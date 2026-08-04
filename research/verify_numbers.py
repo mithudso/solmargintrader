@@ -102,11 +102,20 @@ def load() -> pd.DataFrame:
     return pd.read_csv(CSV)
 
 
+CPCV_COMBOS_CSV = RESEARCH / "results" / "cpcv_combos_results.csv"
+
+
 def load_cpcv() -> pd.DataFrame | None:
-    """CPCV results, if the CPCV sweep has been run."""
-    if not CPCV_CSV.exists():
+    """CPCV results (singles and combinations), if those sweeps have been run.
+
+    Singles and combinations share the same column schema, so they are
+    concatenated and looked up by label -- a CPCV table row in the document does
+    not say which sweep produced it, and it does not need to.
+    """
+    frames = [pd.read_csv(p) for p in (CPCV_CSV, CPCV_COMBOS_CSV) if p.exists()]
+    if not frames:
         return None
-    return pd.read_csv(CPCV_CSV)
+    return pd.concat(frames, ignore_index=True)
 
 
 def candidates(df: pd.DataFrame, label: str) -> pd.DataFrame:
