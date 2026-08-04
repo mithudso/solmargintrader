@@ -152,13 +152,58 @@ def install() -> int:
     AGENT.write_bytes(plistlib.dumps(agent_plist()))
     print(f"wrote agent → {AGENT}")
 
-    run(["launchctl", "bootout", f"gui/{uid()}/{LABEL}"])  # ignore failure
-    res = run(["launchctl", "bootstrap", f"gui/{uid()}", str(AGENT)])
-    if res.returncode != 0:
-        print(f"bootstrap said: {res.stderr.strip() or res.stdout.strip()}")
-    print("\nInstalled. The app is supervised only while the flag exists:")
+    if not reload_agent():
+        print(
+            "\nThe agent could not be loaded. Fix that before relying on login "
+            "startup:\n"
+            f"    launchctl bootstrap gui/{uid()} {AGENT}",
+            file=sys.stderr,
+        )
+        return 1
+
+    print("\nInstalled and loaded. The app is supervised only while the flag exists:")
     print("    soltui/soltui-service start")
     return 0
+
+
+def is_loaded() -> bool:
+    """Whether launchd currently knows about the agent."""
+    return run(["launchctl", "print", f"gui/{uid()}/{LABEL}"]).returncode == 0
+
+
+def reload_agent(timeout: float = 10.0) -> bool:
+    """Bootout then bootstrap, waiting for each step to actually take effect.
+
+    `launchctl bootout` is ASYNCHRONOUS: it returns before the job is gone, so a
+    bootstrap issued immediately afterwards races it and fails with a confusing
+    "Try re-running the command as root" -- leaving the agent UNLOADED while
+    install reported success. Found empirically after a reinstall silently
+    stopped starting the app at login.
+
+    So: poll until the old job has really gone, then bootstrap, then poll until
+    the new one is really there. Returns True only if the agent ends up loaded.
+    """
+    import time
+
+    if is_loaded():
+        run(["launchctl", "bootout", f"gui/{uid()}/{LABEL}"])
+        deadline = time.monotonic() + timeout
+        while is_loaded() and time.monotonic() < deadline:
+            time.sleep(0.3)
+        if is_loaded():
+            print("  bootout did not complete within the timeout", file=sys.stderr)
+            return False
+
+    res = run(["launchctl", "bootstrap", f"gui/{uid()}", str(AGENT)])
+    deadline = time.monotonic() + timeout
+    while not is_loaded() and time.monotonic() < deadline:
+        time.sleep(0.3)
+    if not is_loaded():
+        detail = (res.stderr or res.stdout).strip()
+        print(f"  bootstrap failed: {detail or 'no output'}", file=sys.stderr)
+        return False
+    print("  agent loaded")
+    return True
 
 
 def start() -> int:

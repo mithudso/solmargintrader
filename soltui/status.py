@@ -39,6 +39,9 @@ MAX_TITLE_CHARS = 40
 # time rather than by clipping the finished string, because the figure the
 # indicator exists to show sits at the END and tail-clipping would remove it.
 MAX_ACTIVITY_CHARS = 12
+# Same reasoning for an error string: cap it at composition time so the title
+# stays a readable sentence. The menu summary carries the untruncated text.
+MAX_ERROR_CHARS = 26
 
 
 class Phase(StrEnum):
@@ -109,8 +112,12 @@ def build_title(state: AppState) -> str:
     icon = ICONS.get(str(state.phase), "◦")
 
     if state.phase is Phase.ERROR:
-        detail = state.error or "unknown"
-        return _clip(f"{icon} SOL: error — {detail}")
+        # Cap the message BEFORE composing. Letting _clip() handle an over-long
+        # error elides the middle and produces unreadable fragments like
+        # "✕: …or — no data — run the fetch…". The full text is in the menu
+        # summary, which has room for it.
+        detail = _shorten(state.error or "unknown", MAX_ERROR_CHARS)
+        return _clip(f"{icon} SOL: {detail}")
 
     if state.phase is Phase.RUNNING:
         # Cap the caller-supplied label BEFORE composing. Clipping the finished

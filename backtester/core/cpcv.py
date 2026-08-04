@@ -38,6 +38,7 @@ equity *levels* cannot be spliced across a gap.
 from __future__ import annotations
 
 import itertools
+import math
 from dataclasses import dataclass, field
 from typing import Callable
 
@@ -272,8 +273,11 @@ def pbo_cscv(
     choosing at random, i.e. the "best" backtest is an overfit artifact.
 
     `max_splits` caps the enumeration -- C(16,8) is 12,870 and the estimate is
-    stable long before that. Splits are taken in deterministic order so the
-    result is reproducible.
+    stable long before that. The cap SAMPLES EVENLY across the combination space
+    rather than taking the first N: `itertools.combinations` emits in
+    lexicographic order, so the first N all share low-index blocks and would
+    systematically under-represent the later ones. Sampling is by fixed stride,
+    so the result is still fully deterministic and reproducible.
     """
     labels = list(block_returns)
     if len(labels) < 2:
@@ -294,9 +298,16 @@ def pbo_cscv(
         sd = float(np.std(cat, ddof=1))
         return 0.0 if sd <= 1e-15 else float(np.mean(cat) / sd)
 
+    # Even sampling: walk the whole space but keep every `stride`-th combination,
+    # so a capped run still spans early and late block groupings.
+    total_splits = math.comb(n_blocks, half)
+    stride = max(1, total_splits // max_splits) if max_splits > 0 else 1
+
     below_median = 0
     splits = 0
-    for train_idx in itertools.combinations(range(n_blocks), half):
+    for position, train_idx in enumerate(itertools.combinations(range(n_blocks), half)):
+        if position % stride:
+            continue
         if splits >= max_splits:
             break
         test_idx = [i for i in range(n_blocks) if i not in train_idx]
