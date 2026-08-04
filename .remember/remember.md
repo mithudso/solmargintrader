@@ -49,10 +49,17 @@ Evaluation is now **CPCV** (8 blocks, k=2, 28 paths per configuration), not one 
 
 ## Blocked, and why
 
-**Longer daily history is not obtainable from this network.** Coinbase returns empty for SOL-USD
-before **2021-06-17** (its listing date); Binance is geo-blocked; Kraken, OKX, Gate, KuCoin and
-Bybit all hang on DNS. CoinGecko's `days=max` OHLC is pro-gated and its free `market_chart` is
-close-only, which cannot build OHLC bars for breakout/Keltner/stochastic/ATR strategies.
+**Longer daily history was not obtainable from this environment.** Coinbase's backward pagination
+walked to **2021-06-17** and could make no further progress, consistent with that being its
+SOL-USD listing date. Binance is geo-blocked; Kraken, OKX, Gate, KuCoin and Bybit hang on DNS.
+CoinGecko's `days=max` OHLC is pro-gated and its free `market_chart` is close-only, which cannot
+build OHLC bars for breakout/Keltner/stochastic/ATR strategies.
+
+> **Know the limit of this evidence.** The 2021-06-17 floor is inferred from the pagination loop
+> terminating, **not** from a direct empty response for an earlier window. I attempted that direct
+> probe three times; all three were killed or timed out because outbound HTTP degraded to
+> unreachable partway through the session. **Re-test before treating 2021-06-17 as a hard floor** —
+> one completed request for `start=2020-04-01&end=2021-06-16` settles it either way.
 
 CPCV absorbed the underlying need: the long horizon went from **4/16 evaluable to 16/16**,
 because blocks reuse the whole series instead of one 563-bar tail.

@@ -471,12 +471,17 @@ Ranked by expected information gain per unit of work, which is a different quest
    changed the answer: buy-and-hold went from mid-table to first at the medium horizon, and the
    long horizon became evaluable at all (16/16 versus 4/16). PBO 0.43–0.46 now quantifies what
    the single split could only hint at.
-2. **Get more assets. Longer daily history is not obtainable here** — Coinbase returns nothing
-   for SOL-USD before 2021-06-17 (its listing date), and every venue with 2020 SOL history
-   (Binance, OKX, Kraken, Gate, KuCoin, Bybit) is geo-blocked or unreachable from this network.
-   CPCV largely absorbed the need: it fixed the long-horizon evidence problem the extra history
-   was meant to fix. A **peer universe** remains the higher-value data addition, because it
-   unlocks the cross-sectional-momentum and cointegration families that are currently spec-only.
+2. **Get more assets. Longer daily history was not obtainable from this environment** —
+   Coinbase's backward pagination walked to **2021-06-17** and could make no further progress,
+   which is consistent with that being its SOL-USD listing date. *Evidence limit, stated
+   precisely:* that conclusion comes from the pagination loop terminating, not from a direct
+   observation of an empty response for an earlier window — a direct probe of 2020-04→2021-06 was
+   attempted and could not complete, because outbound HTTP to every venue with 2020 SOL history
+   (Binance geo-blocked; Kraken, OKX, Gate, KuCoin, Bybit unreachable) hangs from this network.
+   **Re-test before treating 2021-06-17 as a hard floor.** CPCV largely absorbed the need
+   regardless: it fixed the long-horizon evidence problem the extra history was meant to fix. A
+   **peer universe** remains the higher-value data addition, because it unlocks the
+   cross-sectional-momentum and cointegration families that are currently spec-only.
 3. **Measure pairwise signal correlation before calling a pair orthogonal.** The identical
    `+2.555` triples prove family labels are not enough.
 4. **Add funding/borrow-rate history.** It is the highest-ranked spec-only signal and it is
