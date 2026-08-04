@@ -251,7 +251,9 @@ function renderTables() {
         f.side,
         f.baseQty.toFixed(6),
         `$${f.priceUsd.toFixed(4)}`,
-        usd(f.feeUsd),
+        // "$0.00?" reads as "unknown", where a bare "$0.00" would claim the
+        // venue told us this trade was free.
+        f.feeUnknown ? `${usd(f.feeUsd)}?` : usd(f.feeUsd),
       ]);
     }
   }

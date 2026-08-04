@@ -46,7 +46,7 @@ Both venues sit behind one `VenueAdapter` interface, so Perps drops in when its 
 
 ```bash
 cd ~/dev/solmargintrader/extension
-npm test              # 104 tests, no dependencies to install
+npm test              # 110 tests, no dependencies to install
 node tools/dryrun.js  # end-to-end tick against the live SOL price
 ```
 
@@ -255,7 +255,7 @@ src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe)
 tools/cli.js               CLI surface, generated from the registry
 tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/dryrun.js            Headless end-to-end tick
-test/                      104 tests, zero dependencies (node:test)
+test/                      110 tests, zero dependencies (node:test)
 ```
 
 No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
@@ -268,7 +268,7 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 
 **Done and proven:**
 
-- `npm test` → **104 passing, 0 failing** (unit, integration and three-surface parity)
+- `npm test` → **110 passing, 0 failing** (unit, integration and three-surface parity)
 - `node tools/dryrun.js --ticks 8 --osc 6 --offline 100` → full tick loop with a down-then-up path:
   4 bids placed, filled as price fell, exits placed one rung above each lot, and on tick 8 an exit
   filled and took net P&L from −$2.33 to **+$0.04**. The closed trip captured **$0.620**, which is
@@ -303,6 +303,17 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 6. **`window.prompt()` as the live-arm gate** — Chrome suppresses modal dialogs in an extension
    popup, so the confirmation would silently no-op or close the popup. Replaced with an inline
    typed confirmation.
+7. **Cancelled orders booked as fills.** `getFills()` reads the orders/**history** endpoint, and
+   history holds every *terminal* order — cancelled and expired as well as filled. There was no
+   execution gate, so a cancelled order took its price from `triggerPriceUsd` and its quantity from
+   the intent's **planned** size, then stored a fill for inventory the wallet never acquired and
+   marked the intent `filled`. Reproduced end to end before fixing. `ingestFills` now requires
+   positive evidence of execution — a real `filledBaseQty` or a real `executedPriceUsd` — and the
+   gate is deliberately positive rather than a blacklist of status strings, because the status
+   vocabulary is part of the unverified envelope.
+8. **An unrecognised order envelope read as "no orders".** Covered under "Not verified" #2 below:
+   an empty list is indistinguishable from a misread one to reconciliation, which treats it as
+   "nothing is live" and re-plans every resting rung. Now refused.
 
 **Not verified — do these before risking money:**
 
@@ -322,11 +333,22 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
    Use `normaliseOrders(body, { strict: false })` to inspect one by hand — it flags unusable orders
    instead of throwing. Accepted envelopes are `ORDER_LIST_KEYS`; required fields are
    `ORDER_REQUIRED_FIELDS`. Both are exported so correcting them is a one-line, visible diff.
+
+   Strictness is **asymmetric by design**. `getOpenOrders()` refuses per record, because planning
+   against a live list known to be incomplete is the double-fire vector. `getFills()` refuses the
+   *envelope* but degrades per record, because a skipped history record can only delay P&L — it can
+   never place an order — and refusing the whole list would trade a recoverable accounting lag for an
+   engine that never ticks again. Two candidate list keys holding arrays (`{orders: [], data: [...]}`)
+   is treated as ambiguous and refused: taking the first would reintroduce the empty-list bug through
+   a second door. A trigger price must be positive, not merely present, since `Number('')` is `0`.
 3. **Fee attribution — where Trigger reports fees is still unconfirmed.** Fees are no longer
    coerced to zero when absent. `normaliseOrders()` leaves `feeUsd` as `null` and sets
    `feeUnknown`; `ingestFills()` still records the fill (dropping a real fill would lose inventory
    the wallet holds) but flags it and counts it on `result.feeUnknownFills`. A non-zero count means
-   the reported P&L understates costs by however much those fees were.
+   the reported P&L understates costs by however much those fees were. The count reaches humans in
+   three places: `summarise()` puts it in the event log, the popup appends `?` to the fee total, and
+   the dashboard renders `$0.00?` on any fill whose fee the venue never reported. A safeguard nobody
+   can see is not a safeguard.
 4. **Chrome alarm floor.** 30s is assumed; the engine logs the real wake delta. Watch it before
    trusting a sub-minute tick.
 5. **Transaction signature insertion** is tested against synthetic transactions, not a real

@@ -101,6 +101,20 @@ class GridConfig:
         if self.min_order_usd < 0:
             raise ValueError("min_order_usd cannot be negative")
 
+        # Order identity rounds the level to 1e-6 (see `_level_key`, which mirrors
+        # the extension's `intentKey`). A ladder finer than that resolution maps
+        # several distinct rungs onto one key, and they would silently collapse
+        # into a single order — 1000 rungs across a $0.0001 range becomes 101
+        # orders with 899 of them quietly dropped.
+        levels = grid_levels(self)
+        min_gap = min(b - a for a, b in zip(levels, levels[1:]))
+        if round(min_gap * 1e6) == 0:
+            raise ValueError(
+                f"rungs are {min_gap:.3e} USD apart, finer than the 1e-6 resolution of "
+                "an order key, so distinct rungs would collapse into one order. "
+                "Widen the range or use fewer rungs."
+            )
+
     def to_dict(self) -> dict[str, Any]:
         """Plain-dict form for the run manifest."""
         return {
@@ -696,6 +710,20 @@ def run_grid_backtest(
         raise ValueError(
             f"high < low at index {int(np.argmax(highs < lows))}; the bars are malformed"
         )
+    if np.any(closes <= 0.0):
+        raise ValueError(
+            f"close contains a non-positive price at index "
+            f"{int(np.argmin(closes > 0.0))}; it is the mark for every bar and the "
+            "price of the final forced exit"
+        )
+    outside = (closes < lows) | (closes > highs)
+    if np.any(outside):
+        # A close outside its own bar's range would mark the book — and liquidate
+        # the final position — at a price the market never traded.
+        raise ValueError(
+            f"close is outside [low, high] at index {int(np.argmax(outside))}; "
+            "the bars are malformed"
+        )
 
     levels = grid_levels(cfg)
     # The ladder is fixed for the whole run, so its level -> index map is built
@@ -752,7 +780,23 @@ def run_grid_backtest(
                 del resting[key]
 
         # -- 4. mark to market --------------------------------------------
-        equity[i] = max(0.0, book.equity(closes[i]))
+        # No `max(0.0, ...)` floor here, deliberately, and unlike `core/engine.py`
+        # — that engine's floor is justified by isolated per-position margin,
+        # which a spot ladder does not have. Clamping would let accrued carry push
+        # true equity below zero while the *reported* curve sat at 0.0, and every
+        # drawdown and return figure would inherit the floor in the flattering
+        # direction. Refusing matches the cash guard in `_GridBook.sell`; the two
+        # insolvency paths must not disagree.
+        equity[i] = book.equity(closes[i])
+        if equity[i] < -1e-9:
+            raise RuntimeError(
+                f"bar {i}: equity went negative (${equity[i]:,.6f}) with "
+                f"${book.unsettled_carry:,.6f} of carry accrued on open inventory. "
+                "This run models carry but not liquidation, so the curve past this "
+                "bar would describe an account that could not have existed. Lower "
+                "--carry-bps-per-hour, shorten the holding period, or add a "
+                "liquidation model."
+            )
         exposure[i] = (
             book.inventory_qty * closes[i] / equity[i] if equity[i] > 1e-12 else 0.0
         )
@@ -789,7 +833,7 @@ def run_grid_backtest(
         # No `max_open_index` here: the run is over, so every lot must be closed
         # even one opened on the final bar.
         book.sell(closes[-1], forced_qty, int(ts[-1]), n - 1, reason="grid_forced_exit")
-        equity[-1] = max(0.0, book.equity(closes[-1]))
+        equity[-1] = book.equity(closes[-1])
         exposure[-1] = 0.0
 
     ppy = periods_per_year(interval)

@@ -16,7 +16,7 @@ import {
   DIRECTION,
 } from '../src/core/grid.js';
 
-import { reconcile, tick, ingestFills, pricesMatch, matchIntent } from '../src/core/engine.js';
+import { reconcile, tick, ingestFills, summarise, pricesMatch, matchIntent } from '../src/core/engine.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
 import { INTENT_STATUS, ConfigStore } from '../src/storage/store.js';
 import {
@@ -892,4 +892,146 @@ test('a fill with an unreported fee is recorded, flagged and counted', async () 
   });
   assert.deepEqual(known.feeUnknown, []);
   assert.equal(known.added[0].feeUnknown, false);
+});
+
+// ------------------------------------------ terminal orders are not all fills --
+//
+// `getFills()` reads the orders/history endpoint, and history holds every
+// TERMINAL order — cancelled and expired as well as filled. Booking one of those
+// as a fill invents inventory the wallet never acquired.
+
+test('a cancelled order in history is never booked as a fill', async () => {
+  const store = new MemoryStore();
+  const key = intentKey({ gridId: RECON_CONFIG.gridId, side: 'buy', level: 100 });
+  await store.putIntent({
+    intentKey: key,
+    gridId: RECON_CONFIG.gridId,
+    side: 'buy',
+    level: 100,
+    baseQty: 0.12,
+    notionalUsd: 12,
+    status: INTENT_STATUS.RESTING,
+    venueOrderId: 'ord-cancelled',
+  });
+
+  const venue = {
+    async getFills() {
+      // The dangerous shape: no executed price, no filled quantity. Without a gate
+      // the price falls back to the trigger and the quantity to the intent's
+      // PLANNED size, fabricating a fill out of an order that never traded.
+      return [
+        {
+          venueOrderId: 'ord-cancelled',
+          status: 'cancelled',
+          side: 'buy',
+          triggerPriceUsd: 100,
+          executedPriceUsd: null,
+          filledBaseQty: null,
+          updatedAtMs: 1,
+        },
+      ];
+    },
+  };
+
+  const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  assert.equal(added.length, 0, 'a cancelled order must not become a fill');
+  assert.equal(rejected.length, 1);
+  assert.match(rejected[0].reason, /no execution/);
+  assert.equal((await store.allFills()).length, 0, 'no phantom inventory may be stored');
+  assert.notEqual(
+    (await store.getIntent(key)).status,
+    INTENT_STATUS.FILLED,
+    'a cancelled order must not mark the intent filled',
+  );
+});
+
+test('execution evidence in either field is enough to book a fill', async () => {
+  // Quantity alone, or price alone, is evidence the venue executed something.
+  for (const [label, extra] of [
+    ['quantity only', { filledBaseQty: 0.12, executedPriceUsd: null }],
+    ['price only', { filledBaseQty: null, executedPriceUsd: 101 }],
+  ]) {
+    const store = new MemoryStore();
+    const key = intentKey({ gridId: RECON_CONFIG.gridId, side: 'buy', level: 100 });
+    await store.putIntent({
+      intentKey: key,
+      gridId: RECON_CONFIG.gridId,
+      side: 'buy',
+      level: 100,
+      baseQty: 0.12,
+      notionalUsd: 12,
+      status: INTENT_STATUS.RESTING,
+      venueOrderId: `ord-${label}`,
+    });
+    const venue = {
+      async getFills() {
+        return [
+          {
+            venueOrderId: `ord-${label}`,
+            status: 'filled',
+            side: 'buy',
+            triggerPriceUsd: 100,
+            updatedAtMs: 1,
+            ...extra,
+          },
+        ];
+      },
+    };
+    const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
+    assert.equal(added.length, 1, `${label} should book a fill`);
+    assert.equal(rejected.length, 0, `${label} should not be rejected`);
+  }
+});
+
+test('an unusable history record is rejected individually, not fatally', async () => {
+  // The history path is non-strict per record precisely so one bad record cannot
+  // brick the engine; ingestFills must still refuse to book it.
+  const store = new MemoryStore();
+  const venue = {
+    async getFills() {
+      return normaliseOrders([{ id: 'ord-broken', status: 'filled' }], { strict: false });
+    },
+  };
+  const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  assert.equal(added.length, 0);
+  assert.equal(rejected.length, 1);
+  assert.match(rejected[0].reason, /unusable/);
+});
+
+test('an ambiguous envelope holding two candidate lists is refused', () => {
+  // Picking the first match would read `{orders: [], data: [order]}` as empty —
+  // the same "nothing is live, re-place every rung" double-fire, second door.
+  assert.throws(
+    () => normaliseOrders({ orders: [], data: [ORDER] }),
+    (err) => err instanceof OrderEnvelopeError && /ambiguous/.test(err.message),
+  );
+  assert.throws(
+    () => normaliseOrders({ orders: [ORDER], data: [ORDER] }),
+    (err) => err instanceof OrderEnvelopeError && /ambiguous/.test(err.message),
+  );
+});
+
+test('a zero, blank or negative trigger price is not a valid order', () => {
+  // Number('') is 0 and Number('0') is 0, so "present and finite" is too weak a
+  // test for a price: a $0 rung would be adopted at an impossible level.
+  for (const bad of [0, '0', -5, '', '-0.01']) {
+    assert.throws(
+      () => normaliseOrders([{ ...ORDER, triggerPriceUsd: bad }]),
+      (err) => err instanceof OrderEnvelopeError && err.missingFields.includes('triggerPriceUsd'),
+      `triggerPriceUsd ${JSON.stringify(bad)} must be refused`,
+    );
+  }
+  // A real price still passes, including one given as a string.
+  assert.equal(normaliseOrders([{ ...ORDER, triggerPriceUsd: '141.4214' }])[0].triggerPriceUsd, 141.4214);
+});
+
+test('the unknown-fee count reaches the event log', async () => {
+  // Recorded but never displayed is not a safeguard, so summarise() carries it.
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setRuntime({ armed: false });
+  const result = await tick({ venue: stubVenue(100), store, configStore });
+  const summary = summarise(result);
+  assert.equal(summary.feeUnknownFills, 0, 'the field must always be present');
+  assert.equal(summarise({ ...result, feeUnknownFills: 3 }).feeUnknownFills, 3);
 });

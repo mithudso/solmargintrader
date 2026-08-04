@@ -16,9 +16,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
-from typing import Sequence
+from typing import Any, Sequence
 
 from .core.data import CsvLoader, SyntheticLoader, checksum_frame, frame_to_arrays
 from .core.gridsim import (
@@ -30,6 +31,33 @@ from .core.gridsim import (
     rung_width_bps,
 )
 from .core.types import INTERVAL_SECONDS, CostConfig
+
+
+# Repeated on every output path, including both JSON payloads. A number that
+# leaves this tool without it can be pasted anywhere.
+DISCLAIMER = (
+    "A grid is short volatility: it earns its rung width in a range and "
+    "accumulates losing inventory in a trend. Historical simulation only, "
+    "NOT investment advice."
+)
+
+
+def _json_safe(value: Any) -> Any:
+    """Replace non-finite floats with None, recursively.
+
+    `profit_factor` is `+inf` on a run with no losing trade — a legitimate
+    outcome, not an error — and `json.dumps` writes that as a bare `Infinity`
+    token, which strict JSON parsers reject. Emitting `null` keeps the document
+    parseable; the encoder below still passes `allow_nan=False` so anything this
+    misses fails loudly rather than shipping invalid JSON.
+    """
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, dict):
+        return {k: _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(v) for v in value]
+    return value
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -134,6 +162,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
+    # Validated here rather than left to the simulator so that every bad argument
+    # exits 2 (usage) instead of some exiting 1 (runtime). A caller scripting this
+    # cannot distinguish "you typed it wrong" from "the run failed" otherwise.
+    for flag, value, ok in (
+        ("--capital", args.capital, args.capital > 0),
+        ("--carry-bps-per-hour", args.carry_bps_per_hour, args.carry_bps_per_hour >= 0),
+        ("--fee-bps", args.fee_bps, args.fee_bps >= 0),
+        ("--slippage-bps", args.slippage_bps, 0.0 <= args.slippage_bps < 10_000.0),
+        ("--min-order-usd", args.min_order_usd, args.min_order_usd >= 0),
+        ("--synthetic", args.synthetic, args.synthetic is None or args.synthetic > 0),
+    ):
+        if not ok:
+            print(f"error: {flag} is out of range: {value}", file=sys.stderr)
+            return 2
+
+    if args.data and args.synthetic is not None:
+        print(
+            "error: --data and --synthetic name two different data sources; pass one",
+            file=sys.stderr,
+        )
+        return 2
+
     levels = grid_levels(cfg)
     if args.levels:
         # Quoting the requirement at the top rung is the useful case: that is the
@@ -143,17 +193,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             "levels": levels,
             "rung_width_bps": rung_width_bps(cfg),
             "capital_requirement_at_upper": need,
+            "disclaimer": DISCLAIMER,
         }
         if args.json:
-            print(json.dumps(payload, indent=2))
+            print(json.dumps(_json_safe(payload), indent=2, allow_nan=False))
         else:
             for i, level in enumerate(levels):
                 print(f"  rung {i}  ${level:,.4f}")
             print(f"\nrung width       {payload['rung_width_bps']:,.1f} bps")
             print(f"capital required ${need['total_usd']:,.2f} at ${levels[-1]:,.2f}")
+            print(f"\n{DISCLAIMER}")
         return 0
 
-    if args.synthetic:
+    # `is not None`, not truthiness: `--synthetic 0` is a bad argument, not an
+    # instruction to quietly load a CSV instead.
+    if args.synthetic is not None:
         loader = SyntheticLoader(n_bars=args.synthetic, seed=args.seed)
     else:
         path = (
@@ -185,11 +239,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
+    except RuntimeError as exc:
+        # The simulator raises this when carry drives the account insolvent, and
+        # its message names the remedy. Letting it escape would show a traceback
+        # instead of the advice.
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
 
     if args.json:
         print(
             json.dumps(
-                {
+                _json_safe({
                     "config": result.config,
                     "data_source": loader.describe(),
                     "data_checksum": checksum_frame(df),
@@ -216,9 +276,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "skipped": result.skipped,
                     "grid_metrics": result.metrics.to_dict(),
                     "buy_and_hold_metrics": result.baseline_metrics.to_dict(),
-                },
+                    "disclaimer": DISCLAIMER,
+                }),
                 indent=2,
                 default=float,
+                # `profit_factor` is +inf on a run with no losing trade, and
+                # json.dumps writes that as a bare `Infinity` token, which is not
+                # valid JSON and breaks any strict parser downstream.
+                allow_nan=False,
             )
         )
         return 0
@@ -234,10 +299,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("\n  skipped (plan-time refusals, by reason):")
         for reason, count in sorted(result.skipped.items(), key=lambda kv: -kv[1]):
             print(f"    {count:6d}  {reason}")
-    print(
-        "\nA grid is short volatility: it earns its rung width in a range and "
-        "accumulates losing inventory in a trend.\nNOT investment advice."
-    )
+    print(f"\n{DISCLAIMER}")
     return 0
 
 

@@ -52,8 +52,8 @@ Three components with different risk profiles. Know which one you are in:
 ## Before you claim a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 110 tests
-cd extension && npm test                                # 104 tests
+python3 -m unittest discover -s backtester/tests -t .   # 122 tests
+cd extension && npm test                                # 110 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 node tools/verify-endpoints.js                          # live Jupiter reachability
 ```

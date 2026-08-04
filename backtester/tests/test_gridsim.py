@@ -319,7 +319,9 @@ class TestNoLookahead(unittest.TestCase):
         # Bar 2 spans from below the entry to above its paired exit. A path-blind
         # simulator would book a free round trip here; this one must book only
         # the entry, because the exit does not exist until that bar's close.
-        rows = flat(90.0, 2) + [(90.0, self.levels[5], entry - 1.0, 90.0)]
+        # The close stays inside [low, high] — a bar that closes outside its own
+        # range is malformed data and is refused up front.
+        rows = flat(90.0, 2) + [(90.0, 90.0, entry - 1.0, self.levels[5])]
         res = run_grid_backtest(
             self.cfg, bars(rows), initial_capital=1_000.0, costs=FREE
         )

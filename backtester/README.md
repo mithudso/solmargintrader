@@ -351,7 +351,7 @@ once. A grid that underperforms holding the asset has not earned its complexity.
 python3 -m unittest discover -s backtester/tests -t . -v
 ```
 
-110 known-answer tests, no network required. The load-bearing ones:
+122 known-answer tests, no network required. The load-bearing ones:
 
 | Test | Known answer |
 |---|---|

@@ -47,7 +47,11 @@ async function refresh() {
   paintPnl($('net'), lastTick?.pnl?.totalNetUsd);
   paintPnl($('realized'), lastTick?.pnl?.realizedNetUsd);
   paintPnl($('unrealized'), lastTick?.pnl?.unrealizedNetUsd);
-  $('fees').textContent = usd(lastTick?.pnl?.feeTotalUsd);
+  // A trailing "?" when some fill's fee was never reported by the venue: the
+  // total is a floor, not the real figure, and a bare number would claim
+  // otherwise.
+  $('fees').textContent =
+    usd(lastTick?.pnl?.feeTotalUsd) + (lastTick?.feeUnknownFills > 0 ? '?' : '');
   $('trips').textContent =
     lastTick?.pnl?.roundTripCount != null
       ? `${lastTick.pnl.roundTripCount} (${(lastTick.pnl.winRate * 100).toFixed(0)}% win)`

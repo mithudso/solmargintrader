@@ -1,13 +1,13 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 110 tests
-cd extension && npm test                                # 104 tests
+python3 -m unittest discover -s backtester/tests -t .   # 122 tests
+cd extension && npm test                                # 110 tests
 ```
 
 176 tests total, no test-framework dependency in either component (`unittest` and `node:test`).
 
-## Extension — what the 104 tests cover
+## Extension — what the 110 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -57,14 +57,14 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 110 tests
+## Backtester — 122 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
 signal generation or fill timing needs a test that would catch a one-bar leak. See
 `backtester/README.md`.
 
-30 of those cover the ladder-grid simulator (`core/gridsim.py`), and they exist because that module
+32 of those cover the ladder-grid simulator (`core/gridsim.py`), and they exist because that module
 has to agree with `extension/src/core/grid.js` about what a round trip earns. Three groups matter
 most: the **round-trip invariant** (gross `== notional × rung width`, plus rung width asserted
 against the JavaScript implementation's own figures), the **no-lookahead group** (nothing fills on

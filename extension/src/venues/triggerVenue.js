@@ -104,6 +104,20 @@ export class TriggerVenue {
     return normaliseOrders(res);
   }
 
+  /**
+   * Terminal orders. Deliberately NON-strict per record, unlike `getOpenOrders`.
+   *
+   * The asymmetry is the point. An unreadable *live* list must abort the tick,
+   * because planning against a list known to be incomplete is how a rung
+   * double-fires. A skipped *history* record can only delay P&L — it can never
+   * place an order — so refusing the whole list would trade a recoverable
+   * accounting lag for an engine that never ticks again. Unusable records come
+   * back flagged and `ingestFills` rejects them individually.
+   *
+   * The envelope itself is still strict: an unrecognised shape throws here too,
+   * because that is the case where we cannot tell an empty history from a
+   * misread one.
+   */
   async getFills() {
     const res = await this.#authed(() =>
       trigger.listOrders({
@@ -114,7 +128,7 @@ export class TriggerVenue {
         fetchImpl: this.fetchImpl,
       }),
     );
-    return normaliseOrders(res);
+    return normaliseOrders(res, { strict: false, strictEnvelope: true });
   }
 
   /** Trigger charges no carry: a resting spot order has no funding leg. */
@@ -328,27 +342,38 @@ export const ORDER_REQUIRED_FIELDS = ['venueOrderId', 'side', 'triggerPriceUsd']
  * shape change is the whole point.
  *
  * @param {unknown} res raw response body
- * @param {{strict?: boolean}} [opts] `strict: false` returns unusable orders
- *   flagged instead of throwing, for inspecting a real response by hand.
+ * @param {{strict?: boolean, strictEnvelope?: boolean}} [opts] `strict: false`
+ *   returns unusable orders flagged instead of throwing, for inspecting a real
+ *   response by hand or for the history path (see `getFills`). `strictEnvelope`
+ *   keeps envelope-level refusal on while relaxing per-record refusal, which is
+ *   the combination the history path wants: an unreadable *shape* is still fatal
+ *   because it hides the difference between an empty history and a misread one.
  */
-export function normaliseOrders(res, { strict = true } = {}) {
+export function normaliseOrders(res, { strict = true, strictEnvelope = strict } = {}) {
   let list = null;
   if (Array.isArray(res)) {
     list = res;
   } else if (res && typeof res === 'object') {
-    for (const key of ORDER_LIST_KEYS) {
-      if (Array.isArray(res[key])) {
-        list = res[key];
-        break;
-      }
+    const present = ORDER_LIST_KEYS.filter((key) => Array.isArray(res[key]));
+    if (present.length > 1 && strictEnvelope) {
+      // Taking the first match would let `{orders: [], data: [realOrder]}` read as
+      // an empty list — the same "nothing is live, re-place every rung" double-fire
+      // this function exists to prevent, arriving through a second door. Two
+      // candidate lists means we do not know which one is authoritative.
+      throw new OrderEnvelopeError(
+        `ambiguous orders envelope: ${present.map((k) => `"${k}"`).join(' and ')} both hold arrays ` +
+          `(lengths ${present.map((k) => res[k].length).join(', ')}); cannot tell which is authoritative`,
+        { observedKeys: Object.keys(res) },
+      );
     }
+    if (present.length === 1) list = res[present[0]];
   }
 
   if (list === null) {
     // An absent or unrecognised body is not an empty order list, and treating it
     // as one is the failure this function exists to stop.
     const observedKeys = res && typeof res === 'object' ? Object.keys(res) : [];
-    if (strict) {
+    if (strictEnvelope) {
       throw new OrderEnvelopeError(
         `unrecognised orders envelope: expected an array or one of ` +
           `${ORDER_LIST_KEYS.map((k) => `"${k}"`).join(', ')}, got ` +
@@ -381,9 +406,16 @@ export function normaliseOrders(res, { strict = true } = {}) {
     };
     order.feeUnknown = !Number.isFinite(order.feeUsd);
 
-    const missingFields = ORDER_REQUIRED_FIELDS.filter(
-      (f) => order[f] == null || (typeof order[f] === 'number' && !Number.isFinite(order[f])),
-    );
+    // A price must be POSITIVE, not merely present and finite. `Number('')` is 0
+    // and `Number('0')` is 0, so a blank or zero field would otherwise pass as a
+    // valid $0 trigger, get adopted into the journal as a phantom rung at an
+    // impossible level, and occupy cap space while never matching anything.
+    const missingFields = ORDER_REQUIRED_FIELDS.filter((f) => {
+      const v = order[f];
+      if (v == null) return true;
+      if (f === 'triggerPriceUsd') return !(Number.isFinite(v) && v > 0);
+      return typeof v === 'number' && !Number.isFinite(v);
+    });
     if (missingFields.length) {
       const observedKeys = o && typeof o === 'object' ? Object.keys(o) : [];
       if (strict) {

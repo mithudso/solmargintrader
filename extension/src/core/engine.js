@@ -157,6 +157,29 @@ export async function ingestFills({ venue, store, config, log = () => {} }) {
     const id = f.venueOrderId;
     if (!id || known.has(id)) continue;
 
+    // `getFills()` reads the orders/history endpoint, and "history" is every
+    // TERMINAL order — filled, cancelled and expired alike. Without this gate a
+    // cancelled order books a phantom fill: `executedPriceUsd` is absent so the
+    // price falls back to the trigger price, `filledBaseQty` is absent so the
+    // quantity falls back to the intent's PLANNED size, and the result is
+    // inventory the wallet never acquired plus an intent marked FILLED.
+    //
+    // The gate is positive — it requires evidence the venue actually executed
+    // something — rather than a blacklist of status strings, because the status
+    // vocabulary is part of the unverified envelope. An unknown status with real
+    // execution evidence is still a fill; a known-sounding one without it is not.
+    if (f.unusable) {
+      rejected.push({ id, reason: `history record unusable: missing ${(f.missingFields ?? []).join(', ')}` });
+      continue;
+    }
+    const executedQty = Number.isFinite(f.filledBaseQty) && f.filledBaseQty > 0;
+    const executedPrice = Number.isFinite(f.executedPriceUsd) && f.executedPriceUsd > 0;
+    if (!executedQty && !executedPrice) {
+      rejected.push({ id, reason: 'terminal order shows no execution (cancelled or expired, not filled)' });
+      log({ level: 'info', msg: 'terminal order ignored — no execution evidence', id, status: f.status ?? null });
+      continue;
+    }
+
     const priceUsd = f.executedPriceUsd ?? f.triggerPriceUsd;
     // Quantity must come from the fill or from the intent that created it —
     // never from current config, which would let editing notionalPerRungUsd
@@ -390,5 +413,9 @@ export function summarise(r) {
     orphaned: r.orphaned.length,
     errors: r.errors.length,
     netUsd: r.pnl?.totalNetUsd ?? null,
+    // A fee the venue never reported is booked as 0 so the arithmetic stays
+    // finite, which means the fee total reads as complete when it is not. The
+    // count belongs in the event log, or the safeguard is invisible.
+    feeUnknownFills: r.feeUnknownFills ?? 0,
   };
 }
