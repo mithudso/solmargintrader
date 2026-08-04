@@ -25,6 +25,7 @@ from soltui.paper import MODE_LABEL, PaperSession, start_session
 from soltui.roster import Roster, RosterError, available_strategies
 from soltui.runner import engine_config
 from soltui.status import (
+    ICONS,
     MAX_TITLE_CHARS,
     AppState,
     Phase,
@@ -112,10 +113,36 @@ class TestIndicatorTitle(unittest.TestCase):
         self.assertEqual(format_pct(0.0), "+0.0%")
 
     def test_error_phase_shows_the_error(self) -> None:
-        """Failures must be visible, not silent."""
+        """Failures must be visible, not silent.
+
+        Asserts the failure GLYPH plus the message, not the literal word "error":
+        the word is redundant next to ✕ and costs 8 characters that the actual
+        message needs in a 40-char status item.
+        """
         title = build_title(AppState(phase=Phase.ERROR, error="no data"))
-        self.assertIn("error", title)
+        self.assertIn(ICONS["error"], title)
         self.assertIn("no data", title)
+
+    def test_long_error_stays_readable(self) -> None:
+        """A long message is truncated cleanly, not elided into fragments.
+
+        An earlier version let _clip() handle it and produced unreadable output
+        like "✕: …or — no data — run the fetch…".
+        """
+        title = build_title(
+            AppState(phase=Phase.ERROR, error="no data — run the fetch command")
+        )
+        self.assertLessEqual(len(title), MAX_TITLE_CHARS)
+        self.assertTrue(title.startswith(f"{ICONS['error']} SOL: no data"))
+        self.assertNotIn("…or", title)
+
+    def test_full_error_text_survives_in_the_menu(self) -> None:
+        """Truncating the title must not lose the detail entirely."""
+        long_err = "no data — run the fetch command"
+        summary = " ".join(
+            build_menu_summary(AppState(phase=Phase.ERROR, error=long_err))
+        )
+        self.assertIn(long_err, summary)
 
     def test_titles_stay_within_the_bar(self) -> None:
         """Long content is clipped, and clipping keeps the number."""

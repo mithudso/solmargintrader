@@ -182,16 +182,28 @@ class SweepRunner:
                 self.state.phase = Phase.IDLE
         except FileNotFoundError as exc:
             outcome.error = str(exc)
-            self.state.phase = Phase.ERROR
-            self.state.error = "no data — run the fetch command"
+            self._fail("no data — run the fetch command")
         except Exception as exc:  # noqa: BLE001 - a UI worker must not die silently
             outcome.error = f"{type(exc).__name__}: {exc}\n{traceback.format_exc()}"
-            self.state.phase = Phase.ERROR
-            self.state.error = f"{type(exc).__name__}"
+            self._fail(type(exc).__name__)
         finally:
             self.outcome = outcome
             if on_done is not None:
                 on_done(outcome)
+
+
+    def _fail(self, message: str) -> None:
+        """Enter the error phase and CLEAR progress.
+
+        Leaving `done`/`total` populated after a failure means a later phase
+        change can surface a stale "42/99" that never completed -- the indicator
+        would report progress for a sweep that died.
+        """
+        self.state.phase = Phase.ERROR
+        self.state.error = message
+        self.state.done = 0
+        self.state.total = 0
+        self.state.activity = ""
 
     def _evaluate(
         self,

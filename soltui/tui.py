@@ -449,7 +449,11 @@ class SolTuiApp(App):
             status.update(
                 f"saved → {path} · affects {len(mapped_strategies())} strategies"
             )
-        except (SignalError, Exception) as exc:  # noqa: BLE001 - shown verbatim
+        except Exception as exc:  # noqa: BLE001 - shown verbatim to the user
+            # Deliberately broad: SignalError is the expected case, but a form
+            # can also yield ValueError/TypeError, and a UI must not die on
+            # bad input. (SignalError was previously listed alongside
+            # Exception, which was redundant and implied false specificity.)
             status.update(f"[red]{exc}[/]")
 
     @on(Button.Pressed, "#btn-reset-signals")
