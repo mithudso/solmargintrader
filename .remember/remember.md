@@ -2,7 +2,7 @@
 
 ## State: all merged to master, local only (no remote)
 
-`python3 -m unittest discover -s backtester/tests -t .` → **228 OK**
+`python3 -m unittest discover -s backtester/tests -t .` → **250 OK**
 `python3 -m unittest discover -s soltui/tests -t .` → **95 OK**
 `python3 research/verify_numbers.py` → **exit 0**, 795 figures verified
 
@@ -89,6 +89,55 @@ Master also received `worktree-signals-concept-map` (strategy cards, ladder-grid
 new strategies). Combined state verified green: **25 REGISTRY strategies, all mapped in
 `STRATEGY_PARAM_MAP`, all with a family**, so the editable Signals tab covers them. Backtester
 suite is now 228 tests.
+
+## Latest sweep: all 25 strategies under CPCV
+
+1,287 configurations (75 singles + 1,002 pairs + 210 triples), 28 paths each.
+`python3 research/cpcv_sweep.py` reproduces it; 870 figures in the docs are verified against the
+CSVs by `verify_numbers.py`.
+
+| | short | medium | long |
+|---|---|---|---|
+| Singles PBO | 0.343 | **0.700** | **0.700** |
+| Pairs PBO | 0.229 | **0.650** | **0.650** |
+| Triples PBO | 0.086 | **0.886** | 0.543 |
+
+**Short horizon: 0 of 25 singles has a positive median path Sharpe.** Daily horizons are all
+*above* the 0.500 noise line, i.e. in-sample rank is anti-informative.
+
+### The one result worth defending carefully
+
+Growing the search 16 -> 25 moved singles PBO 0.457 -> 0.700, which reads like a clean
+multiple-testing effect. It is not clean. Adding the 250-bar-window strategies (OU, Hurst,
+vol-regime) shrank the common CPCV block set from 7 to 6 (they cannot warm up before block 1), so
+two variables moved together. Holding blocks fixed:
+
+    medium: 16cfg/7blk 0.457 -> 16cfg/6blk 0.600 -> 25cfg/6blk 0.700   (search: +0.100)
+    long:   16cfg/7blk 0.457 -> 16cfg/6blk 0.550 -> 25cfg/6blk 0.700   (search: +0.150)
+
+Search size is real but is only a third to a half of the move. **Do not re-simplify this into
+"more configs -> higher PBO".**
+
+### New leaders, all previously spec-only or untested
+
+`hurst_switch` (medium +0.699, 93% of paths positive), `obv_trend_60` (long +0.774, 81%),
+`vol_regime` (long +0.696, 80%). Buy-and-hold is 2nd at medium and 3rd at long — and the rows
+ahead of it are separated by less than their own IQR.
+
+Best figure anywhere: `all(dual_momentum+vol_regime)`, long, median Sharpe **+1.345** on
+**+75.1%**. It tops a 295-configuration search with PBO 0.650, so it is precisely the row not to
+trust. That tension is the finding, not a caveat on it.
+
+### Two traps this sweep re-taught
+
+- **`vol_regime` was 16.02s per hourly backtest** (100x its peers) because `on_bar` rebuilt ~230
+  realised-vol values per bar. `indicators.rolling_realised_vol()` vectorises it to 0.56s, proven
+  equivalent to 0.0 absolute difference. The slow path was invisible from the results — only from
+  the clock.
+- **Strategy cards and `research/sweep.py` must agree exactly**, enforced by
+  `test_presets_agree_with_the_sweep_grid`. Adding strategies to the sweep without card presets
+  breaks it, correctly. Generate presets FROM the sweep; the test compares floats and ints
+  strictly (25.0 != 25).
 
 ## What exists
 
@@ -243,3 +292,64 @@ router — so the label says exactly that rather than claiming the closest-looki
 being labelled.
 
 Counts: **189 Python, 114 JS** (303 total).
+
+### Update — merged to master; pairs + JLP cards unblocked
+
+**Everything is on `master` now** (merges `e3b1701`, `14b6444`, `f8be140`). No remote, so
+nothing is pushed. `chore/repo-bootstrap-and-surfaces` is gone — other sessions merged it
+and moved to master, which advanced **four times while I was merging**, so the merge went
+in as merge commits rather than fast-forwards. Nothing was lost either way: verified by
+checking their reference commits are still ancestors after each merge.
+
+**Two integration failures caught by tests at the boundary, both legitimate:**
+1. `soltui`'s `test_every_registered_strategy_is_mapped` failed because my nine new
+   strategies weren't in `STRATEGY_PARAM_MAP`. Wired them in with fields, groups and
+   validation. Their test, my omission — the same drift discipline the cards use.
+2. My `test_presets_agree_with_the_sweep_grid` failed because *they* added my nine
+   strategies to `research/sweep.py` HORIZONS while my cards said `presets: {}`. Copied
+   the presets **from** sweep.py so both describe one experiment. Note their short/long
+   scalings differ from the defaults I measured at, so the measured numbers on those
+   cards are medium-horizon and labelled as such.
+
+Also: another session vectorised my `vol_regime` realised-vol loop (16.02s → 0.56s,
+commit `3ebb34d`). Worth knowing that per-bar recomputation of a rolling distribution was
+the bottleneck.
+
+## pairs_cointegration — unblocked and MEASURED
+
+Coinbase serves BTC-USD and ETH-USD keyless via the existing fetcher, so both were
+fetched (1,875 daily bars, aligned with SOL). `core/cointegration.py` (ADF +
+Engle-Granger, MacKinnon table, **no statsmodels**) and `core/pairs.py`, run through
+`backtester.paircli`.
+
+| Peer | ADF | Cointegrated 5% | OOS trades |
+|---|---|---|---|
+| ETH | −3.127 (p≈0.032) | **Yes** | 0 |
+| BTC | −2.648 (p≈0.087) | No | 0 |
+
+**The finding is the gate, not the return.** Disable it (`--no-cointegration-gate`) and
+the ETH pair takes 2 out-of-sample trades and loses **−24.70%**. With it on: no trades,
+no loss. That is exactly what `zscore` lacks — it applies a stationarity-dependent method
+to non-stationary raw price and bought dips through the same window.
+
+Caveat that bounds the whole card: exposure is **single-asset long SOL**; the peer is a
+signal input, not a shorted leg. This is not the dollar-neutral pairs trade the
+literature describes, and this harness cannot express one.
+
+## jlp_vs_sol_relative_value — status `implemented`, deliberately not measured
+
+What was actually checked: **Coinbase does not list JLP-USD**; Jupiter Price v3 serves
+its *spot* price keyless ($3.5933); `datapi.jup.ag` charts is unreachable. So my earlier
+card was right about price and **wrong about history** — it cannot be fetched
+retroactively from anywhere reachable.
+
+`core/archive_price.py` accumulates it forward instead: append-only, refuses a
+non-positive price rather than writing a zero, warns while too short to backtest. Seeded
+with one row. Schedule it if the series is wanted.
+
+**This required a third card status.** `implemented` = code exists and is tested, no data
+to run it on. Collapsing it into `spec-only` hides working code; into `measured` invents a
+result. The loader enforces `evaluation: null` and forbids citing `measured-oos`.
+
+Counts: **250 backtester, 114 extension, 95 soltui**. Cards: 27 measured, 1 implemented,
+15 spec-only.
