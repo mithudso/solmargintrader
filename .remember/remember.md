@@ -75,3 +75,89 @@ because blocks reuse the whole series instead of one 563-bar tail.
   trusting family labels; (3) re-run Lists 2 and 3 under CPCV (they are still single-split);
   (4) fetch a **peer universe** — unlocks cross-sectional momentum and cointegration, and is a
   bigger win than more SOL history; (5) deflated Sharpe accounting for the trials already run.
+
+---
+
+# Handoff — 2026-08-04 (second session: signals concept map + ladder grid)
+
+Separate worktree from the CPCV work above; the two do not overlap in files.
+
+## Where the work lives
+
+Branch **`worktree-signals-concept-map`** in `.claude/worktrees/signals-concept-map`.
+Five commits, **unmerged, no remote**, so nothing is pushed and the worktree can be
+deleted with its session:
+
+| Commit | What |
+|---|---|
+| `ba5b181` | `docs/trading-signals-concept-family.md` — concept map of trading signals → providers → jup.ag API/webhooks |
+| `694ad1a` | `backtester/core/gridsim.py` ladder-grid simulator + extension order-envelope strictness |
+| `0f117fa` | Docs for both, plus pagesource-derived evidence |
+| `262bf0d` | Fix: sell slippage double-counted in grid realized P&L |
+| `8a9c5f6` | Fix: cancelled orders booked as fills |
+
+**122 Python tests, 110 JS tests, dry-run round trip closes +$0.0401, live
+endpoints reachable.** All four `CLAUDE.md` gates pass.
+
+## The one thing to know about the grid work
+
+There are now **two different things called "grid"** and conflating them puts a
+wrong number under the live strategy:
+
+- `grid` / `GridLong` in `core/strategies/signals.py` — an **exposure staircase**
+  off a rolling SMA anchor. A `Strategy`, filled at a bar boundary. Never captures
+  a rung width, because it never has an order resting at a level.
+- **the ladder grid** in `core/gridsim.py` — a ladder of **resting limit orders**
+  with paired exits one rung above each lot. The extension's actual strategy.
+  Own bar loop, own entry point (`python -m backtester.gridcli`).
+
+`gridsim.py` is a port of `extension/src/core/grid.js` and the two must stay in
+agreement — verified against the JS directly (699.1319 bps rung width on a 60–90/7
+ladder, both implementations). This is now a `CLAUDE.md` non-negotiable.
+
+## Three bugs, all found by review passes and none by tests
+
+1. **Cancelled orders booked as fills** (Critical, pre-existing in the extension).
+   `getFills()` reads orders/**history**, which holds every *terminal* order.
+   With no execution gate a cancelled order took its price from `triggerPriceUsd`
+   and its quantity from the intent's *planned* size, stored a fill for inventory
+   the wallet never held, and marked the intent `filled`. Reproduced end to end
+   before fixing; `ingestFills` now requires positive evidence of execution.
+2. **Sell slippage double-counted** in the grid simulator — netted inside `gross`
+   via the fill price, then subtracted again. Default slippage is 2 bps, so every
+   realistic run understated P&L and corrupted win rate and profit factor.
+   **All 30 tests passed with it live**, because every reconciliation test ran at
+   zero cost. The lesson: an identity asserted only at zero cost is not asserted.
+3. **Equity clamped where cash was refused.** `max(0.0, equity)` floored a
+   carry-driven negative equity in the flattering direction while the cash guard
+   raised on the same condition. Both paths now refuse.
+
+## Still open
+
+- **The Trigger order-list envelope remains unverified.** The strictness work made
+  a wrong mapping *loud*, not correct — it still needs one real authenticated
+  response to check field names against. Use
+  `normaliseOrders(body, { strict: false })` to inspect one by hand.
+- **No live order has ever been placed.** Unchanged.
+- `docs/trading-signals-concept-family.md` carries `UNVERIFIED` tags on the Perps
+  program ID, the Portfolio API host, the Prediction P&L path shape, and whether
+  the SDK/API licence permits programmatic use. A background agent was verifying
+  these and had not reported by session end — re-run that check before relying on
+  any of them.
+- **Known duplication, deliberately left:** `gridcli.py` repeats ~12 parser args
+  and the data-loading block from `cli.py`. Extracting a shared helper would edit
+  `cli.py`, outside this change's scope; drift risk is real but was judged smaller
+  than the regression risk.
+- **Skipped on advice:** a signal-ingestion webhook receiver (widens the
+  money-touching surface with no real signal source to test against) and a perps
+  asset/decimals registry (the executable venue is spot Trigger, so it feeds
+  nothing today — the extracted data went into the concept map as evidence).
+
+## Useful artifacts
+
+- `pagesource` (untracked, repo root) is the rendered perps page and contains a
+  ~50 KB SSR hydration payload: `perpsSettings: {v2AsDefault: true}`, the Tokens v2
+  `/search` record shape (the mint is `id`, **not** `address`), and ~100 perps
+  markets with decimals. All recorded in the concept map's §10.
+- `jup.ag/` mirror is HTML only — no JS bundles — so it proves which pages exist,
+  never what an endpoint returns.
