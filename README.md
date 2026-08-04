@@ -33,7 +33,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 141 tests
+python3 -m unittest discover -s backtester/tests -t .   # 153 tests
 cd extension && npm test                                # 110 tests
 ```
 

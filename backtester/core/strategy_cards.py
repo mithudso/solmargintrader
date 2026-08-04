@@ -27,22 +27,28 @@ rather than guessing. A card that uses unsupported syntax fails loudly at load
 time, which is the only safe behaviour for a file that supplies numbers to a
 backtest.
 
-Supported frontmatter subset:
+Supported frontmatter subset — scalars are `null`, `true`/`false`, a finite int or
+float, a quoted string, or a bare string:
 
-    key: scalar                  # null | true/false | int | float | "quoted" | bare
-    key: [a, b, c]               # flow sequence of scalars
-    key: {a: 1, b: two}          # flow mapping of scalars
-    key:                         # block mapping, exactly one level deep,
-      sub: scalar                #   whose values are scalars or flow collections
+    key: scalar
+    key: [a, b, c]
+    key: {a: 1, b: two}
+    key:
+      sub: scalar
       sub2: {a: 1}
 
-Block sequences (`- item`) and deeper nesting are rejected on purpose: every
-card in this repo fits the subset, and a parser that silently accepts more is a
-parser nobody can predict.
+A block mapping is exactly one level deep and its values are scalars or flow
+collections. Everything else is rejected on purpose: block sequences (`- item`),
+deeper nesting, nested flow collections, tabs, duplicate keys, non-finite floats
+(`nan`, `inf`), and **trailing `#` comments after a value** — a full-line comment
+is fine, but `rungs: 7  # seven` would parse as the string `"7  # seven"`, so it
+raises instead. Every card here fits the subset, and a parser that silently
+accepts more is a parser nobody can predict.
 """
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -77,6 +83,28 @@ REQUIRED_FIELDS = (
 # Every horizon key a card may declare a preset for, matching research/sweep.py.
 HORIZONS = ("short", "medium", "long")
 
+# Frontmatter is allow-listed rather than merely required-checked: a `warmpu_bars`
+# typo would otherwise be dropped in silence, which is exactly the
+# silently-missing-parameter failure this module exists to prevent.
+ALLOWED_FIELDS = REQUIRED_FIELDS + (
+    "registry_key",
+    "runner",
+    "warmup_bars",
+    "evaluation",
+    "params",
+    "presets",
+)
+
+ALLOWED_PARAM_KEYS = ("default", "type", "desc", "required", "min", "max")
+
+# `type` is declared per parameter, so it is enforced per parameter.
+TYPE_CHECKS = {
+    "int": lambda v: isinstance(v, int) and not isinstance(v, bool),
+    "float": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool),
+    "bool": lambda v: isinstance(v, bool),
+    "str": lambda v: isinstance(v, str),
+}
+
 
 class CardError(ValueError):
     """A card is malformed, or uses syntax outside the supported subset."""
@@ -101,11 +129,21 @@ def _parse_scalar(raw: str, *, where: str) -> Any:
     except ValueError:
         pass
     try:
-        return float(text)
+        value = float(text)
     except ValueError:
         pass
+    else:
+        if not math.isfinite(value):
+            # `float("nan")` and `float("inf")` both succeed. A NaN parameter would
+            # reach a constructor and then the P&L path, and this repo's rule is that
+            # a NaN must never silently disable anything.
+            raise CardError(f"{where}: {text!r} is not a finite number")
+        return value
     if text[0] in "[{":
-        raise CardError(f"{where}: unterminated flow collection {text!r}")
+        raise CardError(
+            f"{where}: nested flow collections are unsupported inside {text!r}; "
+            "flatten it or use a block mapping"
+        )
     return text
 
 
@@ -161,7 +199,10 @@ def _parse_value(raw: str, *, where: str) -> Any:
             if ":" not in pair:
                 raise CardError(f"{where}: flow mapping entry {pair!r} has no ':'")
             k, v = pair.split(":", 1)
-            out[k.strip()] = _parse_scalar(v, where=where)
+            key = k.strip()
+            if key in out:
+                raise CardError(f"{where}: duplicate key {key!r} in flow mapping")
+            out[key] = _parse_scalar(v, where=where)
         return out
     return _parse_scalar(text, where=where)
 
@@ -205,6 +246,10 @@ def parse_frontmatter(text: str, *, where: str = "<card>") -> tuple[dict[str, An
         key = key.strip()
 
         if indent == 0:
+            # Last-one-wins on a duplicate is how a reader sees `fast: 12` while the
+            # backtest runs 21. Real YAML errors here too.
+            if key in data:
+                raise CardError(f"{where}:{lineno}: duplicate key {key!r}")
             value = raw.strip()
             if value == "":
                 data[key] = {}
@@ -220,8 +265,10 @@ def parse_frontmatter(text: str, *, where: str = "<card>") -> tuple[dict[str, An
                     f"{where}:{lineno}: nesting deeper than one level is unsupported"
                 )
             parent = data[current_key]
-            if not isinstance(parent, dict):
-                raise CardError(f"{where}:{lineno}: cannot nest under scalar {current_key!r}")
+            if key in parent:
+                raise CardError(
+                    f"{where}:{lineno}: duplicate key {key!r} under {current_key!r}"
+                )
             parent[key] = _parse_value(raw, where=f"{where}:{lineno}")
 
     return data, "\n".join(lines[end + 1 :]).strip()
@@ -265,30 +312,35 @@ class StrategyCard:
         return self.registry_key is not None
 
     def defaults(self) -> dict[str, Any]:
-        """The card's declared default parameter values."""
-        return {name: spec["default"] for name, spec in self.params.items()}
+        """Declared defaults, excluding parameters marked `required`.
+
+        A required parameter has no default anywhere in the code either — the ladder
+        grid's `lower` and `upper` are the examples — so inventing one here would put
+        an example value where a reader expects a fact.
+        """
+        return {
+            name: spec["default"]
+            for name, spec in self.params.items()
+            if "default" in spec
+        }
+
+    def required_params(self) -> list[str]:
+        """Parameters the caller must supply; they have no default."""
+        return sorted(n for n, spec in self.params.items() if spec.get("required") is True)
 
     def preset(self, horizon: str) -> dict[str, Any]:
-        """Parameters for one horizon, falling back to the declared defaults."""
+        """Parameters for one horizon, layered over the declared defaults.
+
+        A preset that names only some parameters means "these, plus the defaults for
+        the rest" — five real cards declare partial presets, and returning only the
+        named subset would silently drop the others from anything that echoed the
+        result.
+        """
         if horizon not in HORIZONS:
             raise KeyError(f"unknown horizon {horizon!r}; expected one of {HORIZONS}")
-        return dict(self.presets.get(horizon) or self.defaults())
-
-    def cli_args(self, horizon: str = "medium") -> list[str]:
-        """The `--strategy`/param flags this card's preset corresponds to.
-
-        Emitted for copy-paste and for an agent assembling a command; the
-        backtester CLI takes strategy parameters positionally through the
-        registry rather than as flags, so this is the strategy name plus a
-        readable parameter echo.
-        """
-        if not self.implemented:
-            raise CardError(f"{self.id}: {self.status} cards cannot be run")
-        args = ["--strategy", self.registry_key]
-        for key, value in self.preset(horizon).items():
-            args.append(f"# {key}={value}")
-        return args
-
+        merged = self.defaults()
+        merged.update(self.presets.get(horizon) or {})
+        return merged
 
 def load_card(path: str | Path) -> StrategyCard:
     """Parse one card file."""
@@ -298,25 +350,65 @@ def load_card(path: str | Path) -> StrategyCard:
     missing = [f for f in REQUIRED_FIELDS if f not in data]
     if missing:
         raise CardError(f"{path.name}: missing required field(s): {', '.join(missing)}")
+    unknown = sorted(set(data) - set(ALLOWED_FIELDS))
+    if unknown:
+        raise CardError(
+            f"{path.name}: unknown frontmatter field(s): {', '.join(unknown)}. "
+            f"Allowed: {', '.join(sorted(ALLOWED_FIELDS))}"
+        )
+    for field_name in ("id", "name", "family", "summary"):
+        if not isinstance(data[field_name], str):
+            raise CardError(
+                f"{path.name}: {field_name} must be a string, got "
+                f"{type(data[field_name]).__name__}"
+            )
     if data["status"] not in STATUSES:
         raise CardError(f"{path.name}: status must be one of {STATUSES}, got {data['status']!r}")
     if data["kind"] not in KINDS:
         raise CardError(f"{path.name}: kind must be one of {KINDS}, got {data['kind']!r}")
     if not isinstance(data["data_required"], list):
         raise CardError(f"{path.name}: data_required must be a flow sequence")
+    for item in data["data_required"]:
+        if not isinstance(item, str):
+            raise CardError(
+                f"{path.name}: data_required entries must be strings, got {item!r}"
+            )
     if not isinstance(data["data_available"], bool):
         raise CardError(f"{path.name}: data_available must be true or false")
 
-    params = data.get("params") or {}
+    # `in` rather than `or`, so a falsy wrong type (`params: []`) reaches the
+    # isinstance check instead of being coerced to an empty mapping.
+    params = data["params"] if "params" in data else {}
     if not isinstance(params, dict):
         raise CardError(f"{path.name}: params must be a block mapping")
     for name, spec in params.items():
         if not isinstance(spec, dict):
             raise CardError(f"{path.name}: param {name!r} must be a flow mapping")
-        if "default" not in spec:
-            raise CardError(f"{path.name}: param {name!r} has no 'default'")
+        stray = sorted(set(spec) - set(ALLOWED_PARAM_KEYS))
+        if stray:
+            raise CardError(
+                f"{path.name}: param {name!r} has unknown key(s): {', '.join(stray)}"
+            )
+        if "default" not in spec and spec.get("required") is not True:
+            raise CardError(
+                f"{path.name}: param {name!r} needs either a 'default' or "
+                "'required: true'"
+            )
+        if "default" in spec and spec.get("required") is True:
+            raise CardError(
+                f"{path.name}: param {name!r} is marked required and also has a "
+                "default; pick one"
+            )
+        declared_type = spec.get("type")
+        if "default" in spec and declared_type in TYPE_CHECKS:
+            if not TYPE_CHECKS[declared_type](spec["default"]):
+                raise CardError(
+                    f"{path.name}: param {name!r} declares type {declared_type} but "
+                    f"its default {spec['default']!r} is "
+                    f"{type(spec['default']).__name__}"
+                )
 
-    presets = data.get("presets") or {}
+    presets = data["presets"] if "presets" in data else {}
     if not isinstance(presets, dict):
         raise CardError(f"{path.name}: presets must be a block mapping")
     for horizon, values in presets.items():
@@ -399,12 +491,21 @@ def load_all(card_dir: str | Path | None = None) -> dict[str, StrategyCard]:
     if not directory.is_dir():
         raise CardError(f"card directory not found: {directory}")
     cards: dict[str, StrategyCard] = {}
+    claimed: dict[str, str] = {}
     for path in sorted(directory.glob("*.md")):
         if path.name.upper().startswith("README"):
             continue
         card = load_card(path)
-        if card.id in cards:
-            raise CardError(f"duplicate card id {card.id!r} in {path.name}")
+        # Two cards claiming one registry key is the collision that matters: the drift
+        # test keys cards by registry_key, so the second would silently shadow the
+        # first and its declared defaults would never be checked against anything.
+        if card.registry_key is not None:
+            if card.registry_key in claimed:
+                raise CardError(
+                    f"{path.name}: registry_key {card.registry_key!r} is already "
+                    f"claimed by {claimed[card.registry_key]}"
+                )
+            claimed[card.registry_key] = path.name
         if card.id != path.stem:
             raise CardError(
                 f"{path.name}: id {card.id!r} does not match the filename; the "

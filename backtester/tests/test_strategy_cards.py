@@ -105,11 +105,135 @@ class TestFrontmatterParser(unittest.TestCase):
             "deep nesting": "---\na:\n  b:\n      c: 1\n---\n",
             "no colon": "---\njust a line\n---\n",
             "unterminated flow": "---\nseq: [a, b\n---\n",
-            "nest under scalar": "---\na: 1\n  b: 2\n---\n",
+            # This case raises at the "indented line has no parent key" check, not at
+            # a nest-under-scalar check; named for what it actually exercises.
+            "indent with no parent": "---\na: 1\n  b: 2\n---\n",
+            "nested flow sequence": "---\na: {b: [1, 2]}\n---\n",
+            "nested flow mapping": "---\na: [x, {b: 1}]\n---\n",
+            "duplicate top-level key": "---\na: 1\nb: 2\na: 3\n---\n",
+            "duplicate flow key": "---\na: {x: 1, x: 2}\n---\n",
+            "duplicate block child": "---\na:\n  x: 1\n  x: 2\n---\n",
+            "nan": "---\na: nan\n---\n",
+            "inf": "---\na: inf\n---\n",
+            "negative infinity": "---\na: -Infinity\n---\n",
         }
         for label, text in cases.items():
             with self.subTest(label), self.assertRaises(sc.CardError):
                 sc.parse_frontmatter(text, where=label)
+
+
+class TestCardValidation(unittest.TestCase):
+    """What a malformed card is refused for. Every rule here protects a number."""
+
+    BASE = {
+        "id": "demo", "name": "Demo", "kind": "exposure-strategy",
+        "status": "spec-only", "family": "test", "summary": "one line",
+        "data_required": "[ohlcv]", "data_available": "true",
+    }
+
+    def write_card(self, extra_lines: list[str] = (), **overrides) -> Path:
+        fields = {**self.BASE, **overrides}
+        lines = ["---"] + [f"{k}: {v}" for k, v in fields.items()]
+        lines += list(extra_lines) + ["---", "", "# Body"]
+        path = Path(self.tmp) / "demo.md"
+        path.write_text("\n".join(lines), encoding="utf-8")
+        return path
+
+    def setUp(self) -> None:
+        import tempfile
+
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = self._tmp.name
+        self.addCleanup(self._tmp.cleanup)
+
+    def test_a_valid_minimal_card_loads(self) -> None:
+        card = sc.load_card(self.write_card())
+        self.assertEqual(card.id, "demo")
+        self.assertFalse(card.implemented)
+
+    def test_an_unknown_frontmatter_field_is_refused(self) -> None:
+        # A `warmpu_bars` typo used to be dropped in silence, and the warmup drift
+        # check then skipped the card entirely.
+        with self.assertRaises(sc.CardError) as ctx:
+            sc.load_card(self.write_card(warmpu_bars="53"))
+        self.assertIn("warmpu_bars", str(ctx.exception))
+
+    def test_a_param_needs_either_a_default_or_required(self) -> None:
+        with self.assertRaises(sc.CardError):
+            sc.load_card(self.write_card(["params:", "  a: {type: int}"]))
+        with self.assertRaises(sc.CardError):
+            sc.load_card(
+                self.write_card(["params:", "  a: {default: 1, required: true}"])
+            )
+        ok = sc.load_card(self.write_card(["params:", "  a: {required: true}"]))
+        self.assertEqual(ok.required_params(), ["a"])
+        self.assertEqual(ok.defaults(), {})
+
+    def test_a_declared_param_type_is_enforced_against_its_default(self) -> None:
+        with self.assertRaises(sc.CardError) as ctx:
+            sc.load_card(
+                self.write_card(["params:", "  a: {default: two, type: int}"])
+            )
+        self.assertIn("type int", str(ctx.exception))
+        # A bool is not an int here, despite Python's inheritance.
+        with self.assertRaises(sc.CardError):
+            sc.load_card(
+                self.write_card(["params:", "  a: {default: true, type: int}"])
+            )
+
+    def test_an_unknown_param_key_is_refused(self) -> None:
+        with self.assertRaises(sc.CardError) as ctx:
+            sc.load_card(
+                self.write_card(["params:", "  a: {default: 1, dsec: typo}"])
+            )
+        self.assertIn("dsec", str(ctx.exception))
+
+    def test_string_fields_must_be_strings(self) -> None:
+        # `family: 007` parsed to int 7 and then crashed the inventory printer.
+        with self.assertRaises(sc.CardError):
+            sc.load_card(self.write_card(family="007"))
+
+    def test_data_required_entries_must_be_strings(self) -> None:
+        with self.assertRaises(sc.CardError):
+            sc.load_card(self.write_card(data_required="[1, 2]"))
+
+    def test_a_falsy_wrong_type_still_reaches_the_type_check(self) -> None:
+        # `params: []` was coerced to {} by an `or`, skipping the isinstance guard.
+        with self.assertRaises(sc.CardError):
+            sc.load_card(self.write_card(params="[]"))
+
+    def test_a_spec_only_card_cannot_claim_a_runner_or_registry_key(self) -> None:
+        for override in ({"registry_key": "macd"}, {"runner": "backtester.cli"}):
+            with self.assertRaises(sc.CardError):
+                sc.load_card(self.write_card(**override))
+
+    def test_two_cards_cannot_claim_one_registry_key(self) -> None:
+        for name in ("a.md", "b.md"):
+            Path(self.tmp, name).write_text(
+                "\n".join(
+                    [
+                        "---",
+                        f"id: {name[0]}",
+                        "name: Demo",
+                        "kind: exposure-strategy",
+                        "status: measured",
+                        "family: trend",
+                        "summary: s",
+                        "registry_key: macd",
+                        "runner: backtester.cli",
+                        "evaluation: single-split-70-30",
+                        "data_required: [ohlcv]",
+                        "data_available: true",
+                        "---",
+                        "",
+                        "body",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+        with self.assertRaises(sc.CardError) as ctx:
+            sc.load_all(self.tmp)
+        self.assertIn("already", str(ctx.exception))
 
 
 class TestCardsLoad(unittest.TestCase):
@@ -145,7 +269,19 @@ class TestRegistryDrift(unittest.TestCase):
 
     def setUp(self) -> None:
         self.cards = sc.load_all()
-        self.by_key = {c.registry_key: c for c in self.cards.values() if c.registry_key}
+        # Built with a collision check rather than a comprehension: a dict
+        # comprehension is last-wins, so a second card claiming the same key would
+        # shadow the first and its defaults would never be compared to anything.
+        self.by_key: dict[str, sc.StrategyCard] = {}
+        for card in self.cards.values():
+            if not card.registry_key:
+                continue
+            self.assertNotIn(
+                card.registry_key,
+                self.by_key,
+                f"{card.id}: registry_key already claimed",
+            )
+            self.by_key[card.registry_key] = card
 
     def test_every_registry_strategy_has_a_card(self) -> None:
         missing = sorted(set(REGISTRY) - set(self.by_key))
@@ -182,6 +318,57 @@ class TestRegistryDrift(unittest.TestCase):
     def test_declared_family_matches_the_registry(self) -> None:
         for key, card in self.by_key.items():
             self.assertEqual(card.family, FAMILY[key], f"{card.id}: family drifted")
+
+
+class TestLadderDrift(unittest.TestCase):
+    """The ladder has no registry key, so the registry drift test cannot see it.
+
+    Without this class its declared parameters are verified against nothing — and it is
+    the card sitting under the strategy the extension actually trades.
+    """
+
+    def setUp(self) -> None:
+        self.cards = sc.load_all()
+        ladders = [c for c in self.cards.values() if c.kind == "ladder"]
+        self.assertEqual(len(ladders), 1, "expected exactly one ladder card")
+        self.card = ladders[0]
+
+    def test_declared_params_match_gridconfig(self) -> None:
+        from backtester.core.gridsim import GridConfig
+
+        sig = inspect.signature(GridConfig)
+        self.assertEqual(
+            set(self.card.params),
+            set(sig.parameters),
+            "ladder card parameters drifted from GridConfig",
+        )
+        for name, param in sig.parameters.items():
+            spec = self.card.params[name]
+            if param.default is inspect.Parameter.empty:
+                self.assertIs(
+                    spec.get("required"),
+                    True,
+                    f"{name} has no default in GridConfig, so the card must mark it "
+                    "required rather than invent one",
+                )
+                self.assertNotIn("default", spec, f"{name} must not declare a default")
+            else:
+                self.assertEqual(
+                    spec.get("default"),
+                    param.default,
+                    f"{name}: card default drifted from GridConfig",
+                )
+
+    def test_declared_defaults_are_constructible(self) -> None:
+        # The declared defaults plus a plausible required set must build a real config,
+        # so the card cannot declare a combination GridConfig would reject.
+        from backtester.core.gridsim import GridConfig
+
+        cfg = GridConfig(
+            lower=60.0, upper=90.0, rungs=7, notional_per_rung_usd=12.0,
+            **self.card.defaults(),
+        )
+        self.assertEqual(cfg.spacing, self.card.defaults()["spacing"])
 
 
 class TestSweepDrift(unittest.TestCase):
@@ -221,8 +408,11 @@ class TestSweepDrift(unittest.TestCase):
                 self.assertIsNotNone(
                     declared, f"{card.id}: no {horizon} preset, but the sweep has one"
                 )
+                # Exact, not an intersection: an extra preset key at a value the
+                # sweep never ran is the same "card documents one experiment, sweep
+                # runs another" failure this class exists to catch.
                 self.assertEqual(
-                    {k: declared[k] for k in params if k in declared},
+                    declared,
                     params,
                     f"{card.id}: {horizon} preset disagrees with research/sweep.py",
                 )
@@ -305,12 +495,22 @@ class TestAgentAffordances(unittest.TestCase):
         for card in excluded:
             self.assertNotIn(card, selected)
 
-    def test_preset_falls_back_to_defaults_when_a_horizon_is_absent(self) -> None:
-        card = next(c for c in self.cards.values() if c.buildable and c.params)
-        self.assertEqual(
-            card.preset("medium") if "medium" in card.presets else card.defaults(),
-            card.preset("medium"),
+    def test_preset_layers_over_defaults_and_falls_back_when_absent(self) -> None:
+        # Hand-built rather than selected from the corpus, so the assertion is against
+        # literals. The previous version of this test picked a card that HAD a medium
+        # preset and compared preset("medium") to itself, which passed against a
+        # stubbed-out implementation.
+        card = sc.StrategyCard(
+            id="demo", name="demo", kind="exposure-strategy", status="spec-only",
+            family="test", summary="s", data_required=["ohlcv"], data_available=True,
+            path=Path("demo.md"), body="b",
+            params={"a": {"default": 1}, "b": {"default": 2}},
+            presets={"short": {"a": 9}},
         )
+        # A partial preset layers over the defaults rather than replacing them.
+        self.assertEqual(card.preset("short"), {"a": 9, "b": 2})
+        # An absent horizon falls back to the defaults entirely.
+        self.assertEqual(card.preset("long"), {"a": 1, "b": 2})
 
     def test_an_unknown_horizon_is_refused(self) -> None:
         card = next(iter(self.cards.values()))

@@ -12,11 +12,11 @@ evaluation: intrabar-ladder-simulation
 data_required: [ohlcv]
 data_available: true
 params:
-  lower: {default: 60.0, type: float, desc: "lowest rung price in USD"}
-  upper: {default: 90.0, type: float, desc: "highest rung price in USD"}
-  rungs: {default: 7, type: int, desc: "number of ladder levels; minimum 2"}
-  notional_per_rung_usd: {default: 12.0, type: float, desc: "USD per rung; the venue minimum is 10"}
-  spacing: {default: 'geom', type: str, desc: "geom for equal percentage width or arith for equal dollar width"}
+  lower: {required: true, type: float, desc: "lowest rung price in USD; no default exists"}
+  upper: {required: true, type: float, desc: "highest rung price in USD; no default exists"}
+  rungs: {required: true, type: int, desc: "number of ladder levels, minimum 2; gridcli defaults to 7"}
+  notional_per_rung_usd: {required: true, type: float, desc: "USD per rung; gridcli defaults to 12, venue minimum is 10"}
+  spacing: {default: geom, type: str, desc: "geom for equal percentage width or arith for equal dollar width"}
   deadband_bps: {default: 25.0, type: float, desc: "suppress rungs this close to the market"}
   min_order_usd: {default: 10.0, type: float, desc: "venue minimum; rungs below it are never placed"}
 presets: {}
@@ -34,6 +34,12 @@ It is not a `Strategy` at all — no `on_bar`, no registry key, no target exposu
 its own bar loop and its own entry point, because a grid's entire edge comes from limit
 orders filling **intrabar at known prices**, which a target-exposure engine cannot
 express.
+
+## Parameters
+`lower`, `upper`, `rungs` and `notional_per_rung_usd` are **required — `GridConfig` gives
+them no default**, because there is no defensible default ladder. The numbers in this
+card's examples are examples. `backtester/gridcli.py` supplies its own CLI defaults for
+`rungs` (7) and `notional_per_rung_usd` (12), and requires `--lower` and `--upper`.
 
 ## What it looks for
 Range-bound oscillation, harvested one rung width at a time.

@@ -21,16 +21,16 @@ committed table drifts the moment someone adds a card.
 
 ```markdown
 ---
-id: macd                       # stable slug; MUST equal the filename
+id: macd
 name: MACD Crossover
-kind: exposure-strategy        # exposure-strategy | ladder
-status: measured               # measured | spec-only
-family: trend                  # must match FAMILY[] in core/strategies/__init__.py
+kind: exposure-strategy
+status: measured
+family: trend
 summary: one line
-registry_key: macd             # null unless it is in REGISTRY
-runner: backtester.cli         # backtester.cli | backtester.gridcli | null
-warmup_bars: 53                # must match the instance's warmup_bars()
-evaluation: single-split-70-30 # how any number below was produced
+registry_key: macd
+runner: backtester.cli
+warmup_bars: 53
+evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
 params:
@@ -41,6 +41,23 @@ presets:
 
 # Body: equations, reasoning, limitations, caveats, how to run
 ```
+
+**Note there are no trailing `#` comments above.** A full-line comment is fine, but
+`warmup_bars: 53  # must match` parses as the *string* `"53  # must match"`, so the
+loader raises rather than accept it. The fields mean:
+
+| Field | Rule |
+|---|---|
+| `id` | stable slug; **must equal the filename stem** |
+| `kind` | `exposure-strategy` or `ladder` |
+| `status` | `measured` or `spec-only` |
+| `family` | must match `FAMILY[]` in `core/strategies/__init__.py` |
+| `registry_key` | `null` unless the strategy is in `REGISTRY`; two cards may not claim one key |
+| `runner` | `backtester.cli`, `backtester.gridcli`, or `null` for spec-only |
+| `warmup_bars` | must match the instance's `warmup_bars()` |
+| `evaluation` | how any number in the body was produced; required on `measured` cards |
+| `params` | each entry needs **either** `default:` **or** `required: true`, never both. `type:` is enforced against the default |
+| `presets` | per-horizon overrides; may only name declared params, and layer over the defaults |
 
 The frontmatter is a **strict YAML subset** parsed by `core/strategy_cards.py` — no
 `pyyaml`, because `requirements.txt` deliberately excludes it. Scalars, flow sequences
@@ -57,7 +74,8 @@ cards = sc.load_all()
 card = cards["macd"]
 
 card.defaults()          # {'fast': 12, 'slow': 26, 'signal': 9}
-card.preset("short")     # {'fast': 6, 'slow': 13, 'signal': 5}
+card.required_params()   # [] here; ['lower', 'rungs', ...] on ladder_grid
+card.preset("short")     # defaults, with the short-horizon overrides layered on top
 
 strategy = sc.build_from_card(card, horizon="short")
 strategy = sc.build_from_card(card, fast=8)          # overrides beat the preset
@@ -73,7 +91,10 @@ Prose in a card can be wrong and no test will catch it. **Numbers cannot.**
 - every card parses, and its `id` matches its filename;
 - **both directions of registry drift** — every `REGISTRY` strategy has a card, and every
   card's `registry_key` still exists;
-- every declared default equals the constructor's actual default;
+- every declared default equals the constructor's actual default — and a parameter with
+  no default in the code must be marked `required: true` rather than given an invented
+  one, which is checked for the ladder card against `GridConfig` directly since it has no
+  registry key to compare against;
 - `warmup_bars` and `family` match the code;
 - every card's presets agree with `research/sweep.py`, so the card documents the same
   experiment the sweep runs;

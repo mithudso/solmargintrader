@@ -1,11 +1,11 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 141 tests
+python3 -m unittest discover -s backtester/tests -t .   # 153 tests
 cd extension && npm test                                # 110 tests
 ```
 
-176 tests total, no test-framework dependency in either component (`unittest` and `node:test`).
+263 tests total, no test-framework dependency in either component (`unittest` and `node:test`).
 
 ## Extension — what the 110 tests cover
 
@@ -57,7 +57,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 141 tests
+## Backtester — 153 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -71,6 +71,15 @@ against the JavaScript implementation's own figures), the **no-lookahead group**
 bar 0; a bar spanning both legs books only the entry), and the **failure modes** (a one-way
 downtrend fills every bid and loses; an unfundable rung is skipped rather than overdrawn; a forced
 end-of-run exit is never counted as a captured rung).
+
+31 of them cover the **strategy cards** (`core/strategy_cards.py`). Those tests exist because a card's
+frontmatter supplies numbers to a backtest, so the machine-readable half is checked against the code
+rather than trusted: registry drift is asserted in **both** directions (every registered strategy has
+a card, every card's `registry_key` still exists), every declared default is compared against its
+constructor's actual default, `warmup_bars` and `family` against the code, and every card's presets
+against `research/sweep.py` so a card documents the same experiment the sweep runs. Every buildable
+card is also constructed and run through a full backtest. Prose in a card can still be wrong — no
+test catches that — but a number cannot.
 
 ## Adding tests
 
