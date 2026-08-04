@@ -138,9 +138,9 @@ This is where the map stops being generic. Jupiter's current surface:
 | **Trigger v2** | `api.jup.ag/trigger/v2` — create/manage/cancel, `GET /orders/history`, `/orders/history/dca` | Limit orders **and** DCA. Needs `x-api-key` **plus** `Authorization: Bearer <JWT>` for user actions. |
 | **Price v3** | `api.jup.ag/price/v3?ids=` | Max **50 ids**; token omitted if untraded 7d. |
 | **Tokens v2** | `api.jup.ag/tokens/v2` — `/search`, `/tag`, `/{category}/{interval}`, `/recent` | Categories: `toporganicscore`, `toptraded`, `toptrending`. Organic Score 0–100. |
-| **Perps** | **Program-level only** — "the Perps API is still a work in progress" | Anchor IDL parsing. The program ID appears in Jupiter's docs only as a block-explorer link, never in prose — read it off the live docs and confirm on-chain before use, rather than copying it from anywhere (including this map, which omits it deliberately). |
-| **Prediction (beta)** | `api.jup.ag/prediction/v1` — `/profiles/{pk}`, `/profiles/{pk}/pnl-history`, `/trades`, `/leaderboards` | Beta; breaking changes expected. Whether P&L history nests under `/profiles/{pk}` or sits at the top level is worth confirming — **UNVERIFIED**. |
-| **Portfolio (beta)** | positions across Jupiter products | Base host not stated on the index page — **UNVERIFIED**. |
+| **Perps** | **Program-level only** — `/docs/perps` still reads "The Perps API is still a **work in progress**, stay tuned!" (re-checked 2026-08-04) | No write API. Program `PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu`, which appears in the docs **only inside a block-explorer link href** on `/docs/perps/position-account`, never in prose — confirm on-chain before use. Jupiter points at `github.com/julianfssen/jupiter-perps-anchor-idl-parsing` for IDL parsing. |
+| **Prediction (beta)** | `api.jup.ag/prediction/v1` — `GET /profiles/{ownerPubkey}`, `GET /profiles/{ownerPubkey}/pnl-history`, `GET /trades`, `GET /leaderboards` | **Confirmed** against `/docs/prediction/social-features`: P&L history *is* nested under the profile. `x-api-key` required. Every monetary field is **micro USD** — `"15000000"` is $15.00 — and they arrive as strings. Beta; breaking changes expected. |
+| **Portfolio (beta)** | positions across Jupiter products, staked JUP | **Confirmed that the docs omit the base host** — `/docs/portfolio` is prose only, with no endpoint or host, and directs projects to Discord. Not an omission in this map. |
 
 **Rate-limit tiers** (one `x-api-key` works across all APIs):
 
@@ -269,13 +269,43 @@ anything through Trigger v2.
   blind.
 - **Accounting** — cost basis and tax lots per fill; realized vs unrealized P&L
   including fees, tips, and slippage.
-- **Legal / ToS** — the Jupiter Terms of Use prohibit reverse-engineering the
-  Interface, IP-disguising, and circumventing the Terms, but contain **no
-  explicit clause on bots, automated trading, or scraping**, and state no
-  effective date. A separate `/docs/legal/sdk-api-license-agreement` exists and
-  was **not read** — programmatic-use permission is **UNVERIFIED**. Read it
-  before shipping. Rate-limit guidance: exponential backoff on 429; bursting can
-  yield 429s even after the refill period.
+- **Legal / licence** — see §6.1 below. The short version: programmatic use is
+  licensed, and it comes with conditions most hobby projects would not guess.
+  Rate-limit guidance: exponential backoff on 429; bursting can yield 429s even
+  after the refill period.
+
+### 6.1 What the SDK & API License Agreement actually says
+
+Read in full on 2026-08-04 at `/docs/legal/sdk-api-license-agreement`. **Not legal
+advice** — this is a reading, and the agreement can be amended at any time by
+posting a new version (§15), so re-read it before relying on any of it. Clause
+numbers are the agreement's own.
+
+The headline: there is **no clause prohibiting bots or automated trading**, and
+§2.1 grants a licence to build a product on the API. But the conditions attached
+are concrete, and several are easy to breach by accident:
+
+| Clause | What it requires or forbids |
+|---|---|
+| §2.1 | The licence is "limited, non-exclusive, **fee-bearing**, non-transferable, non-sublicensable", for the licensee's **own** development of a product. |
+| §6.1, §13.1 | Jupiter "**shall charge a subscription fee**", with a **30-day minimum term paid in advance**. Note the tension with the portal's $0 "Free" tier — worth resolving before assuming free use is contractually free. |
+| **§8.4** | The product "shall **prominently display to end users** … **'Powered by Jupiter'**". A compliance obligation, not a courtesy. |
+| **§2.3** | You must prominently label **which** routing API you use — "Jupiter Ultra" vs "Metis". Presenting output as just "Jupiter" is called out as "misleading and unethical" and carries an indemnity. |
+| **§3.2(g)** | You may not "use the API in conjunction with, or **combine content from the API with, content obtained through scraping** or any other means outside the API". |
+| §3.2(d) | No selling, leasing, sharing or transferring "any content obtained through the API" to third parties. |
+| §3.2(e) | No usage that "exceeds reasonable request volume" or is "excessive or abusive", **as determined by Jupiter in its sole discretion**. |
+| §3.2(f) | No competitive analysis, and no disseminating "performance information (including uptime, response time and/or benchmarks)". |
+| §7.3, §7.4 | The licensee carries **KYC/AML, sanctions screening and transaction monitoring** obligations, including blocking sanctioned wallets, and must hold any necessary licences. |
+| §10 | Jupiter's total liability is capped at **USD 100**. |
+| §14 | **Panama law**, arbitration, no class actions. |
+
+**Two of these bear directly on a project like this one.** §3.2(g) is the sharp
+one: a repository that holds both a scraped copy of the site *and* an API client
+is one step from combining the two, and this map's own §10 evidence came from
+scraped pages. Using it to *understand* the platform is a different act from
+feeding it into a product alongside API responses — keep that boundary explicit.
+And §8.4's "Powered by Jupiter" attribution is a requirement that a private tool
+can quietly miss simply because nobody else can see the UI.
 
 ---
 
@@ -368,10 +398,18 @@ rendered *with*. Three things from it are primary evidence rather than inference
   freezeAuthority?, firstPool:{id,createdAt}, organicScore, organicScoreLabel,
   isVerified, tags[]}`. Note the mint is `id`, **not** `address` — a detail worth
   having right before writing a client against it.
-- **`perpsTokenList`** — ~100 tradeable markets with mint and decimals, including
+- **`perpsTokenList`** — ~100 token records with mint and decimals, including
   SOL (9), ETH Portal `7vfCXTU…` (8), WBTC Portal `3NZ9JMVB…` (8), USDC (6),
   USDT (6), JLP `27G8MtK7…` (6). Decimals are the kind of value that must never be
   guessed in order math, and these came from the app itself.
+
+  **Correction, from a later docs check:** this list is *not* the set of tradeable
+  perps markets, and an earlier draft of this map said it was. `/docs/perps/position-account`
+  states that a trader has exactly **nine** possible positions — long SOL, wETH or
+  wBTC, and short each of those against USDC or USDT collateral. So perps trades
+  three underlyings; `perpsTokenList` is the front end's token *picker*. The
+  mistake is instructive: a list scraped from a page is evidence of what that page
+  loaded, never of what the protocol supports.
 
 It also carries `remoteConfig.swapSettings` with a live `bannedTokens` list, which
 is a reminder that the front end applies filters a direct API client does not
@@ -382,13 +420,16 @@ unauthenticated — so §4's Trigger open question stays open.
 - The three `*-api.jup.ag` hosts found in the mirror are undocumented internal
   surfaces. They are **not** part of the developer platform and should not be
   treated as an API contract.
-- Perps, Portfolio, and the two leaderboard/smart-money surfaces carry
-  **UNVERIFIED** tags above; each is a question to close before it becomes a
-  dependency.
+- The four items this map previously tagged **UNVERIFIED** were closed on
+  2026-08-04 against the live docs: the Perps program ID (present, but only as a
+  link href), the Portfolio base host (genuinely absent from the docs), the
+  Prediction P&L path (nested under the profile), and the SDK/API licence (read in
+  full — see §6.1). What remains open is the Trigger orders/history **envelope**,
+  which no doc page specifies field-by-field, and the two UI-only signal surfaces.
 - Jito's native tip accounts and auction semantics were read only through
   Helius's docs, not Jito's own.
-- The SDK/API license agreement was not read, so programmatic-use permission
-  remains open.
+- The Terms of Use (separate from the licence agreement) states no effective
+  date, so which version binds is unclear.
 - API surfaces at Jupiter have churned hard (Ultra deprecated, `lite-api` host
   retiring, Recurring folded into Trigger). Re-verify anything here against the
   live docs before writing code against it.

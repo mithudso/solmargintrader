@@ -371,6 +371,19 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
   Scraping or driving the frontend would be brittle and a worse ToS position. Review the
   [Jupiter SDK/API License Agreement](https://developers.jup.ag/docs/legal/sdk-api-license-agreement)
   before running this against real funds.
+- **Three licence obligations this extension does not yet meet.** The agreement was read on
+  2026-08-04 (see `../docs/trading-signals-concept-family.md` §6.1 for the full reading; **not legal
+  advice**). It contains no clause against bots or automated trading, but it does require:
+  §8.4 — the product must **prominently display "Powered by Jupiter"** to end users; §2.3 — it must
+  prominently label *which* routing API is used ("Jupiter Ultra" vs "Metis"), and presenting output
+  as merely "Jupiter" is explicitly called out; §6.1 and §13.1 — use is **fee-bearing with a 30-day
+  minimum term paid in advance**, which sits awkwardly beside the portal's $0 "Free" tier. Liability
+  is capped at **USD 100** (§10) under **Panama law** (§14).
+- **§3.2(g) forbids combining API content with scraped content.** This repository contains both a
+  scraped `../jup.ag/` mirror and `../pagesource` alongside this API client. Reading them to
+  *understand* the platform is a different act from feeding them into the running product beside API
+  responses. Keep that boundary explicit — nothing in `src/` reads either artifact today, and it
+  should stay that way.
 - Trigger V2 requires an API key for every call, and rate limits apply per tier. The client
   implements backoff and a request budget, but a tight tick across many rungs will still find the
   ceiling.
