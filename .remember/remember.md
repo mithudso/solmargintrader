@@ -3,8 +3,47 @@
 ## State: all merged to master, local only (no remote)
 
 `python3 -m unittest discover -s backtester/tests -t .` → **119 OK**
-`python3 -m unittest discover -s soltui/tests -t .` → **61 OK**
+`python3 -m unittest discover -s soltui/tests -t .` → **93 OK**
 `python3 research/verify_numbers.py` → **exit 0**, 795 figures verified
+
+## soltui menu-bar app — installed and running at login
+
+Bundle `~/Applications/SolTUI.app`, agent `~/Library/LaunchAgents/com.mitchhudson.soltui.plist`.
+Verified: launchd `state = running`, clean log, and the flag-file off switch works both ways.
+
+```bash
+python3 soltui/soltui-service status     # bundle / agent / flag / launchd state
+python3 soltui/soltui-service stop       # removes the flag -> launchd stops supervising
+python3 soltui/soltui-service start      # recreates it -> starts, and starts at login
+python3 soltui/soltui-service build      # rebuild after moving the repo
+```
+
+**The flag file is the real off switch**, not the menu-bar Quit item — `KeepAlive`
+necessarily overrides Quit, so removing `~/Library/Application Support/soltui/supervise.enabled`
+is how you actually stop it.
+
+### Packaging traps already paid for (do not re-learn)
+
+- **Alias build (`py2app -A`), so the bundle references `/Users/mitch.hudson/dev/solmargintrader`.**
+  Rebuild if the repo moves. A full freeze would have to embed pandas/numpy.
+- **Never install a bundle built from a worktree.** `.claude/worktrees/` gets deleted and login
+  startup breaks silently. `soltui-service install` refuses the target and warns on the source.
+- **py2app runs its target as a top-level script**, so `app.py`'s relative imports failed.
+  `menubar_launcher.py` exists for that, and also `chdir`s to the repo because a Finder/launchd
+  launch starts at `/` and `data_dir="data"` would miss.
+- **A py2app "Launch error" dialog keeps the process ALIVE.** Checking liveness alone reports a
+  broken bundle as working — assert the stderr log is empty instead.
+- **No `RunAtLoad`.** It starts the app at every login regardless of the flag, so `stop` silently
+  undoes itself.
+- **launchd provides no `LANG`**, making the locale US-ASCII; the status glyphs are non-ASCII.
+  Set in the agent, the bundle plist, and the launcher.
+
+## Signals tab is editable
+
+`soltui/signals.py` holds every indicator tunable. Precedence: **signal defaults fill only what
+was not pinned explicitly in the Strategies tab** — explicit always wins. `STRATEGY_PARAM_MAP` is
+explicit, not name-inferred, with tests asserting every registered strategy is mapped and every
+mapped strategy actually constructs from its merged params.
 
 ## What exists
 
@@ -53,3 +92,51 @@ risk rails as separate, explicit work.
 3. Fetch a **peer universe** — unlocks cross-sectional momentum and cointegration.
 4. Deflated Sharpe accounting for the ~1,300 configurations already evaluated.
 5. `/cdo` outstanding on the newer modules (indicators, signals, composite, cpcv, soltui/*).
+
+### Update — strategy cards (commits `4073576`, `bc9fe2b`)
+
+**43 cards under `backtester/strategy_cards/`**, one self-contained file per strategy or
+signal: 17 measured (the 16 registered strategies + the resting-ladder grid) and 26
+spec-only from `research/STRATEGIES.md` Tier 2. Each carries equations, a code pointer,
+why it might work, how it fails, backtest caveats, measured numbers where they exist, and
+machine-readable params with defaults and per-horizon presets.
+
+`python3 -m backtester.core.strategy_cards` prints the inventory. No committed index
+table — it would drift on the next card.
+
+**The loader is `core/strategy_cards.py`** and parses a strict YAML subset **by hand**
+(pyyaml is deliberately absent from requirements.txt). It refuses everything outside the
+subset: block sequences, deeper nesting, nested flow collections, tabs, duplicate keys,
+non-finite floats, trailing `#` comments, unknown fields, unknown param keys, and a
+`type:` that disagrees with its default.
+
+**What makes a card a contract and not a claim:** `tests/test_strategy_cards.py` (31
+tests) checks registry drift **in both directions**, every declared default against the
+constructor's actual default, `warmup_bars` and `family` against the code, every preset
+against `research/sweep.py`, and constructs + backtests every buildable card. Prose in a
+card can still be wrong; a number cannot.
+
+**Schema notes worth remembering.** `kind` discriminates `exposure-strategy` from
+`ladder`, because the ladder grid is implemented but has **no registry key** — it is not
+a `Strategy`. So `implemented` keys off `runner`, and `buildable` off `registry_key`.
+A param declares **either** `default:` **or** `required: true`, never both:
+`GridConfig` gives `lower`, `upper`, `rungs` and `notional_per_rung_usd` no default, and
+an earlier draft invented four. `data_required` / `data_available` are frontmatter so an
+agent can filter without reading English — `implementable_today()` returns the **9** of
+26 spec-only mechanisms needing no new data source.
+
+**Two bugs the /cdo review caught that the suite could not see:** the ladder card's
+declared defaults were verified against nothing (no registry key → never in the drift
+map), and two cards claiming one `registry_key` silently shadowed each other, which was
+mutation-proved by giving `macd` a wrong default that passed every test. Both fixed, both
+now covered.
+
+**Highest-value spec cards, by the reference's own reckoning:** `hurst_regime_test`
+(a meta-signal selecting trend vs reversion — attacks the failure dominating all 16
+measured results), `ou_half_life_sizing` (the missing hold cap in both reversion cards),
+`atr_position_sizing`, and `funding_utilization_extremes` (on Jupiter there is **no
+funding rate** — the signal is pool *utilization*, which would also improve every
+leveraged backtest here). `jlp_vs_sol_relative_value` is the cheapest blocked item to
+unblock: Jupiter's own Price API can supply the JLP mint.
+
+Counts now: **153 Python, 110 JS** (263 total).
