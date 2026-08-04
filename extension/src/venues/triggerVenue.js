@@ -281,32 +281,124 @@ export class TriggerVenue {
 }
 
 /**
- * Flatten whatever list shape the orders endpoint returns.
- * Kept tolerant on purpose: the exact envelope is the least-verified part of
- * this client, and a shape change should degrade to "no orders found" plus a
- * loud reconciliation warning, not a crash inside the tick.
+ * Raised when the orders endpoint returns a shape this client does not
+ * recognise, or an order missing a field reconciliation depends on.
+ *
+ * Carries the observed key names — never the values — because this error is
+ * logged, and an order body can hold wallet addresses.
  */
-export function normaliseOrders(res) {
-  const list = Array.isArray(res) ? res : (res?.orders ?? res?.data ?? []);
-  if (!Array.isArray(list)) return [];
-  return list.map((o) => ({
-    venueOrderId: o.id ?? o.orderId,
-    status: o.status,
-    // null, not a default of 'sell': guessing a side would let reconcile adopt
-    // an order as the wrong direction, and a wrong-side adoption is worse than
-    // an unmatched one.
-    side: o.triggerCondition === 'below' ? 'buy' : o.triggerCondition === 'above' ? 'sell' : null,
-    triggerPriceUsd: num(o.triggerPriceUsd),
-    inputMint: o.inputMint,
-    outputMint: o.outputMint,
-    inputAmount: o.inputAmount,
-    filledBaseQty: num(o.filledOutputAmount ?? o.filledAmount),
-    executedPriceUsd: num(o.executedPriceUsd ?? o.avgPriceUsd),
-    feeUsd: num(o.feeUsd ?? o.totalFeeUsd) ?? 0,
-    createdAtMs: toMs(o.createdAt),
-    updatedAtMs: toMs(o.updatedAt ?? o.filledAt),
-    raw: o,
-  }));
+export class OrderEnvelopeError extends Error {
+  constructor(message, { observedKeys = [], missingFields = [], index = null } = {}) {
+    super(message);
+    this.name = 'OrderEnvelopeError';
+    this.observedKeys = observedKeys;
+    this.missingFields = missingFields;
+    this.index = index;
+  }
+}
+
+/** The only list envelopes this client accepts. Anything else is refused. */
+export const ORDER_LIST_KEYS = ['orders', 'data'];
+
+/**
+ * Fields reconciliation cannot work without.
+ *
+ * `matchIntent` and `keyForLiveOrder` both bail on a null side or trigger price,
+ * so an order missing either is invisible to reconciliation — and an invisible
+ * live order is one the planner will happily place a second time.
+ */
+export const ORDER_REQUIRED_FIELDS = ['venueOrderId', 'side', 'triggerPriceUsd'];
+
+/**
+ * Map the orders endpoint's response onto the shape the engine consumes.
+ *
+ * The envelope is still the least-verified part of this client (see
+ * README "Not verified" #2), which is exactly why this refuses rather than
+ * shrugs. Two failure modes used to be silent and are now loud:
+ *
+ *   - An unrecognised envelope produced `[]`, which reconciliation reads as
+ *     "nothing is live" — so every resting rung looks orphaned and gets
+ *     re-planned. That is the double-fire path CLAUDE.md non-negotiable #4
+ *     exists to prevent, arrived at from the read side.
+ *   - A missing fee became `0`. Zero fees make a grid look better than it is,
+ *     so the fee stays `null` with `feeUnknown` set, and the caller decides.
+ *
+ * Throwing is safe here: `tick()` wraps its whole body, so an envelope it cannot
+ * read aborts the tick before anything is planned or placed. Failing closed on a
+ * shape change is the whole point.
+ *
+ * @param {unknown} res raw response body
+ * @param {{strict?: boolean}} [opts] `strict: false` returns unusable orders
+ *   flagged instead of throwing, for inspecting a real response by hand.
+ */
+export function normaliseOrders(res, { strict = true } = {}) {
+  let list = null;
+  if (Array.isArray(res)) {
+    list = res;
+  } else if (res && typeof res === 'object') {
+    for (const key of ORDER_LIST_KEYS) {
+      if (Array.isArray(res[key])) {
+        list = res[key];
+        break;
+      }
+    }
+  }
+
+  if (list === null) {
+    // An absent or unrecognised body is not an empty order list, and treating it
+    // as one is the failure this function exists to stop.
+    const observedKeys = res && typeof res === 'object' ? Object.keys(res) : [];
+    if (strict) {
+      throw new OrderEnvelopeError(
+        `unrecognised orders envelope: expected an array or one of ` +
+          `${ORDER_LIST_KEYS.map((k) => `"${k}"`).join(', ')}, got ` +
+          (observedKeys.length ? `keys [${observedKeys.join(', ')}]` : typeof res),
+        { observedKeys },
+      );
+    }
+    return [];
+  }
+
+  return list.map((o, index) => {
+    const order = {
+      venueOrderId: o?.id ?? o?.orderId ?? null,
+      status: o?.status ?? null,
+      // null, not a default of 'sell': guessing a side would let reconcile adopt
+      // an order as the wrong direction, and a wrong-side adoption is worse than
+      // an unmatched one.
+      side:
+        o?.triggerCondition === 'below' ? 'buy' : o?.triggerCondition === 'above' ? 'sell' : null,
+      triggerPriceUsd: num(o?.triggerPriceUsd),
+      inputMint: o?.inputMint,
+      outputMint: o?.outputMint,
+      inputAmount: o?.inputAmount,
+      filledBaseQty: num(o?.filledOutputAmount ?? o?.filledAmount),
+      executedPriceUsd: num(o?.executedPriceUsd ?? o?.avgPriceUsd),
+      feeUsd: num(o?.feeUsd ?? o?.totalFeeUsd),
+      createdAtMs: toMs(o?.createdAt),
+      updatedAtMs: toMs(o?.updatedAt ?? o?.filledAt),
+      raw: o,
+    };
+    order.feeUnknown = !Number.isFinite(order.feeUsd);
+
+    const missingFields = ORDER_REQUIRED_FIELDS.filter(
+      (f) => order[f] == null || (typeof order[f] === 'number' && !Number.isFinite(order[f])),
+    );
+    if (missingFields.length) {
+      const observedKeys = o && typeof o === 'object' ? Object.keys(o) : [];
+      if (strict) {
+        throw new OrderEnvelopeError(
+          `order at index ${index} is missing ${missingFields.join(', ')}; ` +
+            `reconciliation cannot match it, so planning would risk re-placing a ` +
+            `live rung. Observed keys: [${observedKeys.join(', ')}]`,
+          { observedKeys, missingFields, index },
+        );
+      }
+      order.unusable = true;
+      order.missingFields = missingFields;
+    }
+    return order;
+  });
 }
 
 const num = (v) => (v == null ? null : Number(v));

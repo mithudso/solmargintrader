@@ -16,10 +16,15 @@ import {
   DIRECTION,
 } from '../src/core/grid.js';
 
-import { reconcile, tick, pricesMatch, matchIntent } from '../src/core/engine.js';
+import { reconcile, tick, ingestFills, pricesMatch, matchIntent } from '../src/core/engine.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
 import { INTENT_STATUS, ConfigStore } from '../src/storage/store.js';
-import { normaliseOrders } from '../src/venues/triggerVenue.js';
+import {
+  normaliseOrders,
+  OrderEnvelopeError,
+  ORDER_LIST_KEYS,
+  ORDER_REQUIRED_FIELDS,
+} from '../src/venues/triggerVenue.js';
 
 import {
   evaluate,
@@ -714,4 +719,177 @@ test('CSV export has a header and one row per fill', () => {
   assert.equal(lines.length, 2);
   assert.ok(lines[0].startsWith('id,gridId,tsIso'));
   assert.ok(lines[1].includes('200.000000')); // notional
+});
+
+// ------------------------------------------------ order-envelope strictness --
+//
+// The orders/history envelope is the least-verified part of the client. These
+// tests do not claim the mapping is right — they claim that when it is wrong,
+// the client refuses instead of inventing a quiet answer.
+
+const ORDER = {
+  id: 'ord-1',
+  status: 'active',
+  triggerCondition: 'below',
+  triggerPriceUsd: 100,
+};
+
+test('an unrecognised orders envelope is refused, not read as "no orders"', () => {
+  // "No orders live" is the single most dangerous wrong answer here: every
+  // resting rung looks orphaned and the planner re-places it.
+  for (const body of [
+    { result: [ORDER] }, // plausible-but-unknown wrapper key
+    { pagination: {}, records: [ORDER] },
+    null,
+    undefined,
+    'nope',
+    42,
+  ]) {
+    assert.throws(
+      () => normaliseOrders(body),
+      (err) => err instanceof OrderEnvelopeError && /unrecognised orders envelope/.test(err.message),
+      `envelope ${JSON.stringify(body) ?? String(body)} must be refused`,
+    );
+  }
+});
+
+test('the documented envelopes are still accepted, including a genuinely empty list', () => {
+  for (const key of ORDER_LIST_KEYS) {
+    assert.equal(normaliseOrders({ [key]: [] }).length, 0);
+    assert.equal(normaliseOrders({ [key]: [ORDER] }).length, 1);
+  }
+  assert.equal(normaliseOrders([]).length, 0, 'a bare empty array is a real empty list');
+  assert.equal(normaliseOrders([ORDER]).length, 1);
+});
+
+test('an order missing a field reconciliation needs is refused by name', () => {
+  for (const field of ['triggerPriceUsd', 'triggerCondition', 'id']) {
+    const broken = { ...ORDER };
+    delete broken[field];
+    assert.throws(
+      () => normaliseOrders([broken]),
+      (err) => {
+        assert.ok(err instanceof OrderEnvelopeError);
+        assert.equal(err.index, 0);
+        assert.ok(err.missingFields.length > 0, 'the missing field must be named');
+        assert.ok(
+          err.missingFields.every((f) => ORDER_REQUIRED_FIELDS.includes(f)),
+          'only declared required fields may be reported missing',
+        );
+        // The error is logged, so it may carry key names but never values.
+        assert.ok(!err.message.includes('100'), 'error text must not echo order values');
+        return true;
+      },
+      `a missing ${field} must be refused`,
+    );
+  }
+});
+
+test('a non-finite trigger price counts as missing, not as a number', () => {
+  // Number('') is 0 and Number('abc') is NaN; neither may pass as a price.
+  assert.throws(
+    () => normaliseOrders([{ ...ORDER, triggerPriceUsd: 'abc' }]),
+    (err) => err instanceof OrderEnvelopeError && err.missingFields.includes('triggerPriceUsd'),
+  );
+});
+
+test('non-strict mode flags unusable orders for inspection instead of throwing', () => {
+  const [order] = normaliseOrders([{ id: 'x', status: 'active' }], { strict: false });
+  assert.equal(order.unusable, true);
+  assert.deepEqual(order.missingFields.sort(), ['side', 'triggerPriceUsd']);
+  // And an unknown envelope degrades to empty rather than throwing, so a human
+  // can dump a real response without the tick deciding anything.
+  assert.deepEqual(normaliseOrders({ mystery: [] }, { strict: false }), []);
+});
+
+test('an unreported fee stays unknown instead of becoming zero', () => {
+  const [noFee] = normaliseOrders([ORDER]);
+  assert.equal(noFee.feeUsd, null, 'a missing fee must not be coerced to 0');
+  assert.equal(noFee.feeUnknown, true);
+
+  const [withFee] = normaliseOrders([{ ...ORDER, feeUsd: '0.25' }]);
+  assert.equal(withFee.feeUsd, 0.25);
+  assert.equal(withFee.feeUnknown, false);
+
+  // A genuine zero fee is knowledge, not absence.
+  const [zeroFee] = normaliseOrders([{ ...ORDER, feeUsd: 0 }]);
+  assert.equal(zeroFee.feeUsd, 0);
+  assert.equal(zeroFee.feeUnknown, false);
+});
+
+test('an envelope the client cannot read aborts the tick before placing anything', async () => {
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setConfig({ lower: 85, upper: 115, rungs: 5, notionalPerRungUsd: 12 });
+  await configStore.setRuntime({ armed: true });
+
+  const venue = {
+    async getPrice() {
+      return 100;
+    },
+    async getOpenOrders() {
+      return normaliseOrders({ surprise: [] });
+    },
+    async getFills() {
+      return [];
+    },
+    async getCarryCosts() {
+      return [];
+    },
+    async placeOrder() {
+      throw new Error('placeOrder must never be reached on an unreadable envelope');
+    },
+  };
+
+  const result = await tick({ venue, store, configStore });
+  assert.equal(result.placed.length, 0, 'nothing may be placed when live state is unknown');
+  assert.ok(result.errors.some((e) => /unrecognised orders envelope/.test(e.error)));
+});
+
+test('a fill with an unreported fee is recorded, flagged and counted', async () => {
+  const store = new MemoryStore();
+  const venue = {
+    async getFills() {
+      return [
+        {
+          venueOrderId: 'f-1',
+          side: 'buy',
+          triggerPriceUsd: 100,
+          executedPriceUsd: 100,
+          filledBaseQty: 0.12,
+          feeUsd: null,
+          feeUnknown: true,
+          updatedAtMs: 1,
+        },
+      ];
+    },
+  };
+
+  const { added, feeUnknown } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  assert.equal(added.length, 1, 'a real fill must never be dropped for a missing fee');
+  assert.deepEqual(feeUnknown, ['f-1']);
+  assert.equal(added[0].feeUnknown, true);
+  assert.equal(added[0].feeUsd, 0, 'the arithmetic stays finite');
+
+  const known = await ingestFills({
+    venue: {
+      async getFills() {
+        return [
+          {
+            venueOrderId: 'f-2',
+            side: 'buy',
+            triggerPriceUsd: 100,
+            executedPriceUsd: 100,
+            filledBaseQty: 0.12,
+            feeUsd: 0.05,
+            updatedAtMs: 2,
+          },
+        ];
+      },
+    },
+    store,
+    config: RECON_CONFIG,
+  });
+  assert.deepEqual(known.feeUnknown, []);
+  assert.equal(known.added[0].feeUnknown, false);
 });
