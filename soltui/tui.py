@@ -39,6 +39,15 @@ from backtester.core.strategies import FAMILY, REGISTRY, build
 from .config import INTERVALS, Settings, load_settings, save_settings
 from .paper import MODE_LABEL, PaperSession, start_session
 from .roster import Roster, RosterError, available_strategies
+from .signals import (
+    SIGNAL_GROUPS,
+    SignalDefaults,
+    SignalError,
+    coerce,
+    from_dict,
+    mapped_strategies,
+    merged_params,
+)
 from .runner import SweepRunner, engine_config, load_arrays
 from .status import AppState, Phase, build_title, format_pct
 
@@ -106,6 +115,7 @@ class SolTuiApp(App):
         ) or Roster.default()
         if len(self.roster) == 0:
             self.roster = Roster.default()
+        self.signals = from_dict(self.settings.signal_defaults)
         self.state = AppState()
         self.runner = SweepRunner(self.state)
         self.session: PaperSession | None = None
@@ -187,11 +197,34 @@ class SolTuiApp(App):
             yield Static("", id="roster-status")
 
     def _signals_pane(self) -> ComposeResult:
-        """Read-only reference: indicator equations and family behaviour."""
+        """Editable signal parameters, grouped by indicator.
+
+        These are DEFAULTS. A per-entry value pinned in the Strategies tab wins,
+        so editing here never silently overwrites a deliberate choice.
+        """
         with VerticalScroll():
             yield Static(
-                "Signal reference. Equations are the ones "
-                "backtester/core/indicators.py actually implements.",
+                "Edit signal parameters. These are defaults applied when a strategy "
+                "is added without explicit params — an explicit value in the "
+                "Strategies tab always wins.",
+                classes="hint",
+            )
+            with Horizontal(classes="form-row"):
+                yield Button("Save signals", variant="primary", id="btn-save-signals")
+                yield Button("Reset to defaults", id="btn-reset-signals")
+                yield Static("", id="signals-status")
+            for group, names in SIGNAL_GROUPS:
+                yield Static(f"\n{group}", classes="hint")
+                for name in names:
+                    with Horizontal(classes="form-row"):
+                        yield Label(f"{name}:")
+                        yield Input(
+                            value=str(getattr(self.signals, name)),
+                            id=f"sig-{name}",
+                        )
+            yield Static(
+                "\nReference — equations as implemented in "
+                "backtester/core/indicators.py:",
                 classes="hint",
             )
             yield DataTable(id="signals-table")
@@ -363,7 +396,10 @@ class SolTuiApp(App):
         table = self.query_one("#available-table", DataTable)
         try:
             row = table.get_row_at(table.cursor_row)
-            entry = self.roster.add(str(row[0]), **self._parse_params())
+            name = str(row[0])
+            entry = self.roster.add(
+                name, **merged_params(name, self.signals, self._parse_params())
+            )
             self._refresh_roster_table()
             self._refresh_exec_choices()
             status.update(f"added {entry.label} (warm-up {entry.warmup} bars)")
@@ -391,6 +427,41 @@ class SolTuiApp(App):
         self._refresh_roster_table()
         self._refresh_exec_choices()
         self.query_one("#roster-status", Static).update("roster reset to default")
+
+
+    # -- signals ---------------------------------------------------------
+
+    @on(Button.Pressed, "#btn-save-signals")
+    def _save_signals(self) -> None:
+        """Read the signal form, validate, persist into settings."""
+        status = self.query_one("#signals-status", Static)
+        try:
+            updated = SignalDefaults(**{
+                name: coerce(
+                    name, self.query_one(f"#sig-{name}", Input).value, self.signals
+                )
+                for _, names in SIGNAL_GROUPS
+                for name in names
+            })
+            self.signals = from_dict(updated.to_dict())
+            self.settings.signal_defaults = self.signals.to_dict()
+            path = save_settings(self.settings)
+            status.update(
+                f"saved → {path} · affects {len(mapped_strategies())} strategies"
+            )
+        except (SignalError, Exception) as exc:  # noqa: BLE001 - shown verbatim
+            status.update(f"[red]{exc}[/]")
+
+    @on(Button.Pressed, "#btn-reset-signals")
+    def _reset_signals(self) -> None:
+        """Restore the backtester's shipped signal values."""
+        self.signals = SignalDefaults()
+        for _, names in SIGNAL_GROUPS:
+            for name in names:
+                self.query_one(f"#sig-{name}", Input).value = str(
+                    getattr(self.signals, name)
+                )
+        self.query_one("#signals-status", Static).update("reset to shipped defaults")
 
     # -- backtest --------------------------------------------------------
 

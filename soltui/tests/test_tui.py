@@ -210,5 +210,83 @@ class TestSettingsTab(unittest.IsolatedAsyncioTestCase):
             self.assertIn("look-ahead", status)
 
 
+class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
+    """The Signals tab edits values, not just displays them."""
+
+    async def test_inputs_exist_for_every_tunable(self) -> None:
+        """Every signal field must have an editable input."""
+        from soltui.signals import SIGNAL_GROUPS
+        from textual.widgets import Input, TabbedContent
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-signals"
+            await pilot.pause()
+            for _, names in SIGNAL_GROUPS:
+                for name in names:
+                    with self.subTest(field=name):
+                        self.assertIsNotNone(app.query_one(f"#sig-{name}", Input))
+
+    async def test_editing_and_saving_updates_the_live_defaults(self) -> None:
+        """A saved edit changes what new roster entries will use."""
+        from textual.widgets import Input, TabbedContent
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-signals"
+            await pilot.pause()
+            app.query_one("#sig-rsi_period", Input).value = "9"
+            await pilot.click("#btn-save-signals")
+            await pilot.pause()
+            self.assertEqual(app.signals.rsi_period, 9)
+
+    async def test_invalid_edit_is_refused_with_a_message(self) -> None:
+        """An inverted fast/slow pair must not be saved."""
+        from textual.widgets import Input, TabbedContent
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-signals"
+            await pilot.pause()
+            app.query_one("#sig-sma_fast", Input).value = "200"
+            await pilot.click("#btn-save-signals")
+            await pilot.pause()
+            status = text_of(app, "#signals-status")
+            self.assertIn("shorter than", status)
+            self.assertNotEqual(app.signals.sma_fast, 200)
+
+    async def test_reset_restores_shipped_values(self) -> None:
+        """Reset is the recovery path from a mangled signal set."""
+        from textual.widgets import Input, TabbedContent
+        from soltui.signals import SignalDefaults
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-signals"
+            await pilot.pause()
+            app.query_one("#sig-rsi_period", Input).value = "3"
+            await pilot.click("#btn-reset-signals")
+            await pilot.pause()
+            self.assertEqual(
+                app.query_one("#sig-rsi_period", Input).value,
+                str(SignalDefaults().rsi_period),
+            )
+
+    async def test_added_strategy_picks_up_edited_signal_defaults(self) -> None:
+        """The whole point: editing a signal changes the strategy that uses it."""
+        from textual.widgets import TabbedContent
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            app.signals.rsi_period = 9
+            app.roster.clear()
+            from soltui.signals import merged_params
+
+            entry = app.roster.add("rsi", **merged_params("rsi", app.signals))
+            self.assertEqual(entry.params["period"], 9)
+            self.assertIn("rsi_9", entry.label)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
