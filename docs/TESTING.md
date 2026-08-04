@@ -1,11 +1,11 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 189 tests
+python3 -m unittest discover -s backtester/tests -t .   # 250 tests
 cd extension && npm test                                # 114 tests
 ```
 
-303 tests total, no test-framework dependency in either component (`unittest` and `node:test`).
+364 tests total, no test-framework dependency in either component (`unittest` and `node:test`).
 
 ## Extension — what the 114 tests cover
 
@@ -57,7 +57,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 189 tests
+## Backtester — 250 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching

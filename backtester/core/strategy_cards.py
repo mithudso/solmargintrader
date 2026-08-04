@@ -57,9 +57,15 @@ CARD_DIR = Path(__file__).resolve().parent.parent / "strategy_cards"
 
 FRONTMATTER_FENCE = "---"
 
-# `measured` means this repo has run it and the card carries the numbers.
-# `spec-only` means the mechanism is specified but never implemented.
-STATUSES = ("measured", "spec-only")
+# `measured`     this repo has run it and the card carries the numbers.
+# `implemented`   the code exists and is tested, but no data exists to measure it
+#                 on — the JLP case, where the history cannot be fetched
+#                 retroactively and can only be accumulated going forward.
+# `spec-only`     the mechanism is specified and nothing has been built.
+#
+# The middle state exists because collapsing it into either neighbour would lie:
+# calling it spec-only hides working code, and calling it measured invents a result.
+STATUSES = ("measured", "implemented", "spec-only")
 
 # How the thing is executed. An exposure strategy implements the `Strategy`
 # protocol in core/engine.py; a ladder is a resting-order grid run by
@@ -67,7 +73,7 @@ STATUSES = ("measured", "spec-only")
 KINDS = ("exposure-strategy", "ladder")
 
 # Which entry point runs the card. `null` means nothing does yet (spec-only).
-RUNNERS = ("backtester.cli", "backtester.gridcli")
+RUNNERS = ("backtester.cli", "backtester.gridcli", "backtester.paircli")
 
 REQUIRED_FIELDS = (
     "id",
@@ -401,6 +407,10 @@ def load_card(path: str | Path) -> StrategyCard:
             f"{path.name}: success_basis must be one of {SUCCESS_BASES}, "
             f"got {data['success_basis']!r}"
         )
+    if data["status"] == "implemented" and data["success_basis"] == "measured-oos":
+        raise CardError(
+            f"{path.name}: status 'implemented' has no measured result to cite"
+        )
     if data["success_basis"] == "measured-oos" and data["status"] != "measured":
         raise CardError(
             f"{path.name}: success_basis 'measured-oos' claims an out-of-sample "
@@ -487,15 +497,17 @@ def load_card(path: str | Path) -> StrategyCard:
             )
     else:
         if runner is None:
-            raise CardError(f"{path.name}: a measured card must name its runner")
-        if data["kind"] == "exposure-strategy":
+            raise CardError(f"{path.name}: a {data['status']} card must name its runner")
+        if data["status"] == "implemented" and data.get("evaluation") is not None:
+            raise CardError(
+                f"{path.name}: status 'implemented' means nothing has been measured "
+                f"yet, so evaluation must be null, got {data['evaluation']!r}"
+            )
+        if data["kind"] == "exposure-strategy" and runner == "backtester.cli":
             if data.get("registry_key") is None:
                 raise CardError(
-                    f"{path.name}: a measured exposure-strategy must name its registry_key"
-                )
-            if runner != "backtester.cli":
-                raise CardError(
-                    f"{path.name}: an exposure-strategy runs through backtester.cli"
+                    f"{path.name}: a card running through backtester.cli must name "
+                    "its registry_key"
                 )
         elif data["kind"] == "ladder":
             if data.get("registry_key") is not None:
@@ -622,13 +634,16 @@ def _format_inventory(cards: dict[str, StrategyCard]) -> str:
         out.append("  ".join(cell.ljust(widths[j]) for j, cell in enumerate(row)).rstrip())
         if i == 0:
             out.append("  ".join("-" * w for w in widths))
-    measured = sum(1 for c in cards.values() if c.status == "measured")
-    spec = len(cards) - measured
+    # Counted per status rather than measured-vs-everything-else: lumping
+    # `implemented` in with `spec-only` would hide working code, which is the exact
+    # distinction that status was added to make.
+    by_status = {k: sum(1 for c in cards.values() if c.status == k) for k in STATUSES}
     ready = len(implementable_today(cards))
     out.append("")
     out.append(
-        f"{len(cards)} cards: {measured} measured, {spec} spec-only "
-        f"({ready} of those need no new data source)"
+        f"{len(cards)} cards: "
+        + ", ".join(f"{n} {k}" for k, n in by_status.items() if n)
+        + f" ({ready} spec-only need no new data source)"
     )
     return "\n".join(out)
 
