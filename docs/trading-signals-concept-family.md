@@ -23,8 +23,9 @@ Three corrections matter enough to state before the taxonomy:
    every plan tier, keyless included. A separate **Recurring/DCA API**
    (`recurring/v1`) is Unmaintained — folded into **Trigger v2**.
 3. **Jupiter offers no webhooks, event streams, or push notifications** for
-   fills or orders. Fill detection is polling. This single fact determines the
-   whole shape of axis 4 below.
+   fills or orders. Jupiter-native fill detection is polling; push has to come
+   from third-party chain monitoring instead. This single fact determines the
+   whole shape of Axis D (§5).
 
 ---
 
@@ -137,8 +138,8 @@ This is where the map stops being generic. Jupiter's current surface:
 | **Trigger v2** | `api.jup.ag/trigger/v2` — create/manage/cancel, `GET /orders/history`, `/orders/history/dca` | Limit orders **and** DCA. Needs `x-api-key` **plus** `Authorization: Bearer <JWT>` for user actions. |
 | **Price v3** | `api.jup.ag/price/v3?ids=` | Max **50 ids**; token omitted if untraded 7d. |
 | **Tokens v2** | `api.jup.ag/tokens/v2` — `/search`, `/tag`, `/{category}/{interval}`, `/recent` | Categories: `toporganicscore`, `toptraded`, `toptrending`. Organic Score 0–100. |
-| **Perps** | **Program-level only** — "the Perps API is still a work in progress" | Anchor IDL parsing. Program ID has weak doc provenance — **UNVERIFIED**. |
-| **Prediction (beta)** | `api.jup.ag/prediction/v1` — `/profiles/{pk}`, `/pnl-history`, `/trades`, `/leaderboards` | Beta; breaking changes expected. |
+| **Perps** | **Program-level only** — "the Perps API is still a work in progress" | Anchor IDL parsing. The program ID appears in Jupiter's docs only as a block-explorer link, never in prose — read it off the live docs and confirm on-chain before use, rather than copying it from anywhere (including this map, which omits it deliberately). |
+| **Prediction (beta)** | `api.jup.ag/prediction/v1` — `/profiles/{pk}`, `/profiles/{pk}/pnl-history`, `/trades`, `/leaderboards` | Beta; breaking changes expected. Whether P&L history nests under `/profiles/{pk}` or sits at the top level is worth confirming — **UNVERIFIED**. |
 | **Portfolio (beta)** | positions across Jupiter products | Base host not stated on the index page — **UNVERIFIED**. |
 
 **Rate-limit tiers** (one `x-api-key` works across all APIs):
@@ -151,8 +152,11 @@ This is where the map stops being generic. Jupiter's current surface:
 | Launch | 100 | 50 | 3,000 | 100M |
 | Pro | 500 | 150 | 9,000 | 500M |
 
-`/swap/v2/execute` gets its own bucket — 20/50/100 RPS by tier — and costs
-**zero credits**.
+`/swap/v2/execute` gets its own bucket and costs **zero credits**: 20 RPS
+keyless, 50 RPS free, 100 RPS on every paid tier. Execute is therefore looser
+than quoting on Developer (10 RPS) and Launch (50 RPS) — but on Pro the quote
+ceiling (150 RPS) exceeds the execute ceiling (100 RPS), so at Pro it is fill
+frequency, not quote frequency, that binds.
 
 ### 4.1 The two execution paths
 **Managed:** `GET /order` (inputMint, outputMint, amount, taker) → base64 v0
@@ -235,6 +239,14 @@ subscribe to for *pending* orders; a fill becomes observable only at keeper
 execution. Trigger v1/v2 and Recurring v1 program addresses are **UNVERIFIED**
 in Jupiter's own docs.
 
+That custody sentence is the highest-consequence claim in this map, and it is
+second-hand: both quotes trace to `developers.jup.ag/docs/trigger` and
+`/docs/trigger/lifecycle` as read on 2026-08-04, not to an audited contract.
+Where a resting Trigger v2 order's funds actually sit determines whether you are
+running a non-custodial strategy or lending your capital to a vault (see §6).
+Confirm it against the current docs and the on-chain accounts before sizing
+anything through Trigger v2.
+
 ---
 
 ## 6. Cross-cutting concerns
@@ -312,7 +324,9 @@ feed Jupiter ships — but it is prediction markets, not spot or perps.
    auth and a documented permanent-loss window; gRPC with slot replay survives
    both. For money-moving triggers, the webhook weaknesses are hard to accept.
 4. **Fill detection** — poll Trigger order-history, watch the chain, or both?
-   There is no push option.
+   Jupiter offers no push, so any push-based detection means third-party chain
+   monitoring (Helius webhooks, gRPC, or RPC WebSockets); polling is the only
+   Jupiter-native path.
 5. **Idempotency key** — decide it now (signal ID *and* tx signature), because
    retrofitting it after a double-fill is expensive.
 6. **Custody and key handling** — where the signing key lives, and what caps
