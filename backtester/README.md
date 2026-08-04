@@ -268,6 +268,14 @@ Then in `core/strategies/__init__.py`:
 REGISTRY["my_strategy"] = MyStrategy
 ```
 
+**Then add its card.** `backtester/strategy_cards/my_strategy.md` carries the equations,
+the reasoning, the failure modes and the parameter defaults — and
+`tests/test_strategy_cards.py` fails if a registry entry has no card, or if a card's
+declared defaults, `warmup_bars` or `family` drift from the code. That check runs in both
+directions on purpose: a strategy nobody documented and a card for a strategy nobody
+kept are both silent failures. See `strategy_cards/README.md` for the schema, and
+`python3 -m backtester.core.strategy_cards` for the current inventory.
+
 The engine — not the strategy — owns position sizing, fee application, and fill
 timing. A strategy that can only emit a target exposure for the next bar cannot
 leak the future.
@@ -351,7 +359,7 @@ once. A grid that underperforms holding the asset has not earned its complexity.
 python3 -m unittest discover -s backtester/tests -t . -v
 ```
 
-122 known-answer tests, no network required. The load-bearing ones:
+141 known-answer tests, no network required. The load-bearing ones:
 
 | Test | Known answer |
 |---|---|
