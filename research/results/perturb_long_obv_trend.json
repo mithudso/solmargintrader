@@ -1,0 +1,10 @@
+{
+  "target": "obv_trend",
+  "horizon": "long",
+  "baseline_median_sharpe": 0.7740954549380439,
+  "baseline_iqr": 1.5712656370577331,
+  "max_abs_delta": 0.1994003809057825,
+  "ratio_to_iqr": 0.1269043096233994,
+  "sign_flips": 0,
+  "perturbations": 2
+}

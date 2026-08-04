@@ -1,0 +1,24 @@
+PARAMETER-PERTURBATION STABILITY CHECK
+target   : all(macd+vol_regime)
+horizon  : long
+
+baseline : median Sharpe +0.991  IQR 0.957  87% paths positive  median return +42.0%  34 trades
+
+variant                                          median       Δ   %pos      ret trades
+--------------------------------------------------------------------------------------
+vol_regime: vol_window 60→66                     +1.108  +0.116    93%    +42.0     34
+vol_regime: lookback 250→275                     +0.957  -0.034    80%    +42.0     32
+macd: signal 18→16                               +0.932  -0.059    87%    +38.0     34
+vol_regime: trend_window 200→220                 +0.859  -0.132    87%    +37.3     40
+macd: fast 26→23                                 +0.830  -0.161    87%    +35.8     34
+macd: slow 52→47                                 +0.830  -0.161    87%    +35.8     34
+macd: fast 26→29                                 +0.796  -0.195    80%    +34.5     34
+macd: signal 18→20                               +0.796  -0.195    80%    +34.5     34
+vol_regime: trend_window 200→180                 +0.787  -0.204    87%    +33.8     40
+macd: slow 52→57                                 +0.787  -0.204    80%    +33.9     34
+vol_regime: vol_window 60→54                     +0.733  -0.259    80%    +28.2     36
+vol_regime: lookback 250→225                     +0.708  -0.283    71%    +23.1     32
+
+VERDICT: STABLE under this test — a 10% parameter nudge moves the median much less than sampling a different regime does.
+    max |Δ median Sharpe| = 0.283 against a baseline path IQR of 0.957 (ratio 0.30)
+    0 of 12 perturbations flip the sign

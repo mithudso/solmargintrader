@@ -1,0 +1,10 @@
+{
+  "target": "any(ou_reversion+obv_trend)",
+  "horizon": "long",
+  "baseline_median_sharpe": 1.0541212061208953,
+  "baseline_iqr": 1.1797950024648642,
+  "max_abs_delta": 0.44589602776868886,
+  "ratio_to_iqr": 0.377943648546662,
+  "sign_flips": 0,
+  "perturbations": 8
+}

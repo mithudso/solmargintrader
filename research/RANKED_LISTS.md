@@ -104,6 +104,62 @@ Short horizon needs the same care as any low PBO: 0.343 looks encouraging, but *
 have a positive median Sharpe there, so in-sample rank generalises reliably as a loser. PBO
 measures rank consistency, not profitability — always read it next to the positive count.
 
+### 1d. The top pair survives parameter perturbation — which is a narrower result than it sounds
+
+`all(dual_momentum+vol_regime)` is the best figure in this document (median Sharpe **+1.345**,
+87% of paths positive, **+75.1%** median path return). It sits atop a 295-configuration search
+whose PBO is 0.650, so the obvious question is whether the number is a property of the mechanism
+or of the particular parameters someone picked. `research/perturb.py` answers that by nudging every
+parameter ±10% one at a time and re-running the full CPCV evaluation.
+
+**Result: 0 of 12 perturbations flip the sign, and the median never drops below +0.904.**
+
+| Variant | Median Sharpe | Δ | % paths + |
+|---|---|---|---|
+| baseline | **+1.345** | — | 87% |
+| `vol_window` 60→66 | +1.435 | +0.090 | 93% |
+| `formation` 24→26 | +1.294 | −0.051 | 93% |
+| `trend_window` 200→180 | +1.154 | −0.191 | 80% |
+| `formation` 24→22 | +1.019 | −0.327 | 87% |
+| `lookback` 250→225 | +0.954 | −0.392 | 71% |
+| **geometry: 9 blocks** | **+0.904** | **−0.441** | 95% |
+
+Two things worth noticing. **The largest single move comes from the CPCV geometry, not from any
+strategy parameter** — changing 8 blocks to 9 moved the median more (−0.441) than the worst
+parameter nudge did (−0.392). The result is more sensitive to how you slice the data than to the
+strategy's own settings, which is not what you would guess.
+
+And the sensitivity is **typical, not exceptional**. Measuring the same ratio (max |Δ| over the
+baseline's own path IQR) across seven top long-horizon configurations gives 0.13–0.72 with a median
+of 0.44. This pair scores 0.44 on parameters alone, 0.50 including geometry — squarely mid-pack:
+
+| Configuration | median Sharpe | ratio | sign flips |
+|---|---|---|---|
+| `obv_trend` (single) | +0.774 | **0.13** | 0/2 |
+| `all(macd+vol_regime)` | +0.991 | 0.30 | 0/12 |
+| `any(ou_reversion+obv_trend)` | +1.054 | 0.38 | 0/8 |
+| `all(dual_momentum+vol_regime)` | +1.345 | 0.44 | 0/9 |
+| `vol_regime` (single) | +0.696 | 0.44 | 0/6 |
+| `any(adx_trend+ou_reversion)` | +1.162 | 0.47 | 0/10 |
+| `any(hurst_switch+ou_reversion)` | +0.965 | **0.72** | 0/12 |
+
+**Across all seven configurations and 59 perturbations, not one flipped sign.**
+
+> **What this does not establish.** Perturbation stability and multiple testing are *different
+> failure modes*. This test asks whether the **parameters** were cherry-picked — answer: no more
+> than typical. It cannot ask whether the **configuration** was cherry-picked from 295 candidates,
+> and PBO 0.650 says that concern stands undiminished. A robust-under-perturbation row at the top
+> of an anti-informative ranking is still a row selected by an anti-informative ranking. The
+> honest summary: these numbers are not parameter artifacts, and that is not the same as saying
+> they will hold out of sample.
+
+Reproduce with:
+
+```bash
+python3 research/perturb.py --horizon long --pair dual_momentum vol_regime --mode all
+python3 research/perturb.py --horizon medium --single hurst_switch
+```
+
 ### 2. In-sample rank does not predict out-of-sample rank. At the medium horizon it inverts.
 
 Spearman rank correlation between in-sample and out-of-sample Sharpe, across rankable configs:

@@ -1,0 +1,10 @@
+{
+  "target": "all(dual_momentum+vol_regime)",
+  "horizon": "long",
+  "baseline_median_sharpe": 1.3451573756602337,
+  "baseline_iqr": 0.8814547987408718,
+  "max_abs_delta": 0.4413466595087321,
+  "ratio_to_iqr": 0.5007025432718509,
+  "sign_flips": 0,
+  "perturbations": 12
+}

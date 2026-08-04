@@ -1,0 +1,10 @@
+{
+  "target": "any(adx_trend+ou_reversion)",
+  "horizon": "long",
+  "baseline_median_sharpe": 1.1624903877868862,
+  "baseline_iqr": 1.4227713920349365,
+  "max_abs_delta": 0.6746563013364488,
+  "ratio_to_iqr": 0.47418461259015987,
+  "sign_flips": 0,
+  "perturbations": 10
+}
