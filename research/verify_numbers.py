@@ -153,9 +153,14 @@ def main() -> int:
     per_doc: dict[str, int] = {}
 
     def check_cpcv(label: str, field: str, value: float, tol: float) -> tuple[bool, str]:
-        """Match a CPCV figure against cpcv_results.csv for any horizon."""
+        """Match a CPCV figure against the CPCV results for any horizon.
+
+        A missing results file is reported by the preflight below, never treated
+        as a pass -- silently counting unverifiable figures as verified is the
+        one failure mode this whole script exists to prevent.
+        """
         if cpcv is None:
-            return True, ""
+            return False, f"no CPCV results loaded, cannot verify {label!r}"
         rows = cpcv[cpcv.label == label]
         if rows.empty:
             return False, f"CPCV label not in results: {label!r}"
@@ -166,6 +171,38 @@ def main() -> int:
             f"CPCV {label} {field}: doc says {value}, results have "
             + ", ".join(f"{g:.4f}" for g in got)
         )
+
+    # -- preflight: are the results complete enough to verify against? --------
+    # Without this, stale or partial results produce hundreds of per-figure
+    # mismatches that look like the DOCUMENTS are wrong, when the real problem is
+    # that the evidence was never regenerated. Fail once, clearly, up front.
+    doc_labels: set[str] = set()
+    for d in DOCS:
+        if d.exists():
+            t = normalise(d.read_text())
+            doc_labels |= {m.group(1) for m in CPCV_ROW.finditer(t)}
+    if doc_labels:
+        if cpcv is None:
+            print(
+                "PREFLIGHT FAIL: the documents contain CPCV tables but no CPCV "
+                "results were found.\n  Regenerate with:\n"
+                "    python3 research/cpcv_sweep.py\n"
+                "    python3 research/cpcv_sweep.py --stage pairs --stage triples",
+                file=sys.stderr,
+            )
+            return 1
+        unknown = sorted(doc_labels - set(cpcv.label))
+        if unknown:
+            print(
+                f"PREFLIGHT FAIL: {len(unknown)} of {len(doc_labels)} CPCV labels in the "
+                f"documents are absent from the results, so the results are stale or "
+                f"incomplete.\n  Missing e.g.: {', '.join(unknown[:4])}\n"
+                "  Regenerate BOTH sweeps before trusting any figure:\n"
+                "    python3 research/cpcv_sweep.py\n"
+                "    python3 research/cpcv_sweep.py --stage pairs --stage triples",
+                file=sys.stderr,
+            )
+            return 1
 
     for doc in DOCS:
         if not doc.exists():
