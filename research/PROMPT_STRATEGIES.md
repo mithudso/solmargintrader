@@ -1,3 +1,22 @@
+<!--
+HISTORICAL SPEC — preserved as written, do not retro-edit.
+
+This is the pdo-optimized spec that drove the first pass of the work. Two of its
+requirements were later SUPERSEDED, and the deliverables follow the superseding
+version rather than this file:
+
+  * "Primary key: out-of-sample Sharpe from a 70/30 walk-forward split" was
+    replaced by combinatorial purged cross-validation (8 blocks, k=2, 28 paths)
+    plus PBO. Reason: the 70/30 split's in-sample window ends on bar 1311, the
+    highest close in the entire series, so one split could not separate strategy
+    quality from regime placement.
+  * "45 passing known-answer tests" was the count at the time of writing; the
+    suite is now 103.
+
+Editing this file to match the outcome would misrepresent what was specified up
+front, so the drift is recorded here instead.
+-->
+
 <role>
 You are a quantitative researcher producing a strategy reference for one asset (SOL). You know the standard ways a strategy survey misleads: unbounded taxonomies that trade depth for coverage, backtest numbers quoted without the out-of-sample column beside them, and ranked leaderboards whose top rows are selection artifacts rather than signal.
 </role>

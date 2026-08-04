@@ -55,11 +55,32 @@ venv/
 #   python3 -m backtester.core.fetch --asset SOL --interval 1h --start 2025-08-01 --allow-gaps
 data/
 
-# Regenerable outputs. Rebuild with:
+# Regenerable CLI output. Rebuild with:
 #   python3 -m backtester.cli --asset SOL --strategy all --out results/
-#   python3 research/sweep.py
-results/
-research/results/
+# NOTE the leading slash: this must match ONLY the repo-root results/ directory.
+# An unanchored "results/" also matches research/results/ at any depth, which is
+# how the tracked-evidence fix below was silently defeated the first time.
+/results/
+
+# research/results/ is deliberately TRACKED, not ignored. Those CSVs are the
+# evidence for every figure in research/*.md, and verify_numbers.py checks the
+# documents against them. Ignoring them meant a fresh checkout could not verify
+# its own claims -- and worse, a stale copy produced hundreds of spurious
+# mismatches. They are small (~200KB total).
+
+# py2app build output for the soltui menu-bar bundle. Regenerate with:
+#   python3 soltui/soltui-service build
+# The installed copy lives in ~/Applications, deliberately outside the repo --
+# see soltui/soltui-service for why a worktree path breaks login startup.
+/build/
+/dist/
+
+# Claude Code local state. worktrees/ holds live git worktrees (multi-MB, and
+# committing a worktree from inside the repo it belongs to is recursive); the
+# .local.json settings are per-machine by convention. A tracked
+# .claude/settings.json would still be picked up if you add one.
+.claude/worktrees/
+.claude/settings.local.json
 
 # Session scratch
 .remember/logs/

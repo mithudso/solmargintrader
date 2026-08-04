@@ -80,11 +80,42 @@ def normalise(text: str) -> str:
     )
 
 
+CPCV_CSV = RESEARCH / "results" / "cpcv_results.csv"
+
+# CPCV table rows:
+#   | 1 | `label` | family | **+0.534** | 1.434 | 68% | +9.4% | 16 |
+CPCV_ROW = re.compile(
+    r"^\|\s*\d+\s*\|\s*`([^`]+)`\s*\|[^|]*\|"
+    r"\s*\*{0,2}([-+]?\d+\.\d+)\*{0,2}\s*\|"      # median sharpe
+    r"\s*([-+]?\d+\.\d+)\s*\|"                    # iqr
+    r"\s*\*{0,2}(\d+)%\*{0,2}\s*\|"               # % paths positive
+    r"\s*\*{0,2}([-+]?\d+\.\d+)%\*{0,2}\s*\|"     # median path return
+    r"\s*(\d+)\s*\|",                             # trades
+    re.M,
+)
+
+
 def load() -> pd.DataFrame:
     """Sweep results, indexed for lookup by label."""
     if not CSV.exists():
         raise SystemExit(f"missing {CSV}; run: python3 research/sweep.py")
     return pd.read_csv(CSV)
+
+
+CPCV_COMBOS_CSV = RESEARCH / "results" / "cpcv_combos_results.csv"
+
+
+def load_cpcv() -> pd.DataFrame | None:
+    """CPCV results (singles and combinations), if those sweeps have been run.
+
+    Singles and combinations share the same column schema, so they are
+    concatenated and looked up by label -- a CPCV table row in the document does
+    not say which sweep produced it, and it does not need to.
+    """
+    frames = [pd.read_csv(p) for p in (CPCV_CSV, CPCV_COMBOS_CSV) if p.exists()]
+    if not frames:
+        return None
+    return pd.concat(frames, ignore_index=True)
 
 
 def candidates(df: pd.DataFrame, label: str) -> pd.DataFrame:
@@ -116,9 +147,62 @@ def check(
 def main() -> int:
     """Verify every parseable figure; exit non-zero on any mismatch."""
     df = load()
+    cpcv = load_cpcv()
     checked = 0
     failures: list[str] = []
     per_doc: dict[str, int] = {}
+
+    def check_cpcv(label: str, field: str, value: float, tol: float) -> tuple[bool, str]:
+        """Match a CPCV figure against the CPCV results for any horizon.
+
+        A missing results file is reported by the preflight below, never treated
+        as a pass -- silently counting unverifiable figures as verified is the
+        one failure mode this whole script exists to prevent.
+        """
+        if cpcv is None:
+            return False, f"no CPCV results loaded, cannot verify {label!r}"
+        rows = cpcv[cpcv.label == label]
+        if rows.empty:
+            return False, f"CPCV label not in results: {label!r}"
+        got = rows[field].to_numpy()
+        if any(abs(g - value) <= tol for g in got):
+            return True, ""
+        return False, (
+            f"CPCV {label} {field}: doc says {value}, results have "
+            + ", ".join(f"{g:.4f}" for g in got)
+        )
+
+    # -- preflight: are the results complete enough to verify against? --------
+    # Without this, stale or partial results produce hundreds of per-figure
+    # mismatches that look like the DOCUMENTS are wrong, when the real problem is
+    # that the evidence was never regenerated. Fail once, clearly, up front.
+    doc_labels: set[str] = set()
+    for d in DOCS:
+        if d.exists():
+            t = normalise(d.read_text())
+            doc_labels |= {m.group(1) for m in CPCV_ROW.finditer(t)}
+    if doc_labels:
+        if cpcv is None:
+            print(
+                "PREFLIGHT FAIL: the documents contain CPCV tables but no CPCV "
+                "results were found.\n  Regenerate with:\n"
+                "    python3 research/cpcv_sweep.py\n"
+                "    python3 research/cpcv_sweep.py --stage pairs --stage triples",
+                file=sys.stderr,
+            )
+            return 1
+        unknown = sorted(doc_labels - set(cpcv.label))
+        if unknown:
+            print(
+                f"PREFLIGHT FAIL: {len(unknown)} of {len(doc_labels)} CPCV labels in the "
+                f"documents are absent from the results, so the results are stale or "
+                f"incomplete.\n  Missing e.g.: {', '.join(unknown[:4])}\n"
+                "  Regenerate BOTH sweeps before trusting any figure:\n"
+                "    python3 research/cpcv_sweep.py\n"
+                "    python3 research/cpcv_sweep.py --stage pairs --stage triples",
+                file=sys.stderr,
+            )
+            return 1
 
     for doc in DOCS:
         if not doc.exists():
@@ -174,6 +258,24 @@ def main() -> int:
             checked += 1
             if not ok:
                 failures.append(f"{doc.name}: {msg}")
+
+        # CPCV tables. Matched BEFORE the pair regex, whose 4-column shape can
+        # also match a CPCV row prefix and would then compare the wrong fields.
+        cpcv_labels: set[str] = set()
+        for m in CPCV_ROW.finditer(text):
+            label, med_s, iqr, frac, med_r, trades = m.groups()
+            cpcv_labels.add(label)
+            for field, v, tol in (
+                ("median_sharpe", float(med_s), TOL_SHARPE),
+                ("iqr_spread", float(iqr), TOL_SHARPE),
+                ("frac_paths_positive", float(frac) / 100.0, 0.005),
+                ("median_path_return", float(med_r) / 100.0, TOL_PCT / 100.0),
+                ("total_trades", float(trades), 0.5),
+            ):
+                checked += 1
+                ok, msg = check_cpcv(label, field, v, tol)
+                if not ok:
+                    failures.append(f"{doc.name}: {msg}")
 
         for m in PAIR_ROW.finditer(text):
             label, oos_s, is_s, oos_r, trades = m.groups()
