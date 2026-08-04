@@ -1,0 +1,16 @@
+# soltui dependencies, kept in this package rather than widened into the repo.
+#
+# Note on the repo's "zero runtime dependencies" rule: that constraint is scoped
+# to extension/ (ESM, no build step, no packages). The Python side already takes
+# pandas and numpy for the backtester; these two are additive to soltui only.
+
+# Textual TUI (the five-tab console). Same choice as ~/dev/story-tui.
+textual>=8.0
+
+# macOS menu-bar status item. Optional and macOS-only: the TUI and the entire
+# test suite run without it, and soltui/app.py reports this install line rather
+# than failing to import.
+rumps>=0.4.0 ; sys_platform == "darwin"
+
+# Optional: YAML config instead of JSON. config.py falls back to JSON when absent.
+PyYAML>=6.0
