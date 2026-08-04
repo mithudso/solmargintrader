@@ -139,6 +139,44 @@ trust. That tension is the finding, not a caveat on it.
   breaks it, correctly. Generate presets FROM the sweep; the test compares floats and ints
   strictly (25.0 != 25).
 
+## Perturbation stability check (research/perturb.py)
+
+Answers a narrower question than it appears to: **were the PARAMETERS cherry-picked?** It nudges
+each parameter ±10% one at a time, re-runs the full CPCV evaluation, and compares max|Δ median
+Sharpe| against the configuration's **own path IQR** — not an absolute threshold.
+
+One-at-a-time on purpose. A joint grid *is* a parameter search and would reintroduce the very
+selection bias the documents warn about.
+
+### Result on `all(dual_momentum+vol_regime)` (the best figure anywhere, +1.345)
+
+- **0 of 12 perturbations flip the sign;** the median never drops below +0.904.
+- Ratio 0.44 on parameters alone, 0.50 with geometry — **mid-pack**, not exceptional.
+- **The largest single move came from the CPCV geometry** (8→9 blocks, −0.441), bigger than any
+  strategy parameter (worst −0.392). The result is more sensitive to how you slice the data than
+  to the strategy's own settings. That was not the expected answer.
+- Across seven top configurations and 59 perturbations, **not one flipped sign**.
+
+Reference population for the ratio (recorded as `REFERENCE_*` in perturb.py so the verdict compares
+against something measured): **0.13–0.72, median 0.44**.
+
+### Do not over-read this
+
+Perturbation stability and multiple testing are **different failure modes**. Passing this says the
+parameters were not cherry-picked. It says nothing about whether the *configuration* was
+cherry-picked from 295 candidates — **PBO 0.650 says that concern stands undiminished**. A robust
+row at the top of an anti-informative ranking is still a row chosen by an anti-informative ranking.
+
+### Two traps hit while wiring this up
+
+- The first `PERTURB_ROW` regex collided with the single-split pair tables (identical 4-column
+  shape) and produced three false failures. Fixed by scoping the match to the finding-1d section.
+- The calibration table quoted numbers from an in-session heredoc run with **no CSV behind them**,
+  so `verify_numbers.py` correctly refused them. Re-ran those six configurations through the CLI to
+  leave durable evidence. 877 figures now verified.
+- zsh does **not** word-split unquoted `$var`, so a `for spec in "--pair a b --mode any"` loop
+  passes the whole string as one argument and every run fails silently.
+
 ## What exists
 
 - `backtester/` — event-driven engine, look-ahead-guarded, 16 strategies, CPCV + PBO
@@ -353,3 +391,91 @@ result. The loader enforces `evaluation: null` and forbids citing `measured-oos`
 
 Counts: **250 backtester, 114 extension, 95 soltui**. Cards: 27 measured, 1 implemented,
 15 spec-only.
+
+### Update — hurst_switch under CPCV: the pre-registered bet held
+
+Full run for all 25 registered configurations is tracked at
+`research/results/cpcv_all25_1d.csv` (SOL 1d, checksum `b68858b5deef2e35`, 1,875 bars,
+8 groups, k=2). Merged to master as `f091942`.
+
+**hurst_switch ranks 1st of 25 by median path Sharpe.**
+
+| | hurst_switch | buy_and_hold | zscore |
+|---|---|---|---|
+| Median path Sharpe | **+0.699** | +0.534 | +0.036 |
+| Q1 path Sharpe | **+0.609** | −0.095 | −0.539 |
+| Paths positive | **93%** | 68% | 52% |
+| Median path return | **+16.7%** | +9.4% | −10.0% |
+| Trades | 24 | 16 | 50 |
+
+It and `ou_reversion` are the **only two of 25 with a positive 25th-percentile path
+Sharpe**. Per-block Sharpes: +0.86, +2.67, 0.00, 0.00, +0.99, +0.29 — **no negative
+block**. Adding it to the set **lowered PBO** (0.600 → 0.400 on the six common blocks),
+so it is not the artifact in-sample selection latches onto.
+
+**Rating HELD at moderate, not raised.** 24 trades across six blocks, two of which
+traded zero times — those 0.00 Sharpes are "never lost", not "usually won", which
+inflates the 93%. Block 3's +2.669 rests on **two trades**. Next step is more data
+(hourly, or a peer universe), not more confidence.
+
+**Two PBO gotchas for whoever runs this next.** `pbo_cscv` requires every config to
+expose the *same* block count, and the 251-warmup strategies (hurst/ou/vol_regime) only
+get 6 usable blocks against 7–8 for the rest — so intersect on common block indices or
+it raises. Doing that leaves only 20 CSCV splits, which is why my PBO levels (0.600/0.400)
+sit above the prior study's 0.429–0.457; read the *direction*, not the level.
+Also `BlockResult` has no `.sharpe` — use `cpcv._sharpe(b.returns, ppy)`.
+
+**Six cards re-rated, in both directions** (the table is in
+`backtester/strategy_cards/README.md`): `ou_half_life_sizing` low→**moderate**;
+`bb_breakout` very-low→**low** (3rd of 25 — its notorious single-split decay was
+split-dependent); `zscore` low→**very-low** (the old top-ranked row is a coin flip whose
+median path loses 10%); `adx_filtered_trend` held at low despite a positive CPCV median,
+because Q1 is −0.603 with the widest spread of any config; `vol_regime_hmm` confirmed
+very-low; `pairs_cointegration` had already gone moderate→low on measurement.
+
+**The comparison worth keeping:** hurst_switch conditions on **serial correlation** and
+ranks 1st; vol_regime conditions on **volatility level** and ranks near the bottom. Same
+"pick the regime, then pick the rule" idea — the regime variable is the whole difference.
+
+Distribution now: 20 very-low, 21 low, 2 moderate.
+
+### Update — hourly test kills the hurst_switch result
+
+`research/results/cpcv_all25_1h.csv` (SOL 1h, checksum `704dd982c4e810a0`, 8,823 bars,
+`allow_gaps=True` as sweep.py uses, 8 groups k=2, all 25 configs built from each card's
+**short** preset). Merged as `0ad8b55`.
+
+**hurst_switch: 1st of 25 on daily → 23rd of 25 on hourly.**
+
+| | daily | hourly |
+|---|---|---|
+| median path Sharpe | +0.699 | **−3.123** |
+| Q1 | +0.609 | −3.878 |
+| paths positive | 93% | 14% |
+| median return | +16.7% | −12.8% |
+| trades | 24 | 170 |
+
+Seven times the trades, rank inverted from best to third-from-last. **Downgraded
+moderate → low.** The moderate rating was conditional in writing on surviving the next
+experiment; it didn't.
+
+**The confound, stated because it matters but doesn't rescue it:** the hourly file is
+only 2025-08→2026-08, **zero of 25 configs** had a positive median path Sharpe over it,
+and buy-and-hold lost 22.9%. So "everything lost" is partly the period. But rank is
+period-invariant — same bars for everyone — and this one moved from first to nearly last
+*relative to its peers*. The repo's headline finding (in-sample rank doesn't predict
+out-of-sample rank) now also holds **across horizons**, which is worse.
+
+**`ou_half_life_sizing` is now the only moderate.** 4th of 25 daily, **2nd of 25
+hourly**, median path return −3.4% vs buy-and-hold's −22.9% on 196 trades. Rank
+stability across a change of scale is the closest thing to evidence this repo has
+produced. Next test should be a different asset or a peer universe, not more SOL.
+
+**A degeneracy worth remembering:** on hourly, `voltarget`, `garch_voltarget` and
+`sma_regime` returned **numerically identical** rows (median −2.282, −19.9%, 292 trades).
+At `target_vol` 0.8 on hourly SOL the vol cap binds every bar, so `min(1, target/sigma)`
+= 1.0 and both vol-targeted rules collapse into the shared trend gate. Three "separate"
+strategies, one row — a sweep's configuration count overstates how many distinct ideas
+it contains.
+
+Distribution: 20 very-low, 22 low, 1 moderate.
