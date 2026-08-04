@@ -9,6 +9,7 @@
 
 import { snapshot, equityCurve, maxDrawdown, fillsToCsv } from '../core/pnl.js';
 import { gridLevels, capitalRequirement } from '../core/grid.js';
+import { attributionLine, attributionDetail } from '../jupiter/attribution.js';
 
 const $ = (sel) => document.querySelector(sel);
 const send = (msg) => chrome.runtime.sendMessage(msg);
@@ -251,10 +252,17 @@ function renderTables() {
         f.side,
         f.baseQty.toFixed(6),
         `$${f.priceUsd.toFixed(4)}`,
-        usd(f.feeUsd),
+        // "$0.00?" reads as "unknown", where a bare "$0.00" would claim the
+        // venue told us this trade was free.
+        f.feeUnknown ? `${usd(f.feeUsd)}?` : usd(f.feeUsd),
       ]);
     }
   }
+
+  // Licence-required attribution (agreement 8.4 and 2.3), rendered from the
+  // module that imports the real base URLs so it cannot drift from what we call.
+  $('#attribution').textContent = attributionLine();
+  $('#attributionDetail').textContent = attributionDetail();
 
   $('#events').textContent = cache.events
     .map((e) => `${new Date(e.tsMs).toISOString()}  ${e.type}  ${JSON.stringify(e.summary ?? e.reason ?? '')}`)

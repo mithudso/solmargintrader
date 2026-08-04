@@ -16,10 +16,15 @@ import {
   DIRECTION,
 } from '../src/core/grid.js';
 
-import { reconcile, tick, pricesMatch, matchIntent } from '../src/core/engine.js';
+import { reconcile, tick, ingestFills, summarise, pricesMatch, matchIntent } from '../src/core/engine.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
 import { INTENT_STATUS, ConfigStore } from '../src/storage/store.js';
-import { normaliseOrders } from '../src/venues/triggerVenue.js';
+import {
+  normaliseOrders,
+  OrderEnvelopeError,
+  ORDER_LIST_KEYS,
+  ORDER_REQUIRED_FIELDS,
+} from '../src/venues/triggerVenue.js';
 
 import {
   evaluate,
@@ -31,6 +36,15 @@ import {
 } from '../src/core/risk.js';
 
 import { matchFifo, snapshot, equityCurve, maxDrawdown, fillsToCsv } from '../src/core/pnl.js';
+import {
+  POWERED_BY,
+  SURFACES,
+  ROUTING_API,
+  attributionLine,
+  attributionDetail,
+} from '../src/jupiter/attribution.js';
+import { TRIGGER_BASE } from '../src/jupiter/trigger.js';
+import { PRICE_HOSTS } from '../src/jupiter/price.js';
 
 const near = (a, b, eps = 1e-9) =>
   assert.ok(Math.abs(a - b) < eps, `expected ${a} to be within ${eps} of ${b}`);
@@ -714,4 +728,364 @@ test('CSV export has a header and one row per fill', () => {
   assert.equal(lines.length, 2);
   assert.ok(lines[0].startsWith('id,gridId,tsIso'));
   assert.ok(lines[1].includes('200.000000')); // notional
+});
+
+// ------------------------------------------------ order-envelope strictness --
+//
+// The orders/history envelope is the least-verified part of the client. These
+// tests do not claim the mapping is right — they claim that when it is wrong,
+// the client refuses instead of inventing a quiet answer.
+
+const ORDER = {
+  id: 'ord-1',
+  status: 'active',
+  triggerCondition: 'below',
+  triggerPriceUsd: 100,
+};
+
+test('an unrecognised orders envelope is refused, not read as "no orders"', () => {
+  // "No orders live" is the single most dangerous wrong answer here: every
+  // resting rung looks orphaned and the planner re-places it.
+  for (const body of [
+    { result: [ORDER] }, // plausible-but-unknown wrapper key
+    { pagination: {}, records: [ORDER] },
+    null,
+    undefined,
+    'nope',
+    42,
+  ]) {
+    assert.throws(
+      () => normaliseOrders(body),
+      (err) => err instanceof OrderEnvelopeError && /unrecognised orders envelope/.test(err.message),
+      `envelope ${JSON.stringify(body) ?? String(body)} must be refused`,
+    );
+  }
+});
+
+test('the documented envelopes are still accepted, including a genuinely empty list', () => {
+  for (const key of ORDER_LIST_KEYS) {
+    assert.equal(normaliseOrders({ [key]: [] }).length, 0);
+    assert.equal(normaliseOrders({ [key]: [ORDER] }).length, 1);
+  }
+  assert.equal(normaliseOrders([]).length, 0, 'a bare empty array is a real empty list');
+  assert.equal(normaliseOrders([ORDER]).length, 1);
+});
+
+test('an order missing a field reconciliation needs is refused by name', () => {
+  for (const field of ['triggerPriceUsd', 'triggerCondition', 'id']) {
+    const broken = { ...ORDER };
+    delete broken[field];
+    assert.throws(
+      () => normaliseOrders([broken]),
+      (err) => {
+        assert.ok(err instanceof OrderEnvelopeError);
+        assert.equal(err.index, 0);
+        assert.ok(err.missingFields.length > 0, 'the missing field must be named');
+        assert.ok(
+          err.missingFields.every((f) => ORDER_REQUIRED_FIELDS.includes(f)),
+          'only declared required fields may be reported missing',
+        );
+        // The error is logged, so it may carry key names but never values.
+        assert.ok(!err.message.includes('100'), 'error text must not echo order values');
+        return true;
+      },
+      `a missing ${field} must be refused`,
+    );
+  }
+});
+
+test('a non-finite trigger price counts as missing, not as a number', () => {
+  // Number('') is 0 and Number('abc') is NaN; neither may pass as a price.
+  assert.throws(
+    () => normaliseOrders([{ ...ORDER, triggerPriceUsd: 'abc' }]),
+    (err) => err instanceof OrderEnvelopeError && err.missingFields.includes('triggerPriceUsd'),
+  );
+});
+
+test('non-strict mode flags unusable orders for inspection instead of throwing', () => {
+  const [order] = normaliseOrders([{ id: 'x', status: 'active' }], { strict: false });
+  assert.equal(order.unusable, true);
+  assert.deepEqual(order.missingFields.sort(), ['side', 'triggerPriceUsd']);
+  // And an unknown envelope degrades to empty rather than throwing, so a human
+  // can dump a real response without the tick deciding anything.
+  assert.deepEqual(normaliseOrders({ mystery: [] }, { strict: false }), []);
+});
+
+test('an unreported fee stays unknown instead of becoming zero', () => {
+  const [noFee] = normaliseOrders([ORDER]);
+  assert.equal(noFee.feeUsd, null, 'a missing fee must not be coerced to 0');
+  assert.equal(noFee.feeUnknown, true);
+
+  const [withFee] = normaliseOrders([{ ...ORDER, feeUsd: '0.25' }]);
+  assert.equal(withFee.feeUsd, 0.25);
+  assert.equal(withFee.feeUnknown, false);
+
+  // A genuine zero fee is knowledge, not absence.
+  const [zeroFee] = normaliseOrders([{ ...ORDER, feeUsd: 0 }]);
+  assert.equal(zeroFee.feeUsd, 0);
+  assert.equal(zeroFee.feeUnknown, false);
+});
+
+test('an envelope the client cannot read aborts the tick before placing anything', async () => {
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setConfig({ lower: 85, upper: 115, rungs: 5, notionalPerRungUsd: 12 });
+  await configStore.setRuntime({ armed: true });
+
+  const venue = {
+    async getPrice() {
+      return 100;
+    },
+    async getOpenOrders() {
+      return normaliseOrders({ surprise: [] });
+    },
+    async getFills() {
+      return [];
+    },
+    async getCarryCosts() {
+      return [];
+    },
+    async placeOrder() {
+      throw new Error('placeOrder must never be reached on an unreadable envelope');
+    },
+  };
+
+  const result = await tick({ venue, store, configStore });
+  assert.equal(result.placed.length, 0, 'nothing may be placed when live state is unknown');
+  assert.ok(result.errors.some((e) => /unrecognised orders envelope/.test(e.error)));
+});
+
+test('a fill with an unreported fee is recorded, flagged and counted', async () => {
+  const store = new MemoryStore();
+  const venue = {
+    async getFills() {
+      return [
+        {
+          venueOrderId: 'f-1',
+          side: 'buy',
+          triggerPriceUsd: 100,
+          executedPriceUsd: 100,
+          filledBaseQty: 0.12,
+          feeUsd: null,
+          feeUnknown: true,
+          updatedAtMs: 1,
+        },
+      ];
+    },
+  };
+
+  const { added, feeUnknown } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  assert.equal(added.length, 1, 'a real fill must never be dropped for a missing fee');
+  assert.deepEqual(feeUnknown, ['f-1']);
+  assert.equal(added[0].feeUnknown, true);
+  assert.equal(added[0].feeUsd, 0, 'the arithmetic stays finite');
+
+  const known = await ingestFills({
+    venue: {
+      async getFills() {
+        return [
+          {
+            venueOrderId: 'f-2',
+            side: 'buy',
+            triggerPriceUsd: 100,
+            executedPriceUsd: 100,
+            filledBaseQty: 0.12,
+            feeUsd: 0.05,
+            updatedAtMs: 2,
+          },
+        ];
+      },
+    },
+    store,
+    config: RECON_CONFIG,
+  });
+  assert.deepEqual(known.feeUnknown, []);
+  assert.equal(known.added[0].feeUnknown, false);
+});
+
+// ------------------------------------------ terminal orders are not all fills --
+//
+// `getFills()` reads the orders/history endpoint, and history holds every
+// TERMINAL order — cancelled and expired as well as filled. Booking one of those
+// as a fill invents inventory the wallet never acquired.
+
+test('a cancelled order in history is never booked as a fill', async () => {
+  const store = new MemoryStore();
+  const key = intentKey({ gridId: RECON_CONFIG.gridId, side: 'buy', level: 100 });
+  await store.putIntent({
+    intentKey: key,
+    gridId: RECON_CONFIG.gridId,
+    side: 'buy',
+    level: 100,
+    baseQty: 0.12,
+    notionalUsd: 12,
+    status: INTENT_STATUS.RESTING,
+    venueOrderId: 'ord-cancelled',
+  });
+
+  const venue = {
+    async getFills() {
+      // The dangerous shape: no executed price, no filled quantity. Without a gate
+      // the price falls back to the trigger and the quantity to the intent's
+      // PLANNED size, fabricating a fill out of an order that never traded.
+      return [
+        {
+          venueOrderId: 'ord-cancelled',
+          status: 'cancelled',
+          side: 'buy',
+          triggerPriceUsd: 100,
+          executedPriceUsd: null,
+          filledBaseQty: null,
+          updatedAtMs: 1,
+        },
+      ];
+    },
+  };
+
+  const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  assert.equal(added.length, 0, 'a cancelled order must not become a fill');
+  assert.equal(rejected.length, 1);
+  assert.match(rejected[0].reason, /no execution/);
+  assert.equal((await store.allFills()).length, 0, 'no phantom inventory may be stored');
+  assert.notEqual(
+    (await store.getIntent(key)).status,
+    INTENT_STATUS.FILLED,
+    'a cancelled order must not mark the intent filled',
+  );
+});
+
+test('execution evidence in either field is enough to book a fill', async () => {
+  // Quantity alone, or price alone, is evidence the venue executed something.
+  for (const [label, extra] of [
+    ['quantity only', { filledBaseQty: 0.12, executedPriceUsd: null }],
+    ['price only', { filledBaseQty: null, executedPriceUsd: 101 }],
+  ]) {
+    const store = new MemoryStore();
+    const key = intentKey({ gridId: RECON_CONFIG.gridId, side: 'buy', level: 100 });
+    await store.putIntent({
+      intentKey: key,
+      gridId: RECON_CONFIG.gridId,
+      side: 'buy',
+      level: 100,
+      baseQty: 0.12,
+      notionalUsd: 12,
+      status: INTENT_STATUS.RESTING,
+      venueOrderId: `ord-${label}`,
+    });
+    const venue = {
+      async getFills() {
+        return [
+          {
+            venueOrderId: `ord-${label}`,
+            status: 'filled',
+            side: 'buy',
+            triggerPriceUsd: 100,
+            updatedAtMs: 1,
+            ...extra,
+          },
+        ];
+      },
+    };
+    const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
+    assert.equal(added.length, 1, `${label} should book a fill`);
+    assert.equal(rejected.length, 0, `${label} should not be rejected`);
+  }
+});
+
+test('an unusable history record is rejected individually, not fatally', async () => {
+  // The history path is non-strict per record precisely so one bad record cannot
+  // brick the engine; ingestFills must still refuse to book it.
+  const store = new MemoryStore();
+  const venue = {
+    async getFills() {
+      return normaliseOrders([{ id: 'ord-broken', status: 'filled' }], { strict: false });
+    },
+  };
+  const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  assert.equal(added.length, 0);
+  assert.equal(rejected.length, 1);
+  assert.match(rejected[0].reason, /unusable/);
+});
+
+test('an ambiguous envelope holding two candidate lists is refused', () => {
+  // Picking the first match would read `{orders: [], data: [order]}` as empty —
+  // the same "nothing is live, re-place every rung" double-fire, second door.
+  assert.throws(
+    () => normaliseOrders({ orders: [], data: [ORDER] }),
+    (err) => err instanceof OrderEnvelopeError && /ambiguous/.test(err.message),
+  );
+  assert.throws(
+    () => normaliseOrders({ orders: [ORDER], data: [ORDER] }),
+    (err) => err instanceof OrderEnvelopeError && /ambiguous/.test(err.message),
+  );
+});
+
+test('a zero, blank or negative trigger price is not a valid order', () => {
+  // Number('') is 0 and Number('0') is 0, so "present and finite" is too weak a
+  // test for a price: a $0 rung would be adopted at an impossible level.
+  for (const bad of [0, '0', -5, '', '-0.01']) {
+    assert.throws(
+      () => normaliseOrders([{ ...ORDER, triggerPriceUsd: bad }]),
+      (err) => err instanceof OrderEnvelopeError && err.missingFields.includes('triggerPriceUsd'),
+      `triggerPriceUsd ${JSON.stringify(bad)} must be refused`,
+    );
+  }
+  // A real price still passes, including one given as a string.
+  assert.equal(normaliseOrders([{ ...ORDER, triggerPriceUsd: '141.4214' }])[0].triggerPriceUsd, 141.4214);
+});
+
+test('the unknown-fee count reaches the event log', async () => {
+  // Recorded but never displayed is not a safeguard, so summarise() carries it.
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setRuntime({ armed: false });
+  const result = await tick({ venue: stubVenue(100), store, configStore });
+  const summary = summarise(result);
+  assert.equal(summary.feeUnknownFills, 0, 'the field must always be present');
+  assert.equal(summarise({ ...result, feeUnknownFills: 3 }).feeUnknownFills, 3);
+});
+
+// ------------------------------------------------------- licence attribution --
+//
+// The SDK & API License Agreement imposes two DISPLAY obligations, and a private
+// tool fails them silently because nobody else sees the UI. These tests are the
+// only thing that notices.
+
+test('the exact phrase clause 8.4 requires is present and unparaphrased', () => {
+  assert.equal(POWERED_BY, 'Powered by Jupiter');
+  assert.match(attributionLine(), /Powered by Jupiter/);
+});
+
+test('every Jupiter API the client calls is named in the attribution', () => {
+  // Clause 2.3: the specific API used must be labelled accurately. If someone
+  // adds a base URL to the client without naming it here, this fails — which is
+  // the whole point of deriving SURFACES from the real constants.
+  const declared = SURFACES.flatMap((s) => s.bases);
+  assert.ok(declared.includes(TRIGGER_BASE), 'Trigger base must be declared');
+  assert.ok(declared.includes(PRICE_HOSTS.keyed), 'keyed price host must be declared');
+  assert.ok(declared.includes(PRICE_HOSTS.lite), 'keyless price host must be declared');
+  for (const base of declared) {
+    assert.match(base, /^https:\/\//, 'a declared base must be a real https URL');
+  }
+});
+
+test('the label does not claim a swap router this extension never uses', () => {
+  // Clause 2.3 is written around "Jupiter Ultra" and "Metis". Claiming either
+  // would be the exact mischaracterisation it prohibits, since this client
+  // routes no swaps at all.
+  assert.equal(ROUTING_API, null);
+  const line = attributionLine();
+  assert.match(line, /no swap router/);
+  assert.match(line, /Trigger V2/);
+  assert.match(line, /Price v3/);
+});
+
+test('the attribution detail lists a base URL for every surface', () => {
+  const detail = attributionDetail();
+  for (const surface of SURFACES) {
+    assert.ok(detail.includes(surface.name), `${surface.name} missing from detail`);
+    for (const base of surface.bases) {
+      assert.ok(detail.includes(base), `${base} missing from detail`);
+    }
+  }
 });

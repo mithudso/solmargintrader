@@ -43,12 +43,22 @@ Three components with different risk profiles. Know which one you are in:
 3. **Costs are never optional.** Fees, slippage and the perp borrow fee stay in the P&L path.
 4. **The engine does not touch the network.** Fetching is a separate, explicit step
    (`backtester.core.fetch`) writing a local cache.
+5. **Every registered strategy has a card.** `backtester/strategy_cards/<id>.md` carries its
+   equations, reasoning, limitations and parameter defaults, and `tests/test_strategy_cards.py`
+   checks the machine-readable half against the code in both directions — a registry entry with no
+   card fails, and so does a card whose defaults have drifted. Add the card in the same commit as
+   the strategy.
+6. **The ladder grid must agree with the extension.** `core/gridsim.py` is a port of
+   `extension/src/core/grid.js`; a change to either one's economics needs the matching change in the
+   other, or the backtest becomes a confident wrong number about the live strategy. Do not confuse it
+   with the `grid` strategy in `core/strategies/signals.py`, which is an exposure staircase, not a
+   ladder of resting orders.
 
 ## Before you claim a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 80 tests
-cd extension && npm test                                # 96 tests
+python3 -m unittest discover -s backtester/tests -t .   # 189 tests
+cd extension && npm test                                # 114 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 node tools/verify-endpoints.js                          # live Jupiter reachability
 ```

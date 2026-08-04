@@ -6,6 +6,8 @@
  * never be the thing that decides whether an order is placed.
  */
 
+import { attributionLine } from '../jupiter/attribution.js';
+
 const $ = (id) => document.getElementById(id);
 const send = (msg) => chrome.runtime.sendMessage(msg);
 
@@ -43,11 +45,19 @@ async function refresh() {
   }
   banner.classList.remove('hidden');
 
+  // Licence-required attribution, from the one module that knows which Jupiter
+  // APIs this extension actually calls.
+  $('attribution').textContent = attributionLine();
+
   $('price').textContent = lastTick?.price ? `$${lastTick.price.toFixed(4)}` : '—';
   paintPnl($('net'), lastTick?.pnl?.totalNetUsd);
   paintPnl($('realized'), lastTick?.pnl?.realizedNetUsd);
   paintPnl($('unrealized'), lastTick?.pnl?.unrealizedNetUsd);
-  $('fees').textContent = usd(lastTick?.pnl?.feeTotalUsd);
+  // A trailing "?" when some fill's fee was never reported by the venue: the
+  // total is a floor, not the real figure, and a bare number would claim
+  // otherwise.
+  $('fees').textContent =
+    usd(lastTick?.pnl?.feeTotalUsd) + (lastTick?.feeUnknownFills > 0 ? '?' : '');
   $('trips').textContent =
     lastTick?.pnl?.roundTripCount != null
       ? `${lastTick.pnl.roundTripCount} (${(lastTick.pnl.winRate * 100).toFixed(0)}% win)`

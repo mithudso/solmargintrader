@@ -46,7 +46,7 @@ Both venues sit behind one `VenueAdapter` interface, so Perps drops in when its 
 
 ```bash
 cd ~/dev/solmargintrader/extension
-npm test              # 96 tests, no dependencies to install
+npm test              # 110 tests, no dependencies to install
 node tools/dryrun.js  # end-to-end tick against the live SOL price
 ```
 
@@ -255,7 +255,7 @@ src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe)
 tools/cli.js               CLI surface, generated from the registry
 tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/dryrun.js            Headless end-to-end tick
-test/                      96 tests, zero dependencies (node:test)
+test/                      110 tests, zero dependencies (node:test)
 ```
 
 No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
@@ -268,7 +268,7 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 
 **Done and proven:**
 
-- `npm test` → **96 passing, 0 failing** (unit, integration and three-surface parity)
+- `npm test` → **110 passing, 0 failing** (unit, integration and three-surface parity)
 - `node tools/dryrun.js --ticks 8 --osc 6 --offline 100` → full tick loop with a down-then-up path:
   4 bids placed, filled as price fell, exits placed one rung above each lot, and on tick 8 an exit
   filled and took net P&L from −$2.33 to **+$0.04**. The closed trip captured **$0.620**, which is
@@ -303,17 +303,52 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 6. **`window.prompt()` as the live-arm gate** — Chrome suppresses modal dialogs in an extension
    popup, so the confirmation would silently no-op or close the popup. Replaced with an inline
    typed confirmation.
+7. **Cancelled orders booked as fills.** `getFills()` reads the orders/**history** endpoint, and
+   history holds every *terminal* order — cancelled and expired as well as filled. There was no
+   execution gate, so a cancelled order took its price from `triggerPriceUsd` and its quantity from
+   the intent's **planned** size, then stored a fill for inventory the wallet never acquired and
+   marked the intent `filled`. Reproduced end to end before fixing. `ingestFills` now requires
+   positive evidence of execution — a real `filledBaseQty` or a real `executedPriceUsd` — and the
+   gate is deliberately positive rather than a blacklist of status strings, because the status
+   vocabulary is part of the unverified envelope.
+8. **An unrecognised order envelope read as "no orders".** Covered under "Not verified" #2 below:
+   an empty list is indistinguishable from a misread one to reconciliation, which treats it as
+   "nothing is live" and re-plans every resting rung. Now refused.
 
 **Not verified — do these before risking money:**
 
 1. **No live order has been placed.** The write path (auth → vault → deposit craft → sign →
    create) is written to the documented shapes but never executed. It needs a Jupiter API key and a
    funded wallet. Test with one rung at the $10 minimum.
-2. **Order-list response envelope.** `normaliseOrders()` guesses field names for the
-   orders/history endpoint. Reconciliation depends on `triggerPriceUsd` and fill fields, so verify
-   against a real response and correct the mapping.
-3. **Fee attribution.** Fills currently take `feeUsd` from the venue when present and 0 otherwise.
-   Zero fees make a grid look better than it is — confirm where Trigger reports fees.
+2. **Order-list response envelope — still unverified, but now loud.** The field names in
+   `normaliseOrders()` have never been checked against a real response, and that has not changed.
+   What changed is the failure mode. It used to return `[]` for a shape it did not recognise, and
+   reconciliation reads an empty list as "nothing is live" — so every resting rung looks orphaned
+   and gets re-planned, which is the double-fire path. It now throws `OrderEnvelopeError`, and
+   because `tick()` wraps its whole body, an unreadable envelope aborts the tick before anything is
+   placed. An order missing a field reconciliation needs (`venueOrderId`, `side`,
+   `triggerPriceUsd`) is refused by name rather than passed along unmatchable.
+
+   So this item is *safer*, not *closed*: the mapping still needs checking against a live response.
+   Use `normaliseOrders(body, { strict: false })` to inspect one by hand — it flags unusable orders
+   instead of throwing. Accepted envelopes are `ORDER_LIST_KEYS`; required fields are
+   `ORDER_REQUIRED_FIELDS`. Both are exported so correcting them is a one-line, visible diff.
+
+   Strictness is **asymmetric by design**. `getOpenOrders()` refuses per record, because planning
+   against a live list known to be incomplete is the double-fire vector. `getFills()` refuses the
+   *envelope* but degrades per record, because a skipped history record can only delay P&L — it can
+   never place an order — and refusing the whole list would trade a recoverable accounting lag for an
+   engine that never ticks again. Two candidate list keys holding arrays (`{orders: [], data: [...]}`)
+   is treated as ambiguous and refused: taking the first would reintroduce the empty-list bug through
+   a second door. A trigger price must be positive, not merely present, since `Number('')` is `0`.
+3. **Fee attribution — where Trigger reports fees is still unconfirmed.** Fees are no longer
+   coerced to zero when absent. `normaliseOrders()` leaves `feeUsd` as `null` and sets
+   `feeUnknown`; `ingestFills()` still records the fill (dropping a real fill would lose inventory
+   the wallet holds) but flags it and counts it on `result.feeUnknownFills`. A non-zero count means
+   the reported P&L understates costs by however much those fees were. The count reaches humans in
+   three places: `summarise()` puts it in the event log, the popup appends `?` to the fee total, and
+   the dashboard renders `$0.00?` on any fill whose fee the venue never reported. A safeguard nobody
+   can see is not a safeguard.
 4. **Chrome alarm floor.** 30s is assumed; the engine logs the real wake delta. Watch it before
    trusting a sub-minute tick.
 5. **Transaction signature insertion** is tested against synthetic transactions, not a real
@@ -336,6 +371,19 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
   Scraping or driving the frontend would be brittle and a worse ToS position. Review the
   [Jupiter SDK/API License Agreement](https://developers.jup.ag/docs/legal/sdk-api-license-agreement)
   before running this against real funds.
+- **Three licence obligations this extension does not yet meet.** The agreement was read on
+  2026-08-04 (see `../docs/trading-signals-concept-family.md` §6.1 for the full reading; **not legal
+  advice**). It contains no clause against bots or automated trading, but it does require:
+  §8.4 — the product must **prominently display "Powered by Jupiter"** to end users; §2.3 — it must
+  prominently label *which* routing API is used ("Jupiter Ultra" vs "Metis"), and presenting output
+  as merely "Jupiter" is explicitly called out; §6.1 and §13.1 — use is **fee-bearing with a 30-day
+  minimum term paid in advance**, which sits awkwardly beside the portal's $0 "Free" tier. Liability
+  is capped at **USD 100** (§10) under **Panama law** (§14).
+- **§3.2(g) forbids combining API content with scraped content.** This repository contains both a
+  scraped `../jup.ag/` mirror and `../pagesource` alongside this API client. Reading them to
+  *understand* the platform is a different act from feeding them into the running product beside API
+  responses. Keep that boundary explicit — nothing in `src/` reads either artifact today, and it
+  should stay that way.
 - Trigger V2 requires an API key for every call, and rate limits apply per tier. The client
   implements backoff and a request budget, but a tight tick across many rungs will still find the
   ceiling.

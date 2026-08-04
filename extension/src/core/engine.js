@@ -151,10 +151,34 @@ export async function ingestFills({ venue, store, config, log = () => {} }) {
   const journal = await store.allIntents();
   const added = [];
   const rejected = [];
+  const feeUnknown = [];
 
   for (const f of venueFills) {
     const id = f.venueOrderId;
     if (!id || known.has(id)) continue;
+
+    // `getFills()` reads the orders/history endpoint, and "history" is every
+    // TERMINAL order — filled, cancelled and expired alike. Without this gate a
+    // cancelled order books a phantom fill: `executedPriceUsd` is absent so the
+    // price falls back to the trigger price, `filledBaseQty` is absent so the
+    // quantity falls back to the intent's PLANNED size, and the result is
+    // inventory the wallet never acquired plus an intent marked FILLED.
+    //
+    // The gate is positive — it requires evidence the venue actually executed
+    // something — rather than a blacklist of status strings, because the status
+    // vocabulary is part of the unverified envelope. An unknown status with real
+    // execution evidence is still a fill; a known-sounding one without it is not.
+    if (f.unusable) {
+      rejected.push({ id, reason: `history record unusable: missing ${(f.missingFields ?? []).join(', ')}` });
+      continue;
+    }
+    const executedQty = Number.isFinite(f.filledBaseQty) && f.filledBaseQty > 0;
+    const executedPrice = Number.isFinite(f.executedPriceUsd) && f.executedPriceUsd > 0;
+    if (!executedQty && !executedPrice) {
+      rejected.push({ id, reason: 'terminal order shows no execution (cancelled or expired, not filled)' });
+      log({ level: 'info', msg: 'terminal order ignored — no execution evidence', id, status: f.status ?? null });
+      continue;
+    }
 
     const priceUsd = f.executedPriceUsd ?? f.triggerPriceUsd;
     // Quantity must come from the fill or from the intent that created it —
@@ -172,24 +196,35 @@ export async function ingestFills({ venue, store, config, log = () => {} }) {
       continue;
     }
 
+    // A real fill must be recorded even when the venue did not report its fee —
+    // dropping it would lose inventory the wallet actually holds. But booking an
+    // unreported fee as 0 states a cost we do not know, and zero fees make a grid
+    // look better than it is. Record 0 so the arithmetic stays finite, flag the
+    // fill, and surface the count so P&L is never read as fee-complete.
+    const feeKnown = Number.isFinite(f.feeUsd);
     const fill = {
       id,
       gridId: config.gridId,
       side: f.side,
       baseQty,
       priceUsd,
-      feeUsd: f.feeUsd ?? 0,
+      feeUsd: feeKnown ? f.feeUsd : 0,
+      feeUnknown: !feeKnown,
       tsMs: f.updatedAtMs ?? f.createdAtMs ?? Date.now(),
       level: f.triggerPriceUsd ?? null,
     };
     await store.putFill(fill);
     added.push(fill);
+    if (!feeKnown) {
+      feeUnknown.push(id);
+      log({ level: 'warn', msg: 'fill recorded with an unreported fee — P&L understates costs', id });
+    }
 
     const key = matched?.intentKey ?? f.intentKey ?? keyForLiveOrder({ gridId: config.gridId, order: f });
     if (key) await store.updateIntent(key, { status: INTENT_STATUS.FILLED, fillId: id });
   }
 
-  return { added, rejected };
+  return { added, rejected, feeUnknown };
 }
 
 /**
@@ -229,6 +264,9 @@ export async function tick({
     orphaned: [],
     errors: [],
     pnl: null,
+    // Stays 0 when a tick aborts early, so the field's absence never has to be
+    // distinguished from "no unknown fees".
+    feeUnknownFills: 0,
   };
 
   try {
@@ -249,6 +287,9 @@ export async function tick({
 
     const ingested = await ingestFills({ venue, store, config, log });
     if (ingested.rejected.length) result.errors.push(...ingested.rejected.map((r) => ({ error: `fill ${r.id}: ${r.reason}` })));
+    // Not an error — the fills are real — but the P&L below understates costs by
+    // however much these fees were, so the count travels with the result.
+    result.feeUnknownFills = ingested.feeUnknown.length;
 
     const fills = await store.allFills();
     const carry = await store.allCarry();
@@ -372,5 +413,9 @@ export function summarise(r) {
     orphaned: r.orphaned.length,
     errors: r.errors.length,
     netUsd: r.pnl?.totalNetUsd ?? null,
+    // A fee the venue never reported is booked as 0 so the arithmetic stays
+    // finite, which means the fee total reads as complete when it is not. The
+    // count belongs in the event log, or the safeguard is invisible.
+    feeUnknownFills: r.feeUnknownFills ?? 0,
   };
 }
