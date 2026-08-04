@@ -105,6 +105,90 @@ export function sideForLevel({ level, price, deadbandBps = 25 }) {
   return null;
 }
 
+
+/**
+ * Ladder bounds centred on `price`, using this extension's own convention.
+ *
+ * `tools/dryrun.js` builds its ladder as 0.85x to 1.15x of the current price, so
+ * `spanPct` defaults to 0.15 to match it rather than inventing a second
+ * convention. Rounded to 4dp because the venue echoes prices back rounded and
+ * `intentKey` matching is only tolerant to 1bp.
+ */
+export function recentredBounds({ price, spanPct = 0.15 }) {
+  if (!(price > 0)) throw new RangeError(`price must be > 0, got ${price}`);
+  if (!(spanPct > 0 && spanPct < 1)) {
+    throw new RangeError(`spanPct must be in (0, 1), got ${spanPct}`);
+  }
+  const round4 = (n) => Number(n.toFixed(4));
+  return { lower: round4(price * (1 - spanPct)), upper: round4(price * (1 + spanPct)) };
+}
+
+/**
+ * Whether the ladder may be re-centred right now, and if not, exactly why.
+ *
+ * **The safety rule is that re-centring must never strand anything.** Moving the
+ * bounds changes every level, and a level is what an order's identity and a lot's
+ * paired exit are derived from:
+ *
+ *   - A resting order at an old level is no longer in the plan, and `tick()` has
+ *     **no cancel step** — `cancelOrder` is a manual command only. So a moved
+ *     ladder would leave real orders live on the venue at abandoned levels, with
+ *     capital committed to a ladder the strategy no longer believes in.
+ *   - An open lot's exit is computed from the CURRENT levels by
+ *     `pairedExitLevel`. Re-centre downward while holding inventory and that lot's
+ *     exit is recomputed onto the new, lower ladder — which can place a sell
+ *     BELOW its own entry. That is the zero-spread bug this file's history is
+ *     built around, and it would now be a loss rather than a break-even.
+ *
+ * So this returns `allowed: true` only when there is no open inventory and no
+ * resting order to strand. That is a narrower window than "whenever price leaves
+ * the ladder", and it is the only window that is safe without a cancel path.
+ * Widening it is a change to `tick()`, not to this function.
+ */
+export function recentreDecision({
+  config,
+  price,
+  openLots = [],
+  openIntentKeys = [],
+}) {
+  const {
+    lower, upper,
+    autoRecentre = false,
+    recentreSpanPct = 0.15,
+    recentreDriftBps = 0,
+  } = config;
+
+  if (!autoRecentre) return { allowed: false, reason: 'auto-recentre-disabled' };
+  if (!(price > 0)) return { allowed: false, reason: 'unusable-price' };
+
+  // Counted, not summed. snapshot() already drops a lot once its residual falls
+  // to ~0 (pnl.js), so a non-empty list means real inventory. Summing baseQty
+  // instead would let a NaN or undefined qty total to 0 and read as FLAT, which
+  // is how a fail-open reaches the paired-exit hazard above.
+  if (openLots.length > 0) {
+    return { allowed: false, reason: 'open-lots-would-be-stranded', openLots: openLots.length };
+  }
+  if (openIntentKeys.length > 0) {
+    return {
+      allowed: false,
+      reason: 'resting-orders-would-be-stranded-and-tick-cannot-cancel',
+      resting: openIntentKeys.length,
+    };
+  }
+
+  // Only bother once price is genuinely outside the ladder, plus any drift band.
+  const band = (price * recentreDriftBps) / 10_000;
+  if (price >= lower - band && price <= upper + band) {
+    return { allowed: false, reason: 'price-inside-ladder' };
+  }
+
+  const bounds = recentredBounds({ price, spanPct: recentreSpanPct });
+  if (bounds.lower === lower && bounds.upper === upper) {
+    return { allowed: false, reason: 'already-centred' };
+  }
+  return { allowed: true, reason: price > upper ? 'price-above-ladder' : 'price-below-ladder', ...bounds };
+}
+
 /**
  * The orders the grid *wants* to have resting right now.
  *
@@ -134,7 +218,17 @@ export function planGrid({ config, price, openIntentKeys = [], openLots = [] }) 
     minOrderUsd = 10, // Jupiter Trigger V2 hard minimum
   } = config;
 
-  const levels = gridLevels({ lower, upper, rungs, spacing });
+  // Auto re-centring, off by default. `recentreDecision` refuses in every case
+  // where moving the ladder could strand a resting order or re-point an open
+  // lot's exit below its own entry, so this can only widen behaviour in the case
+  // that is safe by construction: a grid holding nothing with nothing resting.
+  const recentre = recentreDecision({ config, price, openLots, openIntentKeys });
+  const effectiveLower = recentre.allowed ? recentre.lower : lower;
+  const effectiveUpper = recentre.allowed ? recentre.upper : upper;
+
+  const levels = gridLevels({
+    lower: effectiveLower, upper: effectiveUpper, rungs, spacing,
+  });
   const open = new Set(openIntentKeys);
   const intents = [];
   const skipped = [];
@@ -231,7 +325,19 @@ export function planGrid({ config, price, openIntentKeys = [], openLots = [] }) 
     });
   }
 
-  return { intents, skipped };
+  // `recentre` is additive: existing callers destructure { intents, skipped } and
+  // are unaffected. A caller that wants to persist the moved bounds reads
+  // recentre.applied and recentre.lower/upper.
+  return {
+    intents,
+    skipped,
+    recentre: {
+      applied: recentre.allowed === true,
+      reason: recentre.reason,
+      from: { lower, upper },
+      to: { lower: effectiveLower, upper: effectiveUpper },
+    },
+  };
 }
 
 /**

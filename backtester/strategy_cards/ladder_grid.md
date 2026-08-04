@@ -157,11 +157,18 @@ live engine agree.
 
 ### The product finding
 
-**The extension does not re-centre.** `planGrid` reads `lower` and `upper` straight from
-config and nothing recomputes them, so a live install behaves like the *static* column
-above — out of range 86–93% of the time — rather than the re-centred one that produced
-the positive daily median. The gap between those two columns is the value of a feature
-that does not exist yet.
+**The extension now re-centres, but not the way this simulation does — so the +7.5% below
+still does not describe a live install.** `planGrid` gained an opt-in, default-off
+`autoRecentre` (see `extension/README.md`). The simulation moves the ladder unconditionally
+at every block boundary. The extension may only move it when **nothing is resting and no lot
+is open**, because `tick()` has no cancel step and a moved ladder would otherwise strand real
+orders or recompute an open lot's exit below its own entry. Measured on this same daily series
+with `extension/tools/measure-recentre.js`, that gate opens **once, on the first bar** — and
+on this path it made placement *worse* (93.1% of bars outside the ladder, versus 87.3% for the
+untouched default), because one inception-time move locked the ladder onto the 2021 price.
+
+So the gap between the two columns below is still the value of a feature that does not exist:
+a ladder that **tracks** the market needs order cancellation, not just re-centring.
 
 ## Likelihood of success: low
 
@@ -186,9 +193,11 @@ Four things hold it at low.
    into a large losing position, exactly as the card predicted before it was run.
 3. **Hourly is negative** (median −1.2%, 3 of 8 blocks positive). Beating a −16.1% hold is
    not the same as making money.
-4. **The positive result depends on a feature that does not exist.** The daily median is
-   the *re-centred* configuration; the extension is static, so a live install gets the
-   other column.
+4. **The positive result depends on re-centring the live engine cannot safely do.** The
+   daily median is the *unconditionally re-centred* configuration. The extension's
+   `autoRecentre` only fires when nothing is resting and no lot is open — measured at once
+   in 1,875 bars — so a live install gets the static column, not this one. Closing that gap
+   needs a cancel path in `tick()`.
 
 And the standing constraint that outranks all of it: **no live order has ever been
 placed**, the Trigger order-list envelope is still unverified, and fee attribution is

@@ -240,7 +240,7 @@ export async function tick({
   clock = () => Date.now(),
   log = () => {},
 }) {
-  const config = await configStore.getConfig();
+  let config = await configStore.getConfig();
   const runtime = await configStore.getRuntime();
   const now = clock();
 
@@ -341,6 +341,29 @@ export async function tick({
       openLots: pnl.openLots,
     });
     result.skipped.push(...plan.skipped);
+    result.recentre = plan.recentre;
+
+    // WRITE-AHEAD, same reasoning as the intent journal below: planGrid is pure,
+    // so a re-centre it computes exists only in `plan` until it is stored. If an
+    // order were placed on the moved ladder while config still held the old
+    // bounds, the next tick would see those orders resting, refuse to re-centre,
+    // fall back to the OLD bounds and place a second ladder at the levels this
+    // tick just abandoned — capital committed to two ladders at once. Persisting
+    // first also means a crash mid-submit leaves config describing the ladder the
+    // orders actually belong to.
+    if (plan.recentre.applied) {
+      config = await configStore.setConfig({
+        lower: plan.recentre.to.lower,
+        upper: plan.recentre.to.upper,
+      });
+      log({
+        level: 'warn',
+        msg: 'grid re-centred',
+        from: plan.recentre.from,
+        to: plan.recentre.to,
+        reason: plan.recentre.reason,
+      });
+    }
 
     const state = {
       openNotionalUsd: rec.restingKeys.length * config.notionalPerRungUsd,
