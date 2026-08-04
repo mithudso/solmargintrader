@@ -79,6 +79,15 @@ HORIZONS: dict[str, dict[str, Any]] = {
             "grid": {"anchor_window": 48, "levels": 4, "step": 0.03},
             "obv_trend": {"ma_window": 24},
             "voltarget": {"trend_window": 168, "vol_window": 24, "target_vol": 0.8},
+            "dual_momentum": {"formation": 24, "skip": 2},
+            "adx_trend": {"adx_period": 7, "adx_threshold": 25.0},
+            "ma_ribbon": {"windows": 5, "base": 6},
+            "ichimoku": {"tenkan": 9, "kijun": 26, "senkou_b": 52, "displacement": 26},
+            "ou_reversion": {"fit_window": 250, "entry_z": -2.0, "max_half_life_bars": 48},
+            "hurst_switch": {"window": 250, "lag": 5, "trend_window": 168},
+            "vol_regime": {"vol_window": 24, "lookback": 250, "trend_window": 168},
+            "atr_sized": {"atr_period": 7, "trend_window": 168},
+            "garch_voltarget": {"lam": 0.94, "target_vol": 0.8, "trend_window": 168},
         },
     },
     "medium": {
@@ -103,6 +112,15 @@ HORIZONS: dict[str, dict[str, Any]] = {
             "grid": {"anchor_window": 50, "levels": 4, "step": 0.05},
             "obv_trend": {"ma_window": 20},
             "voltarget": {"trend_window": 100, "vol_window": 20, "target_vol": 0.6},
+            "dual_momentum": {"formation": 12, "skip": 1},
+            "adx_trend": {"adx_period": 14, "adx_threshold": 25.0},
+            "ma_ribbon": {"windows": 5, "base": 10},
+            "ichimoku": {"tenkan": 9, "kijun": 26, "senkou_b": 52, "displacement": 26},
+            "ou_reversion": {"fit_window": 250, "entry_z": -2.0, "max_half_life_bars": 30},
+            "hurst_switch": {"window": 250, "lag": 5, "trend_window": 100},
+            "vol_regime": {"vol_window": 20, "lookback": 250, "trend_window": 100},
+            "atr_sized": {"atr_period": 14, "trend_window": 100},
+            "garch_voltarget": {"lam": 0.94, "target_vol": 0.6, "trend_window": 100},
         },
     },
     "long": {
@@ -127,6 +145,15 @@ HORIZONS: dict[str, dict[str, Any]] = {
             "grid": {"anchor_window": 120, "levels": 4, "step": 0.10},
             "obv_trend": {"ma_window": 60},
             "voltarget": {"trend_window": 200, "vol_window": 60, "target_vol": 0.6},
+            "dual_momentum": {"formation": 24, "skip": 1},
+            "adx_trend": {"adx_period": 30, "adx_threshold": 25.0},
+            "ma_ribbon": {"windows": 5, "base": 20},
+            "ichimoku": {"tenkan": 18, "kijun": 52, "senkou_b": 104, "displacement": 52},
+            "ou_reversion": {"fit_window": 250, "entry_z": -2.0, "hold_multiple": 3.0},
+            "hurst_switch": {"window": 250, "lag": 10, "trend_window": 200},
+            "vol_regime": {"vol_window": 60, "lookback": 250, "trend_window": 200},
+            "atr_sized": {"atr_period": 30, "trend_window": 200},
+            "garch_voltarget": {"lam": 0.97, "target_vol": 0.6, "trend_window": 200},
         },
     },
 }
@@ -135,11 +162,24 @@ HORIZONS: dict[str, dict[str, Any]] = {
 # the baseline, and "hold plus X" is just X with extra exposure) and voltarget
 # (a sizing overlay, tested separately as a wrapper).
 COMBO_CANDIDATES = (
-    "ma_crossover", "macd", "ts_momentum", "sma_regime",
+    # trend
+    "ma_crossover", "macd", "ma_ribbon", "ichimoku",
+    # momentum
+    "ts_momentum", "dual_momentum",
+    # regime filters
+    "sma_regime", "adx_trend", "hurst_switch", "vol_regime",
+    # breakout
     "breakout", "bb_breakout", "keltner",
-    "rsi", "stochastic", "bb_reversion", "zscore", "vwap_reversion",
+    # oscillator reversion
+    "rsi", "stochastic",
+    # mean reversion
+    "bb_reversion", "zscore", "vwap_reversion", "ou_reversion",
+    # volume flow
     "obv_trend",
 )
+# Risk overlays (voltarget, atr_sized, garch_voltarget) are deliberately absent:
+# they change position SIZE, not direction, so a cross-family "pair" with one is
+# really a wrapper test and belongs in its own experiment.
 
 
 @dataclass

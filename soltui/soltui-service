@@ -144,6 +144,7 @@ def install() -> int:
         print(f"replacing existing {BUNDLE}")
         shutil.rmtree(BUNDLE)
     shutil.copytree(DIST_BUNDLE, BUNDLE, symlinks=True)
+    dereference_resources(BUNDLE)
     print(f"installed → {BUNDLE}")
 
     SUPPORT.mkdir(parents=True, exist_ok=True)
@@ -164,6 +165,38 @@ def install() -> int:
     print("\nInstalled and loaded. The app is supervised only while the flag exists:")
     print("    soltui/soltui-service start")
     return 0
+
+
+def dereference_resources(bundle: Path) -> list[Path]:
+    """Replace symlinked bundle resources with real copies. Returns what changed.
+
+    An alias build symlinks Contents/Resources back into the source tree, so the
+    icon would break the moment the repo moves -- and a bundle whose icon is a
+    dangling link falls back to the generic executable icon with no error
+    anywhere. Copying the small, self-contained resources in means the icon at
+    least survives a move even though the alias-mode *code* still will not.
+
+    Only files are dereferenced, and only in Resources: the Frameworks and lib
+    symlinks are what make alias mode work at all.
+    """
+    changed: list[Path] = []
+    resources = bundle / "Contents" / "Resources"
+    if not resources.is_dir():
+        return changed
+    for entry in resources.iterdir():
+        if not entry.is_symlink() or not entry.is_file():
+            continue
+        target = entry.resolve()
+        if not target.exists():
+            print(f"  WARNING: dangling resource symlink {entry.name}", file=sys.stderr)
+            continue
+        entry.unlink()
+        shutil.copy2(target, entry)
+        changed.append(entry)
+    if changed:
+        print(f"  copied in {len(changed)} resource(s): "
+              f"{', '.join(p.name for p in changed)}")
+    return changed
 
 
 def is_loaded() -> bool:
