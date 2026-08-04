@@ -1,0 +1,235 @@
+#!/usr/bin/env python3
+"""Install / start / stop the soltui menu-bar LaunchAgent.
+
+    soltui/soltui-service build      # py2app alias build into dist/
+    soltui/soltui-service install    # copy bundle to ~/Applications + write the agent
+    soltui/soltui-service start      # create the supervise flag -> launchd starts it
+    soltui/soltui-service stop       # remove the flag -> launchd stops supervising
+    soltui/soltui-service status
+    soltui/soltui-service uninstall
+
+Edit THIS script, not the generated plist -- `install` overwrites the plist.
+
+## Design decisions inherited from net-dns-monitor, not rediscovered
+
+Its plist documents four hard-won lessons; all four are reproduced here because
+the failure modes are identical for any rumps status-item app.
+
+1. **A LaunchAgent, not a LaunchDaemon.** rumps needs the logged-in user's GUI
+   session. A daemon runs before login with no window server access and could
+   never draw a status item.
+
+2. **ProgramArguments points at the executable inside the .app bundle**, not at
+   `python3 -m soltui.app`. Framework Python re-execs into its own bundled
+   Python.app the instant rumps creates the GUI, so a bare module launch shows
+   "Python" in the Dock, Cmd-Tab and Force Quit.
+
+3. **The bundle path must be ~/Applications, never a build or worktree
+   directory.** Anything under `.claude/worktrees/` can be deleted at any time,
+   and when it is, login startup breaks silently. `install` refuses to write an
+   agent pointing inside a worktree.
+
+4. **No RunAtLoad.** It starts the app whenever the agent is loaded -- including
+   every login -- regardless of the flag file, so `stop` would silently undo
+   itself at the next login. `KeepAlive` with a `PathState` condition is enough
+   to start the job at load when the flag exists, and it does so for the right
+   reason: because supervision is enabled. The flag file is therefore the real
+   on/off switch, which is necessary because KeepAlive overrides the menu bar's
+   own Quit item.
+
+Plus: `LANG` is set explicitly. launchd starts processes with no LANG at all,
+making the locale encoding US-ASCII; the status glyphs in status.py are
+non-ASCII, and net-dns-monitor hit precisely this as 0-byte report files.
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+import plistlib
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+LABEL = "com.mitchhudson.soltui"
+APP_NAME = "SolTUI"
+REPO = Path(__file__).resolve().parent.parent
+HOME = Path.home()
+
+APPS_DIR = HOME / "Applications"
+BUNDLE = APPS_DIR / f"{APP_NAME}.app"
+BUNDLE_EXE = BUNDLE / "Contents" / "MacOS" / APP_NAME
+DIST_BUNDLE = REPO / "dist" / f"{APP_NAME}.app"
+AGENT = HOME / "Library" / "LaunchAgents" / f"{LABEL}.plist"
+SUPPORT = HOME / "Library" / "Application Support" / "soltui"
+FLAG = SUPPORT / "supervise.enabled"
+LOG = HOME / "Library" / "Logs" / "soltui.launchd.log"
+
+
+def uid() -> int:
+    """Current user id, for the launchd gui/ domain."""
+    return os.getuid()
+
+
+def run(cmd: list[str], check: bool = False) -> subprocess.CompletedProcess:
+    """Run a command, echoing it so the effect is auditable."""
+    print("  $", " ".join(cmd))
+    return subprocess.run(cmd, check=check, capture_output=True, text=True)
+
+
+def build() -> int:
+    """py2app alias build into dist/."""
+    print(f"Building {APP_NAME}.app (alias mode) …")
+    proc = subprocess.run(
+        [sys.executable, str(REPO / "soltui" / "setup_app.py"), "py2app", "-A"],
+        cwd=REPO,
+    )
+    if proc.returncode != 0:
+        print("build failed", file=sys.stderr)
+        return proc.returncode
+    if not DIST_BUNDLE.exists():
+        print(f"expected {DIST_BUNDLE} but it is absent", file=sys.stderr)
+        return 1
+    print(f"built → {DIST_BUNDLE}")
+    return 0
+
+
+def agent_plist() -> dict:
+    """The LaunchAgent definition. See the module docstring for every choice."""
+    return {
+        "Label": LABEL,
+        # Lesson 2: the bundle executable, not `python -m`.
+        "ProgramArguments": [str(BUNDLE_EXE)],
+        # Lesson 4: no RunAtLoad. KeepAlive+PathState starts it when the flag
+        # exists and stops supervising when it does not.
+        "KeepAlive": {"PathState": {str(FLAG): True}},
+        "ThrottleInterval": 15,
+        "ProcessType": "Interactive",
+        # launchd provides no LANG; without this the locale encoding is US-ASCII
+        # and non-ASCII output raises UnicodeEncodeError.
+        "EnvironmentVariables": {"LANG": "en_US.UTF-8", "PYTHONUTF8": "1"},
+        "StandardOutPath": str(LOG),
+        "StandardErrorPath": str(LOG),
+    }
+
+
+def install() -> int:
+    """Copy the bundle to ~/Applications and write + bootstrap the agent."""
+    if not DIST_BUNDLE.exists():
+        print(f"no bundle at {DIST_BUNDLE}. Run: soltui/soltui-service build",
+              file=sys.stderr)
+        return 1
+
+    # Lesson 3: never install from, or point at, a worktree path.
+    if ".claude/worktrees" in str(BUNDLE):
+        print(
+            "refusing to install: the target path is inside a git worktree, which "
+            "can be deleted and would break login startup silently.",
+            file=sys.stderr,
+        )
+        return 1
+    if ".claude/worktrees" in str(REPO):
+        print(
+            f"WARNING: building from a worktree ({REPO}).\n"
+            "  An alias bundle references its source tree, so this bundle will "
+            "break when the worktree is removed.\n"
+            "  Merge to master and rebuild from /Users/mitch.hudson/dev/"
+            "solmargintrader before relying on login startup.",
+            file=sys.stderr,
+        )
+
+    APPS_DIR.mkdir(parents=True, exist_ok=True)
+    if BUNDLE.exists():
+        print(f"replacing existing {BUNDLE}")
+        shutil.rmtree(BUNDLE)
+    shutil.copytree(DIST_BUNDLE, BUNDLE, symlinks=True)
+    print(f"installed → {BUNDLE}")
+
+    SUPPORT.mkdir(parents=True, exist_ok=True)
+    LOG.parent.mkdir(parents=True, exist_ok=True)
+    AGENT.parent.mkdir(parents=True, exist_ok=True)
+    AGENT.write_bytes(plistlib.dumps(agent_plist()))
+    print(f"wrote agent → {AGENT}")
+
+    run(["launchctl", "bootout", f"gui/{uid()}/{LABEL}"])  # ignore failure
+    res = run(["launchctl", "bootstrap", f"gui/{uid()}", str(AGENT)])
+    if res.returncode != 0:
+        print(f"bootstrap said: {res.stderr.strip() or res.stdout.strip()}")
+    print("\nInstalled. The app is supervised only while the flag exists:")
+    print("    soltui/soltui-service start")
+    return 0
+
+
+def start() -> int:
+    """Create the flag file; launchd starts and supervises the app."""
+    SUPPORT.mkdir(parents=True, exist_ok=True)
+    FLAG.touch()
+    print(f"flag created → {FLAG}")
+    run(["launchctl", "kickstart", f"gui/{uid()}/{LABEL}"])
+    print("started (and will start at login while the flag exists)")
+    return 0
+
+
+def stop() -> int:
+    """Remove the flag file; launchd stops supervising and shuts the app down."""
+    if FLAG.exists():
+        FLAG.unlink()
+        print(f"flag removed → {FLAG}")
+    else:
+        print("flag was already absent")
+    run(["launchctl", "kill", "SIGTERM", f"gui/{uid()}/{LABEL}"])
+    print("stopped (will not start at login)")
+    return 0
+
+
+def status() -> int:
+    """Report every piece of state, so a partial install is visible."""
+    print(f"bundle      : {BUNDLE} {'✓' if BUNDLE.exists() else '✗ (not installed)'}")
+    print(f"agent plist : {AGENT} {'✓' if AGENT.exists() else '✗'}")
+    print(f"supervise   : {FLAG} {'✓ enabled' if FLAG.exists() else '✗ disabled'}")
+    print(f"log         : {LOG} {'✓' if LOG.exists() else '(no output yet)'}")
+    res = run(["launchctl", "print", f"gui/{uid()}/{LABEL}"])
+    if res.returncode != 0:
+        print("launchd     : not loaded")
+    else:
+        for line in res.stdout.splitlines():
+            if any(k in line for k in ("state =", "pid =", "last exit")):
+                print(f"launchd     : {line.strip()}")
+    return 0
+
+
+def uninstall() -> int:
+    """Remove the agent, the flag and the installed bundle."""
+    stop()
+    run(["launchctl", "bootout", f"gui/{uid()}/{LABEL}"])
+    for path in (AGENT, BUNDLE):
+        if path.exists():
+            shutil.rmtree(path) if path.is_dir() else path.unlink()
+            print(f"removed {path}")
+    print("uninstalled")
+    return 0
+
+
+COMMANDS = {
+    "build": build, "install": install, "start": start,
+    "stop": stop, "status": status, "uninstall": uninstall,
+}
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Dispatch a subcommand."""
+    ap = argparse.ArgumentParser(
+        description="Manage the soltui menu-bar LaunchAgent.",
+        epilog="Typical first run: build → install → start",
+    )
+    ap.add_argument("command", choices=sorted(COMMANDS))
+    args = ap.parse_args(argv)
+    if sys.platform != "darwin":
+        print("macOS only.", file=sys.stderr)
+        return 1
+    return COMMANDS[args.command]()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

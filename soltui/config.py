@@ -62,6 +62,10 @@ class Settings:
     enabled_strategies: list[str] = field(
         default_factory=lambda: ["buy_and_hold", "ma_crossover", "rsi", "breakout"]
     )
+    # Editable signal parameters from the Signals tab. Stored as a plain dict so
+    # the config file round-trips through YAML/JSON without a custom
+    # representer; `signals.from_dict()` rebuilds and validates the dataclass.
+    signal_defaults: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         """Plain dict for serialisation."""
@@ -104,6 +108,16 @@ def validate(settings: Settings) -> Settings:
             "armed=True requires i_understand_this_is_simulated_only=True. "
             "Note that this build has no live order path regardless."
         )
+    # Signal defaults are validated by their own module, which knows the
+    # relationships (fast < slow, oversold < exit). Surfacing the failure as a
+    # ConfigError keeps one error type for the caller to handle.
+    if settings.signal_defaults:
+        from .signals import SignalError, from_dict
+
+        try:
+            from_dict(settings.signal_defaults)
+        except SignalError as exc:
+            raise ConfigError(f"signal_defaults: {exc}") from exc
     return settings
 
 

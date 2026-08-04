@@ -1,0 +1,98 @@
+"""py2app build for the soltui menu-bar app.
+
+    cd /Users/mitch.hudson/dev/solmargintrader
+    python3 soltui/setup_app.py py2app -A     # alias build (recommended, see below)
+
+## Why alias mode
+
+A full py2app freeze would have to embed pandas and numpy, which the backtester
+imports. That is slow, large, and a well-known source of missing-dylib breakage.
+Alias mode (`-A`) instead builds a real bundle whose Python resolves imports
+against the live source tree, so:
+
+  * the bundle stays small and builds in seconds
+  * the app always runs the current code -- no rebuild after every edit
+  * pandas/numpy load exactly as they do from the shell
+
+The cost is that the bundle is **not portable**: it references
+`/Users/mitch.hudson/dev/solmargintrader`. That is fine here (this is a personal
+tool on a fixed path) and is why `soltui-service` refuses to install an agent
+pointing at a git worktree, which can be deleted -- see that script.
+
+## Why a bundle at all, rather than `python3 -m soltui.app`
+
+Framework Python re-execs itself into its own bundled `Python.app` the moment
+rumps creates the GUI, so a bare module launch shows up as "Python" in the Dock,
+Cmd-Tab and Force Quit. A py2app bundle carries its own executable stub and its
+own Info.plist, so the app presents as "soltui". This lesson is inherited from
+net-dns-monitor's launchd plist comments rather than rediscovered.
+"""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+from setuptools import setup
+
+REPO = Path(__file__).resolve().parent.parent
+
+APP_NAME = "SolTUI"
+BUNDLE_ID = "com.mitchhudson.soltui"
+
+# LSUIElement False on purpose: net-dns-monitor's bundle shows in the Dock, and
+# the request was for something "similar to net-dns-monitor". Note what the Dock
+# icon can and cannot do -- macOS Dock icons cannot display live text, so the
+# moving indicator (sweep progress, last-backtest return) is the MENU BAR title.
+# The Dock icon is presence and a click target; the menu bar carries the number.
+PLIST = {
+    "CFBundleName": APP_NAME,
+    "CFBundleDisplayName": APP_NAME,
+    "CFBundleIdentifier": BUNDLE_ID,
+    "CFBundleShortVersionString": "0.1.0",
+    "CFBundleVersion": "1",
+    "LSUIElement": False,
+    "LSMinimumSystemVersion": "12.0",
+    "NSHumanReadableCopyright": "",
+    # launchd starts processes with no LANG at all, which makes the locale
+    # encoding US-ASCII. The status glyphs and em-dashes in status.py are
+    # non-ASCII, and net-dns-monitor hit exactly this as 0-byte report files.
+    # Belt-and-braces alongside the agent's EnvironmentVariables.
+    "LSEnvironment": {"LANG": "en_US.UTF-8", "PYTHONUTF8": "1"},
+}
+
+OPTIONS = {
+    "argv_emulation": False,
+    "plist": PLIST,
+    # rumps needs these at runtime; py2app cannot infer them from imports.
+    "packages": ["rumps"],
+    "includes": [
+        "soltui", "soltui.app", "soltui.status", "soltui.config",
+        "soltui.roster", "soltui.runner", "soltui.signals", "soltui.paper",
+    ],
+    # Excluded because the menu-bar app never imports them: the TUI is launched
+    # as a separate process in Terminal (see app.open_tui), so freezing textual
+    # into this bundle would be dead weight.
+    "excludes": ["textual", "tkinter", "matplotlib", "pytest"],
+}
+
+
+def main() -> None:
+    """Run setup with the app entry point."""
+    setup(
+        name=APP_NAME,
+        # menubar_launcher.py, NOT app.py: py2app runs its target as a top-level
+        # script, so app.py's relative imports would fail. See that file.
+        app=[str(REPO / "soltui" / "menubar_launcher.py")],
+        options={"py2app": OPTIONS},
+        setup_requires=["py2app"],
+    )
+
+
+if __name__ == "__main__":
+    if "py2app" not in sys.argv:
+        print(__doc__)
+        print("Nothing to do — pass the py2app command:")
+        print("    python3 soltui/setup_app.py py2app -A")
+        raise SystemExit(1)
+    main()
