@@ -2,8 +2,8 @@
 
 ## State: all merged to master, local only (no remote)
 
-`python3 -m unittest discover -s backtester/tests -t .` → **119 OK**
-`python3 -m unittest discover -s soltui/tests -t .` → **93 OK**
+`python3 -m unittest discover -s backtester/tests -t .` → **228 OK**
+`python3 -m unittest discover -s soltui/tests -t .` → **95 OK**
 `python3 research/verify_numbers.py` → **exit 0**, 795 figures verified
 
 ## soltui menu-bar app — installed and running at login
@@ -44,6 +44,51 @@ is how you actually stop it.
 was not pinned explicitly in the Strategies tab** — explicit always wins. `STRATEGY_PARAM_MAP` is
 explicit, not name-inferred, with tests asserting every registered strategy is mapped and every
 mapped strategy actually constructs from its merged params.
+
+## Menu-bar app: installed, running, with the tree-of-life icon
+
+Bundle `~/Applications/SolTUI.app`, agent `com.mitchhudson.soltui`. Icon generated from code by
+`soltui/make_icon.py` (a tree whose three roots ARE the Solana mark) so it is reviewable and
+regenerable rather than an opaque binary.
+
+```bash
+python3 soltui/soltui-service status | start | stop | build | install
+```
+
+### Icon design note
+
+Driven by the **16px** size, not 1024. First attempt failed there: bare recursive branches are
+sub-pixel at 16px and vanished, leaving a stick above three bars. What fixed it — a FILLED canopy
+of overlapping lobes (solid silhouettes survive downscaling), branch texture **carved out** rather
+than drawn on (subtractive detail fades gracefully; additive hairlines become grey noise), a short
+thick trunk, and a root flare tying trunk to bars. Verified by rendering 16/32/64px and looking.
+
+### The install race — do not "simplify" reload_agent()
+
+`launchctl bootout` is **asynchronous**. Issuing `bootstrap` immediately after races it, fails with
+"try re-running as root", and leaves the agent UNLOADED while install reports success. This was
+caught only because a reinstall silently stopped starting the app at login. `reload_agent()` polls
+for each step to take effect and returns False if the agent does not end up loaded.
+
+## cdo pass — four real defects found and fixed
+
+Static patterns were clean. These came from probing behaviour:
+
+1. `pbo_cscv`'s `max_splits` cap took the FIRST N combinations; `itertools` emits lexicographically
+   so those share low-index blocks — a biased PBO. Now strides evenly, still deterministic.
+2. The install race above.
+3. `SweepRunner` left `done`/`total` set after a failure, so a later phase change could show
+   progress for a sweep that died. `_fail()` clears it.
+4. The error title elided its middle into unreadable fragments (`✕: …or — no data —…`). Same class
+   as the earlier activity bug: **cap variable-length text BEFORE composing the title**, never let
+   `_clip` handle it. Full text lives in the menu summary.
+
+## Cross-session integration
+
+Master also received `worktree-signals-concept-map` (strategy cards, ladder-grid simulator, nine
+new strategies). Combined state verified green: **25 REGISTRY strategies, all mapped in
+`STRATEGY_PARAM_MAP`, all with a family**, so the editable Signals tab covers them. Backtester
+suite is now 228 tests.
 
 ## What exists
 
@@ -140,3 +185,61 @@ leveraged backtest here). `jlp_vs_sol_relative_value` is the cheapest blocked it
 unblock: Jupiter's own Price API can supply the JLP mint.
 
 Counts now: **153 Python, 110 JS** (263 total).
+
+### Update — nine strategies implemented, all cards rated, Jupiter labelling (commit `019da89`)
+
+**The nine spec cards whose gap was "code, not data" are now implemented and measured**
+in `core/strategies/advanced.py`, on the real 1,875-bar SOL daily series with the same
+70/30 split as every existing card. `buy_and_hold` reproduces its documented
+IS +565.2% / OOS −70.8% exactly, which is how the new numbers are known to be
+comparable to the old ones.
+
+| strategy | OOS return | OOS Sharpe | trades |
+|---|---|---|---|
+| **hurst_switch** | **+15.6%** | **+0.564** | 10 |
+| ou_reversion | −1.5% | +0.092 | 6 |
+| atr_sized | −2.6% | −0.454 | 93 |
+| ichimoku | −33.3% | −0.531 | 11 |
+| vol_regime | −21.2% | −0.377 | 15 |
+| garch_voltarget | −30.8% | −0.551 | 50 |
+| adx_trend | −43.6% | −1.165 | 8 |
+| ma_ribbon | −54.0% | −1.242 | 160 |
+| dual_momentum | −65.3% | −1.303 | 37 |
+
+**`hurst_switch` is the result worth remembering.** The research doc predicted before
+any code existed that a regime selector would be the highest-value unimplemented item,
+because trend and reversion invert between regimes and nothing else checks which is
+present. It then made money out-of-sample through the leg that cost buy-and-hold 70.8%.
+Ten trades is exactly the evidence floor, so it is "worth the next experiment" (CPCV),
+not "works". It is the only card rated **moderate on measured evidence**.
+
+Also notable: `garch_voltarget` landed within 0.3pp of `voltarget` (−30.8% vs −31.1%),
+which says the lag in the volatility estimate was **not** what made vol-targeted trend
+following lose here — the direction call was, and both share the same crude SMA gate.
+
+**Ichimoku's displacement was the real implementation trap.** The cloud sitting at the
+current bar was computed `displacement` bars ago, so reading it as current reads 26 bars
+of future data. The implementation slices history to what was visible then, and a test
+asserts the value used *differs* from the full-history cloud.
+
+**Every card now carries `success_likelihood` + `success_basis`,** enforced by the loader
+and by five tests. Scale is `very-low | low | moderate` — **no `high`**, because 14% of
+311 rankable configurations had a positive OOS Sharpe and 9% made money. One test caps
+`moderate` at a tenth of all cards, so the ratings cannot drift into marketing.
+Distribution: 20 very-low, 21 low, 2 moderate (`hurst_regime_test`,
+`pairs_cointegration`).
+
+**The 17 remaining spec cards stay spec-only** — options surfaces, L2 depth, on-chain
+flows, tick prints, OI history, a peer universe. `pairs_cointegration` and
+`jlp_vs_sol_relative_value` are the cheapest to unblock (Coinbase serves BTC/ETH
+keyless; Jupiter's Price API serves the JLP mint).
+
+**Licence labelling is done.** `extension/src/jupiter/attribution.js` is the single
+source for clause 8.4's exact "Powered by Jupiter" string and clause 2.3's
+name-the-API requirement. Clause 2.3 is written around "Jupiter Ultra" and "Metis" and
+this extension uses **neither** — Trigger V2 for orders, Price v3 for marks, no swap
+router — so the label says exactly that rather than claiming the closest-looking name.
+`SURFACES` imports the real base URLs, and four tests fail if an API is called without
+being labelled.
+
+Counts: **189 Python, 114 JS** (303 total).
