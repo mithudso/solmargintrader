@@ -129,6 +129,7 @@ class TestCardValidation(unittest.TestCase):
         "id": "demo", "name": "Demo", "kind": "exposure-strategy",
         "status": "spec-only", "family": "test", "summary": "one line",
         "data_required": "[ohlcv]", "data_available": "true",
+        "success_likelihood": "low", "success_basis": "a-priori",
     }
 
     def write_card(self, extra_lines: list[str] = (), **overrides) -> Path:
@@ -224,6 +225,8 @@ class TestCardValidation(unittest.TestCase):
                         "evaluation: single-split-70-30",
                         "data_required: [ohlcv]",
                         "data_available: true",
+                        "success_likelihood: low",
+                        "success_basis: measured-oos",
                         "---",
                         "",
                         "body",
@@ -262,6 +265,63 @@ class TestCardsLoad(unittest.TestCase):
                     card.evaluation,
                     f"{card_id}: a measured card must state how it was evaluated",
                 )
+
+
+class TestSuccessRatings(unittest.TestCase):
+    """The ratings must stay honest, and honesty here is checkable in three ways."""
+
+    def setUp(self) -> None:
+        self.cards = sc.load_all()
+
+    def test_no_card_claims_a_rating_outside_the_scale(self) -> None:
+        for card in self.cards.values():
+            self.assertIn(card.success_likelihood, sc.SUCCESS_LIKELIHOODS)
+            self.assertIn(card.success_basis, sc.SUCCESS_BASES)
+
+    def test_there_is_no_high_rating_available_at_all(self) -> None:
+        # Across 311 rankable configurations, 14% had a positive out-of-sample
+        # Sharpe and 9% made money. A 'high' rating would be a claim the evidence
+        # base cannot support for anything, so the vocabulary omits it.
+        self.assertNotIn("high", sc.SUCCESS_LIKELIHOODS)
+        for card in self.cards.values():
+            self.assertNotEqual(card.success_likelihood, "high")
+
+    def test_only_a_measured_card_may_cite_a_measured_result(self) -> None:
+        for card in self.cards.values():
+            if card.success_basis == "measured-oos":
+                self.assertEqual(
+                    card.status,
+                    "measured",
+                    f"{card.id}: cites an out-of-sample result it never produced",
+                )
+            if card.status == "spec-only":
+                self.assertNotEqual(card.success_basis, "measured-oos", card.id)
+
+    def test_every_card_explains_its_rating_in_the_body(self) -> None:
+        # A rating with no stated reason is an opinion wearing a field name.
+        for card in self.cards.values():
+            self.assertIn(
+                f"Likelihood of success: {card.success_likelihood}",
+                card.body,
+                f"{card.id}: frontmatter rating has no matching body section",
+            )
+            self.assertIn(
+                f"Basis: {card.success_basis}",
+                card.body,
+                f"{card.id}: body does not state the basis its frontmatter claims",
+            )
+
+    def test_the_distribution_is_not_flattering(self) -> None:
+        # A directory where most cards looked promising would be the tell that the
+        # ratings had drifted into marketing. The measured base rate is 9% profitable.
+        counts = {k: 0 for k in sc.SUCCESS_LIKELIHOODS}
+        for card in self.cards.values():
+            counts[card.success_likelihood] += 1
+        self.assertLessEqual(
+            counts["moderate"],
+            max(2, len(self.cards) // 10),
+            f"too many cards rated moderate: {counts}",
+        )
 
 
 class TestRegistryDrift(unittest.TestCase):
@@ -503,6 +563,7 @@ class TestAgentAffordances(unittest.TestCase):
         card = sc.StrategyCard(
             id="demo", name="demo", kind="exposure-strategy", status="spec-only",
             family="test", summary="s", data_required=["ohlcv"], data_available=True,
+            success_likelihood="low", success_basis="a-priori",
             path=Path("demo.md"), body="b",
             params={"a": {"default": 1}, "b": {"default": 2}},
             presets={"short": {"a": 9}},

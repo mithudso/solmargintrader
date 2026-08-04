@@ -1,13 +1,13 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 153 tests
-cd extension && npm test                                # 110 tests
+python3 -m unittest discover -s backtester/tests -t .   # 189 tests
+cd extension && npm test                                # 114 tests
 ```
 
-263 tests total, no test-framework dependency in either component (`unittest` and `node:test`).
+303 tests total, no test-framework dependency in either component (`unittest` and `node:test`).
 
-## Extension — what the 110 tests cover
+## Extension — what the 114 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -57,7 +57,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 153 tests
+## Backtester — 189 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -72,7 +72,7 @@ bar 0; a bar spanning both legs books only the entry), and the **failure modes**
 downtrend fills every bid and loses; an unfundable rung is skipped rather than overdrawn; a forced
 end-of-run exit is never counted as a captured rung).
 
-31 of them cover the **strategy cards** (`core/strategy_cards.py`). Those tests exist because a card's
+36 of them cover the **strategy cards** (`core/strategy_cards.py`). Those tests exist because a card's
 frontmatter supplies numbers to a backtest, so the machine-readable half is checked against the code
 rather than trusted: registry drift is asserted in **both** directions (every registered strategy has
 a card, every card's `registry_key` still exists), every declared default is compared against its
@@ -80,6 +80,15 @@ constructor's actual default, `warmup_bars` and `family` against the code, and e
 against `research/sweep.py` so a card documents the same experiment the sweep runs. Every buildable
 card is also constructed and run through a full backtest. Prose in a card can still be wrong — no
 test catches that — but a number cannot.
+
+31 more cover the **nine strategies implemented from spec-only cards**
+(`core/strategies/advanced.py`). Each test targets what that mechanism could get
+*wrong* rather than that it runs: the excluded window in dual momentum, the strength
+gate in ADX, and above all the **displacement trap in Ichimoku** — the cloud sitting
+at the current bar was computed 26 bars ago, so reading it as current reads 26 bars of
+future data. That test asserts the value used equals the cloud computed from the
+truncated slice *and* differs from the full-history cloud, so the distinction is
+verified rather than assumed.
 
 ## Adding tests
 

@@ -11,6 +11,8 @@ warmup_bars: 15
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: very-low
+success_basis: measured-oos
 params:
   period: {default: 14, type: int, desc: "Wilder RSI period"}
   oversold: {default: 30.0, type: float, desc: "RSI level that triggers entry"}
@@ -81,6 +83,17 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: very-low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+4 out-of-sample trades at the medium horizon is not a sample, and the short horizon
+scored -0.527. The known failure mode is decisive here: in a strong trend RSI stays
+oversold for weeks and becomes a trend-continuation indicator. SOL's out-of-sample
+leg was exactly that trend. `all(sma_regime+rsi)` reached +1.456 — but the filter
+did the work.
 
 ## Caveats and limitations
 - 4 out-of-sample trades is not evidence of anything.

@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [jlp-price-history]
 data_available: false
+success_likelihood: low
+success_basis: a-priori
 params:
   window: {default: 168, type: int, desc: "window for the ratio's z-score"}
   entry_z: {default: 2.0, type: float, desc: "ratio z-score at which to act"}
@@ -43,6 +45,22 @@ obtain** of any card in this tier, which makes it the most actionable blocked it
 JLP accrues fees, so its price has a drift component that is not a market view. Treating
 the ratio as purely mean-reverting would fight that drift. JLP also holds SOL, so the
 two are not independent — the "hedge" is partly a hedge against itself.
+
+## Likelihood of success: low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+**The cheapest blocked card to unblock**: Jupiter's own Price API serves the JLP mint,
+and JLP realises roughly 0.42-0.53x SOL's short-horizon volatility, so the pair is
+mechanically related with a stable-ish beta — a better cointegration candidate than
+two unrelated tokens.
+
+Held to low by two structural problems: JLP accrues fees, so its price has a drift
+component that is not a market view and a pure mean-reversion read would fight it;
+and JLP *holds* SOL, so the hedge is partly a hedge against itself.
 
 ## Data gap
 **No JLP price history fetched.**

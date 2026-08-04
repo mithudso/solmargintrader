@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [peer-price-series]
 data_available: false
+success_likelihood: moderate
+success_basis: a-priori
 params:
   entry_z: {default: 2.0, type: float, desc: "spread z-score at which to enter"}
   exit_z: {default: 0.0, type: float, desc: "spread z-score at which to exit"}
@@ -47,6 +49,24 @@ is a meaningful amount of validation code.
 The primary risk is **convergence failure**: the relation breaks and the spread keeps
 diverging while both legs are held. Cointegration is a property of a sample, not a
 promise about the future.
+
+## Likelihood of success: moderate
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+The only spec card besides `hurst_regime_test` rated moderate, and for a structural
+reason: it is what `zscore.md` should have been. The z-score method assumes
+stationarity; raw SOL price is not stationary, and a cointegrated spread is
+*constructed* to be, with the assumption **tested** rather than hoped for.
+
+The peer series is also the cheapest gap in this tier to close — Coinbase serves
+BTC-USD and ETH-USD keyless, the same source as the SOL data already here. Held to
+moderate rather than higher by convergence risk: the relation breaks and the spread
+keeps diverging while both legs are held, which is the documented way this strategy
+loses badly rather than slightly.
 
 ## Data gap
 **No peer price series fetched.**

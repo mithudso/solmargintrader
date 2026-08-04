@@ -11,6 +11,8 @@ warmup_bars: 61
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: very-low
+success_basis: measured-oos
 params:
   window: {default: 60, type: int, desc: "formation window in bars"}
   threshold: {default: 0.0, type: float, desc: "minimum trailing return to go long"}
@@ -76,6 +78,17 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: very-low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+**OOS Sharpe -1.976** at the long horizon — the worst rankable long-horizon row — and
+-51.1% at the medium. The published momentum edge is largely *cross-sectional*, and
+this single-asset form discards exactly that while keeping the momentum-crash risk
+that the diversification was paying for. `dual_momentum_12_1.md`, now implemented,
+did not repair it.
 
 ## Caveats and limitations
 - Single-asset momentum is the weakest form of a strong anomaly. The published edge

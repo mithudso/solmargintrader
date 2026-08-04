@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [on-chain-flows]
 data_available: false
+success_likelihood: very-low
+success_basis: a-priori
 params:
   window: {default: 168, type: int, desc: "bars over which to sum net flow"}
 presets: {}
@@ -36,6 +38,18 @@ is never complete.
 Attribution is unreliable — internal transfers, custody reshuffles and bridge movements
 all look like flow. On Solana, much of the interesting activity never touches a
 centralised exchange at all.
+
+## Likelihood of success: very-low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+A direct measure of arriving buying power, in principle. In practice attribution is
+unreliable: internal transfers, custody reshuffles and bridge movements all look like
+flow, wallet labelling is never complete, and on Solana much of the interesting
+activity never touches a centralised exchange at all.
 
 ## Data gap
 **No on-chain flow data.**

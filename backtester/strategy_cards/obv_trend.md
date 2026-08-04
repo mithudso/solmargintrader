@@ -11,6 +11,8 @@ warmup_bars: 22
 evaluation: single-split-70-30
 data_required: [ohlcv, volume]
 data_available: true
+success_likelihood: very-low
+success_basis: measured-oos
 params:
   ma_window: {default: 20, type: int, desc: "SMA window applied to the OBV series"}
 presets:
@@ -71,6 +73,16 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: very-low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+IS +1,932.1% to **OOS -69.2%** is a textbook decay row. Its best result anywhere —
+`any(rsi+obv_trend)`, the top long-horizon pair at +0.226 Sharpe — still *lost*
+8.8%. Being price-blind makes it a good partner in principle; nothing here shows it
+paying.
 
 ## Caveats and limitations
 - The best long-horizon pair still lost money. A positive Sharpe on a negative return

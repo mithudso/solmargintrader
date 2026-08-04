@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [on-chain-cost-basis]
 data_available: false
+success_likelihood: very-low
+success_basis: a-priori
 params:
   high_pct: {default: 0.9, type: float, desc: "MVRV percentile treated as expensive"}
   low_pct: {default: 0.1, type: float, desc: "MVRV percentile treated as cheap"}
@@ -38,6 +40,19 @@ Per-coin cost-basis reconstruction from chain history. Heavy indexing.
 Realised cap is a construct with debatable definitions, and it behaves differently on a
 high-throughput chain with cheap transfers than on Bitcoin, where these metrics were
 developed.
+
+## Likelihood of success: very-low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+A cycle-position gauge is exactly what every card here is blind to, which is the
+argument for it. Against that: realised cap is a construct with debatable
+definitions, it was developed on Bitcoin and behaves differently on a
+high-throughput chain with cheap transfers, and reconstructing per-coin cost basis
+needs heavy indexing this repo has no route to.
 
 ## Data gap
 **No on-chain cost-basis data.**

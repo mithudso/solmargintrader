@@ -78,7 +78,30 @@ REQUIRED_FIELDS = (
     "summary",
     "data_required",
     "data_available",
+    "success_likelihood",
+    "success_basis",
 )
+
+# How likely this is to make money after costs, on a scale that refuses to
+# flatter. There is deliberately **no `high`**: across 311 rankable
+# configurations in this repo's own sweep, 14% had a positive out-of-sample
+# Sharpe and 9% made money, so `high` would be a claim the evidence base cannot
+# support for anything.
+#
+#   very-low  measured negative out-of-sample, or the mechanism's known failure
+#             mode is the dominant feature of this market
+#   low       plausible mechanism, no confirming evidence here — or evidence at
+#             or below the 10-trade evidence floor
+#   moderate  a documented edge in the literature AND either out-of-sample
+#             evidence above the floor here, or a premise that is structural
+#             (an arbitrage, a fee) rather than statistical
+SUCCESS_LIKELIHOODS = ("very-low", "low", "moderate")
+
+# Where the belief comes from, so a reader can weigh it without reading prose.
+#   measured-oos  this repo ran it and the out-of-sample number drives the rating
+#   base-rate     rated from the sweep's overall hit rate, not its own result
+#   a-priori      never run here; rated from mechanism and literature only
+SUCCESS_BASES = ("measured-oos", "base-rate", "a-priori")
 
 # Every horizon key a card may declare a preset for, matching research/sweep.py.
 HORIZONS = ("short", "medium", "long")
@@ -286,6 +309,8 @@ class StrategyCard:
     summary: str
     data_required: list[str]
     data_available: bool
+    success_likelihood: str
+    success_basis: str
     path: Path
     body: str
     registry_key: str | None = None
@@ -366,6 +391,23 @@ def load_card(path: str | Path) -> StrategyCard:
         raise CardError(f"{path.name}: status must be one of {STATUSES}, got {data['status']!r}")
     if data["kind"] not in KINDS:
         raise CardError(f"{path.name}: kind must be one of {KINDS}, got {data['kind']!r}")
+    if data["success_likelihood"] not in SUCCESS_LIKELIHOODS:
+        raise CardError(
+            f"{path.name}: success_likelihood must be one of {SUCCESS_LIKELIHOODS}, "
+            f"got {data['success_likelihood']!r}. There is no 'high' on purpose."
+        )
+    if data["success_basis"] not in SUCCESS_BASES:
+        raise CardError(
+            f"{path.name}: success_basis must be one of {SUCCESS_BASES}, "
+            f"got {data['success_basis']!r}"
+        )
+    if data["success_basis"] == "measured-oos" and data["status"] != "measured":
+        raise CardError(
+            f"{path.name}: success_basis 'measured-oos' claims an out-of-sample "
+            f"result, but status is {data['status']!r}"
+        )
+    if data["status"] == "spec-only" and data["success_basis"] == "measured-oos":
+        raise CardError(f"{path.name}: a spec-only card has no measured result")
     if not isinstance(data["data_required"], list):
         raise CardError(f"{path.name}: data_required must be a flow sequence")
     for item in data["data_required"]:
@@ -473,6 +515,8 @@ def load_card(path: str | Path) -> StrategyCard:
         summary=data["summary"],
         data_required=data["data_required"],
         data_available=data["data_available"],
+        success_likelihood=data["success_likelihood"],
+        success_basis=data["success_basis"],
         path=path,
         body=body,
         registry_key=data.get("registry_key"),
@@ -556,13 +600,17 @@ def implementable_today(cards: dict[str, StrategyCard] | None = None) -> list[St
 
 def _format_inventory(cards: dict[str, StrategyCard]) -> str:
     """A table of every card. Printed rather than committed, so it cannot go stale."""
-    rows = [("id", "status", "kind", "family", "runner", "data")]
-    for card in sorted(cards.values(), key=lambda c: (c.status, c.family, c.id)):
+    rows = [("id", "status", "odds", "basis", "family", "runner", "data")]
+    order = {v: i for i, v in enumerate(reversed(SUCCESS_LIKELIHOODS))}
+    for card in sorted(
+        cards.values(), key=lambda c: (order[c.success_likelihood], c.status, c.id)
+    ):
         rows.append(
             (
                 card.id,
                 card.status,
-                card.kind,
+                card.success_likelihood,
+                card.success_basis,
                 card.family,
                 card.runner or "-",
                 ",".join(card.data_required) + ("" if card.data_available else " (MISSING)"),

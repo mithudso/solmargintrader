@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [l2-order-book, maker-rebate-venue]
 data_available: false
+success_likelihood: very-low
+success_basis: a-priori
 params:
   gamma: {default: 0.1, type: float, desc: "inventory risk aversion"}
   kappa: {default: 1.5, type: float, desc: "order-arrival intensity parameter"}
@@ -40,6 +42,18 @@ backtester takes positions at bar prices; the shapes do not match.
 ## Caveats
 Listed to close out the microstructure family honestly. It is the one card here where
 the right answer is "this repo is the wrong tool", not "fetch more data".
+
+## Likelihood of success: very-low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+Derived rather than fitted, which is rare and good. But it earns the *spread*, so it
+needs a quoting simulator with queue position and fill probability, plus a venue with
+maker rebates. This backtester takes positions at bar prices. The right answer for
+this card is "this repo is the wrong tool", not "fetch more data".
 
 ## Data gap
 **Needs L2 plus a venue with maker rebates; and it is fundamentally an execution strategy, not a directional signal.**

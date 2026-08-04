@@ -25,6 +25,8 @@ Two conventions worth knowing:
 
 from __future__ import annotations
 
+import math
+
 import numpy as np
 
 # Multiple of `span` retained when evaluating an exponential recursion. Chosen
@@ -266,3 +268,148 @@ def realised_vol(closes: np.ndarray, window: int = 20, periods_per_year: float =
     logret = np.diff(np.log(w))
     sd = float(np.std(logret, ddof=1)) if len(logret) > 1 else 0.0
     return sd * np.sqrt(periods_per_year)
+
+
+def directional_movement(
+    highs: np.ndarray, lows: np.ndarray, closes: np.ndarray, period: int = 14
+) -> tuple[float, float, float]:
+    """Wilder's (+DI, -DI, ADX) for the latest bar.
+
+    ADX measures trend *strength* without direction, which is what makes it a
+    filter rather than a signal: every trend strategy here fails in chop, and this
+    is the conventional measure of whether a trend exists at all.
+
+    Needs `3 * period` bars because ADX is a Wilder smoothing of DX, which is
+    itself built from smoothed DM and ATR — three nested recursions deep.
+    """
+    n = len(closes)
+    if n < 3 * period + 1:
+        return (float("nan"), float("nan"), float("nan"))
+
+    up_move = highs[1:] - highs[:-1]
+    down_move = lows[:-1] - lows[1:]
+    # A bar counts toward one direction only: the larger move wins, and a move
+    # that is not positive counts as zero rather than negative.
+    plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
+    minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
+    tr = true_range(highs, lows, closes)
+
+    dx = np.empty(period, dtype="float64")
+    for j in range(period):
+        end = len(tr) - period + j + 1
+        atr_j = wilder_smooth(tr[:end], period)
+        if not np.isfinite(atr_j) or atr_j <= 1e-15:
+            dx[j] = 0.0
+            continue
+        pdi = 100.0 * wilder_smooth(plus_dm[:end], period) / atr_j
+        mdi = 100.0 * wilder_smooth(minus_dm[:end], period) / atr_j
+        total = pdi + mdi
+        dx[j] = 0.0 if total <= 1e-15 else 100.0 * abs(pdi - mdi) / total
+
+    atr_now = wilder_smooth(tr, period)
+    if not np.isfinite(atr_now) or atr_now <= 1e-15:
+        return (float("nan"), float("nan"), float("nan"))
+    plus_di = 100.0 * wilder_smooth(plus_dm, period) / atr_now
+    minus_di = 100.0 * wilder_smooth(minus_dm, period) / atr_now
+    return (float(plus_di), float(minus_di), float(np.mean(dx)))
+
+
+def variance_ratio(closes: np.ndarray, window: int = 250, lag: int = 5) -> float:
+    """Lo-MacKinlay variance ratio on log returns: Var(k-period) / (k * Var(1-period)).
+
+    A random walk gives 1, trending gives > 1, mean-reverting gives < 1. Used in
+    preference to a rescaled-range Hurst exponent, which is badly biased on short
+    samples — the estimator matters more than the label here.
+    """
+    if len(closes) < window + 1 or lag < 2:
+        return float("nan")
+    prices = np.asarray(closes[-(window + 1) :], dtype="float64")
+    if np.any(prices <= 0):
+        return float("nan")
+    rets = np.diff(np.log(prices))
+    var_one = float(np.var(rets, ddof=1))
+    if var_one <= 1e-18:
+        return float("nan")
+    # Overlapping k-period sums, which is the standard (and more efficient) form.
+    k_sums = np.convolve(rets, np.ones(lag), mode="valid")
+    var_k = float(np.var(k_sums, ddof=1))
+    return var_k / (lag * var_one)
+
+
+def hurst_from_variance_ratio(vr: float, lag: int = 5) -> float:
+    """Translate a variance ratio into the Hurst-exponent scale readers expect.
+
+    `VR = lag^(2H-1)`, so `H = 0.5 * (1 + log(VR)/log(lag))`. Reported because
+    `H < 0.5 / > 0.5` is the vocabulary the literature uses, not because the
+    rescaled-range estimator is worth computing.
+    """
+    if not np.isfinite(vr) or vr <= 0 or lag < 2:
+        return float("nan")
+    return 0.5 * (1.0 + math.log(vr) / math.log(lag))
+
+
+def ou_half_life(closes: np.ndarray, window: int = 250) -> float:
+    """Half-life of mean reversion in bars, from an AR(1) fit.
+
+    Discretised Ornstein-Uhlenbeck: regress `dX_t` on `X_{t-1}`; the slope is
+    `-theta`, and `half_life = ln(2)/theta`. Returns `inf` when the series shows
+    no reversion (slope >= 0), which is the honest answer for a trending series
+    and the screening rule that should gate any reversion strategy.
+    """
+    if len(closes) < window + 1:
+        return float("nan")
+    x = np.asarray(closes[-(window + 1) :], dtype="float64")
+    lagged = x[:-1]
+    delta = np.diff(x)
+    centred = lagged - lagged.mean()
+    denom = float(np.dot(centred, centred))
+    if denom <= 1e-15:
+        return float("inf")
+    slope = float(np.dot(centred, delta - delta.mean())) / denom
+    if slope >= -1e-12:
+        return float("inf")
+    return math.log(2.0) / -slope
+
+
+def ewma_vol(
+    closes: np.ndarray, lam: float = 0.94, periods_per_year: float = 365.0
+) -> float:
+    """Annualised EWMA volatility — the GARCH(1,1) special case with omega=0.
+
+    `sigma2_t = (1-lam) * r2_{t-1} + lam * sigma2_{t-1}`. RiskMetrics' lam=0.94 is
+    used rather than fitting alpha and beta, because fitted GARCH parameters are
+    unstable on short samples and refitting per bar invites look-ahead.
+    """
+    if len(closes) < 3 or not 0.0 < lam < 1.0:
+        return float("nan")
+    prices = np.asarray(closes, dtype="float64")
+    if np.any(prices <= 0):
+        return float("nan")
+    rets = np.diff(np.log(prices))
+    var = float(rets[0] ** 2)
+    for r in rets[1:]:
+        var = (1.0 - lam) * float(r) ** 2 + lam * var
+    return math.sqrt(max(var, 0.0)) * math.sqrt(periods_per_year)
+
+
+def ichimoku(
+    highs: np.ndarray,
+    lows: np.ndarray,
+    tenkan: int = 9,
+    kijun: int = 26,
+    senkou_b: int = 52,
+) -> tuple[float, float, float, float]:
+    """(Tenkan, Kijun, SenkouA, SenkouB) computed at the CURRENT bar.
+
+    The cloud is conventionally *plotted* `displacement` bars forward. This
+    returns the values as computed now, and it is the caller's job to compare
+    them against a later price — never to read a value drawn at the current bar,
+    which was computed from future data. That inversion is the classic Ichimoku
+    look-ahead trap.
+    """
+    if len(highs) < senkou_b:
+        return (float("nan"),) * 4
+    mid = lambda h, l, n: (float(np.max(h[-n:])) + float(np.min(l[-n:]))) / 2.0  # noqa: E731
+    t = mid(highs, lows, tenkan)
+    k = mid(highs, lows, kijun)
+    return (t, k, (t + k) / 2.0, mid(highs, lows, senkou_b))

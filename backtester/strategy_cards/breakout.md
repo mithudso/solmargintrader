@@ -11,6 +11,8 @@ warmup_bars: 21
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: low
+success_basis: measured-oos
 params:
   entry_lookback: {default: 20, type: int, desc: "bars in the entry high channel"}
   exit_lookback: {default: 10, type: int, desc: "bars in the exit low channel"}
@@ -79,6 +81,17 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+OOS -7.5% on **7 trades** cannot be ranked, and a documented 30-35% win rate means any
+window short enough to contain few large winners misrepresents this family in either
+direction. The reason it is not very-low is `any(breakout+zscore)`, the **best measured
+medium pair** (+0.584 Sharpe, +30.8%). The mechanism is documented and durable; this
+sample cannot show it.
 
 ## Caveats and limitations
 - With a 30–35% win rate, any window short enough to contain few large winners will

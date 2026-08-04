@@ -11,6 +11,8 @@ warmup_bars: 50
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: very-low
+success_basis: measured-oos
 params:
   anchor_window: {default: 50, type: int, desc: "SMA window for the anchor price"}
   levels: {default: 4, type: int, desc: "number of staircase rungs"}
@@ -79,6 +81,16 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: very-low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+**OOS Sharpe -1.510 across 694 trades** at the short horizon. At 8 bps round trip
+that trade count alone is roughly 5.5% of notional in costs. The mechanism converts
+a trend into a maximum-size losing position — it reaches peak exposure exactly when
+it is most wrong — and SOL's out-of-sample leg was a trend.
 
 ## Caveats and limitations
 - 694 trades at 8 bps round trip is roughly 5.5% of notional in costs alone before any

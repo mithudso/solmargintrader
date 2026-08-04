@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: intrabar-ladder-simulation
 data_required: [ohlcv]
 data_available: true
+success_likelihood: low
+success_basis: base-rate
 params:
   lower: {required: true, type: float, desc: "lowest rung price in USD; no default exists"}
   upper: {required: true, type: float, desc: "highest rung price in USD; no default exists"}
@@ -116,6 +118,22 @@ same bars — the characteristic trade: far less return, far less pain.
 
 **Not evaluated on real SOL history yet**, and synthetic bars cannot tell you whether
 the real series ranged or trended. That is the one thing that determines a grid's result.
+
+## Likelihood of success: low
+
+*Basis: base-rate. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+**Not yet run on real SOL history**, so this is a base-rate rating, not a
+measurement. On synthetic bars it did what a grid should: +2.65% with a **-1.92%**
+max drawdown against buy-and-hold's +9.93% with **-41.53%**. That shape — far less
+return, far less pain — is the honest case for it.
+
+What holds the rating down is that a grid's result is dominated by whether the
+window ranged or trended, and the extension's own dry run shows a 24% drawdown
+leaving it **-$8.62 on $48 deployed** with four open lots. The economics are also
+gross-of-nothing: every round trip pays two fees and two slippage legs against a
+fixed rung width, so the edge is a known constant fighting a known cost.
 
 ## Caveats and limitations
 - Grid results are dominated by whether the window contained a range or a trend, so a

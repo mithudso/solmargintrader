@@ -11,6 +11,8 @@ warmup_bars: 61
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: very-low
+success_basis: measured-oos
 params:
   ema_span: {default: 20, type: int, desc: "EMA span for the channel centre"}
   atr_period: {default: 14, type: int, desc: "Wilder ATR period"}
@@ -75,6 +77,15 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: very-low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+OOS -26.4% on 6 trades (below the floor) and **-1.954 Sharpe** at the short horizon
+on 13 trades. Its one genuine advantage over Bollinger — true range sees gaps —
+was never isolated by an experiment, and both lost out-of-sample anyway.
 
 ## Caveats and limitations
 - 6 out-of-sample trades at the medium horizon cannot support a ranking.

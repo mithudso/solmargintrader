@@ -8,6 +8,17 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
+from .advanced import (
+    AdxFilteredTrend,
+    AtrSizedTrend,
+    DualMomentum,
+    GarchVolTarget,
+    HurstRegimeSwitch,
+    IchimokuCloud,
+    MaRibbon,
+    OuHalfLifeReversion,
+    VolRegimeSwitch,
+)
 from .breakout import DonchianBreakout
 from .buy_and_hold import BuyAndHold
 from .composite import COMBINE_MODES, Composite
@@ -48,6 +59,16 @@ REGISTRY: dict[str, Callable[..., Any]] = {
     "sma_regime": Sma200Regime,
     "voltarget": VolTargetTrend,
     "grid": GridLong,
+    # Implemented from spec-only cards: each needed code, not a new data source.
+    "dual_momentum": DualMomentum,
+    "adx_trend": AdxFilteredTrend,
+    "ma_ribbon": MaRibbon,
+    "ichimoku": IchimokuCloud,
+    "ou_reversion": OuHalfLifeReversion,
+    "hurst_switch": HurstRegimeSwitch,
+    "vol_regime": VolRegimeSwitch,
+    "atr_sized": AtrSizedTrend,
+    "garch_voltarget": GarchVolTarget,
 }
 
 # Taxonomy family per registry key, used by the sweep to reason about
@@ -67,6 +88,15 @@ FAMILY: dict[str, str] = {
     "zscore": "mean-reversion",
     "vwap_reversion": "mean-reversion",
     "grid": "mean-reversion",
+    "dual_momentum": "momentum",
+    "adx_trend": "regime-filter",
+    "ma_ribbon": "trend",
+    "ichimoku": "trend",
+    "ou_reversion": "mean-reversion",
+    "hurst_switch": "regime-filter",
+    "vol_regime": "regime-filter",
+    "atr_sized": "risk-overlay",
+    "garch_voltarget": "risk-overlay",
     "obv_trend": "volume-flow",
     "voltarget": "risk-overlay",
 }

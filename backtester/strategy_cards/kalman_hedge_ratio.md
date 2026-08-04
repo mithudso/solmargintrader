@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [peer-price-series]
 data_available: false
+success_likelihood: low
+success_basis: a-priori
 params:
   process_var: {default: 1e-05, type: float, desc: "state process variance"}
   obs_var: {default: 0.001, type: float, desc: "observation variance"}
@@ -39,6 +41,19 @@ A peer series plus a scalar Kalman filter — perhaps forty lines, no dependency
 Two variance parameters tune how fast beta moves, and they are usually chosen by
 eyeballing the result, which is fitting by another name. A filter that adapts quickly
 enough will track any relationship, including one that has genuinely broken.
+
+## Likelihood of success: low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+A filtered hedge ratio is a genuine improvement on refitting per window, which jumps
+at boundaries. But it inherits every risk of `pairs_cointegration.md` and adds two
+variance parameters usually chosen by eyeballing the output — which is fitting by
+another name. A filter that adapts fast enough will track any relationship, including
+one that has genuinely broken.
 
 ## Data gap
 **No peer series fetched.**

@@ -11,6 +11,8 @@ warmup_bars: 0
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: low
+success_basis: measured-oos
 params: {}
 presets: {}
 ---
@@ -74,6 +76,17 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+It is the only card whose mechanism is not a claim — you hold the asset, and the
+outcome is the asset's outcome. Rated **low** rather than very-low because SOL did
+appreciate over the full sample (+87.61%), and no higher because a **-96.27%** max
+drawdown is not survivable at size and the out-of-sample leg lost **70.8%**.
+Everything else in this directory is judged against this row.
 
 ## Caveats and limitations
 - A -96% drawdown is survivable on a spreadsheet and not survivable with leverage or

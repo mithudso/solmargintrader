@@ -11,6 +11,8 @@ warmup_bars: 53
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: very-low
+success_basis: measured-oos
 params:
   fast: {default: 12, type: int, desc: "fast EMA span"}
   slow: {default: 26, type: int, desc: "slow EMA span"}
@@ -82,6 +84,16 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: very-low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+**OOS Sharpe -4.621 across 205 trades** at the short horizon is the worst row in the
+entire sweep, and the medium horizon decayed from +1,356.5% in-sample to -52.8% out.
+Fast parameters on hourly SOL bars pay more in fees than the signal earns. Nothing in
+the measurement or the mechanism argues for a better rating.
 
 ## Caveats and limitations
 - A four-figure in-sample return next to a negative out-of-sample Sharpe is the

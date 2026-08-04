@@ -11,6 +11,8 @@ warmup_bars: 20
 evaluation: single-split-70-30
 data_required: [ohlcv, volume]
 data_available: true
+success_likelihood: very-low
+success_basis: measured-oos
 params:
   window: {default: 20, type: int, desc: "rolling VWAP window in bars"}
   entry_discount: {default: 0.02, type: float, desc: "fractional discount to VWAP required to enter"}
@@ -75,6 +77,16 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: very-low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+**OOS -53.9%** medium and **-1.516 Sharpe** short — consistently among the worst
+rows measured. It also rests on exchange-reported volume, which is unreliable in
+crypto, and it is a rolling rather than session-anchored VWAP, so it is not even the
+indicator the literature validated.
 
 ## Caveats and limitations
 - Volume quality is the hidden variable. A signal built on unreliable volume inherits

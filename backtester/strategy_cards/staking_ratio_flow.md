@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [on-chain-staking-data]
 data_available: false
+success_likelihood: very-low
+success_basis: a-priori
 params:
   window: {default: 720, type: int, desc: "bars over which to measure the change in staked fraction"}
 presets: {}
@@ -37,6 +39,18 @@ Epoch-level stake account aggregation. Slow-moving, so daily granularity suffice
 Very slow signal — epochs are ~2–3 days — so it can inform position size or a regime
 view, but never entry timing. Liquid-staking tokens (jupSOL, jitoSOL, mSOL) blur the
 "reduces liquid supply" logic considerably, since staked SOL becomes tradeable again.
+
+## Likelihood of success: very-low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+One of the few unambiguous SOL-specific supply measures — stake is stake — but
+epochs are 2-3 days, so it can inform position size at best and never entry timing.
+Liquid-staking tokens (jupSOL, jitoSOL, mSOL) also badly blur the "reduces liquid
+supply" logic, since staked SOL becomes tradeable again.
 
 ## Data gap
 **No on-chain staking data.**

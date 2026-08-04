@@ -11,6 +11,8 @@ warmup_bars: 18
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: low
+success_basis: measured-oos
 params:
   k_period: {default: 14, type: int, desc: "lookback for the %K range"}
   d_period: {default: 3, type: int, desc: "SMA period for %D"}
@@ -75,6 +77,16 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+**OOS Sharpe +0.024** on 11 trades: one of only three positive medium-horizon
+singles, and indistinguishable from zero. The `%K > %D` turn-up condition is a
+genuine improvement over buying oversold alone, which is why this clears very-low.
+It clears nothing else.
 
 ## Caveats and limitations
 - +0.024 is not an edge. It is the absence of a disaster, which on this split is

@@ -11,6 +11,8 @@ warmup_bars: 20
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: low
+success_basis: measured-oos
 params:
   window: {default: 20, type: int, desc: "trailing window for mean and stdev"}
   entry_z: {default: -2.0, type: float, desc: "z-score at or below which to enter"}
@@ -78,6 +80,17 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+The **top-ranked medium single** (OOS Sharpe +0.699, +41.3%) — on exactly **10
+trades**, the evidence floor. `RANKED_LISTS.md` records a within-mechanism natural
+experiment finding this row consistent with noise. Against it stands a known
+theoretical error: the z-score assumes stationarity and raw price is not stationary.
+Read as "not yet disconfirmed", never as "works".
 
 ## Caveats and limitations
 - The top-ranked medium row rests on exactly 10 trades. `RANKED_LISTS.md` records that

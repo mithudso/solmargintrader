@@ -6,6 +6,8 @@
  * never be the thing that decides whether an order is placed.
  */
 
+import { attributionLine } from '../jupiter/attribution.js';
+
 const $ = (id) => document.getElementById(id);
 const send = (msg) => chrome.runtime.sendMessage(msg);
 
@@ -42,6 +44,10 @@ async function refresh() {
     banner.className = 'banner ok';
   }
   banner.classList.remove('hidden');
+
+  // Licence-required attribution, from the one module that knows which Jupiter
+  // APIs this extension actually calls.
+  $('attribution').textContent = attributionLine();
 
   $('price').textContent = lastTick?.price ? `$${lastTick.price.toFixed(4)}` : '—';
   paintPnl($('net'), lastTick?.pnl?.totalNetUsd);

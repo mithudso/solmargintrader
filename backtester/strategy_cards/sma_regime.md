@@ -11,6 +11,8 @@ warmup_bars: 200
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: low
+success_basis: measured-oos
 params:
   window: {default: 200, type: int, desc: "SMA window in bars"}
 presets:
@@ -75,6 +77,18 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+Standalone it lost 35.8% out-of-sample, which alone would be very-low. It is rated
+**low** on the strength of what it does for *others*: `all(sma_regime+zscore)` reached
+OOS Sharpe **+2.572** against +0.441 for zscore alone, and `all(sma_regime+rsi)`
+reached +1.456. That is a real mechanical story — it vetoes the
+buy-the-dip-in-a-downtrend failure — but it is one number from one hostile split, and
+the partner effect belongs to the pair rather than to this card.
 
 ## Caveats and limitations
 - Standalone it lost money out-of-sample. Its case rests almost entirely on what it

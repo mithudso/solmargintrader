@@ -11,6 +11,8 @@ warmup_bars: 20
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: very-low
+success_basis: measured-oos
 params:
   window: {default: 20, type: int, desc: "SMA and stdev window"}
   num_std: {default: 2.0, type: float, desc: "band width in population standard deviations"}
@@ -87,6 +89,17 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: very-low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+**+2,843.6% in-sample, the largest number in the sweep — and -34.9% out-of-sample.**
+That single pair of figures is the strongest evidence in this directory that
+full-sample band-breakout results on SOL are artefacts. The squeeze gate that might
+add real information is off by default and was never swept, so even the interesting
+half is unmeasured.
 
 ## Caveats and limitations
 - The headline in-sample figure is a trap, not an achievement. It is included because

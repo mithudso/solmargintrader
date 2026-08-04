@@ -11,6 +11,8 @@ warmup_bars: 50
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: low
+success_basis: measured-oos
 params:
   fast: {default: 20, type: int, desc: "fast SMA window in bars"}
   slow: {default: 50, type: int, desc: "slow SMA window in bars; must exceed fast"}
@@ -80,6 +82,17 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+The **best short-horizon single measured** (OOS Sharpe +0.488), which is the only
+reason this is not very-low. But the profit was +3.4% on 29 trades — inside the noise
+of any slippage assumption — and the medium horizon lost 52.3% on 7 trades, below the
+evidence floor. A mechanism this parameter-sensitive, whose cost scales directly with
+crossover frequency, has no stable edge to point at.
 
 ## Caveats and limitations
 - The short-horizon result is the best in its horizon and still only +3.4% before

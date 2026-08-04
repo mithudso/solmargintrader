@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [peer-universe-ohlcv, survivorship-free-constituents]
 data_available: false
+success_likelihood: low
+success_basis: a-priori
 params:
   formation: {default: 90, type: int, desc: "formation window in bars"}
   top_k: {default: 3, type: int, desc: "number of assets held"}
@@ -41,6 +43,21 @@ Survivorship bias inflates long-only equity backtest returns by an estimated
 **1.5–2.0% annually**, and a crypto universe is far worse: the dead tokens are most of
 the sample. A universe assembled today from surviving tokens would produce a
 spectacular, entirely fictional result.
+
+## Likelihood of success: low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+The **cross-sectional** form is the one the momentum literature actually supports,
+which is a real point in its favour — but it needs a multi-asset engine this harness
+does not have, and a survivorship-free crypto universe, where the dead tokens are
+most of the sample. A universe assembled today from survivors would produce a
+spectacular fiction. Rated low rather than moderate because the implementation risk
+*is* the main risk: the most likely outcome of building this carelessly is a wrong
+number, not a losing one.
 
 ## Data gap
 **No peer universe fetched. Would also require survivorship-free constituent history.**

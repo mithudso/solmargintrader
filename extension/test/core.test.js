@@ -36,6 +36,15 @@ import {
 } from '../src/core/risk.js';
 
 import { matchFifo, snapshot, equityCurve, maxDrawdown, fillsToCsv } from '../src/core/pnl.js';
+import {
+  POWERED_BY,
+  SURFACES,
+  ROUTING_API,
+  attributionLine,
+  attributionDetail,
+} from '../src/jupiter/attribution.js';
+import { TRIGGER_BASE } from '../src/jupiter/trigger.js';
+import { PRICE_HOSTS } from '../src/jupiter/price.js';
 
 const near = (a, b, eps = 1e-9) =>
   assert.ok(Math.abs(a - b) < eps, `expected ${a} to be within ${eps} of ${b}`);
@@ -1034,4 +1043,49 @@ test('the unknown-fee count reaches the event log', async () => {
   const summary = summarise(result);
   assert.equal(summary.feeUnknownFills, 0, 'the field must always be present');
   assert.equal(summarise({ ...result, feeUnknownFills: 3 }).feeUnknownFills, 3);
+});
+
+// ------------------------------------------------------- licence attribution --
+//
+// The SDK & API License Agreement imposes two DISPLAY obligations, and a private
+// tool fails them silently because nobody else sees the UI. These tests are the
+// only thing that notices.
+
+test('the exact phrase clause 8.4 requires is present and unparaphrased', () => {
+  assert.equal(POWERED_BY, 'Powered by Jupiter');
+  assert.match(attributionLine(), /Powered by Jupiter/);
+});
+
+test('every Jupiter API the client calls is named in the attribution', () => {
+  // Clause 2.3: the specific API used must be labelled accurately. If someone
+  // adds a base URL to the client without naming it here, this fails — which is
+  // the whole point of deriving SURFACES from the real constants.
+  const declared = SURFACES.flatMap((s) => s.bases);
+  assert.ok(declared.includes(TRIGGER_BASE), 'Trigger base must be declared');
+  assert.ok(declared.includes(PRICE_HOSTS.keyed), 'keyed price host must be declared');
+  assert.ok(declared.includes(PRICE_HOSTS.lite), 'keyless price host must be declared');
+  for (const base of declared) {
+    assert.match(base, /^https:\/\//, 'a declared base must be a real https URL');
+  }
+});
+
+test('the label does not claim a swap router this extension never uses', () => {
+  // Clause 2.3 is written around "Jupiter Ultra" and "Metis". Claiming either
+  // would be the exact mischaracterisation it prohibits, since this client
+  // routes no swaps at all.
+  assert.equal(ROUTING_API, null);
+  const line = attributionLine();
+  assert.match(line, /no swap router/);
+  assert.match(line, /Trigger V2/);
+  assert.match(line, /Price v3/);
+});
+
+test('the attribution detail lists a base URL for every surface', () => {
+  const detail = attributionDetail();
+  for (const surface of SURFACES) {
+    assert.ok(detail.includes(surface.name), `${surface.name} missing from detail`);
+    for (const base of surface.bases) {
+      assert.ok(detail.includes(base), `${base} missing from detail`);
+    }
+  }
 });

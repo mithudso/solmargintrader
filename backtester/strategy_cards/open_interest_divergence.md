@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [open-interest-history]
 data_available: false
+success_likelihood: low
+success_basis: a-priori
 params:
   window: {default: 72, type: int, desc: "bars over which to compare OI and price change"}
 presets: {}
@@ -37,6 +39,18 @@ prospectively.
 ## Caveats
 Direction-agnostic. It forecasts *volatility*, not sign, which makes it a sizing input
 rather than an entry rule.
+
+## Likelihood of success: low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+Leverage building without price progress is a documented precursor to violent
+resolution, and that is a real mechanism. But it is **direction-agnostic** — it
+forecasts volatility, not sign — which makes it a sizing input rather than an entry
+rule, and this harness has no OI history to test it against.
 
 ## Data gap
 **No open-interest history.**

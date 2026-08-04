@@ -11,6 +11,8 @@ warmup_bars: 101
 evaluation: single-split-70-30
 data_required: [ohlcv]
 data_available: true
+success_likelihood: low
+success_basis: measured-oos
 params:
   trend_window: {default: 100, type: int, desc: "SMA window for the trend gate"}
   vol_window: {default: 20, type: int, desc: "window for realised volatility"}
@@ -80,6 +82,16 @@ Read these numbers as evidence about **one regime transition**, not as a perform
 estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
+
+## Likelihood of success: low
+
+*Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
+configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
+
+OOS -31.1% standalone, and at the short horizon it degenerates into `sma_regime`
+whenever the vol cap binds. The rating is **low** rather than very-low only because
+it was measured in the one configuration that wastes it: this belongs as a *wrapper*
+around another signal, which is the most obvious untested gap in the sweep.
 
 ## Caveats and limitations
 - Measured in the one configuration that wastes it. Read the numbers as "vol-targeted

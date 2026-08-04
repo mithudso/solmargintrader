@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [options-implied-volatility]
 data_available: false
+success_likelihood: low
+success_basis: a-priori
 params:
   lookback: {default: 250, type: int, desc: "bars of IV-RV history for the percentile"}
   entry_pct: {default: 0.8, type: float, desc: "IV-RV percentile above which to sell volatility"}
@@ -39,6 +41,19 @@ instrument model — this is not a strategy addition, it is a new asset class.
 ## Caveats
 Selling volatility is short a fat left tail. The premium is compensation for exactly the
 risk that a backtest of a calm period will not show.
+
+## Likelihood of success: low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+The variance risk premium is among the more robust documented premia, so the
+mechanism is not speculative. Everything else is: there is no SOL options surface
+available here, this harness has no options instrument model, and selling volatility
+is short a fat left tail that a calm-period backtest will not show. Rated on the
+premium's reputation, discounted for being unbuildable and dangerous.
 
 ## Data gap
 **No options surface for SOL.**

@@ -11,6 +11,8 @@ warmup_bars: null
 evaluation: None
 data_required: [open-interest-history, position-distribution]
 data_available: false
+success_likelihood: very-low
+success_basis: a-priori
 params:
   cluster_bps: {default: 200.0, type: float, desc: "width of a liquidation cluster in bps"}
 presets: {}
@@ -38,6 +40,19 @@ holders — expensive, and the distribution changes continuously.
 This is the most crowded trade in crypto analytics; everyone with the data is looking at
 the same levels. Also note `backtester/core/perps.py` shows liquidation price **drifts
 toward spot as borrow fees accrue**, so a static cluster estimate decays.
+
+## Likelihood of success: very-low
+
+*Basis: a-priori — never run here, so this is a judgement about the mechanism and
+the literature, not a measurement. There is no 'high' rating in this scheme: across
+311 rankable configurations measured in this repo, 14% had a positive out-of-sample
+Sharpe and 9% made money.*
+
+The mechanism is real — forced selling begets forced selling — but this is the most
+crowded trade in crypto analytics: everyone with the data is looking at the same
+levels. It also needs position-level data across all holders, and
+`core/perps.py` shows liquidation prices **drift toward spot as borrow fees
+accrue**, so a static cluster estimate decays as soon as it is built.
 
 ## Data gap
 **No open-interest or position-distribution data.**
