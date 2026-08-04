@@ -1,0 +1,13 @@
+# Core dependencies. Versions are those verified on the development machine;
+# the code does not require these exact pins.
+pandas>=2.2
+numpy>=2.0
+
+# Charts only. The tool degrades to "no charts" if this is absent, so the
+# test suite does not depend on it.
+matplotlib>=3.8
+
+# Deliberately NOT required:
+#   pyarrow   -- Parquet is optional and guarded by an import check.
+#   requests  -- fetch.py uses urllib from the standard library.
+#   pytest    -- tests use unittest from the standard library.

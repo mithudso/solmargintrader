@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "SolMarginTrader — Jupiter Grid",
+  "version": "0.1.0",
+  "description": "Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking. Dry-run by default.",
+  "minimum_chrome_version": "120",
+  "background": {
+    "service_worker": "src/bg/service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "SolMarginTrader",
+    "default_popup": "src/ui/popup.html"
+  },
+  "options_page": "src/ui/dashboard.html",
+  "permissions": ["storage", "alarms"],
+  "host_permissions": [
+    "https://api.jup.ag/*",
+    "https://lite-api.jup.ag/*",
+    "https://tx.jup.ag/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'none'"
+  }
+}

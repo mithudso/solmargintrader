@@ -1,0 +1,20 @@
+{
+  "name": "solmargintrader",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome MV3 extension: grid trading on Jupiter (Solana) with risk rails and P&L tracking. Dry-run by default.",
+  "bin": {
+    "smt": "tools/cli.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "smt": "node tools/cli.js",
+    "api": "node tools/api-server.js",
+    "verify:endpoints": "node tools/verify-endpoints.js",
+    "dryrun": "node tools/dryrun.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

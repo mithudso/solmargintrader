@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SolMarginTrader — Dashboard</title>
+    <link rel="stylesheet" href="ui.css" />
+  </head>
+  <body class="dashboard">
+    <h1>SolMarginTrader</h1>
+    <p class="disclaimer">
+      Educational tool, not financial advice. Grid trading loses money in a trending market, and any
+      leveraged position can be liquidated. Dry-run mode is the default for a reason.
+    </p>
+
+    <div id="banner" class="banner"></div>
+
+    <section>
+      <h2>P&amp;L</h2>
+      <dl class="stats wide">
+        <dt>Net</dt><dd id="net">—</dd>
+        <dt>Realized</dt><dd id="realized">—</dd>
+        <dt>Unrealized</dt><dd id="unrealized">—</dd>
+        <dt>Fees + carry</dt><dd id="fees">—</dd>
+        <dt>Round trips</dt><dd id="trips">—</dd>
+        <dt>Win rate</dt><dd id="winRate">—</dd>
+        <dt>Max drawdown</dt><dd id="drawdown">—</dd>
+        <dt>Open inventory</dt><dd id="inventory">—</dd>
+      </dl>
+      <figure>
+        <figcaption>Equity curve (closed round trips, net of fees and carry)</figcaption>
+        <div id="equityChart" role="img" aria-label="Equity curve"></div>
+      </figure>
+      <figure>
+        <figcaption>Grid ladder — resting orders and fills by rung</figcaption>
+        <div id="ladderChart" role="img" aria-label="Grid ladder"></div>
+      </figure>
+      <button id="exportCsv">Export fills as CSV</button>
+    </section>
+
+    <section>
+      <h2>Grid configuration</h2>
+      <form id="configForm" class="grid-form">
+        <label>Mode
+          <select name="mode">
+            <option value="dry-run">dry-run — simulate, place nothing</option>
+            <option value="semi-auto">semi-auto — real orders, approve each signature</option>
+            <option value="full-auto">full-auto — real orders, session key signs</option>
+          </select>
+        </label>
+        <label>Venue
+          <select name="venue">
+            <option value="trigger">Jupiter Trigger V2 (spot, live-capable)</option>
+            <option value="perps">Jupiter Perps (read-only — no write API)</option>
+          </select>
+        </label>
+        <label>Wallet pubkey <input name="userPubkey" type="text" spellcheck="false" /></label>
+        <label>Base mint <input name="baseMint" type="text" spellcheck="false" /></label>
+        <label>Quote mint <input name="quoteMint" type="text" spellcheck="false" /></label>
+        <label>Lower bound (USD) <input name="lower" type="number" step="any" min="0" /></label>
+        <label>Upper bound (USD) <input name="upper" type="number" step="any" min="0" /></label>
+        <label>Rungs <input name="rungs" type="number" min="2" step="1" /></label>
+        <label>Spacing
+          <select name="spacing">
+            <option value="geom">geometric — equal %</option>
+            <option value="arith">arithmetic — equal $</option>
+          </select>
+        </label>
+        <label>Notional per rung (USD) <input name="notionalPerRungUsd" type="number" step="any" min="10" /></label>
+        <label>Direction
+          <select name="direction">
+            <option value="neutral">neutral</option>
+            <option value="long">long</option>
+            <option value="short">short</option>
+          </select>
+        </label>
+        <label>Deadband (bps) <input name="deadbandBps" type="number" min="0" step="1" /></label>
+        <label>Slippage (bps) <input name="slippageBps" type="number" min="0" max="10000" step="1" /></label>
+        <label>Leverage <input name="leverage" type="number" min="1" step="any" /></label>
+        <label>Margin source
+          <select name="marginSource">
+            <option value="none">none (spot)</option>
+            <option value="jup-lend">Jupiter Lend borrow (not implemented)</option>
+          </select>
+        </label>
+        <label>Tick seconds <input name="tickSeconds" type="number" min="30" step="1" /></label>
+        <button type="submit" class="primary">Save configuration</button>
+      </form>
+      <p id="capital" class="note"></p>
+    </section>
+
+    <section>
+      <h2>Risk rails</h2>
+      <form id="limitsForm" class="grid-form">
+        <label>Max total notional (USD) <input name="maxTotalNotionalUsd" type="number" step="any" /></label>
+        <label>Max per-order notional (USD) <input name="maxNotionalPerOrderUsd" type="number" step="any" /></label>
+        <label>Max concurrent orders <input name="maxConcurrentOrders" type="number" step="1" /></label>
+        <label>Max leverage <input name="maxLeverage" type="number" step="any" /></label>
+        <label>Daily loss limit (USD) <input name="dailyLossLimitUsd" type="number" step="any" /></label>
+        <label>Max slippage (bps) <input name="maxSlippageBps" type="number" step="1" /></label>
+        <label>Min liquidation distance (%) <input name="minLiquidationDistancePct" type="number" step="any" /></label>
+        <label>Max orders per tick <input name="maxOrdersPerTick" type="number" step="1" /></label>
+        <button type="submit" class="primary">Save rails</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Jupiter API key</h2>
+      <p class="note">
+        Stored in <code>chrome.storage.local</code> only — never <code>.sync</code>, which would
+        upload it. Trigger V2 requires a key for every call.
+        Get one at <code>developers.jup.ag/portal</code>.
+      </p>
+      <form id="keyForm" class="row">
+        <input name="apiKey" type="password" placeholder="x-api-key" autocomplete="off" />
+        <button type="submit">Save key</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Order journal</h2>
+      <table id="intents">
+        <thead>
+          <tr><th>Rung</th><th>Side</th><th>Level</th><th>Status</th><th>Venue order</th><th>Note</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Fills</h2>
+      <table id="fills">
+        <thead>
+          <tr><th>Time</th><th>Side</th><th>Qty</th><th>Price</th><th>Fee</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Recent events</h2>
+      <pre id="events"></pre>
+    </section>
+
+    <script type="module" src="dashboard.js"></script>
+  </body>
+</html>

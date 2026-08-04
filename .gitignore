@@ -1,0 +1,66 @@
+# Local state — holds the Jupiter API key and the encrypted session-key vault.
+# Must never be committed.
+.solmargintrader/
+*.local.json
+journal.json
+config.json
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# The jup.ag reference dump: ~42 MB of rendered HTML plus its zip. Useful
+# locally as reference material, wrong to put in git history.
+jup.ag/
+jup.ag.zip
+
+# Node
+node_modules/
+npm-debug.log*
+.npm/
+
+# Build/coverage output (there is no build step today; kept for safety)
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Editor / OS
+.DS_Store
+.idea/
+*.swp
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Packaged extension
+*.crx
+*.pem
+*.zip
+!extension/**/*.zip
+
+# Temp
+*.tmp
+*.tmp.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Regenerable data caches. Refetch with:
+#   python3 -m backtester.core.fetch --asset SOL --interval 1d --start 2021-01-01
+#   python3 -m backtester.core.fetch --asset SOL --interval 1h --start 2025-08-01 --allow-gaps
+data/
+
+# Regenerable outputs. Rebuild with:
+#   python3 -m backtester.cli --asset SOL --strategy all --out results/
+#   python3 research/sweep.py
+results/
+research/results/
+
+# Session scratch
+.remember/logs/
+.remember/tmp/

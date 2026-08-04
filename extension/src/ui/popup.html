@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SolMarginTrader</title>
+    <link rel="stylesheet" href="ui.css" />
+  </head>
+  <body class="popup">
+    <header>
+      <strong>SolMarginTrader</strong>
+      <span id="mode" class="pill">…</span>
+    </header>
+
+    <div id="banner" class="banner hidden"></div>
+
+    <dl class="stats">
+      <dt>Price</dt>
+      <dd id="price">—</dd>
+      <dt>Net P&amp;L</dt>
+      <dd id="net">—</dd>
+      <dt>Realized</dt>
+      <dd id="realized">—</dd>
+      <dt>Unrealized</dt>
+      <dd id="unrealized">—</dd>
+      <dt>Fees</dt>
+      <dd id="fees">—</dd>
+      <dt>Round trips</dt>
+      <dd id="trips">—</dd>
+      <dt>Resting</dt>
+      <dd id="resting">—</dd>
+      <dt>Last tick</dt>
+      <dd id="lastTick">—</dd>
+    </dl>
+
+    <div class="row">
+      <button id="arm" class="primary">Arm</button>
+      <button id="disarm">Disarm</button>
+      <button id="tickNow">Tick now</button>
+    </div>
+
+    <div id="confirmRow" class="row confirm hidden">
+      <label for="confirmText">Type <code>ARM</code> to trade live:</label>
+      <input id="confirmText" type="text" autocomplete="off" spellcheck="false" />
+      <button id="confirmArm" class="danger">Confirm</button>
+      <button id="cancelArm">Cancel</button>
+    </div>
+
+    <div class="row">
+      <button id="kill" class="danger">KILL SWITCH</button>
+      <button id="clearKill" class="hidden">Clear kill</button>
+    </div>
+
+    <div class="row">
+      <button id="openDashboard" class="link">Dashboard &amp; settings →</button>
+    </div>
+
+    <p id="err" class="err hidden"></p>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
