@@ -69,35 +69,40 @@ measured **one regime**, not the future.
 split and are retained because the contrast is the lesson; the CPCV rankings that supersede them
 are in List 1, and they reorder almost completely.
 
-### 1b. Under CPCV, buy-and-hold ranks first at the medium horizon.
+### 1b. Under CPCV the ranking reorders completely, and buy-and-hold stays near the top.
 
-The single split ranked `zscore_20_-2` first at the medium horizon (OOS Sharpe +0.699). Under
-CPCV that same configuration falls to **8th (+0.036)** and **`buy_and_hold` ranks 1st (+0.534)**.
-At the long horizon buy-and-hold ranks 3rd. Once the evaluation no longer depends on where one
-cut landed, the headline becomes: *on this asset and this history, holding the asset beat almost
-every strategy tested.*
+The single split ranked `zscore_20_-2` first at the medium horizon (OOS Sharpe +0.699). Under CPCV
+it falls far down the table, and the medium-horizon top two are `hurst_switch` (+0.699, 93% of
+paths positive) and **`buy_and_hold` (+0.534)**. At the long horizon buy-and-hold is 3rd behind
+`obv_trend_60` and `vol_regime`.
+
+That buy-and-hold sits second and third across 25 strategies is the headline: *on this asset and
+this history, holding the asset beat all but one or two of everything tested* — and the ones ahead
+of it are separated by less than their own interquartile spread.
 
 CPCV also made the long horizon answerable at all. Under the single split only **4 of 16**
-long-horizon configurations cleared the evidence floor; under CPCV **16 of 16** are evaluable,
+long-horizon configurations cleared the evidence floor; under CPCV **all 25 are evaluable**,
 because blocks reuse the whole series instead of one 563-bar tail.
 
-### 1c. PBO says in-sample selection carries almost no information.
+### 1c. PBO says in-sample selection is anti-informative at the daily horizons.
 
-Probability of Backtest Overfitting (Bailey et al., via CSCV) across 35 splits of 16
-fully-evaluable configurations per horizon:
+Probability of Backtest Overfitting (Bailey et al., via CSCV), over all 25 strategies:
 
-| Horizon | PBO |
-|---|---|
-| Short | **0.429** |
-| Medium | **0.457** |
-| Long | **0.457** |
+| Horizon | PBO | splits | configs |
+|---|---|---|---|
+| Short | **0.343** | 35 | 25 |
+| Medium | **0.700** | 20 | 25 |
+| Long | **0.700** | 20 | 25 |
 
 Calibrated against constructed controls in the test suite: **pure noise gives mean PBO 0.500**
-(over 30 seeds) and **a genuinely ordered signal set gives 0.000**. SOL's strategies sit at
-0.43–0.46 — far closer to the noise control than the signal control. PBO is the fraction of
-splits where the in-sample winner lands *below median* out-of-sample, so ~0.45 means selecting by
-in-sample performance is barely distinguishable from picking at random. This is the
-regime-independent form of finding 2, and it is the most decision-relevant number here.
+(over 30 seeds) and **a genuinely ordered signal set gives 0.000**. Both daily horizons sit at
+0.700 — *above* the noise line, meaning selecting by in-sample performance is measurably worse
+than picking at random. The earlier 16-strategy run measured 0.429 / 0.457 / 0.457; the
+decomposition of that rise is in *Read this before the tables* above.
+
+Short horizon needs the same care as any low PBO: 0.343 looks encouraging, but **0 of 25** singles
+have a positive median Sharpe there, so in-sample rank generalises reliably as a loser. PBO
+measures rank consistency, not profitability — always read it next to the positive count.
 
 ### 2. In-sample rank does not predict out-of-sample rank. At the medium horizon it inverts.
 
