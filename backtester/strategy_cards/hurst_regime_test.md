@@ -8,10 +8,10 @@ summary: A meta-signal: measure whether the series trends or reverts, then run t
 registry_key: hurst_switch
 runner: backtester.cli
 warmup_bars: 251
-evaluation: cpcv-8-groups-k2
+evaluation: cpcv-8-groups-k2-daily-and-hourly
 data_required: [ohlcv]
 data_available: true
-success_likelihood: moderate
+success_likelihood: low
 success_basis: measured-oos
 params:
   window: {default: 250, type: int, desc: "bars used to estimate the variance ratio"}
@@ -88,9 +88,9 @@ estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
 
-## Likelihood of success: moderate
+## Likelihood of success: low
 
-*Basis: measured-oos. This is the only card in the directory rated moderate.*
+*Basis: measured-oos. **Downgraded from moderate after the hourly test below.***
 
 Four things support it, and one caveat bounds it.
 
@@ -139,7 +139,48 @@ onto — it makes selection more reliable. (Both figures sit above the prior stu
 0.429–0.457 because restricting to six common blocks leaves only 20 CSCV splits; treat
 the *direction* of the change as the signal, not the level.)
 
-### What holds the rating at moderate rather than higher
+### Downgraded from moderate: the hourly series
+
+The moderate rating was explicitly conditional — "worth the next experiment, not works,
+and the next experiment is CPCV". CPCV on daily passed. The follow-up test was the
+hourly series, chosen because trade count was the binding constraint. **It failed.**
+
+Same mechanism at the sweep's pre-registered short-horizon scaling (window 250, lag 5,
+trend_window 168) on 8,823 hourly bars, 8 groups, k=2
+(`research/results/cpcv_all25_1h.csv`):
+
+| | daily | hourly |
+|---|---|---|
+| Rank by median path Sharpe | **1st of 25** | **23rd of 25** |
+| Median path Sharpe | +0.699 | **−3.123** |
+| Q1 path Sharpe | +0.609 | −3.878 |
+| Paths positive | 93% | 14% |
+| Median path return | +16.7% | −12.8% |
+| Trades | 24 | 170 |
+
+Seven times the trades, and the rank inverted from first to third-from-last. That is the
+single strongest piece of evidence available about this mechanism, and it says the daily
+result was **scale-specific at best**.
+
+**One honest confound, which does not rescue it.** The hourly file covers
+2025-08→2026-08 only, and that year was brutal: **zero of 25 configurations** had a
+positive median path Sharpe, and buy-and-hold itself lost 22.9%. So the hourly test is a
+different *period* as well as a different scale, and "everything lost" is partly the
+market. But rank is period-invariant by construction — every configuration faced the
+same bars — and hurst_switch went from best to nearly worst *relative to its peers*. It
+also lost more than buy-and-hold's Sharpe while trading 170 times.
+
+The repo's own headline finding is that in-sample rank does not predict out-of-sample
+rank. This card is now a demonstration of the same effect **across horizons**, which is
+a more uncomfortable version of it: the rank was not stable across a change of scale
+either.
+
+### What would change the rating back
+A third independent test that it passes — a peer universe, or a different asset's daily
+series. Not another look at the daily SOL bars, which it has now been fitted to by
+selection whether or not anyone intended that.
+
+### The trade-count caveat that applied even on daily
 
 The trade count. **24 trades across six blocks**, and two of those blocks traded
 **zero** times — their 0.00 Sharpes are "never lost", not "usually won", which inflates

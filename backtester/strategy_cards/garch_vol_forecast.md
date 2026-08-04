@@ -89,6 +89,19 @@ vol-targeted trend-following lose on SOL. The direction call was, and both cards
 share the same crude SMA trend gate. Replacing the variance model was the wrong
 repair.
 
+### The hourly run exposed a three-way degeneracy
+
+On 8,823 hourly bars at short-horizon scaling, `voltarget`, `garch_voltarget` and
+`sma_regime` produced **numerically identical** results — median path Sharpe −2.282,
+median return −19.9%, 292 trades, all three. That is not a coincidence and it is not a
+bug: at `target_vol` 0.8 on hourly SOL the volatility cap binds on essentially every
+bar, so `min(1, target/sigma)` collapses to 1.0 and both vol-targeted rules degenerate
+into the plain trend gate they share with the regime filter.
+
+The caveat was written on these cards before it was observed. Seeing three separate
+"strategies" return one identical row is the cleanest demonstration available that a
+sweep's configuration count overstates how many distinct ideas are in it.
+
 ## Caveats and limitations
 - A variance forecast is not a return forecast. This changes sizing, never direction.
 - `lam` fixed at the RiskMetrics value, unswept. A fitted GARCH may behave

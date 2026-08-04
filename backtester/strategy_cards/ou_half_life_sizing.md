@@ -8,7 +8,7 @@ summary: Z-score reversion with an Ornstein-Uhlenbeck hold cap and a stationarit
 registry_key: ou_reversion
 runner: backtester.cli
 warmup_bars: 251
-evaluation: cpcv-8-groups-k2
+evaluation: cpcv-8-groups-k2-daily-and-hourly
 data_required: [ohlcv]
 data_available: true
 success_likelihood: moderate
@@ -127,6 +127,28 @@ statistical one, which is what moderate requires.
 
 Same caveat as its sibling: 26 trades is a small sample, and "mostly abstains" is doing
 real work in that 93%.
+
+### It held up better than its sibling on the hourly series
+
+`hurst_regime_test.md` was downgraded after the hourly test; this was not. On 8,823
+hourly bars at the sweep's short-horizon scaling
+(`research/results/cpcv_all25_1h.csv`), where **zero of 25 configurations** had a
+positive median path Sharpe and buy-and-hold lost 22.9%:
+
+| | daily rank | hourly rank | hourly median Sharpe | hourly median return |
+|---|---|---|---|---|
+| ou_reversion | 4th of 25 | **2nd of 25** | −0.595 | **−3.4%** |
+| hurst_switch | 1st of 25 | 23rd of 25 | −3.123 | −12.8% |
+| buy_and_hold | 2nd of 25 | 7th of 25 | −1.456 | −22.9% |
+
+It still lost, in a period where everything did. What earns it the retained rating is
+**rank stability across a change of scale** — near the top on both — and a median path
+return of −3.4% against buy-and-hold's −22.9% on 196 trades. The screening rule keeps it
+out of the way, which is the same behaviour the daily test showed and the opposite of
+what happened to the regime switch.
+
+Moderate here still means "worth the next experiment", and the next experiment is a
+different asset or a peer universe, not more SOL.
 
 ## Caveats and limitations
 - Theta fitted on a trending series is meaningless. That is the point of the

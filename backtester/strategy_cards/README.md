@@ -152,10 +152,16 @@ absent from the vocabulary. It also asserts that only a `measured` card may cite
 more than a tenth of cards may be rated moderate** — a directory where most cards
 looked promising would be the tell that the ratings had drifted into marketing.
 
-Current distribution: **20 very-low, 21 low, 2 moderate**. Both moderates —
-`hurst_regime_test` and `ou_half_life_sizing` — were re-evaluated under CPCV and are the
-only two configurations of 25 with a **positive 25th-percentile path Sharpe**, which is
-the conservative statistic Lopez de Prado recommends reading.
+Current distribution: **20 very-low, 22 low, 1 moderate**. The single moderate is
+`ou_half_life_sizing`, which is near the top of the ranking on **both** the daily and
+hourly series — rank stability across a change of scale being the closest thing to
+evidence available here.
+
+`hurst_regime_test` was **downgraded from moderate to low** after ranking 1st of 25 on
+daily and **23rd of 25 on hourly**. Its moderate rating was explicitly conditional on
+surviving the next experiment; it did not. Note that zero of 25 configurations had a
+positive median path Sharpe on the hourly year, so the period is doing some of that
+work — but rank is period-invariant, and the rank inverted.
 
 **Ratings have moved in both directions as evidence improved**, which is the point of
 recording the basis alongside the rating:
@@ -168,6 +174,7 @@ recording the basis alongside the rating:
 | `zscore` | low | **very-low** | CPCV: the top-ranked single-split row is a 52% coin flip whose median path loses 10% |
 | `pairs_cointegration` | moderate (a-priori) | **low** (measured) | Unblocked and measured: cointegrated with ETH, but zero out-of-sample trades |
 | `vol_regime_hmm` | very-low | very-low | CPCV confirmed rather than softened it |
+| `hurst_regime_test` | moderate | **low** | 1st of 25 on daily, **23rd of 25 on hourly** — the rank did not survive a change of scale |
 
 A rating that never moves when better evidence arrives is decoration.
 

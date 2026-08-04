@@ -90,6 +90,19 @@ reached +1.456. That is a real mechanical story — it vetoes the
 buy-the-dip-in-a-downtrend failure — but it is one number from one hostile split, and
 the partner effect belongs to the pair rather than to this card.
 
+### The hourly run exposed a three-way degeneracy
+
+On 8,823 hourly bars at short-horizon scaling, `voltarget`, `garch_voltarget` and
+`sma_regime` produced **numerically identical** results — median path Sharpe −2.282,
+median return −19.9%, 292 trades, all three. That is not a coincidence and it is not a
+bug: at `target_vol` 0.8 on hourly SOL the volatility cap binds on essentially every
+bar, so `min(1, target/sigma)` collapses to 1.0 and both vol-targeted rules degenerate
+into the plain trend gate they share with the regime filter.
+
+The caveat was written on these cards before it was observed. Seeing three separate
+"strategies" return one identical row is the cleanest demonstration available that a
+sweep's configuration count overstates how many distinct ideas are in it.
+
 ## Caveats and limitations
 - Standalone it lost money out-of-sample. Its case rests almost entirely on what it
   does for *other* signals, which is a different claim and should not be blurred.
