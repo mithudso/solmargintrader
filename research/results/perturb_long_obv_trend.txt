@@ -12,5 +12,5 @@ obv_trend: ma_window 60→66                       +0.575  -0.199    76%    +23.
 VERDICT: STABLE under this test — a 10% parameter nudge moves the median much less than sampling a different regime does.
     max |Δ median Sharpe| = 0.199 against a baseline path IQR of 1.571 (ratio 0.13)
     0 of 2 perturbations flip the sign
-    for reference, seven top long-horizon configurations measured ratios of 0.13–0.72 (median 0.44), so this is at or below typical
+    reference population for a single: 0.04–1.33 (median 0.21), so this is at or below typical
     this test does NOT address multiple testing. It asks whether the PARAMETERS were cherry-picked; it cannot tell you whether the CONFIGURATION was cherry-picked from hundreds. PBO answers that, separately.

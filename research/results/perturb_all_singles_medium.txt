@@ -1,0 +1,34 @@
+PERTURBATION STABILITY — every single strategy, medium horizon
+perturbation: +/-10% one at a time; ratio = max|delta median| / baseline path IQR
+
+strategy                       median    IQR  max|d|  ratio   flips   %pos
+--------------------------------------------------------------------------
+keltner                        +0.213  1.656   0.067   0.04   0/6      76%
+ts_momentum                    +0.025  1.752   0.081   0.05   0/2      52%
+sma_regime                     -0.066  1.522   0.097   0.06   2/2      48%
+adx_trend                      +0.336  2.368   0.171   0.07   0/4      71%
+voltarget                      -0.021  1.154   0.090   0.08   2/6      38%
+breakout                       +0.078  1.911   0.163   0.09   0/4      52%
+obv_trend                      +0.189  1.536   0.132   0.09   0/2      67%
+garch_voltarget                -0.028  1.207   0.106   0.09   1/5      48%
+ichimoku                       +0.023  2.055   0.194   0.09   1/8      57%
+ma_crossover                   -0.334  2.186   0.303   0.14   0/4      38%
+bb_breakout                    +0.481  1.694   0.237   0.14   0/4      67%
+macd                           +0.321  1.277   0.182   0.14   0/6      67%
+zscore                         +0.036  0.964   0.142   0.15   1/4      52%
+atr_sized                      -0.038  1.289   0.191   0.15   1/4      48%
+ma_ribbon                      -0.336  1.957   0.390   0.20   1/4      43%
+dual_momentum                  -0.319  1.459   0.357   0.24   1/3      43%
+vwap_reversion                 -0.265  0.587   0.164   0.28   0/4      29%
+stochastic                     -0.043  1.175   0.362   0.31   3/4      48%
+bb_reversion                   -0.114  0.910   0.352   0.39   3/4      43%
+grid                           -0.152  0.369   0.174   0.47   1/6      29%
+ou_reversion                   +0.412  0.790   0.443   0.56   2/6      93%
+hurst_switch                   +0.699  1.167   0.699   0.60   1/6      93%
+rsi                            +0.238  0.664   0.555   0.84   0/6      71%
+vol_regime                     -0.172  0.759   0.653   0.86   1/6      40%
+
+buy_and_hold                  skipped — no tunable parameters
+
+population: ratio min 0.04  median 0.14  max 0.86   |   sign flips 21/110
+Spearman(median Sharpe, ratio) = -0.152  — performance and stability are not strongly linked
