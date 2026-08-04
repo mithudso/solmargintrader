@@ -46,7 +46,7 @@ Both venues sit behind one `VenueAdapter` interface, so Perps drops in when its 
 
 ```bash
 cd ~/dev/solmargintrader/extension
-npm test              # 52 unit tests, no dependencies to install
+npm test              # 96 tests, no dependencies to install
 node tools/dryrun.js  # end-to-end tick against the live SOL price
 ```
 
