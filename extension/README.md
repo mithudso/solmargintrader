@@ -199,6 +199,39 @@ gross $10.00, fees $1.05, **net $8.95**; with $2.00 carry, **realized $6.95**.
 
 ---
 
+## Three surfaces, one registry
+
+Every action lives in `src/core/commands.js` (22 commands). The Chrome message handler, the CLI and
+the HTTP API are thin adapters over it, so anything you can do in the UI you can script — and
+`test/surfaces.test.js` fails the build if any surface drifts.
+
+```bash
+node tools/cli.js                                   # all commands, auto-generated help
+node tools/cli.js <command> --help                  # arguments and types
+node tools/cli.js setConfig --lower 60 --upper 90 --rungs 7 --notionalPerRungUsd 12
+node tools/cli.js levels                            # rung ladder + gross per round trip
+node tools/cli.js plan --price 75                   # what it WOULD place; places nothing
+node tools/cli.js arm && node tools/cli.js tick --count 3
+node tools/cli.js pnl --json
+```
+
+```bash
+node tools/api-server.js --port 8787                # prints a bearer token
+curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
+```
+
+The API is loopback-bound, requires a bearer token compared in constant time, allows `GET` only for
+read-only commands, and refuses any request carrying `Origin` or `Sec-Fetch-Site` — a web page *can*
+post to localhost, so a token alone would not be enough.
+
+Useful CLI flags: `--json` for machine output, `--ephemeral` for throwaway in-memory state, and
+`--store-path` / `--config-path` to isolate a run. An unknown flag is rejected rather than ignored;
+a silently dropped `--notionalPerRungUsd` would be a money bug.
+
+Full reference: [../docs/API.md](../docs/API.md).
+
+---
+
 ## Layout
 
 ```
@@ -207,7 +240,8 @@ src/core/grid.js           Pure grid engine — levels, side selection, planning
 src/core/risk.js           Risk rails and batch admission
 src/core/pnl.js            FIFO matching, snapshots, equity curve, drawdown, CSV
 src/core/engine.js         The tick: reconcile -> ingest fills -> plan -> admit -> place
-src/jupiter/http.js        Retry/backoff, Retry-After, token-bucket request budget
+src/core/commands.js       The command registry — every action, transport-agnostic
+src/jupiter/http.js        Retry/backoff, Retry-After, request budget, per-attempt timeout
 src/jupiter/price.js       Price API, tolerant of both response shapes
 src/jupiter/trigger.js     Trigger V2: auth, vault, deposit craft, create, manage
 src/venues/index.js        VenueAdapter contract, dry-run wrapper, read-only Perps
@@ -215,10 +249,13 @@ src/venues/triggerVenue.js The live-capable adapter
 src/wallet/solana.js       base58, shortvec, signature insertion (no web3.js dependency)
 src/wallet/signer.js       Null / pending-approval / session-key signers + encrypted vault
 src/storage/store.js       IndexedDB journal + chrome.storage config
-src/bg/service-worker.js   Alarm scheduling, message API, badge
+src/storage/fileStore.js   The same interfaces on JSON files, for the CLI and API
+src/bg/service-worker.js   Alarm scheduling, message plumbing, badge
 src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe)
+tools/cli.js               CLI surface, generated from the registry
+tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/dryrun.js            Headless end-to-end tick
-test/                      72 tests, zero dependencies (node:test)
+test/                      96 tests, zero dependencies (node:test)
 ```
 
 No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
@@ -231,7 +268,7 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 
 **Done and proven:**
 
-- `npm test` → **72 passing, 0 failing**
+- `npm test` → **96 passing, 0 failing** (unit, integration and three-surface parity)
 - `node tools/dryrun.js --ticks 8 --osc 6 --offline 100` → full tick loop with a down-then-up path:
   4 bids placed, filled as price fell, exits placed one rung above each lot, and on tick 8 an exit
   filled and took net P&L from −$2.33 to **+$0.04**. The closed trip captured **$0.620**, which is
