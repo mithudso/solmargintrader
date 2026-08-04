@@ -29,15 +29,28 @@ own entry.
 
 ### The headline empirical result
 
-On 1,875 daily SOL bars and 8,823 hourly bars, across **520 evaluated configurations**:
-**45 of 311 rankable configurations (14%) had a positive out-of-sample Sharpe, and 28 (9%)
-made money.** In-sample rank did not predict out-of-sample rank — at the medium horizon the
-Spearman correlation was **−0.419**, i.e. actively inverted. The single 70/30 walk-forward
-split lands almost exactly on SOL's price top (in-sample \$39 → \$252, out-of-sample
-\$252 → \$74), which is the dominant cause. Details and full tables in `RANKED_LISTS.md`.
+Evaluation is now **combinatorial purged cross-validation** (8 blocks, k=2, 28 paths per
+configuration) rather than a single 70/30 split. Under CPCV, across 48 configurations × 28 paths:
 
-**Consequence for reading this document:** treat the `Measured` block on each entry as
-evidence about *one regime transition*, not as a performance estimate.
+- **PBO is 0.429 / 0.457 / 0.457** (short / medium / long). Calibrated against controls in the
+  test suite, **pure noise gives 0.500 and a genuinely ordered signal set gives 0.000** — so
+  selecting a strategy by in-sample performance here is barely better than random.
+- **At the medium horizon, `buy_and_hold` ranks first** (median path Sharpe +0.534). Nothing beat
+  holding the asset.
+- **At the short horizon all 16 configurations have a negative median path Sharpe.**
+- Only one row anywhere has a genuinely interesting profile: **`obv_trend_60`**, median Sharpe
+  +0.774 with **81% of paths positive** and +44.6% median path return.
+
+Under the earlier single split: 520 configurations, 311 rankable, **45 (14%) with a positive
+out-of-sample Sharpe and 28 (9%) that made money**, with in-sample rank *inverted* against
+out-of-sample at the medium horizon (Spearman **−0.419**). The cause is stark: the **highest close
+in the entire series (\$261.99) is bar 1311 — the final in-sample bar**, so the split separates
+the bull market from the bear leg to within a single bar. Full tables and the method contrast in
+`RANKED_LISTS.md`.
+
+**Consequence for reading this document:** each entry's `Measured` block quotes single-split
+figures, which are evidence about *one regime transition*. Prefer the CPCV distribution in
+`RANKED_LISTS.md` List 1 when deciding anything.
 
 ### Horizon definitions
 

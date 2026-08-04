@@ -1,9 +1,15 @@
 # SOL Strategy & Signal Rankings — Three Lists
 
+**AS OF 2026-08-04.** Data runs through 2026-08-04; every figure is tied to that snapshot.
+**Primary evaluation method: combinatorial purged cross-validation (CPCV)** — 8 blocks, k=2,
+28 paths per configuration. The earlier single 70/30 walk-forward is retained as List 1b,
+because the disagreement between the two methods is the most instructive result here.
+
 > **Historical simulation for research and education only. NOT investment advice**, and not a
 > recommendation to trade anything. Simulated past performance does not predict future results.
 > Every number below came from an executed run and can be reproduced with
-> `python3 research/sweep.py`. No figure in this document was estimated.
+> `python3 research/cpcv_sweep.py` and `python3 research/sweep.py`. No figure in this document
+> was estimated; `python3 research/verify_numbers.py` enforces that mechanically.
 
 **Method note.** The request asked for a `/dr` (deep-research) pass. Subagent fan-out is
 unavailable in this environment, so the taxonomy is grounded in the local citation-backed
@@ -15,24 +21,66 @@ rather than made silently. Literature figures are attributed; everything else is
 
 ## Read this before the tables
 
-**520 configurations were evaluated. 311 carry enough out-of-sample evidence to rank.
-45 of those 311 (14%) have a positive out-of-sample Sharpe. 28 of 311 (9%) made money.**
+**Under CPCV: 48 configurations (16 mechanisms × 3 horizons) × 28 paths each = 1,344 path
+evaluations. PBO is 0.43–0.46, against 0.500 for pure noise. At the medium horizon nothing beat
+buy-and-hold; at the short horizon every single configuration had a negative median Sharpe.**
 
-Four findings matter more than any ranking below. The first undermines the premise of a
-leaderboard on this dataset; the fourth shows the top-ranked medium-horizon row is noise, using
-a within-mechanism control that requires no interpretation at all.
+**Under the earlier single split: 520 configurations, 311 rankable, 45 (14%) with a positive
+out-of-sample Sharpe, 28 (9%) that made money.**
 
-### 1. The split lands on the top. A single walk-forward split cannot answer this question.
+Six findings matter more than any ranking below. Findings 1/1b/1c are the method result — one
+split cannot answer this question and PBO quantifies how little in-sample rank tells you.
+Findings 2–4 were measured under the single split and are kept because the contrast is the
+lesson; finding 4 in particular shows a top-ranked row is noise using a within-mechanism control
+that needs no interpretation at all.
+
+### 1. The split ends on the highest close in the series. One split cannot answer this.
 
 | Leg | Daily (medium/long) | Hourly (short) |
 |---|---|---|
 | In-sample | 2021-06-17 → 2025-01-18, **\$39.25 → \$252.34 (+543%)** | 2025-08-01 → 2026-04-15, \$170.25 → \$83.66 (−51%) |
 | Out-of-sample | 2025-01-19 → 2026-08-04, **\$252.34 → \$73.89 (−70.7%)** | 2026-04-15 → 2026-08-04, \$83.66 → \$73.00 (−13%) |
 
-A 70/30 split on this history puts essentially the **entire bull market in-sample and the
-entire bear leg out-of-sample**. Any long-biased strategy is therefore structurally required
-to look excellent in-sample and terrible out-of-sample, independent of whether it has any
-predictive content. The out-of-sample column measures *one regime*, not *the future*.
+This is worse than "near the top". The **highest close in the entire 1,875-bar series is
+\$261.99, on 2025-01-18 — bar 1311, the final bar of the in-sample window.** The split falls on
+the very next bar. So a 70/30 split puts essentially the entire bull market in-sample and the
+entire bear leg out-of-sample, and any long-biased strategy is *structurally required* to look
+excellent in-sample and terrible out-of-sample regardless of predictive content. That column
+measured **one regime**, not the future.
+
+**This has now been replaced by CPCV.** Findings 2–4 below were measured under the old single
+split and are retained because the contrast is the lesson; the CPCV rankings that supersede them
+are in List 1, and they reorder almost completely.
+
+### 1b. Under CPCV, buy-and-hold ranks first at the medium horizon.
+
+The single split ranked `zscore_20_-2` first at the medium horizon (OOS Sharpe +0.699). Under
+CPCV that same configuration falls to **8th (+0.036)** and **`buy_and_hold` ranks 1st (+0.534)**.
+At the long horizon buy-and-hold ranks 3rd. Once the evaluation no longer depends on where one
+cut landed, the headline becomes: *on this asset and this history, holding the asset beat almost
+every strategy tested.*
+
+CPCV also made the long horizon answerable at all. Under the single split only **4 of 16**
+long-horizon configurations cleared the evidence floor; under CPCV **16 of 16** are evaluable,
+because blocks reuse the whole series instead of one 563-bar tail.
+
+### 1c. PBO says in-sample selection carries almost no information.
+
+Probability of Backtest Overfitting (Bailey et al., via CSCV) across 35 splits of 16
+fully-evaluable configurations per horizon:
+
+| Horizon | PBO |
+|---|---|
+| Short | **0.429** |
+| Medium | **0.457** |
+| Long | **0.457** |
+
+Calibrated against constructed controls in the test suite: **pure noise gives mean PBO 0.500**
+(over 30 seeds) and **a genuinely ordered signal set gives 0.000**. SOL's strategies sit at
+0.43–0.46 — far closer to the noise control than the signal control. PBO is the fraction of
+splits where the in-sample winner lands *below median* out-of-sample, so ~0.45 means selecting by
+in-sample performance is barely distinguishable from picking at random. This is the
+regime-independent form of finding 2, and it is the most decision-relevant number here.
 
 ### 2. In-sample rank does not predict out-of-sample rank. At the medium horizon it inverts.
 
@@ -106,11 +154,98 @@ Recorded because the hypothesis was plausible and the data refused it.
 
 ---
 
-# List 1 — Single strategies and signals, ranked
+# List 1 — Single strategies and signals, ranked (CPCV — primary)
 
-Ranked on **out-of-sample Sharpe**, with in-sample shown beside every row so the decay is
-visible per line. Rows with fewer than 10 out-of-sample trades are listed but **not ranked** —
-a high Sharpe on 2 trades is noise, and this dataset produces a lot of it.
+Ranked on **median path Sharpe** across 28 CPCV paths (8 blocks, k=2). Three columns matter as
+much as the median: **IQR** (a median of +0.5 with IQR 1.4 straddles zero heavily), **% paths
+positive** (below ~70% means the sign depends on which regime you sampled), and **trades**
+(pooled across usable blocks). Tables below are generated directly from
+`research/results/cpcv_results.csv`; no figure was transcribed by hand.
+
+## Short horizon (1h bars) — CPCV
+
+**All 16 configurations have a negative median path Sharpe**, buy-and-hold included (−1.456).
+| # | Strategy | Family | Median Sharpe | IQR | % paths + | Median ret | Trades |
+|---|---|---|---|---|---|---|---|
+| 1 | `stoch_14_3` | oscillator-reversion | **-0.341** | 2.117 | 38% | -5.2% | 240 |
+| 2 | `keltner_12_7_2` | breakout | **-0.961** | 2.477 | 29% | -4.9% | 88 |
+| 3 | `zscore_20_-2` | mean-reversion | **-1.152** | 1.213 | 19% | -12.5% | 294 |
+| 4 | `bb_reversion_20_2` | mean-reversion | **-1.316** | 1.396 | 14% | -15.4% | 308 |
+| 5 | `buy_and_hold` | baseline | **-1.456** | 2.154 | 29% | -22.9% | 16 |
+| 6 | `bb_breakout_20_2` | breakout | **-1.487** | 3.114 | 29% | -11.5% | 270 |
+| 7 | `obv_trend_24` | volume-flow | **-1.580** | 1.668 | 24% | -18.0% | 852 |
+| 8 | `rsi_7_30_55` | oscillator-reversion | **-1.723** | 1.052 | 14% | -19.8% | 328 |
+| 9 | `breakout_12_6` | breakout | **-1.905** | 2.809 | 14% | -16.9% | 350 |
+| 10 | `grid_48_4_0.03` | mean-reversion | **-2.022** | 0.731 | 0% | -12.4% | 4304 |
+| 11 | `vwap_reversion_20_0.01` | mean-reversion | **-2.189** | 0.836 | 0% | -24.3% | 398 |
+| 12 | `sma_regime_168` | regime-filter | **-2.282** | 1.278 | 5% | -19.9% | 292 |
+| 13 | `voltarget_168_24_0.8` | risk-overlay | **-2.282** | 1.278 | 5% | -19.9% | 292 |
+| 14 | `ma_crossover_12_48` | trend | **-2.385** | 3.326 | 10% | -23.5% | 204 |
+| 15 | `ts_momentum_24` | momentum | **-2.564** | 2.018 | 0% | -24.2% | 716 |
+| 16 | `macd_6_13_5` | trend | **-3.083** | 2.223 | 0% | -33.4% | 1156 |
+
+Rows 12–13 are numerically identical — `voltarget` degenerates into the plain regime filter whenever realised vol stays under target, so its cap binds at 1.0 (verified: identical exposure 0.4299). And `ma_crossover_12_48`, **first place** under the old split (+0.488), ranks **14th of 16** here.
+
+> PBO at this horizon is **0.429** across 35 splits, so the *ordering* is weakly informative at best. Read the distribution columns, not the rank.
+
+## Medium horizon (1d bars) — CPCV
+
+| # | Strategy | Family | Median Sharpe | IQR | % paths + | Median ret | Trades |
+|---|---|---|---|---|---|---|---|
+| 1 | `buy_and_hold` | baseline | **+0.534** | 1.434 | 68% | +9.4% | 16 |
+| 2 | `bb_breakout_20_2` | breakout | **+0.481** | 1.694 | 67% | +15.9% | 58 |
+| 3 | `macd_12_26_9` | trend | **+0.321** | 1.277 | 67% | +3.8% | 118 |
+| 4 | `rsi_14_30_50` | oscillator-reversion | **+0.238** | 0.664 | 71% | -0.0% | 18 |
+| 5 | `keltner_20_14_2` | breakout | **+0.213** | 1.656 | 76% | +2.2% | 38 |
+| 6 | `obv_trend_20` | volume-flow | **+0.189** | 1.536 | 67% | -9.8% | 220 |
+| 7 | `breakout_20_10` | breakout | **+0.078** | 1.911 | 52% | -6.4% | 52 |
+| 8 | `zscore_20_-2` | mean-reversion | **+0.036** | 0.964 | 52% | -10.0% | 50 |
+| 9 | `ts_momentum_60` | momentum | **+0.025** | 1.752 | 52% | -19.4% | 142 |
+| 10 | `voltarget_100_20_0.6` | risk-overlay | **-0.021** | 1.154 | 38% | -14.7% | 645 |
+| 11 | `stoch_14_3` | oscillator-reversion | **-0.043** | 1.175 | 48% | -13.3% | 56 |
+| 12 | `sma_regime_100` | regime-filter | **-0.066** | 1.522 | 48% | -16.4% | 96 |
+| 13 | `bb_reversion_20_2` | mean-reversion | **-0.114** | 0.910 | 43% | -19.1% | 50 |
+| 14 | `grid_50_4_0.05` | mean-reversion | **-0.152** | 0.369 | 29% | -16.7% | 599 |
+| 15 | `vwap_reversion_20_0.02` | mean-reversion | **-0.265** | 0.587 | 29% | -38.4% | 152 |
+| 16 | `ma_crossover_20_50` | trend | **-0.334** | 2.186 | 38% | -31.7% | 38 |
+
+**Nothing beat buy-and-hold.** No row reaches 80% of paths positive, and every positive median sits inside an IQR wide enough to straddle zero. `zscore_20_-2` — first under the single split — is 8th, with 52% of paths positive: a coin flip.
+
+> PBO at this horizon is **0.457** across 35 splits, so the *ordering* is weakly informative at best. Read the distribution columns, not the rank.
+
+## Long horizon (1d bars, slow parameters) — CPCV
+
+| # | Strategy | Family | Median Sharpe | IQR | % paths + | Median ret | Trades |
+|---|---|---|---|---|---|---|---|
+| 1 | `obv_trend_60` | volume-flow | **+0.774** | 1.571 | 81% | +44.6% | 98 |
+| 2 | `rsi_30_35_55` | oscillator-reversion | **+0.593** | 0.895 | 71% | +20.8% | 10 |
+| 3 | `buy_and_hold` | baseline | **+0.534** | 1.434 | 68% | +9.4% | 16 |
+| 4 | `macd_26_52_18` | trend | **+0.517** | 1.142 | 76% | +16.1% | 50 |
+| 5 | `stoch_40_5` | oscillator-reversion | **+0.316** | 0.752 | 57% | +6.3% | 34 |
+| 6 | `voltarget_200_60_0.6` | risk-overlay | **+0.295** | 1.558 | 76% | +5.0% | 661 |
+| 7 | `ma_crossover_50_200` | trend | **+0.290** | 1.162 | 52% | +0.0% | 16 |
+| 8 | `sma_regime_200` | regime-filter | **+0.254** | 1.620 | 71% | -2.2% | 44 |
+| 9 | `ts_momentum_200` | momentum | **+0.200** | 2.341 | 52% | -12.7% | 54 |
+| 10 | `breakout_60_30` | breakout | **+0.140** | 1.676 | 62% | -6.6% | 18 |
+| 11 | `bb_reversion_60_2` | mean-reversion | **+0.120** | 0.222 | 76% | -6.0% | 24 |
+| 12 | `zscore_60_-2` | mean-reversion | **+0.120** | 0.222 | 76% | -6.0% | 24 |
+| 13 | `grid_120_4_0.1` | mean-reversion | **+0.095** | 0.869 | 52% | -2.3% | 675 |
+| 14 | `keltner_50_30_2` | breakout | **-0.160** | 2.203 | 38% | -17.7% | 34 |
+| 15 | `vwap_reversion_60_0.05` | mean-reversion | **-0.162** | 0.420 | 29% | -31.5% | 54 |
+| 16 | `bb_breakout_60_2` | breakout | **-0.349** | 1.905 | 43% | -27.1% | 32 |
+
+**`obv_trend_60` is the only row in this document with a genuinely interesting profile:** median Sharpe +0.774, **81% of paths positive**, +44.6% median path return, 98 trades — beating buy-and-hold on all three. It is therefore the first candidate for the parameter-perturbation check (item 7 below), precisely *because* it looks good. Rows 11–12 are again the duplicate mechanism (identical to 3dp), confirming that defect at a third horizon.
+
+> PBO at this horizon is **0.457** across 35 splits, so the *ordering* is weakly informative at best. Read the distribution columns, not the rank.
+
+---
+
+# List 1b — the same singles under a single 70/30 split (retained as contrast)
+
+**Superseded by List 1.** Kept because the disagreement between the two methods is the lesson:
+the single split ranked `zscore_20_-2` first at medium and `ma_crossover_12_48` first at short;
+CPCV puts them 8th and 14th. Ranked on **out-of-sample Sharpe**, in-sample beside each row.
+Rows with fewer than 10 out-of-sample trades are listed but **not ranked**.
 
 ## Short horizon (1h bars, fast parameters) — 16 configurations evaluated
 
@@ -332,14 +467,16 @@ List 3 is demonstrated. The top rows are the experiments most worth running on m
 Ranked by expected information gain per unit of work, which is a different question from
 "which strategy won":
 
-1. **Replace the single 70/30 split with combinatorial purged cross-validation (CPCV).**
-   This is the binding constraint on everything above. One split on a regime-inverting series
-   produces the −0.419 rank correlation seen here; CPCV yields a *distribution* of
-   out-of-sample paths and confidence intervals on Sharpe. Lopez de Prado (2018), Ch. 11–12.
-2. **Get more history and more assets.** 1,875 daily bars cannot evaluate 200-day signals
-   out-of-sample — twelve of sixteen long-horizon rows failed the evidence floor. A peer
-   universe would additionally unlock the cross-sectional and cointegration families that are
-   currently spec-only.
+1. ~~Replace the single 70/30 split with CPCV.~~ **Done** — `backtester/core/cpcv.py`, and it
+   changed the answer: buy-and-hold went from mid-table to first at the medium horizon, and the
+   long horizon became evaluable at all (16/16 versus 4/16). PBO 0.43–0.46 now quantifies what
+   the single split could only hint at.
+2. **Get more assets. Longer daily history is not obtainable here** — Coinbase returns nothing
+   for SOL-USD before 2021-06-17 (its listing date), and every venue with 2020 SOL history
+   (Binance, OKX, Kraken, Gate, KuCoin, Bybit) is geo-blocked or unreachable from this network.
+   CPCV largely absorbed the need: it fixed the long-horizon evidence problem the extra history
+   was meant to fix. A **peer universe** remains the higher-value data addition, because it
+   unlocks the cross-sectional-momentum and cointegration families that are currently spec-only.
 3. **Measure pairwise signal correlation before calling a pair orthogonal.** The identical
    `+2.555` triples prove family labels are not enough.
 4. **Add funding/borrow-rate history.** It is the highest-ranked spec-only signal and it is
@@ -356,10 +493,11 @@ Ranked by expected information gain per unit of work, which is a different quest
 ## Reproducing every number
 
 ```bash
-python3 research/sweep.py                      # all 520 configurations
-python3 research/sweep.py --stage singles       # List 1 only
-python3 research/sweep.py --horizon medium      # one horizon
-python3 research/verify_numbers.py              # assert every figure here matches the sweep
+python3 research/cpcv_sweep.py                  # List 1 (primary): CPCV + PBO
+python3 research/cpcv_sweep.py --groups 8 --k 2  # tune the block/path geometry
+python3 research/sweep.py                       # List 1b/2/3: the single-split sweep
+python3 research/verify_numbers.py              # assert every figure here matches the results
+python3 -m unittest discover -s backtester/tests -t .   # 103 tests
 ```
 
 `verify_numbers.py` extracts every performance figure from this document and from
