@@ -21,16 +21,26 @@ rather than made silently. Literature figures are attributed; everything else is
 
 ## Read this before the tables
 
-**Under CPCV: 48 singles + 420 pairs + 210 triples = 678 configurations, each across 28 paths.
-Singles PBO 0.43–0.46 against 0.500 for pure noise. At the medium horizon nothing beat
-buy-and-hold; at the short horizon every single configuration had a negative median Sharpe.**
+**Under CPCV, over all 25 registered strategies: 75 singles + 1,002 pairs + 210 triples = 1,287
+configurations, each across 28 paths.** At the short horizon **not one of the 25 singles has a
+positive median path Sharpe**. At the daily horizons singles PBO is **0.700** — well above the
+0.500 pure-noise line, so in-sample rank is anti-informative.
 
-**Combining signals made it worse, not better.** Pair and triple PBO reaches **0.857 and 0.886**
-at the medium horizon — *anti*-informative, meaning the in-sample winner lands below median
-out-of-sample nearly nine times in ten. And it does so while producing far more positive-looking
-results (96% of long-horizon triples have a positive median Sharpe). That combination — abundant
-positive results plus failed rank generalisation — is the signature of an overfit search space.
-Full detail in **Lists 2 & 3 under CPCV**.
+**Growing the search from 16 to 25 strategies raised PBO, and I measured how much of that is the
+search rather than a coincident change.** The common CPCV block set shrank from 7 blocks to 6 when
+the 250-bar-window strategies (OU, Hurst, vol-regime) were added, because they cannot warm up
+before block 1 — so two variables moved together. Holding the block set fixed isolates them:
+
+| | Medium | Long |
+|---|---|---|
+| 16 configs, 7 blocks (the earlier run) | 0.457 | 0.457 |
+| 16 configs, **6 blocks** | 0.600 | 0.550 |
+| **25 configs**, 6 blocks | **0.700** | **0.700** |
+| **attributable to search size** | **+0.100** | **+0.150** |
+
+So searching more configurations *does* raise the probability of backtest overfitting, which is
+exactly what Harvey-Liu-Zhu and Bailey et al. predict — but it accounts for only a third to a half
+of the move here. Reporting the whole 0.457 → 0.700 rise as a search effect would have been wrong.
 
 **Under the earlier single split: 520 configurations, 311 rankable, 45 (14%) with a positive
 out-of-sample Sharpe, 28 (9%) that made money.**
@@ -163,87 +173,109 @@ Recorded because the hypothesis was plausible and the data refused it.
 
 # List 1 — Single strategies and signals, ranked (CPCV — primary)
 
-Ranked on **median path Sharpe** across 28 CPCV paths (8 blocks, k=2). Three columns matter as
-much as the median: **IQR** (a median of +0.5 with IQR 1.4 straddles zero heavily), **% paths
-positive** (below ~70% means the sign depends on which regime you sampled), and **trades**
-(pooled across usable blocks). Tables below are generated directly from
-`research/results/cpcv_results.csv`; no figure was transcribed by hand.
+Ranked on **median path Sharpe** across 28 CPCV paths (8 blocks, k=2), over **all 25 registered
+strategies**. Three columns matter as much as the median: **IQR** (a median of +0.5 with IQR 1.4
+straddles zero heavily), **% paths positive** (below ~70% means the sign depends on which regime
+you sampled), and **trades**. Tables are generated from `research/results/cpcv_results.csv`; no
+figure is transcribed by hand.
 
 ## Short horizon (1h bars) — CPCV
 
-**All 16 configurations have a negative median path Sharpe**, buy-and-hold included (−1.456).
+**Not one of the 25 has a positive median path Sharpe at this horizon.** The best, `stoch_14_3` at −0.341, still loses.
+
 | # | Strategy | Family | Median Sharpe | IQR | % paths + | Median ret | Trades |
 |---|---|---|---|---|---|---|---|
 | 1 | `stoch_14_3` | oscillator-reversion | **-0.341** | 2.117 | 38% | -5.2% | 240 |
-| 2 | `keltner_12_7_2` | breakout | **-0.961** | 2.477 | 29% | -4.9% | 88 |
-| 3 | `zscore_20_-2` | mean-reversion | **-1.152** | 1.213 | 19% | -12.5% | 294 |
-| 4 | `bb_reversion_20_2` | mean-reversion | **-1.316** | 1.396 | 14% | -15.4% | 308 |
-| 5 | `buy_and_hold` | baseline | **-1.456** | 2.154 | 29% | -22.9% | 16 |
-| 6 | `bb_breakout_20_2` | breakout | **-1.487** | 3.114 | 29% | -11.5% | 270 |
-| 7 | `obv_trend_24` | volume-flow | **-1.580** | 1.668 | 24% | -18.0% | 852 |
-| 8 | `rsi_7_30_55` | oscillator-reversion | **-1.723** | 1.052 | 14% | -19.8% | 328 |
-| 9 | `breakout_12_6` | breakout | **-1.905** | 2.809 | 14% | -16.9% | 350 |
-| 10 | `grid_48_4_0.03` | mean-reversion | **-2.022** | 0.731 | 0% | -12.4% | 4304 |
-| 11 | `vwap_reversion_20_0.01` | mean-reversion | **-2.189** | 0.836 | 0% | -24.3% | 398 |
-| 12 | `sma_regime_168` | regime-filter | **-2.282** | 1.278 | 5% | -19.9% | 292 |
-| 13 | `voltarget_168_24_0.8` | risk-overlay | **-2.282** | 1.278 | 5% | -19.9% | 292 |
-| 14 | `ma_crossover_12_48` | trend | **-2.385** | 3.326 | 10% | -23.5% | 204 |
-| 15 | `ts_momentum_24` | momentum | **-2.564** | 2.018 | 0% | -24.2% | 716 |
-| 16 | `macd_6_13_5` | trend | **-3.083** | 2.223 | 0% | -33.4% | 1156 |
+| 2 | `ou_reversion_250_2.5` | mean-reversion | **-0.595** | 1.333 | 33% | -3.4% | 196 |
+| 3 | `keltner_12_7_2` | breakout | **-0.961** | 2.477 | 29% | -4.9% | 88 |
+| 4 | `vol_regime_24_0.5` | regime-filter | **-1.048** | 1.677 | 19% | -8.8% | 290 |
+| 5 | `zscore_20_-2` | mean-reversion | **-1.152** | 1.213 | 19% | -12.5% | 294 |
+| 6 | `bb_reversion_20_2` | mean-reversion | **-1.316** | 1.396 | 14% | -15.4% | 308 |
+| 7 | `buy_and_hold` | baseline | **-1.456** | 2.154 | 29% | -22.9% | 16 |
+| 8 | `bb_breakout_20_2` | breakout | **-1.487** | 3.114 | 29% | -11.5% | 270 |
+| 9 | `obv_trend_24` | volume-flow | **-1.580** | 1.668 | 24% | -18.0% | 852 |
+| 10 | `rsi_7_30_55` | oscillator-reversion | **-1.723** | 1.052 | 14% | -19.8% | 328 |
+| 11 | `ichimoku_9_26_52` | trend | **-1.877** | 1.174 | 0% | -18.6% | 392 |
+| 12 | `breakout_12_6` | breakout | **-1.905** | 2.809 | 14% | -16.9% | 350 |
+| 13 | `grid_48_4_0.03` | mean-reversion | **-2.022** | 0.731 | 0% | -12.4% | 4304 |
+| 14 | `vwap_reversion_20_0.01` | mean-reversion | **-2.189** | 0.836 | 0% | -24.3% | 398 |
+| 15 | `voltarget_168_24_0.8` | risk-overlay | **-2.282** | 1.278 | 5% | -19.9% | 292 |
+| 16 | `sma_regime_168` | regime-filter | **-2.282** | 1.278 | 5% | -19.9% | 292 |
+| 17 | `garch_voltarget_0.94_0.8` | risk-overlay | **-2.282** | 1.278 | 5% | -19.9% | 292 |
+| 18 | `ma_crossover_12_48` | trend | **-2.385** | 3.326 | 10% | -23.5% | 204 |
+| 19 | `atr_sized_7_0.01` | risk-overlay | **-2.548** | 2.298 | 5% | -12.4% | 3191 |
+| 20 | `ts_momentum_24` | momentum | **-2.564** | 2.018 | 0% | -24.2% | 716 |
+| 21 | `ma_ribbon_5x6` | trend | **-2.767** | 2.727 | 5% | -19.5% | 4572 |
+| 22 | `macd_6_13_5` | trend | **-3.083** | 2.223 | 0% | -33.4% | 1156 |
+| 23 | `hurst_switch_250_0.55_0.45` | regime-filter | **-3.123** | 2.107 | 14% | -12.8% | 170 |
+| 24 | `adx_trend_7_25` | regime-filter | **-3.736** | 2.496 | 5% | -27.4% | 680 |
+| 25 | `dual_momentum_24_2` | momentum | **-4.633** | 2.094 | 0% | -39.2% | 728 |
 
-Rows 12–13 are numerically identical — `voltarget` degenerates into the plain regime filter whenever realised vol stays under target, so its cap binds at 1.0 (verified: identical exposure 0.4299). And `ma_crossover_12_48`, **first place** under the old split (+0.488), ranks **14th of 16** here.
-
-> PBO at this horizon is **0.429** across 35 splits, so the *ordering* is weakly informative at best. Read the distribution columns, not the rank.
+> 0 of 25 evaluable have a positive median. PBO **0.343** over 35 splits of 25 configurations (common blocks [1, 2, 3, 4, 5, 6, 7]).
 
 ## Medium horizon (1d bars) — CPCV
 
 | # | Strategy | Family | Median Sharpe | IQR | % paths + | Median ret | Trades |
 |---|---|---|---|---|---|---|---|
-| 1 | `buy_and_hold` | baseline | **+0.534** | 1.434 | 68% | +9.4% | 16 |
-| 2 | `bb_breakout_20_2` | breakout | **+0.481** | 1.694 | 67% | +15.9% | 58 |
-| 3 | `macd_12_26_9` | trend | **+0.321** | 1.277 | 67% | +3.8% | 118 |
-| 4 | `rsi_14_30_50` | oscillator-reversion | **+0.238** | 0.664 | 71% | -0.0% | 18 |
-| 5 | `keltner_20_14_2` | breakout | **+0.213** | 1.656 | 76% | +2.2% | 38 |
-| 6 | `obv_trend_20` | volume-flow | **+0.189** | 1.536 | 67% | -9.8% | 220 |
-| 7 | `breakout_20_10` | breakout | **+0.078** | 1.911 | 52% | -6.4% | 52 |
-| 8 | `zscore_20_-2` | mean-reversion | **+0.036** | 0.964 | 52% | -10.0% | 50 |
-| 9 | `ts_momentum_60` | momentum | **+0.025** | 1.752 | 52% | -19.4% | 142 |
-| 10 | `voltarget_100_20_0.6` | risk-overlay | **-0.021** | 1.154 | 38% | -14.7% | 645 |
-| 11 | `stoch_14_3` | oscillator-reversion | **-0.043** | 1.175 | 48% | -13.3% | 56 |
-| 12 | `sma_regime_100` | regime-filter | **-0.066** | 1.522 | 48% | -16.4% | 96 |
-| 13 | `bb_reversion_20_2` | mean-reversion | **-0.114** | 0.910 | 43% | -19.1% | 50 |
-| 14 | `grid_50_4_0.05` | mean-reversion | **-0.152** | 0.369 | 29% | -16.7% | 599 |
-| 15 | `vwap_reversion_20_0.02` | mean-reversion | **-0.265** | 0.587 | 29% | -38.4% | 152 |
-| 16 | `ma_crossover_20_50` | trend | **-0.334** | 2.186 | 38% | -31.7% | 38 |
+| 1 | `hurst_switch_250_0.55_0.45` | regime-filter | **+0.699** | 1.167 | 93% | +16.7% | 24 |
+| 2 | `buy_and_hold` | baseline | **+0.534** | 1.434 | 68% | +9.4% | 16 |
+| 3 | `bb_breakout_20_2` | breakout | **+0.481** | 1.694 | 67% | +15.9% | 58 |
+| 4 | `ou_reversion_250_2.5` | mean-reversion | **+0.412** | 0.790 | 93% | +10.5% | 26 |
+| 5 | `adx_trend_14_25` | regime-filter | **+0.336** | 2.368 | 71% | +7.0% | 44 |
+| 6 | `macd_12_26_9` | trend | **+0.321** | 1.277 | 67% | +3.8% | 118 |
+| 7 | `rsi_14_30_50` | oscillator-reversion | **+0.238** | 0.664 | 71% | -0.0% | 18 |
+| 8 | `keltner_20_14_2` | breakout | **+0.213** | 1.656 | 76% | +2.2% | 38 |
+| 9 | `obv_trend_20` | volume-flow | **+0.189** | 1.536 | 67% | -9.8% | 220 |
+| 10 | `breakout_20_10` | breakout | **+0.078** | 1.911 | 52% | -6.4% | 52 |
+| 11 | `zscore_20_-2` | mean-reversion | **+0.036** | 0.964 | 52% | -10.0% | 50 |
+| 12 | `ts_momentum_60` | momentum | **+0.025** | 1.752 | 52% | -19.4% | 142 |
+| 13 | `ichimoku_9_26_52` | trend | **+0.023** | 2.055 | 57% | -10.9% | 82 |
+| 14 | `voltarget_100_20_0.6` | risk-overlay | **-0.021** | 1.154 | 38% | -14.7% | 645 |
+| 15 | `garch_voltarget_0.94_0.6` | risk-overlay | **-0.028** | 1.207 | 48% | -12.2% | 711 |
+| 16 | `atr_sized_14_0.01` | risk-overlay | **-0.038** | 1.289 | 48% | -0.3% | 743 |
+| 17 | `stoch_14_3` | oscillator-reversion | **-0.043** | 1.175 | 48% | -13.3% | 56 |
+| 18 | `sma_regime_100` | regime-filter | **-0.066** | 1.522 | 48% | -16.4% | 96 |
+| 19 | `bb_reversion_20_2` | mean-reversion | **-0.114** | 0.910 | 43% | -19.1% | 50 |
+| 20 | `grid_50_4_0.05` | mean-reversion | **-0.152** | 0.369 | 29% | -16.7% | 599 |
+| 21 | `vol_regime_20_0.5` | regime-filter | **-0.172** | 0.759 | 40% | -18.7% | 94 |
+| 22 | `vwap_reversion_20_0.02` | mean-reversion | **-0.265** | 0.587 | 29% | -38.4% | 152 |
+| 23 | `dual_momentum_12_1` | momentum | **-0.319** | 1.459 | 43% | -37.2% | 212 |
+| 24 | `ma_crossover_20_50` | trend | **-0.334** | 2.186 | 38% | -31.7% | 38 |
+| 25 | `ma_ribbon_5x10` | trend | **-0.336** | 1.957 | 43% | -29.0% | 965 |
 
-**Nothing beat buy-and-hold.** No row reaches 80% of paths positive, and every positive median sits inside an IQR wide enough to straddle zero. `zscore_20_-2` — first under the single split — is 8th, with 52% of paths positive: a coin flip.
-
-> PBO at this horizon is **0.457** across 35 splits, so the *ordering* is weakly informative at best. Read the distribution columns, not the rank.
+> 13 of 25 evaluable have a positive median. PBO **0.700** over 20 splits of 25 configurations (common blocks [2, 3, 4, 5, 6, 7]).
 
 ## Long horizon (1d bars, slow parameters) — CPCV
 
 | # | Strategy | Family | Median Sharpe | IQR | % paths + | Median ret | Trades |
 |---|---|---|---|---|---|---|---|
 | 1 | `obv_trend_60` | volume-flow | **+0.774** | 1.571 | 81% | +44.6% | 98 |
-| 2 | `rsi_30_35_55` | oscillator-reversion | **+0.593** | 0.895 | 71% | +20.8% | 10 |
-| 3 | `buy_and_hold` | baseline | **+0.534** | 1.434 | 68% | +9.4% | 16 |
-| 4 | `macd_26_52_18` | trend | **+0.517** | 1.142 | 76% | +16.1% | 50 |
-| 5 | `stoch_40_5` | oscillator-reversion | **+0.316** | 0.752 | 57% | +6.3% | 34 |
-| 6 | `voltarget_200_60_0.6` | risk-overlay | **+0.295** | 1.558 | 76% | +5.0% | 661 |
-| 7 | `ma_crossover_50_200` | trend | **+0.290** | 1.162 | 52% | +0.0% | 16 |
-| 8 | `sma_regime_200` | regime-filter | **+0.254** | 1.620 | 71% | -2.2% | 44 |
-| 9 | `ts_momentum_200` | momentum | **+0.200** | 2.341 | 52% | -12.7% | 54 |
-| 10 | `breakout_60_30` | breakout | **+0.140** | 1.676 | 62% | -6.6% | 18 |
-| 11 | `bb_reversion_60_2` | mean-reversion | **+0.120** | 0.222 | 76% | -6.0% | 24 |
-| 12 | `zscore_60_-2` | mean-reversion | **+0.120** | 0.222 | 76% | -6.0% | 24 |
-| 13 | `grid_120_4_0.1` | mean-reversion | **+0.095** | 0.869 | 52% | -2.3% | 675 |
-| 14 | `keltner_50_30_2` | breakout | **-0.160** | 2.203 | 38% | -17.7% | 34 |
-| 15 | `vwap_reversion_60_0.05` | mean-reversion | **-0.162** | 0.420 | 29% | -31.5% | 54 |
-| 16 | `bb_breakout_60_2` | breakout | **-0.349** | 1.905 | 43% | -27.1% | 32 |
+| 2 | `vol_regime_60_0.5` | regime-filter | **+0.696** | 0.823 | 80% | +36.1% | 54 |
+| 3 | `adx_trend_30_25` | regime-filter | **+0.651** | 2.286 | 57% | +26.2% | 14 |
+| 4 | `rsi_30_35_55` | oscillator-reversion | **+0.593** | 0.895 | 71% | +20.8% | 10 |
+| 5 | `hurst_switch_250_0.55_0.45` | regime-filter | **+0.558** | 1.505 | 80% | +11.3% | 32 |
+| 6 | `buy_and_hold` | baseline | **+0.534** | 1.434 | 68% | +9.4% | 16 |
+| 7 | `macd_26_52_18` | trend | **+0.517** | 1.142 | 76% | +16.1% | 50 |
+| 8 | `ou_reversion_250_3` | mean-reversion | **+0.412** | 0.806 | 73% | +10.5% | 24 |
+| 9 | `dual_momentum_24_1` | momentum | **+0.358** | 1.715 | 57% | +5.5% | 156 |
+| 10 | `stoch_40_5` | oscillator-reversion | **+0.316** | 0.752 | 57% | +6.3% | 34 |
+| 11 | `voltarget_200_60_0.6` | risk-overlay | **+0.295** | 1.558 | 76% | +5.0% | 661 |
+| 12 | `ma_crossover_50_200` | trend | **+0.290** | 1.162 | 52% | +0.0% | 16 |
+| 13 | `sma_regime_200` | regime-filter | **+0.254** | 1.620 | 71% | -2.2% | 44 |
+| 14 | `ichimoku_18_52_104` | trend | **+0.243** | 0.950 | 71% | +2.5% | 56 |
+| 15 | `garch_voltarget_0.97_0.6` | risk-overlay | **+0.239** | 1.558 | 76% | +2.3% | 672 |
+| 16 | `ts_momentum_200` | momentum | **+0.200** | 2.341 | 52% | -12.7% | 54 |
+| 17 | `ma_ribbon_5x20` | trend | **+0.171** | 1.319 | 57% | -2.6% | 1030 |
+| 18 | `atr_sized_30_0.01` | risk-overlay | **+0.156** | 1.715 | 67% | +0.7% | 672 |
+| 19 | `breakout_60_30` | breakout | **+0.140** | 1.676 | 62% | -6.6% | 18 |
+| 20 | `zscore_60_-2` | mean-reversion | **+0.120** | 0.222 | 76% | -6.0% | 24 |
+| 21 | `bb_reversion_60_2` | mean-reversion | **+0.120** | 0.222 | 76% | -6.0% | 24 |
+| 22 | `grid_120_4_0.1` | mean-reversion | **+0.095** | 0.869 | 52% | -2.3% | 675 |
+| 23 | `keltner_50_30_2` | breakout | **-0.160** | 2.203 | 38% | -17.7% | 34 |
+| 24 | `vwap_reversion_60_0.05` | mean-reversion | **-0.162** | 0.420 | 29% | -31.5% | 54 |
+| 25 | `bb_breakout_60_2` | breakout | **-0.349** | 1.905 | 43% | -27.1% | 32 |
 
-**`obv_trend_60` is the only row in this document with a genuinely interesting profile:** median Sharpe +0.774, **81% of paths positive**, +44.6% median path return, 98 trades — beating buy-and-hold on all three. It is therefore the first candidate for the parameter-perturbation check (item 7 below), precisely *because* it looks good. Rows 11–12 are again the duplicate mechanism (identical to 3dp), confirming that defect at a third horizon.
-
-> PBO at this horizon is **0.457** across 35 splits, so the *ordering* is weakly informative at best. Read the distribution columns, not the rank.
+> 22 of 25 evaluable have a positive median. PBO **0.700** over 20 splits of 25 configurations (common blocks [2, 3, 4, 5, 6, 7]).
 
 ---
 
@@ -251,7 +283,7 @@ Rows 12–13 are numerically identical — `voltarget` degenerates into the plai
 
 **Superseded by List 1.** Kept because the disagreement between the two methods is the lesson:
 the single split ranked `zscore_20_-2` first at medium and `ma_crossover_12_48` first at short;
-CPCV puts them 8th and 14th. Ranked on **out-of-sample Sharpe**, in-sample beside each row.
+CPCV puts them far lower. Ranked on **out-of-sample Sharpe**, in-sample beside each row.
 Rows with fewer than 10 out-of-sample trades are listed but **not ranked**.
 
 ## Short horizon (1h bars, fast parameters) — 16 configurations evaluated
@@ -471,109 +503,85 @@ List 3 is demonstrated. The top rows are the experiments most worth running on m
 
 # Lists 2 & 3 under CPCV — the combination result
 
-**This is the headline of the combination work, and it is a warning.** Combining signals
-produced *more* positive-looking results and *dramatically worse* generalisation at the same time.
+**Re-run over all 25 strategies: 334 cross-family pairs per horizon (was 140) and 70 triples.**
+The conclusion did not soften — combinations still produce *more* positive-looking results and
+*worse* rank generalisation at the same time.
 
 | Configuration type | PBO (short) | PBO (medium) | PBO (long) |
 |---|---|---|---|
-| Singles | 0.429 | 0.457 | 0.457 |
-| **Pairs** | 0.371 | **0.857** | **0.657** |
-| **Triples** | 0.086 | **0.886** | 0.543 |
+| Singles (25) | 0.343 | **0.700** | **0.700** |
+| **Pairs** (334/horizon) | 0.229 | **0.650** | **0.650** |
+| **Triples** (70/horizon) | 0.086 | **0.886** | **0.543** |
 
-Recall the calibration: **0.500 is pure noise, 0.000 is a genuinely ordered signal set.** At the
-medium horizon, pairs reach **0.857** and triples **0.886** — the in-sample winner lands *below*
-median out-of-sample almost nine times in ten. That is not merely uninformative, it is
-**anti-informative**: choosing the best-looking combination in-sample is measurably worse than
-choosing at random. This is the multiple-testing effect from Harvey-Liu-Zhu and Bailey et al.
-observed directly, and it scales with the size of the search exactly as they predict.
+Recall the calibration: **0.500 is pure noise, 0.000 is a genuinely ordered signal set.** Every
+daily-horizon figure above 0.500 is *anti*-informative — picking the best in-sample is measurably
+worse than picking at random.
 
-And the trap is baited. Combinations look *better* on the surface:
+And the trap is baited harder than before:
 
 | | positive median Sharpe |
 |---|---|
-| Medium singles | 11 of 16 |
-| Medium pairs | 83 of 123 |
-| **Long triples** | **45 of 47 (96%)** |
+| Long pairs | **247 of 295 (84%)** |
+| Long triples | **45 of 47 (96%)** |
+| Medium pairs | 201 of 297 (68%) |
 
-96% of long-horizon triples have a positive median path Sharpe, and their PBO is still 0.543 —
-worse than a coin flip. Abundant positive results plus failed rank generalisation is the exact
-signature of an overfit search space.
-
-> **One reading trap to avoid.** Short-horizon triples show PBO **0.086**, which looks excellent.
-> It is not good news: only **6 of 61** have a positive median Sharpe. PBO measures whether
-> in-sample *rank* generalises, not whether anything is profitable — here the in-sample winner
-> generalises reliably as a loser. Always read PBO next to the positive-count column.
+The single best number anywhere in this document is `all(dual_momentum+vol_regime)` at the long
+horizon: median Sharpe **+1.345**, 87% of paths positive, **+75.1%** median path return. It is
+also, by the PBO of 0.650 sitting above it, exactly the row you should not trust — it is the top
+of a 295-configuration search whose ranking is anti-informative. That tension is the finding.
 
 ## List 2 under CPCV — pairs
 
-Ranked on median path Sharpe. The a-priori complementarity hypotheses from the original List 2
-are below; the one that survived both methods is called out.
-
-**SHORT** — 140 evaluated, 129 evaluable, **2** with positive median Sharpe. **PBO = 0.371.**
+**SHORT** — 334 evaluated, 320 evaluable, **11** with positive median Sharpe. **PBO = 0.229.**
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
-| 1 | `all(sma_regime+zscore)` | regime-filter+mean-reversion | **+0.681** | 2.584 | 62% | +1.6% | 112 |
-| 2 | `all(sma_regime+bb_reversion)` | regime-filter+mean-reversion | **+0.549** | 2.866 | 62% | +1.6% | 112 |
-| 3 | `all(sma_regime+rsi)` | regime-filter+oscillator-reversion | **-0.063** | 2.619 | 48% | -0.4% | 142 |
-| 4 | `all(breakout+bb_reversion)` | breakout+mean-reversion | **-0.227** | 2.944 | 43% | -0.5% | 12 |
-| 5 | `all(breakout+zscore)` | breakout+mean-reversion | **-0.227** | 2.873 | 33% | -0.5% | 10 |
-| 6 | `all(stochastic+zscore)` | oscillator-reversion+mean-reversion | **-0.238** | 1.362 | 38% | -2.9% | 208 |
-| 7 | `all(ma_crossover+zscore)` | trend+mean-reversion | **-0.309** | 2.596 | 43% | -1.4% | 134 |
-| 8 | `all(stochastic+bb_reversion)` | oscillator-reversion+mean-reversion | **-0.354** | 1.557 | 33% | -5.1% | 212 |
-| 9 | `all(ma_crossover+bb_reversion)` | trend+mean-reversion | **-0.376** | 2.380 | 43% | -1.6% | 142 |
-| 10 | `all(keltner+obv_trend)` | breakout+volume-flow | **-0.448** | 2.197 | 38% | -2.5% | 96 |
+| 1 | `all(vol_regime+zscore)` | regime-filter+mean-reversion | **+1.091** | 2.726 | 71% | +2.8% | 84 |
+| 2 | `all(vol_regime+ou_reversion)` | regime-filter+mean-reversion | **+0.944** | 2.244 | 71% | +1.4% | 68 |
+| 3 | `all(ma_crossover+ou_reversion)` | trend+mean-reversion | **+0.919** | 2.168 | 71% | +1.6% | 94 |
+| 4 | `all(vol_regime+bb_reversion)` | regime-filter+mean-reversion | **+0.834** | 2.726 | 71% | +1.9% | 84 |
+| 5 | `all(ou_reversion+obv_trend)` | mean-reversion+volume-flow | **+0.688** | 3.779 | 52% | +1.4% | 104 |
+| 6 | `all(sma_regime+zscore)` | regime-filter+mean-reversion | **+0.681** | 2.584 | 62% | +1.6% | 112 |
+| 7 | `all(sma_regime+bb_reversion)` | regime-filter+mean-reversion | **+0.549** | 2.866 | 62% | +1.6% | 112 |
+| 8 | `all(vol_regime+rsi)` | regime-filter+oscillator-reversion | **+0.530** | 2.329 | 57% | +1.2% | 100 |
 
-_Top 10 of 129 evaluable._
+_Top 8 of 320 evaluable._
 
-**MEDIUM** — 140 evaluated, 123 evaluable, **83** with positive median Sharpe. **PBO = 0.857.**
+**MEDIUM** — 334 evaluated, 297 evaluable, **201** with positive median Sharpe. **PBO = 0.650.**
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
-| 1 | `any(bb_breakout+stochastic)` | breakout+oscillator-reversion | **+0.802** | 1.676 | 62% | +47.9% | 110 |
-| 2 | `all(breakout+obv_trend)` | breakout+volume-flow | **+0.609** | 1.631 | 62% | +24.3% | 92 |
-| 3 | `all(macd+breakout)` | trend+breakout | **+0.592** | 1.477 | 67% | +23.0% | 66 |
-| 4 | `any(bb_breakout+zscore)` | breakout+mean-reversion | **+0.573** | 1.590 | 62% | +15.9% | 108 |
-| 5 | `any(keltner+stochastic)` | breakout+oscillator-reversion | **+0.556** | 1.220 | 57% | +22.1% | 94 |
-| 6 | `all(bb_breakout+obv_trend)` | breakout+volume-flow | **+0.541** | 1.727 | 62% | +19.7% | 76 |
-| 7 | `all(macd+bb_breakout)` | trend+breakout | **+0.527** | 1.546 | 62% | +18.8% | 64 |
-| 8 | `any(breakout+stochastic)` | breakout+oscillator-reversion | **+0.489** | 1.566 | 57% | +13.1% | 102 |
-| 9 | `any(bb_breakout+rsi)` | breakout+oscillator-reversion | **+0.489** | 1.142 | 76% | +15.2% | 72 |
-| 10 | `any(keltner+zscore)` | breakout+mean-reversion | **+0.470** | 1.247 | 67% | +2.1% | 88 |
+| 1 | `any(hurst_switch+ou_reversion)` | regime-filter+mean-reversion | **+1.290** | 0.972 | 100% | +68.9% | 40 |
+| 2 | `all(stochastic+ou_reversion)` | oscillator-reversion+mean-reversion | **+1.156** | 0.584 | 93% | +30.1% | 18 |
+| 3 | `any(bb_breakout+ou_reversion)` | breakout+mean-reversion | **+1.052** | 1.198 | 87% | +67.1% | 76 |
+| 4 | `any(macd+ou_reversion)` | trend+mean-reversion | **+0.996** | 0.929 | 87% | +84.3% | 100 |
+| 5 | `any(macd+hurst_switch)` | trend+regime-filter | **+0.925** | 1.083 | 93% | +72.6% | 118 |
+| 6 | `any(hurst_switch+bb_breakout)` | regime-filter+breakout | **+0.924** | 1.380 | 87% | +48.3% | 72 |
+| 7 | `all(ma_ribbon+hurst_switch)` | trend+regime-filter | **+0.881** | 1.238 | 93% | +7.9% | 25 |
+| 8 | `any(hurst_switch+stochastic)` | regime-filter+oscillator-reversion | **+0.875** | 1.080 | 87% | +53.5% | 58 |
 
-_Top 10 of 123 evaluable._
+_Top 8 of 297 evaluable._
 
-**LONG** — 140 evaluated, 119 evaluable, **98** with positive median Sharpe. **PBO = 0.657.**
+**LONG** — 334 evaluated, 295 evaluable, **247** with positive median Sharpe. **PBO = 0.650.**
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
-| 1 | `any(stochastic+obv_trend)` | oscillator-reversion+volume-flow | **+0.812** | 1.318 | 76% | +51.4% | 84 |
-| 2 | `all(macd+rsi)` | trend+oscillator-reversion | **+0.751** | 1.071 | 86% | +19.4% | 12 |
-| 3 | `any(rsi+obv_trend)` | oscillator-reversion+volume-flow | **+0.748** | 1.490 | 90% | +44.6% | 86 |
-| 4 | `any(keltner+obv_trend)` | breakout+volume-flow | **+0.694** | 1.573 | 76% | +35.5% | 88 |
-| 5 | `all(macd+obv_trend)` | trend+volume-flow | **+0.680** | 1.784 | 90% | +32.3% | 74 |
-| 6 | `any(zscore+obv_trend)` | mean-reversion+volume-flow | **+0.664** | 1.386 | 76% | +28.5% | 92 |
-| 7 | `any(bb_reversion+obv_trend)` | mean-reversion+volume-flow | **+0.664** | 1.386 | 76% | +28.5% | 92 |
-| 8 | `any(bb_breakout+obv_trend)` | breakout+volume-flow | **+0.626** | 1.532 | 71% | +29.7% | 88 |
-| 9 | `all(macd+stochastic)` | trend+oscillator-reversion | **+0.589** | 0.739 | 95% | +21.8% | 30 |
-| 10 | `any(breakout+stochastic)` | breakout+oscillator-reversion | **+0.580** | 1.065 | 67% | +24.0% | 52 |
+| 1 | `all(dual_momentum+vol_regime)` | momentum+regime-filter | **+1.345** | 0.881 | 87% | +75.1% | 52 |
+| 2 | `any(adx_trend+ou_reversion)` | regime-filter+mean-reversion | **+1.162** | 1.423 | 67% | +87.6% | 34 |
+| 3 | `any(ou_reversion+obv_trend)` | mean-reversion+volume-flow | **+1.054** | 1.180 | 93% | +93.6% | 90 |
+| 4 | `all(macd+vol_regime)` | trend+regime-filter | **+0.991** | 0.957 | 87% | +42.0% | 34 |
+| 5 | `any(hurst_switch+ou_reversion)` | regime-filter+mean-reversion | **+0.965** | 1.049 | 93% | +42.6% | 46 |
+| 6 | `all(dual_momentum+stochastic)` | momentum+oscillator-reversion | **+0.937** | 1.089 | 95% | +23.4% | 66 |
+| 7 | `any(vol_regime+rsi)` | regime-filter+oscillator-reversion | **+0.927** | 0.868 | 100% | +57.9% | 60 |
+| 8 | `any(hurst_switch+obv_trend)` | regime-filter+volume-flow | **+0.919** | 1.534 | 100% | +63.1% | 88 |
 
-_Top 10 of 119 evaluable._
-
-**Which a-priori hypothesis survived?** Original List 2 ranked **regime filter + mean-reversion**
-first on mechanical grounds — mean-reversion's fatal mode is buying dips in a downtrend, and only
-a regime filter can see the downtrend. Under CPCV, `all(sma_regime+zscore)` is the **top-ranked
-short-horizon pair (+0.681)**, and it was also top under the single split (+2.572). It is the only
-List 2 hypothesis that held up under both methods. Note its IQR is 2.584 — still wide enough to
-straddle zero, so this is "the best-supported hypothesis", not "a result".
+_Top 8 of 295 evaluable._
 
 ## List 3 under CPCV — triples
 
-Triples are drawn from a **fixed a-priori candidate set of seven** (one per family:
-`ma_crossover`, `ts_momentum`, `sma_regime`, `breakout`, `rsi`, `zscore`, `obv_trend`), chosen
-before any CPCV number was seen. The single-split version selected triples from the top-N measured
-singles, which borrows information from the evaluation data; fixing the set up front removes that
-leak, so **these numbers carry no selection bias from the singles ranking**.
+Drawn from a **fixed a-priori set of seven** (one per family), chosen before any CPCV number was
+seen, so these carry no selection bias from the singles ranking. Unchanged from the 16-strategy
+run, which keeps them comparable across both sweeps.
 
 **SHORT** — 70 evaluated, 61 evaluable, **6** with positive median Sharpe. **PBO = 0.086.**
 
@@ -587,10 +595,8 @@ leak, so **these numbers carry no selection bias from the singles ranking**.
 | 6 | `all(ma_crossover+ts_momentum+zscore)` | trend+momentum+mean-reversion | **+0.239** | 1.847 | 62% | +0.2% | 44 |
 | 7 | `all(ts_momentum+sma_regime+rsi)` | momentum+regime-filter+oscillator-reversion | **-0.104** | 2.363 | 48% | -0.2% | 58 |
 | 8 | `all(ma_crossover+sma_regime+rsi)` | trend+regime-filter+oscillator-reversion | **-0.458** | 1.902 | 38% | -0.9% | 88 |
-| 9 | `all(ma_crossover+zscore+obv_trend)` | trend+mean-reversion+volume-flow | **-0.485** | 3.945 | 29% | -0.1% | 22 |
-| 10 | `all(ma_crossover+rsi+zscore)` | trend+oscillator-reversion+mean-reversion | **-0.638** | 2.939 | 33% | -2.3% | 114 |
 
-_Top 10 of 61 evaluable._
+_Top 8 of 61 evaluable._
 
 **MEDIUM** — 70 evaluated, 51 evaluable, **38** with positive median Sharpe. **PBO = 0.886.**
 
@@ -604,10 +610,8 @@ _Top 10 of 61 evaluable._
 | 6 | `vote(ts_momentum+breakout+zscore)` | momentum+breakout+mean-reversion | **+0.326** | 1.336 | 57% | +5.4% | 1252 |
 | 7 | `vote(ts_momentum+rsi+obv_trend)` | momentum+oscillator-reversion+volume-flow | **+0.311** | 1.455 | 57% | +5.3% | 1372 |
 | 8 | `vote(ts_momentum+zscore+obv_trend)` | momentum+mean-reversion+volume-flow | **+0.307** | 1.076 | 62% | +5.2% | 1438 |
-| 9 | `vote(ma_crossover+zscore+obv_trend)` | trend+mean-reversion+volume-flow | **+0.297** | 1.383 | 57% | +4.6% | 1493 |
-| 10 | `vote(ma_crossover+rsi+zscore)` | trend+oscillator-reversion+mean-reversion | **+0.281** | 1.187 | 57% | +3.8% | 1174 |
 
-_Top 10 of 51 evaluable._
+_Top 8 of 51 evaluable._
 
 **LONG** — 70 evaluated, 47 evaluable, **45** with positive median Sharpe. **PBO = 0.543.**
 
@@ -621,17 +625,8 @@ _Top 10 of 51 evaluable._
 | 6 | `vote(sma_regime+zscore+obv_trend)` | regime-filter+mean-reversion+volume-flow | **+0.512** | 1.702 | 76% | +17.6% | 1398 |
 | 7 | `all(ma_crossover+sma_regime+obv_trend)` | trend+regime-filter+volume-flow | **+0.507** | 1.397 | 81% | +18.0% | 42 |
 | 8 | `all(rsi+zscore+obv_trend)` | oscillator-reversion+mean-reversion+volume-flow | **+0.475** | 1.012 | 57% | +0.7% | 10 |
-| 9 | `vote(breakout+zscore+obv_trend)` | breakout+mean-reversion+volume-flow | **+0.446** | 1.536 | 71% | +13.8% | 1271 |
-| 10 | `vote(ts_momentum+zscore+obv_trend)` | momentum+mean-reversion+volume-flow | **+0.425** | 1.695 | 71% | +12.2% | 1449 |
 
-_Top 10 of 47 evaluable._
-
-**`obv_trend` dominates the long-horizon triples** — it appears in 6 of the top 7, consistent with
-`obv_trend_60` being the best single anywhere. Watch the trade counts though: `vote` mode runs
-1,200–1,400 trades because continuous exposure rebalances every bar, while `all` mode runs ~42.
-At 8bps round-trip, those are very different cost profiles for a similar median Sharpe, and the
-`all` variant is the more honest candidate.
-
+_Top 8 of 47 evaluable._
 ---
 
 ## What to actually do next
