@@ -68,6 +68,13 @@ data/
 # its own claims -- and worse, a stale copy produced hundreds of spurious
 # mismatches. They are small (~200KB total).
 
+# py2app build output for the soltui menu-bar bundle. Regenerate with:
+#   python3 soltui/soltui-service build
+# The installed copy lives in ~/Applications, deliberately outside the repo --
+# see soltui/soltui-service for why a worktree path breaks login startup.
+/build/
+/dist/
+
 # Claude Code local state. worktrees/ holds live git worktrees (multi-MB, and
 # committing a worktree from inside the repo it belongs to is recursive); the
 # .local.json settings are per-machine by convention. A tracked
