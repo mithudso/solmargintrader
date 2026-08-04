@@ -1,0 +1,98 @@
+[
+  {
+    "pbo": 0.37142857142857144,
+    "n_splits": 35.0,
+    "n_configs": 129.0,
+    "horizon": "short",
+    "kind": "pair",
+    "common_blocks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "pbo": 0.08571428571428572,
+    "n_splits": 35.0,
+    "n_configs": 61.0,
+    "horizon": "short",
+    "kind": "triple",
+    "common_blocks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "pbo": 0.8571428571428571,
+    "n_splits": 35.0,
+    "n_configs": 123.0,
+    "horizon": "medium",
+    "kind": "pair",
+    "common_blocks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "pbo": 0.8857142857142857,
+    "n_splits": 35.0,
+    "n_configs": 51.0,
+    "horizon": "medium",
+    "kind": "triple",
+    "common_blocks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "pbo": 0.6571428571428571,
+    "n_splits": 35.0,
+    "n_configs": 119.0,
+    "horizon": "long",
+    "kind": "pair",
+    "common_blocks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "pbo": 0.5428571428571428,
+    "n_splits": 35.0,
+    "n_configs": 47.0,
+    "horizon": "long",
+    "kind": "triple",
+    "common_blocks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  }
+]

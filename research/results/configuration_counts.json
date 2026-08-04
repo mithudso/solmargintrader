@@ -1,0 +1,11 @@
+{
+  "long/pairs": 140,
+  "long/singles": 16,
+  "medium/pairs": 140,
+  "medium/singles": 16,
+  "medium/triples": 20,
+  "short/pairs": 140,
+  "short/singles": 16,
+  "short/triples": 32,
+  "total": 520
+}
