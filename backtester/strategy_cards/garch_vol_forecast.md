@@ -17,7 +17,10 @@ params:
   lam: {default: 0.94, type: float, desc: "EWMA decay; the GARCH(1,1) case omega=0, alpha=1-lam, beta=lam"}
   target_vol: {default: 0.6, type: float, desc: "annualised volatility target, decimal"}
   trend_window: {default: 100, type: int, desc: "SMA window for the trend gate"}
-presets: {}
+presets:
+  short: {lam: 0.94, target_vol: 0.8, trend_window: 168}
+  medium: {lam: 0.94, target_vol: 0.6, trend_window: 100}
+  long: {lam: 0.97, target_vol: 0.6, trend_window: 200}
 ---
 # EWMA / GARCH(1,1) Vol-Targeted Trend
 

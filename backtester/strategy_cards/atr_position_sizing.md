@@ -18,7 +18,10 @@ params:
   risk_per_trade: {default: 0.01, type: float, desc: "fraction of equity risked per stop distance"}
   stop_atr_multiple: {default: 2.0, type: float, desc: "stop distance in ATRs"}
   trend_window: {default: 100, type: int, desc: "SMA window for the trend gate"}
-presets: {}
+presets:
+  short: {atr_period: 7, trend_window: 168}
+  medium: {atr_period: 14, trend_window: 100}
+  long: {atr_period: 30, trend_window: 200}
 ---
 # ATR-Normalised Position Sizing
 

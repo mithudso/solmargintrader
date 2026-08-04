@@ -18,7 +18,10 @@ params:
   lookback: {default: 250, type: int, desc: "bars of vol history for the quantile"}
   calm_quantile: {default: 0.5, type: float, desc: "vol quantile below which the regime counts as calm"}
   trend_window: {default: 100, type: int, desc: "SMA window for the trend rule"}
-presets: {}
+presets:
+  short: {vol_window: 24, lookback: 250, trend_window: 168}
+  medium: {vol_window: 20, lookback: 250, trend_window: 100}
+  long: {vol_window: 60, lookback: 250, trend_window: 200}
 ---
 # Volatility-Regime Switch (tercile, not HMM)
 

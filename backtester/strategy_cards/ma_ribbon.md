@@ -16,7 +16,10 @@ success_basis: measured-oos
 params:
   windows: {default: 5, type: int, desc: "number of MAs in the ribbon"}
   base: {default: 10, type: int, desc: "shortest MA window; the rest are multiples of it"}
-presets: {}
+presets:
+  short: {windows: 5, base: 6}
+  medium: {windows: 5, base: 10}
+  long: {windows: 5, base: 20}
 ---
 # Moving-Average Ribbon
 

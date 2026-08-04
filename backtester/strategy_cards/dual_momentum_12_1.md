@@ -16,7 +16,10 @@ success_basis: measured-oos
 params:
   formation: {default: 12, type: int, desc: "formation window in bars"}
   skip: {default: 1, type: int, desc: "most recent bars excluded from the return"}
-presets: {}
+presets:
+  short: {formation: 24, skip: 2}
+  medium: {formation: 12, skip: 1}
+  long: {formation: 24, skip: 1}
 ---
 # Dual Momentum (12-1)
 
