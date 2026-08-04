@@ -58,6 +58,8 @@ loader raises rather than accept it. The fields mean:
 | `evaluation` | how any number in the body was produced; required on `measured` cards |
 | `params` | each entry needs **either** `default:` **or** `required: true`, never both. `type:` is enforced against the default |
 | `presets` | per-horizon overrides; may only name declared params, and layer over the defaults |
+| `success_likelihood` | `very-low`, `low` or `moderate`. **There is no `high`** — see below |
+| `success_basis` | `measured-oos`, `base-rate` or `a-priori`: where the belief comes from |
 
 The frontmatter is a **strict YAML subset** parsed by `core/strategy_cards.py` — no
 `pyyaml`, because `requirements.txt` deliberately excludes it. Scalars, flow sequences
@@ -119,6 +121,30 @@ trades; below that a row is listed, never ranked.
 Treat those numbers as evidence about **one regime transition**, not as performance
 estimates. When a CPCV evaluation supersedes them, change `evaluation:` and the numbers
 together.
+
+## Likelihood of success
+
+Every card carries a rating and must explain it in a matching body section. The scale
+refuses to flatter, because the evidence base cannot support flattery: across 311
+rankable configurations in this repo's own sweep, **14% had a positive out-of-sample
+Sharpe and 9% made money**.
+
+| Rating | Means |
+|---|---|
+| `very-low` | Measured negative out-of-sample, or the mechanism's known failure mode is the dominant feature of this market |
+| `low` | Plausible mechanism, no confirming evidence here — or evidence at/below the 10-trade evidence floor |
+| `moderate` | A documented edge **and** either out-of-sample evidence above the floor here, or a premise that is structural (an arbitrage, a fee) rather than statistical |
+
+There is deliberately **no `high`**, and `test_strategy_cards.py` asserts the word is
+absent from the vocabulary. It also asserts that only a `measured` card may cite
+`measured-oos`, that every rating has a body section stating its basis, and that **no
+more than a tenth of cards may be rated moderate** — a directory where most cards
+looked promising would be the tell that the ratings had drifted into marketing.
+
+Current distribution: **20 very-low, 21 low, 2 moderate**. The two moderates are
+`hurst_regime_test` (measured: +15.6% out-of-sample at +0.564 Sharpe on exactly 10
+trades) and `pairs_cointegration` (a-priori: the rigorous version of `zscore`, whose
+peer series is also the cheapest data gap here to close).
 
 ## Two things called "grid"
 
