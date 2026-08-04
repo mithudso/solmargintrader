@@ -1,0 +1,10 @@
+{
+  "target": "all(macd+vol_regime)",
+  "horizon": "long",
+  "baseline_median_sharpe": 0.991215210065157,
+  "baseline_iqr": 0.956616766709356,
+  "max_abs_delta": 0.28318264558328066,
+  "ratio_to_iqr": 0.29602517480160223,
+  "sign_flips": 0,
+  "perturbations": 12
+}

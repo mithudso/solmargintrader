@@ -103,6 +103,27 @@ def load() -> pd.DataFrame:
 
 
 CPCV_COMBOS_CSV = RESEARCH / "results" / "cpcv_combos_results.csv"
+PERTURB_GLOB = "perturb_*.csv"
+# Heading that opens the perturbation results, used to scope the match.
+PERTURB_SECTION = "### 1d. The top pair survives parameter perturbation"
+
+# Perturbation tables are 4-column and would not be matched by the 8-column
+# CPCV_ROW pattern, so they need their own extraction. Without this the figures in
+# finding 1d would sit in the document unverified, quietly weakening the
+# "every number is checked" guarantee this whole script exists for.
+PERTURB_ROW = re.compile(
+    r"^\|\s*(?:\*\*)?(?:baseline|`[^`]+`|geometry:[^|]*?)(?:\*\*)?\s*\|"
+    r"\s*\*{0,2}([-+]?\d+\.\d+)\*{0,2}\s*\|",
+    re.M,
+)
+
+
+def load_perturb() -> pd.DataFrame | None:
+    """Every perturbation result concatenated; None when none have been run."""
+    paths = sorted((RESEARCH / "results").glob(PERTURB_GLOB))
+    if not paths:
+        return None
+    return pd.concat([pd.read_csv(x) for x in paths], ignore_index=True)
 
 
 def load_cpcv() -> pd.DataFrame | None:
@@ -148,6 +169,7 @@ def main() -> int:
     """Verify every parseable figure; exit non-zero on any mismatch."""
     df = load()
     cpcv = load_cpcv()
+    perturb = load_perturb()
     checked = 0
     failures: list[str] = []
     per_doc: dict[str, int] = {}
@@ -276,6 +298,25 @@ def main() -> int:
                 ok, msg = check_cpcv(label, field, v, tol)
                 if not ok:
                     failures.append(f"{doc.name}: {msg}")
+
+        # Perturbation tables. Matched by NUMBER rather than by label, because
+        # the document abbreviates variant names for readability while the CSV
+        # keeps them verbose.
+        if perturb is not None and PERTURB_SECTION in text:
+            # Scope to the perturbation section only. Searching the whole document
+            # collides with the single-split pair tables, which share the same
+            # 4-column shape and produced three false failures.
+            start = text.index(PERTURB_SECTION)
+            nxt = text.find("\n### ", start + len(PERTURB_SECTION))
+            section = text[start : nxt if nxt != -1 else len(text)]
+            known = perturb["median_sharpe"].to_numpy()
+            for m in PERTURB_ROW.finditer(section):
+                v = float(m.group(1))
+                checked += 1
+                if not any(abs(g - v) <= TOL_SHARPE for g in known):
+                    failures.append(
+                        f"{doc.name}: perturbation median {v} appears in no perturb_*.csv"
+                    )
 
         for m in PAIR_ROW.finditer(text):
             label, oos_s, is_s, oos_r, trades = m.groups()

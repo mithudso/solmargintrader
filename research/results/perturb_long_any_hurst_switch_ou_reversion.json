@@ -1,0 +1,10 @@
+{
+  "target": "any(hurst_switch+ou_reversion)",
+  "horizon": "long",
+  "baseline_median_sharpe": 0.965303321963032,
+  "baseline_iqr": 1.0494498740805256,
+  "max_abs_delta": 0.7544781893659631,
+  "ratio_to_iqr": 0.7189273237342549,
+  "sign_flips": 0,
+  "perturbations": 12
+}

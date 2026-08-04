@@ -1,0 +1,10 @@
+{
+  "target": "vol_regime",
+  "horizon": "long",
+  "baseline_median_sharpe": 0.6963665172944979,
+  "baseline_iqr": 0.8229623956700485,
+  "max_abs_delta": 0.3643243002183903,
+  "ratio_to_iqr": 0.4426985997601516,
+  "sign_flips": 0,
+  "perturbations": 6
+}

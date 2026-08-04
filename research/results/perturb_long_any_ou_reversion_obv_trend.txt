@@ -1,0 +1,22 @@
+PARAMETER-PERTURBATION STABILITY CHECK
+target   : any(ou_reversion+obv_trend)
+horizon  : long
+
+baseline : median Sharpe +1.054  IQR 1.180  93% paths positive  median return +93.6%  90 trades
+
+variant                                          median       Δ   %pos      ret trades
+--------------------------------------------------------------------------------------
+obv_trend: ma_window 60→54                       +1.225  +0.171    93%   +114.4     94
+ou_reversion: entry_z -2→-1.8                    +1.054  +0.000    93%    +93.6     92
+ou_reversion: entry_z -2→-2.2                    +1.054  +0.000    93%    +93.6     90
+ou_reversion: hold_multiple 3→2.7                +1.054  +0.000    93%    +93.6     90
+ou_reversion: hold_multiple 3→3.3                +1.054  +0.000    93%    +93.6     90
+obv_trend: ma_window 60→66                       +0.854  -0.200    93%    +56.2     88
+ou_reversion: fit_window 250→275                 +0.786  -0.268    93%    +46.9     84
+ou_reversion: fit_window 250→225                 +0.608  -0.446    76%    +27.4    108
+
+VERDICT: STABLE under this test — a 10% parameter nudge moves the median much less than sampling a different regime does.
+    max |Δ median Sharpe| = 0.446 against a baseline path IQR of 1.180 (ratio 0.38)
+    0 of 8 perturbations flip the sign
+    for reference, seven top long-horizon configurations measured ratios of 0.13–0.72 (median 0.44), so this is at or below typical
+    this test does NOT address multiple testing. It asks whether the PARAMETERS were cherry-picked; it cannot tell you whether the CONFIGURATION was cherry-picked from hundreds. PBO answers that, separately.

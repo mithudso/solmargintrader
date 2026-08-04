@@ -1,0 +1,20 @@
+PARAMETER-PERTURBATION STABILITY CHECK
+target   : vol_regime
+horizon  : long
+
+baseline : median Sharpe +0.696  IQR 0.823  80% paths positive  median return +36.1%  54 trades
+
+variant                                          median       Δ   %pos      ret trades
+--------------------------------------------------------------------------------------
+vol_regime: trend_window 200→220                 +0.840  +0.144    87%    +40.5     60
+vol_regime: vol_window 60→54                     +0.753  +0.057    80%    +32.5     60
+vol_regime: vol_window 60→66                     +0.719  +0.023    87%    +30.9     56
+vol_regime: lookback 250→275                     +0.603  -0.093    87%    +22.2     54
+vol_regime: trend_window 200→180                 +0.504  -0.192    73%    +17.2     64
+vol_regime: lookback 250→225                     +0.332  -0.364    76%     +5.0     54
+
+VERDICT: STABLE under this test — a 10% parameter nudge moves the median much less than sampling a different regime does.
+    max |Δ median Sharpe| = 0.364 against a baseline path IQR of 0.823 (ratio 0.44)
+    0 of 6 perturbations flip the sign
+    for reference, seven top long-horizon configurations measured ratios of 0.13–0.72 (median 0.44), so this is above typical
+    this test does NOT address multiple testing. It asks whether the PARAMETERS were cherry-picked; it cannot tell you whether the CONFIGURATION was cherry-picked from hundreds. PBO answers that, separately.
