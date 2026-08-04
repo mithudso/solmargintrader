@@ -29,17 +29,23 @@ own entry.
 
 ### The headline empirical result
 
-Evaluation is now **combinatorial purged cross-validation** (8 blocks, k=2, 28 paths per
-configuration) rather than a single 70/30 split. Under CPCV, across 48 configurations × 28 paths:
+Evaluation is **combinatorial purged cross-validation** (8 blocks, k=2, 28 paths per
+configuration), now run over **all 25 registered strategies** — the original 16 plus nine
+implemented from the spec-only cards. Across 1,287 configurations:
 
-- **PBO is 0.429 / 0.457 / 0.457** (short / medium / long). Calibrated against controls in the
-  test suite, **pure noise gives 0.500 and a genuinely ordered signal set gives 0.000** — so
-  selecting a strategy by in-sample performance here is barely better than random.
-- **At the medium horizon, `buy_and_hold` ranks first** (median path Sharpe +0.534). Nothing beat
-  holding the asset.
-- **At the short horizon all 16 configurations have a negative median path Sharpe.**
-- Only one row anywhere has a genuinely interesting profile: **`obv_trend_60`**, median Sharpe
-  +0.774 with **81% of paths positive** and +44.6% median path return.
+- **PBO is 0.343 / 0.700 / 0.700** (short / medium / long). Calibrated against constructed
+  controls in the test suite, **pure noise gives 0.500 and a genuinely ordered signal set gives
+  0.000** — so at the daily horizons in-sample rank is *anti*-informative.
+- **At the short horizon not one of the 25 has a positive median path Sharpe.** The best,
+  `stoch_14_3` at −0.341, still loses.
+- Growing the search 16 → 25 raised PBO by **+0.100 (medium) and +0.150 (long)** once the
+  coincident block-set change is held fixed — the multiple-testing effect, measured rather than
+  cited. Full decomposition in `RANKED_LISTS.md`.
+- Best rows now: `hurst_switch` (medium, +0.699, 93% of paths positive), `obv_trend_60` (long,
+  +0.774, 81%), `vol_regime` (long, +0.696, 80%). All three were spec-only or untested before.
+- The best figure anywhere — `all(dual_momentum+vol_regime)`, long, median Sharpe **+1.345** on
+  **+75.1%** — sits atop a 295-configuration search with PBO 0.650, so it is precisely the row not
+  to trust.
 
 Under the earlier single split: 520 configurations, 311 rankable, **45 (14%) with a positive
 out-of-sample Sharpe and 28 (9%) that made money**, with in-sample rank *inverted* against
