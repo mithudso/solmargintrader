@@ -260,6 +260,32 @@ def roc(closes: np.ndarray, window: int = 20) -> float:
     return float(closes[-1]) / past - 1.0
 
 
+def rolling_realised_vol(
+    closes: np.ndarray, window: int = 20, periods_per_year: float = 365.0
+) -> np.ndarray:
+    """Realised vol at EVERY bar that has enough history, in one vectorised pass.
+
+    Equivalent to calling `realised_vol(closes[:i+1], window)` for each i, but
+    O(n) numpy work instead of O(n) separate numpy calls.
+
+    This exists because a strategy that needs the trailing *distribution* of
+    realised vol (to take a quantile of it) was rebuilding ~230 values per bar
+    with a Python loop -- roughly 2M numpy calls over 8,823 hourly bars, which
+    measured at 16s per backtest against 0.1s for its peers and dominated the
+    whole sweep. Same numbers, ~100x less time.
+
+    Returns an array aligned so that element k corresponds to
+    `closes[: window + 1 + k]`; it is shorter than `closes` by `window`.
+    """
+    closes = np.asarray(closes, dtype="float64")
+    if len(closes) < window + 1 or window < 2:
+        return np.zeros(0, dtype="float64")
+    logret = np.diff(np.log(closes))
+    # Sliding windows of `window` consecutive log returns.
+    views = np.lib.stride_tricks.sliding_window_view(logret, window)
+    return views.std(axis=1, ddof=1) * np.sqrt(periods_per_year)
+
+
 def realised_vol(closes: np.ndarray, window: int = 20, periods_per_year: float = 365.0) -> float:
     """Annualised realised volatility from log returns over `window` bars."""
     if len(closes) < window + 1:
