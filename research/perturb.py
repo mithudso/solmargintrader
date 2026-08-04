@@ -65,16 +65,28 @@ OUT = REPO / "research" / "results"
 BOUNDED_UNIT = {"calm_quantile", "lam", "risk_per_trade", "step", "entry_discount",
                 "target_vol", "trend_threshold", "revert_threshold"}
 
-# Empirical reference for the ratio, so the verdict compares against something
-# measured rather than a threshold I picked. These are the ratios observed for the
-# seven top long-horizon configurations (parameters only, geometry excluded):
-#   obv_trend 0.13 · macd+vol_regime 0.30 · ou_reversion+obv_trend 0.38 ·
-#   dual_momentum+vol_regime 0.44 · vol_regime 0.44 · adx_trend+ou_reversion 0.47 ·
-#   hurst_switch+ou_reversion 0.72
-# Re-derive with: python3 research/perturb.py --pair ... --no-geometry
-REFERENCE_MIN, REFERENCE_MEDIAN, REFERENCE_MAX = 0.13, 0.44, 0.72
+# Empirical references for the ratio, so the verdict compares against something
+# measured rather than a threshold I picked. SEPARATE references per configuration
+# type, because they differ substantially and using one for the other
+# mis-calibrates the verdict:
+#
+#   singles: 72 configurations (all 25 across 3 horizons)
+#            min 0.04 · median 0.21 · max 1.33
+#   pairs  : 5 top long-horizon pairs
+#            min 0.30 · median 0.44 · max 0.72
+#
+# Pairs are ~2.6x more parameter-sensitive than singles by median ratio, which is
+# the same direction as the PBO result that combining signals makes overfitting
+# worse -- two independent methods agreeing.
+#
+# Re-derive with:
+#   python3 research/perturb.py --horizon <h> --all-singles
+REFERENCE = {
+    "single": (0.04, 0.21, 1.33),
+    "combo": (0.30, 0.44, 0.72),
+}
 # Above the observed population's upper end, sensitivity is unusual enough to flag.
-REFERENCE_HIGH = 0.72
+REFERENCE_HIGH = {"single": 0.60, "combo": 0.72}
 
 
 @dataclass
@@ -99,6 +111,7 @@ class Report:
     target: str
     horizon: str
     baseline: Trial
+    kind: str = "single"   # 'single' or 'combo'; selects the reference population
     trials: list[Trial] = field(default_factory=list)
 
     @property
@@ -151,16 +164,17 @@ class Report:
             head = ("FRAGILE — the parameter choice moved the result as much as the "
                     "market did. Treat the headline number as a property of those "
                     "parameters, not of the mechanism.")
-        elif r >= REFERENCE_HIGH:
+        elif r >= REFERENCE_HIGH[self.kind]:
             head = ("BORDERLINE — sensitivity is high relative to the measured "
                     "reference population. Worth more data before believing the rank.")
         else:
             head = ("STABLE under this test — a 10% parameter nudge moves the median "
                     "much less than sampling a different regime does.")
+        lo, mid, hi = REFERENCE[self.kind]
         parts.append(
-            f"for reference, seven top long-horizon configurations measured ratios of "
-            f"{REFERENCE_MIN:.2f}–{REFERENCE_MAX:.2f} (median {REFERENCE_MEDIAN:.2f}), "
-            f"so this is {'above' if r > REFERENCE_MEDIAN else 'at or below'} typical"
+            f"reference population for a {self.kind}: {lo:.2f}–{hi:.2f} "
+            f"(median {mid:.2f}), so this is "
+            f"{'above' if r > mid else 'at or below'} typical"
         )
         parts.append(
             "this test does NOT address multiple testing. It asks whether the "
@@ -232,7 +246,8 @@ def run(
     label = (f"{mode}({'+'.join(members)})" if mode else members[0])
 
     base = evaluate(label, "baseline", specs, mode, arrays, cfg, groups, k)
-    report = Report(target=label, horizon=horizon, baseline=base)
+    report = Report(target=label, horizon=horizon, baseline=base,
+                    kind="single" if mode is None else "combo")
 
     for idx, (name, ps) in enumerate(specs):
         for pname, pvalue in ps.items():
@@ -286,6 +301,72 @@ def render(report: Report) -> str:
     return "\n".join(lines)
 
 
+def run_all_singles(
+    horizon: str, pct: float, groups: int, k: int
+) -> list[Report]:
+    """Perturbation check for every single strategy in the horizon's grid."""
+    reports: list[Report] = []
+    for name in HORIZONS[horizon]["params"]:
+        print(f"  {horizon}/{name} …", file=sys.stderr)
+        reports.append(run(horizon, [name], None, pct, groups, k, geometry=False))
+    return reports
+
+
+def render_batch(horizon: str, reports: list[Report]) -> str:
+    """Stability table for a whole horizon, most robust first.
+
+    Sorted by ratio, NOT by median Sharpe. The interesting question is whether the
+    best-performing configurations are also the most stable ones -- if they are
+    not, the ranking is selecting for parameter luck.
+    """
+    rows = [r for r in reports if np.isfinite(r.ratio_to_iqr) and r.usable]
+    skipped = [r for r in reports if r not in rows]
+    rows.sort(key=lambda r: r.ratio_to_iqr)
+
+    lines = [
+        f"PERTURBATION STABILITY — every single strategy, {horizon} horizon",
+        f"perturbation: +/-10% one at a time; ratio = max|delta median| / baseline path IQR",
+        "",
+        f"{'strategy':<28}{'median':>9}{'IQR':>7}{'max|d|':>8}{'ratio':>7}"
+        f"{'flips':>8}{'%pos':>7}",
+        "-" * 74,
+    ]
+    for r in rows:
+        b = r.baseline
+        lines.append(
+            f"{b.label[:27]:<28}{b.median_sharpe:>+9.3f}{b.iqr:>7.3f}"
+            f"{r.max_abs_delta:>8.3f}{r.ratio_to_iqr:>7.2f}"
+            f"{len(r.sign_flips):>4}/{len(r.usable):<3}{b.frac_positive*100:>6.0f}%"
+        )
+    if skipped:
+        lines.append("")
+        for r in skipped:
+            why = "no tunable parameters" if not r.trials else (r.baseline.reason or "unevaluable")
+            lines.append(f"{r.baseline.label[:27]:<28}  skipped — {why}")
+
+    if len(rows) >= 3:
+        ratios = np.array([r.ratio_to_iqr for r in rows])
+        medians = np.array([r.baseline.median_sharpe for r in rows])
+        flips = sum(len(r.sign_flips) for r in rows)
+        total = sum(len(r.usable) for r in rows)
+        # Rank correlation between performance and stability. Positive means the
+        # better performers are the LESS stable ones, which is the bad direction.
+        rp = pd.Series(medians).rank()
+        rr = pd.Series(ratios).rank()
+        rho = float(np.corrcoef(rp, rr)[0, 1])
+        lines += [
+            "",
+            f"population: ratio min {ratios.min():.2f}  median {np.median(ratios):.2f}  "
+            f"max {ratios.max():.2f}   |   sign flips {flips}/{total}",
+            f"Spearman(median Sharpe, ratio) = {rho:+.3f}  "
+            + ("— better performers are LESS stable, i.e. the ranking is partly "
+               "selecting parameter luck" if rho > 0.3 else
+               "— performance and stability are not strongly linked" if abs(rho) <= 0.3 else
+               "— better performers are MORE stable"),
+        ]
+    return "\n".join(lines)
+
+
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point."""
     ap = argparse.ArgumentParser(description="Perturbation stability check.")
@@ -293,6 +374,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--pair", nargs=2, metavar=("A", "B"))
     ap.add_argument("--triple", nargs=3, metavar=("A", "B", "C"))
     ap.add_argument("--single", metavar="NAME")
+    ap.add_argument(
+        "--all-singles", action="store_true",
+        help="perturb every single strategy at this horizon and rank by stability",
+    )
     ap.add_argument("--mode", default="all", choices=["all", "any", "vote", "mean"])
     ap.add_argument("--pct", type=float, default=0.10, help="perturbation size")
     ap.add_argument("--groups", type=int, default=8)
@@ -301,6 +386,25 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", default=None, help="also write the report here")
     args = ap.parse_args(argv)
 
+    if args.all_singles:
+        OUT.mkdir(parents=True, exist_ok=True)
+        reports = run_all_singles(args.horizon, args.pct, args.groups, args.k)
+        text = render_batch(args.horizon, reports)
+        print(text)
+        stem = f"perturb_all_singles_{args.horizon}"
+        (OUT / f"{stem}.txt").write_text(text + "\n")
+        pd.DataFrame([
+            {"horizon": args.horizon, "label": r.baseline.label,
+             "median_sharpe": r.baseline.median_sharpe, "iqr": r.baseline.iqr,
+             "max_abs_delta": r.max_abs_delta, "ratio_to_iqr": r.ratio_to_iqr,
+             "sign_flips": len(r.sign_flips), "perturbations": len(r.usable),
+             "frac_positive": r.baseline.frac_positive,
+             "trades": r.baseline.trades}
+            for r in reports
+        ]).to_csv(OUT / f"{stem}.csv", index=False)
+        print(f"\nwrote {OUT}/{stem}.{{txt,csv}}", file=sys.stderr)
+        return 0
+
     if args.single:
         members, mode = [args.single], None
     elif args.pair:
@@ -308,7 +412,7 @@ def main(argv: list[str] | None = None) -> int:
     elif args.triple:
         members, mode = list(args.triple), args.mode
     else:
-        ap.error("give --single, --pair or --triple")
+        ap.error("give --single, --pair, --triple or --all-singles")
 
     unknown = [m for m in members if m not in HORIZONS[args.horizon]["params"]]
     if unknown:

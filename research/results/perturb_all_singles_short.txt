@@ -1,0 +1,34 @@
+PERTURBATION STABILITY — every single strategy, short horizon
+perturbation: +/-10% one at a time; ratio = max|delta median| / baseline path IQR
+
+strategy                       median    IQR  max|d|  ratio   flips   %pos
+--------------------------------------------------------------------------
+ma_crossover                   -2.385  3.326   0.379   0.11   0/4      10%
+atr_sized                      -2.548  2.298   0.272   0.12   0/4       5%
+macd                           -3.083  2.223   0.293   0.13   0/6       0%
+ma_ribbon                      -2.767  2.727   0.383   0.14   0/4       5%
+sma_regime                     -2.282  1.278   0.221   0.17   0/2       5%
+voltarget                      -2.282  1.278   0.221   0.17   0/6       5%
+garch_voltarget                -2.282  1.278   0.221   0.17   0/5       5%
+stochastic                     -0.341  2.117   0.457   0.22   1/4      38%
+bb_breakout                    -1.487  3.114   0.699   0.22   0/4      29%
+hurst_switch                   -3.123  2.107   0.516   0.25   0/6      14%
+ichimoku                       -1.877  1.174   0.293   0.25   0/8       0%
+obv_trend                      -1.580  1.668   0.432   0.26   0/2      24%
+breakout                       -1.905  2.809   0.758   0.27   0/4      14%
+zscore                         -1.152  1.213   0.339   0.28   0/4      19%
+vwap_reversion                 -2.189  0.836   0.236   0.28   0/4       0%
+ts_momentum                    -2.564  2.018   0.601   0.30   0/2       0%
+keltner                        -0.961  2.477   0.822   0.33   0/6      29%
+bb_reversion                   -1.316  1.396   0.492   0.35   0/4      14%
+adx_trend                      -3.736  2.496   1.149   0.46   0/4       5%
+dual_momentum                  -4.633  2.094   0.978   0.47   0/4       0%
+vol_regime                     -1.048  1.677   0.828   0.49   0/6      19%
+ou_reversion                   -0.595  1.333   0.863   0.65   0/6      33%
+rsi                            -1.723  1.052   0.719   0.68   0/6      14%
+grid                           -2.022  0.731   0.569   0.78   0/6       0%
+
+buy_and_hold                  skipped — no tunable parameters
+
+population: ratio min 0.11  median 0.26  max 0.78   |   sign flips 1/111
+Spearman(median Sharpe, ratio) = +0.328  — better performers are LESS stable, i.e. the ranking is partly selecting parameter luck

@@ -160,6 +160,56 @@ python3 research/perturb.py --horizon long --pair dual_momentum vol_regime --mod
 python3 research/perturb.py --horizon medium --single hurst_switch
 ```
 
+### 1e. Perturbation stability across all 25 singles — three findings, one of them new
+
+`research/perturb.py --all-singles` ran the ±10% check on every strategy at every horizon: **72
+configurations, 329 perturbations.** `buy_and_hold` is skipped throughout — it has no parameters
+to perturb, which is its own kind of robustness.
+
+**Population ratio (max |Δ median| over the configuration's own path IQR):**
+
+| Horizon | min | median | max | sign flips |
+|---|---|---|---|---|
+| Short | 0.11 | 0.26 | 0.78 | 1/111 |
+| Medium | 0.04 | 0.14 | 0.86 | 21/110 |
+| Long | 0.06 | 0.17 | 1.33 | 13/108 |
+
+**Finding 1 — singles are far more parameter-stable than pairs, which corroborates the PBO
+result by a completely different route.** Singles median ratio **0.21**; the five top long-horizon
+pairs median **0.44**. Combining signals roughly **2.6×** the parameter sensitivity. PBO said
+combining makes overfitting worse; perturbation says combining makes parameter choice matter more.
+Two independent methods, same direction.
+
+**Finding 2 — the two most fragile configurations of all 72 are `bb_reversion` and `zscore` at the
+long horizon, both at ratio 1.33 — the only two above 1.0.** These are the pair already proven from
+source to be *the same mechanism* separated by a stdev convention (finding 4). Their path IQR is a
+mere 0.222, so any nudge is large relative to it. That is now **three independent flags on the same
+configuration**: the algebra, the 46-point natural experiment, and the highest perturbation ratio
+in the population. When three unrelated tests point at one row, believe them.
+
+**Finding 3 — `obv_trend` is the standout, and it is the one row that gets better the harder you
+look at it.** Long horizon: median Sharpe **+0.774** (the best single anywhere), **81% of paths
+positive**, ratio **0.13** (4th most stable of 24), **0 sign flips**, and only two perturbable
+parameters — fewer ways to be wrong. Compare the medium-horizon leader `hurst_switch`: median
++0.699 and 93% of paths positive, but ratio **0.60**, near the top of the singles distribution. The
+two best performers have very different robustness, and the ranking does not tell you which is
+which.
+
+**Does the ranking select parameter luck?** Spearman correlation between median Sharpe and ratio:
+**−0.045 (long), −0.152 (medium), +0.328 (short)**. Long and medium are uncorrelated — performance
+and stability are independent there, which is the benign case. **Short is +0.328: the better
+performers *are* the less stable ones**, so at the short horizon the ranking is partly selecting
+parameter luck. Since every short-horizon median is negative, "better" there means "least bad", but
+the direction is still the bad one.
+
+Sign flips cluster where you would expect — around near-zero medians (`breakout` +0.140, `grid`
++0.095, `bb_reversion`/`zscore` +0.120). Short shows only 1 flip in 111 because every median is
+solidly negative and there is no sign to lose.
+
+```bash
+python3 research/perturb.py --horizon long --all-singles     # any of short|medium|long
+```
+
 ### 2. In-sample rank does not predict out-of-sample rank. At the medium horizon it inverts.
 
 Spearman rank correlation between in-sample and out-of-sample Sharpe, across rankable configs:
