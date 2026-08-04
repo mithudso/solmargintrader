@@ -761,7 +761,9 @@ Distilled from the corpus's pitfall taxonomy, in the order these actually bite:
 python3 -m backtester.core.fetch --asset SOL --interval 1d --start 2021-01-01
 python3 -m backtester.core.fetch --asset SOL --interval 1h --start 2025-08-01 --allow-gaps
 python3 research/sweep.py
-python3 -m unittest discover -s backtester/tests -t .    # 80 known-answer tests
+python3 research/cpcv_sweep.py                           # CPCV + PBO (List 1, primary)
+python3 research/verify_numbers.py                       # 495 figures checked against results
+python3 -m unittest discover -s backtester/tests -t .    # 103 known-answer tests
 ```
 
 > Educational and research use only. **NOT investment advice.** Nothing in this document is
