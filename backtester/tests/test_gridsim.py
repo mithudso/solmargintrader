@@ -243,6 +243,40 @@ class TestRoundTripEconomics(unittest.TestCase):
         self.assertGreater(costed.slippage_paid_usd, 0.0)
         self.assertLess(costed.realized_pnl_usd, costed.gross_captured_usd)
 
+    def test_the_book_reconciles_at_non_zero_cost(self) -> None:
+        # The regression guard for a double-counted slippage leg. Every other
+        # reconciliation test runs at zero cost, where a double count is
+        # invisible; this one fails if either leg's slippage is netted inside
+        # gross AND subtracted again as an explicit cost.
+        cfg = GridConfig(lower=60.0, upper=90.0, rungs=2, notional_per_rung_usd=12.0)
+        rows = flat(90.0, 2) + [
+            (90.0, 90.0, 60.0, 60.0),
+            (60.0, 90.0, 60.0, 90.0),
+        ]
+        for slippage_bps in (2.0, 50.0, 300.0):
+            res = run_grid_backtest(
+                cfg,
+                bars(rows),
+                initial_capital=1_000.0,
+                costs=CostConfig(fee_bps=6.0, slippage_bps=slippage_bps),
+            )
+            self.assertEqual(res.round_trips, 1)
+            self.assertAlmostEqual(
+                res.metrics.final_equity,
+                1_000.0 + res.realized_pnl_usd,
+                places=9,
+                msg=f"book must reconcile at {slippage_bps} bps slippage",
+            )
+            # Gross is the rung spread and must not move with slippage at all;
+            # only realized should shrink as costs rise.
+            self.assertAlmostEqual(
+                res.gross_captured_usd,
+                expected_round_trip_usd(cfg, 60.0),
+                places=9,
+                msg="gross is measured level-to-level, before costs",
+            )
+            self.assertLess(res.realized_pnl_usd, res.gross_captured_usd)
+
     def test_carry_is_charged_on_held_inventory(self) -> None:
         entry = self.levels[3]
         rows = flat(90.0, 2) + [(90.0, 90.0, entry, entry)] + flat(entry, 5)

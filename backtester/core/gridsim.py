@@ -229,11 +229,22 @@ def _level_key(side: str, level: float) -> str:
 
 @dataclass
 class Lot:
-    """One open buy lot. Entry fee rides on the lot so a partial close realizes
-    only its proportional share — the same rule `extension/src/core/pnl.js` uses."""
+    """One open buy lot.
+
+    Entry fee and entry slippage both ride on the lot, so a partial close
+    realizes only their proportional share — the rule
+    `extension/src/core/pnl.js` uses for fees.
+
+    `price` is what was actually paid (the level plus the adverse slippage);
+    `level` is the rung it was bought at. Both are needed: `price` is the real
+    cash outlay, while `level` is what the *rung spread* is measured between. Using
+    `price` for the spread would net slippage inside the gross figure and then net
+    it again as an explicit cost.
+    """
 
     qty: float
     price: float
+    level: float
     entry_fee_usd: float
     entry_slippage_usd: float
     opened_index: int
@@ -374,6 +385,7 @@ class _GridBook:
             Lot(
                 qty=qty,
                 price=fill_price,
+                level=level,
                 entry_fee_usd=fee,
                 entry_slippage_usd=slip,
                 opened_index=index,
@@ -451,15 +463,23 @@ class _GridBook:
         remaining = matched
         gross = 0.0
         entry_fee_share = 0.0
+        entry_slip_share = 0.0
         carry_share = 0.0
         while remaining > 1e-15 and eligible:
             lot = eligible[0]
             take = min(lot.qty, remaining)
             frac = take / lot.qty
-            gross += (fill_price - lot.price) * take
+            # Gross is the rung spread, measured level to level. Measuring it
+            # between *fill* prices would fold both slippage legs into gross and
+            # then subtract them again below, understating realized P&L by the
+            # full slippage on every round trip — and it would silently break
+            # `final_equity == capital + realized` at any non-zero slippage.
+            gross += (level - lot.level) * take
             entry_fee_share += lot.entry_fee_usd * frac
+            entry_slip_share += lot.entry_slippage_usd * frac
             carry_share += lot.accrued_carry_usd * frac
             lot.entry_fee_usd -= lot.entry_fee_usd * frac
+            lot.entry_slippage_usd -= lot.entry_slippage_usd * frac
             lot.accrued_carry_usd -= lot.accrued_carry_usd * frac
             lot.qty -= take
             remaining -= take
@@ -467,12 +487,24 @@ class _GridBook:
                 eligible.pop(0)
                 self.lots.remove(lot)
 
-        realized = gross - fee - slip - entry_fee_share - carry_share
+        realized = gross - fee - slip - entry_fee_share - entry_slip_share - carry_share
         # Carry leaves cash when it settles. Subtracting it from `realized` only
         # would let the equity curve dip while a lot is open (via
         # `unsettled_carry`) and then step back up when the lot closed, which
         # reads as free money at exactly the moment the cost becomes real.
         self.cash += notional - fee - carry_share
+        if self.cash < -1e-9:
+            # Only reachable with carry on: accrued carry has exceeded what the
+            # inventory sold for, i.e. an account that should have been margin
+            # called. Clamping cash to zero here would drop a real cost and hand
+            # back a flattering equity curve, so refuse instead and say why.
+            raise RuntimeError(
+                f"bar {index}: cash went negative (${self.cash:,.6f}) after settling "
+                f"${carry_share:,.6f} of carry. This run models carry but not "
+                "liquidation, so the result would describe an account that could "
+                "not have existed. Lower --carry-bps-per-hour, shorten the holding "
+                "period, or add a liquidation model."
+            )
         self.fees += fee
         self.slippage += slip
         self.carry += carry_share
@@ -507,6 +539,7 @@ def _plan(
     price: float,
     lots: Iterable[Lot],
     skipped: Counter,
+    level_index: dict[float, int] | None = None,
 ) -> list[RestingOrder]:
     """Every order the ladder wants resting at `price`. Port of `planGrid`.
 
@@ -527,8 +560,19 @@ def _plan(
     for lot in lots:
         if lot.qty <= 0:
             continue
-        lot_level_indexes.add(nearest_level_index(levels, lot.price))
-        exit_level = paired_exit_level(levels, lot.price)
+        # A lot's rung is known exactly — it is the level the bid rested at — so
+        # look it up rather than re-deriving it from the fill price. Besides being
+        # O(1) instead of O(rungs), it cannot mis-snap a lot to a neighbouring rung
+        # when slippage is a large fraction of the rung width.
+        idx = level_index.get(lot.level) if level_index else None
+        if idx is None:
+            idx = nearest_level_index(levels, lot.level)
+        lot_level_indexes.add(idx)
+        exit_level = (
+            levels[idx + 1]
+            if idx < len(levels) - 1
+            else paired_exit_level(levels, lot.level)
+        )
         exit_buckets[exit_level] = exit_buckets.get(exit_level, 0.0) + lot.qty
 
     for exit_level, qty in exit_buckets.items():
@@ -610,6 +654,18 @@ def run_grid_backtest(
         raise ValueError("initial_capital must be positive")
     if carry_bps_per_hour < 0:
         raise ValueError("carry_bps_per_hour cannot be negative")
+    if not 0.0 <= costs.slippage_bps < 10_000.0:
+        # At 10,000 bps a sell's fill price reaches zero and beyond it goes
+        # negative, so a sale would *reduce* cash.
+        raise ValueError(
+            f"slippage_bps must be in [0, 10000), got {costs.slippage_bps}"
+        )
+    if costs.fee_bps < 0:
+        raise ValueError(f"fee_bps cannot be negative, got {costs.fee_bps}")
+
+    missing = [k for k in ("ts", "high", "low", "close") if k not in arrays]
+    if missing:
+        raise ValueError(f"arrays is missing required series: {', '.join(missing)}")
 
     ts = np.asarray(arrays["ts"])
     highs = np.asarray(arrays["high"], dtype="float64")
@@ -619,7 +675,32 @@ def run_grid_backtest(
     if n == 0:
         raise ValueError("cannot backtest an empty series")
 
+    # Length and finiteness are checked up front rather than trusted. A `high`
+    # array longer than `close` would silently truncate the run — the dangerous
+    # direction, because it returns a plausible number for the wrong window — and
+    # a NaN close survives `max(0.0, nan)` as 0.0, poisoning every metric with no
+    # error anywhere.
+    lengths = {"ts": ts.size, "high": highs.size, "low": lows.size, "close": closes.size}
+    if len(set(lengths.values())) != 1:
+        raise ValueError(f"series lengths disagree: {lengths}")
+    for name, series in (("high", highs), ("low", lows), ("close", closes)):
+        if not np.all(np.isfinite(series)):
+            bad = int(np.argmin(np.isfinite(series)))
+            raise ValueError(f"{name} contains a non-finite value at index {bad}")
+    if np.any(lows <= 0.0):
+        raise ValueError(
+            f"low contains a non-positive price at index {int(np.argmin(lows > 0.0))}; "
+            "a grid divides by its levels and cannot price a zero market"
+        )
+    if np.any(highs < lows):
+        raise ValueError(
+            f"high < low at index {int(np.argmax(highs < lows))}; the bars are malformed"
+        )
+
     levels = grid_levels(cfg)
+    # The ladder is fixed for the whole run, so its level -> index map is built
+    # once instead of scanning every level for every lot on every bar.
+    level_index = {level: i for i, level in enumerate(levels)}
     book = _GridBook(initial_capital, costs)
     resting: dict[str, RestingOrder] = {}
     skipped: Counter = Counter()
@@ -684,7 +765,7 @@ def run_grid_backtest(
         # Diff desired against resting. An order already on the venue keeps its
         # original `planned_index`, so re-planning cannot reset a rung's fill
         # eligibility and thereby delay it forever.
-        wanted = _plan(cfg, levels, closes[i], book.lots, skipped)
+        wanted = _plan(cfg, levels, closes[i], book.lots, skipped, level_index)
         desired = {_level_key(o.side, o.level): o for o in wanted}
         for key in list(resting):
             if key not in desired:
