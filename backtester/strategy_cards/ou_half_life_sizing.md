@@ -18,7 +18,10 @@ params:
   entry_z: {default: -2.0, type: float, desc: "z-score at or below which to enter"}
   hold_multiple: {default: 2.5, type: float, desc: "exit after this multiple of the half-life"}
   max_half_life_bars: {default: 30, type: int, desc: "above this, refuse to trade the series at all"}
-presets: {}
+presets:
+  short: {fit_window: 250, entry_z: -2.0, max_half_life_bars: 48}
+  medium: {fit_window: 250, entry_z: -2.0, max_half_life_bars: 30}
+  long: {fit_window: 250, entry_z: -2.0, hold_multiple: 3.0}
 ---
 # OU Half-Life Reversion (screened and hold-capped)
 

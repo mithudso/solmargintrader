@@ -16,7 +16,10 @@ success_basis: measured-oos
 params:
   adx_period: {default: 14, type: int, desc: "Wilder ADX period"}
   adx_threshold: {default: 25.0, type: float, desc: "ADX level above which the market counts as trending"}
-presets: {}
+presets:
+  short: {adx_period: 7, adx_threshold: 25.0}
+  medium: {adx_period: 14, adx_threshold: 25.0}
+  long: {adx_period: 30, adx_threshold: 25.0}
 ---
 # ADX-Filtered Trend
 

@@ -18,7 +18,10 @@ params:
   kijun: {default: 26, type: int, desc: "base-line period"}
   senkou_b: {default: 52, type: int, desc: "leading span B period"}
   displacement: {default: 26, type: int, desc: "bars the cloud is projected forward"}
-presets: {}
+presets:
+  short: {tenkan: 9, kijun: 26, senkou_b: 52, displacement: 26}
+  medium: {tenkan: 9, kijun: 26, senkou_b: 52, displacement: 26}
+  long: {tenkan: 18, kijun: 52, senkou_b: 104, displacement: 52}
 ---
 # Ichimoku Cloud
 

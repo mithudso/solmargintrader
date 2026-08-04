@@ -20,7 +20,10 @@ params:
   revert_threshold: {default: 0.45, type: float, desc: "H below this selects the reversion rule"}
   trend_window: {default: 50, type: int, desc: "SMA window for the trend rule"}
   entry_z: {default: -2.0, type: float, desc: "z-score entry for the reversion rule"}
-presets: {}
+presets:
+  short: {window: 250, lag: 5, trend_window: 168}
+  medium: {window: 250, lag: 5, trend_window: 100}
+  long: {window: 250, lag: 10, trend_window: 200}
 ---
 # Variance-Ratio / Hurst Regime Switch
 
