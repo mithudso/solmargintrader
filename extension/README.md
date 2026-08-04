@@ -46,7 +46,7 @@ Both venues sit behind one `VenueAdapter` interface, so Perps drops in when its 
 
 ```bash
 cd ~/dev/solmargintrader/extension
-npm test              # 96 tests, no dependencies to install
+npm test              # 104 tests, no dependencies to install
 node tools/dryrun.js  # end-to-end tick against the live SOL price
 ```
 
@@ -255,7 +255,7 @@ src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe)
 tools/cli.js               CLI surface, generated from the registry
 tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/dryrun.js            Headless end-to-end tick
-test/                      96 tests, zero dependencies (node:test)
+test/                      104 tests, zero dependencies (node:test)
 ```
 
 No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
@@ -268,7 +268,7 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 
 **Done and proven:**
 
-- `npm test` → **96 passing, 0 failing** (unit, integration and three-surface parity)
+- `npm test` → **104 passing, 0 failing** (unit, integration and three-surface parity)
 - `node tools/dryrun.js --ticks 8 --osc 6 --offline 100` → full tick loop with a down-then-up path:
   4 bids placed, filled as price fell, exits placed one rung above each lot, and on tick 8 an exit
   filled and took net P&L from −$2.33 to **+$0.04**. The closed trip captured **$0.620**, which is
@@ -309,11 +309,24 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 1. **No live order has been placed.** The write path (auth → vault → deposit craft → sign →
    create) is written to the documented shapes but never executed. It needs a Jupiter API key and a
    funded wallet. Test with one rung at the $10 minimum.
-2. **Order-list response envelope.** `normaliseOrders()` guesses field names for the
-   orders/history endpoint. Reconciliation depends on `triggerPriceUsd` and fill fields, so verify
-   against a real response and correct the mapping.
-3. **Fee attribution.** Fills currently take `feeUsd` from the venue when present and 0 otherwise.
-   Zero fees make a grid look better than it is — confirm where Trigger reports fees.
+2. **Order-list response envelope — still unverified, but now loud.** The field names in
+   `normaliseOrders()` have never been checked against a real response, and that has not changed.
+   What changed is the failure mode. It used to return `[]` for a shape it did not recognise, and
+   reconciliation reads an empty list as "nothing is live" — so every resting rung looks orphaned
+   and gets re-planned, which is the double-fire path. It now throws `OrderEnvelopeError`, and
+   because `tick()` wraps its whole body, an unreadable envelope aborts the tick before anything is
+   placed. An order missing a field reconciliation needs (`venueOrderId`, `side`,
+   `triggerPriceUsd`) is refused by name rather than passed along unmatchable.
+
+   So this item is *safer*, not *closed*: the mapping still needs checking against a live response.
+   Use `normaliseOrders(body, { strict: false })` to inspect one by hand — it flags unusable orders
+   instead of throwing. Accepted envelopes are `ORDER_LIST_KEYS`; required fields are
+   `ORDER_REQUIRED_FIELDS`. Both are exported so correcting them is a one-line, visible diff.
+3. **Fee attribution — where Trigger reports fees is still unconfirmed.** Fees are no longer
+   coerced to zero when absent. `normaliseOrders()` leaves `feeUsd` as `null` and sets
+   `feeUnknown`; `ingestFills()` still records the fill (dropping a real fill would lose inventory
+   the wallet holds) but flags it and counts it on `result.feeUnknownFills`. A non-zero count means
+   the reported P&L understates costs by however much those fees were.
 4. **Chrome alarm floor.** 30s is assumed; the engine logs the real wake delta. Watch it before
    trusting a sub-minute tick.
 5. **Transaction signature insertion** is tested against synthetic transactions, not a real

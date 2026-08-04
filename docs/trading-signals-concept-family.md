@@ -356,6 +356,28 @@ signal-like pages with no public API — plus the hosts `remote-api.jup.ag`,
 HTML only; its JavaScript bundles were not downloaded, so it is evidence of
 *which pages exist*, never of what any endpoint returns.
 
+A second local artifact, `pagesource` (the rendered page source of
+`jup.ag/perps/long/SOL-SOL`), carries something the mirror does not: a ~50 KB
+TanStack Router SSR hydration payload holding the data the perps page was
+rendered *with*. Three things from it are primary evidence rather than inference:
+
+- **`perpsSettings: {v2AsDefault: true}`** — the front end defaults to Perps v2.
+- **The asset record shape** the app receives, keyed
+  `["search","asset",<mint>]` — i.e. the Tokens v2 `/search` response:
+  `{id, name, symbol, icon, decimals, tokenProgram, dev?, mintAuthority?,
+  freezeAuthority?, firstPool:{id,createdAt}, organicScore, organicScoreLabel,
+  isVerified, tags[]}`. Note the mint is `id`, **not** `address` — a detail worth
+  having right before writing a client against it.
+- **`perpsTokenList`** — ~100 tradeable markets with mint and decimals, including
+  SOL (9), ETH Portal `7vfCXTU…` (8), WBTC Portal `3NZ9JMVB…` (8), USDC (6),
+  USDT (6), JLP `27G8MtK7…` (6). Decimals are the kind of value that must never be
+  guessed in order math, and these came from the app itself.
+
+It also carries `remoteConfig.swapSettings` with a live `bannedTokens` list, which
+is a reminder that the front end applies filters a direct API client does not
+inherit. The payload contains **no order-list envelope** — the perps page is
+unauthenticated — so §4's Trigger open question stays open.
+
 **Coverage limits.**
 - The three `*-api.jup.ag` hosts found in the mirror are undocumented internal
   surfaces. They are **not** part of the developer platform and should not be

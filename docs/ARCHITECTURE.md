@@ -105,5 +105,13 @@ the network; it writes a local CSV cache that `core/engine.py` reads. Strategies
 Jupiter-Perps-style leveraged modes share the engine, with the borrow fee modelled in the P&L path
 rather than bolted on.
 
+**Two execution models, on purpose.** `core/engine.py` runs `Strategy` objects, which map history to
+one target exposure filled at a bar boundary. `core/gridsim.py` runs the resting-ladder grid — the
+extension's strategy — whose edge comes from limit orders filling *intrabar* at known prices, which
+a target exposure cannot express. It owns its own bar loop and its own entry point
+(`backtester.gridcli`), and it ports `extension/src/core/grid.js` function for function so the
+backtest and the live strategy agree on what a round trip earns. Keeping them separate is deliberate:
+folding the ladder into the exposure engine would imply the two are comparable on the same axis.
+
 Its correctness priorities — no lookahead, costs always applied, honest reporting of a losing
-strategy — are documented in `backtester/README.md` and enforced by 80 tests.
+strategy — are documented in `backtester/README.md` and enforced by 110 tests.

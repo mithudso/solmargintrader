@@ -276,13 +276,82 @@ leak the future.
 `|e| × current_equity × leverage`, marked at the fill price. Current equity,
 not initial capital — so strategies compound.
 
+## The ladder grid — backtesting what the extension actually trades
+
+There are two different things called "grid" in this repo, and conflating them
+would put a wrong number under the strategy that runs live:
+
+| | What it is | Where |
+|---|---|---|
+| `grid` (`GridLong`) | An **exposure staircase**: exposure rises one rung per `step` below a rolling SMA anchor. A `Strategy` like any other, filled at a bar boundary. | `core/strategies/signals.py`, run via `backtester.cli` |
+| **ladder grid** | A **ladder of resting limit orders** with paired exits one rung above each lot — the extension's strategy. Fills intrabar at known prices. | `core/gridsim.py`, run via `backtester.gridcli` |
+
+`GridLong` can imitate a grid's *position profile*, but it can never capture a
+rung width, because it never has an order sitting at a level waiting to be hit.
+That capture is the entire economic engine of a real grid, so it needs its own
+simulator rather than a `Strategy` returning one target exposure per bar.
+
+```bash
+# The ladder and what it costs to fund, without running anything
+python3 -m backtester.gridcli --lower 60 --upper 90 --rungs 7 \
+    --notional-per-rung 12 --levels
+
+# A run on cached bars, or offline on synthetic ones
+python3 -m backtester.gridcli --lower 60 --upper 90 --rungs 7 \
+    --notional-per-rung 12 --interval 1h
+python3 -m backtester.gridcli --lower 60 --upper 90 --rungs 7 \
+    --notional-per-rung 12 --synthetic 400 --capital 500 --json
+```
+
+`core/gridsim.py` ports `extension/src/core/grid.js` function for function —
+geometric/arithmetic spacing with pinned endpoints, top-rung extrapolation,
+paired exits, the deadband, the $10 venue minimum, FIFO realization. Divergence
+between the two would be worse than having no grid backtest at all, so
+`rung_width_bps` is asserted against figures read off the JavaScript
+implementation (699.1319 bps for a 60–90/7 ladder; 516.7 bps for the 0.85×–1.15×
+ladder `tools/dryrun.js` builds).
+
+**Three conventions keep it pessimistic**, because an optimistic grid simulator
+makes a losing grid look profitable:
+
+1. **An order cannot fill on the bar that planned it.** Planning happens at a
+   bar's close, so the earliest fill is the next bar. This is the no-lookahead
+   guard and it also makes a same-bar round trip impossible — "price dipped to
+   the bid then rallied to the offer" is an assumption about the intrabar path,
+   not an observation of it.
+2. **Fills are adverse.** A buy fills at its level moved up by the full slippage
+   allowance, a sell at its level moved down by it.
+3. **Buys settle before sells**, so cash freed by a sell cannot fund a buy in the
+   same bar.
+
+FIFO is additionally bounded to lots opened *before* the current bar. Without
+that bound, two exits filling in one bar let the second reach inventory bought
+that same bar — an indirect same-bar round trip. It fired on synthetic data
+during development, so the bound is load-bearing rather than theoretical; when
+old inventory runs short the exit fills partially and the remainder is re-planned.
+
+**Read per-round-trip gross carefully.** The planner pairs each exit to a
+specific lot while realization matches FIFO, so with several rungs open the two
+disagree per trip — an exit meant to close a cheap lot is matched against an older
+expensive one, and gross per trip comes in below the nominal rung width.
+Portfolio totals are identical either way. The extension documents the same
+divergence; `test_pairing_and_fifo_disagree_per_trip_but_not_in_total` pins it.
+
+Carry defaults to **0 bps/hr** because Trigger V2 is a spot venue with no borrow
+leg — not because carry is free. `--carry-bps-per-hour` models a borrowed-margin
+ladder, and the rate is echoed in the output so a run can never quietly claim a
+cost structure it did not use.
+
+Every run prints a buy-and-hold baseline on the same bars, paying entry costs
+once. A grid that underperforms holding the asset has not earned its complexity.
+
 ## Tests
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t . -v
 ```
 
-40 known-answer tests, no network required. The load-bearing ones:
+110 known-answer tests, no network required. The load-bearing ones:
 
 | Test | Known answer |
 |---|---|
@@ -295,6 +364,13 @@ python3 -m unittest discover -s backtester/tests -t . -v
 | Liquidation drift | Buffer shrinks monotonically as borrow fees accrue |
 | Data validation | Duplicate/gap/negative/NaN/millisecond input is rejected |
 | Determinism | Two runs produce identical output |
+| Ladder round trip | Gross `== notional × rung width`, to 9 dp — the same contract the extension asserts |
+| Ladder rung width | Matches the JavaScript `rungWidthBps` to 3 dp |
+| Ladder same-bar guard | A bar spanning entry and exit books the entry only |
+| Ladder first bar | A bar-0 sweep of the whole ladder fills nothing |
+| Ladder downtrend | Every bid fills, no round trips, final equity below capital |
+| Ladder cash limit | An unfundable rung is skipped, equity never negative |
+| Ladder book identity | At zero cost, final equity `== capital + realized P&L` |
 
 ## Scope
 
