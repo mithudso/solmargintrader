@@ -152,10 +152,24 @@ absent from the vocabulary. It also asserts that only a `measured` card may cite
 more than a tenth of cards may be rated moderate** — a directory where most cards
 looked promising would be the tell that the ratings had drifted into marketing.
 
-Current distribution: **20 very-low, 21 low, 2 moderate**. The two moderates are
-`hurst_regime_test` (measured: +15.6% out-of-sample at +0.564 Sharpe on exactly 10
-trades) and `pairs_cointegration` (a-priori: the rigorous version of `zscore`, whose
-peer series is also the cheapest data gap here to close).
+Current distribution: **20 very-low, 21 low, 2 moderate**. Both moderates —
+`hurst_regime_test` and `ou_half_life_sizing` — were re-evaluated under CPCV and are the
+only two configurations of 25 with a **positive 25th-percentile path Sharpe**, which is
+the conservative statistic Lopez de Prado recommends reading.
+
+**Ratings have moved in both directions as evidence improved**, which is the point of
+recording the basis alongside the rating:
+
+| Card | Was | Now | Why |
+|---|---|---|---|
+| `ou_half_life_sizing` | low | **moderate** | CPCV: Q1 +0.213, 93% of paths positive, 4th of 25 |
+| `bb_breakout` | very-low | **low** | CPCV: 3rd of 25 by median path Sharpe, +15.9% median return — its notorious single-split decay was split-dependent |
+| `adx_filtered_trend` | low | low | CPCV median turned *positive*, but Q1 −0.603 and the widest spread of any config |
+| `zscore` | low | **very-low** | CPCV: the top-ranked single-split row is a 52% coin flip whose median path loses 10% |
+| `pairs_cointegration` | moderate (a-priori) | **low** (measured) | Unblocked and measured: cointegrated with ETH, but zero out-of-sample trades |
+| `vol_regime_hmm` | very-low | very-low | CPCV confirmed rather than softened it |
+
+A rating that never moves when better evidence arrives is decoration.
 
 ## Two things called "grid"
 
