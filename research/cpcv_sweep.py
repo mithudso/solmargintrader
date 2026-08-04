@@ -40,6 +40,124 @@ from research.sweep import (  # noqa: E402
 
 OUT = REPO / "research" / "results"
 
+# ---------------------------------------------------------------------------
+# Self-explaining output
+#
+# Every number this script prints is easy to misread, and two of the misreadings
+# are actively dangerous ("83 positive" sounds like 83 working strategies; a low
+# PBO sounds like good news). The legend and per-line interpretation below print
+# WITH the results by default so the numbers cannot travel without their meaning.
+# Pass --quiet for bare output in scripts.
+# ---------------------------------------------------------------------------
+
+LEGEND = """\
+────────────────────────────────────────────────────────────────────────────────
+HOW TO READ THIS OUTPUT
+────────────────────────────────────────────────────────────────────────────────
+Each line is one CPCV sweep. CPCV = combinatorial purged cross-validation: the
+price series is cut into N contiguous blocks, and every combination of k blocks
+forms one out-of-sample "path". With 8 blocks and k=2 that is 28 paths per
+configuration, instead of the single arbitrary train/test split it replaces.
+
+  "129/140 evaluable"
+      140 cross-family combinations were generated (same-family combos are
+      skipped -- two trend signals mostly measure the same thing twice). 11 were
+      DROPPED, not zeroed: a combination is unevaluable when its slowest member
+      needs more warm-up bars than precede a block, or when it produced fewer
+      than MIN_OOS_TRADES across all blocks. Dropping loudly beats reporting a
+      confident number built on 3 trades.
+
+  "2 with positive median Sharpe"
+      Of the 28 paths per configuration, the MEDIAN path's Sharpe is positive.
+      This is NOT "2 profitable strategies". A positive median with a wide
+      interquartile spread still straddles zero -- read the IQR column in
+      results/cpcv_combos_tables.md before believing any single row.
+
+  "PBO 0.371"
+      Probability of Backtest Overfitting (Bailey et al., via CSCV): the fraction
+      of train/test splits where the configuration that looked BEST in-sample
+      landed BELOW MEDIAN out-of-sample.
+
+      PBO scale, calibrated against constructed controls in the test suite
+      (backtester/tests/test_cpcv.py):
+
+          0.00  in-sample rank predicts out-of-sample rank perfectly
+          0.50  PURE NOISE -- measured mean over 30 seeds of random returns
+          >0.50 ANTI-INFORMATIVE: picking the best in-sample performer is
+                measurably WORSE than picking at random
+
+      So PBO is the number that decides whether the ranking above it means
+      anything. A high positive-count with a high PBO is the classic overfit
+      signature: lots of things look good, and in-sample rank still cannot tell
+      you which one will keep working.
+────────────────────────────────────────────────────────────────────────────────"""
+
+# PBO thresholds, named so the interpretation logic reads like the legend.
+PBO_NOISE = 0.50
+PBO_INFORMATIVE = 0.35
+# Below this share of evaluable configs being positive, a low PBO is not good
+# news -- it means the in-sample winner generalises reliably as a loser.
+LOW_POSITIVE_SHARE = 0.25
+
+
+def interpret(evaluable: int, total: int, positive: int, pbo: float) -> list[str]:
+    """Plain-language reading of one sweep line. Pure function, so it is testable.
+
+    Returns zero or more annotation lines. The important one is the trap: a LOW
+    PBO alongside a LOW positive count looks like the best result on the page and
+    is actually the worst, because PBO measures whether in-sample *rank*
+    generalises, not whether anything is profitable. That condition is computed
+    here rather than left to the reader to notice.
+    """
+    lines: list[str] = []
+    if evaluable == 0:
+        return ["      -> nothing evaluable; check warm-up lengths and trade floors"]
+
+    share = positive / evaluable
+    dropped = total - evaluable
+    if dropped:
+        lines.append(
+            f"      -> {dropped} dropped for insufficient warm-up or too few trades "
+            f"(not counted as zero)"
+        )
+
+    if pbo != pbo:  # NaN
+        lines.append("      -> PBO unavailable: too few comparable configurations")
+    elif pbo > PBO_NOISE:
+        lines.append(
+            f"      -> PBO {pbo:.3f} is ABOVE the 0.50 noise line: in-sample rank is "
+            f"ANTI-informative here."
+        )
+        lines.append(
+            f"         Picking the best of these {evaluable} in-sample is worse than "
+            f"picking at random."
+        )
+        if share > 0.5:
+            lines.append(
+                f"         Note {positive}/{evaluable} ({share:.0%}) look positive while "
+                f"rank fails -- the classic overfit signature."
+            )
+    elif pbo < PBO_INFORMATIVE and share < LOW_POSITIVE_SHARE:
+        lines.append(
+            f"      -> TRAP: PBO {pbo:.3f} looks excellent, but only {positive}/{evaluable} "
+            f"({share:.0%}) are positive."
+        )
+        lines.append(
+            "         Low PBO means in-sample rank GENERALISES -- here it generalises "
+            "reliably as a loser."
+        )
+    elif pbo < PBO_INFORMATIVE:
+        lines.append(
+            f"      -> PBO {pbo:.3f} is below the noise line: in-sample rank carries "
+            f"some signal. Still verify with a parameter-perturbation check."
+        )
+    else:
+        lines.append(
+            f"      -> PBO {pbo:.3f} sits near the 0.50 noise line: in-sample rank is "
+            f"close to uninformative."
+        )
+    return lines
+
 # Triples are drawn from this fixed a-priori set, one member per family, chosen
 # for mechanical complementarity rather than for measured performance.
 #
@@ -197,11 +315,21 @@ def main(argv: list[str] | None = None) -> int:
         "--stage", action="append", choices=["singles", "pairs", "triples"], default=None,
         help="which of List 1 / List 2 / List 3 to compute (default: all)",
     )
+    ap.add_argument(
+        "--quiet", action="store_true",
+        help="suppress the how-to-read legend and per-line interpretation",
+    )
     args = ap.parse_args(argv)
 
     horizons = args.horizon or list(HORIZONS)
     stages = args.stage or ["singles", "pairs", "triples"]
     OUT.mkdir(parents=True, exist_ok=True)
+
+    # Explanations are ON by default: these numbers are easy to misread, and the
+    # two most likely misreadings are the dangerous ones.
+    explain = not args.quiet
+    if explain:
+        print(LEGEND, file=sys.stderr)
 
     if "pairs" in stages or "triples" in stages:
         combo_frames, combo_pbos = [], []
@@ -214,9 +342,13 @@ def main(argv: list[str] | None = None) -> int:
                 combo_frames.append(df)
                 combo_pbos.append(pbo)
                 ok = df[~df.insufficient]
+                pos = int((ok.median_sharpe > 0).sum())
                 print(f"  {len(ok)}/{len(df)} evaluable, "
-                      f"{int((ok.median_sharpe > 0).sum())} with positive median Sharpe, "
+                      f"{pos} with positive median Sharpe, "
                       f"PBO {pbo['pbo']:.3f}", file=sys.stderr)
+                if explain:
+                    for line in interpret(len(ok), len(df), pos, pbo["pbo"]):
+                        print(line, file=sys.stderr)
             if "triples" in stages:
                 print(f"[{h}] CPCV triples (a-priori candidate set)…", file=sys.stderr)
                 df, pbo = run_combos(
@@ -225,9 +357,13 @@ def main(argv: list[str] | None = None) -> int:
                 combo_frames.append(df)
                 combo_pbos.append(pbo)
                 ok = df[~df.insufficient]
+                pos = int((ok.median_sharpe > 0).sum())
                 print(f"  {len(ok)}/{len(df)} evaluable, "
-                      f"{int((ok.median_sharpe > 0).sum())} with positive median Sharpe, "
+                      f"{pos} with positive median Sharpe, "
                       f"PBO {pbo['pbo']:.3f}", file=sys.stderr)
+                if explain:
+                    for line in interpret(len(ok), len(df), pos, pbo["pbo"]):
+                        print(line, file=sys.stderr)
 
         combos = pd.concat(combo_frames, ignore_index=True)
         combos.to_csv(OUT / "cpcv_combos_results.csv", index=False)
@@ -274,6 +410,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {len(ranked)}/{len(df)} configurations evaluable", file=sys.stderr)
         print(f"  PBO = {pbo['pbo']:.3f} over {int(pbo['n_splits'])} splits, "
               f"{int(pbo['n_configs'])} configs", file=sys.stderr)
+        if explain:
+            pos = int((ranked.median_sharpe > 0).sum())
+            for line in interpret(len(ranked), len(df), pos, pbo["pbo"]):
+                print(line, file=sys.stderr)
 
     allrows = pd.concat(frames, ignore_index=True)
     allrows.to_csv(OUT / "cpcv_results.csv", index=False)
