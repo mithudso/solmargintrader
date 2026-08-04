@@ -156,13 +156,15 @@ export const COMMANDS = {
       const resting = (await deps.store.allIntents())
         .filter((i) => i.status === INTENT_STATUS.RESTING)
         .map((i) => i.intentKey);
-      const { intents, skipped } = planGrid({
+      const { intents, skipped, recentre } = planGrid({
         config,
         price,
         openIntentKeys: resting,
         openLots: pnl.openLots,
       });
-      return { price, intents, skipped, restingCount: resting.length };
+      // recentre is reported, not applied: `plan` is readOnly, so a move it
+      // previews is uncommitted until a real tick books orders on it.
+      return { price, intents, skipped, restingCount: resting.length, recentre };
     },
   },
 
@@ -231,6 +233,9 @@ export const COMMANDS = {
       { name: 'spacing', type: TYPE.STRING, describe: 'geom | arith' },
       { name: 'notionalPerRungUsd', type: TYPE.NUMBER },
       { name: 'direction', type: TYPE.STRING, describe: 'neutral | long | short' },
+      { name: 'autoRecentre', type: TYPE.BOOL, describe: 'Move the ladder to track price. Off by default; only acts when nothing rests and no lot is open.' },
+      { name: 'recentreSpanPct', type: TYPE.NUMBER, describe: 'Half-width of a re-centred ladder, 0-1 exclusive (0.15 = 0.85x-1.15x).' },
+      { name: 'recentreDriftBps', type: TYPE.NUMBER, describe: 'Slack beyond the ladder before a re-centre is worth it.' },
       { name: 'slippageBps', type: TYPE.NUMBER },
       { name: 'leverage', type: TYPE.NUMBER },
       { name: 'marginSource', type: TYPE.STRING },
@@ -247,6 +252,24 @@ export const COMMANDS = {
       }
       if (merged.mode && !Object.values(MODE).includes(merged.mode)) {
         throw new CommandError(`mode must be one of ${Object.values(MODE).join(', ')}`, 400);
+      }
+      if (
+        merged.recentreSpanPct !== undefined
+        && !(merged.recentreSpanPct > 0 && merged.recentreSpanPct < 1)
+      ) {
+        throw new CommandError(
+          `recentreSpanPct must be between 0 and 1 exclusive, got ${merged.recentreSpanPct}`,
+          400,
+        );
+      }
+      if (
+        merged.recentreDriftBps !== undefined
+        && !(Number.isFinite(merged.recentreDriftBps) && merged.recentreDriftBps >= 0)
+      ) {
+        throw new CommandError(
+          `recentreDriftBps must be a finite number >= 0, got ${merged.recentreDriftBps}`,
+          400,
+        );
       }
       return { config: await deps.configStore.setConfig(merged) };
     },

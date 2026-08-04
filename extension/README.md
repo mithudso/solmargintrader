@@ -189,7 +189,17 @@ defaults are 60–90; on the real SOL daily series that band is outside the mark
 bars**. `autoRecentre` lets `planGrid` move the ladder to `0.85x–1.15x` of price — the same
 convention `tools/dryrun.js` uses, so there is only one.
 
-It is **off by default** and a fresh install behaves exactly as it did before it existed.
+It is **off by default** and a fresh install behaves exactly as it did before it existed. To turn it
+on, and to see what it would do before arming anything:
+
+```bash
+node tools/cli.js setConfig --autoRecentre true --recentreSpanPct 0.15
+node tools/cli.js plan          # reports `recentre`; computes only, places nothing
+```
+
+`setConfig` range-checks both values, because `ConfigStore.setConfig` is a blind merge — an
+out-of-range span would otherwise not surface until it threw inside every tick, which fails closed
+but bricks the grid silently instead of refusing the input.
 
 **`recentreDecision()` refuses far more often than it acts, and the refusals are the feature.**
 Moving the bounds changes every level, and a level is what an order's identity and a lot's paired

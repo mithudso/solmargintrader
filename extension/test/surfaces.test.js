@@ -373,3 +373,71 @@ test('every message the bundled UI sends maps to a real command', async () => {
   assert.ok(seen.has('status'), 'expected the UI to request status');
   assert.ok(seen.size >= 5, `expected several UI messages, found ${seen.size}`);
 });
+
+// ---------------------------------------------- auto re-centring, via commands
+//
+// Every other re-centring test builds config in-process with
+// `configStore.setConfig({...})`, which bypasses the command layer entirely. A
+// green suite is fully consistent with a flag no surface can actually set, so
+// these go through `runCommand`.
+
+test('autoRecentre is settable by name from every surface, not just via --patch', async () => {
+  const setConfig = COMMANDS.setConfig;
+  for (const field of ['autoRecentre', 'recentreSpanPct', 'recentreDriftBps']) {
+    assert.ok(
+      setConfig.params.some((p) => p.name === field),
+      `${field} needs a named param or the CLI and HTTP surfaces cannot reach it`,
+    );
+  }
+
+  const deps = testDeps();
+  const { config } = await runCommand({
+    name: 'setConfig',
+    args: { autoRecentre: true, recentreSpanPct: 0.2, recentreDriftBps: 50 },
+    deps,
+  });
+  assert.equal(config.autoRecentre, true);
+  assert.equal(config.recentreSpanPct, 0.2);
+  assert.equal(config.recentreDriftBps, 50);
+});
+
+test('a span that would break recentredBounds is refused at set time', async () => {
+  // ConfigStore.setConfig is a blind merge, so without this the bad value is not
+  // caught until recentredBounds() throws inside every tick — fail-closed, but it
+  // bricks the grid silently instead of rejecting the input.
+  for (const bad of [0, 1, 1.5, -0.1]) {
+    await assert.rejects(
+      () => runCommand({ name: 'setConfig', args: { recentreSpanPct: bad }, deps: testDeps() }),
+      CommandError,
+      `recentreSpanPct ${bad} must be refused`,
+    );
+  }
+  for (const bad of [-1, Infinity, NaN]) {
+    await assert.rejects(
+      () => runCommand({ name: 'setConfig', args: { recentreDriftBps: bad }, deps: testDeps() }),
+      CommandError,
+      `recentreDriftBps ${bad} must be refused`,
+    );
+  }
+  // The --patch escape hatch is validated on the same path, not around it.
+  await assert.rejects(
+    () => runCommand({ name: 'setConfig', args: { patch: { recentreSpanPct: 9 } }, deps: testDeps() }),
+    CommandError,
+  );
+});
+
+test('plan explains a previewed re-centre instead of silently showing moved levels', async () => {
+  const deps = testDeps();
+  await deps.configStore.setConfig({
+    gridId: 'g1', lower: 500, upper: 900, rungs: 5, notionalPerRungUsd: 25, autoRecentre: true,
+  });
+  // The stub venue prices at $100, well below the 500-900 ladder.
+  const result = await runCommand({ name: 'plan', args: {}, deps });
+  assert.ok(result.recentre, 'plan must report the re-centre decision');
+  assert.equal(result.recentre.applied, true);
+  assert.deepEqual(result.recentre.from, { lower: 500, upper: 900 });
+  assert.deepEqual(result.recentre.to, { lower: 85, upper: 115 });
+  // readOnly: previewing must not have moved the stored config.
+  const config = await deps.configStore.getConfig();
+  assert.deepEqual([config.lower, config.upper], [500, 900]);
+});
