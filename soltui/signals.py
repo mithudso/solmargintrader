@@ -73,6 +73,29 @@ class SignalDefaults:
     grid_anchor: int = 50
     grid_levels: int = 4
     grid_step: float = 0.05
+    # Implemented from spec cards (core/strategies/advanced.py)
+    dual_formation: int = 12
+    dual_skip: int = 1
+    adx_period: int = 14
+    adx_threshold: float = 25.0
+    ribbon_windows: int = 5
+    ribbon_base: int = 10
+    ichimoku_tenkan: int = 9
+    ichimoku_kijun: int = 26
+    ichimoku_senkou_b: int = 52
+    ichimoku_displacement: int = 26
+    ou_fit_window: int = 250
+    ou_hold_multiple: float = 2.5
+    ou_max_half_life: int = 30
+    hurst_window: int = 250
+    hurst_lag: int = 5
+    hurst_trend_threshold: float = 0.55
+    hurst_revert_threshold: float = 0.45
+    volregime_lookback: int = 250
+    volregime_calm_quantile: float = 0.5
+    atr_risk_per_trade: float = 0.01
+    atr_stop_multiple: float = 2.0
+    ewma_lambda: float = 0.94
 
     def to_dict(self) -> dict[str, Any]:
         """Serialisable form."""
@@ -110,6 +133,37 @@ STRATEGY_PARAM_MAP: dict[str, dict[str, str]] = {
         "anchor_window": "grid_anchor", "levels": "grid_levels", "step": "grid_step",
     },
     "buy_and_hold": {},
+    # Implemented from spec cards. Existing fields are reused where the meaning is
+    # genuinely the same (zscore_entry, trend_window, vol_window, vol_target), so the
+    # Signals tab stays one editor rather than growing a parallel set of near-duplicates.
+    "dual_momentum": {"formation": "dual_formation", "skip": "dual_skip"},
+    "adx_trend": {"adx_period": "adx_period", "adx_threshold": "adx_threshold"},
+    "ma_ribbon": {"windows": "ribbon_windows", "base": "ribbon_base"},
+    "ichimoku": {
+        "tenkan": "ichimoku_tenkan", "kijun": "ichimoku_kijun",
+        "senkou_b": "ichimoku_senkou_b", "displacement": "ichimoku_displacement",
+    },
+    "ou_reversion": {
+        "fit_window": "ou_fit_window", "entry_z": "zscore_entry",
+        "hold_multiple": "ou_hold_multiple", "max_half_life_bars": "ou_max_half_life",
+    },
+    "hurst_switch": {
+        "window": "hurst_window", "lag": "hurst_lag",
+        "trend_threshold": "hurst_trend_threshold",
+        "revert_threshold": "hurst_revert_threshold",
+        "trend_window": "trend_window", "entry_z": "zscore_entry",
+    },
+    "vol_regime": {
+        "vol_window": "vol_window", "lookback": "volregime_lookback",
+        "calm_quantile": "volregime_calm_quantile", "trend_window": "trend_window",
+    },
+    "atr_sized": {
+        "atr_period": "keltner_atr", "risk_per_trade": "atr_risk_per_trade",
+        "stop_atr_multiple": "atr_stop_multiple", "trend_window": "trend_window",
+    },
+    "garch_voltarget": {
+        "lam": "ewma_lambda", "target_vol": "vol_target", "trend_window": "trend_window",
+    },
 }
 
 # Human-facing grouping and units for the Signals tab, so the form reads as a
@@ -126,6 +180,21 @@ SIGNAL_GROUPS: list[tuple[str, list[str]]] = [
     ("Z-score / ROC", ["zscore_window", "zscore_entry", "roc_window"]),
     ("Volatility target", ["vol_window", "vol_target"]),
     ("Grid", ["grid_anchor", "grid_levels", "grid_step"]),
+    ("Dual momentum", ["dual_formation", "dual_skip"]),
+    ("ADX", ["adx_period", "adx_threshold"]),
+    ("MA ribbon", ["ribbon_windows", "ribbon_base"]),
+    (
+        "Ichimoku",
+        ["ichimoku_tenkan", "ichimoku_kijun", "ichimoku_senkou_b", "ichimoku_displacement"],
+    ),
+    ("OU reversion", ["ou_fit_window", "ou_hold_multiple", "ou_max_half_life"]),
+    (
+        "Hurst regime switch",
+        ["hurst_window", "hurst_lag", "hurst_trend_threshold", "hurst_revert_threshold"],
+    ),
+    ("Volatility regime", ["volregime_lookback", "volregime_calm_quantile"]),
+    ("ATR sizing", ["atr_risk_per_trade", "atr_stop_multiple"]),
+    ("EWMA / GARCH", ["ewma_lambda"]),
 ]
 
 
@@ -142,6 +211,11 @@ def validate(defaults: SignalDefaults) -> SignalDefaults:
         "keltner_ema", "keltner_atr", "donchian_entry", "donchian_exit", "obv_ma",
         "vwap_window", "zscore_window", "roc_window", "vol_window", "trend_window",
         "grid_anchor", "grid_levels",
+        # Implemented from spec cards.
+        "dual_formation", "adx_period", "ribbon_windows", "ribbon_base",
+        "ichimoku_tenkan", "ichimoku_kijun", "ichimoku_senkou_b",
+        "ichimoku_displacement", "ou_fit_window", "ou_max_half_life",
+        "hurst_window", "volregime_lookback",
     ]
     for name in positive_ints:
         if int(getattr(d, name)) < 1:
@@ -161,6 +235,32 @@ def validate(defaults: SignalDefaults) -> SignalDefaults:
         raise SignalError("bollinger_std must be positive")
     if d.keltner_mult <= 0:
         raise SignalError("keltner_mult must be positive")
+    # --- relationships the advanced strategies enforce in their constructors ---
+    if not 0 <= d.dual_skip < d.dual_formation:
+        raise SignalError("require 0 <= dual_skip < dual_formation")
+    if d.adx_threshold < 0:
+        raise SignalError("adx_threshold cannot be negative")
+    if d.ribbon_windows < 2:
+        raise SignalError("ribbon_windows must be at least 2 to have a pair to order")
+    if d.hurst_lag < 2:
+        raise SignalError("hurst_lag must be at least 2 for a variance ratio")
+    if not 0 < d.hurst_revert_threshold < d.hurst_trend_threshold < 1:
+        raise SignalError(
+            "require 0 < hurst_revert_threshold < hurst_trend_threshold < 1"
+        )
+    if d.ou_hold_multiple <= 0:
+        raise SignalError("ou_hold_multiple must be positive")
+    if not 0 < d.volregime_calm_quantile < 1:
+        raise SignalError("volregime_calm_quantile must be a fraction between 0 and 1")
+    if d.volregime_lookback < d.vol_window * 2:
+        raise SignalError("volregime_lookback must be at least twice vol_window")
+    if not 0 < d.atr_risk_per_trade <= 1:
+        raise SignalError("atr_risk_per_trade must be a fraction in (0, 1]")
+    if d.atr_stop_multiple <= 0:
+        raise SignalError("atr_stop_multiple must be positive")
+    if not 0 < d.ewma_lambda < 1:
+        raise SignalError("ewma_lambda must be strictly between 0 and 1")
+
     if d.zscore_entry >= 0:
         raise SignalError(
             "zscore_entry must be negative — it is the oversold threshold a long "
