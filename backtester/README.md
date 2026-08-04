@@ -353,13 +353,50 @@ cost structure it did not use.
 Every run prints a buy-and-hold baseline on the same bars, paying entry costs
 once. A grid that underperforms holding the asset has not earned its complexity.
 
+## Peer-relative value: the rigorous version of a z-score
+
+`zscore` assumes the series it measures is stationary, and raw price is not. A
+cointegrated spread is *constructed* to be stationary and the assumption is **tested**:
+
+```bash
+python3 -m backtester.core.fetch --asset BTC --interval 1d --start 2021-06-17
+python3 -m backtester.paircli --asset SOL --peer BTC --interval 1d --split 0.7
+```
+
+`core/cointegration.py` implements an Augmented Dickey-Fuller test and the
+Engle-Granger two-step with MacKinnon critical values — no `statsmodels`, since
+`requirements.txt` stays minimal. `core/pairs.py` refits beta every bar on trailing data
+only and **refuses to trade** while the ADF test fails.
+
+That refusal is the measured result. SOL and ETH are cointegrated on the full daily
+sample (ADF −3.127, p≈0.032); SOL and BTC are not (p≈0.087). Either way the strategy took
+**zero out-of-sample trades** — and with the gate disabled it took two and lost
+**24.7%**. The screen, not the z-score, is what the mechanism contributes.
+
+It runs through its own entry point rather than the strategy registry because it needs
+two price series, and a registered strategy that silently does nothing when its peer is
+absent would be a footgun.
+
+## Archiving a series nobody publishes
+
+Some data cannot be fetched retroactively at all. JLP is the example: Coinbase does not
+list it, and Jupiter serves its spot price but no history.
+
+```bash
+python3 -m backtester.core.archive_price --mint JLP    # append one observation
+```
+
+Append-only, refuses a non-positive price rather than writing a zero, and warns while
+the file is too short to backtest. It accumulates history going forward; it cannot
+recover the past.
+
 ## Tests
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t . -v
 ```
 
-189 known-answer tests, no network required. The load-bearing ones:
+250 known-answer tests, no network required. The load-bearing ones:
 
 | Test | Known answer |
 |---|---|

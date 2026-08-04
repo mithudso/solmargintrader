@@ -203,6 +203,49 @@ class TestCardValidation(unittest.TestCase):
         with self.assertRaises(sc.CardError):
             sc.load_card(self.write_card(params="[]"))
 
+    def test_an_implemented_card_may_not_claim_a_measurement(self) -> None:
+        # 'implemented' exists precisely to describe code with no data to run on —
+        # the JLP case. Letting it carry an evaluation or cite measured-oos would
+        # collapse it back into 'measured' and invent a result.
+        with self.assertRaises(sc.CardError) as ctx:
+            sc.load_card(
+                self.write_card(
+                    status="implemented", runner="backtester.paircli",
+                    evaluation="single-split-70-30",
+                )
+            )
+        self.assertIn("evaluation must be null", str(ctx.exception))
+
+        with self.assertRaises(sc.CardError):
+            sc.load_card(
+                self.write_card(
+                    status="implemented", runner="backtester.paircli",
+                    success_basis="measured-oos",
+                )
+            )
+
+    def test_an_implemented_card_must_still_name_a_runner(self) -> None:
+        with self.assertRaises(sc.CardError) as ctx:
+            sc.load_card(self.write_card(status="implemented"))
+        self.assertIn("must name its runner", str(ctx.exception))
+
+    def test_a_valid_implemented_card_loads(self) -> None:
+        card = sc.load_card(
+            self.write_card(status="implemented", runner="backtester.paircli")
+        )
+        self.assertTrue(card.implemented, "runner set means something runs it")
+        self.assertFalse(card.buildable, "but not from the strategy registry")
+        self.assertIsNone(card.evaluation)
+
+    def test_a_card_on_backtester_cli_must_name_a_registry_key(self) -> None:
+        with self.assertRaises(sc.CardError) as ctx:
+            sc.load_card(
+                self.write_card(status="measured", runner="backtester.cli",
+                                evaluation="single-split-70-30",
+                                success_basis="measured-oos")
+            )
+        self.assertIn("registry_key", str(ctx.exception))
+
     def test_a_spec_only_card_cannot_claim_a_runner_or_registry_key(self) -> None:
         for override in ({"registry_key": "macd"}, {"runner": "backtester.cli"}):
             with self.assertRaises(sc.CardError):

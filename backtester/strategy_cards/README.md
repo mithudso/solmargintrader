@@ -50,10 +50,10 @@ loader raises rather than accept it. The fields mean:
 |---|---|
 | `id` | stable slug; **must equal the filename stem** |
 | `kind` | `exposure-strategy` or `ladder` |
-| `status` | `measured` or `spec-only` |
+| `status` | `measured`, `implemented` or `spec-only` — see below |
 | `family` | must match `FAMILY[]` in `core/strategies/__init__.py` |
 | `registry_key` | `null` unless the strategy is in `REGISTRY`; two cards may not claim one key |
-| `runner` | `backtester.cli`, `backtester.gridcli`, or `null` for spec-only |
+| `runner` | `backtester.cli`, `backtester.gridcli`, `backtester.paircli`, or `null` for spec-only |
 | `warmup_bars` | must match the instance's `warmup_bars()` |
 | `evaluation` | how any number in the body was produced; required on `measured` cards |
 | `params` | each entry needs **either** `default:` **or** `required: true`, never both. `type:` is enforced against the default |
@@ -121,6 +121,17 @@ trades; below that a row is listed, never ranked.
 Treat those numbers as evidence about **one regime transition**, not as performance
 estimates. When a CPCV evaluation supersedes them, change `evaluation:` and the numbers
 together.
+
+## Three statuses, because two would lie
+
+- **`measured`** — this repo ran it and the card carries the numbers.
+- **`implemented`** — the code exists and is tested, but **no data exists to measure it
+  on**. `jlp_vs_sol_relative_value` is the case: JLP price history cannot be fetched
+  retroactively from anywhere reachable, only accumulated going forward with
+  `core/archive_price.py`. Calling this `spec-only` would hide working code; calling it
+  `measured` would invent a result. The loader enforces that an `implemented` card's
+  `evaluation` is null and that it cannot cite `measured-oos`.
+- **`spec-only`** — specified, nothing built.
 
 ## Likelihood of success
 
