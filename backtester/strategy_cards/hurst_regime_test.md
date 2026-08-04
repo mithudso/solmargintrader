@@ -8,7 +8,7 @@ summary: A meta-signal: measure whether the series trends or reverts, then run t
 registry_key: hurst_switch
 runner: backtester.cli
 warmup_bars: 251
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2
 data_required: [ohlcv]
 data_available: true
 success_likelihood: moderate
@@ -111,6 +111,46 @@ hostile split that inverted every other ranking. `RANKED_LISTS.md` found the
 previous top-ranked row consistent with noise on a within-mechanism test, and nothing
 here rules out the same verdict. Moderate means "worth the next experiment", not
 "works" — and the next experiment is CPCV, not another split.
+
+## Re-evaluated under CPCV
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
+1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
+arbitrary split. Full run for all 25 registered configurations:
+`research/results/cpcv_all25_1d.csv`.
+
+| Statistic | hurst_switch | buy_and_hold | zscore |
+|---|---|---|---|
+| Median path Sharpe | **+0.699** | +0.534 | +0.036 |
+| Q1 path Sharpe (the conservative read) | **+0.609** | −0.095 | −0.539 |
+| Paths with positive Sharpe | **93%** | 68% | 52% |
+| Median path return | **+16.7%** | +9.4% | −10.0% |
+| Total trades | 24 | 16 | 50 |
+
+**It ranks first of all 25 configurations by median path Sharpe**, and it is the only
+one whose 25th-percentile path is comfortably positive — Lopez de Prado's recommended
+conservative statistic. It also has **no negative block**: per-block Sharpes are
++0.86, +2.67, 0.00, 0.00, +0.99, +0.29.
+
+**Adding it to the set *lowered* the Probability of Backtest Overfitting.** On the six
+blocks every configuration shares, PBO across the original 16 is 0.600; adding
+hurst_switch gives 0.400. So it is not the artifact that in-sample selection latches
+onto — it makes selection more reliable. (Both figures sit above the prior study's
+0.429–0.457 because restricting to six common blocks leaves only 20 CSCV splits; treat
+the *direction* of the change as the signal, not the level.)
+
+### What holds the rating at moderate rather than higher
+
+The trade count. **24 trades across six blocks**, and two of those blocks traded
+**zero** times — their 0.00 Sharpes are "never lost", not "usually won", which inflates
+the 93%-positive figure. Block 3's headline +2.669 rests on **two trades**. A mechanism
+that abstains most of the time and is right when it acts is the profile you want, but it
+is also the profile that a small sample cannot distinguish from luck.
+
+So: the pre-registered prediction survived the harder test, the rating stays at
+**moderate**, and the next honest step is more data rather than more confidence —
+either the hourly series or a peer universe, both of which multiply the trade count
+without re-using this one.
 
 ## Caveats and limitations
 - Estimating H on a rolling window is noisy, and the estimate is itself

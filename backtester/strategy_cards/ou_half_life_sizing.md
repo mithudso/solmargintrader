@@ -8,10 +8,10 @@ summary: Z-score reversion with an Ornstein-Uhlenbeck hold cap and a stationarit
 registry_key: ou_reversion
 runner: backtester.cli
 warmup_bars: 251
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2
 data_required: [ohlcv]
 data_available: true
-success_likelihood: low
+success_likelihood: moderate
 success_basis: measured-oos
 params:
   fit_window: {default: 250, type: int, desc: "bars used to fit theta"}
@@ -82,7 +82,7 @@ estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
 
-## Likelihood of success: low
+## Likelihood of success: moderate
 
 *Basis: measured-oos.*
 
@@ -99,6 +99,34 @@ Rated low rather than moderate because a mechanism that mostly abstains has not
 demonstrated an edge — it has demonstrated a filter. The next real test is using it
 as the exit discipline on top of the two existing reversion cards, which is what the
 original spec proposed and what remains undone.
+
+## Re-evaluated under CPCV
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
+1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
+arbitrary split. Full run for all 25 registered configurations:
+`research/results/cpcv_all25_1d.csv`.
+
+| Statistic | ou_reversion | buy_and_hold |
+|---|---|---|
+| Median path Sharpe | **+0.412** | +0.534 |
+| Q1 path Sharpe | **+0.213** | −0.095 |
+| Paths with positive Sharpe | **93%** | 68% |
+| Median path return | **+10.5%** | +9.4% |
+| Total trades | 26 | 16 |
+
+**Upgraded from low to moderate.** The single split gave it 6 out-of-sample trades and
+no verdict; CPCV gives it 15 paths, a **positive 25th percentile** (+0.213, second only
+to hurst_switch among all 25) and 93% of paths positive. It ranks fourth of 25 by median
+path Sharpe while trading a quarter as often as the mechanisms below it.
+
+The reading is that the **screening rule is the edge**: refusing a series whose fitted
+half-life is infinite or beyond the cap keeps it out of exactly the trending regimes
+that destroyed `bb_reversion` and `zscore`. That is a structural argument, not a
+statistical one, which is what moderate requires.
+
+Same caveat as its sibling: 26 trades is a small sample, and "mostly abstains" is doing
+real work in that 93%.
 
 ## Caveats and limitations
 - Theta fitted on a trending series is meaningless. That is the point of the

@@ -8,7 +8,7 @@ summary: Trend-follow in calm volatility, stand aside when volatility is elevate
 registry_key: vol_regime
 runner: backtester.cli
 warmup_bars: 251
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2
 data_required: [ohlcv]
 data_available: true
 success_likelihood: very-low
@@ -99,6 +99,31 @@ for the wrong reason.
 The honest reading is that **volatility level is the wrong regime variable for this
 market**. `hurst_regime_test.md` conditions on serial correlation instead and made
 money on the same split, which is the more informative comparison this card provides.
+
+## Re-evaluated under CPCV
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
+1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
+arbitrary split. Full run for all 25 registered configurations:
+`research/results/cpcv_all25_1d.csv`.
+
+| Statistic | vol_regime | buy_and_hold |
+|---|---|---|
+| Median path Sharpe | −0.172 | +0.534 |
+| Q1 path Sharpe | −0.683 | −0.095 |
+| Paths with positive Sharpe | 40% | 68% |
+| Median path return | −18.7% | +9.4% |
+| Total trades | 94 | 16 |
+
+**CPCV confirms the very-low rating rather than softening it.** A negative median across
+15 paths, only 40% of paths positive, and a median path that loses 18.7%. Unlike
+`adx_filtered_trend`, whose single-split loss turned out to be split-dependent, this one
+loses across the distribution.
+
+The comparison that makes it useful sits one card away: `hurst_regime_test.md` conditions
+on **serial correlation** and ranks first of 25, while this conditions on **volatility
+level** and ranks near the bottom. Same idea — pick the regime, then pick the rule — and
+the choice of regime variable is what separates them.
 
 ## Caveats and limitations
 - A quantile is not a state model. If the latent-state version behaves differently,

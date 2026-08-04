@@ -8,10 +8,10 @@ summary: Buy when price is z sample-stdevs below its trailing mean. Top-ranked m
 registry_key: zscore
 runner: backtester.cli
 warmup_bars: 20
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2
 data_required: [ohlcv]
 data_available: true
-success_likelihood: low
+success_likelihood: very-low
 success_basis: measured-oos
 params:
   window: {default: 20, type: int, desc: "trailing window for mean and stdev"}
@@ -81,7 +81,7 @@ estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
 
-## Likelihood of success: low
+## Likelihood of success: very-low
 
 *Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
 configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
@@ -91,6 +91,32 @@ trades**, the evidence floor. `RANKED_LISTS.md` records a within-mechanism natur
 experiment finding this row consistent with noise. Against it stands a known
 theoretical error: the z-score assumes stationarity and raw price is not stationary.
 Read as "not yet disconfirmed", never as "works".
+
+## Re-evaluated under CPCV
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
+1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
+arbitrary split. Full run for all 25 registered configurations:
+`research/results/cpcv_all25_1d.csv`.
+
+| Statistic | zscore | buy_and_hold |
+|---|---|---|
+| Median path Sharpe | +0.036 | +0.534 |
+| Q1 path Sharpe | −0.539 | −0.095 |
+| Paths with positive Sharpe | **52%** | 68% |
+| Median path return | **−10.0%** | +9.4% |
+| Total trades | 50 | 16 |
+
+**Downgraded from low to very-low.** The single split made this the top-ranked medium
+single (+0.699 Sharpe, +41.3%) on exactly 10 trades. Across 21 CPCV paths the median
+Sharpe is **+0.036** — a coin flip, 52% of paths positive — and the median path
+*loses 10%*.
+
+`RANKED_LISTS.md` already suspected this row was noise on a within-mechanism test. CPCV
+says so directly: the earlier figure was a property of where the split landed, not of
+the mechanism. The theoretical objection stands unchanged — a stationarity-dependent
+method applied to non-stationary raw price — and `ou_half_life_sizing.md` is what the
+same idea looks like with the assumption actually tested.
 
 ## Caveats and limitations
 - The top-ranked medium row rests on exactly 10 trades. `RANKED_LISTS.md` records that
