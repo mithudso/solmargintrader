@@ -1,62 +1,71 @@
 # solmargintrader
 
-Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking, exposed through three
-interchangeable surfaces: a Chrome MV3 extension, a CLI, and a local HTTP API.
+SOL trading research and execution tooling, in three parts:
 
-**Dry-run by default.** Nothing places an order until you change the mode and type a confirmation.
+| Path | What it is | Language |
+| --- | --- | --- |
+| [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
+| [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists and parameter sweeps built on the backtester. | Python |
+| [`extension/`](extension/README.md) | Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **This is the part that can place real orders.** | JavaScript (ESM, no deps) |
 
-> Educational tool, not financial advice. Grid trading is short volatility: it earns in a range and
-> loses in a trend. Any leveraged position can be liquidated. Trade only capital you can lose.
-
-## Layout
-
-| Path | What it is |
-| --- | --- |
-| `extension/` | The whole product: engine, venues, surfaces, tests. See [extension/README.md](extension/README.md). |
-| `jup.ag/` | A rendered-HTML dump of jup.ag, kept only as reference material. **Not** Jupiter's source — see below. |
-| `docs/` | Architecture, testing, API/CLI reference, security model, operations runbook. |
+> Research and educational tooling, not financial advice. Simulated past performance does not
+> predict future results. Grid trading is short volatility: it earns in a range and loses in a trend.
+> Leveraged positions can be liquidated. Trade only capital you can lose entirely.
 
 ## Quick start
 
 ```bash
+# Backtester — fetch once, then simulate offline
+pip install -r backtester/requirements.txt
+python3 -m backtester.core.fetch --asset SOL --interval 1d --start 2021-01-01
+python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
+
+# Extension — no install step, no dependencies
 cd extension
-npm test                                        # 96 tests, no dependencies to install
+npm test                                               # 96 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
-node tools/cli.js                               # every available command
+node tools/cli.js                                      # every available command
 ```
 
 Load the extension: `chrome://extensions` → Developer mode → **Load unpacked** → select
-`extension/`. It loads disarmed, in dry-run.
+`extension/`. It loads **disarmed, in dry-run**.
+
+## Tests
+
+```bash
+python3 -m unittest discover -s backtester/tests -t .   # 80 tests
+cd extension && npm test                                # 96 tests
+```
 
 ## Three surfaces, one registry
 
-Every action lives in `extension/src/core/commands.js`. The extension's message handler, the CLI, and
-the HTTP API are thin adapters over that registry, and a parity test fails the build if any surface
-falls behind. That means anything you can do in the extension UI you can also script:
+Every extension action lives in `extension/src/core/commands.js`. The Chrome message handler, the
+CLI and the HTTP API are thin adapters over that registry, and a parity test fails the build if any
+surface drifts. So anything you can do in the extension UI, you can script:
 
 ```bash
 cd extension
 node tools/cli.js setConfig --lower 60 --upper 90 --rungs 7 --notionalPerRungUsd 12
-node tools/cli.js levels
-node tools/cli.js plan --price 75
+node tools/cli.js levels          # rung ladder + gross spread per round trip
+node tools/cli.js plan --price 75 # what it WOULD place; places nothing
 node tools/cli.js arm
 node tools/cli.js tick --count 3
 node tools/cli.js pnl --json
 ```
 
 ```bash
-node tools/api-server.js --port 8787          # prints a bearer token
+node tools/api-server.js --port 8787     # prints a bearer token
 curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 ```
 
 Full reference: [docs/API.md](docs/API.md).
 
-## Two findings that shaped this repo
+## Two findings that shaped the extension
 
-**The HTML dump is not Jupiter's code.** `jup.ag/` contains 16 rendered HTML files and zero `.js`
-bundles — it references `jup.ag/assets/index-*.js` but never downloaded them. It was still useful:
-it identified the intended venue, yielded real token mints, and revealed a bundled `vendor-anchor-*.js`
-implying client-side Anchor instruction building.
+**The bundled HTML dump is not Jupiter's code.** `jup.ag/` holds 16 rendered HTML files and zero
+`.js` bundles — it references `jup.ag/assets/index-*.js` but never fetched them. It was still
+useful: it identified the intended venue, yielded real token mints, and revealed a bundled
+`vendor-anchor-*.js` implying client-side Anchor instruction building. It is gitignored (~42 MB).
 
 **Jupiter Perps has no public REST write API.** Jupiter's docs state the Perps API is a work in
 progress and point at Anchor IDL parsing, so opening or closing a leveraged position is not
@@ -66,8 +75,9 @@ ships.
 
 ## Docs
 
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — module map, the tick, restart safety, venue seam
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — component map, the tick, restart safety, venue seam
 - [docs/API.md](docs/API.md) — every command across all three surfaces
-- [docs/TESTING.md](docs/TESTING.md) — what is tested, what is not, how to verify
+- [docs/TESTING.md](docs/TESTING.md) — what is covered, what is not, how to verify
 - [docs/SECURITY.md](docs/SECURITY.md) — key custody, API token, threat model
 - [docs/OPERATIONS.md](docs/OPERATIONS.md) — dry run to live, kill switch, incident steps
+- [CLAUDE.md](CLAUDE.md) / [AGENTS.md](AGENTS.md) — rules for agents working in this repo

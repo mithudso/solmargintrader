@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+# Read-only by default; nothing here needs write access to the repo.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  extension:
+    name: extension (node)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Ed25519 in WebCrypto and node:test's current output both need a
+          # recent runtime; 22 is the floor the test suite is verified on.
+          node-version: '22'
+
+      # No install step: the extension has zero runtime and zero dev
+      # dependencies by design, so there is nothing to cache or audit.
+      - name: Unit and parity tests
+        run: node --test
+
+      - name: Syntax check every module
+        run: |
+          find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Validate the MV3 manifest
+        run: |
+          node -e "
+            const m = require('./manifest.json');
+            if (m.manifest_version !== 3) throw new Error('expected MV3');
+            for (const p of [m.background.service_worker, m.action.default_popup, m.options_page]) {
+              if (!require('node:fs').existsSync(p)) throw new Error('manifest references missing file: ' + p);
+            }
+            console.log('manifest ok:', m.name, m.version);
+          "
+
+      - name: Headless dry run (offline, deterministic)
+        run: node tools/dryrun.js --ticks 8 --osc 6 --offline 100
+
+  backtester:
+    name: backtester (python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r backtester/requirements.txt
+
+      - name: Unit tests
+        run: python3 -m unittest discover -s backtester/tests -t . -v
+
+      - name: Import check
+        run: python3 -c "import backtester.cli; print('imports ok')"
+
+  # Live Jupiter endpoints are checked on a schedule rather than per-commit: a
+  # third-party outage must not turn every PR red.
+  endpoints:
+    name: jupiter endpoints (informational)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tools/verify-endpoints.js
