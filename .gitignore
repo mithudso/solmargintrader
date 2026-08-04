@@ -57,7 +57,10 @@ data/
 
 # Regenerable CLI output. Rebuild with:
 #   python3 -m backtester.cli --asset SOL --strategy all --out results/
-results/
+# NOTE the leading slash: this must match ONLY the repo-root results/ directory.
+# An unanchored "results/" also matches research/results/ at any depth, which is
+# how the tracked-evidence fix below was silently defeated the first time.
+/results/
 
 # research/results/ is deliberately TRACKED, not ignored. Those CSVs are the
 # evidence for every figure in research/*.md, and verify_numbers.py checks the
