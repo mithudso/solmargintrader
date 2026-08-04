@@ -1,5 +1,24 @@
 # Handoff — 2026-08-04
 
+## Final state: MERGED to master
+
+All work is on **master** (`75a68d1`). Verification on master: `verify_numbers.py` **exit 0**,
+795 figures checked, **103 tests pass**, tree clean. **No remote — intentionally local.**
+
+Master had diverged mid-session with three parallel commits (extension docs, repo bootstrap);
+merged with merge commits, no conflicts, merged tree validated before each commit.
+
+`research/results/` is now **tracked** (9 files, ~200KB). Those CSVs are the evidence for every
+published figure, and `verify_numbers.py` checks the documents against them — ignoring them meant
+a fresh checkout could not verify its own claims.
+
+**A verifier bug worth knowing about:** `check_cpcv` used to return `True` when no CPCV results
+were loaded, silently counting unverifiable figures as verified. Combined with the ignored
+results directory, master reported success while actually failing 454 checks. Both fixed; there
+is now a **preflight** that fails once with the regenerate commands rather than emitting hundreds
+of per-figure mismatches. Also note: an unanchored `results/` gitignore pattern matches
+`research/results/` at any depth — it is now `/results/`, anchored to the repo root.
+
 ## Where the work lives
 
 Branch **`worktree-cpcv-and-longer-history`** in `.claude/worktrees/cpcv-and-longer-history`.
