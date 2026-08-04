@@ -8,7 +8,7 @@ summary: A meta-signal: measure whether the series trends or reverts, then run t
 registry_key: hurst_switch
 runner: backtester.cli
 warmup_bars: 251
-evaluation: cpcv-8-groups-k2-daily-and-hourly
+evaluation: cpcv-8-groups-k2-sol-btc-eth
 data_required: [ohlcv]
 data_available: true
 success_likelihood: low
@@ -174,6 +174,15 @@ The repo's own headline finding is that in-sample rank does not predict out-of-s
 rank. This card is now a demonstration of the same effect **across horizons**, which is
 a more uncomfortable version of it: the rank was not stable across a change of scale
 either.
+
+### BTC and ETH confirm it
+
+Run at the same medium scaling on both (`research/results/cpcv_all25_btc_eth_1d.csv`):
+**13th of 25 on BTC** (median +0.565, Q1 −0.554) and **19th of 25 on ETH** (median
++0.000, Q1 −1.471, **0% of paths positive**, four trades). On BTC, where 25 of 25
+configurations had a positive median path Sharpe, it still finished mid-pack and below
+buy-and-hold. Four datasets, one good rank, and that one was the dataset the mechanism
+was developed against.
 
 ### What would change the rating back
 A third independent test that it passes — a peer universe, or a different asset's daily
