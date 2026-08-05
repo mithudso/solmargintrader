@@ -13,10 +13,12 @@ cannot be forgotten:
     S3  evidence floor           — a result standing on too few trades is not evidence.
                                    A `q1_sharpe` of exactly 0.000 is the specific tell
                                    that most CPCV paths took no trade at all.
-    S4  degeneracy               — nominally different strategies whose RESULT VECTORS
-                                   coincide are one strategy wearing several names. It
-                                   compares outputs, never parameters, because the cause
-                                   is usually a constraint binding on every bar.
+    S4  degeneracy               — nominally different strategies whose published results
+                                   coincide are usually one strategy wearing several names,
+                                   because some constraint binds on every bar. It compares
+                                   outputs, never parameters. Note it screens on the CSVs'
+                                   summary scalars rather than full equity curves, so a hit
+                                   is a lead to confirm, not a verdict.
     S5  attribution              — a strategy that ranks 1st on one asset or timeframe
                                    and near-last on another was measuring the dataset.
 
@@ -108,7 +110,14 @@ def s3_evidence_floor(df: pd.DataFrame, floor: int) -> list[str]:
 
 
 def s4_degeneracy(df: pd.DataFrame) -> list[str]:
-    """Strategies whose published result vectors coincide."""
+    """Strategies whose published summary scalars coincide.
+
+    **This is a collision screen, not proof of a twin.** The CSVs carry summary
+    statistics, not equity curves, so two genuinely different curves can share a
+    rounded median Sharpe, median return and trade count. A hit is strong evidence
+    worth chasing, not a verdict; confirming a true twin means comparing per-bar
+    exposure or equity, which means re-running the backtest.
+    """
     keys = [k for k in RESULT_KEYS if k in df]
     if not keys:
         return []

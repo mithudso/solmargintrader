@@ -45,7 +45,9 @@ optimization, whose whole culture assumes you can hold out an i.i.d. slice.
 
 ## 3. Children / sub-concepts, tagged against this repo
 
-`HAVE` = implemented and tested here. `PARTIAL` = done once by hand, not tooled. `GAP` = absent.
+`HAVE` = implemented and tested here. `HAVE` (screen) = added by this work as a reporting screen in
+`research/dso_audit.py`, which flags but does not gate. `PARTIAL` = done once by hand, not tooled.
+`GAP` = absent.
 
 ### 3.1 Parameter search
 | Concept | Status | Where / note |
@@ -81,15 +83,15 @@ This row is the repo's genuine strength. Most of the standard overfitting defenc
 | Deflated Sharpe / multiple-testing haircut | `GAP` | §5.1 |
 | Minimum backtest length / minimum track record length | `GAP` | §5.2 |
 | White's Reality Check / Hansen SPA | `GAP` | heavier; bootstrap over the whole config set. Lower priority than DSR because PBO already answers the "is the leaderboard informative" question |
-| **Evidence floor on trade count** | `PARTIAL` | the *phrase* is in the cards; no mechanical veto. §5.2 |
-| **Result-vector degeneracy** | `GAP` | §5.3 |
+| **Evidence floor on trade count** | `HAVE` (screen) | was only a phrase in the cards; `research/dso_audit.py` now flags it mechanically. Still not a *veto* in the sweep itself. §5.2 |
+| **Result-vector degeneracy** | `HAVE` (screen) | `research/dso_audit.py` S4, on published summary scalars. Confirming a twin still needs equity curves. §5.3 |
 
 ### 3.5 Robustness
 | Concept | Status | Note |
 | --- | --- | --- |
 | Parameter perturbation ±10% | `HAVE` | `research/perturb.py`, now across all 25 singles at every horizon |
-| Cross-asset transfer | `PARTIAL` | BTC/ETH runs done by hand; not a gate |
-| Cross-timeframe transfer | `PARTIAL` | 1d vs 1h done by hand; catastrophic for `hurst_switch` (1st → 23rd) |
+| Cross-asset transfer | `HAVE` (screen) | BTC/ETH runs were by hand; `dso_audit.py` S5 now reports the swing. Not a gate |
+| Cross-timeframe transfer | `HAVE` (screen) | catastrophic for `hurst_switch` (1st to 23rd); `dso_audit.py` S5 reports it |
 | Regime stratification | `GAP` | would explain the 1d/1h collapse rather than just observing it |
 | Bootstrap / noise injection on the price path | `GAP` | moderate value; perturbation covers the parameter axis but not the data axis |
 
@@ -103,7 +105,7 @@ This row is the repo's genuine strength. Most of the standard overfitting defenc
 ### 3.7 Attribution
 | Concept | Status | Note |
 | --- | --- | --- |
-| Dataset vs strategy | `PARTIAL` | the sharpest finding this repo has produced (§6) and it is not tooled |
+| Dataset vs strategy | `HAVE` (screen) | was the sharpest finding here and untooled; `research/dso_audit.py` S5 now reports rank swings across asset and timeframe |
 | Is it just beta / buy-and-hold in disguise | `PARTIAL` | `buy_and_hold` is in the registry as a benchmark, compared by hand |
 | Parameter vs structure | `HAVE` | that is exactly what `perturb.py` answers |
 
@@ -169,7 +171,15 @@ below the floor, a result is not eligible to be reported as an improvement at al
 "different" strategies were one strategy. Nothing detects this, and it inflates apparent search
 breadth — which in turn inflates the multiple-testing burden in §5.1 while adding no diversity.
 
-The check must compare **result vectors** (equity curves or per-bar exposure), not parameter sets.
+`research/dso_audit.py` implements this screen, and the first run of it found a **second** pair that
+was not previously known: on BTC daily, `bb_reversion` and `zscore` are identical at median Sharpe
+`0.056701`, median return `-0.037425`, and 56 trades. Whether that is two registry entries computing
+the same thing or a coincidence is **open and untriaged** — no strategy was changed when it was
+found. It is the finding that best justifies the pass existing.
+
+The check must compare **outputs**, not parameter sets. Note the shipped screen compares the
+published summary scalars, since the result CSVs do not carry equity curves; confirming a true twin
+means re-running the two backtests and comparing per-bar exposure.
 
 ### 5.4 Dataset-vs-strategy attribution
 See §6. Not tooled; done by hand.

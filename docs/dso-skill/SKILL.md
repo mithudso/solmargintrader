@@ -236,6 +236,18 @@ strategies:
 6. PBO not worsened, where the harness computes it.
 7. The project's full pre-existing suite still green.
 
+**Refuse to run when the split cannot carry a verdict.** Require at least **8 usable CV blocks**, of
+which at least **4** are held out. Below that, decline `--promote`, report `promotion: declined
+(holdout too small: N blocks)`, and run the defect track only. Splitting a short block set anyway is
+how a promotion gets reported on noise, which is the failure this track exists to prevent. Two
+compounding reasons, both of which bite on real data:
+
+- **Warm-up shrinks the block set.** Strategies needing a long fit window cannot warm up before the
+  first block, so the *common* block set across a registry is smaller than the nominal one. On the
+  codebase this was written against it fell from 7 to 6, which is already below this floor.
+- **Splitting halves the trade count**, so S3's evidence floor is far harder to clear per split than
+  on the full sample. Check it against the split, not the whole.
+
 **The rule that separates this from an overfitting machine:** *never select an edit using the
 holdout.* Choosing a change because it improves a held-out block converts the holdout into training
 data and the reported gain becomes noise. Edits come only from working-set failures. One change per
