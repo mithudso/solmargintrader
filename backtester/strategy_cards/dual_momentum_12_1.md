@@ -8,7 +8,7 @@ summary: Trailing formation-window return excluding the most recent bars, to ski
 registry_key: dual_momentum
 runner: backtester.cli
 warmup_bars: 13
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2
 data_required: [ohlcv]
 data_available: true
 success_likelihood: very-low
@@ -79,6 +79,36 @@ The 12-1 construction is well documented, and it did **not** help: -65.3% and a
 is the cross-sectional ranking that carries most of the published edge. On 37 trades
 this clears the evidence floor, so it is a real result rather than an anecdote — and
 the real result is that it lost.
+
+## Re-evaluated under CPCV
+
+`research/results/cpcv_results.csv`, 8 groups, k=2, 28 paths, all 25 registered configurations.
+
+| Horizon | Median path Sharpe | Paths positive | Median path return | Trades | Rank |
+|---|---|---|---|---|---|
+| short | −4.633 | 0% | −39.2% | 728 | **25 of 25 — last** |
+| medium | −0.319 | 43% | −37.2% | 212 | 23 of 25 |
+| long | +0.358 | 57% | +5.5% | 156 | 9 of 25 |
+
+**As a single strategy this is weak and the rating stands.** Zero of 28 paths positive at the short
+horizon is the worst result in the study.
+
+### The exception, which matters more than the row above
+
+Paired with `vol_regime` in `all` mode at the long horizon, this is **the single best configuration
+measured anywhere in this project**: median path Sharpe **+1.345**, **87%** of 28 paths positive,
+median path return **+75.1%** over 52 trades (`research/results/cpcv_combos_results.csv`). It
+survives ±10% perturbation on every parameter — **12 variants, 0 sign flips**, median never below
++0.904 (`research/perturb.py --horizon long --pair dual_momentum vol_regime --mode all`).
+
+Both components are mediocre alone at that horizon (+0.358 here, +0.696 for `vol_regime`) and strong
+together, which is the complementarity the pairing was chosen for: dual momentum states a direction,
+the volatility regime states whether to act on it.
+
+**This does not raise the rating of this card.** The pair sits atop a 295-configuration search whose
+PBO is 0.650; a robust-under-perturbation row at the top of an anti-informative ranking is still a
+row selected by an anti-informative ranking. The pair is documented here so the single's poor
+standing is not mistaken for the mechanism being useless in combination.
 
 ## Caveats and limitations
 - Momentum-crash risk survives the skip intact.

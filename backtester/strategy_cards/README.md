@@ -152,7 +152,13 @@ absent from the vocabulary. It also asserts that only a `measured` card may cite
 more than a tenth of cards may be rated moderate** — a directory where most cards
 looked promising would be the tell that the ratings had drifted into marketing.
 
-Current distribution: **20 very-low, 23 low, and no card rated moderate.**
+Current distribution: **18 very-low, 25 low, and no card rated moderate.**
+
+Two cards moved `very-low` → `low` when CPCV superseded their single-split numbers
+(`obv_trend`, `vol_regime_hmm`): at their long presets both are measured *positive* across
+80%+ of 28 paths, and `very-low` is defined as measured-negative, so the old rating had become
+a false statement about the evidence. Neither reached `moderate` — PBO 0.700 at the daily
+horizons means a good rank is not an edge, and neither card has BTC/ETH confirmation.
 
 That empty top tier is a result, not an oversight. Two cards held `moderate` at different
 points and both lost it to the next experiment:
