@@ -1,0 +1,27 @@
+# Normalise line endings on the way in; check out with the platform's own.
+* text=auto eol=lf
+
+# Explicit text types, so a diff is never treated as binary.
+*.py    text diff=python
+*.js    text
+*.json  text
+*.md    text diff=markdown
+*.csv   text
+*.yml   text
+*.html  text
+*.css   text
+
+# Binary artefacts: never normalise, never diff.
+*.png   binary
+*.icns  binary
+*.zip   binary
+*.parquet binary
+
+# Generated and captured material -- excluded from language statistics so the
+# repo is not reported as mostly scraped HTML.
+pagesource/**  linguist-vendored
+jup.ag/**      linguist-vendored
+build/**       linguist-generated
+dist/**        linguist-generated
+results/**     linguist-generated
+docs/high_signal_file_index.json linguist-generated

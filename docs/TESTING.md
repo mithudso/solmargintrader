@@ -1,11 +1,18 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 250 tests
+python3 -m unittest discover -s backtester/tests -t .   # 454 tests
+python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
 cd extension && npm test                                # 114 tests
+python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-364 tests total, no test-framework dependency in either component (`unittest` and `node:test`).
+663 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
+
+Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
+discovery and fails on a stale figure. That exists because these numbers were wrong for
+several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
+nothing caught it.
 
 ## Extension — what the 114 tests cover
 
@@ -57,7 +64,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 250 tests
+## Backtester — 454 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -90,10 +97,32 @@ future data. That test asserts the value used equals the cloud computed from the
 truncated slice *and* differs from the full-history cloud, so the distinction is
 verified rather than assumed.
 
+63 cover the **per-bar rule readout** (`research/decide.py`), and the one that matters
+asserts *engine parity*: a recording wrapper captures every `on_bar` return
+`run_backtest` asks for, and the readout's replay must reproduce that index sequence and
+those values exactly for all 25 strategies. The rest guard the two ways the readout can
+lie — a truncated-history test that fails if the replay is ever "optimised" into a single
+call on the last bar, and a constructed series where that shortcut gives the *opposite*
+answer, so the first test is known to be load-bearing rather than vacuously true.
+
+## soltui — 95 tests
+
+Slower than the others (~70s) because the TUI tests drive real render cycles. Three
+files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
+state) and `test_tui.py` (rendering). Run them with
+`python3 -m unittest discover -s soltui/tests -t .`.
+
+soltui is read-only over the research side and places no orders, so its tests are about
+display correctness, not money. The packaging paths — the py2app alias bundle and the
+launchd agent — are **not** covered by any test; see `soltui/README.md` for the manual
+checks that stand in for them.
+
 ## Adding tests
 
 - Extension: `extension/test/*.test.js`, `node:test` + `node:assert/strict`. Assert behaviour and
   observable effects, not line execution.
-- Backtester: `backtester/tests/`, `unittest`.
+- Backtester and research: `backtester/tests/`, `unittest`. `research/` has no test directory of
+  its own; its modules are tested from there (`test_decide.py`, `test_cpcv.py`, `test_interpret.py`).
+- soltui: `soltui/tests/`, `unittest`.
 - A new command needs no new parity test — the registry-driven suite picks it up automatically. If it
   takes an argument that changes money, add a behavioural test for that argument.

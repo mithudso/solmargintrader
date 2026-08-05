@@ -1,0 +1,11 @@
+# Single-author repository: every path falls to the same reviewer. The value of
+# this file here is not routing but the explicit statement that the
+# money-touching component has no second owner -- if that ever changes, the
+# extension is the first path that needs one.
+
+*                       @mitch-hudson
+
+# Reviewed with the most care, in this order.
+/extension/             @mitch-hudson
+/extension/src/core/    @mitch-hudson
+/backtester/core/       @mitch-hudson
