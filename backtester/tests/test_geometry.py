@@ -31,7 +31,9 @@ if str(REPO) not in sys.path:
 
 from research.geometry import GeometryRun, spearman, tidy_frame, verdict  # noqa: E402
 from research.verify_numbers import (  # noqa: E402
+    EXPECTED_FIGURES,
     GEOMETRY_TABLE_HEADER,
+    census_failures,
     geometry_stats,
     markdown_table_rows,
 )
@@ -246,6 +248,33 @@ class MarkdownTableRowsTests(unittest.TestCase):
     def test_a_missing_header_is_none_not_zero(self) -> None:
         # None and 0 mean different things: header gone vs table present but empty.
         self.assertIsNone(markdown_table_rows("no table here", GEOMETRY_TABLE_HEADER))
+
+
+class CensusTests(unittest.TestCase):
+    """The floor on how many figures must be recognised.
+
+    Every other check is regex-driven, so a table whose format drifts stops matching
+    and the run prints a pass having verified fewer numbers than before. Deleting six
+    CPCV rows measurably took the count 923 -> 893 and still exited 0 before this.
+    """
+
+    def test_the_expected_count_is_a_pass(self) -> None:
+        self.assertEqual(census_failures(dict(EXPECTED_FIGURES)), [])
+
+    def test_a_shortfall_names_how_many_went_unchecked(self) -> None:
+        out = census_failures({"RANKED_LISTS.md": EXPECTED_FIGURES["RANKED_LISTS.md"] - 5})
+        self.assertEqual(len(out), 1)
+        self.assertIn("5 went unchecked", out[0])
+
+    def test_a_surplus_asks_for_the_constant_to_be_raised(self) -> None:
+        # Silently accepting more would let the floor rot until it stopped biting.
+        n = EXPECTED_FIGURES["STRATEGIES.md"] + 3
+        out = census_failures({"STRATEGIES.md": n})
+        self.assertEqual(len(out), 1)
+        self.assertIn(f"raise EXPECTED_FIGURES to {n}", out[0])
+
+    def test_an_unknown_document_is_not_policed(self) -> None:
+        self.assertEqual(census_failures({"SOMETHING_ELSE.md": 4}), [])
 
 
 if __name__ == "__main__":

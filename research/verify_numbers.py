@@ -30,6 +30,19 @@ RESEARCH = Path(__file__).resolve().parent
 CSV = RESEARCH / "results" / "sweep_results.csv"
 DOCS = (RESEARCH / "RANKED_LISTS.md", RESEARCH / "STRATEGIES.md")
 
+# How many figures each document is known to contain.
+#
+# Without this the script has no floor: every check is driven by a regex, so a table
+# whose format drifts simply stops matching, and the run prints a pass having quietly
+# verified fewer numbers than it did yesterday. Measured: deleting six CPCV rows took
+# the count from 923 to 893 and still exited 0. The `checked < 100` backstop below
+# only catches a collapse, not a leak.
+#
+# Update these in the same commit that changes the documents' figures -- deliberately,
+# after reading the new count. Never lower one to make a red run go green; that is
+# the same act as deleting the evidence.
+EXPECTED_FIGURES = {"RANKED_LISTS.md": 892, "STRATEGIES.md": 31}
+
 # Sharpe values are quoted to 3dp, returns to 1dp; allow half a unit of the
 # last printed digit plus a little slack for rounding direction.
 TOL_SHARPE = 0.0006
@@ -335,6 +348,26 @@ def markdown_table_rows(section: str, header: str) -> int | None:
             continue
         rows += 1
     return rows
+
+
+def census_failures(per_doc: dict[str, int]) -> list[str]:
+    """Complain when the number of recognised figures moves in either direction."""
+    out = []
+    for name, n in sorted(per_doc.items()):
+        want = EXPECTED_FIGURES.get(name)
+        if want is None or n == want:
+            continue
+        if n < want:
+            out.append(
+                f"{name}: only {n} figures were recognised but {want} are expected, so "
+                f"{want - n} went unchecked -- a table's format has drifted"
+            )
+        else:
+            out.append(
+                f"{name}: {n} figures were recognised but only {want} are expected. If "
+                f"figures were added deliberately, raise EXPECTED_FIGURES to {n}"
+            )
+    return out
 
 
 def check_geometry(section: str, geometry: dict[str, pd.DataFrame]) -> tuple[int, list[str]]:
@@ -683,8 +716,10 @@ def main() -> int:
 
         per_doc[doc.name] = checked - before
 
+    failures += census_failures(per_doc)
+
     print("figures checked against the run that produced them "
-          f"(sweep, CPCV, perturbation, recomputed geometry): {checked}".format(checked=checked))
+          f"(sweep, CPCV, perturbation, recomputed geometry): {checked}")
     for name, n in per_doc.items():
         print(f"  {name}: {n}")
     if failures:
