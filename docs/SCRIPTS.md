@@ -43,6 +43,7 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 research/dso_audit.py` | deflated-Sharpe / evidence-floor audit of results | no |
 | `python3 research/verify_numbers.py` | **gate:** every quoted figure vs its CSV | no |
 | `python3 research/turnover_table.py` | the one comparable turnover table | no |
+| `python3 research/leverage_economics.py` | what leverage costs before it earns; the viable region | no |
 | `python3 index/build.py` | build the four repo indexes | localhost only |
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
@@ -342,6 +343,53 @@ single-timestamp pull puts **DOGE ahead**, 3.44% to SOL's 3.32%.
 python3 research/turnover_table.py            # print it
 python3 research/turnover_table.py --check     # fail if a spoke disagrees
 ```
+
+### `python3 research/leverage_economics.py` — what leverage costs before it earns
+
+**Purpose.** The cost model for high-leverage perpetuals on Jupiter Perps: break-even
+move by holding period, where borrow carry overtakes the round-trip fee, time to
+liquidation from carry alone, and the fee cost of trade *count* at leverage. Generates
+every table in `research/LEVERAGE-ECONOMICS.md`.
+
+**No network, no data files.** Closed-form arithmetic over published venue parameters,
+so it reproduces exactly and needs no cache. It is also the one research script whose
+output does not move when `HORIZONS` changes.
+
+**When to use it.** Before designing anything leveraged — it answers "what must this
+trade overcome" independently of whether the signal is any good.
+
+**When *not* to use it.** As evidence a strategy works. It is a **cost model and says
+nothing about edge**. Across 48 out-of-sample months every strategy family in this repo
+lost to buy-and-hold unlevered; leverage rescales an edge, it does not create one.
+
+**The result worth knowing even if you never run it.** Leverage cancels out of the
+break-even equation:
+
+```
+pnl%_collateral  = L*move - (fee_rt*L + rate*util*hours*L)
+break_even_move  = fee_rt + rate*util*hours        <- L cancels
+```
+
+A 2x and a 250x position need the **same** price move to break even. Leverage changes
+only how close the absorbing barrier sits and how fast carry consumes collateral — both
+survival terms, not profitability terms. Two consequences the tables quantify: carry
+overtakes the round-trip fee at **~15 h for longs and ~80 h for shorts**, splitting
+leveraged trading into two regimes that reward opposite behaviour; and **100 round trips
+at 10x costs 120% of collateral in fees alone**, which is why grid and market-making are
+structurally insolvent at leverage rather than mistuned.
+
+```bash
+python3 research/leverage_economics.py --self-test   # gate: 7 load-bearing claims
+python3 research/leverage_economics.py               # all tables
+python3 research/leverage_economics.py --markdown    # the doc's tables, regenerated
+```
+
+**Limits, stated in the script and the doc.** Borrow rates are Gauntlet's May-2024
+recommendation, not a live read, and utilisation moves continuously — treat every figure
+as an order-of-magnitude frame. **Price impact is not modelled** (per-custody parameters
+are on-chain and undocumented), nor are keeper latency, priority fees, failed
+transactions, or the liquidation penalty itself. Every omission makes the real picture
+worse, never better. Verify venue parameters at `docs.jup.ag` before relying on them.
 
 ---
 
