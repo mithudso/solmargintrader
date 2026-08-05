@@ -1,0 +1,5 @@
+# Deliberately separate from backtester/requirements.txt. The backtester is
+# stdlib-first and its dependency list is short on purpose; a driver needed only
+# by this reference store does not belong there, and nothing in backtester/,
+# research/ or soltui/ imports pymongo.
+pymongo>=4.6

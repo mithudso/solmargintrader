@@ -94,10 +94,54 @@ jobs:
       - name: Unit tests
         run: python3 -m unittest discover -s soltui/tests -t .
 
+  # The mongo tests skip themselves when no server is listening, which would make
+  # this job silently vacuous. A service container is the point: it makes the
+  # integration half -- strict validation, provenance, and above all the
+  # idempotency check -- actually run.
+  mongo:
+    name: mongo (python)
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:8
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ping:1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Install dependencies
+        # The backtester's deps too: the loader imports it to read bars and to
+        # reuse checksum_frame.
+        run: |
+          pip install -r mongo/requirements.txt
+          pip install -r backtester/requirements.txt
+
+      - name: Layout describes itself without a server
+        run: python3 mongo/schema.py --describe
+
+      - name: Load what a fresh clone has
+        # `data/` and `results/` are gitignored, so most collections load empty
+        # here. The collections built from tracked files -- strategies, signals,
+        # indicators, documents -- are the ones under test, and they are enough to
+        # exercise validation and idempotency.
+        run: python3 mongo/load.py --only strategies,signals,indicators,documents
+
+      - name: Unit and integration tests
+        run: python3 -m unittest discover -s mongo/tests -t .
+
   # Documentation drift is a build failure, not a nit: the docs claimed 250
   # backtester tests for several commits while the suite had grown to 454, and
-  # nothing caught it. Counts come from unittest discovery, so this job needs no
-  # dependencies and runs in seconds.
+  # nothing caught it.
   docs:
     name: docs (drift check)
     runs-on: ubuntu-latest
@@ -107,6 +151,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          cache: pip
+
+      # Node is pinned for the same reason the extension job pins it, and because
+      # `check_docs.py` asks `node --test` for the extension count rather than
+      # trusting a source regex.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Counting is by unittest DISCOVERY, which imports each test module -- so the
+      # suites' own dependencies are required here even though no test runs. Without
+      # them every backtester module fails to import, each becomes a single
+      # `_FailedTest`, and the count lands at 31 instead of 499: this job would then
+      # report drift against docs that are correct. Verified by running it in a bare
+      # virtualenv.
+      - name: Install the suites' dependencies
+        run: |
+          pip install -r backtester/requirements.txt
+          pip install -r soltui/requirements.txt
+          pip install -r mongo/requirements.txt
 
       - name: Test counts and retrieval indexes agree with the repo
         run: python3 scripts/check_docs.py

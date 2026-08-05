@@ -11,6 +11,8 @@ Three components with different risk profiles. Know which one you are in:
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability here** — see its README's Scope section. The danger is a dishonest backtest, not a lost trade. |
 | `research/` (Python) | Analysis built on the backtester. The danger is overstating a result. |
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software. |
+| `soltui/` (Python) | Read-only macOS display over the research side. Places no orders. |
+| `mongo/` (Python) | Derived local datastore. Rebuildable from the repo; nothing else imports it. |
 
 ## Non-negotiables — extension
 
@@ -59,6 +61,7 @@ Three components with different risk profiles. Know which one you are in:
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 499 tests
 python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+python3 -m unittest discover -s mongo/tests -t .        # 20 tests
 cd extension && npm test                                # 131 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 node tools/verify-endpoints.js                          # live Jupiter reachability
