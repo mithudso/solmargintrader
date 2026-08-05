@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-05T18:04:21+00:00",
+  "generatedAt": "2026-08-05T18:05:40+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "db9038b",
+  "commit": "8cd66e8",
   "counts": {
     "files": 276,
-    "bytes": 3702237,
+    "bytes": 3712552,
     "byKind": {
       "code-python": 57,
       "result": 52,
@@ -3606,9 +3606,9 @@
       "title": "Conceptual index",
       "summary": "python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them",
       "summarySource": "opening-prose",
-      "bytes": 14559,
+      "bytes": 14596,
       "lines": 312,
-      "sha1": "93674c314f309861b078ecf6f9651f925ee18fdc",
+      "sha1": "d488e734cedd3c1179284661cabf08259d02f624",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -3642,9 +3642,9 @@
       "title": "Every file in this repository",
       "summary": "Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file",
       "summarySource": "opening-prose",
-      "bytes": 136172,
+      "bytes": 136287,
       "lines": 2719,
-      "sha1": "5e7e618178650fdb6e61187cf97a96112401757f",
+      "sha1": "e5a90aac38e92f74e53c5a3eda37cf7b97887c3e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -5290,17 +5290,17 @@
       "ext": ".md",
       "kind": "coin-reference",
       "title": "sol-solana",
-      "summary": "Solana (SOL) for a systematic trader \u2014 execution reality on a no-mempool chain, supply and staking, and what this project's own 1,287-configuration backtest actually measured on it. Read before designing or trusting any SOL strategy.",
+      "summary": "Solana (SOL) for a systematic trader \u2014 execution reality on a no-mempool chain, a 98.6%-volatility and \u221296.3%-drawdown record with a +1.31 beta to BTC, and what this project's own 1,287-configuration backtest measured, including that its five recommended configurations do not transfer off SOL. Read before designing or trusting any SOL strategy.",
       "summarySource": "frontmatter",
-      "bytes": 25475,
-      "lines": 364,
-      "sha1": "7f922495bb4e8a2ecd0a6f62835b582b95e93e12",
+      "bytes": 35638,
+      "lines": 498,
+      "sha1": "c114cfa43b16feee53845dd293d3c7d00fc90a29",
       "symbols": [],
       "imports": [],
       "internalImports": [],
       "frontmatter": {
         "name": "sol-solana",
-        "description": "Solana (SOL) for a systematic trader \u2014 execution reality on a no-mempool chain, supply and staking, and what this project's own 1,287-configuration backtest actually measured on it. Read before designing or trusting any SOL strategy."
+        "description": "Solana (SOL) for a systematic trader \u2014 execution reality on a no-mempool chain, a 98.6%-volatility and \u221296.3%-drawdown record with a +1.31 beta to BTC, and what this project's own 1,287-configuration backtest measured, including that its five recommended configurations do not transfer off SOL. Read before designing or trusting any SOL strategy."
       }
     },
     {
