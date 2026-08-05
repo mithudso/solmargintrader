@@ -60,6 +60,25 @@ EXCLUDED: dict[str, str] = {
     ),
 }
 
+# Assets whose *available history* is short enough to be its own evidence-floor problem,
+# separate from whether the venue lists them at all. A strategy measured on six months of
+# bars is not weakly evidenced, it is barely evidenced -- and the fetch succeeds silently,
+# so nothing downstream flags it.
+SHORT_HISTORY: dict[str, str] = {
+    "HYPE": "HYPE-USD only listed on Coinbase 2026-02-05, so a fetch returns ~6 months",
+    "TRX": (
+        "not on Coinbase at all; the only reachable alternative serves a fixed ~721-bar "
+        "window, capping TRX at ~2 years and truncating any cross-asset study including it"
+    ),
+}
+
+# Quote-pair availability, where it is narrower than USD. Matters for anything needing a
+# cross pair rather than a USD leg -- see triangular_arbitrage.md, which cannot be built
+# from USD-quoted series at all.
+USD_ONLY: dict[str, str] = {
+    "ZEC": "Coinbase has delisted ZEC-BTC and ZEC-USDC; only ZEC-USD remains",
+}
+
 # What a directional strategy should actually be pointed at. Nine, not ten -- backfilling
 # an eleventh to restore a round number would be choosing the number over the evidence.
 TRADEABLE_UNIVERSE = tuple(a for a in TOP10_NON_PEGGED if a not in EXCLUDED)
@@ -219,6 +238,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     for asset in assets:
         if asset in EXCLUDED:
             print(f"note: {asset} is in EXCLUDED -- {EXCLUDED[asset]}", file=sys.stderr)
+        if asset in SHORT_HISTORY:
+            print(f"note: {asset} short history -- {SHORT_HISTORY[asset]}", file=sys.stderr)
+        if asset in USD_ONLY:
+            print(f"note: {asset} USD-only -- {USD_ONLY[asset]}", file=sys.stderr)
     print(f"Universe plan: {plan.summary()}", file=sys.stderr)
     for asset in assets:
         mark = "  ok " if asset in plan.available else "  -- "

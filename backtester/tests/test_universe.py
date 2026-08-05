@@ -96,6 +96,22 @@ class PlanTests(unittest.TestCase):
         self.assertIn("RAIN", uni.EXCLUDED)
         self.assertIn("rain-rain.md", uni.EXCLUDED["RAIN"])
 
+    def test_short_history_assets_are_flagged_separately_from_unlisted_ones(self):
+        """Availability and sufficiency are different failures and only one of them is
+        loud. An unlisted asset produces no file; a six-month asset produces a file that
+        looks exactly like a five-year one, and the evidence floor is breached silently.
+        """
+        self.assertIn("HYPE", uni.SHORT_HISTORY)
+        self.assertIn("2026-02-05", uni.SHORT_HISTORY["HYPE"])
+        self.assertIn("TRX", uni.SHORT_HISTORY)
+
+    def test_zec_is_recorded_as_usd_only(self):
+        """A cross-pair strategy needs a cross pair. Coinbase delisted ZEC-BTC and
+        ZEC-USDC, so ZEC can serve a USD-leg study and not a triangle.
+        """
+        self.assertIn("ZEC", uni.USD_ONLY)
+        self.assertIn("ZEC-USD", uni.USD_ONLY["ZEC"])
+
     def test_the_summary_names_what_is_missing(self):
         plan = uni.plan_universe_fetch(["BTC", "TRX"], [p["id"] for p in LISTED])
         self.assertIn("TRX", plan.summary())
