@@ -14,7 +14,7 @@ description: Trader-facing reference for Dogecoin (DOGE) — uncapped supply wit
 | Price | ~$0.0702 | CoinGecko, 2026-08-04[^doge-snapshot] |
 | Market cap | ~$10.9B | CoinGecko, 2026-08-04[^doge-snapshot] |
 | 24h volume | ~$0.38B | CoinGecko, 2026-08-04[^doge-snapshot] |
-| Turnover (vol ÷ mcap) | **~3.49%** | derived from the row above[^doge-snapshot] |
+| Turnover (vol ÷ mcap) | **3.44%** | derived from the row above[^doge-snapshot] |
 | Implied circulating supply (mcap ÷ price) | ~155.27B DOGE | derived[^doge-snapshot] |
 | Reported circulating supply | ~154.9B DOGE (mid-2026) | secondary[^doge-supply] |
 | Max supply | **None — uncapped** | protocol[^doge-supply] |
@@ -86,7 +86,7 @@ The trader-relevant consequence: **DOGE has a permanent, price-insensitive suppl
 
 ## Concentration, float and turnover
 
-**Turnover ~3.49%** ($0.38B against a $10.9B cap, 2026-08-04) — the **highest of the three assets** in this set (TRX ~1.45%, ZEC ~2.33%). DOGE trades actively relative to its size, which is consistent with its retail-driven, high-participation holder base. Liquidity is not DOGE's problem.
+**Turnover 3.44%**[^turnover-std] ($0.375B against a $10.9B cap) — the **highest of all ten coins in this directory**, ahead of SOL (3.32%) and ETH (3.05%), and the highest of the three assets in this set (TRX 1.45%, ZEC 2.30%). DOGE trades actively relative to its size, which is consistent with its retail-driven, high-participation holder base. Liquidity is not DOGE's problem.
 
 **Float is effectively 100%.** There is no vesting, no lockup, no staking, no foundation treasury schedule of consequence. Every coin ever mined is liquid. This makes DOGE unusually clean from a float-analysis perspective — the awkward questions that dominate the TRX file simply do not arise here.
 
@@ -160,7 +160,7 @@ Compare: BTC's max drawdown over the same 948-bar window was −53.1%, ZEC's −
 
 ## For this backtester
 
-**None of the assets in this reference set are held in the local cache.** `~/dev/solmargintrader/data/` contains only `BTC_1d.csv`, `ETH_1d.csv`, `SOL_1d.csv`, `SOL_1h.csv`, `JLP_spot.csv` (checked 2026-08-04).[^doge-local]
+**DOGE is now held in the local cache.** `~/dev/solmargintrader/data/DOGE_1d.csv` was fetched 2026-08-05 — 1,890 daily bars, 2021-06-03 to 2026-08-05, 0 non-1d steps. Note the start: Coinbase's DOGE-USD listing begins 2021-06-03, so a request for earlier history is silently truncated rather than refused. ZEC was fetched the same day (2,043 bars from 2021-01-01). The rest of the set is still absent, and TRX cannot be fetched at all (not listed).[^doge-local]
 
 **Coinbase lists DOGE, so this project's fetcher can retrieve it with no code changes.** Verified against the exact API `backtester/core/fetch.py` uses:[^doge-coinbase]
 
@@ -189,8 +189,10 @@ Compare: BTC's max drawdown over the same 948-bar window was −53.1%, ZEC's −
 
 [^doge-venues]: Venue verification by direct public API call, 2026-08-04. OKX `/api/v5/market/ticker?instId=DOGE-USDT` → live, ~$16.04M 24h notional. Kraken `/0/public/Ticker?pair=XDGUSD` → live, ~$1.46M 24h notional. Binance and Bybit geo-restricted from this environment (**unverified**). Tier-1 (primary). verified-as-of: 2026-08-04
 
-[^doge-vol]: Volatility, correlation, beta, drawdown **and all cross-asset comparatives** — **derived** by this reference from Coinbase daily candles for **DOGE-USD, BTC-USD and ZEC-USD** (948 bars each, 2024-01-01 → 2026-08-05) plus **Kraken TRXUSD** daily OHLC (`https://api.kraken.com/0/public/OHLC?pair=TRXUSD&interval=1440`, 721 bars from 2024-08-15), all retrieved 2026-08-05. TRX is sourced from Kraken because **Coinbase does not list it** — see the TRX reference in this directory. DOGE–TRX and any TRX-involving comparative is computed on the 720-return intersection of all four series (2024-08-16 → 2026-08-05); DOGE/BTC/ZEC comparatives use the full 948-bar window. Annualized vol = population stdev of daily log returns × √365. Beta and correlation on aligned daily log returns. Drawdown computed on daily closes from running peak. Reproducible from `api.exchange.coinbase.com/products/{DOGE-USD,BTC-USD,ZEC-USD}/candles` plus the Kraken endpoint above. **Cross-asset turnover figures (TRX ~1.45%, ZEC ~2.33%) derive from those coins' own 2026-08-04 CoinGecko snapshots, not from this price data.** verified-as-of: 2026-08-05
+[^doge-vol]: Volatility, correlation, beta, drawdown **and all cross-asset comparatives** — **derived** by this reference from Coinbase daily candles for **DOGE-USD, BTC-USD and ZEC-USD** (948 bars each, 2024-01-01 → 2026-08-05) plus **Kraken TRXUSD** daily OHLC (`https://api.kraken.com/0/public/OHLC?pair=TRXUSD&interval=1440`, 721 bars from 2024-08-15), all retrieved 2026-08-05. TRX is sourced from Kraken because **Coinbase does not list it** — see the TRX reference in this directory. DOGE–TRX and any TRX-involving comparative is computed on the 720-return intersection of all four series (2024-08-16 → 2026-08-05); DOGE/BTC/ZEC comparatives use the full 948-bar window. Annualized vol = population stdev of daily log returns × √365. Beta and correlation on aligned daily log returns. Drawdown computed on daily closes from running peak. Reproducible from `api.exchange.coinbase.com/products/{DOGE-USD,BTC-USD,ZEC-USD}/candles` plus the Kraken endpoint above. **Cross-asset turnover figures now come from the single-timestamp pull described in [^turnover-std], not from per-coin snapshots.** verified-as-of: 2026-08-05
 
 [^doge-snapshot]: Price, market cap and 24h volume snapshot — CoinGecko, 2026-08-04, as supplied to this research. Turnover, implied supply, implied inflation rate and annual issuance notional are **derived** from those figures. Cross-checked: Coinbase DOGE-USD close 2026-08-05 was $0.07018 and the retail reference endpoint returned $0.0701, both consistent with the $0.0702 snapshot. verified-as-of: 2026-08-04
 
 [^doge-local]: Local bar cache contents — direct filesystem check of `~/dev/solmargintrader/data/` and read of `~/dev/solmargintrader/backtester/core/fetch.py`. Tier-1 (primary). verified-as-of: 2026-08-04
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

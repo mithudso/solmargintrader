@@ -1,6 +1,6 @@
 ---
 name: xrp-ripple
-description: Trader-facing reference for XRP — XRPL mechanics, the 100B pre-mine and escrow release schedule, what Ripple actually holds, the SEC litigation record with dates, venue structure, and what its ~1.4% turnover means for sizing and backtesting.
+description: Trader-facing reference for XRP — XRPL mechanics, the 100B pre-mine and escrow release schedule, what Ripple actually holds, the SEC litigation record with dates, venue structure, and what its 1.37% turnover means for sizing and backtesting.
 ---
 
 # XRP (XRP Ledger / Ripple)
@@ -142,8 +142,8 @@ future issuance — it is existing tokens on a published release timetable.
 
 ### The finding
 
-**XRP is not the turnover outlier the headline pairing suggests — BNB is.** At 1.38%, XRP's
-24h turnover sits within the same order of magnitude as BTC's 1.80%, and float adjustments move
+**XRP is not the turnover outlier the headline pairing suggests — BNB is.** At 1.37%[^turnover-std], XRP's
+24h turnover sits within the same order of magnitude as BTC's 1.78%, and float adjustments move
 it *closer* to BTC, not further away. The genuinely striking concentration fact about XRP is
 not thin trading; it is **who holds it**.
 
@@ -485,7 +485,7 @@ or your backtest is conditioning on the future.
 
 ### What the turnover figure means for a realistic cost model
 
-**Start from the corrected finding: XRP's ~1.4% turnover is not anomalous.** It is a modest
+**Start from the corrected finding: XRP's 1.37% turnover is not anomalous.** It is a modest
 discount to BTC's 1.80%, and float adjustments narrow the gap. Do not apply an illiquidity
 penalty on the strength of that number. **BNB is the asset whose headline turnover is
 misleading — and it is misleading in the opposite direction.**
@@ -588,3 +588,5 @@ books; the `chrislarsen` and `ahbritto` address attributions (explorer labels); 
 Coinbase's candles endpoint truly holds no pre-2021 XRP data (probes were inconclusive); and
 the aggregation basis XRPSCAN uses for the Top 10/20/50/100 cohort table, which does not
 reconcile against the per-holder table above it.
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

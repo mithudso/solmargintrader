@@ -1,6 +1,6 @@
 ---
 name: bnb-binance-coin
-description: Trader-facing reference for BNB (Binance Coin) — exchange-token mechanics, the Auto-Burn supply schedule, extreme address concentration, venue and issuer risk, and what its ~0.7% headline turnover really means for sizing and backtesting.
+description: Trader-facing reference for BNB (Binance Coin) — exchange-token mechanics, the Auto-Burn supply schedule, extreme address concentration, venue and issuer risk, and what its 0.73% headline turnover really means for sizing and backtesting.
 ---
 
 # BNB (Binance Coin)
@@ -17,7 +17,7 @@ description: Trader-facing reference for BNB (Binance Coin) — exchange-token m
 | Price | $603.05 | CoinGecko API, retrieved 2026-08-05 03:03:59 UTC[^cg-bnb] |
 | Market cap | ~$80.3B / $80,311,028,264 | CoinGecko, 2026-08-04 / API 2026-08-05[^cg-bnb] |
 | 24h volume | ~$0.59B / $608,516,445 | CoinGecko, 2026-08-04 / API 2026-08-05[^cg-bnb] |
-| Headline turnover (24h vol ÷ mcap) | 0.73% / 0.758% | derived from the two rows above |
+| Headline turnover (24h vol ÷ mcap) | **0.73%** (comparable[^turnover-std], lowest of the ten bar RAIN) / 0.758% on the later 2026-08-05 API pull | derived from the two rows above |
 | Circulating supply | 133,164,808.15 BNB | CoinGecko API, 2026-08-05[^cg-bnb] |
 | Total supply | 133,164,808.15 BNB (identical to circulating) | CoinGecko API, 2026-08-05[^cg-bnb] |
 | Max / genesis supply | 200,000,000 BNB | CoinGecko API, 2026-08-05[^cg-bnb]; BNB Chain burn program[^bnb36] |
@@ -362,7 +362,7 @@ your own window.
 
 ## Known failure modes for traders
 
-1. **Ranking or screening on volume/market-cap.** BNB's 0.7% headline turnover is a
+1. **Ranking or screening on volume/market-cap.** BNB's 0.73% headline turnover is a
    denominator artifact (locked bridge and burn balances counted as circulating). Any liquidity
    screen using CoinGecko circulating supply mis-ranks it. Use a float you can defend.
 2. **Trusting the headline volume number.** ~80% of reported BNB volume sits on venues outside
@@ -565,3 +565,5 @@ cited, not independently confirmed); the current BEP-95 burn ratio (10% is the d
 assets named as digital commodities in the SEC/CFTC joint interpretation of 2026-03-17 (see
 "What drives the price" for the interpretation itself); the current security posture of the BSC
 Token Hub bridge contract; and the DOJ monitorship's present status.
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

@@ -28,11 +28,17 @@ timeframe, or evaluation geometry.
 Source: CoinGecko API, 2026-08-05. **These decay.** The structural claims below — supply
 mechanics, execution model, the measured backtest results — age far more slowly.
 
-**Turnover (24h volume ÷ market cap) is 3.69%**, the highest of the ten coins in this hub —
-though the lead is narrow rather than categorical: DOGE is ~3.49% and ETH ~3.05%, while BTC is
-~1.80% and RAIN ~0.24%. So SOL is roughly **2× BTC** and **15× RAIN**. Whatever else is true of
-SOL, thin liquidity is not its problem, and a cost model calibrated on it will be *optimistic*
-if reused on the thin names.
+**Turnover (24h volume ÷ market cap) is 3.32%, second of the ten coins in this
+directory**[^turnover-std] — behind DOGE at 3.44%, ahead of ETH at 3.05%, and roughly **2× BTC**
+(1.78%) and **14× RAIN** (0.24%). Whatever else is true of SOL, thin liquidity is not its problem,
+and a cost model calibrated on it will be *optimistic* if reused on the thin names.
+
+The 3.69% an earlier revision of this file claimed came from the per-asset `/coins/solana`
+endpoint, whose volume runs ~10% higher than the cross-coin pull, and it was used to assert SOL had
+the highest turnover of the ten. It does not. **That error is the reason every comparative turnover
+figure in this directory now comes from one call:** turnover has a moving numerator and a moving
+denominator, so two figures pulled at different times cannot be ranked against each other, and the
+superlative was an artifact of mixing them rather than a fact about SOL.
 
 Note the close/high distinction, because it matters for reproducing anything: CoinGecko's ATH
 of $293.31 is intraday, while the **highest daily close in this project's 1,875-bar series is
@@ -44,9 +50,11 @@ A single-shard L1 optimising for throughput and latency rather than for node che
 
 - **Proof of History** — a verifiable delay function giving a cryptographic clock, so
   validators can agree on ordering without round-tripping consensus messages for every batch.
-- **Sealevel** — parallel execution across transactions whose read/write account sets do not
-  overlap. Transactions must declare every account they touch up front, which is what makes
-  the parallelism decidable.
+- **Sealevel** — parallel execution wherever a transaction's *write* set does not overlap
+  another's read/write set. Read locks are shared, write locks exclusive, so many readers of one
+  account run together while any writer serialises. Transactions must declare every account they
+  touch up front, which is what makes the parallelism decidable — and it means a hot pool
+  everyone writes to is a serialisation point no matter how much parallelism exists elsewhere.
 - **Slots and a public leader schedule.** Leaders are assigned per slot and **the schedule is
   deterministic and public for the whole epoch.** That single fact drives most of the
   execution reality below: anyone can know who will produce the next block and route to them.
@@ -91,9 +99,12 @@ In rough order of what the 2021-2026 record supports:
 - **Aggregation:** Jupiter's router does multi-hop and split routing across many venues per
   quote, which means most simple cross-venue price differences a retail user can see have
   already been consumed.
-- **Perps:** Jupiter Perps executes **at the oracle price** against the JLP pool, with no
-  spread and no book. This is the single most important fact for modelling fills here, and
-  §"Execution reality" explains why.
+- **Perps:** Jupiter Perps executes **at the oracle price** against the JLP pool, with no book
+  and no bid/ask spread — but *not* for free. There is no book, so Jupiter charges an explicit
+  **price impact fee** in its place (0.06% base plus a linear size term plus an open-interest
+  imbalance term, capped per asset), and **every** open position pays a **borrow fee** to JLP that
+  is structurally non-negative — long or short, the trader always pays. This is the single most
+  important fact for modelling fills here, and "Execution reality for a trader" explains why.
 
 ## Execution reality for a trader
 
@@ -113,18 +124,25 @@ from a CEX-traded asset.
 - **Stake-weighted ingress.** Leader ingress is allocated in proportion to the stake of the
   forwarding node, so *which RPC endpoint you submit through* changes your landing rate
   independent of what you pay. A public RPC is a structural disadvantage no fee fixes.
-- **Atomicity is free within one transaction.** All instructions in a transaction either all
-  execute or none do. A Jito bundle buys *ordering relative to other transactions*, not
-  atomicity — conflating the two is the standard error.
+- **Atomicity is free within one transaction, and a Jito bundle extends it.** All instructions
+  in a transaction either all execute or none do. A bundle extends all-or-nothing across **up to
+  5 transactions executed sequentially within one slot**, and buys ordering along with it — which
+  is why a route too large to serialise into one transaction is not automatically un-atomic. What
+  a bundle does *not* buy is protection from the leader: it cannot stop a block producer wrapping
+  your bundle in its own transactions.
 - **Hard ceilings:** 1,232 bytes and 1.4M compute units per transaction, and a blockhash that
   expires after 150 blocks (**~60–90 s**; ~79 s at nominal slot times). A complex split route
   may simply not serialise;
   treat "the optimal route does not fit" as an expected case rather than an anomaly.
 - **Oracle-priced perps invert the usual fill problem.** On a book you worry about spread and
-  depth. Against JLP at the oracle price you do not — but the signal series and the fill
-  series become *the same series*, which is a lookahead hazard rather than a convenience. A
+  depth. Against JLP at the oracle price you worry instead about the signal series and the fill
+  series becoming *the same series*, which is a lookahead hazard rather than a convenience. A
   naive backtest trades on the print it also fills at, a zero-cost round trip that looks
-  spectacular and is fiction.
+  spectacular and is fiction. **A round trip here is not cheap:** budget the 0.06% base impact
+  fee, the imbalance term, and borrow carry for the whole holding period. The imbalance term's
+  `factor`, `exp` and threshold are per-custody on-chain values Jupiter does not publish, so
+  **total price impact cannot be precomputed from public documentation** — read the custody
+  account or treat the per-asset cap as your worst case.
 
 Reported figure, single-sourced and directional rather than load-bearing: **75.7% of non-vote
 transactions were reverted at the April 2024 peak**, largely MEV-bot competition (Helius).
@@ -146,6 +164,14 @@ difference, because drawdown recovery is multiplicative: getting back from −71
 **+254%**, getting back from −96.3% takes **+2,584%**. A risk model calibrated on the −71%
 figure is an order of magnitude short of what this asset has already done.
 
+**Against BTC, correlation +0.709 and beta +1.314 over the full overlap** (1,874 aligned daily log
+returns, `SOL_1d.csv` × `BTC_1d.csv`), tightening to **+0.850 / +1.375 over the trailing
+365 days** and +0.840 / +1.277 over the trailing 90. So "high-beta BTC proxy" is roughly right
+in magnitude, but the coupling is far stronger recently than the full-sample number implies:
+at r = 0.85 only
+~28% of SOL's daily variance is independent of BTC. A SOL-plus-BTC book is closer to one bet than
+two, and any multiple-testing correction across both should say so.
+
 The shape of the record matters more than any single volatility number:
 
 | Leg | Window | Move |
@@ -161,6 +187,11 @@ The hourly split is quoted to the bar because the two legs meet at adjacent bars
 shared value: bar 6175 closes at $83.74 and bar 6176 at $83.66. And the hourly series' final
 close ($73.00) differs from the daily's ($73.89) on the same calendar date because the hourly
 record ends at the **00:00 bar** of 2026-08-04 while the daily bar covers the whole day.
+
+**The hourly series is not a uniform clock.** It carries **two 6-hour gaps**, ending 2025-10-25
+21:00 and 2026-05-08 07:00 UTC — disclosed in `research/sweep.py` and confirmed on the file. Only
+0.14% of bars, but anything that treats bar index as elapsed time (an annualisation factor, a
+bar-count split, a rolling window in hours) is working from a slightly wrong calendar.
 
 ## What this project has already measured on SOL
 
@@ -201,9 +232,14 @@ which means rank is *stable*, and what it stably predicts is losing.
 positive, +9.4% median return — **2nd of 25 at the medium horizon and 6th at long**, with zero
 parameters. So exactly one single beat it at medium and five did at long: holding the asset was
 not literally unbeatable, but it out-ranked 23 of 25 mechanisms at one horizon and 19 of 25 at
-the other, for no parameters and no turnover. Read each rank against its field, though — **13 of
-25 singles posted a positive median at medium but 22 of 25 did at long** — so 6th place in a
-field where almost everything cleared zero is the weaker of the two results.
+the other, for no parameters and no turnover. Two discounts apply, though. Read each rank against
+its field: **13 of 25 singles posted a positive median at medium but 22 of 25 did at long**, so
+6th place in a field where almost everything cleared zero is the weaker of the two results. And
+buy-and-hold is **measured on more paths than anything it is compared against** — it needs no
+warm-up, so all 8 blocks stay usable and it gets the full 28 paths, while slower rivals forfeit
+blocks to their own lookback and run on 21 or 15. Its interval is the tightest in the study by
+construction, not by merit. (Its 16 CPCV trades do clear the 10-trade evidence floor discussed
+below; the "1 trade" figure attaches only to the superseded 70/30 split.)
 
 **6. "Beat the baseline" is nearly meaningless when the baseline lost 71%.** *(single 70/30
 split — not CPCV.)* At the medium horizon 105 of 109 configurations beat buy-and-hold — by
@@ -212,10 +248,12 @@ losing less. **Five made money.** At the long horizon, one of 38.
 **7. Combining signals raises fragility as well as performance.** Compared like with like —
 the top pairs are long-horizon, so the comparison must be against long-horizon singles — the
 median parameter-perturbation ratio goes from **0.171** for singles to **0.44** for the top
-pairs, **2.6×** the parameter sensitivity. (Against the *pooled* singles median of 0.208 across
-all three horizons the multiple is 2.1×; quoting 0.21 alongside "2.6×" mixes the two and is
-the arithmetic slip to avoid.) PBO and perturbation are independent methods pointing the same
-way.
+pairs, **2.6×** the parameter sensitivity. The ratio is `ratio_to_iqr`: the largest absolute
+shift in median Sharpe from any single ±10% parameter nudge, divided by that configuration's own
+path IQR — so 1.0 means one nudge moves the result by its whole interquartile spread. (Against
+the *pooled* singles median of 0.208 across all three horizons the multiple is 2.1×; quoting
+0.21 alongside "2.6×" mixes the two and is the arithmetic slip to avoid.) PBO and perturbation
+are independent methods pointing the same way.
 
 **8. The largest single sensitivity was the evaluation geometry, not any strategy parameter.**
 Changing CPCV from 8 blocks to 9 moved the best pair's median Sharpe by **−0.441**, more than
@@ -236,7 +274,9 @@ evidence is thinner than the geometry advertises.) Across all 25 singles on five
 are positive everywhere and not one of the eight is from a reversion family** — equivalently, no
 reversion-family strategy clears all five (families per the repo's own `FAMILY` dict). And on
 ZEC, zero-parameter buy-and-hold (+0.659) beat all five recommended configurations, the best of
-which reached +0.492.
+which reached +0.492 — though that comparison crosses horizons, since the ZEC buy-and-hold run is
+medium and four of the five configurations are long. Only #2, the +0.492, is strictly
+horizon-matched.
 
 That is the strongest available answer to "does a SOL result mean anything elsewhere", and the
 answer is mostly no — with the qualification that a poor DOGE or ZEC number is evidence about
@@ -245,8 +285,8 @@ answer is mostly no — with the qualification that a poor DOGE or ZEC number is
 ## Known failure modes for traders
 
 - **Fitting the cycle.** Five years of SOL is one bull and one bear. A strategy tuned across
-  it is tuned to a single regime transition, and CPCV's 28 paths resample that same history —
-  they widen the estimate, they do not add a second cycle.
+  it is tuned to a single regime transition, and CPCV's paths — 28 at most, usually 21 or 15 —
+  resample that same history. They widen the estimate, they do not add a second cycle.
 - **Trusting a rank.** With PBO at 0.700, being top of the table is not evidence. Rank by how
   many independent checks a configuration clears — median, path fraction, IQR, perturbation,
   trade count — not by Sharpe.
@@ -266,12 +306,26 @@ convention is the right one — perturb the parameters ±10% and re-run, check t
 paths positive rather than the median alone, compare against buy-and-hold on the same bars,
 and test whether the result survives a change of asset or timeframe — the check that finding 9
 above now actually performs, via `research/cross_asset_cpcv.py`. At the **medium** horizon the
-same 25 strategies range from **25-of-25 positive on BTC daily down to 13-of-25 on SOL daily** (24/25
-ZEC, 18/25 ETH, 16/25 DOGE). On SOL's *hourly* bars **not one of the 25 is positive** — but note
-that hourly **is** the short horizon in this project's configuration, so that figure is finding 4
-restated as a timeframe contrast, not a sixth independent asset. A top-ranked configuration fell
+same 25 strategies range from **25-of-25 positive on BTC daily down to 13-of-25 on SOL daily**
+(24/25 ZEC, 18/25 ETH, 16/25 DOGE). Apply this file's own evidence floor before trusting the top
+of that range, though: the sweep marks a configuration under 10 trades `insufficient` and prints
+it DROPPED, but still returns its path count, so a raw positive-count reads high. BTC and ETH
+each carry one such row, making them properly **24 of 24** and **18 of 24** — BTC's is its
+rank-1 `ou_reversion` on 6 trades, ETH's is `hurst_switch` on 4, whose median is exactly 0.000.
+The SOL, DOGE and ZEC counts stand as quoted; all 25 clear the floor on each. On SOL's *hourly*
+bars **not one of the 25 is positive** — but note that hourly **is** the short horizon here, so
+that figure is finding 4 restated as a timeframe contrast, not a sixth independent asset. A
+top-ranked configuration fell
 from 1st to 23rd on that same timeframe change. On this dataset the *data* has repeatedly
 explained more than the strategy.
+
+The three checks, as the repo actually invokes them:
+
+```bash
+python3 research/perturb.py --horizon long --all-singles       # ±10% parameter nudges
+python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC  # asset transfer, SOL as control
+python3 research/verify_numbers.py                             # re-verify RANKED_LISTS.md
+```
 
 ## Sources
 
@@ -295,9 +349,15 @@ explained more than the strategy.
   from a single call, so they are comparable only to within a day.
 - `~/.claude/skills/trading-and-investing/references/solana-dex-and-amm-landscape.md`,
   `jupiter-perps-trading.md`, `jupiter-jlp-pool.md` — venue taxonomy, oracle-priced perps, JLP.
-- Helius MEV research — the 75.7% revert figure, flagged single-source above.
+- Helius *MEV Report*, `https://www.helius.dev/blog/solana-mev-report` — the 75.7% revert figure,
+  flagged single-source above; reached via the `solana-transaction-execution-and-mev.md` citation
+  rather than read directly.
 
 Unverified and deliberately not asserted: a dated SOL unlock/vesting schedule; current
 inflation rate and terminal rate as of 2026; outage dates and counts; staking participation
-share. Each would need a current primary source, and none is load-bearing for the backtest
-findings above.
+share; and **holder and validator-stake concentration** — who could actually move the float.
+That last one is a question the other spokes in this directory answer and this one does not;
+it is a gap, not a non-issue. Each would need a current primary source, and none is
+load-bearing for the backtest findings above.
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

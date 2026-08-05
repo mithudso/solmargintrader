@@ -75,14 +75,22 @@ day, at the same reported cap. Total bid depth within 2% of mid across every ven
 it is about $294,000 against an $8.6B nominal cap. Rank the universe by turnover and
 executable depth, not by cap.
 
-**2. Turnover spans roughly 15× across the ten coins here: one order of magnitude, not the two
-this set is sometimes said to span.** 24h volume ÷ market cap: SOL 3.69%, DOGE ~3.49%, ETH
-~3.05%, ZEC ~2.33%, HYPE 2.28%, BTC ~1.80%, TRX ~1.45%, XRP ~1.38%, BNB 0.76%, RAIN 0.24%.
-The nine non-RAIN coins span about 5× on their own, with a further 3× step down to RAIN. BNB's
-0.76% is a denominator artifact: its spoke recomputes 1.11% once the burn address and bridge
-contract come out of the float, which puts it beside BTC. A position size that is unremarkable
-in BTC is the entire visible book in the thin names, so one cost model across a universe is
-wrong by construction.
+**2. Turnover spans 14.4× across the ten coins here: one order of magnitude, not the two this
+set is sometimes said to span.** 24h volume ÷ market cap, **all ten from a single CoinGecko
+`/coins/markets` call at 2026-08-05T02:15:22Z** — DOGE **3.44%**, SOL **3.32%**, ETH **3.05%**,
+HYPE **2.52%**, ZEC **2.30%**, BTC **1.78%**, TRX **1.45%**, XRP **1.37%**, BNB **0.73%**, RAIN
+**0.24%**. The nine non-RAIN coins span about 4.9× on their own, with a further 3.2× step down to
+RAIN. BNB's 0.73% is a denominator artifact: its spoke recomputes 1.11% once the burn address and
+bridge contract come out of the float, which puts it beside BTC. A position size that is
+unremarkable in BTC is the entire visible book in the thin names, so one cost model across a
+universe is wrong by construction.
+
+**One timestamp, on purpose.** Turnover has a moving numerator *and* a moving denominator, so
+figures pulled at different times cannot be ranked against each other. Mixing them produced a
+real error here: the SOL spoke claimed the highest turnover of the ten at 3.69%, from a per-asset
+`/coins/solana` call, when the single-timestamp pull puts **DOGE ahead**. Regenerate the table and
+verify all ten spokes against it with `python3 research/turnover_table.py [--check]` in
+`solmargintrader`.
 
 **3. Listing is not availability, and availability is not sufficiency.** Coinbase does not
 list TRX or RAIN at all. It lists HYPE only from 2026-02-05, so a fetch returns about six
@@ -117,14 +125,13 @@ is recorded, not resolved.
 
 ## About this copy
 
-This directory mirrors the user-level skill `crypto-coin-intelligence`
-(`~/.claude/skills/crypto-coin-intelligence/`), so the research this repo's findings rest on
-travels with the repo. This file is that skill's `SKILL.md`; the ten spokes sit beside it as
-flat files, matching the `references/<name>.md` paths in the routing table above.
-
-The canonical copy is the skill. Re-sync with:
+Mirrors the user-level skill `crypto-coin-intelligence`
+(`~/.claude/skills/crypto-coin-intelligence/`) so the research this repo's findings rest on travels
+with the repo. This file is that skill's `SKILL.md`; the ten spokes sit beside it as flat files,
+matching the `references/<name>.md` paths in the routing table above. The skill is canonical.
 
 ```bash
 cp ~/.claude/skills/crypto-coin-intelligence/SKILL.md research/coin-intelligence/README.md
 cp ~/.claude/skills/crypto-coin-intelligence/references/*.md research/coin-intelligence/
+python3 research/turnover_table.py --check    # all ten turnover figures must agree
 ```

@@ -134,14 +134,25 @@ series, not a law about mechanisms.
 
 Positive median path Sharpe, out of 25 singles, same parameters throughout:
 
-| Asset | Positive | Note |
-|---|---|---|
-| BTC | **25/25** | every registered strategy cleared zero |
-| ZEC | **24/25** | only `dual_momentum` failed |
-| ETH | 18/25 | |
-| DOGE | 16/25 | |
-| SOL (daily) | 13/25 | matches `RANKED_LISTS.md`'s medium-horizon count |
-| SOL (hourly) | **0/25** | `cpcv_all25_1h.csv`; timeframe, not asset |
+| Asset | Positive | Rankable | Note |
+|---|---|---|---|
+| BTC | **25/25** | **24/24** | `ou_reversion` (+1.657, rank 1) has **6 trades** — below the floor |
+| ZEC | **24/25** | 24/25 | only `dual_momentum` failed |
+| ETH | 18/25 | **18/24** | `hurst_switch` has 4 trades, median exactly 0.000 |
+| DOGE | 16/25 | 16/25 | |
+| SOL (daily) | 13/25 | 13/25 | matches `RANKED_LISTS.md`'s medium-horizon count |
+| SOL (hourly) | **0/25** | 0/25 | `cpcv_all25_1h.csv`; timeframe, not asset |
+
+**The "Rankable" column applies the project's own 10-trade evidence floor**, and it is not
+cosmetic on BTC. `cpcv_evaluate` marks a configuration `insufficient` below `min_total_trades`
+and prints it DROPPED, but **still returns a full path count** — so a filter on `n_paths > 0`
+counts rows the engine has just refused. BTC's *top-ranked* strategy is one of them: `ou_reversion`
+medians +1.657 on **six trades**, which is not evidence at any useful confidence. So "every
+registered strategy cleared zero on BTC" survives as 24 of 24, but **the row a reader would quote
+first does not qualify to be ranked.** `btc-bitcoin.md` had independently flagged "effective n on
+BTC is 24" as an open item for a different reason (two byte-identical rows); both point the same
+way. SOL, DOGE and ZEC have no below-floor rows — their minimum is 16 trades — and every top-5
+configuration in Result 1 has 38 or more, so nothing in the transfer conclusion moves.
 
 The identical strategy set ranges from 0/25 to 25/25 depending only on which series it is
 pointed at. No property of any strategy explains a spread that wide. This is the same
