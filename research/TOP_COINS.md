@@ -48,6 +48,36 @@ This is the list to actually point a directional strategy at.
 | 9 | `RAIN` | Rain | 0.0125 | 8.7 | 0.02 | **no** |
 | 10 | `ZEC` | Zcash | 513.2200 | 8.6 | 0.20 | **no** |
 
+## RAIN does not belong in a tradeable universe — added after research
+
+The list above ranks by market cap, and for `RAIN` that number does not survive contact
+with evidence. Recorded here because the "tradeable ten" heading above would otherwise be
+a claim this file cannot support.
+
+- **The aggregators do not agree it is a top-20 asset.** Same day, same reported market cap:
+  **CoinGecko ranks it #14, CoinMarketCap #201, DefiLlama #16.** CoinGecko's own page lists
+  two circulating supplies differing by ~$580M.
+- **Turnover is ~0.24%** — roughly a tenth of HYPE's, measured the same day by the same
+  method, and two orders of magnitude below Bitcoin's.
+- **Total bid depth within 2% of mid, across every venue that lists it, is about
+  $294,000** against an $8.6B nominal cap.
+- **DefiLlama records $76 of protocol fees in the trailing 30 days.**
+- **A single Nasdaq micro-cap holds or controls ~30.5% of supply.** Enlivex Ltd. (ENLV)
+  discloses 6.9% held plus an option on a further 23.6% at $0.0033 — **73% below** the
+  market price — expiring 2027-12-31. Roughly 66% of supply sits in vesting contracts,
+  treasury or that one holder, and CoinGecko counts the ~230B treasury as circulating.
+- **Not listed on Coinbase**, so this project's fetcher cannot retrieve it regardless.
+- **The ticker is ambiguous.** At least five unrelated tokens use `RAIN`. Key on a contract
+  address, never the symbol.
+
+**Treat the market-cap rank as unreliable and exclude it from the tradeable set.** That
+leaves nine, and the honest thing is to say nine rather than backfill an eleventh to keep a
+round number. Detail and sources: `crypto-coin-intelligence/references/rain-rain.md`.
+
+One further note from the same research: **`HYPE-USD` only listed on Coinbase on
+2026-02-05**, so a fetch returns roughly six months of history, not years. Short history is
+its own evidence-floor problem, distinct from availability.
+
 ## The constraint that matters for this repo
 
 **This project holds price data for 3 of them: BTC, ETH, SOL** (`data/`, plus `JLP_spot.csv`).

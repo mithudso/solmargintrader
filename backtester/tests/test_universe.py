@@ -80,6 +80,22 @@ class PlanTests(unittest.TestCase):
         self.assertIn("TRX", plan.missing)
         self.assertIn("RAIN", plan.missing)
 
+    def test_the_tradeable_universe_drops_assets_the_evidence_does_not_support(self):
+        """RAIN ranks top-20 by market cap and is excluded anyway.
+
+        Three aggregators disagree on its rank by ~190 places on the same day, total bid
+        depth across all venues is ~$294k against an $8.6B nominal cap, and ~66% of supply
+        is in vesting, treasury, or one Nasdaq holder. The market-cap list stays factual;
+        the tradeable list is what a strategy should point at, and it is nine long. A
+        universe that backfilled a tenth to keep a round number would be choosing the
+        number over the evidence.
+        """
+        self.assertIn("RAIN", uni.TOP10_NON_PEGGED)
+        self.assertNotIn("RAIN", uni.TRADEABLE_UNIVERSE)
+        self.assertEqual(len(uni.TRADEABLE_UNIVERSE), 9)
+        self.assertIn("RAIN", uni.EXCLUDED)
+        self.assertIn("rain-rain.md", uni.EXCLUDED["RAIN"])
+
     def test_the_summary_names_what_is_missing(self):
         plan = uni.plan_universe_fetch(["BTC", "TRX"], [p["id"] for p in LISTED])
         self.assertIn("TRX", plan.summary())

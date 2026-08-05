@@ -45,6 +45,25 @@ TOP10_NON_PEGGED = ("BTC", "ETH", "BNB", "XRP", "SOL", "TRX", "HYPE", "DOGE", "R
 # The subset this project already holds history for.
 ALREADY_CACHED = ("BTC", "ETH", "SOL")
 
+# Assets whose market-cap rank does not survive contact with evidence, and why.
+# Kept as data rather than silently dropped from TOP10_NON_PEGGED above: that constant
+# states what market cap says, and this states why we decline to believe it. Both are
+# true and a reader needs to see the disagreement.
+EXCLUDED: dict[str, str] = {
+    "RAIN": (
+        "market-cap rank unreliable: CoinGecko #14 / CoinMarketCap #201 / DefiLlama #16 "
+        "on the same day; ~0.24% turnover; total bid depth within 2% of mid across all "
+        "venues ~$294k against an $8.6B nominal cap; ~66% of supply in vesting, treasury "
+        "or one Nasdaq holder (ENLV, 6.9% held plus an option on 23.6% at 73% below "
+        "market). Not listed on Coinbase either. See "
+        "crypto-coin-intelligence/references/rain-rain.md"
+    ),
+}
+
+# What a directional strategy should actually be pointed at. Nine, not ten -- backfilling
+# an eleventh to restore a round number would be choosing the number over the evidence.
+TRADEABLE_UNIVERSE = tuple(a for a in TOP10_NON_PEGGED if a not in EXCLUDED)
+
 
 @dataclass(frozen=True)
 class FetchPlan:
@@ -168,8 +187,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     ap.add_argument(
         "--assets",
-        default=",".join(TOP10_NON_PEGGED),
-        help="comma-separated base assets; defaults to the top-10 non-pegged set",
+        default=",".join(TRADEABLE_UNIVERSE),
+        help=(
+            "comma-separated base assets; defaults to the tradeable universe, which is the "
+            "top-10 non-pegged set minus those in EXCLUDED (currently RAIN)"
+        ),
     )
     ap.add_argument("--quote", default="USD")
     ap.add_argument("--start", default="2021-01-01")
@@ -194,6 +216,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     listed = list_coinbase_products()
     plan = plan_universe_fetch(assets, listed, args.quote)
 
+    for asset in assets:
+        if asset in EXCLUDED:
+            print(f"note: {asset} is in EXCLUDED -- {EXCLUDED[asset]}", file=sys.stderr)
     print(f"Universe plan: {plan.summary()}", file=sys.stderr)
     for asset in assets:
         mark = "  ok " if asset in plan.available else "  -- "
