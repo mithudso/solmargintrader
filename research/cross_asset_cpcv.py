@@ -672,8 +672,32 @@ def main(argv: list[str] | None = None) -> int:
         for asset, window in windows.items():
             print(f"  {asset:5s} {window}")
 
+        # The control thresholds against the `sol_median` literals, which were
+        # produced at REFERENCE_GROUPS/REFERENCE_K. At any other geometry SOL's
+        # medians legitimately differ, so comparing anyway reported DIVERGED with a
+        # false cause ("composite wiring differs") on a perfectly valid flag
+        # combination -- the same mistake the self-test gate made before it was
+        # pinned to the reference's own geometry. The control can only certify at
+        # the geometry it was published at; elsewhere it declines to run rather
+        # than assert something untrue.
+        published_geometry = args.groups == REFERENCE_GROUPS and args.k == REFERENCE_K
+
         diverged = False
-        if not args.no_control:
+        if not args.no_control and not published_geometry:
+            print(
+                f"\nCONTROL NOT RUN: the published SOL medians were produced at "
+                f"{REFERENCE_GROUPS} blocks / k={REFERENCE_K}; this run used "
+                f"{args.groups} / k={args.k}."
+            )
+            print(
+                "  SOL's medians are expected to differ at another geometry, so the "
+                "comparison would prove nothing either way."
+            )
+            print(
+                "  The rows below are still computed — they are simply not certified. "
+                "Re-run at the published geometry to certify them."
+            )
+        elif not args.no_control:
             sol = df[df["asset"] == "SOL"]
             deltas = sol["delta_vs_sol"]
             # A partial control is not a passing control. `.abs().max()` skips NaN,
