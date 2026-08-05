@@ -1,3 +1,89 @@
+# Handoff — 2026-08-05
+
+## Cross-asset transfer: the top five do NOT survive a change of asset
+
+Run unchanged on DOGE and ZEC, **all ten transfers degraded and not one improved** (median
+−0.821 DOGE, −0.753 ZEC). Only #3 `any(ou_reversion+obv_trend)` and #4 `obv_trend_60` stayed
+positive on all three assets. On ZEC, zero-parameter `buy_and_hold` (+0.659) beat all five, the
+best of which reached +0.492.
+
+Sharpest row: **`any(hurst_switch+ou_reversion)` is 100% positive on SOL and 0% positive on DOGE
+across the same 15 paths.** Identical path count, so the collapse is not evaluation geometry.
+
+Across all 25 singles on five assets, **eight are positive everywhere and not one is from a
+reversion family**; no reversion-family strategy clears all five. Per-asset positive counts run
+BTC 25/25, ZEC 24/25, ETH 18/25, DOGE 16/25, SOL daily 13/25, SOL hourly 0/25 — the same
+parameters, so the data explains more than the strategy.
+
+New: `research/cross_asset_cpcv.py` (+54 tests), `research/CROSS-ASSET-TRANSFER.md`,
+`results/cpcv_all25_sol_doge_zec_1d.csv`, `results/cpcv_top5_sol_doge_zec_1d.csv`.
+
+```bash
+python3 research/cross_asset_cpcv.py --self-test               # reproduces BTC/ETH to 4.984e-07
+python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC     # 25 singles, medium horizon
+python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC  # the five, SOL control (0.0004)
+```
+
+### The trap that cost the most — do not re-learn it
+
+`results/cpcv_all25_1d.csv` was the obvious source for SOL's singles column and was **silently
+wrong**: a medium-horizon file with the long-horizon `sma_regime_200` row spliced in where
+medium's `sma_regime_100` belonged. **24 of its 25 rows reproduced exactly**, so nothing looked
+broken. That one row propagated into five figures in `coin-intelligence/btc-bitcoin.md` — the
+table that document calls "the single most important table" — including the cross-asset Spearman
+ρ, which read **+0.245 and is actually +0.159**. Also SOL positives 14→13, sign flips 11→12
+(44%→48%), Pearson +0.303→+0.263, and `sma_regime`'s SOL rank 7→18.
+
+**A results CSV that reproduces 96% of its rows is not verified.** Diff every row, and prefer
+regenerating a column over trusting a file whose generating command no longer exists. The file is
+deleted (recoverable in history); full diagnosis in `research/CROSS-ASSET-TRANSFER.md`.
+
+Every correction cut the same way: the ranking transfers *less* than claimed, so that document's
+own argument got stronger.
+
+### Also corrected
+
+`RANKED_LISTS.md` claimed all 1,287 configurations ran "each across 28 paths". **Only three
+did** — `buy_and_hold` at each horizon, the sole zero-warm-up strategy. Real distribution: 3 at
+28 paths, 1,094 at 21, 190 at 15 (median 21). So the benchmark is measured on more paths than
+anything it is compared against, and **four of the five recommended configurations are 15-path
+results**.
+
+`TOP5-RECOMMENDATION.md` mechanism finding 2 ("a volatility- or Hurst-based regime gate is the
+second most productive partner") is **downgraded as contradicted** — both `vol_regime`
+configurations degraded most, and `vol_regime_60_0.5` goes negative on both new assets.
+`obv_trend` replaces it. Finding 3's "~2.6×" was paired with the pooled perturbation median
+0.208 (giving 2.1×); it holds only against the long-horizon median 0.171, which is the right
+comparison since the top pairs are long-horizon.
+
+### Verification (2026-08-05)
+
+```
+python3 -m pytest backtester/tests -q  -> 374 passed, 249 subtests
+python3 research/verify_numbers.py     -> 950 figures checked
+```
+
+### Watch out
+
+- **Subagents failed with `Connection closed mid-response` four times.** Two died after
+  reporting findings but before applying them. Assume a report may arrive without its edits.
+- **A pre-edit snapshot restored a deleted tracked file byte-identical, with its original
+  mtime.** Re-check `git status` at session end after deleting an artifact.
+- **This file was truncated to empty (699 lines lost) by something mid-session**, caught before
+  committing and restored with `git checkout --`. Check its line count before committing it.
+
+### Open
+
+1. Two assets are not a universe. DOGE correlates +0.76..+0.78 with BTC, so it is nearer a second
+   BTC column than an independent draw. A real verdict wants uncorrelated assets.
+2. Calendar windows differ (SOL/BTC/ETH from 2021-06-17, DOGE 2021-06-03, ZEC 2021-01-01), so
+   asset is confounded with period. Disclosed, not corrected — aligning would discard real
+   history and still leave regimes unmatched.
+3. No PBO for the new assets: that needs a configuration population, not 25 singles plus 5 named
+   configurations.
+
+---
+
 # Handoff — 2026-08-04
 
 ## State: all merged to master, local only (no remote)
