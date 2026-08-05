@@ -18,8 +18,14 @@ Three sections, because they are three different kinds of claim:
     Bollinger band is bullish to `bb_reversion` and bearish to `bb_breakout`.
     That disagreement is the informative part and must stay visible.
   * **Indicators** -- raw values from `core.indicators`. Many have no
-    direction at all (ATR, realised vol, half-life), and those are printed with
-    an explicit "no directional reading" rather than being forced into a verb.
+    direction at all (ATR, realised vol, half-life), and those read
+    `no-direction` rather than being forced into a verb. That is kept distinct
+    from `neutral`, which means the rule looked and found nothing.
+
+The header states what the reader needs in order to disbelieve the output: the
+decision bar's timestamp and close, the data checksum, how old that bar is in
+bars of the stated interval, and the fill delay -- so a readout built from a
+two-day-old hourly cache cannot be mistaken for a live one.
 
 Deliberately NOT here:
 
@@ -39,6 +45,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -78,6 +85,10 @@ DEFAULT_TOLERANCE = 0.01
 # short. Well under any tradeable size.
 FLAT_EPSILON = 1e-9
 
+# Age of the decision bar, in bars, past which the readout says so out loud. Two
+# bars rather than one because the newest bar is often still forming upstream.
+STALE_AFTER_BARS = 2.0
+
 HOLD_LONG = "HOLD-LONG"
 HOLD_SHORT = "HOLD-SHORT"
 FLAT = "FLAT"
@@ -101,7 +112,15 @@ NO_DIRECTION = "no-direction"
 
 @dataclass
 class StrategyDecision:
-    """One strategy's reading of the final bar."""
+    """One strategy's reading of the final bar.
+
+    `target` is the exposure the strategy wants for the next bar. `previous` is
+    the target it asked for on the bar before -- which, under the default
+    one-bar fill delay, is the exposure actually held right now: it was decided
+    at bar n-2 and filled at the open of bar n-1. So `previous -> target` reads
+    as "what you are holding" to "what the rule now wants", and the action verb
+    is the trade between them.
+    """
 
     key: str
     name: str
@@ -179,7 +198,13 @@ def classify(
     HOLD is deliberately split into HOLD-LONG / HOLD-SHORT / FLAT. Collapsing
     "stay fully long" and "stay in cash" into one word would be the single most
     misleading thing this script could print -- they are opposite instructions.
+
+    A negative tolerance is rejected rather than clamped: it inverts the
+    comparison, so an unchanged flat position reports as a BUY. That is a wrong
+    answer, not a loose one.
     """
+    if not tolerance >= 0.0:
+        raise ValueError(f"tolerance must be >= 0, got {tolerance!r}")
     prior = 0.0 if previous is None else previous
     delta = target - prior
     if delta > tolerance:
@@ -290,6 +315,22 @@ class SignalRule:
     evaluate: Callable[[BarWindow], tuple[str, str]]
 
 
+# Three signals reproduce a registered strategy's own comparison rather than
+# inventing one: the Donchian channel that excludes the current bar, the Ichimoku
+# cloud displaced back so it is not read from the future, and the momentum
+# lookback. Each takes its periods from that strategy's defaults so the two
+# cannot drift apart -- a signal row claiming a 90-bar ROC while `ts_momentum`
+# trades a 60-bar one is a quietly wrong explanation of the strategy above it,
+# and it shipped that way until a review caught it.
+#
+# The thresholds NOT taken from a strategy (RSI 30/70, stochastic 20/80, z-score
+# +/-2, ADX 25, the 50/200 golden cross) are the signal layer's own conventional
+# levels and belong to no strategy, so there is nothing to track.
+DONCHIAN: dict[str, int] = dict(build("breakout").params)
+ICHIMOKU: dict[str, int] = dict(build("ichimoku").params)
+TS_MOMENTUM: dict[str, Any] = dict(build("ts_momentum").params)
+
+
 def _fmt(value: float, places: int = 2) -> str:
     """Format a float, or 'nan' when it is not finite."""
     return "nan" if not np.isfinite(value) else f"{value:,.{places}f}"
@@ -306,6 +347,14 @@ def _threshold_reading(
     if value >= high:
         return BEARISH if low_is_bullish else BULLISH
     return NEUTRAL
+
+
+# The evaluators below carry no docstrings on purpose: each one's documentation
+# is the `rule` string registered next to it in SIGNAL_RULES, which is also what
+# the reader sees. A docstring restating the rule is a second copy that can drift
+# from both the code and the printed explanation. Comments here explain only the
+# non-obvious choices (why a channel excludes the current bar, why the cloud is
+# displaced, why ADX withholds a direction).
 
 
 def _sig_macd(w: BarWindow) -> tuple[str, str]:
@@ -376,18 +425,23 @@ def _sig_keltner(w: BarWindow) -> tuple[str, str]:
 def _sig_donchian(w: BarWindow) -> tuple[str, str]:
     # The channel excludes the current bar, matching DonchianBreakout: a channel
     # containing today's own high makes the breakout test nearly always false.
-    if len(w.closes) < 22:
+    entry, exit_ = DONCHIAN["entry_lookback"], DONCHIAN["exit_lookback"]
+    if len(w.closes) < max(entry, exit_) + 2:
         return UNAVAILABLE, "insufficient history"
     close = float(w.closes[-1])
-    upper = float(np.max(w.highs[-21:-1]))
-    lower = float(np.min(w.lows[-11:-1]))
+    upper = float(np.max(w.highs[-entry - 1 : -1]))
+    lower = float(np.min(w.lows[-exit_ - 1 : -1]))
     if close > upper:
         reading = BULLISH
     elif close < lower:
         reading = BEARISH
     else:
         reading = NEUTRAL
-    return reading, f"close {_fmt(close)} vs prior 20-high {_fmt(upper)} / 10-low {_fmt(lower)}"
+    return (
+        reading,
+        f"close {_fmt(close)} vs prior {entry}-high {_fmt(upper)} "
+        f"/ {exit_}-low {_fmt(lower)}",
+    )
 
 
 def _sig_sma_regime(w: BarWindow) -> tuple[str, str]:
@@ -406,10 +460,11 @@ def _sig_golden_cross(w: BarWindow) -> tuple[str, str]:
 
 
 def _sig_ts_momentum(w: BarWindow) -> tuple[str, str]:
-    value = ind.roc(w.closes, 90)
+    window = TS_MOMENTUM["window"]
+    value = ind.roc(w.closes, window)
     if not np.isfinite(value):
-        return UNAVAILABLE, "needs 91 bars"
-    return (BULLISH if value > 0 else BEARISH), f"90-bar ROC {value * 100:+.2f}%"
+        return UNAVAILABLE, f"needs {window + 1} bars"
+    return (BULLISH if value > 0 else BEARISH), f"{window}-bar ROC {value * 100:+.2f}%"
 
 
 def _sig_vwap(w: BarWindow) -> tuple[str, str]:
@@ -446,12 +501,13 @@ def _sig_ichimoku(w: BarWindow) -> tuple[str, str]:
     # Cloud computed from history ending `displacement` bars back, matching
     # IchimokuCloud. Reading a span computed at the current bar would be reading
     # data from the future -- the classic Ichimoku look-ahead trap.
-    displacement = 26
+    tenkan, kijun = ICHIMOKU["tenkan"], ICHIMOKU["kijun"]
+    senkou_b, displacement = ICHIMOKU["senkou_b"], ICHIMOKU["displacement"]
     closes, highs, lows = w.closes, w.highs, w.lows
-    if len(closes) < 52 + displacement:
-        return UNAVAILABLE, "needs 78 bars"
+    if len(closes) < senkou_b + displacement:
+        return UNAVAILABLE, f"needs {senkou_b + displacement} bars"
     cut = len(closes) - displacement
-    _, _, span_a, span_b = ind.ichimoku(highs[:cut], lows[:cut], 9, 26, 52)
+    _, _, span_a, span_b = ind.ichimoku(highs[:cut], lows[:cut], tenkan, kijun, senkou_b)
     if not (np.isfinite(span_a) and np.isfinite(span_b)):
         return UNAVAILABLE, "insufficient history"
     close = float(closes[-1])
@@ -492,13 +548,18 @@ SIGNAL_RULES: tuple[SignalRule, ...] = (
         "keltner_20_14_2", "close outside the EMA20 +/- 2*ATR14 channel", _sig_keltner
     ),
     SignalRule(
-        "donchian_20_10",
-        "close above the prior 20-bar high / below the prior 10-bar low",
+        f"donchian_{DONCHIAN['entry_lookback']}_{DONCHIAN['exit_lookback']}",
+        f"close above the prior {DONCHIAN['entry_lookback']}-bar high / below the "
+        f"prior {DONCHIAN['exit_lookback']}-bar low, both excluding this bar",
         _sig_donchian,
     ),
     SignalRule("sma_200_regime", "close above its 200-bar SMA", _sig_sma_regime),
     SignalRule("sma_50_200_cross", "SMA50 above SMA200 (golden cross)", _sig_golden_cross),
-    SignalRule("ts_momentum_90", "90-bar rate of change above zero", _sig_ts_momentum),
+    SignalRule(
+        f"ts_momentum_{TS_MOMENTUM['window']}",
+        f"{TS_MOMENTUM['window']}-bar rate of change above zero",
+        _sig_ts_momentum,
+    ),
     SignalRule(
         "vwap_20_reversion",
         "close below the 20-bar VWAP (reversion reading)",
@@ -512,7 +573,8 @@ SIGNAL_RULES: tuple[SignalRule, ...] = (
     ),
     SignalRule(
         "ichimoku_cloud",
-        "close above the cloud projected onto this bar from 26 bars back",
+        f"close above the cloud projected onto this bar from "
+        f"{ICHIMOKU['displacement']} bars back",
         _sig_ichimoku,
     ),
     SignalRule("obv_trend_20", "OBV above its own 20-bar average", _sig_obv),
@@ -564,6 +626,11 @@ class IndicatorRow:
     key: str
     sources: tuple[str, ...]
     evaluate: Callable[[BarWindow, float], tuple[str, str, str]]
+
+
+# As with the signal evaluators, the documentation of each row is the `note`
+# string it returns -- the same text the reader sees -- rather than a docstring
+# that would duplicate it.
 
 
 def _ind_price(w: BarWindow, ppy: float) -> tuple[str, str, str]:
@@ -797,6 +864,81 @@ def _iso(ts: int) -> str:
     return datetime.fromtimestamp(int(ts), tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def detected_interval(ts: np.ndarray) -> str | None:
+    """The bar interval implied by the timestamps, or None if it matches none.
+
+    The median spacing rather than the mean or a strict all-equal check, so the
+    two real gaps in the cached hourly SOL series do not change the answer.
+    """
+    if len(ts) < 2:
+        return None
+    step = float(np.median(np.diff(np.asarray(ts, dtype="float64"))))
+    for name, seconds in INTERVAL_SECONDS.items():
+        if abs(step - seconds) < 1.0:
+            return name
+    return None
+
+
+def check_interval(ts: np.ndarray, interval: str) -> None:
+    """Refuse a stated interval the data contradicts.
+
+    `validate_bars` only catches spacing LARGER than one bar, so reading the
+    hourly cache as `--interval 1d` passes validation and then silently
+    misreports two things: the staleness line divides the bar's age by 86,400
+    instead of 3,600 (40 stale bars read as 1.7), and realised/EWMA vol are
+    annualised at 365 bars per year instead of 8,760. Both are wrong numbers
+    presented with the same confidence as right ones, so this is an error rather
+    than a warning.
+    """
+    found = detected_interval(ts)
+    if found is not None and found != interval:
+        raise ValueError(
+            f"data is spaced as {found} bars but --interval says {interval}; "
+            f"staleness and annualised volatility would both be wrong. "
+            f"Re-run with --interval {found}."
+        )
+
+
+def staleness(
+    last_ts: int, interval: str, *, now: float | None = None
+) -> dict[str, Any]:
+    """How old the decision bar is, in bars and in hours.
+
+    A cached CSV is a snapshot, and nothing in the file says when it was taken.
+    An hourly readout whose last bar closed 36 hours ago looks exactly like a
+    fresh one unless the age is printed, so it is printed. `STALE_AFTER_BARS`
+    is the point past which the readout says so out loud.
+    """
+    wall = time.time() if now is None else now
+    seconds = max(0.0, wall - last_ts)
+    bars = seconds / INTERVAL_SECONDS[interval]
+    return {
+        "age_hours": seconds / 3600.0,
+        "age_bars": bars,
+        "stale": bars >= STALE_AFTER_BARS,
+    }
+
+
+def final_window(arrays: dict[str, np.ndarray]) -> BarWindow:
+    """A `BarWindow` positioned on the last bar of the series.
+
+    Signals and indicators read through this rather than the raw arrays so that
+    the same truncation guard the strategies get applies to them too.
+    """
+    n = len(arrays["close"])
+    if n == 0:
+        raise ValueError("no bars to read")
+    return BarWindow(
+        arrays["ts"],
+        arrays["open"],
+        arrays["high"],
+        arrays["low"],
+        arrays["close"],
+        arrays["volume"],
+        n - 1,
+    )
+
+
 def build_report(
     arrays: dict[str, np.ndarray],
     *,
@@ -809,20 +951,20 @@ def build_report(
     allow_short: bool = False,
     tolerance: float = DEFAULT_TOLERANCE,
     fill_delay: int = 1,
+    now: float | None = None,
 ) -> dict[str, Any]:
-    """Everything the text and JSON renderers need, computed once."""
+    """Everything the text and JSON renderers need, computed once.
+
+    `now` overrides the wall clock used for the staleness reading; it exists so
+    the age of the decision bar is testable.
+    """
     n = len(arrays["close"])
     if n == 0:
         raise ValueError("no bars to decide on")
-    window = BarWindow(
-        arrays["ts"],
-        arrays["open"],
-        arrays["high"],
-        arrays["low"],
-        arrays["close"],
-        arrays["volume"],
-        n - 1,
-    )
+    if fill_delay < 0:
+        raise ValueError(f"fill_delay must be >= 0, got {fill_delay!r}")
+    check_interval(arrays["ts"], interval)
+    window = final_window(arrays)
     decisions = strategy_decisions(
         arrays, keys=keys, mode=mode, allow_short=allow_short, tolerance=tolerance
     )
@@ -842,6 +984,7 @@ def build_report(
             "timestamp": int(arrays["ts"][-1]),
             "utc": _iso(int(arrays["ts"][-1])),
             "close": float(arrays["close"][-1]),
+            **staleness(int(arrays["ts"][-1]), interval, now=now),
         },
         "execution": {
             "mode": str(mode),
@@ -888,6 +1031,8 @@ def render_text(report: dict[str, Any]) -> str:
         f"  data           {report['source']}  ({report['bars']} bars, "
         f"sha256 {report['data_checksum'][:12]})",
         f"  decision bar   #{bar['index']}  {bar['utc']}  close {bar['close']:,.4f}",
+        f"  bar age        {bar['age_bars']:,.1f} bars ({bar['age_hours']:,.1f} h)"
+        + ("   *** STALE -- refetch before reading this ***" if bar["stale"] else ""),
         f"  would execute  at {ex['applies_to']}",
         f"  exposure       mode {ex['mode']}, bounds "
         f"[{ex['exposure_bounds'][0]:+.2f}, {ex['exposure_bounds'][1]:+.2f}]",
@@ -928,9 +1073,26 @@ def render_text(report: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+DEFAULT_ASSET = "SOL"
+
+
 def default_data_path(asset: str, interval: str) -> Path:
     """Conventional cache location, matching what `core.fetch` writes."""
     return REPO / "data" / f"{asset}_{interval}.csv"
+
+
+def asset_from_path(path: Path) -> str | None:
+    """The asset a cache filename names, following the `<ASSET>_<interval>` convention.
+
+    Used only to correct the label when `--data` names one asset and `--asset`
+    was left at its default: a header reading `BTC 1d` above SOL bars makes the
+    readout unfalsifiable, which is the one thing the header exists to prevent.
+    """
+    stem = path.stem
+    if "_" not in stem:
+        return None
+    candidate = stem.rsplit("_", 1)[0]
+    return candidate or None
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -944,7 +1106,11 @@ def build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    ap.add_argument("--asset", default="SOL", help="base asset symbol")
+    ap.add_argument(
+        "--asset",
+        default=DEFAULT_ASSET,
+        help="base asset symbol; inferred from a --data filename when left at the default",
+    )
     ap.add_argument(
         "--interval", default="1d", choices=sorted(INTERVAL_SECONDS), help="bar interval"
     )
@@ -961,13 +1127,21 @@ def build_parser() -> argparse.ArgumentParser:
         "--strategy",
         action="append",
         default=None,
+        choices=sorted(REGISTRY),
+        metavar="NAME",
         help=f"repeatable; default is every registered strategy: {sorted(REGISTRY)}",
     )
     ap.add_argument(
         "--mode", default="spot", choices=[m.value for m in Mode], help="exposure mode"
     )
     ap.add_argument(
-        "--allow-short", action="store_true", help="permit short exposure (perp only)"
+        "--allow-short",
+        action="store_true",
+        help=(
+            "widen the exposure bound to -1 (perp only). No registered strategy's "
+            "DEFAULT parameters emit a short, so this changes the stated bound "
+            "and nothing else unless a strategy is parameterised to go short"
+        ),
     )
     ap.add_argument(
         "--tolerance",
@@ -991,25 +1165,48 @@ def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry point."""
     args = build_parser().parse_args(argv)
     path = Path(args.data) if args.data else default_data_path(args.asset, args.interval)
+    asset = args.asset
+    if args.data and asset == DEFAULT_ASSET:
+        # An explicit --asset always wins; this only stops the default from
+        # labelling someone else's bars as SOL.
+        asset = asset_from_path(path) or asset
     loader = CsvLoader(path, allow_gaps=args.allow_gaps)
     try:
-        frame = loader.load(args.asset, args.start, args.end, args.interval)
+        frame = loader.load(asset, args.start, args.end, args.interval)
     except (FileNotFoundError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    report = build_report(
-        frame_to_arrays(frame),
-        asset=args.asset,
-        interval=args.interval,
-        source=str(path),
-        checksum=checksum_frame(frame),
-        keys=args.strategy,
-        mode=Mode(args.mode),
-        allow_short=args.allow_short,
-        tolerance=args.tolerance,
-        fill_delay=args.fill_delay,
+    arrays = frame_to_arrays(frame)
+    wanted = len(REGISTRY) if args.strategy is None else len(args.strategy)
+    # Every strategy is replayed over the whole series, so the cost is
+    # bars x strategies -- ~18s for 25 strategies over 8,823 hourly bars. Say so
+    # on stderr rather than looking hung; stdout stays exactly the report.
+    print(
+        f"replaying {wanted} strateg{'y' if wanted == 1 else 'ies'} over "
+        f"{len(arrays['close']):,} bars...",
+        file=sys.stderr,
     )
+
+    try:
+        report = build_report(
+            arrays,
+            asset=asset,
+            interval=args.interval,
+            source=str(path),
+            checksum=checksum_frame(frame),
+            keys=args.strategy,
+            mode=Mode(args.mode),
+            allow_short=args.allow_short,
+            tolerance=args.tolerance,
+            fill_delay=args.fill_delay,
+        )
+    except (KeyError, ValueError) as exc:
+        # A rejected argument is a usage error, not a crash. The KeyError arm
+        # catches a strategy name that argparse's `choices` cannot reject --
+        # a programmatic caller passing `keys=` directly.
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
     text = json.dumps(report, indent=2, sort_keys=True) if args.json else render_text(report)
     print(text)
     if args.out:

@@ -23,10 +23,13 @@ import inspect
 import io
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 import numpy as np
+import pandas as pd
 
 REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
@@ -39,8 +42,6 @@ from backtester.core.strategies import REGISTRY, build  # noqa: E402
 from backtester.core.strategies.breakout import DonchianBreakout  # noqa: E402
 from backtester.core.types import BarWindow, CostConfig, Mode  # noqa: E402
 from research import decide  # noqa: E402
-
-import pandas as pd  # noqa: E402
 
 ZERO_COST = CostConfig(fee_bps=0.0, slippage_bps=0.0, perp_base_fee_bps=0.0)
 
@@ -85,7 +86,7 @@ def make_arrays(closes: list[float], step: int = 86400) -> dict[str, np.ndarray]
 class Recorder:
     """Wraps a strategy and records every target the engine asks it for."""
 
-    def __init__(self, inner: object) -> None:
+    def __init__(self, inner: Any) -> None:
         self.inner = inner
         self.name = inner.name
         self.params = dict(getattr(inner, "params", {}))
@@ -148,6 +149,72 @@ class TestEngineParity(unittest.TestCase):
                 decision = decide.decide_strategy(key, self.arrays)
                 self.assertAlmostEqual(decision.target, expected, places=12)
 
+    def test_parity_holds_on_the_short_side(self) -> None:
+        """A perp run that permits shorts must match too, negatives included.
+
+        Spot clamps every negative target to zero, so a spot-only parity test
+        would never exercise the short half of `_resolve_target`. Built directly
+        rather than through the registry because no registered default shorts
+        (see `test_no_registry_default_emits_a_short`).
+        """
+        config = EngineConfig(
+            mode=Mode.PERP,
+            allow_short=True,
+            leverage=1.0,
+            fill_delay=0,
+            costs=ZERO_COST,
+            interval="1d",
+        )
+        recorder = Recorder(build("ma_crossover", short_when_below=True))
+        run_backtest(recorder, self.arrays, config)
+        engine_targets = np.array(
+            [_resolve_target(t, Mode.PERP, True) for _, t in recorder.calls]
+        )
+        replayed = decide.replay_targets(
+            build("ma_crossover", short_when_below=True),
+            self.arrays,
+            mode=Mode.PERP,
+            allow_short=True,
+        )
+        asked = np.flatnonzero(np.isfinite(replayed))
+        self.assertEqual(list(asked), [i for i, _ in recorder.calls])
+        np.testing.assert_allclose(replayed[asked], engine_targets, rtol=0, atol=0)
+        self.assertTrue(
+            bool(np.any(engine_targets < 0)), "no negative target seen; test proves nothing"
+        )
+
+    def test_spot_clamps_that_same_short_to_flat(self) -> None:
+        """The clamp is the engine's, so spot must report flat, not a short."""
+        replayed = decide.replay_targets(
+            build("ma_crossover", short_when_below=True), self.arrays
+        )
+        asked = np.flatnonzero(np.isfinite(replayed))
+        self.assertGreaterEqual(float(np.min(replayed[asked])), 0.0)
+
+    def test_no_registry_default_emits_a_short(self) -> None:
+        """Documents why `--allow-short` changes nothing on a default readout.
+
+        Every registered strategy's default parameters are long-or-flat, so
+        HOLD-SHORT is unreachable through the CLI. If a future strategy ships a
+        shorting default this fails, and the readout's help text needs updating
+        rather than the test relaxing.
+        """
+        for key in REGISTRY:
+            with self.subTest(strategy=key):
+                replayed = decide.replay_targets(
+                    build(key), self.arrays, mode=Mode.PERP, allow_short=True
+                )
+                asked = np.flatnonzero(np.isfinite(replayed))
+                self.assertGreaterEqual(float(np.min(replayed[asked])), 0.0)
+
+    def test_bars_before_warmup_are_nan_not_zero(self) -> None:
+        """An unasked bar must be NaN, distinct from a decision to stay flat."""
+        strategy = build("sma_regime")
+        warmup = strategy.warmup_bars()
+        replayed = decide.replay_targets(strategy, self.arrays)
+        self.assertTrue(np.all(np.isnan(replayed[:warmup])))
+        self.assertTrue(np.all(np.isfinite(replayed[warmup:])))
+
     def test_engine_exposure_sign_agrees(self) -> None:
         """With a same-bar fill and no costs, held exposure follows the target.
 
@@ -208,15 +275,7 @@ class TestPathDependence(unittest.TestCase):
         replayed = decide.replay_targets(DonchianBreakout(), arrays)
         self.assertEqual(replayed[-1], 1.0)
 
-        window = BarWindow(
-            arrays["ts"],
-            arrays["open"],
-            arrays["high"],
-            arrays["low"],
-            arrays["close"],
-            arrays["volume"],
-            len(closes) - 1,
-        )
+        window = decide.final_window(arrays)
         self.assertEqual(DonchianBreakout().on_bar(window), 0.0)
 
     def test_decide_strategy_agrees_with_the_replay_not_the_shortcut(self) -> None:
@@ -260,6 +319,11 @@ class TestClassify(unittest.TestCase):
         """The suppression is the tolerance's doing, not a rounding artifact."""
         self.assertEqual(decide.classify(0.50, 0.505, 0.0), decide.BUY)
 
+    def test_negative_tolerance_is_refused(self) -> None:
+        """It inverts the comparison, making an unchanged flat position a BUY."""
+        with self.assertRaises(ValueError):
+            decide.classify(0.0, 0.0, -5.0)
+
 
 class TestInsufficientHistory(unittest.TestCase):
     """A strategy that cannot compute must say so, not report a verdict."""
@@ -297,7 +361,7 @@ class TestInsufficientHistory(unittest.TestCase):
         self.assertIn("NOT INVESTMENT ADVICE", decide.render_text(report))
 
     def test_single_bar_series(self) -> None:
-        """One row of data -- the JLP_spot.csv shape -- is handled, not crashed on."""
+        """One row of data is handled, not crashed on."""
         arrays = {
             "ts": np.array([1_600_000_000], dtype="int64"),
             "open": np.array([1.0]),
@@ -329,16 +393,8 @@ class TestSignals(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        arrays = synthetic_arrays()
-        cls.window = BarWindow(
-            arrays["ts"],
-            arrays["open"],
-            arrays["high"],
-            arrays["low"],
-            arrays["close"],
-            arrays["volume"],
-            len(arrays["close"]) - 1,
-        )
+        cls.arrays = synthetic_arrays()
+        cls.window = decide.final_window(cls.arrays)
 
     def test_every_rule_returns_a_known_reading(self) -> None:
         """No rule may invent a vocabulary of its own."""
@@ -354,20 +410,47 @@ class TestSignals(unittest.TestCase):
         keys = [r.key for r in decide.SIGNAL_RULES]
         self.assertEqual(len(keys), len(set(keys)))
 
+    def test_periods_track_the_registered_strategy_defaults(self) -> None:
+        """The two signals that mirror a strategy must not drift from it.
+
+        A row claiming a 20-bar channel while `breakout` trades a 55-bar one
+        would be a quietly wrong explanation of the strategy above it.
+        """
+        self.assertEqual(decide.DONCHIAN, dict(build("breakout").params))
+        self.assertEqual(decide.ICHIMOKU, dict(build("ichimoku").params))
+        self.assertEqual(decide.TS_MOMENTUM, dict(build("ts_momentum").params))
+        keys = {r.key for r in decide.SIGNAL_RULES}
+        expected = (
+            f"donchian_{DonchianBreakout().entry_lookback}"
+            f"_{DonchianBreakout().exit_lookback}"
+        )
+        self.assertIn(expected, keys)
+        self.assertIn(f"ts_momentum_{build('ts_momentum').params['window']}", keys)
+
+    def test_momentum_signal_reads_the_strategy_lookback(self) -> None:
+        """The regression: a 90-bar ROC explaining a 60-bar strategy.
+
+        On the cached SOL daily series the two even disagreed -- the 90-bar leg
+        was negative while the 60-bar leg the strategy trades was positive -- so
+        the row labelled `ts_momentum` argued against the strategy above it.
+        """
+        window = build("ts_momentum").params["window"]
+        expected = ind.roc(self.window.closes, window)
+        reading = {r.key: r for r in decide.signal_readings(self.window)}[
+            f"ts_momentum_{window}"
+        ]
+        self.assertIn(f"{window}-bar", reading.detail)
+        self.assertEqual(
+            reading.reading, decide.BULLISH if expected > 0 else decide.BEARISH
+        )
+
     def test_short_history_is_unavailable_not_neutral(self) -> None:
         """'Cannot compute' must not be reported as 'looked and found nothing'."""
         arrays = make_arrays([100.0, 101.0, 102.0, 103.0])
-        window = BarWindow(
-            arrays["ts"],
-            arrays["open"],
-            arrays["high"],
-            arrays["low"],
-            arrays["close"],
-            arrays["volume"],
-            3,
-        )
+        window = decide.final_window(arrays)
         readings = {r.key: r.reading for r in decide.signal_readings(window)}
-        for key in ("sma_200_regime", "ichimoku_cloud", "adx_14_di", "ts_momentum_90"):
+        momentum = f"ts_momentum_{decide.TS_MOMENTUM['window']}"
+        for key in ("sma_200_regime", "ichimoku_cloud", "adx_14_di", momentum):
             with self.subTest(signal=key):
                 self.assertEqual(readings[key], decide.UNAVAILABLE)
 
@@ -380,15 +463,7 @@ class TestSignals(unittest.TestCase):
         # A long flat stretch then a sharp drop puts the close below the band.
         closes = [100.0] * 40 + [80.0]
         arrays = make_arrays(closes)
-        window = BarWindow(
-            arrays["ts"],
-            arrays["open"],
-            arrays["high"],
-            arrays["low"],
-            arrays["close"],
-            arrays["volume"],
-            len(closes) - 1,
-        )
+        window = decide.final_window(arrays)
         readings = {r.key: r.reading for r in decide.signal_readings(window)}
         self.assertEqual(readings["bb_reversion_20_2"], decide.BULLISH)
         self.assertEqual(readings["bb_breakout_20_2"], decide.BEARISH)
@@ -405,15 +480,7 @@ class TestSignals(unittest.TestCase):
         cycle = [100.0 + i for i in range(6)] + [104.0 - i for i in range(4)]
         closes = (cycle * 12)[:120]
         arrays = make_arrays(closes)
-        window = BarWindow(
-            arrays["ts"],
-            arrays["open"],
-            arrays["high"],
-            arrays["low"],
-            arrays["close"],
-            arrays["volume"],
-            len(closes) - 1,
-        )
+        window = decide.final_window(arrays)
         plus, minus, adx = ind.directional_movement(
             window.highs, window.lows, window.closes, 14
         )
@@ -452,16 +519,8 @@ class TestIndicators(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        arrays = synthetic_arrays()
-        cls.window = BarWindow(
-            arrays["ts"],
-            arrays["open"],
-            arrays["high"],
-            arrays["low"],
-            arrays["close"],
-            arrays["volume"],
-            len(arrays["close"]) - 1,
-        )
+        cls.arrays = synthetic_arrays()
+        cls.window = decide.final_window(cls.arrays)
 
     def test_module_is_fully_covered(self) -> None:
         """Every public indicator is reported or explicitly skipped, with a reason.
@@ -567,6 +626,91 @@ class TestReport(unittest.TestCase):
         self.assertAlmostEqual(bar["close"], float(self.arrays["close"][-1]))
         self.assertTrue(bar["utc"].endswith("Z"))
 
+    def test_stale_data_is_called_out(self) -> None:
+        """A cached CSV says nothing about when it was fetched; the age must.
+
+        Without this an hourly readout whose last bar closed 36 hours ago looks
+        exactly like a fresh one.
+        """
+        last = int(self.arrays["ts"][-1])
+        fresh = decide.build_report(
+            self.arrays,
+            asset="SOL",
+            interval="1d",
+            source="s",
+            checksum="a" * 64,
+            now=last + 3600,
+        )
+        self.assertFalse(fresh["decision_bar"]["stale"])
+        self.assertNotIn("STALE", decide.render_text(fresh))
+
+        old = decide.build_report(
+            self.arrays,
+            asset="SOL",
+            interval="1d",
+            source="s",
+            checksum="a" * 64,
+            now=last + 10 * 86400,
+        )
+        self.assertTrue(old["decision_bar"]["stale"])
+        self.assertAlmostEqual(old["decision_bar"]["age_bars"], 10.0, places=6)
+        self.assertAlmostEqual(old["decision_bar"]["age_hours"], 240.0, places=6)
+        self.assertIn("STALE", decide.render_text(old))
+
+    def test_age_is_measured_in_bars_of_the_stated_interval(self) -> None:
+        """40 hours is 1.7 daily bars but 40 hourly ones -- only one is stale."""
+        last = int(self.arrays["ts"][-1])
+        common = dict(asset="SOL", source="s", checksum="a" * 64, now=last + 40 * 3600)
+        daily = decide.staleness(last, "1d", now=last + 40 * 3600)
+        hourly = decide.staleness(last, "1h", now=last + 40 * 3600)
+        self.assertFalse(daily["stale"])
+        self.assertTrue(hourly["stale"])
+        self.assertAlmostEqual(hourly["age_bars"], 40.0, places=6)
+        # And the same series read at two intervals reports the two ages.
+        self.assertFalse(
+            decide.build_report(self.arrays, interval="1d", **common)["decision_bar"][
+                "stale"
+            ]
+        )
+
+    def test_interval_is_detected_from_the_timestamps(self) -> None:
+        """The median spacing, so real gaps do not change the answer."""
+        base = 1_600_000_000
+        hourly = np.array([base + i * 3600 for i in range(50)], dtype="int64")
+        self.assertEqual(decide.detected_interval(hourly), "1h")
+        # One 6-hour gap, as the cached hourly SOL series actually has.
+        gapped = np.concatenate([hourly, [hourly[-1] + 21600], [hourly[-1] + 25200]])
+        self.assertEqual(decide.detected_interval(gapped), "1h")
+        self.assertIsNone(decide.detected_interval(np.array([base], dtype="int64")))
+        self.assertIsNone(
+            decide.detected_interval(np.array([base, base + 777], dtype="int64"))
+        )
+
+    def test_a_contradicted_interval_is_refused(self) -> None:
+        """Named so the caller can fix it, not silently accepted."""
+        hourly = np.array([1_600_000_000 + i * 3600 for i in range(50)], dtype="int64")
+        decide.check_interval(hourly, "1h")
+        with self.assertRaises(ValueError) as caught:
+            decide.check_interval(hourly, "1d")
+        self.assertIn("--interval 1h", str(caught.exception))
+
+    def test_an_undetectable_spacing_does_not_block_the_readout(self) -> None:
+        """A series that matches no known interval is passed through, not refused."""
+        odd = np.array([1_600_000_000 + i * 777 for i in range(10)], dtype="int64")
+        decide.check_interval(odd, "1d")
+
+    def test_asset_is_read_from_a_cache_filename(self) -> None:
+        """Follows the `<ASSET>_<interval>.csv` convention `core.fetch` writes."""
+        self.assertEqual(decide.asset_from_path(Path("data/BTC_1d.csv")), "BTC")
+        self.assertEqual(decide.asset_from_path(Path("data/JLP_spot.csv")), "JLP")
+        self.assertIsNone(decide.asset_from_path(Path("data/prices.csv")))
+
+    def test_a_future_timestamp_reports_zero_age_not_a_negative(self) -> None:
+        """Clock skew must not print a negative age."""
+        aged = decide.staleness(2_000_000_000, "1d", now=1_900_000_000)
+        self.assertEqual(aged["age_bars"], 0.0)
+        self.assertFalse(aged["stale"])
+
     def test_execution_context_is_stated(self) -> None:
         """Bounds, tolerance and fill delay change what the verbs mean."""
         ex = self.report["execution"]
@@ -646,7 +790,86 @@ class TestReport(unittest.TestCase):
 
 
 class TestCli(unittest.TestCase):
-    """The entry point, including its failure path."""
+    """The entry point, including its failure paths.
+
+    Every case writes its own CSV rather than reaching for `data/`, which is
+    gitignored and absent in a fresh clone -- a `skipTest` here would mean the
+    CLI is effectively untested in CI.
+    """
+
+    @contextlib.contextmanager
+    def cached_csv(self, name: str = "SOL_1d.csv", bars: int = 300):
+        """A temporary CSV in the on-disk cache format, plus its path."""
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / name
+            SyntheticLoader(n_bars=bars, seed=11).load("SOL", None, None, "1d").to_csv(
+                path, index=False
+            )
+            yield path
+
+    @staticmethod
+    def run_cli(args: list[str]) -> tuple[int, str, str]:
+        """Invoke `main` with stdout and stderr captured."""
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = decide.main(args)
+        return code, out.getvalue(), err.getvalue()
+
+    def test_a_readout_runs_end_to_end_from_a_csv(self) -> None:
+        """The happy path, exercised through the real loader."""
+        with self.cached_csv() as path:
+            code, out, _ = self.run_cli(["--data", str(path), "--strategy", "rsi"])
+        self.assertEqual(code, 0)
+        self.assertIn("STRATEGIES", out)
+        self.assertIn("NOT INVESTMENT ADVICE", out)
+
+    def test_a_non_ohlcv_csv_is_refused_by_name(self) -> None:
+        """`data/JLP_spot.csv` is a Jupiter price snapshot, not a bar series.
+
+        It has `timestamp,iso,mint,usd_price,source` and one row. The readout
+        must name the missing columns rather than half-parse it.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "JLP_spot.csv"
+            path.write_text(
+                "timestamp,iso,mint,usd_price,source\n"
+                "1785867150,2026-08-04T18:12:30+00:00,27G8Mt,3.59334506,jupiter-price-v3\n",
+                encoding="utf-8",
+            )
+            code, _, err = self.run_cli(["--data", str(path), "--strategy", "rsi"])
+        self.assertEqual(code, 2)
+        self.assertIn("missing required column", err)
+
+    def test_an_interval_the_data_contradicts_is_refused(self) -> None:
+        """Reading the hourly cache as daily silently broke two reported numbers.
+
+        `validate_bars` only catches spacing larger than one bar, so hourly bars
+        under `--interval 1d` passed and then reported 40 stale bars as 1.7 and
+        annualised vol at 365 bars/year instead of 8,760.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "SOL_1h.csv"
+            SyntheticLoader(n_bars=200, seed=5).load("SOL", None, None, "1h").to_csv(
+                path, index=False
+            )
+            code, _, err = self.run_cli(
+                ["--data", str(path), "--interval", "1d", "--strategy", "rsi"]
+            )
+        self.assertEqual(code, 2)
+        self.assertIn("spaced as 1h", err)
+        self.assertIn("--interval 1h", err)
+
+    def test_the_asset_label_follows_the_data_filename(self) -> None:
+        """A header reading SOL over BTC bars would make the readout unfalsifiable."""
+        with self.cached_csv(name="BTC_1d.csv") as path:
+            code, out, _ = self.run_cli(["--data", str(path), "--strategy", "rsi"])
+            self.assertEqual(code, 0)
+            self.assertIn("Rule readout -- BTC 1d", out)
+            # An explicit --asset still wins.
+            _, out, _ = self.run_cli(
+                ["--asset", "WRAPPED", "--data", str(path), "--strategy", "rsi"]
+            )
+        self.assertIn("Rule readout -- WRAPPED 1d", out)
 
     def test_missing_data_file_exits_nonzero(self) -> None:
         """A missing cache is an error with a message, not a traceback."""
@@ -655,6 +878,27 @@ class TestCli(unittest.TestCase):
             code = decide.main(["--data", str(REPO / "data" / "definitely_absent.csv")])
         self.assertEqual(code, 2)
         self.assertIn("no cached data", stderr.getvalue())
+
+    def test_bad_numeric_arguments_exit_nonzero(self) -> None:
+        """A rejected tolerance or fill delay is a usage error, not a traceback."""
+        with self.cached_csv() as path:
+            for args in (["--tolerance", "-5"], ["--fill-delay", "-3"]):
+                with self.subTest(args=args):
+                    code, _, err = self.run_cli(
+                        ["--data", str(path), "--strategy", "rsi", *args]
+                    )
+                    self.assertEqual(code, 2)
+                    self.assertIn("must be >= 0", err)
+
+    def test_out_file_receives_the_same_text(self) -> None:
+        """`--out` writes what was printed, so a saved readout is not a summary."""
+        with self.cached_csv() as path:
+            target = path.parent / "readout.txt"
+            code, out, _ = self.run_cli(
+                ["--data", str(path), "--strategy", "rsi", "--out", str(target)]
+            )
+            self.assertEqual(code, 0)
+            self.assertEqual(target.read_text(encoding="utf-8"), out)
 
     def test_json_output_is_parseable(self) -> None:
         """`--json` must emit exactly one JSON document on stdout."""
