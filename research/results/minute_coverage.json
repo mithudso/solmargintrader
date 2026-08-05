@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-05 20:03:50.661178+00:00",
+  "generated": "2026-08-05 21:26:30.927625+00:00",
   "interval": "1m",
   "venue": "coinbase-exchange",
   "note": "span_days is calendar covered; completeness is how much of that calendar's minute grid is present. A bar count cannot tell short history from holes.",
@@ -19,6 +19,7 @@
       "short_of_request_days": 0.0,
       "windows_done": 8760,
       "windows_total": 8760,
+      "hours_behind_live": 1.4,
       "complete_fetch": true
     },
     {
@@ -34,9 +35,10 @@
       "largest_gap_minutes": 392,
       "requested_years": 5.0,
       "short_of_request_days": 0.0,
-      "windows_done": 8759,
+      "windows_done": 8760,
       "windows_total": 8760,
-      "complete_fetch": false
+      "hours_behind_live": 5.4,
+      "complete_fetch": true
     },
     {
       "asset": "ETH",
@@ -51,9 +53,10 @@
       "largest_gap_minutes": 395,
       "requested_years": 5.0,
       "short_of_request_days": 0.0,
-      "windows_done": 8759,
+      "windows_done": 8760,
       "windows_total": 8760,
-      "complete_fetch": false
+      "hours_behind_live": 6.4,
+      "complete_fetch": true
     },
     {
       "asset": "DOGE",
@@ -68,9 +71,10 @@
       "largest_gap_minutes": 395,
       "requested_years": 5.0,
       "short_of_request_days": 0.0,
-      "windows_done": 8759,
+      "windows_done": 8760,
       "windows_total": 8760,
-      "complete_fetch": false
+      "hours_behind_live": 6.5,
+      "complete_fetch": true
     },
     {
       "asset": "ZEC",
@@ -85,9 +89,10 @@
       "largest_gap_minutes": 395,
       "requested_years": 5.0,
       "short_of_request_days": 0.0,
-      "windows_done": 8759,
+      "windows_done": 8760,
       "windows_total": 8760,
-      "complete_fetch": false
+      "hours_behind_live": 6.4,
+      "complete_fetch": true
     },
     {
       "asset": "XRP",
@@ -103,8 +108,9 @@
       "requested_years": 5.0,
       "short_of_request_days": 706.2,
       "windows_done": 5373,
-      "windows_total": 5374,
-      "complete_fetch": false
+      "windows_total": 5373,
+      "hours_behind_live": 6.4,
+      "complete_fetch": true
     },
     {
       "asset": "BNB",
@@ -120,8 +126,9 @@
       "requested_years": 5.0,
       "short_of_request_days": 1538.2,
       "windows_done": 1379,
-      "windows_total": 1380,
-      "complete_fetch": false
+      "windows_total": 1379,
+      "hours_behind_live": 6.4,
+      "complete_fetch": true
     },
     {
       "asset": "HYPE",
@@ -137,8 +144,9 @@
       "requested_years": 5.0,
       "short_of_request_days": 1644.2,
       "windows_done": 870,
-      "windows_total": 871,
-      "complete_fetch": false
+      "windows_total": 870,
+      "hours_behind_live": 6.4,
+      "complete_fetch": true
     }
   ]
 }

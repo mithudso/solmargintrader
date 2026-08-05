@@ -186,10 +186,18 @@ class Coverage:
     short_of_request_days: float = 0.0
     windows_done: int = 0
     windows_total: int = 0
+    hours_behind_live: float = 0.0
 
     @property
     def complete_fetch(self) -> bool:
-        """Every planned window attempted AND bars actually present.
+        """Every window in the plan AS PLANNED attempted, and bars actually present.
+
+        "As planned" is load-bearing and was originally missing. plan_windows is anchored
+        to `now`, so re-measuring hours later planned windows that did not exist when the
+        fetch ran and flipped this to False for seven of eight assets with nothing wrong
+        on disk -- and render_coverage turned that into "re-run to continue", which was
+        simply false. The plan end is recorded at fetch time and reused, so the verdict is
+        reproducible; how current the data is is reported separately as hours_behind_live.
 
         The bar check is not redundant. The ledger and the CSV are separate files, so a
         truncated or empty CSV beside a full sidecar would otherwise report "full" -- and
@@ -332,6 +340,18 @@ def load_probe(asset: str) -> tuple[int, int] | None:
         return None
 
 
+def load_planned_end(asset: str) -> int | None:
+    """The plan end recorded when this asset was last fetched, if any."""
+    path = progress_path(asset)
+    if not path.exists():
+        return None
+    try:
+        value = json.loads(path.read_text()).get("planned_end")
+        return int(value) if value is not None else None
+    except (json.JSONDecodeError, ValueError, TypeError):
+        return None
+
+
 def load_listing_start(asset: str) -> int | None:
     """The probed listing start, ignoring a probe that searched no deeper than needed."""
     probe = load_probe(asset)
@@ -340,7 +360,8 @@ def load_listing_start(asset: str) -> int | None:
 
 def save_listing_start(asset: str, start: int, probe_floor: int) -> None:
     """Record the probe result and the floor it searched from."""
-    _write_sidecar(asset, load_progress(asset), start, probe_floor)
+    _write_sidecar(asset, load_progress(asset), start, probe_floor,
+                   planned_end=load_planned_end(asset))
 
 
 def load_progress(asset: str) -> set[int]:
@@ -358,14 +379,17 @@ def load_progress(asset: str) -> set[int]:
         return set()
 
 
-def save_progress(asset: str, done: set[int]) -> None:
-    """Persist attempted windows without discarding the probe result."""
+def save_progress(asset: str, done: set[int], planned_end: int | None = None) -> None:
+    """Persist attempted windows without discarding the probe result or the plan end."""
     probe = load_probe(asset)
-    _write_sidecar(asset, done, *(probe if probe is not None else (None, None)))
+    _write_sidecar(asset, done, *(probe if probe is not None else (None, None)),
+                   planned_end=planned_end if planned_end is not None
+                   else load_planned_end(asset))
 
 
 def _write_sidecar(asset: str, done: set[int], listing_start: int | None,
-                   probe_floor: int | None = None) -> None:
+                   probe_floor: int | None = None,
+                   planned_end: int | None = None) -> None:
     """Write the sidecar whole, then rename, so a crash cannot half-update it."""
     path = progress_path(asset)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -377,6 +401,8 @@ def _write_sidecar(asset: str, done: set[int], listing_start: int | None,
         payload["listing_start"] = int(listing_start)
         payload["probe_floor"] = int(
             probe_floor if probe_floor is not None else listing_start)
+    if planned_end is not None:
+        payload["planned_end"] = int(planned_end)
     tmp.write_text(json.dumps(payload))
     tmp.replace(path)
 
@@ -398,11 +424,18 @@ def load_minutes(asset: str) -> pd.DataFrame:
     )
 
 
-def coverage(asset: str, df: pd.DataFrame, requested_years: float) -> Coverage:
-    """Measure the series against the minute grid it claims to cover."""
+def coverage(asset: str, df: pd.DataFrame, requested_years: float,
+             now: int | None = None) -> Coverage:
+    """Measure the series against the minute grid it claims to cover.
+
+    `now` defaults to the plan end recorded when the fetch ran, NOT to the wall clock --
+    see Coverage.complete_fetch for why that distinction produced a false "PARTIAL".
+    """
     out = Coverage(asset=asset, requested_years=requested_years)
     listing_start = load_listing_start(asset)
-    planned = plan_windows(requested_years)
+    if now is None:
+        now = load_planned_end(asset)
+    planned = plan_windows(requested_years, now)
     if listing_start is not None:
         planned = [w for w in planned if w >= listing_start]
     out.windows_total = len(planned)
@@ -423,6 +456,9 @@ def coverage(asset: str, df: pd.DataFrame, requested_years: float) -> Coverage:
         out.largest_gap_minutes = int(deltas.max() // MINUTE)
         out.gaps_over_an_hour = int((deltas > 3600).sum())
     out.short_of_request_days = round(max(0.0, requested_years * 365.0 - out.span_days), 1)
+    # Staleness as its own number rather than disguised as an incomplete fetch.
+    live = int(pd.Timestamp.now(tz="UTC").timestamp())
+    out.hours_behind_live = round(max(0.0, (live - int(ts.max())) / 3600.0), 1)
     return out
 
 
@@ -462,6 +498,10 @@ def fetch_minutes(
     limiter = limiter or RateLimiter(RATE_LIMIT_PER_SECOND)
 
     planned = effective_windows(asset, years, limiter, probe=resume)
+    # The end of the plan AS PLANNED NOW. Recorded so a later coverage run measures
+    # against this plan rather than against a plan that has since grown (see
+    # Coverage.complete_fetch).
+    plan_end = (planned[-1] + WINDOW_SECONDS) if planned else None
     done = load_progress(asset) if resume else set()
     todo = [w for w in planned if w not in done]
     if max_windows is not None:
@@ -472,6 +512,8 @@ def fetch_minutes(
         print(f"  {asset}: {len(planned):,} windows planned, {len(done):,} already done, "
               f"{len(todo):,} to fetch", file=sys.stderr)
     if not todo:
+        if plan_end is not None:
+            save_progress(asset, done, planned_end=plan_end)
         return coverage(asset, load_minutes(asset) if path.exists()
                         else pd.DataFrame(columns=list(BAR_COLUMNS)), years)
 
@@ -524,7 +566,7 @@ def fetch_minutes(
                 # are already in the CSV; a ledger that omits them makes the next run
                 # refetch up to a full checkpoint interval for no reason.
                 handle.flush()
-                save_progress(asset, done)
+                save_progress(asset, done, planned_end=plan_end)
     finally:
         # Without cancel_futures every remaining window is still fetched before an
         # exception surfaces -- ~18 min of requests at 8,760 windows, against a venue that
@@ -578,8 +620,8 @@ def render_coverage(covs: list[Coverage]) -> str:
     """Coverage table, with the shortfall stated rather than left to be inferred."""
     lines = [
         f"{'asset':<6}{'bars':>12}{'first':>12}{'span d':>8}{'complete':>10}"
-        f"{'gaps>1h':>9}{'max gap':>9}{'short by':>10}{'fetch':>8}",
-        "-" * 84,
+        f"{'gaps>1h':>9}{'max gap':>9}{'short by':>10}{'behind':>9}{'fetch':>8}",
+        "-" * 93,
     ]
     for c in sorted(covs, key=lambda c: -c.span_days):
         short = f"{c.short_of_request_days:.0f}d" if c.short_of_request_days > 1 else "-"
@@ -587,6 +629,7 @@ def render_coverage(covs: list[Coverage]) -> str:
             f"{c.asset:<6}{c.bars:>12,}{c.first[:10]:>12}{c.span_days:>8.0f}"
             f"{c.completeness:>9.1%}{c.gaps_over_an_hour:>9,}"
             f"{c.largest_gap_minutes:>9,}{short:>10}"
+            f"{(str(round(c.hours_behind_live)) + 'h') if c.hours_behind_live >= 1 else '-':>9}"
             f"{'full' if c.complete_fetch else 'PARTIAL':>8}"
         )
     full = [c.asset for c in covs if c.short_of_request_days <= 1]
@@ -607,6 +650,10 @@ def render_coverage(covs: list[Coverage]) -> str:
         "'short by' is missing CALENDAR (the venue has no more). 'complete' is missing",
         "MINUTES inside the calendar it does cover. They are different problems and",
         "a bar count alone cannot distinguish them.",
+        "",
+        "'behind' is how far the newest bar is from live, which is NOT an incomplete",
+        "fetch -- it just means time has passed. 'fetch' is measured against the plan as",
+        "it stood when the fetch ran, so it does not drift as the clock advances.",
     ]
     return "\n".join(lines)
 

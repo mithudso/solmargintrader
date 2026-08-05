@@ -223,6 +223,64 @@ class CoverageTests(unittest.TestCase):
         self.assertFalse(cov.complete_fetch)
 
 
+class CoverageDoesNotDriftTests(unittest.TestCase):
+    """The verdict must not change because time passed.
+
+    plan_windows is anchored to `now`, so re-measuring hours after a fetch planned
+    windows that did not exist when it ran. That flipped complete_fetch to False for
+    seven of eight real assets with nothing wrong on disk, and render_coverage turned it
+    into "re-run to continue" -- an instruction that was simply false. The plan end is
+    recorded at fetch time and reused; staleness is reported separately.
+    """
+
+    def setUp(self) -> None:
+        self.tmp = Path(self.enterContext(__import__("tempfile").TemporaryDirectory()))
+        patcher = mock.patch.object(fm, "DATA", self.tmp)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    @staticmethod
+    def _frame(timestamps: list[int]):
+        import pandas as pd
+        return pd.DataFrame({"timestamp": timestamps, "open": 1.0, "high": 1.0,
+                             "low": 1.0, "close": 1.0, "volume": 1.0})
+
+    def _complete_fetch_at(self, planned_end: int, years: float = 5.0) -> bool:
+        windows = fm.plan_windows(years, now=planned_end)
+        fm.save_progress("BTC", set(windows), planned_end=planned_end)
+        ts = list(range(windows[0], windows[-1] + fm.WINDOW_SECONDS, fm.MINUTE))
+        return fm.coverage("BTC", self._frame(ts), years).complete_fetch
+
+    def test_a_finished_fetch_reads_full(self) -> None:
+        end = 1785942000 - (1785942000 % fm.WINDOW_SECONDS)
+        self.assertTrue(self._complete_fetch_at(end))
+
+    def test_it_still_reads_full_a_day_later(self) -> None:
+        """The bug: this returned False purely because the clock had moved."""
+        end = 1785942000 - (1785942000 % fm.WINDOW_SECONDS)
+        windows = fm.plan_windows(5.0, now=end)
+        fm.save_progress("BTC", set(windows), planned_end=end)
+        ts = list(range(windows[0], windows[-1] + fm.WINDOW_SECONDS, fm.MINUTE))
+        # Measured with no `now` argument, as --coverage-only does, a day later.
+        self.assertTrue(fm.coverage("BTC", self._frame(ts), 5.0).complete_fetch)
+
+    def test_the_recorded_plan_end_survives_a_progress_write(self) -> None:
+        fm.save_progress("BTC", {100}, planned_end=999_000)
+        fm.save_progress("BTC", {100, 200})          # no planned_end passed
+        self.assertEqual(fm.load_planned_end("BTC"), 999_000)
+
+    def test_staleness_is_reported_separately_from_completeness(self) -> None:
+        # A fetch can be complete against its plan AND hours behind live; those are two
+        # different facts and conflating them is what produced the false PARTIAL.
+        end = 1785942000 - (1785942000 % fm.WINDOW_SECONDS)
+        windows = fm.plan_windows(5.0, now=end)
+        fm.save_progress("BTC", set(windows), planned_end=end)
+        ts = list(range(windows[0], windows[-1] + fm.WINDOW_SECONDS, fm.MINUTE))
+        cov = fm.coverage("BTC", self._frame(ts), 5.0)
+        self.assertTrue(cov.complete_fetch)
+        self.assertGreater(cov.hours_behind_live, 0.0)
+
+
 class CacheTests(unittest.TestCase):
     """Reading and rewriting the only copy of an expensive file."""
 
