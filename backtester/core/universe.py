@@ -70,6 +70,11 @@ SHORT_HISTORY: dict[str, str] = {
         "not on Coinbase at all; the only reachable alternative serves a fixed ~721-bar "
         "window, capping TRX at ~2 years and truncating any cross-asset study including it"
     ),
+    "DOGE": (
+        "DOGE-USD starts 2021-06-03 on Coinbase, so a --start earlier than that is silently "
+        "truncated rather than refused -- 1,890 bars, not the ~2,040 a 2021-01-01 request "
+        "implies. Contiguous, but shorter than asked for"
+    ),
     "BNB": (
         "BNB-USD returns ~288 daily bars from 2025-10-22 -- and they cover one monotone "
         "bull-to-bear leg ($1,073 to ~$603), so there are too few independent folds for "
