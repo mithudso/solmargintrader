@@ -114,4 +114,4 @@ backtest and the live strategy agree on what a round trip earns. Keeping them se
 folding the ladder into the exposure engine would imply the two are comparable on the same axis.
 
 Its correctness priorities — no lookahead, costs always applied, honest reporting of a losing
-strategy — are documented in `backtester/README.md` and enforced by 454 tests.
+strategy — are documented in `backtester/README.md` and enforced by 499 tests.

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `bc70fbf` (2026-08-05T18:03:48+00:00). 276 tracked files, 3.7 MB.
+**Generated** from `index/INDEX.json` at commit `af3206e` (2026-08-05T18:49:35+00:00). 276 tracked files, 3.7 MB.
 
 Regenerate with:
 
@@ -111,7 +111,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 113 lines · 5,793 B · description: **curated**
+`doc` · 114 lines · 5,914 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -159,7 +159,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 312 lines · 14,559 B · description: **extracted**
+`doc` · 312 lines · 14,595 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -175,7 +175,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 2719 lines · 136,172 B · description: **extracted**
+`doc` · 2719 lines · 136,287 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -209,7 +209,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 129 lines · 8,372 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 454 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 114 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 499 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests
 
 **Use.** Read it.
 
@@ -289,9 +289,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/dso-skill/README.md`
 
-`doc` · 30 lines · 1,103 B · description: **extracted**
+`doc` · 64 lines · 2,669 B · description: **extracted**
 
-**Purpose.** The live skill is installed at `~/.claude/skills/deep-strategy-optimizer/`, which is where committed mirror: the copy that survives a machine change or a deleted worktree. SKILL.md the skill (mirror of the installed copy)
+**Purpose.** ~/.claude/skills/deep-strategy-optimizer -> <repo>/docs/dso-skill follows the link. There is exactly one copy, which is the point — the earlier arrangement kept two and had to warn that they could drift. They can't now.
 
 **Use.** Read it.
 

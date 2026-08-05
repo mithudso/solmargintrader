@@ -16,7 +16,7 @@
     "AGENTS.md": 93,
     "CLAUDE.md": 551,
     "GEMINI.md": 281,
-    "README.md": 592,
+    "README.md": 605,
     "backtester/PROMPT.md": 1993,
     "backtester/README.md": 2177,
     "backtester/__init__.py": 16,
@@ -118,7 +118,7 @@
     "docs/COMPONENTS.md": 801,
     "docs/CONCEPTS.md": 1654,
     "docs/DEVELOPMENT.md": 651,
-    "docs/FILES.md": 13767,
+    "docs/FILES.md": 13766,
     "docs/INSTALLATION.md": 527,
     "docs/OPERATIONS.md": 502,
     "docs/SECURITY.md": 470,
@@ -277,7 +277,7 @@
     "soltui/tui.py": 2277,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-08-05T18:11:25+00:00",
+  "generatedAt": "2026-08-05T18:49:35+00:00",
   "postings": {
     "100": {
       ".remember/remember.md": 1,
@@ -2316,6 +2316,9 @@
       "docs/SECURITY.md": 2,
       "extension/README.md": 1,
       "extension/src/wallet/signer.js": 5
+    },
+    "af3206e": {
+      "docs/FILES.md": 1
     },
     "affairs": {
       "research/coin-intelligence/bnb-binance-coin.md": 1
@@ -5437,6 +5440,7 @@
       "tradingskilllist/trading-skills.md": 1
     },
     "arrangement": {
+      "docs/FILES.md": 1,
       "docs/dso-skill/README.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 2
     },
@@ -9159,9 +9163,6 @@
     },
     "bc1q": {
       "research/coin-intelligence/btc-bitcoin.md": 1
-    },
-    "bc70fbf": {
-      "docs/FILES.md": 1
     },
     "bc9fe2b": {
       ".remember/remember.md": 1
@@ -15196,7 +15197,7 @@
       "backtester/tests/test_strategy_duplication.py": 1,
       "docs/COMPONENTS.md": 3,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 6,
+      "docs/FILES.md": 5,
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 1,
       "docs/dso-skill/README.md": 1,
@@ -18493,7 +18494,7 @@
       "backtester/core/strategy_cards.py": 1,
       "backtester/strategy_cards/README.md": 2,
       "backtester/tests/test_index.py": 1,
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 4,
       "extension/README.md": 1,
       "extension/src/core/engine.js": 1,
       "extension/src/core/grid.js": 1,
@@ -21140,7 +21141,7 @@
       "backtester/strategy_cards/README.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "backtester/tests/test_pairs.py": 1,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 2,
       "docs/dso-skill/README.md": 5,
       "docs/trading-signals-concept-family.md": 8,
       "extension/README.md": 1,
@@ -25780,7 +25781,6 @@
       "backtester/strategy_cards/zscore.md": 1,
       "backtester/tests/test_strategy_duplication.py": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 1,
       "docs/INSTALLATION.md": 1,
       "docs/dso-skill/README.md": 2,
       "docs/known-issues.md": 1,
@@ -29000,7 +29000,7 @@
       ".remember/remember.md": 2,
       "CLAUDE.md": 2,
       "GEMINI.md": 4,
-      "README.md": 36,
+      "README.md": 38,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
       "backtester/core/archive_price.py": 1,
@@ -29012,7 +29012,7 @@
       "docs/COMPONENTS.md": 4,
       "docs/CONCEPTS.md": 19,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 53,
+      "docs/FILES.md": 54,
       "docs/INSTALLATION.md": 2,
       "docs/OPERATIONS.md": 1,
       "docs/SECURITY.md": 1,
@@ -29866,7 +29866,7 @@
       "backtester/tests/test_gridcli.py": 1,
       "backtester/tests/test_strategy_cards.py": 3,
       "docs/API.md": 2,
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 6,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/README.md": 2,
@@ -30269,7 +30269,7 @@
     "dso": {
       "backtester/strategy_cards/bb_reversion.md": 1,
       "backtester/tests/test_strategy_duplication.py": 2,
-      "docs/FILES.md": 13,
+      "docs/FILES.md": 14,
       "docs/dso-skill/README.md": 9,
       "docs/dso-skill/SKILL.md": 8,
       "docs/dso-skill/references/passes.md": 3,
@@ -30785,7 +30785,7 @@
       "backtester/tests/test_deflated_sharpe.py": 2,
       "backtester/tests/test_engine.py": 2,
       "backtester/tests/test_pairs.py": 2,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 1,
       "docs/dso-skill/references/passes.md": 1,
@@ -32743,6 +32743,7 @@
       ".github/dependabot.yml": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 2,
+      "README.md": 1,
       "backtester/PROMPT.md": 9,
       "backtester/README.md": 10,
       "backtester/cli.py": 2,
@@ -34251,7 +34252,7 @@
       ".remember/remember.md": 35,
       "CLAUDE.md": 5,
       "GEMINI.md": 1,
-      "README.md": 5,
+      "README.md": 6,
       "backtester/PROMPT.md": 16,
       "backtester/README.md": 11,
       "backtester/core/archive_price.py": 1,
@@ -34708,7 +34709,7 @@
       "backtester/tests/test_universe.py": 1,
       "docs/COMPONENTS.md": 1,
       "docs/CONCEPTS.md": 2,
-      "docs/FILES.md": 8,
+      "docs/FILES.md": 9,
       "docs/TESTING.md": 1,
       "docs/dso-skill/README.md": 2,
       "docs/dso-skill/references/passes.md": 2,
@@ -40854,6 +40855,7 @@
       "backtester/strategy_cards/discount_to_anchor.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "backtester/tests/test_decide.py": 6,
+      "docs/FILES.md": 1,
       "docs/dso-skill/README.md": 2,
       "extension/README.md": 1,
       "extension/test/core.test.js": 1,
@@ -50909,7 +50911,6 @@
       ".gitignore": 1,
       ".remember/remember.md": 3,
       "backtester/PROMPT.md": 1,
-      "docs/FILES.md": 2,
       "docs/INSTALLATION.md": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/known-issues.md": 1,
@@ -54194,7 +54195,7 @@
       "backtester/tests/test_geometry.py": 1,
       "backtester/tests/test_index.py": 1,
       "docs/CONCEPTS.md": 1,
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 6,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/README.md": 2,
       "docs/high_signal_file_index.json": 1,
@@ -57642,6 +57643,7 @@
       ".gitattributes": 6
     },
     "link": {
+      "docs/FILES.md": 1,
       "docs/SECURITY.md": 1,
       "docs/dso-skill/README.md": 10,
       "docs/trading-signals-concept-family.md": 2,
@@ -58246,7 +58248,7 @@
       "docs/COMPONENTS.md": 3,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 3,
-      "docs/FILES.md": 19,
+      "docs/FILES.md": 18,
       "docs/INSTALLATION.md": 2,
       "docs/OPERATIONS.md": 3,
       "docs/TESTING.md": 3,
@@ -60487,7 +60489,7 @@
       "backtester/tests/test_geometry.py": 1,
       "docs/API.md": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 8,
+      "docs/FILES.md": 7,
       "docs/INSTALLATION.md": 2,
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 1,
@@ -64470,7 +64472,6 @@
       "backtester/core/engine.py": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/tests/test_decide.py": 1,
-      "docs/FILES.md": 2,
       "docs/dso-skill/references/passes.md": 1,
       "docs/trading-signals-concept-family.md": 6,
       "extension/README.md": 1,
@@ -69191,7 +69192,7 @@
       "backtester/tests/test_engine.py": 2,
       "backtester/tests/test_index.py": 1,
       "docs/API.md": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 1,
       "docs/integrations-and-assumptions.md": 1,
@@ -71717,6 +71718,7 @@
     "options": {
       ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
+      "README.md": 1,
       "backtester/strategy_cards/implied_vs_realised_vol.md": 6,
       "backtester/strategy_cards/vol_of_vol_term_structure.md": 4,
       "docs/FILES.md": 1,
@@ -72638,6 +72640,7 @@
       ".github/workflows/ci.yml": 1,
       ".gitignore": 3,
       ".remember/remember.md": 1,
+      "README.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 3,
       "backtester/cli.py": 2,
@@ -77452,7 +77455,7 @@
     },
     "point": {
       ".remember/remember.md": 1,
-      "README.md": 1,
+      "README.md": 2,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 3,
       "backtester/cli.py": 2,
@@ -77492,7 +77495,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 9,
+      "docs/FILES.md": 10,
       "docs/codebase-overview.md": 4,
       "docs/dso-skill/README.md": 3,
       "docs/dso-skill/references/passes.md": 1,
@@ -80956,6 +80959,7 @@
       ".github/copilot-instructions.md": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
+      "README.md": 1,
       "backtester/README.md": 1,
       "backtester/core/strategy_cards.py": 2,
       "backtester/gridcli.py": 2,
@@ -84241,7 +84245,7 @@
       ".remember/remember.md": 16,
       "CLAUDE.md": 2,
       "GEMINI.md": 2,
-      "README.md": 2,
+      "README.md": 3,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 7,
       "backtester/core/archive_price.py": 1,
@@ -87232,7 +87236,7 @@
       "docs/COMPONENTS.md": 3,
       "docs/CONCEPTS.md": 4,
       "docs/DEVELOPMENT.md": 6,
-      "docs/FILES.md": 43,
+      "docs/FILES.md": 44,
       "docs/INSTALLATION.md": 1,
       "docs/codebase-overview.md": 3,
       "docs/dso-skill/README.md": 4,
@@ -91258,6 +91262,7 @@
       "docs/high_signal_file_index.json": 1
     },
     "runnable": {
+      "README.md": 1,
       "backtester/strategy_cards/jlp_vs_sol_relative_value.md": 2,
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "docs/FILES.md": 1,
@@ -92645,7 +92650,7 @@
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
-      "README.md": 2,
+      "README.md": 4,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 11,
       "docs/INSTALLATION.md": 1,
@@ -97244,7 +97249,7 @@
     "skill": {
       "backtester/README.md": 1,
       "backtester/core/deflated_sharpe.py": 2,
-      "docs/FILES.md": 13,
+      "docs/FILES.md": 11,
       "docs/dso-skill/README.md": 11,
       "docs/dso-skill/SKILL.md": 18,
       "docs/dso-skill/references/passes.md": 5,
@@ -103928,7 +103933,6 @@
       "backtester/tests/test_decide.py": 1,
       "backtester/tests/test_deflated_sharpe.py": 4,
       "backtester/tests/test_strategy_duplication.py": 1,
-      "docs/FILES.md": 1,
       "docs/strategy-optimization-concept-family.md": 2,
       "docs/trading-signals-concept-family.md": 1,
       "extension/test/core.test.js": 1,
@@ -115569,6 +115573,7 @@
       ".remember/remember.md": 6,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "README.md": 1,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 2,
       "backtester/cli.py": 1,
@@ -118859,6 +118864,7 @@
     "warn": {
       ".remember/remember.md": 1,
       "backtester/core/engine.py": 1,
+      "docs/FILES.md": 1,
       "docs/dso-skill/README.md": 2,
       "extension/src/bg/service-worker.js": 1,
       "extension/src/core/engine.js": 4,
@@ -120710,7 +120716,6 @@
       ".gitignore": 2,
       ".remember/remember.md": 4,
       "docs/COMPONENTS.md": 2,
-      "docs/FILES.md": 1,
       "docs/INSTALLATION.md": 3,
       "docs/dso-skill/README.md": 3,
       "docs/known-issues.md": 3,
@@ -122928,10 +122933,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 981.4,
+    "avgDocLength": 981.5,
     "documents": 276,
     "terms": 14797,
     "termsBeforePrune": 14802,
-    "totalTokens": 270877
+    "totalTokens": 270889
   }
 }

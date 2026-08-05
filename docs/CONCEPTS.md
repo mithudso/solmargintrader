@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-08-05T18:03:48+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-08-05T18:49:35+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -154,7 +154,7 @@ Full list: `python3 index/search.py --concept benchmark -n 81`
 
 ### Combinatorial purged cross-validation
 
-`cpcv` · **73 files** · matched on `cpcv`, `purged`, `combinatorial`, `n_groups`, `k_test`, `path_sharpes`
+`cpcv` · **72 files** · matched on `cpcv`, `purged`, `combinatorial`, `n_groups`, `k_test`, `path_sharpes`
 
 The repo's primary evaluation method: 8 blocks, k=2, up to 28 paths. Replaced the single 70/30 split, whose in-sample window ended on the highest close in the series.
 
@@ -169,7 +169,7 @@ Strongest files:
 - `research/coin-intelligence/sol-solana.md` (35 hits)
 - `research/cross_asset_cpcv.py` (31 hits)
 
-Full list: `python3 index/search.py --concept cpcv -n 73`
+Full list: `python3 index/search.py --concept cpcv -n 72`
 
 ### Cost model
 
@@ -192,7 +192,7 @@ Full list: `python3 index/search.py --concept costs -n 71`
 
 ### Overfitting and PBO
 
-`overfitting-pbo` · **57 files** · matched on `pbo`, `overfitting`, `cscv`, `deflated`, `anti-informative`, `multiple-testing`
+`overfitting-pbo` · **58 files** · matched on `pbo`, `overfitting`, `cscv`, `deflated`, `anti-informative`, `multiple-testing`
 
 PBO measured 0.700 at daily horizons against a 0.500 noise line, so in-sample rank is anti-informative. This is the finding that governs how every other number here may be read.
 
@@ -207,7 +207,7 @@ Strongest files:
 - `docs/strategy-optimization-concept-family.md` (25 hits)
 - `backtester/tests/test_interpret.py` (24 hits)
 
-Full list: `python3 index/search.py --concept overfitting-pbo -n 57`
+Full list: `python3 index/search.py --concept overfitting-pbo -n 58`
 
 ### Perturbation and robustness
 
@@ -223,7 +223,7 @@ Strongest files:
 - `research/RANKED_LISTS.md` (25 hits)
 - `.remember/remember.md` (18 hits)
 - `research/coin-intelligence/sol-solana.md` (11 hits)
-- `docs/CONCEPTS.md` (10 hits)
+- `docs/CONCEPTS.md` (9 hits)
 - `research/results/perturb_all_singles_long.txt` (9 hits)
 
 Full list: `python3 index/search.py --concept robustness -n 55`
@@ -239,7 +239,7 @@ Strongest files:
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
 - `research/CROSS-ASSET-TRANSFER.md` (60 hits)
-- `docs/FILES.md` (52 hits)
+- `docs/FILES.md` (53 hits)
 - `backtester/tests/test_cross_asset_cpcv.py` (46 hits)
 - `backtester/tests/test_universe.py` (40 hits)
 - `backtester/core/universe.py` (35 hits)
