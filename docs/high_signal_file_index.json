@@ -711,7 +711,7 @@
       "component": "repo",
       "kind": "python",
       "summary": "Fails the build on stale test counts or dead index entries",
-      "lines": 302
+      "lines": 320
     },
     {
       "path": "docs",

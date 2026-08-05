@@ -71,9 +71,27 @@ def is_ignored(rel: str) -> bool:
     return False
 
 
+def is_tracked(rel: str) -> bool:
+    """True when git tracks `rel`, in `HEAD` or in the index."""
+    return (
+        subprocess.run(
+            ["git", "ls-files", "--error-unmatch", "--", rel],
+            cwd=REPO,
+            capture_output=True,
+        ).returncode
+        == 0
+    )
+
+
 def missing_and_tracked(rel: str) -> bool:
-    """True when a documented path is absent for a reason worth failing over."""
-    return not (REPO / rel).exists() and not is_ignored(rel)
+    """True when a documented path is absent for a reason worth failing over.
+
+    Tracked wins over ignored: a tracked file that has gone missing is real drift
+    even if an ignore rule would also match it.
+    """
+    if (REPO / rel).exists():
+        return False
+    return is_tracked(rel) or not is_ignored(rel)
 
 
 def committed_test_files(rel_dir: str) -> list[str] | None:

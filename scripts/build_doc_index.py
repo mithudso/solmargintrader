@@ -47,23 +47,39 @@ KIND_BY_SUFFIX = {
 }
 
 
+def git_ok(*args: str) -> bool:
+    """True when the git command exits 0."""
+    return (
+        subprocess.run(["git", *args], cwd=REPO, capture_output=True).returncode == 0
+    )
+
+
+def is_tracked(rel: str) -> bool:
+    """True when git tracks `rel`, in `HEAD` or in the index."""
+    return git_ok("ls-files", "--error-unmatch", "--", rel)
+
+
 def is_ignored(rel: str) -> bool:
-    """True when git deliberately ignores `rel` (so its absence is expected).
+    """True when git deliberately ignores `rel`.
 
     Both spellings are tried: `.gitignore` writes directory rules with a trailing
     slash (`data/`), and `git check-ignore` will not match that rule against a
-    bare name when the directory does not exist on disk -- which is precisely the
-    case this has to answer.
+    bare name when the directory does not exist on disk -- precisely the case
+    this has to answer.
     """
-    for candidate in (rel, f"{rel}/"):
-        done = subprocess.run(
-            ["git", "check-ignore", "-q", "--", candidate],
-            cwd=REPO,
-            capture_output=True,
-        )
-        if done.returncode == 0:
-            return True
-    return False
+    return any(git_ok("check-ignore", "-q", "--", c) for c in (rel, f"{rel}/"))
+
+
+def excluded(rel: str) -> bool:
+    """True when `rel` is regenerable output that does not belong in the index.
+
+    Tracked wins over ignored, always. `.remember/remember.md` sits under a
+    directory with ignored siblings, and asking `check-ignore` alone dropped it
+    from one checkout and not another -- so the artifact differed by machine while
+    both were "correct". Tracking state is the same in every clone; ignore rules
+    interact with what happens to exist on disk.
+    """
+    return is_ignored(rel) and not is_tracked(rel)
 
 
 def component_of(rel: str) -> str:
@@ -86,11 +102,12 @@ def build() -> tuple[list[dict[str, object]], list[str]]:
             continue
         seen.add(rel)
 
-        # Gitignored paths never enter the index, whether or not they happen to
-        # exist here. `data/` and `results/` are regenerable output, not source,
-        # so indexing them would make the artifact depend on whether this machine
-        # has run a fetch -- two developers would generate two different files.
-        if is_ignored(rel):
+        # Untracked, ignored paths never enter the index, whether or not they
+        # happen to exist here. `data/` and `results/` are regenerable output, not
+        # source, so indexing them would make the artifact depend on whether this
+        # machine has run a fetch -- two developers would generate two different
+        # files from the same commit.
+        if excluded(rel):
             continue
 
         path = REPO / rel
