@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T18:03:00+00:00",
+  "generatedAt": "2026-08-05T18:04:21+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -878,7 +878,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 45
+          "hits": 46
         },
         {
           "path": "backtester/gridcli.py",
@@ -1402,11 +1402,11 @@
           "hits": 63
         },
         {
-          "path": "backtester/core/cpcv.py",
-          "hits": 60
+          "path": "docs/FILES.md",
+          "hits": 62
         },
         {
-          "path": "docs/FILES.md",
+          "path": "backtester/core/cpcv.py",
           "hits": 60
         },
         {
@@ -1687,7 +1687,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 21
+          "hits": 23
         },
         {
           "path": "backtester/tests/test_strategy_duplication.py",
@@ -1832,6 +1832,10 @@
           "hits": 32
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 31
+        },
+        {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 25
         },
@@ -1841,10 +1845,6 @@
         },
         {
           "path": "backtester/core/deflated_sharpe.py",
-          "hits": 21
-        },
-        {
-          "path": "docs/FILES.md",
           "hits": 21
         },
         {
@@ -1881,7 +1881,7 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 11
+          "hits": 12
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",

@@ -2,7 +2,7 @@
 
 A searchable index over every tracked file in this repo: what exists, which files
 contain a word, which files mean something like a question, and which bear on an
-idea. Built to answer "where is the thing that does X" without reading 266 files.
+idea. Built to answer "where is the thing that does X" without reading every file.
 
 ```bash
 python3 index/build.py all                       # metadata + text + concepts (offline)
@@ -28,7 +28,7 @@ this one:
 
 | | `docs/high_signal_file_index.json` | `index/` (here) |
 |---|---|---|
-| Coverage | **104** curated high-signal files | **all 266** tracked files |
+| Coverage | **104** curated high-signal files | **every** tracked file |
 | Purpose | a short list for an LLM to read first | lookup and search |
 | Retrieval | none — it is a list | BM25, embeddings, concepts |
 | Drift check | `scripts/check_docs.py` prunes dead paths | `build.py --check` re-hashes |
@@ -53,19 +53,31 @@ subsumes the other, and both are checked in CI.
 - **semantic** (cosine over chunk embeddings) finds paraphrase. It answers "why did
   a backtest look good but fail later" with no shared keywords — and it cannot be
   trusted on an identifier, because it will happily rank `slippage_bps` beside
-  `fee_bps` when you wanted one specifically.
+  `fee_bps` when you wanted one specifically. Note it also lags: the array covers
+  whatever the corpus was at its last build, and `SEMANTIC-MANIFEST.json` records
+  the per-file hashes so you can tell. Rebuild after the tree moves.
 - **hybrid** (the default) fuses the two by rank, not score. A BM25 score and a
   cosine similarity are on different scales, so averaging them would let whichever
   is numerically larger win; reciprocal rank fusion only uses position.
 
 ## Four decisions worth knowing
 
-**The embeddings are gitignored.** ~2,600 chunks × 1024 float16 is a few MB of
-derived binary that re-diffs on every content change, in a tree of 3.6 MB. `data/`
-is gitignored for the same reason. `SEMANTIC-MANIFEST.json` is committed instead —
-model, dimensions, chunk count, chunk-to-file mapping, per-file source hashes — so
-a reader can tell what the index *was* and whether it would still be valid.
-`search.py --semantic` refuses with the rebuild command when the array is absent.
+**The embeddings are gitignored.** A few thousand chunks at 1024 float16 comes to
+**more megabytes than the entire tracked source tree**, and it re-diffs on every
+content change. `data/` is gitignored for the same reason. `SEMANTIC-MANIFEST.json`
+is committed instead — model, dimensions, chunk count, chunk-to-file mapping,
+per-file source hashes — so a reader can tell what the index *was* and whether it
+would still be valid. `search.py --semantic` refuses with the rebuild command when
+the array is absent.
+
+Exact counts live in the manifest, not in this file, and deliberately so: every
+figure here that was hardcoded went stale within the day, because the repo grew from
+237 tracked files to 276 while the index was being built.
+
+```bash
+python3 -c "import json; m = json.load(open('index/SEMANTIC-MANIFEST.json')); \
+print(m['chunks'], 'chunks over', m['files'], 'files,', m['dims'], 'dims,', m['model'])"
+```
 
 **No pickle.** The `.npz` holds only floats and the chunk-to-file mapping lives in
 the JSON manifest, so loading never needs `allow_pickle=True`. Unpickling an array
@@ -126,7 +138,8 @@ one should not look alike:
   of `make_files_doc.py` so a rebuild never discards it. Used for the engine, the
   research drivers, the order-placing path, and every file with no prose of its own.
 - **extracted** — the file's own module docstring, JSDoc header, or frontmatter
-  `summary`. Trustworthy here because 63 of 67 Python modules and all 27 JS files
-  carry a substantial one.
+  `summary`. Trustworthy here because nearly every Python module and JS file carries
+  a substantial one — `docs/FILES.md` prints the exact ratio, computed at generation
+  time rather than hardcoded, because a frozen figure here was wrong within a day.
 - **derived** — shape only, for generated artifacts: a CSV's header and row count,
   a JSON's keys. Prose for a result file would be invented.

@@ -15,7 +15,8 @@ Four indexes, three of them committed:
 
 **Why the embeddings are gitignored.** They are ~1500 chunks x 1024 float16, a
 few MB of derived binary that re-diffs on every content change, in a repo whose
-entire tracked tree is 3.6 MB. `data/` is gitignored for the same reason. What is
+entire tracked source tree is a few MB. `data/` is gitignored for the same
+reason. What is
 committed is `index/SEMANTIC-MANIFEST.json`, which records the model, dimensions,
 chunk count and per-file source hashes, so a reader can tell what the index *was*
 and whether it would still be valid. `search.py --semantic` refuses with the
@@ -232,9 +233,11 @@ def python_facts(text: str) -> tuple[str, list[str], list[str]]:
 def js_docstring(text: str) -> str:
     """The leading JSDoc block, or a run of `//` lines at the top of the file.
 
-    Worth extracting rather than curating: all 27 JS files here open with a
+    Worth extracting rather than curating: nearly every JS file here opens with a
     substantial `/** ... */` header of the same quality as the Python module
-    docstrings, so this lifts JS summary coverage from nothing to complete.
+    docstrings, so this lifts JS summary coverage from nothing to near-complete.
+    The exceptions are the three `extension/test/*.test.js` files, which open with
+    imports and are covered by CURATED entries in make_files_doc.py instead.
     """
     # A shebang precedes the JSDoc in the executable tools, so skip one if present.
     text = re.sub(r"^#![^\n]*\n", "", text, count=1)
