@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-05T18:05:41+00:00",
+  "generatedAt": "2026-08-05T18:11:25+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "438d6f9",
+  "commit": "d7c26b0",
   "counts": {
     "files": 276,
-    "bytes": 3712552,
+    "bytes": 3712536,
     "byKind": {
       "code-python": 57,
       "result": 52,
@@ -6893,9 +6893,9 @@
       "title": "top_coins",
       "summary": "Generated data: 15 rows x 8 columns (rank, symbol, name, price_usd, market_cap_usd, volume_24h_usd, pegged, local_data).",
       "summarySource": "derived",
-      "bytes": 926,
+      "bytes": 910,
       "lines": 17,
-      "sha1": "d116b70bcd1ef97a5cf549630a0926cf8782a53f",
+      "sha1": "f5c7ba9b8c0c6957fd4a94c3be091cd9b91ec6b4",
       "symbols": [],
       "imports": [],
       "internalImports": [],

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T18:05:41+00:00",
+  "generatedAt": "2026-08-05T18:11:25+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
