@@ -145,8 +145,12 @@ That is the Deflated Sharpe Ratio (Bailey & López de Prado): compute the expect
 under the null across N trials given the observed *variance of trial Sharpes*, then evaluate the
 candidate against that inflated benchmark rather than against zero.
 
-With 1,287 configurations searched, the null expectation is not zero and comparing to zero
-overstates every result in `RANKED_LISTS.md`.
+With 1,287 configurations searched (75 singles + 1,002 pairs + 210 triples), the null expectation is
+not zero, and comparing to zero overstates every result in `RANKED_LISTS.md`.
+
+Note this is a **different quantity from the PBO**: the burden counts the whole search, while the
+0.700 PBO was computed over the 25 singles. Quoting one as the other is the kind of slip this
+document exists to prevent, and it happened once in the first draft of `/dso` itself.
 
 **Before implementing, verify the expected-maximum formula against the source paper** — it involves
 the Euler–Mascheroni constant and the inverse normal CDF at `1 − 1/N` and `1 − 1/(Ne)`, and this
@@ -185,9 +189,9 @@ Every figure here is from this repo's own runs, reproducible via `research/cpcv_
 
 | Observation | Figure | What it implies for an optimizer |
 | --- | --- | --- |
-| PBO, singles, medium and long | **0.700** | In-sample rank is *anti*-informative. A promotion gate reading in-sample Sharpe is worse than a coin flip. |
-| Configs with positive OOS Sharpe | **14% of 311** | The prior on any candidate improvement is low. |
-| Configs that made money | **9%** | `SUCCESS_LIKELIHOODS` has no `high` tier on purpose. |
+| PBO, singles (25 configs), medium and long, under CPCV | **0.700** | In-sample rank is *anti*-informative. A promotion gate reading in-sample Sharpe is worse than a coin flip. |
+| Positive OOS Sharpe — earlier **single-split** sweep | **14% of 311** | The prior on any candidate improvement is low. |
+| Made money, same single-split sweep | **9%** | `SUCCESS_LIKELIHOODS` has no `high` tier on purpose. |
 | Short horizon, singles with positive median path Sharpe | **0 of 25** | Some regimes have nothing to optimize. |
 | BTC daily vs SOL hourly | **25/25 positive vs 0/25** | The dataset explains more than the strategy. Any claimed improvement must be attributed before it is claimed. |
 | `hurst_switch` SOL daily → SOL hourly | **1st → 23rd** (+0.699 → −3.123) | A win on one series is not a win. |

@@ -22,8 +22,8 @@ whenToUse:
 origin: local
 model: claude-opus-4-8
 effort: xhigh
-version: "1.1.0"
-updated: "2026-08-04"
+version: "1.1.1"
+updated: "2026-08-05"
 ---
 
 > **Output rules:** Skip preamble and recaps. When delivering changes, output diffs/edits directly —
@@ -48,12 +48,14 @@ promotion track it cites `~/.claude/skill-consolidation/champion-challenger.md`.
 Run this only where an honest answer is wanted. Two empirical facts about backtested strategies
 drive the whole design, and on the codebase this was written against both are measured, not assumed:
 
-1. **In-sample rank can be anti-informative.** Probability of Backtest Overfitting (PBO) measured
-   **0.700** across 1,287 configurations at daily horizons. Above 0.500, the in-sample leaderboard
-   is worse than a coin flip at predicting out-of-sample rank. A promotion gate that reads in-sample
-   performance is therefore not merely weak; it is inverted.
-2. **The base rate is low.** Of 311 rankable configurations, **14%** had a positive out-of-sample
-   Sharpe and **9%** made money.
+1. **In-sample rank can be anti-informative.** Probability of Backtest Overfitting (PBO) for the
+   25 single-strategy configurations measured **0.700** at both daily horizons under combinatorial
+   purged CV. Above 0.500 the in-sample leaderboard is worse than a coin flip at predicting
+   out-of-sample rank, so a promotion gate reading in-sample performance is not merely weak; it is
+   inverted. (The full search was 1,287 configurations once pairs and triples are counted. That is
+   the S2 burden, a separate quantity from the PBO; never quote one as the other.)
+2. **The base rate is low.** Under an earlier single-split sweep, of 311 rankable configurations
+   **14%** had a positive out-of-sample Sharpe and **9%** made money.
 
 So: **the defect track is where the value is, and it always runs. The optimization track is opt-in,
 gated, and usually declines.** "No promotion" is a first-class successful outcome of this skill, not
