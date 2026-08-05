@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-08-05T17:43:57+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-08-05T18:03:48+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -68,8 +68,8 @@ Strongest files:
 - `pagesource` (98 hits)
 - `docs/trading-signals-concept-family.md` (79 hits)
 - `research/coin-intelligence/hype-hyperliquid.md` (68 hits)
+- `research/coin-intelligence/sol-solana.md` (58 hits)
 - `docs/FILES.md` (46 hits)
-- `research/coin-intelligence/sol-solana.md` (40 hits)
 - `extension/README.md` (39 hits)
 - `backtester/core/gridsim.py` (35 hits)
 - `backtester/strategy_cards/jlp_vs_sol_relative_value.md` (26 hits)
@@ -166,8 +166,8 @@ Strongest files:
 - `research/cpcv_sweep.py` (53 hits)
 - `backtester/tests/test_cross_asset_cpcv.py` (41 hits)
 - `research/RANKED_LISTS.md` (35 hits)
+- `research/coin-intelligence/sol-solana.md` (35 hits)
 - `research/cross_asset_cpcv.py` (31 hits)
-- `docs/CONCEPTS.md` (26 hits)
 
 Full list: `python3 index/search.py --concept cpcv -n 73`
 
@@ -222,9 +222,9 @@ Strongest files:
 - `research/verify_numbers.py` (31 hits)
 - `research/RANKED_LISTS.md` (25 hits)
 - `.remember/remember.md` (18 hits)
+- `research/coin-intelligence/sol-solana.md` (11 hits)
 - `docs/CONCEPTS.md` (10 hits)
 - `research/results/perturb_all_singles_long.txt` (9 hits)
-- `research/results/perturb_all_singles_medium.txt` (9 hits)
 
 Full list: `python3 index/search.py --concept robustness -n 55`
 
@@ -243,7 +243,7 @@ Strongest files:
 - `backtester/tests/test_cross_asset_cpcv.py` (46 hits)
 - `backtester/tests/test_universe.py` (40 hits)
 - `backtester/core/universe.py` (35 hits)
-- `.remember/remember.md` (33 hits)
+- `research/coin-intelligence/sol-solana.md` (34 hits)
 
 Full list: `python3 index/search.py --concept transfer -n 52`
 
@@ -262,8 +262,8 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 | `baseline` | 75 | `buy_and_hold`, `baseline` |
 | `mean-reversion` | 61 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
 | `breakout` | 52 | `breakout`, `bb_breakout`, `keltner` |
+| `oscillator-reversion` | 49 | `rsi`, `stochastic`, `oscillator` |
 | `momentum` | 48 | `momentum`, `ts_momentum`, `dual_momentum` |
-| `oscillator-reversion` | 48 | `rsi`, `stochastic`, `oscillator` |
 | `volume-flow` | 44 | `obv`, `volume-flow` |
 | `risk-overlay` | 31 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
 

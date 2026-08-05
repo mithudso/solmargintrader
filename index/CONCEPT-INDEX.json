@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T17:43:57+00:00",
+  "generatedAt": "2026-08-05T18:03:49+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -316,12 +316,12 @@
           "hits": 68
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 46
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 58
         },
         {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 40
+          "path": "docs/FILES.md",
+          "hits": 46
         },
         {
           "path": "extension/README.md",
@@ -340,16 +340,16 @@
           "hits": 25
         },
         {
+          "path": "docs/CONCEPTS.md",
+          "hits": 24
+        },
+        {
           "path": "backtester/tests/test_engine.py",
           "hits": 24
         },
         {
           "path": "backtester/README.md",
           "hits": 22
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 21
         },
         {
           "path": ".remember/remember.md",
@@ -1198,6 +1198,10 @@
           "hits": 5
         },
         {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 5
+        },
+        {
           "path": "research/sweep.py",
           "hits": 5
         },
@@ -1239,10 +1243,6 @@
         },
         {
           "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.json",
-          "hits": 4
-        },
-        {
-          "path": "research/results/perturb_long_any_ou_reversion_obv_trend.json",
           "hits": 4
         }
       ],
@@ -1316,6 +1316,10 @@
           "hits": 5
         },
         {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 5
+        },
+        {
           "path": "research/sweep.py",
           "hits": 5
         },
@@ -1374,10 +1378,6 @@
         {
           "path": "backtester/README.md",
           "hits": 3
-        },
-        {
-          "path": "backtester/cli.py",
-          "hits": 3
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1422,6 +1422,10 @@
           "hits": 35
         },
         {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 35
+        },
+        {
           "path": "research/cross_asset_cpcv.py",
           "hits": 31
         },
@@ -1448,10 +1452,6 @@
         {
           "path": "research/CROSS-ASSET-TRANSFER.md",
           "hits": 17
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 16
         },
         {
           "path": "research/coin-intelligence/btc-bitcoin.md",
@@ -1593,6 +1593,10 @@
           "hits": 12
         },
         {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 11
+        },
+        {
           "path": "research/coin-intelligence/hype-hyperliquid.md",
           "hits": 11
         },
@@ -1650,10 +1654,6 @@
         },
         {
           "path": "index/search.py",
-          "hits": 5
-        },
-        {
-          "path": "research/sweep.py",
           "hits": 5
         }
       ],
@@ -1884,6 +1884,10 @@
           "hits": 12
         },
         {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 12
+        },
+        {
           "path": "research/TOP5-RECOMMENDATION.md",
           "hits": 10
         },
@@ -1921,10 +1925,6 @@
         },
         {
           "path": "research/STRATEGIES.md",
-          "hits": 6
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
           "hits": 6
         },
         {
@@ -1969,8 +1969,12 @@
           "hits": 18
         },
         {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 11
+        },
+        {
           "path": "docs/CONCEPTS.md",
-          "hits": 10
+          "hits": 9
         },
         {
           "path": "research/results/perturb_all_singles_long.txt",
@@ -1986,10 +1990,6 @@
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 7
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
           "hits": 7
         },
         {
@@ -2101,7 +2101,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 52
+          "hits": 53
         },
         {
           "path": "backtester/tests/test_cross_asset_cpcv.py",
@@ -2116,16 +2116,16 @@
           "hits": 35
         },
         {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 34
+        },
+        {
           "path": ".remember/remember.md",
           "hits": 33
         },
         {
           "path": "research/coin-intelligence/README.md",
           "hits": 33
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 29
         },
         {
           "path": "research/cross_asset_cpcv.py",
@@ -2346,6 +2346,141 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
+      "id": "family:oscillator-reversion",
+      "label": "Strategy family: oscillator-reversion",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "rsi",
+        "stochastic",
+        "oscillator"
+      ],
+      "matchingFiles": 49,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/results/tables.md",
+          "hits": 92
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 71
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 60
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 28
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 26
+        },
+        {
+          "path": "backtester/strategy_cards/rsi.md",
+          "hits": 23
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 21
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 18
+        },
+        {
+          "path": "soltui/tests/test_signals.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/core/strategies/rsi.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/strategy_cards/stochastic.md",
+          "hits": 14
+        },
+        {
+          "path": "backtester/tests/test_decide.py",
+          "hits": 9
+        },
+        {
+          "path": "research/results/cpcv_tables.md",
+          "hits": 9
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 9
+        },
+        {
+          "path": "soltui/tests/test_tui.py",
+          "hits": 9
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 8
+        },
+        {
+          "path": "backtester/tests/test_indicators.py",
+          "hits": 8
+        },
+        {
+          "path": "research/results/geometry_short_k2.txt",
+          "hits": 8
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 7
+        },
+        {
+          "path": "backtester/core/indicators.py",
+          "hits": 6
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 5
+        },
+        {
+          "path": "index/build.py",
+          "hits": 4
+        },
+        {
+          "path": "research/results/geometry_long_k2.txt",
+          "hits": 4
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 3
+        },
+        {
+          "path": "research/results/cpcv_pbo.json",
+          "hits": 3
+        },
+        {
+          "path": "backtester/PROMPT.md",
+          "hits": 2
+        },
+        {
+          "path": "backtester/strategy_cards/sma_regime.md",
+          "hits": 2
+        },
+        {
+          "path": "docs/codebase-overview.md",
+          "hits": 2
+        },
+        {
+          "path": "docs/high_signal_file_index.json",
+          "hits": 2
+        },
+        {
+          "path": "research/cpcv_sweep.py",
+          "hits": 2
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
       "id": "family:momentum",
       "label": "Strategy family: momentum",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -2476,141 +2611,6 @@
         {
           "path": "research/results/perturb_all_singles_medium.txt",
           "hits": 4
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "family:oscillator-reversion",
-      "label": "Strategy family: oscillator-reversion",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "rsi",
-        "stochastic",
-        "oscillator"
-      ],
-      "matchingFiles": 48,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/results/tables.md",
-          "hits": 92
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 71
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 60
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 28
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 26
-        },
-        {
-          "path": "backtester/strategy_cards/rsi.md",
-          "hits": 23
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 21
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 18
-        },
-        {
-          "path": "soltui/tests/test_signals.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/core/strategies/rsi.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/strategy_cards/stochastic.md",
-          "hits": 14
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 9
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 9
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 9
-        },
-        {
-          "path": "soltui/tests/test_tui.py",
-          "hits": 9
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/tests/test_indicators.py",
-          "hits": 8
-        },
-        {
-          "path": "research/results/geometry_short_k2.txt",
-          "hits": 8
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 7
-        },
-        {
-          "path": "backtester/core/indicators.py",
-          "hits": 6
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 5
-        },
-        {
-          "path": "index/build.py",
-          "hits": 4
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
-          "hits": 4
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 3
-        },
-        {
-          "path": "research/results/cpcv_pbo.json",
-          "hits": 3
-        },
-        {
-          "path": "backtester/PROMPT.md",
-          "hits": 2
-        },
-        {
-          "path": "backtester/strategy_cards/sma_regime.md",
-          "hits": 2
-        },
-        {
-          "path": "docs/codebase-overview.md",
-          "hits": 2
-        },
-        {
-          "path": "docs/high_signal_file_index.json",
-          "hits": 2
-        },
-        {
-          "path": "research/cpcv_sweep.py",
-          "hits": 2
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"

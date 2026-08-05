@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `f9ce01f` (2026-08-05T17:43:57+00:00). 276 tracked files, 3.7 MB.
+**Generated** from `index/INDEX.json` at commit `bc70fbf` (2026-08-05T18:03:48+00:00). 276 tracked files, 3.7 MB.
 
 Regenerate with:
 
@@ -1537,9 +1537,9 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/coin-intelligence/sol-solana.md`
 
-`coin-reference` · 364 lines · 25,475 B · description: **extracted**
+`coin-reference` · 498 lines · 35,638 B · description: **extracted**
 
-**Purpose.** Solana (SOL) for a systematic trader — execution reality on a no-mempool chain, supply and staking, and what this project's own 1,287-configuration backtest actually measured on it. Read before designing or trusting any SOL strategy.
+**Purpose.** Solana (SOL) for a systematic trader — execution reality on a no-mempool chain, a 98.6%-volatility and −96.3%-drawdown record with a +1.31 beta to BTC, and what this project's own 1,287-configuration backtest measured, including that its five recommended configurations do not transfer off SOL. Read before designing or trusting any SOL strategy.
 
 **Use.** Read it.
 
