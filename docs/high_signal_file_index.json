@@ -1,0 +1,730 @@
+{
+  "$comment": "Generated from docs/codebase-overview.md by scripts/build_doc_index.py. Do not hand-edit; regenerate instead. Validated in CI by scripts/check_docs.py.",
+  "repo": "solmargintrader",
+  "components": [
+    "backtester",
+    "research",
+    "extension",
+    "soltui"
+  ],
+  "files": [
+    {
+      "path": "research",
+      "component": "research",
+      "kind": "directory",
+      "summary": "Python 3.13 | No \u2014 analysis over the backtester"
+    },
+    {
+      "path": "soltui",
+      "component": "soltui",
+      "kind": "directory",
+      "summary": "Python 3.13 | No \u2014 read-only display"
+    },
+    {
+      "path": "backtester",
+      "component": "backtester",
+      "kind": "directory",
+      "summary": "Python 3.13 | No \u2014 simulation only, by design"
+    },
+    {
+      "path": "extension",
+      "component": "extension",
+      "kind": "directory",
+      "summary": "JavaScript (ESM, no deps) | Yes"
+    },
+    {
+      "path": "backtester/cli.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Entry point: python3 -m backtester.cli",
+      "lines": 323
+    },
+    {
+      "path": "backtester/gridcli.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Entry point for the ladder-grid simulator, which owns its own bar loop",
+      "lines": 307
+    },
+    {
+      "path": "backtester/paircli.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Entry point for pairs/cointegration runs",
+      "lines": 236
+    },
+    {
+      "path": "backtester/requirements.txt",
+      "component": "backtester",
+      "kind": "text",
+      "summary": "Declared deps, kept minimal on purpose",
+      "lines": 13
+    },
+    {
+      "path": "backtester/README.md",
+      "component": "backtester",
+      "kind": "markdown",
+      "summary": "Scope, correctness priorities, usage",
+      "lines": 462
+    },
+    {
+      "path": "backtester/PROMPT.md",
+      "component": "backtester",
+      "kind": "markdown",
+      "summary": "The prompt the component was built from",
+      "lines": 199
+    },
+    {
+      "path": "backtester/strategy_cards",
+      "component": "backtester",
+      "kind": "directory",
+      "summary": "One card per registered strategy: equations, limitations, defaults"
+    },
+    {
+      "path": "backtester/tests",
+      "component": "backtester",
+      "kind": "directory",
+      "summary": "454 tests (unittest), including the research modules"
+    },
+    {
+      "path": "backtester/core/engine.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "The bar loop. Owns the per-bar ordering that makes lookahead impossible",
+      "lines": 588
+    },
+    {
+      "path": "backtester/core/types.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "BarWindow (the structural lookahead guard), CostConfig, RunManifest",
+      "lines": 292
+    },
+    {
+      "path": "backtester/core/indicators.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Trailing-window indicator functions, each returning a scalar for the current bar",
+      "lines": 441
+    },
+    {
+      "path": "backtester/core/metrics.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Sharpe, drawdown, CAGR, with the conventions stated in the manifest",
+      "lines": 251
+    },
+    {
+      "path": "backtester/core/perps.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Borrow-fee accrual and liquidation price for the perp mode",
+      "lines": 181
+    },
+    {
+      "path": "backtester/core/gridsim.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
+      "lines": 874
+    },
+    {
+      "path": "backtester/core/data.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "CsvLoader, SyntheticLoader, bar validation, checksums",
+      "lines": 288
+    },
+    {
+      "path": "backtester/core/fetch.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "The only network path: Coinbase OHLCV into a local CSV cache",
+      "lines": 221
+    },
+    {
+      "path": "backtester/core/archive_price.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Jupiter spot-price snapshot (this is what data/JLP_spot.csv is)",
+      "lines": 153
+    },
+    {
+      "path": "backtester/core/cpcv.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Combinatorial purged cross-validation",
+      "lines": 330
+    },
+    {
+      "path": "backtester/core/cointegration.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Cointegration tests for the pairs work",
+      "lines": 197
+    },
+    {
+      "path": "backtester/core/pairs.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Pairs-trading construction",
+      "lines": 172
+    },
+    {
+      "path": "backtester/core/universe.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Asset universe selection, with the survivorship-bias refusal",
+      "lines": 312
+    },
+    {
+      "path": "backtester/core/report.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Run reports and walk-forward split output",
+      "lines": 341
+    },
+    {
+      "path": "backtester/core/plotting.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Chart output",
+      "lines": 98
+    },
+    {
+      "path": "backtester/core/strategy_cards.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Parses the cards and is checked against the registry both ways",
+      "lines": 652
+    },
+    {
+      "path": "backtester/core/strategies/__init__.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "REGISTRY (25 strategies), FAMILY taxonomy, build()",
+      "lines": 137
+    },
+    {
+      "path": "backtester/core/strategies/signals.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Indicator-driven strategies, one screen each",
+      "lines": 435
+    },
+    {
+      "path": "backtester/core/strategies/advanced.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "The nine implemented from spec-only cards, incl. the Ichimoku displacement trap",
+      "lines": 468
+    },
+    {
+      "path": "backtester/core/strategies/breakout.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Donchian channel breakout; the channel excludes the current bar",
+      "lines": 54
+    },
+    {
+      "path": "backtester/core/strategies/ma_crossover.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "The only strategy that can emit a short, and only when asked",
+      "lines": 54
+    },
+    {
+      "path": "backtester/core/strategies/rsi.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "RSI mean reversion",
+      "lines": 77
+    },
+    {
+      "path": "backtester/core/strategies/buy_and_hold.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "The baseline every other result is measured against",
+      "lines": 28
+    },
+    {
+      "path": "backtester/core/strategies/composite.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Combines strategies under a COMBINE_MODES rule",
+      "lines": 71
+    },
+    {
+      "path": "research/decide.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar",
+      "lines": 1218
+    },
+    {
+      "path": "research/sweep.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Parameter sweeps",
+      "lines": 493
+    },
+    {
+      "path": "research/cpcv_sweep.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading",
+      "lines": 461
+    },
+    {
+      "path": "research/cross_asset_cpcv.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Whether a result on one coin transfers to another",
+      "lines": 774
+    },
+    {
+      "path": "research/turnover_table.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "One turnover pull shared by all ten coin spokes",
+      "lines": 199
+    },
+    {
+      "path": "research/verify_numbers.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out",
+      "lines": 1081
+    },
+    {
+      "path": "research/geometry.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Grid geometry helpers",
+      "lines": 299
+    },
+    {
+      "path": "research/perturb.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Parameter perturbation for robustness",
+      "lines": 450
+    },
+    {
+      "path": "research/STRATEGIES.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "The strategy survey",
+      "lines": 778
+    },
+    {
+      "path": "research/RANKED_LISTS.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Ranked results",
+      "lines": 928
+    },
+    {
+      "path": "research/TOP_COINS.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Coin shortlist",
+      "lines": 141
+    },
+    {
+      "path": "research/TOP5-RECOMMENDATION.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "The narrowed recommendation",
+      "lines": 107
+    },
+    {
+      "path": "research/CROSS-ASSET-TRANSFER.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Cross-asset transfer findings",
+      "lines": 224
+    },
+    {
+      "path": "research/PROMPT_STRATEGIES.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "The prompt the strategy work was built from",
+      "lines": 174
+    },
+    {
+      "path": "research/coin-intelligence",
+      "component": "research",
+      "kind": "directory",
+      "summary": "Ten per-coin spokes (BTC, ETH, SOL, BNB, XRP, TRX, HYPE, DOGE, ZEC, RAIN) plus a README"
+    },
+    {
+      "path": "research/results",
+      "component": "research",
+      "kind": "directory",
+      "summary": "Generated output; not source"
+    },
+    {
+      "path": "extension/manifest.json",
+      "component": "extension",
+      "kind": "json",
+      "summary": "MV3 manifest; validated in CI",
+      "lines": 25
+    },
+    {
+      "path": "extension/package.json",
+      "component": "extension",
+      "kind": "json",
+      "summary": "Scripts only \u2014 no runtime and no dev dependencies",
+      "lines": 20
+    },
+    {
+      "path": "extension/README.md",
+      "component": "extension",
+      "kind": "markdown",
+      "summary": "Includes the Verification status section; read it before extending",
+      "lines": 411
+    },
+    {
+      "path": "extension/src/core/commands.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "The single registry. Every action lives here or the parity test fails",
+      "lines": 485
+    },
+    {
+      "path": "extension/src/core/risk.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Every risk rail, as a gate an order must pass. Rails fail closed",
+      "lines": 188
+    },
+    {
+      "path": "extension/src/core/grid.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Ladder geometry. backtester/core/gridsim.py is its port",
+      "lines": 267
+    },
+    {
+      "path": "extension/src/core/pnl.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "FIFO/paired-lot attribution, fees included",
+      "lines": 213
+    },
+    {
+      "path": "extension/src/core/engine.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "The tick loop: reconcile, then plan",
+      "lines": 421
+    },
+    {
+      "path": "extension/src/bg/service-worker.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "MV3 service worker and its timer constraints",
+      "lines": 178
+    },
+    {
+      "path": "extension/src/jupiter/http.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "The HTTP layer for every Jupiter call",
+      "lines": 156
+    },
+    {
+      "path": "extension/src/jupiter/trigger.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Trigger order API; the order-list response envelope is guessed",
+      "lines": 304
+    },
+    {
+      "path": "extension/src/jupiter/price.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Price lookups",
+      "lines": 85
+    },
+    {
+      "path": "extension/src/jupiter/attribution.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Fee attribution \u2014 unconfirmed against a real fill",
+      "lines": 60
+    },
+    {
+      "path": "extension/src/venues/triggerVenue.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Venue adapter over the Trigger API",
+      "lines": 442
+    },
+    {
+      "path": "extension/src/venues/index.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Venue selection",
+      "lines": 237
+    },
+    {
+      "path": "extension/src/wallet/solana.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "~150 lines that make a Solana dependency unnecessary",
+      "lines": 203
+    },
+    {
+      "path": "extension/src/wallet/signer.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Signing, and the session-key vault boundary",
+      "lines": 251
+    },
+    {
+      "path": "extension/src/storage/store.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Storage interface",
+      "lines": 248
+    },
+    {
+      "path": "extension/src/storage/fileStore.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Mode-0600 file store for secret material",
+      "lines": 156
+    },
+    {
+      "path": "extension/src/storage/memoryStore.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "In-memory store for tests",
+      "lines": 72
+    },
+    {
+      "path": "extension/src/ui/dashboard.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Dashboard view",
+      "lines": 340
+    },
+    {
+      "path": "extension/src/ui/popup.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Popup view",
+      "lines": 125
+    },
+    {
+      "path": "extension/tools/cli.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "CLI surface over the registry",
+      "lines": 216
+    },
+    {
+      "path": "extension/tools/api-server.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Local HTTP surface; reads SMT_API_PORT, SMT_API_TOKEN, SMT_PASSPHRASE",
+      "lines": 250
+    },
+    {
+      "path": "extension/tools/dryrun.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "The headless integration gate \u2014 a round trip must close positive",
+      "lines": 149
+    },
+    {
+      "path": "extension/tools/verify-endpoints.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Live Jupiter reachability; reads JUPITER_API_KEY",
+      "lines": 79
+    },
+    {
+      "path": "extension/tools/deps.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Dependency wiring",
+      "lines": 66
+    },
+    {
+      "path": "extension/test/core.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Grid, risk, P&L, reconciliation, tick guards",
+      "lines": 1091
+    },
+    {
+      "path": "extension/test/surfaces.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Parity across the three surfaces",
+      "lines": 375
+    },
+    {
+      "path": "extension/test/wallet.test.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Wallet and signing",
+      "lines": 251
+    },
+    {
+      "path": "soltui/app.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "The menu-bar app",
+      "lines": 167
+    },
+    {
+      "path": "soltui/menubar_launcher.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Exists because py2app runs its target as a top-level script, which breaks relative imports; also chdirs to the repo",
+      "lines": 51
+    },
+    {
+      "path": "soltui/tui.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Terminal UI",
+      "lines": 609
+    },
+    {
+      "path": "soltui/signals.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Signal derivation for display",
+      "lines": 333
+    },
+    {
+      "path": "soltui/status.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Status model",
+      "lines": 206
+    },
+    {
+      "path": "soltui/roster.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Watched-asset roster",
+      "lines": 164
+    },
+    {
+      "path": "soltui/paper.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Paper positions",
+      "lines": 197
+    },
+    {
+      "path": "soltui/runner.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "The loop that refreshes state",
+      "lines": 253
+    },
+    {
+      "path": "soltui/config.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Configuration",
+      "lines": 174
+    },
+    {
+      "path": "soltui/setup_app.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "py2app build config (alias build, so the bundle references this checkout)",
+      "lines": 104
+    },
+    {
+      "path": "soltui/make_icon.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Generates SolTUI.icns",
+      "lines": 280
+    },
+    {
+      "path": "soltui/soltui-service",
+      "component": "soltui",
+      "kind": "other",
+      "summary": "status / start / stop / build / install for the launchd agent",
+      "lines": 313
+    },
+    {
+      "path": "soltui/README.md",
+      "component": "soltui",
+      "kind": "markdown",
+      "summary": "Packaging traps already paid for \u2014 read before rebuilding",
+      "lines": 121
+    },
+    {
+      "path": "soltui/tests",
+      "component": "soltui",
+      "kind": "directory",
+      "summary": "95 tests (~70s)"
+    },
+    {
+      "path": "CLAUDE.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Agent instructions and the per-component non-negotiables",
+      "lines": 93
+    },
+    {
+      "path": "AGENTS.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Points at CLAUDE.md",
+      "lines": 14
+    },
+    {
+      "path": "GEMINI.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Gemini CLI equivalent",
+      "lines": 54
+    },
+    {
+      "path": ".github/copilot-instructions.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Copilot CLI equivalent",
+      "lines": 86
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "component": "repo",
+      "kind": "yaml",
+      "summary": "Extension, backtester, soltui and doc-drift jobs",
+      "lines": 129
+    },
+    {
+      "path": "scripts/check_docs.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Fails the build on stale test counts or dead index entries",
+      "lines": 231
+    },
+    {
+      "path": "docs",
+      "component": "repo",
+      "kind": "directory",
+      "summary": "The documentation suite; README.md links every page"
+    },
+    {
+      "path": ".remember/remember.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Session handoff notes",
+      "lines": 785
+    }
+  ]
+}

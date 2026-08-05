@@ -152,7 +152,18 @@ absent from the vocabulary. It also asserts that only a `measured` card may cite
 more than a tenth of cards may be rated moderate** — a directory where most cards
 looked promising would be the tell that the ratings had drifted into marketing.
 
-Current distribution: **20 very-low, 23 low, and no card rated moderate.**
+Current distribution: **21 very-low, 24 low, and no card rated moderate.**
+
+Since then `triangular_arbitrage` and `discount_to_anchor` were added at `very-low` and `dex_cex_dislocation`
+was lowered `low` → `very-low` — it had been rated on the claim that it is a genuine
+arbitrage rather than a forecast, and that claim was struck: DEX and CEX legs do not
+settle atomically, so it is a spread trade.
+
+Two cards moved `very-low` → `low` when CPCV superseded their single-split numbers
+(`obv_trend`, `vol_regime_hmm`): at their long presets both are measured *positive* across
+80%+ of 28 paths, and `very-low` is defined as measured-negative, so the old rating had become
+a false statement about the evidence. Neither reached `moderate` — PBO 0.700 at the daily
+horizons means a good rank is not an edge, and neither card has BTC/ETH confirmation.
 
 That empty top tier is a result, not an oversight. Two cards held `moderate` at different
 points and both lost it to the next experiment:

@@ -1,0 +1,60 @@
+CPCV GEOMETRY SWEEP — medium horizon, k=2
+block counts: 6, 7, 8, 9, 10, 11, 12
+comparable strategies: 25 of 25 (evaluable at every block count)
+
+strategy                       6       7       8       9      10      11      12   spread  rank Δ
+-------------------------------------------------------------------------------------------------
+hurst_switch               +0.73   +0.58   +0.70   +0.65   +0.68   +0.71   +0.75     0.17       4
+bb_breakout                +0.84   +0.68   +0.48   +0.47   +0.81   +0.48   +0.74     0.36       3
+buy_and_hold               +0.59   +0.70   +0.53   +0.42   +0.61   +0.68   +0.46     0.27       4
+ou_reversion               +0.44   +0.92   +0.41   +0.45   +0.22   +0.44   +0.49     0.70       8
+macd                       +0.66   +0.62   +0.32   +0.26   +0.41   +0.30   +0.37     0.40       2
+adx_trend                  +0.97   +0.35   +0.34   -0.20   +0.27   +0.09   +0.40     1.17      14
+keltner                    +0.58   +0.48   +0.21   +0.15   +0.38   -0.15   +0.29     0.72      10
+obv_trend                  +0.62   +0.32   +0.19   +0.20   +0.35   -0.10   +0.26     0.72       8
+rsi                        +0.22   +0.40   +0.24   -0.01   -0.29   +0.54   +0.16     0.82      15
+stochastic                 +0.00   +0.25   -0.04   +0.33   +0.17   +0.28   +0.19     0.37      15
+breakout                   +0.55   +0.19   +0.08   -0.05   +0.30   +0.06   +0.09     0.61       6
+zscore                     -0.07   +0.28   +0.04   +0.05   +0.02   +0.24   +0.11     0.35      13
+ichimoku                   +0.41   -0.12   +0.02   -0.19   +0.05   -0.07   +0.02     0.60       7
+bb_reversion               -0.21   +0.18   -0.11   -0.04   -0.04   -0.02   +0.06     0.39      13
+ts_momentum                +0.14   +0.03   +0.02   -0.51   -0.09   -0.47   -0.15     0.66       9
+grid                       -0.11   -0.04   -0.15   -0.04   -0.05   -0.12   -0.31     0.27      10
+vwap_reversion             -0.19   -0.15   -0.27   -0.28   -0.18   -0.17   -0.22     0.13       7
+dual_momentum              +0.22   -0.09   -0.32   -0.44   -0.20   -0.35   -0.05     0.65       8
+atr_sized                  +0.34   -0.34   -0.04   -0.52   -0.30   -0.69   -0.27     1.03      11
+ma_ribbon                  +0.27   -0.23   -0.34   -0.45   -0.30   -0.67   -0.21     0.94      12
+garch_voltarget            +0.27   -0.44   -0.03   -0.62   -0.31   -0.80   -0.25     1.07      10
+sma_regime                 +0.33   -0.47   -0.07   -0.54   -0.33   -0.78   -0.26     1.11      12
+voltarget                  +0.21   -0.48   -0.02   -0.67   -0.36   -0.89   -0.36     1.09      11
+ma_crossover               +0.14   -0.44   -0.33   -0.50   -0.42   -0.51   -0.31     0.65       5
+vol_regime                 -0.80   -0.46   -0.17   -0.50   -0.48   -0.57   -0.40     0.62       6
+
+top-ranked strategy by block count:
+   6 blocks: adx_trend                median +0.972   PBO 0.600 (10 splits)
+   7 blocks: ou_reversion             median +0.921   PBO 0.750 (20 splits)
+   8 blocks: hurst_switch             median +0.699   PBO 0.700 (20 splits)
+   9 blocks: hurst_switch             median +0.646   PBO 0.714 (35 splits)
+  10 blocks: bb_breakout              median +0.806   PBO 0.629 (70 splits)
+  11 blocks: hurst_switch             median +0.714   PBO 0.667 (126 splits)
+  12 blocks: hurst_switch             median +0.747   PBO 0.445 (200 splits)
+
+pairwise Spearman between geometries (on the comparable set):
+        6      7      8      9     10     11     12
+   6   1.00   0.58   0.75   0.43   0.68   0.42   0.70
+   7   0.58   1.00   0.81   0.91   0.88   0.90   0.94
+   8   0.75   0.81   1.00   0.66   0.78   0.72   0.83
+   9   0.43   0.91   0.66   1.00   0.86   0.91   0.87
+  10   0.68   0.88   0.78   0.86   1.00   0.80   0.90
+  11   0.42   0.90   0.72   0.91   0.80   1.00   0.86
+  12   0.70   0.94   0.83   0.87   0.90   0.86   1.00
+
+median |Δ median Sharpe| across geometries: 0.65 (max 1.17)
+median rank movement: 9 places (max 15 of 25)
+mean pairwise Spearman: +0.772
+distinct top-ranked strategies across 7 geometries: 4 (adx_trend, bb_breakout, hurst_switch, ou_reversion)
+
+VERDICT: MOSTLY STABLE — the ordering broadly survives, but the top spot is not fixed. Quote the distribution, not the rank.
+    mean pairwise rank correlation +0.772
+    the median strategy moves 9 of 25 places as the block count varies
+    4 distinct strategies hold first place

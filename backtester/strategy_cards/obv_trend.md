@@ -8,10 +8,10 @@ summary: Long while cumulative signed volume is above its own moving average. Pr
 registry_key: obv_trend
 runner: backtester.cli
 warmup_bars: 22
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2
 data_required: [ohlcv, volume]
 data_available: true
-success_likelihood: very-low
+success_likelihood: low
 success_basis: measured-oos
 params:
   ma_window: {default: 20, type: int, desc: "SMA window applied to the OBV series"}
@@ -74,15 +74,63 @@ estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
 
-## Likelihood of success: very-low
+## Re-evaluated under CPCV — this supersedes the single-split reading above
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, 28 paths, over all 25
+registered configurations: `research/results/cpcv_results.csv`. **The single-split section above is
+retained for contrast, not as the current estimate** — the split it used lands one bar from the
+highest close in the series, and the README's rule is that when CPCV supersedes a card's numbers,
+the `evaluation:` field and the numbers change together.
+
+| Horizon (preset) | Median path Sharpe | IQR | Paths positive | Median path return | Trades | Rank |
+|---|---|---|---|---|---|---|
+| short (`ma_window` 24) | −1.580 | 1.668 | 24% | −18.0% | 852 | 9 of 25 |
+| medium (`ma_window` 20) | +0.189 | 1.536 | 67% | −9.8% | 220 | 9 of 25 |
+| **long (`ma_window` 60)** | **+0.774** | 1.571 | **81%** | **+44.6%** | 98 | **1 of 25** |
+
+At the long horizon this is **the best single strategy of the 25 measured**, and the direction is
+opposite to the single-split row above (which read −24.0%). One of the two is a statement about one
+regime transition; the other is a distribution over 28 paths. The CPCV row is the one to believe.
+
+### Parameter perturbation
+
+`research/perturb.py --horizon long --single obv_trend` — ±10% on every parameter, full CPCV re-run:
+
+| Variant | Median Sharpe | Paths positive |
+|---|---|---|
+| baseline | +0.774 | 81% |
+| `ma_window` 60→54 | +0.751 | 86% |
+| `ma_window` 60→66 | +0.575 | 76% |
+
+**No sign flips.** Max absolute move 0.199, against the configuration's own path IQR of 1.571 — a
+ratio of **0.13, the 4th most stable of the 24 perturbable singles.** It also has only two
+perturbable parameters, so there are fewer ways for it to be a fitted artifact. This is the one row
+in the study that gets *better* the harder it is looked at.
+
+## Likelihood of success: low
 
 *Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
 configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
 
-IS +1,932.1% to **OOS -69.2%** is a textbook decay row. Its best result anywhere —
-`any(rsi+obv_trend)`, the top long-horizon pair at +0.226 Sharpe — still *lost*
-8.8%. Being price-blind makes it a good partner in principle; nothing here shows it
-paying.
+**Raised from `very-low` to `low` when CPCV superseded the single split.** `very-low` is defined as
+"measured negative out-of-sample, or the mechanism's known failure mode is the dominant feature of
+this market". Under the primary method this configuration is measured *positive* at the long
+horizon and ranks first of 25, so `very-low` had become a false statement about the evidence.
+
+It stops at `low` — "plausible mechanism, no confirming evidence here" — and not at `moderate`, for
+three reasons that the CPCV rank does not answer:
+
+1. **PBO at the daily horizons is 0.700**, above the 0.500 noise line. Ranking first in a set whose
+   in-sample rank is anti-informative is not the same as having an edge; the rank itself is the
+   suspect quantity.
+2. **No cross-asset confirmation.** `hurst_regime_test` and `ou_half_life_sizing` carry
+   `cpcv-8-groups-k2-sol-btc-eth`; this card does not. BTC and ETH have already sunk one surviving
+   result in this project (`research/results/cpcv_all25_btc_eth_1d.csv`).
+3. **The horizons disagree.** +0.774 at long, −1.580 at short on the same mechanism. A real edge
+   that reverses sign with the bar size needs an explanation this card does not have.
+
+The single-split reading — IS +1,932.1% to OOS −69.2% — is retained above as the textbook decay row
+it is, and as the reason no single split is trusted here again.
 
 ## Caveats and limitations
 - The best long-horizon pair still lost money. A positive Sharpe on a negative return

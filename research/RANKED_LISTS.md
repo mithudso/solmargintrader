@@ -1,9 +1,11 @@
 # SOL Strategy & Signal Rankings — Three Lists
 
 **AS OF 2026-08-04.** Data runs through 2026-08-04; every figure is tied to that snapshot.
-**Primary evaluation method: combinatorial purged cross-validation (CPCV)** — 8 blocks, k=2,
-28 paths per configuration. The earlier single 70/30 walk-forward is retained as List 1b,
-because the disagreement between the two methods is the most instructive result here.
+**Primary evaluation method: combinatorial purged cross-validation (CPCV)** — 8 blocks, k=2, so
+**C(8,2) = 28 paths nominally**. Warm-up renders 1–2 blocks unusable for almost every
+configuration, so realised path counts are lower; see "How many paths each figure actually
+rests on" below. The earlier single 70/30 walk-forward is retained as List 1b, because the
+disagreement between the two methods is the most instructive result here.
 
 > **Historical simulation for research and education only. NOT investment advice**, and not a
 > recommendation to trade anything. Simulated past performance does not predict future results.
@@ -23,17 +25,48 @@ rather than made silently. Literature figures are attributed; everything else is
 
 > **Read every ranking below against its multiple-testing benchmark, not against zero.**
 > `python3 research/dso_audit.py` deflates these Sharpes per Bailey & Lopez de Prado
-> (`backtester/core/deflated_sharpe.py`). Of the 100 single-strategy configurations evaluated across
-> SOL 1d, SOL 1h and BTC/ETH 1d, **exactly one clears the Sharpe that the search alone would be
-> expected to produce under no skill** — `BTC ou_reversion`, DSR 0.803 — and that one rests on **6
-> trades with a Q1 path Sharpe of exactly 0.000**, which is below any usable evidence floor. The SOL
-> daily leader `hurst_switch` (+0.699) does not reach its own benchmark of +0.712, giving DSR 0.494.
-> A high rank in the tables below is therefore a position in a search, not evidence of an edge.
+> (`backtester/core/deflated_sharpe.py`). Across the **200 single-strategy configurations** now
+> evaluated (199 after collapsing the proven `bb_reversion`/`zscore` duplicate), **two clear the
+> Sharpe the search alone would be expected to produce under no skill, and only one of those also
+> clears the evidence floor**:
+>
+> - `ZEC adx_trend` — Sharpe +1.037 against a +0.905 benchmark, **DSR 0.568**, 60 trades, Q1 +0.371.
+>   The only row here that survives both tests. DSR 0.568 is barely above the 0.5 coin-flip line, so
+>   read it as not-yet-disconfirmed rather than as an edge.
+> - `BTC ou_reversion` — DSR 0.775, but on **6 trades with Q1 exactly 0.000**, below any usable floor.
+>
+> `SOL hurst_switch`, ranked first on SOL daily at +0.699, does not reach its own +0.886 benchmark
+> (DSR **0.416**). A high rank in the tables below is a position in a search, not evidence of an edge.
 
 **Under CPCV, over all 25 registered strategies: 75 singles + 1,002 pairs + 210 triples = 1,287
-configurations, each across 28 paths.** At the short horizon **not one of the 25 singles has a
-positive median path Sharpe**. At the daily horizons singles PBO is **0.700** — well above the
-0.500 pure-noise line, so in-sample rank is anti-informative.
+configurations.** At the short horizon **not one of the 25 singles has a positive median path
+Sharpe**. At the daily horizons singles PBO is **0.700** — well above the 0.500 pure-noise line,
+so in-sample rank is anti-informative.
+
+### How many paths each figure actually rests on
+
+**Corrected 2026-08-05.** This document previously said all 1,287 configurations ran "each
+across 28 paths". They did not, and the gap is not marginal — computed from
+`results/cpcv_results.csv` and `results/cpcv_combos_results.csv`:
+
+| Paths | Configurations | Share |
+|---|---|---|
+| 28 (full) | **3** | 0.2% |
+| 21 | 1,094 | 85.0% |
+| 15 | 190 | 14.8% |
+
+**The only three configurations ever evaluated on all 28 paths are `buy_and_hold`, one per
+horizon** — because it is the sole strategy with no warm-up. Every signal-based configuration
+lost 1 or 2 of the 8 blocks to warm-up, and the median across the population is **21 paths**.
+Two consequences worth carrying into any reading of the tables below:
+
+1. **The benchmark is measured on more paths than anything it is compared against.** That is
+   not a bug — needing no warm-up is a real property of holding the asset — but it means
+   `buy_and_hold`'s interval estimate is the tightest in the study by construction.
+2. **The slowest configurations rest on 15 paths**, including several that appear at the top of
+   the tables: `ou_reversion`, `hurst_switch` and `vol_regime` at both daily horizons. Four of
+   the five configurations in `TOP5-RECOMMENDATION.md` are 15-path results. Fewer paths is a
+   weaker estimate, and the `n_paths` column in every results CSV records it per row.
 
 **Growing the search from 16 to 25 strategies raised PBO, and I measured how much of that is the
 search rather than a coincident change.** The common CPCV block set shrank from 7 blocks to 6 when
@@ -54,11 +87,18 @@ of the move here. Reporting the whole 0.457 → 0.700 rise as a search effect wo
 **Under the earlier single split: 520 configurations, 311 rankable, 45 (14%) with a positive
 out-of-sample Sharpe, 28 (9%) that made money.**
 
-Six findings matter more than any ranking below. Findings 1/1b/1c are the method result — one
-split cannot answer this question and PBO quantifies how little in-sample rank tells you.
-Findings 2–4 were measured under the single split and are kept because the contrast is the
-lesson; finding 4 in particular shows a top-ranked row is noise using a within-mechanism control
-that needs no interpretation at all.
+**The `#` column in every table below is the weakest thing in this document.** Finding 1f re-ran
+all 25 singles at every CPCV block count from 6 to 12. At the long horizon the mean pairwise rank
+correlation is **+0.566**, the median strategy moves **12 of 25 places**, and **six different
+strategies hold first place across seven block counts**. Eight blocks is the geometry these tables
+happen to use and nothing justifies it over nine. Read the tables for *which mechanisms clear zero
+at all*; do not read positions off them, and do not read the top row as "the best".
+
+The findings below matter more than any ranking. Findings 1/1b/1c are the method result — one
+split cannot answer this question and PBO quantifies how little in-sample rank tells you. Finding
+1f is the sharpest limit on the tables themselves. Findings 2–4 were measured under the single
+split and are kept because the contrast is the lesson; finding 4 in particular shows a top-ranked
+row is noise using a within-mechanism control that needs no interpretation at all.
 
 ### 1. The split ends on the highest close in the series. One split cannot answer this.
 
@@ -196,10 +236,12 @@ mere 0.222, so any nudge is large relative to it. That is now **three independen
 configuration**: the algebra, the 46-point natural experiment, and the highest perturbation ratio
 in the population. When three unrelated tests point at one row, believe them.
 
-**Finding 3 — `obv_trend` is the standout, and it is the one row that gets better the harder you
-look at it.** Long horizon: median Sharpe **+0.774** (the best single anywhere), **81% of paths
-positive**, ratio **0.13** (4th most stable of 24), **0 sign flips**, and only two perturbable
-parameters — fewer ways to be wrong. Compare the medium-horizon leader `hurst_switch`: median
+**Finding 3 — `obv_trend` is the standout on this test.** Long horizon: median Sharpe **+0.774**,
+**81% of paths positive**, ratio **0.13** (4th most stable of 24), **0 sign flips**, and only two
+perturbable parameters — fewer ways to be wrong. (**Qualified by finding 1f below:** that +0.774
+is its value at 8 blocks, the geometry this document happens to use. Across block counts 6–12 its
+median is +0.573 and it is *not* always first. What survives is its rank *stability*, which is the
+best in the set.) Compare the medium-horizon leader `hurst_switch`: median
 +0.699 and 93% of paths positive, but ratio **0.60**, near the top of the singles distribution. The
 two best performers have very different robustness, and the ranking does not tell you which is
 which.
@@ -218,6 +260,71 @@ solidly negative and there is no sign to lose.
 ```bash
 python3 research/perturb.py --horizon long --all-singles     # any of short|medium|long
 ```
+
+### 1f. Block count 6–12: at the long horizon the ranking is largely a slicing artifact
+
+The perturbation run threw up an oddity — for the top pair, changing 8 blocks to 9 moved the median
+more than any 10% parameter change. `research/geometry.py` measures that properly: re-rank all 25
+strategies at every block count from 6 to 12 and ask whether the *ranking* survives.
+
+| Horizon | mean pairwise Spearman | median rank movement | distinct #1s | verdict |
+|---|---|---|---|---|
+| Short | **+0.909** | 5 of 25 | 3 | mostly stable |
+| Medium | +0.772 | 9 of 25 | 4 | mostly stable |
+| **Long** | **+0.566** | **12 of 25** | **6** | **geometry-dependent** |
+
+**The long horizon is much the worst, and that is precisely where every positive result lives.**
+Six different strategies hold first place across seven block counts — `macd` (6, 10),
+`ou_reversion` (7), `obv_trend` (8), `rsi` (9), `hurst_switch` (11), `ts_momentum` (12). The median
+strategy moves twelve of twenty-five places. Reading a position off the long-horizon leaderboard is
+reading the block count.
+
+The mechanism is straightforward once stated: slow long-horizon parameters generate few trades, so
+each block's Sharpe is noisy, so the ordering is easily reshuffled. The short horizon has 8,823 bars
+and hundreds of trades per configuration, and its ranking is correspondingly stable (+0.909).
+
+**And the leaderboard-toppers are the unstable ones.** Spearman between the best rank a strategy
+ever achieves and how far its rank moves is **−0.390** — better peak rank goes with *more*
+movement. Strategies that held first place somewhere move a mean of **14.0** places; everyone else
+**11.6**. Topping this leaderboard is partly a symptom of instability.
+
+**What survives the test, ranked by invariance rather than by performance.** The median column
+is *not* sorted; `adx_trend` (+0.604) and `rsi` (+0.593) have the two highest medians of all 25 and
+both are far less stable than the rows below them:
+
+| Strategy | median across 6–12 | spread | rank movement | top-3 in |
+|---|---|---|---|---|
+| `buy_and_hold` | +0.587 | **0.27** | 7 | 1/7 |
+| `obv_trend` | +0.573 | 0.38 | **5** | 3/7 |
+| `vol_regime` | +0.386 | 0.41 | 12 | 1/7 |
+| `hurst_switch` | +0.461 | 0.42 | 19 | 2/7 |
+| `adx_trend` | +0.604 | **1.38** | **23** | 2/7 |
+
+Two things to take from that table. **`buy_and_hold` has by far the smallest spread (0.27)**, and
+it reaches third of 25 on median (+0.587) while doing so — it edges `obv_trend` on median while
+being twice as invariant, which is unsurprising given it has no parameters and no timing to get
+wrong. And **`adx_trend` has the single highest median of all 25 (+0.604) while ranging from +0.78
+to −0.60 and moving 23 of 25 places** — the clearest example in this document of a number that
+means nothing. The top of the median column and the top of the stability column are not the same
+strategies, which is the finding restated.
+
+`obv_trend` is the one genuinely encouraging row: not always first, but the **most rank-stable
+strategy in the set** (moves 5 places), third-smallest spread, top-3 in three of seven geometries.
+
+**PBO is not geometry-invariant either**, which matters because it is the statistic used to
+discount everything else. At the long horizon it runs 0.800 (6 blocks) → 0.700 (8) → **0.943** (10)
+→ 0.830 (12); at medium, 0.445 (12) to 0.667 (11). Every value stays above the 0.500 noise line, so
+the conclusion holds in direction, but the specific figure quoted elsewhere in this document is the
+8-block one and should be read as one draw from that range.
+
+```bash
+python3 research/geometry.py --horizon long --blocks 6 12 --k 2
+```
+
+> **Net effect on how to read Lists 1–3.** Two independent tests now say the same thing from
+> different directions: PBO says in-sample rank does not generalise, and this says the rank is not
+> even stable to an arbitrary evaluation choice. Use the tables to see *which mechanisms produce
+> positive medians at all*, and treat the ordering within them as noise.
 
 ### 2. In-sample rank does not predict out-of-sample rank. At the medium horizon it inverts.
 
@@ -299,6 +406,12 @@ straddles zero heavily), **% paths positive** (below ~70% means the sign depends
 you sampled), and **trades**. Tables are generated from `research/results/cpcv_results.csv`; no
 figure is transcribed by hand.
 
+> **The ordering is not a result — the `8 blocks` in that first line is.** Finding 1f re-ranks
+> these same 25 strategies at block counts 6 through 12 and the order does not survive it, worst
+> at the long horizon (mean pairwise Spearman **+0.566**, median strategy moving **12 of 25**
+> places). The medians and the IQR/`% paths +` columns are what to read; the rank number is an
+> artifact of one arbitrary evaluation choice.
+
 ## Short horizon (1h bars) — CPCV
 
 **Not one of the 25 has a positive median path Sharpe at this horizon.** The best, `stoch_14_3` at −0.341, still loses.
@@ -366,6 +479,17 @@ figure is transcribed by hand.
 > 13 of 25 evaluable have a positive median. PBO **0.700** over 20 splits of 25 configurations (common blocks [2, 3, 4, 5, 6, 7]).
 
 ## Long horizon (1d bars, slow parameters) — CPCV
+
+> **This is the table whose ordering survives least, and the one with the most positive medians —
+> **22 of 25**, against **13** at medium and **none** at short. The two facts are not
+> independent.** Slow parameters mean few trades, so each CPCV
+> block's Sharpe is noisy and the order reshuffles when the block count changes. Concretely, of
+> the seven block counts 6–12, **only the 8-block geometry used here is led by the row this table
+> ranks first.** The other six are led by rows this table places **fourth** (`rsi`), **fifth**
+> (`hurst_switch`), **seventh** (`macd`, which leads at two of them), **eighth** (`ou_reversion`)
+> and **sixteenth of twenty-five** (`ts_momentum`). Finding 1f has the mapping and the checks.
+>
+> Read the medians and their spread. Do not read this as a ranking.
 
 | # | Strategy | Family | Median Sharpe | IQR | % paths + | Median ret | Trades |
 |---|---|---|---|---|---|---|---|
@@ -626,6 +750,16 @@ List 3 is demonstrated. The top rows are the experiments most worth running on m
 **Re-run over all 25 strategies: 334 cross-family pairs per horizon (was 140) and 70 triples.**
 The conclusion did not soften — combinations still produce *more* positive-looking results and
 *worse* rank generalisation at the same time.
+
+> **The block-count caveat applies here too, and the one measurement I have says it bites harder.**
+> Finding 1f swept block counts across the 25 *singles*; I did not repeat that sweep over the
+> 1,002 pairs and 210 triples, so the aggregate figures below are for 8 blocks only and their
+> ordering has not been tested for geometry stability. What I do have is a single measured point
+> from finding 1d: moving the top pair from 8 blocks to 9 changed its median Sharpe by
+> **−0.441**, a larger move than any ±10% parameter perturbation produced (**−0.392** at worst).
+> Combinations gate each other and so trade less than their components, which is the same
+> few-trades mechanism that makes the long-horizon singles unstable — expect these orderings to
+> be *less* geometry-stable than List 1's, not more. Treat every rank below as unranked.
 
 | Configuration type | PBO (short) | PBO (medium) | PBO (long) |
 |---|---|---|---|

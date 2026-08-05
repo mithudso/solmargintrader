@@ -168,24 +168,35 @@ inverse, keeping scipy out per the stdlib-first rule.
 
 ### What it says about this repo's results
 
-`python3 research/dso_audit.py` now applies it. **Of 100 evaluated configurations, exactly one beats
-the benchmark its own search produced**, and that one fails the evidence floor:
+`python3 research/dso_audit.py` applies it. Over the **200 single-strategy configurations** now
+evaluated across SOL/DOGE/ZEC 1d, BTC/ETH 1d and SOL 1h — 199 after collapsing the proven
+`bb_reversion`/`zscore` duplicate — **two clear the benchmark their own search produced, and only one
+of those also clears the evidence floor:**
 
-| Series | Benchmark `SR_0` to beat | Leader | Its DSR | Verdict |
-| --- | --- | --- | --- | --- |
-| SOL 1d | +0.712 | `hurst_switch` +0.699 | 0.494 | below the benchmark |
-| SOL 1h | +2.456 | `stochastic` −0.341 | 0.259 | far below |
-| BTC/ETH 1d | +0.902 | `BTC ou_reversion` +1.657 | **0.803** | clears it — **on 6 trades, Q1 = 0.000** |
+| Series | Benchmark `SR_0` | Config | Sharpe | DSR | Trades | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| DOGE/ZEC 1d | +0.905 | `ZEC adx_trend` | +1.037 | **0.568** | 60 | **survives both gates** |
+| BTC/ETH 1d | +0.987 | `BTC ou_reversion` | +1.657 | 0.775 | **6** | clears DSR, **fails the floor** |
+| SOL/DOGE/ZEC 1d | +0.886 | `SOL hurst_switch` | +0.699 | 0.416 | 24 | below the benchmark |
+| SOL 1h | +2.686 | `stochastic` | −0.341 | 0.242 | — | far below |
 
-So `hurst_switch`, the top-ranked strategy on SOL daily, does not reach the Sharpe that searching 99
-independent configurations would be expected to produce under no skill at all. **Nothing in the
-registry survives both the multiple-testing haircut and the evidence floor.** That is the honest
-summary of the whole search, and it is what the deflation was worth implementing to learn.
+So **one configuration in 200 survives both the multiple-testing haircut and the evidence floor**:
+`ZEC adx_trend`, with 60 trades, a Q1 path Sharpe of **+0.371** and 81% of paths positive. That is the
+only row in this repository that has cleared both tests.
 
-Caveats stated with it, both in the generous direction: normality is assumed because the result CSVs
-carry no higher moments (real negative skew and fat tails would lower every DSR further), and `N` is
-discounted only for the one *proven* duplicate pair, so correlated-but-distinct strategies still
-inflate it — which understates the haircut.
+Read even that cautiously. A DSR of 0.568 is barely above the 0.5 coin-flip line: it says roughly a
+57% probability the true Sharpe exceeds the search's own benchmark. It is the absence of
+disconfirmation, not a discovery — and ZEC is a single asset over one history.
+
+Meanwhile `SOL hurst_switch`, the strategy this repository ranked **first** on SOL daily, posts
++0.699 against a benchmark of +0.886 for a DSR of **0.416**. It does not reach the Sharpe that
+searching 199 configurations would be expected to produce with no skill anywhere in the search.
+
+Both stated caveats run in the generous direction, so this is if anything understated: normality is
+assumed because the result CSVs carry no higher moments (real negative skew and fat tails lower every
+DSR), and `N` is discounted only for the one *proven* duplicate, so correlated-but-distinct
+strategies still inflate it. `T` is taken as `k/groups` of a 1,875-bar series; a shorter history for
+a given coin would lower its DSR further.
 
 ### 5.2 Evidence floor and minimum track record length
 `ou_reversion` ranked **1st on BTC daily on 6 trades, with a Q1 path Sharpe of exactly 0.000**. Six

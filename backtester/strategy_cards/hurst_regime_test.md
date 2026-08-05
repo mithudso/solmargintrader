@@ -117,7 +117,10 @@ here rules out the same verdict. Moderate means "worth the next experiment", not
 Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
 1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
 arbitrary split. Full run for all 25 registered configurations:
-`research/results/cpcv_all25_1d.csv`.
+`research/results/cpcv_all25_sol_doge_zec_1d.csv` (SOL column; this replaced
+`cpcv_all25_1d.csv`, deleted 2026-08-05 because it carried one long-horizon `sma_regime` row
+in an otherwise medium-horizon file — this card's figures are unaffected, since 24 of the 25
+rows were identical and none of them is `sma_regime`).
 
 | Statistic | hurst_switch | buy_and_hold | zscore |
 |---|---|---|---|
