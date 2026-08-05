@@ -82,6 +82,22 @@ def excluded(rel: str) -> bool:
     return is_ignored(rel) and not is_tracked(rel)
 
 
+def committed_line_count(rel: str) -> int | None:
+    """Lines in the **committed** version of `rel`, or None if it has none.
+
+    Read from `HEAD` rather than from disk. Counting the working tree made the
+    artifact depend on uncommitted edits: a staged change to
+    `.github/workflows/ci.yml` alone produced a different file from the same
+    commit, which reads as drift in a diff and is not.
+    """
+    done = subprocess.run(
+        ["git", "show", f"HEAD:{rel}"], cwd=REPO, capture_output=True, text=True
+    )
+    if done.returncode != 0:
+        return None
+    return len(done.stdout.splitlines())
+
+
 def component_of(rel: str) -> str:
     """Which component a path belongs to, or 'repo' for top-level files."""
     head = rel.split("/", 1)[0]
@@ -128,9 +144,9 @@ def build() -> tuple[list[dict[str, object]], list[str]]:
             "summary": re.sub(r"[*`]", "", description).strip(),
         }
         if path.is_file():
-            entry["lines"] = len(
-                path.read_text(encoding="utf-8", errors="replace").splitlines()
-            )
+            lines = committed_line_count(rel)
+            if lines is not None:
+                entry["lines"] = lines
         entries.append(entry)
 
     return entries, missing
