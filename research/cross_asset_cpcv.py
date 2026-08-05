@@ -3,6 +3,14 @@
     python3 research/cross_asset_cpcv.py --self-test
     python3 research/cross_asset_cpcv.py --assets DOGE,ZEC
     python3 research/cross_asset_cpcv.py --assets DOGE,ZEC --horizon long
+    python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC --skip-self-test
+
+The last line is the second gate and is easy to miss, because `--help` shows only
+this docstring's first line: `--top5` evaluates the five configurations of
+`TOP5-RECOMMENDATION.md` instead of the 25 singles, and prepends SOL as a control
+whose published medians it must reproduce. `--skip-self-test` drops the BTC/ETH
+gate, `--no-control` drops the SOL control row, and `--out` names the output CSV
+(a bare filename, written into `research/results/`).
 
 Why this exists, and why it is a script rather than a notebook cell: the file
 `research/results/cpcv_all25_btc_eth_1d.csv` is quoted in `TOP5-RECOMMENDATION.md`
@@ -37,6 +45,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
+from typing import Callable
 
 import pandas as pd
 
@@ -56,6 +65,14 @@ OUT = REPO / "research" / "results"
 # The file this script must reproduce before its new rows can be trusted.
 REFERENCE = OUT / "cpcv_all25_btc_eth_1d.csv"
 REFERENCE_ASSETS = ("BTC", "ETH")
+
+# The horizon the reference file was produced at. The gate is pinned to it rather
+# than to `--horizon`, because the reference is one fixed file: run at `long` the
+# same procedure legitimately disagrees with it by ~138 trades, so threading the
+# operator's horizon through the gate turned every non-default horizon into a
+# refusal and taught the operator to reach for --skip-self-test. What the gate
+# certifies is the harness, which is horizon-independent.
+REFERENCE_HORIZON = "medium"
 
 # Columns, in the order the reference file already uses. Matching it exactly is
 # what makes the self-test a comparison rather than an interpretation.
@@ -77,6 +94,23 @@ COLUMNS = [
 # difference that would change a conclusion, and loose enough not to fail on
 # library drift.
 TOLERANCE = 1e-6
+
+# Tolerance for the SOL control in --top5 mode, four orders of magnitude looser
+# than TOLERANCE for a reason: the control compares against the `sol_median`
+# literals below, which TOP5-RECOMMENDATION.md quotes to three decimals, so
+# rounding alone can contribute 5e-4. 0.01 leaves room for that and no room for
+# a composite wired to the wrong member or a horizon's parameters having moved.
+CONTROL_TOLERANCE = 0.01
+
+# The cost and capital model. Named rather than inlined because these four values
+# are what make a reproduction a reproduction: research/sweep.py builds the
+# identical EngineConfig, and a one-sided edit to either copy would move the SOL
+# control's medians away from the `sol_median` literals below with nothing in
+# either file failing.
+FILL_DELAY = 1
+INITIAL_CAPITAL = 10_000.0
+FEE_BPS = 6.0
+SLIPPAGE_BPS = 2.0
 
 # The five configurations of research/TOP5-RECOMMENDATION.md, with the SOL median
 # path Sharpe that document reports. Three are composites and four are long
@@ -106,8 +140,59 @@ TOP5_COLUMNS = [
 ]
 
 
+def resolve_output_path(name: str) -> Path | None:
+    """Resolve a CSV filename inside OUT, or return None if it must be refused.
+
+    Two refusals, and both have to happen *before* any compute rather than after
+    it, which is why this is a pure function called early rather than a check at
+    the write site:
+
+    1. **The reference file.** Regenerating it from this script would replace the
+       only independent record of the numbers the script exists to check, so the
+       gate would then pass against its own output. `--assets BTC,ETH` at the
+       reference horizon derives exactly that filename, so this is reachable
+       without anyone typing `--out`.
+    2. **Anything outside OUT.** `--out` is joined onto a directory, and an
+       absolute path or a `..` segment silently wins that join: `--out
+       ../../data/SOL_1d.csv` landed on a price file that `.gitignore` excludes,
+       i.e. an unrecoverable overwrite of an input every published number depends
+       on. Only a bare filename is accepted.
+    """
+    if name != Path(name).name or not name:
+        print(f"REFUSED: --out must be a bare filename inside research/results (got {name!r}).")
+        return None
+    dest = (OUT / name).resolve()
+    if dest == REFERENCE.resolve():
+        print(f"REFUSED: {name} is the reference file. Choose another --out.")
+        return None
+    if dest.parent != OUT.resolve():
+        print(f"REFUSED: {name} resolves outside research/results ({dest}).")
+        return None
+    OUT.mkdir(parents=True, exist_ok=True)
+    return dest
+
+
+def missing_data_files(assets: list[str], horizons: list[str]) -> list[str]:
+    """Which required price files are absent, checked before any compute.
+
+    Without this, a typo'd or unfetched asset raises FileNotFoundError partway
+    through the loop, and every asset already computed is discarded unwritten —
+    the operator pays for the run and gets a traceback instead of the rows.
+    """
+    wanted = {
+        REPO / "data" / f"{asset}_{HORIZONS[h]['interval']}.csv"
+        for asset in assets
+        for h in horizons
+    }
+    return sorted(str(p.relative_to(REPO)) for p in wanted if not p.exists())
+
+
 def load_asset(asset: str, horizon: str) -> tuple[dict, EngineConfig, str]:
-    """Load one asset's series using the horizon's interval and cost model.
+    """Load one asset's series at the horizon's interval and gap policy.
+
+    The cost model is this module's (FEE_BPS/SLIPPAGE_BPS), not the horizon's —
+    HORIZONS carries no costs. The path is derived from the interval rather than
+    read from `spec["data"]`, which names SOL specifically; for SOL the two agree.
 
     Returns the arrays, the engine config, and a human-readable date window. The
     window is returned rather than logged so the caller can put it in the report
@@ -122,9 +207,9 @@ def load_asset(asset: str, horizon: str) -> tuple[dict, EngineConfig, str]:
     window = f"{len(df)} bars, {ts.iloc[0].date()}..{ts.iloc[-1].date()}"
     cfg = EngineConfig(
         interval=interval,
-        fill_delay=1,
-        initial_capital=10_000.0,
-        costs=CostConfig(fee_bps=6.0, slippage_bps=2.0),
+        fill_delay=FILL_DELAY,
+        initial_capital=INITIAL_CAPITAL,
+        costs=CostConfig(fee_bps=FEE_BPS, slippage_bps=SLIPPAGE_BPS),
     )
     return frame_to_arrays(df), cfg, window
 
@@ -175,14 +260,19 @@ def run_asset(
     return rows, window
 
 
-def make_top5_strategy(cfg_spec: dict, horizon: str):
+def make_top5_strategy(cfg_spec: dict) -> Callable[[], object]:
     """Build one top-5 configuration as a zero-argument factory.
+
+    The horizon is read out of `cfg_spec` rather than passed alongside it. Two
+    names for one fact is how a configuration ends up built with another
+    configuration's parameters, and nothing here would have failed if they had
+    disagreed — the wrong-horizon parameters produce a number, not an error.
 
     A single-member entry is built directly rather than wrapped in a Composite:
     a one-element `all(...)` is behaviourally the same signal, but going through
     the same path as the sweep keeps the singles comparable to the singles table.
     """
-    params = HORIZONS[horizon]["params"]
+    params = HORIZONS[cfg_spec["horizon"]]["params"]
     members = cfg_spec["members"]
     if len(members) == 1:
         # `params[name]` is resolved here, not in the lambda's default list:
@@ -200,25 +290,29 @@ def run_top5(
 ) -> tuple[pd.DataFrame, dict[str, str]]:
     """Evaluate the five recommended configurations on each asset.
 
-    Each asset needs both the medium and long series (config 2 is medium, the
-    rest are long); the interval is the same, so the frame is loaded once per
-    asset and reused across horizons.
+    Config 2 is the medium horizon and the rest are long, but `medium` and `long`
+    are the same 1d series and differ only in `params`, so the cache below is
+    keyed on what actually determines the load — interval and gap policy — and
+    the frame is read once per asset. Keying it on the horizon instead read the
+    identical file twice while a docstring claimed otherwise.
     """
     rows: list[dict] = []
     windows: dict[str, str] = {}
     for asset in assets:
         if verbose:
             print(f"{asset}:")
-        cache: dict[str, tuple] = {}
+        cache: dict[tuple[str, bool], tuple] = {}
         for spec in TOP5:
             horizon = spec["horizon"]
-            if horizon not in cache:
-                cache[horizon] = load_asset(asset, horizon)
-            arrays, cfg, window = cache[horizon]
+            hspec = HORIZONS[horizon]
+            load_key = (hspec["interval"], hspec["allow_gaps"])
+            if load_key not in cache:
+                cache[load_key] = load_asset(asset, horizon)
+            arrays, cfg, window = cache[load_key]
             windows[asset] = window
             res = cpcv_evaluate(
                 spec["label"],
-                make_top5_strategy(spec, horizon),
+                make_top5_strategy(spec),
                 arrays,
                 cfg,
                 n_groups=groups,
@@ -273,22 +367,40 @@ def summarise(df: pd.DataFrame) -> str:
     return "\n".join(lines)
 
 
-def self_test(horizon: str, groups: int, k: int) -> int:
-    """Reproduce the reference BTC/ETH file. Never writes over it.
+def self_test(groups: int, k: int) -> int:
+    """Reproduce the reference BTC/ETH file at REFERENCE_HORIZON. Never writes it.
 
     This is the gate on the whole script. If the same procedure cannot
     regenerate numbers already published in the repo's own documents, then any
     new asset's numbers are unverified too, and the honest response is to report
     the divergence rather than to tune until it agrees.
+
+    Returns 0 only when the comparison ran and agreed. A gate that could not run
+    returns non-zero, because the caller's test is `!= 0`: returning 0 for "no
+    reference on disk" made a gate that never executed indistinguishable from one
+    that passed, and the run went on to write new asset rows anyway.
     """
     if not REFERENCE.exists():
         print(f"SELF-TEST SKIPPED: no reference at {REFERENCE}")
-        return 0
+        print("  A gate that did not run is not a gate that passed; refusing.")
+        return 2
 
     ref = pd.read_csv(REFERENCE)
+    absent = [c for c in COLUMNS if c not in ref.columns]
+    if absent:
+        print(f"SELF-TEST FAILED: reference is missing columns {absent}")
+        print("  Its schema has drifted from COLUMNS; the comparison cannot be made.")
+        return 1
+
+    gaps = missing_data_files(list(REFERENCE_ASSETS), [REFERENCE_HORIZON])
+    if gaps:
+        print(f"SELF-TEST SKIPPED: no price data for the reference assets ({', '.join(gaps)})")
+        print("  A gate that did not run is not a gate that passed; refusing.")
+        return 2
+
     rows: list[dict] = []
     for asset in REFERENCE_ASSETS:
-        got, window = run_asset(asset, horizon, groups, k, verbose=False)
+        got, window = run_asset(asset, REFERENCE_HORIZON, groups, k, verbose=False)
         rows.extend(got)
         print(f"  {asset}: {window}")
     new = pd.DataFrame(rows, columns=COLUMNS)
@@ -301,12 +413,29 @@ def self_test(horizon: str, groups: int, k: int) -> int:
         return 1
 
     numeric = [c for c in COLUMNS if c not in key]
+
+    # Null-ness is compared before any subtraction, because a NaN difference
+    # compares False against every threshold: a column that went from a number to
+    # NaN leaves `worst` untouched and prints PASSED. That is reachable, not
+    # hypothetical -- run_asset deliberately writes insufficient configurations
+    # with NaN metrics, so this is the divergence the gate would most likely be
+    # asked to catch.
+    flipped = [
+        c for c in numeric
+        if not merged[f"{c}_ref"].isna().equals(merged[f"{c}_new"].isna())
+    ]
+    if flipped:
+        print(f"SELF-TEST FAILED: {', '.join(flipped)} changed between a value and NaN")
+        print("  The reference file was NOT overwritten. Investigate before trusting new rows.")
+        return 1
+
     worst = 0.0
     worst_at = ""
     for c in numeric:
         diff = (merged[f"{c}_ref"] - merged[f"{c}_new"]).abs()
-        if diff.max() > worst:
-            worst = float(diff.max())
+        largest = float(diff.max()) if diff.notna().any() else 0.0
+        if largest > worst:
+            worst = largest
             worst_at = f"{c} on {merged.loc[diff.idxmax(), 'asset']}/{merged.loc[diff.idxmax(), 'strategy']}"
 
     if worst > TOLERANCE:
@@ -336,22 +465,43 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--skip-self-test", action="store_true", help="run new assets without the gate")
     args = ap.parse_args(argv)
 
+    # Validated before anything is printed or computed. --groups below 2 makes
+    # make_groups raise, which cpcv_evaluate turns into zero-path rows, so the run
+    # would write a CSV of zeros and report success; --k 0 reaches np.concatenate
+    # with no arrays and dies on a traceback several frames away from the flag
+    # that caused it. k == 1 is legitimate (single-block paths).
+    if args.groups < 2:
+        print(f"REFUSED: --groups must be >= 2 (got {args.groups}).")
+        return 1
+    if not 1 <= args.k < args.groups:
+        print(f"REFUSED: --k must be >= 1 and < --groups (got k={args.k}, groups={args.groups}).")
+        return 1
+    # Checked here rather than at the write site so a bad name costs nothing: the
+    # old placement burned the whole sweep before printing REFUSED.
+    if args.out is not None and resolve_output_path(args.out) is None:
+        return 1
+
     print(f"Horizon {args.horizon}, CPCV {args.groups} blocks, k={args.k}")
     print("Parameters are SOL-tuned and NOT refitted -- this measures transfer, not fit.\n")
 
     if args.self_test:
         print("Reproducing reference BTC/ETH run:")
-        return self_test(args.horizon, args.groups, args.k)
+        return self_test(args.groups, args.k)
 
     if not args.skip_self_test:
         print("Gate: reproducing reference BTC/ETH run first.")
-        if self_test(args.horizon, args.groups, args.k) != 0:
+        if args.horizon != REFERENCE_HORIZON:
+            print(f"  (gate runs at {REFERENCE_HORIZON}, the horizon the reference was produced at)")
+        if self_test(args.groups, args.k) != 0:
             print("\nRefusing to report new assets on an unreproducible harness.")
             print("Pass --skip-self-test to override deliberately.")
             return 1
         print()
 
     assets = [a.strip().upper() for a in args.assets.split(",") if a.strip()]
+    if not assets:
+        print(f"REFUSED: --assets named no assets (got {args.assets!r}).")
+        return 1
 
     if args.top5:
         # SOL first and by default: reproducing its published medians is what
@@ -359,23 +509,50 @@ def main(argv: list[str] | None = None) -> int:
         # other assets' rows rather than merely being interesting.
         control = [] if args.no_control else ["SOL"]
         ordered = control + [a for a in assets if a != "SOL"]
+        if not ordered:
+            print("REFUSED: --no-control with only SOL requested leaves nothing to evaluate.")
+            return 1
+        # Resolved before the sweep, and before the cheaper data check, because
+        # this is the destructive one: the branch used to write with no reference
+        # check at all, so --top5 --out cpcv_all25_btc_eth_1d.csv replaced the
+        # reference with 14-column data and left the gate permanently unrunnable.
+        dest = resolve_output_path(
+            args.out or f"cpcv_top5_{'_'.join(a.lower() for a in ordered)}_1d.csv"
+        )
+        if dest is None:
+            return 1
+        gaps = missing_data_files(ordered, sorted({s["horizon"] for s in TOP5}))
+        if gaps:
+            print(f"REFUSED: missing price data ({', '.join(gaps)}). Fetch it first.")
+            return 1
         df, windows = run_top5(ordered, args.groups, args.k)
-        dest = OUT / (args.out or f"cpcv_top5_{'_'.join(a.lower() for a in ordered)}_1d.csv")
         df.to_csv(dest, index=False)
 
         print("\nDate windows (block i is NOT the same period across assets):")
         for asset, window in windows.items():
             print(f"  {asset:5s} {window}")
 
+        diverged = False
         if not args.no_control:
             sol = df[df["asset"] == "SOL"]
-            worst = sol["delta_vs_sol"].abs().max()
-            verdict = "PASSED" if worst < 0.01 else "DIVERGED"
+            deltas = sol["delta_vs_sol"]
+            # A partial control is not a passing control. `.abs().max()` skips NaN,
+            # so four insufficient configurations and one agreeing one printed
+            # PASSED on a fifth of the evidence.
+            incomplete = len(sol) != len(TOP5) or bool(deltas.isna().any())
+            worst = float(deltas.abs().max()) if deltas.notna().any() else float("nan")
+            diverged = incomplete or not worst < CONTROL_TOLERANCE
+            verdict = "DIVERGED" if diverged else "PASSED"
             print(
                 f"\nCONTROL {verdict}: SOL reproduces its published medians to "
                 f"max abs delta {worst:.4f}."
             )
-            if verdict == "DIVERGED":
+            if incomplete:
+                print(
+                    f"  Only {int(deltas.notna().sum())} of {len(TOP5)} control configurations "
+                    f"produced a delta; the rest were insufficient or missing."
+                )
+            if diverged:
                 print("  Composite wiring or horizon params differ from the published run.")
                 print("  Treat the other assets' rows as unverified until this is resolved.")
 
@@ -383,14 +560,33 @@ def main(argv: list[str] | None = None) -> int:
         for asset, g in df.groupby("asset", sort=False):
             if asset == "SOL":
                 continue
-            held = int((g["median_sharpe"] > 0).sum())
-            money = int((g["median_return"] > 0).sum())
+            # Zero-path configurations are excluded from both halves of the ratio,
+            # matching summarise(). Counting them in the denominator only reported
+            # "tested and failed to clear zero" for something that was never
+            # testable -- the distinction run_asset's own comment turns on.
+            rankable = g[g["n_paths"] > 0]
+            held = int((rankable["median_sharpe"] > 0).sum())
+            money = int((rankable["median_return"] > 0).sum())
+            dropped = len(g) - len(rankable)
+            note = f", {dropped} insufficient" if dropped else ""
             print(
-                f"  {asset:5s} {held}/5 still positive, {money}/5 still made money, "
-                f"median delta {g['delta_vs_sol'].median():+.3f}"
+                f"  {asset:5s} {held}/{len(rankable)} still positive, "
+                f"{money}/{len(rankable)} still made money, "
+                f"median delta {rankable['delta_vs_sol'].median():+.3f}{note}"
             )
         print(f"\nWrote {len(df)} rows to {dest.relative_to(REPO)}")
-        return 0
+        # Non-zero on DIVERGED: CROSS-ASSET-TRANSFER.md treats this as one of two
+        # gates, and an exit code of 0 made it one no script could check.
+        return 1 if diverged else 0
+
+    slug = args.out or f"cpcv_all25_{'_'.join(a.lower() for a in assets)}_{HORIZONS[args.horizon]['interval']}.csv"
+    dest = resolve_output_path(slug)
+    if dest is None:
+        return 1
+    gaps = missing_data_files(assets, [args.horizon])
+    if gaps:
+        print(f"REFUSED: missing price data ({', '.join(gaps)}). Fetch it first.")
+        return 1
 
     rows: list[dict] = []
     windows: dict[str, str] = {}
@@ -401,11 +597,6 @@ def main(argv: list[str] | None = None) -> int:
         windows[asset] = window
 
     df = pd.DataFrame(rows, columns=COLUMNS)
-    slug = args.out or f"cpcv_all25_{'_'.join(a.lower() for a in assets)}_{HORIZONS[args.horizon]['interval']}.csv"
-    dest = OUT / slug
-    if dest.resolve() == REFERENCE.resolve():
-        print(f"REFUSED: {slug} is the reference file. Choose another --out.")
-        return 1
     df.to_csv(dest, index=False)
 
     print("\nDate windows (block i is NOT the same period across assets):")
