@@ -239,21 +239,25 @@ ever achieves and how far its rank moves is **−0.390** — better peak rank go
 movement. Strategies that held first place somewhere move a mean of **14.0** places; everyone else
 **11.6**. Topping this leaderboard is partly a symptom of instability.
 
-**What survives the test, ranked by invariance rather than by performance:**
+**What survives the test, ranked by invariance rather than by performance.** The median column
+is *not* sorted; `adx_trend` (+0.604) and `rsi` (+0.593) have the two highest medians of all 25 and
+both are far less stable than the rows below them:
 
 | Strategy | median across 6–12 | spread | rank movement | top-3 in |
 |---|---|---|---|---|
-| `buy_and_hold` | **+0.587** | **0.27** | 7 | 1/7 |
+| `buy_and_hold` | +0.587 | **0.27** | 7 | 1/7 |
 | `obv_trend` | +0.573 | 0.38 | **5** | 3/7 |
 | `vol_regime` | +0.386 | 0.41 | 12 | 1/7 |
 | `hurst_switch` | +0.461 | 0.42 | 19 | 2/7 |
 | `adx_trend` | +0.604 | **1.38** | **23** | 2/7 |
 
-Two things to take from that table. **`buy_and_hold` has both the highest median across geometries
-(+0.587) and by far the smallest spread (0.27)** — it edges `obv_trend` on median while being twice
-as invariant, which is unsurprising given it has no parameters and no timing. And **`adx_trend` has
-the single highest median of all 25 (+0.604) while ranging from +0.78 to −0.60 and moving 23 of 25
-places** — the clearest example in this document of a number that means nothing.
+Two things to take from that table. **`buy_and_hold` has by far the smallest spread (0.27)**, and
+it reaches third of 25 on median (+0.587) while doing so — it edges `obv_trend` on median while
+being twice as invariant, which is unsurprising given it has no parameters and no timing to get
+wrong. And **`adx_trend` has the single highest median of all 25 (+0.604) while ranging from +0.78
+to −0.60 and moving 23 of 25 places** — the clearest example in this document of a number that
+means nothing. The top of the median column and the top of the stability column are not the same
+strategies, which is the finding restated.
 
 `obv_trend` is the one genuinely encouraging row: not always first, but the **most rank-stable
 strategy in the set** (moves 5 places), third-smallest spread, top-3 in three of seven geometries.

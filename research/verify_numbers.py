@@ -38,10 +38,16 @@ DOCS = (RESEARCH / "RANKED_LISTS.md", RESEARCH / "STRATEGIES.md")
 # the count from 923 to 893 and still exited 0. The `checked < 100` backstop below
 # only catches a collapse, not a leak.
 #
+# To be exact about the guarantee, since it is easy to read as more: this detects a
+# DROP from the set currently recognised. It cannot detect a figure that was never
+# recognised in the first place -- one of those does not lower the count. It prevents
+# regression; it does not prove completeness, and "EVERY PARSED FIGURE MATCHES" below
+# carries real weight on the word "parsed".
+#
 # Update these in the same commit that changes the documents' figures -- deliberately,
 # after reading the new count. Never lower one to make a red run go green; that is
 # the same act as deleting the evidence.
-EXPECTED_FIGURES = {"RANKED_LISTS.md": 892, "STRATEGIES.md": 31}
+EXPECTED_FIGURES = {"RANKED_LISTS.md": 901, "STRATEGIES.md": 31}
 
 # Sharpe values are quoted to 3dp, returns to 1dp; allow half a unit of the
 # last printed digit plus a little slack for rounding direction.
@@ -257,6 +263,9 @@ def geometry_stats(part: pd.DataFrame) -> dict:
         "blocks": blocks,
         "n": len(wide),
         "median": wide.median(axis=1),
+        "hi": wide.max(axis=1),
+        "lo": wide.min(axis=1),
+        "leader": {int(b): str(wide[b].idxmax()) for b in blocks},
         "spread": wide.max(axis=1) - wide.min(axis=1),
         "movement": movement,
         "top3": top3,
@@ -328,6 +337,21 @@ GEOMETRY_PBO_MARKER = "PBO is not geometry-invariant"
 # requiring merely "some rows matched" lets a single reformatted row drop out of
 # verification while the others keep the run green.
 GEOMETRY_TABLE_HEADER = "| Strategy | median across"
+
+# "`macd` (6, 10)" -- which strategy topped the leaderboard at which block counts.
+# The correction to finding 1e rests on obv_trend having been first at 8 and nowhere
+# else, so the identities are checked, not just the count of distinct winners.
+GEOMETRY_WINNER = re.compile(r"`([a-z0-9_]+)`\s*\(([\d,\s]+)\)")
+GEOMETRY_WINNER_MARKER = "hold first place across"
+# "ranging from +0.78 to -0.60"
+# Bounded rather than [^.]*? because the intervening prose quotes "+0.604" and a class
+# excluding "." cannot cross its decimal point. (?!`) forbids an intervening backtick,
+# which pins the range to the NEAREST preceding strategy name -- without it the lazy
+# quantifier reaches back past `adx_trend` and attributes the range to `obv_trend`.
+GEOMETRY_RANGE = re.compile(
+    r"`([a-z0-9_]+)`(?:(?!`)[\s\S]){0,240}?ranging from"
+    r"\s*([-+]?\d+\.\d+)\s*to\s*([-+]?\d+\.\d+)"
+)
 GEOMETRY_HORIZON_WORD = re.compile(r"\b(short|medium|long)\b", re.I)
 
 
@@ -467,8 +491,67 @@ def check_geometry(section: str, geometry: dict[str, pd.DataFrame]) -> tuple[int
         compare("other mean movement", float(m.group(2)),
                 long_stats["mean_move_others"], 0.05)
 
+    checked += _check_geometry_winners(section, long_stats, failures)
+
+    m = GEOMETRY_RANGE.search(section)
+    if m is None:
+        failures.append("the min/max range sentence did not match; those figures "
+                        "went unchecked")
+    else:
+        name, hi, lo = m.group(1), float(m.group(2)), float(m.group(3))
+        if name not in long_stats["hi"].index:
+            checked += 1
+            failures.append(f"range quoted for a strategy not in the results: {name!r}")
+        else:
+            compare(f"long {name} max", hi, long_stats["hi"][name], 0.0055)
+            compare(f"long {name} min", lo, long_stats["lo"][name], 0.0055)
+
     checked += _check_geometry_pbo(section, failures)
     return checked, failures
+
+
+def _check_geometry_winners(section: str, long_stats: dict, failures: list[str]) -> int:
+    """Check the "who was first at which block count" list against the recomputation.
+
+    Counting six distinct winners says nothing about WHICH six. The 1e correction
+    turns on obv_trend having led at 8 blocks specifically, so verify the mapping.
+    """
+    if GEOMETRY_WINNER_MARKER not in section:
+        failures.append(f"could not locate the winners sentence "
+                        f"({GEOMETRY_WINNER_MARKER!r}); the mapping went unchecked")
+        return 0
+    at = section.index(GEOMETRY_WINNER_MARKER)
+    end = section.find("\n\n", at)
+    para = section[at : end if end != -1 else len(section)]
+
+    leaders: dict[int, str] = long_stats["leader"]
+    checked = 0
+    claimed: dict[int, str] = {}
+    for m in GEOMETRY_WINNER.finditer(para):
+        name = m.group(1)
+        for raw in m.group(2).split(","):
+            raw = raw.strip()
+            if not raw.isdigit():
+                continue
+            claimed[int(raw)] = name
+    if not claimed:
+        failures.append("the winners sentence matched no `strategy` (blocks) pairs; "
+                        "the mapping went unchecked")
+        return 0
+    for blocks, name in sorted(claimed.items()):
+        checked += 1
+        actual = leaders.get(blocks)
+        if actual is None:
+            failures.append(f"a winner is claimed at {blocks} blocks, which is not in "
+                            "the geometry results")
+        elif actual != name:
+            failures.append(f"the leader at {blocks} blocks is {actual!r}, but the "
+                            f"document says {name!r}")
+    missing = sorted(set(leaders) - set(claimed))
+    if missing:
+        failures.append(f"no leader is stated for block counts {missing}, so those "
+                        "went unchecked")
+    return checked
 
 
 def _check_geometry_pbo(section: str, failures: list[str]) -> int:
