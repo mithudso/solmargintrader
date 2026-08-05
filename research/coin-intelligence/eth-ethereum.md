@@ -745,15 +745,26 @@ quoted as one.
 |---|---|---|
 | BTC daily, 2021-06 → 2026-08 | **25 of 25** | **+25.6%** |
 | **ETH daily, same window** | **18 of 25** | **−6.3%** |
-| SOL daily, same window | **14 of 25** | +9.4% |
+| SOL daily, same window | **13 of 25** | +9.4% |
 | SOL hourly, 2025-08 → 2026-08 | **0 of 25** | **−22.9%** |
+| DOGE daily, 2021-06 → 2026-08 | **16 of 25** | −4.4% |
+| ZEC daily, 2021-01 → 2026-08 | **24 of 25** | +5.2% |
 
 Source: `backtester/strategy_cards/README.md` ("The finding that outranks any individual card").
-All four rows recomputed from the underlying CSVs on 2026-08-04 and they reproduce exactly:
-BTC +25.56% / 25 of 25 and ETH −6.31% / 18 of 25 from `cpcv_all25_btc_eth_1d.csv` (21 paths over
-7 usable blocks — 8 groups, k=2, one block lost to warmup); SOL daily +9.39% / **14 of 25** from
-`cpcv_all25_1d.csv`; SOL hourly −22.94% / 0 of 25 from `cpcv_all25_1h.csv`. The README records
-the SOL daily cell as "mixed"; the precise count is 14 of 25.
+All rows recomputed from the underlying CSVs and they reproduce exactly: BTC +25.56% / 25 of 25
+and ETH −6.31% / 18 of 25 from `cpcv_all25_btc_eth_1d.csv` (21 paths over 7 usable blocks — 8
+groups, k=2, one block lost to warmup); SOL daily +9.39% / **13 of 25**, plus the DOGE and ZEC
+rows, from `cpcv_all25_sol_doge_zec_1d.csv`; SOL hourly −22.94% / 0 of 25 from
+`cpcv_all25_1h.csv`. The README records the SOL daily cell as "mixed"; the precise count is 13
+of 25.
+
+> **Corrected 2026-08-05.** The SOL daily count read **14 of 25** until its source,
+> `cpcv_all25_1d.csv`, was found to be a medium-horizon file with the long-horizon
+> `sma_regime_200` row spliced in. `sma_regime`'s real medium SOL median is −0.066, not +0.254,
+> which removes it from the positive set. That file is now deleted; diagnosis in
+> `research/CROSS-ASSET-TRANSFER.md`. The two new rows come from the same 2026-08-05 run, and they
+> are why this table now spans five assets: on identical, unrefitted parameters the count ranges
+> from **0 to 25 of 25**.
 
 **Read the two columns together.** The count of "winning" configurations tracks the buy-and-hold
 return of the underlying almost perfectly. That is the repo's own conclusion, and it is the

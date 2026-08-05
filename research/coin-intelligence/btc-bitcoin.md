@@ -777,7 +777,7 @@ are two views of **one macro path**, closer to "one and a bit" independent obser
 
 ### The decisive measurement — this repo already ran 25 strategies on both assets
 
-`research/results/cpcv_all25_btc_eth_1d.csv` and `cpcv_all25_1d.csv` hold CPCV results for the
+`research/results/cpcv_all25_btc_eth_1d.csv` and `cpcv_all25_sol_doge_zec_1d.csv` hold CPCV results for the
 **same 25 strategies** on BTC, ETH and SOL. **The windows match exactly** — every one of the 25
 strategies reports an identical (paths, usable-blocks) pair on both assets: 21/7 for 21 strategies,
 15/6 for `hurst_switch`, `ou_reversion` and `vol_regime`, and 28/8 for `buy_and_hold`, which also
@@ -788,14 +788,24 @@ comparison, and it is the single most important table in this document.
 | Measure across the 25 strategies | Result |
 |---|---|
 | Median Sharpe **positive** on BTC | **25 of 25** |
-| Median Sharpe **positive** on SOL | **14 of 25** (ETH: 18 of 25) |
-| **Median Sharpe flips sign** BTC ↔ SOL | **11 of 25 — 44%** |
-| Cross-asset correlation of median Sharpe | **+0.303** |
-| **Spearman rank correlation of the strategy ranking** | **+0.245** |
+| Median Sharpe **positive** on SOL | **13 of 25** (ETH: 18 of 25) |
+| **Median Sharpe flips sign** BTC ↔ SOL | **12 of 25 — 48%** |
+| Cross-asset correlation of median Sharpe | **+0.263** |
+| **Spearman rank correlation of the strategy ranking** | **+0.159** |
 | BTC median Sharpe range | +0.035 to +1.657 |
 | SOL median Sharpe range | −0.336 to +0.699 |
 
-`[repo, computed from research/results/*.csv, AS OF 2026-08-04]`
+`[repo, computed from research/results/cpcv_all25_sol_doge_zec_1d.csv +
+cpcv_all25_btc_eth_1d.csv, SOL column corrected 2026-08-05]`
+
+> **Corrected 2026-08-05.** The SOL column previously came from
+> `results/cpcv_all25_1d.csv`, which was a medium-horizon file with the long-horizon
+> `sma_regime_200` row spliced in where medium's `sma_regime_100` belonged. That one row moved
+> four figures in the table above — SOL positives 14→13, sign flips 11→12, Pearson +0.303→+0.263,
+> Spearman **+0.245→+0.159** (exactly 0.1585, average-rank ties) — and `sma_regime`'s own SOL
+> rank from 7 to 18. The defective file has been deleted; diagnosis in
+> `research/CROSS-ASSET-TRANSFER.md`. **Every correction cuts the same way: the ranking
+> transfers even less than this document previously claimed.**
 
 **Every single strategy tested produced a positive median Sharpe on BTC.** That is the finding to
 absorb first, and it is not good news — **it means a BTC pass has essentially no discriminating
@@ -804,19 +814,20 @@ from bad ones; it tells you the asset had a positive drift at low volatility (BT
 over the span vs SOL's 98.6% `[local]`), which flatters any long-biased rule on a Sharpe basis.
 **On BTC, "it worked" is the base rate, not evidence.**
 
-**The ranking barely transfers.** Spearman ρ = +0.245 across 25 strategies. Concretely:
+**The ranking barely transfers.** Spearman ρ = +0.159 across 25 strategies. Concretely:
 
 | BTC top 5 | BTC Sharpe (rank) | → SOL Sharpe (rank) |
 |---|---|---|
 | `ou_reversion` | +1.657 (1) | +0.412 (**4**) |
-| `sma_regime` | +0.835 (2) | +0.254 (7) |
-| `garch_voltarget` | +0.834 (3) | **−0.028 (16)** |
-| `voltarget` | +0.829 (4) | **−0.021 (15)** |
-| `ichimoku` | +0.825 (5) | +0.023 (14) |
+| `sma_regime` | +0.835 (2) | **−0.066 (18)** |
+| `garch_voltarget` | +0.834 (3) | **−0.028 (15)** |
+| `voltarget` | +0.829 (4) | **−0.021 (14)** |
+| `ichimoku` | +0.825 (5) | +0.023 (13) |
 
-**Three of BTC's top five are below the median on SOL, and two of them lose money there.** Running
-it the other way is no kinder: SOL's #3 (`bb_breakout`, +0.481) ranks **22nd of 25** on BTC. Only
-`ou_reversion` is top-5 on both.
+**Three of BTC's top five are below the median on SOL, and all three of those lose money there**
+(`sma_regime`, `garch_voltarget`, `voltarget` — the SOL median is +0.023). BTC's **2nd**-best
+strategy is SOL's **18th of 25**. Running it the other way is no kinder: SOL's #3
+(`bb_breakout`, +0.481) ranks **22nd of 25** on BTC. Only `ou_reversion` is top-5 on both.
 
 **And the benchmark inverts.** `buy_and_hold` ranks **11th of 25 on BTC** — 10 strategies beat it —
 but **2nd of 25 on SOL**, where only one did. A researcher who calibrated "can I beat buy-and-hold?"
@@ -887,11 +898,11 @@ difference.
 - ✅ **Does tell you** that a BTC-only backtest is running on an asset that explains **50% of SOL's
   daily variance over the full span, and 80% in 2026** `[local]` — so a BTC pass is substantially a
   re-test on correlated data, not fresh evidence.
-- ❌ **Does not tell you** that the strategy is profitable on SOL. Measured in this repo: **44% of
-  25 strategies flip the sign of their median Sharpe**, and the trend sleeve's standalone edge flips
-  +4.49% → −1.00%.
-- ❌ **Does not tell you** where a strategy will *rank* on SOL. Spearman ρ = **+0.245**; three of
-  BTC's top five are sub-median on SOL.
+- ❌ **Does not tell you** that the strategy is profitable on SOL. Measured in this repo: **48% of
+  25 strategies flip the sign of their median Sharpe** (12 of 25), and the trend sleeve's standalone
+  edge flips +4.49% → −1.00%.
+- ❌ **Does not tell you** where a strategy will *rank* on SOL. Spearman ρ = **+0.159**; three of
+  BTC's top five are sub-median on SOL and all three lose money there.
 - ❌ **Does not discriminate at all on this sample**, because **all 25 strategies pass on BTC**. A
   BTC-only screen would have rejected nothing.
 - ❌ **Does not tell you** anything about SOL-specific microstructure: priority fees, transaction
@@ -910,7 +921,7 @@ difference.
 2. **Selection by in-sample rank is worse than random on this dataset.** PBO for singles is
    **0.700** against a pure-noise line of 0.500, and Spearman ρ(in-sample, out-of-sample Sharpe) is
    **−0.419** at the medium horizon `[repo, research/TOP5-RECOMMENDATION.md, AS OF 2026-08-04]`.
-   Combine that with the +0.245 cross-asset rank correlation above and the conclusion is blunt:
+   Combine that with the +0.159 cross-asset rank correlation above and the conclusion is blunt:
    **neither in-sample rank nor BTC rank is a trustworthy way to choose a SOL strategy.**
 
 ---
@@ -929,11 +940,14 @@ difference.
   `/coins/markets`. Regenerate: `curl -s 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false'`
 - `research/TOP5-RECOMMENDATION.md` — PBO 0.700, ρ = −0.419, `buy_and_hold` median Sharpe +0.534.
   **AS OF 2026-08-04.**
-- `research/results/cpcv_all25_btc_eth_1d.csv` (BTC + ETH) and `research/results/cpcv_all25_1d.csv`
-  (SOL) — 25 strategies × CPCV on matched windows: 21 paths / 7 usable blocks for 21 strategies,
-  15/6 for `hurst_switch`, `ou_reversion` and `vol_regime`, 28/8 for `buy_and_hold`. The 44% sign-flip
-  rate, ρ_Spearman = +0.245, the 25-of-25-positive BTC result, and the rank tables are computed
-  from these two files. **AS OF 2026-08-04.** Reproduce by joining the two CSVs on `strategy`.
+- `research/results/cpcv_all25_btc_eth_1d.csv` (BTC + ETH) and
+  `research/results/cpcv_all25_sol_doge_zec_1d.csv` (SOL, DOGE, ZEC) — 25 strategies × CPCV on
+  matched windows: 21 paths / 7 usable blocks for 21 strategies, 15/6 for `hurst_switch`,
+  `ou_reversion` and `vol_regime`, 28/8 for `buy_and_hold`. The 48% sign-flip rate,
+  ρ_Spearman = +0.159, the 25-of-25-positive BTC result, and the rank tables are computed from
+  these two files. **SOL column regenerated 2026-08-05**, replacing the deleted
+  `cpcv_all25_1d.csv`. Reproduce with
+  `python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC` and join on `strategy`.
 
 **Local skill corpus — original stamps carried through, NOT restamped to today:**
 - `~/.claude/skills/blockchain/references/bitcoin-protocol-expert.md` — **verified-as-of 2026-06-16.**
@@ -1065,8 +1079,9 @@ These were sought and are **not** stated as fact anywhere above:
   across all seven result columns**. On ETH and SOL they differ. If the BTC run aliased two
   strategies, effective n on BTC is **24**, and "25 of 25 positive" needs a footnote. **Check
   upstream before quoting that statistic in isolation.**
-- The reported Spearman ρ of **+0.245** is **+0.242** under average-rank tie handling; the
-  difference comes from one tie and changes nothing downstream.
+- The reported Spearman ρ of **+0.159** is already the average-rank-tie figure (0.1585 exactly).
+  The superseded +0.245/+0.242 pair came from the defective `cpcv_all25_1d.csv` SOL column, not
+  from a tie-handling choice.
 
 **Why the remaining items stayed open:** the session's web-search budget (200 calls) was exhausted
 and Kaiko/Farside partially blocked automated access. Everything above that *is* sourced was
