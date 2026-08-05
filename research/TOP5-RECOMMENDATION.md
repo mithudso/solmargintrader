@@ -80,7 +80,8 @@ The transferable claim is **not** 'trade these five configurations' — it is:
    `vol_regime` is positive on only 3 of 5 assets and one of those is +0.019. **`obv_trend`
    replaces it as the transfer-supported second mechanism**: it is the only member appearing in
    both surviving configurations (#3, #4) and, as a single, is positive on all five assets with
-   the highest path fractions on both new ones (86% DOGE, 90% ZEC).
+   path fractions of 86% on DOGE (highest of the 25) and 90% on ZEC (third, behind `rsi` at 100%
+   and `keltner` at 95%).
 3. **Combining raises parameter sensitivity ~2.6×** — comparing like with like, since the top
    pairs are long-horizon: long-horizon singles median ratio **0.171** vs top pairs **0.44**.
    (Corrected 2026-08-05: the earlier phrasing paired that 2.6× multiple with the *pooled*

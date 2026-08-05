@@ -11,14 +11,25 @@ python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC     # 25 singles, med
 python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC  # the five, with SOL as control
 ```
 
-> **`research/results/cpcv_all25_1d.csv` is not used here, and should not be trusted.** It was
-> the obvious source for SOL's singles column and was rejected after testing: the committed
-> script run on SOL gives **13/25** positive at `--horizon medium` and **22/25** at
-> `--horizon long`, and both of those match `RANKED_LISTS.md`. That file gives **14/25** and
-> matches neither (max absolute difference 52 against medium, 122 against long, on trade
-> counts). Its parameters cannot be established, so SOL's column here was regenerated from the
-> reproducible path instead. **Every column in every table below is medium horizon and
-> re-derivable from the committed script** — which was the point of building the gates.
+> **`research/results/cpcv_all25_1d.csv` is not used here: it is a medium-horizon file with one
+> long-horizon row spliced into it.** It was the obvious source for SOL's singles column and was
+> rejected after testing. Re-running the committed script on SOL reproduces **24 of its 25 rows
+> exactly** (all six value columns, to 1e-5) at `--horizon medium`. The one row that differs is
+> `sma_regime`:
+>
+> | | median | Q1 | Q3 | frac + | median ret | trades |
+> |---|---|---|---|---|---|---|
+> | `cpcv_all25_1d.csv` | **+0.254** | 0.000 | 1.620 | 71% | −2.2% | 44 |
+> | reproducible medium | **−0.066** | −0.628 | 0.894 | 48% | −16.4% | 96 |
+>
+> The first row is `sma_regime_200`, which `RANKED_LISTS.md` lists under **long horizon**; the
+> second is `sma_regime_100` under **medium**. Both match their respective `RANKED_LISTS.md`
+> entries on all six columns, so the file is medium with one long row substituted — and the
+> difference propagates: it is why the file counts **14/25** positive where medium is **13/25**.
+> SOL's column here was therefore regenerated from the reproducible path. **Every column in
+> every table below is medium horizon and re-derivable from the committed script** — which was
+> the point of building the gates. To reproduce the diagnosis:
+> `python3 research/cross_asset_cpcv.py --assets SOL --skip-self-test --out check.csv` and diff.
 
 ## Why this test, and why it is the one that mattered
 
@@ -41,7 +52,9 @@ the narrower question that actually matters: *do the choices made on SOL transfe
 1. **Harness gate.** The script reproduces `cpcv_all25_btc_eth_1d.csv` — a file quoted in
    `TOP5-RECOMMENDATION.md` and two coin spokes but which no committed script previously
    re-derived — to a **max absolute difference of 5.0e-07** across all 50 rows. That closes a
-   real reproducibility gap as a side effect.
+   real reproducibility gap as a side effect. *(This tolerance is printed at runtime by
+   `--self-test` and is deliberately not stored in a CSV: a stored gate result would be an
+   assertion about the past, whereas re-running it is an assertion about the code as it stands.)*
 2. **Composite gate.** Run on SOL, the `--top5` path reproduces all five published medians
    (+1.345, +1.290, +1.054, +0.774, +0.696) to a **max absolute delta of 0.0004**, with
    matching path fractions and returns. The composite wiring is therefore the same wiring that
@@ -150,15 +163,26 @@ zero-parameter buy-and-hold (+0.659)** — and loses on return too, +17.6% again
 SOL, where the recommendation was built, exactly one single beat holding the asset. Where
 buy-and-hold did badly (DOGE, −0.041) most things beat it, by losing less.
 
-One honest caveat: `buy_and_hold` needs no warm-up, so it is evaluated on all 8 blocks and 28
-paths, while warm-up costs the slower configurations a block or two (21 or 15 paths). The
+Two honest caveats. First, `buy_and_hold` needs no warm-up, so it is evaluated on all 8 blocks
+and 28 paths, while warm-up costs the slower configurations a block or two (21 or 15 paths). The
 comparison is still the right one — needing no warm-up is a genuine property of the benchmark,
 not an artifact — but the path counts are not identical and the CSV records them per row.
+
+Second, **this comparison crosses horizons.** `buy_and_hold` here is the medium-horizon run,
+while four of the five configurations (#1, #3, #4, #5) are long. Only #2 is medium, so only that
+one row is strictly horizon-matched — and it is the row the sentence above names, because it is
+also the best of the five on ZEC. The heading's "all five" is true numerically (the highest
+top-5 ZEC median is +0.492 against +0.659) but is not a like-for-like comparison for four of the
+five. No long-horizon ZEC `buy_and_hold` exists in the committed results, so there is nothing to
+substitute; `buy_and_hold` takes no parameters, so its horizon label refers only to the cost and
+block settings, not to any signal tuning.
 
 ## What this does not establish, and two confounds not corrected
 
 - **Two assets are not a universe.** DOGE and ZEC are one more pair, not a general result.
-  DOGE correlates +0.76 to +0.78 with BTC, so it is closer to a second BTC column than to an
+  DOGE correlates +0.76 to +0.78 with BTC across every window measured in
+  `research/coin-intelligence/doge-dogecoin.md` (that spoke is the source; no results CSV here
+  carries a correlation column), so it is closer to a second BTC column than to an
   independent draw.
 - **Calendar windows differ**, so asset is confounded with period: SOL/BTC/ETH span
   2021-06-17.., DOGE 1,890 bars from 2021-06-03, ZEC 2,043 bars from 2021-01-01. Block *i* is
@@ -182,7 +206,8 @@ not an artifact — but the path counts are not identical and the CSV records th
    `vol_regime` is positive on only 3 of 5 assets and one of those is +0.019.
 2. **`obv_trend` is promoted to the transfer-supported mechanism.** It is the only member
    appearing in both surviving configurations (#3 and #4), and as a single it is positive on
-   all five assets with the highest path fractions on both new ones (86% DOGE, 90% ZEC).
+   all five assets. Its path fractions on the new assets are **86% on DOGE — the highest of the
+   25 — and 90% on ZEC, third of 25** behind `rsi` (100%) and `keltner` (95%).
 3. **The ordering 1–5 should not be read as a preference ranking.** #3 and #4 transferred; #1
    and #2 did not. The document already ordered by checks cleared rather than by Sharpe;
    transfer is now a third axis and it reorders the set again.
