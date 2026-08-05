@@ -598,3 +598,59 @@ but idle most of the time, hourly negative, the trend failure mode cost 22.5% of
 and the profitable configuration needs re-centring that doesn't exist. Standing constraint
 still outranks all of it — **no live order has ever been placed**, the Trigger order-list
 envelope is unverified, fee attribution unconfirmed.
+
+---
+
+## Auto re-centring in `planGrid` — shipped opt-in, and measured to do almost nothing
+
+Commits `724bedf` + `a90455a`. `recentreDecision()` moves the ladder to 0.85x–1.15x of price
+(`tools/dryrun.js`'s convention, deliberately not a second one). **Off by default.**
+
+**The refusals are the feature.** It may only act when nothing rests and no lot is open:
+
+- an open lot's exit is recomputed from the *current* levels, so re-centring down while holding
+  inventory can place that lot's sell **below its own entry** — the zero-spread bug, except it now
+  realizes a loss. The guard **counts** lots rather than summing `baseQty`, so a NaN cannot read as
+  flat (`pnl.js` already drops fully-matched lots, so counting is safe).
+- `tick()` has **no cancel step** (`cancelOrder` is manual only), so a moved ladder would strand
+  real orders at abandoned levels.
+
+### Three traps paid for here — do not re-learn
+
+1. **Persist moved bounds BEFORE placing anything.** `planGrid` is pure, so an uncommitted
+   re-centre vanishes: the next tick sees the new orders resting, refuses to re-centre, falls back
+   to the **old** bounds and places a **second ladder** at the levels just abandoned — capital on
+   two ladders at once. Reproduced with a failing test first, then fixed in `engine.js`.
+2. **`stubVenue` returns `[]` from `getOpenOrders`, so nothing it places ever stays resting** — it
+   hides every bug that only appears on the *second* tick. Use `echoVenue` (`test/core.test.js`) or
+   `recordingVenue` (`tools/measure-recentre.js`) for anything multi-tick.
+3. **`setConfig`'s `--patch` hatch makes a new config field settable but undiscoverable.** Without a
+   named param no surface shows it, and since every test builds config via `ConfigStore` directly, a
+   green suite is consistent with a flag nobody can reach. Test through `runCommand`.
+
+### Do not quote +7.5% for this feature
+
+From `extension/`: `node tools/measure-recentre.js --csv ../data/SOL_1d.csv` drives the real
+`tick()` bar by bar. (`data/` is a gitignored fetch cache that exists only in the main checkout, so
+that relative path does not resolve from inside a worktree — pass an absolute path there.)
+
+| | ladder moved | bars outside ladder |
+| --- | --- | --- |
+| `autoRecentre=false` | 0x | 1637/1875 (**87.3%**) |
+| `autoRecentre=true` | **1x**, on bar 1 | 1745/1875 (**93.1%**) |
+
+The **+7.5% median** came from a simulator moving the ladder *unconditionally* every block. The
+shipped gate fires **once in 1,875 bars** and on this path made placement **worse** — one
+inception-time move locked the ladder onto 2021's $39.25. Corrected in `extension/README.md` and
+`backtester/strategy_cards/ladder_grid.md`, which both previously called re-centring "what made it
+profitable". Value is *not* return: a grid armed today starts near today's price. At $74.03 the
+stock 60–90 band already contains price, so it returns `price-inside-ladder` and does nothing.
+
+Making the ladder actually **track** the market needs a cancel path in `tick()` — a change to the
+order lifecycle, deliberately not attempted. **No live order has ever been placed.**
+
+### Handoff-file hazard, learned the hard way
+
+`.remember/remember.md` is **tracked and cumulative across sessions**. Writing it with a whole-file
+Write from a worktree clobbers every prior section in the main checkout's working tree. Append a new
+`---` section instead; recover a clobber with `git restore .remember/remember.md`.
