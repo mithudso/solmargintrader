@@ -64,18 +64,37 @@ partner in a majority of top combinations across every horizon, and `vol_regime`
 The transferable claim is **not** 'trade these five configurations' — it is:
 
 1. **A slow mean-reversion signal (`ou_reversion`, 250-bar) is the most productive *partner*
-   mechanism in this study.** It is what the top pairs have in common.
-2. **A volatility- or Hurst-based regime gate is the second.** Its job is answering 'is this a
-   trending regime', which is precisely mean-reversion's fatal blind spot.
-3. **Combining raises parameter sensitivity ~2.6×** (singles median ratio 0.21 vs top pairs 0.44)
-   and raises PBO. Pairs buy performance with fragility; that trade is real and measured.
+   mechanism in this study.** It is what the top pairs have in common. **Qualified 2026-08-05:**
+   its value is partner-dependent. `any(ou_reversion+obv_trend)` transferred to DOGE and ZEC;
+   `any(hurst_switch+ou_reversion)` collapsed on DOGE (0 of 15 paths positive).
+2. ~~**A volatility- or Hurst-based regime gate is the second.**~~ **DOWNGRADED 2026-08-05 —
+   contradicted by the cross-asset test** (`CROSS-ASSET-TRANSFER.md`). The two configurations
+   containing `vol_regime` (#1 and #5) suffered the largest degradations off SOL, and
+   `vol_regime_60_0.5` goes negative on **both** DOGE and ZEC. As a medium-horizon single,
+   `vol_regime` is positive on only 3 of 5 assets and one of those is +0.019. **`obv_trend`
+   replaces it as the transfer-supported second mechanism**: it is the only member appearing in
+   both surviving configurations (#3, #4) and, as a single, is positive on all five assets with
+   the highest path fractions on both new ones (86% DOGE, 90% ZEC).
+3. **Combining raises parameter sensitivity ~2.6×** — comparing like with like, since the top
+   pairs are long-horizon: long-horizon singles median ratio **0.171** vs top pairs **0.44**.
+   (Corrected 2026-08-05: the earlier phrasing paired that 2.6× multiple with the *pooled*
+   singles median of 0.208 across all three horizons, which yields 2.1×, not 2.6×. Both numbers
+   are real; the mismatched pairing was not.) It also raises PBO. Pairs buy performance with
+   fragility; that trade is real and measured.
 
 ## What this does not establish
 
 - Perturbation stability answers *were the parameters cherry-picked* (no). It cannot answer
   *was the configuration cherry-picked from 295 candidates* — PBO 0.650 says that stands.
 - One asset (SOL), one history. BTC and ETH runs already sank the last surviving moderate result;
-  `cpcv_all25_btc_eth_1d.csv` is the record.
+  `cpcv_all25_btc_eth_1d.csv` is the record. **Answered 2026-08-05, and the answer is bad for
+  this table:** all five configurations were re-run unchanged on DOGE and ZEC, and **all ten
+  transfers degraded with none improving** (median −0.821 DOGE, −0.753 ZEC). Only **#3 and #4**
+  stayed positive on all three assets — so the ordering 1–5 above should not be read as a
+  preference ranking, because the two configurations at the top of it are among the worst
+  transfers. On ZEC, zero-parameter `buy_and_hold` (+0.659) beat all five. Full write-up:
+  `research/CROSS-ASSET-TRANSFER.md`; reproduce with
+  `python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC`.
 - The largest single sensitivity found was **CPCV geometry** (8→9 blocks, Δ −0.441), larger than
   any strategy parameter. The result depends more on how the data is sliced than on the strategy.
 - No live order has ever been placed by this project.
