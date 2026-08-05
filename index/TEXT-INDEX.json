@@ -124,7 +124,7 @@
     "docs/SECURITY.md": 470,
     "docs/TESTING.md": 836,
     "docs/codebase-overview.md": 1043,
-    "docs/dso-skill/README.md": 134,
+    "docs/dso-skill/README.md": 290,
     "docs/dso-skill/SKILL.md": 2025,
     "docs/dso-skill/references/passes.md": 782,
     "docs/external-calls.md": 549,
@@ -277,7 +277,7 @@
     "soltui/tui.py": 2277,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-08-05T17:37:53+00:00",
+  "generatedAt": "2026-08-05T18:03:00+00:00",
   "postings": {
     "100": {
       ".remember/remember.md": 1,
@@ -3309,6 +3309,7 @@
       "docs/INSTALLATION.md": 1,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 2,
       "docs/high_signal_file_index.json": 1,
       "docs/logging.md": 1,
@@ -4264,6 +4265,7 @@
       "backtester/tests/test_gridcli.py": 3,
       "docs/DEVELOPMENT.md": 2,
       "docs/FILES.md": 4,
+      "docs/dso-skill/README.md": 1,
       "docs/known-issues.md": 2,
       "docs/strategy-optimization-concept-family.md": 1,
       "extension/src/jupiter/http.js": 1,
@@ -4507,6 +4509,7 @@
       "scripts/check_docs.py": 1
     },
     "appearing": {
+      "docs/dso-skill/README.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1
@@ -5427,6 +5430,7 @@
       "tradingskilllist/trading-skills.md": 1
     },
     "arrangement": {
+      "docs/dso-skill/README.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 2
     },
     "array": {
@@ -6761,6 +6765,7 @@
       "docs/FILES.md": 2,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 3,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 2,
       "docs/dso-skill/references/passes.md": 1,
       "docs/high_signal_file_index.json": 3,
@@ -6827,7 +6832,7 @@
       "backtester/strategy_cards/bb_reversion.md": 1,
       "backtester/tests/test_strategy_duplication.py": 2,
       "docs/SECURITY.md": 1,
-      "docs/dso-skill/README.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 14,
       "docs/strategy-optimization-concept-family.md": 10,
       "research/RANKED_LISTS.md": 1,
@@ -7872,6 +7877,7 @@
       "backtester/tests/test_geometry.py": 1
     },
     "backups": {
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1
     },
     "backward": {
@@ -8020,6 +8026,9 @@
     },
     "baj": {
       "soltui/SolTUI.icns": 1
+    },
+    "bak": {
+      "docs/dso-skill/README.md": 1
     },
     "baked": {
       "README.md": 1,
@@ -9589,6 +9598,7 @@
     "belong": {
       ".github/SECURITY.md": 1,
       "backtester/PROMPT.md": 1,
+      "docs/dso-skill/README.md": 1,
       "extension/src/core/engine.js": 1,
       "extension/tools/api-server.js": 1,
       "research/TOP_COINS.md": 1,
@@ -9706,6 +9716,7 @@
     },
     "beside": {
       "docs/CONCEPTS.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/references/passes.md": 1,
       "extension/README.md": 2,
       "index/README.md": 1,
@@ -9946,6 +9957,7 @@
       "backtester/tests/test_deflated_sharpe.py": 2,
       "docs/FILES.md": 4,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/trading-signals-concept-family.md": 3,
@@ -11565,6 +11577,7 @@
       "docs/COMPONENTS.md": 2,
       "docs/INSTALLATION.md": 2,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/known-issues.md": 1,
@@ -11660,6 +11673,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 2,
       "docs/INSTALLATION.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/onboarding.md": 1,
       "extension/src/wallet/signer.js": 2,
       "extension/test/core.test.js": 4,
@@ -12312,6 +12326,7 @@
       "docs/INSTALLATION.md": 7,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/known-issues.md": 2,
@@ -13617,6 +13632,7 @@
       "backtester/strategy_cards/ma_crossover.md": 2,
       "docs/API.md": 1,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 8,
       "docs/trading-signals-concept-family.md": 1,
       "pagesource": 1,
@@ -14326,6 +14342,7 @@
       "docs/API.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "extension/README.md": 1,
       "extension/src/core/commands.js": 1,
@@ -15148,7 +15165,7 @@
       "docs/FILES.md": 5,
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 1,
-      "docs/dso-skill/README.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 11,
       "docs/integrations-and-assumptions.md": 1,
       "docs/logging.md": 3,
@@ -15559,6 +15576,7 @@
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 4,
       "docs/codebase-overview.md": 4,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 7,
       "docs/dso-skill/references/passes.md": 4,
       "docs/external-calls.md": 1,
@@ -15733,6 +15751,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/INSTALLATION.md": 2,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/high_signal_file_index.json": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/known-issues.md": 1,
@@ -16482,7 +16501,7 @@
       "docs/FILES.md": 7,
       "docs/INSTALLATION.md": 1,
       "docs/codebase-overview.md": 4,
-      "docs/dso-skill/README.md": 6,
+      "docs/dso-skill/README.md": 9,
       "docs/dso-skill/SKILL.md": 10,
       "docs/high_signal_file_index.json": 2,
       "docs/known-issues.md": 1,
@@ -16850,6 +16869,7 @@
       "docs/DEVELOPMENT.md": 4,
       "docs/FILES.md": 1,
       "docs/INSTALLATION.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/known-issues.md": 1,
       "research/turnover_table.py": 1,
       "scripts/build_doc_index.py": 1,
@@ -17289,6 +17309,7 @@
       "docs/FILES.md": 102,
       "docs/INSTALLATION.md": 2,
       "docs/TESTING.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 13,
       "docs/dso-skill/references/passes.md": 4,
       "docs/external-calls.md": 2,
@@ -18391,7 +18412,6 @@
       "docs/COMPONENTS.md": 1,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 3,
-      "docs/dso-skill/README.md": 1,
       "docs/onboarding.md": 1,
       "index/README.md": 1,
       "index/build.py": 4,
@@ -18425,7 +18445,6 @@
       "backtester/strategy_cards/README.md": 2,
       "backtester/tests/test_index.py": 1,
       "docs/FILES.md": 4,
-      "docs/dso-skill/README.md": 2,
       "extension/README.md": 1,
       "extension/src/core/engine.js": 1,
       "extension/src/core/grid.js": 1,
@@ -18479,6 +18498,7 @@
       "backtester/tests/test_strategy_duplication.py": 1,
       "docs/FILES.md": 1,
       "docs/OPERATIONS.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "index/build.py": 1,
       "pagesource": 1,
@@ -20129,6 +20149,7 @@
       "research/coin-intelligence/xrp-ripple.md": 1
     },
     "consolidation": {
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 8
     },
     "conspicuously": {
@@ -20510,6 +20531,7 @@
       ".gitignore": 1,
       ".remember/remember.md": 1,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/trading-signals-concept-family.md": 4,
       "extension/README.md": 2,
@@ -20876,6 +20898,9 @@
     "convenience": {
       "research/coin-intelligence/sol-solana.md": 1
     },
+    "convenient": {
+      "docs/dso-skill/README.md": 1
+    },
     "convention": {
       ".gitignore": 1,
       ".remember/remember.md": 2,
@@ -21179,6 +21204,7 @@
       "docs/INSTALLATION.md": 1,
       "docs/TESTING.md": 4,
       "docs/codebase-overview.md": 37,
+      "docs/dso-skill/README.md": 1,
       "docs/external-calls.md": 7,
       "docs/high_signal_file_index.json": 32,
       "docs/integrations-and-assumptions.md": 3,
@@ -22152,7 +22178,6 @@
       "docs/FILES.md": 56,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 4,
-      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 4,
       "docs/onboarding.md": 1,
       "docs/strategy-optimization-concept-family.md": 8,
@@ -22503,6 +22528,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/FILES.md": 2,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/trading-signals-concept-family.md": 2,
       "extension/README.md": 3,
       "extension/src/bg/service-worker.js": 1,
@@ -22598,6 +22624,7 @@
     },
     "creating": {
       "backtester/strategy_cards/bb_reversion.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/strategy-optimization-concept-family.md": 1
     },
     "creation": {
@@ -23163,7 +23190,6 @@
       "backtester/paircli.py": 1,
       "backtester/strategy_cards/discount_to_anchor.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
-      "docs/dso-skill/README.md": 1,
       "docs/strategy-optimization-concept-family.md": 4,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
@@ -24928,7 +24954,7 @@
       "backtester/tests/test_engine.py": 1,
       "backtester/tests/test_strategy_cards.py": 1,
       "docs/FILES.md": 1,
-      "docs/dso-skill/README.md": 7,
+      "docs/dso-skill/README.md": 8,
       "docs/dso-skill/SKILL.md": 11,
       "docs/known-issues.md": 1,
       "docs/logging.md": 1,
@@ -25457,6 +25483,7 @@
       "backtester/core/deflated_sharpe.py": 16,
       "backtester/tests/test_deflated_sharpe.py": 16,
       "docs/CONCEPTS.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/references/passes.md": 1,
       "docs/strategy-optimization-concept-family.md": 8,
       "index/build.py": 1,
@@ -25468,6 +25495,7 @@
     "deflated_sharpe": {
       "backtester/core/deflated_sharpe.py": 4,
       "backtester/tests/test_deflated_sharpe.py": 6,
+      "docs/dso-skill/README.md": 1,
       "docs/strategy-optimization-concept-family.md": 3,
       "research/RANKED_LISTS.md": 1,
       "research/dso_audit.py": 3
@@ -25505,6 +25533,7 @@
       "backtester/strategy_cards/garch_vol_forecast.md": 1,
       "backtester/strategy_cards/sma_regime.md": 1,
       "backtester/strategy_cards/voltarget.md": 3,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 3,
       "docs/dso-skill/references/passes.md": 2,
       "docs/strategy-optimization-concept-family.md": 3,
@@ -25642,6 +25671,7 @@
     },
     "delete": {
       "docs/INSTALLATION.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "extension/test/core.test.js": 1,
       "extension/test/surfaces.test.js": 1,
@@ -26343,6 +26373,7 @@
       "backtester/core/strategies/signals.py": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "backtester/tests/test_strategy_duplication.py": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/references/passes.md": 1,
       "extension/src/wallet/signer.js": 1,
       "index/README.md": 1,
@@ -26369,6 +26400,7 @@
       "backtester/tests/test_index.py": 2,
       "docs/FILES.md": 54,
       "docs/SECURITY.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 2,
       "extension/README.md": 6,
@@ -26570,6 +26602,7 @@
       "backtester/paircli.py": 1,
       "backtester/strategy_cards/atr_position_sizing.md": 1,
       "docs/FILES.md": 268,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "extension/manifest.json": 2,
       "extension/package.json": 2,
@@ -26875,6 +26908,7 @@
       "docs/FILES.md": 2,
       "docs/INSTALLATION.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/known-issues.md": 1,
       "docs/trading-signals-concept-family.md": 5,
@@ -27550,6 +27584,7 @@
       "backtester/tests/test_universe.py": 7,
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 7,
+      "docs/dso-skill/README.md": 1,
       "extension/src/storage/fileStore.js": 4,
       "index/build.py": 2,
       "index/make_files_doc.py": 18,
@@ -27729,6 +27764,7 @@
       "backtester/tests/test_decide.py": 1,
       "backtester/tests/test_index.py": 1,
       "docs/FILES.md": 3,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 3,
@@ -27774,7 +27810,7 @@
       "docs/INSTALLATION.md": 1,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 2,
-      "docs/dso-skill/README.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/high_signal_file_index.json": 10,
       "index/make_files_doc.py": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -28882,7 +28918,7 @@
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 4,
       "docs/codebase-overview.md": 6,
-      "docs/dso-skill/README.md": 4,
+      "docs/dso-skill/README.md": 5,
       "docs/dso-skill/SKILL.md": 1,
       "docs/dso-skill/references/passes.md": 1,
       "docs/external-calls.md": 5,
@@ -29730,7 +29766,7 @@
       "docs/FILES.md": 4,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
-      "docs/dso-skill/README.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/high_signal_file_index.json": 1,
       "docs/strategy-optimization-concept-family.md": 4,
       "extension/src/core/grid.js": 2,
@@ -30128,7 +30164,7 @@
     "dso": {
       "backtester/strategy_cards/bb_reversion.md": 1,
       "backtester/tests/test_strategy_duplication.py": 2,
-      "docs/dso-skill/README.md": 7,
+      "docs/dso-skill/README.md": 9,
       "docs/dso-skill/SKILL.md": 8,
       "docs/dso-skill/references/passes.md": 3,
       "docs/strategy-optimization-concept-family.md": 16,
@@ -30139,7 +30175,7 @@
     "dso_audit": {
       "backtester/strategy_cards/bb_reversion.md": 1,
       "backtester/tests/test_strategy_duplication.py": 2,
-      "docs/dso-skill/README.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/strategy-optimization-concept-family.md": 9,
       "research/RANKED_LISTS.md": 1,
       "research/dso_audit.py": 5
@@ -30641,6 +30677,7 @@
       "backtester/tests/test_engine.py": 2,
       "backtester/tests/test_pairs.py": 2,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 1,
       "docs/dso-skill/references/passes.md": 1,
       "docs/integrations-and-assumptions.md": 1,
@@ -30964,6 +31001,7 @@
       "backtester/tests/test_index.py": 1,
       "backtester/tests/test_strategy_duplication.py": 1,
       "docs/FILES.md": 3,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 3,
       "docs/high_signal_file_index.json": 1,
       "index/make_files_doc.py": 1,
@@ -30989,7 +31027,6 @@
     },
     "edited": {
       "backtester/strategy_cards/README.md": 1,
-      "docs/dso-skill/README.md": 1,
       "soltui/tests/test_tui.py": 1
     },
     "editing": {
@@ -32078,6 +32115,7 @@
       "backtester/strategy_cards/vwap_reversion.md": 1,
       "backtester/strategy_cards/zscore.md": 1,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/onboarding.md": 2,
       "extension/tools/measure-recentre.js": 1,
@@ -33320,6 +33358,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 3,
       "docs/INSTALLATION.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 3,
       "docs/external-calls.md": 2,
       "docs/integrations-and-assumptions.md": 1,
@@ -34160,6 +34199,7 @@
       "docs/SECURITY.md": 2,
       "docs/TESTING.md": 10,
       "docs/codebase-overview.md": 10,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 10,
       "docs/dso-skill/references/passes.md": 9,
       "docs/external-calls.md": 7,
@@ -34363,7 +34403,7 @@
       "backtester/tests/test_universe.py": 3,
       "docs/CONCEPTS.md": 5,
       "docs/FILES.md": 1,
-      "docs/dso-skill/README.md": 1,
+      "docs/dso-skill/README.md": 3,
       "docs/dso-skill/SKILL.md": 9,
       "docs/dso-skill/references/passes.md": 3,
       "docs/known-issues.md": 1,
@@ -34546,6 +34586,7 @@
       "docs/CONCEPTS.md": 2,
       "docs/FILES.md": 7,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/references/passes.md": 2,
       "docs/integrations-and-assumptions.md": 1,
       "docs/logging.md": 1,
@@ -37029,6 +37070,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 4,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 6,
       "docs/dso-skill/references/passes.md": 2,
       "docs/known-issues.md": 1,
@@ -38454,6 +38496,7 @@
       "docs/FILES.md": 8,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 12,
       "docs/dso-skill/references/passes.md": 4,
       "docs/high_signal_file_index.json": 1,
@@ -38761,6 +38804,7 @@
       "docs/INSTALLATION.md": 1,
       "docs/SECURITY.md": 2,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 2,
       "docs/logging.md": 3,
       "docs/onboarding.md": 1,
@@ -40404,6 +40448,7 @@
       "docs/CONCEPTS.md": 5,
       "docs/FILES.md": 2,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 3,
       "docs/dso-skill/SKILL.md": 7,
       "docs/dso-skill/references/passes.md": 3,
       "docs/integrations-and-assumptions.md": 1,
@@ -40666,6 +40711,7 @@
       "backtester/strategy_cards/discount_to_anchor.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "backtester/tests/test_decide.py": 6,
+      "docs/dso-skill/README.md": 2,
       "extension/README.md": 1,
       "extension/test/core.test.js": 1,
       "research/STRATEGIES.md": 2,
@@ -41617,6 +41663,7 @@
       "docs/INSTALLATION.md": 2,
       "docs/SECURITY.md": 2,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
@@ -42870,6 +42917,7 @@
       "backtester/strategy_cards/vol_regime_hmm.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 2,
       "docs/strategy-optimization-concept-family.md": 1,
       "index/make_files_doc.py": 1,
@@ -42882,6 +42930,7 @@
     "gating": {
       "backtester/core/strategies/composite.py": 1,
       "backtester/strategy_cards/grid.md": 1,
+      "docs/dso-skill/README.md": 1,
       "research/coin-intelligence/rain-rain.md": 4
     },
     "gauge": {
@@ -43762,6 +43811,7 @@
       "docs/FILES.md": 5,
       "docs/INSTALLATION.md": 1,
       "docs/SECURITY.md": 2,
+      "docs/dso-skill/README.md": 5,
       "index/build.py": 3,
       "index/make_files_doc.py": 3,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -47638,6 +47688,7 @@
       ".remember/remember.md": 1,
       "backtester/README.md": 1,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/known-issues.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "soltui/README.md": 1,
@@ -49207,6 +49258,7 @@
       "research/coin-intelligence/xrp-ripple.md": 4
     },
     "incentive": {
+      "docs/dso-skill/README.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/coin-intelligence/rain-rain.md": 2,
@@ -49397,6 +49449,7 @@
       "tradingskilllist/trading-skills.md": 2
     },
     "inconvenient": {
+      "docs/dso-skill/README.md": 1,
       "research/dso_audit.py": 1
     },
     "incorporation": {
@@ -50549,6 +50602,7 @@
       "backtester/tests/test_strategy_duplication.py": 1,
       "docs/FILES.md": 2,
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 2,
       "docs/strategy-optimization-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
@@ -50668,7 +50722,6 @@
       ".remember/remember.md": 3,
       "backtester/PROMPT.md": 1,
       "docs/INSTALLATION.md": 1,
-      "docs/dso-skill/README.md": 4,
       "docs/integrations-and-assumptions.md": 1,
       "docs/known-issues.md": 1,
       "extension/src/bg/service-worker.js": 1,
@@ -50775,6 +50828,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 7,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/integrations-and-assumptions.md": 1,
@@ -51617,6 +51671,7 @@
       "research/coin-intelligence/xrp-ripple.md": 1
     },
     "introduced": {
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 2,
       "research/coin-intelligence/doge-dogecoin.md": 1
     },
@@ -52583,6 +52638,7 @@
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 4,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 2,
       "docs/dso-skill/references/passes.md": 1,
       "docs/known-issues.md": 1,
@@ -53939,6 +53995,7 @@
       "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 5,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/high_signal_file_index.json": 1,
       "extension/src/bg/service-worker.js": 1,
       "extension/src/core/grid.js": 1,
@@ -54526,6 +54583,7 @@
       "backtester/strategy_cards/macd.md": 1,
       "backtester/strategy_cards/obv_trend.md": 1,
       "docs/FILES.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/known-issues.md": 1,
       "docs/onboarding.md": 2,
       "docs/trading-signals-concept-family.md": 1,
@@ -55975,6 +56033,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "backtester/tests/test_decide.py": 1,
       "docs/INSTALLATION.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/onboarding.md": 1,
       "extension/README.md": 1,
       "extension/src/core/grid.js": 1,
@@ -57323,6 +57382,7 @@
     },
     "liner": {
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "index/README.md": 1,
       "index/build.py": 1,
       "index/make_files_doc.py": 2
@@ -57375,6 +57435,7 @@
     },
     "link": {
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 10,
       "docs/trading-signals-concept-family.md": 2,
       "extension/src/ui/dashboard.html": 1,
       "extension/src/ui/popup.html": 2,
@@ -57981,7 +58042,6 @@
       "docs/OPERATIONS.md": 3,
       "docs/TESTING.md": 3,
       "docs/codebase-overview.md": 1,
-      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 6,
       "docs/dso-skill/references/passes.md": 2,
       "docs/external-calls.md": 5,
@@ -58319,6 +58379,7 @@
       "backtester/tests/test_decide.py": 1,
       "backtester/tests/test_engine.py": 1,
       "backtester/tests/test_strategy_cards.py": 2,
+      "docs/dso-skill/README.md": 2,
       "docs/onboarding.md": 1,
       "research/cross_asset_cpcv.py": 3,
       "research/decide.py": 2,
@@ -60213,7 +60274,7 @@
       "docs/INSTALLATION.md": 2,
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 1,
-      "docs/dso-skill/README.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 2,
       "docs/external-calls.md": 2,
       "docs/integrations-and-assumptions.md": 1,
@@ -60439,6 +60500,7 @@
       "docs/FILES.md": 16,
       "docs/INSTALLATION.md": 1,
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/strategy-optimization-concept-family.md": 1,
       "extension/README.md": 1,
       "extension/src/wallet/signer.js": 1,
@@ -61722,6 +61784,7 @@
     },
     "maths": {
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "index/make_files_doc.py": 1,
       "tradingskilllist/trading-skills.md": 2
     },
@@ -64175,7 +64238,6 @@
       "backtester/core/engine.py": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/tests/test_decide.py": 1,
-      "docs/dso-skill/README.md": 6,
       "docs/dso-skill/references/passes.md": 1,
       "docs/trading-signals-concept-family.md": 6,
       "extension/README.md": 1,
@@ -64455,6 +64517,7 @@
       ".remember/remember.md": 1,
       "backtester/README.md": 1,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/known-issues.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "soltui/README.md": 1,
@@ -64516,7 +64579,6 @@
       "backtester/core/report.py": 1,
       "backtester/core/universe.py": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 2,
-      "docs/dso-skill/README.md": 1,
       "extension/src/storage/fileStore.js": 2,
       "index/build.py": 1,
       "index/make_concepts_doc.py": 1,
@@ -64819,6 +64881,7 @@
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 2,
@@ -67461,6 +67524,7 @@
       "docs/SECURITY.md": 10,
       "docs/TESTING.md": 4,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 3,
       "docs/dso-skill/SKILL.md": 18,
       "docs/dso-skill/references/passes.md": 4,
       "docs/external-calls.md": 4,
@@ -67558,6 +67622,7 @@
       "docs/API.md": 1,
       "docs/FILES.md": 2,
       "docs/TESTING.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/known-issues.md": 1,
       "docs/onboarding.md": 1,
@@ -67701,6 +67766,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 1,
       "docs/OPERATIONS.md": 4,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/onboarding.md": 1,
@@ -68873,6 +68939,7 @@
       "backtester/tests/test_index.py": 1,
       "docs/API.md": 1,
       "docs/FILES.md": 2,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/onboarding.md": 1,
@@ -69820,6 +69887,7 @@
       "backtester/strategy_cards/garch_vol_forecast.md": 1,
       "backtester/strategy_cards/sma_regime.md": 1,
       "backtester/strategy_cards/voltarget.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/known-issues.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "extension/src/venues/triggerVenue.js": 2,
@@ -71326,7 +71394,7 @@
     "optimizer": {
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
-      "docs/dso-skill/README.md": 7,
+      "docs/dso-skill/README.md": 9,
       "docs/dso-skill/SKILL.md": 16,
       "docs/known-issues.md": 1,
       "docs/logging.md": 1,
@@ -72786,6 +72854,7 @@
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 3,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 5,
       "docs/dso-skill/references/passes.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -73180,6 +73249,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/onboarding.md": 1,
       "docs/trading-signals-concept-family.md": 4,
@@ -73494,6 +73564,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 3,
       "docs/codebase-overview.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 2,
       "docs/strategy-optimization-concept-family.md": 4,
       "index/search.py": 1,
@@ -73934,6 +74005,7 @@
       "backtester/tests/test_gridcli.py": 3,
       "backtester/tests/test_index.py": 4,
       "backtester/tests/test_strategy_cards.py": 2,
+      "docs/dso-skill/README.md": 2,
       "extension/src/jupiter/http.js": 1,
       "extension/src/storage/fileStore.js": 1,
       "extension/src/venues/index.js": 1,
@@ -74385,7 +74457,7 @@
       "backtester/tests/test_universe.py": 1,
       "docs/API.md": 2,
       "docs/TESTING.md": 1,
-      "docs/dso-skill/README.md": 5,
+      "docs/dso-skill/README.md": 3,
       "docs/dso-skill/SKILL.md": 11,
       "docs/dso-skill/references/passes.md": 5,
       "docs/onboarding.md": 1,
@@ -74570,6 +74642,7 @@
       "docs/INSTALLATION.md": 1,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 11,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 7,
       "docs/dso-skill/references/passes.md": 6,
       "docs/external-calls.md": 3,
@@ -76226,6 +76299,7 @@
       "backtester/tests/test_gridsim.py": 1,
       "docs/INSTALLATION.md": 1,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/decide.py": 1,
       "soltui/make_icon.py": 1,
@@ -76309,6 +76383,7 @@
       "docs/FILES.md": 1,
       "docs/INSTALLATION.md": 1,
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/integrations-and-assumptions.md": 2,
       "docs/strategy-optimization-concept-family.md": 2,
       "extension/test/core.test.js": 1,
@@ -77138,6 +77213,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 9,
       "docs/codebase-overview.md": 4,
+      "docs/dso-skill/README.md": 3,
       "docs/dso-skill/references/passes.md": 1,
       "docs/high_signal_file_index.json": 3,
       "docs/integrations-and-assumptions.md": 1,
@@ -77231,6 +77307,7 @@
       "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 27,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/known-issues.md": 1,
@@ -78097,6 +78174,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/onboarding.md": 1,
       "extension/README.md": 1,
       "extension/src/storage/memoryStore.js": 2,
@@ -80001,6 +80079,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 10,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 5,
       "docs/trading-signals-concept-family.md": 2,
       "index/README.md": 2,
@@ -80903,7 +80982,7 @@
       "docs/INSTALLATION.md": 14,
       "docs/TESTING.md": 6,
       "docs/codebase-overview.md": 1,
-      "docs/dso-skill/README.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/onboarding.md": 7,
@@ -82898,6 +82977,7 @@
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 5,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/dso-skill/references/passes.md": 2,
       "docs/external-calls.md": 2,
@@ -83785,6 +83865,7 @@
       "docs/INSTALLATION.md": 1,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/external-calls.md": 2,
       "docs/high_signal_file_index.json": 2,
       "docs/known-issues.md": 1,
@@ -83885,6 +83966,7 @@
       "docs/SECURITY.md": 2,
       "docs/TESTING.md": 6,
       "docs/codebase-overview.md": 3,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 4,
       "docs/dso-skill/references/passes.md": 4,
       "docs/external-calls.md": 3,
@@ -84855,6 +84937,9 @@
     "recreates": {
       ".remember/remember.md": 1
     },
+    "recreating": {
+      "docs/dso-skill/README.md": 1
+    },
     "rect": {
       "pagesource": 4
     },
@@ -85126,7 +85211,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/INSTALLATION.md": 1,
       "docs/codebase-overview.md": 1,
-      "docs/dso-skill/README.md": 4,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 3,
       "docs/dso-skill/references/passes.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -85702,6 +85787,9 @@
     "registering": {
       "extension/src/jupiter/trigger.js": 1
     },
+    "registers": {
+      "docs/dso-skill/README.md": 1
+    },
     "registration": {
       "docs/strategy-optimization-concept-family.md": 1
     },
@@ -85949,7 +86037,6 @@
     },
     "reinstall": {
       ".remember/remember.md": 1,
-      "docs/dso-skill/README.md": 1,
       "soltui/soltui-service": 1
     },
     "reinsurance": {
@@ -86815,7 +86902,7 @@
       "docs/FILES.md": 39,
       "docs/INSTALLATION.md": 1,
       "docs/codebase-overview.md": 3,
-      "docs/dso-skill/README.md": 3,
+      "docs/dso-skill/README.md": 4,
       "docs/dso-skill/SKILL.md": 3,
       "docs/external-calls.md": 4,
       "docs/high_signal_file_index.json": 11,
@@ -87061,6 +87148,7 @@
       "docs/API.md": 1,
       "docs/OPERATIONS.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/strategy-optimization-concept-family.md": 3,
@@ -88271,7 +88359,6 @@
       "docs/FILES.md": 58,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 3,
-      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 7,
       "docs/dso-skill/references/passes.md": 6,
       "docs/high_signal_file_index.json": 2,
@@ -88544,6 +88631,7 @@
       "research/coin-intelligence/eth-ethereum.md": 2
     },
     "retired": {
+      "docs/dso-skill/README.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1
     },
@@ -88824,6 +88912,7 @@
       "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 8,
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/integrations-and-assumptions.md": 3,
       "docs/logging.md": 2,
       "docs/trading-signals-concept-family.md": 4,
@@ -88900,6 +88989,7 @@
       "research/coin-intelligence/xrp-ripple.md": 7
     },
     "rev": {
+      "docs/dso-skill/README.md": 2,
       "index/build.py": 1,
       "research/coin-intelligence/eth-ethereum.md": 1
     },
@@ -89789,6 +89879,7 @@
       "backtester/tests/test_strategy_cards.py": 3,
       "docs/FILES.md": 6,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "extension/README.md": 1,
       "extension/src/ui/ui.css": 2,
       "extension/test/surfaces.test.js": 5,
@@ -92444,6 +92535,7 @@
       "backtester/tests/test_strategy_cards.py": 3,
       "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 4,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/integrations-and-assumptions.md": 4,
       "docs/strategy-optimization-concept-family.md": 1,
@@ -92837,6 +92929,7 @@
       "backtester/strategy_cards/obv_trend.md": 1,
       "docs/FILES.md": 2,
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 1,
       "extension/src/jupiter/attribution.js": 2,
       "extension/src/storage/fileStore.js": 1,
       "extension/test/core.test.js": 2,
@@ -93734,6 +93827,7 @@
       "docs/INSTALLATION.md": 2,
       "docs/SECURITY.md": 2,
       "docs/codebase-overview.md": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 2,
       "docs/integrations-and-assumptions.md": 1,
       "docs/logging.md": 1,
@@ -94507,6 +94601,7 @@
       "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 85,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 4,
       "docs/dso-skill/references/passes.md": 2,
       "docs/high_signal_file_index.json": 1,
@@ -94990,6 +95085,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "backtester/tests/test_geometry.py": 1,
       "docs/FILES.md": 2,
+      "docs/dso-skill/README.md": 1,
       "extension/src/core/risk.js": 2,
       "extension/src/ui/dashboard.js": 1,
       "index/search.py": 7,
@@ -95948,6 +96044,7 @@
       "docs/FILES.md": 2,
       "docs/INSTALLATION.md": 2,
       "docs/TESTING.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 2,
       "docs/dso-skill/references/passes.md": 3,
       "docs/external-calls.md": 1,
@@ -96073,6 +96170,7 @@
       "backtester/strategy_cards/triangular_arbitrage.md": 2,
       "backtester/strategy_cards/vol_regime_hmm.md": 1,
       "backtester/strategy_cards/zscore.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
@@ -96802,7 +96900,7 @@
     },
     "skills": {
       "docs/FILES.md": 2,
-      "docs/dso-skill/README.md": 6,
+      "docs/dso-skill/README.md": 7,
       "docs/dso-skill/SKILL.md": 1,
       "index/make_files_doc.py": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -98074,6 +98172,7 @@
       "docs/FILES.md": 2,
       "docs/OPERATIONS.md": 1,
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/known-issues.md": 1,
       "extension/README.md": 4,
@@ -98129,6 +98228,7 @@
       "docs/INSTALLATION.md": 25,
       "docs/TESTING.md": 8,
       "docs/codebase-overview.md": 19,
+      "docs/dso-skill/README.md": 1,
       "docs/external-calls.md": 1,
       "docs/high_signal_file_index.json": 34,
       "docs/integrations-and-assumptions.md": 7,
@@ -98259,6 +98359,7 @@
     "somewhere": {
       ".remember/remember.md": 1,
       "docs/FILES.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/integrations-and-assumptions.md": 2,
       "research/RANKED_LISTS.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -98432,6 +98533,7 @@
       "docs/FILES.md": 11,
       "docs/INSTALLATION.md": 2,
       "docs/codebase-overview.md": 3,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 3,
       "docs/dso-skill/references/passes.md": 3,
       "docs/external-calls.md": 4,
@@ -98965,6 +99067,9 @@
     "speeches": {
       "research/coin-intelligence/eth-ethereum.md": 2
     },
+    "spell": {
+      "docs/dso-skill/README.md": 1
+    },
     "spellcheck": {
       "extension/src/ui/dashboard.html": 3,
       "extension/src/ui/popup.html": 1
@@ -99093,6 +99198,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 23,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 6,
       "docs/dso-skill/references/passes.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -100450,7 +100556,6 @@
       "backtester/strategy_cards/README.md": 1,
       "backtester/strategy_cards/ou_half_life_sizing.md": 1,
       "backtester/tests/test_strategy_duplication.py": 1,
-      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 3,
       "docs/dso-skill/references/passes.md": 1,
       "docs/strategy-optimization-concept-family.md": 2,
@@ -100911,6 +101016,7 @@
       "docs/OPERATIONS.md": 2,
       "docs/SECURITY.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/references/passes.md": 2,
       "docs/external-calls.md": 3,
       "docs/onboarding.md": 6,
@@ -101187,6 +101293,7 @@
       "backtester/tests/test_geometry.py": 5,
       "docs/API.md": 1,
       "docs/INSTALLATION.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 1,
@@ -101565,6 +101672,7 @@
       "docs/FILES.md": 40,
       "docs/TESTING.md": 3,
       "docs/codebase-overview.md": 16,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 7,
       "docs/dso-skill/references/passes.md": 2,
       "docs/high_signal_file_index.json": 14,
@@ -101786,6 +101894,7 @@
       "extension/src/venues/triggerVenue.js": 6
     },
     "stricter": {
+      "docs/dso-skill/README.md": 1,
       "research/RANKED_LISTS.md": 1
     },
     "strictly": {
@@ -102244,6 +102353,9 @@
       "docs/INSTALLATION.md": 2,
       "index/build.py": 1,
       "soltui/soltui-service": 1
+    },
+    "subdirectory": {
+      "docs/dso-skill/README.md": 1
     },
     "subject": {
       "backtester/strategy_cards/triangular_arbitrage.md": 1,
@@ -103215,7 +103327,8 @@
       "docs/FILES.md": 1
     },
     "supporting": {
-      "backtester/tests/test_geometry.py": 1
+      "backtester/tests/test_geometry.py": 1,
+      "docs/dso-skill/README.md": 1
     },
     "supports": {
       "backtester/README.md": 2,
@@ -103441,7 +103554,6 @@
       "backtester/tests/test_decide.py": 1,
       "backtester/tests/test_deflated_sharpe.py": 4,
       "backtester/tests/test_strategy_duplication.py": 1,
-      "docs/dso-skill/README.md": 2,
       "docs/strategy-optimization-concept-family.md": 2,
       "docs/trading-signals-concept-family.md": 1,
       "extension/test/core.test.js": 1,
@@ -103488,6 +103600,7 @@
       "backtester/strategy_cards/xs_momentum.md": 4,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/dso-skill/references/passes.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -103914,6 +104027,7 @@
       "research/STRATEGIES.md": 1
     },
     "symlink": {
+      "docs/dso-skill/README.md": 1,
       "soltui/soltui-service": 2
     },
     "symlinked": {
@@ -107712,6 +107826,7 @@
       "docs/INSTALLATION.md": 4,
       "docs/TESTING.md": 22,
       "docs/codebase-overview.md": 6,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 4,
       "docs/dso-skill/references/passes.md": 4,
       "docs/high_signal_file_index.json": 6,
@@ -110000,6 +110115,9 @@
     "topics": {
       "pagesource": 1
     },
+    "toplevel": {
+      "docs/dso-skill/README.md": 1
+    },
     "toporganicscore": {
       "docs/trading-signals-concept-family.md": 2
     },
@@ -110370,6 +110488,7 @@
       "backtester/core/archive_price.py": 2,
       "backtester/strategy_cards/kalman_hedge_ratio.md": 2,
       "backtester/tests/test_decide.py": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 13,
       "docs/strategy-optimization-concept-family.md": 5,
       "docs/trading-signals-concept-family.md": 2,
@@ -111168,6 +111287,7 @@
       "docs/FILES.md": 1,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/references/passes.md": 1,
       "docs/high_signal_file_index.json": 1,
       "extension/tools/measure-recentre.js": 1,
@@ -112780,6 +112900,7 @@
       "backtester/gridcli.py": 1,
       "backtester/tests/test_gridcli.py": 1,
       "docs/SECURITY.md": 1,
+      "docs/dso-skill/README.md": 1,
       "extension/README.md": 1,
       "extension/src/ui/popup.js": 1,
       "index/search.py": 1,
@@ -114142,6 +114263,7 @@
     },
     "unreadable": {
       ".remember/remember.md": 1,
+      "docs/dso-skill/README.md": 1,
       "extension/README.md": 1,
       "extension/src/venues/triggerVenue.js": 2,
       "extension/test/core.test.js": 2,
@@ -115249,6 +115371,7 @@
       ".remember/remember.md": 1,
       "backtester/README.md": 1,
       "docs/FILES.md": 3,
+      "docs/dso-skill/README.md": 1,
       "docs/known-issues.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 1,
@@ -118071,6 +118194,7 @@
       "backtester/tests/test_geometry.py": 2,
       "backtester/tests/test_index.py": 1,
       "docs/DEVELOPMENT.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "extension/src/core/grid.js": 1,
       "index/README.md": 1,
@@ -118323,6 +118447,7 @@
     "warn": {
       ".remember/remember.md": 1,
       "backtester/core/engine.py": 1,
+      "docs/dso-skill/README.md": 2,
       "extension/src/bg/service-worker.js": 1,
       "extension/src/core/engine.js": 4,
       "extension/src/ui/dashboard.js": 1,
@@ -118987,7 +119112,6 @@
       ".remember/remember.md": 1,
       "backtester/core/strategies/signals.py": 2,
       "backtester/tests/test_index.py": 1,
-      "docs/dso-skill/README.md": 1,
       "extension/src/jupiter/attribution.js": 1,
       "index/README.md": 1,
       "index/search.py": 1,
@@ -120021,6 +120145,7 @@
       "backtester/core/deflated_sharpe.py": 1,
       "backtester/strategy_cards/README.md": 1,
       "backtester/tests/test_engine.py": 2,
+      "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/strategy-optimization-concept-family.md": 2,
       "docs/trading-signals-concept-family.md": 1,
@@ -120170,7 +120295,7 @@
       ".remember/remember.md": 4,
       "docs/COMPONENTS.md": 2,
       "docs/INSTALLATION.md": 3,
-      "docs/dso-skill/README.md": 2,
+      "docs/dso-skill/README.md": 3,
       "docs/known-issues.md": 3,
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 6
@@ -120179,6 +120304,7 @@
       ".gitignore": 3,
       ".remember/remember.md": 1,
       "docs/INSTALLATION.md": 1,
+      "docs/dso-skill/README.md": 1,
       "docs/known-issues.md": 1,
       "soltui/soltui-service": 3
     },
@@ -120318,6 +120444,7 @@
       "backtester/tests/test_strategy_duplication.py": 1,
       "backtester/tests/test_universe.py": 2,
       "docs/FILES.md": 5,
+      "docs/dso-skill/README.md": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/logging.md": 2,
       "docs/onboarding.md": 1,
@@ -122377,10 +122504,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 974.7,
+    "avgDocLength": 975.3,
     "documents": 276,
-    "terms": 14768,
-    "termsBeforePrune": 14773,
-    "totalTokens": 269026
+    "terms": 14775,
+    "termsBeforePrune": 14780,
+    "totalTokens": 269182
   }
 }
