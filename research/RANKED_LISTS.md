@@ -45,11 +45,18 @@ of the move here. Reporting the whole 0.457 → 0.700 rise as a search effect wo
 **Under the earlier single split: 520 configurations, 311 rankable, 45 (14%) with a positive
 out-of-sample Sharpe, 28 (9%) that made money.**
 
-Six findings matter more than any ranking below. Findings 1/1b/1c are the method result — one
-split cannot answer this question and PBO quantifies how little in-sample rank tells you.
-Findings 2–4 were measured under the single split and are kept because the contrast is the
-lesson; finding 4 in particular shows a top-ranked row is noise using a within-mechanism control
-that needs no interpretation at all.
+**The `#` column in every table below is the weakest thing in this document.** Finding 1f re-ran
+all 25 singles at every CPCV block count from 6 to 12. At the long horizon the mean pairwise rank
+correlation is **+0.566**, the median strategy moves **12 of 25 places**, and **six different
+strategies hold first place across seven block counts**. Eight blocks is the geometry these tables
+happen to use and nothing justifies it over nine. Read the tables for *which mechanisms clear zero
+at all*; do not read positions off them, and do not read the top row as "the best".
+
+The findings below matter more than any ranking. Findings 1/1b/1c are the method result — one
+split cannot answer this question and PBO quantifies how little in-sample rank tells you. Finding
+1f is the sharpest limit on the tables themselves. Findings 2–4 were measured under the single
+split and are kept because the contrast is the lesson; finding 4 in particular shows a top-ranked
+row is noise using a within-mechanism control that needs no interpretation at all.
 
 ### 1. The split ends on the highest close in the series. One split cannot answer this.
 
@@ -357,6 +364,12 @@ straddles zero heavily), **% paths positive** (below ~70% means the sign depends
 you sampled), and **trades**. Tables are generated from `research/results/cpcv_results.csv`; no
 figure is transcribed by hand.
 
+> **The ordering is not a result — the `8 blocks` in that first line is.** Finding 1f re-ranks
+> these same 25 strategies at block counts 6 through 12 and the order does not survive it, worst
+> at the long horizon (mean pairwise Spearman **+0.566**, median strategy moving **12 of 25**
+> places). The medians and the IQR/`% paths +` columns are what to read; the rank number is an
+> artifact of one arbitrary evaluation choice.
+
 ## Short horizon (1h bars) — CPCV
 
 **Not one of the 25 has a positive median path Sharpe at this horizon.** The best, `stoch_14_3` at −0.341, still loses.
@@ -424,6 +437,17 @@ figure is transcribed by hand.
 > 13 of 25 evaluable have a positive median. PBO **0.700** over 20 splits of 25 configurations (common blocks [2, 3, 4, 5, 6, 7]).
 
 ## Long horizon (1d bars, slow parameters) — CPCV
+
+> **This is the table whose ordering survives least, and the one with the most positive medians —
+> **22 of 25**, against **13** at medium and **none** at short. The two facts are not
+> independent.** Slow parameters mean few trades, so each CPCV
+> block's Sharpe is noisy and the order reshuffles when the block count changes. Concretely, of
+> the seven block counts 6–12, **only the 8-block geometry used here is led by the row this table
+> ranks first.** The other six are led by rows this table places **fourth** (`rsi`), **fifth**
+> (`hurst_switch`), **seventh** (`macd`, which leads at two of them), **eighth** (`ou_reversion`)
+> and **sixteenth of twenty-five** (`ts_momentum`). Finding 1f has the mapping and the checks.
+>
+> Read the medians and their spread. Do not read this as a ranking.
 
 | # | Strategy | Family | Median Sharpe | IQR | % paths + | Median ret | Trades |
 |---|---|---|---|---|---|---|---|
@@ -684,6 +708,16 @@ List 3 is demonstrated. The top rows are the experiments most worth running on m
 **Re-run over all 25 strategies: 334 cross-family pairs per horizon (was 140) and 70 triples.**
 The conclusion did not soften — combinations still produce *more* positive-looking results and
 *worse* rank generalisation at the same time.
+
+> **The block-count caveat applies here too, and the one measurement I have says it bites harder.**
+> Finding 1f swept block counts across the 25 *singles*; I did not repeat that sweep over the
+> 1,002 pairs and 210 triples, so the aggregate figures below are for 8 blocks only and their
+> ordering has not been tested for geometry stability. What I do have is a single measured point
+> from finding 1d: moving the top pair from 8 blocks to 9 changed its median Sharpe by
+> **−0.441**, a larger move than any ±10% parameter perturbation produced (**−0.392** at worst).
+> Combinations gate each other and so trade less than their components, which is the same
+> few-trades mechanism that makes the long-horizon singles unstable — expect these orderings to
+> be *less* geometry-stable than List 1's, not more. Treat every rank below as unranked.
 
 | Configuration type | PBO (short) | PBO (medium) | PBO (long) |
 |---|---|---|---|

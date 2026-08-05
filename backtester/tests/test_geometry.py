@@ -37,11 +37,14 @@ if str(REPO) not in sys.path:
 from research.geometry import GeometryRun, spearman, tidy_frame, verdict  # noqa: E402
 from research.verify_numbers import (  # noqa: E402
     EXPECTED_FIGURES,
+    LONG_TABLE_HEADING,
     GEOMETRY_TABLE_HEADER,
     _check_geometry_pbo,
     census_failures,
     check_geometry,
+    check_geometry_xref,
     geometry_stats,
+    long_table_ranks,
     markdown_table_rows,
     verdict_label,
 )
@@ -407,6 +410,105 @@ class CheckGeometryFailureTests(unittest.TestCase):
         )
         _, failures = check_geometry(section, self._geometry())
         self.assertTrue(any("only 1 matched" in f for f in failures), failures)
+
+
+class GeometryXrefTests(unittest.TestCase):
+    """The List 1 caveat's claims about which rows lead at other block counts.
+
+    These are prose claims ABOUT verified numbers -- the class that produced the one
+    contradiction every machine check in this file missed. They are the punchline of
+    the caveat, so they are checked rather than trusted.
+    """
+
+    # `a` tops the table and leads only at 8 blocks; `b` and `c` lead elsewhere.
+    GEOM = {"long": frame({
+        6: {"a": 0.5, "b": 0.9, "c": 0.1},
+        8: {"a": 0.9, "b": 0.5, "c": 0.1},
+        10: {"a": 0.2, "b": 0.1, "c": 0.9},
+    }, horizon="long")}
+
+    SECTION = (
+        "only the 8-block geometry used here is led by the row this table ranks first."
+        " The others are led by rows placed **second** (`b`) and **third** (`c`).\n\n"
+        f"{LONG_TABLE_HEADING}\n\n"
+        "| # | Strategy | Family | Median Sharpe |\n|---|---|---|---|\n"
+        "| 1 | `a_10` | x | +0.9 |\n| 2 | `b_20` | x | +0.5 |\n| 3 | `c_30` | x | +0.1 |\n"
+    )
+
+    # The fixture deliberately omits the positive-median sentence, which is checked
+    # against the real cpcv_results.csv rather than a fixture; that one failure is
+    # expected here and is filtered out so the displacement claims can be asserted on.
+    COUNTS_FAILURE = "positive-median counts sentence"
+
+    def displacement_failures(self, section: str, geometry=None) -> list[str]:
+        _, failures = check_geometry_xref(section, geometry or self.GEOM)
+        return [f for f in failures if self.COUNTS_FAILURE not in f]
+
+    def test_the_consistent_case_passes(self) -> None:
+        n, failures = check_geometry_xref(self.SECTION, self.GEOM)
+        self.assertEqual(self.displacement_failures(self.SECTION), [])
+        self.assertGreater(n, 0)
+        # And the omission itself must be reported, not shrugged off.
+        self.assertTrue(any(self.COUNTS_FAILURE in f for f in failures), failures)
+
+    def test_a_wrong_ordinal_is_caught(self) -> None:
+        bad = self.SECTION.replace("**second** (`b`)", "**third** (`b`)")
+        _, failures = check_geometry_xref(bad, self.GEOM)
+        self.assertTrue(any("but it ranks 2" in f for f in failures), failures)
+
+    def test_naming_a_strategy_that_leads_nowhere_is_caught(self) -> None:
+        bad = self.SECTION.replace("**third** (`c`)", "**third** (`d`)")
+        _, failures = check_geometry_xref(bad, self.GEOM)
+        self.assertTrue(any("no such strategy" in f for f in failures), failures)
+
+    def test_omitting_a_leader_is_caught_by_set_equality(self) -> None:
+        """A count of matches cannot notice a name that should be there and is not."""
+        bad = self.SECTION.replace(" and **third** (`c`)", "")
+        _, failures = check_geometry_xref(bad, self.GEOM)
+        self.assertTrue(any("never mentions c" in f for f in failures), failures)
+
+    def test_a_top_row_that_leads_elsewhere_too_is_caught(self) -> None:
+        # If the table's first row also led at another geometry, the caveat's central
+        # claim would be false; it must not pass just because the ordinals line up.
+        geom = {"long": frame({
+            6: {"a": 0.9, "b": 0.5, "c": 0.1},
+            8: {"a": 0.9, "b": 0.5, "c": 0.1},
+            10: {"a": 0.2, "b": 0.1, "c": 0.9},
+        }, horizon="long")}
+        _, failures = check_geometry_xref(self.SECTION, geom)
+        self.assertTrue(any("it leads at block counts" in f for f in failures), failures)
+
+    def test_a_claim_that_wraps_onto_a_blockquote_line_still_matches(self) -> None:
+        """A plain \\s* gap missed a wrapped claim, and it went unchecked in silence."""
+        wrapped = self.SECTION.replace("**second** (`b`)", "**second**\n> (`b`)")
+        self.assertEqual(self.displacement_failures(wrapped), [])
+
+    def test_no_marker_means_no_claims_to_check(self) -> None:
+        n, failures = check_geometry_xref("nothing relevant here", self.GEOM)
+        self.assertEqual((n, failures), (0, []))
+
+    def test_a_missing_table_is_a_failure_not_a_skip(self) -> None:
+        bare = self.SECTION[: self.SECTION.index(LONG_TABLE_HEADING)]
+        _, failures = check_geometry_xref(bare, self.GEOM)
+        self.assertTrue(any("could not find" in f for f in failures), failures)
+
+
+class LongTableRanksTests(unittest.TestCase):
+    """Parameterised labels have to reduce to the bare names geometry uses."""
+
+    TABLE = (f"{LONG_TABLE_HEADING}\n\n| # | Strategy |\n|---|---|\n"
+             "| 1 | `obv_trend_60` |\n| 2 | `vol_regime_60_0.5` |\n\n# Next section\n")
+
+    def test_it_reads_rank_and_label(self) -> None:
+        self.assertEqual(long_table_ranks(self.TABLE),
+                         {"obv_trend_60": 1, "vol_regime_60_0.5": 2})
+
+    def test_it_stops_at_the_next_top_level_heading(self) -> None:
+        extended = self.TABLE + "| 9 | `should_not_count` |\n"
+        self.assertNotIn("should_not_count", long_table_ranks(extended))
+
+    def test_a_missing_heading_is_empty_not_an_error(self) -> None:
+        self.assertEqual(long_table_ranks("no heading"), {})
 
 
 if __name__ == "__main__":

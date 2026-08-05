@@ -52,7 +52,7 @@ DOCS = (RESEARCH / "RANKED_LISTS.md", RESEARCH / "STRATEGIES.md")
 EXPECTED_FIGURES = {
     "RANKED_LISTS.md": {
         "prose": 8, "walk_forward": 180, "cpcv": 615,
-        "perturb": 7, "geometry": 58, "pair": 36,
+        "perturb": 7, "geometry": 58, "geometry_xref": 15, "pair": 36,
     },
     "STRATEGIES.md": {"prose": 31},
 }
@@ -396,6 +396,154 @@ GEOMETRY_RANGE = re.compile(
     r"\s*([-+]?\d+\.\d+)\s*to\s*([-+]?\d+\.\d+)"
 )
 GEOMETRY_HORIZON_WORD = re.compile(r"\b(short|medium|long)\b", re.I)
+
+
+# The long-horizon CPCV table, whose ordering the List 1 caveat makes claims about.
+# Hyphen, not the em dash the document uses: this is matched against normalise()d
+# text, which ASCII-ifies it. Matching the raw form silently finds nothing.
+LONG_TABLE_HEADING = "## Long horizon (1d bars, slow parameters) - CPCV"
+LONG_TABLE_ROW = re.compile(r"^\|\s*(\d+)\s*\|\s*`([a-z0-9_.]+)`\s*\|", re.M)
+# "**seventh** (`macd`, which leads at two of them)" -- an ordinal placing a strategy in
+# that table. Written as words, so no numeric pattern would ever have caught them. The
+# [\s>]* gap spans a blockquote line wrap: with a plain \s* a claim that happened to wrap
+# onto the next "> " line silently never matched, and hurst_switch went unchecked.
+XREF_CLAIM = re.compile(r"\*\*(" + "|".join([
+    "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth",
+    "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth",
+    "sixteenth",
+]) + r")(?: of twenty-five)?\*\*[\s>]*\(`([a-z0-9_]+)`")
+ORDINALS = {w: i for i, w in enumerate([
+    "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth",
+    "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth",
+    "sixteenth",
+], start=1)}
+XREF_MARKER = "only the 8-block geometry used here is led by the row this table"
+# "**22 of 25**, against **13** at medium and **none** at short" -- how many configurations
+# clear zero per horizon. A comparative claim about the tables, so it gets checked: the
+# first draft of this sentence said the long horizon was the ONLY one with positive
+# medians, which was simply false (medium has 13).
+XREF_POSITIVE_COUNTS = re.compile(
+    r"\*\*(\d+) of 25\*\*[\s>]*,? against \*\*(\d+)\*\* at medium and \*\*none\*\* at short"
+)
+
+
+def long_table_ranks(text: str) -> dict[str, int]:
+    """rank -> strategy for the long-horizon CPCV table, keyed by bare strategy name.
+
+    The table uses parameterised labels (`macd_26_52_18`) while the geometry results use
+    bare names (`macd`), so the label is reduced to the longest bare name that prefixes
+    it. Without that the two halves of the claim could never be compared.
+    """
+    if LONG_TABLE_HEADING not in text:
+        return {}
+    after = text[text.index(LONG_TABLE_HEADING):]
+    nxt = after.find("\n# ")
+    after = after[: nxt if nxt != -1 else len(after)]
+    out: dict[str, int] = {}
+    for m in LONG_TABLE_ROW.finditer(after):
+        out.setdefault(m.group(2), int(m.group(1)))
+    return out
+
+
+def check_geometry_xref(
+    text: str, geometry: dict[str, pd.DataFrame], cpcv: pd.DataFrame | None = None
+) -> tuple[int, list[str]]:
+    """Check the List 1 caveat's claims about which rows lead at other block counts.
+
+    These are prose claims ABOUT verified numbers -- the class that produced the one
+    contradiction machine checking missed in this document. They are the punchline of
+    the caveat, so they get checked rather than trusted.
+    """
+    if XREF_MARKER not in text:
+        return 0, []
+    part = geometry.get("long")
+    if part is None:
+        return 0, ["the List 1 geometry caveat makes claims about the long horizon but "
+                   "no long-horizon geometry results were found"]
+    stats = geometry_stats(part)
+    leaders: dict[int, str] = stats["leader"]
+    ranks = long_table_ranks(text)
+    if not ranks:
+        return 0, [f"could not find the long-horizon CPCV table ({LONG_TABLE_HEADING!r}), "
+                   "so the caveat's rank claims went unchecked"]
+
+    def rank_of(name: str) -> int | None:
+        hits = [r for label, r in ranks.items()
+                if label == name or label.startswith(name + "_")]
+        return min(hits) if hits else None
+
+    checked, failures = 0, []
+    top = min(ranks.items(), key=lambda kv: kv[1])[0]
+    # "only the 8-block geometry is led by the row this table ranks first"
+    checked += 1
+    led_by_top = sorted(b for b, w in leaders.items()
+                        if top == w or top.startswith(w + "_"))
+    if led_by_top != [8]:
+        failures.append(
+            f"the caveat says only the 8-block geometry is led by this table's top row "
+            f"({top!r}), but it leads at block counts {led_by_top}"
+        )
+
+    claimed = 0
+    for m in XREF_CLAIM.finditer(text):
+        word, name = m.group(1), m.group(2)
+        claimed += 1
+        checked += 1
+        want, got = ORDINALS[word], rank_of(name)
+        if got is None:
+            failures.append(f"the caveat places {name!r} in the long-horizon table, "
+                            "which contains no such strategy")
+        elif got != want:
+            failures.append(f"the caveat calls {name!r} {word} in the long-horizon "
+                            f"table, but it ranks {got}")
+        checked += 1
+        if not any(name == w for w in leaders.values()):
+            failures.append(f"the caveat says {name!r} leads at some block count, but "
+                            "it leads at none")
+    # The caveat claims to enumerate the leader at every OTHER block count, so the set
+    # it names must equal the recomputed set. Set equality also catches a name that
+    # should be there and is not, which counting matches never could.
+    named = {m.group(2) for m in XREF_CLAIM.finditer(text)}
+    others = {w for b, w in leaders.items() if b != 8}
+    checked += 1
+    if named != others:
+        detail = []
+        if others - named:
+            detail.append(f"never mentions {', '.join(sorted(others - named))}")
+        if named - others:
+            detail.append(f"names {', '.join(sorted(named - others))}, which leads at "
+                          "no other geometry")
+        failures.append(
+            "the List 1 caveat claims to list the leader at every other block count but "
+            + " and ".join(detail)
+        )
+    if claimed == 0:
+        failures.append("the List 1 geometry caveat names no ranked strategies, so its "
+                        "displacement claim went unchecked")
+
+    m = XREF_POSITIVE_COUNTS.search(text)
+    if m is None:
+        failures.append("the positive-median counts sentence did not match, so those "
+                        "figures went unchecked")
+    elif not CPCV_CSV.exists():
+        failures.append("the caveat quotes positive-median counts but no CPCV singles "
+                        "results were found to check them against")
+    else:
+        # CPCV_CSV, not the frame load_cpcv() returns: that one concatenates the
+        # combination sweep, and counting over both gives 254 at medium against the 25
+        # the claim is about. The sentence is about List 1's singles.
+        singles = pd.read_csv(CPCV_CSV)
+        for horizon, claim in (("long", int(m.group(1))), ("medium", int(m.group(2))),
+                               ("short", 0)):
+            rows = singles[singles.horizon == horizon]
+            actual = int((rows.median_sharpe > 0).sum())
+            checked += 1
+            if actual != claim:
+                failures.append(
+                    f"the caveat says {claim} configurations have a positive median "
+                    f"Sharpe at the {horizon} horizon, but {actual} do"
+                )
+    return checked, failures
 
 
 def markdown_table_rows(section: str, header: str) -> int | None:
@@ -880,6 +1028,13 @@ def main() -> int:
                     failures.append(
                         f"{doc.name}: perturbation median {v} appears in no perturb_*.csv"
                     )
+
+        # The List 1 caveat's cross-references between the geometry sweep and the
+        # long-horizon CPCV table.
+        if geometry:
+            n, msgs = check_geometry_xref(text, geometry, cpcv)
+            tally.add("geometry_xref", n)
+            failures += [f"{doc.name}: {m}" for m in msgs]
 
         # Block-count geometry tables (finding 1f), verified by recomputation.
         if geometry and GEOMETRY_SECTION in text:
