@@ -21,6 +21,15 @@ rather than made silently. Literature figures are attributed; everything else is
 
 ## Read this before the tables
 
+> **Read every ranking below against its multiple-testing benchmark, not against zero.**
+> `python3 research/dso_audit.py` deflates these Sharpes per Bailey & Lopez de Prado
+> (`backtester/core/deflated_sharpe.py`). Of the 100 single-strategy configurations evaluated across
+> SOL 1d, SOL 1h and BTC/ETH 1d, **exactly one clears the Sharpe that the search alone would be
+> expected to produce under no skill** — `BTC ou_reversion`, DSR 0.803 — and that one rests on **6
+> trades with a Q1 path Sharpe of exactly 0.000**, which is below any usable evidence floor. The SOL
+> daily leader `hurst_switch` (+0.699) does not reach its own benchmark of +0.712, giving DSR 0.494.
+> A high rank in the tables below is therefore a position in a search, not evidence of an edge.
+
 **Under CPCV, over all 25 registered strategies: 75 singles + 1,002 pairs + 210 triples = 1,287
 configurations, each across 28 paths.** At the short horizon **not one of the 25 singles has a
 positive median path Sharpe**. At the daily horizons singles PBO is **0.700** — well above the

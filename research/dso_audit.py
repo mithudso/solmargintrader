@@ -7,9 +7,11 @@
 arithmetic rather than judgement, so they belong in code where they can be re-run and
 cannot be forgotten:
 
-    S2  multiple-testing burden  — how many configurations were searched, and was the
-                                   comparison drawn against zero rather than against the
-                                   expected maximum of that many trials?
+    S2  multiple-testing burden  — how many configurations were searched, and does the
+                                   best of them beat the expected maximum of that many
+                                   trials rather than beating zero? Applies a Deflated
+                                   Sharpe haircut (backtester.core.deflated_sharpe),
+                                   discounting the proven bb_reversion/zscore duplicate.
     S3  evidence floor           — a result standing on too few trades is not evidence.
                                    A `q1_sharpe` of exactly 0.000 is the specific tell
                                    that most CPCV paths took no trade at all.
@@ -41,6 +43,22 @@ from pathlib import Path
 
 import pandas as pd
 
+# Same convention as research/sweep.py and research/perturb.py: running a script puts
+# the script's own directory on sys.path, not the repo root.
+REPO = Path(__file__).resolve().parent.parent
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
+
+from backtester.core.deflated_sharpe import (  # noqa: E402
+    DeflatedSharpeError,
+    deannualise,
+    deflated_sharpe_ratio,
+    effective_trials,
+    expected_max_sharpe,
+    trial_sharpe_variance,
+)
+from backtester.core.types import periods_per_year  # noqa: E402
+
 RESULTS = Path(__file__).resolve().parent / "results"
 
 # A CPCV path Sharpe of exactly 0.000 at the first quartile means at least a quarter of
@@ -68,22 +86,84 @@ def load(path: Path) -> pd.DataFrame:
     return df
 
 
-def s2_burden(frames: dict[str, pd.DataFrame]) -> list[str]:
-    """Report the size of the search, which sets the multiple-testing burden."""
+# `bb_reversion` is `zscore` up to a ddof convention: identical exposure on all 1,875
+# BTC daily bars. Two names, one hypothesis, so the raw config count overstates the
+# independent trials. See backtester/tests/test_strategy_duplication.py.
+KNOWN_DUPLICATE_GROUPS = (2,)
+
+# The sweep splits each series into `--groups` blocks and builds every path from
+# `--k` of them, so one path Sharpe rests on k/groups of the series.
+DEFAULT_GROUPS, DEFAULT_K = 8, 2
+
+
+def interval_of(filename: str) -> str:
+    """Bar interval encoded in a result filename, e.g. cpcv_all25_1h.csv -> 1h."""
+    for token in ("1h", "1d", "6h", "15m", "5m", "1m"):
+        if f"_{token}" in filename:
+            return token
+    return "1d"
+
+
+def s2_burden(
+    frames: dict[str, pd.DataFrame], bars: int, groups: int, k: int, top: int
+) -> list[str]:
+    """Size the search, then deflate the leaders' Sharpes by the expected maximum."""
     out = []
-    total = 0
+    total = sum(len(df) for df in frames.values())
     for name, df in frames.items():
-        n = len(df)
-        total += n
-        out.append(f"  {name}: {n} configurations")
+        out.append(f"  {name}: {len(df)} configurations")
+    eff = effective_trials(total, KNOWN_DUPLICATE_GROUPS)
     out.append(
-        f"  TOTAL {total} configurations evaluated across {len(frames)} files.\n"
-        f"  A best-of-{total} Sharpe is expected to look good even with no edge present. "
-        "Any claim\n  drawn against a benchmark of ZERO overstates itself by the expected "
-        "maximum of\n  that many trials — apply a Deflated-Sharpe haircut before ranking. "
-        "Verify the DSR\n  expected-maximum formula against its source paper before "
-        "implementing it."
+        f"  TOTAL {total} configurations across {len(frames)} files; "
+        f"{eff:.0f} after collapsing the known bb_reversion/zscore duplicate."
     )
+    out.append(
+        f"  A best-of-{eff:.0f} Sharpe is expected to look good with no edge present, so the\n"
+        "  benchmark below is that expected maximum rather than zero."
+    )
+
+    n_obs = max(2, k * bars // groups)
+    out.append(
+        f"\n  Deflated Sharpe per file (T={n_obs} observations per path, from "
+        f"bars={bars}, groups={groups}, k={k}).\n"
+        "  Normality assumed (skew 0, kurtosis 3): the result CSVs carry no higher moments,\n"
+        "  and assuming normality is the GENEROUS direction, so a strategy failing here\n"
+        "  would also fail with real skew and fat tails."
+    )
+    for name, df in frames.items():
+        if "median_sharpe" not in df:
+            continue
+        ppy = periods_per_year(interval_of(name))
+        try:
+            var_annual = trial_sharpe_variance(df["median_sharpe"].to_numpy())
+        except DeflatedSharpeError as exc:
+            out.append(f"  [{name}] cannot deflate: {exc}")
+            continue
+        # De-annualise the whole cross-section, so SR and V[SR] share units.
+        var = var_annual / ppy
+        sr0 = expected_max_sharpe(eff, var)
+        out.append(
+            f"\n  [{name}] interval {interval_of(name)}, trial Sharpe sd "
+            f"{var_annual ** 0.5:+.3f} annualised\n"
+            f"      benchmark SR_0 = {sr0 * (ppy ** 0.5):+.3f} annualised "
+            f"({sr0:+.5f} per bar) — this is what a result must beat"
+        )
+        ordered = df.sort_values("median_sharpe", ascending=False).head(top)
+        for _, r in ordered.iterrows():
+            label = f"{r.get('asset', '')} {r['strategy']}".strip()
+            try:
+                res = deflated_sharpe_ratio(
+                    deannualise(float(r["median_sharpe"]), ppy),
+                    n_obs, eff, var,
+                )
+            except DeflatedSharpeError as exc:
+                out.append(f"      {label}: cannot deflate ({exc})")
+                continue
+            verdict = "beats the benchmark" if res.survives else "DOES NOT beat it"
+            out.append(
+                f"      {label:<28} Sharpe {r['median_sharpe']:+.3f} annualised  "
+                f"DSR {res.deflated_sharpe:.3f}  {verdict}"
+            )
     return out
 
 
@@ -193,10 +273,20 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--floor", type=int, default=30, help="minimum trades to count as evidence")
     ap.add_argument("--swing", type=int, default=10, help="rank change that triggers S5")
     ap.add_argument("--glob", default="cpcv_all25*.csv", help="which result files to audit")
+    ap.add_argument("--bars", type=int, default=1875, help="bars in the underlying series")
+    ap.add_argument("--groups", type=int, default=DEFAULT_GROUPS, help="CPCV blocks used")
+    ap.add_argument("--k", type=int, default=DEFAULT_K, help="blocks per CPCV path")
+    ap.add_argument("--top", type=int, default=5, help="leaders to deflate per file")
     args = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
 
     if args.floor < 1 or args.swing < 1:
         print("error: --floor and --swing must both be >= 1", file=sys.stderr)
+        return 2
+    if args.bars < 2 or args.groups < 2 or args.k < 1 or args.k >= args.groups:
+        print("error: need --bars >= 2, --groups >= 2, and 1 <= --k < --groups", file=sys.stderr)
+        return 2
+    if args.top < 1:
+        print("error: --top must be >= 1", file=sys.stderr)
         return 2
 
     paths = sorted(RESULTS.glob(args.glob))
@@ -212,7 +302,10 @@ def main(argv: list[str] | None = None) -> int:
     print("/dso mechanical audit — passes S2, S3, S4, S5")
     print(f"files: {', '.join(frames)}")
 
-    section("S2 — multiple-testing burden", s2_burden(frames))
+    section(
+        "S2 — multiple-testing burden and the Deflated Sharpe haircut",
+        s2_burden(frames, args.bars, args.groups, args.k, args.top),
+    )
 
     floor_rows: list[str] = []
     degen_rows: list[str] = []

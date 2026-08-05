@@ -44,6 +44,22 @@ sweep, several "cross-family" pairs and two identical `+2.555` triples are
 double-counting a single idea. Verified from source, not assumed. Family labels are not
 a substitute for measuring pairwise signal correlation.
 
+**Now measured, not just derived** (2026-08-05, `research/dso_audit.py` S4 flagged the
+collision and per-bar exposure confirmed it). Comparing the two strategies bar by bar at
+the shipped presets (`window=20`, `num_std=2.0` against `entry_z=-2.0`):
+
+| Series | Bars | Exposure differs | Verdict |
+| --- | --- | --- | --- |
+| BTC 1d | 1,875 | **0 bars (0.00%)** | bit-for-bit the same strategy |
+| SOL 1d | 1,875 | 30 bars (1.60%) | 98.4% the same strategy |
+| ETH 1d | 1,875 | 16 bars (0.85%) | 99.2% the same strategy |
+
+So the 2.6% band difference changes a decision on **at most 1.6% of bars, and on BTC on
+none at all**. Neither entry is deleted: a registry that reports its redundancy honestly
+beats one that hides it, and removing a row would silently change the denominator of every
+published PBO. `tests/test_strategy_duplication.py` pins the relationship, so a future
+"tidy-up" of either ddof fails a test rather than quietly creating an exact duplicate.
+
 ## Implementation
 `backtester/core/strategies/signals.py::BollingerReversion`.
 

@@ -62,7 +62,7 @@ optimization, whose whole culture assumes you can hold out an i.i.d. slice.
 | Sharpe, Sortino, Calmar, profit factor, win rate | `HAVE` | `core/metrics.py` |
 | Median / Q1 path Sharpe across CPCV paths | `HAVE` | `core/cpcv.py` — the right objective shape: a distribution, not a point |
 | Drawdown-constrained / utility objectives | `GAP` | low value; Calmar plus the max-drawdown column already covers the decision |
-| **Deflated Sharpe Ratio (DSR)** | `GAP` | **highest-value gap.** See §5.1 |
+| **Deflated Sharpe Ratio (DSR)** | `HAVE` | `core/deflated_sharpe.py`, pinned to the paper's own worked figure. See §5.1 |
 
 ### 3.3 Validation protocol
 | Concept | Status | Note |
@@ -80,7 +80,7 @@ This row is the repo's genuine strength. Most of the standard overfitting defenc
 | Concept | Status | Note |
 | --- | --- | --- |
 | PBO | `HAVE` | measured 0.700 medium/long |
-| Deflated Sharpe / multiple-testing haircut | `GAP` | §5.1 |
+| Deflated Sharpe / multiple-testing haircut | `HAVE` | `core/deflated_sharpe.py`; applied by `research/dso_audit.py` S2. §5.1 |
 | Minimum backtest length / minimum track record length | `GAP` | §5.2 |
 | White's Reality Check / Hansen SPA | `GAP` | heavier; bootstrap over the whole config set. Lower priority than DSR because PBO already answers the "is the leaderboard informative" question |
 | **Evidence floor on trade count** | `HAVE` (screen) | was only a phrase in the cards; `research/dso_audit.py` now flags it mechanically. Still not a *veto* in the sweep itself. §5.2 |
@@ -154,10 +154,38 @@ Note this is a **different quantity from the PBO**: the burden counts the whole 
 0.700 PBO was computed over the 25 singles. Quoting one as the other is the kind of slip this
 document exists to prevent, and it happened once in the first draft of `/dso` itself.
 
-**Before implementing, verify the expected-maximum formula against the source paper** — it involves
-the Euler–Mascheroni constant and the inverse normal CDF at `1 − 1/N` and `1 − 1/(Ne)`, and this
-document deliberately does not reproduce it from memory. Getting it subtly wrong would produce a
-confident wrong haircut, which is worse than no haircut.
+**Implemented 2026-08-05** in `backtester/core/deflated_sharpe.py`, after verifying the formula
+against the source rather than reproducing it from memory:
+
+```
+SR_0 = E[max SR_n] ≈ E[SR_n] + sqrt(V[SR_n])·( (1−γ)·Z⁻¹[1 − 1/N] + γ·Z⁻¹[1 − 1/(N·e)] )
+DSR  = PSR(SR_0)   = Z[ (SR − SR_0)·sqrt(T−1) / sqrt(1 − γ₃·SR + ((γ₄−1)/4)·SR²) ]
+```
+
+Pinned by the paper's own worked figure — N=1,000 at unit variance gives **3.2551**, and the paper
+states 3.26 — so the formula cannot drift silently. Uses `statistics.NormalDist` for the CDF and its
+inverse, keeping scipy out per the stdlib-first rule.
+
+### What it says about this repo's results
+
+`python3 research/dso_audit.py` now applies it. **Of 100 evaluated configurations, exactly one beats
+the benchmark its own search produced**, and that one fails the evidence floor:
+
+| Series | Benchmark `SR_0` to beat | Leader | Its DSR | Verdict |
+| --- | --- | --- | --- | --- |
+| SOL 1d | +0.712 | `hurst_switch` +0.699 | 0.494 | below the benchmark |
+| SOL 1h | +2.456 | `stochastic` −0.341 | 0.259 | far below |
+| BTC/ETH 1d | +0.902 | `BTC ou_reversion` +1.657 | **0.803** | clears it — **on 6 trades, Q1 = 0.000** |
+
+So `hurst_switch`, the top-ranked strategy on SOL daily, does not reach the Sharpe that searching 99
+independent configurations would be expected to produce under no skill at all. **Nothing in the
+registry survives both the multiple-testing haircut and the evidence floor.** That is the honest
+summary of the whole search, and it is what the deflation was worth implementing to learn.
+
+Caveats stated with it, both in the generous direction: normality is assumed because the result CSVs
+carry no higher moments (real negative skew and fat tails would lower every DSR further), and `N` is
+discounted only for the one *proven* duplicate pair, so correlated-but-distinct strategies still
+inflate it — which understates the haircut.
 
 ### 5.2 Evidence floor and minimum track record length
 `ou_reversion` ranked **1st on BTC daily on 6 trades, with a Q1 path Sharpe of exactly 0.000**. Six
@@ -171,15 +199,35 @@ below the floor, a result is not eligible to be reported as an improvement at al
 "different" strategies were one strategy. Nothing detects this, and it inflates apparent search
 breadth — which in turn inflates the multiple-testing burden in §5.1 while adding no diversity.
 
-`research/dso_audit.py` implements this screen, and the first run of it found a **second** pair that
-was not previously known: on BTC daily, `bb_reversion` and `zscore` are identical at median Sharpe
-`0.056701`, median return `-0.037425`, and 56 trades. Whether that is two registry entries computing
-the same thing or a coincidence is **open and untriaged** — no strategy was changed when it was
-found. It is the finding that best justifies the pass existing.
+`research/dso_audit.py` implements this screen. Its first run flagged a second pair: on BTC daily,
+`bb_reversion` and `zscore` post identical summary scalars (median Sharpe `0.056701`, median return
+`-0.037425`, 56 trades).
+
+**Triaged, and the honest version is more interesting than "new finding".** That redundancy was
+*already documented* in both cards, derived from source: `bb_reversion(num_std=k)` is
+`zscore(entry_z=-k, exit_z=0)` because `(c-mid)/sd <= -k` is `c <= mid - k*sd`, and the exits are
+equivalent too. The only surviving difference is a statistical convention — `bollinger` uses ddof=0,
+`zscore` uses ddof=1, a `sqrt(20/19)` ≈ 2.6% wider band at n=20.
+
+So S4 did not discover something unknown. It **independently rediscovered a documented redundancy
+without being told about it**, which is the better evidence that the pass works: a true positive from
+the data alone. What it added was the missing measurement. The cards asserted a 2.6% threshold
+difference but never said how often that changes a decision:
+
+| Series | Exposure differs |
+| --- | --- |
+| BTC 1d | **0 of 1,875 bars** |
+| SOL 1d | 30 (1.60%) |
+| ETH 1d | 16 (0.85%) |
+
+Neither strategy was deleted — removing one would silently change the denominator of every published
+PBO, and the skill's own guardrails forbid deleting a strategy to improve an aggregate.
+`backtester/tests/test_strategy_duplication.py` now pins the relationship, so a future tidy-up of
+either ddof fails a test instead of quietly creating an exact duplicate.
 
 The check must compare **outputs**, not parameter sets. Note the shipped screen compares the
 published summary scalars, since the result CSVs do not carry equity curves; confirming a true twin
-means re-running the two backtests and comparing per-bar exposure.
+means re-running the two backtests and comparing per-bar exposure, which is what was done here.
 
 ### 5.4 Dataset-vs-strategy attribution
 See §6. Not tooled; done by hand.
