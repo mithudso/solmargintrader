@@ -2,9 +2,11 @@
 
 The documents' entire credibility rests on "no number was estimated". A
 transcription slip is indistinguishable from a fabrication to a reader, so this
-checks the whole surface rather than a sample: it extracts every
-`config | metric | value` triple it can recognise from the markdown tables and
-asserts each matches `results/sweep_results.csv` within tolerance.
+checks the whole surface rather than a sample. Every figure is checked against the
+run that produced it -- `sweep_results.csv` for the walk-forward tables, the CPCV
+results for the CPCV tables, `perturb_*.csv` for the perturbation tables -- and the
+derived block-count figures of finding 1f are RECOMPUTED from the per-block medians,
+because no CSV contains a "median across geometries" to look up.
 
     python3 research/verify_numbers.py        # exit 0 iff every figure matches
 
@@ -15,10 +17,13 @@ silently passing.
 
 from __future__ import annotations
 
+import itertools
+import json
 import re
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 RESEARCH = Path(__file__).resolve().parent
@@ -95,6 +100,26 @@ CPCV_ROW = re.compile(
 )
 
 
+def spearman(a: list[float], b: list[float]) -> float:
+    """Rank correlation, defined here rather than imported from research.geometry.
+
+    To be exact about what this buys, because it is easy to overclaim: two identical
+    copies cannot catch a bug that was always in both. What separation does prevent
+    is a LATER edit to geometry.py silently redefining the thing that checks it. The
+    real independence lives in geometry_stats, which re-derives every figure from the
+    raw per-block medians by a different route than render() used.
+
+    The len<3 guard mirrors research.geometry.spearman deliberately: if the two
+    disagreed on degenerate input, one would return NaN while the other returned a
+    confident +/-1.0, and only the NaN is honest.
+    """
+    ra = pd.Series(a).rank().to_numpy()
+    rb = pd.Series(b).rank().to_numpy()
+    if len(ra) < 3:
+        return float("nan")
+    return float(np.corrcoef(ra, rb)[0, 1])
+
+
 def load() -> pd.DataFrame:
     """Sweep results, indexed for lookup by label."""
     if not CSV.exists():
@@ -117,6 +142,118 @@ PERTURB_ROW = re.compile(
     re.M,
 )
 
+
+GEOMETRY_GLOB = "geometry_*.csv"
+# Heading that opens the block-count sweep results, used to scope the match.
+GEOMETRY_SECTION = "### 1f."
+
+# The geometry tables report DERIVED quantities -- a median across block counts, a
+# spread, a rank movement -- none of which appear as a number in any CSV. So unlike
+# every other check here, these are recomputed from the raw per-block medians rather
+# than looked up. Recomputing independently of research/geometry.py is deliberate: a
+# lookup against that script's own text report would only prove the report was
+# copied faithfully, not that the arithmetic behind it is right.
+GEOMETRY_VERDICT_ROW = re.compile(
+    r"^\|\s*\*{0,2}(Short|Medium|Long)\*{0,2}\s*\|"
+    r"\s*\*{0,2}([-+]?\d+\.\d+)\*{0,2}\s*\|"
+    r"\s*\*{0,2}(\d+) of (\d+)\*{0,2}\s*\|"
+    r"\s*\*{0,2}(\d+)\*{0,2}\s*\|",
+    re.M,
+)
+GEOMETRY_STRATEGY_ROW = re.compile(
+    r"^\|\s*`([a-z0-9_]+)`\s*\|"
+    r"\s*\*{0,2}([-+]?\d+\.\d+)\*{0,2}\s*\|"
+    r"\s*\*{0,2}(\d+\.\d+)\*{0,2}\s*\|"
+    r"\s*\*{0,2}(\d+)\*{0,2}\s*\|"
+    r"\s*\*{0,2}(\d+)/(\d+)\*{0,2}\s*\|",
+    re.M,
+)
+GEOMETRY_PBO = re.compile(r"\*{0,2}(\d\.\d{3})\*{0,2}\s*\((\d+)(?:\s*blocks)?\)")
+GEOMETRY_RANKCORR = re.compile(r"how far its rank moves is\s*\*{0,2}([-+]?\d+\.\d+)")
+GEOMETRY_MEANMOVE = re.compile(
+    r"move a mean of\s*\*{0,2}(\d+\.\d+)\*{0,2}\s*places;? everyone else\s*\*{0,2}(\d+\.\d+)",
+    re.S,
+)
+
+
+def load_geometry() -> dict[str, pd.DataFrame]:
+    """Per-horizon block-count sweep results; empty when none have been run.
+
+    Refuses to merge two files covering one horizon. The filename encodes k
+    (`geometry_long_k2.csv`) because several k can coexist, and the document's
+    figures came from exactly one of them -- silently keeping whichever sorted last
+    would verify against evidence that did not produce the number.
+    """
+    out: dict[str, pd.DataFrame] = {}
+    seen: dict[str, str] = {}
+    for path in sorted((RESEARCH / "results").glob(GEOMETRY_GLOB)):
+        frame = pd.read_csv(path)
+        for horizon, part in frame.groupby("horizon"):
+            key = str(horizon)
+            if key in seen:
+                raise SystemExit(
+                    f"two geometry result files cover the {key!r} horizon: "
+                    f"{seen[key]} and {path.name}. The document quotes one k; "
+                    "verifying against a mix of both would prove nothing. "
+                    "Remove the stale file."
+                )
+            seen[key] = path.name
+            out[key] = part
+    return out
+
+
+def load_geometry_pbo() -> dict[tuple[str, int], float]:
+    """PBO per (horizon, block count) from the sweep's JSON sidecars."""
+    pbo: dict[tuple[str, int], float] = {}
+    for path in sorted((RESEARCH / "results").glob("geometry_*.json")):
+        horizon = path.stem.split("_")[1]
+        for entry in json.loads(path.read_text()):
+            pbo[(horizon, int(entry["blocks"]))] = float(entry["pbo"])
+    return pbo
+
+
+def geometry_stats(part: pd.DataFrame) -> dict:
+    """Recompute every derived geometry figure from the raw per-block medians.
+
+    `rank` here is position by median Sharpe, best first, which is why the sort is
+    descending -- ranking ascending would silently invert every movement figure.
+    """
+    blocks = sorted(part.blocks.unique())
+    dupes = part.duplicated(subset=["strategy", "blocks"]).sum()
+    if dupes:
+        # pivot_table would average them and produce a plausible wrong number.
+        raise SystemExit(
+            f"{dupes} duplicate (strategy, blocks) rows in the geometry results; "
+            "regenerate them rather than averaging over the duplicates"
+        )
+    wide = part.pivot_table(index="strategy", columns="blocks", values="median_sharpe")
+    # Comparability: a strategy missing at any block count cannot be ranked across
+    # them, and including it would manufacture rank movement out of absence.
+    wide = wide.dropna()
+    ranks = wide.rank(ascending=False, method="first")
+    movement = (ranks.max(axis=1) - ranks.min(axis=1)).astype(int)
+    best_rank = ranks.min(axis=1).astype(int)
+    top3 = (ranks <= 3).sum(axis=1).astype(int)
+
+    rhos = []
+    for i, j in itertools.combinations(blocks, 2):
+        rhos.append(spearman(list(wide[i]), list(wide[j])))
+    winners = {wide[b].idxmax() for b in blocks}
+    held_first = best_rank == 1
+    return {
+        "blocks": blocks,
+        "n": len(wide),
+        "median": wide.median(axis=1),
+        "spread": wide.max(axis=1) - wide.min(axis=1),
+        "movement": movement,
+        "top3": top3,
+        "mean_rho": float(np.mean(rhos)),
+        "median_movement": float(np.median(movement)),
+        "winners": winners,
+        "rankcorr": spearman(list(best_rank), list(movement)),
+        "mean_move_winners": float(movement[held_first].mean()),
+        "mean_move_others": float(movement[~held_first].mean()),
+    }
 
 def load_perturb() -> pd.DataFrame | None:
     """Every perturbation result concatenated; None when none have been run."""
@@ -165,11 +302,199 @@ def check(
     )
 
 
+# Spread is printed to 2dp, so half a unit is 0.005 -- exactly the rounding boundary.
+# Several real spreads sit within 5e-4 of it (buy_and_hold 0.27459), so a tolerance of
+# exactly 0.005 would turn a benign regeneration into a MISMATCH on a figure that is
+# correct to 2dp. Same half-unit-plus-slack reasoning as TOL_PCT.
+TOL_SPREAD = 0.0055
+
+# Marker for the paragraph quoting PBO per block count. PBO figures must be tied to
+# the horizon they are quoted under, and the horizon only appears in the prose.
+GEOMETRY_PBO_MARKER = "PBO is not geometry-invariant"
+# Header of the per-strategy invariance table. Used to count its rows STRUCTURALLY:
+# requiring merely "some rows matched" lets a single reformatted row drop out of
+# verification while the others keep the run green.
+GEOMETRY_TABLE_HEADER = "| Strategy | median across"
+GEOMETRY_HORIZON_WORD = re.compile(r"\b(short|medium|long)\b", re.I)
+
+
+def markdown_table_rows(section: str, header: str) -> int | None:
+    """Count data rows under `header`, or None when the header itself is gone.
+
+    Structural count, independent of the field regexes, so a row that stops matching
+    is visible as a shortfall rather than as silence.
+    """
+    if header not in section:
+        return None
+    lines = section[section.index(header):].split("\n")
+    rows = 0
+    for line in lines[1:]:
+        if not line.startswith("|"):
+            break
+        if set(line) <= set("|- :"):   # the |---|---| separator
+            continue
+        rows += 1
+    return rows
+
+
+def check_geometry(section: str, geometry: dict[str, pd.DataFrame]) -> tuple[int, list[str]]:
+    """Verify finding 1f by recomputing every figure from the per-block medians.
+
+    Returns (figures checked, failure messages). A figure that cannot be recomputed
+    is a failure, never a skip: the whole point of this script is that "the run said
+    PASS" and "the numbers were checked" are the same statement.
+    """
+    checked = 0
+    failures: list[str] = []
+    stats = {h: geometry_stats(part) for h, part in geometry.items()}
+
+    def compare(what: str, doc_val: float, got: float, tol: float) -> None:
+        """Record a failure unless the doc value matches the recomputed one.
+
+        `not isfinite(got)` is load-bearing. `abs(x - nan) > tol` is False, so the
+        naive form silently PASSES an unrecomputable figure -- the exact failure mode
+        this file exists to prevent.
+        """
+        nonlocal checked
+        checked += 1
+        if not np.isfinite(got) or abs(doc_val - got) > tol:
+            failures.append(f"geometry {what}: doc says {doc_val}, recomputed {got:.4f}")
+
+    seen_horizons: set[str] = set()
+    for m in GEOMETRY_VERDICT_ROW.finditer(section):
+        horizon, rho, move, total, winners = m.groups()
+        key = horizon.lower()
+        seen_horizons.add(key)
+        s = stats.get(key)
+        if s is None:
+            checked += 1
+            failures.append(f"no geometry results for {key!r}")
+            continue
+        compare(f"{key} mean Spearman", float(rho), s["mean_rho"], TOL_SHARPE)
+        compare(f"{key} median rank movement", float(move), s["median_movement"], 0.5)
+        compare(f"{key} comparable count", float(total), float(s["n"]), 0.5)
+        compare(f"{key} distinct winners", float(winners), float(len(s["winners"])), 0.5)
+
+    # Format drift would otherwise drop these figures while the run still reported a
+    # pass, because the total stays well above the `checked < 100` backstop.
+    for missing in sorted(set(stats) - seen_horizons):
+        failures.append(
+            f"the 1f verdict table has no row for the {missing!r} horizon, but "
+            f"geometry results for it exist -- those figures went unchecked"
+        )
+
+    # The per-strategy invariance table is long-horizon only.
+    long_stats = stats.get("long")
+    if long_stats is None:
+        failures.append("no long-horizon geometry results; the 1f invariance table "
+                        "and its prose figures could not be checked")
+        return checked, failures
+
+    rows = 0
+    for m in GEOMETRY_STRATEGY_ROW.finditer(section):
+        name, med, spread, move, top3, n_geom = m.groups()
+        rows += 1
+        if name not in long_stats["median"].index:
+            checked += 1
+            failures.append(f"strategy not in geometry results: {name!r}")
+            continue
+        compare(f"long {name} median", float(med), long_stats["median"][name], TOL_SHARPE)
+        compare(f"long {name} spread", float(spread), long_stats["spread"][name], TOL_SPREAD)
+        compare(f"long {name} rank movement", float(move),
+                float(long_stats["movement"][name]), 0.5)
+        compare(f"long {name} top-3 count", float(top3),
+                float(long_stats["top3"][name]), 0.5)
+        compare(f"long {name} geometry count", float(n_geom),
+                float(len(long_stats["blocks"])), 0.5)
+    expected = markdown_table_rows(section, GEOMETRY_TABLE_HEADER)
+    if expected is None:
+        failures.append(f"the 1f invariance table header ({GEOMETRY_TABLE_HEADER!r}) is "
+                        "missing, so its rows could not be counted or checked")
+    elif rows != expected:
+        failures.append(
+            f"the 1f invariance table has {expected} rows but only {rows} matched the "
+            "field pattern, so the rest went unchecked"
+        )
+
+    m = GEOMETRY_RANKCORR.search(section)
+    if m is None:
+        failures.append("the best-rank/movement correlation sentence did not match; "
+                        "that figure went unchecked")
+    else:
+        compare("best-rank/movement correlation", float(m.group(1)),
+                long_stats["rankcorr"], TOL_SHARPE)
+
+    m = GEOMETRY_MEANMOVE.search(section)
+    if m is None:
+        failures.append("the mean-rank-movement sentence did not match; those two "
+                        "figures went unchecked")
+    else:
+        compare("winner mean movement", float(m.group(1)),
+                long_stats["mean_move_winners"], 0.05)
+        compare("other mean movement", float(m.group(2)),
+                long_stats["mean_move_others"], 0.05)
+
+    checked += _check_geometry_pbo(section, failures)
+    return checked, failures
+
+
+def _check_geometry_pbo(section: str, failures: list[str]) -> int:
+    """Check each quoted PBO against the sidecar for the horizon it is quoted under.
+
+    Matching on block count alone would let a long-horizon figure verify against a
+    medium-horizon run: at 8 blocks both happen to be 0.700, so the check would pass
+    on the wrong evidence.
+    """
+    pbo = load_geometry_pbo()
+    if not pbo:
+        failures.append(
+            "no geometry_*.json sidecars, so every quoted PBO went unchecked; "
+            "regenerate with research/geometry.py"
+        )
+        return 0
+    if GEOMETRY_PBO_MARKER not in section:
+        failures.append(f"could not locate the PBO paragraph ({GEOMETRY_PBO_MARKER!r}); "
+                        "the quoted PBO figures went unchecked")
+        return 0
+
+    para_start = section.index(GEOMETRY_PBO_MARKER)
+    end = section.find("\n\n", para_start)
+    para = section[para_start : end if end != -1 else len(section)]
+
+    # Walk the paragraph in order, carrying the most recent horizon word, so
+    # "At the long horizon ... 0.800 (6 blocks) ... ; at medium, 0.445 (12)"
+    # attributes each figure to the right run.
+    events = [(mm.start(), "h", mm.group(1).lower())
+              for mm in GEOMETRY_HORIZON_WORD.finditer(para)]
+    events += [(mm.start(), "v", mm.groups()) for mm in GEOMETRY_PBO.finditer(para)]
+    events.sort()
+
+    checked = 0
+    horizon: str | None = None
+    for _, kind, payload in events:
+        if kind == "h":
+            horizon = payload
+            continue
+        value, blocks = float(payload[0]), int(payload[1])
+        checked += 1
+        if horizon is None:
+            failures.append(f"PBO {value} at {blocks} blocks is quoted before any "
+                            "horizon is named, so it cannot be attributed")
+            continue
+        got = pbo.get((horizon, blocks))
+        if got is None:
+            failures.append(f"PBO {value}: no {horizon} sidecar entry at {blocks} blocks")
+        elif abs(got - value) > TOL_SHARPE:
+            failures.append(f"PBO at {horizon} {blocks} blocks: doc says {value}, "
+                            f"sidecar has {got:.4f}")
+    return checked
+
 def main() -> int:
     """Verify every parseable figure; exit non-zero on any mismatch."""
     df = load()
     cpcv = load_cpcv()
     perturb = load_perturb()
+    geometry = load_geometry()
     checked = 0
     failures: list[str] = []
     per_doc: dict[str, int] = {}
@@ -225,6 +550,23 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
+
+    # A geometry section with no geometry results is the same failure mode as the
+    # CPCV preflight above: the figures would simply go unchecked and the run would
+    # report success.
+    has_geometry_section = any(
+        d.exists() and GEOMETRY_SECTION in d.read_text() for d in DOCS
+    )
+    if has_geometry_section and not geometry:
+        print(
+            "PREFLIGHT FAIL: the documents contain a block-count geometry section but "
+            "no geometry results were found.\n  Regenerate with:\n"
+            "    python3 research/geometry.py --horizon short --blocks 6 12 --k 2\n"
+            "    python3 research/geometry.py --horizon medium --blocks 6 12 --k 2\n"
+            "    python3 research/geometry.py --horizon long --blocks 6 12 --k 2",
+            file=sys.stderr,
+        )
+        return 1
 
     for doc in DOCS:
         if not doc.exists():
@@ -318,6 +660,14 @@ def main() -> int:
                         f"{doc.name}: perturbation median {v} appears in no perturb_*.csv"
                     )
 
+        # Block-count geometry tables (finding 1f), verified by recomputation.
+        if geometry and GEOMETRY_SECTION in text:
+            at = text.index(GEOMETRY_SECTION)
+            nxt = text.find("\n### ", at + len(GEOMETRY_SECTION))
+            n, msgs = check_geometry(text[at : nxt if nxt != -1 else len(text)], geometry)
+            checked += n
+            failures += [f"{doc.name}: {m}" for m in msgs]
+
         for m in PAIR_ROW.finditer(text):
             label, oos_s, is_s, oos_r, trades = m.groups()
             for field, raw, tol in (
@@ -333,7 +683,8 @@ def main() -> int:
 
         per_doc[doc.name] = checked - before
 
-    print(f"figures verified against {CSV.name}: {checked}")
+    print("figures checked against the run that produced them "
+          f"(sweep, CPCV, perturbation, recomputed geometry): {checked}".format(checked=checked))
     for name, n in per_doc.items():
         print(f"  {name}: {n}")
     if failures:
@@ -347,7 +698,7 @@ def main() -> int:
             "stopped matching after a table format change.",
             file=sys.stderr,
         )
-    print("ALL PARSED FIGURES MATCH THE SWEEP OUTPUT")
+    print("EVERY PARSED FIGURE MATCHES ITS SOURCE RUN")
     return 0
 
 

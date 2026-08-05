@@ -1,0 +1,51 @@
+[
+  {
+    "blocks": 6,
+    "k": 2,
+    "pbo": 0.4,
+    "pbo_splits": 10,
+    "unevaluable": {}
+  },
+  {
+    "blocks": 7,
+    "k": 2,
+    "pbo": 0.15,
+    "pbo_splits": 20,
+    "unevaluable": {}
+  },
+  {
+    "blocks": 8,
+    "k": 2,
+    "pbo": 0.34285714285714286,
+    "pbo_splits": 35,
+    "unevaluable": {}
+  },
+  {
+    "blocks": 9,
+    "k": 2,
+    "pbo": 0.42857142857142855,
+    "pbo_splits": 70,
+    "unevaluable": {}
+  },
+  {
+    "blocks": 10,
+    "k": 2,
+    "pbo": 0.6666666666666666,
+    "pbo_splits": 126,
+    "unevaluable": {}
+  },
+  {
+    "blocks": 11,
+    "k": 2,
+    "pbo": 0.505,
+    "pbo_splits": 200,
+    "unevaluable": {}
+  },
+  {
+    "blocks": 12,
+    "k": 2,
+    "pbo": 0.475,
+    "pbo_splits": 200,
+    "unevaluable": {}
+  }
+]

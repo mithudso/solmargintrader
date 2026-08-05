@@ -187,10 +187,12 @@ mere 0.222, so any nudge is large relative to it. That is now **three independen
 configuration**: the algebra, the 46-point natural experiment, and the highest perturbation ratio
 in the population. When three unrelated tests point at one row, believe them.
 
-**Finding 3 — `obv_trend` is the standout, and it is the one row that gets better the harder you
-look at it.** Long horizon: median Sharpe **+0.774** (the best single anywhere), **81% of paths
-positive**, ratio **0.13** (4th most stable of 24), **0 sign flips**, and only two perturbable
-parameters — fewer ways to be wrong. Compare the medium-horizon leader `hurst_switch`: median
+**Finding 3 — `obv_trend` is the standout on this test.** Long horizon: median Sharpe **+0.774**,
+**81% of paths positive**, ratio **0.13** (4th most stable of 24), **0 sign flips**, and only two
+perturbable parameters — fewer ways to be wrong. (**Qualified by finding 1f below:** that +0.774
+is its value at 8 blocks, the geometry this document happens to use. Across block counts 6–12 its
+median is +0.573 and it is *not* always first. What survives is its rank *stability*, which is the
+best in the set.) Compare the medium-horizon leader `hurst_switch`: median
 +0.699 and 93% of paths positive, but ratio **0.60**, near the top of the singles distribution. The
 two best performers have very different robustness, and the ranking does not tell you which is
 which.
@@ -209,6 +211,67 @@ solidly negative and there is no sign to lose.
 ```bash
 python3 research/perturb.py --horizon long --all-singles     # any of short|medium|long
 ```
+
+### 1f. Block count 6–12: at the long horizon the ranking is largely a slicing artifact
+
+The perturbation run threw up an oddity — for the top pair, changing 8 blocks to 9 moved the median
+more than any 10% parameter change. `research/geometry.py` measures that properly: re-rank all 25
+strategies at every block count from 6 to 12 and ask whether the *ranking* survives.
+
+| Horizon | mean pairwise Spearman | median rank movement | distinct #1s | verdict |
+|---|---|---|---|---|
+| Short | **+0.909** | 5 of 25 | 3 | mostly stable |
+| Medium | +0.772 | 9 of 25 | 4 | mostly stable |
+| **Long** | **+0.566** | **12 of 25** | **6** | **geometry-dependent** |
+
+**The long horizon is much the worst, and that is precisely where every positive result lives.**
+Six different strategies hold first place across seven block counts — `macd` (6, 10),
+`ou_reversion` (7), `obv_trend` (8), `rsi` (9), `hurst_switch` (11), `ts_momentum` (12). The median
+strategy moves twelve of twenty-five places. Reading a position off the long-horizon leaderboard is
+reading the block count.
+
+The mechanism is straightforward once stated: slow long-horizon parameters generate few trades, so
+each block's Sharpe is noisy, so the ordering is easily reshuffled. The short horizon has 8,823 bars
+and hundreds of trades per configuration, and its ranking is correspondingly stable (+0.909).
+
+**And the leaderboard-toppers are the unstable ones.** Spearman between the best rank a strategy
+ever achieves and how far its rank moves is **−0.390** — better peak rank goes with *more*
+movement. Strategies that held first place somewhere move a mean of **14.0** places; everyone else
+**11.6**. Topping this leaderboard is partly a symptom of instability.
+
+**What survives the test, ranked by invariance rather than by performance:**
+
+| Strategy | median across 6–12 | spread | rank movement | top-3 in |
+|---|---|---|---|---|
+| `buy_and_hold` | **+0.587** | **0.27** | 7 | 1/7 |
+| `obv_trend` | +0.573 | 0.38 | **5** | 3/7 |
+| `vol_regime` | +0.386 | 0.41 | 12 | 1/7 |
+| `hurst_switch` | +0.461 | 0.42 | 19 | 2/7 |
+| `adx_trend` | +0.604 | **1.38** | **23** | 2/7 |
+
+Two things to take from that table. **`buy_and_hold` has both the highest median across geometries
+(+0.587) and by far the smallest spread (0.27)** — it edges `obv_trend` on median while being twice
+as invariant, which is unsurprising given it has no parameters and no timing. And **`adx_trend` has
+the single highest median of all 25 (+0.604) while ranging from +0.78 to −0.60 and moving 23 of 25
+places** — the clearest example in this document of a number that means nothing.
+
+`obv_trend` is the one genuinely encouraging row: not always first, but the **most rank-stable
+strategy in the set** (moves 5 places), third-smallest spread, top-3 in three of seven geometries.
+
+**PBO is not geometry-invariant either**, which matters because it is the statistic used to
+discount everything else. At the long horizon it runs 0.800 (6 blocks) → 0.700 (8) → **0.943** (10)
+→ 0.830 (12); at medium, 0.445 (12) to 0.667 (11). Every value stays above the 0.500 noise line, so
+the conclusion holds in direction, but the specific figure quoted elsewhere in this document is the
+8-block one and should be read as one draw from that range.
+
+```bash
+python3 research/geometry.py --horizon long --blocks 6 12 --k 2
+```
+
+> **Net effect on how to read Lists 1–3.** Two independent tests now say the same thing from
+> different directions: PBO says in-sample rank does not generalise, and this says the rank is not
+> even stable to an arbitrary evaluation choice. Use the tables to see *which mechanisms produce
+> positive medians at all*, and treat the ordering within them as noise.
 
 ### 2. In-sample rank does not predict out-of-sample rank. At the medium horizon it inverts.
 
