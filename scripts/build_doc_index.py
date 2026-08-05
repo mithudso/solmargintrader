@@ -85,13 +85,18 @@ def build() -> tuple[list[dict[str, object]], list[str]]:
         if rel in seen:
             continue
         seen.add(rel)
+
+        # Gitignored paths never enter the index, whether or not they happen to
+        # exist here. `data/` and `results/` are regenerable output, not source,
+        # so indexing them would make the artifact depend on whether this machine
+        # has run a fetch -- two developers would generate two different files.
+        if is_ignored(rel):
+            continue
+
         path = REPO / rel
         if not path.exists():
-            # `data/` and `results/` are regenerable and gitignored, so their
-            # absence is expected rather than drift. Anything else is a rename
-            # the overview has not caught up with.
-            if not is_ignored(rel):
-                missing.append(rel)
+            # A rename the overview has not caught up with.
+            missing.append(rel)
             continue
         entry: dict[str, object] = {
             "path": rel,
