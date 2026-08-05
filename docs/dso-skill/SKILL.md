@@ -32,8 +32,9 @@ updated: "2026-08-05"
 
 # Deep Strategy Optimizer
 
-Sixth sibling of `code-deep-optimizer` (source), `document-critique` (prose),
-`prompt-deep-optimizer` (prompts), `skill-optimizer` (skills), and `deep-query-optimizer` (SQL).
+Seventh sibling of `code-deep-optimizer` (source), `document-critique` (prose),
+`prompt-deep-optimizer` (prompts), `skill-optimizer` (skills), `deep-query-optimizer` (SQL), and
+`design-deep-optimizer` (UI/UX).
 Same machinery: multi-pass audit, Medium+ fixes applied in place, verify gate, convergence loop.
 Different artifact: **a strategy is a claim about the future backed by a simulation, so the failure
 mode is not a crash but a number that is wrong or means less than it appears to.**
