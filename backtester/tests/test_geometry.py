@@ -11,9 +11,14 @@ or of the block count. Two pieces carry the whole conclusion and are covered her
     leaderboard, so an off-by-one on the boundary is a wrong instruction, not a
     cosmetic slip.
 
-`render()` and `evaluate_geometry()` need a full price series and a strategy build,
-so they are exercised by the sweep itself rather than here; these are the pure
-parts.
+`render()` and `evaluate_geometry()` need a full price series and a strategy build and
+are **untested** -- being executed by a sweep is not coverage, since nothing asserts
+what they produce.
+
+The classes at the end cover the functions whose job is *to fail*. That distinction
+earned its place: the pure arithmetic here was well covered while `_check_geometry_pbo`
+had no tests, and a missing non-finite guard survived in it for exactly that reason,
+two functions away from a comment calling the guard load-bearing.
 """
 
 from __future__ import annotations
@@ -33,9 +38,12 @@ from research.geometry import GeometryRun, spearman, tidy_frame, verdict  # noqa
 from research.verify_numbers import (  # noqa: E402
     EXPECTED_FIGURES,
     GEOMETRY_TABLE_HEADER,
+    _check_geometry_pbo,
     census_failures,
+    check_geometry,
     geometry_stats,
     markdown_table_rows,
+    verdict_label,
 )
 
 
@@ -275,6 +283,97 @@ class CensusTests(unittest.TestCase):
 
     def test_an_unknown_document_is_not_policed(self) -> None:
         self.assertEqual(census_failures({"SOMETHING_ELSE.md": 4}), [])
+
+
+class VerdictLabelTests(unittest.TestCase):
+    """The reader-facing word, re-derived so it can disagree with the table."""
+
+    def test_it_matches_the_thresholds_in_geometry(self) -> None:
+        # Kept deliberately in step with research.geometry.verdict; if those move,
+        # this must fail rather than quietly agree with whatever was printed.
+        for rho, winners, want in [
+            (0.95, 1, "geometry-stable"),
+            (0.95, 2, "mostly stable"),
+            (0.70, 3, "mostly stable"),
+            (0.6999, 3, "geometry-dependent"),
+            (-0.4, 6, "geometry-dependent"),
+        ]:
+            with self.subTest(rho=rho, winners=winners):
+                self.assertEqual(verdict_label(rho, winners), want)
+
+    def test_it_agrees_with_the_real_verdict_function_on_the_published_case(self) -> None:
+        out = verdict(0.566, ["a"] * 6, np.array([12]), 25)
+        self.assertIn(verdict_label(0.566, 6).upper(), out)
+
+
+class PboCheckTests(unittest.TestCase):
+    """`_check_geometry_pbo`: the delegate that skipped the non-finite guard."""
+
+    PARA = ("PBO is not geometry-invariant either. At the long horizon it runs "
+            "0.800 (6 blocks) to 0.700 (8); at medium, 0.445 (12).\n\ntail\n")
+
+    def setUp(self) -> None:
+        self.failures: list[str] = []
+
+    def test_the_real_paragraph_checks_out(self) -> None:
+        n = _check_geometry_pbo(self.PARA, self.failures)
+        self.assertEqual(n, 3)
+        self.assertEqual(self.failures, [])
+
+    def test_a_figure_quoted_under_the_wrong_horizon_is_caught(self) -> None:
+        # long@8 and medium@8 are both 0.700 in the real data, so matching on block
+        # count alone would pass this.
+        para = self.PARA.replace("at medium, 0.445 (12)", "at medium, 0.830 (12)")
+        _check_geometry_pbo(para, self.failures)
+        self.assertTrue(any("medium 12" in f for f in self.failures), self.failures)
+
+    def test_a_non_finite_sidecar_value_fails_rather_than_passing(self) -> None:
+        """`abs(nan - x) > tol` is False, so the naive comparison passed anything."""
+        import research.verify_numbers as vn
+        real = vn.load_geometry_pbo
+        vn.load_geometry_pbo = lambda: {("long", 6): float("nan"), ("long", 8): 0.7,
+                                        ("medium", 12): 0.445}
+        try:
+            n = _check_geometry_pbo(self.PARA, self.failures)
+        finally:
+            vn.load_geometry_pbo = real
+        self.assertEqual(n, 3)
+        self.assertTrue(any("not a number" in f for f in self.failures), self.failures)
+
+    def test_a_missing_marker_is_a_failure_not_a_skip(self) -> None:
+        n = _check_geometry_pbo("no PBO paragraph here", self.failures)
+        self.assertEqual(n, 0)
+        self.assertTrue(any("unchecked" in f for f in self.failures))
+
+    def test_a_figure_quoted_before_any_horizon_cannot_be_attributed(self) -> None:
+        para = "PBO is not geometry-invariant either: 0.800 (6 blocks).\n\n"
+        _check_geometry_pbo(para, self.failures)
+        self.assertTrue(any("cannot be attributed" in f for f in self.failures))
+
+
+class CheckGeometryFailureTests(unittest.TestCase):
+    """The guards that make check_geometry trustworthy, exercised as failures."""
+
+    @staticmethod
+    def _geometry() -> dict[str, pd.DataFrame]:
+        return {"long": frame({6: {"a": 1.0, "b": 0.5, "c": 0.1},
+                               8: {"a": 0.9, "b": 0.6, "c": 0.2}}, horizon="long")}
+
+    def test_a_horizon_with_results_but_no_table_row_is_reported(self) -> None:
+        _, failures = check_geometry("### 1f.\n\nno tables at all\n", self._geometry())
+        self.assertTrue(any("no row for the 'long' horizon" in f for f in failures),
+                        failures)
+
+    def test_a_row_that_stops_matching_shows_up_as_a_shortfall(self) -> None:
+        section = (
+            "### 1f.\n\n"
+            f"{GEOMETRY_TABLE_HEADER} 6-12 | spread | rank movement | top-3 in |\n"
+            "|---|---|---|---|---|\n"
+            "| `a` | +0.95 | 0.10 | 0 | 2/2 |\n"
+            "| b-without-backticks | +0.55 | 0.10 | 0 | 2/2 |\n\n"
+        )
+        _, failures = check_geometry(section, self._geometry())
+        self.assertTrue(any("only 1 matched" in f for f in failures), failures)
 
 
 if __name__ == "__main__":

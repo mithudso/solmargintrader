@@ -319,3 +319,27 @@ diffing — **csv, txt and json byte-identical** except the intended `unevaluabl
 list→dict change. Each new guard was confirmed to fail on a mutated document.
 
 Counts: **279 Python** (was 263), 95 soltui, 114 JS.
+
+### The blind re-audit found the one that mattered
+
+The `isfinite` guard was added to `compare()` — and `_check_geometry_pbo` does its own
+comparison and did not get it. **A NaN in a JSON sidecar meant a quoted PBO was counted
+as checked and compared against nothing: 932 figures, exit 0, "EVERY PARSED FIGURE
+MATCHES".** `geometry.py` writes NaN whenever it cannot compute PBO for a geometry and
+`json` round-trips it, so this was reachable, and the most realistic trigger was an
+aborted run leaving a stale `geometry_long_k3.json` sidecar — which `load_geometry`'s
+duplicate guard never saw, because that guard is on the CSV glob.
+
+The lesson generalises: **the pure arithmetic was well covered while every function
+whose job is *to fail* had no tests at all.** That is exactly why the missing guard
+survived two functions away from a comment calling it load-bearing. `_check_geometry_pbo`
+and `check_geometry`'s guards now have failure-path tests.
+
+Also closed: the verdict word (`mostly stable` vs `geometry-stable`) was the one cell in
+the 1f table a reader acts on and nothing checked it — flipping it to its opposite
+passed. It is now re-derived locally from the recomputed statistics, deliberately *not*
+by importing `geometry.verdict`. And renumbering the `### 1f.` heading silenced the
+preflight, the checks and the coverage guard at once; geometry results with no matching
+section is now a preflight failure.
+
+Counts: **288 Python** (was 263 at the start of this work).

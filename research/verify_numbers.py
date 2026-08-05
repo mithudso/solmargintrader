@@ -5,8 +5,10 @@ transcription slip is indistinguishable from a fabrication to a reader, so this
 checks the whole surface rather than a sample. Every figure is checked against the
 run that produced it -- `sweep_results.csv` for the walk-forward tables, the CPCV
 results for the CPCV tables, `perturb_*.csv` for the perturbation tables -- and the
-derived block-count figures of finding 1f are RECOMPUTED from the per-block medians,
-because no CSV contains a "median across geometries" to look up.
+derived block-count figures of finding 1f (medians across geometries, spreads, rank
+movements, correlations) are RECOMPUTED from the per-block medians, because no CSV
+contains a "median across geometries" to look up. The PBO figures quoted in the same
+finding are the exception: those are a lookup against the sweep's JSON sidecars.
 
     python3 research/verify_numbers.py        # exit 0 iff every figure matches
 
@@ -47,7 +49,7 @@ DOCS = (RESEARCH / "RANKED_LISTS.md", RESEARCH / "STRATEGIES.md")
 # Update these in the same commit that changes the documents' figures -- deliberately,
 # after reading the new count. Never lower one to make a red run go green; that is
 # the same act as deleting the evidence.
-EXPECTED_FIGURES = {"RANKED_LISTS.md": 901, "STRATEGIES.md": 31}
+EXPECTED_FIGURES = {"RANKED_LISTS.md": 904, "STRATEGIES.md": 31}
 
 # Sharpe values are quoted to 3dp, returns to 1dp; allow half a unit of the
 # last printed digit plus a little slack for rounding direction.
@@ -134,7 +136,9 @@ def spearman(a: list[float], b: list[float]) -> float:
     """
     ra = pd.Series(a).rank().to_numpy()
     rb = pd.Series(b).rank().to_numpy()
-    if len(ra) < 3:
+    if len(ra) < 3 or ra.std() == 0 or rb.std() == 0:
+        # A constant ranking has no order to correlate with. numpy would divide by a
+        # zero standard deviation, warn, and hand back NaN; say NaN outright instead.
         return float("nan")
     return float(np.corrcoef(ra, rb)[0, 1])
 
@@ -176,9 +180,22 @@ GEOMETRY_VERDICT_ROW = re.compile(
     r"^\|\s*\*{0,2}(Short|Medium|Long)\*{0,2}\s*\|"
     r"\s*\*{0,2}([-+]?\d+\.\d+)\*{0,2}\s*\|"
     r"\s*\*{0,2}(\d+) of (\d+)\*{0,2}\s*\|"
-    r"\s*\*{0,2}(\d+)\*{0,2}\s*\|",
+    r"\s*\*{0,2}(\d+)\*{0,2}\s*\|"
+    r"\s*\*{0,2}([a-z -]+?)\*{0,2}\s*\|",
     re.M,
 )
+
+
+def verdict_label(mean_rho: float, winners: int) -> str:
+    """The reader-facing word, re-derived from the recomputed statistics.
+
+    Deliberately NOT research.geometry.verdict: this must be able to disagree with the
+    script that produced the table. Kept in step with geometry.verdict's thresholds --
+    if those move, this fails and says so, which is the correct outcome.
+    """
+    if mean_rho >= 0.9 and winners == 1:
+        return "geometry-stable"
+    return "mostly stable" if mean_rho >= 0.7 else "geometry-dependent"
 GEOMETRY_STRATEGY_ROW = re.compile(
     r"^\|\s*`([a-z0-9_]+)`\s*\|"
     r"\s*\*{0,2}([-+]?\d+\.\d+)\*{0,2}\s*\|"
@@ -222,10 +239,23 @@ def load_geometry() -> dict[str, pd.DataFrame]:
 
 
 def load_geometry_pbo() -> dict[tuple[str, int], float]:
-    """PBO per (horizon, block count) from the sweep's JSON sidecars."""
+    """PBO per (horizon, block count) from the sweep's JSON sidecars.
+
+    Refuses two sidecars covering one horizon, for the same reason load_geometry does.
+    This is a separate glob from the CSVs, and the realistic case is an aborted run
+    leaving `geometry_long_k3.json` behind with no sibling CSV -- so the CSV loader's
+    guard never sees it.
+    """
     pbo: dict[tuple[str, int], float] = {}
+    seen: dict[str, str] = {}
     for path in sorted((RESEARCH / "results").glob("geometry_*.json")):
         horizon = path.stem.split("_")[1]
+        if horizon in seen and seen[horizon] != path.name:
+            raise SystemExit(
+                f"two geometry sidecars cover the {horizon!r} horizon: {seen[horizon]} "
+                f"and {path.name}. Remove the stale one; the document quotes one run."
+            )
+        seen[horizon] = path.name
         for entry in json.loads(path.read_text()):
             pbo[(horizon, int(entry["blocks"]))] = float(entry["pbo"])
     return pbo
@@ -246,6 +276,11 @@ def geometry_stats(part: pd.DataFrame) -> dict:
             "regenerate them rather than averaging over the duplicates"
         )
     wide = part.pivot_table(index="strategy", columns="blocks", values="median_sharpe")
+    if wide.dropna().empty:
+        raise SystemExit(
+            "no strategy in the geometry results is evaluable at every block count, "
+            "so no ranking can be compared across them"
+        )
     # Comparability: a strategy missing at any block count cannot be ranked across
     # them, and including it would manufacture rank movement out of absence.
     wide = wide.dropna()
@@ -419,7 +454,7 @@ def check_geometry(section: str, geometry: dict[str, pd.DataFrame]) -> tuple[int
 
     seen_horizons: set[str] = set()
     for m in GEOMETRY_VERDICT_ROW.finditer(section):
-        horizon, rho, move, total, winners = m.groups()
+        horizon, rho, move, total, winners, label = m.groups()
         key = horizon.lower()
         seen_horizons.add(key)
         s = stats.get(key)
@@ -431,6 +466,13 @@ def check_geometry(section: str, geometry: dict[str, pd.DataFrame]) -> tuple[int
         compare(f"{key} median rank movement", float(move), s["median_movement"], 0.5)
         compare(f"{key} comparable count", float(total), float(s["n"]), 0.5)
         compare(f"{key} distinct winners", float(winners), float(len(s["winners"])), 0.5)
+        checked += 1
+        want = verdict_label(s["mean_rho"], len(s["winners"]))
+        if label.strip().lower() != want:
+            failures.append(
+                f"geometry {key} verdict: the table says {label.strip()!r} but the "
+                f"recomputed statistics give {want!r}"
+            )
 
     # Format drift would otherwise drop these figures while the run still reported a
     # pass, because the total stays well above the `checked < 100` backstop.
@@ -600,6 +642,14 @@ def _check_geometry_pbo(section: str, failures: list[str]) -> int:
         got = pbo.get((horizon, blocks))
         if got is None:
             failures.append(f"PBO {value}: no {horizon} sidecar entry at {blocks} blocks")
+        elif not np.isfinite(got):
+            # geometry.py writes NaN when it could not compute PBO for a geometry, and
+            # json round-trips it. `abs(nan - v) > tol` is False, so without this the
+            # figure is counted as checked and compared against nothing.
+            failures.append(
+                f"PBO at {horizon} {blocks} blocks: the sidecar value is not a number, "
+                f"so the quoted {value} was compared against nothing"
+            )
         elif abs(got - value) > TOL_SHARPE:
             failures.append(f"PBO at {horizon} {blocks} blocks: doc says {value}, "
                             f"sidecar has {got:.4f}")
@@ -673,6 +723,16 @@ def main() -> int:
     has_geometry_section = any(
         d.exists() and GEOMETRY_SECTION in d.read_text() for d in DOCS
     )
+    if geometry and not has_geometry_section:
+        print(
+            f"PREFLIGHT FAIL: geometry results exist for "
+            f"{', '.join(sorted(geometry))} but no document contains a "
+            f"{GEOMETRY_SECTION!r} section, so none of their figures can be checked.\n"
+            "  Either the heading was renumbered (update GEOMETRY_SECTION) or the "
+            "results are stale (remove them).",
+            file=sys.stderr,
+        )
+        return 1
     if has_geometry_section and not geometry:
         print(
             "PREFLIGHT FAIL: the documents contain a block-count geometry section but "
@@ -810,13 +870,8 @@ def main() -> int:
         for f in failures:
             print(f"  {f}", file=sys.stderr)
         return 1
-    if checked < 100:
-        print(
-            f"\nWARNING: only {checked} figures parsed; the regexes may have "
-            "stopped matching after a table format change.",
-            file=sys.stderr,
-        )
-    print("EVERY PARSED FIGURE MATCHES ITS SOURCE RUN")
+    # No `checked < 100` backstop any more: EXPECTED_FIGURES is a per-document floor,
+    # which subsumes it and says something specific when it trips.
     return 0
 
 

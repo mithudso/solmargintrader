@@ -89,7 +89,9 @@ def spearman(a: list[float], b: list[float]) -> float:
     """Rank correlation without scipy."""
     ra = pd.Series(a).rank().to_numpy()
     rb = pd.Series(b).rank().to_numpy()
-    if len(ra) < 3:
+    if len(ra) < 3 or ra.std() == 0 or rb.std() == 0:
+        # A constant ranking has no order to correlate with. numpy would divide by a
+        # zero standard deviation, warn, and hand back NaN; say NaN outright instead.
         return float("nan")
     return float(np.corrcoef(ra, rb)[0, 1])
 
