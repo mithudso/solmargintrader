@@ -22,5 +22,5 @@ geometry: 9 blocks, k=2                          +0.904  -0.441    95%    +35.0 
 VERDICT: STABLE under this test — a 10% parameter nudge moves the median much less than sampling a different regime does.
     max |Δ median Sharpe| = 0.441 against a baseline path IQR of 0.881 (ratio 0.50)
     0 of 12 perturbations flip the sign
-    for reference, seven top long-horizon configurations measured ratios of 0.13–0.72 (median 0.44), so this is above typical
+    reference population for a combo: 0.30–0.72 (median 0.44), so this is above typical
     this test does NOT address multiple testing. It asks whether the PARAMETERS were cherry-picked; it cannot tell you whether the CONFIGURATION was cherry-picked from hundreds. PBO answers that, separately.

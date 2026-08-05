@@ -177,6 +177,41 @@ row at the top of an anti-informative ranking is still a row chosen by an anti-i
 - zsh does **not** word-split unquoted `$var`, so a `for spec in "--pair a b --mode any"` loop
   passes the whole string as one argument and every run fails silently.
 
+## All-25 perturbation stability (72 configs, 329 perturbations)
+
+`python3 research/perturb.py --horizon <h> --all-singles`
+
+| Horizon | ratio min | median | max | sign flips |
+|---|---|---|---|---|
+| Short | 0.11 | 0.26 | 0.78 | 1/111 |
+| Medium | 0.04 | 0.14 | 0.86 | 21/110 |
+| Long | 0.06 | 0.17 | **1.33** | 13/108 |
+
+1. **Singles median ratio 0.21 vs top pairs 0.44 — combining ~2.6×'s parameter sensitivity.**
+   PBO said combining makes overfitting worse; perturbation says it makes the parameter choice
+   matter more. Two independent methods, same direction. That is the strongest form of the
+   "don't combine signals" conclusion in this repo.
+2. **`bb_reversion` and `zscore` (long) are the two most fragile of all 72, both 1.33 — the only
+   two above 1.0.** Same pair already proven from source to be ONE mechanism. **Three independent
+   flags now:** the algebra, the 46-point natural experiment, the highest perturbation ratio.
+3. **`obv_trend` is the standout** — long median +0.774 (best single anywhere), 81% of paths
+   positive, ratio 0.13, 0 sign flips, only 2 perturbable params. Meanwhile the medium leader
+   `hurst_switch` (+0.699, 93% positive) sits at ratio 0.60, near the top of the distribution.
+   **Performance and robustness are different axes; the ranking shows only one.**
+
+Spearman(median Sharpe, ratio): −0.045 long, −0.152 medium, **+0.328 short**. Long/medium
+uncorrelated (benign). Short is the bad direction — better performers are less stable, so that
+ranking partly selects parameter luck.
+
+### Watch out
+
+- `REFERENCE_*` in perturb.py is **split by configuration type** (`single` median 0.21, `combo`
+  median 0.44) because I originally applied the pairs reference to singles and mis-calibrated every
+  verdict. Do not re-merge them.
+- The check answers "were the PARAMETERS cherry-picked". It says **nothing** about whether the
+  CONFIGURATION was cherry-picked from hundreds — PBO answers that, and at 0.650 the concern stands.
+- `buy_and_hold` is skipped: no parameters to perturb, which is its own kind of robustness.
+
 ## What exists
 
 - `backtester/` — event-driven engine, look-ahead-guarded, 16 strategies, CPCV + PBO
@@ -479,3 +514,87 @@ strategies, one row — a sweep's configuration count overstates how many distin
 it contains.
 
 Distribution: 20 very-low, 22 low, 1 moderate.
+
+### Update — BTC/ETH sink the last moderate; the dataset outranks the strategy
+
+`research/results/cpcv_all25_btc_eth_1d.csv` (BTC checksum `3042b33a202fe8ef`, ETH
+`52c7bb3220d1e59a`, 1,875 bars each, medium preset, 8 groups k=2). Merged as `f66e7d4`.
+
+**`ou_half_life_sizing` downgraded moderate → low.** Four independent tests:
+
+| dataset | rank | medSh | Q1 | %pos | medRet | **trades** |
+|---|---|---|---|---|---|---|
+| SOL daily | 4/25 | +0.412 | +0.213 | 93% | +10.5% | **26** |
+| SOL hourly | 2/25 | −0.595 | −1.296 | 33% | −3.4% | **196** |
+| BTC daily | **1/25** | +1.657 | **+0.000** | 60% | +12.0% | **6** |
+| ETH daily | **18/25** | +0.012 | −0.323 | 53% | +0.0% | **18** |
+
+Read trades against rank: **every good result has a tiny trade count, and the one test
+where it traded properly it lost.** BTC's rank-1 is six trades with Q1 exactly 0.000 (the
+conservative quarter of paths did nothing). That is a filter, not an edge. Its real use —
+bounding the hold on `bb_reversion`/`zscore` — remains untested.
+
+**NO CARD IS RATED MODERATE NOW** (20 very-low, 23 low). Both cards that ever held it lost
+it to the experiment the rating was explicitly conditional on. That empty tier is the
+result.
+
+hurst_switch: 13th of 25 on BTC, 19th on ETH (4 trades, 0% of paths positive) — confirms
+its downgrade.
+
+### The finding worth carrying forward
+
+Configurations with a positive median path Sharpe, per dataset:
+
+| dataset | positive | buy-and-hold medRet |
+|---|---|---|
+| BTC daily 2021-06→2026-08 | **25 of 25** | +25.6% |
+| ETH daily same window | 18 of 25 | −6.3% |
+| SOL daily same window | mixed | +9.4% |
+| SOL hourly 2025-08→2026-08 | **0 of 25** | −22.9% |
+
+**The dataset explains far more than the strategy does.** On BTC every mechanism
+"worked"; on the SOL hourly year not one did. Any ranking computed inside one dataset is
+mostly measuring that dataset — the single-split critique, one level up. Before trusting
+any future ranking here, check how many configs are positive in that dataset overall; if
+it's 25/25 or 0/25, the ranking is about the market, not the mechanisms.
+
+### Update — the ladder grid on real SOL, for the first time
+
+`research/results/ladder_grid_sol.csv`. Merged as `54dd41a`. This is the strategy the
+extension would actually place orders with; until now it had only run on synthetic bars.
+
+**Bounds came from the extension's own convention** (`tools/dryrun.js`: 0.85×–1.15× of
+price, 7 rungs, $12/rung), never from hindsight. P&L is against *deployed* capital, the
+denominator `extension/README.md` already uses.
+
+**One static ladder, whole series**
+
+| | daily | hourly |
+|---|---|---|
+| realized | **+$7.51 (+10.4%)** | −$14.37 (−20.0%) |
+| round trips | 68 | 36 |
+| **bars outside ladder** | **93.1%** | **86.0%** |
+| grid ret / maxDD | +5.21% / **−11.46%** | −9.98% / −18.68% |
+| hold ret / maxDD | +88.25% / **−96.27%** | −57.12% / −75.80% |
+
+**Re-centred per block** (8 blocks, ladder reset from each block's first close):
+daily median **+7.5% of deployed capital, 5/8 positive**, beat hold 4/8 (hold median
+−1.2%), worst block **−22.5%**; hourly median −1.2%, 3/8 positive, beat hold **6/8**
+(hold median −16.1%).
+
+The worst daily block ($28–38 ladder while SOL fell 39%, −22.5% of deployed at max
+position) lands within a couple of points of the extension's own dry-run figure (−$8.62
+on $48), which **cross-checks gridsim.py against grid.js on real data** — the parity that
+CLAUDE.md makes a non-negotiable.
+
+**THE PRODUCT FINDING: the extension does not re-centre.** `planGrid` reads `lower`/`upper`
+straight from config and nothing recomputes them, so a live install behaves like the
+*static* column — idle 86–93% of the time — not the re-centred one that was profitable on
+daily. The gap between those two columns is the value of an unbuilt feature, and it is now
+named in `extension/README.md` as the highest-value missing one.
+
+Card basis moved base-rate → measured-oos, rating stays **low**: good drawdown profile,
+but idle most of the time, hourly negative, the trend failure mode cost 22.5% of deployed,
+and the profitable configuration needs re-centring that doesn't exist. Standing constraint
+still outranks all of it — **no live order has ever been placed**, the Trigger order-list
+envelope is unverified, fee attribution unconfirmed.
