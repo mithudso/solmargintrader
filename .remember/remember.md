@@ -243,3 +243,79 @@ router — so the label says exactly that rather than claiming the closest-looki
 being labelled.
 
 Counts: **189 Python, 114 JS** (303 total).
+
+---
+
+## Block-count geometry: the long-horizon leaderboard is mostly a slicing artifact
+
+`research/geometry.py` re-ranks all 25 strategies at every CPCV block count from 6 to
+12 and asks whether the *ranking* is a property of the strategies or of N. Nobody can
+justify 8 blocks over 9 from first principles, so if the leaderboard reshuffles as N
+moves, the leaderboard is partly reporting how the series was sliced.
+
+| Horizon | mean pairwise Spearman | median rank move | distinct #1s |
+| --- | --- | --- | --- |
+| short | **+0.909** | 5 of 25 | 3 |
+| medium | +0.772 | 9 of 25 | 4 |
+| **long** | **+0.566** | **12 of 25** | **6** |
+
+**The long horizon is much the worst, and that is where every positive result lives.**
+Six strategies hold first place across seven block counts. The mechanism: slow
+long-horizon parameters generate few trades, so each block's Sharpe is noisy, so the
+order reshuffles. Short has 8,823 bars and stays stable.
+
+**Topping the leaderboard is partly a symptom of instability.** Spearman between best
+rank achieved and rank movement is **−0.390**; strategies that led somewhere move a
+mean of 14.0 places against 11.6 for everyone else. `adx_trend` has the highest median
+of all 25 (+0.604) while ranging +0.78 to −0.60 and moving 23 of 25 places — the
+clearest example in the document of a number that means nothing. `obv_trend` survives
+as the most rank-stable strategy in the set (moves 5 places), which **qualifies finding
+1e**: its +0.774 was its value at 8 blocks, the geometry the document happened to use.
+PBO is not geometry-invariant either — 0.700 to 0.943 at the long horizon.
+
+## verify_numbers had a silent-pass hole, and it was not in the new code
+
+Adding the geometry checks raised the count 877 → 932. The first run *passed at 877*,
+which was the tell: none of finding 1f's figures were being checked, because the
+extractor only ever looked numbers up and 1f's figures (median across geometries,
+spread, rank movement) exist in no CSV. They are now **recomputed** from the raw
+per-block medians.
+
+A blind re-audit then found the larger, pre-existing hole: every check is regex-driven,
+so a table whose format drifts stops matching and the run still prints a pass.
+**Measured: deleting six CPCV rows took the count 923 → 893 — thirty figures silently
+unverified — and the script exited 0.** `EXPECTED_FIGURES` now records the count each
+document carries and fails on a mismatch in either direction. Be exact about what it
+buys: it detects a *drop* from the recognised set; it cannot detect a figure that was
+never recognised. "EVERY PARSED FIGURE MATCHES" carries real weight on "parsed".
+
+Other fixes worth not re-discovering:
+
+* **PBO was matched on block count alone**, so a long-horizon figure could verify
+  against a medium run — at 8 blocks both are 0.700. Each is now tied to its horizon.
+* **`abs(doc - recomputed) > tol` is False when the recomputation is NaN**, so an
+  unrecomputable figure passed silently. Every geometry comparison now rejects
+  non-finite.
+* **Spread tolerance 0.005 on a 2dp figure is the rounding boundary with no slack** —
+  `buy_and_hold`'s spread sits 4e-4 from a false failure. Now 0.0055. The median
+  tolerance was the opposite error: 0.005 on a 3dp figure, eight times too loose.
+* Two result files covering one horizon were silently merged, keeping whichever sorted
+  last; a `--k 3` run would have verified k2 figures.
+
+**The `spearman` duplication docstring overclaimed and is corrected.** Two identical
+copies cannot catch a bug that was always in both. What separation prevents is a later
+edit to `geometry.py` redefining the thing that checks it; the real independence lives
+in `geometry_stats`, which re-derives every figure by a different route than `render()`.
+
+**A contradiction survived every machine check.** 1f said `buy_and_hold` had "the
+highest median across geometries (+0.587)" and, two sentences later, that `adx_trend`
+had "the single highest median of all 25 (+0.604)". Every figure was correct and
+verified; the defect was a comparative claim *about* verified numbers, which the script
+structurally cannot catch — it compares prose against results, never prose against
+prose. `buy_and_hold` is third of 25; its distinction is the smallest spread, 0.27.
+
+Verification: the refactor was proven safe by regenerating all three horizons and
+diffing — **csv, txt and json byte-identical** except the intended `unevaluable`
+list→dict change. Each new guard was confirmed to fail on a mutated document.
+
+Counts: **279 Python** (was 263), 95 soltui, 114 JS.
