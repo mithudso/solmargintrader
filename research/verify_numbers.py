@@ -49,7 +49,13 @@ DOCS = (RESEARCH / "RANKED_LISTS.md", RESEARCH / "STRATEGIES.md")
 # Update these in the same commit that changes the documents' figures -- deliberately,
 # after reading the new count. Never lower one to make a red run go green; that is
 # the same act as deleting the evidence.
-EXPECTED_FIGURES = {"RANKED_LISTS.md": 904, "STRATEGIES.md": 31}
+EXPECTED_FIGURES = {
+    "RANKED_LISTS.md": {
+        "prose": 8, "walk_forward": 180, "cpcv": 615,
+        "perturb": 7, "geometry": 58, "pair": 36,
+    },
+    "STRATEGIES.md": {"prose": 31},
+}
 
 # Sharpe values are quoted to 3dp, returns to 1dp; allow half a unit of the
 # last printed digit plus a little slack for rounding direction.
@@ -204,7 +210,9 @@ GEOMETRY_STRATEGY_ROW = re.compile(
     r"\s*\*{0,2}(\d+)/(\d+)\*{0,2}\s*\|",
     re.M,
 )
-GEOMETRY_PBO = re.compile(r"\*{0,2}(\d\.\d{3})\*{0,2}\s*\((\d+)(?:\s*blocks)?\)")
+# {2,3} rather than {3}: "0.70 (8 blocks)" is a perfectly natural way to write it and
+# would otherwise not match, dropping the figure with no complaint.
+GEOMETRY_PBO = re.compile(r"\*{0,2}(\d\.\d{2,3})\*{0,2}\s*\((\d+)(?:\s*blocks\b)?\)")
 GEOMETRY_RANKCORR = re.compile(r"how far its rank moves is\s*\*{0,2}([-+]?\d+\.\d+)")
 GEOMETRY_MEANMOVE = re.compile(
     r"move a mean of\s*\*{0,2}(\d+\.\d+)\*{0,2}\s*places;? everyone else\s*\*{0,2}(\d+\.\d+)",
@@ -409,23 +417,49 @@ def markdown_table_rows(section: str, header: str) -> int | None:
     return rows
 
 
-def census_failures(per_doc: dict[str, int]) -> list[str]:
-    """Complain when the number of recognised figures moves in either direction."""
+class Tally:
+    """Figures checked, counted per pattern family.
+
+    A single per-document total lets a loss in one table be masked by a gain in
+    another: six figures dropped from the CPCV tables and six added to the geometry
+    tables net to zero and pass. Counting per family closes that, and makes the
+    failure message name the table that moved.
+    """
+
+    def __init__(self) -> None:
+        self.per: dict[str, int] = {}
+
+    def add(self, family: str, n: int = 1) -> None:
+        self.per[family] = self.per.get(family, 0) + n
+
+    @property
+    def total(self) -> int:
+        return sum(self.per.values())
+
+
+def census_failures(per_doc: dict[str, dict[str, int]]) -> list[str]:
+    """Complain when any family's recognised count moves in either direction."""
     out = []
-    for name, n in sorted(per_doc.items()):
+    for name, got in sorted(per_doc.items()):
         want = EXPECTED_FIGURES.get(name)
-        if want is None or n == want:
+        if want is None:
             continue
-        if n < want:
-            out.append(
-                f"{name}: only {n} figures were recognised but {want} are expected, so "
-                f"{want - n} went unchecked -- a table's format has drifted"
-            )
-        else:
-            out.append(
-                f"{name}: {n} figures were recognised but only {want} are expected. If "
-                f"figures were added deliberately, raise EXPECTED_FIGURES to {n}"
-            )
+        for family in sorted(set(want) | set(got)):
+            expected, actual = want.get(family, 0), got.get(family, 0)
+            if actual == expected:
+                continue
+            if actual < expected:
+                out.append(
+                    f"{name}: the {family} tables yielded only {actual} figures but "
+                    f"{expected} are expected, so {expected - actual} went unchecked "
+                    "-- that table's format has drifted"
+                )
+            else:
+                out.append(
+                    f"{name}: the {family} tables yielded {actual} figures but only "
+                    f"{expected} are expected. If figures were added deliberately, "
+                    f"set EXPECTED_FIGURES[{name!r}][{family!r}] to {actual}"
+                )
     return out
 
 
@@ -619,6 +653,17 @@ def _check_geometry_pbo(section: str, failures: list[str]) -> int:
     end = section.find("\n\n", para_start)
     para = section[para_start : end if end != -1 else len(section)]
 
+    # Attribution needs the horizon named nearby, so only this paragraph can be walked
+    # reliably. A PBO quoted anywhere else in the finding would therefore go unchecked
+    # -- so refuse it explicitly rather than passing over it.
+    stray = len(GEOMETRY_PBO.findall(section)) - len(GEOMETRY_PBO.findall(para))
+    if stray > 0:
+        failures.append(
+            f"{stray} PBO figure(s) are quoted in finding 1f outside the paragraph "
+            f"beginning {GEOMETRY_PBO_MARKER!r}; only that paragraph names the horizon "
+            "each belongs to, so they cannot be attributed or checked"
+        )
+
     # Walk the paragraph in order, carrying the most recent horizon word, so
     # "At the long horizon ... 0.800 (6 blocks) ... ; at medium, 0.445 (12)"
     # attributes each figure to the right run.
@@ -749,7 +794,7 @@ def main() -> int:
             failures.append(f"missing document {doc}")
             continue
         text = normalise(doc.read_text())
-        before = checked
+        tally = Tally()
 
         # Prose "IS x% (Sharpe y) -> OOS z% (Sharpe w)" quadruples. These carry
         # no label, so verify each value exists SOMEWHERE in the sweep for the
@@ -763,7 +808,7 @@ def main() -> int:
                 ("oos_return", float(oos_r.replace(",", "")) / 100.0, TOL_PCT / 100.0),
                 ("oos_sharpe", float(oos_s), TOL_SHARPE),
             ):
-                checked += 1
+                tally.add("prose")
                 if not any(abs(g - v) <= tol for g in df[field].to_numpy()):
                     failures.append(
                         f"{doc.name}: prose {field}={v} appears nowhere in the sweep"
@@ -771,7 +816,7 @@ def main() -> int:
 
         for m in PROSE_OOS_SHARPE.finditer(text):
             v = float(m.group(1))
-            checked += 1
+            tally.add("prose")
             if not any(abs(g - v) <= TOL_SHARPE for g in df["oos_sharpe"].to_numpy()):
                 failures.append(
                     f"{doc.name}: prose OOS Sharpe={v} appears nowhere in the sweep"
@@ -791,11 +836,11 @@ def main() -> int:
                     v /= 100.0
                     tol /= 100.0
                 ok, msg = check(df, label, field, v, tol)
-                checked += 1
+                tally.add("walk_forward")
                 if not ok:
                     failures.append(f"{doc.name}: {msg}")
             ok, msg = check(df, label, "oos_trades", float(trades), 0.5)
-            checked += 1
+            tally.add("walk_forward")
             if not ok:
                 failures.append(f"{doc.name}: {msg}")
 
@@ -812,7 +857,7 @@ def main() -> int:
                 ("median_path_return", float(med_r) / 100.0, TOL_PCT / 100.0),
                 ("total_trades", float(trades), 0.5),
             ):
-                checked += 1
+                tally.add("cpcv")
                 ok, msg = check_cpcv(label, field, v, tol)
                 if not ok:
                     failures.append(f"{doc.name}: {msg}")
@@ -830,7 +875,7 @@ def main() -> int:
             known = perturb["median_sharpe"].to_numpy()
             for m in PERTURB_ROW.finditer(section):
                 v = float(m.group(1))
-                checked += 1
+                tally.add("perturb")
                 if not any(abs(g - v) <= TOL_SHARPE for g in known):
                     failures.append(
                         f"{doc.name}: perturbation median {v} appears in no perturb_*.csv"
@@ -841,7 +886,7 @@ def main() -> int:
             at = text.index(GEOMETRY_SECTION)
             nxt = text.find("\n### ", at + len(GEOMETRY_SECTION))
             n, msgs = check_geometry(text[at : nxt if nxt != -1 else len(text)], geometry)
-            checked += n
+            tally.add("geometry", n)
             failures += [f"{doc.name}: {m}" for m in msgs]
 
         for m in PAIR_ROW.finditer(text):
@@ -853,18 +898,20 @@ def main() -> int:
                 ("oos_trades", trades, 0.5),
             ):
                 ok, msg = check(df, label, field, float(raw), tol)
-                checked += 1
+                tally.add("pair")
                 if not ok:
                     failures.append(f"{doc.name}: {msg}")
 
-        per_doc[doc.name] = checked - before
+        per_doc[doc.name] = tally.per
+        checked += tally.total
 
     failures += census_failures(per_doc)
 
     print("figures checked against the run that produced them "
           f"(sweep, CPCV, perturbation, recomputed geometry): {checked}")
-    for name, n in per_doc.items():
-        print(f"  {name}: {n}")
+    for name, families in per_doc.items():
+        detail = ", ".join(f"{k} {v}" for k, v in sorted(families.items()))
+        print(f"  {name}: {sum(families.values())}  ({detail})")
     if failures:
         print(f"\nMISMATCHES ({len(failures)}):", file=sys.stderr)
         for f in failures:

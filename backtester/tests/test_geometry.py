@@ -259,30 +259,48 @@ class MarkdownTableRowsTests(unittest.TestCase):
 
 
 class CensusTests(unittest.TestCase):
-    """The floor on how many figures must be recognised.
+    """The floor on how many figures must be recognised, counted per family.
 
     Every other check is regex-driven, so a table whose format drifts stops matching
     and the run prints a pass having verified fewer numbers than before. Deleting six
     CPCV rows measurably took the count 923 -> 893 and still exited 0 before this.
     """
 
-    def test_the_expected_count_is_a_pass(self) -> None:
-        self.assertEqual(census_failures(dict(EXPECTED_FIGURES)), [])
+    def test_the_expected_counts_are_a_pass(self) -> None:
+        self.assertEqual(census_failures({k: dict(v) for k, v in EXPECTED_FIGURES.items()}), [])
 
-    def test_a_shortfall_names_how_many_went_unchecked(self) -> None:
-        out = census_failures({"RANKED_LISTS.md": EXPECTED_FIGURES["RANKED_LISTS.md"] - 5})
+    def test_a_shortfall_names_the_family_and_the_number_lost(self) -> None:
+        got = {k: dict(v) for k, v in EXPECTED_FIGURES.items()}
+        got["RANKED_LISTS.md"]["cpcv"] -= 5
+        out = census_failures(got)
         self.assertEqual(len(out), 1)
+        self.assertIn("cpcv", out[0])
         self.assertIn("5 went unchecked", out[0])
 
+    def test_a_loss_in_one_family_is_not_masked_by_a_gain_in_another(self) -> None:
+        """The reason this is per-family: a per-document total nets these to zero."""
+        got = {k: dict(v) for k, v in EXPECTED_FIGURES.items()}
+        got["RANKED_LISTS.md"]["cpcv"] -= 6
+        got["RANKED_LISTS.md"]["geometry"] += 6
+        out = census_failures(got)
+        self.assertEqual(len(out), 2, out)
+        self.assertTrue(any("cpcv" in f and "unchecked" in f for f in out), out)
+
     def test_a_surplus_asks_for_the_constant_to_be_raised(self) -> None:
-        # Silently accepting more would let the floor rot until it stopped biting.
-        n = EXPECTED_FIGURES["STRATEGIES.md"] + 3
-        out = census_failures({"STRATEGIES.md": n})
+        got = {k: dict(v) for k, v in EXPECTED_FIGURES.items()}
+        got["STRATEGIES.md"]["prose"] += 3
+        out = census_failures(got)
         self.assertEqual(len(out), 1)
-        self.assertIn(f"raise EXPECTED_FIGURES to {n}", out[0])
+        self.assertIn("set EXPECTED_FIGURES", out[0])
+
+    def test_a_family_that_vanishes_entirely_is_caught(self) -> None:
+        got = {k: dict(v) for k, v in EXPECTED_FIGURES.items()}
+        del got["RANKED_LISTS.md"]["perturb"]
+        out = census_failures(got)
+        self.assertTrue(any("perturb" in f for f in out), out)
 
     def test_an_unknown_document_is_not_policed(self) -> None:
-        self.assertEqual(census_failures({"SOMETHING_ELSE.md": 4}), [])
+        self.assertEqual(census_failures({"SOMETHING_ELSE.md": {"prose": 4}}), [])
 
 
 class VerdictLabelTests(unittest.TestCase):
@@ -344,6 +362,21 @@ class PboCheckTests(unittest.TestCase):
         n = _check_geometry_pbo("no PBO paragraph here", self.failures)
         self.assertEqual(n, 0)
         self.assertTrue(any("unchecked" in f for f in self.failures))
+
+    def test_a_two_decimal_figure_still_matches(self) -> None:
+        """"0.70 (8 blocks)" is natural to write and used to be dropped in silence."""
+        para = self.PARA.replace("0.700 (8)", "0.70 (8)")
+        n = _check_geometry_pbo(para, self.failures)
+        self.assertEqual(n, 3)
+        self.assertEqual(self.failures, [])
+
+    def test_a_figure_quoted_outside_the_scanned_paragraph_is_refused(self) -> None:
+        # Only the marked paragraph names the horizon each figure belongs to, so a
+        # stray one cannot be attributed -- say so rather than passing over it.
+        section = "PBO at 0.912 (9 blocks) up front.\n\n" + self.PARA
+        _check_geometry_pbo(section, self.failures)
+        self.assertTrue(any("outside the paragraph" in f for f in self.failures),
+                        self.failures)
 
     def test_a_figure_quoted_before_any_horizon_cannot_be_attributed(self) -> None:
         para = "PBO is not geometry-invariant either: 0.800 (6 blocks).\n\n"
