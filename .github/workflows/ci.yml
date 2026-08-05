@@ -111,6 +111,14 @@ jobs:
       - name: Test counts and retrieval indexes agree with the repo
         run: python3 scripts/check_docs.py
 
+      # The exhaustive index under index/ is a separate artifact from
+      # docs/high_signal_file_index.json above, and it goes stale the same way: it
+      # looks authoritative, and nothing notices when a file moves. --check
+      # re-hashes every tracked source file against the committed index. No
+      # dependencies, no network.
+      - name: Repository index is not stale
+        run: python3 index/build.py --check
+
   # Live Jupiter endpoints are checked on a schedule rather than per-commit: a
   # third-party outage must not turn every PR red.
   endpoints:

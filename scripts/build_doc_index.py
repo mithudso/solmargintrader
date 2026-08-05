@@ -47,23 +47,55 @@ KIND_BY_SUFFIX = {
 }
 
 
+def git_ok(*args: str) -> bool:
+    """True when the git command exits 0."""
+    return (
+        subprocess.run(["git", *args], cwd=REPO, capture_output=True).returncode == 0
+    )
+
+
+def is_tracked(rel: str) -> bool:
+    """True when git tracks `rel`, in `HEAD` or in the index."""
+    return git_ok("ls-files", "--error-unmatch", "--", rel)
+
+
 def is_ignored(rel: str) -> bool:
-    """True when git deliberately ignores `rel` (so its absence is expected).
+    """True when git deliberately ignores `rel`.
 
     Both spellings are tried: `.gitignore` writes directory rules with a trailing
     slash (`data/`), and `git check-ignore` will not match that rule against a
-    bare name when the directory does not exist on disk -- which is precisely the
-    case this has to answer.
+    bare name when the directory does not exist on disk -- precisely the case
+    this has to answer.
     """
-    for candidate in (rel, f"{rel}/"):
-        done = subprocess.run(
-            ["git", "check-ignore", "-q", "--", candidate],
-            cwd=REPO,
-            capture_output=True,
-        )
-        if done.returncode == 0:
-            return True
-    return False
+    return any(git_ok("check-ignore", "-q", "--", c) for c in (rel, f"{rel}/"))
+
+
+def excluded(rel: str) -> bool:
+    """True when `rel` is regenerable output that does not belong in the index.
+
+    Tracked wins over ignored, always. `.remember/remember.md` sits under a
+    directory with ignored siblings, and asking `check-ignore` alone dropped it
+    from one checkout and not another -- so the artifact differed by machine while
+    both were "correct". Tracking state is the same in every clone; ignore rules
+    interact with what happens to exist on disk.
+    """
+    return is_ignored(rel) and not is_tracked(rel)
+
+
+def committed_line_count(rel: str) -> int | None:
+    """Lines in the **committed** version of `rel`, or None if it has none.
+
+    Read from `HEAD` rather than from disk. Counting the working tree made the
+    artifact depend on uncommitted edits: a staged change to
+    `.github/workflows/ci.yml` alone produced a different file from the same
+    commit, which reads as drift in a diff and is not.
+    """
+    done = subprocess.run(
+        ["git", "show", f"HEAD:{rel}"], cwd=REPO, capture_output=True, text=True
+    )
+    if done.returncode != 0:
+        return None
+    return len(done.stdout.splitlines())
 
 
 def component_of(rel: str) -> str:
@@ -85,13 +117,19 @@ def build() -> tuple[list[dict[str, object]], list[str]]:
         if rel in seen:
             continue
         seen.add(rel)
+
+        # Untracked, ignored paths never enter the index, whether or not they
+        # happen to exist here. `data/` and `results/` are regenerable output, not
+        # source, so indexing them would make the artifact depend on whether this
+        # machine has run a fetch -- two developers would generate two different
+        # files from the same commit.
+        if excluded(rel):
+            continue
+
         path = REPO / rel
         if not path.exists():
-            # `data/` and `results/` are regenerable and gitignored, so their
-            # absence is expected rather than drift. Anything else is a rename
-            # the overview has not caught up with.
-            if not is_ignored(rel):
-                missing.append(rel)
+            # A rename the overview has not caught up with.
+            missing.append(rel)
             continue
         entry: dict[str, object] = {
             "path": rel,
@@ -106,9 +144,9 @@ def build() -> tuple[list[dict[str, object]], list[str]]:
             "summary": re.sub(r"[*`]", "", description).strip(),
         }
         if path.is_file():
-            entry["lines"] = len(
-                path.read_text(encoding="utf-8", errors="replace").splitlines()
-            )
+            lines = committed_line_count(rel)
+            if lines is not None:
+                entry["lines"] = lines
         entries.append(entry)
 
     return entries, missing

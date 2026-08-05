@@ -280,7 +280,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Whether a result on one coin transfers to another",
-      "lines": 774
+      "lines": 798
     },
     {
       "path": "research/turnover_table.py",
@@ -711,7 +711,7 @@
       "component": "repo",
       "kind": "python",
       "summary": "Fails the build on stale test counts or dead index entries",
-      "lines": 231
+      "lines": 320
     },
     {
       "path": "docs",

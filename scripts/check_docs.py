@@ -71,39 +71,117 @@ def is_ignored(rel: str) -> bool:
     return False
 
 
+def is_tracked(rel: str) -> bool:
+    """True when git tracks `rel`, in `HEAD` or in the index."""
+    return (
+        subprocess.run(
+            ["git", "ls-files", "--error-unmatch", "--", rel],
+            cwd=REPO,
+            capture_output=True,
+        ).returncode
+        == 0
+    )
+
+
 def missing_and_tracked(rel: str) -> bool:
-    """True when a documented path is absent for a reason worth failing over."""
-    return not (REPO / rel).exists() and not is_ignored(rel)
+    """True when a documented path is absent for a reason worth failing over.
+
+    Tracked wins over ignored: a tracked file that has gone missing is real drift
+    even if an ignore rule would also match it.
+    """
+    if (REPO / rel).exists():
+        return False
+    return is_tracked(rel) or not is_ignored(rel)
+
+
+def committed_test_files(rel_dir: str) -> list[str] | None:
+    """Basenames of the test files **committed** under `rel_dir`.
+
+    Committed rather than present-on-disk, and specifically not `git ls-files`,
+    which includes the index. A test file that is staged but not yet committed
+    would otherwise make this fail in someone else's checkout for work they have
+    not landed -- the docs would be reported as stale against tests that do not
+    exist in any commit yet. Counting `HEAD` puts the failure on the commit that
+    adds the tests, which is where it belongs.
+
+    Returns None when git cannot answer, so the caller can fall back.
+    """
+    done = subprocess.run(
+        ["git", "ls-tree", "-r", "HEAD", "--name-only", "--", rel_dir],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    if done.returncode != 0:
+        return None
+    return [
+        Path(line).name
+        for line in done.stdout.splitlines()
+        if Path(line).name.startswith("test") and line.endswith(".py")
+    ]
+
+
+def count_tests(suite: unittest.TestSuite | unittest.TestCase) -> int:
+    """Test cases in a loaded suite.
+
+    A load error is itself a `_FailedTest` case and is counted, so a broken
+    import surfaces as a count mismatch rather than a silently smaller suite.
+    """
+    if isinstance(suite, unittest.TestSuite):
+        return sum(count_tests(child) for child in suite)
+    return 1
+
+
+def discover(rel_dir: str, pattern: str = "test*.py") -> unittest.TestSuite:
+    """Discovery over `rel_dir`, which also puts the repo on `sys.path` for us."""
+    return unittest.defaultTestLoader.discover(
+        str(REPO / rel_dir), pattern=pattern, top_level_dir=str(REPO)
+    )
 
 
 def count_suite(rel_dir: str) -> int:
-    """Number of test cases discovery finds under `rel_dir`, without running them."""
-    suite = unittest.defaultTestLoader.discover(
-        str(REPO / rel_dir), top_level_dir=str(REPO)
-    )
-
-    def walk(s: unittest.TestSuite | unittest.TestCase) -> int:
-        if isinstance(s, unittest.TestSuite):
-            return sum(walk(child) for child in s)
-        # A load error is itself a _FailedTest case; count it so a broken import
-        # shows up as a count mismatch rather than a silently smaller suite.
-        return 1
-
-    return walk(suite)
+    """Number of committed test cases under `rel_dir`, without running them."""
+    files = committed_test_files(rel_dir)
+    if files is None:
+        # No git: fall back to discovering whatever is on disk. Less precise, but
+        # better than refusing to check at all.
+        return count_tests(discover(rel_dir))
+    # One discovery pass per committed file, so an uncommitted test file is not
+    # counted. Discovery rather than `loadTestsFromName` because it handles the
+    # import path itself -- loading by dotted name silently produced one
+    # `_FailedTest` per module instead of the real cases.
+    return sum(count_tests(discover(rel_dir, pattern=name)) for name in files)
 
 
 def count_extension_tests() -> int:
-    """`node:test` cases in `extension/test`, counted by source.
+    """`node:test` cases in `extension/test`.
 
-    Counts `test(`/`it(` at the start of a line, which is how every file in that
-    directory declares a case. Reading the source rather than running `node
-    --test` keeps this check under a second.
+    Asks the runner, because a source regex is a guess: `test.skip(`, a subtest,
+    or a case declared inside a helper all move one count and not the other.
+    Running the suite costs about a second.
+
+    Falls back to counting `test(`/`it(` at the start of a line when node is not
+    installed. That fallback agreed with the runner at 114 when it was written,
+    but it is an approximation and a mismatch would not be visible -- so the
+    runner is tried first.
     """
-    total = 0
+    done = subprocess.run(
+        ["node", "--test", "--test-reporter=tap"],
+        cwd=REPO / "extension",
+        capture_output=True,
+        text=True,
+    )
+    # A failing suite still reports its pass/fail tally, and a test failure is
+    # the extension job's business, not this check's.
+    match = re.search(r"^# tests (\d+)$", done.stdout, re.MULTILINE)
+    if match:
+        return int(match.group(1))
+
     pattern = re.compile(r"^\s*(?:test|it)\s*\(", re.MULTILINE)
-    for path in sorted((REPO / "extension" / "test").glob("*.test.js")):
-        total += len(pattern.findall(path.read_text(encoding="utf-8")))
-    return total
+    return sum(
+        len(pattern.findall(path.read_text(encoding="utf-8")))
+        for path in sorted((REPO / "extension" / "test").glob("*.test.js"))
+    )
 
 
 def claimed_counts(text: str) -> dict[str, list[int]]:
@@ -112,14 +190,24 @@ def claimed_counts(text: str) -> dict[str, list[int]]:
     A claim is attributed by what else is on the line: a `discover -s <dir>`
     command, an `npm test`, or a heading naming the suite.
     """
-    found: dict[str, list[int]] = {"backtester": [], "soltui": [], "extension": []}
+    found: dict[str, list[int]] = {
+        "backtester": [],
+        "soltui": [],
+        "extension": [],
+        "total": [],
+    }
     for line in text.splitlines():
         match = re.search(r"(\d[\d,]*)\s+tests\b", line)
         if not match:
             continue
         value = int(match.group(1).replace(",", ""))
         lowered = line.lower()
-        if "soltui" in lowered:
+        # "N tests total" / "N tests in total" -- checked against the sum, because
+        # a hand-summed total is exactly the kind of number that goes stale
+        # silently while the three per-suite figures beside it stay right.
+        if "total" in lowered:
+            found["total"].append(value)
+        elif "soltui" in lowered:
             found["soltui"].append(value)
         elif "backtester" in lowered or "research" in lowered:
             found["backtester"].append(value)
@@ -208,6 +296,7 @@ def main(argv: list[str] | None = None) -> int:
 
     actual = {name: count_suite(d) for name, (d, _) in SUITES.items()}
     actual["extension"] = count_extension_tests()
+    actual["total"] = sum(actual.values())
 
     problems = (
         check_counts(actual)
