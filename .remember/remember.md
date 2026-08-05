@@ -696,4 +696,4 @@ by importing `geometry.verdict`. And renumbering the `### 1f.` heading silenced 
 preflight, the checks and the coverage guard at once; geometry results with no matching
 section is now a preflight failure.
 
-Counts: **288 Python** (was 263 at the start of this work).
+Counts on the merged tree: **304 Python** (backtester; 292 from this work plus master's universe tests), **95 soltui**, **114 JS**.
