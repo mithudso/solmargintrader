@@ -3,7 +3,7 @@ id: garch_vol_forecast
 name: EWMA / GARCH(1,1) Vol-Targeted Trend
 kind: exposure-strategy
 status: measured
-family: risk-overlay
+family: sma-gated
 summary: Vol-targeted trend using an EWMA variance forecast instead of a trailing stdev.
 registry_key: garch_voltarget
 runner: backtester.cli

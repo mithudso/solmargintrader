@@ -1,8 +1,9 @@
 """Measure how many independent bets the strategy registry actually contains.
 
-    python3 research/signal_redundancy.py                    # SOL daily
-    python3 research/signal_redundancy.py --horizon short    # SOL hourly (slower)
-    python3 research/signal_redundancy.py --top 25           # longer redundant-pair list
+    python3 research/signal_redundancy.py                          # SOL, medium
+    python3 research/signal_redundancy.py --horizon short          # SOL hourly, slower
+    python3 research/signal_redundancy.py --asset BTC --out auto   # BTC, canonical name
+    python3 research/signal_redundancy.py --top 25                 # longer pair list
 
 Why this script exists. `core.strategies.FAMILY` **asserts** a taxonomy --
 "trend", "mean-reversion", "oscillator-reversion", "breakout" -- and
@@ -78,7 +79,9 @@ if str(REPO) not in sys.path:
 from backtester.core.data import CsvLoader, frame_to_arrays  # noqa: E402
 from backtester.core.strategies import FAMILY, REGISTRY, build  # noqa: E402
 from backtester.core.types import BarWindow  # noqa: E402
-from research.sweep import HORIZONS  # noqa: E402
+# `redundancy_filename` is defined in sweep.py, not here, so the import stays
+# one-directional -- this module already depends on that one for HORIZONS.
+from research.sweep import HORIZONS, redundancy_filename  # noqa: E402
 
 OUT = REPO / "research" / "results"
 
@@ -287,25 +290,42 @@ def family_verdict(pairs: pd.DataFrame) -> pd.DataFrame:
     return out.sort_values("mean_corr", ascending=False).reset_index()
 
 
-def load_series(horizon: str) -> tuple[dict[str, np.ndarray], dict[str, Any], str]:
+def load_series(
+    asset: str, horizon: str
+) -> tuple[dict[str, np.ndarray], dict[str, Any], str]:
     """Price arrays, per-strategy parameters and a provenance note.
 
     Parameters come from `sweep.py`'s HORIZONS deliberately -- re-fitting them
     here would measure a different set of strategies than the ones whose
     performance the rest of `research/` reports.
 
+    Two things are derived rather than read out of the horizon spec, following
+    `cross_asset_cpcv.load_asset`: the path, because `spec["data"]` names SOL
+    specifically, and the note, because `spec["note"]`'s bar count and date
+    range describe SOL's history. Reusing that note for another asset would
+    caption a BTC measurement with SOL's window -- and two assets never share a
+    history window, which is a confound the reader has to see.
+
     Named `load_series` rather than `load_horizon` on purpose: `sweep.py`
     already exports a `load_horizon` with a different arity, and two functions
     sharing a name and a directory is a trap for whoever greps next.
     """
     spec = HORIZONS[horizon]
-    loader = CsvLoader(REPO / spec["data"], allow_gaps=spec["allow_gaps"])
-    frame = loader.load("SOL", None, None, spec["interval"])
+    interval = spec["interval"]
+    loader = CsvLoader(
+        REPO / "data" / f"{asset}_{interval}.csv", allow_gaps=spec["allow_gaps"]
+    )
+    frame = loader.load(asset, None, None, interval)
+    stamps = pd.to_datetime(frame["timestamp"], unit="s", utc=True)
+    note = (
+        f"{len(frame):,} {interval} bars, "
+        f"{stamps.iloc[0].date()}..{stamps.iloc[-1].date()}"
+    )
     # Copied, not aliased: HORIZONS belongs to sweep.py, and handing a caller a
     # live reference into another module's constant means one careless mutation
     # here changes what every other research script in the process backtests.
     params = {name: dict(values) for name, values in spec["params"].items()}
-    return frame_to_arrays(frame), params, str(spec["note"])
+    return frame_to_arrays(frame), params, note
 
 
 def resolve_output_path(name: str, *, force: bool) -> Path:
@@ -330,15 +350,20 @@ def resolve_output_path(name: str, *, force: bool) -> Path:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--asset", default="SOL", help="ticker, e.g. SOL, BTC, ETH")
     parser.add_argument("--horizon", default="medium", choices=sorted(HORIZONS))
     parser.add_argument(
         "--top", type=int, default=15, help="rows of the redundant-pair table to print"
     )
-    parser.add_argument("--out", default=None, help="bare CSV filename under results/")
+    parser.add_argument(
+        "--out",
+        default=None,
+        help="bare CSV filename under results/, or 'auto' for the canonical name",
+    )
     parser.add_argument("--force", action="store_true", help="allow overwriting --out")
     args = parser.parse_args(argv)
 
-    arrays, params, note = load_series(args.horizon)
+    arrays, params, note = load_series(args.asset, args.horizon)
     raw, warmups = exposure_matrix(arrays, params)
 
     burn_in = max(warmups.values())
@@ -354,7 +379,7 @@ def main(argv: list[str] | None = None) -> int:
     pairs = pair_table(result)
     per_strategy = per_strategy_table(signals, warmups, result["constant"])
 
-    print(f"\n=== signal redundancy: SOL {args.horizon} ===")
+    print(f"\n=== signal redundancy: {args.asset} {args.horizon} ===")
     print(f"source            : {note}")
     print(f"bars              : {total_bars} total, {result['bars']} measured")
     print(f"burn-in discarded : {burn_in} bars (max warmup across the cohort)")
@@ -408,7 +433,12 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     if args.out:
-        target = resolve_output_path(args.out, force=args.force)
+        name = (
+            redundancy_filename(args.asset, args.horizon)
+            if args.out == "auto"
+            else args.out
+        )
+        target = resolve_output_path(name, force=args.force)
         target.parent.mkdir(parents=True, exist_ok=True)
         pairs.to_csv(target, index=False)
         print(f"\nwrote {len(pairs)} pair rows to {target}")

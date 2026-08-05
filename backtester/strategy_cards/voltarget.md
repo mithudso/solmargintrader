@@ -3,7 +3,7 @@ id: voltarget
 name: Volatility-Targeted Trend
 kind: exposure-strategy
 status: measured
-family: risk-overlay
+family: sma-gated
 summary: Trend entry sized inversely to realised volatility. Continuous exposure, not binary.
 registry_key: voltarget
 runner: backtester.cli

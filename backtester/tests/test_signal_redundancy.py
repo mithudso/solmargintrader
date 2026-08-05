@@ -124,18 +124,38 @@ class TestPairTable(unittest.TestCase):
     def test_cross_family_redundancy_is_flagged(self) -> None:
         """The finding the script exists to surface.
 
-        `sma_regime` is asserted regime-filter and `voltarget` risk-overlay, so
-        FAMILY treats the pair as diversifying. Identical exposures must be
-        reported as redundant AND cross-family.
+        `rsi` is asserted oscillator-reversion and `bb_reversion`
+        mean-reversion, so FAMILY treats the pair as diversifying. On SOL hourly
+        they measure 0.841 correlated -- redundant AND cross-family, which is
+        the combination the sweep's label-based gate cannot see.
         """
         wave = np.tile([1.0, 1.0, 0.0, 0.0], 50)
-        pairs = sr.pair_table(sr.redundancy(frame(sma_regime=wave, voltarget=wave.copy())))
+        pairs = sr.pair_table(sr.redundancy(frame(rsi=wave, bb_reversion=wave.copy())))
         self.assertEqual(len(pairs), 1)
         row = pairs.iloc[0]
         self.assertTrue(bool(row["redundant"]))
         self.assertTrue(bool(row["cross_family"]))
-        self.assertEqual(row["family_a"], "regime-filter")
-        self.assertEqual(row["family_b"], "risk-overlay")
+        self.assertEqual(row["family_a"], "oscillator-reversion")
+        self.assertEqual(row["family_b"], "mean-reversion")
+
+    def test_sma_gated_variants_are_not_cross_family(self) -> None:
+        """Regression guard on the FAMILY correction.
+
+        sma_regime, voltarget, atr_sized and garch_voltarget share the
+        `close > sma(closes, trend_window)` gate, so their long/flat state is
+        algebraically identical. They must sit in ONE family -- a redundant pair
+        among them is redundant WITHOUT being cross-family, or the taxonomy is
+        promising diversification that cannot exist.
+        """
+        wave = np.tile([1.0, 1.0, 0.0, 0.0], 50)
+        pairs = sr.pair_table(
+            sr.redundancy(frame(sma_regime=wave, voltarget=wave * 0.3))
+        )
+        row = pairs.iloc[0]
+        self.assertTrue(bool(row["redundant"]))
+        self.assertFalse(bool(row["cross_family"]))
+        self.assertEqual(row["family_a"], "sma-gated")
+        self.assertEqual(row["family_b"], "sma-gated")
 
     def test_opposed_pair_is_not_redundant(self) -> None:
         a, b = np.zeros(100), np.zeros(100)
@@ -162,10 +182,12 @@ class TestFamilyVerdict(unittest.TestCase):
         handles inconsistently across pandas versions, which is why it is not
         used."""
         wave = np.tile([1.0, 0.0], 50)
-        pairs = sr.pair_table(sr.redundancy(frame(sma_regime=wave, voltarget=-wave)))
+        pairs = sr.pair_table(sr.redundancy(frame(rsi=wave, bb_reversion=-wave)))
         verdict = sr.family_verdict(pairs)
         self.assertEqual(len(verdict), 1)
-        self.assertEqual(verdict.iloc[0]["families"], "regime-filter + risk-overlay")
+        self.assertEqual(
+            verdict.iloc[0]["families"], "mean-reversion + oscillator-reversion"
+        )
         self.assertEqual(verdict.iloc[0]["pairs"], 1)
 
     def test_family_key_is_order_independent(self) -> None:
