@@ -36,16 +36,22 @@ axes*: the CPCV path distribution **and** ±10% parameter perturbation (`researc
 Ranking outside that set means ranking on the anti-informative axis alone. The five below are
 drawn from those seven, and ordered by how many checks they clear — not by Sharpe.
 
-Checks: median Sharpe > 0 · ≥70% of 28 paths positive · median > IQR/2 · positive median return ·
+Checks: median Sharpe > 0 · ≥70% of paths positive · median > IQR/2 · positive median return ·
 ≥10 trades · perturbation-tested with 0 sign flips.
 
 | # | Configuration | Horizon | Median Sharpe | IQR | % paths + | Median ret | Trades | Perturbations | max abs Δ | Sign flips |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | `all(dual_momentum+vol_regime)` | long | **+1.345** | 0.881 | 87% | +75.1% | 52 | 12 | 0.441 | **0** |
-| 2 | `any(hurst_switch+ou_reversion)` | medium | **+1.290** | 0.972 | 100% | +68.9% | 40 | 12 | 0.754 | **0** |
-| 3 | `any(ou_reversion+obv_trend)` | long | **+1.054** | 1.180 | 93% | +93.6% | 90 | 8 | 0.446 | **0** |
-| 4 | `obv_trend_60` | long | **+0.774** | 1.571 | 81% | +44.6% | 98 | 2 | 0.199 | **0** |
-| 5 | `vol_regime_60_0.5` | long | **+0.696** | 0.823 | 80% | +36.1% | 54 | 6 | 0.364 | **0** |
+| 1 | `all(dual_momentum+vol_regime)` | long | **+1.345** | 0.881 | 87% (of 15) | +75.1% | 52 | 12 | 0.441 | **0** |
+| 2 | `any(hurst_switch+ou_reversion)` | medium | **+1.290** | 0.972 | 100% (of 15) | +68.9% | 40 | 12 | 0.754 | **0** |
+| 3 | `any(ou_reversion+obv_trend)` | long | **+1.054** | 1.180 | 93% (of 15) | +93.6% | 90 | 8 | 0.446 | **0** |
+| 4 | `obv_trend_60` | long | **+0.774** | 1.571 | 81% (of 21) | +44.6% | 98 | 2 | 0.199 | **0** |
+| 5 | `vol_regime_60_0.5` | long | **+0.696** | 0.823 | 80% (of 15) | +36.1% | 54 | 6 | 0.364 | **0** |
+
+**Path counts are 15 or 21, not 28.** C(8,2) is 28 nominally, but warm-up renders 2 blocks
+unusable for these slow configurations (1 for `obv_trend_60`), so each percentage above is over
+15 or 21 paths as marked — verified 2026-08-05 from `results/cpcv_top5_sol_doge_zec_1d.csv`,
+whose `n_paths` column contains no value of 28. Fewer paths is a weaker estimate, and four of
+these five rest on fifteen.
 
 **Benchmark that must stay in view:** `buy_and_hold`, zero parameters, medium/long median Sharpe
 **+0.534**, 68% of paths positive, +9.4% median return. It ranked **2nd of 25** at the medium
