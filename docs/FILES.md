@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5a4f436` (2026-08-05T17:16:25+00:00). 267 tracked files, 3.6 MB.
+**Generated** from `index/INDEX.json` at commit `f9ce01f` (2026-08-05T17:43:57+00:00). 276 tracked files, 3.7 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 63 of 67 Python modules and all 27 JS files carry a substantial one.
-- **derived** — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (184 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 74/78 Python modules and 25/28 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (50 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,11 +34,11 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 9 files
-- [`docs`](#docs) — 18 files
+- [`docs`](#docs) — 22 files
 - [`index`](#index) — 5 files
-- [`backtester`](#backtester) — 93 files
-- [`research`](#research) — 77 files
-- [`extension`](#extension) — 33 files
+- [`backtester`](#backtester) — 96 files
+- [`research`](#research) — 78 files
+- [`extension`](#extension) — 34 files
 - [`soltui`](#soltui) — 20 files
 - [`.github`](#github) — 8 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
@@ -131,7 +131,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-18 files.
+22 files.
 
 #### `docs/API.md`
 
@@ -159,7 +159,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 312 lines · 14,521 B · description: **extracted**
+`doc` · 312 lines · 14,559 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -175,7 +175,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 2633 lines · 131,143 B · description: **extracted**
+`doc` · 2719 lines · 136,172 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -269,11 +269,47 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/strategy-optimization-concept-family.md`
+
+`doc` · 303 lines · 19,699 B · description: **extracted**
+
+**Purpose.** Scoping document for `/dso` (deep strategy optimizer). Written to answer one question: **what would a strategy optimizer have to do to be worth running on this repo, given what this repo has already measured?**
+
+**Use.** Read it.
+
 #### `docs/trading-signals-concept-family.md`
 
 `doc` · 443 lines · 27,593 B · description: **extracted**
 
 **Purpose.** automated trading signals and their execution on Jupiter (jup.ag) on Solana. This is a *map*, not an implementation plan, and not financial advice. Facts about Jupiter APIs were verified against live `developers.jup.ag`;
+
+**Use.** Read it.
+
+### `docs/dso-skill/`
+
+#### `docs/dso-skill/README.md`
+
+`doc` · 30 lines · 1,103 B · description: **extracted**
+
+**Purpose.** The live skill is installed at `~/.claude/skills/deep-strategy-optimizer/`, which is where committed mirror: the copy that survives a machine change or a deleted worktree. SKILL.md the skill (mirror of the installed copy)
+
+**Use.** Read it.
+
+#### `docs/dso-skill/SKILL.md`
+
+`doc` · 348 lines · 21,949 B · description: **extracted**
+
+**Purpose.** >-
+
+**Use.** Read it.
+
+### `docs/dso-skill/references/`
+
+#### `docs/dso-skill/references/passes.md`
+
+`doc` · 110 lines · 8,384 B · description: **extracted**
+
+**Purpose.** Read this before the Step-3 dispatch. `SKILL.md` carries the pass index and the group summaries; the per-pass checks, precedents, and severity specifics live here. Every precedent cited below is a real defect from the codebase this skill was written against, not a
 
 **Use.** Read it.
 
@@ -287,15 +323,15 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/README.md`
 
-`doc` · 133 lines · 6,823 B · description: **extracted**
+`doc` · 146 lines · 7,584 B · description: **extracted**
 
-**Purpose.** A searchable index over every tracked file in this repo: what exists, which files contain a word, which files mean something like a question, and which bear on an idea. Built to answer "where is the thing that does X" without reading 266 files.
+**Purpose.** A searchable index over every tracked file in this repo: what exists, which files contain a word, which files mean something like a question, and which bear on an idea. Built to answer "where is the thing that does X" without reading every file.
 
 **Use.** Read it.
 
 #### `index/build.py`
 
-`code-python` · 832 lines · 35,114 B · description: **curated**
+`code-python` · 835 lines · 35,294 B · description: **curated**
 
 **Purpose.** Builds the four indexes over every tracked file: metadata, BM25 text, concepts, and the opt-in semantic embeddings. `--check` re-hashes the tree so a stale index fails loudly.
 
@@ -315,7 +351,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/make_files_doc.py`
 
-`code-python` · 517 lines · 26,825 B · description: **curated**
+`code-python` · 538 lines · 28,249 B · description: **curated**
 
 **Purpose.** Generates `docs/FILES.md` from the index plus the curated table in this module, so per-file documentation is regenerable and curation is never discarded by a rebuild.
 
@@ -339,7 +375,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-93 files.
+96 files.
 
 #### `backtester/PROMPT.md`
 
@@ -452,6 +488,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `class DataValidationError`, `class DataLoader`, `validate_bars()`, `_slice_dates()`, `checksum_frame()`, `class CsvLoader`, `class SyntheticLoader`, `frame_to_arrays()`.
 
 **Use.** `CsvLoader(path, allow_gaps=False).load(asset, start, end, interval)`.
+
+#### `backtester/core/deflated_sharpe.py`
+
+`code-python` · 245 lines · 10,129 B · description: **extracted**
+
+**Purpose.** Deflated Sharpe Ratio: the haircut a Sharpe owes to the size of the search. PBO answers "is this leaderboard informative?" The Deflated Sharpe Ratio answers a different question that PBO leaves open: **given that N configurations were tried, how much of this particular Sharpe is simply the expected maximum of N draws?** Comparing a best-of-N Sharpe against zero is the mistake.
+
+**Contents.** Defines `EULER_MASCHERONI`, `_NORMAL`, `class DeflatedSharpeError`, `class DsrResult`, `deannualise()`, `expected_max_sharpe()`, `probabilistic_sharpe_ratio()`, `deflated_sharpe_ratio()`, `effective_trials()`, `trial_sharpe_variance()`.
+
+**Use.** `import backtester.core.deflated_sharpe`
 
 #### `backtester/core/engine.py`
 
@@ -707,7 +753,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/bb_reversion.md`
 
-`strategy-card` · 101 lines · 4,120 B · description: **extracted**
+`strategy-card` · 117 lines · 5,085 B · description: **extracted**
 
 **Purpose.** Buy a close below the lower Bollinger band, exit on reversion to the mid. Same inequality as zscore.
 
@@ -867,7 +913,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/ladder_grid.md`
 
-`strategy-card` · 212 lines · 10,702 B · description: **extracted**
+`strategy-card` · 221 lines · 11,531 B · description: **extracted**
 
 **Purpose.** A ladder of resting limit orders with paired exits one rung above each lot. The strategy the extension trades.
 
@@ -1107,7 +1153,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/zscore.md`
 
-`strategy-card` · 134 lines · 5,924 B · description: **extracted**
+`strategy-card` · 139 lines · 6,225 B · description: **extracted**
 
 **Purpose.** Buy when price is z sample-stdevs below its trailing mean. Top-ranked medium single, at the evidence floor.
 
@@ -1164,6 +1210,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `REPO`, `ZERO_COST`, `SYNTHETIC_BARS`, `synthetic_arrays()`, `truncate()`, `make_arrays()`, `class Recorder`, `class TestEngineParity`, `class TestNoLeak`, `class TestPathDependence` and 6 more. Depends on `backtester`, `research`.
 
 **Use.** `python3 -m pytest backtester/tests/test_decide.py -q`
+
+#### `backtester/tests/test_deflated_sharpe.py`
+
+`test` · 194 lines · 9,192 B · description: **extracted**
+
+**Purpose.** Tests for the Deflated Sharpe Ratio. The first test is the one that matters: it pins the implementation to a figure the source paper states in prose, so the formula cannot drift into something plausible but wrong. Bailey & López de Prado report that at N=1,000 independent trials with unit cross-sectional variance and zero mean, the expected maximum Sharpe is **3.26**.
+
+**Contents.** Defines `class TestExpectedMaxSharpe`, `class TestProbabilisticSharpe`, `class TestDeflatedSharpe`, `class TestUnitsAndHelpers`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_deflated_sharpe.py -q`
 
 #### `backtester/tests/test_engine.py`
 
@@ -1255,6 +1311,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_strategy_cards.py -q`
 
+#### `backtester/tests/test_strategy_duplication.py`
+
+`test` · 143 lines · 6,622 B · description: **extracted**
+
+**Purpose.** `bb_reversion` and `zscore` are one hypothesis counted twice. Found by `research/dso_audit.py`'s S4 pass, which flagged them as posting identical summary scalars on BTC daily, and confirmed by comparing per-bar exposure: on 1,875 BTC daily bars the two strategies took **exactly the same position on every bar**. The reason is algebra, not coincidence.
+
+**Contents.** Defines `exposures()`, `series()`, `class TestTheTwoAreTheSameRule`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_strategy_duplication.py -q`
+
 #### `backtester/tests/test_universe.py`
 
 `test` · 242 lines · 10,859 B · description: **extracted**
@@ -1271,7 +1337,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-77 files.
+78 files.
 
 #### `research/CROSS-ASSET-TRANSFER.md`
 
@@ -1291,7 +1357,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/RANKED_LISTS.md`
 
-`doc` · 929 lines · 62,054 B · description: **extracted**
+`doc` · 944 lines · 63,126 B · description: **extracted**
 
 **Purpose.** configuration, so realised path counts are lower; see "How many paths each figure actually rests on" below. The earlier single 70/30 walk-forward is retained as List 1b, because the disagreement between the two methods is the most instructive result here.
 
@@ -1350,6 +1416,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `DEFAULT_TOLERANCE`, `FLAT_EPSILON`, `STALE_AFTER_BARS`, `HOLD_LONG`, `HOLD_SHORT`, `FLAT`, `BUY`, `SELL`, `INSUFFICIENT` and 30 more. Depends on `backtester`.
 
 **Use.** `python3 research/decide.py --help`
+
+#### `research/dso_audit.py`
+
+`code-python` · 328 lines · 14,340 B · description: **extracted**
+
+**Purpose.** Mechanical half of the /dso statistical-honesty passes, run over the CPCV result CSVs. python3 research/dso_audit.py # audit every cpcv_* result file python3 research/dso_audit.py --floor 30 # raise the evidence floor `/dso` (the deep-strategy-optimizer skill) defines 19 audit passes.
+
+**Contents.** Defines `REPO`, `RESULTS`, `FLAT_TOL`, `RESULT_KEYS`, `class AuditError`, `load()`, `KNOWN_DUPLICATE_GROUPS`, `interval_of()`, `s2_burden()`, `s3_evidence_floor()` and 4 more. Depends on `backtester`.
+
+**Use.** `python3 research/dso_audit.py --help`
 
 #### `research/geometry.py`
 
@@ -1947,7 +2023,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/results/top_coins.csv`
 
-`result` · 17 lines · 926 B · description: **derived**
+`result` · 17 lines · 910 B · description: **derived**
 
 **Purpose.** Generated data: 15 rows x 8 columns (rank, symbol, name, price_usd, market_cap_usd, volume_24h_usd, pegged, local_data).
 
@@ -1961,11 +2037,11 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 The Chrome extension, and the only component that can place a real order. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-33 files.
+34 files.
 
 #### `extension/README.md`
 
-`doc` · 412 lines · 24,396 B · description: **extracted**
+`doc` · 471 lines · 28,325 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension that runs a **grid trading strategy on Jupiter (Solana)** with hard risk rails and full P&L tracking. **Dry-run by default** — it will not place an order until you change the mode and type a confirmation.
 
@@ -2003,7 +2079,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/commands.js`
 
-`code-js` · 486 lines · 17,557 B · description: **extracted**
+`code-js` · 509 lines · 18,754 B · description: **extracted**
 
 **Purpose.** The command registry — single source of truth for every action this project can perform. Three surfaces drive this one registry: extension src/bg/service-worker.js (chrome.runtime messages) CLI tools/cli.js (argv) HTTP API tools/api-server.js (POST /v1/<command>) Nothing may be reachable from one surface and not the others.
 
@@ -2013,7 +2089,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/engine.js`
 
-`code-js` · 422 lines · 16,220 B · description: **extracted**
+`code-js` · 445 lines · 17,211 B · description: **extracted**
 
 **Purpose.** The tick. Order of operations is the whole design: RECONCILE before PLAN, always. A MV3 service worker can be killed at any moment, including between "write the intent" and "the venue accepted the order". So the venue's live order list — not our local records — is the source of truth at the top of every tick. Local state is a cache and a journal, nothing more.
 
@@ -2023,11 +2099,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/grid.js`
 
-`code-js` · 268 lines · 9,331 B · description: **extracted**
+`code-js` · 374 lines · 13,928 B · description: **extracted**
 
 **Purpose.** Pure grid-strategy engine. No I/O, no chrome.* APIs, no network. Everything here is a deterministic function of (config, price, open state) so the whole strategy is unit testable and a service-worker restart can recompute intent from scratch.
 
-**Contents.** Defines `DIRECTION`, `SIDE`, `SPACING`, `capitalRequirement`, `expectedRoundTripUsd`, `gridLevels`, `intentKey`, `nearestLevelIndex`, `pairedExitLevel`, `planGrid` and 2 more.
+**Contents.** Defines `DIRECTION`, `SIDE`, `SPACING`, `capitalRequirement`, `expectedRoundTripUsd`, `gridLevels`, `intentKey`, `nearestLevelIndex`, `pairedExitLevel`, `planGrid` and 4 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -2117,7 +2193,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/storage/store.js`
 
-`code-js` · 249 lines · 7,777 B · description: **extracted**
+`code-js` · 255 lines · 8,153 B · description: **extracted**
 
 **Purpose.** Persistence. Two surfaces, chosen by what the data is: chrome.storage.local — config and limits. Small, synchronously readable at worker start, and NEVER `.sync` (that would push settings, and anything near them, to Google's servers). IndexedDB — the intent journal and fill log.
 
@@ -2219,17 +2295,17 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/core.test.js`
 
-`code-js` · 1092 lines · 40,052 B · description: **curated**
+`code-js` · 1308 lines · 49,607 B · description: **curated**
 
 **Purpose.** Node test-runner suite for the pure core — grid maths, planner, reconciler. No `chrome.*`, so it runs headless.
 
-**Contents.** Defines `CONFIG`, `ORDER`, `RECON_CONFIG`, `STATE`, `seedResting`.
+**Contents.** Defines `CONFIG`, `ORDER`, `RC_CONFIG`, `RECON_CONFIG`, `STATE`, `seedResting`.
 
 **Use.** `node --test extension/test/` or `npm test` in `extension/`.
 
 #### `extension/test/surfaces.test.js`
 
-`code-js` · 376 lines · 13,984 B · description: **curated**
+`code-js` · 444 lines · 16,906 B · description: **curated**
 
 **Purpose.** Covers the command registry as driven by each surface (popup, dashboard, CLI), so one registry change cannot silently break one caller.
 
@@ -2286,6 +2362,16 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 **Purpose.** Headless dry run. Runs the real tick — real Jupiter price, real grid engine, real risk rails, real journal — with simulated fills, in Node. This is the integration gate: loading an unpacked extension cannot be automated (chrome://extensions needs a human), so end-to-end verification happens here instead.
 
 **Contents.** Defines `class ScriptedPriceVenue`, `main`, `parseArgs`, `round`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/tools/measure-recentre.js`
+
+`code-js` · 160 lines · 6,399 B · description: **extracted**
+
+**Purpose.** How often does the shipped auto-recentre gate actually open? node tools/measure-recentre.js --csv ../data/SOL_1d.csv `recentreDecision()` refuses to move the ladder while anything is resting or any lot is open, because `tick()` cannot cancel. That gate is deliberately tight, and the honest question is whether it is so tight the feature never fires.
+
+**Contents.** Defines `closeColumn`, `main`, `parseArgs`, `recordingVenue`, `run`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -2599,7 +2685,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.remember/remember.md`
 
-`doc` · 786 lines · 44,628 B · description: **extracted**
+`doc` · 843 lines · 48,099 B · description: **extracted**
 
 **Purpose.** Run unchanged on DOGE and ZEC, **all ten transfers degraded and not one improved** (median −0.821 DOGE, −0.753 ZEC). Only #3 `any(ou_reversion+obv_trend)` and #4 `obv_trend_60` stayed positive on all three assets. On ZEC, zero-parameter `buy_and_hold` (+0.659) beat all five, the
 

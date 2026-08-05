@@ -5,18 +5,21 @@
 
 Reads `index/INDEX.json`, so run `python3 index/build.py all` first.
 
-**Why a generator and not a hand-written document.** 237 files hand-maintained
-would be stale within a week, and this repo has already been bitten twice by
+**Why a generator and not a hand-written document.** Hundreds of files hand-
+maintained would be stale within a week — this repo grew from 237 tracked files to
+276 while the index was being built — and it has already been bitten twice by
 artifacts nobody re-derived. So the descriptions are assembled from three sources,
 and every entry says which one it came from:
 
 - **curated** — the `CURATED` table below. Hand-written `purpose` and `use` for
   the files where extraction cannot supply what a reader needs: the engine, the
-  research drivers, the extension's risk path, and the seventeen files with no
-  prose of their own (empty `__init__.py`, dotfiles, HTML/CSS, a binary icon).
+  research drivers, the extension's risk path, and every file with no prose of its
+  own (empty `__init__.py`, dotfiles, HTML/CSS, a binary icon).
 - **extracted** — the file's own module docstring, JSDoc header, or frontmatter
-  `summary`. 63 of 67 Python modules and all 27 JS files carry a substantial one,
-  which is why extraction is worth trusting here.
+  `summary`. Nearly every Python module and JS file here carries a substantial one,
+  which is why extraction is worth trusting; the exact ratio is computed at
+  generation time and printed in the output rather than asserted here, because a
+  frozen ratio in this docstring went stale in a day.
 - **derived** — shape only, for generated artifacts: a CSV's header and row count,
   a JSON's keys. Prose for a result file would be invented.
 
@@ -394,6 +397,20 @@ def render(meta: dict[str, Any]) -> str:
 
     c = meta["counts"]
     n_cur = sum(1 for e in meta["files"] if e["path"] in CURATED)
+    # Computed from the index rather than hardcoded. A frozen ratio in this prose
+    # was wrong within a day: the repo went from 237 tracked files to 276 while the
+    # index was being built, and "63 of 67 Python modules" stopped being true.
+    n_extracted = sum(1 for e in meta["files"]
+                      if e["path"] not in CURATED
+                      and e["summarySource"] in {"docstring", "frontmatter",
+                                                 "opening-prose"})
+    n_derived = sum(1 for e in meta["files"]
+                    if e["path"] not in CURATED and e["summarySource"] == "derived")
+    py = [e for e in meta["files"] if e["ext"] == ".py"]
+    js = [e for e in meta["files"] if e["ext"] == ".js"]
+    py_total, js_total = len(py), len(js)
+    py_doc = sum(1 for e in py if e["summarySource"] == "docstring")
+    js_doc = sum(1 for e in js if e["summarySource"] == "docstring")
     out: list[str] = [
         "# Every file in this repository",
         "",
@@ -418,11 +435,15 @@ def render(meta: dict[str, Any]) -> str:
         "`CURATED` table of `index/make_files_doc.py`. Used where extraction cannot "
         "give a reader what they need: the engine, the research drivers, the "
         "order-placing path, and the files with no prose of their own.",
-        f"- **extracted** — the file's own module docstring, JSDoc header, or "
-        "frontmatter `summary`. Trustworthy here because 63 of 67 Python modules and "
-        "all 27 JS files carry a substantial one.",
-        "- **derived** — shape only, for generated artifacts: a CSV's header and row "
-        "count, a JSON's keys. Prose for a result file would be invented.",
+        f"- **extracted** ({n_extracted} files) — the file's own module docstring, "
+        f"JSDoc header, or frontmatter `summary`. Trustworthy here because "
+        f"{py_doc}/{py_total} Python modules and {js_doc}/{js_total} JS files carry a "
+        f"substantial one. (These counts are computed at generation time, not "
+        f"hardcoded — an earlier revision asserted a frozen ratio and it was wrong "
+        f"within a day as the repo grew.)",
+        f"- **derived** ({n_derived} files) — shape only, for generated artifacts: a "
+        f"CSV's header and row count, a JSON's keys. Prose for a result file would be "
+        f"invented.",
         "",
         "*How to use* is curated where it matters and otherwise inferred from the file's "
         "kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.",
