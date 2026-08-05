@@ -11,11 +11,11 @@ python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC     # 25 singles, med
 python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC  # the five, with SOL as control
 ```
 
-> **`research/results/cpcv_all25_1d.csv` is not used here: it is a medium-horizon file with one
-> long-horizon row spliced into it.** It was the obvious source for SOL's singles column and was
-> rejected after testing. Re-running the committed script on SOL reproduces **24 of its 25 rows
-> exactly** (all six value columns, to 1e-5) at `--horizon medium`. The one row that differs is
-> `sma_regime`:
+> **`research/results/cpcv_all25_1d.csv` has been DELETED (commit of 2026-08-05; recoverable
+> from git history): it was a medium-horizon file with one long-horizon row spliced into it.** It
+> was the obvious source for SOL's singles column and was rejected after testing. Re-running the
+> committed script on SOL reproduces **24 of its 25 rows exactly** (all six value columns, to
+> 1e-5) at `--horizon medium`. The one row that differed is `sma_regime`:
 >
 > | | median | Q1 | Q3 | frac + | median ret | trades |
 > |---|---|---|---|---|---|---|

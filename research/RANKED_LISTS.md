@@ -1,9 +1,11 @@
 # SOL Strategy & Signal Rankings — Three Lists
 
 **AS OF 2026-08-04.** Data runs through 2026-08-04; every figure is tied to that snapshot.
-**Primary evaluation method: combinatorial purged cross-validation (CPCV)** — 8 blocks, k=2,
-28 paths per configuration. The earlier single 70/30 walk-forward is retained as List 1b,
-because the disagreement between the two methods is the most instructive result here.
+**Primary evaluation method: combinatorial purged cross-validation (CPCV)** — 8 blocks, k=2, so
+**C(8,2) = 28 paths nominally**. Warm-up renders 1–2 blocks unusable for almost every
+configuration, so realised path counts are lower; see "How many paths each figure actually
+rests on" below. The earlier single 70/30 walk-forward is retained as List 1b, because the
+disagreement between the two methods is the most instructive result here.
 
 > **Historical simulation for research and education only. NOT investment advice**, and not a
 > recommendation to trade anything. Simulated past performance does not predict future results.
@@ -22,9 +24,34 @@ rather than made silently. Literature figures are attributed; everything else is
 ## Read this before the tables
 
 **Under CPCV, over all 25 registered strategies: 75 singles + 1,002 pairs + 210 triples = 1,287
-configurations, each across 28 paths.** At the short horizon **not one of the 25 singles has a
-positive median path Sharpe**. At the daily horizons singles PBO is **0.700** — well above the
-0.500 pure-noise line, so in-sample rank is anti-informative.
+configurations.** At the short horizon **not one of the 25 singles has a positive median path
+Sharpe**. At the daily horizons singles PBO is **0.700** — well above the 0.500 pure-noise line,
+so in-sample rank is anti-informative.
+
+### How many paths each figure actually rests on
+
+**Corrected 2026-08-05.** This document previously said all 1,287 configurations ran "each
+across 28 paths". They did not, and the gap is not marginal — computed from
+`results/cpcv_results.csv` and `results/cpcv_combos_results.csv`:
+
+| Paths | Configurations | Share |
+|---|---|---|
+| 28 (full) | **3** | 0.2% |
+| 21 | 1,094 | 85.0% |
+| 15 | 190 | 14.8% |
+
+**The only three configurations ever evaluated on all 28 paths are `buy_and_hold`, one per
+horizon** — because it is the sole strategy with no warm-up. Every signal-based configuration
+lost 1 or 2 of the 8 blocks to warm-up, and the median across the population is **21 paths**.
+Two consequences worth carrying into any reading of the tables below:
+
+1. **The benchmark is measured on more paths than anything it is compared against.** That is
+   not a bug — needing no warm-up is a real property of holding the asset — but it means
+   `buy_and_hold`'s interval estimate is the tightest in the study by construction.
+2. **The slowest configurations rest on 15 paths**, including several that appear at the top of
+   the tables: `ou_reversion`, `hurst_switch` and `vol_regime` at both daily horizons. Four of
+   the five configurations in `TOP5-RECOMMENDATION.md` are 15-path results. Fewer paths is a
+   weaker estimate, and the `n_paths` column in every results CSV records it per row.
 
 **Growing the search from 16 to 25 strategies raised PBO, and I measured how much of that is the
 search rather than a coincident change.** The common CPCV block set shrank from 7 blocks to 6 when
