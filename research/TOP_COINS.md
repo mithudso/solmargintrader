@@ -78,6 +78,43 @@ One further note from the same research: **`HYPE-USD` only listed on Coinbase on
 2026-02-05**, so a fetch returns roughly six months of history, not years. Short history is
 its own evidence-floor problem, distinct from availability.
 
+## Turnover is not one phenomenon — a correction
+
+An early reading of this table treated BNB and XRP together as "strikingly thin". The
+per-coin research falsified that in both directions, and the corrected version matters
+because any screen ranking by volume ÷ market cap mis-ranks them.
+
+- **BNB's ~0.7% is a denominator artifact, not illiquidity.** Five addresses hold **71.89%**
+  of nominal circulating supply — a 22.4% unlabelled wallet, the 19.5% Token Hub bridge
+  contract, 17.6% across two Binance-labelled wallets, and the 12.4% burn address. Removing
+  only the provably-immobile burn and bridge gives **1.11%**; removing all five gives
+  **2.70%**, which is *above* BTC's 1.80%. BNB's real liquidity problem is venue, not float:
+  Binance is only 18.4% of reported BNB volume and the next nine venues report about twice
+  that, in a market with well-documented fake volume.
+- **XRP at ~1.38% is already near BTC**, and every float adjustment moves it closer. It is
+  not an outlier at all.
+
+The general lesson for the universe: **rank by executable depth, not by volume ÷ cap.** A
+ratio built on a nominal circulating-supply figure inherits whatever that figure gets wrong,
+and for exchange tokens it gets a lot wrong.
+
+## Per-asset data hazards, from the research
+
+Each of these is a different failure and only the first announces itself.
+
+| Asset | Hazard |
+|---|---|
+| TRX, RAIN | **Not listed on Coinbase.** No file, and you notice |
+| BNB | **~288 daily bars from 2025-10-22**, covering one monotone bull-to-bear leg — too few independent folds to evaluate anything |
+| HYPE | **Listed 2026-02-05**, so ~6 months of history |
+| XRP | **~30-month hole**: suspended 2021-01-19, relisted 2023-07-13. A blind concatenation makes the join one bar spanning two and a half years |
+| ZEC | **USD-only** — ZEC-BTC and ZEC-USDC delisted, so no cross-pair study |
+
+Liquidity differs by more than an order of magnitude among the ones that *are* fetchable:
+the Coinbase XRP book runs about **$41.5M/day** against BNB's **~$1.1M/day**. A 1%-ADV cap
+on BNB is roughly $11k/day, so a flat 5-10bp slippage assumption applied across the universe
+is actively misleading on the thin end.
+
 ## The constraint that matters for this repo
 
 **This project holds price data for 3 of them: BTC, ETH, SOL** (`data/`, plus `JLP_spot.csv`).

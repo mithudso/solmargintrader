@@ -70,6 +70,23 @@ SHORT_HISTORY: dict[str, str] = {
         "not on Coinbase at all; the only reachable alternative serves a fixed ~721-bar "
         "window, capping TRX at ~2 years and truncating any cross-asset study including it"
     ),
+    "BNB": (
+        "BNB-USD returns ~288 daily bars from 2025-10-22 -- and they cover one monotone "
+        "bull-to-bear leg ($1,073 to ~$603), so there are too few independent folds for "
+        "walk-forward or CPCV to say anything"
+    ),
+}
+
+# Series with a hole in the middle, which is a worse failure than a short series because a
+# naive fetch concatenates across it and the join looks like an ordinary bar.
+# `validate_bars(strict_gaps=True)` is what catches this, and it is why the CLI defaults to
+# strict and requires --allow-gaps to be asked for explicitly.
+KNOWN_GAPS: dict[str, str] = {
+    "XRP": (
+        "Coinbase suspended XRP on 2021-01-19 and relisted it on 2023-07-13, so the series "
+        "has a ~30-month hole. Concatenated blind it becomes a single bar spanning two and "
+        "a half years, and every return, volatility and drawdown computed across it is wrong"
+    ),
 }
 
 # Quote-pair availability, where it is narrower than USD. Matters for anything needing a
@@ -242,6 +259,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"note: {asset} short history -- {SHORT_HISTORY[asset]}", file=sys.stderr)
         if asset in USD_ONLY:
             print(f"note: {asset} USD-only -- {USD_ONLY[asset]}", file=sys.stderr)
+        if asset in KNOWN_GAPS:
+            print(f"WARNING: {asset} has a known gap -- {KNOWN_GAPS[asset]}", file=sys.stderr)
     print(f"Universe plan: {plan.summary()}", file=sys.stderr)
     for asset in assets:
         mark = "  ok " if asset in plan.available else "  -- "

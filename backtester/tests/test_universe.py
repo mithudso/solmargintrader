@@ -112,6 +112,26 @@ class PlanTests(unittest.TestCase):
         self.assertIn("ZEC", uni.USD_ONLY)
         self.assertIn("ZEC-USD", uni.USD_ONLY["ZEC"])
 
+    def test_a_series_with_a_known_hole_is_recorded_as_such(self):
+        """Worse than a short series, because a short one is at least contiguous.
+
+        Coinbase suspended XRP 2021-01-19 and relisted 2023-07-13. Concatenated blind, the
+        join is a single bar spanning two and a half years and every return, volatility and
+        drawdown computed across it is wrong -- while the file looks perfectly ordinary.
+        strict_gaps is what catches it; this records that we know it is there.
+        """
+        self.assertIn("XRP", uni.KNOWN_GAPS)
+        self.assertIn("2021-01-19", uni.KNOWN_GAPS["XRP"])
+        self.assertIn("2023-07-13", uni.KNOWN_GAPS["XRP"])
+
+    def test_bnb_is_flagged_for_covering_a_single_regime(self):
+        """288 bars is not merely few, it is few *and* monotone -- one bull-to-bear leg
+        offers no independent folds, so a good CPCV number off it would be one regime
+        wearing 28 paths.
+        """
+        self.assertIn("BNB", uni.SHORT_HISTORY)
+        self.assertIn("288", uni.SHORT_HISTORY["BNB"])
+
     def test_the_summary_names_what_is_missing(self):
         plan = uni.plan_universe_fetch(["BTC", "TRX"], [p["id"] for p in LISTED])
         self.assertIn("TRX", plan.summary())
