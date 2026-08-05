@@ -61,7 +61,7 @@ from __future__ import annotations
 import argparse
 import sys
 import time
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -108,6 +108,15 @@ SLIPPAGE_BPS = 2.0
 
 DEFAULT_BARS = 500_000          # ~347 days of minutes
 MINUTE = 60
+
+# Sliced arrays are prepared once in the parent and cached to .npz, then loaded by the
+# workers. The first version had each worker call load_minutes(), which re-parsed the
+# same ~150MB CSV and copied it twice (drop_duplicates, then sort_values) -- roughly
+# 400MB transient per worker. With 10 workers that killed the pool outright:
+# `BrokenProcessPool: A process in the process pool was terminated abruptly`. Caching the
+# slice bounds memory to the slice itself (500k rows x 6 float64 is ~24MB) and removes
+# 200 redundant parses of the same file.
+SLICES = Path(__file__).resolve().parent / "results" / ".slices"
 
 _ARRAYS: dict[str, tuple[dict[str, np.ndarray], int, int]] = {}
 
@@ -162,24 +171,43 @@ def common_window(assets: list[str]) -> tuple[int, int]:
     return max(s for s, _ in spans), min(e for _, e in spans)
 
 
-def _arrays_for(asset: str, bars: int | None, window: tuple[int, int] | None):
-    """Load and slice one asset's series, cached per worker process.
+def slice_key(asset: str, bars: int | None, window: tuple[int, int] | None) -> str:
+    """Stable filename for one (asset, window) slice."""
+    lo, hi = window if window else (0, 0)
+    return f"{asset}_{bars or 'all'}_{lo}_{hi}"
 
-    Cached because a ProcessPoolExecutor reuses workers across cells, and reloading
-    millions of rows for each of 25 strategies would cost more than the backtests.
+
+def build_slice(asset: str, bars: int | None, window: tuple[int, int] | None) -> Path:
+    """Parse the CSV once in the parent and write the sliced arrays to .npz."""
+    SLICES.mkdir(parents=True, exist_ok=True)
+    path = SLICES / f"{slice_key(asset, bars, window)}.npz"
+    if path.exists():
+        return path
+    df = load_minutes(asset)
+    if window is not None:
+        lo, hi = window
+        df = df[(df["timestamp"] >= lo) & (df["timestamp"] <= hi)]
+    if bars is not None and len(df) > bars:
+        df = df.tail(bars)
+    df = df.reset_index(drop=True)
+    np.savez(path, **{c: df[c].to_numpy() for c in df.columns})
+    del df
+    return path
+
+
+def _arrays_for(asset: str, bars: int | None, window: tuple[int, int] | None):
+    """The cached slice, loaded once per worker process.
+
+    Loads the compact .npz the parent prepared rather than the CSV -- see SLICES above
+    for why that distinction killed the first run.
     """
-    key = f"{asset}:{bars}:{window}"
+    key = slice_key(asset, bars, window)
     if key not in _ARRAYS:
-        df = load_minutes(asset)
-        if window is not None:
-            lo, hi = window
-            df = df[(df["timestamp"] >= lo) & (df["timestamp"] <= hi)]
-        if bars is not None and len(df) > bars:
-            df = df.tail(bars)
-        df = df.reset_index(drop=True)
-        ts = df["timestamp"].to_numpy(dtype="int64")
-        _ARRAYS.clear()          # one asset-slice per worker is enough; keep memory flat
-        _ARRAYS[key] = (frame_to_arrays(df), int(ts.min()), int(ts.max()))
+        with np.load(SLICES / f"{key}.npz") as data:
+            frame = pd.DataFrame({c: data[c] for c in data.files})
+        ts = frame["timestamp"].to_numpy(dtype="int64")
+        _ARRAYS.clear()          # one asset-slice per worker; keep memory flat
+        _ARRAYS[key] = (frame_to_arrays(frame), int(ts.min()), int(ts.max()))
     return _ARRAYS[key]
 
 
@@ -357,7 +385,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--param-scale", type=int, default=1,
                     help="multiply bar-count parameters (60 preserves the hourly "
                          "wall-clock window; much slower)")
-    ap.add_argument("--workers", type=int, default=max(1, (__import__("os").cpu_count() or 4) - 2))
+    # Default deliberately below cpu_count: each worker holds one asset slice plus the
+    # engine's own arrays, and the first run died with BrokenProcessPool at 10.
+    ap.add_argument("--workers", type=int,
+                    default=min(6, max(1, (__import__("os").cpu_count() or 4) - 2)))
     ap.add_argument("--tag", default="", help="suffix for the output filenames")
     args = ap.parse_args(argv)
 
@@ -389,6 +420,13 @@ def main(argv: list[str] | None = None) -> int:
     if bars is not None:
         window_mode += f", capped at {bars:,}"
 
+    # Parse each CSV once here, not once per cell in each worker.
+    print(f"preparing {len(assets)} asset slices (parsed once, not per cell) …",
+          file=sys.stderr)
+    for a in assets:
+        path = build_slice(a, bars, window)
+        print(f"  {a}: {path.stat().st_size / 1048576:.0f} MB slice", file=sys.stderr)
+
     jobs = [(a, s, args.param_scale, bars, window) for a in assets for s in strategies]
     print(f"{len(jobs)} cells: {len(assets)} assets x {len(strategies)} strategies, "
           f"{args.workers} workers", file=sys.stderr)
@@ -399,8 +437,25 @@ def main(argv: list[str] | None = None) -> int:
     started = time.time()
     rows: list[dict] = []
     with ProcessPoolExecutor(max_workers=args.workers) as pool:
-        # Chunked by asset order so each worker tends to reuse its cached slice.
-        for done, row in enumerate(pool.map(run_cell, jobs, chunksize=1), start=1):
+        # submit/as_completed rather than map: map propagates a BrokenProcessPool and
+        # loses every completed result with it, which is how the first run ended with
+        # nothing written after an hour of compute.
+        futures = {pool.submit(run_cell, j): j for j in jobs}
+        done = 0
+        for future in as_completed(futures):
+            done += 1
+            try:
+                row = future.result()
+            except Exception as exc:                      # noqa: BLE001
+                asset, strategy = futures[future][0], futures[future][1]
+                row = asdict(Cell(
+                    asset=asset, strategy=strategy, params="-", bars=0, first="", last="",
+                    trades=0, net_return_pct=float("nan"), gross_return_pct=float("nan"),
+                    net_sharpe=float("nan"), gross_sharpe=float("nan"),
+                    max_drawdown_pct=float("nan"), fees_usd=0.0, borrow_fees_usd=0.0,
+                    cost_share_of_capital=float("nan"), exposure_fraction=float("nan"),
+                    liquidations=0, seconds=0.0,
+                    error=f"worker died: {type(exc).__name__}: {exc}"[:200]))
             rows.append(row)
             if done % 10 == 0 or done == len(jobs):
                 rate = done / max(1e-9, time.time() - started)

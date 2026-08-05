@@ -85,3 +85,8 @@ data/
 # Session scratch
 .remember/logs/
 .remember/tmp/
+
+# Sliced 1m arrays, rebuilt on demand by research/minute_sweep.py. Regenerable from
+# data/*_1m.csv, and large; the coverage manifest in research/results/ is the artifact
+# worth keeping, not this cache.
+research/results/.slices/
