@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T18:50:46+00:00",
+  "generatedAt": "2026-08-05T19:12:43+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -529,6 +529,10 @@
           "hits": 15
         },
         {
+          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 14
+        },
+        {
           "path": "research/decide.py",
           "hits": 13
         },
@@ -539,10 +543,6 @@
         {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 12
-        },
-        {
-          "path": "backtester/strategy_cards/adx_filtered_trend.md",
-          "hits": 11
         },
         {
           "path": "backtester/strategy_cards/ou_half_life_sizing.md",
@@ -633,6 +633,10 @@
           "hits": 21
         },
         {
+          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 18
+        },
+        {
           "path": "backtester/core/strategies/__init__.py",
           "hits": 16
         },
@@ -655,10 +659,6 @@
         {
           "path": "backtester/tests/test_decide.py",
           "hits": 13
-        },
-        {
-          "path": "backtester/strategy_cards/adx_filtered_trend.md",
-          "hits": 12
         },
         {
           "path": "research/results/cpcv_pbo.json",
@@ -1166,6 +1166,10 @@
           "hits": 10
         },
         {
+          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 8
+        },
+        {
           "path": "backtester/strategy_cards/buy_and_hold.md",
           "hits": 8
         },
@@ -1239,10 +1243,6 @@
         },
         {
           "path": "research/results/perturb_long_any_adx_trend_ou_reversion.json",
-          "hits": 4
-        },
-        {
-          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.json",
           "hits": 4
         }
       ],
@@ -1808,7 +1808,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 58,
+      "matchingFiles": 59,
       "shown": 30,
       "files": [
         {
@@ -1945,7 +1945,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 55,
+      "matchingFiles": 56,
       "shown": 30,
       "files": [
         {
@@ -1954,7 +1954,7 @@
         },
         {
           "path": "research/perturb.py",
-          "hits": 53
+          "hits": 54
         },
         {
           "path": "research/verify_numbers.py",
@@ -2148,6 +2148,10 @@
           "hits": 17
         },
         {
+          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 16
+        },
+        {
           "path": "research/TOP_COINS.md",
           "hits": 16
         },
@@ -2201,10 +2205,6 @@
         },
         {
           "path": "backtester/strategy_cards/hurst_regime_test.md",
-          "hits": 4
-        },
-        {
-          "path": "research/coin-intelligence/hype-hyperliquid.md",
           "hits": 4
         }
       ],

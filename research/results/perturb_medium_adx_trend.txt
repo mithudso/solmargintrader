@@ -1,0 +1,21 @@
+PARAMETER-PERTURBATION STABILITY CHECK
+target   : adx_trend
+horizon  : medium
+
+baseline : median Sharpe +1.037  IQR 1.743  81% paths positive  median return +50.3%  60 trades
+
+variant                                          median       Δ   %pos      ret trades
+--------------------------------------------------------------------------------------
+geometry: 7 blocks, k=2                          +1.384  +0.347    93%   +164.4     56
+geometry: 8 blocks, k=3                          +1.016  -0.021    94%   +146.5     60
+adx_trend: adx_period 14→15                      +0.883  -0.154    90%    +51.7     46
+geometry: 9 blocks, k=2                          +0.799  -0.238    86%    +47.7     62
+adx_trend: adx_threshold 25→27.5                 +0.692  -0.345    86%    +34.3     42
+adx_trend: adx_period 14→13                      +0.639  -0.398    76%    +27.7     70
+adx_trend: adx_threshold 25→22.5                 +0.614  -0.423    86%    +30.4     68
+
+VERDICT: STABLE under this test — a 10% parameter nudge moves the median much less than sampling a different regime does.
+    max |Δ median Sharpe| = 0.423 against a baseline path IQR of 1.743 (ratio 0.24)
+    0 of 7 perturbations flip the sign
+    reference population for a single: 0.04–1.33 (median 0.21), so this is above typical
+    this test does NOT address multiple testing. It asks whether the PARAMETERS were cherry-picked; it cannot tell you whether the CONFIGURATION was cherry-picked from hundreds. PBO answers that, separately.

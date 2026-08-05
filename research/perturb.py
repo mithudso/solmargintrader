@@ -237,10 +237,10 @@ def evaluate(
 
 def run(
     horizon: str, members: list[str], mode: str | None, pct: float,
-    groups: int, k: int, geometry: bool = True,
+    groups: int, k: int, geometry: bool = True, asset: str = "SOL",
 ) -> Report:
     """Baseline plus a one-at-a-time perturbation of every member parameter."""
-    arrays, cfg = load_horizon(horizon)
+    arrays, cfg = load_horizon(horizon, asset)
     params = HORIZONS[horizon]["params"]
     specs = [(m, dict(params[m])) for m in members]
     label = (f"{mode}({'+'.join(members)})" if mode else members[0])
@@ -382,6 +382,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--pct", type=float, default=0.10, help="perturbation size")
     ap.add_argument("--groups", type=int, default=8)
     ap.add_argument("--k", type=int, default=2)
+    ap.add_argument("--asset", default="SOL",
+                    help="series to perturb on; the interval and costs stay fixed")
     ap.add_argument("--no-geometry", action="store_true")
     ap.add_argument("--out", default=None, help="also write the report here")
     args = ap.parse_args(argv)
@@ -420,7 +422,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     report = run(args.horizon, members, mode, args.pct, args.groups, args.k,
-                 geometry=not args.no_geometry)
+                 geometry=not args.no_geometry, asset=args.asset)
     text = render(report)
     print(text)
 

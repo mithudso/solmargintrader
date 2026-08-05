@@ -34,7 +34,9 @@ REPO = Path(__file__).resolve().parent.parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from backtester.core.data import CsvLoader, frame_to_arrays  # noqa: E402
+from backtester.core.data import (  # noqa: E402
+    CsvLoader, frame_to_arrays, resolve_data_dir,
+)
 from backtester.core.engine import EngineConfig, run_backtest  # noqa: E402
 from backtester.core.metrics import Metrics, compute_metrics  # noqa: E402
 from backtester.core.strategies import (  # noqa: E402
@@ -232,11 +234,29 @@ class Row:
         return rec
 
 
-def load_horizon(h: str) -> tuple[dict[str, np.ndarray], EngineConfig]:
-    """Load the price series and engine config for a horizon."""
+def load_horizon(
+    h: str, asset: str = "SOL"
+) -> tuple[dict[str, np.ndarray], EngineConfig]:
+    """Load the price series and engine config for a horizon.
+
+    `asset` defaults to SOL, so every published figure is reproduced unchanged.
+    Passing another asset swaps the series while holding the horizon's interval,
+    costs and fill delay fixed, which is what makes a cross-asset comparison a
+    comparison rather than two different experiments.
+    """
     spec = HORIZONS[h]
-    loader = CsvLoader(REPO / spec["data"], allow_gaps=spec["allow_gaps"])
-    df = loader.load("SOL", None, None, spec["interval"])
+    # The horizon's path names SOL; substitute the requested asset into it, and
+    # resolve against the main checkout because data/ is a gitignored cache.
+    filename = Path(spec["data"]).name.replace("SOL", asset.upper())
+    path = resolve_data_dir() / filename
+    if not path.exists():
+        raise FileNotFoundError(
+            f"{path} not found. Fetch it first:\n"
+            f"  python3 -m backtester.core.fetch --asset {asset.upper()} "
+            f"--interval {spec['interval']}"
+        )
+    loader = CsvLoader(path, allow_gaps=spec["allow_gaps"])
+    df = loader.load(asset.upper(), None, None, spec["interval"])
     cfg = EngineConfig(
         interval=spec["interval"],
         fill_delay=1,

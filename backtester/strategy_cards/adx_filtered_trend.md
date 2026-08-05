@@ -116,6 +116,71 @@ spread of 2.368 is the widest of any configuration measured. That is the signatu
 result that depends heavily on which regime you land in, which is the opposite of
 robustness even when the median looks respectable.
 
+## Cross-asset transfer and parameter stability (2026-08-05)
+
+Run because this is the **only configuration in the repository that clears both the Deflated
+Sharpe haircut and the evidence floor** — `research/dso_audit.py` flagged it, on ZEC.
+
+### It transfers in sign across every daily asset
+
+`adx_trend`, unchanged at the medium preset, on all five coins with a daily history:
+
+| Asset | Median path Sharpe | Q1 | % paths + | Median return | Trades | Clears its own DSR benchmark? |
+| --- | --- | --- | --- | --- | --- | --- |
+| **ZEC** | **+1.037** | **+0.371** | 81% | +50.3% | 60 | **yes — DSR 0.571** |
+| BTC | +0.575 | +0.130 | 86% | +15.1% | 50 | no (0.321, benchmark +0.987) |
+| ETH | +0.495 | +0.281 | 76% | +15.0% | 52 | no (0.289) |
+| SOL | +0.336 | −0.603 | 71% | +7.0% | 44 | no (0.267) |
+| DOGE | +0.188 | −0.721 | 67% | −7.3% | 54 | no (0.214) |
+
+**Five of five daily assets have a positive median**, and three of five have a positive Q1. That is a
+different kind of evidence from the DSR: the DSR asks whether one magnitude beats a search benchmark,
+while sign consistency across assets asks whether the mechanism shows up at all outside the series it
+was found on. Both are worth having, and this is the only strategy here to pass the second.
+
+**Do not read the five as five independent trials.** BTC, ETH, SOL and DOGE are strongly correlated
+crypto majors; they are closer to one observation than four. ZEC is the least correlated of the five —
+and is also the only one whose magnitude clears its benchmark, which cuts both ways (see below).
+
+### The parameters are a plateau, not a spike
+
+`python3 research/perturb.py --horizon medium --single adx_trend --asset ZEC`
+
+| Variant | Median | Δ |
+| --- | --- | --- |
+| baseline | +1.037 | — |
+| `adx_period` 14→15 | +0.883 | −0.154 |
+| `adx_threshold` 25→27.5 | +0.692 | −0.345 |
+| `adx_period` 14→13 | +0.639 | −0.398 |
+| `adx_threshold` 25→22.5 | +0.614 | −0.423 |
+
+**Zero of seven perturbations flip the sign**, and every variant stays above +0.61. Max
+|Δ median Sharpe| is 0.423 against a baseline path IQR of 1.743, a ratio of 0.24. Verdict: STABLE.
+For contrast the same test on SOL flips 1 of 7. So the ZEC figure is not a knife-edge parameter fit.
+
+### What still argues against it
+
+1. **It does not survive a timeframe change.** On SOL hourly the same configuration posts a median
+   path Sharpe of **−3.736** with **4.8% of paths positive** on 680 trades. Whatever it captures on
+   daily bars is absent or inverted at one hour. No hourly history exists for ZEC to test whether
+   that is a SOL effect or a timeframe effect — **this is the open question**, and until it is
+   answered the daily result rests on one interval.
+2. **A trend filter on the one asset with a big sustained trend is the obvious alternative
+   explanation.** ADX gates for trend strength, so a single long ZEC trend inside 2,043 bars would
+   produce exactly this table. That ZEC is simultaneously the best performer and the least correlated
+   asset is consistent with genuine diversification *and* with a single lucky regime.
+3. **DSR 0.571 is barely above the 0.5 coin-flip line.** It means roughly a 57% probability the true
+   Sharpe exceeds the search's own benchmark. It is the absence of disconfirmation, not a result.
+4. **One asset, one history, no live order ever placed.**
+
+**It is not just beta.** On ZEC it beats buy-and-hold on Sharpe (+1.037 vs +0.659), on Q1 (+0.371 vs
++0.151) and on return (+50.3% vs +20.2%), at similar path-positive rates (81% vs 82%). It ranks 1 of
+25 on ZEC.
+
+**Rating unchanged at `low`.** Passing three tests that most configurations fail is the strongest
+evidence in this repository, and it is still one asset on one timeframe with a DSR a whisker over a
+coin flip. The rating moves when an hourly ZEC history, or a second uncorrelated asset, agrees.
+
 ## Caveats and limitations
 - ADX > 25 is a convention, not a constant. It is a parameter and was not swept.
 - ADX is lagging by construction, so it can confirm a trend that is ending.
