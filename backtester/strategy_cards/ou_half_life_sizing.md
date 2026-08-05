@@ -8,7 +8,7 @@ summary: Z-score reversion with an Ornstein-Uhlenbeck hold cap and a stationarit
 registry_key: ou_reversion
 runner: backtester.cli
 warmup_bars: 251
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2-sol-btc-eth
 data_required: [ohlcv]
 data_available: true
 success_likelihood: low
@@ -84,7 +84,7 @@ out-of-sample trades: fewer than that and a row is listed, never ranked.
 
 ## Likelihood of success: low
 
-*Basis: measured-oos.*
+*Basis: measured-oos. **Downgraded from moderate after the BTC and ETH tests below.***
 
 **A positive out-of-sample Sharpe (+0.092) and a near-flat return (-1.5%) on 6
 trades.** Both halves of that matter. 6 trades is **below the 10-trade evidence
@@ -99,6 +99,83 @@ Rated low rather than moderate because a mechanism that mostly abstains has not
 demonstrated an edge — it has demonstrated a filter. The next real test is using it
 as the exit discipline on top of the two existing reversion cards, which is what the
 original spec proposed and what remains undone.
+
+## Re-evaluated under CPCV
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
+1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
+arbitrary split. Full run for all 25 registered configurations:
+`research/results/cpcv_all25_1d.csv`.
+
+| Statistic | ou_reversion | buy_and_hold |
+|---|---|---|
+| Median path Sharpe | **+0.412** | +0.534 |
+| Q1 path Sharpe | **+0.213** | −0.095 |
+| Paths with positive Sharpe | **93%** | 68% |
+| Median path return | **+10.5%** | +9.4% |
+| Total trades | 26 | 16 |
+
+**Upgraded from low to moderate.** The single split gave it 6 out-of-sample trades and
+no verdict; CPCV gives it 15 paths, a **positive 25th percentile** (+0.213, second only
+to hurst_switch among all 25) and 93% of paths positive. It ranks fourth of 25 by median
+path Sharpe while trading a quarter as often as the mechanisms below it.
+
+The reading is that the **screening rule is the edge**: refusing a series whose fitted
+half-life is infinite or beyond the cap keeps it out of exactly the trending regimes
+that destroyed `bb_reversion` and `zscore`. That is a structural argument, not a
+statistical one, which is what moderate requires.
+
+Same caveat as its sibling: 26 trades is a small sample, and "mostly abstains" is doing
+real work in that 93%.
+
+### It held up better than its sibling on the hourly series
+
+`hurst_regime_test.md` was downgraded after the hourly test; this was not. On 8,823
+hourly bars at the sweep's short-horizon scaling
+(`research/results/cpcv_all25_1h.csv`), where **zero of 25 configurations** had a
+positive median path Sharpe and buy-and-hold lost 22.9%:
+
+| | daily rank | hourly rank | hourly median Sharpe | hourly median return |
+|---|---|---|---|---|
+| ou_reversion | 4th of 25 | **2nd of 25** | −0.595 | **−3.4%** |
+| hurst_switch | 1st of 25 | 23rd of 25 | −3.123 | −12.8% |
+| buy_and_hold | 2nd of 25 | 7th of 25 | −1.456 | −22.9% |
+
+It still lost, in a period where everything did. What earns it the retained rating is
+**rank stability across a change of scale** — near the top on both — and a median path
+return of −3.4% against buy-and-hold's −22.9% on 196 trades. The screening rule keeps it
+out of the way, which is the same behaviour the daily test showed and the opposite of
+what happened to the regime switch.
+
+### Downgraded from moderate: the cross-asset test
+
+The retained moderate rating said the next experiment was a different asset. BTC and ETH
+daily were already fetched, so both were run at the same pre-registered medium scaling,
+8 groups, k=2 (`research/results/cpcv_all25_btc_eth_1d.csv`). **Four independent tests
+now exist, and together they do not support moderate.**
+
+| Dataset | Rank | Median Sharpe | Q1 | %pos | Median return | **Trades** |
+|---|---|---|---|---|---|---|
+| SOL daily | 4 / 25 | +0.412 | +0.213 | 93% | +10.5% | **26** |
+| SOL hourly | 2 / 25 | −0.595 | −1.296 | 33% | −3.4% | **196** |
+| BTC daily | **1 / 25** | +1.657 | **+0.000** | 60% | +12.0% | **6** |
+| ETH daily | **18 / 25** | +0.012 | −0.323 | 53% | +0.0% | **18** |
+
+Read the trade column against the rank column. **Every good result comes with a tiny
+trade count, and the one test where it traded properly is the one it lost.** The BTC
+rank-1 rests on **six trades** across the whole series, with a 25th-percentile path
+Sharpe of exactly `+0.000` — meaning the conservative quarter of regime mixes did
+*nothing at all*. On ETH, where it traded 18 times, the median Sharpe is +0.012 and the
+median path return is 0.0%: a coin flip that went nowhere.
+
+That is the signature of **a filter, not an edge**. The screening rule is genuinely good
+at staying out of trouble, which flatters every rank-based comparison in a losing period
+and produces nothing in a rising one. "Mostly abstains" was noted as a caveat on this
+card from the beginning; four datasets later it is the whole result.
+
+The mechanism keeps its real use — bounding the hold on `bb_reversion` and `zscore`,
+which is what it was specified for and what remains untested — but as a standalone
+strategy it rates **low**, and no card in this directory is now rated moderate.
 
 ## Caveats and limitations
 - Theta fitted on a trending series is meaningless. That is the point of the

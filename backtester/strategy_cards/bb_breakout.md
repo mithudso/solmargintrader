@@ -8,10 +8,10 @@ summary: Long a close above the upper Bollinger band, with an optional volatilit
 registry_key: bb_breakout
 runner: backtester.cli
 warmup_bars: 20
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2
 data_required: [ohlcv]
 data_available: true
-success_likelihood: very-low
+success_likelihood: low
 success_basis: measured-oos
 params:
   window: {default: 20, type: int, desc: "SMA and stdev window"}
@@ -90,7 +90,7 @@ estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
 
-## Likelihood of success: very-low
+## Likelihood of success: low
 
 *Basis: measured-oos. There is no 'high' rating in this scheme — across 311 rankable
 configurations, 14% had a positive out-of-sample Sharpe and 9% made money.*
@@ -100,6 +100,33 @@ That single pair of figures is the strongest evidence in this directory that
 full-sample band-breakout results on SOL are artefacts. The squeeze gate that might
 add real information is off by default and was never swept, so even the interesting
 half is unmeasured.
+
+## Re-evaluated under CPCV
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
+1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
+arbitrary split. Full run for all 25 registered configurations:
+`research/results/cpcv_all25_1d.csv`.
+
+| Statistic | bb_breakout | buy_and_hold |
+|---|---|---|
+| Median path Sharpe | +0.481 | +0.534 |
+| Q1 path Sharpe | −0.068 | −0.095 |
+| Paths with positive Sharpe | 67% | 68% |
+| Median path return | +15.9% | +9.4% |
+| Total trades | 58 | 16 |
+
+**Upgraded from very-low to low**, and this card is the cleanest illustration in the
+directory of why the single split was condemned. That split produced the largest
+in-sample figure in the study (+2,843.6%) and a −34.9% out-of-sample loss, which read as
+a pure overfitting artifact. Across 21 CPCV paths it is **third of 25 by median path
+Sharpe** with a **+15.9% median return** — better than holding the asset — on a
+respectable 58 trades.
+
+It stays at low, not moderate, for two reasons. Its Q1 is still slightly negative
+(−0.068), so the conservative read is a small loss rather than a gain; and the squeeze
+gate that supplies the mechanism's actual premise is **off by default and still never
+swept**, so what was measured is a plain band breakout.
 
 ## Caveats and limitations
 - The headline in-sample figure is a trap, not an achievement. It is included because

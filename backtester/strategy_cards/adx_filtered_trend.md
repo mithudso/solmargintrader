@@ -8,7 +8,7 @@ summary: Long only while a directional trend is both present (ADX) and up (+DI >
 registry_key: adx_trend
 runner: backtester.cli
 warmup_bars: 43
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2
 data_required: [ohlcv]
 data_available: true
 success_likelihood: low
@@ -86,6 +86,32 @@ What it did not do is make money, and its in-sample +1,644.3% is the second-larg
 figure in the whole study — a decay profile that should be read as a warning rather
 than a promise. The mechanism attacks the right failure (chop) with the conventional
 tool; on this split it still lost.
+
+## Re-evaluated under CPCV
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
+1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
+arbitrary split. Full run for all 25 registered configurations:
+`research/results/cpcv_all25_1d.csv`.
+
+| Statistic | adx_trend | buy_and_hold |
+|---|---|---|
+| Median path Sharpe | +0.336 | +0.534 |
+| Q1 path Sharpe | −0.603 | −0.095 |
+| Paths with positive Sharpe | 71% | 68% |
+| Median path return | +7.0% | +9.4% |
+| Total trades | 44 | 16 |
+
+**The single-split figure was unrepresentative, exactly as that split's critics
+predicted.** One split gave −43.6% on 8 unrankable trades; 21 CPCV paths give a
+*positive* median Sharpe of +0.336, 71% of paths positive and a +7.0% median return on
+44 trades.
+
+The rating stays **low** rather than rising, because the Q1 path Sharpe is **−0.603** —
+the conservative quarter of regime mixes still loses meaningfully, and the interquartile
+spread of 2.368 is the widest of any configuration measured. That is the signature of a
+result that depends heavily on which regime you land in, which is the opposite of
+robustness even when the median looks respectable.
 
 ## Caveats and limitations
 - ADX > 25 is a convention, not a constant. It is a parameter and was not swept.

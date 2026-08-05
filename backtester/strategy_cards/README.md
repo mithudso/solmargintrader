@@ -152,10 +152,59 @@ absent from the vocabulary. It also asserts that only a `measured` card may cite
 more than a tenth of cards may be rated moderate** — a directory where most cards
 looked promising would be the tell that the ratings had drifted into marketing.
 
-Current distribution: **20 very-low, 21 low, 2 moderate**. The two moderates are
-`hurst_regime_test` (measured: +15.6% out-of-sample at +0.564 Sharpe on exactly 10
-trades) and `pairs_cointegration` (a-priori: the rigorous version of `zscore`, whose
-peer series is also the cheapest data gap here to close).
+Current distribution: **18 very-low, 25 low, and no card rated moderate.**
+
+Two cards moved `very-low` → `low` when CPCV superseded their single-split numbers
+(`obv_trend`, `vol_regime_hmm`): at their long presets both are measured *positive* across
+80%+ of 28 paths, and `very-low` is defined as measured-negative, so the old rating had become
+a false statement about the evidence. Neither reached `moderate` — PBO 0.700 at the daily
+horizons means a good rank is not an edge, and neither card has BTC/ETH confirmation.
+
+That empty top tier is a result, not an oversight. Two cards held `moderate` at different
+points and both lost it to the next experiment:
+
+| Card | Path |
+|---|---|
+| `hurst_regime_test` | 1st of 25 on SOL daily → **23rd of 25 on SOL hourly** → 13th on BTC, 19th on ETH |
+| `ou_half_life_sizing` | 4th on SOL daily, 2nd on SOL hourly, **1st on BTC (on six trades, Q1 exactly 0.000)**, **18th of 25 on ETH** |
+
+`moderate` was defined as "worth the next experiment, not works". In both cases the next
+experiment was run and the rating followed the evidence down. A rating that never moves
+when better evidence arrives is decoration.
+
+### The finding that outranks any individual card
+
+Four CPCV datasets now exist, and the count of configurations with a **positive median
+path Sharpe** in each is:
+
+| Dataset | Configs positive | Buy-and-hold median return |
+|---|---|---|
+| BTC daily, 2021-06→2026-08 | **25 of 25** | +25.6% |
+| ETH daily, same window | 18 of 25 | −6.3% |
+| SOL daily, same window | mixed | +9.4% |
+| SOL hourly, 2025-08→2026-08 | **0 of 25** | −22.9% |
+
+**The dataset explains far more than the strategy does.** On BTC every single mechanism
+"worked"; on the SOL hourly year not one did. Any ranking computed inside a single dataset
+is therefore mostly measuring that dataset, which is the same lesson the single-split
+critique taught — one level up. It is also why every rating here is low or very-low: the
+honest reading of 25 mechanisms across four datasets is that none of them has
+demonstrated an edge distinguishable from the market it was measured in.
+
+Ratings and their bases are recorded per card so this can be re-checked rather than
+believed.
+
+Six cards were re-rated when CPCV replaced the single split, in both directions:
+
+| Card | Was | Now | Why |
+|---|---|---|---|
+| `bb_breakout` | very-low | **low** | 3rd of 25 on SOL daily CPCV; its notorious single-split decay was split-dependent |
+| `zscore` | low | **very-low** | the top-ranked single-split row is a 52% coin flip whose median path loses 10% |
+| `adx_filtered_trend` | low | low | CPCV median turned positive, but Q1 −0.603 and the widest spread of any config |
+| `vol_regime_hmm` | very-low | very-low | CPCV confirmed rather than softened it |
+| `pairs_cointegration` | moderate (a-priori) | **low** (measured) | cointegrated with ETH, but zero out-of-sample trades |
+| `hurst_regime_test` | moderate | **low** | rank did not survive a change of scale or asset |
+| `ou_half_life_sizing` | moderate | **low** | every good rank came with a tiny trade count; the one test where it traded properly, it lost |
 
 ## Two things called "grid"
 

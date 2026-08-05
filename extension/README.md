@@ -315,6 +315,24 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
    an empty list is indistinguishable from a misread one to reconciliation, which treats it as
    "nothing is live" and re-plans every resting rung. Now refused.
 
+**Measured on real SOL for the first time (2026-08-04).** The ladder economics were run
+against the real daily and hourly series, not just synthetic bars —
+`backtester/strategy_cards/ladder_grid.md` and `research/results/ladder_grid_sol.csv`.
+Two results matter here:
+
+- **A static ladder is out of range 86–93% of the time.** Using this extension's own
+  `tools/dryrun.js` convention (0.85x–1.15x of price, 7 rungs, $12/rung), the ladder set
+  once at the start of the daily series sat outside the market for 93.1% of bars. It still
+  cut max drawdown from holding's **−96.27% to −11.46%**, which is the honest case for the
+  strategy, but it earned +5.21% while holding earned +88.25%.
+- **`planGrid` does not re-centre, and re-centring is what made it profitable.** Reset the
+  ladder from each block's opening price and the daily median becomes **+7.5% of deployed
+  capital with 5 of 8 blocks positive**; leave it static and you get the column above.
+  `lower` and `upper` come straight from config and nothing recomputes them, so a live
+  install behaves like the static case. **That is the highest-value missing feature.**
+  The worst re-centred block still lost **22.5% of deployed capital** in a downtrend,
+  consistent with the −$8.62 on $48 this README already reports from the dry run.
+
 **Not verified — do these before risking money:**
 
 1. **No live order has been placed.** The write path (auth → vault → deposit craft → sign →

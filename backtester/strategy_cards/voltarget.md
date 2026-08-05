@@ -93,6 +93,19 @@ whenever the vol cap binds. The rating is **low** rather than very-low only beca
 it was measured in the one configuration that wastes it: this belongs as a *wrapper*
 around another signal, which is the most obvious untested gap in the sweep.
 
+### The hourly run exposed a three-way degeneracy
+
+On 8,823 hourly bars at short-horizon scaling, `voltarget`, `garch_voltarget` and
+`sma_regime` produced **numerically identical** results — median path Sharpe −2.282,
+median return −19.9%, 292 trades, all three. That is not a coincidence and it is not a
+bug: at `target_vol` 0.8 on hourly SOL the volatility cap binds on essentially every
+bar, so `min(1, target/sigma)` collapses to 1.0 and both vol-targeted rules degenerate
+into the plain trend gate they share with the regime filter.
+
+The caveat was written on these cards before it was observed. Seeing three separate
+"strategies" return one identical row is the cleanest demonstration available that a
+sweep's configuration count overstates how many distinct ideas are in it.
+
 ## Caveats and limitations
 - Measured in the one configuration that wastes it. Read the numbers as "vol-targeted
   trend-following on SOL", not as a verdict on vol targeting.

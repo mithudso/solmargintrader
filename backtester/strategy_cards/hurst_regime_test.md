@@ -8,10 +8,10 @@ summary: A meta-signal: measure whether the series trends or reverts, then run t
 registry_key: hurst_switch
 runner: backtester.cli
 warmup_bars: 251
-evaluation: single-split-70-30
+evaluation: cpcv-8-groups-k2-sol-btc-eth
 data_required: [ohlcv]
 data_available: true
-success_likelihood: moderate
+success_likelihood: low
 success_basis: measured-oos
 params:
   window: {default: 250, type: int, desc: "bars used to estimate the variance ratio"}
@@ -88,9 +88,9 @@ estimate. Across the whole sweep, 45 of 311 rankable configurations (14%) had a
 positive out-of-sample Sharpe and 28 (9%) made money. The evidence floor is 10
 out-of-sample trades: fewer than that and a row is listed, never ranked.
 
-## Likelihood of success: moderate
+## Likelihood of success: low
 
-*Basis: measured-oos. This is the only card in the directory rated moderate.*
+*Basis: measured-oos. **Downgraded from moderate after the hourly test below.***
 
 Four things support it, and one caveat bounds it.
 
@@ -111,6 +111,96 @@ hostile split that inverted every other ranking. `RANKED_LISTS.md` found the
 previous top-ranked row consistent with noise on a within-mechanism test, and nothing
 here rules out the same verdict. Moderate means "worth the next experiment", not
 "works" — and the next experiment is CPCV, not another split.
+
+## Re-evaluated under CPCV
+
+Combinatorial purged cross-validation (`core/cpcv.py`), 8 groups, k=2, on the same
+1,875 daily bars — 28 out-of-sample paths where the series allows, instead of one
+arbitrary split. Full run for all 25 registered configurations:
+`research/results/cpcv_all25_1d.csv`.
+
+| Statistic | hurst_switch | buy_and_hold | zscore |
+|---|---|---|---|
+| Median path Sharpe | **+0.699** | +0.534 | +0.036 |
+| Q1 path Sharpe (the conservative read) | **+0.609** | −0.095 | −0.539 |
+| Paths with positive Sharpe | **93%** | 68% | 52% |
+| Median path return | **+16.7%** | +9.4% | −10.0% |
+| Total trades | 24 | 16 | 50 |
+
+**It ranks first of all 25 configurations by median path Sharpe**, and it is the only
+one whose 25th-percentile path is comfortably positive — Lopez de Prado's recommended
+conservative statistic. It also has **no negative block**: per-block Sharpes are
++0.86, +2.67, 0.00, 0.00, +0.99, +0.29.
+
+**Adding it to the set *lowered* the Probability of Backtest Overfitting.** On the six
+blocks every configuration shares, PBO across the original 16 is 0.600; adding
+hurst_switch gives 0.400. So it is not the artifact that in-sample selection latches
+onto — it makes selection more reliable. (Both figures sit above the prior study's
+0.429–0.457 because restricting to six common blocks leaves only 20 CSCV splits; treat
+the *direction* of the change as the signal, not the level.)
+
+### Downgraded from moderate: the hourly series
+
+The moderate rating was explicitly conditional — "worth the next experiment, not works,
+and the next experiment is CPCV". CPCV on daily passed. The follow-up test was the
+hourly series, chosen because trade count was the binding constraint. **It failed.**
+
+Same mechanism at the sweep's pre-registered short-horizon scaling (window 250, lag 5,
+trend_window 168) on 8,823 hourly bars, 8 groups, k=2
+(`research/results/cpcv_all25_1h.csv`):
+
+| | daily | hourly |
+|---|---|---|
+| Rank by median path Sharpe | **1st of 25** | **23rd of 25** |
+| Median path Sharpe | +0.699 | **−3.123** |
+| Q1 path Sharpe | +0.609 | −3.878 |
+| Paths positive | 93% | 14% |
+| Median path return | +16.7% | −12.8% |
+| Trades | 24 | 170 |
+
+Seven times the trades, and the rank inverted from first to third-from-last. That is the
+single strongest piece of evidence available about this mechanism, and it says the daily
+result was **scale-specific at best**.
+
+**One honest confound, which does not rescue it.** The hourly file covers
+2025-08→2026-08 only, and that year was brutal: **zero of 25 configurations** had a
+positive median path Sharpe, and buy-and-hold itself lost 22.9%. So the hourly test is a
+different *period* as well as a different scale, and "everything lost" is partly the
+market. But rank is period-invariant by construction — every configuration faced the
+same bars — and hurst_switch went from best to nearly worst *relative to its peers*. It
+also lost more than buy-and-hold's Sharpe while trading 170 times.
+
+The repo's own headline finding is that in-sample rank does not predict out-of-sample
+rank. This card is now a demonstration of the same effect **across horizons**, which is
+a more uncomfortable version of it: the rank was not stable across a change of scale
+either.
+
+### BTC and ETH confirm it
+
+Run at the same medium scaling on both (`research/results/cpcv_all25_btc_eth_1d.csv`):
+**13th of 25 on BTC** (median +0.565, Q1 −0.554) and **19th of 25 on ETH** (median
++0.000, Q1 −1.471, **0% of paths positive**, four trades). On BTC, where 25 of 25
+configurations had a positive median path Sharpe, it still finished mid-pack and below
+buy-and-hold. Four datasets, one good rank, and that one was the dataset the mechanism
+was developed against.
+
+### What would change the rating back
+A third independent test that it passes — a peer universe, or a different asset's daily
+series. Not another look at the daily SOL bars, which it has now been fitted to by
+selection whether or not anyone intended that.
+
+### The trade-count caveat that applied even on daily
+
+The trade count. **24 trades across six blocks**, and two of those blocks traded
+**zero** times — their 0.00 Sharpes are "never lost", not "usually won", which inflates
+the 93%-positive figure. Block 3's headline +2.669 rests on **two trades**. A mechanism
+that abstains most of the time and is right when it acts is the profile you want, but it
+is also the profile that a small sample cannot distinguish from luck.
+
+So: the pre-registered prediction survived the harder test, the rating stays at
+**moderate**, and the next honest step is more data rather than more confidence —
+either the hourly series or a peer universe, both of which multiply the trade count
+without re-using this one.
 
 ## Caveats and limitations
 - Estimating H on a rolling window is noisy, and the estimate is itself
