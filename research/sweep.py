@@ -330,6 +330,15 @@ def cross_family_combos(names: Sequence[str], size: int) -> list[tuple[str, ...]
     return out
 
 
+# Thresholds for READING the redundancy diagnostic, not calibrated constants:
+# the defensible claim is the ordering (higher means more redundant), not the
+# cutoff. They live here rather than in `signal_redundancy.py` for the same
+# reason `redundancy_filename` does -- that module imports from this one, so
+# owning shared constants there would make the pair circular.
+REDUNDANT_CORR = 0.80
+REDUNDANT_AGREEMENT = 0.90
+
+
 def redundancy_filename(asset: str, horizon: str) -> str:
     """Canonical name of a measured-redundancy result under `research/results/`.
 
@@ -384,6 +393,69 @@ def measured_redundant_pairs(
     return frozenset(frozenset((a, b)) for a, b in zip(flagged["a"], flagged["b"]))
 
 
+def redundancy_classes(
+    horizon: str, asset: str = "SOL"
+) -> tuple[dict[str, str], list[tuple[list[str], float]]]:
+    """Group interchangeable strategies and pick one representative for each.
+
+    Excluding a redundant pair INSIDE a combination does not stop two DIFFERENT
+    combinations from being the same experiment reported twice. zscore and
+    bb_reversion measure 0.96-1.00 correlated, so every triple containing one has
+    a twin containing the other; both clear the pair test, both get ranked, and
+    the pair of identical results reads as corroboration. Grouping the members
+    and keeping one per group is what removes the twin.
+
+    Groups are connected components over the measured-redundant pairs, and each
+    collapses to its alphabetically-first member -- an arbitrary but stable
+    choice, so the surviving combination does not depend on iteration order.
+
+    Connected components can CHAIN: a~b and b~c does not make a~c, so a component
+    can be looser than any pair in it. The minimum intra-class correlation is
+    returned with each group for exactly that reason -- a value below
+    REDUNDANT_CORR means the group over-merged and should not be trusted.
+    Measured on SOL none of them chain; the loosest is 0.806.
+    """
+    pairs = measured_redundant_pairs(horizon, asset)
+    parent: dict[str, str] = {}
+
+    def find(x: str) -> str:
+        parent.setdefault(x, x)
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for pair in pairs:
+        a, b = sorted(pair)
+        parent[find(a)] = find(b)
+
+    grouped: dict[str, list[str]] = {}
+    for member in list(parent):
+        grouped.setdefault(find(member), []).append(member)
+
+    path = OUT_DIR / redundancy_filename(asset, horizon)
+    table = pd.read_csv(path)
+    corr = {
+        frozenset((a, b)): c
+        for a, b, c in zip(table["a"], table["b"], table["corr"])
+    }
+
+    canonical: dict[str, str] = {}
+    classes: list[tuple[list[str], float]] = []
+    for members in grouped.values():
+        members = sorted(members)
+        rep = members[0]
+        for member in members:
+            canonical[member] = rep
+        inner = [
+            corr[frozenset(p)]
+            for p in itertools.combinations(members, 2)
+            if frozenset(p) in corr
+        ]
+        classes.append((members, min(inner) if inner else float("nan")))
+    return canonical, sorted(classes)
+
+
 # Gates a combination has to clear to enter the sweep. They disagree, and the
 # disagreement is the finding -- see `independent_combos`.
 PAIR_GATES = ("both", "measured", "family")
@@ -417,19 +489,62 @@ def independent_combos(
     if gate not in PAIR_GATES:
         raise SystemExit(f"--pair-gate must be one of {PAIR_GATES}, got {gate!r}")
     redundant: frozenset[frozenset[str]] = frozenset()
+    canonical: dict[str, str] = {}
     if gate in ("measured", "both"):
         redundant = measured_redundant_pairs(horizon)
+        canonical, _ = redundancy_classes(horizon)
 
-    out: list[tuple[str, ...]] = []
-    for combo in itertools.combinations(names, size):
+    # Representatives are chosen among the names actually being combined. A class
+    # whose alphabetical head is not a candidate (sma_regime's class leads with
+    # atr_sized, which is not one) would otherwise elect an absent member and no
+    # combination could ever be the representative one.
+    present = set(names)
+    local_rep: dict[str, str] = {}
+    if canonical:
+        by_class: dict[str, list[str]] = {}
+        for member, rep in canonical.items():
+            if member in present:
+                by_class.setdefault(rep, []).append(member)
+        for members in by_class.values():
+            head = sorted(members)[0]
+            for member in members:
+                local_rep[member] = head
+
+    def admissible(combo: tuple[str, ...]) -> bool:
         if gate in ("family", "both") and len({FAMILY[n] for n in combo}) != size:
-            continue
+            return False
         if gate in ("measured", "both") and any(
             frozenset(pair) in redundant
             for pair in itertools.combinations(combo, 2)
         ):
-            continue
-        out.append(combo)
+            return False
+        return True
+
+    out: list[tuple[str, ...]] = []
+    seen: set[frozenset[str]] = set()
+    if not local_rep:
+        return [c for c in itertools.combinations(names, size) if admissible(c)]
+
+    # Two passes so the survivor is PREDICTABLE rather than an artifact of
+    # enumeration order: the combination built entirely from class
+    # representatives wins, and only if none exists does the first admissible
+    # variant stand in. Enumeration order alone would keep whichever twin the
+    # candidate list happened to mention first, silently retiring the label a
+    # reader was told to look for.
+    for representatives_only in (True, False):
+        for combo in itertools.combinations(names, size):
+            if not admissible(combo):
+                continue
+            if representatives_only and any(local_rep.get(n, n) != n for n in combo):
+                continue
+            # A key shorter than `size` means two members share a class without
+            # their own pair being flagged -- reachable only through a chained
+            # component, and dropped for the same reason.
+            key = frozenset(local_rep.get(n, n) for n in combo)
+            if len(key) < size or key in seen:
+                continue
+            seen.add(key)
+            out.append(combo)
     return out
 
 

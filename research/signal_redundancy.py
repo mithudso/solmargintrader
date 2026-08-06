@@ -79,17 +79,16 @@ if str(REPO) not in sys.path:
 from backtester.core.data import CsvLoader, frame_to_arrays  # noqa: E402
 from backtester.core.strategies import FAMILY, REGISTRY, build  # noqa: E402
 from backtester.core.types import BarWindow  # noqa: E402
-# `redundancy_filename` is defined in sweep.py, not here, so the import stays
+# The shared names below are defined in sweep.py, not here, so the import stays
 # one-directional -- this module already depends on that one for HORIZONS.
-from research.sweep import HORIZONS, redundancy_filename  # noqa: E402
+from research.sweep import (  # noqa: E402
+    HORIZONS,
+    REDUNDANT_AGREEMENT,
+    REDUNDANT_CORR,
+    redundancy_filename,
+)
 
 OUT = REPO / "research" / "results"
-
-# Thresholds for READING the diagnostic, not calibrated constants. The
-# defensible claim is the ordering -- higher means more redundant -- not the
-# cutoff. They are named here so a reader can see they were chosen, not derived.
-REDUNDANT_CORR = 0.80
-REDUNDANT_AGREEMENT = 0.90
 
 # Variance share the retained principal components must span.
 VARIANCE_TARGET = 0.90
