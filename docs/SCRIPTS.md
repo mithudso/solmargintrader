@@ -36,6 +36,7 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 -m backtester.core.universe` | fetch many assets, refuse a partial set | **yes** |
 | `python3 -m backtester.core.ticks` | fetch trade ticks into `data/ticks/` | **yes** |
 | `python3 research/candle_gap_audit.py` | classify and repair candle gaps using ticks | **yes** |
+| `./research/run_backfill.sh` | long, resumable, low-priority tick backfill + audit | **yes** |
 | `python3 research/sweep.py` | the horizon parameter tables; single-split walk-forward | no |
 | `python3 research/cpcv_sweep.py` | **primary evaluation** — CPCV + PBO | no |
 | `python3 research/cross_asset_cpcv.py` | does a result transfer to another coin | no |
@@ -272,14 +273,56 @@ Established 2026-08-06 by `candle_gap_audit.py` against the trades endpoint, ove
    logic reads, which makes this a correctness problem for any backtest that models
    intrabar stops, not merely a volume-accuracy one.
 
+5. **The corruption is not confined to gaps.** A full tick reconstruction of
+   2026-08-04 — a day with **zero gaps** in the SOL 1m cache — disagrees with the
+   candle file on **133 of 1,440 minutes (9.2%)** by volume, plus 2.8% of opens,
+   3.1% of closes, 1.7% of highs and 1.4% of lows. 100 of those 133 are exact
+   adjacent-pair reassignments (volume mis-binned into the neighbouring minute), but
+   the day's total volume still differs by 932.4 SOL, so it is not purely a binning
+   convention. Two independent tick paths — the streaming backfill and
+   `fetch_trades` — agree with each other exactly and disagree with the candle, and
+   there are no trades near the affected boundaries, so this is not rounding.
+
 **What to do about it.** Treat a gap as *suspected data loss* until classified —
-never assume a quiet minute. Before trusting a result that depends on volume, on
-intrabar extremes, or on any window containing a gap, run the audit over that range
-and use the repaired series. Ticks and candles agree bit-exactly on undisturbed
-minutes, so the disagreement is specific to gap neighbourhoods, not a systematic
-offset between the two sources.
+never assume a quiet minute — and do not treat a gapless window as clean either.
+Before trusting a result that depends on volume or on intrabar extremes, rebuild the
+range from ticks (`research/tick_backfill.py`) and compare. Small spot checks will
+mislead you here: many windows match bit-exactly, and roughly one minute in eleven
+does not.
 
 Full evidence, per asset, with the sampled gap runs: **`research/CANDLE-GAP-AUDIT.md`**.
+
+### `research/run_backfill.sh` — the long, polite version
+
+**Purpose.** `candle_gap_audit.py` pays a ~29-request bisection to locate each gap,
+which is fine for five gaps and absurd for DOGE's 3,739 (~24,000 requests, mostly
+spent finding windows rather than reading them). `research/tick_backfill.py` walks
+the window **once**, backward, at `total_trades / 1000` requests, and classifies
+every gap instead of a sample — while producing an authoritative bar series that
+also exposes the errors in bars that are *present*.
+
+```bash
+./research/run_backfill.sh            # start or resume, detached
+./research/run_backfill.sh --status   # progress and checkpoints
+./research/run_backfill.sh --tail     # follow the log
+./research/run_backfill.sh --stop     # checkpoint and stop cleanly
+```
+
+Env: `BACKFILL_ASSETS`, `BACKFILL_START`, `BACKFILL_END`, `BACKFILL_PAUSE`,
+`BACKFILL_HOME` (**set this to the main checkout when running from a worktree**, or
+hours of output are deleted with the worktree).
+
+**"Polite" means three things, only one of which is the scheduler.** `nice -n 19`
+yields CPU; macOS `taskpolicy -b` also throttles disk I/O and parks the job on
+efficiency cores, which `nice` alone does not do; and the Python side rate-limits
+itself, because the resource most likely to disrupt other work is the shared public
+API quota, which no scheduler priority can protect.
+
+**It is interruptible without loss.** State is checkpointed every 25 pages via an
+atomic write, `--stop` sends SIGTERM which is trapped to checkpoint after the
+current page, and a resumed run is verified to produce byte-identical results to an
+uninterrupted one. A run that was interrupted **refuses to write** its bar series,
+so a partial series can never be mistaken for a complete one.
 
 ### `python3 -m backtester.core.universe` — many assets
 

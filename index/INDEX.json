@@ -1,28 +1,28 @@
 {
-  "generatedAt": "2026-08-06T22:45:34+00:00",
+  "generatedAt": "2026-08-06T23:51:23+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "0d62a5e",
+  "commit": "dcc791c",
   "counts": {
-    "files": 285,
-    "bytes": 3816887,
+    "files": 288,
+    "bytes": 3844560,
     "byKind": {
-      "code-python": 60,
+      "code-python": 61,
       "result": 52,
       "strategy-card": 46,
       "doc": 43,
       "code-js": 28,
-      "test": 23,
+      "test": 24,
       "coin-reference": 11,
+      "other": 8,
       "ci": 8,
-      "other": 7,
       "code-web": 3,
       "data": 2,
       "config": 2
     },
     "byTopDir": {
-      "backtester": 99,
-      "research": 83,
+      "backtester": 100,
+      "research": 85,
       "extension": 34,
       "docs": 23,
       "soltui": 20,
@@ -33,7 +33,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 264
+    "withSummary": 266
   },
   "files": [
     {
@@ -308,7 +308,7 @@
       "summarySource": "opening-prose",
       "bytes": 5616,
       "lines": 94,
-      "sha1": "d2d55ab54b70bb4018c33896637f4d7e5f44ca67",
+      "sha1": "183af2ae1c599305894097b8f708df339586180d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -344,7 +344,7 @@
       "summarySource": "opening-prose",
       "bytes": 5914,
       "lines": 114,
-      "sha1": "02399a808cd1da1ae3744cfcdf4364833a7fe445",
+      "sha1": "085759f5d62432bbe4d3f5b4a2785cc91fb48d1d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -3582,6 +3582,43 @@
       "frontmatter": {}
     },
     {
+      "id": "backtester/tests/test_tick_backfill.py",
+      "path": "backtester/tests/test_tick_backfill.py",
+      "dir": "backtester/tests",
+      "name": "test_tick_backfill.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_tick_backfill",
+      "summary": "Incremental aggregation and checkpoint round-trip in `research/tick_backfill.py`. The backfill walks a month of trades BACKWARD in pages, folding each page into a running per-bar aggregate. That means a bar's opening trade usually arrives *after* its closing trade, and often in a different page entirely.",
+      "summarySource": "docstring",
+      "bytes": 6174,
+      "lines": 146,
+      "sha1": "9ee9add92e3adbfd249fdc814446c36a36a78a22",
+      "symbols": [
+        "REPO",
+        "BASE",
+        "_trades()",
+        "class TestMinuteAggregator",
+        "class TestCheckpointRoundTrip"
+      ],
+      "imports": [
+        "__future__",
+        "backtester",
+        "json",
+        "pandas",
+        "pathlib",
+        "research",
+        "sys",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "backtester",
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "backtester/tests/test_ticks.py",
       "path": "backtester/tests/test_ticks.py",
       "dir": "backtester/tests",
@@ -3677,7 +3714,7 @@
       "summarySource": "opening-prose",
       "bytes": 6905,
       "lines": 118,
-      "sha1": "77598adcb519b3dd36ea974063b059781a397163",
+      "sha1": "f607411aa124efe99ebbd1da1c100b8f47b0960a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -3801,9 +3838,9 @@
       "title": "Scripts",
       "summary": "Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual \u2014 the commands you actually type.",
       "summarySource": "opening-prose",
-      "bytes": 31096,
-      "lines": 655,
-      "sha1": "267a557699b395d364e2db12226767b2b33f7ceb",
+      "bytes": 33681,
+      "lines": 698,
+      "sha1": "4c416cc9d938f0bf9b091b07bde0af71525d9c88",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -3835,11 +3872,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Testing",
-      "summary": "python3 -m unittest discover -s backtester/tests -t . # 521 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests",
+      "summary": "python3 -m unittest discover -s backtester/tests -t . # 531 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests",
       "summarySource": "opening-prose",
       "bytes": 8372,
       "lines": 129,
-      "sha1": "aa98d5f5ad0e644c479eb03ee28f3a6e24850bdf",
+      "sha1": "8a148920f8afd0b1de896e3e8e4c53b03abcc6db",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -7161,6 +7198,24 @@
       "csvRows": 15
     },
     {
+      "id": "research/run_backfill.sh",
+      "path": "research/run_backfill.sh",
+      "dir": "research",
+      "name": "run_backfill.sh",
+      "ext": ".sh",
+      "kind": "other",
+      "title": "run_backfill",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 4015,
+      "lines": 0,
+      "sha1": "44c4f11979d11d4c0df24e5ad8e12facd6fd76c9",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "research/sweep.py",
       "path": "research/sweep.py",
       "dir": "research",
@@ -7200,6 +7255,50 @@
         "pathlib",
         "sys",
         "typing"
+      ],
+      "internalImports": [
+        "backtester"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/tick_backfill.py",
+      "path": "research/tick_backfill.py",
+      "dir": "research",
+      "name": "tick_backfill.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "tick_backfill",
+      "summary": "Long-running, resumable tick backfill and candle-integrity audit. Built to run for hours at low priority in the background. See `research/run_backfill.sh` for the wrapper that sets the priority. Why a streaming walk instead of `candle_gap_audit.py`'s per-gap fetch.",
+      "summarySource": "docstring",
+      "bytes": 14899,
+      "lines": 351,
+      "sha1": "1c9450c93450561c0f5c5664428ba7f606ae570e",
+      "symbols": [
+        "REPO",
+        "PAGE",
+        "CHECKPOINT_EVERY",
+        "_handle_stop()",
+        "class MinuteAggregator",
+        "_page()",
+        "backfill()",
+        "_write_ck()",
+        "audit()",
+        "rerun_decision()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "backtester",
+        "json",
+        "os",
+        "pandas",
+        "pathlib",
+        "signal",
+        "subprocess",
+        "sys",
+        "time"
       ],
       "internalImports": [
         "backtester"
