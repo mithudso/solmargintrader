@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           # Ed25519 in WebCrypto and node:test's current output both need a
           # recent runtime; 22 is the floor the test suite is verified on.
@@ -131,7 +131,7 @@ jobs:
         working-directory: extension
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
       - run: node tools/verify-endpoints.js
