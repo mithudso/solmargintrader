@@ -63,6 +63,8 @@ FAMILY_NOTES = {
     "mean-reversion": "Buys distance from a mean. Fails when the mean itself shifts.",
     "volume-flow": "Reads participation, not price. Price-blind, which is why it pairs well.",
     "risk-overlay": "Changes position size, not direction. Reshapes the equity curve.",
+    "sma-gated": "One entry rule -- close above its SMA -- under four sizing schemes. "
+                 "Measured 0.92-1.00 correlated, so treat them as one bet, not four.",
 }
 
 # Indicator functions exposed on the Signals tab, with their equations.
