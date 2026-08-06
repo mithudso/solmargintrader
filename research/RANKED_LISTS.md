@@ -69,8 +69,8 @@ So searching more configurations *does* raise the probability of backtest overfi
 exactly what Harvey-Liu-Zhu and Bailey et al. predict — but it accounts for only a third to a half
 of the move here. Reporting the whole 0.457 → 0.700 rise as a search effect would have been wrong.
 
-**Under the earlier single split: 1,139 configurations, 711 rankable, 104 (15%) with a positive
-out-of-sample Sharpe, 68 (10%) that made money.**
+**Under the earlier single split: 907 configurations, 557 rankable, 70 (13%) with a positive
+out-of-sample Sharpe, 45 (8%) that made money.**
 
 **The `#` column in every table below is the weakest thing in this document.** Finding 1f re-ran
 all 25 singles at every CPCV block count from 6 to 12. At the long horizon the mean pairwise rank
@@ -367,14 +367,24 @@ score OOS Sharpe **+2.5721** on **+9.03%** over **18 trades**, matching to four 
 because the gate suppresses exactly the bars where the threshold difference lived. Ungated, that
 difference dominated the entire result.
 
+> **This observation is now enforced rather than only noted.** `zscore` and `bb_reversion`
+> measure 0.96–1.00 correlated, so `research/signal_redundancy.py` groups them into one
+> redundancy class and the sweep builds only the representative combination —
+> `all(sma_regime+bb_reversion)`. The `zscore` twin is no longer evaluated, which is why it no
+> longer appears in the tables below. One caveat this pair does *not* show: identical here does
+> not mean identical everywhere. Under CPCV at the short horizon the two score median path
+> Sharpe **+0.549** and **+0.681**, because the short-horizon class is a looser three-member
+> group (`bb_reversion`, `rsi`, `zscore`, minimum pairwise 0.837) than the medium and long
+> pair (0.964 and 1.000).
+
 **Practical rule this implies:** before believing any row in any of these tables, perturb its
 parameters slightly and re-run. If the result moves materially, you measured noise. This
-document does not do that systematically for all 520 configurations — it should, and that is
+document does not do that systematically for all 907 configurations — it should, and that is
 item 7 in *What to actually do next*.
 
 ### One hypothesis I tested and rejected
 
-The top-ranked rows have small returns on high Sharpe (e.g. `all(sma_regime+zscore)`, OOS
+The top-ranked rows have small returns on high Sharpe (e.g. `all(sma_regime+bb_reversion)`, OOS
 Sharpe 2.572 on +9.0%), which suggested the ranking might just be measuring *how little you
 were invested* during a downtrend. It is not: correlation between out-of-sample Sharpe and
 out-of-sample exposure fraction is **−0.05 (short), −0.09 (medium), +0.26 (long), +0.02
@@ -633,10 +643,10 @@ never generated.
 | 1 | **regime filter + mean-reversion** (`sma_regime` + `zscore`) | Mean-reversion's fatal mode is buying dips in a downtrend; the regime filter is the only thing that answers "is there a downtrend". Directly patches the primary's failure. | ✅ Best measured short-horizon pair: **OOS Sharpe +2.572** (IS −1.407), +9.0% on 18 trades |
 | 2 | **trend + volume confirmation** (`ma_crossover` + `obv_trend`) | Price-based trend cannot distinguish a move on real participation from a drift on none; OBV is price-blind and reads exactly that. | ✅ Evaluated at all horizons |
 | 3 | **breakout + volatility-squeeze filter** (`bb_breakout` + low-bandwidth gate) | Breakouts fail most when volatility is already expanded; the squeeze condition selects for contraction-before-expansion. | ⚠️ Squeeze gate implemented but not swept (`squeeze_lookback` defaults to off) |
-| 4 | **oscillator + mean-reversion** (`stochastic` + `zscore`) | Two independent statements of "stretched": one on momentum, one on price distance. Agreement raises precision. | ✅ **OOS Sharpe +1.258** short (IS −0.385), 35 trades |
+| 4 | **oscillator + mean-reversion** (`stochastic` + `bb_reversion`) | Two independent statements of "stretched": one on momentum, one on price distance. Agreement raises precision. | ⚠️ **OOS Sharpe +0.618** short (IS −0.383), 36 trades. The `zscore` variant scored +1.258 and is no longer built — see the caveat below the pair tables, this class does *not* collapse cleanly |
 | 5 | **trend + breakout** (`ts_momentum` + `breakout`) | Trend confirms direction, breakout times entry; addresses trend-following's late-entry problem. | ✅ **OOS +0.100** medium, 10 trades |
 | 6 | **momentum + oscillator brake** (`macd` + `stochastic`) | Stops momentum from adding exposure into an already-exhausted move. | ✅ **OOS +0.391** medium (IS +0.223), 10 trades |
-| 7 | **breakout + reversion exit** (`breakout` + `zscore`, `any` mode) | Breakout for entry, reversion for the exit the breakout rule handles badly. | ✅ **Best measured medium pair: OOS Sharpe +0.584**, **+30.8%**, 16 trades |
+| 7 | **breakout + reversion exit** (`breakout` + `bb_reversion`, `any` mode) | Breakout for entry, reversion for the exit the breakout rule handles badly. | ❌ **OOS Sharpe +0.174 on −11.8%** medium, 16 trades — positive Sharpe, negative money. The `zscore` variant scored +0.584 on +30.8% and is no longer built; the two are not interchangeable despite sharing a redundancy class |
 | 8 | **vol-target overlay + any directional signal** (`voltarget` × …) | Orthogonal by construction — changes size, not direction. Should reshape the equity curve without touching signal quality. | ⚠️ Swept as a single, not yet as a wrapper |
 | 9 | **reversion + volume** (`vwap_reversion` + `obv_trend`) | Distinguishes a discount with accumulation from one with distribution. | ✅ **OOS +0.186** long, 12 trades |
 | 10 | **regime filter + grid** (`sma_regime` + `grid`) | Grid is short-volatility and long the range assumption; its catastrophic mode is a sustained trend, which is precisely what a regime filter vetoes. | ❌ Not swept — grid is in the candidate set but this specific pairing was not isolated |
@@ -647,31 +657,66 @@ Top rankable pairs per horizon. **Note the pattern: high out-of-sample Sharpe al
 negative in-sample Sharpe** — the reverse of overfitting, and a direct consequence of the
 regime inversion at the split. These are regime-dependent, not fitted.
 
-**Short (140 evaluated, 125 rankable, 16 with positive OOS Sharpe):**
+**Short (246 evaluated, 222 rankable, 25 with positive OOS Sharpe):**
 
 | Pair | OOS Sharpe | IS Sharpe | OOS ret | OOS trades |
 |---|---|---|---|---|
-| `all(sma_regime+zscore)` | +2.572 | −1.407 | +9.0% | 18 |
 | `all(sma_regime+bb_reversion)` | +2.572 | −1.691 | +9.0% | 18 |
-| `all(sma_regime+rsi)` | +1.456 | −2.147 | +5.2% | 17 |
-| `all(stochastic+zscore)` | +1.258 | −0.385 | +9.7% | 35 |
+| `all(vol_regime+bb_reversion)` | +2.489 | −0.702 | +8.4% | 18 |
+| `all(sma_regime+ou_reversion)` | +1.786 | −0.882 | +5.0% | 14 |
+| `all(vol_regime+ou_reversion)` | +1.539 | −0.139 | +4.2% | 14 |
 | `any(ma_crossover+bb_breakout)` | +1.240 | −1.283 | +12.3% | 33 |
 
-**Medium (140 evaluated, 88 rankable, 8 with positive OOS Sharpe):**
+**Medium (278 evaluated, 179 rankable, 14 with positive OOS Sharpe):**
 
 | Pair | OOS Sharpe | IS Sharpe | OOS ret | OOS trades |
 |---|---|---|---|---|
-| `any(breakout+zscore)` | +0.584 | +0.867 | +30.8% | 16 |
+| `all(hurst_switch+bb_reversion)` | +0.564 | +0.363 | +15.6% | 10 |
+| `all(hurst_switch+vwap_reversion)` | +0.564 | −0.000 | +15.6% | 10 |
 | `all(macd+stochastic)` | +0.391 | +0.223 | +9.9% | 10 |
-| `any(keltner+zscore)` | +0.305 | +0.776 | +3.9% | 16 |
-| `all(ts_momentum+stochastic)` | +0.240 | −0.275 | +4.5% | 10 |
+| `any(hurst_switch+breakout)` | +0.304 | +0.777 | +6.9% | 17 |
 
-**Long (140 evaluated, 34 rankable, 5 with positive OOS Sharpe):** best is
-`any(rsi+obv_trend)` at **+0.226** OOS (IS +1.288) on 15 trades, but **−8.8% return** —
-positive Sharpe with a negative return means low, well-behaved exposure, not profit.
+**Long (276 evaluated, 85 rankable, 17 with positive OOS Sharpe):**
+
+| Pair | OOS Sharpe | IS Sharpe | OOS ret | OOS trades |
+|---|---|---|---|---|
+| `all(dual_momentum+stochastic)` | +1.169 | +0.242 | +23.8% | 10 |
+| `all(dual_momentum+bb_reversion)` | +0.784 | −0.858 | +18.3% | 11 |
+| `all(ma_ribbon+ou_reversion)` | +0.719 | +0.084 | +16.3% | 20 |
+| `all(dual_momentum+vwap_reversion)` | +0.668 | −0.737 | +18.1% | 15 |
+
+> Two of the short-horizon rows this table used to lead with — `all(sma_regime+zscore)` at
+> +2.572 and `all(stochastic+zscore)` at +1.258 — no longer exist. Each was the `zscore` twin of
+> a `bb_reversion` combination, and only the representative one is now built. The top row is
+> unchanged in value because the surviving twin scored identically (+2.572 on +9.0% over 18
+> trades); what changed is that it is listed once.
+>
+> The medium rows repay a second look: `all(hurst_switch+bb_reversion)` and
+> `all(hurst_switch+vwap_reversion)` are **not** a twin pair — `vwap_reversion` is in no
+> redundancy class here — yet they post identical Sharpe, return and trade count. Two signals
+> that were never measured as interchangeable can still produce one book once a gate suppresses
+> the bars where they differ, which is a limit of pairwise redundancy testing rather than a
+> failure of it.
+
+> **Caveat on class collapse — read before trusting any "the twin scored the same" claim.**
+> Members of a redundancy class are interchangeable *as signals*, at 0.80+ correlation on their
+> own exposure vectors. It does not follow that every combination built from them behaves the
+> same, and measurably it does not:
+>
+> | combination | `zscore` variant | surviving `bb_reversion` variant |
+> |---|---|---|
+> | `all(sma_regime+…)` short | +2.572 on +9.0% | **+2.572 on +9.0%** — identical |
+> | `all(stochastic+…)` short | +1.258 on +9.7% | **+0.618 on +4.1%** |
+> | `any(breakout+…)` medium | +0.584 on +30.8% | **+0.174 on −11.8%** |
+>
+> The first row is what the collapse assumes; the third is the opposite of it — same class,
+> opposite sign on money. So the surviving combination is a *representative*, not a summary: the
+> pair test removes a demonstrably redundant pair, while the class collapse removes a combination
+> merely for containing a class member. That is a blunter instrument, and it is the reason the
+> search size is reported next to every gate rather than the gate simply being trusted.
 
 > Every one of the eight positive medium-horizon pairs sits at 10–21 out-of-sample trades.
-> At that sample size, and with 336-340 configurations searched per horizon, the Harvey-Liu-Zhu
+> At that sample size, and with 246-278 configurations searched per horizon, the Harvey-Liu-Zhu
 > bar (t > 3.0) is not remotely cleared by any of them. Treat this table as a shortlist of
 > **experiments worth running properly**, on more data and more out-of-sample paths.
 
@@ -775,20 +820,27 @@ of a 295-configuration search whose ranking is anti-informative. That tension is
 
 ## List 2 under CPCV — pairs
 
-**SHORT** — 334 evaluated, 320 evaluable, **11** with positive median Sharpe. **PBO = 0.229.**
+**SHORT** — 246 evaluated, 237 evaluable, **8** with positive median Sharpe. **PBO = 0.229.**
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
-| 1 | `all(vol_regime+zscore)` | regime-filter+mean-reversion | **+1.091** | 2.726 | 71% | +2.8% | 84 |
-| 2 | `all(vol_regime+ou_reversion)` | regime-filter+mean-reversion | **+0.944** | 2.244 | 71% | +1.4% | 68 |
-| 3 | `all(ma_crossover+ou_reversion)` | trend+mean-reversion | **+0.919** | 2.168 | 71% | +1.6% | 94 |
-| 4 | `all(vol_regime+bb_reversion)` | regime-filter+mean-reversion | **+0.834** | 2.726 | 71% | +1.9% | 84 |
-| 5 | `all(ou_reversion+obv_trend)` | mean-reversion+volume-flow | **+0.688** | 3.779 | 52% | +1.4% | 104 |
-| 6 | `all(sma_regime+zscore)` | regime-filter+mean-reversion | **+0.681** | 2.584 | 62% | +1.6% | 112 |
-| 7 | `all(sma_regime+bb_reversion)` | regime-filter+mean-reversion | **+0.549** | 2.866 | 62% | +1.6% | 112 |
-| 8 | `all(vol_regime+rsi)` | regime-filter+oscillator-reversion | **+0.530** | 2.329 | 57% | +1.2% | 100 |
+| 1 | `all(vol_regime+ou_reversion)` | regime-filter+mean-reversion | **+0.944** | 2.244 | 71% | +1.4% | 68 |
+| 2 | `all(ma_crossover+ou_reversion)` | trend+mean-reversion | **+0.919** | 2.168 | 71% | +1.6% | 94 |
+| 3 | `all(vol_regime+bb_reversion)` | regime-filter+mean-reversion | **+0.834** | 2.726 | 71% | +1.9% | 84 |
+| 4 | `all(ou_reversion+obv_trend)` | mean-reversion+volume-flow | **+0.688** | 3.779 | 52% | +1.4% | 104 |
+| 5 | `all(sma_regime+bb_reversion)` | sma-gated+mean-reversion | **+0.549** | 2.866 | 62% | +1.6% | 112 |
+| 6 | `all(ichimoku+ou_reversion)` | trend+mean-reversion | **+0.400** | 3.146 | 57% | +0.7% | 56 |
+| 7 | `all(sma_regime+ou_reversion)` | sma-gated+mean-reversion | **+0.268** | 1.834 | 52% | +0.4% | 92 |
+| 8 | `all(adx_trend+stochastic)` | regime-filter+oscillator-reversion | **+0.126** | 1.778 | 52% | +0.2% | 150 |
 
-_Top 8 of 320 evaluable._
+_Top 8 of 237 evaluable._
+
+> The two rows that used to sit at #1 and #6 — `all(vol_regime+zscore)` at +1.091 and
+> `all(sma_regime+zscore)` at +0.681 — are gone, not demoted. Each was the `zscore` twin of a
+> `bb_reversion` row still in the table, and the measured gate now builds only one of each pair.
+> Removing them cost the table its highest median Sharpe: the best surviving short-horizon pair
+> is +0.944, down from +1.091. That is the point rather than a regression — the +1.091 row was
+> one bet listed twice, and its rank was propped up by its own duplicate.
 
 **MEDIUM** — 334 evaluated, 297 evaluable, **201** with positive median Sharpe. **PBO = 0.650.**
 
@@ -800,10 +852,12 @@ _Top 8 of 320 evaluable._
 | 4 | `any(macd+ou_reversion)` | trend+mean-reversion | **+0.996** | 0.929 | 87% | +84.3% | 100 |
 | 5 | `any(macd+hurst_switch)` | trend+regime-filter | **+0.925** | 1.083 | 93% | +72.6% | 118 |
 | 6 | `any(hurst_switch+bb_breakout)` | regime-filter+breakout | **+0.924** | 1.380 | 87% | +48.3% | 72 |
-| 7 | `all(ma_ribbon+hurst_switch)` | trend+regime-filter | **+0.881** | 1.238 | 93% | +7.9% | 25 |
-| 8 | `any(hurst_switch+stochastic)` | regime-filter+oscillator-reversion | **+0.875** | 1.080 | 87% | +53.5% | 58 |
+| 7 | `any(hurst_switch+stochastic)` | regime-filter+oscillator-reversion | **+0.875** | 1.080 | 87% | +53.5% | 58 |
+| 8 | `any(adx_trend+ou_reversion)` | regime-filter+mean-reversion | **+0.850** | 1.353 | 80% | +54.7% | 58 |
 
-_Top 8 of 297 evaluable._
+_Top 8 of 244 evaluable._ `all(ma_ribbon+hurst_switch)`, previously #7 at +0.881, is no longer
+built: `ma_ribbon` and `ma_crossover` measure 0.846 correlated at this horizon and share a
+redundancy class, so only `all(ma_crossover+hurst_switch)` is evaluated.
 
 **LONG** — 334 evaluated, 295 evaluable, **247** with positive median Sharpe. **PBO = 0.650.**
 
@@ -826,20 +880,29 @@ Drawn from a **fixed a-priori set of seven** (one per family), chosen before any
 seen, so these carry no selection bias from the singles ranking. Unchanged from the 16-strategy
 run, which keeps them comparable across both sweeps.
 
-**SHORT** — 70 evaluated, 61 evaluable, **6** with positive median Sharpe. **PBO = 0.086.**
+**SHORT** — 40 evaluated, 36 evaluable, **1** with positive median Sharpe. **PBO = 0.229.**
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
-| 1 | `all(ma_crossover+sma_regime+zscore)` | trend+regime-filter+mean-reversion | **+1.907** | 2.680 | 76% | +2.7% | 62 |
-| 2 | `all(sma_regime+zscore+obv_trend)` | regime-filter+mean-reversion+volume-flow | **+1.844** | 2.091 | 81% | +2.3% | 42 |
-| 3 | `all(sma_regime+rsi+obv_trend)` | regime-filter+oscillator-reversion+volume-flow | **+0.950** | 2.734 | 67% | +1.8% | 68 |
-| 4 | `all(sma_regime+rsi+zscore)` | regime-filter+oscillator-reversion+mean-reversion | **+0.735** | 2.505 | 67% | +1.6% | 100 |
-| 5 | `all(ts_momentum+sma_regime+zscore)` | momentum+regime-filter+mean-reversion | **+0.708** | 2.138 | 71% | +0.5% | 26 |
-| 6 | `all(ma_crossover+ts_momentum+zscore)` | trend+momentum+mean-reversion | **+0.239** | 1.847 | 62% | +0.2% | 44 |
-| 7 | `all(ts_momentum+sma_regime+rsi)` | momentum+regime-filter+oscillator-reversion | **-0.104** | 2.363 | 48% | -0.2% | 58 |
-| 8 | `all(ma_crossover+sma_regime+rsi)` | trend+regime-filter+oscillator-reversion | **-0.458** | 1.902 | 38% | -0.9% | 88 |
+| 1 | `all(sma_regime+rsi+obv_trend)` | sma-gated+oscillator-reversion+volume-flow | **+0.950** | 2.734 | 67% | +1.8% | 68 |
+| 2 | `all(ts_momentum+sma_regime+rsi)` | momentum+sma-gated+oscillator-reversion | **-0.104** | 2.363 | 48% | -0.2% | 58 |
+| 3 | `all(ma_crossover+sma_regime+rsi)` | trend+sma-gated+oscillator-reversion | **-0.458** | 1.902 | 38% | -0.9% | 88 |
+| 4 | `all(ma_crossover+rsi+obv_trend)` | trend+oscillator-reversion+volume-flow | **-1.517** | 2.147 | 24% | -2.2% | 54 |
+| 5 | `all(sma_regime+breakout+obv_trend)` | sma-gated+breakout+volume-flow | **-1.559** | 1.888 | 10% | -12.6% | 350 |
+| 6 | `all(ts_momentum+breakout+obv_trend)` | momentum+breakout+volume-flow | **-1.606** | 2.544 | 24% | -13.5% | 476 |
+| 7 | `vote(sma_regime+breakout+obv_trend)` | sma-gated+breakout+volume-flow | **-1.924** | 1.463 | 0% | -13.7% | 3951 |
+| 8 | `all(ma_crossover+ts_momentum+rsi)` | trend+momentum+oscillator-reversion | **-1.933** | 2.256 | 19% | -3.7% | 86 |
 
-_Top 8 of 61 evaluable._
+_Top 8 of 36 evaluable._
+
+> **This table is where deduplication bites hardest.** It previously showed **6** triples with a
+> positive median Sharpe; it now shows **1**. Five of the six were `zscore` twins of `rsi`
+> combinations — on this horizon `bb_reversion`, `rsi` and `zscore` form one redundancy class
+> (minimum pairwise 0.837), so a triple containing any of them had two siblings containing the
+> others, and all three were ranked. The apparent breadth of short-horizon triple performance was
+> the same bet listed three times. PBO rose from **0.086** to **0.229** once they were removed,
+> which is the honest reading: the low figure was partly measuring how well a configuration
+> predicts its own duplicate.
 
 **MEDIUM** — 70 evaluated, 51 evaluable, **38** with positive median Sharpe. **PBO = 0.886.**
 
@@ -898,7 +961,7 @@ Ranked by expected information gain per unit of work, which is a different quest
    also a direct input to the perp cost model already implemented in `backtester/core/perps.py`.
 5. **Test the vol-target overlay as a wrapper**, not as a standalone strategy. It is the one
    candidate here that is orthogonal by construction rather than by assumption.
-6. **Apply a deflated Sharpe ratio** to any survivor, accounting for the 1,139 trials already run.
+6. **Apply a deflated Sharpe ratio** to any survivor, accounting for the 907 trials already run.
 7. **Add a parameter-perturbation stability check to the sweep itself.** Finding 4 shows a 2.6%
    threshold change moving an out-of-sample return by 46 percentage points. Every ranked row
    should be re-run at ±10% on each parameter and reported with the spread; rows whose result

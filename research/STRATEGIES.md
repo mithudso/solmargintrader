@@ -47,9 +47,9 @@ implemented from the spec-only cards. Across 1,287 configurations:
   **+75.1%** — sits atop a 295-configuration search with PBO 0.650, so it is precisely the row not
   to trust.
 
-Under the earlier single split: 1,139 configurations, 711 rankable, **104 (15%) with a positive
-out-of-sample Sharpe and 68 (10%) that made money**, with in-sample rank *inverted* against
-out-of-sample at the medium horizon (Spearman **−0.463**). The cause is stark: the **highest close
+Under the earlier single split: 907 configurations, 557 rankable, **70 (13%) with a positive
+out-of-sample Sharpe and 45 (8%) that made money**, with in-sample rank *inverted* against
+out-of-sample at the medium horizon (Spearman **−0.453**). The cause is stark: the **highest close
 in the entire series (\$261.99) is bar 1311 — the final in-sample bar**, so the split separates
 the bull market from the bear leg to within a single bar. Full tables and the method contrast in
 `RANKED_LISTS.md`.
@@ -253,8 +253,10 @@ that answers "is there a downtrend". Measured as the top short-horizon pair and 
 
 **Implementation.** `core/strategies/signals.py::Sma200Regime`.
 **Measured.** Standalone medium (100): IS +34.8% → **OOS −35.8%**, 13 OOS trades.
-**As a partner** it is transformative: `all(sma_regime+zscore)` reached **OOS Sharpe +2.572**
-(short) versus +0.441 for `zscore` alone.
+**As a partner** it is transformative: `all(sma_regime+bb_reversion)` reached **OOS Sharpe
++2.572** (short) versus +0.086 for `bb_reversion` alone. The `zscore` twin of that pair scored
+identically and is no longer built — the two measure 0.96–1.00 correlated and now share one
+redundancy class.
 
 ---
 
@@ -289,7 +291,10 @@ a reversion rule for the exit that a pure breakout rule handles poorly.
 **Measured.** Full-sample medium: +620.7%, Sharpe 0.935. Walk-forward: **IS +860.2%
 (Sharpe 1.265) → OOS −7.5%**, only 7 OOS trades — **below the evidence floor**, which is
 exactly the low-trade-count problem the Turtle profile predicts.
-`any(breakout+zscore)` was the **best measured medium pair: OOS Sharpe +0.584, +30.8%**.
+`any(breakout+zscore)` was the best measured medium pair at **+0.584** out-of-sample on +30.8%, but it
+is no longer built: `zscore` and `bb_reversion` share a redundancy class and only the
+representative combination survives. Its surviving sibling `any(breakout+bb_reversion)` scores
+**+0.174 on −11.8%** — positive Sharpe, negative money — so this pairing does not carry over.
 
 ---
 
@@ -745,7 +750,7 @@ Distilled from the corpus's pitfall taxonomy, in the order these actually bite:
    fold; embargo the first *h* observations after it. **CPCV** samples all valid train/test
    combinations to give a *distribution* of backtest paths — the fix for the single-split
    problem that dominates every result in this document.
-3. **Multiple testing.** 1,139 configurations were evaluated here. Harvey-Liu-Zhu: raise the
+3. **Multiple testing.** 907 configurations were evaluated here. Harvey-Liu-Zhu: raise the
    t-stat bar from 2.0 to **3.0+**. Bailey et al.: PBO rises with the size of the search.
    Deflated Sharpe adjusts for trial count, skew, and kurtosis. McLean & Pontiff: **26%
    in-sample / 58% out-of-sample** decay across 97 published factors.
@@ -774,5 +779,5 @@ python3 -m unittest discover -s backtester/tests -t .    # 409 known-answer test
 
 > Educational and research use only. **NOT investment advice.** Nothing in this document is
 > evidence that any listed mechanism is profitable. The measured evidence is that on this asset
-> and this window, 10% of 711 rankable configurations made money, and in-sample rank did not
+> and this window, 8% of 557 rankable configurations made money, and in-sample rank did not
 > predict out-of-sample rank.

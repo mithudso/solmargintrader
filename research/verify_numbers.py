@@ -60,10 +60,18 @@ DOCS = (RESEARCH / "RANKED_LISTS.md", RESEARCH / "STRATEGIES.md")
 # mean restoring the combination, i.e. re-admitting one signal counted twice.
 EXPECTED_FIGURES = {
     "RANKED_LISTS.md": {
+        # pair 36 -> 52 on 2026-08-05: the long-horizon result was a prose
+        # sentence naming one configuration and is now a four-row table, because
+        # the measured gate changed the long ranking enough that one row no
+        # longer represented it. More figures checked, not fewer.
         "prose": 7, "walk_forward": 180, "cpcv": 615,
-        "perturb": 7, "geometry": 58, "geometry_xref": 15, "pair": 36,
+        "perturb": 7, "geometry": 58, "geometry_xref": 15, "pair": 52,
     },
-    "STRATEGIES.md": {"prose": 31},
+    # STRATEGIES.md prose 31 -> 30 on 2026-08-05, same reason as the RANKED_LISTS
+    # entry above: any(breakout+zscore) left the evaluated set when its class
+    # collapsed, so the sweep produces no OOS Sharpe for it. Its +0.584 is kept
+    # as history, phrased so it no longer claims to be a live figure.
+    "STRATEGIES.md": {"prose": 30},
 }
 
 # Sharpe values are quoted to 3dp, returns to 1dp; allow half a unit of the
