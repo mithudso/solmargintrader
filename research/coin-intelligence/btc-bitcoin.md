@@ -38,6 +38,7 @@ Anything I could not land in one of those five is marked **unverified**.
 | Price | **$64,401** | `[web]` CoinGecko `/coins/markets`, 2026-08-05T02:15:22Z |
 | Market cap | **$1,292.1B** | same call |
 | 24h volume (all venues) | **$23.03B** | same call |
+| **Turnover (24h vol ÷ mcap)** | **1.78%** — 6th of the ten coins here[^turnover-std] | `[web-derived]` from the two rows above |
 | Rank | **#1** by market cap; ~5.7× #2 (ETH, $226.1B) | same call |
 | Implied circulating supply | **~20.06M BTC** (= mcap ÷ price) = **95.5% of the 21M cap** | `[web-derived]` from the CoinGecko row above |
 | All-time high | **$126,296 intraday / $124,720 close, 2025-10-06** | `[local]` Coinbase BTC-USD |
@@ -1086,3 +1087,5 @@ These were sought and are **not** stated as fact anywhere above:
 **Why the remaining items stayed open:** the session's web-search budget (200 calls) was exhausted
 and Kaiko/Farside partially blocked automated access. Everything above that *is* sourced was
 verified on 2026-08-04/05; everything else is marked open rather than filled from recall.
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

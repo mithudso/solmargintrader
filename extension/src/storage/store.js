@@ -195,6 +195,12 @@ export const DEFAULT_CONFIG = Object.freeze({
   marginSource: 'none',
   tickSeconds: 60,
   minOrderUsd: 10,
+  // Auto re-centring is OFF by default: a fresh install must behave exactly as it
+  // did before this feature existed. See recentreDecision() for why it can only
+  // act when nothing would be stranded.
+  autoRecentre: false,
+  recentreSpanPct: 0.15, // 0.85x-1.15x, matching tools/dryrun.js
+  recentreDriftBps: 0, // extra slack beyond the ladder before a move is worth it
 });
 
 /** chrome.storage.local wrapper that works headless (Node) for tests. */

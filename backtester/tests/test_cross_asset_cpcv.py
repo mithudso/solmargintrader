@@ -9,7 +9,8 @@ runnable at all, and safe to run:
     a test that merely *tolerates* a missing price file can go green in CI for the
     wrong reason -- the refusal it asserts arriving from the data check rather than
     from the guard it names. Every test that calls `main` therefore stubs
-    `missing_data_files` and asserts the specific refusal text.
+    `unusable_data_files` (or redirects `REPO` so the lookup lands in a tempdir, or
+    stubs `self_test`) and asserts the specific refusal text.
   * `research/results/` holds the published evidence, including the one file the
     self-test compares against. A test that drives `main` at the real `OUT` is one
     guard-regression away from having the *test suite* overwrite that evidence, so
@@ -159,8 +160,16 @@ class PatchMixin(unittest.TestCase):
     def run_self_test(self) -> tuple[int, str]:
         buffer = io.StringIO()
         with redirect_stdout(buffer):
-            code = cac.self_test(groups=8, k=2)
+            code = cac.self_test()
         return code, buffer.getvalue()
+
+    def refuse_with_reason(self, name: str) -> tuple[Path | None, str]:
+        """`resolve_output_path` plus the refusal it printed, so a test can say
+        which of the three rules fired rather than only that one did."""
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            dest = cac.resolve_output_path(name)
+        return dest, buffer.getvalue()
 
     def resolve_quietly(self, name: str) -> Path | None:
         """`resolve_output_path` prints its own refusal, which is the operator's
@@ -305,10 +314,13 @@ class Top5RowTests(PatchMixin):
         self.kwargs: list[dict] = []
 
         def fake_load(asset: str, horizon: str):
+            # The window embeds the asset so a regression that gives every asset the
+            # first one's window -- right keys, wrong values -- is visible.
             self.loads.append((asset, horizon))
-            return {"close": np.zeros(3)}, object(), "9 bars, 2021-01-01..2021-01-09"
+            return {"close": np.zeros(3)}, object(), f"9 bars, 2021-01-01..2021-01-09 {asset}"
 
-        def fake_evaluate(label, make_strategy, arrays, cfg, n_groups=8, k_test=2):
+        def fake_evaluate(label, make_strategy, arrays, cfg, n_groups=8, k_test=2,
+                          min_total_trades=10):
             # The strategy is *built* here so the label a row carries can be
             # checked against the configuration that row was evaluated from.
             self.evaluated.append((label, make_strategy().name))
@@ -318,8 +330,8 @@ class Top5RowTests(PatchMixin):
         self.patch("load_asset", fake_load)
         self.patch("cpcv_evaluate", fake_evaluate)
 
-    def run_top5(self, assets: list[str] = ["DOGE"], groups: int = 8, k: int = 2):
-        return cac.run_top5(assets, groups=groups, k=k, verbose=False)
+    def run_top5(self, assets: tuple[str, ...] = ("DOGE",), groups: int = 8, k: int = 2):
+        return cac.run_top5(list(assets), groups=groups, k=k, verbose=False)
 
     def test_the_declared_columns_are_exactly_the_row_keys(self):
         """Both directions, and the duplicated key list is the point. Comparing
@@ -396,6 +408,7 @@ class Top5RowTests(PatchMixin):
         operand order would move the verdict rather than the report.
         """
         df, _windows = self.run_top5()
+        self.assertEqual(len(df), len(cac.TOP5))
         for _i, row in df.iterrows():
             self.assertAlmostEqual(
                 row["delta_vs_sol"],
@@ -408,7 +421,7 @@ class Top5RowTests(PatchMixin):
         the medium entry and the long entries re-read the identical 1d file while
         the docstring claimed one read per asset.
         """
-        self.run_top5(["DOGE", "ZEC"])
+        self.run_top5(("DOGE", "ZEC"))
         self.assertEqual([asset for asset, _h in self.loads], ["DOGE", "ZEC"])
 
     def test_each_asset_reports_its_own_date_window(self):
@@ -416,9 +429,10 @@ class Top5RowTests(PatchMixin):
         not the same period across assets. A dropped or overwritten entry turns
         that disclosure into a claim about one asset.
         """
-        _df, windows = self.run_top5(["DOGE", "ZEC"])
+        _df, windows = self.run_top5(("DOGE", "ZEC"))
         self.assertEqual(set(windows), {"DOGE", "ZEC"})
-        self.assertIn("2021-01-01", windows["DOGE"])
+        self.assertIn("DOGE", windows["DOGE"])
+        self.assertNotEqual(windows["DOGE"], windows["ZEC"])
 
     def test_the_singles_columns_match_the_reference_header(self):
         """`COLUMNS` is compared positionally against the reference file's header
@@ -430,7 +444,14 @@ class Top5RowTests(PatchMixin):
 
 
 class OutputPathTests(PatchMixin):
-    """The write guard, asserted against the real constants where it cannot write."""
+    """The write guard.
+
+    Asserted against the *real* OUT and REFERENCE wherever the call cannot write:
+    `resolve_output_path` is pure -- it resolves and compares, and the directory
+    creation it used to perform now sits at the write site precisely so this class
+    can point it at the published directory without mutating it. Every test that
+    drives `main`, which does write, sandboxes first.
+    """
 
     def test_the_reference_file_is_refused(self):
         """The one file this script must never write. `resolve_output_path` is
@@ -455,26 +476,41 @@ class OutputPathTests(PatchMixin):
         self.assertEqual(dest.parent, cac.OUT.resolve())
         self.assertFalse(dest.exists(), "resolving a path must not create the file")
 
-    def test_a_name_that_is_not_a_bare_filename_is_refused(self):
+    def test_a_path_that_escapes_the_results_directory_is_refused(self):
         """`OUT / name` confines nothing: an absolute operand replaces the left
         side outright and `..` walks out of it. `data/` is gitignored, so landing
         there is an unrecoverable overwrite of an input every published number
-        depends on. Refusing anything with a path separator is what makes the
-        containment check below unreachable rather than merely untested.
+        depends on.
         """
-        for name in ("/tmp/escaped.csv", "../../data/SOL_1d.csv", "sub/dir.csv", ""):
+        for name in ("/tmp/escaped.csv", "../../data/SOL_1d.csv", "/etc/passwd"):
             self.assertIsNone(self.resolve_quietly(name), name)
 
-    def test_a_dot_segment_is_refused(self):
-        """`.` and `..` name a directory, not a file, and `Path("..").name` is the
-        empty string -- so they are refused by the bare-filename rule rather than
-        by the containment check that follows it. That check is therefore
-        defence-in-depth with no input of its own today; it is kept because it is
-        the invariant (`dest.parent == OUT`) the write actually depends on, and the
-        bare-filename rule is the easier of the two to relax by accident.
+    def test_each_refusal_is_attributed_to_the_rule_that_made_it(self):
+        """Three rules refuse, and a bare `assertIsNone` cannot tell them apart --
+        which is how this file's own docstring came to describe the coverage
+        backwards. `Path("..").name` is `".."`, not the empty string, so `..`
+        *passes* the bare-filename rule and is caught by the containment check;
+        `.` and `""` are the reverse. Asserting the text is what keeps a maintainer
+        from deleting the containment check as unreachable.
         """
-        self.assertIsNone(self.resolve_quietly(".."))
-        self.assertIsNone(self.resolve_quietly("."))
+        for name in ("/tmp/escaped.csv", "sub/dir.csv", ".", ""):
+            code, out = self.refuse_with_reason(name)
+            self.assertIsNone(code, name)
+            self.assertIn("must be a bare filename", out, name)
+        code, out = self.refuse_with_reason("..")
+        self.assertIsNone(code)
+        self.assertIn("resolves outside research/results", out)
+
+    def test_the_reference_is_refused_case_insensitively(self):
+        """`Path.resolve()` follows symlinks but never case-folds, and a
+        case-insensitive filesystem (APFS, NTFS) makes `CPCV_ALL25_BTC_ETH_1D.csv`
+        the same file as the reference: a string-equality guard compared them unequal
+        and truncated the reference in place. Asserted through the guard rather than
+        through `Path.exists()`, which answers differently on the case-sensitive
+        filesystem CI runs on -- over-refusing there is fail-safe.
+        """
+        self.assertIsNone(self.resolve_quietly(cac.REFERENCE.name.upper()))
+        self.assertIsNone(self.resolve_quietly(cac.REFERENCE.name.title()))
 
     def test_the_singles_branch_refuses_before_evaluating_anything(self):
         """`--assets BTC,ETH` derives the reference filename with no `--out` at
@@ -483,7 +519,7 @@ class OutputPathTests(PatchMixin):
         one an operator learns to route around.
         """
         self.sandbox_results_dir()
-        self.patch("missing_data_files", lambda *a, **k: [])
+        self.patch("unusable_data_files", lambda *a, **k: [])
         calls: list[str] = []
         self.patch("run_asset", lambda *a, **k: (calls.append("ran"), ([], "w"))[1])
         code, out = self.run_main(["--assets", "BTC,ETH", "--skip-self-test"])
@@ -491,19 +527,35 @@ class OutputPathTests(PatchMixin):
         self.assertIn("is the reference file", out)
         self.assertEqual(calls, [])
 
-    def test_the_top5_branch_refuses_the_reference_too(self):
-        """The branch that had no guard at all. Its rows carry no `strategy`
-        column, so overwriting the reference with them does not merely corrupt the
-        comparison -- it makes `self_test`'s merge key absent and the gate
-        unrunnable.
+    def test_an_out_that_names_the_reference_is_refused_before_any_branch(self):
+        """The shared pre-parse check, which fires for both modes and costs nothing.
+        It cannot stand in for the per-branch guard below: it only runs when `--out`
+        was given.
         """
         out_dir = self.sandbox_results_dir()
-        self.patch("missing_data_files", lambda *a, **k: [])
         calls: list[str] = []
         self.patch("run_top5", lambda *a, **k: calls.append("ran"))
         code, out = self.run_main(
             ["--top5", "--out", cac.REFERENCE.name, "--skip-self-test"]
         )
+        self.assertEqual(code, 1)
+        self.assertIn("is the reference file", out)
+        self.assertEqual(calls, [])
+        self.assertEqual(list(out_dir.iterdir()), [])
+
+    def test_the_top5_branch_refuses_its_derived_name_too(self):
+        """The branch that had no guard at all, reached the way it is actually
+        reached -- by the name the branch derives, with no `--out` to trip the
+        pre-parse check. Its rows carry no `strategy` column, so overwriting the
+        reference with them does not merely corrupt the comparison: it removes
+        `self_test`'s merge key and makes the gate unrunnable.
+        """
+        out_dir = self.sandbox_results_dir()
+        self.patch("REFERENCE", cac.OUT / "cpcv_top5_sol_doge_1d.csv")
+        self.patch("unusable_data_files", lambda *a, **k: [])
+        calls: list[str] = []
+        self.patch("run_top5", lambda *a, **k: calls.append("ran"))
+        code, out = self.run_main(["--top5", "--assets", "DOGE", "--skip-self-test"])
         self.assertEqual(code, 1)
         self.assertIn("is the reference file", out)
         self.assertEqual(calls, [])
@@ -517,7 +569,7 @@ class OutputPathTests(PatchMixin):
         code, out = self.run_main(["--assets", "NOSUCHCOIN", "--skip-self-test"])
         self.assertEqual(code, 1)
         self.assertIn("NOSUCHCOIN", out)
-        self.assertIn("missing price data", out)
+        self.assertIn("unusable price data", out)
 
     def test_a_degenerate_block_geometry_is_refused_by_name(self):
         """`--groups 1` makes `make_groups` raise, which `cpcv_evaluate` converts
@@ -527,14 +579,15 @@ class OutputPathTests(PatchMixin):
         from each other, or from the data check.
         """
         self.sandbox_results_dir()
-        self.patch("missing_data_files", lambda *a, **k: [])
+        self.patch("unusable_data_files", lambda *a, **k: [])
         calls: list[str] = []
         self.patch("run_asset", lambda *a, **k: (calls.append("ran"), ([], "w"))[1])
         cases = {
             "--groups": (["--groups", "1"], "--groups must be >= 2"),
-            "k too low": (["--k", "0"], "--k must be >= 1"),
-            "k too high": (["--k", "8"], "--k must be >= 1"),
-            "k negative": (["--k", "-1"], "--k must be >= 1"),
+            "k too low": (["--k", "0"], "got k=0, groups=8"),
+            "k too high": (["--k", "8"], "got k=8, groups=8"),
+            "k negative": (["--k", "-1"], "got k=-1, groups=8"),
+            "path blow-up": (["--groups", "100", "--k", "5"], "exceeds the"),
         }
         for name, (argv, expected) in cases.items():
             code, out = self.run_main(argv + ["--skip-self-test"])
@@ -547,7 +600,7 @@ class OutputPathTests(PatchMixin):
         and reported "Wrote 0 rows" -- a file that looks like a result.
         """
         out_dir = self.sandbox_results_dir()
-        self.patch("missing_data_files", lambda *a, **k: [])
+        self.patch("unusable_data_files", lambda *a, **k: [])
         code, out = self.run_main(["--assets", ",", "--skip-self-test"])
         self.assertEqual(code, 1)
         self.assertIn("named no assets", out)
@@ -587,17 +640,26 @@ class ControlGateTests(PatchMixin):
                 })
         return pd.DataFrame(rows, columns=cac.TOP5_COLUMNS)
 
-    def run_top5_main(self, df: pd.DataFrame, extra: list[str] = []) -> tuple[int, str]:
+    def run_top5_main(self, df: pd.DataFrame, extra: tuple[str, ...] = ()) -> tuple[int, str]:
         self.sandbox_results_dir()
-        self.patch("missing_data_files", lambda *a, **k: [])
+        self.patch("unusable_data_files", lambda *a, **k: [])
         self.patch("run_top5", lambda *a, **k: (df, {"SOL": "w", "DOGE": "w"}))
-        return self.run_main(["--top5", "--assets", "DOGE", "--skip-self-test"] + extra)
+        return self.run_main(["--top5", "--assets", "DOGE", "--skip-self-test", *extra])
 
-    def test_an_agreeing_control_passes_and_exits_zero(self):
-        """The baseline the other cases are read against."""
+    def test_an_agreeing_control_passes_and_writes_the_declared_frame(self):
+        """The baseline the other cases are read against, and the only test that
+        inspects an artifact `main` produced. A dropped `index=False` would add an
+        unnamed index column to tracked evidence that research/verify_numbers.py
+        reads -- silent corruption that an exit code cannot see.
+        """
         code, out = self.run_top5_main(self.frame())
         self.assertEqual(code, 0)
         self.assertIn("CONTROL PASSED", out)
+        written = list(cac.OUT.iterdir())
+        self.assertEqual(len(written), 1)
+        frame = pd.read_csv(written[0])
+        self.assertEqual(frame.columns.tolist(), cac.TOP5_COLUMNS)
+        self.assertEqual(len(frame), 2 * len(cac.TOP5))
 
     def test_a_control_beyond_tolerance_diverges_and_exits_non_zero(self):
         """CROSS-ASSET-TRANSFER.md treats this as one of two gates, and the branch
@@ -641,7 +703,7 @@ class ControlGateTests(PatchMixin):
         """`--no-control` is a documented option, so it must not fail; it must also
         not print a verdict it did not earn.
         """
-        code, out = self.run_top5_main(self.frame(), extra=["--no-control"])
+        code, out = self.run_top5_main(self.frame(), extra=("--no-control",))
         self.assertEqual(code, 0)
         self.assertNotIn("CONTROL", out)
 
@@ -658,6 +720,188 @@ class ControlGateTests(PatchMixin):
         self.assertIn("DOGE", out)
         self.assertIn("/4 still positive", out)
         self.assertIn("1 insufficient", out)
+
+
+class SinglesBranchTests(PatchMixin):
+    """The 25-singles path: what it writes, and when it refuses to write."""
+
+    ROW = {
+        "asset": "DOGE", "strategy": "obv_trend", "n_paths": 28, "usable_blocks": 8,
+        "median_sharpe": 0.5, "q1_sharpe": 0.1, "q3_sharpe": 0.9,
+        "frac_paths_positive": 0.6, "median_return": 0.2, "total_trades": 40,
+    }
+
+    def drive(self, rows: list[dict], argv: tuple[str, ...] = ()) -> tuple[int, str, Path]:
+        out_dir = self.sandbox_results_dir()
+        self.patch("unusable_data_files", lambda *a, **k: [])
+        self.patch("run_asset", lambda *a, **k: (rows, "9 bars, 2021-01-01..2021-01-09"))
+        code, out = self.run_main(["--assets", "DOGE", "--skip-self-test", *argv])
+        return code, out, out_dir
+
+    def test_a_successful_run_writes_the_declared_columns_and_nothing_else(self):
+        """The singles CSVs are the published artifacts other documents quote, and
+        no test previously looked at one. An extra index column or a reordered
+        header breaks `self_test`'s positional comparison against the reference.
+        """
+        code, out, out_dir = self.drive([dict(self.ROW)])
+        self.assertEqual(code, 0)
+        self.assertIn("Wrote 1 rows", out)
+        written = list(out_dir.iterdir())
+        self.assertEqual(len(written), 1)
+        frame = pd.read_csv(written[0])
+        self.assertEqual(frame.columns.tolist(), cac.COLUMNS)
+        self.assertEqual(len(frame), 1)
+
+    def test_the_declared_columns_are_exactly_run_asset_s_row_keys(self):
+        """The singles twin of the top-5 column tripwire, and it needs no engine
+        run. Asserting the written frame's header proves nothing on its own --
+        `main` forces the columns -- so the row dict's own keys are read by building
+        the frame without the declared list. Renaming a key otherwise yields an
+        all-NaN column in a published CSV plus a silently dropped value.
+        """
+        self.patch("load_asset", lambda asset, horizon: ({"close": np.zeros(3)}, object(), "w"))
+        self.patch("cpcv_evaluate", lambda *a, **k: cpcv_result())
+        declared = list(cac.COLUMNS)
+        rows, _window = cac.run_asset("DOGE", "medium", 8, 2, verbose=False)
+        self.assertTrue(rows)
+        self.assertEqual(set(pd.DataFrame(rows).columns), set(declared))
+
+    def test_every_metric_column_carries_the_result_field_it_names(self):
+        """Same reason as the top-5 case: a q1/q3 or n_paths/usable_blocks swap is
+        silent in the CSV and in the column set, so the fake's eight metrics are
+        mutually distinct and each is asserted by name.
+        """
+        expected = cpcv_result()
+        self.patch("load_asset", lambda asset, horizon: ({"close": np.zeros(3)}, object(), "w"))
+        self.patch("cpcv_evaluate", lambda *a, **k: expected)
+        rows, _window = cac.run_asset("DOGE", "medium", 8, 2, verbose=False)
+        row = rows[0]
+        self.assertAlmostEqual(row["median_sharpe"], expected.median_sharpe)
+        self.assertAlmostEqual(row["q1_sharpe"], expected.q1_sharpe)
+        self.assertAlmostEqual(row["q3_sharpe"], expected.q3_sharpe)
+        self.assertAlmostEqual(row["frac_paths_positive"], expected.frac_positive)
+        self.assertAlmostEqual(row["median_return"], expected.median_return)
+        self.assertEqual(row["total_trades"], expected.total_trades)
+        self.assertEqual(row["n_paths"], expected.n_paths)
+        self.assertEqual(row["usable_blocks"], expected.usable_blocks)
+
+    def test_the_operator_s_horizon_and_geometry_reach_the_sweep(self):
+        """The gate is deliberately pinned to the reference's settings; the sweep
+        deliberately is not. Hardcoding the reference values here would silently
+        ignore --horizon, --groups and --k while the header still printed them.
+        """
+        seen: list[tuple] = []
+        self.sandbox_results_dir()
+        self.patch("unusable_data_files", lambda *a, **k: [])
+        self.patch(
+            "run_asset",
+            lambda asset, horizon, groups, k, **kw: (
+                seen.append((horizon, groups, k)), ([dict(self.ROW)], "w")
+            )[1],
+        )
+        code, _out = self.run_main(
+            ["--assets", "DOGE", "--horizon", "long", "--groups", "6", "--k", "3",
+             "--skip-self-test"]
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(seen, [("long", 6, 3)])
+
+    def test_a_run_where_nothing_is_rankable_writes_nothing(self):
+        """A geometry no series can support makes every configuration zero-path.
+        That used to write a CSV of NaNs, print "Wrote 25 rows" and exit 0 -- a file
+        that reads as a result. The bar count is only known after loading, so the
+        `--groups` bound cannot catch this and the empty outcome must.
+        """
+        code, out, out_dir = self.drive([{**self.ROW, "n_paths": 0, "total_trades": 0}])
+        self.assertEqual(code, 1)
+        self.assertIn("no configuration produced a rankable path", out)
+        self.assertEqual(list(out_dir.iterdir()), [])
+
+    def test_a_run_of_only_low_trade_configurations_still_writes(self):
+        """The counterpart of the summarise() case: the refusal keys on paths, not
+        on the trade floor, so a thin-but-pathful run is still reported. Pinned
+        because the two thresholds are easy to conflate, and tightening this one
+        would move published headlines rather than only refusing garbage.
+        """
+        code, out, out_dir = self.drive([{**self.ROW, "total_trades": 3}])
+        self.assertEqual(code, 0)
+        self.assertIn("Wrote 1 rows", out)
+        self.assertEqual(len(list(out_dir.iterdir())), 1)
+
+    def test_a_repeated_asset_is_evaluated_once(self):
+        """`--assets DOGE,DOGE` wrote 50 rows for one asset and `summarise`
+        collapsed them into one group with every count doubled.
+        """
+        seen: list[str] = []
+        out_dir = self.sandbox_results_dir()
+        self.patch("unusable_data_files", lambda *a, **k: [])
+        self.patch(
+            "run_asset",
+            lambda asset, *a, **k: (seen.append(asset), ([dict(self.ROW)], "w"))[1],
+        )
+        code, out = self.run_main(["--assets", "DOGE,DOGE", "--skip-self-test"])
+        self.assertEqual(code, 0)
+        self.assertEqual(seen, ["DOGE"])
+        self.assertIn("cpcv_all25_doge_1d.csv", out)
+        self.assertEqual(len(list(out_dir.iterdir())), 1)
+
+
+class DataPreflightTests(PatchMixin):
+    """`unusable_data_files`, exercised rather than stubbed."""
+
+    def test_an_absent_file_is_named(self):
+        """The check every other test stubs out. Left unexercised, deleting it or
+        narrowing it to one horizon passed the whole suite, and the failure then
+        arrived as a FileNotFoundError mid-sweep -- the outcome it exists to prevent.
+        """
+        self.sandbox_results_dir()
+        problems = cac.unusable_data_files(["NOSUCHCOIN"], ["medium"])
+        self.assertEqual(len(problems), 1)
+        self.assertIn("NOSUCHCOIN_1d.csv", problems[0])
+        self.assertIn("absent", problems[0])
+
+    def test_an_invalid_file_is_named_rather_than_raising(self):
+        """Existence is the weaker test. `data/` is gitignored and refetched, so a
+        gap-broken or truncated file is likelier than a missing one, and CsvLoader
+        answers it with DataValidationError -- which reached the operator as a
+        traceback, and turned --self-test into a crash where a merely missing file
+        produced an orderly refusal.
+        """
+        root = self.sandbox_results_dir().parent
+        (root / "data").mkdir()
+        (root / "data" / "BROKEN_1d.csv").write_text(
+            "timestamp,open,high,low,close,volume\n"
+            "1600000000,1,1,1,1,1\n"
+            "1600000000,1,1,1,1,1\n"
+        )
+        problems = cac.unusable_data_files(["BROKEN"], ["medium"])
+        self.assertEqual(len(problems), 1)
+        self.assertIn("BROKEN_1d.csv", problems[0])
+        self.assertNotIn("absent", problems[0])
+
+    def test_the_same_series_is_validated_once_across_horizons(self):
+        """`medium` and `long` are the same 1d file. Reported twice, an operator
+        reads one broken file as two.
+        """
+        self.sandbox_results_dir()
+        problems = cac.unusable_data_files(["NOSUCHCOIN"], ["medium", "long"])
+        self.assertEqual(len(problems), 1)
+
+    def test_the_top5_branch_refuses_on_unusable_data(self):
+        """The call site that was never executed by any test, because every --top5
+        test stubs this helper.
+        """
+        out_dir = self.sandbox_results_dir()
+        calls: list[str] = []
+        self.patch("run_top5", lambda *a, **k: calls.append("ran"))
+        code, out = self.run_main(
+            ["--top5", "--assets", "NOSUCHCOIN", "--skip-self-test"]
+        )
+        self.assertEqual(code, 1)
+        self.assertIn("unusable price data", out)
+        self.assertIn("NOSUCHCOIN", out)
+        self.assertEqual(calls, [])
+        self.assertEqual(list(out_dir.iterdir()), [])
 
 
 class SelfTestGateTests(PatchMixin):
@@ -685,7 +929,7 @@ class SelfTestGateTests(PatchMixin):
         reference = Path(tmp.name) / "reference.csv"
         frame.to_csv(reference, index=False)
         self.patch("REFERENCE", reference)
-        self.patch("missing_data_files", lambda *a, **k: [])
+        self.patch("unusable_data_files", lambda *a, **k: [])
         return reference
 
     def gate_over(self, produced: tuple[dict, ...]) -> tuple[int, str]:
@@ -768,7 +1012,10 @@ class SelfTestGateTests(PatchMixin):
         self.patch("REFERENCE", Path("/nonexistent/reference.csv"))
         code, out = self.run_self_test()
         self.assertNotEqual(code, 0)
-        self.assertIn("SELF-TEST SKIPPED", out)
+        # The discriminating line, not the shared SELF-TEST SKIPPED prefix: the
+        # absent-data branch prints that too, so a reordering of the two checks
+        # would leave this green through the wrong one.
+        self.assertIn("no reference at", out)
 
     def test_absent_price_data_does_not_read_as_a_pass(self):
         """`data/` is gitignored, so "the reference exists but its inputs do not"
@@ -776,10 +1023,10 @@ class SelfTestGateTests(PatchMixin):
         be most expensive.
         """
         self.use_reference(pd.DataFrame(list(self.ROWS), columns=cac.COLUMNS))
-        self.patch("missing_data_files", lambda *a, **k: ["data/BTC_1d.csv"])
+        self.patch("unusable_data_files", lambda *a, **k: ["data/BTC_1d.csv"])
         code, out = self.run_self_test()
         self.assertNotEqual(code, 0)
-        self.assertIn("SELF-TEST SKIPPED", out)
+        self.assertIn("unusable price data for the reference assets", out)
 
     def test_a_reference_missing_a_column_fails_instead_of_raising(self):
         """The gate exists to turn "cannot reproduce" into a sentence. A drifted
@@ -805,19 +1052,34 @@ class SelfTestGateTests(PatchMixin):
         self.assertIn("Refusing to report new assets", out)
         self.assertEqual(calls, [])
 
-    def test_the_gate_is_pinned_to_the_horizon_its_reference_came_from(self):
-        """The reference is one fixed file. Running the comparison at whatever
-        `--horizon` the operator asked for made every non-default horizon a
-        refusal, which teaches the operator to pass --skip-self-test.
+    def test_the_gate_is_pinned_to_the_settings_its_reference_came_from(self):
+        """The reference is one fixed artifact: medium horizon, 8 blocks, k=2 (its
+        `n_paths` are C(usable_blocks, 2) off 8 blocks). Comparing against it at the
+        operator's `--horizon`, `--groups` or `--k` made a legitimate flag
+        combination report a broken harness, which teaches the operator to reach for
+        --skip-self-test -- the one habit this gate cannot survive.
         """
-        seen: list[str] = []
+        seen: list[tuple] = []
         self.use_reference(pd.DataFrame(list(self.ROWS), columns=cac.COLUMNS))
         self.patch(
             "run_asset",
-            lambda asset, horizon, *a, **k: (seen.append(horizon), ([], "w"))[1],
+            lambda asset, horizon, groups, k, **kw: (
+                seen.append((horizon, groups, k)), ([], "w")
+            )[1],
         )
         self.run_self_test()
-        self.assertEqual(set(seen), {cac.REFERENCE_HORIZON})
+        self.assertEqual(
+            set(seen),
+            {(cac.REFERENCE_HORIZON, cac.REFERENCE_GROUPS, cac.REFERENCE_K)},
+        )
+
+    def test_the_gate_result_reaches_the_exit_code_of_a_self_test_run(self):
+        """`--self-test` is the documented gate entry point and its return value is
+        the whole contract; nothing previously exercised it through `main`.
+        """
+        self.patch("self_test", lambda: 7)
+        code, _out = self.run_main(["--self-test"])
+        self.assertEqual(code, 7)
 
 
 class SummariseTests(unittest.TestCase):
@@ -846,6 +1108,63 @@ class SummariseTests(unittest.TestCase):
         line = cac.summarise(self.FRAME)
         self.assertIn("1/2 positive median Sharpe", line)
         self.assertIn("1 made money", line)
+
+    def test_a_configuration_with_paths_but_too_few_trades_is_still_counted(self):
+        """Pins an acknowledged inconsistency so it cannot change silently in either
+        direction. The engine flags a configuration insufficient below
+        MIN_RANKABLE_TRADES and this module prints it DROPPED, yet the headline
+        counts it: the reference file's BTC/ou_reversion is 15 paths, 6 trades and
+        median Sharpe 1.657. Excluding it is defensible and would move the "N/25
+        positive" ratios that CROSS-ASSET-TRANSFER.md and RANKED_LISTS.md quote, so
+        the decision belongs to whoever owns those documents. If someone makes it,
+        this test should fail and be updated deliberately.
+        """
+        frame = pd.concat([
+            self.FRAME,
+            pd.DataFrame([{
+                **self.FRAME.iloc[0].to_dict(),
+                "strategy": "thin", "median_sharpe": 1.657,
+                "total_trades": cac.MIN_RANKABLE_TRADES - 1,
+            }], columns=cac.COLUMNS),
+        ])
+        line = cac.summarise(frame)
+        self.assertIn("2/3 positive median Sharpe", line)
+        self.assertIn("1 dropped", line)
+
+    def test_the_engine_is_told_the_same_trade_floor_this_module_names(self):
+        """The DROPPED flag comes from `cpcv_evaluate`'s own `min_total_trades`. Left
+        to its default, an engine-side change would print DROPPED for rows whose
+        floor this module still described as 10 -- two live definitions of
+        insufficient in one printed run.
+        """
+        seen: list[int] = []
+        self.assertEqual(cac.MIN_RANKABLE_TRADES, 10)
+
+        def record(*a, min_total_trades=None, **k):
+            seen.append(min_total_trades)
+            return cpcv_result()
+
+        original = cac.cpcv_evaluate
+        cac.cpcv_evaluate = record
+        self.addCleanup(setattr, cac, "cpcv_evaluate", original)
+        original_load = cac.load_asset
+        cac.load_asset = lambda asset, horizon: ({"close": np.zeros(3)}, object(), "w")
+        self.addCleanup(setattr, cac, "load_asset", original_load)
+
+        cac.run_asset("DOGE", "medium", 8, 2, verbose=False)
+        cac.run_top5(["DOGE"], groups=8, k=2, verbose=False)
+        self.assertTrue(seen)
+        self.assertEqual(set(seen), {cac.MIN_RANKABLE_TRADES})
+
+    def test_an_all_dropped_asset_says_so_instead_of_printing_nan(self):
+        """An empty group makes `.min()`/`.median()` return NaN, so the headline
+        read `0/0 positive median Sharpe … paths nan-nan` -- a sentence that looks
+        like a measurement.
+        """
+        frame = self.FRAME.assign(n_paths=0, total_trades=0)
+        line = cac.summarise(frame)
+        self.assertIn("nothing rankable", line)
+        self.assertNotIn("nan", line)
 
     def test_the_median_return_is_taken_over_the_ranked_rows_only(self):
         """The dropped row's NaN would be skipped by `.median()` anyway, but the

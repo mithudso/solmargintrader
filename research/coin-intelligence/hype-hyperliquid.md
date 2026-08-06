@@ -24,7 +24,7 @@ during 2026.
 | Max supply | 1,000,000,000 | CoinGecko (2026-08-04) |
 | FDV | $55.46B — MC/FDV 0.22 | CoinGecko (2026-08-04) |
 | 24h volume | $280.8M | CoinGecko (2026-08-04) |
-| **Turnover (24h vol ÷ mcap)** | **2.28%** | computed from the two rows above |
+| **Turnover (24h vol ÷ mcap)** | **2.52%** — 4th of the ten coins here[^turnover-std] | single-timestamp pull, 2026-08-05T02:15:22Z |
 | TVL | $6.247B — MC/TVL 1.98 | DefiLlama via CoinGecko (2026-08-04) |
 | 24h protocol fees | $1,513,540 (−35.3% d/d) | Token Terminal via CoinGecko (2026-08-04) |
 | 24h protocol revenue | $1,165,113 (−31.9% d/d) | Token Terminal via CoinGecko (2026-08-04) |
@@ -255,8 +255,10 @@ check on-chain yourself before relying on either narrative.
 
 ## Turnover and what the market cap actually means
 
-$280.8M of 24h volume against a $12.34B market cap is **2.28% turnover** (both figures CoinGecko,
-2026-08-04). That is healthy: the asset trades across 62 exchanges and 79 markets, with real depth on
+On the comparable single-timestamp pull[^turnover-std], $311.4M of 24h volume against a $12.342B market
+cap is **2.52% turnover** — 4th of the ten coins in this directory. (The 2026-08-04 snapshot in the
+table above, $280.8M, gives 2.28%; the difference is the pull time, not the asset, and 2.52% is the
+figure to use when ranking HYPE against the other nine.) Either way it is healthy: the asset trades across 62 exchanges and 79 markets, with real depth on
 several of them, and the market cap is broadly backed by supply someone can actually buy or sell.
 
 Two qualifications:
@@ -513,3 +515,5 @@ Fetched or consulted 2026-08-04 unless noted.
   https://support.jup.ag/hc/en-us/articles/18735045234588-What-are-the-fees-associated-with-Jupiter-Perps
 - dailycoinbrief (2026-07-05) — $1B cumulative protocol revenue crossed 2026-06-30, Q1 2026 volume,
   ETF inflows. https://dailycoinbrief.com/hype-just-crossed-1-billion-in-protocol-revenue/
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

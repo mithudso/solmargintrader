@@ -23,6 +23,21 @@ rather than made silently. Literature figures are attributed; everything else is
 
 ## Read this before the tables
 
+> **Read every ranking below against its multiple-testing benchmark, not against zero.**
+> `python3 research/dso_audit.py` deflates these Sharpes per Bailey & Lopez de Prado
+> (`backtester/core/deflated_sharpe.py`). Across the **200 single-strategy configurations** now
+> evaluated (199 after collapsing the proven `bb_reversion`/`zscore` duplicate), **two clear the
+> Sharpe the search alone would be expected to produce under no skill, and only one of those also
+> clears the evidence floor**:
+>
+> - `ZEC adx_trend` — Sharpe +1.037 against a +0.905 benchmark, **DSR 0.568**, 60 trades, Q1 +0.371.
+>   The only row here that survives both tests. DSR 0.568 is barely above the 0.5 coin-flip line, so
+>   read it as not-yet-disconfirmed rather than as an edge.
+> - `BTC ou_reversion` — DSR 0.775, but on **6 trades with Q1 exactly 0.000**, below any usable floor.
+>
+> `SOL hurst_switch`, ranked first on SOL daily at +0.699, does not reach its own +0.886 benchmark
+> (DSR **0.416**). A high rank in the tables below is a position in a search, not evidence of an edge.
+
 **Under CPCV, over all 25 registered strategies: 75 singles + 1,002 pairs + 210 triples = 1,287
 configurations.** At the short horizon **not one of the 25 singles has a positive median path
 Sharpe**. At the daily horizons singles PBO is **0.700** — well above the 0.500 pure-noise line,

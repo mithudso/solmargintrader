@@ -44,6 +44,11 @@ enter if z_t <= entry_z ;  exit if z_t >= exit_z
 `bb_reversion.md` is **the same inequality** at a 2.6% different threshold (ddof=0 vs
 ddof=1). Treat them as one mechanism when reasoning about diversification.
 
+Measured bar by bar at the shipped presets: exposure differs on **0 of 1,875 BTC daily
+bars**, 30 (1.60%) on SOL and 16 (0.85%) on ETH. On BTC they are literally the same
+strategy. Full table and the reasoning in `bb_reversion.md`; the relationship is pinned by
+`tests/test_strategy_duplication.py`.
+
 ## Works when
 Stationary or range-bound series. **Raw price is not stationary**, which is this card's
 central theoretical weakness: the technique properly applies to a *cointegrated spread*

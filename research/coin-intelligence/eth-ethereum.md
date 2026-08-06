@@ -28,6 +28,7 @@ description: Trader-facing reference on Ethereum (ETH) — mechanics, supply and
 | Price (local close) | **$1,868.38** | 2026-08-04 (daily close) | `data/ETH_1d.csv` (first-party) |
 | Market cap | **$226.1B** | 2026-08-05T02:15:22Z | CoinGecko snapshot |
 | 24h volume | **$6.90B** | 2026-08-05T02:15:22Z | CoinGecko snapshot |
+| **Turnover (24h vol ÷ mcap)** | **3.05%** — 3rd of the ten coins here[^turnover-std] | 2026-08-05T02:15:22Z | derived from the two rows above |
 | Rank by market cap | **#2** (behind BTC $1,292.1B) | 2026-08-05T02:15:22Z | CoinGecko snapshot |
 | ETH/BTC | **0.02925** | 2026-08-04 | computed from `data/ETH_1d.csv` + `data/BTC_1d.csv` |
 | Total supply | **121,924,835 ETH** (no cap) | 2026-08-04 | ultrasound.money |
@@ -1071,3 +1072,5 @@ number for any of them from this document.
 | Options OI and implied vol (DVOL) | https://www.deribit.com/ |
 | Fork status, EIP text, blob parameters | https://ethereum.org/en/roadmap/ , https://eips.ethereum.org/ |
 | Price, market cap, volume | https://www.coingecko.com/en/coins/ethereum |
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

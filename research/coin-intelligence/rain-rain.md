@@ -307,7 +307,7 @@ doubled, and roughly half of that came from issuing tokens rather than from repr
 $20.43M of 24h volume against $8.641B of market cap is **0.24% turnover** (CoinGecko, 2026-08-04).
 
 For same-day, same-methodology calibration: **HYPE turned over 2.28%** on 2026-08-04 ($280.8M volume
-against $12.34B market cap, CoinGecko). RAIN's turnover is roughly **one tenth** of that.
+against $12.34B market cap; **2.52%** on the single-timestamp pull[^turnover-std]). RAIN's turnover is roughly **one tenth** of that.
 
 *A note on a common framing:* RAIN's turnover is sometimes described as "two orders of magnitude below
 Bitcoin's." That overstates it. Bitcoin's daily turnover generally runs in the low single-digit
@@ -563,3 +563,5 @@ snippets.
 No independent investigative journalism on Rain Protocol was located. No on-chain burn evidence, no
 verified identities for the named Foundation officers, no user or open-interest metrics from any
 source other than the Rain Foundation itself.
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

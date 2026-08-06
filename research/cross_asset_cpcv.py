@@ -43,6 +43,7 @@ require choices less defensible than disclosing them:
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 from pathlib import Path
 from typing import Callable
@@ -74,6 +75,30 @@ REFERENCE_ASSETS = ("BTC", "ETH")
 # certifies is the harness, which is horizon-independent.
 REFERENCE_HORIZON = "medium"
 
+# The CPCV geometry the reference was produced at, pinned for the same reason as
+# the horizon. `n_paths` in that file is C(usable_blocks, 2) taken off 8 blocks, so
+# comparing against it at `--groups 6` makes every path count diverge by order 10
+# and reports a broken harness for what is only the operator's geometry.
+REFERENCE_GROUPS = 8
+REFERENCE_K = 2
+
+# The trade floor, passed explicitly to `cpcv_evaluate` rather than left to its
+# default, so that the DROPPED flag this module prints and the floor this module
+# names cannot drift apart across an engine-side change. research/sweep.py refuses
+# to rank below the same number and TOP5-RECOMMENDATION.md lists it as a selection
+# check, so 10 is the project's figure, not a local one. See `rankable_rows` for why
+# the headline does not yet filter on it.
+MIN_RANKABLE_TRADES = 10
+
+# Ceiling on C(groups, k). The lower bounds on --groups and --k are checked; the
+# upper one matters more, because path count is combinatorial: --groups 100 --k 5
+# is 5.7e7 concatenations per configuration across 25 configurations, which reads
+# as a hung run rather than as the typo it is. 10,000 is two orders above anything
+# this project uses -- the published geometry is C(8,2) = 28 and research/geometry.py
+# sweeps 6..12 blocks at k=2, topping out at C(12,2) = 66 -- and still bounds a run
+# to seconds, so it refuses typos without constraining a deliberate experiment.
+MAX_PATHS = 10_000
+
 # Columns, in the order the reference file already uses. Matching it exactly is
 # what makes the self-test a comparison rather than an interpretation.
 COLUMNS = [
@@ -90,9 +115,13 @@ COLUMNS = [
 ]
 
 # Tolerance for the self-test. Floating-point re-derivation through pandas and
-# numpy is not bit-identical across versions; 1e-6 is far tighter than any
-# difference that would change a conclusion, and loose enough not to fail on
-# library drift.
+# numpy is not bit-identical across versions, and 1e-6 is far tighter than any
+# difference that would change a conclusion. Note where most of that budget goes:
+# the reference stores six decimals, so truncation alone can contribute 5e-7 and
+# the passing run already reports 4.984e-07. The headroom against genuine library
+# drift is therefore small in absolute terms and ample in relative ones -- ULP
+# drift is ~1e-15 relative, orders below what remains. Do not loosen this to buy
+# margin that is not being consumed.
 TOLERANCE = 1e-6
 
 # Tolerance for the SOL control in --top5 mode, four orders of magnitude looser
@@ -104,9 +133,10 @@ CONTROL_TOLERANCE = 0.01
 
 # The cost and capital model. Named rather than inlined because these four values
 # are what make a reproduction a reproduction: research/sweep.py builds the
-# identical EngineConfig, and a one-sided edit to either copy would move the SOL
-# control's medians away from the `sol_median` literals below with nothing in
-# either file failing.
+# identical EngineConfig. An edit *here* is caught immediately -- the reference was
+# produced with these values, so --self-test fails and the SOL control diverges.
+# An edit to sweep.py's copy is the unguarded direction, and this file would keep
+# agreeing with a reference that no longer matches the sweep it came from.
 FILL_DELAY = 1
 INITIAL_CAPITAL = 10_000.0
 FEE_BPS = 6.0
@@ -140,10 +170,27 @@ TOP5_COLUMNS = [
 ]
 
 
+def rankable_rows(frame: pd.DataFrame) -> pd.DataFrame:
+    """Rows with at least one usable path.
+
+    Deliberately NOT also filtered on MIN_RANKABLE_TRADES, though there is a real
+    case for it: the engine flags a configuration `insufficient` below that floor
+    and this module prints it DROPPED, yet the headline still counts it. In the
+    reference file BTC/ou_reversion (15 paths, 6 trades, median Sharpe 1.657) and
+    ETH/hurst_switch (15 paths, 4 trades) are both counted, so adding the floor
+    would change two assets' "N/25 positive median Sharpe" ratios. Those ratios are
+    quoted in research/CROSS-ASSET-TRANSFER.md and RANKED_LISTS.md, which makes the
+    change a research decision about what those documents claim rather than a code
+    fix. It is recorded here, and the count of excluded rows is now disclosed on the
+    line itself, so the omission is visible either way.
+    """
+    return frame[frame["n_paths"] > 0]
+
+
 def resolve_output_path(name: str) -> Path | None:
     """Resolve a CSV filename inside OUT, or return None if it must be refused.
 
-    Two refusals, and both have to happen *before* any compute rather than after
+    Three refusals, and they have to happen *before* any compute rather than after
     it, which is why this is a pure function called early rather than a check at
     the write site:
 
@@ -158,33 +205,68 @@ def resolve_output_path(name: str) -> Path | None:
        i.e. an unrecoverable overwrite of an input every published number depends
        on. Only a bare filename is accepted.
     """
-    if name != Path(name).name or not name:
+    if not name or name != Path(name).name:
         print(f"REFUSED: --out must be a bare filename inside research/results (got {name!r}).")
         return None
     dest = (OUT / name).resolve()
-    if dest == REFERENCE.resolve():
+    # Case-folded and by inode, not by string. `Path.resolve()` follows symlinks
+    # but never case-folds, and this project's filesystem is case-insensitive, so
+    # `--out CPCV_ALL25_BTC_ETH_1D.csv` compared unequal to the reference and named
+    # the same file -- a string-equality guard accepted it and truncated the
+    # reference in place. `samefile` needs both to exist, so it is the second half
+    # of an `or`, not the whole test.
+    if dest.name.casefold() == REFERENCE.name.casefold() or (
+        dest.exists() and REFERENCE.exists() and dest.samefile(REFERENCE)
+    ):
         print(f"REFUSED: {name} is the reference file. Choose another --out.")
         return None
+    # Reached by names with no separator that still resolve elsewhere: `..` is
+    # exactly that, since `Path("..").name` is `".."`.
     if dest.parent != OUT.resolve():
         print(f"REFUSED: {name} resolves outside research/results ({dest}).")
         return None
-    OUT.mkdir(parents=True, exist_ok=True)
     return dest
 
 
-def missing_data_files(assets: list[str], horizons: list[str]) -> list[str]:
-    """Which required price files are absent, checked before any compute.
+def unusable_data_files(assets: list[str], horizons: list[str]) -> list[str]:
+    """Which required price files are absent or fail the loader's bar contract.
 
-    Without this, a typo'd or unfetched asset raises FileNotFoundError partway
-    through the loop, and every asset already computed is discarded unwritten —
-    the operator pays for the run and gets a traceback instead of the rows.
+    Checked before any compute. Without this, a typo'd or unfetched asset raises
+    FileNotFoundError partway through the loop and every asset already computed is
+    discarded unwritten — the operator pays for the run and gets a traceback
+    instead of the rows.
+
+    Existence alone is not the test. `data/` is gitignored and refetched per asset,
+    so a truncated or gap-broken file is the *likelier* failure, and `CsvLoader`
+    answers it with DataValidationError — which used to reach the operator as a
+    traceback, and turned `--self-test` into a crash where a merely missing file
+    produced an orderly refusal. Loading here costs milliseconds against eight
+    engine runs per configuration.
+
+    Horizons are collapsed to distinct (interval, gap-policy) pairs, so the medium
+    and long specs — the same 1d series — are validated once rather than twice.
     """
-    wanted = {
-        REPO / "data" / f"{asset}_{HORIZONS[h]['interval']}.csv"
-        for asset in assets
-        for h in horizons
+    loads = {
+        (HORIZONS[h]["interval"], HORIZONS[h]["allow_gaps"]): h for h in horizons
     }
-    return sorted(str(p.relative_to(REPO)) for p in wanted if not p.exists())
+    problems: list[str] = []
+    for asset in assets:
+        for horizon in loads.values():
+            path = REPO / "data" / f"{asset}_{HORIZONS[horizon]['interval']}.csv"
+            label = path.relative_to(REPO)
+            if not path.exists():
+                problems.append(f"{label} (absent)")
+                continue
+            try:
+                load_asset(asset, horizon)
+            except (OSError, ValueError) as exc:
+                # ValueError, not DataValidationError alone: pandas answers a
+                # 0-byte or binary file with EmptyDataError/ParserError, which are
+                # ValueError subclasses and would otherwise reach the operator as
+                # the traceback this function exists to replace. DataValidationError
+                # is itself a ValueError, so it stays covered.
+                problems.append(f"{label} ({exc})")
+    return sorted(set(problems))
 
 
 def load_asset(asset: str, horizon: str) -> tuple[dict, EngineConfig, str]:
@@ -230,6 +312,7 @@ def run_asset(
             cfg,
             n_groups=groups,
             k_test=k,
+            min_total_trades=MIN_RANKABLE_TRADES,
         )
         # Insufficient configurations are written with their real (zero) path
         # count rather than skipped: a missing row reads as "not tested", which
@@ -309,6 +392,10 @@ def run_top5(
             if load_key not in cache:
                 cache[load_key] = load_asset(asset, horizon)
             arrays, cfg, window = cache[load_key]
+            # Written once per spec, last one wins. Correct only while every spec
+            # shares one load, which is the case today (all five are 1d); the moment
+            # a spec moved to another interval the "Date windows" block would
+            # disclose the last spec's interval as if it were the run's.
             windows[asset] = window
             res = cpcv_evaluate(
                 spec["label"],
@@ -317,6 +404,7 @@ def run_top5(
                 cfg,
                 n_groups=groups,
                 k_test=k,
+                min_total_trades=MIN_RANKABLE_TRADES,
             )
             delta = res.median_sharpe - spec["sol_median"]
             rows.append(
@@ -350,12 +438,25 @@ def run_top5(
 
 
 def summarise(df: pd.DataFrame) -> str:
-    """Per-asset headline: how many strategies cleared zero, and by how much."""
+    """Per-asset headline: how many strategies cleared zero, and by how much.
+
+    Counts only rankable rows (see `rankable_rows`) and says how many it left out,
+    because a headline that silently drops rows overstates by omission just as one
+    that silently includes dropped rows overstates by inclusion.
+    """
     lines = []
     for asset, g in df.groupby("asset", sort=False):
-        rankable = g[g["n_paths"] > 0]
+        rankable = rankable_rows(g)
+        dropped = len(g) - len(rankable)
+        if rankable.empty:
+            lines.append(
+                f"  {asset:5s} nothing rankable: all {len(g)} configurations were "
+                f"dropped for want of paths or trades"
+            )
+            continue
         pos = int((rankable["median_sharpe"] > 0).sum())
         made_money = int((rankable["median_return"] > 0).sum())
+        note = f", {dropped} dropped" if dropped else ""
         lines.append(
             f"  {asset:5s} {pos:2d}/{len(rankable)} positive median Sharpe, "
             f"{made_money:2d} made money, "
@@ -363,12 +464,18 @@ def summarise(df: pd.DataFrame) -> str:
             f"{rankable['median_return'].median() * 100:+.2f}%, "
             f"paths {rankable['n_paths'].min()}-{rankable['n_paths'].max()}, "
             f"blocks {rankable['usable_blocks'].min()}-{rankable['usable_blocks'].max()}"
+            f"{note}"
         )
     return "\n".join(lines)
 
 
-def self_test(groups: int, k: int) -> int:
-    """Reproduce the reference BTC/ETH file at REFERENCE_HORIZON. Never writes it.
+def self_test() -> int:
+    """Reproduce the reference BTC/ETH file at its own horizon and geometry.
+
+    Takes no parameters on purpose. The reference is one fixed artifact produced at
+    REFERENCE_HORIZON with REFERENCE_GROUPS/REFERENCE_K, so accepting the
+    operator's `--horizon`, `--groups` and `--k` here made a legitimate flag
+    combination look like a broken harness.
 
     This is the gate on the whole script. If the same procedure cannot
     regenerate numbers already published in the repo's own documents, then any
@@ -392,15 +499,17 @@ def self_test(groups: int, k: int) -> int:
         print("  Its schema has drifted from COLUMNS; the comparison cannot be made.")
         return 1
 
-    gaps = missing_data_files(list(REFERENCE_ASSETS), [REFERENCE_HORIZON])
+    gaps = unusable_data_files(list(REFERENCE_ASSETS), [REFERENCE_HORIZON])
     if gaps:
-        print(f"SELF-TEST SKIPPED: no price data for the reference assets ({', '.join(gaps)})")
+        print(f"SELF-TEST SKIPPED: unusable price data for the reference assets ({', '.join(gaps)})")
         print("  A gate that did not run is not a gate that passed; refusing.")
         return 2
 
     rows: list[dict] = []
     for asset in REFERENCE_ASSETS:
-        got, window = run_asset(asset, REFERENCE_HORIZON, groups, k, verbose=False)
+        got, window = run_asset(
+            asset, REFERENCE_HORIZON, REFERENCE_GROUPS, REFERENCE_K, verbose=False
+        )
         rows.extend(got)
         print(f"  {asset}: {window}")
     new = pd.DataFrame(rows, columns=COLUMNS)
@@ -476,6 +585,13 @@ def main(argv: list[str] | None = None) -> int:
     if not 1 <= args.k < args.groups:
         print(f"REFUSED: --k must be >= 1 and < --groups (got k={args.k}, groups={args.groups}).")
         return 1
+    paths = math.comb(args.groups, args.k)
+    if paths > MAX_PATHS:
+        print(
+            f"REFUSED: C({args.groups},{args.k}) = {paths} paths exceeds the "
+            f"{MAX_PATHS} ceiling. Lower --groups or --k."
+        )
+        return 1
     # Checked here rather than at the write site so a bad name costs nothing: the
     # old placement burned the whole sweep before printing REFUSED.
     if args.out is not None and resolve_output_path(args.out) is None:
@@ -486,24 +602,37 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.self_test:
         print("Reproducing reference BTC/ETH run:")
-        return self_test(args.groups, args.k)
+        return self_test()
 
     if not args.skip_self_test:
         print("Gate: reproducing reference BTC/ETH run first.")
-        if args.horizon != REFERENCE_HORIZON:
-            print(f"  (gate runs at {REFERENCE_HORIZON}, the horizon the reference was produced at)")
-        if self_test(args.groups, args.k) != 0:
+        if (args.horizon, args.groups, args.k) != (
+            REFERENCE_HORIZON, REFERENCE_GROUPS, REFERENCE_K
+        ):
+            print(
+                f"  (gate runs at {REFERENCE_HORIZON}, {REFERENCE_GROUPS} blocks, "
+                f"k={REFERENCE_K} -- the settings the reference was produced at)"
+            )
+        if self_test() != 0:
             print("\nRefusing to report new assets on an unreproducible harness.")
             print("Pass --skip-self-test to override deliberately.")
             return 1
         print()
 
-    assets = [a.strip().upper() for a in args.assets.split(",") if a.strip()]
+    # Deduplicated, order preserved: `--assets DOGE,DOGE` otherwise wrote 50 rows
+    # for one asset and summarise() collapsed them into a single group whose counts
+    # were doubled.
+    assets = list(dict.fromkeys(a.strip().upper() for a in args.assets.split(",") if a.strip()))
     if not assets:
         print(f"REFUSED: --assets named no assets (got {args.assets!r}).")
         return 1
 
     if args.top5:
+        # The five configurations carry their own horizons, so --horizon says
+        # nothing here; the header above prints it regardless, which would read as
+        # a claim about this run.
+        if args.horizon != "medium":
+            print("  (--top5 ignores --horizon; each configuration carries its own)\n")
         # SOL first and by default: reproducing its published medians is what
         # certifies the composite wiring, so a divergent control invalidates the
         # other assets' rows rather than merely being interesting.
@@ -521,19 +650,54 @@ def main(argv: list[str] | None = None) -> int:
         )
         if dest is None:
             return 1
-        gaps = missing_data_files(ordered, sorted({s["horizon"] for s in TOP5}))
+        gaps = unusable_data_files(ordered, sorted({s["horizon"] for s in TOP5}))
         if gaps:
-            print(f"REFUSED: missing price data ({', '.join(gaps)}). Fetch it first.")
+            print(f"REFUSED: unusable price data ({', '.join(gaps)}). Fetch it first.")
             return 1
         df, windows = run_top5(ordered, args.groups, args.k)
+        # The same refusal the singles branch makes. Without it, --no-control skips
+        # the only other check, so an unsupportable geometry wrote five NaN rows and
+        # exited 0 on the path where the singles branch writes nothing and exits 1.
+        if rankable_rows(df).empty:
+            print(
+                f"REFUSED: no configuration produced a rankable path at "
+                f"{args.groups} blocks, k={args.k}."
+            )
+            print("  Nothing was written -- a CSV of NaNs is not a result.")
+            return 1
+        dest.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(dest, index=False)
 
         print("\nDate windows (block i is NOT the same period across assets):")
         for asset, window in windows.items():
             print(f"  {asset:5s} {window}")
 
+        # The control thresholds against the `sol_median` literals, which were
+        # produced at REFERENCE_GROUPS/REFERENCE_K. At any other geometry SOL's
+        # medians legitimately differ, so comparing anyway reported DIVERGED with a
+        # false cause ("composite wiring differs") on a perfectly valid flag
+        # combination -- the same mistake the self-test gate made before it was
+        # pinned to the reference's own geometry. The control can only certify at
+        # the geometry it was published at; elsewhere it declines to run rather
+        # than assert something untrue.
+        published_geometry = args.groups == REFERENCE_GROUPS and args.k == REFERENCE_K
+
         diverged = False
-        if not args.no_control:
+        if not args.no_control and not published_geometry:
+            print(
+                f"\nCONTROL NOT RUN: the published SOL medians were produced at "
+                f"{REFERENCE_GROUPS} blocks / k={REFERENCE_K}; this run used "
+                f"{args.groups} / k={args.k}."
+            )
+            print(
+                "  SOL's medians are expected to differ at another geometry, so the "
+                "comparison would prove nothing either way."
+            )
+            print(
+                "  The rows below are still computed — they are simply not certified. "
+                "Re-run at the published geometry to certify them."
+            )
+        elif not args.no_control:
             sol = df[df["asset"] == "SOL"]
             deltas = sol["delta_vs_sol"]
             # A partial control is not a passing control. `.abs().max()` skips NaN,
@@ -542,11 +706,16 @@ def main(argv: list[str] | None = None) -> int:
             incomplete = len(sol) != len(TOP5) or bool(deltas.isna().any())
             worst = float(deltas.abs().max()) if deltas.notna().any() else float("nan")
             diverged = incomplete or not worst < CONTROL_TOLERANCE
-            verdict = "DIVERGED" if diverged else "PASSED"
-            print(
-                f"\nCONTROL {verdict}: SOL reproduces its published medians to "
-                f"max abs delta {worst:.4f}."
-            )
+            if diverged:
+                print(
+                    f"\nCONTROL DIVERGED: SOL's medians differ from its published "
+                    f"values by up to {worst:.4f}."
+                )
+            else:
+                print(
+                    f"\nCONTROL PASSED: SOL reproduces its published medians to "
+                    f"max abs delta {worst:.4f}."
+                )
             if incomplete:
                 print(
                     f"  Only {int(deltas.notna().sum())} of {len(TOP5)} control configurations "
@@ -560,14 +729,18 @@ def main(argv: list[str] | None = None) -> int:
         for asset, g in df.groupby("asset", sort=False):
             if asset == "SOL":
                 continue
-            # Zero-path configurations are excluded from both halves of the ratio,
-            # matching summarise(). Counting them in the denominator only reported
-            # "tested and failed to clear zero" for something that was never
-            # testable -- the distinction run_asset's own comment turns on.
-            rankable = g[g["n_paths"] > 0]
+            # Dropped configurations leave both halves of the ratio, through the
+            # same evidence floor summarise() uses. Counting them in the
+            # denominator only reported "tested and failed to clear zero" for
+            # something that was never testable -- the distinction run_asset's own
+            # comment turns on.
+            rankable = rankable_rows(g)
+            dropped = len(g) - len(rankable)
+            if rankable.empty:
+                print(f"  {asset:5s} nothing rankable: all {len(g)} dropped")
+                continue
             held = int((rankable["median_sharpe"] > 0).sum())
             money = int((rankable["median_return"] > 0).sum())
-            dropped = len(g) - len(rankable)
             note = f", {dropped} insufficient" if dropped else ""
             print(
                 f"  {asset:5s} {held}/{len(rankable)} still positive, "
@@ -583,9 +756,9 @@ def main(argv: list[str] | None = None) -> int:
     dest = resolve_output_path(slug)
     if dest is None:
         return 1
-    gaps = missing_data_files(assets, [args.horizon])
+    gaps = unusable_data_files(assets, [args.horizon])
     if gaps:
-        print(f"REFUSED: missing price data ({', '.join(gaps)}). Fetch it first.")
+        print(f"REFUSED: unusable price data ({', '.join(gaps)}). Fetch it first.")
         return 1
 
     rows: list[dict] = []
@@ -597,6 +770,19 @@ def main(argv: list[str] | None = None) -> int:
         windows[asset] = window
 
     df = pd.DataFrame(rows, columns=COLUMNS)
+    # A geometry no series can support (--groups above the bar count, or blocks
+    # under three bars) makes every configuration zero-path. That used to write 25
+    # rows of NaN, print "Wrote 25 rows" and exit 0 -- the outcome the --groups
+    # check above exists to prevent, arriving by a route it cannot see because the
+    # bar count is only known after loading.
+    if rankable_rows(df).empty:
+        print(
+            f"REFUSED: no configuration produced a rankable path at "
+            f"{args.groups} blocks, k={args.k}."
+        )
+        print("  Nothing was written -- a CSV of NaNs is not a result.")
+        return 1
+    dest.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(dest, index=False)
 
     print("\nDate windows (block i is NOT the same period across assets):")

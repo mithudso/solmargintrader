@@ -85,3 +85,13 @@ data/
 # Session scratch
 .remember/logs/
 .remember/tmp/
+
+# Regenerable semantic index. ~2,400 chunks x 1024 float16 = ~4.6 MB of derived
+# binary that re-diffs on every content change, in a tree that is 3.6 MB in total.
+# Rebuild with:
+#   python3 index/build.py semantic
+# index/SEMANTIC-MANIFEST.json IS tracked: it records the model, dimensions, chunk
+# count, chunk-to-file mapping and per-file source hashes, so a reader can tell
+# what the index was and whether it would still be valid without holding the
+# vectors. Same reasoning as data/ above.
+index/semantic-embeddings.npz

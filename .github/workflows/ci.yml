@@ -73,6 +73,52 @@ jobs:
       - name: Import check
         run: python3 -c "import backtester.cli; print('imports ok')"
 
+  # soltui is macOS-only (py2app, the menu-bar app and launchd have no Linux
+  # equivalent), so this job runs on a macOS runner. It covers the unit suite
+  # only: the packaging paths -- the alias bundle and the launchd agent -- are
+  # verified by hand, per docs/known-issues.md.
+  soltui:
+    name: soltui (python, macos)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r soltui/requirements.txt
+
+      - name: Unit tests
+        run: python3 -m unittest discover -s soltui/tests -t .
+
+  # Documentation drift is a build failure, not a nit: the docs claimed 250
+  # backtester tests for several commits while the suite had grown to 454, and
+  # nothing caught it. Counts come from unittest discovery, so this job needs no
+  # dependencies and runs in seconds.
+  docs:
+    name: docs (drift check)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Test counts and retrieval indexes agree with the repo
+        run: python3 scripts/check_docs.py
+
+      # The exhaustive index under index/ is a separate artifact from
+      # docs/high_signal_file_index.json above, and it goes stale the same way: it
+      # looks authoritative, and nothing notices when a file moves. --check
+      # re-hashes every tracked source file against the committed index. No
+      # dependencies, no network.
+      - name: Repository index is not stale
+        run: python3 index/build.py --check
+
   # Live Jupiter endpoints are checked on a schedule rather than per-commit: a
   # third-party outage must not turn every PR red.
   endpoints:

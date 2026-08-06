@@ -50,7 +50,7 @@ The trader-relevant consequence: **TRX's demand driver is stablecoin payment thr
 
 ## Concentration, float and turnover
 
-**Turnover is the headline number: ~1.45%** ($0.45B volume against a $31.0B cap, CoinGecko 2026-08-04). For scale, DOGE turns over ~3.49% and ZEC ~2.33% on the same snapshot. TRX is a **$31B asset that trades like a much smaller one.**
+**Turnover is the headline number: ~1.45%** ($0.45B volume against a $31.0B cap, CoinGecko 2026-08-04). For scale, on the single-timestamp pull[^turnover-std] DOGE turns over 3.44% and ZEC 2.30%, and TRX is 7th of the ten coins in this directory. TRX is a **$31B asset that trades like a much smaller one.**
 
 Low turnover on a large cap has a specific meaning for a trader: **the market cap is not a liquidity promise.** A large notional position is priced off a float that changes hands slowly. Exit slippage is the risk, not entry.
 
@@ -182,3 +182,5 @@ So the blocker is confirmed on **two independent Coinbase trading APIs**, and at
 [^trx-snapshot]: Price, market cap and 24h volume snapshot — CoinGecko, 2026-08-04, as supplied to this research. Turnover and implied supply are **derived** from those figures. Cross-checked: Kraken TRXUSD last close 2026-08-05 was $0.326363, consistent with the $0.3267 snapshot. verified-as-of: 2026-08-04
 
 [^trx-local]: Local bar cache contents — direct filesystem check of `~/dev/solmargintrader/data/` and read of `~/dev/solmargintrader/backtester/core/fetch.py`. Tier-1 (primary). verified-as-of: 2026-08-04
+
+[^turnover-std]: **Comparable turnover.** All ten coins' turnover figures in this directory come from ONE CoinGecko `/coins/markets` call, `~/dev/solmargintrader/research/results/top_coins.csv`, **2026-08-05T02:15:22Z**. Turnover is 24h volume / market cap and both terms move continuously, so figures pulled at different times cannot be ranked against each other — doing that produced a real error, a claim that SOL had the highest turnover of the ten when the single-timestamp pull puts DOGE ahead. Canonical table, highest to lowest: DOGE 3.44%, SOL 3.32%, ETH 3.05%, HYPE 2.52%, ZEC 2.30%, BTC 1.78%, TRX 1.45%, XRP 1.37%, BNB 0.73%, RAIN 0.24% — a 14.4x spread, one order of magnitude. Regenerate and verify with `python3 research/turnover_table.py` and `--check`. verified-as-of: 2026-08-05

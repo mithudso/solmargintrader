@@ -182,6 +182,62 @@ exit intended to close the $85 lot may be matched against an older $98 lot inste
 totals are right either way; per-round-trip figures reflect FIFO, not the intended pairing. If you
 need per-rung strategy attribution, add lot linkage on the fill record.
 
+## Auto re-centring — opt-in, and narrower than it sounds
+
+`lower`/`upper` are static config, so a ladder can end up nowhere near the market. The stock
+defaults are 60–90; on the real SOL daily series that band is outside the market on **87.3% of
+bars**. `autoRecentre` lets `planGrid` move the ladder to `0.85x–1.15x` of price — the same
+convention `tools/dryrun.js` uses, so there is only one.
+
+It is **off by default** and a fresh install behaves exactly as it did before it existed. To turn it
+on, and to see what it would do before arming anything:
+
+```bash
+node tools/cli.js setConfig --autoRecentre true --recentreSpanPct 0.15
+node tools/cli.js plan          # reports `recentre`; computes only, places nothing
+```
+
+`setConfig` range-checks both values, because `ConfigStore.setConfig` is a blind merge — an
+out-of-range span would otherwise not surface until it threw inside every tick, which fails closed
+but bricks the grid silently instead of refusing the input.
+
+**`recentreDecision()` refuses far more often than it acts, and the refusals are the feature.**
+Moving the bounds changes every level, and a level is what an order's identity and a lot's paired
+exit are derived from:
+
+| Refusal | Why |
+| --- | --- |
+| `open-lots-would-be-stranded` | An open lot's exit is derived from the *current* levels. Re-centre downward while holding inventory and that lot's sell is recomputed onto the new, lower ladder — **below its own entry**. That is the zero-spread bug above, except now it realizes a loss. Counted, not summed, so a `NaN` quantity cannot read as flat. |
+| `resting-orders-would-be-stranded-and-tick-cannot-cancel` | `tick()` has **no cancel step** — `cancelOrder` is a manual command. A moved ladder would leave real orders live at abandoned levels with capital committed to a ladder the strategy no longer believes in. |
+| `price-inside-ladder` | Nothing to fix. `recentreDriftBps` adds slack beyond the bounds first. |
+| `auto-recentre-disabled`, `unusable-price`, `already-centred` | Off; no usable price; would be a no-op. |
+
+So it can only act on a grid holding nothing with nothing resting. **Measure it before believing
+it helps:**
+
+```bash
+node tools/measure-recentre.js --csv ../data/SOL_1d.csv
+```
+
+On SOL daily (1,875 bars) it fires **exactly once, on the first bar** — because once bids rest they
+stay resting, and if they fill there is a lot. And the honest result is that on this path it made
+placement **worse**: one inception-time re-centre locked the ladder onto the 2021 price of $39.25
+(→ 33.36–45.14) and the market left it behind, giving **93.1%** of bars outside the ladder versus
+**87.3%** for the untouched 60–90 default.
+
+Read that as what it is. The value here is *not* return; it is that a grid armed today starts with a
+ladder around today's price instead of a hardcoded band. Tracking the market after that needs a
+cancel path in `tick()`, which is a change to the order lifecycle and is not this.
+
+And to keep it in proportion: at the time of writing (2026-08-04) SOL is **$74.03**, which the stock
+60–90 ladder already contains, so `autoRecentre` would return `price-inside-ladder` and change
+nothing at all. Turning it on is not a decision with much upside; leaving it off costs nothing.
+
+The moved bounds are **persisted before any order is placed** (`engine.js`), for the same reason the
+intent journal is written before the network call. `planGrid` is pure, so an uncommitted re-centre
+would vanish: the next tick would see the new orders resting, refuse to re-centre, fall back to the
+old bounds and place a **second ladder** at the levels this tick just abandoned. There is a test.
+
 ## P&L accounting
 
 Realized P&L uses **FIFO lot matching** — the IRS default for property and what crypto tax tools
@@ -325,13 +381,16 @@ Two results matter here:
   once at the start of the daily series sat outside the market for 93.1% of bars. It still
   cut max drawdown from holding's **−96.27% to −11.46%**, which is the honest case for the
   strategy, but it earned +5.21% while holding earned +88.25%.
-- **`planGrid` does not re-centre, and re-centring is what made it profitable.** Reset the
-  ladder from each block's opening price and the daily median becomes **+7.5% of deployed
-  capital with 5 of 8 blocks positive**; leave it static and you get the column above.
-  `lower` and `upper` come straight from config and nothing recomputes them, so a live
-  install behaves like the static case. **That is the highest-value missing feature.**
-  The worst re-centred block still lost **22.5% of deployed capital** in a downtrend,
-  consistent with the −$8.62 on $48 this README already reports from the dry run.
+- **Re-centring in the simulator looked like the fix. The version that is safe to ship is
+  not the version that was measured.** Reset the ladder from each block's opening price and
+  the daily median becomes **+7.5% of deployed capital with 5 of 8 blocks positive**; the
+  worst block still lost **22.5%**, consistent with the −$8.62 on $48 from the dry run.
+  `planGrid` now has an opt-in `autoRecentre` (below) — but **that +7.5% does not transfer to
+  it**, and the two must not be quoted together. The simulator moved the ladder
+  unconditionally every block. `recentreDecision()` may only move it when nothing is resting
+  and no lot is open, because `tick()` cannot cancel, so it fires far less often. Measured on
+  the same daily series with `tools/measure-recentre.js`, it fires **once, on the first bar**,
+  and then the ladder is frozen again for 1,874 bars.
 
 **Not verified — do these before risking money:**
 

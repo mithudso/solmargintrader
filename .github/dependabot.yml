@@ -1,0 +1,31 @@
+# The extension has zero runtime and zero dev dependencies by design (see
+# CLAUDE.md, House style), so there is deliberately no npm ecosystem entry: an
+# npm updater here would have nothing to update and would invite the first
+# dependency in. What DOES need updating is pinned action SHAs and the Python
+# requirements files.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
+
+  - package-ecosystem: pip
+    directory: /backtester
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    # numpy and pandas move fast and the backtester asserts on numeric output;
+    # a major bump needs the suite run by a human, not an auto-merge.
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: pip
+    directory: /soltui
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 3

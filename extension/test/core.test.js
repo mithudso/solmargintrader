@@ -11,6 +11,8 @@ import {
   pairedExitLevel,
   nearestLevelIndex,
   expectedRoundTripUsd,
+  recentredBounds,
+  recentreDecision,
   SPACING,
   SIDE,
   DIRECTION,
@@ -18,7 +20,7 @@ import {
 
 import { reconcile, tick, ingestFills, summarise, pricesMatch, matchIntent } from '../src/core/engine.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
-import { INTENT_STATUS, ConfigStore } from '../src/storage/store.js';
+import { INTENT_STATUS, ConfigStore, DEFAULT_CONFIG } from '../src/storage/store.js';
 import {
   normaliseOrders,
   OrderEnvelopeError,
@@ -1088,4 +1090,218 @@ test('the attribution detail lists a base URL for every surface', () => {
       assert.ok(detail.includes(base), `${base} missing from detail`);
     }
   }
+});
+
+// ------------------------------------------------------------ auto re-centring --
+//
+// Re-centring moves every level, and a level is what an order's identity and a
+// lot's paired exit are derived from. So most of these tests assert that it
+// REFUSES — the narrow window where it acts is the easy part.
+
+const RC_CONFIG = { ...CONFIG, autoRecentre: true, recentreSpanPct: 0.15 };
+
+test('recentredBounds follows the extension its own dryrun convention', () => {
+  // tools/dryrun.js uses 0.85x-1.15x, so this must not invent a second convention.
+  assert.deepEqual(recentredBounds({ price: 100 }), { lower: 85, upper: 115 });
+  assert.deepEqual(recentredBounds({ price: 73.8912 }), { lower: 62.8075, upper: 84.9749 });
+  assert.deepEqual(recentredBounds({ price: 100, spanPct: 0.2 }), { lower: 80, upper: 120 });
+});
+
+test('recentredBounds refuses an unusable price or span', () => {
+  for (const bad of [0, -1, NaN]) {
+    assert.throws(() => recentredBounds({ price: bad }), RangeError);
+  }
+  for (const span of [0, 1, 1.5, -0.1]) {
+    assert.throws(() => recentredBounds({ price: 100, spanPct: span }), RangeError);
+  }
+});
+
+test('auto re-centring is OFF unless asked for, and off by default on a fresh install', () => {
+  // Non-negotiable #1: a fresh install must behave exactly as before.
+  assert.equal(DEFAULT_CONFIG.autoRecentre, false);
+  const { recentre } = planGrid({ config: CONFIG, price: 10_000, openLots: [] });
+  assert.equal(recentre.applied, false);
+  assert.equal(recentre.reason, 'auto-recentre-disabled');
+  assert.deepEqual(recentre.to, { lower: CONFIG.lower, upper: CONFIG.upper });
+});
+
+test('it REFUSES to re-centre while a lot is open, however far price has run', () => {
+  // The hazard: an open lot's exit is derived from the CURRENT levels. Moving them
+  // down can place that lot's sell BELOW its own entry — the zero-spread bug, but
+  // now realising a loss. Refusing is the only safe answer without lot-level ladders.
+  const decision = recentreDecision({
+    config: RC_CONFIG,
+    price: 500,
+    openLots: [{ baseQty: 0.2, priceUsd: 125 }],
+  });
+  assert.equal(decision.allowed, false);
+  assert.equal(decision.reason, 'open-lots-would-be-stranded');
+});
+
+test('a held lot still exits one rung above ITS OWN entry when re-centring is on', () => {
+  // The invariant that must survive the feature existing at all.
+  const { intents, recentre } = planGrid({
+    config: RC_CONFIG,
+    price: 500, // far above the ladder: a naive implementation would re-centre here
+    openLots: [{ baseQty: 0.2, priceUsd: 125 }],
+  });
+  assert.equal(recentre.applied, false);
+  const sells = intents.filter((i) => i.side === SIDE.SELL);
+  assert.equal(sells.length, 1);
+  assert.ok(sells[0].level > 125, 'the exit must still sit above its own entry');
+  assert.equal(sells[0].level, 150); // unchanged: the original ladder
+});
+
+test('a lot with an unreadable quantity blocks re-centring rather than reading as flat', () => {
+  // Fail closed: summing baseQty would total NaN/undefined to 0 and let the
+  // ladder move while inventory of unknown size is open.
+  for (const bad of [NaN, undefined, null, -0.5, Infinity]) {
+    const d = recentreDecision({
+      config: RC_CONFIG,
+      price: 400,
+      openLots: [{ baseQty: bad, priceUsd: 125 }],
+    });
+    assert.equal(d.allowed, false, `baseQty ${bad} must not read as flat`);
+    assert.equal(d.reason, 'open-lots-would-be-stranded');
+  }
+});
+
+test('it REFUSES to re-centre while any order is resting, because tick cannot cancel', () => {
+  // `tick()` has no cancel step — cancelOrder is a manual command only. A moved
+  // ladder would leave real orders live at abandoned levels.
+  const key = intentKey({ gridId: 'g1', side: SIDE.BUY, level: 100 });
+  const decision = recentreDecision({
+    config: RC_CONFIG,
+    price: 500,
+    openLots: [],
+    openIntentKeys: [key],
+  });
+  assert.equal(decision.allowed, false);
+  assert.match(decision.reason, /resting-orders-would-be-stranded/);
+  assert.match(decision.reason, /cannot-cancel/);
+});
+
+test('it does not re-centre while price sits inside the ladder', () => {
+  for (const price of [100, 150, 200]) {
+    const d = recentreDecision({ config: RC_CONFIG, price, openLots: [] });
+    assert.equal(d.allowed, false, `price ${price} is inside [100, 200]`);
+    assert.equal(d.reason, 'price-inside-ladder');
+  }
+});
+
+test('it re-centres when flat, nothing resting, and price has left the ladder', () => {
+  const above = recentreDecision({ config: RC_CONFIG, price: 400, openLots: [] });
+  assert.equal(above.allowed, true);
+  assert.equal(above.reason, 'price-above-ladder');
+  assert.deepEqual({ lower: above.lower, upper: above.upper }, { lower: 340, upper: 460 });
+
+  const below = recentreDecision({ config: RC_CONFIG, price: 50, openLots: [] });
+  assert.equal(below.allowed, true);
+  assert.equal(below.reason, 'price-below-ladder');
+});
+
+test('a re-centred plan places its bids on the NEW ladder, not the old one', () => {
+  const { intents, recentre } = planGrid({ config: RC_CONFIG, price: 400, openLots: [] });
+  assert.equal(recentre.applied, true);
+  assert.deepEqual(recentre.from, { lower: 100, upper: 200 });
+  assert.deepEqual(recentre.to, { lower: 340, upper: 460 });
+
+  const buys = intents.filter((i) => i.side === SIDE.BUY);
+  assert.ok(buys.length > 0, 'a re-centred ladder should have bids below the market');
+  for (const b of buys) {
+    assert.ok(b.level >= 340 && b.level <= 460, `bid at ${b.level} must be on the new ladder`);
+    assert.ok(b.level < 400, 'a bid must sit below the market');
+  }
+  // And nothing from the abandoned ladder survives.
+  assert.equal(buys.filter((b) => b.level <= 200).length, 0);
+});
+
+test('the drift band delays re-centring until price is meaningfully outside', () => {
+  // 201 is outside [100,200] but within a 100bp band of it.
+  const tight = recentreDecision({ config: RC_CONFIG, price: 201, openLots: [] });
+  assert.equal(tight.allowed, true);
+  const banded = recentreDecision({
+    config: { ...RC_CONFIG, recentreDriftBps: 100 },
+    price: 201,
+    openLots: [],
+  });
+  assert.equal(banded.allowed, false);
+  assert.equal(banded.reason, 'price-inside-ladder');
+  // And the knob is reachable from a real install, not just from a test.
+  assert.equal(DEFAULT_CONFIG.recentreDriftBps, 0);
+});
+
+test('re-centring cannot be used to breach the venue minimum', () => {
+  // A tiny price must not produce rungs whose notional is below $10; the existing
+  // minimum check still applies on the new ladder.
+  const { intents, skipped } = planGrid({
+    config: { ...RC_CONFIG, notionalPerRungUsd: 5 },
+    price: 400,
+    openLots: [],
+  });
+  assert.equal(intents.length, 0);
+  assert.ok(skipped.some((s) => String(s.reason).includes('below-venue-minimum')));
+});
+
+/**
+ * A venue that remembers what it was told to place and echoes it back as live.
+ *
+ * `stubVenue` returns [] from getOpenOrders, so nothing it places ever stays
+ * resting — which hides every bug that only appears on the SECOND tick.
+ */
+const echoVenue = (price) => {
+  const live = [];
+  return {
+    kind: 'spot',
+    live,
+    async getPrice() { return price; },
+    async getOpenOrders() { return live.slice(); },
+    async getFills() { return []; },
+    async getCarryCosts() { return []; },
+    async placeOrder({ intent }) {
+      live.push({ intentKey: intent.intentKey, side: intent.side, triggerPriceUsd: intent.level });
+      return { venueOrderId: `v-${intent.intentKey}`, simulated: true };
+    },
+  };
+};
+
+test('a committed re-centre stops the next tick re-planning the abandoned ladder', async () => {
+  // The bug this exists to catch: planGrid is pure, so if the moved bounds are
+  // not persisted, tick 2 sees orders resting (-> re-centre refused), falls back
+  // to the ORIGINAL bounds, and places a SECOND ladder at the levels the
+  // strategy just abandoned. Capital committed to two ladders at once.
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setConfig({
+    gridId: 'g1', lower: 100, upper: 200, rungs: 5, spacing: 'arith',
+    notionalPerRungUsd: 25, autoRecentre: true, recentreSpanPct: 0.15,
+  });
+  await configStore.setRuntime({ armed: true });
+  const venue = echoVenue(400);
+
+  await tick({ venue, store, configStore });
+  assert.ok(venue.live.length > 0, 'tick 1 should place the re-centred ladder');
+  const moved = await configStore.getConfig();
+  assert.deepEqual(
+    [moved.lower, moved.upper], [340, 460],
+    'the moved bounds must be committed, or the next tick disagrees with this one',
+  );
+
+  await tick({ venue, store, configStore });
+  const stale = venue.live.filter((o) => o.triggerPriceUsd <= 200);
+  assert.deepEqual(stale, [], 'no order may rest on the abandoned [100,200] ladder');
+  for (const o of venue.live) {
+    assert.ok(o.triggerPriceUsd >= 340 && o.triggerPriceUsd <= 460, `stray order at ${o.triggerPriceUsd}`);
+  }
+});
+
+test('a tick that books nothing leaves the configured bounds alone', async () => {
+  // Not armed => never reaches planGrid => must not mutate the user's config.
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setConfig({ lower: 100, upper: 200, autoRecentre: true });
+  const result = await tick({ venue: echoVenue(400), store, configStore });
+  assert.ok(result.skipped.some((s) => s.reason === 'not-armed'));
+  const after = await configStore.getConfig();
+  assert.deepEqual([after.lower, after.upper], [100, 200]);
 });
