@@ -34,6 +34,7 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 -m backtester.paircli` | cointegration / pairs backtest | no |
 | `python3 -m backtester.core.fetch` | fetch one asset's bars into `data/` | **yes** |
 | `python3 -m backtester.core.universe` | fetch many assets, refuse a partial set | **yes** |
+| `python3 -m backtester.core.ticks` | fetch trade ticks into `data/ticks/` | **yes** |
 | `python3 research/sweep.py` | the horizon parameter tables; single-split walk-forward | no |
 | `python3 research/cpcv_sweep.py` | **primary evaluation** — CPCV + PBO | no |
 | `python3 research/cross_asset_cpcv.py` | does a result transfer to another coin | no |
@@ -153,6 +154,38 @@ Options: `--asset`, `--quote`, `--start`, `--interval`, `--out`.
 **When *not* to use it.** To "fix" a gap. It refuses gappy series on purpose;
 `--allow-gaps` is a disclosure, not a repair. A forward-filled gap flatters every
 volatility and mean-reversion statistic computed afterwards.
+
+### `python3 -m backtester.core.ticks` — trade ticks, not bars
+
+**Purpose.** Fetch individual trades from `/products/<id>/trades`, below the 1m
+floor of the candle endpoint, and optionally aggregate them into bars.
+
+```bash
+python3 -m backtester.core.ticks --asset SOL --start 2026-08-05T12:00:00Z \
+    --end 2026-08-05T12:05:00Z --bars 1m
+```
+
+Options: `--asset`, `--quote`, `--start`, `--end`, `--max-trades`,
+`--allow-truncated`, `--out`, `--bars`, `--bars-out`.
+
+Output lands in `data/ticks/`, deliberately outside the `data/<ASSET>_<interval>.csv`
+namespace `CsvLoader` reads — a tick frame is not a bar frame and a backtest that
+loaded one as the other would be a confident wrong number.
+
+**When *not* to use it.** For a long window. The endpoint takes no time range at
+all (`start`/`end` are silently ignored, which is why the window is located by
+bisecting `trade_id`), and a month of SOL-USD is millions of trades. `--max-trades`
+defaults to 500,000; a window cut short is **refused** rather than written, because
+`to_csv` drops the in-frame truncation marker and the file name would still claim
+the full window. `--allow-truncated` is a disclosure, not a repair.
+
+**Why this exists, and what it caught.** Where a 1m candle exists, ticks aggregated
+to 1m reproduce it exactly — OHLC and volume — over sampled windows. But the candle
+endpoint sometimes **omits minutes that traded**: on 2026-07-06 it returned no bar
+for 01:38 or 01:39 although 100 trades and ~171 SOL changed hands in them, and the
+01:37 bar it did return understated volume (120.4 vs 204.2 from ticks). The loss
+propagates upward — the enclosing 5m bar is short by the same trades. The tick
+endpoint is the only way to see, or repair, that.
 
 ### `python3 -m backtester.core.universe` — many assets
 

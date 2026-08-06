@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-08-05T18:49:35+00:00",
+  "generatedAt": "2026-08-06T20:26:55+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "af3206e",
+  "commit": "234acbb",
   "counts": {
-    "files": 276,
-    "bytes": 3712656,
+    "files": 282,
+    "bytes": 3782928,
     "byKind": {
-      "code-python": 57,
+      "code-python": 59,
       "result": 52,
       "strategy-card": 46,
-      "doc": 39,
+      "doc": 42,
       "code-js": 28,
-      "test": 21,
+      "test": 22,
       "coin-reference": 11,
       "ci": 8,
       "other": 7,
@@ -21,10 +21,10 @@
       "config": 2
     },
     "byTopDir": {
-      "backtester": 96,
-      "research": 78,
+      "backtester": 98,
+      "research": 81,
       "extension": 34,
-      "docs": 22,
+      "docs": 23,
       "soltui": 20,
       "(root)": 9,
       ".github": 8,
@@ -33,7 +33,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 255
+    "withSummary": 261
   },
   "files": [
     {
@@ -308,7 +308,7 @@
       "summarySource": "opening-prose",
       "bytes": 5616,
       "lines": 94,
-      "sha1": "72dd7d16a68f88234a9632a1b516cff9be17f3ec",
+      "sha1": "47bcc16cff5e565e602786ee172bdc5b3fc2f373",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -344,7 +344,7 @@
       "summarySource": "opening-prose",
       "bytes": 5914,
       "lines": 114,
-      "sha1": "f4fac0af98f213e48d58410af3a301839f89fec6",
+      "sha1": "bb9f361011571904dfe23cb8b88954042911090e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -1237,6 +1237,46 @@
         "pathlib",
         "strategies",
         "typing"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "backtester/core/ticks.py",
+      "path": "backtester/core/ticks.py",
+      "dir": "backtester/core",
+      "name": "ticks.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "ticks",
+      "summary": "Explicit trade-tick fetch from the Coinbase Exchange public API. Sibling of fetch.py, and deliberately separate from it. Candles and ticks are different contracts: a tick frame is not a bar frame and must never be loaded as one, so nothing here writes into the `data/<ASSET>_<interval>.csv` namespace that CsvLoader reads. Ticks land under `data/ticks/`.",
+      "summarySource": "docstring",
+      "bytes": 12817,
+      "lines": 313,
+      "sha1": "a6f1e471d103988ea1d75a006b888b788b8503ff",
+      "symbols": [
+        "MAX_TRADES_PER_REQUEST",
+        "TRADE_COLUMNS",
+        "_parse_trades()",
+        "_trade_page()",
+        "newest_trade_id()",
+        "seek_trade_id()",
+        "fetch_trades()",
+        "trades_to_bars()",
+        "default_tick_path()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "data",
+        "fetch",
+        "pandas",
+        "pathlib",
+        "sys",
+        "time",
+        "types",
+        "urllib"
       ],
       "internalImports": [],
       "frontmatter": {}
@@ -3509,6 +3549,38 @@
       "frontmatter": {}
     },
     {
+      "id": "backtester/tests/test_ticks.py",
+      "path": "backtester/tests/test_ticks.py",
+      "dir": "backtester/tests",
+      "name": "test_ticks.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "Two minutes of trades, newest first, exactly as the API returns them.",
+      "summary": "Tick fetch and tick->bar aggregation. No network: every test uses fixtures.",
+      "summarySource": "docstring",
+      "bytes": 8031,
+      "lines": 192,
+      "sha1": "40c0fd6c5f76ba4a2d30cdb030d05339a81013e6",
+      "symbols": [
+        "RAW",
+        "class TestParseTrades",
+        "class TestTradesToBars",
+        "class TestTruncationIsNotWritableBySilence"
+      ],
+      "imports": [
+        "__future__",
+        "backtester",
+        "pandas",
+        "pathlib",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "backtester"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "backtester/tests/test_universe.py",
       "path": "backtester/tests/test_universe.py",
       "dir": "backtester/tests",
@@ -3572,7 +3644,7 @@
       "summarySource": "opening-prose",
       "bytes": 6905,
       "lines": 118,
-      "sha1": "8aad241d995d9449bfa71b4f0d41b46fb116aaab",
+      "sha1": "07a27f9afcb5d8b8e7aebb0039e96169117310da",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -3687,6 +3759,24 @@
       "frontmatter": {}
     },
     {
+      "id": "docs/SCRIPTS.md",
+      "path": "docs/SCRIPTS.md",
+      "dir": "docs",
+      "name": "SCRIPTS.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Scripts",
+      "summary": "Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual \u2014 the commands you actually type.",
+      "summarySource": "opening-prose",
+      "bytes": 26024,
+      "lines": 561,
+      "sha1": "3b715849ff1949e0d2c41e388ea484e29fc15d54",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "docs/SECURITY.md",
       "path": "docs/SECURITY.md",
       "dir": "docs",
@@ -3712,11 +3802,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Testing",
-      "summary": "python3 -m unittest discover -s backtester/tests -t . # 499 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests",
+      "summary": "python3 -m unittest discover -s backtester/tests -t . # 514 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests",
       "summarySource": "opening-prose",
       "bytes": 8372,
       "lines": 129,
-      "sha1": "570914207f8df2e5af8094d494b3837d8ba0553b",
+      "sha1": "d0c8391aaa18f7ce534c20cef82fffc387a1ef94",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -5041,6 +5131,24 @@
       "frontmatter": {}
     },
     {
+      "id": "research/LEVERAGE-ECONOMICS.md",
+      "path": "research/LEVERAGE-ECONOMICS.md",
+      "dir": "research",
+      "name": "LEVERAGE-ECONOMICS.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Leverage economics \u2014 which strategies survive high-fee, high-leverage perps",
+      "summary": "No network, no data files \u2014 this is closed-form arithmetic over published venue parameters, so it reproduces exactly. python3 research/leverage_economics.py --self-test # gate: 7 load-bearing claims",
+      "summarySource": "opening-prose",
+      "bytes": 8146,
+      "lines": 162,
+      "sha1": "2afe81c712d48c72b7a662f2ab4eb094d2bc3734",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "research/PROMPT_STRATEGIES.md",
       "path": "research/PROMPT_STRATEGIES.md",
       "dir": "research",
@@ -5089,6 +5197,24 @@
       "bytes": 39574,
       "lines": 779,
       "sha1": "45fd84ac83bc09334d6f37cad41edb19845fee93",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/SWEEP-9COIN.md",
+      "path": "research/SWEEP-9COIN.md",
+      "dir": "research",
+      "name": "SWEEP-9COIN.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Nine coins, seven strategies, ~2,400 configs \u2014 and one survivor that still loses",
+      "summary": "into `sweep_results_9coin.json`, `sweep_wf_9coin.json` and `sweep_grid_9coin.json`. cd ~/Downloads/sol-backtest-data/_scripts python3 run_sweep.py --interval 1h --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,LINKUSDT,AVAXUSDT,TRXUSDT",
+      "summarySource": "opening-prose",
+      "bytes": 7123,
+      "lines": 146,
+      "sha1": "e324b93545bc71556977a1c3d9352a06e1044ffe",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -5624,6 +5750,41 @@
         "backtester",
         "research"
       ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/leverage_economics.py",
+      "path": "research/leverage_economics.py",
+      "dir": "research",
+      "name": "leverage_economics.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "leverage_economics",
+      "summary": "Cost economics of high-leverage perpetuals, for Jupiter Perps specifically. Generates every table in research/LEVERAGE-ECONOMICS.md. No network, no data files -- this is closed-form arithmetic over published venue parameters, so it reproduces exactly.",
+      "summarySource": "docstring",
+      "bytes": 8131,
+      "lines": 170,
+      "sha1": "dfe87c2a1bc3cb63f6cd6e33cb429216cf230936",
+      "symbols": [
+        "FEE_RT",
+        "R_LONG",
+        "R_SHORT",
+        "HOLDS",
+        "LEVS",
+        "break_even_move()",
+        "carry_crossover_hours()",
+        "hours_to_zero_collateral()",
+        "liquidation_move()",
+        "_fmt_h()",
+        "tables()",
+        "self_test()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse"
+      ],
+      "internalImports": [],
       "frontmatter": {}
     },
     {
