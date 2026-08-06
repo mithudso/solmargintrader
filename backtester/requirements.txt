@@ -5,7 +5,7 @@ numpy>=2.0
 
 # Charts only. The tool degrades to "no charts" if this is absent, so the
 # test suite does not depend on it.
-matplotlib>=3.8
+matplotlib>=3.11.1
 
 # Deliberately NOT required:
 #   pyarrow   -- Parquet is optional and guarded by an import check.
