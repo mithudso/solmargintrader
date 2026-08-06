@@ -525,84 +525,123 @@ the single split ranked `zscore_20_-2` first at medium and `ma_crossover_12_48` 
 CPCV puts them far lower. Ranked on **out-of-sample Sharpe**, in-sample beside each row.
 Rows with fewer than 10 out-of-sample trades are listed but **not ranked**.
 
-## Short horizon (1h bars, fast parameters) — 16 configurations evaluated
-
-> These three tables are the **16-strategy** run. The current sweep evaluates 25 singles per
-> horizon under the measured redundancy gate; the regenerated tables are in
-> `research/results/tables.md` and have not been retypeset into this document.
+## Short horizon (1h bars, fast parameters) — 25 configurations evaluated
 
 | # | Strategy | Family | OOS Sharpe | IS Sharpe | OOS ret | IS ret | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
 | 1 | `ma_crossover_12_48` | trend | **+0.488** | −2.490 | +3.4% | −59.7% | −11.8% | 29 |
 | 2 | `zscore_20_-2` | mean-reversion | **+0.441** | −1.285 | +2.8% | −37.3% | −19.0% | 48 |
-| 3 | `bb_reversion_20_2` | mean-reversion | **+0.086** | −1.274 | −0.9% | −37.3% | −18.0% | 52 |
-| 4 | `sma_regime_168` | regime-filter | −0.519 | −2.101 | −7.0% | −51.4% | −15.2% | 49 |
-| 5 | `voltarget_168_24_0.8` | risk-overlay | −0.519 | −2.105 | −7.0% | −51.5% | −15.2% | 49 |
-| 6 | `rsi_7_30_55` | oscillator-reversion | −0.527 | −1.620 | −7.4% | −45.9% | −23.9% | 49 |
-| 7 | `bb_breakout_20_2` | breakout | −0.684 | −0.901 | −6.9% | −23.6% | −15.9% | 50 |
-| 8 | `stoch_14_3` | oscillator-reversion | −0.719 | −0.311 | −7.9% | −14.6% | −13.9% | 37 |
-| 9 | `grid_48_4_0.03` | mean-reversion | −1.510 | −1.593 | −8.8% | −27.1% | −13.3% | 694 |
-| 10 | `vwap_reversion_20_0.01` | mean-reversion | −1.516 | −1.777 | −17.2% | −50.5% | −23.3% | 55 |
-| 11 | `ts_momentum_24` | momentum | −1.677 | −2.272 | −18.1% | −57.8% | −23.3% | 126 |
-| 12 | `keltner_12_7_2` | breakout | −1.954 | +0.448 | −7.9% | +5.3% | −9.0% | 13 |
-| 13 | `breakout_12_6` | breakout | −2.272 | −0.936 | −22.2% | −29.6% | −27.1% | 59 |
-| 14 | `obv_trend_24` | volume-flow | −2.331 | −0.499 | −25.8% | −23.3% | −29.4% | 153 |
-| 15 | `macd_6_13_5` | trend | −4.621 | −2.016 | −42.4% | −56.4% | −46.0% | 205 |
+| 3 | `ou_reversion_250_2.5` | mean-reversion | **+0.089** | −0.040 | +0.0% | −3.5% | −9.4% | 33 |
+| 4 | `bb_reversion_20_2` | mean-reversion | **+0.086** | −1.274 | −0.9% | −37.3% | −18.0% | 52 |
+| 5 | `hurst_switch_250_0.55_0.45` | regime-filter | **+0.030** | −3.097 | −0.1% | −40.2% | −6.6% | 29 |
+| 6 | `voltarget_168_24_0.8` | sma-gated | −0.519 | −2.105 | −7.0% | −51.5% | −15.2% | 49 |
+| 7 | `garch_voltarget_0.94_0.8` | sma-gated | −0.519 | −2.105 | −7.0% | −51.5% | −15.2% | 49 |
+| 8 | `sma_regime_168` | sma-gated | −0.519 | −2.101 | −7.0% | −51.4% | −15.2% | 49 |
+| 9 | `rsi_7_30_55` | oscillator-reversion | −0.527 | −1.620 | −7.4% | −45.9% | −23.9% | 49 |
+| 10 | `bb_breakout_20_2` | breakout | −0.684 | −0.901 | −6.9% | −23.6% | −15.9% | 50 |
+| 11 | `stoch_14_3` | oscillator-reversion | −0.719 | −0.311 | −7.9% | −14.6% | −13.9% | 37 |
+| 12 | `ichimoku_9_26_52` | trend | −0.889 | −1.557 | −10.1% | −41.8% | −17.4% | 67 |
+| 13 | `ma_ribbon_5x6` | trend | −1.030 | −2.019 | −9.6% | −43.6% | −18.0% | 801 |
+| 14 | `vol_regime_24_0.5` | regime-filter | −1.360 | −1.386 | −10.8% | −26.9% | −15.5% | 58 |
+| 15 | `grid_48_4_0.03` | mean-reversion | −1.510 | −1.593 | −8.8% | −27.1% | −13.3% | 694 |
+| 16 | `vwap_reversion_20_0.01` | mean-reversion | −1.516 | −1.777 | −17.2% | −50.5% | −23.3% | 55 |
+| 17 | `atr_sized_7_0.01` | sma-gated | −1.665 | −2.039 | −10.4% | −27.2% | −13.2% | 434 |
+| 18 | `ts_momentum_24` | momentum | −1.677 | −2.272 | −18.1% | −57.8% | −23.3% | 126 |
+| 19 | `keltner_12_7_2` | breakout | −1.954 | +0.448 | −7.9% | +5.3% | −9.0% | 13 |
+| 20 | `breakout_12_6` | breakout | −2.272 | −0.936 | −22.2% | −29.6% | −27.1% | 59 |
+| 21 | `obv_trend_24` | volume-flow | −2.331 | −0.499 | −25.8% | −23.3% | −29.4% | 153 |
+| 22 | `dual_momentum_24_2` | momentum | −2.739 | −4.061 | −27.3% | −76.5% | −31.6% | 130 |
+| 23 | `adx_trend_7_25` | regime-filter | −3.600 | −1.991 | −28.4% | −45.7% | −29.7% | 121 |
+| 24 | `macd_6_13_5` | trend | −4.621 | −2.016 | −42.4% | −56.4% | −46.0% | 205 |
 
 _Not ranked: `buy_and_hold` (1 trade) — OOS Sharpe −0.523, OOS return −12.9%._
 
-**Reading it:** only three of fifteen rankable short-horizon signals produced a positive
-out-of-sample Sharpe, and the best of them returned +3.4% before any funding/borrow cost.
-`macd_6_13_5` at −4.62 is the clearest case of a fast trend signal being chewed up by
-whipsaw plus 8bps round-trip cost across 205 trades.
+**Reading it:** five of twenty-four rankable short-horizon signals produced a positive
+out-of-sample Sharpe, and the best of them returned +3.4% before any funding/borrow cost. Two of
+the five clear zero by a rounding margin — `ou_reversion` at +0.089 on +0.0% and `hurst_switch`
+at +0.030 on −0.1% are flat, not profitable. `macd_6_13_5` at −4.62 remains the clearest case of
+a fast trend signal chewed up by whipsaw plus 8bps round-trip cost across 205 trades.
 
-## Medium horizon (1d bars, medium parameters) — 16 configurations evaluated (the 16-strategy run)
+Rows 6–8 are the redundancy finding sitting in plain sight: `voltarget`, `garch_voltarget` and
+`sma_regime` post −0.519 on −7.0% over 49 trades apiece, because all three gate on
+`close > sma(closes, 168)` and differ only in position size. They are one signal under three
+names, which is why they now share the `sma-gated` family. `atr_sized` shares that gate too and
+lands at −1.665 — its risk-normalised sizing changes the magnitude enough to move it eighteen
+places without changing a single entry or exit decision.
+
+## Medium horizon (1d bars, medium parameters) — 25 configurations evaluated
 
 | # | Strategy | Family | OOS Sharpe | IS Sharpe | OOS ret | IS ret | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
 | 1 | `zscore_20_-2` | mean-reversion | **+0.699** | −0.170 | **+41.3%** | −64.8% | −52.0% | 10 |
-| 2 | `bb_reversion_20_2` | mean-reversion | **+0.193** | −0.152 | −4.8% | −63.9% | −52.0% | 10 |
-| 3 | `stoch_14_3` | oscillator-reversion | **+0.024** | +0.153 | −18.1% | −20.2% | −44.4% | 11 |
-| 4 | `sma_regime_100` | regime-filter | −0.516 | +0.443 | −35.8% | +34.8% | −43.1% | 13 |
-| 5 | `vwap_reversion_20_0.02` | mean-reversion | −0.532 | +0.032 | −53.9% | −58.6% | −61.8% | 23 |
-| 6 | `voltarget_100_20_0.6` | risk-overlay | −0.569 | +0.307 | −31.1% | +15.7% | −34.8% | 73 |
-| 7 | `grid_50_4_0.05` | mean-reversion | −0.590 | −0.119 | −38.9% | −36.9% | −48.5% | 100 |
-| 8 | `macd_12_26_9` | trend | −0.720 | **+1.347** | −52.8% | **+1356.5%** | −59.2% | 21 |
-| 9 | `bb_breakout_20_2` | breakout | −0.841 | **+1.837** | −34.9% | **+2843.6%** | −40.9% | 11 |
-| 10 | `ts_momentum_60` | momentum | −0.874 | +0.959 | −51.1% | +392.8% | −51.3% | 25 |
-| 11 | `obv_trend_20` | volume-flow | −1.383 | **+1.494** | −69.2% | **+1932.1%** | −69.2% | 37 |
+| 2 | `hurst_switch_250_0.55_0.45` | regime-filter | **+0.564** | +0.669 | **+15.6%** | +64.0% | −16.3% | 10 |
+| 3 | `bb_reversion_20_2` | mean-reversion | **+0.193** | −0.152 | −4.8% | −63.9% | −52.0% | 10 |
+| 4 | `stoch_14_3` | oscillator-reversion | **+0.024** | +0.153 | −18.1% | −20.2% | −44.4% | 11 |
+| 5 | `vol_regime_20_0.5` | regime-filter | −0.377 | −0.495 | −21.2% | −58.5% | −35.3% | 15 |
+| 6 | `atr_sized_14_0.01` | sma-gated | −0.454 | +0.377 | −2.6% | +5.8% | −3.9% | 93 |
+| 7 | `sma_regime_100` | sma-gated | −0.516 | +0.443 | −35.8% | +34.8% | −43.1% | 13 |
+| 8 | `ichimoku_9_26_52` | trend | −0.531 | +0.967 | −33.3% | **+336.3%** | −36.7% | 11 |
+| 9 | `vwap_reversion_20_0.02` | mean-reversion | −0.532 | +0.032 | −53.9% | −58.6% | −61.8% | 23 |
+| 10 | `garch_voltarget_0.94_0.6` | sma-gated | −0.551 | +0.321 | −30.8% | +18.9% | −37.2% | 50 |
+| 11 | `voltarget_100_20_0.6` | sma-gated | −0.569 | +0.307 | −31.1% | +15.7% | −34.8% | 73 |
+| 12 | `grid_50_4_0.05` | mean-reversion | −0.590 | −0.119 | −38.9% | −36.9% | −48.5% | 100 |
+| 13 | `macd_12_26_9` | trend | −0.720 | **+1.347** | −52.8% | **+1356.5%** | −59.2% | 21 |
+| 14 | `bb_breakout_20_2` | breakout | −0.841 | **+1.837** | −34.9% | **+2843.6%** | −40.9% | 11 |
+| 15 | `ts_momentum_60` | momentum | −0.874 | +0.959 | −51.1% | **+392.8%** | −51.3% | 25 |
+| 16 | `ma_ribbon_5x10` | trend | −1.242 | +1.119 | −54.0% | **+452.0%** | −55.2% | 160 |
+| 17 | `dual_momentum_12_1` | momentum | −1.303 | +1.176 | −65.3% | **+776.5%** | −71.8% | 37 |
+| 18 | `obv_trend_20` | volume-flow | −1.383 | **+1.494** | −69.2% | **+1932.1%** | −69.2% | 37 |
 
-_Not ranked (fewer than 10 OOS trades): `breakout_20_10` (7), `rsi_14_30_50` (4),
-`keltner_20_14_2` (6), `ma_crossover_20_50` (7), `buy_and_hold` (1)._
+_Not ranked (fewer than 10 OOS trades): `adx_trend_14_25` (8), `breakout_20_10` (7),
+`ma_crossover_20_50` (7), `keltner_20_14_2` (6), `ou_reversion_250_2.5` (6), `rsi_14_30_50` (4),
+`buy_and_hold` (1)._
 
-**Reading it:** rows 8–11 are the exhibit. `bb_breakout_20_2` returned **+2,844% in-sample and
-−34.9% out-of-sample**; `obv_trend_20` **+1,932% → −69.2%**. These are the strategies a
-full-sample leaderboard would have crowned. The three positive out-of-sample rows are all
-mean-reversion/oscillator entries sitting exactly at the 10-trade evidence floor — treat them
-as "not yet disconfirmed" rather than "works".
+**Reading it:** rows 13–18 are the exhibit, and adding nine strategies made it worse rather than
+better. `bb_breakout_20_2` returned **+2,844% in-sample and −34.9% out-of-sample**; `obv_trend_20`
+**+1,932% → −69.2%**; `dual_momentum_12_1` **+777% → −65.3%**; `ma_ribbon_5x10` **+452% → −54.0%**.
+Every one of the six largest in-sample returns is a negative out-of-sample row. These are the
+strategies a full-sample leaderboard would have crowned.
 
-## Long horizon (1d bars, slow parameters) — 16 configurations evaluated (the 16-strategy run)
+The four positive out-of-sample rows sit at 10–11 trades, exactly on the evidence floor — treat
+them as "not yet disconfirmed" rather than "works". `hurst_switch` is the one new entrant among
+them and the only positive row that is also positive in-sample (+0.669), which makes it the least
+likely of the four to be a regime accident, and still a 10-trade sample.
+
+## Long horizon (1d bars, slow parameters) — 25 configurations evaluated
 
 | # | Strategy | Family | OOS Sharpe | IS Sharpe | OOS ret | IS ret | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
-| 1 | `obv_trend_60` | volume-flow | −0.153 | +1.271 | −24.0% | +982.7% | −43.7% | 18 |
-| 2 | `grid_120_4_0.1` | mean-reversion | −0.296 | +0.001 | −26.5% | −23.1% | −39.1% | 143 |
-| 3 | `voltarget_200_60_0.6` | risk-overlay | −0.395 | +0.975 | −23.6% | +219.9% | −27.9% | 67 |
-| 4 | `ts_momentum_200` | momentum | −1.976 | +1.098 | −77.2% | +506.2% | −77.7% | 15 |
+| 1 | `dual_momentum_24_1` | momentum | −0.119 | +1.245 | −19.7% | +988.7% | −40.9% | 26 |
+| 2 | `obv_trend_60` | volume-flow | −0.153 | +1.271 | −24.0% | +982.7% | −43.7% | 18 |
+| 3 | `grid_120_4_0.1` | mean-reversion | −0.296 | +0.001 | −26.5% | −23.1% | −39.1% | 143 |
+| 4 | `voltarget_200_60_0.6` | sma-gated | −0.395 | +0.975 | −23.6% | +219.9% | −27.9% | 67 |
+| 5 | `garch_voltarget_0.97_0.6` | sma-gated | −0.448 | +0.919 | −25.4% | +185.3% | −27.9% | 44 |
+| 6 | `atr_sized_30_0.01` | sma-gated | −0.464 | +0.983 | −2.5% | +17.2% | −3.5% | 66 |
+| 7 | `ma_ribbon_5x20` | trend | −0.806 | +0.668 | −40.3% | +114.7% | −45.4% | 158 |
+| 8 | `ts_momentum_200` | momentum | −1.976 | +1.098 | −77.2% | +506.2% | −77.7% | 15 |
 
 _Not ranked (fewer than 10 OOS trades — the dominant outcome at this scale):
-`rsi_30_35_55` (2, OOS Sharpe +0.540), `bb_reversion_60_2` (5, +0.225), `zscore_60_-2` (5,
-+0.225), `macd_26_52_18` (7, +0.188), `breakout_60_30` (2), `stoch_40_5` (4),
-`sma_regime_200` (4), `vwap_reversion_60_0.05` (7), `ma_crossover_50_200` (2),
-`keltner_50_30_2` (6), `bb_breakout_60_2` (5), `buy_and_hold` (1)._
+`hurst_switch_250_0.55_0.45` (6, OOS Sharpe +0.597), `rsi_30_35_55` (2, +0.540),
+`vol_regime_60_0.5` (4, +0.287), `bb_reversion_60_2` (5, +0.225), `zscore_60_-2` (5, +0.225),
+`macd_26_52_18` (7, +0.188), `ou_reversion_250_3` (6, +0.092), `breakout_60_30` (2),
+`ichimoku_18_52_104` (6), `stoch_40_5` (4), `sma_regime_200` (4), `vwap_reversion_60_0.05` (7),
+`buy_and_hold` (1), `adx_trend_30_25` (2), `ma_crossover_50_200` (2), `keltner_50_30_2` (6),
+`bb_breakout_60_2` (5)._
 
 **Reading it: not one rankable long-horizon _single_ has a positive out-of-sample Sharpe**
-(0 of 4; 5 of 34 rankable long-horizon *pairs* do, see List 2). Twelve of sixteen singles fail
-the evidence floor entirely, because slow parameters on a
-563-bar out-of-sample window simply do not generate enough trades. **The honest conclusion for
-the long horizon is that this dataset cannot answer the question** — 1,875 daily bars is too
-short to evaluate 200-day signals out-of-sample. That is a data limitation, not a finding
-about the strategies.
+(0 of 8; 17 of 85 rankable long-horizon *pairs* do, see List 2). **Seventeen of twenty-five**
+singles fail the evidence floor entirely, because slow parameters on a 563-bar out-of-sample
+window simply do not generate enough trades. Expanding from 16 strategies to 25 did not improve
+that ratio — it worsened it, from 12-of-16 to 17-of-25.
+
+Note where the positive numbers are: every one of the seven configurations with a positive
+out-of-sample Sharpe is in the *unranked* list, on 2 to 7 trades. `rsi_30_35_55` shows +0.540 on
+**two** trades. That is the whole argument for having an evidence floor — without it, this
+table's leaderboard would be sorted by sample size rather than by skill.
+
+**The honest conclusion for the long horizon is that this dataset cannot answer the question** —
+1,875 daily bars is too short to evaluate 200-day signals out-of-sample. That is a data
+limitation, not a finding about the strategies.
 
 ## Spec-only tier — ranked by a priori plausibility, never measured
 

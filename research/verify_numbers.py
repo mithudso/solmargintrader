@@ -64,7 +64,10 @@ EXPECTED_FIGURES = {
         # sentence naming one configuration and is now a four-row table, because
         # the measured gate changed the long ranking enough that one row no
         # longer represented it. More figures checked, not fewer.
-        "prose": 7, "walk_forward": 180, "cpcv": 615,
+        # walk_forward 180 -> 300 on 2026-08-05: the three singles tables were
+        # rebuilt from the 25-strategy run, going from 30 rows to 50 at six
+        # checked figures each. An increase, so nothing stopped being verified.
+        "prose": 7, "walk_forward": 300, "cpcv": 615,
         "perturb": 7, "geometry": 58, "geometry_xref": 15, "pair": 52,
     },
     # STRATEGIES.md prose 31 -> 30 on 2026-08-05, same reason as the RANKED_LISTS
