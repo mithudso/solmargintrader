@@ -353,6 +353,16 @@ def redundancy_filename(asset: str, horizon: str) -> str:
     return f"signal_redundancy_{asset.lower()}_{horizon}.csv"
 
 
+def combination_redundancy_filename(asset: str, horizon: str) -> str:
+    """Canonical name of the COMBINATION-level redundancy evidence.
+
+    Separate from the singles file because it answers a different question: not
+    "are these two signals interchangeable" but "are these two combinations the
+    same experiment". The second does not follow from the first.
+    """
+    return f"combination_redundancy_{asset.lower()}_{horizon}.csv"
+
+
 def measured_redundant_pairs(
     horizon: str, asset: str = "SOL"
 ) -> frozenset[frozenset[str]]:
@@ -391,6 +401,43 @@ def measured_redundant_pairs(
             )
     flagged = table[flags.to_numpy(dtype=bool)]
     return frozenset(frozenset((a, b)) for a, b in zip(flagged["a"], flagged["b"]))
+
+
+def measured_redundant_combinations(
+    horizon: str, asset: str = "SOL"
+) -> frozenset[frozenset[str]] | None:
+    """Twin COMBINATIONS measured redundant as combinations, keyed by label.
+
+    Returns None when the evidence has not been generated, which callers treat as
+    "fall back to collapsing the whole class" -- the previous behaviour, and a
+    documented over-collapse rather than a silent one.
+
+    Why this file exists at all: class membership is measured on a strategy's
+    STANDALONE exposure, and applying it to combinations assumes the members stay
+    interchangeable once a partner decides which bars either may act on. Measured
+    on SOL that assumption mostly holds -- 926 of 1,019 measurable twin pairs are
+    redundant as combinations too -- but roughly 90 are not, and those are the
+    combinations the class rule discards without evidence.
+    """
+    path = OUT_DIR / combination_redundancy_filename(asset, horizon)
+    if not path.exists():
+        return None
+    table = pd.read_csv(path)
+
+    def members(label: str) -> frozenset[str]:
+        return frozenset(label[label.index("(") + 1 : -1].split("+"))
+
+    # The evidence is per-mode; the gate is not, because sweep_combos picks the
+    # combinations first and applies every mode to each. Resolve conservatively:
+    # a twin pair collapses only if it is redundant under EVERY mode measured, so
+    # a single mode that tells them apart is enough to keep both. Erring the other
+    # way would discard a distinguishable experiment on the strength of the modes
+    # where it happens to look the same.
+    verdicts: dict[frozenset[frozenset[str]], list[bool]] = {}
+    for a, b, flag in zip(table["a"], table["b"], table["redundant"]):
+        key = frozenset((members(a), members(b)))
+        verdicts.setdefault(key, []).append(str(flag).lower() == "true")
+    return frozenset(k for k, flags in verdicts.items() if all(flags))
 
 
 def redundancy_classes(
@@ -520,8 +567,14 @@ def independent_combos(
             return False
         return True
 
+    combo_evidence = (
+        measured_redundant_combinations(horizon)
+        if gate in ("measured", "both")
+        else None
+    )
     out: list[tuple[str, ...]] = []
-    seen: set[frozenset[str]] = set()
+    seen: dict[frozenset[str], tuple[str, ...]] = {}
+    added: set[tuple[str, ...]] = set()
     if not local_rep:
         return [c for c in itertools.combinations(names, size) if admissible(c)]
 
@@ -541,9 +594,26 @@ def independent_combos(
             # their own pair being flagged -- reachable only through a chained
             # component, and dropped for the same reason.
             key = frozenset(local_rep.get(n, n) for n in combo)
-            if len(key) < size or key in seen:
+            if len(key) < size:
                 continue
-            seen.add(key)
+            if combo in added:
+                # The second pass revisits every combination, including the ones
+                # the first pass already kept. Without this the representative is
+                # emitted twice and the admitted count exceeds the family gate's,
+                # which is arithmetically impossible for an intersection.
+                continue
+            if key in seen:
+                # A twin of something already kept. Collapse it only if the two
+                # were measured redundant AS COMBINATIONS; the class rule alone
+                # asserts that without evidence.
+                if combo_evidence is None:
+                    continue
+                twin = frozenset((frozenset(combo), frozenset(seen[key])))
+                if twin in combo_evidence:
+                    continue
+            else:
+                seen[key] = combo
+            added.add(combo)
             out.append(combo)
     return out
 
