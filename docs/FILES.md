@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `af3206e` (2026-08-05T18:49:35+00:00). 276 tracked files, 3.7 MB.
+**Generated** from `index/INDEX.json` at commit `439c58e` (2026-08-06T21:42:56+00:00). 280 tracked files, 3.8 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (184 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 74/78 Python modules and 25/28 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (188 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 75/79 Python modules and 25/28 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (50 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,10 +34,10 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 9 files
-- [`docs`](#docs) — 22 files
+- [`docs`](#docs) — 23 files
 - [`index`](#index) — 5 files
 - [`backtester`](#backtester) — 96 files
-- [`research`](#research) — 78 files
+- [`research`](#research) — 81 files
 - [`extension`](#extension) — 34 files
 - [`soltui`](#soltui) — 20 files
 - [`.github`](#github) — 8 files
@@ -131,7 +131,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-22 files.
+23 files.
 
 #### `docs/API.md`
 
@@ -194,6 +194,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 122 lines · 4,883 B · description: **extracted**
 
 **Purpose.** cd extension && node tools/cli.js kill cannot resume trading. In the extension, the popup's red KILL SWITCH button does the same thing. node tools/cli.js data --json # find venueOrderId values
+
+**Use.** Read it.
+
+#### `docs/SCRIPTS.md`
+
+`doc` · 572 lines · 26,959 B · description: **extracted**
+
+**Purpose.** Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual — the commands you actually type.
 
 **Use.** Read it.
 
@@ -1337,13 +1345,21 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-78 files.
+81 files.
 
 #### `research/CROSS-ASSET-TRANSFER.md`
 
 `doc` · 225 lines · 14,429 B · description: **extracted**
 
 **Purpose.** python3 research/cross_asset_cpcv.py --self-test # gate: reproduces the BTC/ETH file python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC # 25 singles, medium horizon python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC # the five, with SOL as control
+
+**Use.** Read it.
+
+#### `research/LEVERAGE-ECONOMICS.md`
+
+`doc` · 162 lines · 8,146 B · description: **extracted**
+
+**Purpose.** No network, no data files — this is closed-form arithmetic over published venue parameters, so it reproduces exactly. python3 research/leverage_economics.py --self-test # gate: 7 load-bearing claims
 
 **Use.** Read it.
 
@@ -1368,6 +1384,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 779 lines · 39,574 B · description: **extracted**
 
 **Purpose.** The request asked for a `/dr` deep-research pass. Subagent fan-out is unavailable in this environment, so this is grounded in the **local citation-backed corpus** — technical analysis, trading styles, algorithmic/quant methods, ML-for-trading pitfalls, crypto
+
+**Use.** Read it.
+
+#### `research/SWEEP-9COIN.md`
+
+`doc` · 146 lines · 7,123 B · description: **extracted**
+
+**Purpose.** into `sweep_results_9coin.json`, `sweep_wf_9coin.json` and `sweep_grid_9coin.json`. cd ~/Downloads/sol-backtest-data/_scripts python3 run_sweep.py --interval 1h --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,LINKUSDT,AVAXUSDT,TRXUSDT
 
 **Use.** Read it.
 
@@ -1436,6 +1460,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `OUT`, `class GeometryRun`, `spearman()`, `evaluate_geometry()`, `tidy_frame()`, `render()`, `verdict()`, `main()`. Depends on `backtester`, `research`.
 
 **Use.** `python3 research/geometry.py --help`.
+
+#### `research/leverage_economics.py`
+
+`code-python` · 170 lines · 8,131 B · description: **extracted**
+
+**Purpose.** Cost economics of high-leverage perpetuals, for Jupiter Perps specifically. Generates every table in research/LEVERAGE-ECONOMICS.md. No network, no data files -- this is closed-form arithmetic over published venue parameters, so it reproduces exactly.
+
+**Contents.** Defines `FEE_RT`, `R_LONG`, `R_SHORT`, `HOLDS`, `LEVS`, `break_even_move()`, `carry_crossover_hours()`, `hours_to_zero_collateral()`, `liquidation_move()`, `_fmt_h()` and 3 more.
+
+**Use.** `python3 research/leverage_economics.py --help`
 
 #### `research/perturb.py`
 

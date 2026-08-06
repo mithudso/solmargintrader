@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-08-05T18:49:35+00:00",
+  "generatedAt": "2026-08-06T21:42:56+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "af3206e",
+  "commit": "439c58e",
   "counts": {
-    "files": 276,
-    "bytes": 3712656,
+    "files": 280,
+    "bytes": 3763015,
     "byKind": {
-      "code-python": 57,
+      "code-python": 58,
       "result": 52,
       "strategy-card": 46,
-      "doc": 39,
+      "doc": 42,
       "code-js": 28,
       "test": 21,
       "coin-reference": 11,
@@ -22,9 +22,9 @@
     },
     "byTopDir": {
       "backtester": 96,
-      "research": 78,
+      "research": 81,
       "extension": 34,
-      "docs": 22,
+      "docs": 23,
       "soltui": 20,
       "(root)": 9,
       ".github": 8,
@@ -33,7 +33,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 255
+    "withSummary": 259
   },
   "files": [
     {
@@ -3687,6 +3687,24 @@
       "frontmatter": {}
     },
     {
+      "id": "docs/SCRIPTS.md",
+      "path": "docs/SCRIPTS.md",
+      "dir": "docs",
+      "name": "SCRIPTS.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Scripts",
+      "summary": "Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual \u2014 the commands you actually type.",
+      "summarySource": "opening-prose",
+      "bytes": 26959,
+      "lines": 572,
+      "sha1": "7394576dcb3c1d5263da66b8a4cbbc2bfc7955be",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "docs/SECURITY.md",
       "path": "docs/SECURITY.md",
       "dir": "docs",
@@ -5041,6 +5059,24 @@
       "frontmatter": {}
     },
     {
+      "id": "research/LEVERAGE-ECONOMICS.md",
+      "path": "research/LEVERAGE-ECONOMICS.md",
+      "dir": "research",
+      "name": "LEVERAGE-ECONOMICS.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Leverage economics \u2014 which strategies survive high-fee, high-leverage perps",
+      "summary": "No network, no data files \u2014 this is closed-form arithmetic over published venue parameters, so it reproduces exactly. python3 research/leverage_economics.py --self-test # gate: 7 load-bearing claims",
+      "summarySource": "opening-prose",
+      "bytes": 8146,
+      "lines": 162,
+      "sha1": "2afe81c712d48c72b7a662f2ab4eb094d2bc3734",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "research/PROMPT_STRATEGIES.md",
       "path": "research/PROMPT_STRATEGIES.md",
       "dir": "research",
@@ -5089,6 +5125,24 @@
       "bytes": 39574,
       "lines": 779,
       "sha1": "45fd84ac83bc09334d6f37cad41edb19845fee93",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/SWEEP-9COIN.md",
+      "path": "research/SWEEP-9COIN.md",
+      "dir": "research",
+      "name": "SWEEP-9COIN.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Nine coins, seven strategies, ~2,400 configs \u2014 and one survivor that still loses",
+      "summary": "into `sweep_results_9coin.json`, `sweep_wf_9coin.json` and `sweep_grid_9coin.json`. cd ~/Downloads/sol-backtest-data/_scripts python3 run_sweep.py --interval 1h --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,LINKUSDT,AVAXUSDT,TRXUSDT",
+      "summarySource": "opening-prose",
+      "bytes": 7123,
+      "lines": 146,
+      "sha1": "e324b93545bc71556977a1c3d9352a06e1044ffe",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -5624,6 +5678,41 @@
         "backtester",
         "research"
       ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/leverage_economics.py",
+      "path": "research/leverage_economics.py",
+      "dir": "research",
+      "name": "leverage_economics.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "leverage_economics",
+      "summary": "Cost economics of high-leverage perpetuals, for Jupiter Perps specifically. Generates every table in research/LEVERAGE-ECONOMICS.md. No network, no data files -- this is closed-form arithmetic over published venue parameters, so it reproduces exactly.",
+      "summarySource": "docstring",
+      "bytes": 8131,
+      "lines": 170,
+      "sha1": "dfe87c2a1bc3cb63f6cd6e33cb429216cf230936",
+      "symbols": [
+        "FEE_RT",
+        "R_LONG",
+        "R_SHORT",
+        "HOLDS",
+        "LEVS",
+        "break_even_move()",
+        "carry_crossover_hours()",
+        "hours_to_zero_collateral()",
+        "liquidation_move()",
+        "_fmt_h()",
+        "tables()",
+        "self_test()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse"
+      ],
+      "internalImports": [],
       "frontmatter": {}
     },
     {

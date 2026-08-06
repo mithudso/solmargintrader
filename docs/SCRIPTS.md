@@ -44,6 +44,7 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 research/verify_numbers.py` | **gate:** every quoted figure vs its CSV | no |
 | `python3 research/turnover_table.py` | the one comparable turnover table | no |
 | `python3 research/leverage_economics.py` | what leverage costs before it earns; the viable region | no |
+| `python3 research/short_horizon_economics.py` | the same cost question below one hour, where turnover dominates | no |
 | `python3 index/build.py` | build the four repo indexes | localhost only |
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
@@ -390,6 +391,49 @@ as an order-of-magnitude frame. **Price impact is not modelled** (per-custody pa
 are on-chain and undocumented), nor are keeper latency, priority fees, failed
 transactions, or the liquidation penalty itself. Every omission makes the real picture
 worse, never better. Verify venue parameters at `docs.jup.ag` before relying on them.
+
+### `python3 research/short_horizon_economics.py` — the same question below one hour
+
+**Purpose.** The sibling of `leverage_economics.py` for holds of seconds to hours, where
+the cost picture inverts. Generates every table in
+`docs/short-horizon-leverage-concept-family.md`: the toll decomposed by sub-hour holding
+period, fixed Solana transaction cost in bps of notional, the win rate a symmetric trade
+needs to break even, daily fee burn by turnover, and where the liquidation barrier sits
+relative to the noise band.
+
+**When to use it.** Before taking seriously any strategy that holds for minutes. It
+answers "how often can this trade before the fee eats the account" and "is the target
+move even reachable net of costs".
+
+**When *not* to use it.** As evidence about any specific strategy, and — more sharply
+than for its sibling — as anything resembling a backtest. **This repo has no sub-hourly
+data at all.** Every empirical result in `research/` is on 1-hour bars, which cannot
+resolve the intrabar path that decides whether a leveraged position survives.
+
+**The results worth knowing even if you never run it.**
+
+- **Below an hour, carry is ~0.1% of the toll.** The 12 bps round-trip fee is the whole
+  cost, which makes turnover — not leverage, and not duration — the binding constraint.
+- **One-minute turnover costs 173% of collateral per day in fees at 1× leverage.** At 10×
+  it is 1,728%. This is the number that ends most short-horizon designs.
+- **A target move below the toll cannot break even at any win rate**, including 100%. A
+  5 bps or 10 bps target is arithmetically dead, not merely difficult.
+- **Fixed transaction cost is the one term leverage improves**, because it amortises
+  across a larger notional: a contested-priority round trip is 20 bps on $500 of notional
+  and 0.04 bps on $250,000.
+
+```bash
+python3 research/short_horizon_economics.py --self-test   # gate: 10 load-bearing claims
+python3 research/short_horizon_economics.py               # all tables
+python3 research/short_horizon_economics.py --markdown    # the doc's tables, regenerated
+python3 research/short_horizon_economics.py --vol 1.2     # barrier table at a different vol
+```
+
+**Limits.** It inherits every limit of `leverage_economics.py` — venue parameters are not
+a live read, price impact is not modelled — and adds one of its own: the barrier table
+assumes 70% annualised volatility with square-root-of-time scaling. **That is an
+assumption, not a measurement**, and `--vol` exists so the sensitivity is visible rather
+than buried. Keeper latency is not modelled because Jupiter publishes no figure for it.
 
 ---
 
