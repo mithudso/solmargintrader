@@ -35,6 +35,7 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 -m backtester.core.fetch` | fetch one asset's bars into `data/` | **yes** |
 | `python3 -m backtester.core.universe` | fetch many assets, refuse a partial set | **yes** |
 | `python3 -m backtester.core.ticks` | fetch trade ticks into `data/ticks/` | **yes** |
+| `python3 research/candle_gap_audit.py` | classify and repair candle gaps using ticks | **yes** |
 | `python3 research/sweep.py` | the horizon parameter tables; single-split walk-forward | no |
 | `python3 research/cpcv_sweep.py` | **primary evaluation** — CPCV + PBO | no |
 | `python3 research/cross_asset_cpcv.py` | does a result transfer to another coin | no |
@@ -179,13 +180,106 @@ defaults to 500,000; a window cut short is **refused** rather than written, beca
 `to_csv` drops the in-frame truncation marker and the file name would still claim
 the full window. `--allow-truncated` is a disclosure, not a repair.
 
-**Why this exists, and what it caught.** Where a 1m candle exists, ticks aggregated
-to 1m reproduce it exactly — OHLC and volume — over sampled windows. But the candle
-endpoint sometimes **omits minutes that traded**: on 2026-07-06 it returned no bar
-for 01:38 or 01:39 although 100 trades and ~171 SOL changed hands in them, and the
-01:37 bar it did return understated volume (120.4 vs 204.2 from ticks). The loss
-propagates upward — the enclosing 5m bar is short by the same trades. The tick
-endpoint is the only way to see, or repair, that.
+**Why this exists.** It is the only source below 1m, and the only way to check the
+candle endpoint against raw prints. It found that the candle endpoint drops minutes
+that traded — see **Candle data is not trustworthy near a gap** below.
+
+### `python3 research/candle_gap_audit.py` — why a candle is missing, and repair
+
+**Purpose.** A missing 1m candle has two causes that look identical in the file and
+mean opposite things: the minute genuinely had no trades, or the minute traded and
+the endpoint dropped it. Only the trades endpoint can tell them apart. This script
+asks it, and can rebuild the affected bars.
+
+```bash
+# classify a sample of gap runs, no writes
+python3 research/candle_gap_audit.py --assets SOL,BTC,ETH --sample 5
+
+# rebuild every gap window from ticks into data/repaired/
+python3 research/candle_gap_audit.py --assets SOL --repair --report research/CANDLE-GAP-AUDIT.md
+```
+
+Options: `--assets`, `--quote`, `--interval`, `--suffix`, `--data-dir`, `--sample`,
+`--seed`, `--repair`, `--max-runs`, `--out-dir`, `--report`.
+
+**Repaired series are mixed-provenance and say so.** Output goes to `data/repaired/`,
+never over the candle cache: the file is candle bars everywhere except the repaired
+windows, which are tick-derived. A capped run (`--max-runs`) is written as
+`..._repaired_PARTIAL.csv` — an asset with thousands of quiet minutes cannot be
+repaired in one pass, because every gap run costs a tick fetch.
+
+`data/` is gitignored, so repaired series are **not in git** and are regenerable by
+re-running the command above. Point `--out-dir` at the repo you actually want them in
+when running from a worktree.
+
+### Candle data is not trustworthy near a gap
+
+Established 2026-08-06 by `candle_gap_audit.py` against the trades endpoint, over
+2026-07-06 .. 2026-08-06. **This is a data-integrity finding, not a tooling note.**
+
+1. **A missing candle is usually not a quiet minute.** Across **31 gap runs sampled
+   over five assets, 26 (84%) had trades the endpoint dropped.** Per asset:
+
+   | asset | gap runs | missing min | sampled | dropped | est. dropped minutes (95% CI) |
+   |---|---:|---:|---:|---:|---|
+   | SOL | 5 | 6 | 5 of 5 | 4 | 4 (2–5) |
+   | BTC | 1 | 1 | 1 of 1 | 1 | 1 (0–1) |
+   | ETH | 1 | 2 | 1 of 1 | 1 | 2 (0–2) |
+   | DOGE | 3,739 | 4,260 | 12 of 3,739 | **11** | **3,905 (2,752–4,196)** |
+   | ZEC | 987 | 1,062 | 12 of 987 | 9 | 796 (496–967) |
+
+   DOGE's 9.5% missing month is therefore mostly **dropped trading, not illiquidity** —
+   the reading a single spot-check wrongly suggested. DOGE and ZEC figures are
+   sample-based estimates (Wilson intervals), not censuses.
+
+   The same minutes — 2026-07-06 01:38 and 01:39 — are missing for **SOL, BTC, ETH,
+   DOGE and ZEC**, so that one is an exchange-side event, not a per-series artefact.
+   BTC lost 390 trades in one minute; ETH lost 428 across two.
+
+2. **The loss is permanent, not a transient serving hiccup.** Re-requesting the
+   affected ranges narrowly, weeks later, still omits 07-26 07:28 and 07-31 23:29 and
+   still reports 65.3978 for 07:27. **Refetching does not repair it** — which is why
+   the tick path is the only remedy.
+
+3. **Bars adjacent to a gap can be wrong too, in both directions.** They are
+   *present*, so nothing flags them:
+
+   | asset | minute | field | candle | ticks |
+   |---|---|---|---|---|
+   | DOGE | 07-06 01:37 | volume | 112.9 | **11,630.4** |
+   | BTC | 07-06 01:37 | volume | 0.719 | **9.171** |
+   | BTC | 07-06 01:39 | volume | 0.046 | **1.221** |
+   | SOL | 07-06 01:37 | volume | 120.4 | **204.2** |
+   | SOL | 07-26 07:27 | volume | 65.398 | **60.042** |
+
+   In the two isolated single-minute drops the neighbour is *too big* by exactly the
+   dropped minute's volume (07-26 07:27 by 5.3562; 07-31 23:28 by 0.2402), which looks
+   like the dropped minute being folded into its neighbour. That tidy explanation does
+   **not** extend to the 01:38–01:39 outage, where the neighbouring candles are too
+   *small* instead — BTC 01:37 by 12×. Two exact matches are a pattern worth knowing;
+   they are not a validated mechanism, and the outage neighbourhood behaves differently.
+
+   **Not every diff is candle error.** Some are boundary attribution: at SOL 07-31,
+   23:30 is −0.135896 and 23:31 is +0.135896, exactly zero-sum. That is one trade on
+   the minute boundary, assigned to different sides by the two surfaces. No volume is
+   lost, and the repair rewrites those bars on a convention that has not been
+   validated — treat sub-0.01 price shifts and zero-sum volume pairs as attribution
+   noise, not recovered data.
+
+4. **The damage propagates to coarser bars, including prices.** The 5m bar at
+   2026-07-06 01:35 is short **254.782 SOL (9.6% of real volume)** and reports a low
+   of **81.91 against a true 81.86**. A wrong low is what stop-loss and liquidation
+   logic reads, which makes this a correctness problem for any backtest that models
+   intrabar stops, not merely a volume-accuracy one.
+
+**What to do about it.** Treat a gap as *suspected data loss* until classified —
+never assume a quiet minute. Before trusting a result that depends on volume, on
+intrabar extremes, or on any window containing a gap, run the audit over that range
+and use the repaired series. Ticks and candles agree bit-exactly on undisturbed
+minutes, so the disagreement is specific to gap neighbourhoods, not a systematic
+offset between the two sources.
+
+Full evidence, per asset, with the sampled gap runs: **`research/CANDLE-GAP-AUDIT.md`**.
 
 ### `python3 -m backtester.core.universe` — many assets
 

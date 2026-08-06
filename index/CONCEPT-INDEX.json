@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T20:26:55+00:00",
+  "generatedAt": "2026-08-06T22:45:34+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -564,6 +564,144 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
+      "id": "evidence-floor",
+      "label": "Evidence floor",
+      "why": "Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.",
+      "terms": [
+        "min_total_trades",
+        "min_rankable_trades",
+        "insufficient",
+        "dropped",
+        "evidence floor",
+        "rankable"
+      ],
+      "matchingFiles": 104,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 67
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 36
+        },
+        {
+          "path": "backtester/tests/test_cross_asset_cpcv.py",
+          "hits": 33
+        },
+        {
+          "path": "index/build.py",
+          "hits": 19
+        },
+        {
+          "path": "research/cpcv_sweep.py",
+          "hits": 18
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 16
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 14
+        },
+        {
+          "path": "index/make_concepts_doc.py",
+          "hits": 14
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 12
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 10
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 10
+        },
+        {
+          "path": "research/candle_gap_audit.py",
+          "hits": 10
+        },
+        {
+          "path": "research/geometry.py",
+          "hits": 9
+        },
+        {
+          "path": "backtester/core/cpcv.py",
+          "hits": 8
+        },
+        {
+          "path": "backtester/tests/test_interpret.py",
+          "hits": 7
+        },
+        {
+          "path": "index/README.md",
+          "hits": 6
+        },
+        {
+          "path": "backtester/tests/test_geometry.py",
+          "hits": 6
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 6
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 5
+        },
+        {
+          "path": "backtester/tests/test_cpcv.py",
+          "hits": 4
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 4
+        },
+        {
+          "path": "backtester/strategy_cards/ts_momentum.md",
+          "hits": 4
+        },
+        {
+          "path": "index/make_files_doc.py",
+          "hits": 3
+        },
+        {
+          "path": "backtester/core/gridsim.py",
+          "hits": 3
+        },
+        {
+          "path": "backtester/tests/test_decide.py",
+          "hits": 3
+        },
+        {
+          "path": "backtester/tests/test_gridsim.py",
+          "hits": 3
+        },
+        {
+          "path": "backtester/core/strategy_cards.py",
+          "hits": 3
+        },
+        {
+          "path": "docs/dso-skill/SKILL.md",
+          "hits": 3
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 3
+        },
+        {
+          "path": "research/coin-intelligence/trx-tron.md",
+          "hits": 2
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "family:trend",
       "label": "Strategy family: trend",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -698,144 +836,6 @@
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "evidence-floor",
-      "label": "Evidence floor",
-      "why": "Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.",
-      "terms": [
-        "min_total_trades",
-        "min_rankable_trades",
-        "insufficient",
-        "dropped",
-        "evidence floor",
-        "rankable"
-      ],
-      "matchingFiles": 101,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 67
-        },
-        {
-          "path": "backtester/tests/test_cross_asset_cpcv.py",
-          "hits": 33
-        },
-        {
-          "path": "index/build.py",
-          "hits": 19
-        },
-        {
-          "path": "research/cpcv_sweep.py",
-          "hits": 18
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 14
-        },
-        {
-          "path": "index/make_concepts_doc.py",
-          "hits": 14
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 12
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 10
-        },
-        {
-          "path": "research/geometry.py",
-          "hits": 9
-        },
-        {
-          "path": "backtester/core/cpcv.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/tests/test_interpret.py",
-          "hits": 7
-        },
-        {
-          "path": "index/README.md",
-          "hits": 6
-        },
-        {
-          "path": "backtester/tests/test_geometry.py",
-          "hits": 6
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 6
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 5
-        },
-        {
-          "path": "backtester/tests/test_cpcv.py",
-          "hits": 4
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 4
-        },
-        {
-          "path": "backtester/strategy_cards/ts_momentum.md",
-          "hits": 4
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 3
-        },
-        {
-          "path": "index/make_files_doc.py",
-          "hits": 3
-        },
-        {
-          "path": "backtester/core/gridsim.py",
-          "hits": 3
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 3
-        },
-        {
-          "path": "backtester/tests/test_gridsim.py",
-          "hits": 3
-        },
-        {
-          "path": "backtester/core/strategy_cards.py",
-          "hits": 3
-        },
-        {
-          "path": "docs/dso-skill/SKILL.md",
-          "hits": 3
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 3
-        },
-        {
-          "path": "research/coin-intelligence/trx-tron.md",
-          "hits": 2
-        },
-        {
-          "path": "backtester/strategy_cards/triangular_arbitrage.md",
-          "hits": 2
-        },
-        {
-          "path": "backtester/tests/test_strategy_cards.py",
-          "hits": 2
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
     },
     {
       "id": "grid",
@@ -987,7 +987,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 95,
+      "matchingFiles": 98,
       "shown": 30,
       "files": [
         {
@@ -1001,6 +1001,22 @@
         {
           "path": "research/STRATEGIES.md",
           "hits": 32
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 23
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 23
+        },
+        {
+          "path": "research/candle_gap_audit.py",
+          "hits": 20
+        },
+        {
+          "path": "backtester/tests/test_candle_gap_audit.py",
+          "hits": 16
         },
         {
           "path": "pagesource",
@@ -1071,10 +1087,6 @@
           "hits": 4
         },
         {
-          "path": "docs/SCRIPTS.md",
-          "hits": 4
-        },
-        {
           "path": "extension/src/ui/ui.css",
           "hits": 4
         },
@@ -1096,18 +1108,6 @@
         },
         {
           "path": "backtester/tests/test_pairs.py",
-          "hits": 3
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 3
-        },
-        {
-          "path": "backtester/core/engine.py",
-          "hits": 3
-        },
-        {
-          "path": "backtester/core/gridsim.py",
           "hits": 3
         }
       ],
@@ -2084,7 +2084,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 54,
+      "matchingFiles": 55,
       "shown": 30,
       "files": [
         {
@@ -2112,6 +2112,10 @@
           "hits": 40
         },
         {
+          "path": "docs/SCRIPTS.md",
+          "hits": 39
+        },
+        {
           "path": "backtester/core/universe.py",
           "hits": 35
         },
@@ -2126,10 +2130,6 @@
         {
           "path": "research/coin-intelligence/README.md",
           "hits": 33
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 31
         },
         {
           "path": "research/cross_asset_cpcv.py",
@@ -2158,6 +2158,10 @@
         {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 15
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 14
         },
         {
           "path": "docs/strategy-optimization-concept-family.md",
@@ -2201,10 +2205,6 @@
         },
         {
           "path": "research/STRATEGIES.md",
-          "hits": 5
-        },
-        {
-          "path": "research/SWEEP-9COIN.md",
           "hits": 5
         }
       ],

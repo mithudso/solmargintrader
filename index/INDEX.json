@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-08-06T20:26:55+00:00",
+  "generatedAt": "2026-08-06T22:45:34+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "234acbb",
+  "commit": "0d62a5e",
   "counts": {
-    "files": 282,
-    "bytes": 3782928,
+    "files": 285,
+    "bytes": 3816887,
     "byKind": {
-      "code-python": 59,
+      "code-python": 60,
       "result": 52,
       "strategy-card": 46,
-      "doc": 42,
+      "doc": 43,
       "code-js": 28,
-      "test": 22,
+      "test": 23,
       "coin-reference": 11,
       "ci": 8,
       "other": 7,
@@ -21,8 +21,8 @@
       "config": 2
     },
     "byTopDir": {
-      "backtester": 98,
-      "research": 81,
+      "backtester": 99,
+      "research": 83,
       "extension": 34,
       "docs": 23,
       "soltui": 20,
@@ -33,7 +33,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 261
+    "withSummary": 264
   },
   "files": [
     {
@@ -308,7 +308,7 @@
       "summarySource": "opening-prose",
       "bytes": 5616,
       "lines": 94,
-      "sha1": "47bcc16cff5e565e602786ee172bdc5b3fc2f373",
+      "sha1": "d2d55ab54b70bb4018c33896637f4d7e5f44ca67",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -344,7 +344,7 @@
       "summarySource": "opening-prose",
       "bytes": 5914,
       "lines": 114,
-      "sha1": "bb9f361011571904dfe23cb8b88954042911090e",
+      "sha1": "02399a808cd1da1ae3744cfcdf4364833a7fe445",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -3024,6 +3024,39 @@
       "frontmatter": {}
     },
     {
+      "id": "backtester/tests/test_candle_gap_audit.py",
+      "path": "backtester/tests/test_candle_gap_audit.py",
+      "dir": "backtester/tests",
+      "name": "test_candle_gap_audit.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_candle_gap_audit",
+      "summary": "Gap detection and repair-merge logic in `research/candle_gap_audit.py`. The audit's whole value is the distinction between \"this minute was quiet\" and \"this minute traded and the exchange dropped it\", so the tests here pin the mechanics that decision rests on: which bars are reported missing, and that a repaired series replaces the damaged bars rather than accumulating duplicates of them.",
+      "summarySource": "docstring",
+      "bytes": 4400,
+      "lines": 114,
+      "sha1": "9c818369e95ba7a69d3f4881c9aeaabcb7a004c8",
+      "symbols": [
+        "REPO",
+        "MINUTE",
+        "_bars()",
+        "class TestGapRuns",
+        "class TestRepairMerge"
+      ],
+      "imports": [
+        "__future__",
+        "pandas",
+        "pathlib",
+        "research",
+        "sys",
+        "unittest"
+      ],
+      "internalImports": [
+        "research"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "backtester/tests/test_cpcv.py",
       "path": "backtester/tests/test_cpcv.py",
       "dir": "backtester/tests",
@@ -3644,7 +3677,7 @@
       "summarySource": "opening-prose",
       "bytes": 6905,
       "lines": 118,
-      "sha1": "07a27f9afcb5d8b8e7aebb0039e96169117310da",
+      "sha1": "77598adcb519b3dd36ea974063b059781a397163",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -3768,9 +3801,9 @@
       "title": "Scripts",
       "summary": "Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual \u2014 the commands you actually type.",
       "summarySource": "opening-prose",
-      "bytes": 26024,
-      "lines": 561,
-      "sha1": "3b715849ff1949e0d2c41e388ea484e29fc15d54",
+      "bytes": 31096,
+      "lines": 655,
+      "sha1": "267a557699b395d364e2db12226767b2b33f7ceb",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -3802,11 +3835,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Testing",
-      "summary": "python3 -m unittest discover -s backtester/tests -t . # 514 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests",
+      "summary": "python3 -m unittest discover -s backtester/tests -t . # 521 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests",
       "summarySource": "opening-prose",
       "bytes": 8372,
       "lines": 129,
-      "sha1": "d0c8391aaa18f7ce534c20cef82fffc387a1ef94",
+      "sha1": "aa98d5f5ad0e644c479eb03ee28f3a6e24850bdf",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -5113,6 +5146,24 @@
       "frontmatter": {}
     },
     {
+      "id": "research/CANDLE-GAP-AUDIT.md",
+      "path": "research/CANDLE-GAP-AUDIT.md",
+      "dir": "research",
+      "name": "CANDLE-GAP-AUDIT.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Candle-gap audit \u2014 Coinbase 1m candles vs raw trades",
+      "summary": "Generated by `research/candle_gap_audit.py` over 2026-07-06 .. 2026-08-06, five assets. Every figure comes from the Coinbase **trades** endpoint compared against the 1m candle cache in `data/`.",
+      "summarySource": "opening-prose",
+      "bytes": 12779,
+      "lines": 209,
+      "sha1": "ed1158a2bb797a7e7608487e98d8b70e70394ebc",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "research/CROSS-ASSET-TRANSFER.md",
       "path": "research/CROSS-ASSET-TRANSFER.md",
       "dir": "research",
@@ -5254,6 +5305,42 @@
       "symbols": [],
       "imports": [],
       "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/candle_gap_audit.py",
+      "path": "research/candle_gap_audit.py",
+      "dir": "research",
+      "name": "candle_gap_audit.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "Running this file directly puts the script's own directory on sys.path, not",
+      "summary": "Audit -- and optionally repair -- gaps in Coinbase 1m candle data using ticks. Why this exists. A missing 1m candle has two possible causes that look identical in the file and have opposite consequences: * the minute genuinely had no trades (thin market), or * the minute traded and the candle endpoint dropped it. The first is honest data.",
+      "summarySource": "docstring",
+      "bytes": 11708,
+      "lines": 286,
+      "sha1": "0ff712a182c497ffdebd47a0c08dd35b26687ad5",
+      "symbols": [
+        "REPO",
+        "PAD_BARS",
+        "gap_runs()",
+        "classify_run()",
+        "_fetch_window()",
+        "repair_window()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "backtester",
+        "pandas",
+        "pathlib",
+        "random",
+        "sys"
+      ],
+      "internalImports": [
+        "backtester"
+      ],
       "frontmatter": {}
     },
     {
