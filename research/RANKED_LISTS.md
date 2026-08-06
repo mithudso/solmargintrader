@@ -69,8 +69,8 @@ So searching more configurations *does* raise the probability of backtest overfi
 exactly what Harvey-Liu-Zhu and Bailey et al. predict — but it accounts for only a third to a half
 of the move here. Reporting the whole 0.457 → 0.700 rise as a search effect would have been wrong.
 
-**Under the earlier single split: 520 configurations, 311 rankable, 45 (14%) with a positive
-out-of-sample Sharpe, 28 (9%) that made money.**
+**Under the earlier single split: 1,139 configurations, 711 rankable, 104 (15%) with a positive
+out-of-sample Sharpe, 68 (10%) that made money.**
 
 **The `#` column in every table below is the weakest thing in this document.** Finding 1f re-ran
 all 25 singles at every CPCV block count from 6 to 12. At the long horizon the mean pairwise rank
@@ -517,6 +517,10 @@ Rows with fewer than 10 out-of-sample trades are listed but **not ranked**.
 
 ## Short horizon (1h bars, fast parameters) — 16 configurations evaluated
 
+> These three tables are the **16-strategy** run. The current sweep evaluates 25 singles per
+> horizon under the measured redundancy gate; the regenerated tables are in
+> `research/results/tables.md` and have not been retypeset into this document.
+
 | # | Strategy | Family | OOS Sharpe | IS Sharpe | OOS ret | IS ret | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
 | 1 | `ma_crossover_12_48` | trend | **+0.488** | −2.490 | +3.4% | −59.7% | −11.8% | 29 |
@@ -542,7 +546,7 @@ out-of-sample Sharpe, and the best of them returned +3.4% before any funding/bor
 `macd_6_13_5` at −4.62 is the clearest case of a fast trend signal being chewed up by
 whipsaw plus 8bps round-trip cost across 205 trades.
 
-## Medium horizon (1d bars, medium parameters) — 16 configurations evaluated
+## Medium horizon (1d bars, medium parameters) — 16 configurations evaluated (the 16-strategy run)
 
 | # | Strategy | Family | OOS Sharpe | IS Sharpe | OOS ret | IS ret | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
@@ -567,7 +571,7 @@ full-sample leaderboard would have crowned. The three positive out-of-sample row
 mean-reversion/oscillator entries sitting exactly at the 10-trade evidence floor — treat them
 as "not yet disconfirmed" rather than "works".
 
-## Long horizon (1d bars, slow parameters) — 16 configurations evaluated
+## Long horizon (1d bars, slow parameters) — 16 configurations evaluated (the 16-strategy run)
 
 | # | Strategy | Family | OOS Sharpe | IS Sharpe | OOS ret | IS ret | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
@@ -667,7 +671,7 @@ regime inversion at the split. These are regime-dependent, not fitted.
 positive Sharpe with a negative return means low, well-behaved exposure, not profit.
 
 > Every one of the eight positive medium-horizon pairs sits at 10–21 out-of-sample trades.
-> At that sample size, and with 140 configurations searched per horizon, the Harvey-Liu-Zhu
+> At that sample size, and with 336-340 configurations searched per horizon, the Harvey-Liu-Zhu
 > bar (t > 3.0) is not remotely cleared by any of them. Treat this table as a shortlist of
 > **experiments worth running properly**, on more data and more out-of-sample paths.
 
@@ -688,7 +692,7 @@ rankable singles to draw from, which is itself the finding from List 1).
 
 | # | Combination | Structural rationale | Measured |
 |---|---|---|---|
-| 1 | **regime filter + mean-reversion + oscillator confirm** (`sma_regime` + `zscore`/`bb_reversion` + `rsi`) | The full defensive stack: regime says *whether*, reversion says *where*, oscillator says *when*. Each covers a distinct failure of the others. | ✅ **Best measured: `all(bb_reversion+sma_regime+rsi)` OOS Sharpe +2.555** (IS −1.569), +8.9%, 17 trades (short) |
+| 1 | **regime filter + mean-reversion + oscillator confirm** (`sma_regime` + `zscore`/`bb_reversion` + `rsi`) | The full defensive stack: regime says *whether*, reversion says *where*, oscillator says *when*. Each covers a distinct failure of the others. | ❌ **No longer evaluated, so there is no current figure for it.** Under the family-label gate this was the top short-horizon triple at **+2.555** out-of-sample (IS −1.569), +8.9%, 17 trades. But `rsi` and `bb_reversion` measure **0.841** correlated on this horizon (`rsi`/`zscore` **0.837**), so the oscillator was not confirming the reversion — it was repeating it. The measured gate excludes both variants; row 2 is the best surviving triple. See `research/signal_redundancy.py`. |
 | 2 | **trend + reversion + regime** (`ma_crossover` + `zscore` + `sma_regime`) | Deliberately mixes opposed families under a regime switch, so one is live when the other is wrong. | ✅ `all(ma_crossover+zscore+sma_regime)` **OOS +1.435** (IS +1.026), +2.4%, 11 trades (short) |
 | 3 | **trend + breakout + volume** (`ma_crossover` + `bb_breakout` + `obv_trend`) | Three independent confirmations of one directional thesis: slope, range expansion, participation. Raises precision, cuts trade count hard. | ⚠️ Partially — `vote(ma_crossover+sma_regime+bb_breakout)` OOS +0.295, 607 trades |
 | 4 | **vol-target × (trend + regime)** | Sizing overlay on a directional core; should improve drawdown without changing hit rate. | ❌ Not swept as a wrapper |
@@ -894,7 +898,7 @@ Ranked by expected information gain per unit of work, which is a different quest
    also a direct input to the perp cost model already implemented in `backtester/core/perps.py`.
 5. **Test the vol-target overlay as a wrapper**, not as a standalone strategy. It is the one
    candidate here that is orthogonal by construction rather than by assumption.
-6. **Apply a deflated Sharpe ratio** to any survivor, accounting for the 520 trials already run.
+6. **Apply a deflated Sharpe ratio** to any survivor, accounting for the 1,139 trials already run.
 7. **Add a parameter-perturbation stability check to the sweep itself.** Finding 4 shows a 2.6%
    threshold change moving an out-of-sample return by 46 percentage points. Every ranked row
    should be re-run at ±10% on each parameter and reported with the spread; rows whose result

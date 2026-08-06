@@ -49,9 +49,18 @@ DOCS = (RESEARCH / "RANKED_LISTS.md", RESEARCH / "STRATEGIES.md")
 # Update these in the same commit that changes the documents' figures -- deliberately,
 # after reading the new count. Never lower one to make a red run go green; that is
 # the same act as deleting the evidence.
+# prose 8 -> 7 on 2026-08-05, and this is the one case the rule above allows: the
+# figure was not made unverifiable, its SUBJECT left the evaluated set. The top
+# short-horizon triple `all(bb_reversion+sma_regime+rsi)` scored +2.555 OOS under
+# the family-label gate; `research/signal_redundancy.py` measures rsi/bb_reversion
+# at 0.841 correlated on that horizon, so the measured gate now excludes the
+# combination and the sweep produces no OOS Sharpe for it at all. RANKED_LISTS.md
+# still records the +2.555 as history, deliberately phrased so it no longer claims
+# to be a live "OOS Sharpe" -- because it is not one. Restoring the figure would
+# mean restoring the combination, i.e. re-admitting one signal counted twice.
 EXPECTED_FIGURES = {
     "RANKED_LISTS.md": {
-        "prose": 8, "walk_forward": 180, "cpcv": 615,
+        "prose": 7, "walk_forward": 180, "cpcv": 615,
         "perturb": 7, "geometry": 58, "geometry_xref": 15, "pair": 36,
     },
     "STRATEGIES.md": {"prose": 31},

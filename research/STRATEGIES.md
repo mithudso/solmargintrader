@@ -47,9 +47,9 @@ implemented from the spec-only cards. Across 1,287 configurations:
   **+75.1%** — sits atop a 295-configuration search with PBO 0.650, so it is precisely the row not
   to trust.
 
-Under the earlier single split: 520 configurations, 311 rankable, **45 (14%) with a positive
-out-of-sample Sharpe and 28 (9%) that made money**, with in-sample rank *inverted* against
-out-of-sample at the medium horizon (Spearman **−0.419**). The cause is stark: the **highest close
+Under the earlier single split: 1,139 configurations, 711 rankable, **104 (15%) with a positive
+out-of-sample Sharpe and 68 (10%) that made money**, with in-sample rank *inverted* against
+out-of-sample at the medium horizon (Spearman **−0.463**). The cause is stark: the **highest close
 in the entire series (\$261.99) is bar 1311 — the final in-sample bar**, so the split separates
 the bull market from the bear leg to within a single bar. Full tables and the method contrast in
 `RANKED_LISTS.md`.
@@ -745,7 +745,7 @@ Distilled from the corpus's pitfall taxonomy, in the order these actually bite:
    fold; embargo the first *h* observations after it. **CPCV** samples all valid train/test
    combinations to give a *distribution* of backtest paths — the fix for the single-split
    problem that dominates every result in this document.
-3. **Multiple testing.** 520 configurations were evaluated here. Harvey-Liu-Zhu: raise the
+3. **Multiple testing.** 1,139 configurations were evaluated here. Harvey-Liu-Zhu: raise the
    t-stat bar from 2.0 to **3.0+**. Bailey et al.: PBO rises with the size of the search.
    Deflated Sharpe adjusts for trial count, skew, and kurtosis. McLean & Pontiff: **26%
    in-sample / 58% out-of-sample** decay across 97 published factors.
@@ -758,7 +758,7 @@ Distilled from the corpus's pitfall taxonomy, in the order these actually bite:
    understates crash conditions. For leveraged SOL, the Jupiter borrow fee dominates: a
    measured 10× run burned **\$722 of borrow fees against \$211 of trading fees**.
 6. **Sample-size floors.** Both trade count (10 minimum here, and 30+ would be better) and
-   window length. Twelve of sixteen long-horizon configurations failed the floor — that is a
+   window length. Seventeen of twenty-five long-horizon singles failed the floor — that is a
    statement about the data, not the strategies.
 
 ## Reproducing everything
@@ -769,10 +769,10 @@ python3 -m backtester.core.fetch --asset SOL --interval 1h --start 2025-08-01 --
 python3 research/sweep.py
 python3 research/cpcv_sweep.py                           # CPCV + PBO (List 1, primary)
 python3 research/verify_numbers.py                       # 495 figures checked against results
-python3 -m unittest discover -s backtester/tests -t .    # 103 known-answer tests
+python3 -m unittest discover -s backtester/tests -t .    # 409 known-answer tests
 ```
 
 > Educational and research use only. **NOT investment advice.** Nothing in this document is
 > evidence that any listed mechanism is profitable. The measured evidence is that on this asset
-> and this window, 9% of 311 rankable configurations made money, and in-sample rank did not
+> and this window, 10% of 711 rankable configurations made money, and in-sample rank did not
 > predict out-of-sample rank.
