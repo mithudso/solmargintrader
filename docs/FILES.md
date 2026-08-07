@@ -209,7 +209,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 129 lines · 8,372 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 499 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 521 tests python3 -m unittest discover -s soltui/tests -t . # 95 tests (~70s) cd extension && npm test # 131 tests
 
 **Use.** Read it.
 

@@ -1,13 +1,13 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 499 tests
+python3 -m unittest discover -s backtester/tests -t .   # 521 tests
 python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
 cd extension && npm test                                # 131 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-725 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
+747 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -64,7 +64,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 499 tests
+## Backtester — 521 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -78,6 +78,16 @@ against the JavaScript implementation's own figures), the **no-lookahead group**
 bar 0; a bar spanning both legs books only the entry), and the **failure modes** (a one-way
 downtrend fills every bid and loses; an unfundable rung is skipped rather than overdrawn; a forced
 end-of-run exit is never counted as a captured rung).
+
+22 cover the **multi-asset rotation harness** (`research/ratio_rotation.py`), which runs
+outside the engine and so inherits none of `BarWindow`'s look-ahead protection. Its leak
+test is a perturbation: overwrite every bar after `t` with noise and require the weights
+through `t` to be bit-identical. That test is itself guarded by a second one that shifts
+the signal a single bar early and asserts the perturbation check *rejects* it — a leak
+test that cannot fail is not a test. Writing that guard exposed a genuine subtlety worth
+keeping: the signal demeans log prices across assets, so scaling every asset by one
+common factor cancels exactly and corrupts nothing, which is now asserted as its own
+invariant rather than left as an accident.
 
 36 of them cover the **strategy cards** (`core/strategy_cards.py`). Those tests exist because a card's
 frontmatter supplies numbers to a backtest, so the machine-readable half is checked against the code
