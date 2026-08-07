@@ -288,5 +288,94 @@ class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
             self.assertIn("rsi_9", entry.label)
 
 
+class TestDocsTab(unittest.IsolatedAsyncioTestCase):
+    """The click-to-open bug: a row cursor move must load the viewer.
+
+    `DataTable.RowSelected` (Enter) was previously the only wired event, and
+    the table never set `cursor_type = "row"` -- so a mouse click moved a
+    *cell* cursor and nothing opened. `move_cursor` is used here rather than
+    `pilot.click` on a table cell because it is what a click, an arrow key,
+    and the "o" binding all ultimately act on: the row cursor position.
+    """
+
+    async def test_table_uses_row_cursor_not_cell(self) -> None:
+        """Without this, a click never fires RowHighlighted at all."""
+        from textual.widgets import DataTable, TabbedContent
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            self.assertEqual(
+                app.query_one("#docs-table", DataTable).cursor_type, "row")
+
+    async def test_moving_the_row_cursor_opens_an_editable_file(self) -> None:
+        """A click (which moves the cursor) must load the file, not just
+        highlight a row and wait for a separate Enter press."""
+        from textual.widgets import Button, DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "soltui/config.py")
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path, "soltui/config.py")
+            view = app.query_one("#docs-view", TextArea)
+            self.assertFalse(view.read_only)
+            self.assertIn("Settings", view.text)
+            self.assertFalse(app.query_one("#docs-save", Button).disabled)
+            self.assertIn("editable", text_of(app, "#docs-view-status"))
+
+    async def test_a_results_file_opens_read_only_with_save_disabled(self) -> None:
+        """research/results/ is evidence; opening one must never look editable."""
+        from textual.widgets import Button, DataTable, Input, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            app.query_one("#docs-filter", Input).value = "research/results/"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            self.assertGreater(table.row_count, 0)
+            # The filter also matches a summary that merely *mentions* the
+            # path, so pick the row that is actually under the prefix rather
+            # than trusting row 0.
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]).startswith("research/results/"))
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            self.assertTrue(app.query_one("#docs-view", TextArea).read_only)
+            self.assertTrue(app.query_one("#docs-save", Button).disabled)
+            self.assertIn("read-only", text_of(app, "#docs-view-status"))
+
+    async def test_o_binding_opens_the_highlighted_row(self) -> None:
+        """The explicit fallback for when a click's RowHighlighted doesn't
+        land through the browser-rendered terminal (textual-serve)."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "soltui/config.py")
+            table.move_cursor(row=row)
+            await pilot.pause()
+            app.query_one("#docs-view", TextArea).text = ""  # prove "o" reloads it
+
+            await pilot.press("o")
+            await pilot.pause()
+
+            self.assertIn("Settings", app.query_one("#docs-view", TextArea).text)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

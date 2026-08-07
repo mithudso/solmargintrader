@@ -149,6 +149,7 @@ class SolTuiApp(App):
         ("q", "quit", "Quit"),
         ("r", "run_backtest", "Run backtest"),
         ("c", "cancel", "Cancel sweep"),
+        ("o", "open_doc", "Open in editor"),
     ]
 
     def __init__(self, settings: Settings | None = None) -> None:
@@ -174,6 +175,10 @@ class SolTuiApp(App):
         # this, not the cheap per-row "editable" column, before writing.
         self._docs_current_path: str | None = None
         self._docs_current_editable = False
+        # The row the DataTable cursor is on, kept independently of what is
+        # actually loaded in the viewer -- the "o" binding opens this even if
+        # the click that highlighted it didn't also fire a load.
+        self._docs_highlighted_path: str | None = None
         self._cumulative_loaded = False
 
     # -- layout ----------------------------------------------------------
@@ -823,7 +828,12 @@ class SolTuiApp(App):
     # -- Docs: read-only explorer over every tracked file ----------------
 
     def _docs_pane(self) -> ComposeResult:
-        """Browse and read every file in the repo. Read-only by design."""
+        """Browse every file in the repo; open one with a click, Enter, or "o".
+
+        Editable per `docs_browser.is_editable` opens read-write with a Save
+        button; everything else (and all of `research/results/`) stays
+        read-only in the same viewer.
+        """
         try:
             self._docs = docs_browser.load_catalog()
         except docs_browser.CatalogUnavailable as exc:
@@ -840,6 +850,12 @@ class SolTuiApp(App):
             with Horizontal():
                 listing = DataTable(id="docs-table")
                 listing.add_columns("path", "kind", "editable", "lines", "summary")
+                # Row cursor, not the DataTable default of cell: a click must
+                # land on *a row*, not one cell in it, for RowHighlighted to
+                # fire and for the "o" binding below to know which file it is
+                # opening. Without this a click just moved a cell cursor and
+                # nothing happened -- the bug this pane shipped with.
+                listing.cursor_type = "row"
                 yield listing
             with Horizontal(classes="form-row"):
                 yield Static("select a file above", id="docs-view-status")
@@ -872,13 +888,47 @@ class SolTuiApp(App):
     def _docs_kind_changed(self) -> None:
         self._refresh_docs()
 
+    @on(DataTable.RowHighlighted, "#docs-table")
+    def _docs_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        """Track the highlighted row so "o" and Enter know what to open.
+
+        `RowHighlighted` is what a mouse click actually fires (a click moves
+        the cursor; it does not "select" in Textual's sense). Opening the
+        file straight from this handler is also what makes a click behave
+        like a file browser instead of requiring a separate Enter press.
+        """
+        try:
+            path = str(event.data_table.get_row_at(event.cursor_row)[0])
+        except Exception:  # noqa: BLE001 - an empty table has no row to open
+            return
+        self._docs_highlighted_path = path
+        self._open_doc(path)
+
     @on(DataTable.RowSelected, "#docs-table")
     def _docs_row_selected(self, event: DataTable.RowSelected) -> None:
-        table = self.query_one("#docs-table", DataTable)
+        """Enter on a highlighted row. Same file RowHighlighted just opened,
+        kept so Enter still does something explicit for anyone expecting it.
+        """
         try:
-            path = str(table.get_row_at(event.cursor_row)[0])
-        except Exception:  # noqa: BLE001 - an empty table selection is harmless
+            path = str(event.data_table.get_row_at(event.cursor_row)[0])
+        except Exception:  # noqa: BLE001 - an empty table has no row to open
             return
+        self._open_doc(path)
+
+    def action_open_doc(self) -> None:
+        """The "o" binding: open whatever row is currently highlighted.
+
+        Exists alongside the click/Enter paths above because mouse-click
+        fidelity through a browser-rendered terminal (textual-serve) is not
+        guaranteed the way it is in a real terminal -- a keybinding that only
+        needs arrow-key navigation to have set `_docs_highlighted_path` is the
+        reliable path when a click doesn't land.
+        """
+        if self._docs_highlighted_path:
+            self._open_doc(self._docs_highlighted_path)
+
+    def _open_doc(self, path: str) -> None:
+        """Load `path` into the viewer, read-write if it is actually editable."""
         text, language, is_real_text = docs_browser.read_document(path, self._docs)
         entry = next((e for e in self._docs if e.path == path), None)
         editable = is_real_text and entry is not None and docs_browser.is_editable(entry)
