@@ -79,16 +79,29 @@ class DocsBrowserTests(unittest.TestCase):
         self.assertEqual(by_path["backtester/core/cpcv.py"].language, "python")
         self.assertEqual(by_path["docs/SCRIPTS.md"].language, "markdown")
 
-    def test_there_is_no_write_path(self):
-        """The omission is the feature, so it is pinned.
+    def test_results_tree_has_no_write_path(self):
+        """The evidence tree staying unwritable is the feature, so it is pinned.
 
-        `research/results/` is the evidence behind every published figure, and
-        `verify_numbers.py` assumes it changes through committed scripts that can
-        be re-run. A GUI editor would be an unlogged write path into that tree.
+        `docs_browser` now has a guarded `write_document()` (see
+        `test_docs_browser.py` for the full guard suite) — the Docs tab is no
+        longer read-only end to end. What must never change is this: writing
+        under `research/results/` is refused regardless of kind or caller,
+        because `verify_numbers.py` and friends assume that tree changes only
+        through committed scripts that can be re-run.
         """
-        for name in ("write_document", "save", "write_file", "edit"):
-            self.assertFalse(hasattr(docs_browser, name),
-                             f"docs_browser must stay read-only; found {name}()")
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        (root / "research" / "results").mkdir(parents=True)
+        index = write_index(root, [
+            {"path": "research/results/sweep.csv", "name": "sweep.csv",
+             "dir": "research/results", "kind": "code-python", "summary": "",
+             "summarySource": "none", "lines": 1, "bytes": 10},
+        ])
+        catalog = docs_browser.load_catalog(index)
+        with self.assertRaises(PermissionError):
+            docs_browser.write_document(
+                "research/results/sweep.csv", "tampered", catalog)
 
 
 class CumulativeTests(unittest.TestCase):

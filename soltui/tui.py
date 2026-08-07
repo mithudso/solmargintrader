@@ -168,6 +168,12 @@ class SolTuiApp(App):
         # memory is what keeps the filter box responsive.
         self._docs: list[docs_browser.DocEntry] = []
         self._docs_loaded = False
+        # The catalogue path currently shown in the Docs viewer, and whether
+        # `read_document` actually returned real text for it (vs a
+        # placeholder for a binary/oversized file) -- the Save button trusts
+        # this, not the cheap per-row "editable" column, before writing.
+        self._docs_current_path: str | None = None
+        self._docs_current_editable = False
         self._cumulative_loaded = False
 
     # -- layout ----------------------------------------------------------
@@ -833,8 +839,11 @@ class SolTuiApp(App):
                 yield Select(kinds, value="", id="docs-kind")
             with Horizontal():
                 listing = DataTable(id="docs-table")
-                listing.add_columns("path", "kind", "lines", "summary")
+                listing.add_columns("path", "kind", "editable", "lines", "summary")
                 yield listing
+            with Horizontal(classes="form-row"):
+                yield Static("select a file above", id="docs-view-status")
+                yield Button("Save", id="docs-save", variant="primary", disabled=True)
             viewer = TextArea("", id="docs-view", read_only=True, show_line_numbers=True)
             yield viewer
 
@@ -848,9 +857,12 @@ class SolTuiApp(App):
         table = self.query_one("#docs-table", DataTable)
         table.clear()
         for e in rows[:400]:
-            table.add_row(e.path, e.kind, str(e.lines), e.summary[:90])
+            editable = "yes" if docs_browser.is_editable(e) else ""
+            table.add_row(e.path, e.kind, editable, str(e.lines), e.summary[:90],
+                          key=e.path)
         self.query_one("#docs-headline", Static).update(
-            f"{len(rows)} of {len(self._docs)} files · read-only viewer")
+            f"{len(rows)} of {len(self._docs)} shown · "
+            f"{docs_browser.summarise_catalog(self._docs)}")
 
     @on(Input.Changed, "#docs-filter")
     def _docs_filter_changed(self) -> None:
@@ -867,15 +879,48 @@ class SolTuiApp(App):
             path = str(table.get_row_at(event.cursor_row)[0])
         except Exception:  # noqa: BLE001 - an empty table selection is harmless
             return
-        text, language = docs_browser.read_document(path, self._docs)
+        text, language, is_real_text = docs_browser.read_document(path, self._docs)
+        entry = next((e for e in self._docs if e.path == path), None)
+        editable = is_real_text and entry is not None and docs_browser.is_editable(entry)
+
         view = self.query_one("#docs-view", TextArea)
         view.text = text
+        view.read_only = not editable
         # Unknown languages must clear the previous one, or a .txt renders with
         # the last file's grammar and looks subtly wrong.
         try:
             view.language = language or None
         except Exception:  # noqa: BLE001 - grammar unavailable in this build
             view.language = None
+
+        self._docs_current_path = path
+        self._docs_current_editable = editable
+        status = self.query_one("#docs-view-status", Static)
+        status.update(f"{path} — {'editable' if editable else 'read-only'}")
+        self.query_one("#docs-save", Button).disabled = not editable
+
+    @on(Button.Pressed, "#docs-save")
+    def _docs_save(self) -> None:
+        """Write the viewer's current text back to disk.
+
+        The click itself is the confirm-on-save step: there is no separate
+        dialog, and `write_document` re-checks editability against the live
+        catalogue rather than trusting `_docs_current_editable`, so a stale
+        button from before a catalogue reload cannot write somewhere the
+        current rules would refuse.
+        """
+        status = self.query_one("#docs-view-status", Static)
+        if not self._docs_current_path or not self._docs_current_editable:
+            status.update("nothing editable is open")
+            return
+        path = self._docs_current_path
+        text = self.query_one("#docs-view", TextArea).text
+        try:
+            docs_browser.write_document(path, text, self._docs)
+        except (PermissionError, FileNotFoundError, OSError) as exc:
+            status.update(f"[red]save failed: {exc}[/]")
+            return
+        status.update(f"{path} — saved")
 
 
 def main(argv: list[str] | None = None) -> int:

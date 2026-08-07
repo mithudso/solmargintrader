@@ -14,20 +14,23 @@ with it eventually. The JSON is consumed as **data** — this module never impor
 anything under `index/`, so the two stay decoupled and the index remains a
 build-time artifact rather than a runtime dependency.
 
-## Why there is no editor
+## Editing, and why `research/results/` is excluded
 
-This is deliberately a viewer, and the omission is the point.
+`write_document()` below is a narrow exception to what was originally a pure
+viewer. The guards anticipated when that decision was made are implemented as:
 
-`research/results/` holds the evidence for every figure in `research/*.md`;
-`verify_numbers.py`, `turnover_table.py --check` and `index/build.py --check` all
-assume those files change through committed scripts that can be re-run. A GUI text
-editor over the same tree is an unlogged, unreviewable write path into exactly that
-evidence — and a truncation is silent until someone happens to read a diff.
-
-If editing is wanted later it needs a decision about guards (an allowlist, a hard
-refusal under `results/`, confirm-on-save), which is a different feature. Adding
-`write_file()` to this module without those is the wrong shortcut, so the function
-does not exist.
+- **allowlist** — `resolve()` already refuses any path not in the catalogue
+  (the index build), and `write_document()` reuses it, so this can never
+  become an arbitrary-path write.
+- **hard refusal under `results/`** — `research/results/` holds the evidence
+  for every figure in `research/*.md`; `verify_numbers.py`,
+  `turnover_table.py --check` and `index/build.py --check` all assume those
+  files change through committed scripts that can be re-run. A GUI text
+  editor over the same tree would be an unlogged, unreviewable write path
+  into exactly that evidence, so `is_editable()` says no for anything under
+  it and `write_document()` refuses regardless of caller.
+- **confirm-on-save** — left to the caller (the Save button in `tui.py`),
+  since that is a UI concern, not a policy one.
 """
 
 from __future__ import annotations
@@ -43,6 +46,11 @@ INDEX_JSON = REPO / "index" / "INDEX.json"
 # text file is ~75 KB, so this is generous; the cap exists so a future large CSV
 # cannot hang the UI thread.
 MAX_VIEW_BYTES = 2_000_000
+
+# Directories no write may touch, regardless of caller. research/results/ is
+# evidence: everything in it is meant to change only by re-running the driver
+# that produced it (see verify_numbers.py, turnover_table.py --check).
+NO_WRITE_PREFIXES = ("research/results/",)
 
 # Extension -> Textual/Rich syntax name. Anything absent renders as plain text,
 # which is correct for .txt reports and better than guessing wrong.
@@ -159,28 +167,68 @@ def resolve(path: str, entries: list[DocEntry]) -> Path:
     return target
 
 
-def read_document(path: str, entries: list[DocEntry]) -> tuple[str, str]:
-    """(text, language) for one catalogued file.
+def read_document(path: str, entries: list[DocEntry]) -> tuple[str, str, bool]:
+    """(text, language, is_real_text) for one catalogued file.
 
     Binary and oversized files return an explanatory line rather than raising, so
-    selecting `SolTUI.icns` in the tree shows a sentence instead of an error dialog.
+    selecting `SolTUI.icns` in the tree shows a sentence instead of an error
+    dialog -- `is_real_text` is False in that case, which is what tells the
+    caller not to offer a Save button next to a placeholder sentence.
     """
     target = resolve(path, entries)
     size = target.stat().st_size
     if size > MAX_VIEW_BYTES:
         return (f"{path} is {size:,} bytes, above the {MAX_VIEW_BYTES:,}-byte "
-                f"viewer limit. Open it outside the console.", "")
+                f"viewer limit. Open it outside the console.", "", False)
     try:
         text = target.read_text(encoding="utf-8")
     except (UnicodeDecodeError, OSError):
-        return (f"{path} is not UTF-8 text ({size:,} bytes) — nothing to display.", "")
+        return (f"{path} is not UTF-8 text ({size:,} bytes) — nothing to display.",
+                "", False)
     entry = next((e for e in entries if e.path == path), None)
-    return text, (entry.language if entry else "")
+    return text, (entry.language if entry else ""), True
+
+
+def is_editable(entry: DocEntry) -> bool:
+    """Cheap, metadata-only editability check for the catalogue and listing.
+
+    Deliberately does not open the file: `summarise_catalog` and the file
+    table run this over every entry (~270 files) on every catalogue load, and
+    a decode-check per file there would mean reading the whole repo's text on
+    every Docs-tab open. `kind == "other"` catches binaries (icons, etc.) and
+    unclassified files; the real UTF-8-decodability check happens once, at
+    selection time, via `read_document`'s third return value -- that is the
+    authoritative answer `write_document` and the Save button rely on.
+    """
+    if any(entry.path.startswith(p) for p in NO_WRITE_PREFIXES):
+        return False
+    if entry.kind in ("result", "other"):
+        return False
+    return entry.size <= MAX_VIEW_BYTES
+
+
+def write_document(path: str, text: str, entries: list[DocEntry]) -> Path:
+    """Save `text` to a catalogued, editable file. Returns the path written.
+
+    Re-derives the cheap editability check rather than trusting the caller's
+    UI state, so a stale widget (e.g. a tab left open while the catalogue
+    changed underneath it) cannot turn into a write into `research/results/`.
+    Callers must additionally have confirmed `read_document`'s `is_real_text`
+    was True for this path -- this function does not re-check that, since
+    doing so here would mean reading the file twice on every save.
+    """
+    entry = next((e for e in entries if e.path == path), None)
+    if entry is None or not is_editable(entry):
+        raise PermissionError(f"{path} is not editable")
+    target = resolve(path, entries)
+    target.write_text(text, encoding="utf-8")
+    return target
 
 
 def summarise_catalog(entries: list[DocEntry]) -> str:
     """One line for the tab header."""
     total = sum(e.size for e in entries)
     described = sum(1 for e in entries if e.summary)
+    editable = sum(1 for e in entries if is_editable(e))
     return (f"{len(entries)} files · {total / 1e6:.1f} MB · "
-            f"{described} with a summary · read-only")
+            f"{described} with a summary · {editable} editable, rest read-only")
