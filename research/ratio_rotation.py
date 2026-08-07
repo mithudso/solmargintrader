@@ -260,21 +260,38 @@ def describe_universes(interval: str = "1d", data_dir: Path | None = None) -> pd
     """
     data_dir = data_dir or (REPO / "data")
     available = sorted(p.name.split("_")[0] for p in data_dir.glob(f"*_{interval}.csv"))
-    rows: list[dict[str, Any]] = []
-    for size in range(2, len(available) + 1):
-        best: tuple[int, tuple[str, ...]] | None = None
-        for combo in itertools.combinations(available, size):
-            try:
-                panel = load_panel(combo, interval, data_dir)
-            except (ValueError, FileNotFoundError):
-                continue
-            if best is None or panel.n_bars > best[0]:
-                best = (panel.n_bars, combo)
-        if best is not None:
-            panel = load_panel(best[1], interval, data_dir)
-            rows.append(
-                {"n_assets": size, "assets": "+".join(best[1]), "bars": best[0], "span": panel.span()}
+
+    # Load each asset's timestamps exactly once. The obvious implementation --
+    # `load_panel` inside an `itertools.combinations` loop -- is O(2^n) full CSV
+    # reads: 247 for 8 assets, but over 32,000 for 15, each one re-reading and
+    # re-validating every file. Intersecting cached sets makes the enumeration
+    # cheap enough that the combinatorics stop mattering at any realistic n.
+    stamps: dict[str, set[int]] = {}
+    for asset in available:
+        try:
+            frame = CsvLoader(data_dir / f"{asset}_{interval}.csv", allow_gaps=True).load(
+                asset, None, None, interval
             )
+        except Exception:  # noqa: BLE001 - an unreadable file is reported by omission
+            continue
+        stamps[asset] = {int(v) for v in frame["timestamp"].to_numpy()}
+
+    usable = sorted(stamps)
+    rows: list[dict[str, Any]] = []
+    for size in range(2, len(usable) + 1):
+        best: tuple[int, tuple[str, ...]] | None = None
+        for combo in itertools.combinations(usable, size):
+            common = set.intersection(*(stamps[a] for a in combo))
+            if best is None or len(common) > best[0]:
+                best = (len(common), combo)
+        if best is None or best[0] < 2:
+            continue
+        common = set.intersection(*(stamps[a] for a in best[1]))
+        lo = pd.to_datetime(min(common), unit="s").date()
+        hi = pd.to_datetime(max(common), unit="s").date()
+        rows.append(
+            {"n_assets": size, "assets": "+".join(best[1]), "bars": best[0], "span": f"{lo}..{hi}"}
+        )
     return pd.DataFrame(rows)
 
 

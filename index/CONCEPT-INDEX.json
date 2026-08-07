@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T23:59:53+00:00",
+  "generatedAt": "2026-08-07T00:03:05+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1031,15 +1031,15 @@
           "hits": 8
         },
         {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
+        },
+        {
           "path": "docs/CONCEPTS.md",
           "hits": 7
         },
         {
           "path": "index/build.py",
-          "hits": 7
-        },
-        {
-          "path": "research/ratio_rotation.py",
           "hits": 7
         },
         {
@@ -2112,12 +2112,12 @@
           "hits": 40
         },
         {
-          "path": "backtester/core/universe.py",
-          "hits": 35
+          "path": "docs/SCRIPTS.md",
+          "hits": 37
         },
         {
-          "path": "docs/SCRIPTS.md",
-          "hits": 34
+          "path": "backtester/core/universe.py",
+          "hits": 35
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
@@ -2136,15 +2136,15 @@
           "hits": 28
         },
         {
+          "path": "research/RATIO-ROTATION.md",
+          "hits": 27
+        },
+        {
           "path": "research/coin-intelligence/trx-tron.md",
           "hits": 21
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 19
-        },
-        {
-          "path": "research/RATIO-ROTATION.md",
           "hits": 19
         },
         {

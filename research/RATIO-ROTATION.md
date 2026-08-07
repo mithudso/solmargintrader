@@ -3,13 +3,21 @@
 Reproduce with:
 
 ```bash
-python3 research/ratio_rotation.py --self-test        # 19 checks
+# Step zero: data/ is gitignored and regenerable, so a clean checkout has none.
+python3 -m backtester.core.universe --assets BTC,ETH,SOL,DOGE,ZEC --interval 1d
+# For the 6-coin panel, XRP has a known 30-month hole and needs the flag stated:
+python3 -m backtester.core.universe --assets XRP --interval 1d --allow-gaps
+
+python3 research/ratio_rotation.py --self-test        # 23 checks
 python3 research/ratio_rotation.py --universes        # why the panel is 5 coins
 python3 research/ratio_rotation.py --turnover-table   # the cost arithmetic
 python3 research/ratio_rotation.py --demo-chain       # chained vs direct routing
 python3 research/ratio_rotation.py --sweep --out rotation_5coin_1d.csv
 python3 research/ratio_rotation.py --carry            # borrow-fee sensitivity
 ```
+
+Every command except the first two needs that cache. `load_panel` raises with the
+exact refetch line when it is missing, rather than proceeding on a partial panel.
 
 ## The question
 

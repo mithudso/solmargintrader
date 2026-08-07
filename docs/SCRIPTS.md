@@ -432,7 +432,10 @@ strength, was positive (best Sharpe 1.771, +12.93%/month) but **failed Deflated 
 both universes** and still lost to simply holding ZEC (+13.71%/month) on the same slice.
 
 ```bash
-python3 research/ratio_rotation.py --self-test        # gate: 19 checks
+# data/ is gitignored; fetch the panel first on a clean checkout.
+python3 -m backtester.core.universe --assets BTC,ETH,SOL,DOGE,ZEC --interval 1d
+
+python3 research/ratio_rotation.py --self-test        # gate: 23 checks
 python3 research/ratio_rotation.py --universes        # why the panel is 5 coins, not 8
 python3 research/ratio_rotation.py --turnover-table   # cost drag by holding period
 python3 research/ratio_rotation.py --demo-chain       # chained vs direct routing
