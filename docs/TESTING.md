@@ -7,7 +7,7 @@ cd extension && npm test                                # 131 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-725 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
+747 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
