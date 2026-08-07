@@ -15,6 +15,8 @@ path anywhere in this package.
 
 from __future__ import annotations
 
+import inspect
+from pathlib import Path
 from typing import Any
 
 from textual import on, work
@@ -526,6 +528,65 @@ class SolTuiApp(App):
         self._refresh_exec_choices()
         self.query_one("#roster-status", Static).update("roster reset to default")
 
+    def _strategy_source_path(self, name: str) -> str | None:
+        """Catalogue-relative path to the file that defines strategy `name`.
+
+        `inspect.getfile` rather than a hand-maintained name-to-file table:
+        several strategies share one module (e.g. everything in
+        `advanced.py`), and a static mapping would drift the moment a
+        strategy moves files. Returns None -- rather than raising -- for
+        anything not resolvable or not present in the Docs catalogue, since
+        `docs_browser.resolve` treats the catalogue as an allowlist and a
+        strategy file missing from `index/INDEX.json` must fail closed, not
+        open an uncatalogued path.
+        """
+        func = REGISTRY.get(name)
+        if func is None:
+            return None
+        try:
+            rel = str(Path(inspect.getfile(func)).resolve()
+                      .relative_to(docs_browser.REPO))
+        except (TypeError, OSError, ValueError):
+            return None
+        if not any(e.path == rel for e in self._docs):
+            return None
+        return rel
+
+    def _open_strategy_file(self, name: str) -> None:
+        """Open the source file for strategy `name` in the shared editor.
+
+        Passive (RowHighlighted, so a click behaves the same way it does on
+        the Docs tab): respects `_open_doc`'s unsaved-edit guard rather than
+        forcing past it, since arrow-keying through the strategy list is
+        exactly the kind of incidental navigation that guard exists for.
+        """
+        rel = self._strategy_source_path(name)
+        if rel is None:
+            self.query_one("#docs-view-status", Static).update(
+                f"{name}: source file not in the Docs catalogue")
+            return
+        self._open_doc(rel)
+
+    @on(DataTable.RowHighlighted, "#available-table")
+    def _available_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        try:
+            name = str(event.data_table.get_row_at(event.cursor_row)[0])
+        except Exception:  # noqa: BLE001 - an empty table has no row to open
+            return
+        self._open_strategy_file(name)
+
+    @on(DataTable.RowHighlighted, "#roster-table")
+    def _roster_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        try:
+            label = str(event.data_table.get_row_at(event.cursor_row)[0])
+        except Exception:  # noqa: BLE001 - an empty table has no row to open
+            return
+        # The roster table's first column is the entry's *label*
+        # (e.g. "rsi_9_30_55", params baked in for display), not the bare
+        # REGISTRY name -- has to go through the roster to recover that.
+        entry = next((e for e in self.roster if e.label == label), None)
+        if entry is not None:
+            self._open_strategy_file(entry.name)
 
     # -- signals ---------------------------------------------------------
 

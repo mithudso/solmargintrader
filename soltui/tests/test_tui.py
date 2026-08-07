@@ -154,6 +154,55 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             status = text_of(app, "#roster-status")
             self.assertIn("expected key=value", status)
 
+    async def test_clicking_an_available_strategy_opens_its_source_file(self) -> None:
+        """The strategy list is a shortcut into the code that defines it."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-strategies"
+            await pilot.pause()
+            table = app.query_one("#available-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "rsi")
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path,
+                              "backtester/core/strategies/rsi.py")
+            self.assertIn("RSI mean-reversion",
+                          app.query_one("#docs-view", TextArea).text)
+
+    async def test_unknown_strategy_name_reports_instead_of_crashing(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            app._open_strategy_file("not_a_real_strategy")
+            await pilot.pause()
+            self.assertIn("not in the Docs catalogue",
+                          text_of(app, "#docs-view-status"))
+
+    async def test_clicking_a_roster_entry_opens_its_source_file(self) -> None:
+        """The roster table's first column is a label, not a REGISTRY name --
+        this pins that the lookup goes through the roster entry, not the
+        display text, to find the right file."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-strategies"
+            await pilot.pause()
+            table = app.query_one("#roster-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "rsi_14_30_50")
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path,
+                              "backtester/core/strategies/rsi.py")
+            self.assertIn("RSI mean-reversion",
+                          app.query_one("#docs-view", TextArea).text)
+
 
 class TestSignalsTab(unittest.IsolatedAsyncioTestCase):
     """The reference tables."""
