@@ -16,10 +16,11 @@ path anywhere in this package.
 from __future__ import annotations
 
 import inspect
+from enum import Enum
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
-from textual import on, work
+from textual import events, on, work
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import (
@@ -128,6 +129,157 @@ SIGNAL_REFERENCE = [
 ]
 
 
+class VimTextArea(TextArea):
+    """`TextArea` with a small, honest subset of Vim's modal editing.
+
+    Not a full Vim emulation. `textual-vim` on PyPI is a single 0.1.0
+    release of unknown maintenance, and whether it even *is* a `TextArea`
+    subclass -- and so keeps `read_only`, `language` and
+    `show_line_numbers` -- is unverified from its listing. All three matter
+    here: `read_only` is `docs_browser`'s actual enforcement point for the
+    `research/results/` write guard (`NO_WRITE_PREFIXES`), not a display
+    hint, so losing it silently would reopen exactly the hole
+    `test_read_only_file_rejects_keystrokes` exists to close. Staying a
+    `TextArea` subclass keeps all three working unchanged: every mutating
+    command below either defers to a `TextArea` action that already refuses
+    when `read_only` is set (`action_delete_right`, `action_delete_line`),
+    or is only reachable through `_enter_insert`/`_open_line_below`, which
+    refuse to switch into INSERT on a read-only file in the first place.
+
+    Two modes: NORMAL (motions only; nothing is typed) and INSERT (falls
+    through to ordinary `TextArea` key handling). Covered commands::
+
+        h j k l     move
+        0   $       start / end of line
+        g g   G     start / end of document
+        i   a       insert before / after the cursor
+        o           open a line below and enter insert
+        x           delete the character under the cursor
+        d d         delete the current line
+        :w<enter>   save (the same guarded write as ctrl+s / the button)
+        escape      return to NORMAL
+
+    An unbound key in NORMAL mode is swallowed, matching Vim's own
+    behaviour, rather than falling through and being typed as text. One
+    deliberate deviation from real Vim: entering INSERT is refused outright
+    on a read-only file, rather than allowed and only refused at `:w` --
+    a blinking insert-mode cursor on a file that can never be saved is a
+    worse experience than "i" doing nothing.
+    """
+
+    class Mode(Enum):
+        NORMAL = "normal"
+        INSERT = "insert"
+
+    def __init__(self, *args: Any, on_save: Callable[[], None] | None = None,
+                 **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.vim_mode = VimTextArea.Mode.NORMAL
+        self._pending_key = ""
+        self._colon_active = False
+        self._colon_buffer = ""
+        # ":w" calls this rather than writing independently, so a Vim save
+        # is the exact same guarded path as ctrl+s / the Save button, never
+        # a second write path that could drift from it.
+        self._on_save = on_save
+
+    async def _on_key(self, event: events.Key) -> None:
+        if self.vim_mode is VimTextArea.Mode.INSERT:
+            if event.key == "escape":
+                event.stop()
+                event.prevent_default()
+                self.vim_mode = VimTextArea.Mode.NORMAL
+                return
+            await super()._on_key(event)
+            return
+
+        # NORMAL mode: every key is ours, handled or swallowed -- never
+        # passed through to be inserted as a stray character.
+        event.stop()
+        event.prevent_default()
+        self._handle_normal_key(event.key, event.character)
+
+    def _handle_normal_key(self, key: str, character: str | None) -> None:
+        if self._colon_active:
+            self._handle_colon_key(key, character)
+            return
+
+        if self._pending_key:
+            pending, self._pending_key = self._pending_key, ""
+            if pending == "g" and key == "g":
+                self.move_cursor(self.document.start)
+            elif pending == "d" and key == "d":
+                self.action_delete_line()
+            # A mismatched second key is dropped rather than processed as
+            # its own command -- not accurate to every real-Vim combination,
+            # but it never falls through and mistypes text.
+            return
+
+        if key in ("g", "d"):
+            self._pending_key = key
+            return
+
+        # Keyed on `key`, not `character`: for every one of these Textual's
+        # key identifier equals the character itself ("h", "0", "x", ...),
+        # *except* "$", whose identifier is "dollar_sign" -- handled
+        # separately just below rather than smuggled into this dict under
+        # the wrong key.
+        motions: dict[str, Callable[[], None]] = {
+            "h": self.action_cursor_left,
+            "l": self.action_cursor_right,
+            "j": self.action_cursor_down,
+            "k": self.action_cursor_up,
+            "0": self.action_cursor_line_start,
+            "G": lambda: self.move_cursor(self.document.end),
+            "x": self.action_delete_right,
+        }
+        if key in motions:
+            motions[key]()
+            return
+        if character == "$":
+            self.action_cursor_line_end()
+            return
+
+        if key == "i":
+            self._enter_insert()
+        elif key == "a":
+            self._enter_insert(after=True)
+        elif key == "o":
+            self._open_line_below()
+        elif character == ":":
+            self._colon_active = True
+            self._colon_buffer = ""
+        # else: an unbound key in NORMAL mode does nothing, matching Vim.
+
+    def _handle_colon_key(self, key: str, character: str | None) -> None:
+        if key == "enter":
+            self._colon_active = False
+            if self._colon_buffer.strip() == "w" and self._on_save is not None:
+                self._on_save()
+            self._colon_buffer = ""
+        elif key == "escape":
+            self._colon_active = False
+            self._colon_buffer = ""
+        elif key == "backspace":
+            self._colon_buffer = self._colon_buffer[:-1]
+        elif character is not None and character.isprintable():
+            self._colon_buffer += character
+
+    def _enter_insert(self, *, after: bool = False) -> None:
+        if self.read_only:
+            return
+        if after:
+            self.action_cursor_right()
+        self.vim_mode = VimTextArea.Mode.INSERT
+
+    def _open_line_below(self) -> None:
+        if self.read_only:
+            return
+        self.action_cursor_line_end()
+        self.insert("\n", maintain_selection_offset=False)
+        self.vim_mode = VimTextArea.Mode.INSERT
+
+
 class SolTuiApp(App):
     """The five-tab console."""
 
@@ -231,13 +383,17 @@ class SolTuiApp(App):
         never lose whatever is loaded here, and a strategy source file opened
         from the Strategies tab needs somewhere to land that the Docs tab
         doesn't own. "ctrl+e" toggles `#editor-panel.display` to hide it.
+        `VimTextArea` (see its docstring) is a `TextArea` subclass, so every
+        existing `query_one("#docs-view", TextArea)` call elsewhere still
+        matches it.
         """
         with Vertical(id="editor-panel"):
             with Horizontal(classes="form-row"):
                 yield Static("select a file to open it here", id="docs-view-status")
                 yield Button("Save (^s)", id="docs-save", variant="primary",
                              disabled=True)
-            yield TextArea("", id="docs-view", read_only=True, show_line_numbers=True)
+            yield VimTextArea("", id="docs-view", read_only=True,
+                               show_line_numbers=True, on_save=self._save_current_doc)
 
     def _settings_pane(self) -> ComposeResult:
         """Editable settings form."""

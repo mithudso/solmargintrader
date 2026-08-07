@@ -14,6 +14,7 @@ from __future__ import annotations
 import unittest
 from tempfile import TemporaryDirectory
 
+from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Static
 
 from soltui.config import Settings
@@ -568,6 +569,226 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
             await pilot.press("ctrl+e")
             await pilot.pause()
             self.assertTrue(panel.display)
+
+
+class _VimHarness(App):
+    """A bare app around one `VimTextArea` -- exercising the widget directly
+    is both faster and more precise than mounting the full `SolTuiApp` (nine
+    tabs, the ~270-row Docs catalogue) for every motion/mode assertion."""
+
+    def __init__(self, text: str = "", *, read_only: bool = False,
+                 on_save=None) -> None:
+        super().__init__()
+        self._text = text
+        self._read_only = read_only
+        self._on_save = on_save
+
+    def compose(self) -> ComposeResult:
+        from soltui.tui import VimTextArea
+        yield VimTextArea(self._text, id="ta", read_only=self._read_only,
+                          on_save=self._on_save)
+
+
+class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
+    """The subset documented on `VimTextArea` itself."""
+
+    async def test_starts_in_normal_mode(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("hello")
+        async with app.run_test() as pilot:
+            await pilot.pause()
+            ta = app.query_one("#ta", VimTextArea)
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
+
+    async def test_unbound_key_in_normal_mode_types_nothing(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("hello")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("z")  # not bound to anything below
+            await pilot.pause()
+            self.assertEqual(ta.text, "hello")
+
+    async def test_hjkl_move_the_cursor(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("ab\ncd")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("l")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 1))
+            await pilot.press("j")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (1, 1))
+            await pilot.press("h")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (1, 0))
+            await pilot.press("k")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 0))
+
+    async def test_0_and_dollar_move_to_line_start_and_end(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("hello")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 2))
+            await pilot.press("dollar_sign")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 5))
+            await pilot.press("0")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 0))
+
+    async def test_gg_and_G_move_to_document_start_and_end(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("one\ntwo\nthree")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("G")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, ta.document.end)
+            await pilot.press("g")
+            await pilot.press("g")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 0))
+
+    async def test_i_enters_insert_and_types_before_cursor(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("bc")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("i")
+            await pilot.pause()
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.INSERT)
+            await pilot.press("a")  # a literal "a", not the vim command now
+            await pilot.pause()
+            self.assertEqual(ta.text, "abc")
+
+    async def test_a_enters_insert_after_cursor(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("ac")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("a")
+            await pilot.press("b")
+            await pilot.pause()
+            self.assertEqual(ta.text, "abc")
+
+    async def test_o_opens_a_line_below_and_enters_insert(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("first")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("o")
+            await pilot.pause()
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.INSERT)
+            await pilot.press("s", "e", "c", "o", "n", "d")
+            await pilot.pause()
+            self.assertEqual(ta.text, "first\nsecond")
+
+    async def test_escape_returns_to_normal_mode(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("x")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("i")
+            await pilot.pause()
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.INSERT)
+            await pilot.press("escape")
+            await pilot.pause()
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
+            # Back in NORMAL, "x" is delete-char-under-cursor, not a letter.
+            await pilot.press("x")
+            await pilot.pause()
+            self.assertEqual(ta.text, "")
+
+    async def test_x_deletes_the_character_under_the_cursor(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("abc")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("x")
+            await pilot.pause()
+            self.assertEqual(ta.text, "bc")
+
+    async def test_dd_deletes_the_current_line(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("one\ntwo\nthree")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((1, 0))  # "two"
+            await pilot.press("d")
+            await pilot.press("d")
+            await pilot.pause()
+            self.assertEqual(ta.text, "one\nthree")
+
+    async def test_mismatched_pending_key_is_dropped_not_misapplied(self) -> None:
+        """"g" then "x" (not "gg") must not delete or move unexpectedly --
+        the documented simplification is to drop it, never guess."""
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("abc")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("g")
+            await pilot.press("x")
+            await pilot.pause()
+            self.assertEqual(ta.text, "abc")
+
+    async def test_colon_w_calls_the_save_callback(self) -> None:
+        from soltui.tui import VimTextArea
+
+        saved = []
+        app = _VimHarness("abc", on_save=lambda: saved.append(True))
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("colon")
+            await pilot.press("w")
+            await pilot.press("enter")
+            await pilot.pause()
+            self.assertEqual(saved, [True])
+
+    async def test_read_only_refuses_to_enter_insert_mode(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("abc", read_only=True)
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            for key in ("i", "a", "o"):
+                await pilot.press(key)
+                await pilot.pause()
+                self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
+            self.assertEqual(ta.text, "abc")
 
 
 if __name__ == "__main__":
