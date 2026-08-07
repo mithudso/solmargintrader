@@ -463,12 +463,73 @@ Read `docs/SECURITY.md` before touching anything here.
 
 ---
 
-## soltui (macOS only)
+## soltui
+
+### `python3 -m soltui.serve` — the console as a real window
+
+**Purpose.** Serves the nine-tab console over loopback HTTP so it renders in a
+browser window. This is the way to reach the console.
+
+**Why it exists.** The console has had tabs, buttons and settings since it was
+written, but the only route to them was the menu bar's Terminal spawn — an
+`osascript` call wrapped in `check=False`. When Terminal automation is not
+permitted, which is the default on a fresh macOS install, that fails **silently**,
+so the app appeared to have no interface at all. It was a reachability bug, not a
+missing UI. A menu-bar process has no controlling terminal; serving removes that
+constraint.
+
+**When *not* to use it.** On a shared machine without thinking about who can reach
+the port. It binds `127.0.0.1` only and there is no flag to widen that, but
+anything that reaches the loopback port can drive the console.
+
+Options: `--port` (default: first free from 8899), `--no-open`.
 
 ```bash
-python3 soltui/soltui-service status|start|stop|build
-python3 soltui/tui.py            # the terminal UI directly
+python3 -m soltui.serve                    # opens http://127.0.0.1:8899
+python3 -m soltui.serve --port 9000 --no-open
 ```
+
+```
+soltui console -> http://127.0.0.1:8899   (Ctrl-C to stop)
+```
+
+Needs `textual-serve` (`pip install -r soltui/requirements.txt`). Without it the
+command prints the install line and the terminal alternative rather than failing
+obscurely. **Like `api-server.js`, this blocks until interrupted** — do not invoke
+it from a script expecting completion.
+
+### The nine tabs
+
+Settings · Strategies · Signals · Backtest · Execute · **Analyze** · **Cumulative**
+· **Research** · **Docs**.
+
+- **Analyze** — every registered strategy replayed for any cached coin **at any
+  timestamp**. Distinct from Signals, which reads the latest bar of the configured
+  asset. Strategies are path-dependent, so the series is truncated at the chosen
+  moment and replayed from the start; reading a row out of a full-history replay
+  would report a number that depended on the future.
+- **Cumulative** — every CSV in `research/results/` with the 10-trade evidence
+  floor applied. Rows below it are counted and listed separately, never pooled into
+  a ranking — on the committed corpus that is **1,332 of 2,691 configurations**.
+  Files are shown side by side rather than merged, because a median across
+  different assets, horizons and geometries describes nothing.
+- **Research** — which driver answers which question, and what each established.
+- **Docs** — filterable catalogue of every tracked file with a **read-only**
+  viewer. Read-only deliberately: `research/results/` is the evidence behind every
+  published figure and `verify_numbers.py` assumes it changes through committed
+  scripts, so a GUI editor would be an unlogged write path into that tree.
+
+### macOS menu bar and packaging
+
+```bash
+python3 -m soltui.app                        # menu-bar shell
+python3 soltui/soltui-service status|start|stop|build
+python3 -m soltui.tui                        # the console in a terminal
+```
+
+The menu bar leads with **Open console** (the window) and keeps **Open console in
+Terminal** as a labelled fallback that now reports the automation-permission error
+instead of swallowing it.
 
 The **flag file is the real off switch**, not the menu-bar Quit item: `KeepAlive`
 necessarily overrides Quit, so removing

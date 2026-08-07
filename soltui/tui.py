@@ -31,11 +31,15 @@ from textual.widgets import (
     Static,
     TabbedContent,
     TabPane,
+    TextArea,
 )
 
 from backtester.core import indicators as ind
 from backtester.core.strategies import FAMILY, REGISTRY, build
 
+from . import analyze as analyze_mod
+from . import cumulative as cumulative_mod
+from . import docs_browser
 from .config import INTERVALS, Settings, load_settings, save_settings
 from .paper import MODE_LABEL, PaperSession, start_session
 from .roster import Roster, RosterError, available_strategies
@@ -50,6 +54,46 @@ from .signals import (
 )
 from .runner import SweepRunner, engine_config, load_arrays
 from .status import AppState, Phase, build_title, format_pct
+
+# The Research tab's content. Kept here as data rather than fetched or computed:
+# these are the questions each driver answers and what it actually established,
+# and both are stable facts about the study. Figures match docs/SCRIPTS.md and
+# research/CROSS-ASSET-TRANSFER.md; `python3 research/verify_numbers.py` is the
+# gate that keeps the underlying documents honest.
+RESEARCH_DRIVERS = [
+    ("research/cpcv_sweep.py", "Is a configuration any good?",
+     "PBO 0.700 at both daily horizons vs a 0.500 noise line"),
+    ("research/cross_asset_cpcv.py", "Does it transfer to another coin?",
+     "All 10 top-5 transfers to DOGE/ZEC degraded; none improved"),
+    ("research/perturb.py", "Was it fitted to noise?",
+     "Pairs are ~2.6x more parameter-sensitive than long-horizon singles"),
+    ("research/geometry.py", "Is the leaderboard an artifact of block count?",
+     "8->9 blocks moved the best pair -0.441, more than any parameter"),
+    ("research/decide.py", "What does each rule say right now?",
+     "Targets provably match what the engine would have acted on"),
+    ("research/dso_audit.py", "Which results are below the evidence floor?",
+     "BTC's rank-1 ou_reversion sits on 6 trades"),
+    ("research/sweep.py", "The single 70/30 split it all replaced",
+     "In-sample window ended on the highest close in the series"),
+    ("research/verify_numbers.py", "Do the docs match their CSVs?",
+     "950 figures checked; CI fails the build on drift"),
+    ("research/turnover_table.py", "One comparable turnover table",
+     "DOGE 3.44% leads SOL 3.32% on a single-timestamp pull"),
+]
+
+RESEARCH_FINDINGS = [
+    "In-sample rank is anti-informative: PBO 0.700, and Spearman rho(IS, OOS) is "
+    "-0.419 at the medium horizon.",
+    "The five recommended configurations do not transfer. Only #3 and #4 stayed "
+    "positive on all three assets; #2 is 100% positive on SOL and 0% on DOGE "
+    "across the same 15 paths.",
+    "Path counts are 15 or 21, never the nominal 28 — only buy_and_hold, which "
+    "needs no warm-up, reached 28.",
+    "The dataset explains more than the strategy: the same 25 strategies score "
+    "25/25 on BTC daily and 0/25 on SOL hourly.",
+    "Buy-and-hold medians +0.534 on SOL with zero parameters, 2nd of 25 — and on "
+    "ZEC it beat all five recommended configurations.",
+]
 
 # One-line description per signal family, for the Signals tab. Sourced from the
 # taxonomy in research/STRATEGIES.md so the two do not drift into disagreement.
@@ -119,6 +163,12 @@ class SolTuiApp(App):
         self.state = AppState()
         self.runner = SweepRunner(self.state)
         self.session: PaperSession | None = None
+        # Populated when the Docs tab composes. Held on the app rather than
+        # re-read per keystroke: the catalogue is ~270 rows and filtering it in
+        # memory is what keeps the filter box responsive.
+        self._docs: list[docs_browser.DocEntry] = []
+        self._docs_loaded = False
+        self._cumulative_loaded = False
 
     # -- layout ----------------------------------------------------------
 
@@ -137,6 +187,14 @@ class SolTuiApp(App):
                 yield from self._backtest_pane()
             with TabPane("Execute", id="tab-execute"):
                 yield from self._execute_pane()
+            with TabPane("Analyze", id="tab-analyze"):
+                yield from self._analyze_pane()
+            with TabPane("Cumulative", id="tab-cumulative"):
+                yield from self._cumulative_pane()
+            with TabPane("Research", id="tab-research"):
+                yield from self._research_pane()
+            with TabPane("Docs", id="tab-docs"):
+                yield from self._docs_pane()
         yield Footer()
 
     def _settings_pane(self) -> ComposeResult:
@@ -597,6 +655,227 @@ class SolTuiApp(App):
                 str(f.bar_index), f.when, f.side, f.reason, f"{f.price:,.2f}",
                 f"{f.units:,.4f}", f"{f.cost:,.2f}", f"{f.equity_after:,.2f}",
             )
+
+
+    @on(TabbedContent.TabActivated)
+    def _populate_on_first_view(self, event: TabbedContent.TabActivated) -> None:
+        """Fill the scanning tabs the first time each is opened.
+
+        Deliberately not `on_mount`: Cumulative reads every CSV in
+        research/results/ and Docs holds a ~270-row catalogue, and doing both at
+        startup would delay the first paint for tabs the user may never open.
+        Repeat activations are cheap — Docs filters in memory, and Cumulative has
+        an explicit Reload button for when results change underneath it.
+        """
+        pane = event.pane.id if event.pane else ""
+        if pane == "tab-cumulative" and not self._cumulative_loaded:
+            self._cumulative_loaded = True
+            self._refresh_cumulative()
+        elif pane == "tab-docs" and not self._docs_loaded:
+            self._docs_loaded = True
+            self._refresh_docs()
+
+    # -- Analyze: any coin, any moment -----------------------------------
+
+    def _analyze_pane(self) -> ComposeResult:
+        """Replay every rule up to a chosen timestamp, for a chosen coin.
+
+        Distinct from the Signals tab, which reads the *latest* bar of the
+        configured asset. Here the coin and the moment are both inputs.
+        """
+        pairs = analyze_mod.available_assets()
+        options = [(f"{a} {i}", f"{a}|{i}") for a, i in pairs]
+        with VerticalScroll():
+            yield Static(
+                "Every registered strategy replayed from the start of history up to "
+                "the chosen bar. Strategies are path-dependent, so the series is "
+                "truncated first and replayed — the answer is what the rule would "
+                "have decided then, not what it decides now.",
+                classes="hint",
+            )
+            if not options:
+                yield Static(
+                    "No cached series. Fetch one:\n"
+                    "  python3 -m backtester.core.fetch --asset SOL --interval 1d "
+                    "--start 2021-01-01",
+                    id="analyze-empty",
+                )
+                return
+            with Horizontal(classes="form-row"):
+                yield Label("Coin / interval")
+                yield Select(options, value=options[0][1], id="analyze-asset")
+            with Horizontal(classes="form-row"):
+                yield Label("As of (UTC)")
+                yield Input(placeholder="YYYY-MM-DD or YYYY-MM-DD HH:MM "
+                                        "(blank = last bar)", id="analyze-when")
+            with Horizontal(classes="form-row"):
+                yield Button("Analyze", id="analyze-run", variant="primary")
+            yield Static("", id="analyze-headline")
+            table = DataTable(id="analyze-table")
+            table.add_columns("strategy", "family", "action", "holding -> wants",
+                              "warmup", "bars")
+            yield table
+
+    @on(Button.Pressed, "#analyze-run")
+    def _run_analysis(self) -> None:
+        sel = self.query_one("#analyze-asset", Select).value
+        if not isinstance(sel, str):
+            return
+        asset, _, interval = sel.partition("|")
+        raw = self.query_one("#analyze-when", Input).value.strip()
+        head = self.query_one("#analyze-headline", Static)
+        try:
+            when = analyze_mod.parse_as_of(raw) if raw else None
+            result = analyze_mod.analyse(asset, interval, as_of=when)
+        except (ValueError, FileNotFoundError, KeyError) as exc:
+            head.update(f"[b]could not analyse:[/b] {exc}")
+            return
+        head.update(result.headline + ("" if result.truncated
+                                       else "   (latest bar)"))
+        table = self.query_one("#analyze-table", DataTable)
+        table.clear()
+        for d in result.decisions:
+            table.add_row(d.name, d.family, d.action, d.detail,
+                          str(d.warmup), str(d.bars))
+
+    # -- Cumulative: every committed result, floor applied ---------------
+
+    def _cumulative_pane(self) -> ComposeResult:
+        """Aggregate the result CSVs without pooling incomparable files."""
+        with VerticalScroll():
+            yield Static(
+                "Every CSV in research/results/. Rows below the "
+                f"{cumulative_mod.MIN_RANKABLE_TRADES}-trade evidence floor are "
+                "counted separately, never mixed into a ranking: cpcv_evaluate "
+                "prints those DROPPED but still returns a full path count. Files "
+                "are shown side by side rather than pooled, because a median "
+                "across different assets, horizons and geometries describes "
+                "nothing.",
+                classes="hint",
+            )
+            with Horizontal(classes="form-row"):
+                yield Button("Reload", id="cumulative-reload", variant="primary")
+            yield Static("", id="cumulative-headline")
+            per_file = DataTable(id="cumulative-table")
+            per_file.add_columns("file", "rankable", "below floor", "positive",
+                                 "made money", "median Sharpe", "paths", "best (rankable)")
+            yield per_file
+            yield Static("[b]Below the floor — what a naive aggregate would rank first[/b]",
+                         classes="hint")
+            dropped = DataTable(id="cumulative-dropped")
+            dropped.add_columns("file", "configuration", "claims Sharpe", "trades", "paths")
+            yield dropped
+
+    @on(Button.Pressed, "#cumulative-reload")
+    def _reload_cumulative(self) -> None:
+        self._refresh_cumulative()
+
+    def _refresh_cumulative(self) -> None:
+        summaries = cumulative_mod.load_all()
+        self.query_one("#cumulative-headline", Static).update(
+            cumulative_mod.headline(summaries))
+        table = self.query_one("#cumulative-table", DataTable)
+        table.clear()
+        for s in summaries:
+            best = s.best
+            med = s.median_sharpe
+            table.add_row(
+                s.source, str(len(s.rankable)), str(len(s.below_floor)),
+                str(s.positive), str(s.made_money),
+                "-" if med is None else f"{med:+.3f}",
+                s.path_range,
+                "-" if best is None else f"{best.label} {best.median_sharpe:+.3f}",
+            )
+        drop = self.query_one("#cumulative-dropped", DataTable)
+        drop.clear()
+        for r in cumulative_mod.floor_casualties(summaries):
+            drop.add_row(r.source, r.label, f"{r.median_sharpe:+.3f}",
+                         str(r.trades or 0), str(r.n_paths or 0))
+
+    # -- Research: the drivers and what they established -----------------
+
+    def _research_pane(self) -> ComposeResult:
+        """The research surface: which driver answers which question."""
+        with VerticalScroll():
+            yield Static(
+                "The drivers that produce every number in this repo, and the "
+                "finding each one established. Run them from a terminal — they "
+                "are long-running and their output is the artifact, not the "
+                "console. docs/SCRIPTS.md carries the full options.",
+                classes="hint",
+            )
+            table = DataTable(id="research-table")
+            table.add_columns("driver", "answers", "established")
+            for driver, answers, found in RESEARCH_DRIVERS:
+                table.add_row(driver, answers, found)
+            yield table
+            yield Static("[b]Findings that constrain every figure above[/b]",
+                         classes="hint")
+            for line in RESEARCH_FINDINGS:
+                yield Static(f"• {line}")
+
+    # -- Docs: read-only explorer over every tracked file ----------------
+
+    def _docs_pane(self) -> ComposeResult:
+        """Browse and read every file in the repo. Read-only by design."""
+        try:
+            self._docs = docs_browser.load_catalog()
+        except docs_browser.CatalogUnavailable as exc:
+            self._docs = []
+            with VerticalScroll():
+                yield Static(str(exc), id="docs-empty")
+            return
+        kinds = [("all kinds", "")] + [(k, k) for k in docs_browser.kinds_of(self._docs)]
+        with Vertical():
+            yield Static(docs_browser.summarise_catalog(self._docs), id="docs-headline")
+            with Horizontal(classes="form-row"):
+                yield Input(placeholder="filter by path or summary…", id="docs-filter")
+                yield Select(kinds, value="", id="docs-kind")
+            with Horizontal():
+                listing = DataTable(id="docs-table")
+                listing.add_columns("path", "kind", "lines", "summary")
+                yield listing
+            viewer = TextArea("", id="docs-view", read_only=True, show_line_numbers=True)
+            yield viewer
+
+    def _refresh_docs(self) -> None:
+        if not getattr(self, "_docs", None):
+            return
+        query = self.query_one("#docs-filter", Input).value
+        kind = self.query_one("#docs-kind", Select).value
+        rows = docs_browser.filter_entries(
+            self._docs, query, kind if isinstance(kind, str) else "")
+        table = self.query_one("#docs-table", DataTable)
+        table.clear()
+        for e in rows[:400]:
+            table.add_row(e.path, e.kind, str(e.lines), e.summary[:90])
+        self.query_one("#docs-headline", Static).update(
+            f"{len(rows)} of {len(self._docs)} files · read-only viewer")
+
+    @on(Input.Changed, "#docs-filter")
+    def _docs_filter_changed(self) -> None:
+        self._refresh_docs()
+
+    @on(Select.Changed, "#docs-kind")
+    def _docs_kind_changed(self) -> None:
+        self._refresh_docs()
+
+    @on(DataTable.RowSelected, "#docs-table")
+    def _docs_row_selected(self, event: DataTable.RowSelected) -> None:
+        table = self.query_one("#docs-table", DataTable)
+        try:
+            path = str(table.get_row_at(event.cursor_row)[0])
+        except Exception:  # noqa: BLE001 - an empty table selection is harmless
+            return
+        text, language = docs_browser.read_document(path, self._docs)
+        view = self.query_one("#docs-view", TextArea)
+        view.text = text
+        # Unknown languages must clear the previous one, or a .txt renders with
+        # the last file's grammar and looks subtly wrong.
+        try:
+            view.language = language or None
+        except Exception:  # noqa: BLE001 - grammar unavailable in this build
+            view.language = None
 
 
 def main(argv: list[str] | None = None) -> int:
