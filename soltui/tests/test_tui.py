@@ -376,6 +376,150 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
 
             self.assertIn("Settings", app.query_one("#docs-view", TextArea).text)
 
+    async def test_read_only_file_rejects_keystrokes(self) -> None:
+        """`read_only` is the actual policy enforcement for research/results/
+        -- a widget that accepted the flag but ignored it would still pass
+        the "looks read-only" assertions above, so this checks behavior."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]).startswith("research/results/"))
+            table.move_cursor(row=row)
+            await pilot.pause()
+            view = app.query_one("#docs-view", TextArea)
+            before = view.text
+
+            view.focus()
+            await pilot.press("x")
+            await pilot.pause()
+
+            self.assertEqual(view.text, before)
+
+    async def test_passive_navigation_never_discards_an_unsaved_edit(self) -> None:
+        """The bug report: editing, then moving to another row, silently lost
+        the edit. Navigating (RowHighlighted) must refuse; an explicit Enter
+        on the new row is what is allowed to discard it."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row_a = next(i for i in range(table.row_count)
+                         if str(table.get_row_at(i)[0]) == "soltui/config.py")
+            row_b = next(i for i in range(table.row_count)
+                         if str(table.get_row_at(i)[0]) == "soltui/roster.py")
+            table.focus()  # Enter later must route to the table, not elsewhere
+            table.move_cursor(row=row_a)
+            await pilot.pause()
+            view = app.query_one("#docs-view", TextArea)
+            view.text = "EDITED, NOT SAVED\n" + view.text
+            await pilot.pause()
+            self.assertIn("unsaved", text_of(app, "#docs-view-status"))
+
+            table.move_cursor(row=row_b)
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path, "soltui/config.py")
+            self.assertIn("EDITED, NOT SAVED", view.text)
+            self.assertIn("unsaved changes", text_of(app, "#docs-view-status"))
+
+            # Cursor is already on row_b; Enter is the deliberate-open action
+            # and may discard where the RowHighlighted move just refused to.
+            await pilot.press("enter")
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path, "soltui/roster.py")
+            self.assertNotIn("EDITED, NOT SAVED", view.text)
+
+    async def test_editor_panel_is_visible_from_a_different_tab(self) -> None:
+        """The whole point of moving it out of _docs_pane: it must still be
+        on screen after switching away from Docs."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "soltui/config.py")
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            app.query_one(TabbedContent).active = "tab-strategies"
+            await pilot.pause()
+
+            view = app.query_one("#docs-view", TextArea)
+            self.assertIn("Settings", view.text)
+            self.assertTrue(app.query_one("#editor-panel").display)
+
+    async def test_ctrl_s_saves_from_any_tab(self) -> None:
+        """`ctrl+s` is an App-level binding precisely so it works without
+        switching to Docs first. Uses a temp-repo fixture (see
+        `test_docs_browser.py`'s `WriteDocumentTests`) rather than a real
+        tracked file, so a save actually lands on disk somewhere throwaway.
+        """
+        from pathlib import Path
+        from unittest import mock
+        from tempfile import TemporaryDirectory
+        from textual.widgets import TabbedContent, TextArea
+
+        from soltui import docs_browser
+
+        with TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            target = repo / "scratch.py"
+            target.write_text("original\n", encoding="utf-8")
+            entries = [docs_browser.DocEntry(
+                path="scratch.py", name="scratch.py", directory="",
+                kind="code-python", summary="", summary_source="none",
+                lines=1, size=9,
+            )]
+
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                # Let the real Docs-tab table's mount-time RowHighlighted
+                # (against the real catalogue) drain before swapping
+                # `self._docs` out from under it below.
+                await pilot.pause()
+                with mock.patch.object(docs_browser, "REPO", repo):
+                    app._docs = entries
+                    app._open_doc("scratch.py")
+                    await pilot.pause()
+
+                    app.query_one(TabbedContent).active = "tab-strategies"
+                    await pilot.pause()
+                    view = app.query_one("#docs-view", TextArea)
+                    view.text = "edited\n"
+                    await pilot.pause()
+
+                    await pilot.press("ctrl+s")
+                    await pilot.pause()
+
+                    self.assertIn("saved", text_of(app, "#docs-view-status"))
+                    self.assertEqual(target.read_text(encoding="utf-8"), "edited\n")
+
+    async def test_ctrl_e_toggles_the_editor_panel(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            panel = app.query_one("#editor-panel")
+            self.assertTrue(panel.display)
+
+            await pilot.press("ctrl+e")
+            await pilot.pause()
+            self.assertFalse(panel.display)
+
+            await pilot.press("ctrl+e")
+            await pilot.pause()
+            self.assertTrue(panel.display)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

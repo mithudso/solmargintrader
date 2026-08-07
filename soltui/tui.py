@@ -144,12 +144,20 @@ class SolTuiApp(App):
     .form-row Label { width: 22; content-align: right middle; padding-right: 1; }
     .hint { color: $text-muted; }
     DataTable { height: 1fr; }
+    TabbedContent { height: 1fr; }
+    #editor-panel {
+        height: 16;
+        border-top: solid $accent;
+    }
+    #editor-panel TextArea { height: 1fr; }
     """
     BINDINGS = [
         ("q", "quit", "Quit"),
         ("r", "run_backtest", "Run backtest"),
         ("c", "cancel", "Cancel sweep"),
         ("o", "open_doc", "Open in editor"),
+        ("ctrl+s", "save_doc", "Save"),
+        ("ctrl+e", "toggle_editor", "Show/hide editor"),
     ]
 
     def __init__(self, settings: Settings | None = None) -> None:
@@ -179,6 +187,11 @@ class SolTuiApp(App):
         # actually loaded in the viewer -- the "o" binding opens this even if
         # the click that highlighted it didn't also fire a load.
         self._docs_highlighted_path: str | None = None
+        # The text as it was on disk when _docs_current_path was loaded.
+        # Compared against the live TextArea to know whether there is an
+        # unsaved edit -- without this, navigating to a different file
+        # silently overwrote whatever was being edited, with no warning.
+        self._docs_loaded_text = ""
         self._cumulative_loaded = False
 
     # -- layout ----------------------------------------------------------
@@ -206,7 +219,23 @@ class SolTuiApp(App):
                 yield from self._research_pane()
             with TabPane("Docs", id="tab-docs"):
                 yield from self._docs_pane()
+        yield from self._editor_pane()
         yield Footer()
+
+    def _editor_pane(self) -> ComposeResult:
+        """The one file viewer/editor, visible under every tab.
+
+        A single shared instance rather than one per tab: a tab switch must
+        never lose whatever is loaded here, and a strategy source file opened
+        from the Strategies tab needs somewhere to land that the Docs tab
+        doesn't own. "ctrl+e" toggles `#editor-panel.display` to hide it.
+        """
+        with Vertical(id="editor-panel"):
+            with Horizontal(classes="form-row"):
+                yield Static("select a file to open it here", id="docs-view-status")
+                yield Button("Save (^s)", id="docs-save", variant="primary",
+                             disabled=True)
+            yield TextArea("", id="docs-view", read_only=True, show_line_numbers=True)
 
     def _settings_pane(self) -> ComposeResult:
         """Editable settings form."""
@@ -830,9 +859,10 @@ class SolTuiApp(App):
     def _docs_pane(self) -> ComposeResult:
         """Browse every file in the repo; open one with a click, Enter, or "o".
 
-        Editable per `docs_browser.is_editable` opens read-write with a Save
-        button; everything else (and all of `research/results/`) stays
-        read-only in the same viewer.
+        The viewer itself lives in `_editor_pane`, not here -- it is shared
+        across every tab. Editable per `docs_browser.is_editable` opens
+        read-write there with Save enabled; everything else (and all of
+        `research/results/`) opens read-only.
         """
         try:
             self._docs = docs_browser.load_catalog()
@@ -857,11 +887,6 @@ class SolTuiApp(App):
                 # nothing happened -- the bug this pane shipped with.
                 listing.cursor_type = "row"
                 yield listing
-            with Horizontal(classes="form-row"):
-                yield Static("select a file above", id="docs-view-status")
-                yield Button("Save", id="docs-save", variant="primary", disabled=True)
-            viewer = TextArea("", id="docs-view", read_only=True, show_line_numbers=True)
-            yield viewer
 
     def _refresh_docs(self) -> None:
         if not getattr(self, "_docs", None):
@@ -906,14 +931,14 @@ class SolTuiApp(App):
 
     @on(DataTable.RowSelected, "#docs-table")
     def _docs_row_selected(self, event: DataTable.RowSelected) -> None:
-        """Enter on a highlighted row. Same file RowHighlighted just opened,
-        kept so Enter still does something explicit for anyone expecting it.
+        """Enter on a highlighted row -- a deliberate "open this", so it may
+        discard an unsaved edit in whatever was open before (force=True).
         """
         try:
             path = str(event.data_table.get_row_at(event.cursor_row)[0])
         except Exception:  # noqa: BLE001 - an empty table has no row to open
             return
-        self._open_doc(path)
+        self._open_doc(path, force=True)
 
     def action_open_doc(self) -> None:
         """The "o" binding: open whatever row is currently highlighted.
@@ -922,18 +947,56 @@ class SolTuiApp(App):
         fidelity through a browser-rendered terminal (textual-serve) is not
         guaranteed the way it is in a real terminal -- a keybinding that only
         needs arrow-key navigation to have set `_docs_highlighted_path` is the
-        reliable path when a click doesn't land.
+        reliable path when a click doesn't land. Also a deliberate action, so
+        force=True.
         """
         if self._docs_highlighted_path:
-            self._open_doc(self._docs_highlighted_path)
+            self._open_doc(self._docs_highlighted_path, force=True)
 
-    def _open_doc(self, path: str) -> None:
-        """Load `path` into the viewer, read-write if it is actually editable."""
+    def action_save_doc(self) -> None:
+        """ctrl+s: save whatever is currently open, from any tab."""
+        self._save_current_doc()
+
+    def action_toggle_editor(self) -> None:
+        """ctrl+e: hide/show the editor panel without losing its contents."""
+        panel = self.query_one("#editor-panel")
+        panel.display = not panel.display
+
+    def _open_doc(self, path: str, *, force: bool = False) -> None:
+        """Load `path` into the shared editor panel.
+
+        Passive navigation (a click or arrow-key move, via `RowHighlighted`)
+        calls this with `force=False`: if it would silently overwrite an
+        unsaved edit in a *different* file, it is refused instead. That
+        silent overwrite -- `view.text = text` ran unconditionally on every
+        cursor move -- was the actual bug behind "editing the file ...
+        doesn't automatically save". Deliberate opens (Enter, the "o"
+        binding) pass `force=True`: a conscious "open this" action is allowed
+        to discard, since the alternative is a file browser that can never be
+        told to move on from a file with unsaved edits.
+        """
+        view = self.query_one("#docs-view", TextArea)
+        status = self.query_one("#docs-view-status", Static)
+        dirty = self._docs_current_path is not None and view.text != self._docs_loaded_text
+        moving_away = dirty and path != self._docs_current_path
+        if moving_away and not force:
+            status.update(
+                f"unsaved changes in {self._docs_current_path} — save "
+                f"(ctrl+s) first, or press Enter/\"o\" on {path} to discard "
+                f"and open it anyway"
+            )
+            return
+
         text, language, is_real_text = docs_browser.read_document(path, self._docs)
         entry = next((e for e in self._docs if e.path == path), None)
         editable = is_real_text and entry is not None and docs_browser.is_editable(entry)
 
-        view = self.query_one("#docs-view", TextArea)
+        # Set before `view.text =`, not after: assigning `.text` fires
+        # `TextArea.Changed`, whose handler compares against this value to
+        # decide whether to show an "unsaved" marker -- if it ran before this
+        # line it would compare the new text against the *previous* file's
+        # loaded text and misreport a freshly-opened file as dirty.
+        self._docs_loaded_text = text
         view.text = text
         view.read_only = not editable
         # Unknown languages must clear the previous one, or a .txt renders with
@@ -945,19 +1008,35 @@ class SolTuiApp(App):
 
         self._docs_current_path = path
         self._docs_current_editable = editable
-        status = self.query_one("#docs-view-status", Static)
-        status.update(f"{path} — {'editable' if editable else 'read-only'}")
+        note = " (discarded unsaved edit)" if moving_away else ""
+        status.update(f"{path} — {'editable' if editable else 'read-only'}{note}")
         self.query_one("#docs-save", Button).disabled = not editable
+
+    @on(TextArea.Changed, "#docs-view")
+    def _docs_view_changed(self) -> None:
+        """Live "unsaved" marker, so a lost-on-navigate edit is visible
+        before it is lost, not just guarded against after the fact."""
+        if self._docs_current_path is None:
+            return
+        view = self.query_one("#docs-view", TextArea)
+        status = self.query_one("#docs-view-status", Static)
+        base = (f"{self._docs_current_path} — "
+                f"{'editable' if self._docs_current_editable else 'read-only'}")
+        dirty = view.text != self._docs_loaded_text
+        status.update(base + (" · unsaved" if dirty else ""))
 
     @on(Button.Pressed, "#docs-save")
     def _docs_save(self) -> None:
+        self._save_current_doc()
+
+    def _save_current_doc(self) -> None:
         """Write the viewer's current text back to disk.
 
-        The click itself is the confirm-on-save step: there is no separate
-        dialog, and `write_document` re-checks editability against the live
-        catalogue rather than trusting `_docs_current_editable`, so a stale
-        button from before a catalogue reload cannot write somewhere the
-        current rules would refuse.
+        The keypress/click itself is the confirm-on-save step: there is no
+        separate dialog, and `write_document` re-checks editability against
+        the live catalogue rather than trusting `_docs_current_editable`, so
+        a stale binding from before a catalogue reload cannot write
+        somewhere the current rules would refuse.
         """
         status = self.query_one("#docs-view-status", Static)
         if not self._docs_current_path or not self._docs_current_editable:
@@ -970,6 +1049,7 @@ class SolTuiApp(App):
         except (PermissionError, FileNotFoundError, OSError) as exc:
             status.update(f"[red]save failed: {exc}[/]")
             return
+        self._docs_loaded_text = text
         status.update(f"{path} — saved")
 
 
