@@ -154,6 +154,133 @@ def sort_key(value: Any) -> tuple[int, float, str]:
         return (1, 0.0, text.casefold())
 
 
+# Column-header glossary, keyed by the exact header label (case-insensitive).
+# One dict for every table on purpose: "median Sharpe" must mean the same
+# thing on the Backtest, Top 5 and Cumulative tabs, and a single lookup makes
+# a divergence impossible. A label with no entry shows no tooltip -- better
+# than a generic sentence pretending to explain it.
+HEADER_GLOSSARY = {
+    "median sharpe": (
+        "Sharpe ratio = mean return / volatility of returns (annualised): "
+        "risk-adjusted performance, >0 means paid for the risk taken. This is "
+        "the MEDIAN across all CPCV paths, not one backtest's number."),
+    "iqr": (
+        "Interquartile range: the spread between the 25th and 75th percentile "
+        "of per-path Sharpe. Large IQR = the result depends heavily on which "
+        "slice of history you test — less trustworthy."),
+    "% paths +": (
+        "Fraction of CPCV paths (regime-mixed train/test splits) where the "
+        "Sharpe was positive. 100% of 15 is still only 15 paths."),
+    "median ret": (
+        "Median total return across CPCV paths over the tested window, "
+        "after fees and slippage."),
+    "median return": (
+        "Median total return across CPCV paths over the tested window, "
+        "after fees and slippage."),
+    "trades": (
+        "Total trades executed. Below 10 the engine refuses to rank the row "
+        "(the evidence floor) — a great Sharpe on 6 trades is noise."),
+    "paths": (
+        "Number of CPCV paths evaluated. Nominal is C(blocks, k), but slow "
+        "strategies lose warm-up blocks; fewer paths = weaker estimate."),
+    "rankable": (
+        "Rows with at least 1 path AND ≥10 trades — enough evidence to "
+        "appear in a ranking at all."),
+    "below floor": (
+        "Rows the engine evaluated but refused: fewer than 10 trades. "
+        "Counted separately, never mixed into rankings."),
+    "positive": "Rankable rows whose median Sharpe is above zero.",
+    "made money": "Rankable rows whose median return is above zero.",
+    "best (rankable)": (
+        "Highest median Sharpe among rankable rows only — below-floor rows "
+        "are excluded no matter what they claim."),
+    "claims sharpe": (
+        "The Sharpe this below-floor row reports. Shown to make the point: "
+        "on this few trades it would often top a naive ranking."),
+    # NB: str.casefold() lowercases Δ to δ, so the key must be δ.
+    "δ vs sol": (
+        "Change in median Sharpe versus the SOL result the configuration was "
+        "selected on. Large negative delta = does not transfer off-asset."),
+    "horizon": (
+        "Bar-interval class from research/sweep.py: short/medium/long map to "
+        "different intervals and parameter scalings."),
+    "signals": (
+        "The member indicator strategies. (all) = every member must agree "
+        "before a position; (any) = one agreeing member is enough."),
+    "configuration": "Strategy (or composite) plus its parameter values.",
+    "strategy": "The registered strategy name.",
+    "in roster": "Strategy label with parameters, as the sweep will run it.",
+    "family": (
+        "Behavioural family (trend, momentum, mean-reversion, ...) — see the "
+        "Signals tab for when each kind fails."),
+    "warm-up": (
+        "Bars of history the strategy needs before its first signal. Warm-up "
+        "eats CPCV blocks, which is why slow strategies have fewer paths."),
+    "file": "Source CSV in research/results/ — results are never pooled across files.",
+    "equation": "The indicator's formula as implemented in backtester/core/indicators.py.",
+    "kind": "Coarse file classification from the repo index (code, doc, result, test...).",
+    "editable": "Whether the Docs editor may write this file. research/results/ never is.",
+    "lines": "Line count at index build time.",
+    "summary": "One-line summary extracted when the repo index was built.",
+    "path": "File path relative to the repository root.",
+    "bar": "Bar index within the replayed series.",
+    "side": "buy or sell.",
+    "reason": "Which rule produced the intended fill.",
+    "units": "Position size in units of the asset.",
+    "cost": "Cash spent or received including fees.",
+    "equity": "Account value after the fill, marked at that bar's close.",
+    "driver": "The research script that produces this artifact.",
+    "answers": "The question the driver was built to answer.",
+    "established": "What the run actually established, quoted from the docs.",
+    "action": "What the rule would decide at the chosen bar: buy, sell or hold.",
+    "holding -> wants": "Position it would be holding, versus what it wants now.",
+    "warmup": "Bars of history the strategy needs before its first signal.",
+    "bars": "Bars of the truncated series available to the replay.",
+    "#": "Rank in research/TOP5-RECOMMENDATION.md — by robustness checks cleared, not by Sharpe.",
+    "asset": "The coin the configuration was evaluated on for this row.",
+    "when": "Timestamp of the bar (UTC).",
+    "price": "Fill price used by the simulation for that bar.",
+    "signal": "The indicator this row defines parameters for.",
+    "what it is / when it fails": (
+        "The family's bet in one line, and the market condition that "
+        "reliably breaks it."),
+}
+
+
+class GlossaryTable(DataTable):
+    """`DataTable` that explains its column headers on hover.
+
+    Textual tooltips are per-widget, not per-cell, so a static tooltip could
+    only describe the whole table. Header cells carry their position in the
+    segment style meta (`row == -1` marks the header row — the same meta the
+    widget's own hover cursor uses), so the tooltip is swapped on every
+    mouse move: over a known header it becomes that column's glossary entry,
+    anywhere else it clears rather than lingering half-screen away from what
+    it describes.
+    """
+
+    def header_tooltip(self, column_index: int) -> str | None:
+        """The glossary entry for one column, or None when there isn't one."""
+        try:
+            label = str(self.ordered_columns[column_index].label)
+        except IndexError:
+            return None
+        return HEADER_GLOSSARY.get(label.strip().casefold())
+
+    def _on_mouse_move(self, event: events.MouseMove) -> None:
+        super()._on_mouse_move(event)
+        meta = event.style.meta
+        tooltip = None
+        if meta and meta.get("row") == -1 and meta.get("column", -1) >= 0:
+            tooltip = self.header_tooltip(meta["column"])
+        if self.tooltip != tooltip:
+            self.tooltip = tooltip
+
+    def _on_leave(self, event: events.Leave) -> None:
+        super()._on_leave(event)
+        self.tooltip = None
+
+
 class VimTextArea(TextArea):
     """`TextArea` with a small, honest subset of Vim's modal editing.
 
@@ -470,8 +597,8 @@ class SolTuiApp(App):
                 classes="hint",
             )
             with Horizontal():
-                yield DataTable(id="available-table")
-                yield DataTable(id="roster-table")
+                yield GlossaryTable(id="available-table")
+                yield GlossaryTable(id="roster-table")
             with Horizontal(classes="form-row"):
                 yield Label("Params (k=v):")
                 yield Input(placeholder="fast=20 slow=50", id="strategy-params")
@@ -512,9 +639,9 @@ class SolTuiApp(App):
                 "backtester/core/indicators.py:",
                 classes="hint",
             )
-            yield DataTable(id="signals-table")
+            yield GlossaryTable(id="signals-table")
             yield Static("\nFamily behaviour — when each kind fails:", classes="hint")
-            yield DataTable(id="families-table")
+            yield GlossaryTable(id="families-table")
 
     def _backtest_pane(self) -> ComposeResult:
         """Run a CPCV sweep over the roster and show the distribution."""
@@ -529,7 +656,7 @@ class SolTuiApp(App):
                 yield Button("Run backtest (r)", variant="primary", id="btn-run")
                 yield Button("Cancel (c)", variant="error", id="btn-cancel")
                 yield Static("", id="backtest-status")
-            yield DataTable(id="results-table")
+            yield GlossaryTable(id="results-table")
 
     def _execute_pane(self) -> ComposeResult:
         """Dry-run replay. The banner is not decoration."""
@@ -551,7 +678,7 @@ class SolTuiApp(App):
                 yield Button("To end", id="btn-step-end")
                 yield Button("Reset", id="btn-paper-reset")
             yield Static("No dry run started.", id="exec-summary")
-            yield DataTable(id="fills-table")
+            yield GlossaryTable(id="fills-table")
 
     # -- lifecycle -------------------------------------------------------
 
@@ -1009,7 +1136,7 @@ class SolTuiApp(App):
                 classes="hint",
             )
             yield Static("", id="top5-headline")
-            configs = DataTable(id="top5-table")
+            configs = GlossaryTable(id="top5-table")
             configs.add_columns("#", "configuration", "horizon", "signals",
                                 "median Sharpe", "IQR", "% paths +",
                                 "median ret", "trades", "paths")
@@ -1021,7 +1148,7 @@ class SolTuiApp(App):
                 "an overfit, and two of the five go negative off-asset)",
                 classes="hint",
             )
-            transfers = DataTable(id="top5-transfers")
+            transfers = GlossaryTable(id="top5-transfers")
             transfers.add_columns("#", "configuration", "asset",
                                   "median Sharpe", "Δ vs SOL", "% paths +",
                                   "median ret", "trades", "paths")
@@ -1198,7 +1325,7 @@ class SolTuiApp(App):
             with Horizontal(classes="form-row"):
                 yield Button("Analyze", id="analyze-run", variant="primary")
             yield Static("", id="analyze-headline")
-            table = DataTable(id="analyze-table")
+            table = GlossaryTable(id="analyze-table")
             table.add_columns("strategy", "family", "action", "holding -> wants",
                               "warmup", "bars")
             yield table
@@ -1243,13 +1370,13 @@ class SolTuiApp(App):
             with Horizontal(classes="form-row"):
                 yield Button("Reload", id="cumulative-reload", variant="primary")
             yield Static("", id="cumulative-headline")
-            per_file = DataTable(id="cumulative-table")
+            per_file = GlossaryTable(id="cumulative-table")
             per_file.add_columns("file", "rankable", "below floor", "positive",
                                  "made money", "median Sharpe", "paths", "best (rankable)")
             yield per_file
             yield Static("[b]Below the floor — what a naive aggregate would rank first[/b]",
                          classes="hint")
-            dropped = DataTable(id="cumulative-dropped")
+            dropped = GlossaryTable(id="cumulative-dropped")
             dropped.add_columns("file", "configuration", "claims Sharpe", "trades", "paths")
             yield dropped
 
@@ -1291,7 +1418,7 @@ class SolTuiApp(App):
                 "console. docs/SCRIPTS.md carries the full options.",
                 classes="hint",
             )
-            table = DataTable(id="research-table")
+            table = GlossaryTable(id="research-table")
             table.add_columns("driver", "answers", "established")
             for driver, answers, found in RESEARCH_DRIVERS:
                 table.add_row(driver, answers, found)
@@ -1325,7 +1452,7 @@ class SolTuiApp(App):
                 yield Input(placeholder="filter by path or summary…", id="docs-filter")
                 yield Select(kinds, value="", id="docs-kind")
             with Horizontal():
-                listing = DataTable(id="docs-table")
+                listing = GlossaryTable(id="docs-table")
                 listing.add_columns("path", "kind", "editable", "lines", "summary")
                 # Row cursor, not the DataTable default of cell: a click must
                 # land on *a row*, not one cell in it, for RowHighlighted to

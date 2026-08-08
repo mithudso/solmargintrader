@@ -650,6 +650,59 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(panel.display)
 
 
+class TestHeaderGlossary(unittest.IsolatedAsyncioTestCase):
+    """Hovering a column header explains the term (Sharpe, IQR, ...)."""
+
+    async def test_every_column_header_in_the_app_has_a_glossary_entry(self) -> None:
+        """Pins coverage: a future table column without a definition fails
+        here, instead of silently shipping a header that explains nothing."""
+        from soltui.tui import HEADER_GLOSSARY, GlossaryTable
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            from textual.widgets import TabbedContent
+            # Activate the lazy tabs so their tables exist with columns.
+            for tab in ("tab-top5", "tab-cumulative", "tab-docs"):
+                app.query_one(TabbedContent).active = tab
+                await pilot.pause()
+            missing = [
+                (table.id, label)
+                for table in app.query(GlossaryTable)
+                for label in (str(c.label) for c in table.ordered_columns)
+                if label.strip().casefold() not in HEADER_GLOSSARY
+            ]
+            self.assertEqual(missing, [])
+
+    async def test_hovering_a_header_yields_its_definition(self) -> None:
+        from soltui.tui import GlossaryTable
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            table = app.query_one("#results-table", GlossaryTable)
+            labels = [str(c.label) for c in table.ordered_columns]
+            sharpe_col = labels.index("median Sharpe")
+            iqr_col = labels.index("IQR")
+
+            self.assertIn("risk-adjusted", table.header_tooltip(sharpe_col))
+            self.assertIn("Interquartile", table.header_tooltip(iqr_col))
+            self.assertIsNone(table.header_tooltip(99))
+
+    async def test_delta_header_survives_casefolding(self) -> None:
+        """str.casefold() lowercases Δ to δ; the lookup must still hit."""
+        from soltui.tui import GlossaryTable
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            from textual.widgets import TabbedContent
+            app.query_one(TabbedContent).active = "tab-top5"
+            await pilot.pause()
+            table = app.query_one("#top5-transfers", GlossaryTable)
+            labels = [str(c.label) for c in table.ordered_columns]
+            delta_col = labels.index("Δ vs SOL")
+            self.assertIn("transfer", table.header_tooltip(delta_col))
+
+
 class TestTop5Tab(unittest.IsolatedAsyncioTestCase):
     """The recommended-configurations tab: evidence shown, re-test wired."""
 
