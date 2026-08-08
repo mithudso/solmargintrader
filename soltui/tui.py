@@ -129,6 +129,29 @@ SIGNAL_REFERENCE = [
 ]
 
 
+def sort_key(value: Any) -> tuple[int, float, str]:
+    """Order any cell value sensibly: numbers numerically, text alphabetically.
+
+    Every cell in this app is a string, but many *render* numbers --
+    "+0.534", "3.44%", "-3.736213", "4,304", "85%". A plain string sort puts
+    "-0.9" above "-3.7" and "9" above "10", which silently misranks exactly
+    the columns (median Sharpe, trades) someone sorts to rank. So: parse as a
+    number when possible (after stripping the +/%/, decorations), fall back
+    to case-insensitive text.
+
+    The tuple keeps `sorted()` away from comparing float with str: group 0 is
+    numbers, group 1 text, group 2 the "-"/empty placeholder cells -- always
+    last ascending, deliberately, since "no value" ranks below any value.
+    """
+    text = str(value).strip()
+    if text in ("", "-"):
+        return (2, 0.0, "")
+    try:
+        return (0, float(text.replace(",", "").replace("%", "").lstrip("+")), "")
+    except ValueError:
+        return (1, 0.0, text.casefold())
+
+
 class VimTextArea(TextArea):
     """`TextArea` with a small, honest subset of Vim's modal editing.
 
@@ -584,6 +607,30 @@ class SolTuiApp(App):
                     f"{self.state.done}/{self.state.total} — "
                     f"{self.state.remaining} left"
                 )
+
+    @on(DataTable.HeaderSelected)
+    def _sort_by_column(self, event: DataTable.HeaderSelected) -> None:
+        """Click any table's column header to sort by it; click again to flip.
+
+        One app-level handler with no selector, on purpose: every DataTable
+        in the console -- Cumulative's per-file and below-floor tables, the
+        Backtest results, Docs, Strategies, fills, all of them -- gets the
+        same behaviour, and a future table gets it for free instead of
+        waiting for someone to remember the wiring. Sorting is a view over
+        the rows already in the widget, so tables that reload their rows
+        (Cumulative's Reload, the Docs filter) reset to their natural order,
+        which is correct: the sort belonged to the old rows.
+
+        The per-direction state rides on the widget instance rather than an
+        app-level dict keyed by table id, because rows and widget die
+        together -- there is nothing to clean up and no stale entry when a
+        pane is rebuilt.
+        """
+        table = event.data_table
+        previous = getattr(table, "_sorted_by", None)
+        reverse = previous == (event.column_key, False)
+        table.sort(event.column_key, key=sort_key, reverse=reverse)
+        table._sorted_by = (event.column_key, reverse)
 
     # -- settings --------------------------------------------------------
 

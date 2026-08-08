@@ -45,6 +45,85 @@ def make_settings() -> Settings:
     return Settings(poll_interval_seconds=0.01)
 
 
+class TestSortKey(unittest.TestCase):
+    """`sort_key` decides how header-click sorting ranks cell text."""
+
+    def test_numeric_strings_rank_numerically_not_lexically(self) -> None:
+        from soltui.tui import sort_key
+        # Lexically "10" < "9" and "-0.9" < "-3.7"; numerically neither is.
+        self.assertLess(sort_key("9"), sort_key("10"))
+        self.assertLess(sort_key("-3.736213"), sort_key("-0.9"))
+
+    def test_decorated_numbers_parse(self) -> None:
+        from soltui.tui import sort_key
+        self.assertLess(sort_key("+0.128"), sort_key("+0.534"))
+        self.assertLess(sort_key("33%"), sort_key("85%"))
+        self.assertLess(sort_key("680"), sort_key("4,304"))
+
+    def test_text_sorts_case_insensitively_after_numbers(self) -> None:
+        from soltui.tui import sort_key
+        self.assertLess(sort_key("apple"), sort_key("Banana"))
+        self.assertLess(sort_key("99999"), sort_key("aardvark"))
+
+    def test_placeholder_cells_rank_last(self) -> None:
+        from soltui.tui import sort_key
+        self.assertLess(sort_key("zebra"), sort_key("-"))
+        self.assertLess(sort_key("zebra"), sort_key(""))
+
+
+class TestSortableTables(unittest.IsolatedAsyncioTestCase):
+    """Clicking a column header sorts the table; clicking again flips it.
+
+    Driven by posting `DataTable.HeaderSelected` from the table (what a real
+    header click emits, bubbling to the app-level handler) rather than
+    `pilot.click` at a pixel coordinate, which would couple the test to
+    column widths.
+    """
+
+    @staticmethod
+    def _column_values(table, column_index: int) -> list[str]:
+        return [str(table.get_row_at(i)[column_index])
+                for i in range(table.row_count)]
+
+    @staticmethod
+    def _click_header(table, column_index: int) -> None:
+        """Post exactly what DataTable emits for a header click."""
+        from rich.text import Text
+
+        column = table.ordered_columns[column_index]
+        table.post_message(DataTable.HeaderSelected(
+            table, column.key, column_index, Text(str(column.label))))
+
+    async def test_header_click_sorts_then_reverses(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            table = app.query_one("#signals-table", DataTable)
+
+            self._click_header(table, 0)  # the "signal" column
+            await pilot.pause()
+            ascending = self._column_values(table, 0)
+            self.assertEqual(ascending, sorted(ascending, key=str.casefold))
+
+            self._click_header(table, 0)
+            await pilot.pause()
+            self.assertEqual(self._column_values(table, 0), ascending[::-1])
+
+    async def test_numeric_column_sorts_by_value(self) -> None:
+        """The Strategies roster's warm-up column is numeric text -- the
+        column type someone actually sorts to rank."""
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            table = app.query_one("#roster-table", DataTable)
+
+            self._click_header(table, 2)  # "warm-up"
+            await pilot.pause()
+
+            warmups = [int(v) for v in self._column_values(table, 2)]
+            self.assertEqual(warmups, sorted(warmups))
+
+
 class TestAppMounts(unittest.IsolatedAsyncioTestCase):
     """The app composes and every tab is reachable."""
 
