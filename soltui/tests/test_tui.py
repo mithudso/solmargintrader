@@ -12,13 +12,26 @@ signal that nothing is reaching a venue.
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import mock
 
 from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Static
 
+from soltui import bgqueue
 from soltui.config import Settings
 from soltui.tui import FAMILY_NOTES, SIGNAL_REFERENCE, SolTuiApp
+
+
+def _queue_row(job_id: str, sharpe: float, trades: int) -> bgqueue.JobResult:
+    """One background-sweep result row, for the Queue-tab tests."""
+    return bgqueue.JobResult(
+        job_id=job_id, strategy="rsi", horizon="medium", asset="SOL",
+        interval="1d", params={}, tier=0, variation="", family="mean-reversion",
+        median_sharpe=sharpe, iqr=0.2, frac_positive=0.6, median_return=0.1,
+        trades=trades, evaluable=True,
+    )
 
 
 # Terminal big enough that every button is on-screen; Pilot.click() raises
@@ -156,6 +169,107 @@ class TestAppMounts(unittest.IsolatedAsyncioTestCase):
                 tabs.active = tab
                 await pilot.pause()
             self.assertEqual(tabs.active, "tab-execute")
+
+
+class TestQueueTab(unittest.IsolatedAsyncioTestCase):
+    """The Queue tab reads files another process writes, so its tests point at
+    the reading, not at a sweep."""
+
+    def _patch_paths(self, tmp: Path):
+        """Point the pane at a scratch results/state pair, not the real one."""
+        return (
+            mock.patch.object(bgqueue, "RESULTS_PATH", tmp / "results.jsonl"),
+            mock.patch.object(bgqueue, "STATE_PATH", tmp / "state.json"),
+        )
+
+    async def test_tab_exists_and_activates(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            from textual.widgets import TabbedContent
+
+            self.assertTrue(app.query("#tab-queue"))
+            app.query_one(TabbedContent).active = "tab-queue"
+            await pilot.pause()
+
+    async def test_an_empty_queue_renders_without_a_worker(self) -> None:
+        """Opening the tab before any sweep has run must not error."""
+        with TemporaryDirectory() as tmp:
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                self.assertEqual(app.query_one("#queue-table", DataTable).row_count, 0)
+
+    async def test_a_thin_evidence_row_lands_below_the_floor_not_on_top(self) -> None:
+        """The pane's whole honesty claim: a huge Sharpe on 3 trades must appear
+        in the floor table, never as rank 1."""
+        with TemporaryDirectory() as tmp:
+            results = Path(tmp) / "results.jsonl"
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            bgqueue.append_result(_queue_row("lucky", 9.9, 3), results)
+            bgqueue.append_result(_queue_row("honest", 0.4, 50), results)
+
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                ranked = app.query_one("#queue-table", DataTable)
+                floor = app.query_one("#queue-floor", DataTable)
+                self.assertEqual(ranked.row_count, 1)
+                self.assertEqual(floor.row_count, 1)
+
+    async def test_refreshing_twice_does_not_duplicate_rows(self) -> None:
+        """The pane reads incrementally from a byte offset; a bad offset would
+        re-append every row on each refresh."""
+        with TemporaryDirectory() as tmp:
+            results = Path(tmp) / "results.jsonl"
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            bgqueue.append_result(_queue_row("a", 1.0, 50), results)
+            bgqueue.append_result(_queue_row("b", 0.5, 50), results)
+
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                table = app.query_one("#queue-table", DataTable)
+                self.assertEqual(table.row_count, 2)
+                await pilot.click("#queue-refresh")
+                await pilot.pause()
+                self.assertEqual(table.row_count, 2)
+
+    async def test_a_new_result_appears_on_refresh(self) -> None:
+        with TemporaryDirectory() as tmp:
+            results = Path(tmp) / "results.jsonl"
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            bgqueue.append_result(_queue_row("a", 1.0, 50), results)
+
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                table = app.query_one("#queue-table", DataTable)
+                self.assertEqual(table.row_count, 1)
+                bgqueue.append_result(_queue_row("b", 0.5, 50), results)
+                await pilot.click("#queue-refresh")
+                await pilot.pause()
+                self.assertEqual(table.row_count, 2)
 
 
 class TestExecuteTabSafety(unittest.IsolatedAsyncioTestCase):

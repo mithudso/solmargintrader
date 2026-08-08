@@ -487,19 +487,25 @@ def pending(jobs: Sequence[Job], done_ids: set[str]) -> list[Job]:
 # -- the file contract -----------------------------------------------------
 
 
-def ensure_dir(path: Path = BG_DIR) -> Path:
+def ensure_dir(path: Path | None = None) -> Path:
     """Create the shared directory if it is missing."""
+    path = path or BG_DIR
     path.mkdir(parents=True, exist_ok=True)
     return path
 
 
-def append_result(result: JobResult, path: Path = RESULTS_PATH) -> None:
+def append_result(result: JobResult, path: Path | None = None) -> None:
     """Append one result as a single line.
 
     One `write()` of one line, opened in append mode: the kernel serialises an
     O_APPEND write, so a reader can be part-way through the file without ever
     seeing two results interleaved on one line.
+
+    The path is resolved HERE rather than in the signature. A `path=RESULTS_PATH`
+    default binds the module constant once, at import, so a test that points the
+    constant somewhere temporary would still be writing to the real file.
     """
+    path = path or RESULTS_PATH
     ensure_dir(path.parent)
     with path.open("a", encoding="utf-8") as fh:
         fh.write(result.to_json() + "\n")
@@ -532,42 +538,80 @@ def _parse_lines(text: str) -> list[JobResult]:
     return out
 
 
-def read_results(path: Path = RESULTS_PATH) -> list[JobResult]:
+def read_results(path: Path | None = None) -> list[JobResult]:
     """Every parseable result."""
+    path = path or RESULTS_PATH
     if not path.exists():
         return []
     return _parse_lines(path.read_text(encoding="utf-8", errors="replace"))
 
 
+@dataclass(frozen=True)
+class ResultsCursor:
+    """How far a reader has consumed the results file, and which file that was.
+
+    The identity half is load-bearing. A byte offset alone cannot tell "the
+    worker appended" from "the file was deleted and a new sweep regrew past my
+    offset" -- the second looks like a bigger file either way, and reading from
+    the stale offset then splices one sweep's tail onto another's rows. Result
+    lines are near enough uniform in length that checking for a line boundary
+    does not catch it either; the inode does, because a replacement gets a new
+    one.
+    """
+
+    offset: int = 0
+    inode: int = 0
+    device: int = 0
+
+    def matches(self, stat: os.stat_result) -> bool:
+        """True when `stat` is the same file this cursor was taken against."""
+        return (self.inode, self.device) == (stat.st_ino, stat.st_dev)
+
+
 def read_results_since(
-    offset: int, path: Path = RESULTS_PATH
-) -> tuple[list[JobResult], int]:
-    """Results appended after `offset` bytes, plus the new offset to remember.
+    cursor: ResultsCursor | None = None, path: Path | None = None
+) -> tuple[list[JobResult], ResultsCursor, bool]:
+    """Results appended since `cursor`, the new cursor, and whether it restarted.
 
     Re-reading the whole file on every append makes the cost of watching a sweep
     quadratic in the number of jobs -- and a long background sweep is precisely
     where the file gets big. Reading only the tail keeps a refresh proportional
     to what actually arrived.
 
-    Resets to a full read when the file has SHRUNK, which is the signal that it
-    was truncated or replaced rather than appended to; continuing from a stale
-    offset there would silently skip results or slice a line in half.
+    The third element is True when the read started from the beginning because
+    the file was truncated or replaced. A caller holding earlier rows must drop
+    them in that case; without the flag it could not tell "here is the tail" from
+    "here is a whole new file".
     """
-    if not path.exists():
-        return [], 0
-    size = path.stat().st_size
-    if offset > size:
+    path = path or RESULTS_PATH
+    cursor = cursor or ResultsCursor()
+    try:
+        stat = path.stat()
+    except OSError:
+        return [], ResultsCursor(), True
+
+    offset = cursor.offset
+    restarted = not cursor.matches(stat) or offset > stat.st_size
+    if restarted:
         offset = 0
+
     with path.open("r", encoding="utf-8", errors="replace") as fh:
         fh.seek(offset)
         text = fh.read()
     # Only consume through the last complete line; a trailing partial line is
     # left unread so the next call re-reads it once it is whole.
     cut = text.rfind("\n")
+    here = ResultsCursor(offset, stat.st_ino, stat.st_dev)
     if cut == -1:
-        return [], offset
+        return [], here, restarted
     consumed = text[: cut + 1]
-    return _parse_lines(consumed), offset + len(consumed.encode("utf-8"))
+    # `to_json` writes with json.dumps' default ensure_ascii=True, so the file is
+    # pure ASCII and this byte count equals the file's. A field written with
+    # ensure_ascii=False would break that equivalence and this arithmetic.
+    advanced = ResultsCursor(
+        offset + len(consumed.encode("utf-8")), stat.st_ino, stat.st_dev
+    )
+    return _parse_lines(consumed), advanced, restarted
 
 
 def completed_ids(results: Sequence[JobResult]) -> set[str]:
@@ -575,13 +619,14 @@ def completed_ids(results: Sequence[JobResult]) -> set[str]:
     return {r.job_id for r in results}
 
 
-def write_state(state: QueueState, path: Path = STATE_PATH) -> None:
+def write_state(state: QueueState, path: Path | None = None) -> None:
     """Rewrite the state file atomically.
 
     tmp+rename rather than truncate+write: a reader polling every couple of
     seconds will otherwise eventually catch a zero-length file and report the
     sweep as idle while it is running.
     """
+    path = path or STATE_PATH
     ensure_dir(path.parent)
     fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=".state-", suffix=".json")
     try:
@@ -595,8 +640,9 @@ def write_state(state: QueueState, path: Path = STATE_PATH) -> None:
         raise
 
 
-def read_state(path: Path = STATE_PATH) -> QueueState:
+def read_state(path: Path | None = None) -> QueueState:
     """Current worker state, or a fresh idle state when there is none."""
+    path = path or STATE_PATH
     if not path.exists():
         return QueueState()
     try:
@@ -699,6 +745,12 @@ def summarise(
         bits.append(f"error: {state.error or 'unknown'}")
     else:
         bits.append(state.phase)
+        # A sweep that finished having skipped a whole interval for want of its
+        # price file still carries the reason. Showing it only in the "error"
+        # phase would render a partly-blind sweep as an unqualified "done", with
+        # every 1h configuration silently absent and nothing saying why.
+        if state.error:
+            bits.append(f"incomplete — {state.error}")
     bits.append(f"{len(ranked)} rankable, {positive} with positive median Sharpe")
     if floor:
         bits.append(f"{len(floor)} below the {MIN_TRADES}-trade floor")

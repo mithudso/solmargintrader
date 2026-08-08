@@ -13,6 +13,7 @@ import sys
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import mock
 
 from soltui import bgcontrol
 
@@ -50,6 +51,45 @@ class TestTaskpolicyLookup(unittest.TestCase):
             self.assertIn("background QoS", text)
         else:
             self.assertNotIn("background QoS", text)
+
+
+class TestStartReleasesTheLockOnFailure(unittest.TestCase):
+    """A lock leaked into the long-lived TUI process wedges the whole feature:
+    every later Start refuses as "already running" and no Stop can find a worker
+    to signal, until the console is restarted."""
+
+    def setUp(self) -> None:
+        self._tmp = TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.dir = Path(self._tmp.name)
+        for name, value in (
+            ("BG_DIR", self.dir),
+            ("LOCK_PATH", self.dir / "worker.lock"),
+            ("PID_PATH", self.dir / "worker.pid"),
+        ):
+            p = mock.patch.object(bgcontrol, name, value)
+            p.start()
+            self.addCleanup(p.stop)
+
+    def test_an_unopenable_log_does_not_leave_the_lock_held(self) -> None:
+        undirectory = self.dir / "nope" / "worker.log"
+        with self.assertRaises(OSError):
+            bgcontrol.start("SOL", log_path=undirectory)
+        self.assertFalse(bgcontrol.is_running())
+
+    def test_a_failed_spawn_does_not_leave_the_lock_held(self) -> None:
+        with mock.patch.object(bgcontrol.subprocess, "Popen",
+                               side_effect=OSError("no exec")):
+            with self.assertRaises(OSError):
+                bgcontrol.start("SOL", log_path=self.dir / "worker.log")
+        self.assertFalse(bgcontrol.is_running())
+
+    def test_a_refused_second_start_does_not_close_the_first_lock(self) -> None:
+        held = bgcontrol.acquire_lock()
+        self.addCleanup(os.close, held)
+        with self.assertRaises(RuntimeError):
+            bgcontrol.start("SOL", log_path=self.dir / "worker.log")
+        self.assertTrue(bgcontrol.is_running())
 
 
 class TestWorkerCommand(unittest.TestCase):

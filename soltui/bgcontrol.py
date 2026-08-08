@@ -106,8 +106,9 @@ def describe_priority() -> str:
     return "requests nice 19 (no taskpolicy on this host, so no QoS demotion)"
 
 
-def read_pid(path: Path = PID_PATH) -> int | None:
+def read_pid(path: Path | None = None) -> int | None:
     """The recorded worker pid, or None when there is no usable pidfile."""
+    path = path or PID_PATH
     try:
         raw = path.read_text(encoding="utf-8").strip()
     except (OSError, ValueError):
@@ -119,13 +120,14 @@ def read_pid(path: Path = PID_PATH) -> int | None:
     return pid if pid > 0 else None
 
 
-def acquire_lock(path: Path = LOCK_PATH) -> int | None:
+def acquire_lock(path: Path | None = None) -> int | None:
     """Take the worker lock, returning its fd, or None when someone else holds it.
 
     The fd is deliberately NOT closed by the caller on success: the lock lives as
     long as the descriptor does, so closing it would release the lock while the
     worker was still running.
     """
+    path = path or LOCK_PATH
     ensure_dir(path.parent)
     fd = os.open(path, os.O_CREAT | os.O_RDWR, 0o644)
     try:
@@ -136,7 +138,7 @@ def acquire_lock(path: Path = LOCK_PATH) -> int | None:
     return fd
 
 
-def is_running(path: Path = LOCK_PATH) -> bool:
+def is_running(path: Path | None = None) -> bool:
     """True when some process holds the worker lock.
 
     Probing by trying to take the lock ourselves, rather than by asking whether a
@@ -193,16 +195,23 @@ def start(
     window you started it from.
     """
     ensure_dir(BG_DIR)
+    repo = cwd or Path(__file__).resolve().parent.parent
+    log = log_path or (BG_DIR / "worker.log")
+    # Open the log BEFORE taking the lock. Everything after the lock is taken has
+    # to be inside the try that releases it, and a failing `open` there (a
+    # read-only dir, a full disk) would leave the lock held by the long-lived TUI
+    # process forever -- after which every Start refuses as "already running" and
+    # no Stop can find a worker to signal. The feature would wedge until restart.
+    handle = log.open("ab")
+
     # Taking the lock IS the "already running?" check. Testing first and then
     # spawning would leave a window in which two Starts both saw "no worker" and
     # both spawned, producing two processes appending to one results file.
     lock_fd = acquire_lock()
     if lock_fd is None:
+        handle.close()
         raise RuntimeError("a background sweep is already running")
 
-    repo = cwd or Path(__file__).resolve().parent.parent
-    log = log_path or (BG_DIR / "worker.log")
-    handle = log.open("ab")
     try:
         proc = subprocess.Popen(  # noqa: S603 - argv list, no shell
             worker_command(asset, horizons=horizons, max_tier=max_tier, limit=limit),
@@ -237,7 +246,7 @@ def start(
     return proc
 
 
-def stop(path: Path = PID_PATH, lock_path: Path = LOCK_PATH) -> bool:
+def stop(path: Path | None = None, lock_path: Path | None = None) -> bool:
     """Ask the worker to finish its current job and exit. True when signalled.
 
     SIGTERM, never SIGKILL: the worker stops at a job boundary and writes its

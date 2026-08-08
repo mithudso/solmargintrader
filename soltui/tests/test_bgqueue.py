@@ -470,59 +470,98 @@ class TestIncrementalRead(unittest.TestCase):
 
     def test_reads_only_what_was_appended(self) -> None:
         q.append_result(_result(job_id="one"), self.results)
-        first, offset = q.read_results_since(0, self.results)
+        first, cursor, restarted = q.read_results_since(path=self.results)
         self.assertEqual([r.job_id for r in first], ["one"])
+        self.assertTrue(restarted)  # first read of a file always starts at 0
 
         q.append_result(_result(job_id="two"), self.results)
-        second, offset2 = q.read_results_since(offset, self.results)
+        second, cursor2, restarted2 = q.read_results_since(cursor, self.results)
         self.assertEqual([r.job_id for r in second], ["two"])
-        self.assertGreater(offset2, offset)
+        self.assertGreater(cursor2.offset, cursor.offset)
+        self.assertFalse(restarted2)
 
     def test_nothing_new_reads_nothing(self) -> None:
         q.append_result(_result(job_id="one"), self.results)
-        _, offset = q.read_results_since(0, self.results)
-        again, offset2 = q.read_results_since(offset, self.results)
+        _, cursor, _ = q.read_results_since(path=self.results)
+        again, cursor2, _ = q.read_results_since(cursor, self.results)
         self.assertEqual(again, [])
-        self.assertEqual(offset2, offset)
+        self.assertEqual(cursor2.offset, cursor.offset)
 
     def test_a_partial_trailing_line_is_left_for_next_time(self) -> None:
         """The offset must not advance past an incomplete line, or the row is
         lost forever once the worker finishes writing it."""
         q.append_result(_result(job_id="one"), self.results)
-        _, offset = q.read_results_since(0, self.results)
+        _, cursor, _ = q.read_results_since(path=self.results)
         with self.results.open("a", encoding="utf-8") as fh:
             fh.write('{"job_id": "two", "strat')
-        rows, offset2 = q.read_results_since(offset, self.results)
+        rows, cursor2, _ = q.read_results_since(cursor, self.results)
         self.assertEqual(rows, [])
-        self.assertEqual(offset2, offset)
+        self.assertEqual(cursor2.offset, cursor.offset)
 
-    def test_a_truncated_file_resets_to_a_full_read(self) -> None:
+    def test_a_truncated_file_resets_and_says_so(self) -> None:
         """Continuing from a stale offset after truncation would slice a line."""
         q.append_result(_result(job_id="one"), self.results)
         q.append_result(_result(job_id="two"), self.results)
-        _, offset = q.read_results_since(0, self.results)
+        _, cursor, _ = q.read_results_since(path=self.results)
         self.results.unlink()
         q.append_result(_result(job_id="three"), self.results)
-        rows, _ = q.read_results_since(offset, self.results)
+        rows, _, restarted = q.read_results_since(cursor, self.results)
         self.assertEqual([r.job_id for r in rows], ["three"])
+        self.assertTrue(restarted)
 
     def test_matches_a_full_read(self) -> None:
         for i in range(5):
             q.append_result(_result(job_id=f"j{i}"), self.results)
         incremental: list[q.JobResult] = []
-        offset = 0
+        cursor = q.ResultsCursor()
         for _ in range(5):
-            rows, offset = q.read_results_since(offset, self.results)
+            rows, cursor, _ = q.read_results_since(cursor, self.results)
             incremental.extend(rows)
         self.assertEqual(
             [r.job_id for r in incremental],
             [r.job_id for r in q.read_results(self.results)],
         )
 
-    def test_absent_file_reads_empty_at_offset_zero(self) -> None:
-        rows, offset = q.read_results_since(0, Path(self._tmp.name) / "absent.jsonl")
+    def test_absent_file_reads_empty(self) -> None:
+        rows, cursor, restarted = q.read_results_since(
+            path=Path(self._tmp.name) / "absent.jsonl"
+        )
         self.assertEqual(rows, [])
-        self.assertEqual(offset, 0)
+        self.assertEqual(cursor.offset, 0)
+        self.assertTrue(restarted)
+
+    def test_a_file_replaced_and_regrown_past_the_offset_resets(self) -> None:
+        """Size alone cannot detect this, and neither can a line-boundary check:
+        result lines are near enough uniform in length that a stale offset lands
+        on a boundary of the NEW file. Only the inode distinguishes them, and
+        without it one sweep's tail gets spliced onto another's rows."""
+        for i in range(2):
+            q.append_result(_result(job_id=f"old{i}"), self.results)
+        _, cursor, _ = q.read_results_since(path=self.results)
+
+        self.results.unlink()
+        for i in range(6):
+            q.append_result(_result(job_id=f"new{i}"), self.results)
+        self.assertGreater(self.results.stat().st_size, cursor.offset)
+
+        rows, _, restarted = q.read_results_since(cursor, self.results)
+        self.assertTrue(restarted)
+        self.assertEqual([r.job_id for r in rows], [f"new{i}" for i in range(6)])
+
+
+class TestIncompleteSweepIsDisclosed(unittest.TestCase):
+    def test_a_done_sweep_still_reports_a_missing_price_file(self) -> None:
+        """A sweep that skipped a whole interval for want of its CSV finishes
+        "done". Showing the reason only in the error phase would render it as an
+        unqualified success with every 1h row silently absent."""
+        state = q.QueueState(phase="done", done=9, total=9,
+                             error="no price cache at data/SOL_1h.csv")
+        text = q.summarise(state, [])
+        self.assertIn("incomplete", text)
+        self.assertIn("SOL_1h.csv", text)
+
+    def test_a_clean_sweep_says_nothing_extra(self) -> None:
+        self.assertNotIn("incomplete", q.summarise(q.QueueState(phase="done"), []))
 
 
 if __name__ == "__main__":

@@ -391,9 +391,9 @@ class SolTuiApp(App):
         # thread on a file that changes once every few seconds at most.
         self._queue_results_mtime = 0.0
         self._queue_results: list[bgqueue.JobResult] = []
-        # Byte offset consumed from the results file, so a refresh parses only
-        # what the worker appended since last time.
-        self._queue_results_offset = 0
+        # How far the results file has been consumed, and which file that was, so
+        # a refresh parses only what the worker appended since last time.
+        self._queue_cursor = bgqueue.ResultsCursor()
 
     # -- layout ----------------------------------------------------------
 
@@ -1250,11 +1250,13 @@ class SolTuiApp(App):
         results file grows without bound, and re-parsing all of it on every new
         row would make watching the sweep cost more than running it.
         """
-        fresh, offset = bgqueue.read_results_since(self._queue_results_offset)
-        if offset < self._queue_results_offset:
+        fresh, cursor, restarted = bgqueue.read_results_since(self._queue_cursor)
+        if restarted:
+            # The file was truncated or replaced, so what we are holding belongs
+            # to a sweep that no longer exists.
             self._queue_results = []
         self._queue_results.extend(fresh)
-        self._queue_results_offset = offset
+        self._queue_cursor = cursor
         results = self._queue_results
         self._queue_results_mtime = _mtime(bgqueue.RESULTS_PATH)
         self._render_queue_status(bgqueue.read_state())
