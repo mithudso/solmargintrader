@@ -41,6 +41,8 @@ from backtester.core import indicators as ind
 from backtester.core.strategies import FAMILY, REGISTRY, build
 
 from . import analyze as analyze_mod
+from . import bgcontrol
+from . import bgqueue
 from . import cumulative as cumulative_mod
 from . import docs_browser
 from .config import INTERVALS, Settings, load_settings, save_settings
@@ -127,6 +129,19 @@ SIGNAL_REFERENCE = [
     ("ROC(n)", "c_t/c_{t-n} - 1", "momentum"),
     ("RealisedVol(n)", "stdev(log returns)*sqrt(periods_per_year)", "risk-overlay"),
 ]
+
+
+def _mtime(path: Path) -> float:
+    """Modification time, or 0.0 when the file is absent.
+
+    Absent and unchanged must be distinguishable from "changed", and a missing
+    background-results file is the normal state before the first sweep -- so
+    this returns a sentinel rather than raising.
+    """
+    try:
+        return path.stat().st_mtime
+    except OSError:
+        return 0.0
 
 
 def sort_key(value: Any) -> tuple[int, float, str]:
@@ -370,6 +385,15 @@ class SolTuiApp(App):
         # silently overwrote whatever was being edited, with no warning.
         self._docs_loaded_text = ""
         self._cumulative_loaded = False
+        # Last results-file mtime the Queue tab rendered. The background worker
+        # is a separate process, so the only way to know it produced something is
+        # to look -- but re-parsing the file on every tick would burn the UI
+        # thread on a file that changes once every few seconds at most.
+        self._queue_results_mtime = 0.0
+        self._queue_results: list[bgqueue.JobResult] = []
+        # Byte offset consumed from the results file, so a refresh parses only
+        # what the worker appended since last time.
+        self._queue_results_offset = 0
 
     # -- layout ----------------------------------------------------------
 
@@ -392,6 +416,8 @@ class SolTuiApp(App):
                 yield from self._analyze_pane()
             with TabPane("Cumulative", id="tab-cumulative"):
                 yield from self._cumulative_pane()
+            with TabPane("Queue", id="tab-queue"):
+                yield from self._queue_pane()
             with TabPane("Research", id="tab-research"):
                 yield from self._research_pane()
             with TabPane("Docs", id="tab-docs"):
@@ -607,6 +633,31 @@ class SolTuiApp(App):
                     f"{self.state.done}/{self.state.total} — "
                     f"{self.state.remaining} left"
                 )
+
+        self._poll_queue()
+
+    def _poll_queue(self) -> None:
+        """Redraw the Queue tab only when the worker actually wrote something.
+
+        Stat, compare, and usually return: the worker is a separate process
+        whose results file changes at the pace of a CPCV evaluation, so parsing
+        it on every tick would be work the UI thread does for nothing. The mtime
+        check is what makes polling on the existing 2-second cadence cheap.
+        """
+        if not self.query("#queue-status"):
+            return
+        mtime = _mtime(bgqueue.RESULTS_PATH)
+        if mtime != self._queue_results_mtime:
+            self._refresh_queue()
+            return
+        # Nothing new to rank, but the worker may have moved on to another job --
+        # or died. `state.json` is a few hundred bytes; the results file is every
+        # result ever computed, so only the former is cheap enough per tick.
+        #
+        # Deliberately NOT gated on the worker being alive: a crashed worker
+        # leaves state.json reading "running", and skipping the render there
+        # would freeze the pane on its last progress line forever.
+        self._render_queue_status(bgqueue.read_state())
 
     @on(DataTable.HeaderSelected)
     def _sort_by_column(self, event: DataTable.HeaderSelected) -> None:
@@ -978,6 +1029,11 @@ class SolTuiApp(App):
         elif pane == "tab-docs" and not self._docs_loaded:
             self._docs_loaded = True
             self._refresh_docs()
+        elif pane == "tab-queue":
+            # No once-only guard: unlike Cumulative and Docs, this tab's source
+            # is being written by another process right now, so re-reading on
+            # every activation is the correct behaviour rather than waste.
+            self._refresh_queue()
 
     # -- Analyze: any coin, any moment -----------------------------------
 
@@ -1095,6 +1151,129 @@ class SolTuiApp(App):
         for r in cumulative_mod.floor_casualties(summaries):
             drop.add_row(r.source, r.label, f"{r.median_sharpe:+.3f}",
                          str(r.trades or 0), str(r.n_paths or 0))
+
+    # -- Queue: the background sweep -------------------------------------
+
+    def _queue_pane(self) -> ComposeResult:
+        """Control and read the low-priority background sweep.
+
+        The sweep runs in its own process, so this pane is a *view* of files on
+        disk rather than of anything this app is computing. That is why it keeps
+        working across a restart of the console, and why every figure here is
+        whatever the worker last flushed.
+        """
+        with VerticalScroll():
+            yield Static(
+                "A separate low-priority process grinds through parameter space "
+                f"and flushes each result as it lands ({bgcontrol.describe_priority()}). "
+                "Work is ordered most-promising-first: every strategy card's own "
+                "published preset before any variation of it, then near "
+                "variations. A background sweep is never finished, only "
+                "interrupted, so the order is what decides what you get.",
+                classes="hint",
+            )
+            yield Static(
+                f"Ranking is out-of-sample CPCV median Sharpe, and rows under the "
+                f"{bgqueue.MIN_TRADES}-trade floor are listed separately and never "
+                "ranked — a Sharpe from a handful of trades sorted descending is a "
+                "ranking of luck.",
+                classes="hint",
+            )
+            with Horizontal(classes="form-row"):
+                yield Button("Start", variant="primary", id="queue-start")
+                yield Button("Stop", variant="error", id="queue-stop")
+                yield Button("Refresh", id="queue-refresh")
+            yield Static("", id="queue-status")
+            yield Static("[b]Ranked — cleared the evidence floor[/b]", classes="hint")
+            ranked = DataTable(id="queue-table")
+            ranked.add_columns(
+                "configuration", "family", "median Sharpe", "IQR",
+                "% paths +", "median return", "trades",
+            )
+            yield ranked
+            yield Static(
+                "[b]Below the floor — listed, never ranked[/b]", classes="hint"
+            )
+            floor = DataTable(id="queue-floor")
+            floor.add_columns("configuration", "family", "trades", "why")
+            yield floor
+
+    @on(Button.Pressed, "#queue-start")
+    def _queue_start(self) -> None:
+        """Spawn the background worker for the configured asset."""
+        status = self.query_one("#queue-status", Static)
+        try:
+            bgcontrol.start(self.settings.asset)
+        except Exception as exc:  # noqa: BLE001
+            status.update(f"[red]{type(exc).__name__}: {exc}[/]")
+            return
+        status.update("started — results appear as each job lands")
+        self._refresh_queue()
+
+    @on(Button.Pressed, "#queue-stop")
+    def _queue_stop(self) -> None:
+        """Ask the worker to stop at the next job boundary."""
+        status = self.query_one("#queue-status", Static)
+        if bgcontrol.stop():
+            status.update("stopping — the current job finishes first")
+        else:
+            status.update("no background sweep is running")
+
+    @on(Button.Pressed, "#queue-refresh")
+    def _queue_refresh(self) -> None:
+        self._refresh_queue()
+
+    def _render_queue_status(self, state: bgqueue.QueueState) -> None:
+        """Update just the status line, from the cached results.
+
+        Split out from `_refresh_queue` so the per-tick path can show live
+        progress without re-reading and re-ranking every result ever computed.
+        """
+        line = self.query("#queue-status")
+        if not line:
+            return
+        alive = bgcontrol.is_running()
+        live = " · worker alive" if alive else ""
+        detail = f" · now: {state.current}" if state.current and alive else ""
+        line.first(Static).update(
+            bgqueue.summarise(
+                state, self._queue_results, self.settings.asset, worker_alive=alive
+            )
+            + detail
+            + live
+        )
+
+    def _refresh_queue(self) -> None:
+        """Re-read the worker's files and redraw both tables.
+
+        Reads only what was appended since the last refresh: a long sweep's
+        results file grows without bound, and re-parsing all of it on every new
+        row would make watching the sweep cost more than running it.
+        """
+        fresh, offset = bgqueue.read_results_since(self._queue_results_offset)
+        if offset < self._queue_results_offset:
+            self._queue_results = []
+        self._queue_results.extend(fresh)
+        self._queue_results_offset = offset
+        results = self._queue_results
+        self._queue_results_mtime = _mtime(bgqueue.RESULTS_PATH)
+        self._render_queue_status(bgqueue.read_state())
+
+        ranked, floor = bgqueue.leaderboard(results, self.settings.asset)
+        table = self.query_one("#queue-table", DataTable)
+        table.clear()
+        for r in ranked[:200]:
+            table.add_row(
+                r.label, r.family, f"{r.median_sharpe:+.3f}", f"{r.iqr:.3f}",
+                f"{r.frac_positive:.0%}", format_pct(r.median_return), str(r.trades),
+            )
+        floor_table = self.query_one("#queue-floor", DataTable)
+        floor_table.clear()
+        for r in floor[:200]:
+            floor_table.add_row(
+                r.label, r.family, str(r.trades),
+                r.reason or f"under the {bgqueue.MIN_TRADES}-trade floor",
+            )
 
     # -- Research: the drivers and what they established -----------------
 
