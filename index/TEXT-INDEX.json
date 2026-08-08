@@ -259,13 +259,13 @@
     "research/verify_numbers.py": 4368,
     "scripts/build_doc_index.py": 625,
     "scripts/check_docs.py": 1210,
-    "soltui/README.md": 794,
+    "soltui/README.md": 887,
     "soltui/SolTUI.icns": 2731,
     "soltui/__init__.py": 4,
     "soltui/analyze.py": 799,
     "soltui/app.py": 882,
-    "soltui/bgcontrol.py": 1093,
-    "soltui/bgqueue.py": 2780,
+    "soltui/bgcontrol.py": 1279,
+    "soltui/bgqueue.py": 2926,
     "soltui/bgworker.py": 1479,
     "soltui/config.py": 763,
     "soltui/cumulative.py": 889,
@@ -282,18 +282,18 @@
     "soltui/soltui-service": 1088,
     "soltui/status.py": 806,
     "soltui/tests/__init__.py": 5,
-    "soltui/tests/test_bgcontrol.py": 814,
-    "soltui/tests/test_bgqueue.py": 2485,
+    "soltui/tests/test_bgcontrol.py": 956,
+    "soltui/tests/test_bgqueue.py": 2688,
     "soltui/tests/test_bgworker.py": 980,
     "soltui/tests/test_docs_browser.py": 640,
     "soltui/tests/test_panes.py": 1128,
     "soltui/tests/test_signals.py": 857,
     "soltui/tests/test_status_roster.py": 1539,
-    "soltui/tests/test_tui.py": 4374,
-    "soltui/tui.py": 6059,
+    "soltui/tests/test_tui.py": 4533,
+    "soltui/tui.py": 6319,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-08-08T19:22:45+00:00",
+  "generatedAt": "2026-08-08T22:34:53+00:00",
   "postings": {
     "100": {
       ".remember/remember.md": 1,
@@ -713,7 +713,7 @@
       "research/sweep.py": 1,
       "research/verify_numbers.py": 1,
       "scripts/check_docs.py": 2,
-      "soltui/README.md": 1,
+      "soltui/README.md": 3,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
@@ -725,7 +725,8 @@
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 3
     },
     "absolute": {
       ".remember/remember.md": 3,
@@ -995,6 +996,7 @@
       "soltui/app.py": 3,
       "soltui/status.py": 3,
       "soltui/tests/test_status_roster.py": 6,
+      "soltui/tui.py": 1,
       "tradingskilllist/trading-skills.md": 6
     },
     "accountaddresses": {
@@ -1432,12 +1434,13 @@
       "research/sweep.py": 2,
       "research/turnover_table.py": 1,
       "scripts/check_docs.py": 1,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/make_icon.py": 1,
       "soltui/serve.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 22
+      "soltui/tui.py": 23
     },
     "action_cancel": {
       "soltui/tui.py": 1
@@ -1525,7 +1528,7 @@
       "research/coin-intelligence/rain-rain.md": 2,
       "research/coin-intelligence/sol-solana.md": 1,
       "soltui/roster.py": 2,
-      "soltui/tests/test_tui.py": 27,
+      "soltui/tests/test_tui.py": 29,
       "soltui/tui.py": 5,
       "tradingskilllist/trading-skills.md": 1
     },
@@ -1820,7 +1823,7 @@
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
       "soltui/README.md": 4,
-      "soltui/bgqueue.py": 2,
+      "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 5,
       "soltui/make_icon.py": 2,
       "soltui/roster.py": 9,
@@ -1874,10 +1877,11 @@
       "backtester/tests/test_cross_asset_cpcv.py": 6,
       "backtester/tests/test_strategy_cards.py": 1,
       "soltui/tests/test_bgcontrol.py": 3,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 4,
       "soltui/tests/test_panes.py": 5,
-      "soltui/tests/test_tui.py": 4
+      "soltui/tests/test_tui.py": 6
     },
     "added": {
       ".github/copilot-instructions.md": 1,
@@ -3264,12 +3268,13 @@
       "research/decide.py": 20,
       "research/sweep.py": 5,
       "research/verify_numbers.py": 1,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 2,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/runner.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "allow_blank": {
       "soltui/tui.py": 2
@@ -3614,7 +3619,7 @@
       "soltui/analyze.py": 2,
       "soltui/app.py": 3,
       "soltui/bgcontrol.py": 5,
-      "soltui/bgqueue.py": 6,
+      "soltui/bgqueue.py": 7,
       "soltui/bgworker.py": 8,
       "soltui/cumulative.py": 1,
       "soltui/docs_browser.py": 4,
@@ -3628,7 +3633,7 @@
       "soltui/tests/test_bgcontrol.py": 2,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 3
+      "soltui/tui.py": 6
     },
     "already_cached": {
       "backtester/core/universe.py": 2,
@@ -4775,6 +4780,7 @@
       "research/coin-intelligence/xrp-ripple.md": 31,
       "research/coin-intelligence/zec-zcash.md": 12,
       "research/turnover_table.py": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 1
     },
     "apikey": {
@@ -4841,7 +4847,7 @@
       "soltui/status.py": 4,
       "soltui/tests/test_docs_browser.py": 6,
       "soltui/tests/test_panes.py": 3,
-      "soltui/tests/test_tui.py": 231,
+      "soltui/tests/test_tui.py": 239,
       "soltui/tui.py": 11,
       "tradingskilllist/trading-skills.md": 1
     },
@@ -4989,7 +4995,7 @@
       "scripts/build_doc_index.py": 2,
       "scripts/check_docs.py": 7,
       "soltui/analyze.py": 1,
-      "soltui/bgqueue.py": 19,
+      "soltui/bgqueue.py": 20,
       "soltui/bgworker.py": 4,
       "soltui/cumulative.py": 2,
       "soltui/docs_browser.py": 2,
@@ -5480,7 +5486,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "backtester/tests/test_universe.py": 1,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 8,
+      "soltui/tests/test_bgqueue.py": 9,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 4,
@@ -5591,6 +5597,7 @@
       "soltui/runner.py": 1,
       "soltui/serve.py": 4,
       "soltui/soltui-service": 3,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tui.py": 2
     },
     "arguably": {
@@ -5665,7 +5672,8 @@
       "soltui/bgworker.py": 5,
       "soltui/make_icon.py": 2,
       "soltui/serve.py": 2,
-      "soltui/soltui-service": 1
+      "soltui/soltui-service": 1,
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "argumentdefaultshelpformatter": {
       "backtester/cli.py": 1,
@@ -5748,7 +5756,8 @@
       "research/turnover_table.py": 2,
       "scripts/check_docs.py": 2,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 4,
+      "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 2,
       "soltui/make_icon.py": 2,
       "soltui/serve.py": 2,
@@ -6286,7 +6295,8 @@
       "research/PROMPT_STRATEGIES.md": 1,
       "research/sweep.py": 1,
       "scripts/build_doc_index.py": 1,
-      "soltui/bgcontrol.py": 1
+      "soltui/bgcontrol.py": 1,
+      "soltui/tests/test_bgqueue.py": 1
     },
     "asks": {
       ".remember/remember.md": 1,
@@ -6435,14 +6445,14 @@
       "backtester/tests/test_pairs.py": 3,
       "backtester/tests/test_strategy_cards.py": 30,
       "backtester/tests/test_universe.py": 9,
-      "soltui/tests/test_bgcontrol.py": 5,
-      "soltui/tests/test_bgqueue.py": 67,
+      "soltui/tests/test_bgcontrol.py": 8,
+      "soltui/tests/test_bgqueue.py": 72,
       "soltui/tests/test_bgworker.py": 25,
       "soltui/tests/test_docs_browser.py": 6,
       "soltui/tests/test_panes.py": 18,
       "soltui/tests/test_signals.py": 13,
       "soltui/tests/test_status_roster.py": 22,
-      "soltui/tests/test_tui.py": 47
+      "soltui/tests/test_tui.py": 48
     },
     "assertfalse": {
       "backtester/tests/test_cpcv.py": 3,
@@ -6504,14 +6514,14 @@
       "backtester/tests/test_strategy_cards.py": 13,
       "backtester/tests/test_strategy_duplication.py": 1,
       "backtester/tests/test_universe.py": 24,
-      "soltui/tests/test_bgcontrol.py": 6,
-      "soltui/tests/test_bgqueue.py": 11,
+      "soltui/tests/test_bgcontrol.py": 8,
+      "soltui/tests/test_bgqueue.py": 14,
       "soltui/tests/test_bgworker.py": 5,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_panes.py": 5,
       "soltui/tests/test_signals.py": 4,
       "soltui/tests/test_status_roster.py": 21,
-      "soltui/tests/test_tui.py": 20
+      "soltui/tests/test_tui.py": 22
     },
     "asserting": {
       ".remember/remember.md": 1,
@@ -6621,7 +6631,7 @@
       "backtester/tests/test_interpret.py": 7,
       "backtester/tests/test_strategy_cards.py": 4,
       "backtester/tests/test_universe.py": 3,
-      "soltui/tests/test_bgcontrol.py": 3,
+      "soltui/tests/test_bgcontrol.py": 5,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_status_roster.py": 4,
@@ -6642,8 +6652,8 @@
       "backtester/tests/test_indicators.py": 2,
       "backtester/tests/test_pairs.py": 5,
       "backtester/tests/test_strategy_cards.py": 19,
-      "soltui/tests/test_bgcontrol.py": 3,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgcontrol.py": 4,
+      "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_docs_browser.py": 4,
       "soltui/tests/test_panes.py": 7,
@@ -6791,19 +6801,19 @@
       "research/turnover_table.py": 1,
       "soltui/README.md": 5,
       "soltui/analyze.py": 19,
-      "soltui/bgcontrol.py": 5,
-      "soltui/bgqueue.py": 44,
+      "soltui/bgcontrol.py": 11,
+      "soltui/bgqueue.py": 53,
       "soltui/bgworker.py": 25,
       "soltui/config.py": 1,
       "soltui/cumulative.py": 6,
       "soltui/runner.py": 2,
-      "soltui/tests/test_bgcontrol.py": 2,
-      "soltui/tests/test_bgqueue.py": 12,
+      "soltui/tests/test_bgcontrol.py": 4,
+      "soltui/tests/test_bgqueue.py": 14,
       "soltui/tests/test_bgworker.py": 6,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_status_roster.py": 3,
-      "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 15,
+      "soltui/tests/test_tui.py": 2,
+      "soltui/tui.py": 20,
       "tradingskilllist/trading-skills.md": 4
     },
     "asset_from_path": {
@@ -7059,7 +7069,7 @@
       "extension/tools/verify-endpoints.js": 2,
       "index/build.py": 1,
       "pagesource": 2,
-      "soltui/tests/test_tui.py": 100,
+      "soltui/tests/test_tui.py": 104,
       "soltui/tui.py": 1
     },
     "asyncfunctiondef": {
@@ -8021,7 +8031,7 @@
       "extension/tools/dryrun.js": 7,
       "extension/tools/measure-recentre.js": 6,
       "extension/tools/verify-endpoints.js": 7,
-      "soltui/tests/test_tui.py": 135,
+      "soltui/tests/test_tui.py": 137,
       "soltui/tui.py": 1
     },
     "awaiting": {
@@ -8274,6 +8284,7 @@
       "soltui/config.py": 3,
       "soltui/requirements.txt": 2,
       "soltui/soltui-service": 2,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_signals.py": 3,
       "soltui/tests/test_status_roster.py": 7,
       "soltui/tests/test_tui.py": 1,
@@ -8326,7 +8337,7 @@
       "extension/src/ui/ui.css": 9,
       "pagesource": 6,
       "soltui/README.md": 4,
-      "soltui/bgcontrol.py": 10,
+      "soltui/bgcontrol.py": 11,
       "soltui/bgqueue.py": 7,
       "soltui/bgworker.py": 10,
       "soltui/make_icon.py": 1,
@@ -10747,17 +10758,18 @@
       "soltui/SolTUI.icns": 1
     },
     "bg_dir": {
-      "soltui/bgcontrol.py": 4,
+      "soltui/bgcontrol.py": 6,
       "soltui/bgqueue.py": 6,
-      "soltui/tests/test_bgcontrol.py": 1
+      "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tui.py": 2
     },
     "bgcontrol": {
       "docs/TESTING.md": 2,
       "soltui/README.md": 1,
       "soltui/bgcontrol.py": 1,
       "soltui/bgworker.py": 7,
-      "soltui/tests/test_bgcontrol.py": 38,
-      "soltui/tui.py": 5
+      "soltui/tests/test_bgcontrol.py": 43,
+      "soltui/tui.py": 6
     },
     "bgm": {
       "soltui/SolTUI.icns": 3
@@ -10771,7 +10783,7 @@
       "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_tui.py": 11,
-      "soltui/tui.py": 12
+      "soltui/tui.py": 16
     },
     "bgwj8b7b9hhx4sgfz2kjhv9496covfsmk2yepevsbrw": {
       "pagesource": 1
@@ -10782,6 +10794,7 @@
       "soltui/bgcontrol.py": 3,
       "soltui/bgworker.py": 6,
       "soltui/runner.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgworker.py": 18
     },
     "bhkk3rtd4ue6jnqxpa9qhtxbn575ycr8hxvmyx4e254k": {
@@ -10956,9 +10969,9 @@
       "research/leverage_economics.py": 1,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
-      "soltui/bgcontrol.py": 3,
+      "soltui/bgcontrol.py": 4,
       "soltui/soltui-service": 1,
-      "soltui/tests/test_bgcontrol.py": 3
+      "soltui/tests/test_bgcontrol.py": 4
     },
     "bin8kjqtgantmhzgtyja3alwlaqygt5kzrydh7gx5rf4": {
       "pagesource": 1
@@ -11232,7 +11245,7 @@
       "soltui/app.py": 1,
       "soltui/bgworker.py": 2,
       "soltui/runner.py": 1,
-      "soltui/tui.py": 12
+      "soltui/tui.py": 13
     },
     "bled": {
       "research/coin-intelligence/btc-bitcoin.md": 1
@@ -12409,6 +12422,7 @@
       "soltui/runner.py": 1,
       "soltui/signals.py": 1,
       "soltui/soltui-service": 3,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgqueue.py": 2
     },
     "break_even_move": {
@@ -13258,6 +13272,7 @@
       "research/cross_asset_cpcv.py": 2,
       "research/decide.py": 1,
       "soltui/analyze.py": 2,
+      "soltui/bgcontrol.py": 1,
       "soltui/cumulative.py": 2,
       "soltui/docs_browser.py": 1,
       "soltui/make_icon.py": 1,
@@ -13474,10 +13489,12 @@
       "extension/src/ui/popup.html": 16,
       "extension/src/ui/ui.css": 7,
       "pagesource": 60,
+      "soltui/README.md": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/docs_browser.py": 3,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_tui.py": 6,
-      "soltui/tui.py": 44
+      "soltui/tui.py": 48
     },
     "buttons": {
       "docs/SCRIPTS.md": 1,
@@ -13837,7 +13854,7 @@
       "index/make_files_doc.py": 2,
       "index/search.py": 2,
       "research/coin-intelligence/sol-solana.md": 1,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 1,
       "soltui/docs_browser.py": 8,
       "soltui/soltui-service": 1,
@@ -14089,7 +14106,9 @@
       "research/coin-intelligence/zec-zcash.md": 4,
       "research/cross_asset_cpcv.py": 5,
       "research/decide.py": 4,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgworker.py": 7,
       "soltui/runner.py": 1,
       "soltui/tests/test_bgqueue.py": 3,
@@ -14123,7 +14142,9 @@
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/decide.py": 6,
       "soltui/analyze.py": 2,
-      "soltui/tui.py": 2
+      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 3
     },
     "cached_csv": {
       "backtester/tests/test_decide.py": 5
@@ -14251,8 +14272,12 @@
       "soltui/config.py": 1,
       "soltui/paper.py": 4,
       "soltui/requirements.txt": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tui.py": 6
+    },
+    "call_args": {
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "call_count": {
       "soltui/tests/test_bgworker.py": 1
@@ -14736,7 +14761,7 @@
       "soltui/setup_app.py": 3,
       "soltui/signals.py": 1,
       "soltui/status.py": 1,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tui.py": 2
@@ -15510,6 +15535,7 @@
       "research/coin-intelligence/sol-solana.md": 1,
       "research/verify_numbers.py": 1,
       "soltui/bgqueue.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgworker.py": 1
     },
     "carryusd": {
@@ -16880,7 +16906,7 @@
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "check_components_covered": {
       "scripts/check_docs.py": 3
@@ -16984,9 +17010,11 @@
       "research/verify_numbers.py": 44,
       "scripts/check_docs.py": 3,
       "soltui/bgcontrol.py": 3,
+      "soltui/bgqueue.py": 1,
       "soltui/serve.py": 1,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tui.py": 2
     },
     "checker": {
       "docs/FILES.md": 1,
@@ -17137,7 +17165,7 @@
       "docs/strategy-optimization-concept-family.md": 1,
       "extension/test/surfaces.test.js": 1,
       "scripts/check_docs.py": 2,
-      "soltui/bgcontrol.py": 8,
+      "soltui/bgcontrol.py": 9,
       "soltui/tests/test_bgcontrol.py": 2
     },
     "child_process": {
@@ -17834,10 +17862,12 @@
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/turnover_table.py": 1,
       "scripts/check_docs.py": 1,
-      "soltui/README.md": 1,
+      "soltui/README.md": 2,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
       "soltui/soltui-service": 3,
+      "soltui/tui.py": 1,
       "tradingskilllist/trading-skills.md": 1
     },
     "clause": {
@@ -17862,6 +17892,7 @@
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/sweep.py": 1,
       "scripts/check_docs.py": 1,
+      "soltui/README.md": 1,
       "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 23,
       "soltui/tests/test_bgqueue.py": 2,
@@ -17898,7 +17929,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "soltui/bgcontrol.py": 1,
       "soltui/tests/test_bgcontrol.py": 3,
-      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tests/test_bgqueue.py": 4,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_panes.py": 5
@@ -18323,7 +18354,7 @@
       "research/leverage_economics.py": 1,
       "research/sweep.py": 1,
       "soltui/analyze.py": 6,
-      "soltui/bgcontrol.py": 8,
+      "soltui/bgcontrol.py": 9,
       "soltui/bgqueue.py": 1,
       "soltui/tests/test_bgcontrol.py": 4,
       "soltui/tests/test_bgqueue.py": 1,
@@ -18593,7 +18624,7 @@
       "soltui/make_icon.py": 2,
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 4,
-      "soltui/tests/test_bgcontrol.py": 15
+      "soltui/tests/test_bgcontrol.py": 22
     },
     "cme": {
       "research/coin-intelligence/btc-bitcoin.md": 21,
@@ -19729,24 +19760,32 @@
       "research/coin-intelligence/xrp-ripple.md": 1,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 2,
+      "soltui/README.md": 1,
       "soltui/app.py": 2,
-      "soltui/bgcontrol.py": 3,
+      "soltui/bgcontrol.py": 7,
+      "soltui/bgqueue.py": 5,
       "soltui/docs_browser.py": 2,
       "soltui/runner.py": 2,
       "soltui/serve.py": 5,
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 4,
-      "soltui/tests/test_bgcontrol.py": 6,
+      "soltui/tests/test_bgcontrol.py": 9,
+      "soltui/tests/test_bgqueue.py": 4,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_panes.py": 5,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tests/test_tui.py": 2,
+      "soltui/tui.py": 5
     },
     "command_names": {
       "docs/FILES.md": 1,
       "extension/src/core/commands.js": 4,
       "extension/test/surfaces.test.js": 13
+    },
+    "command_text": {
+      "soltui/bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tui.py": 1
     },
     "commandargs": {
       "extension/tools/api-server.js": 4
@@ -19791,10 +19830,10 @@
       "extension/tools/cli.js": 10,
       "extension/tools/deps.js": 1,
       "research/coin-intelligence/sol-solana.md": 1,
-      "soltui/README.md": 1,
+      "soltui/README.md": 2,
       "soltui/paper.py": 1,
       "soltui/soltui-service": 3,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 3
     },
     "commas": {
       "backtester/core/strategy_cards.py": 1,
@@ -20894,6 +20933,7 @@
       "extension/test/core.test.js": 1
     },
     "concurrently": {
+      "soltui/bgcontrol.py": 1,
       "soltui/runner.py": 1
     },
     "cond": {
@@ -21040,7 +21080,7 @@
       "research/dso_audit.py": 1,
       "research/geometry.py": 5,
       "research/sweep.py": 1,
-      "soltui/README.md": 6,
+      "soltui/README.md": 7,
       "soltui/app.py": 3,
       "soltui/bgqueue.py": 5,
       "soltui/bgworker.py": 4,
@@ -22278,7 +22318,7 @@
       "scripts/build_doc_index.py": 3,
       "scripts/check_docs.py": 2,
       "soltui/analyze.py": 2,
-      "soltui/bgqueue.py": 9,
+      "soltui/bgqueue.py": 10,
       "soltui/bgworker.py": 2,
       "soltui/cumulative.py": 1,
       "soltui/roster.py": 1,
@@ -22741,8 +22781,8 @@
       "research/decide.py": 2,
       "research/turnover_table.py": 1,
       "soltui/README.md": 1,
-      "soltui/bgcontrol.py": 1,
-      "soltui/bgqueue.py": 3,
+      "soltui/bgcontrol.py": 2,
+      "soltui/bgqueue.py": 4,
       "soltui/make_icon.py": 1,
       "soltui/roster.py": 1,
       "soltui/runner.py": 1,
@@ -22906,21 +22946,23 @@
       "research/geometry.py": 2,
       "research/perturb.py": 2,
       "research/sweep.py": 5,
-      "soltui/README.md": 4,
+      "soltui/README.md": 6,
       "soltui/analyze.py": 2,
-      "soltui/bgqueue.py": 1,
+      "soltui/bgcontrol.py": 2,
+      "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 6,
       "soltui/paper.py": 5,
       "soltui/roster.py": 1,
       "soltui/runner.py": 6,
       "soltui/signals.py": 1,
-      "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_panes.py": 6,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 3,
-      "soltui/tests/test_tui.py": 4,
-      "soltui/tui.py": 4,
+      "soltui/tests/test_tui.py": 5,
+      "soltui/tui.py": 5,
       "tradingskilllist/trading-skills.md": 2
     },
     "cores": {
@@ -24296,7 +24338,7 @@
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/dso_audit.py": 1,
       "soltui/README.md": 1,
-      "soltui/bgqueue.py": 1,
+      "soltui/bgqueue.py": 2,
       "soltui/paper.py": 2,
       "soltui/soltui-service": 2
     },
@@ -24368,7 +24410,8 @@
       "research/coin-intelligence/trx-tron.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
       "soltui/setup_app.py": 1,
-      "soltui/soltui-service": 1
+      "soltui/soltui-service": 1,
+      "soltui/tests/test_bgqueue.py": 1
     },
     "createserver": {
       "extension/tools/api-server.js": 2
@@ -24931,16 +24974,18 @@
       "research/sweep.py": 7,
       "research/turnover_table.py": 3,
       "research/verify_numbers.py": 33,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 3,
-      "soltui/bgqueue.py": 1,
+      "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 3,
       "soltui/cumulative.py": 9,
       "soltui/docs_browser.py": 1,
       "soltui/runner.py": 1,
-      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tests/test_bgqueue.py": 7,
       "soltui/tests/test_bgworker.py": 4,
       "soltui/tests/test_docs_browser.py": 7,
       "soltui/tests/test_panes.py": 6,
+      "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 2
     },
     "csv_summary": {
@@ -25468,7 +25513,7 @@
       "scripts/build_doc_index.py": 2,
       "scripts/check_docs.py": 4,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 3,
+      "soltui/bgcontrol.py": 6,
       "soltui/serve.py": 1,
       "soltui/soltui-service": 1,
       "soltui/tests/test_panes.py": 1
@@ -25895,11 +25940,15 @@
       "backtester/paircli.py": 1,
       "docs/COMPONENTS.md": 1,
       "soltui/analyze.py": 10,
+      "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
       "soltui/menubar_launcher.py": 1,
       "soltui/runner.py": 1,
-      "soltui/tests/test_bgworker.py": 2
+      "soltui/tests/test_bgqueue.py": 6,
+      "soltui/tests/test_bgworker.py": 2,
+      "soltui/tests/test_tui.py": 2,
+      "soltui/tui.py": 2
     },
     "data_layer": {
       "backtester/PROMPT.md": 2
@@ -25985,7 +26034,7 @@
       "research/perturb.py": 3,
       "research/sweep.py": 2,
       "soltui/analyze.py": 3,
-      "soltui/bgqueue.py": 9,
+      "soltui/bgqueue.py": 10,
       "soltui/config.py": 3,
       "soltui/cumulative.py": 3,
       "soltui/docs_browser.py": 2,
@@ -27990,7 +28039,8 @@
       "research/coin-intelligence/trx-tron.md": 6,
       "research/coin-intelligence/xrp-ripple.md": 7,
       "research/coin-intelligence/zec-zcash.md": 2,
-      "soltui/app.py": 1
+      "soltui/app.py": 1,
+      "soltui/tests/test_bgqueue.py": 1
     },
     "demanding": {
       "backtester/core/strategies/signals.py": 1,
@@ -29155,7 +29205,7 @@
     },
     "devnull": {
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 1
+      "soltui/bgcontrol.py": 2
     },
     "dex": {
       "backtester/strategy_cards/README.md": 2,
@@ -29784,8 +29834,8 @@
       "scripts/check_docs.py": 13,
       "soltui/analyze.py": 10,
       "soltui/app.py": 4,
-      "soltui/bgcontrol.py": 8,
-      "soltui/bgqueue.py": 16,
+      "soltui/bgcontrol.py": 11,
+      "soltui/bgqueue.py": 18,
       "soltui/bgworker.py": 4,
       "soltui/config.py": 5,
       "soltui/cumulative.py": 5,
@@ -29794,11 +29844,12 @@
       "soltui/runner.py": 1,
       "soltui/soltui-service": 5,
       "soltui/tests/test_bgcontrol.py": 8,
-      "soltui/tests/test_bgqueue.py": 7,
+      "soltui/tests/test_bgqueue.py": 21,
       "soltui/tests/test_bgworker.py": 5,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_panes.py": 3,
-      "soltui/tests/test_tui.py": 1
+      "soltui/tests/test_tui.py": 3,
+      "soltui/tui.py": 4
     },
     "dir_intros": {
       "index/make_files_doc.py": 3
@@ -30316,6 +30367,7 @@
       "research/cpcv_sweep.py": 1,
       "research/cross_asset_cpcv.py": 1,
       "research/sweep.py": 1,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 1
     },
     "discloses": {
@@ -30431,14 +30483,18 @@
       "backtester/tests/test_universe.py": 1,
       "docs/dso-skill/references/passes.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
-      "research/coin-intelligence/hype-hyperliquid.md": 1
+      "research/coin-intelligence/hype-hyperliquid.md": 1,
+      "soltui/bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tui.py": 1
     },
     "discoveries": {
       "backtester/core/report.py": 1
     },
     "discovering": {
       ".remember/remember.md": 1,
-      "scripts/check_docs.py": 1
+      "scripts/check_docs.py": 1,
+      "soltui/tests/test_tui.py": 1
     },
     "discovers": {
       "backtester/tests/test_strategy_duplication.py": 1
@@ -31796,7 +31852,8 @@
       "extension/README.md": 1,
       "extension/src/venues/triggerVenue.js": 1,
       "extension/test/core.test.js": 1,
-      "research/coin-intelligence/eth-ethereum.md": 1
+      "research/coin-intelligence/eth-ethereum.md": 1,
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "dormant": {
       "research/coin-intelligence/xrp-ripple.md": 1
@@ -33224,7 +33281,8 @@
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 2,
       "research/coin-intelligence/hype-hyperliquid.md": 2,
-      "research/coin-intelligence/rain-rain.md": 1
+      "research/coin-intelligence/rain-rain.md": 1,
+      "soltui/bgcontrol.py": 1
     },
     "earned": {
       "backtester/README.md": 1,
@@ -33652,9 +33710,12 @@
       "research/coin-intelligence/eth-ethereum.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
+      "soltui/README.md": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/soltui-service": 2,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgworker.py": 2
+      "soltui/tests/test_bgworker.py": 2,
+      "soltui/tui.py": 1
     },
     "effect1": {
       "pagesource": 4
@@ -34361,11 +34422,11 @@
       "soltui/docs_browser.py": 2,
       "soltui/roster.py": 1,
       "soltui/runner.py": 1,
-      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tests/test_bgqueue.py": 4,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_signals.py": 2,
-      "soltui/tests/test_tui.py": 1,
+      "soltui/tests/test_tui.py": 2,
       "soltui/tui.py": 7
     },
     "emptydataerror": {
@@ -34483,7 +34544,7 @@
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 2,
       "soltui/tests/test_bgcontrol.py": 4,
-      "soltui/tests/test_bgqueue.py": 6,
+      "soltui/tests/test_bgqueue.py": 7,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 4,
       "soltui/tests/test_tui.py": 2
@@ -34871,6 +34932,7 @@
       "research/sweep.py": 2,
       "soltui/README.md": 3,
       "soltui/analyze.py": 4,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 3,
       "soltui/cumulative.py": 1,
@@ -35048,7 +35110,7 @@
       "research/coin-intelligence/eth-ethereum.md": 1
     },
     "ensure": {
-      "soltui/bgcontrol.py": 3,
+      "soltui/bgcontrol.py": 4,
       "soltui/bgqueue.py": 6,
       "soltui/bgworker.py": 3
     },
@@ -35056,7 +35118,7 @@
       "soltui/bgqueue.py": 2
     },
     "ensure_dir": {
-      "soltui/bgcontrol.py": 3,
+      "soltui/bgcontrol.py": 4,
       "soltui/bgqueue.py": 4,
       "soltui/bgworker.py": 3
     },
@@ -36355,6 +36417,7 @@
       "research/coin-intelligence/xrp-ripple.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/docs_browser.py": 1,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_panes.py": 1
@@ -36949,7 +37012,7 @@
       "soltui/paper.py": 1,
       "soltui/runner.py": 1,
       "soltui/status.py": 1,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 2,
       "soltui/tui.py": 2
     },
     "everywhere": {
@@ -37144,6 +37207,7 @@
       "research/coin-intelligence/xrp-ripple.md": 4,
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/verify_numbers.py": 3,
+      "soltui/README.md": 1,
       "soltui/app.py": 1,
       "soltui/bgqueue.py": 1,
       "soltui/tui.py": 1
@@ -37259,6 +37323,7 @@
       "research/sweep.py": 1,
       "research/verify_numbers.py": 4,
       "scripts/check_docs.py": 2,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/cumulative.py": 1,
@@ -37332,7 +37397,7 @@
       "soltui/roster.py": 6,
       "soltui/runner.py": 7,
       "soltui/signals.py": 2,
-      "soltui/tui.py": 23
+      "soltui/tui.py": 26
     },
     "exceed": {
       "backtester/core/gridsim.py": 1,
@@ -37450,7 +37515,7 @@
       "soltui/runner.py": 2,
       "soltui/serve.py": 2,
       "soltui/signals.py": 1,
-      "soltui/tui.py": 21
+      "soltui/tui.py": 23
     },
     "exception": {
       "backtester/PROMPT.md": 1,
@@ -37478,7 +37543,7 @@
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_signals.py": 3,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tui.py": 13
+      "soltui/tui.py": 14
     },
     "exceptional": {
       ".remember/remember.md": 1,
@@ -37695,11 +37760,11 @@
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/sol-solana.md": 2,
       "soltui/app.py": 2,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 3,
       "soltui/serve.py": 1,
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 4,
-      "soltui/tests/test_bgcontrol.py": 1
+      "soltui/tests/test_bgcontrol.py": 2
     },
     "execute": {
       "backtester/README.md": 1,
@@ -38116,7 +38181,7 @@
       "soltui/analyze.py": 4,
       "soltui/app.py": 2,
       "soltui/bgcontrol.py": 4,
-      "soltui/bgqueue.py": 6,
+      "soltui/bgqueue.py": 7,
       "soltui/bgworker.py": 2,
       "soltui/config.py": 5,
       "soltui/cumulative.py": 3,
@@ -38132,7 +38197,7 @@
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 4
+      "soltui/tui.py": 5
     },
     "existssync": {
       ".github/workflows/ci.yml": 1
@@ -38689,17 +38754,19 @@
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/decide.py": 1,
-      "soltui/README.md": 2,
+      "soltui/README.md": 3,
       "soltui/analyze.py": 2,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
       "soltui/paper.py": 1,
       "soltui/serve.py": 1,
       "soltui/signals.py": 8,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_signals.py": 5,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 3
+      "soltui/tui.py": 4
     },
     "explicitly": {
       ".remember/remember.md": 2,
@@ -39704,7 +39771,7 @@
       "soltui/soltui-service": 2,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgworker.py": 6,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "failed_result": {
       "soltui/bgworker.py": 3,
@@ -40915,20 +40982,29 @@
       "research/decide.py": 1,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
-      "soltui/README.md": 2,
+      "soltui/README.md": 7,
       "soltui/analyze.py": 2,
+      "soltui/bgcontrol.py": 10,
+      "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 2,
       "soltui/runner.py": 2,
       "soltui/status.py": 1,
+      "soltui/tests/test_bgcontrol.py": 7,
+      "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_status_roster.py": 3,
-      "soltui/tui.py": 2
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 13
     },
     "fetch_coinbase": {
       "backtester/core/fetch.py": 3,
       "backtester/core/universe.py": 2,
       "docs/FILES.md": 1
+    },
+    "fetch_command": {
+      "soltui/bgcontrol.py": 3,
+      "soltui/tests/test_bgcontrol.py": 2
     },
     "fetch_spot": {
       "backtester/core/archive_price.py": 3,
@@ -41002,7 +41078,8 @@
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 2,
       "research/coin-intelligence/sol-solana.md": 1,
-      "research/coin-intelligence/trx-tron.md": 1
+      "research/coin-intelligence/trx-tron.md": 1,
+      "soltui/bgcontrol.py": 2
     },
     "fetchfailurecount": {
       "pagesource": 9
@@ -41026,7 +41103,9 @@
       "docs/SCRIPTS.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/external-calls.md": 2,
-      "soltui/bgworker.py": 2
+      "soltui/bgworker.py": 2,
+      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tui.py": 1
     },
     "fetchmeta": {
       "pagesource": 9
@@ -41625,8 +41704,8 @@
       "soltui/README.md": 2,
       "soltui/analyze.py": 1,
       "soltui/app.py": 4,
-      "soltui/bgcontrol.py": 4,
-      "soltui/bgqueue.py": 29,
+      "soltui/bgcontrol.py": 5,
+      "soltui/bgqueue.py": 31,
       "soltui/bgworker.py": 8,
       "soltui/config.py": 6,
       "soltui/cumulative.py": 7,
@@ -41637,13 +41716,13 @@
       "soltui/setup_app.py": 2,
       "soltui/soltui-service": 16,
       "soltui/tests/test_bgcontrol.py": 3,
-      "soltui/tests/test_bgqueue.py": 15,
+      "soltui/tests/test_bgqueue.py": 18,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 6,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_status_roster.py": 4,
       "soltui/tests/test_tui.py": 9,
-      "soltui/tui.py": 49,
+      "soltui/tui.py": 50,
       "tradingskilllist/trading-skills.md": 1
     },
     "file__": {
@@ -41672,7 +41751,7 @@
       "scripts/check_docs.py": 1,
       "soltui/analyze.py": 1,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/cumulative.py": 1,
       "soltui/docs_browser.py": 1,
@@ -41780,7 +41859,7 @@
       "research/verify_numbers.py": 2,
       "scripts/build_doc_index.py": 5,
       "scripts/check_docs.py": 14,
-      "soltui/bgqueue.py": 1,
+      "soltui/bgqueue.py": 2,
       "soltui/cumulative.py": 10,
       "soltui/docs_browser.py": 13,
       "soltui/setup_app.py": 1,
@@ -41789,7 +41868,7 @@
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_panes.py": 5,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 5
+      "soltui/tui.py": 6
     },
     "files_for": {
       "index/build.py": 3
@@ -42290,6 +42369,7 @@
       "extension/src/wallet/signer.js": 2,
       "extension/test/surfaces.test.js": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/runner.py": 1
     },
@@ -42508,6 +42588,10 @@
     "finishes": {
       "soltui/bgqueue.py": 2,
       "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tui.py": 2
+    },
+    "finishing": {
+      "soltui/bgcontrol.py": 1,
       "soltui/tui.py": 1
     },
     "finite": {
@@ -42590,7 +42674,8 @@
       "soltui/tui.py": 2
     },
     "firing": {
-      "extension/src/core/risk.js": 1
+      "extension/src/core/risk.js": 1,
+      "soltui/bgcontrol.py": 1
     },
     "firm": {
       "research/coin-intelligence/btc-bitcoin.md": 2
@@ -42698,7 +42783,7 @@
       "soltui/analyze.py": 4,
       "soltui/app.py": 4,
       "soltui/bgcontrol.py": 2,
-      "soltui/bgqueue.py": 14,
+      "soltui/bgqueue.py": 15,
       "soltui/bgworker.py": 3,
       "soltui/config.py": 1,
       "soltui/cumulative.py": 1,
@@ -42717,7 +42802,7 @@
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 3,
       "soltui/tests/test_tui.py": 5,
-      "soltui/tui.py": 17
+      "soltui/tui.py": 19
     },
     "first_close": {
       "backtester/PROMPT.md": 2,
@@ -42902,6 +42987,7 @@
       "research/STRATEGIES.md": 1,
       "research/cross_asset_cpcv.py": 1,
       "research/dso_audit.py": 1,
+      "soltui/bgqueue.py": 1,
       "soltui/cumulative.py": 1,
       "soltui/soltui-service": 1
     },
@@ -42962,7 +43048,9 @@
       "research/coin-intelligence/sol-solana.md": 1,
       "soltui/docs_browser.py": 1,
       "soltui/menubar_launcher.py": 1,
-      "soltui/requirements.txt": 1
+      "soltui/requirements.txt": 1,
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 1
     },
     "fixing": {
       "backtester/PROMPT.md": 1,
@@ -45026,7 +45114,7 @@
       "research/leverage_economics.py": 1,
       "research/perturb.py": 1,
       "research/verify_numbers.py": 1,
-      "soltui/bgqueue.py": 1
+      "soltui/bgqueue.py": 2
     },
     "frontend": {
       "extension/README.md": 1
@@ -45069,7 +45157,7 @@
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/decide.py": 2,
       "soltui/analyze.py": 2,
-      "soltui/bgqueue.py": 4,
+      "soltui/bgqueue.py": 5,
       "soltui/cumulative.py": 1,
       "soltui/docs_browser.py": 1,
       "soltui/roster.py": 1,
@@ -46058,10 +46146,12 @@
       "research/cross_asset_cpcv.py": 13,
       "research/decide.py": 4,
       "research/sweep.py": 6,
+      "soltui/README.md": 2,
       "soltui/analyze.py": 3,
       "soltui/bgworker.py": 1,
       "soltui/make_icon.py": 1,
-      "soltui/runner.py": 1
+      "soltui/runner.py": 1,
+      "soltui/tui.py": 1
     },
     "gar": {
       "soltui/SolTUI.icns": 1
@@ -46907,7 +46997,7 @@
       "soltui/analyze.py": 1,
       "soltui/app.py": 1,
       "soltui/bgcontrol.py": 2,
-      "soltui/bgqueue.py": 2,
+      "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 3,
       "soltui/docs_browser.py": 10,
       "soltui/roster.py": 4,
@@ -47321,7 +47411,7 @@
       "research/coin-intelligence/sol-solana.md": 1,
       "research/coin-intelligence/trx-tron.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 1,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1
     },
@@ -47559,6 +47649,7 @@
       "research/decide.py": 1,
       "scripts/check_docs.py": 1,
       "soltui/runner.py": 2,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 1
     },
@@ -48942,7 +49033,7 @@
       "extension/README.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 2,
-      "soltui/bgcontrol.py": 7,
+      "soltui/bgcontrol.py": 10,
       "soltui/bgworker.py": 2,
       "soltui/config.py": 1,
       "soltui/status.py": 1,
@@ -50359,6 +50450,7 @@
       "research/coin-intelligence/hype-hyperliquid.md": 2,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/dso_audit.py": 3,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgworker.py": 2,
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 1
@@ -50698,7 +50790,7 @@
       "research/coin-intelligence/xrp-ripple.md": 6,
       "research/leverage_economics.py": 4,
       "soltui/README.md": 2,
-      "soltui/bgcontrol.py": 4,
+      "soltui/bgcontrol.py": 5,
       "soltui/docs_browser.py": 1,
       "soltui/paper.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
@@ -50942,20 +51034,20 @@
       "research/results/tables.md": 8,
       "research/sweep.py": 30,
       "research/verify_numbers.py": 63,
-      "soltui/README.md": 1,
-      "soltui/bgqueue.py": 28,
+      "soltui/README.md": 2,
+      "soltui/bgqueue.py": 31,
       "soltui/bgworker.py": 4,
       "soltui/cumulative.py": 5,
       "soltui/tests/test_bgqueue.py": 7,
       "soltui/tests/test_bgworker.py": 2,
-      "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tests/test_tui.py": 2,
+      "soltui/tui.py": 3
     },
     "horizon_definitions": {
       "research/PROMPT_STRATEGIES.md": 2
     },
     "horizon_interval": {
-      "soltui/bgqueue.py": 3,
+      "soltui/bgqueue.py": 4,
       "soltui/tests/test_bgqueue.py": 3
     },
     "horizons": {
@@ -50989,11 +51081,11 @@
       "research/sweep.py": 10,
       "research/verify_numbers.py": 4,
       "soltui/bgcontrol.py": 7,
-      "soltui/bgqueue.py": 6,
+      "soltui/bgqueue.py": 10,
       "soltui/bgworker.py": 14,
       "soltui/cumulative.py": 2,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 5,
       "soltui/tests/test_panes.py": 1,
       "soltui/tui.py": 2
     },
@@ -51058,7 +51150,8 @@
       "backtester/strategy_cards/vol_regime_hmm.md": 1,
       "backtester/strategy_cards/voltarget.md": 1,
       "backtester/strategy_cards/vwap_reversion.md": 1,
-      "backtester/strategy_cards/zscore.md": 1
+      "backtester/strategy_cards/zscore.md": 1,
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "hosts": {
       "docs/FILES.md": 1,
@@ -51155,9 +51248,11 @@
       "research/decide.py": 6,
       "research/leverage_economics.py": 3,
       "research/sweep.py": 1,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 1,
+      "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 2,
       "soltui/tui.py": 1
     },
     "hourly_borrow_rate": {
@@ -53579,7 +53674,7 @@
       "soltui/bgworker.py": 2,
       "soltui/docs_browser.py": 18,
       "soltui/paper.py": 11,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 4,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_panes.py": 12,
       "soltui/tests/test_status_roster.py": 1,
@@ -55350,8 +55445,12 @@
       "soltui/bgqueue.py": 1
     },
     "interleaves": {
+      "soltui/README.md": 1,
+      "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1,
-      "soltui/tests/test_bgworker.py": 1
+      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgworker.py": 1,
+      "soltui/tui.py": 1
     },
     "intermediate": {
       "backtester/core/deflated_sharpe.py": 1
@@ -55576,18 +55675,20 @@
       "research/perturb.py": 1,
       "research/results/ladder_grid_sol.csv": 2,
       "research/sweep.py": 7,
-      "soltui/README.md": 2,
+      "soltui/README.md": 3,
       "soltui/analyze.py": 18,
       "soltui/app.py": 1,
-      "soltui/bgqueue.py": 21,
+      "soltui/bgcontrol.py": 7,
+      "soltui/bgqueue.py": 31,
       "soltui/bgworker.py": 22,
       "soltui/config.py": 7,
       "soltui/runner.py": 8,
-      "soltui/tests/test_bgqueue.py": 7,
+      "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tests/test_bgqueue.py": 12,
       "soltui/tests/test_bgworker.py": 14,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tests/test_tui.py": 3,
-      "soltui/tui.py": 12
+      "soltui/tests/test_tui.py": 5,
+      "soltui/tui.py": 15
     },
     "interval_of": {
       "docs/FILES.md": 1,
@@ -55607,11 +55708,13 @@
       "backtester/tests/test_decide.py": 1,
       "docs/FILES.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
+      "soltui/README.md": 1,
+      "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 6,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bgworker.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "intervenes": {
       "research/coin-intelligence/hype-hyperliquid.md": 1
@@ -56029,6 +56132,9 @@
     },
     "invoked": {
       "backtester/PROMPT.md": 1
+    },
+    "invokes": {
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "invoking": {
       "docs/dso-skill/SKILL.md": 1,
@@ -57124,9 +57230,9 @@
       "extension/src/core/grid.js": 1,
       "extension/src/core/risk.js": 1,
       "scripts/check_docs.py": 1,
-      "soltui/README.md": 2,
+      "soltui/README.md": 3,
       "soltui/bgcontrol.py": 2,
-      "soltui/bgqueue.py": 50,
+      "soltui/bgqueue.py": 53,
       "soltui/bgworker.py": 56,
       "soltui/runner.py": 1,
       "soltui/soltui-service": 3,
@@ -57156,6 +57262,7 @@
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
       "index/README.md": 1,
+      "soltui/README.md": 1,
       "soltui/bgqueue.py": 26,
       "soltui/bgworker.py": 11,
       "soltui/make_icon.py": 1,
@@ -57221,11 +57328,14 @@
       "scripts/check_docs.py": 1,
       "soltui/analyze.py": 1,
       "soltui/app.py": 1,
-      "soltui/bgqueue.py": 1,
+      "soltui/bgcontrol.py": 2,
+      "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/roster.py": 2,
       "soltui/soltui-service": 2,
-      "soltui/tests/test_status_roster.py": 4
+      "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tests/test_status_roster.py": 4,
+      "soltui/tui.py": 3
     },
     "joined": {
       "backtester/tests/test_interpret.py": 16,
@@ -58309,7 +58419,7 @@
       "research/sweep.py": 6,
       "research/verify_numbers.py": 16,
       "soltui/analyze.py": 2,
-      "soltui/bgqueue.py": 11,
+      "soltui/bgqueue.py": 12,
       "soltui/bgworker.py": 7,
       "soltui/cumulative.py": 2,
       "soltui/docs_browser.py": 3,
@@ -58806,7 +58916,7 @@
       "index/README.md": 1,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
-      "soltui/bgqueue.py": 1
+      "soltui/bgqueue.py": 2
     },
     "knowingly": {
       "backtester/core/universe.py": 1,
@@ -59454,7 +59564,7 @@
       "research/sweep.py": 5,
       "research/verify_numbers.py": 1,
       "soltui/analyze.py": 1,
-      "soltui/bgqueue.py": 3,
+      "soltui/bgqueue.py": 4,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
       "soltui/cumulative.py": 2,
@@ -60235,7 +60345,8 @@
       "docs/strategy-optimization-concept-family.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/cpcv_sweep.py": 1,
-      "research/verify_numbers.py": 1
+      "research/verify_numbers.py": 1,
+      "soltui/bgcontrol.py": 1
     },
     "leakage": {
       "backtester/core/cpcv.py": 1,
@@ -60405,6 +60516,7 @@
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/cross_asset_cpcv.py": 3,
       "scripts/check_docs.py": 1,
+      "soltui/README.md": 1,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_status_roster.py": 1,
@@ -60490,7 +60602,7 @@
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_status_roster.py": 3,
-      "soltui/tui.py": 4
+      "soltui/tui.py": 6
     },
     "leftover": {
       "backtester/core/gridsim.py": 1,
@@ -60684,7 +60796,7 @@
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 11,
       "soltui/tests/test_tui.py": 5,
-      "soltui/tui.py": 9
+      "soltui/tui.py": 10
     },
     "len__": {
       "backtester/core/types.py": 1,
@@ -60880,6 +60992,7 @@
       "research/verify_numbers.py": 2,
       "soltui/README.md": 1,
       "soltui/bgcontrol.py": 2,
+      "soltui/bgqueue.py": 1,
       "soltui/docs_browser.py": 2,
       "soltui/tui.py": 1
     },
@@ -61426,7 +61539,7 @@
       "soltui/serve.py": 1,
       "soltui/status.py": 1,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "likelier": {
       "backtester/tests/test_cross_asset_cpcv.py": 1,
@@ -61570,7 +61683,7 @@
       "research/coin-intelligence/sol-solana.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 2,
       "research/sweep.py": 5,
-      "soltui/bgcontrol.py": 7,
+      "soltui/bgcontrol.py": 8,
       "soltui/bgworker.py": 9,
       "soltui/cumulative.py": 2,
       "soltui/docs_browser.py": 1,
@@ -61751,7 +61864,7 @@
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 4,
-      "soltui/tui.py": 25
+      "soltui/tui.py": 29
     },
     "line_hist": {
       "backtester/core/indicators.py": 4
@@ -62162,8 +62275,8 @@
       "soltui/README.md": 2,
       "soltui/analyze.py": 4,
       "soltui/app.py": 2,
-      "soltui/bgcontrol.py": 2,
-      "soltui/bgqueue.py": 19,
+      "soltui/bgcontrol.py": 3,
+      "soltui/bgqueue.py": 23,
       "soltui/bgworker.py": 2,
       "soltui/config.py": 2,
       "soltui/cumulative.py": 9,
@@ -62183,7 +62296,7 @@
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 9,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 5
+      "soltui/tui.py": 6
     },
     "list_coinbase_products": {
       "backtester/core/universe.py": 3,
@@ -63040,7 +63153,9 @@
       "research/coin-intelligence/zec-zcash.md": 5,
       "research/cross_asset_cpcv.py": 1,
       "research/results/top_coins.csv": 2,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/serve.py": 1,
       "soltui/tests/test_panes.py": 1
     },
@@ -63219,18 +63334,18 @@
       "research/coin-intelligence/trx-tron.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/coin-intelligence/zec-zcash.md": 2,
-      "soltui/README.md": 1,
-      "soltui/bgcontrol.py": 8,
+      "soltui/README.md": 2,
+      "soltui/bgcontrol.py": 13,
       "soltui/bgworker.py": 1,
       "soltui/menubar_launcher.py": 1,
       "soltui/soltui-service": 8,
-      "soltui/tests/test_bgcontrol.py": 7,
-      "soltui/tui.py": 1,
+      "soltui/tests/test_bgcontrol.py": 9,
+      "soltui/tui.py": 7,
       "tradingskilllist/trading-skills.md": 2
     },
     "log_path": {
-      "soltui/bgcontrol.py": 2,
-      "soltui/tests/test_bgcontrol.py": 3
+      "soltui/bgcontrol.py": 4,
+      "soltui/tests/test_bgcontrol.py": 4
     },
     "log_scale": {
       "backtester/core/plotting.py": 2
@@ -63497,7 +63612,7 @@
       "soltui/signals.py": 1,
       "soltui/status.py": 3,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 5,
+      "soltui/tests/test_bgqueue.py": 6,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 6,
       "soltui/tui.py": 3
@@ -63845,7 +63960,7 @@
       "soltui/serve.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "lookup": {
       "backtester/core/cointegration.py": 1,
@@ -63897,9 +64012,11 @@
       "research/cross_asset_cpcv.py": 1,
       "soltui/README.md": 3,
       "soltui/app.py": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/paper.py": 2,
       "soltui/status.py": 2,
+      "soltui/tests/test_bgcontrol.py": 2,
       "soltui/tests/test_bgworker.py": 6,
       "soltui/tests/test_panes.py": 2
     },
@@ -65456,7 +65573,7 @@
       "soltui/soltui-service": 1,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_panes.py": 7,
-      "soltui/tests/test_tui.py": 37,
+      "soltui/tests/test_tui.py": 39,
       "soltui/tui.py": 1
     },
     "make_arrays": {
@@ -65503,7 +65620,7 @@
     },
     "make_settings": {
       "docs/FILES.md": 1,
-      "soltui/tests/test_tui.py": 37
+      "soltui/tests/test_tui.py": 39
     },
     "make_strategy": {
       "backtester/core/cpcv.py": 5,
@@ -67232,7 +67349,7 @@
       "soltui/runner.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_signals.py": 2,
-      "soltui/tests/test_tui.py": 3,
+      "soltui/tests/test_tui.py": 4,
       "soltui/tui.py": 8
     },
     "mean_move_others": {
@@ -67291,7 +67408,8 @@
       "research/coin-intelligence/xrp-ripple.md": 3,
       "research/geometry.py": 1,
       "research/perturb.py": 1,
-      "soltui/bgqueue.py": 2
+      "soltui/bgqueue.py": 2,
+      "soltui/tui.py": 1
     },
     "meaningfully": {
       "backtester/strategy_cards/adx_filtered_trend.md": 1,
@@ -67413,7 +67531,8 @@
       "soltui/soltui-service": 1,
       "soltui/status.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
-      "soltui/tests/test_status_roster.py": 1
+      "soltui/tests/test_status_roster.py": 1,
+      "soltui/tui.py": 1
     },
     "meant": {
       ".gitignore": 1,
@@ -68117,7 +68236,7 @@
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 2,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 35,
+      "soltui/tests/test_bgqueue.py": 38,
       "soltui/tests/test_bgworker.py": 3,
       "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 1
@@ -68764,6 +68883,7 @@
       "soltui/bgworker.py": 1,
       "soltui/roster.py": 1,
       "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 2
     },
     "mid_t": {
@@ -69182,7 +69302,11 @@
       "research/coin-intelligence/btc-bitcoin.md": 3,
       "research/coin-intelligence/doge-dogecoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 4,
-      "research/coin-intelligence/hype-hyperliquid.md": 2
+      "research/coin-intelligence/hype-hyperliquid.md": 2,
+      "soltui/README.md": 1,
+      "soltui/bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tui.py": 1
     },
     "mir": {
       "soltui/SolTUI.icns": 1
@@ -69441,9 +69565,10 @@
       "research/verify_numbers.py": 11,
       "scripts/build_doc_index.py": 8,
       "scripts/check_docs.py": 11,
+      "soltui/README.md": 5,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 1,
-      "soltui/bgqueue.py": 2,
+      "soltui/bgcontrol.py": 5,
+      "soltui/bgqueue.py": 5,
       "soltui/bgworker.py": 11,
       "soltui/config.py": 4,
       "soltui/docs_browser.py": 2,
@@ -69451,13 +69576,13 @@
       "soltui/serve.py": 1,
       "soltui/setup_app.py": 2,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tests/test_bgqueue.py": 19,
       "soltui/tests/test_bgworker.py": 4,
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_signals.py": 6,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tests/test_tui.py": 4,
-      "soltui/tui.py": 2
+      "soltui/tests/test_tui.py": 7,
+      "soltui/tui.py": 22
     },
     "missing_and_tracked": {
       "docs/FILES.md": 1,
@@ -69467,10 +69592,19 @@
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1
     },
+    "missing_series": {
+      "soltui/bgqueue.py": 2,
+      "soltui/tests/test_bgqueue.py": 6,
+      "soltui/tui.py": 4
+    },
     "missingfields": {
       "extension/src/core/engine.js": 1,
       "extension/src/venues/triggerVenue.js": 9,
       "extension/test/core.test.js": 5
+    },
+    "missingseries": {
+      "soltui/bgqueue.py": 5,
+      "soltui/tui.py": 1
     },
     "misspelled": {
       "soltui/tests/test_status_roster.py": 1
@@ -69631,7 +69765,7 @@
     },
     "mock": {
       "extension/README.md": 1,
-      "soltui/tests/test_bgcontrol.py": 3,
+      "soltui/tests/test_bgcontrol.py": 4,
       "soltui/tests/test_bgworker.py": 9,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_tui.py": 5
@@ -70022,7 +70156,7 @@
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 2,
       "soltui/status.py": 2,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_panes.py": 1,
       "soltui/tui.py": 1
     },
@@ -70869,6 +71003,7 @@
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
       "soltui/status.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
       "tradingskilllist/trading-skills.md": 1
     },
     "multiline": {
@@ -71371,7 +71506,7 @@
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 4
+      "soltui/tui.py": 5
     },
     "named": {
       ".remember/remember.md": 3,
@@ -71408,7 +71543,8 @@
       "research/cpcv_sweep.py": 1,
       "research/cross_asset_cpcv.py": 3,
       "research/verify_numbers.py": 8,
-      "scripts/check_docs.py": 1
+      "scripts/check_docs.py": 1,
+      "soltui/tests/test_tui.py": 1
     },
     "names": {
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
@@ -71461,6 +71597,7 @@
       "research/verify_numbers.py": 6,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 2,
+      "soltui/README.md": 1,
       "soltui/cumulative.py": 1,
       "soltui/make_icon.py": 1,
       "soltui/roster.py": 2,
@@ -71471,7 +71608,7 @@
       "soltui/tests/test_signals.py": 9,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 6,
+      "soltui/tui.py": 8,
       "tradingskilllist/trading-skills.md": 2
     },
     "naming": {
@@ -72104,6 +72241,7 @@
       "soltui/README.md": 2,
       "soltui/analyze.py": 1,
       "soltui/app.py": 3,
+      "soltui/bgqueue.py": 2,
       "soltui/config.py": 1,
       "soltui/make_icon.py": 2,
       "soltui/roster.py": 1,
@@ -72114,7 +72252,7 @@
       "soltui/status.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 3,
+      "soltui/tui.py": 5,
       "tradingskilllist/trading-skills.md": 1
     },
     "neeq": {
@@ -72448,8 +72586,13 @@
       "research/coin-intelligence/trx-tron.md": 9,
       "research/coin-intelligence/zec-zcash.md": 6,
       "research/leverage_economics.py": 2,
+      "soltui/README.md": 1,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgworker.py": 2,
-      "soltui/paper.py": 1
+      "soltui/paper.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tui.py": 1
     },
     "neutral": {
       ".remember/remember.md": 1,
@@ -72642,7 +72785,7 @@
       "research/verify_numbers.py": 10,
       "scripts/build_doc_index.py": 1,
       "soltui/README.md": 4,
-      "soltui/bgcontrol.py": 4,
+      "soltui/bgcontrol.py": 5,
       "soltui/bgqueue.py": 4,
       "soltui/bgworker.py": 5,
       "soltui/config.py": 1,
@@ -72653,7 +72796,7 @@
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 3,
       "soltui/status.py": 1,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_bgqueue.py": 5,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_docs_browser.py": 4,
@@ -72750,7 +72893,7 @@
       "research/perturb.py": 1,
       "research/verify_numbers.py": 1,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 3,
       "soltui/bgqueue.py": 7,
       "soltui/make_icon.py": 8,
       "soltui/soltui-service": 1,
@@ -73481,14 +73624,14 @@
       "research/perturb.py": 3,
       "research/sweep.py": 5,
       "soltui/app.py": 2,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 12,
       "soltui/config.py": 1,
       "soltui/menubar_launcher.py": 1,
       "soltui/runner.py": 1,
       "soltui/tests/test_bgworker.py": 8,
-      "soltui/tui.py": 12
+      "soltui/tui.py": 13
     },
     "nor": {
       "backtester/tests/test_cross_asset_cpcv.py": 1,
@@ -73656,7 +73799,7 @@
       "research/coin-intelligence/trx-tron.md": 3,
       "soltui/README.md": 1,
       "soltui/tests/test_bgcontrol.py": 6,
-      "soltui/tests/test_bgqueue.py": 11,
+      "soltui/tests/test_bgqueue.py": 12,
       "soltui/tests/test_bgworker.py": 5,
       "soltui/tests/test_docs_browser.py": 5,
       "soltui/tests/test_panes.py": 4,
@@ -73742,6 +73885,7 @@
       "research/decide.py": 16,
       "research/dso_audit.py": 1,
       "research/sweep.py": 3,
+      "soltui/README.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
@@ -73916,7 +74060,7 @@
       "research/verify_numbers.py": 5,
       "scripts/check_docs.py": 1,
       "soltui/README.md": 1,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 3,
       "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 3,
       "soltui/config.py": 2,
@@ -73928,12 +74072,12 @@
       "soltui/serve.py": 2,
       "soltui/setup_app.py": 1,
       "soltui/status.py": 2,
-      "soltui/tests/test_bgcontrol.py": 2,
-      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tests/test_bgcontrol.py": 4,
+      "soltui/tests/test_bgqueue.py": 4,
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_signals.py": 2,
-      "soltui/tests/test_tui.py": 4,
-      "soltui/tui.py": 9
+      "soltui/tests/test_tui.py": 5,
+      "soltui/tui.py": 12
     },
     "notice": {
       "backtester/PROMPT.md": 1,
@@ -75031,7 +75175,7 @@
       "scripts/build_doc_index.py": 3,
       "soltui/README.md": 1,
       "soltui/bgqueue.py": 2,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_bgworker.py": 6,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_tui.py": 3
@@ -75520,6 +75664,7 @@
       "extension/test/core.test.js": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 2,
+      "soltui/bgqueue.py": 1,
       "soltui/config.py": 1,
       "soltui/docs_browser.py": 1,
       "soltui/tests/test_panes.py": 1
@@ -75982,6 +76127,7 @@
     },
     "once": {
       "backtester/tests/test_cross_asset_cpcv.py": 3,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1
     },
     "onchain": {
@@ -76010,11 +76156,11 @@
       "backtester/tests/test_universe.py": 1,
       "docs/FILES.md": 2,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 4,
+      "soltui/tests/test_bgqueue.py": 5,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_signals.py": 1,
-      "soltui/tests/test_tui.py": 84,
-      "soltui/tui.py": 56
+      "soltui/tests/test_tui.py": 86,
+      "soltui/tui.py": 57
     },
     "one_way": {
       "backtester/tests/test_gridsim.py": 2
@@ -76089,7 +76235,7 @@
       "backtester/tests/test_strategy_duplication.py": 1,
       "backtester/tests/test_universe.py": 3,
       "soltui/config.py": 4,
-      "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_status_roster.py": 2,
@@ -76386,7 +76532,7 @@
       "research/decide.py": 4,
       "soltui/README.md": 1,
       "soltui/app.py": 21,
-      "soltui/bgcontrol.py": 4,
+      "soltui/bgcontrol.py": 5,
       "soltui/bgqueue.py": 4,
       "soltui/cumulative.py": 1,
       "soltui/docs_browser.py": 5,
@@ -77573,13 +77719,15 @@
       "research/geometry.py": 1,
       "research/verify_numbers.py": 2,
       "scripts/check_docs.py": 1,
+      "soltui/README.md": 1,
       "soltui/app.py": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/menubar_launcher.py": 1,
       "soltui/serve.py": 1,
-      "soltui/tests/test_bgqueue.py": 2,
-      "soltui/tui.py": 1
+      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tui.py": 2
     },
     "otoco": {
       "extension/README.md": 1,
@@ -77715,7 +77863,8 @@
       "backtester/tests/test_pairs.py": 2,
       "backtester/tests/test_universe.py": 7,
       "docs/FILES.md": 1,
-      "research/sweep.py": 18
+      "research/sweep.py": 18,
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "out_dir": {
       "backtester/core/plotting.py": 2,
@@ -77951,7 +78100,7 @@
       "research/geometry.py": 1,
       "research/verify_numbers.py": 1,
       "soltui/bgcontrol.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "outs": {
       "research/coin-intelligence/sol-solana.md": 1
@@ -78410,7 +78559,7 @@
       "soltui/SolTUI.icns": 1,
       "soltui/analyze.py": 1,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 3,
+      "soltui/bgcontrol.py": 4,
       "soltui/bgqueue.py": 6,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
@@ -78632,12 +78781,14 @@
       "docs/high_signal_file_index.json": 1,
       "extension/package.json": 2,
       "index/make_files_doc.py": 5,
-      "soltui/README.md": 4,
+      "soltui/README.md": 5,
       "soltui/analyze.py": 2,
+      "soltui/bgcontrol.py": 1,
       "soltui/menubar_launcher.py": 5,
       "soltui/requirements.txt": 4,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_panes.py": 2,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "packaged": {
       ".gitignore": 1,
@@ -79084,13 +79235,13 @@
       "soltui/setup_app.py": 3
     },
     "pane": {
-      "soltui/README.md": 1,
-      "soltui/bgcontrol.py": 2,
-      "soltui/bgqueue.py": 5,
+      "soltui/README.md": 2,
+      "soltui/bgcontrol.py": 3,
+      "soltui/bgqueue.py": 7,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgqueue.py": 3,
-      "soltui/tests/test_tui.py": 4,
-      "soltui/tui.py": 33
+      "soltui/tests/test_tui.py": 5,
+      "soltui/tui.py": 34
     },
     "panel": {
       "extension/src/ui/ui.css": 8,
@@ -79503,7 +79654,7 @@
       "research/verify_numbers.py": 1,
       "soltui/analyze.py": 2,
       "soltui/app.py": 2,
-      "soltui/bgcontrol.py": 5,
+      "soltui/bgcontrol.py": 8,
       "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 3,
       "soltui/config.py": 1,
@@ -79807,7 +79958,7 @@
       "research/geometry.py": 1,
       "research/results/geometry_long_k2.txt": 1,
       "research/verify_numbers.py": 11,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 4,
       "soltui/bgqueue.py": 1,
       "soltui/runner.py": 1,
       "soltui/status.py": 1
@@ -80088,7 +80239,8 @@
       "research/coin-intelligence/xrp-ripple.md": 4,
       "research/cross_asset_cpcv.py": 9,
       "research/turnover_table.py": 1,
-      "soltui/tui.py": 1
+      "soltui/README.md": 1,
+      "soltui/tui.py": 2
     },
     "passes": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
@@ -80235,13 +80387,13 @@
       "extension/src/storage/store.js": 6,
       "extension/src/ui/dashboard.js": 2,
       "extension/test/surfaces.test.js": 3,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_bgworker.py": 7,
       "soltui/tests/test_docs_browser.py": 8,
-      "soltui/tests/test_tui.py": 8
+      "soltui/tests/test_tui.py": 10
     },
     "patch_paths": {
-      "soltui/tests/test_tui.py": 5
+      "soltui/tests/test_tui.py": 7
     },
     "patched": {
       "soltui/tests/test_bgworker.py": 3
@@ -80381,8 +80533,8 @@
       "soltui/README.md": 4,
       "soltui/analyze.py": 20,
       "soltui/app.py": 2,
-      "soltui/bgcontrol.py": 45,
-      "soltui/bgqueue.py": 58,
+      "soltui/bgcontrol.py": 51,
+      "soltui/bgqueue.py": 65,
       "soltui/bgworker.py": 28,
       "soltui/config.py": 28,
       "soltui/cumulative.py": 13,
@@ -80395,14 +80547,14 @@
       "soltui/setup_app.py": 3,
       "soltui/soltui-service": 15,
       "soltui/status.py": 1,
-      "soltui/tests/test_bgcontrol.py": 42,
-      "soltui/tests/test_bgqueue.py": 19,
+      "soltui/tests/test_bgcontrol.py": 45,
+      "soltui/tests/test_bgqueue.py": 20,
       "soltui/tests/test_bgworker.py": 11,
       "soltui/tests/test_docs_browser.py": 13,
       "soltui/tests/test_panes.py": 24,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 5,
-      "soltui/tests/test_tui.py": 22,
+      "soltui/tests/test_tui.py": 25,
       "soltui/tui.py": 65
     },
     "path_range": {
@@ -80419,6 +80571,9 @@
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "docs/CONCEPTS.md": 1,
       "index/build.py": 1
+    },
+    "pathed": {
+      "soltui/tests/test_bgqueue.py": 1
     },
     "pathful": {
       "backtester/tests/test_cross_asset_cpcv.py": 1
@@ -80568,7 +80723,7 @@
       "soltui/menubar_launcher.py": 1,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_panes.py": 6,
-      "soltui/tests/test_tui.py": 5,
+      "soltui/tests/test_tui.py": 7,
       "soltui/tui.py": 9
     },
     "pathstate": {
@@ -80603,7 +80758,7 @@
     "pause": {
       "backtester/core/fetch.py": 2,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
-      "soltui/tests/test_tui.py": 92
+      "soltui/tests/test_tui.py": 94
     },
     "paused": {
       "backtester/tests/test_universe.py": 3,
@@ -81113,6 +81268,7 @@
       "research/sweep.py": 2,
       "research/verify_numbers.py": 6,
       "soltui/signals.py": 6,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tui.py": 4
     },
@@ -82165,7 +82321,7 @@
     },
     "pilot": {
       ".remember/remember.md": 1,
-      "soltui/tests/test_tui.py": 189
+      "soltui/tests/test_tui.py": 193
     },
     "pin": {
       "backtester/PROMPT.md": 1,
@@ -82565,7 +82721,7 @@
       "research/geometry.py": 1,
       "research/perturb.py": 1,
       "research/verify_numbers.py": 1,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 3,
       "soltui/bgqueue.py": 1,
       "soltui/config.py": 2,
       "soltui/docs_browser.py": 1,
@@ -83144,7 +83300,8 @@
       "docs/FILES.md": 2,
       "extension/README.md": 1,
       "extension/src/ui/ui.css": 1,
-      "pagesource": 16
+      "pagesource": 16,
+      "soltui/tui.py": 1
     },
     "pointing": {
       "backtester/PROMPT.md": 1,
@@ -83191,6 +83348,7 @@
       "research/coin-intelligence/hype-hyperliquid.md": 3,
       "research/coin-intelligence/sol-solana.md": 2,
       "research/perturb.py": 1,
+      "soltui/README.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 1
@@ -83371,8 +83529,8 @@
     },
     "popen": {
       "soltui/app.py": 2,
-      "soltui/bgcontrol.py": 2,
-      "soltui/tests/test_bgcontrol.py": 1
+      "soltui/bgcontrol.py": 4,
+      "soltui/tests/test_bgcontrol.py": 4
     },
     "popular": {
       "research/coin-intelligence/btc-bitcoin.md": 3
@@ -84581,14 +84739,17 @@
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/coin-intelligence/rain-rain.md": 4,
       "research/coin-intelligence/xrp-ripple.md": 1,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 1,
       "soltui/tests/test_tui.py": 35,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "pressed": {
       "pagesource": 12,
-      "soltui/tui.py": 20
+      "soltui/tui.py": 21
+    },
+    "pressing": {
+      "soltui/bgcontrol.py": 1
     },
     "pressure": {
       "backtester/strategy_cards/rsi.md": 1,
@@ -84697,7 +84858,7 @@
       "index/README.md": 1,
       "research/decide.py": 16,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 4
+      "soltui/tui.py": 5
     },
     "previous_exposure": {
       "research/decide.py": 1
@@ -84838,14 +84999,16 @@
       "research/results/top_coins.csv": 2,
       "research/sweep.py": 1,
       "research/turnover_table.py": 1,
-      "soltui/README.md": 1,
-      "soltui/bgqueue.py": 1,
+      "soltui/README.md": 2,
+      "soltui/bgcontrol.py": 1,
+      "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 4,
       "soltui/paper.py": 3,
       "soltui/runner.py": 1,
       "soltui/tests/test_bgqueue.py": 4,
       "soltui/tests/test_bgworker.py": 4,
-      "soltui/tui.py": 4
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 7
     },
     "price_cols": {
       "backtester/core/data.py": 3
@@ -85124,6 +85287,7 @@
       "research/cross_asset_cpcv.py": 4,
       "research/decide.py": 1,
       "research/verify_numbers.py": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/cumulative.py": 2,
       "soltui/tui.py": 1
     },
@@ -85358,7 +85522,8 @@
       "research/verify_numbers.py": 1,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
-      "soltui/config.py": 1
+      "soltui/config.py": 1,
+      "soltui/tui.py": 1
     },
     "problems": {
       "backtester/strategy_cards/jlp_vs_sol_relative_value.md": 1,
@@ -85933,10 +86098,11 @@
       "research/PROMPT_STRATEGIES.md": 1,
       "research/coin-intelligence/trx-tron.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
-      "soltui/README.md": 1,
-      "soltui/bgqueue.py": 1,
+      "soltui/README.md": 2,
+      "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 2,
-      "soltui/tests/test_bgqueue.py": 1
+      "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tui.py": 1
     },
     "promised": {
       "research/RANKED_LISTS.md": 1
@@ -86104,7 +86270,7 @@
       "research/sweep.py": 3,
       "research/verify_numbers.py": 1,
       "soltui/analyze.py": 2,
-      "soltui/bgqueue.py": 6,
+      "soltui/bgqueue.py": 8,
       "soltui/bgworker.py": 1,
       "soltui/cumulative.py": 8,
       "soltui/docs_browser.py": 1,
@@ -86518,6 +86684,7 @@
       "research/coin-intelligence/zec-zcash.md": 4,
       "research/decide.py": 1,
       "research/leverage_economics.py": 1,
+      "soltui/bgcontrol.py": 1,
       "tradingskilllist/trading-skills.md": 2
     },
     "publication": {
@@ -86994,6 +87161,9 @@
     "pvr": {
       "soltui/SolTUI.icns": 1
     },
+    "pwned": {
+      "soltui/tests/test_bgcontrol.py": 3
+    },
     "pwx": {
       "soltui/SolTUI.icns": 1
     },
@@ -87118,7 +87288,7 @@
       "index/make_files_doc.py": 6,
       "index/search.py": 2,
       "scripts/build_doc_index.py": 1,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 4,
       "soltui/bgqueue.py": 1,
       "soltui/docs_browser.py": 1,
       "soltui/requirements.txt": 1,
@@ -87220,6 +87390,7 @@
       "soltui/analyze.py": 1,
       "soltui/app.py": 3,
       "soltui/bgcontrol.py": 1,
+      "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 6,
       "soltui/cumulative.py": 1,
       "soltui/docs_browser.py": 1,
@@ -87768,12 +87939,12 @@
       "research/coin-intelligence/doge-dogecoin.md": 1,
       "soltui/docs_browser.py": 2,
       "soltui/tests/test_panes.py": 1,
-      "soltui/tests/test_tui.py": 86,
-      "soltui/tui.py": 63
+      "soltui/tests/test_tui.py": 88,
+      "soltui/tui.py": 65
     },
     "query_one": {
-      "soltui/tests/test_tui.py": 84,
-      "soltui/tui.py": 56
+      "soltui/tests/test_tui.py": 86,
+      "soltui/tui.py": 57
     },
     "queryable": {
       "extension/src/storage/store.js": 1
@@ -87853,16 +88024,19 @@
       "extension/src/wallet/signer.js": 3,
       "research/coin-intelligence/eth-ethereum.md": 8,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
-      "soltui/README.md": 2,
-      "soltui/bgqueue.py": 5,
+      "soltui/README.md": 3,
+      "soltui/bgqueue.py": 7,
       "soltui/bgworker.py": 9,
-      "soltui/tests/test_bgqueue.py": 10,
+      "soltui/tests/test_bgqueue.py": 11,
       "soltui/tests/test_bgworker.py": 6,
-      "soltui/tests/test_tui.py": 24,
-      "soltui/tui.py": 46
+      "soltui/tests/test_tui.py": 28,
+      "soltui/tui.py": 55
     },
     "queue_cursor": {
       "soltui/tui.py": 4
+    },
+    "queue_fetch": {
+      "soltui/tui.py": 1
     },
     "queue_pane": {
       "soltui/tui.py": 2
@@ -87950,12 +88124,15 @@
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/decide.py": 1,
       "research/verify_numbers.py": 2,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 1,
       "soltui/app.py": 1,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/tests/test_bgqueue.py": 2,
-      "soltui/tests/test_signals.py": 2
+      "soltui/tests/test_signals.py": 2,
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 1
     },
     "quit": {
       ".remember/remember.md": 2,
@@ -88033,7 +88210,8 @@
       "research/results/geometry_medium_k2.txt": 1,
       "research/results/geometry_short_k2.txt": 1,
       "research/turnover_table.py": 1,
-      "scripts/check_docs.py": 1
+      "scripts/check_docs.py": 1,
+      "soltui/bgcontrol.py": 2
     },
     "quote_increment": {
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -88073,7 +88251,8 @@
       "research/coin-intelligence/xrp-ripple.md": 2,
       "research/cross_asset_cpcv.py": 2,
       "research/verify_numbers.py": 12,
-      "scripts/check_docs.py": 2
+      "scripts/check_docs.py": 2,
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "quotedecimals": {
       "extension/src/jupiter/trigger.js": 2,
@@ -88476,7 +88655,7 @@
       "scripts/check_docs.py": 1,
       "soltui/analyze.py": 4,
       "soltui/app.py": 2,
-      "soltui/bgcontrol.py": 4,
+      "soltui/bgcontrol.py": 5,
       "soltui/bgqueue.py": 6,
       "soltui/bgworker.py": 2,
       "soltui/config.py": 11,
@@ -88610,7 +88789,7 @@
       "research/coin-intelligence/sol-solana.md": 2,
       "research/cross_asset_cpcv.py": 1,
       "soltui/tests/test_panes.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "random": {
       ".remember/remember.md": 1,
@@ -89219,6 +89398,7 @@
       "research/decide.py": 1,
       "research/leverage_economics.py": 10,
       "research/sweep.py": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/tui.py": 1
     },
     "rated": {
@@ -89659,7 +89839,9 @@
       "research/cross_asset_cpcv.py": 1,
       "research/leverage_economics.py": 1,
       "research/verify_numbers.py": 1,
-      "soltui/tests/test_tui.py": 1
+      "soltui/bgcontrol.py": 1,
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 1
     },
     "reaching": {
       "backtester/README.md": 1,
@@ -90072,7 +90254,7 @@
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_panes.py": 3,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 4
+      "soltui/tui.py": 5
     },
     "readings": {
       "backtester/tests/test_decide.py": 21,
@@ -90669,7 +90851,7 @@
       "soltui/status.py": 3,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bgworker.py": 5,
-      "soltui/tui.py": 3
+      "soltui/tui.py": 4
     },
     "reasonable": {
       "docs/dso-skill/references/passes.md": 1,
@@ -91397,7 +91579,7 @@
       "docs/external-calls.md": 1,
       "research/perturb.py": 2,
       "research/verify_numbers.py": 1,
-      "soltui/tui.py": 12
+      "soltui/tui.py": 13
     },
     "reddit": {
       "pagesource": 1
@@ -91754,7 +91936,7 @@
       "soltui/config.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_tui.py": 4,
-      "soltui/tui.py": 36
+      "soltui/tui.py": 37
     },
     "refresh_cumulative": {
       "soltui/tui.py": 3
@@ -91887,14 +92069,15 @@
       "research/RANKED_LISTS.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 1,
       "research/cross_asset_cpcv.py": 15,
-      "soltui/README.md": 1,
+      "soltui/README.md": 2,
       "soltui/bgcontrol.py": 1,
       "soltui/cumulative.py": 2,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 3,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_panes.py": 3,
       "soltui/tests/test_tui.py": 4,
-      "soltui/tui.py": 3
+      "soltui/tui.py": 4
     },
     "refuses": {
       ".remember/remember.md": 4,
@@ -92921,7 +93104,8 @@
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
-      "research/coin-intelligence/zec-zcash.md": 2
+      "research/coin-intelligence/zec-zcash.md": 2,
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "remainder": {
       "backtester/README.md": 1,
@@ -93148,10 +93332,13 @@
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 7
+      "soltui/tui.py": 9
     },
     "render_batch": {
       "research/perturb.py": 3
+    },
+    "render_queue_data": {
+      "soltui/tui.py": 2
     },
     "render_queue_status": {
       "soltui/tui.py": 3
@@ -93528,7 +93715,7 @@
       "soltui/README.md": 1,
       "soltui/analyze.py": 8,
       "soltui/app.py": 5,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 4,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 4,
       "soltui/config.py": 1,
@@ -93633,7 +93820,8 @@
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 2,
       "soltui/tests/test_panes.py": 1,
-      "soltui/tests/test_tui.py": 1
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 1
     },
     "report_text": {
       "backtester/core/report.py": 2
@@ -93701,9 +93889,11 @@
       "research/verify_numbers.py": 2,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
+      "soltui/README.md": 1,
       "soltui/bgworker.py": 1,
       "soltui/soltui-service": 1,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tui.py": 1,
       "tradingskilllist/trading-skills.md": 2
     },
     "reportedly": {
@@ -93742,10 +93932,12 @@
       "research/cpcv_sweep.py": 1,
       "research/decide.py": 2,
       "research/geometry.py": 1,
+      "soltui/README.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 3,
       "soltui/runner.py": 1,
-      "soltui/tests/test_bgworker.py": 2
+      "soltui/tests/test_bgworker.py": 2,
+      "soltui/tests/test_tui.py": 1
     },
     "reports": {
       ".remember/remember.md": 2,
@@ -93793,7 +93985,7 @@
       "soltui/docs_browser.py": 1,
       "soltui/requirements.txt": 1,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 4,
+      "soltui/tests/test_bgqueue.py": 5,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_panes.py": 1,
@@ -94030,6 +94222,7 @@
       "research/geometry.py": 1,
       "research/sweep.py": 1,
       "soltui/bgworker.py": 3,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_tui.py": 1
     },
@@ -94303,10 +94496,12 @@
       "research/coin-intelligence/hype-hyperliquid.md": 2,
       "research/coin-intelligence/trx-tron.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
-      "soltui/README.md": 1,
+      "soltui/README.md": 2,
+      "soltui/bgcontrol.py": 1,
       "soltui/config.py": 1,
       "soltui/setup_app.py": 1,
-      "soltui/tests/test_status_roster.py": 1
+      "soltui/tests/test_status_roster.py": 1,
+      "soltui/tui.py": 1
     },
     "requiring": {
       "backtester/core/cointegration.py": 1,
@@ -94596,7 +94791,7 @@
       "scripts/check_docs.py": 1,
       "soltui/analyze.py": 1,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/cumulative.py": 1,
@@ -95288,7 +95483,7 @@
       "research/verify_numbers.py": 42,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
-      "soltui/README.md": 1,
+      "soltui/README.md": 2,
       "soltui/app.py": 9,
       "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 33,
@@ -95301,8 +95496,8 @@
       "soltui/tests/test_bgworker.py": 23,
       "soltui/tests/test_docs_browser.py": 14,
       "soltui/tests/test_panes.py": 13,
-      "soltui/tests/test_tui.py": 21,
-      "soltui/tui.py": 32
+      "soltui/tests/test_tui.py": 22,
+      "soltui/tui.py": 33
     },
     "results_dir": {
       "docs/FILES.md": 1,
@@ -96740,6 +96935,7 @@
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/dso_audit.py": 1,
       "soltui/analyze.py": 6,
+      "soltui/bgqueue.py": 2,
       "soltui/cumulative.py": 3,
       "soltui/docs_browser.py": 3,
       "soltui/make_icon.py": 3,
@@ -96911,7 +97107,7 @@
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
       "soltui/make_icon.py": 1,
-      "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 2
@@ -97711,7 +97907,7 @@
       ".remember/remember.md": 1,
       "docs/FILES.md": 1,
       "soltui/README.md": 1,
-      "soltui/tests/test_tui.py": 52
+      "soltui/tests/test_tui.py": 54
     },
     "run_top5": {
       "backtester/tests/test_cross_asset_cpcv.py": 19,
@@ -97998,19 +98194,21 @@
       "research/geometry.py": 1,
       "research/perturb.py": 1,
       "scripts/check_docs.py": 3,
+      "soltui/README.md": 1,
       "soltui/app.py": 2,
       "soltui/bgcontrol.py": 12,
-      "soltui/bgqueue.py": 10,
+      "soltui/bgqueue.py": 11,
       "soltui/bgworker.py": 2,
       "soltui/docs_browser.py": 1,
       "soltui/menubar_launcher.py": 1,
       "soltui/runner.py": 4,
       "soltui/soltui-service": 1,
       "soltui/status.py": 8,
-      "soltui/tests/test_bgcontrol.py": 13,
+      "soltui/tests/test_bgcontrol.py": 14,
       "soltui/tests/test_bgqueue.py": 15,
       "soltui/tests/test_status_roster.py": 11,
-      "soltui/tui.py": 8
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 9
     },
     "running_peak": {
       "backtester/core/metrics.py": 4
@@ -98082,9 +98280,9 @@
       "research/cross_asset_cpcv.py": 2,
       "research/geometry.py": 26,
       "research/sweep.py": 1,
-      "soltui/README.md": 3,
+      "soltui/README.md": 6,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 4,
+      "soltui/bgcontrol.py": 5,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/cumulative.py": 1,
@@ -98098,7 +98296,7 @@
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 1,
+      "soltui/tui.py": 2,
       "tradingskilllist/trading-skills.md": 1
     },
     "runtick": {
@@ -98235,6 +98433,9 @@
     "s5c": {
       "soltui/SolTUI.icns": 1
     },
+    "s602": {
+      "soltui/bgcontrol.py": 1
+    },
     "s603": {
       "soltui/bgcontrol.py": 1
     },
@@ -98366,7 +98567,9 @@
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/verify_numbers.py": 2,
-      "soltui/analyze.py": 2
+      "soltui/README.md": 1,
+      "soltui/analyze.py": 2,
+      "soltui/bgqueue.py": 1
     },
     "saint": {
       "pagesource": 1
@@ -98541,7 +98744,8 @@
     "sanctioned": {
       "docs/FILES.md": 1,
       "docs/trading-signals-concept-family.md": 1,
-      "index/make_files_doc.py": 1
+      "index/make_files_doc.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "sanctions": {
       "docs/trading-signals-concept-family.md": 1,
@@ -98728,7 +98932,7 @@
       "soltui/status.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_signals.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "saying": {
       ".remember/remember.md": 1,
@@ -98792,12 +98996,14 @@
       "research/cross_asset_cpcv.py": 2,
       "research/decide.py": 7,
       "research/verify_numbers.py": 12,
+      "soltui/README.md": 1,
       "soltui/bgqueue.py": 2,
       "soltui/docs_browser.py": 1,
       "soltui/requirements.txt": 1,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_signals.py": 2,
-      "soltui/tests/test_status_roster.py": 1
+      "soltui/tests/test_status_roster.py": 1,
+      "soltui/tests/test_tui.py": 1
     },
     "sbax": {
       "soltui/SolTUI.icns": 2
@@ -99345,11 +99551,13 @@
       "research/sweep.py": 3,
       "research/verify_numbers.py": 8,
       "soltui/app.py": 3,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgworker.py": 2,
       "soltui/menubar_launcher.py": 2,
       "soltui/serve.py": 2,
       "soltui/setup_app.py": 2,
       "soltui/soltui-service": 1,
+      "soltui/tests/test_bgcontrol.py": 3,
       "tradingskilllist/trading-skills.md": 2
     },
     "scripted": {
@@ -99661,7 +99869,7 @@
       "soltui/bgqueue.py": 6,
       "soltui/paper.py": 2,
       "soltui/runner.py": 2,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tui.py": 3
     },
@@ -99931,7 +100139,7 @@
       "soltui/soltui-service": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "seed": {
       "backtester/PROMPT.md": 4,
@@ -100026,7 +100234,7 @@
       "research/cpcv_sweep.py": 1,
       "research/verify_numbers.py": 12,
       "scripts/build_doc_index.py": 3,
-      "soltui/bgqueue.py": 6,
+      "soltui/bgqueue.py": 9,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_signals.py": 3,
       "soltui/tui.py": 1
@@ -100543,13 +100751,15 @@
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/perturb.py": 1,
       "research/verify_numbers.py": 1,
-      "soltui/README.md": 2,
+      "soltui/README.md": 3,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 4,
       "soltui/paper.py": 1,
       "soltui/setup_app.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 5
+      "soltui/tui.py": 6
     },
     "separated": {
       ".remember/remember.md": 1,
@@ -100677,8 +100887,8 @@
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/decide.py": 9,
       "research/sweep.py": 4,
-      "soltui/bgcontrol.py": 3,
-      "soltui/bgqueue.py": 8,
+      "soltui/bgcontrol.py": 4,
+      "soltui/bgqueue.py": 9,
       "soltui/bgworker.py": 3,
       "soltui/paper.py": 2,
       "soltui/runner.py": 2
@@ -100695,7 +100905,8 @@
       "research/coin-intelligence/eth-ethereum.md": 1
     },
     "sequential": {
-      "docs/strategy-optimization-concept-family.md": 1
+      "docs/strategy-optimization-concept-family.md": 1,
+      "soltui/bgcontrol.py": 1
     },
     "sequentially": {
       "docs/dso-skill/SKILL.md": 1,
@@ -100835,13 +101046,19 @@
       "research/results/geometry_long_k2.txt": 1,
       "research/sweep.py": 1,
       "research/verify_numbers.py": 2,
+      "soltui/README.md": 3,
       "soltui/analyze.py": 15,
+      "soltui/bgcontrol.py": 2,
+      "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 2,
       "soltui/runner.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tests/test_bgqueue.py": 7,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_panes.py": 4,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 3,
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 13,
       "tradingskilllist/trading-skills.md": 1
     },
     "serif": {
@@ -101044,7 +101261,7 @@
       "research/STRATEGIES.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 2,
       "research/coin-intelligence/eth-ethereum.md": 1,
-      "soltui/bgcontrol.py": 3,
+      "soltui/bgcontrol.py": 4,
       "soltui/config.py": 1,
       "soltui/paper.py": 3,
       "soltui/soltui-service": 1,
@@ -101160,7 +101377,7 @@
       "scripts/build_doc_index.py": 2,
       "scripts/check_docs.py": 1,
       "soltui/README.md": 1,
-      "soltui/bgqueue.py": 6,
+      "soltui/bgqueue.py": 8,
       "soltui/bgworker.py": 3,
       "soltui/config.py": 1,
       "soltui/roster.py": 2,
@@ -101340,8 +101557,8 @@
       "soltui/tests/test_bgworker.py": 20,
       "soltui/tests/test_signals.py": 8,
       "soltui/tests/test_status_roster.py": 20,
-      "soltui/tests/test_tui.py": 52,
-      "soltui/tui.py": 39
+      "soltui/tests/test_tui.py": 61,
+      "soltui/tui.py": 42
     },
     "settings_pane": {
       "soltui/tui.py": 2
@@ -101415,7 +101632,7 @@
       "soltui/setup_app.py": 8,
       "soltui/soltui-service": 1,
       "soltui/tests/test_bgcontrol.py": 3,
-      "soltui/tests/test_bgqueue.py": 3,
+      "soltui/tests/test_bgqueue.py": 4,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_panes.py": 1
@@ -101999,10 +102216,11 @@
       "index/make_files_doc.py": 2,
       "soltui/README.md": 3,
       "soltui/app.py": 3,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 2,
+      "soltui/bgqueue.py": 1,
       "soltui/setup_app.py": 1,
       "soltui/status.py": 2,
-      "soltui/tests/test_bgcontrol.py": 2
+      "soltui/tests/test_bgcontrol.py": 3
     },
     "shielded": {
       "docs/FILES.md": 1,
@@ -102100,6 +102318,9 @@
       "research/coin-intelligence/eth-ethereum.md": 2,
       "soltui/roster.py": 1,
       "soltui/signals.py": 1
+    },
+    "shlex": {
+      "soltui/bgcontrol.py": 3
     },
     "shock": {
       "backtester/tests/test_advanced_strategies.py": 2,
@@ -102224,11 +102445,14 @@
       "research/results/tables.md": 3,
       "research/sweep.py": 2,
       "research/verify_numbers.py": 6,
+      "soltui/README.md": 1,
       "soltui/bgqueue.py": 7,
       "soltui/make_icon.py": 1,
       "soltui/status.py": 1,
       "soltui/tests/test_bgcontrol.py": 2,
-      "soltui/tests/test_bgqueue.py": 7
+      "soltui/tests/test_bgqueue.py": 9,
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 1
     },
     "short_fee": {
       "backtester/tests/test_engine.py": 3
@@ -102431,7 +102655,7 @@
       "soltui/README.md": 1,
       "soltui/analyze.py": 2,
       "soltui/status.py": 1,
-      "soltui/tui.py": 5
+      "soltui/tui.py": 6
     },
     "shows": {
       ".remember/remember.md": 2,
@@ -102602,7 +102826,9 @@
       "research/coin-intelligence/xrp-ripple.md": 2,
       "research/cross_asset_cpcv.py": 1,
       "research/decide.py": 4,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 2,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 1,
       "soltui/cumulative.py": 2,
       "soltui/paper.py": 3,
@@ -102611,7 +102837,7 @@
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgworker.py": 2,
       "soltui/tests/test_signals.py": 1,
-      "soltui/tui.py": 5,
+      "soltui/tui.py": 6,
       "tradingskilllist/trading-skills.md": 1
     },
     "side_buy": {
@@ -103538,7 +103764,8 @@
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/cross_asset_cpcv.py": 1,
       "research/geometry.py": 1,
-      "research/verify_numbers.py": 3
+      "research/verify_numbers.py": 3,
+      "soltui/tui.py": 1
     },
     "sims": {
       "index/search.py": 2
@@ -104142,7 +104369,7 @@
       "soltui/make_icon.py": 58,
       "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_docs_browser.py": 4,
-      "soltui/tests/test_tui.py": 75,
+      "soltui/tests/test_tui.py": 79,
       "soltui/tui.py": 1
     },
     "sized": {
@@ -104399,7 +104626,7 @@
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/tests/test_bgqueue.py": 3,
-      "soltui/tui.py": 4
+      "soltui/tui.py": 5
     },
     "skipping": {
       "backtester/strategy_cards/dual_momentum_12_1.md": 1,
@@ -105512,15 +105739,15 @@
       "research/results/ladder_grid_sol.csv": 2,
       "research/sweep.py": 5,
       "research/turnover_table.py": 4,
-      "soltui/README.md": 11,
+      "soltui/README.md": 12,
       "soltui/analyze.py": 1,
       "soltui/app.py": 2,
       "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 7,
       "soltui/config.py": 1,
       "soltui/status.py": 9,
-      "soltui/tests/test_bgcontrol.py": 8,
-      "soltui/tests/test_bgqueue.py": 55,
+      "soltui/tests/test_bgcontrol.py": 13,
+      "soltui/tests/test_bgqueue.py": 65,
       "soltui/tests/test_bgworker.py": 15,
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_status_roster.py": 5,
@@ -105547,6 +105774,7 @@
       "research/cross_asset_cpcv.py": 1,
       "research/sweep.py": 2,
       "soltui/bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_panes.py": 1
     },
@@ -105560,9 +105788,10 @@
       "research/coin-intelligence/sol-solana.md": 3,
       "research/coin-intelligence/trx-tron.md": 1,
       "research/sweep.py": 1,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 1,
       "soltui/bgworker.py": 1,
-      "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bgworker.py": 3
     },
     "sol_median": {
@@ -105724,7 +105953,7 @@
       "index/make_files_doc.py": 12,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 9,
-      "soltui/README.md": 14,
+      "soltui/README.md": 15,
       "soltui/SolTUI.icns": 3,
       "soltui/__init__.py": 1,
       "soltui/analyze.py": 2,
@@ -105747,7 +105976,7 @@
       "soltui/soltui-service": 27,
       "soltui/status.py": 1,
       "soltui/tests/__init__.py": 1,
-      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bgworker.py": 4,
       "soltui/tests/test_docs_browser.py": 11,
@@ -105763,7 +105992,7 @@
     "soltuiapp": {
       "docs/FILES.md": 1,
       "soltui/serve.py": 1,
-      "soltui/tests/test_tui.py": 38,
+      "soltui/tests/test_tui.py": 40,
       "soltui/tui.py": 3
     },
     "solusdt": {
@@ -105810,7 +106039,7 @@
       "scripts/check_docs.py": 1,
       "soltui/app.py": 1,
       "soltui/bgcontrol.py": 1,
-      "soltui/bgqueue.py": 2,
+      "soltui/bgqueue.py": 3,
       "soltui/docs_browser.py": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_tui.py": 1,
@@ -105986,7 +106215,7 @@
       "scripts/check_docs.py": 3,
       "soltui/README.md": 1,
       "soltui/analyze.py": 3,
-      "soltui/bgqueue.py": 7,
+      "soltui/bgqueue.py": 8,
       "soltui/bgworker.py": 1,
       "soltui/cumulative.py": 2,
       "soltui/docs_browser.py": 4,
@@ -107798,29 +108027,34 @@
       "research/sweep.py": 3,
       "research/verify_numbers.py": 9,
       "scripts/check_docs.py": 1,
-      "soltui/README.md": 2,
+      "soltui/README.md": 3,
       "soltui/analyze.py": 2,
       "soltui/app.py": 5,
-      "soltui/bgcontrol.py": 10,
+      "soltui/bgcontrol.py": 14,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 7,
       "soltui/config.py": 1,
       "soltui/paper.py": 2,
       "soltui/runner.py": 5,
       "soltui/soltui-service": 10,
-      "soltui/tests/test_bgcontrol.py": 9,
+      "soltui/tests/test_bgcontrol.py": 11,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tests/test_tui.py": 7,
-      "soltui/tui.py": 24
+      "soltui/tests/test_tui.py": 9,
+      "soltui/tui.py": 25
     },
     "start_date": {
       "backtester/PROMPT.md": 2
     },
+    "start_fetch": {
+      "soltui/bgcontrol.py": 2,
+      "soltui/tests/test_bgcontrol.py": 2,
+      "soltui/tui.py": 1
+    },
     "start_new_session": {
-      "soltui/bgcontrol.py": 2
+      "soltui/bgcontrol.py": 3
     },
     "start_price": {
       "backtester/core/data.py": 5
@@ -107873,7 +108107,8 @@
       "soltui/paper.py": 3,
       "soltui/serve.py": 1,
       "soltui/soltui-service": 1,
-      "soltui/tests/test_tui.py": 1
+      "soltui/tests/test_tui.py": 1,
+      "soltui/tui.py": 1
     },
     "starting_equity": {
       "soltui/paper.py": 2
@@ -107900,13 +108135,14 @@
       "research/decide.py": 1,
       "research/sweep.py": 1,
       "soltui/README.md": 1,
-      "soltui/bgcontrol.py": 2,
-      "soltui/bgqueue.py": 2,
+      "soltui/bgcontrol.py": 3,
+      "soltui/bgqueue.py": 3,
       "soltui/menubar_launcher.py": 2,
       "soltui/roster.py": 1,
       "soltui/serve.py": 1,
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 5,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 2,
@@ -108198,7 +108434,7 @@
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
       "soltui/tests/test_tui.py": 3,
-      "soltui/tui.py": 58
+      "soltui/tui.py": 62
     },
     "statically": {
       "docs/TESTING.md": 1,
@@ -108500,6 +108736,7 @@
       "scripts/check_docs.py": 1,
       "soltui/bgcontrol.py": 2,
       "soltui/docs_browser.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_status_roster.py": 1
     },
     "stayed": {
@@ -108555,6 +108792,8 @@
       "research/cross_asset_cpcv.py": 1,
       "research/decide.py": 1,
       "research/verify_numbers.py": 1,
+      "soltui/README.md": 1,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 1,
       "soltui/cumulative.py": 1,
       "soltui/make_icon.py": 1,
@@ -108564,7 +108803,7 @@
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "std": {
       "backtester/core/cpcv.py": 2,
@@ -108619,7 +108858,7 @@
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 2,
       "soltui/app.py": 5,
-      "soltui/bgcontrol.py": 1,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/make_icon.py": 2,
       "soltui/menubar_launcher.py": 1,
@@ -108668,7 +108907,7 @@
       "docs/FILES.md": 1
     },
     "stdin": {
-      "soltui/bgcontrol.py": 1
+      "soltui/bgcontrol.py": 2
     },
     "stdlib": {
       ".github/copilot-instructions.md": 1,
@@ -108699,7 +108938,7 @@
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 2,
       "soltui/app.py": 1,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 4,
       "soltui/soltui-service": 2
     },
     "ste": {
@@ -108795,16 +109034,18 @@
       "research/perturb.py": 5,
       "research/sweep.py": 3,
       "research/verify_numbers.py": 1,
-      "soltui/README.md": 1,
+      "soltui/README.md": 2,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/paper.py": 2,
       "soltui/requirements.txt": 1,
       "soltui/signals.py": 6,
       "soltui/soltui-service": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 9
+      "soltui/tui.py": 10
     },
     "step1": {
       "soltui/tests/test_tui.py": 1,
@@ -109020,7 +109261,7 @@
       "soltui/tests/test_bgworker.py": 15,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tests/test_tui.py": 4,
+      "soltui/tests/test_tui.py": 6,
       "soltui/tui.py": 9
     },
     "stop_atr_multiple": {
@@ -109326,8 +109567,8 @@
       "scripts/check_docs.py": 23,
       "soltui/analyze.py": 19,
       "soltui/app.py": 7,
-      "soltui/bgcontrol.py": 13,
-      "soltui/bgqueue.py": 53,
+      "soltui/bgcontrol.py": 20,
+      "soltui/bgqueue.py": 61,
       "soltui/bgworker.py": 16,
       "soltui/config.py": 11,
       "soltui/cumulative.py": 15,
@@ -109343,7 +109584,7 @@
       "soltui/soltui-service": 10,
       "soltui/status.py": 12,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bgworker.py": 3,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_panes.py": 3,
@@ -110300,11 +110541,11 @@
       "scripts/build_doc_index.py": 3,
       "scripts/check_docs.py": 5,
       "soltui/app.py": 6,
-      "soltui/bgcontrol.py": 5,
+      "soltui/bgcontrol.py": 9,
       "soltui/make_icon.py": 2,
       "soltui/serve.py": 4,
       "soltui/soltui-service": 4,
-      "soltui/tests/test_bgcontrol.py": 1
+      "soltui/tests/test_bgcontrol.py": 2
     },
     "subscribe": {
       "docs/trading-signals-concept-family.md": 1
@@ -111354,6 +111595,7 @@
       "research/STRATEGIES.md": 2,
       "research/coin-intelligence/hype-hyperliquid.md": 2,
       "research/verify_numbers.py": 2,
+      "soltui/README.md": 1,
       "soltui/bgcontrol.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 2,
@@ -111362,7 +111604,7 @@
       "soltui/runner.py": 2,
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "surfaced": {
       "docs/TESTING.md": 1,
@@ -111402,8 +111644,9 @@
       "index/make_files_doc.py": 6,
       "research/coin-intelligence/rain-rain.md": 1,
       "scripts/check_docs.py": 1,
+      "soltui/bgqueue.py": 1,
       "soltui/tests/test_bgcontrol.py": 1,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_signals.py": 1
     },
     "surfacing": {
@@ -111758,10 +112001,10 @@
       "research/results/sweep_results.csv": 2,
       "research/sweep.py": 17,
       "research/verify_numbers.py": 23,
-      "soltui/README.md": 8,
+      "soltui/README.md": 11,
       "soltui/app.py": 9,
-      "soltui/bgcontrol.py": 9,
-      "soltui/bgqueue.py": 26,
+      "soltui/bgcontrol.py": 10,
+      "soltui/bgqueue.py": 28,
       "soltui/bgworker.py": 16,
       "soltui/config.py": 1,
       "soltui/cumulative.py": 1,
@@ -111770,14 +112013,15 @@
       "soltui/setup_app.py": 1,
       "soltui/signals.py": 1,
       "soltui/status.py": 8,
-      "soltui/tests/test_bgqueue.py": 12,
+      "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tests/test_bgqueue.py": 14,
       "soltui/tests/test_bgworker.py": 4,
       "soltui/tests/test_docs_browser.py": 4,
       "soltui/tests/test_panes.py": 3,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tests/test_tui.py": 3,
-      "soltui/tui.py": 18
+      "soltui/tests/test_tui.py": 4,
+      "soltui/tui.py": 23
     },
     "sweep_combos": {
       "research/sweep.py": 3
@@ -112004,7 +112248,9 @@
       "research/turnover_table.py": 6,
       "soltui/bgqueue.py": 8,
       "soltui/bgworker.py": 2,
-      "soltui/tests/test_bgworker.py": 2
+      "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tests/test_bgworker.py": 2,
+      "soltui/tui.py": 1
     },
     "symbols": {
       "backtester/tests/test_index.py": 1,
@@ -112184,7 +112430,7 @@
       "scripts/check_docs.py": 4,
       "soltui/analyze.py": 3,
       "soltui/app.py": 4,
-      "soltui/bgcontrol.py": 4,
+      "soltui/bgcontrol.py": 5,
       "soltui/bgworker.py": 4,
       "soltui/make_icon.py": 2,
       "soltui/menubar_launcher.py": 5,
@@ -112192,7 +112438,7 @@
       "soltui/serve.py": 5,
       "soltui/setup_app.py": 2,
       "soltui/soltui-service": 13,
-      "soltui/tests/test_bgcontrol.py": 3
+      "soltui/tests/test_bgcontrol.py": 4
     },
     "sys_platform": {
       "soltui/requirements.txt": 1
@@ -112435,8 +112681,9 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "docs/FILES.md": 8,
       "docs/SCRIPTS.md": 1,
-      "soltui/README.md": 8,
+      "soltui/README.md": 10,
       "soltui/analyze.py": 8,
+      "soltui/bgqueue.py": 1,
       "soltui/config.py": 3,
       "soltui/cumulative.py": 5,
       "soltui/docs_browser.py": 9,
@@ -112453,14 +112700,14 @@
       "soltui/tests/test_panes.py": 6,
       "soltui/tests/test_signals.py": 5,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tests/test_tui.py": 55,
-      "soltui/tui.py": 37
+      "soltui/tests/test_tui.py": 57,
+      "soltui/tui.py": 38
     },
     "tabactivated": {
       "soltui/tui.py": 2
     },
     "tabbedcontent": {
-      "soltui/tests/test_tui.py": 52,
+      "soltui/tests/test_tui.py": 56,
       "soltui/tui.py": 5
     },
     "tabindex": {
@@ -113253,13 +113500,13 @@
       "backtester/tests/test_decide.py": 3,
       "backtester/tests/test_strategy_cards.py": 1,
       "backtester/tests/test_universe.py": 6,
-      "soltui/tests/test_bgcontrol.py": 4,
-      "soltui/tests/test_bgqueue.py": 4,
+      "soltui/tests/test_bgcontrol.py": 5,
+      "soltui/tests/test_bgqueue.py": 5,
       "soltui/tests/test_bgworker.py": 3,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_panes.py": 6,
       "soltui/tests/test_status_roster.py": 4,
-      "soltui/tests/test_tui.py": 7
+      "soltui/tests/test_tui.py": 9
     },
     "tempted": {
       "docs/SCRIPTS.md": 1
@@ -113592,14 +113839,14 @@
       "soltui/paper.py": 1,
       "soltui/requirements.txt": 1,
       "soltui/runner.py": 1,
-      "soltui/tests/test_bgcontrol.py": 24,
-      "soltui/tests/test_bgqueue.py": 72,
+      "soltui/tests/test_bgcontrol.py": 28,
+      "soltui/tests/test_bgqueue.py": 78,
       "soltui/tests/test_bgworker.py": 23,
       "soltui/tests/test_docs_browser.py": 16,
       "soltui/tests/test_panes.py": 30,
       "soltui/tests/test_signals.py": 29,
       "soltui/tests/test_status_roster.py": 52,
-      "soltui/tests/test_tui.py": 152,
+      "soltui/tests/test_tui.py": 158,
       "soltui/tui.py": 1
     },
     "test_": {
@@ -113619,6 +113866,9 @@
     },
     "test_a_best_of_many_sharpe_can_fail_against_zero_beating_evidence": {
       "backtester/tests/test_deflated_sharpe.py": 1
+    },
+    "test_a_cached_series_is_not_reported": {
+      "soltui/tests/test_bgqueue.py": 1
     },
     "test_a_calm_uptrend_is_long": {
       "backtester/tests/test_advanced_strategies.py": 1
@@ -113742,6 +113992,9 @@
     },
     "test_a_horizon_with_results_but_no_table_row_is_reported": {
       "backtester/tests/test_geometry.py": 1
+    },
+    "test_a_hostile_symbol_cannot_break_out_of_the_shell_loop": {
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "test_a_live_worker_still_reports_progress": {
       "soltui/tests/test_bgqueue.py": 1
@@ -114102,6 +114355,9 @@
     "test_an_unreproducible_gate_stops_the_new_asset_run": {
       "backtester/tests/test_cross_asset_cpcv.py": 1
     },
+    "test_an_unusable_asset_is_refused_rather_than_pathed": {
+      "soltui/tests/test_bgqueue.py": 1
+    },
     "test_annualisation_follows_the_interval": {
       "backtester/tests/test_decide.py": 1
     },
@@ -114206,6 +114462,9 @@
     },
     "test_buy_and_hold_has_no_tunables": {
       "soltui/tests/test_signals.py": 1
+    },
+    "test_cached_data_says_nothing": {
+      "soltui/tests/test_tui.py": 1
     },
     "test_capital_requirement_counts_only_the_bids": {
       "backtester/tests/test_gridsim.py": 1
@@ -114551,6 +114810,9 @@
     "test_every_tab_can_be_activated": {
       "soltui/tests/test_tui.py": 1
     },
+    "test_everything_missing_is_reported_once_per_interval": {
+      "soltui/tests/test_bgqueue.py": 1
+    },
     "test_exact_partition": {
       "backtester/tests/test_cpcv.py": 1
     },
@@ -114595,6 +114857,9 @@
     },
     "test_fee_is_linear_not_compounding": {
       "backtester/tests/test_engine.py": 1
+    },
+    "test_fetching_nothing_is_refused": {
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "test_fifo_matches_the_oldest_lot_first": {
       "backtester/tests/test_gridsim.py": 1
@@ -114840,11 +115105,17 @@
     "test_it_enters_when_stretched_and_the_series_reverts": {
       "backtester/tests/test_advanced_strategies.py": 1
     },
+    "test_it_invokes_the_sanctioned_fetch_module": {
+      "soltui/tests/test_bgcontrol.py": 1
+    },
     "test_it_matches_the_formula_term_by_term": {
       "backtester/tests/test_deflated_sharpe.py": 1
     },
     "test_it_matches_the_thresholds_in_geometry": {
       "backtester/tests/test_geometry.py": 1
+    },
+    "test_it_never_starts_a_sweep": {
+      "soltui/tests/test_bgcontrol.py": 1
     },
     "test_it_ranks_rather_than_correlating_raw_values": {
       "backtester/tests/test_geometry.py": 1
@@ -114980,6 +115251,9 @@
     },
     "test_missing_data_file_exits_nonzero": {
       "backtester/tests/test_decide.py": 1
+    },
+    "test_missing_data_is_named_with_the_command_that_fixes_it": {
+      "soltui/tests/test_tui.py": 1
     },
     "test_missing_file_yields_defaults": {
       "soltui/tests/test_status_roster.py": 1
@@ -115137,6 +115411,9 @@
     "test_not_evaluable_never_ranks_even_above_the_floor": {
       "soltui/tests/test_bgqueue.py": 1
     },
+    "test_nothing_missing_reports_empty": {
+      "soltui/tests/test_bgqueue.py": 1
+    },
     "test_nothing_new_reads_nothing": {
       "soltui/tests/test_bgqueue.py": 1
     },
@@ -115175,6 +115452,9 @@
     },
     "test_only_a_measured_card_may_cite_a_measured_result": {
       "backtester/tests/test_strategy_cards.py": 1
+    },
+    "test_only_the_requested_horizons_are_checked": {
+      "soltui/tests/test_bgqueue.py": 1
     },
     "test_only_the_semantic_path_can_open_a_socket": {
       "backtester/tests/test_index.py": 1
@@ -115553,7 +115833,7 @@
     },
     "test_size": {
       "docs/FILES.md": 1,
-      "soltui/tests/test_tui.py": 38
+      "soltui/tests/test_tui.py": 40
     },
     "test_sizes_differ_by_at_most_one": {
       "backtester/tests/test_cpcv.py": 1
@@ -115714,6 +115994,9 @@
     },
     "test_the_cointegration_gate_blocks_an_unrelated_peer": {
       "backtester/tests/test_pairs.py": 1
+    },
+    "test_the_command_is_the_one_that_creates_the_file": {
+      "soltui/tests/test_bgqueue.py": 1
     },
     "test_the_committed_index_matches_the_tree": {
       "backtester/tests/test_index.py": 1
@@ -116160,8 +116443,8 @@
       "backtester/tests/test_strategy_duplication.py": 1,
       "backtester/tests/test_universe.py": 3,
       "scripts/check_docs.py": 1,
-      "soltui/tests/test_bgcontrol.py": 5,
-      "soltui/tests/test_bgqueue.py": 16,
+      "soltui/tests/test_bgcontrol.py": 6,
+      "soltui/tests/test_bgqueue.py": 17,
       "soltui/tests/test_bgworker.py": 5,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_panes.py": 4,
@@ -116312,6 +116595,9 @@
     "testfeearithmetic": {
       "backtester/tests/test_engine.py": 2,
       "docs/FILES.md": 1
+    },
+    "testfetchcommand": {
+      "soltui/tests/test_bgcontrol.py": 2
     },
     "testfilecontract": {
       "soltui/tests/test_bgqueue.py": 2
@@ -116468,6 +116754,9 @@
     "testmenusummary": {
       "docs/FILES.md": 1,
       "soltui/tests/test_status_roster.py": 2
+    },
+    "testmissingseries": {
+      "soltui/tests/test_bgqueue.py": 2
     },
     "testnearnoise": {
       "backtester/tests/test_interpret.py": 2,
@@ -116783,7 +117072,7 @@
       "soltui/analyze.py": 3,
       "soltui/app.py": 1,
       "soltui/bgcontrol.py": 2,
-      "soltui/bgqueue.py": 8,
+      "soltui/bgqueue.py": 9,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 7,
       "soltui/docs_browser.py": 17,
@@ -116793,13 +117082,13 @@
       "soltui/soltui-service": 1,
       "soltui/status.py": 11,
       "soltui/tests/test_bgcontrol.py": 7,
-      "soltui/tests/test_bgqueue.py": 12,
+      "soltui/tests/test_bgqueue.py": 16,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 18,
       "soltui/tests/test_panes.py": 9,
       "soltui/tests/test_status_roster.py": 2,
-      "soltui/tests/test_tui.py": 52,
-      "soltui/tui.py": 37
+      "soltui/tests/test_tui.py": 58,
+      "soltui/tui.py": 41
     },
     "text_ext": {
       "docs/FILES.md": 1,
@@ -116812,7 +117101,7 @@
     },
     "text_of": {
       "docs/FILES.md": 1,
-      "soltui/tests/test_tui.py": 14
+      "soltui/tests/test_tui.py": 16
     },
     "textarea": {
       "soltui/tests/test_tui.py": 19,
@@ -116849,7 +117138,7 @@
       "soltui/requirements.txt": 3,
       "soltui/serve.py": 9,
       "soltui/setup_app.py": 2,
-      "soltui/tests/test_tui.py": 34,
+      "soltui/tests/test_tui.py": 36,
       "soltui/tui.py": 10
     },
     "textual_serve": {
@@ -116881,7 +117170,7 @@
       "backtester/tests/test_gridsim.py": 1,
       "backtester/tests/test_pairs.py": 2,
       "backtester/tests/test_universe.py": 1,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_signals.py": 2
     },
     "that": {
@@ -116893,9 +117182,11 @@
       "backtester/tests/test_interpret.py": 1,
       "backtester/tests/test_universe.py": 1,
       "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_panes.py": 1,
-      "soltui/tests/test_status_roster.py": 1
+      "soltui/tests/test_status_roster.py": 1,
+      "soltui/tests/test_tui.py": 1
     },
     "thdfzqkm6kryvglg48kapg5trmhymky1icra9xop1wc": {
       "pagesource": 1
@@ -116918,13 +117209,13 @@
       "backtester/tests/test_strategy_duplication.py": 4,
       "backtester/tests/test_universe.py": 7,
       "soltui/README.md": 2,
-      "soltui/tests/test_bgcontrol.py": 8,
-      "soltui/tests/test_bgqueue.py": 16,
+      "soltui/tests/test_bgcontrol.py": 10,
+      "soltui/tests/test_bgqueue.py": 20,
       "soltui/tests/test_bgworker.py": 6,
       "soltui/tests/test_panes.py": 14,
       "soltui/tests/test_signals.py": 3,
       "soltui/tests/test_status_roster.py": 14,
-      "soltui/tests/test_tui.py": 11
+      "soltui/tests/test_tui.py": 12
     },
     "thead": {
       "extension/src/ui/dashboard.html": 4
@@ -117113,7 +117404,7 @@
       "research/decide.py": 3,
       "research/leverage_economics.py": 1,
       "research/verify_numbers.py": 5,
-      "soltui/bgqueue.py": 1,
+      "soltui/bgqueue.py": 2,
       "soltui/make_icon.py": 1,
       "soltui/menubar_launcher.py": 1,
       "soltui/requirements.txt": 1,
@@ -117123,7 +117414,7 @@
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_tui.py": 3,
-      "soltui/tui.py": 4
+      "soltui/tui.py": 5
     },
     "thesis": {
       "backtester/core/strategies/advanced.py": 1,
@@ -117407,6 +117698,7 @@
       "research/sweep.py": 1,
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 9,
+      "soltui/README.md": 1,
       "soltui/cumulative.py": 1,
       "soltui/docs_browser.py": 1,
       "soltui/tests/test_docs_browser.py": 2,
@@ -117555,7 +117847,7 @@
       "soltui/cumulative.py": 1,
       "soltui/make_icon.py": 4,
       "soltui/roster.py": 1,
-      "soltui/tests/test_bgqueue.py": 4,
+      "soltui/tests/test_bgqueue.py": 5,
       "soltui/tui.py": 3
     },
     "threshold": {
@@ -117711,6 +118003,7 @@
       "soltui/paper.py": 1,
       "soltui/requirements.txt": 1,
       "soltui/runner.py": 1,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_signals.py": 1,
@@ -118086,6 +118379,7 @@
       "research/results/perturb_all_singles_short.txt": 2,
       "soltui/analyze.py": 2,
       "soltui/app.py": 4,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 15,
       "soltui/config.py": 2,
@@ -118436,12 +118730,12 @@
       "backtester/tests/test_universe.py": 10,
       "extension/src/storage/fileStore.js": 4,
       "soltui/bgqueue.py": 6,
-      "soltui/tests/test_bgcontrol.py": 10,
-      "soltui/tests/test_bgqueue.py": 13,
+      "soltui/tests/test_bgcontrol.py": 15,
+      "soltui/tests/test_bgqueue.py": 16,
       "soltui/tests/test_bgworker.py": 8,
       "soltui/tests/test_docs_browser.py": 6,
       "soltui/tests/test_panes.py": 16,
-      "soltui/tests/test_tui.py": 16
+      "soltui/tests/test_tui.py": 23
     },
     "tname": {
       "soltui/SolTUI.icns": 1
@@ -119410,6 +119704,8 @@
       "research/coin-intelligence/sol-solana.md": 1,
       "soltui/docs_browser.py": 1,
       "soltui/soltui-service": 1,
+      "soltui/tests/test_bgcontrol.py": 3,
+      "soltui/tests/test_bgqueue.py": 5,
       "soltui/tests/test_docs_browser.py": 1
     },
     "touched": {
@@ -120966,6 +121262,7 @@
       "research/coin-intelligence/sol-solana.md": 4,
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/leverage_economics.py": 3,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 2
@@ -121389,7 +121686,7 @@
       "research/sweep.py": 3,
       "soltui/analyze.py": 1,
       "soltui/app.py": 4,
-      "soltui/bgcontrol.py": 9,
+      "soltui/bgcontrol.py": 10,
       "soltui/bgqueue.py": 9,
       "soltui/bgworker.py": 4,
       "soltui/config.py": 2,
@@ -121403,7 +121700,7 @@
       "soltui/signals.py": 1,
       "soltui/soltui-service": 1,
       "soltui/status.py": 1,
-      "soltui/tui.py": 20
+      "soltui/tui.py": 22
     },
     "trying": {
       "backtester/core/report.py": 1,
@@ -121647,6 +121944,7 @@
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
       "soltui/analyze.py": 2,
+      "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 5,
       "soltui/bgworker.py": 1,
       "soltui/docs_browser.py": 1,
@@ -121863,7 +122161,7 @@
       "soltui/bgworker.py": 1,
       "soltui/docs_browser.py": 1,
       "soltui/signals.py": 1,
-      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_tui.py": 1
     },
     "twin": {
@@ -122087,7 +122385,7 @@
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_tui.py": 3,
-      "soltui/tui.py": 6
+      "soltui/tui.py": 7
     },
     "type_checks": {
       "backtester/core/strategy_cards.py": 4
@@ -123167,8 +123465,8 @@
       "research/STRATEGIES.md": 1,
       "scripts/check_docs.py": 7,
       "soltui/README.md": 2,
-      "soltui/tests/test_bgcontrol.py": 8,
-      "soltui/tests/test_bgqueue.py": 18,
+      "soltui/tests/test_bgcontrol.py": 9,
+      "soltui/tests/test_bgqueue.py": 19,
       "soltui/tests/test_bgworker.py": 8,
       "soltui/tests/test_docs_browser.py": 6,
       "soltui/tests/test_panes.py": 6,
@@ -123308,7 +123606,9 @@
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/cross_asset_cpcv.py": 1,
       "research/decide.py": 2,
-      "research/verify_numbers.py": 1
+      "research/verify_numbers.py": 1,
+      "soltui/README.md": 1,
+      "soltui/tui.py": 1
     },
     "unleveraged": {
       "docs/OPERATIONS.md": 1,
@@ -123914,7 +124214,9 @@
       "research/RANKED_LISTS.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
       "research/cross_asset_cpcv.py": 8,
-      "soltui/config.py": 1
+      "soltui/config.py": 1,
+      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tui.py": 1
     },
     "unusable_data_files": {
       "backtester/tests/test_cross_asset_cpcv.py": 15,
@@ -124036,7 +124338,7 @@
       "research/verify_numbers.py": 2,
       "soltui/signals.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
-      "soltui/tui.py": 38
+      "soltui/tui.py": 43
     },
     "updated": {
       "backtester/core/strategies/advanced.py": 1,
@@ -124984,7 +125286,7 @@
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 1,
       "soltui/tests/test_bgcontrol.py": 4,
-      "soltui/tests/test_bgqueue.py": 6,
+      "soltui/tests/test_bgqueue.py": 7,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 5,
       "soltui/tests/test_tui.py": 2
@@ -125256,7 +125558,7 @@
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/decide.py": 1,
       "soltui/README.md": 2,
-      "soltui/bgqueue.py": 3,
+      "soltui/bgqueue.py": 4,
       "soltui/bgworker.py": 2,
       "soltui/config.py": 5,
       "soltui/signals.py": 3,
@@ -125266,7 +125568,7 @@
       "soltui/tui.py": 2
     },
     "validate_asset": {
-      "soltui/bgqueue.py": 3,
+      "soltui/bgqueue.py": 4,
       "soltui/bgworker.py": 2,
       "soltui/tests/test_bgworker.py": 2
     },
@@ -125572,7 +125874,7 @@
       "research/dso_audit.py": 1,
       "research/sweep.py": 3,
       "soltui/analyze.py": 4,
-      "soltui/bgcontrol.py": 2,
+      "soltui/bgcontrol.py": 3,
       "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 1,
@@ -125582,10 +125884,12 @@
       "soltui/roster.py": 2,
       "soltui/runner.py": 1,
       "soltui/signals.py": 2,
+      "soltui/tests/test_bgcontrol.py": 1,
+      "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 6,
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 6
+      "soltui/tui.py": 7
     },
     "values": {
       ".github/SECURITY.md": 1,
@@ -126046,7 +126350,7 @@
       "soltui/README.md": 2,
       "soltui/paper.py": 2,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "venue_min_order_usd": {
       "backtester/core/gridsim.py": 3,
@@ -128118,7 +128422,8 @@
     },
     "wasted": {
       "backtester/core/indicators.py": 1,
-      "docs/COMPONENTS.md": 1
+      "docs/COMPONENTS.md": 1,
+      "soltui/tests/test_bgqueue.py": 1
     },
     "wastes": {
       "backtester/core/cpcv.py": 1,
@@ -128897,6 +129202,7 @@
       "research/sweep.py": 2,
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 6,
+      "soltui/README.md": 1,
       "soltui/analyze.py": 1,
       "soltui/app.py": 2,
       "soltui/bgqueue.py": 9,
@@ -128910,8 +129216,8 @@
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tests/test_tui.py": 3,
-      "soltui/tui.py": 1
+      "soltui/tests/test_tui.py": 4,
+      "soltui/tui.py": 2
     },
     "wholesale": {
       "soltui/tests/test_bgworker.py": 1,
@@ -129027,7 +129333,7 @@
     },
     "widgets": {
       ".remember/remember.md": 1,
-      "soltui/tests/test_tui.py": 28,
+      "soltui/tests/test_tui.py": 30,
       "soltui/tui.py": 1
     },
     "width": {
@@ -129464,7 +129770,7 @@
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tests/test_tui.py": 2
+      "soltui/tests/test_tui.py": 3
     },
     "with_name": {
       "soltui/make_icon.py": 1
@@ -129664,7 +129970,7 @@
       "soltui/analyze.py": 2,
       "soltui/app.py": 2,
       "soltui/bgcontrol.py": 2,
-      "soltui/bgqueue.py": 5,
+      "soltui/bgqueue.py": 7,
       "soltui/bgworker.py": 1,
       "soltui/config.py": 2,
       "soltui/cumulative.py": 2,
@@ -129685,7 +129991,7 @@
       "soltui/tests/test_panes.py": 3,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_tui.py": 4,
-      "soltui/tui.py": 8
+      "soltui/tui.py": 9
     },
     "withserver": {
       "docs/FILES.md": 1,
@@ -129776,6 +130082,7 @@
       "research/verify_numbers.py": 8,
       "soltui/README.md": 1,
       "soltui/status.py": 2,
+      "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_status_roster.py": 3
     },
     "wording": {
@@ -130234,7 +130541,8 @@
       "scripts/check_docs.py": 1,
       "soltui/roster.py": 2,
       "soltui/tests/test_bgqueue.py": 2,
-      "soltui/tests/test_panes.py": 2
+      "soltui/tests/test_panes.py": 2,
+      "soltui/tui.py": 1
     },
     "worthless": {
       "backtester/strategy_cards/macd.md": 1,
@@ -130386,12 +130694,12 @@
       "soltui/soltui-service": 4,
       "soltui/status.py": 1,
       "soltui/tests/test_bgcontrol.py": 4,
-      "soltui/tests/test_bgqueue.py": 14,
+      "soltui/tests/test_bgqueue.py": 15,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 10,
       "soltui/tests/test_panes.py": 12,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tests/test_tui.py": 1,
+      "soltui/tests/test_tui.py": 2,
       "soltui/tui.py": 9
     },
     "write_bytes": {
@@ -130439,12 +130747,12 @@
       "soltui/config.py": 2,
       "soltui/docs_browser.py": 1,
       "soltui/tests/test_bgcontrol.py": 4,
-      "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_panes.py": 5,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tests/test_tui.py": 1
+      "soltui/tests/test_tui.py": 2
     },
     "writedocumenttests": {
       "soltui/tests/test_docs_browser.py": 2,
@@ -130500,8 +130808,8 @@
       "research/verify_numbers.py": 1,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
-      "soltui/README.md": 1,
-      "soltui/bgcontrol.py": 1,
+      "soltui/README.md": 2,
+      "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/cumulative.py": 1,
@@ -131457,6 +131765,9 @@
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1
     },
+    "yellow": {
+      "soltui/tui.py": 1
+    },
     "yellowstone": {
       "docs/trading-signals-concept-family.md": 5
     },
@@ -131532,7 +131843,7 @@
       "research/coin-intelligence/sol-solana.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 3,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 95
+      "soltui/tui.py": 97
     },
     "yielded": {
       "README.md": 1,
@@ -132402,10 +132713,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1019.7,
+    "avgDocLength": 1023.8,
     "documents": 292,
-    "terms": 15617,
-    "termsBeforePrune": 15625,
-    "totalTokens": 297755
+    "terms": 15647,
+    "termsBeforePrune": 15655,
+    "totalTokens": 298944
   }
 }

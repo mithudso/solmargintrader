@@ -117,6 +117,38 @@ class TestWorkerCommand(unittest.TestCase):
         self.assertIn("SOL; rm -rf /", cmd)
 
 
+class TestFetchCommand(unittest.TestCase):
+    """The one network path in this package. It must remain the separate,
+    explicit `backtester.core.fetch` step and nothing more."""
+
+    def test_it_invokes_the_sanctioned_fetch_module(self) -> None:
+        cmd = bgcontrol.fetch_command("SOL", "1h")
+        self.assertIn("backtester.core.fetch", cmd)
+        self.assertEqual(cmd[0], sys.executable)
+        self.assertEqual(cmd[cmd.index("--asset") + 1], "SOL")
+        self.assertEqual(cmd[cmd.index("--interval") + 1], "1h")
+
+    def test_it_never_starts_a_sweep(self) -> None:
+        """Fetching must not be a back door into running the backtester."""
+        self.assertNotIn("soltui.bgworker", " ".join(bgcontrol.fetch_command("SOL", "1d")))
+
+    def test_fetching_nothing_is_refused(self) -> None:
+        with self.assertRaises(ValueError):
+            bgcontrol.start_fetch([])
+
+    def test_a_hostile_symbol_cannot_break_out_of_the_shell_loop(self) -> None:
+        """The multi-series loop goes through /bin/sh, so every word is quoted;
+        an asset carrying `;` must stay one argument, not a second command."""
+        with mock.patch.object(bgcontrol.subprocess, "Popen") as popen, \
+                TemporaryDirectory() as tmp:
+            bgcontrol.start_fetch(
+                [("SOL; touch /tmp/pwned", "1d")], log_path=Path(tmp) / "f.log"
+            )
+            script = popen.call_args[0][0][2]
+        self.assertIn("'SOL; touch /tmp/pwned'", script)
+        self.assertNotIn("; touch /tmp/pwned &&", script)
+
+
 class TestPidfile(unittest.TestCase):
     def setUp(self) -> None:
         self._tmp = TemporaryDirectory()

@@ -572,6 +572,54 @@ class TestIncrementalRead(unittest.TestCase):
         self.assertEqual([r.job_id for r in rows], [f"new{i}" for i in range(6)])
 
 
+class TestMissingSeries(unittest.TestCase):
+    """Checked before the sweep, not discovered during it: the queue interleaves
+    intervals by promise, so a missing 1h file otherwise surfaces minutes in."""
+
+    def setUp(self) -> None:
+        self._tmp = TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.dir = Path(self._tmp.name)
+
+    def _touch(self, name: str) -> None:
+        (self.dir / name).write_text("x", encoding="utf-8")
+
+    def test_everything_missing_is_reported_once_per_interval(self) -> None:
+        """short/medium/long is three horizons but only two intervals; asking to
+        fetch 1d twice would be a wasted network round trip."""
+        missing = q.missing_series("SOL", data_dir=self.dir)
+        self.assertEqual([m.interval for m in missing], ["1d", "1h"])
+
+    def test_a_cached_series_is_not_reported(self) -> None:
+        self._touch("SOL_1d.csv")
+        self.assertEqual(
+            [m.interval for m in q.missing_series("SOL", data_dir=self.dir)], ["1h"]
+        )
+
+    def test_nothing_missing_reports_empty(self) -> None:
+        self._touch("SOL_1d.csv")
+        self._touch("SOL_1h.csv")
+        self.assertEqual(q.missing_series("SOL", data_dir=self.dir), [])
+
+    def test_only_the_requested_horizons_are_checked(self) -> None:
+        """A medium-only sweep must not demand the hourly file."""
+        self._touch("SOL_1d.csv")
+        self.assertEqual(
+            q.missing_series("SOL", horizons=["medium"], data_dir=self.dir), []
+        )
+
+    def test_the_command_is_the_one_that_creates_the_file(self) -> None:
+        missing = q.missing_series("SOL", horizons=["short"], data_dir=self.dir)[0]
+        self.assertEqual(missing.interval, "1h")
+        self.assertIn("backtester.core.fetch", missing.command_text)
+        self.assertIn("--interval 1h", missing.command_text)
+        self.assertIn("--asset SOL", missing.command_text)
+
+    def test_an_unusable_asset_is_refused_rather_than_pathed(self) -> None:
+        with self.assertRaises(ValueError):
+            q.missing_series("../etc", data_dir=self.dir)
+
+
 class TestIncompleteSweepIsDisclosed(unittest.TestCase):
     def test_a_done_sweep_still_reports_a_missing_price_file(self) -> None:
         """A sweep that skipped a whole interval for want of its CSV finishes

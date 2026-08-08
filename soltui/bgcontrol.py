@@ -46,6 +46,7 @@ from __future__ import annotations
 
 import fcntl
 import os
+import shlex
 import shutil
 import signal
 import subprocess
@@ -251,6 +252,57 @@ def start(
     os.close(lock_fd)
     handle.close()
     return proc
+
+
+def fetch_command(asset: str, interval: str, python: str | None = None) -> list[str]:
+    """The argv that fetches one missing price series."""
+    return [
+        python or sys.executable, "-m", "backtester.core.fetch",
+        "--asset", asset, "--interval", interval,
+    ]
+
+
+def start_fetch(
+    missing: Sequence[tuple[str, str]],
+    *,
+    cwd: Path | None = None,
+    log_path: Path | None = None,
+) -> subprocess.Popen[bytes]:
+    """Fetch the given (asset, interval) series in the background.
+
+    This is the ONE network path this package has, and it stays exactly what
+    `CLAUDE.md` requires it to be: a separate, explicit step that writes a local
+    cache. The engine still never reaches the network -- pressing this button
+    runs `backtester.core.fetch`, the same command the pane prints, and nothing
+    starts a sweep as a side effect of it finishing.
+
+    Sequential, one interval at a time, in a plain shell loop: the fetches hit a
+    public API, and firing them concurrently is how you earn a rate limit.
+    """
+    if not missing:
+        raise ValueError("nothing to fetch")
+    ensure_dir(BG_DIR)
+    repo = cwd or Path(__file__).resolve().parent.parent
+    log = log_path or (BG_DIR / "fetch.log")
+
+    script = " && ".join(
+        " ".join(shlex.quote(part) for part in fetch_command(asset, interval))
+        for asset, interval in missing
+    )
+    handle = log.open("ab")
+    try:
+        return subprocess.Popen(  # noqa: S602 - argv built with shlex.quote
+            ["/bin/sh", "-c", script],
+            cwd=str(repo),
+            stdout=handle,
+            stderr=subprocess.STDOUT,
+            stdin=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    finally:
+        # The child holds its own copy; the parent's would otherwise leak once
+        # per press, exactly as it would in `start()`.
+        handle.close()
 
 
 def stop(path: Path | None = None, lock_path: Path | None = None) -> bool:

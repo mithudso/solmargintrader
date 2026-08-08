@@ -82,6 +82,21 @@ python3 -m soltui.bgworker --plan --asset SOL      # what it would run, in order
 python3 -m soltui.bgworker --asset SOL --max-tier 0  # presets only
 ```
 
+**Missing price data is reported before the sweep, not during it.** The queue
+interleaves 1h and 1d jobs by promise, so an absent `data/SOL_1h.csv` would
+otherwise surface minutes in — with the whole short horizon quietly absent from
+the results while the pane still said "running". The tab names each missing
+series and the exact `backtester.core.fetch` command, and **Fetch missing data**
+runs those commands for you.
+
+That button is the only network action in this package, and it stays the
+separate explicit step `CLAUDE.md` requires: it runs `backtester.core.fetch`,
+writes a local cache, and does **not** start a sweep as a side effect. A sweep
+missing one interval still runs every job at the intervals it does have, and
+says so rather than reporting a clean "done". Note the hourly series is refused
+unless `--allow-gaps` is passed (it has disclosed gaps); when a fetch leaves a
+series missing, the tab points at `~/.config/soltui/bg/fetch.log`.
+
 Inspect it while it runs: `~/.config/soltui/bg/` holds `results.jsonl` (one JSON
 object per job), `state.json` (progress) and `worker.log`.
 

@@ -687,6 +687,56 @@ def read_state(path: Path | None = None) -> QueueState:
 # -- reading the results ---------------------------------------------------
 
 
+@dataclass(frozen=True)
+class MissingSeries:
+    """A price file the queue needs and the command that would create it."""
+
+    asset: str
+    interval: str
+    path: Path
+
+    @property
+    def command(self) -> list[str]:
+        """The fetch argv, as a list so it can be run without a shell."""
+        return [
+            "python3", "-m", "backtester.core.fetch",
+            "--asset", self.asset, "--interval", self.interval,
+        ]
+
+    @property
+    def command_text(self) -> str:
+        """The same command, for someone to copy out of the pane."""
+        return " ".join(self.command)
+
+
+def missing_series(
+    asset: str,
+    *,
+    horizons: Sequence[str] = HORIZONS,
+    data_dir: str | Path = "data",
+) -> list[MissingSeries]:
+    """Price files the sweep needs for these horizons but does not have.
+
+    Checked up front rather than discovered job by job. The queue interleaves
+    intervals by promise, so without this the first hourly job is where a missing
+    1h file surfaces -- minutes in, after the pane has already said "running".
+    Knowing before the sweep starts is what lets the tab offer to fix it.
+    """
+    asset = validate_asset(asset)
+    root = Path(data_dir)
+    seen: set[str] = set()
+    out: list[MissingSeries] = []
+    for horizon in horizons:
+        interval = HORIZON_INTERVAL.get(horizon, "1d")
+        if interval in seen:
+            continue
+        seen.add(interval)
+        path = root / f"{asset}_{interval}.csv"
+        if not path.exists():
+            out.append(MissingSeries(asset, interval, path))
+    return sorted(out, key=lambda m: m.interval)
+
+
 def for_asset(results: Sequence[JobResult], asset: str | None) -> list[JobResult]:
     """Rows for one asset, or all rows when no asset is given.
 

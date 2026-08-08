@@ -1184,6 +1184,8 @@ class SolTuiApp(App):
                 yield Button("Start", variant="primary", id="queue-start")
                 yield Button("Stop", variant="error", id="queue-stop")
                 yield Button("Refresh", id="queue-refresh")
+                yield Button("Fetch missing data", id="queue-fetch")
+            yield Static("", id="queue-data")
             yield Static("", id="queue-status")
             yield Static("[b]Ranked — cleared the evidence floor[/b]", classes="hint")
             ranked = DataTable(id="queue-table")
@@ -1224,6 +1226,71 @@ class SolTuiApp(App):
     def _queue_refresh(self) -> None:
         self._refresh_queue()
 
+    @on(Button.Pressed, "#queue-fetch")
+    def _queue_fetch(self) -> None:
+        """Fetch the price series the sweep is missing.
+
+        The one network action in this package, and it stays the separate
+        explicit step `CLAUDE.md` requires: it runs `backtester.core.fetch` --
+        the same command shown above the button -- and starting a sweep is NOT a
+        side effect of it finishing. Nothing here reaches a venue or an account.
+        """
+        data = self.query_one("#queue-data", Static)
+        missing = self._missing_series()
+        if not missing:
+            data.update("every series this sweep needs is already cached")
+            return
+        try:
+            bgcontrol.start_fetch([(m.asset, m.interval) for m in missing])
+        except Exception as exc:  # noqa: BLE001
+            data.update(f"[red]{type(exc).__name__}: {exc}[/]")
+            return
+        names = ", ".join(f"{m.asset} {m.interval}" for m in missing)
+        data.update(
+            f"fetching {names} — press Refresh when it finishes "
+            f"(log: {bgqueue.BG_DIR / 'fetch.log'})"
+        )
+
+    def _missing_series(self) -> list[bgqueue.MissingSeries]:
+        """Price files this asset's sweep needs and does not have."""
+        try:
+            return bgqueue.missing_series(
+                self.settings.asset, data_dir=self.settings.data_dir
+            )
+        except ValueError:
+            # An unusable asset symbol is the Settings tab's problem to report;
+            # here it just means there is nothing meaningful to check for.
+            return []
+
+    def _render_queue_data(self) -> None:
+        """Say which series are missing, and name the command that fixes it.
+
+        Checked before the sweep rather than discovered during it. The queue
+        interleaves intervals by promise, so a missing 1h file would otherwise
+        surface minutes in, after the pane had already reported "running" -- and
+        the whole short horizon would be quietly absent from the results.
+        """
+        line = self.query("#queue-data")
+        if not line:
+            return
+        missing = self._missing_series()
+        if not missing:
+            line.first(Static).update("")
+            return
+        commands = "  ·  ".join(m.command_text for m in missing)
+        text = (
+            f"[yellow]missing price data — {len(missing)} series "
+            f"({', '.join(m.interval for m in missing)}) will be skipped:[/] {commands}"
+        )
+        # A fetch that already ran and left the series missing failed for a
+        # reason worth reading -- the 1h series is refused outright unless
+        # --allow-gaps is passed. Without this pointer the button looks like it
+        # simply did nothing.
+        log = bgqueue.BG_DIR / "fetch.log"
+        if log.exists():
+            text += f"  ·  a previous fetch left these missing; see {log}"
+        line.first(Static).update(text)
+
     def _render_queue_status(self, state: bgqueue.QueueState) -> None:
         """Update just the status line, from the cached results.
 
@@ -1259,6 +1326,7 @@ class SolTuiApp(App):
         self._queue_results.extend(fresh)
         self._queue_cursor = cursor
         results = self._queue_results
+        self._render_queue_data()
         self._render_queue_status(bgqueue.read_state())
 
         ranked, floor = bgqueue.leaderboard(results, self.settings.asset)

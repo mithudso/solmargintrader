@@ -227,6 +227,42 @@ class TestQueueTab(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(ranked.row_count, 1)
                 self.assertEqual(floor.row_count, 1)
 
+    async def test_missing_data_is_named_with_the_command_that_fixes_it(self) -> None:
+        """Discovering it mid-sweep would mean the whole short horizon is quietly
+        absent from the results with the pane still reporting "running"."""
+        with TemporaryDirectory() as tmp:
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            settings = make_settings()
+            settings.data_dir = tmp  # empty: every series is missing
+            app = SolTuiApp(settings)
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                text = text_of(app, "#queue-data")
+                self.assertIn("missing price data", text)
+                self.assertIn("backtester.core.fetch", text)
+
+    async def test_cached_data_says_nothing(self) -> None:
+        with TemporaryDirectory() as tmp:
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            settings = make_settings()
+            settings.data_dir = tmp
+            for interval in ("1d", "1h"):
+                Path(tmp, f"{settings.asset}_{interval}.csv").write_text("x")
+            app = SolTuiApp(settings)
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                self.assertEqual(text_of(app, "#queue-data"), "")
+
     async def test_refreshing_twice_does_not_duplicate_rows(self) -> None:
         """The pane reads incrementally from a byte offset; a bad offset would
         re-append every row on each refresh."""
