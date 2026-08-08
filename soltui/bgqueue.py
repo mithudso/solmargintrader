@@ -562,6 +562,13 @@ class ResultsCursor:
     offset: int = 0
     inode: int = 0
     device: int = 0
+    # Modification time of the file state this cursor was taken against, so a
+    # poller can ask "has anything changed?" without a second stat that could
+    # observe a NEWER file than the one that was actually read. Recording an
+    # mtime taken after the read would silently strand any row appended during
+    # it -- and if that was a sweep's last row, the leaderboard stays one result
+    # short until someone refreshes by hand.
+    mtime: float = 0.0
 
     def matches(self, stat: os.stat_result) -> bool:
         """True when `stat` is the same file this cursor was taken against."""
@@ -586,22 +593,26 @@ def read_results_since(
     path = path or RESULTS_PATH
     cursor = cursor or ResultsCursor()
     try:
-        stat = path.stat()
+        # Open first, then stat the OPEN DESCRIPTOR. Statting by name and then
+        # opening by name would let the file be replaced in between, and the
+        # cursor would carry the old file's inode over the new file's bytes --
+        # defeating the identity check this cursor exists for.
+        fh = path.open("r", encoding="utf-8", errors="replace")
     except OSError:
         return [], ResultsCursor(), True
 
-    offset = cursor.offset
-    restarted = not cursor.matches(stat) or offset > stat.st_size
-    if restarted:
-        offset = 0
-
-    with path.open("r", encoding="utf-8", errors="replace") as fh:
+    with fh:
+        stat = os.fstat(fh.fileno())
+        offset = cursor.offset
+        restarted = not cursor.matches(stat) or offset > stat.st_size
+        if restarted:
+            offset = 0
         fh.seek(offset)
         text = fh.read()
     # Only consume through the last complete line; a trailing partial line is
     # left unread so the next call re-reads it once it is whole.
     cut = text.rfind("\n")
-    here = ResultsCursor(offset, stat.st_ino, stat.st_dev)
+    here = ResultsCursor(offset, stat.st_ino, stat.st_dev, stat.st_mtime)
     if cut == -1:
         return [], here, restarted
     consumed = text[: cut + 1]
@@ -609,7 +620,10 @@ def read_results_since(
     # pure ASCII and this byte count equals the file's. A field written with
     # ensure_ascii=False would break that equivalence and this arithmetic.
     advanced = ResultsCursor(
-        offset + len(consumed.encode("utf-8")), stat.st_ino, stat.st_dev
+        offset + len(consumed.encode("utf-8")),
+        stat.st_ino,
+        stat.st_dev,
+        stat.st_mtime,
     )
     return _parse_lines(consumed), advanced, restarted
 

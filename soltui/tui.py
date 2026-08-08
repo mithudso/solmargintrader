@@ -389,7 +389,6 @@ class SolTuiApp(App):
         # is a separate process, so the only way to know it produced something is
         # to look -- but re-parsing the file on every tick would burn the UI
         # thread on a file that changes once every few seconds at most.
-        self._queue_results_mtime = 0.0
         self._queue_results: list[bgqueue.JobResult] = []
         # How far the results file has been consumed, and which file that was, so
         # a refresh parses only what the worker appended since last time.
@@ -646,8 +645,10 @@ class SolTuiApp(App):
         """
         if not self.query("#queue-status"):
             return
-        mtime = _mtime(bgqueue.RESULTS_PATH)
-        if mtime != self._queue_results_mtime:
+        # Compared against the mtime of the file state the last read actually
+        # consumed, not one sampled afterwards -- a row appended DURING that read
+        # would otherwise be recorded as already-seen and never appear.
+        if _mtime(bgqueue.RESULTS_PATH) != self._queue_cursor.mtime:
             self._refresh_queue()
             return
         # Nothing new to rank, but the worker may have moved on to another job --
@@ -1258,7 +1259,6 @@ class SolTuiApp(App):
         self._queue_results.extend(fresh)
         self._queue_cursor = cursor
         results = self._queue_results
-        self._queue_results_mtime = _mtime(bgqueue.RESULTS_PATH)
         self._render_queue_status(bgqueue.read_state())
 
         ranked, floor = bgqueue.leaderboard(results, self.settings.asset)

@@ -10,6 +10,7 @@ three trades.
 from __future__ import annotations
 
 import json
+import os
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -529,6 +530,28 @@ class TestIncrementalRead(unittest.TestCase):
         self.assertEqual(rows, [])
         self.assertEqual(cursor.offset, 0)
         self.assertTrue(restarted)
+
+    def test_the_cursor_carries_the_mtime_of_what_it_read(self) -> None:
+        """A poller comparing against an mtime sampled AFTER the read would
+        record a row appended during that read as already-seen. If that was a
+        sweep's last row, the leaderboard stays one short until a manual
+        refresh — silently."""
+        q.append_result(_result(job_id="one"), self.results)
+        _, cursor, _ = q.read_results_since(path=self.results)
+        self.assertEqual(cursor.mtime, self.results.stat().st_mtime)
+
+    def test_a_row_appended_after_the_read_changes_the_observed_mtime(self) -> None:
+        q.append_result(_result(job_id="one"), self.results)
+        _, cursor, _ = q.read_results_since(path=self.results)
+        os.utime(self.results, (cursor.mtime + 5, cursor.mtime + 5))
+        self.assertNotEqual(self.results.stat().st_mtime, cursor.mtime)
+        rows, cursor2, _ = q.read_results_since(cursor, self.results)
+        self.assertEqual(rows, [])
+        self.assertEqual(cursor2.mtime, self.results.stat().st_mtime)
+
+    def test_an_absent_file_has_a_zero_mtime_cursor(self) -> None:
+        _, cursor, _ = q.read_results_since(path=Path(self._tmp.name) / "gone.jsonl")
+        self.assertEqual(cursor.mtime, 0.0)
 
     def test_a_file_replaced_and_regrown_past_the_offset_resets(self) -> None:
         """Size alone cannot detect this, and neither can a line-boundary check:

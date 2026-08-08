@@ -207,7 +207,14 @@ def start(
     # Taking the lock IS the "already running?" check. Testing first and then
     # spawning would leave a window in which two Starts both saw "no worker" and
     # both spawned, producing two processes appending to one results file.
-    lock_fd = acquire_lock()
+    try:
+        lock_fd = acquire_lock()
+    except BaseException:
+        # `acquire_lock` can raise rather than return None (an unwritable lock
+        # path). Without this the log handle opened just above leaks once per
+        # Start press, and the condition that caused it tends to persist.
+        handle.close()
+        raise
     if lock_fd is None:
         handle.close()
         raise RuntimeError("a background sweep is already running")
