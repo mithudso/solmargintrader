@@ -58,7 +58,7 @@ Three components with different risk profiles. Know which one you are in:
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 499 tests
-python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+python3 -m unittest discover -s soltui/tests -t .       # 260 tests (~140s)
 cd extension && npm test                                # 131 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 node tools/verify-endpoints.js                          # live Jupiter reachability

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T18:22:51+00:00",
+  "generatedAt": "2026-08-08T18:29:53+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 134,
+      "matchingFiles": 138,
       "shown": 30,
       "files": [
         {
@@ -144,6 +144,145 @@
         {
           "path": "docs/high_signal_file_index.json",
           "hits": 7
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "execution-onchain",
+      "label": "On-chain execution reality",
+      "why": "Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.",
+      "terms": [
+        "jupiter",
+        "jlp",
+        "oracle",
+        "priority",
+        "slippage",
+        "perps",
+        "solana"
+      ],
+      "matchingFiles": 120,
+      "shown": 30,
+      "files": [
+        {
+          "path": "pagesource",
+          "hits": 98
+        },
+        {
+          "path": "docs/trading-signals-concept-family.md",
+          "hits": 79
+        },
+        {
+          "path": "research/coin-intelligence/hype-hyperliquid.md",
+          "hits": 68
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 58
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 46
+        },
+        {
+          "path": "extension/README.md",
+          "hits": 39
+        },
+        {
+          "path": "backtester/core/gridsim.py",
+          "hits": 35
+        },
+        {
+          "path": "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
+          "hits": 26
+        },
+        {
+          "path": "extension/src/venues/index.js",
+          "hits": 25
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 24
+        },
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 24
+        },
+        {
+          "path": "backtester/README.md",
+          "hits": 22
+        },
+        {
+          "path": ".remember/remember.md",
+          "hits": 16
+        },
+        {
+          "path": "index/build.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/archive_price.py",
+          "hits": 14
+        },
+        {
+          "path": "docs/codebase-overview.md",
+          "hits": 14
+        },
+        {
+          "path": "backtester/PROMPT.md",
+          "hits": 13
+        },
+        {
+          "path": "docs/ARCHITECTURE.md",
+          "hits": 13
+        },
+        {
+          "path": "backtester/core/engine.py",
+          "hits": 13
+        },
+        {
+          "path": "docs/external-calls.md",
+          "hits": 12
+        },
+        {
+          "path": "docs/high_signal_file_index.json",
+          "hits": 12
+        },
+        {
+          "path": "backtester/tests/test_gridsim.py",
+          "hits": 12
+        },
+        {
+          "path": "backtester/strategy_cards/dex_cex_dislocation.md",
+          "hits": 11
+        },
+        {
+          "path": "tradingskilllist/trading-skills.md",
+          "hits": 11
+        },
+        {
+          "path": "README.md",
+          "hits": 10
+        },
+        {
+          "path": "extension/src/jupiter/attribution.js",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 10
+        },
+        {
+          "path": "soltui/bgworker.py",
+          "hits": 10
+        },
+        {
+          "path": "soltui/make_icon.py",
+          "hits": 10
+        },
+        {
+          "path": "extension/src/ui/dashboard.html",
+          "hits": 9
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -288,145 +427,6 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
-      "id": "execution-onchain",
-      "label": "On-chain execution reality",
-      "why": "Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.",
-      "terms": [
-        "jupiter",
-        "jlp",
-        "oracle",
-        "priority",
-        "slippage",
-        "perps",
-        "solana"
-      ],
-      "matchingFiles": 115,
-      "shown": 30,
-      "files": [
-        {
-          "path": "pagesource",
-          "hits": 98
-        },
-        {
-          "path": "docs/trading-signals-concept-family.md",
-          "hits": 79
-        },
-        {
-          "path": "research/coin-intelligence/hype-hyperliquid.md",
-          "hits": 68
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 58
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 46
-        },
-        {
-          "path": "extension/README.md",
-          "hits": 39
-        },
-        {
-          "path": "backtester/core/gridsim.py",
-          "hits": 35
-        },
-        {
-          "path": "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
-          "hits": 26
-        },
-        {
-          "path": "extension/src/venues/index.js",
-          "hits": 25
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 24
-        },
-        {
-          "path": "backtester/README.md",
-          "hits": 22
-        },
-        {
-          "path": ".remember/remember.md",
-          "hits": 16
-        },
-        {
-          "path": "index/build.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/archive_price.py",
-          "hits": 14
-        },
-        {
-          "path": "docs/codebase-overview.md",
-          "hits": 14
-        },
-        {
-          "path": "backtester/PROMPT.md",
-          "hits": 13
-        },
-        {
-          "path": "docs/ARCHITECTURE.md",
-          "hits": 13
-        },
-        {
-          "path": "backtester/core/engine.py",
-          "hits": 13
-        },
-        {
-          "path": "docs/external-calls.md",
-          "hits": 12
-        },
-        {
-          "path": "docs/high_signal_file_index.json",
-          "hits": 12
-        },
-        {
-          "path": "backtester/tests/test_gridsim.py",
-          "hits": 12
-        },
-        {
-          "path": "backtester/strategy_cards/dex_cex_dislocation.md",
-          "hits": 11
-        },
-        {
-          "path": "tradingskilllist/trading-skills.md",
-          "hits": 11
-        },
-        {
-          "path": "README.md",
-          "hits": 10
-        },
-        {
-          "path": "extension/src/jupiter/attribution.js",
-          "hits": 10
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 10
-        },
-        {
-          "path": "soltui/make_icon.py",
-          "hits": 10
-        },
-        {
-          "path": "extension/src/ui/dashboard.html",
-          "hits": 9
-        },
-        {
-          "path": "extension/tools/verify-endpoints.js",
-          "hits": 9
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "evidence-floor",
       "label": "Evidence floor",
       "why": "Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.",
@@ -438,7 +438,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 105,
+      "matchingFiles": 109,
       "shown": 30,
       "files": [
         {
@@ -518,6 +518,10 @@
           "hits": 5
         },
         {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 5
+        },
+        {
           "path": "backtester/tests/test_cpcv.py",
           "hits": 4
         },
@@ -556,10 +560,6 @@
         {
           "path": "docs/dso-skill/SKILL.md",
           "hits": 3
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 3
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -574,7 +574,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 105,
+      "matchingFiles": 106,
       "shown": 30,
       "files": [
         {
@@ -849,7 +849,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 99,
+      "matchingFiles": 100,
       "shown": 30,
       "files": [
         {
@@ -987,7 +987,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 94,
+      "matchingFiles": 96,
       "shown": 30,
       "files": [
         {
@@ -1122,7 +1122,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 83,
+      "matchingFiles": 85,
       "shown": 30,
       "files": [
         {
@@ -1194,6 +1194,10 @@
           "hits": 6
         },
         {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 6
+        },
+        {
           "path": "backtester/core/strategies/__init__.py",
           "hits": 5
         },
@@ -1240,10 +1244,6 @@
         {
           "path": "research/results/perturb_long_any_adx_trend_ou_reversion.json",
           "hits": 4
-        },
-        {
-          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.json",
-          "hits": 4
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1256,7 +1256,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 77,
+      "matchingFiles": 79,
       "shown": 30,
       "files": [
         {
@@ -1297,6 +1297,10 @@
         },
         {
           "path": "research/results/cpcv_tables.md",
+          "hits": 6
+        },
+        {
+          "path": "soltui/tests/test_bgqueue.py",
           "hits": 6
         },
         {
@@ -1374,10 +1378,6 @@
         {
           "path": "backtester/PROMPT.md",
           "hits": 3
-        },
-        {
-          "path": "backtester/README.md",
-          "hits": 3
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1394,7 +1394,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 75,
+      "matchingFiles": 78,
       "shown": 30,
       "files": [
         {
@@ -1670,7 +1670,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 65,
+      "matchingFiles": 66,
       "shown": 30,
       "files": [
         {
@@ -1945,7 +1945,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 57,
+      "matchingFiles": 59,
       "shown": 30,
       "files": [
         {
@@ -1985,11 +1985,19 @@
           "hits": 9
         },
         {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 9
+        },
+        {
           "path": "research/results/perturb_all_singles_short.txt",
           "hits": 8
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 7
+        },
+        {
+          "path": "soltui/bgqueue.py",
           "hits": 7
         },
         {
@@ -2058,14 +2066,6 @@
         },
         {
           "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.json",
-          "hits": 5
-        },
-        {
-          "path": "research/results/perturb_long_any_ou_reversion_obv_trend.json",
-          "hits": 5
-        },
-        {
-          "path": "research/results/perturb_long_obv_trend.json",
           "hits": 5
         }
       ],
@@ -2219,7 +2219,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 52,
+      "matchingFiles": 53,
       "shown": 30,
       "files": [
         {
@@ -2354,7 +2354,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 50,
+      "matchingFiles": 52,
       "shown": 30,
       "files": [
         {
@@ -2395,6 +2395,10 @@
         },
         {
           "path": "backtester/core/strategies/rsi.py",
+          "hits": 15
+        },
+        {
+          "path": "soltui/tests/test_bgqueue.py",
           "hits": 15
         },
         {
@@ -2462,19 +2466,15 @@
           "hits": 3
         },
         {
+          "path": "soltui/tests/test_bgworker.py",
+          "hits": 3
+        },
+        {
           "path": "backtester/PROMPT.md",
           "hits": 2
         },
         {
           "path": "backtester/strategy_cards/sma_regime.md",
-          "hits": 2
-        },
-        {
-          "path": "docs/codebase-overview.md",
-          "hits": 2
-        },
-        {
-          "path": "docs/high_signal_file_index.json",
           "hits": 2
         }
       ],
