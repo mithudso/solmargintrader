@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T22:30:36+00:00",
+  "generatedAt": "2026-08-24T01:04:16+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -193,6 +193,10 @@
           "hits": 15
         },
         {
+          "path": "research/signal_redundancy.py",
+          "hits": 15
+        },
+        {
           "path": "docs/CONCEPTS.md",
           "hits": 13
         },
@@ -219,10 +223,6 @@
         {
           "path": "backtester/tests/test_indicators.py",
           "hits": 10
-        },
-        {
-          "path": "research/signal_redundancy.py",
-          "hits": 9
         },
         {
           "path": "backtester/README.md",
@@ -427,142 +427,6 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
-      "id": "family:trend",
-      "label": "Strategy family: trend",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "trend",
-        "ma_crossover",
-        "macd",
-        "ichimoku"
-      ],
-      "matchingFiles": 106,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 133
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 113
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 94
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 63
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 57
-        },
-        {
-          "path": "backtester/core/strategies/advanced.py",
-          "hits": 52
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 40
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 39
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 37
-        },
-        {
-          "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 29
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 24
-        },
-        {
-          "path": "backtester/strategy_cards/macd.md",
-          "hits": 23
-        },
-        {
-          "path": ".remember/remember.md",
-          "hits": 22
-        },
-        {
-          "path": "backtester/core/strategies/signals.py",
-          "hits": 21
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 17
-        },
-        {
-          "path": "backtester/strategy_cards/garch_vol_forecast.md",
-          "hits": 16
-        },
-        {
-          "path": "backtester/strategy_cards/voltarget.md",
-          "hits": 14
-        },
-        {
-          "path": "backtester/core/indicators.py",
-          "hits": 13
-        },
-        {
-          "path": "backtester/strategy_cards/vol_regime_hmm.md",
-          "hits": 13
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 13
-        },
-        {
-          "path": "backtester/strategy_cards/adx_filtered_trend.md",
-          "hits": 12
-        },
-        {
-          "path": "research/results/cpcv_pbo.json",
-          "hits": 12
-        },
-        {
-          "path": "research/results/perturb_long_all_macd_vol_regime.txt",
-          "hits": 12
-        },
-        {
-          "path": "backtester/strategy_cards/hurst_regime_test.md",
-          "hits": 11
-        },
-        {
-          "path": "backtester/strategy_cards/ichimoku_cloud.md",
-          "hits": 11
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 11
-        },
-        {
-          "path": "backtester/strategy_cards/obv_trend.md",
-          "hits": 10
-        },
-        {
-          "path": "backtester/tests/test_cross_asset_cpcv.py",
-          "hits": 10
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
-          "hits": 10
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
       "id": "family:regime-filter",
       "label": "Strategy family: regime-filter",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -573,16 +437,16 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 106,
+      "matchingFiles": 107,
       "shown": 30,
       "files": [
         {
           "path": "research/RANKED_LISTS.md",
-          "hits": 200
+          "hits": 202
         },
         {
           "path": "research/results/tables.md",
-          "hits": 178
+          "hits": 175
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
@@ -700,6 +564,142 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
+      "id": "family:trend",
+      "label": "Strategy family: trend",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "trend",
+        "ma_crossover",
+        "macd",
+        "ichimoku"
+      ],
+      "matchingFiles": 106,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 132
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 114
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 89
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 63
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 57
+        },
+        {
+          "path": "backtester/core/strategies/advanced.py",
+          "hits": 52
+        },
+        {
+          "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 44
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 40
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 39
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 37
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 24
+        },
+        {
+          "path": "research/results/cpcv_tables.md",
+          "hits": 24
+        },
+        {
+          "path": "backtester/strategy_cards/macd.md",
+          "hits": 23
+        },
+        {
+          "path": ".remember/remember.md",
+          "hits": 22
+        },
+        {
+          "path": "backtester/core/strategies/signals.py",
+          "hits": 21
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 17
+        },
+        {
+          "path": "backtester/strategy_cards/garch_vol_forecast.md",
+          "hits": 16
+        },
+        {
+          "path": "backtester/strategy_cards/voltarget.md",
+          "hits": 14
+        },
+        {
+          "path": "backtester/core/indicators.py",
+          "hits": 13
+        },
+        {
+          "path": "backtester/strategy_cards/vol_regime_hmm.md",
+          "hits": 13
+        },
+        {
+          "path": "backtester/tests/test_decide.py",
+          "hits": 13
+        },
+        {
+          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 12
+        },
+        {
+          "path": "research/results/cpcv_pbo.json",
+          "hits": 12
+        },
+        {
+          "path": "research/results/perturb_long_all_macd_vol_regime.txt",
+          "hits": 12
+        },
+        {
+          "path": "backtester/strategy_cards/hurst_regime_test.md",
+          "hits": 11
+        },
+        {
+          "path": "backtester/strategy_cards/ichimoku_cloud.md",
+          "hits": 11
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 11
+        },
+        {
+          "path": "backtester/strategy_cards/obv_trend.md",
+          "hits": 10
+        },
+        {
+          "path": "backtester/tests/test_cross_asset_cpcv.py",
+          "hits": 10
+        },
+        {
+          "path": "research/results/geometry_long_k2.txt",
+          "hits": 10
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
       "id": "evidence-floor",
       "label": "Evidence floor",
       "why": "Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.",
@@ -732,7 +732,7 @@
         },
         {
           "path": "research/RANKED_LISTS.md",
-          "hits": 16
+          "hits": 17
         },
         {
           "path": "docs/CONCEPTS.md",
@@ -759,15 +759,15 @@
           "hits": 8
         },
         {
+          "path": "research/signal_redundancy.py",
+          "hits": 8
+        },
+        {
           "path": "research/sweep.py",
           "hits": 8
         },
         {
           "path": "backtester/tests/test_interpret.py",
-          "hits": 7
-        },
-        {
-          "path": "research/signal_redundancy.py",
           "hits": 7
         },
         {
@@ -1043,6 +1043,10 @@
           "hits": 6
         },
         {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 6
+        },
+        {
           "path": "backtester/core/fetch.py",
           "hits": 5
         },
@@ -1072,10 +1076,6 @@
         },
         {
           "path": "extension/src/ui/ui.css",
-          "hits": 4
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
           "hits": 4
         },
         {
@@ -1670,24 +1670,24 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 65,
+      "matchingFiles": 66,
       "shown": 30,
       "files": [
         {
           "path": "research/RANKED_LISTS.md",
-          "hits": 99
+          "hits": 101
         },
         {
           "path": "research/results/tables.md",
-          "hits": 54
+          "hits": 55
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
-          "hits": 43
+          "hits": 49
         },
         {
           "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 34
+          "hits": 41
         },
         {
           "path": "docs/FILES.md",
@@ -1790,8 +1790,8 @@
           "hits": 6
         },
         {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 5
+          "path": "research/signal_redundancy.py",
+          "hits": 6
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1820,12 +1820,12 @@
           "hits": 58
         },
         {
-          "path": "research/verify_numbers.py",
-          "hits": 39
+          "path": "research/RANKED_LISTS.md",
+          "hits": 42
         },
         {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 38
+          "path": "research/verify_numbers.py",
+          "hits": 39
         },
         {
           "path": ".remember/remember.md",
@@ -2085,11 +2085,11 @@
       "files": [
         {
           "path": "research/RANKED_LISTS.md",
-          "hits": 76
+          "hits": 70
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
-          "hits": 53
+          "hits": 47
         },
         {
           "path": "research/results/tables.md",
@@ -2200,8 +2200,8 @@
           "hits": 3
         },
         {
-          "path": ".remember/remember.md",
-          "hits": 2
+          "path": "research/signal_redundancy.py",
+          "hits": 3
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2359,19 +2359,19 @@
       "files": [
         {
           "path": "research/RANKED_LISTS.md",
-          "hits": 77
+          "hits": 72
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
-          "hits": 56
+          "hits": 52
         },
         {
           "path": "research/results/tables.md",
-          "hits": 50
+          "hits": 48
         },
         {
           "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 33
+          "hits": 40
         },
         {
           "path": "soltui/signals.py",
@@ -2498,7 +2498,7 @@
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
-          "hits": 63
+          "hits": 69
         },
         {
           "path": "research/results/tables.md",
@@ -2628,11 +2628,11 @@
       "files": [
         {
           "path": "research/RANKED_LISTS.md",
-          "hits": 41
+          "hits": 39
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
-          "hits": 38
+          "hits": 36
         },
         {
           "path": "docs/FILES.md",

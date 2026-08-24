@@ -120,6 +120,61 @@ class TestRedundancy(unittest.TestCase):
         self.assertEqual(result["nan_columns"], [])
 
 
+class TestTwinVerdict(unittest.TestCase):
+    """Is a pair of COMBINATION exposure vectors one experiment or two?
+
+    This is the correction to collapsing a redundancy class outright: class
+    membership is measured on standalone exposure, and a combination changes
+    which bars its members may act on at all. The verdict lives in its own
+    function because the loop around it is integration-only — a variable
+    shadowed in that loop once killed every horizon after the first, and nothing
+    covered the arithmetic underneath it.
+    """
+
+    def test_identical_vectors_are_one_experiment(self) -> None:
+        v = pd.Series(np.tile([1.0, 0.0], 50))
+        verdict = sr.twin_verdict(v, v.copy())
+        self.assertTrue(verdict["redundant"])
+        self.assertAlmostEqual(verdict["corr"], 1.0)
+        self.assertFalse(verdict["both_flat"])
+
+    def test_two_permanently_flat_combinations_collapse(self) -> None:
+        """Correlation is undefined against a constant, so without an explicit
+        check these read as 'not redundant' and pad the search with pairs of
+        configurations that do nothing."""
+        v = pd.Series(np.zeros(50))
+        verdict = sr.twin_verdict(v, v.copy())
+        self.assertTrue(verdict["both_flat"])
+        self.assertTrue(verdict["redundant"])
+        self.assertTrue(np.isnan(verdict["corr"]))
+
+    def test_different_constants_are_not_the_same_experiment(self) -> None:
+        """Always-flat and always-long are both constant and plainly different."""
+        verdict = sr.twin_verdict(pd.Series(np.zeros(50)), pd.Series(np.ones(50)))
+        self.assertFalse(verdict["both_flat"])
+        self.assertFalse(verdict["redundant"])
+
+    def test_one_constant_one_varying_is_not_collapsed(self) -> None:
+        verdict = sr.twin_verdict(
+            pd.Series(np.zeros(50)), pd.Series(np.tile([1.0, 0.0], 25))
+        )
+        self.assertTrue(np.isnan(verdict["corr"]))
+        self.assertFalse(verdict["redundant"])
+
+    def test_independent_vectors_stay_distinct(self) -> None:
+        rng = np.random.default_rng(11)
+        a = pd.Series(rng.choice([0.0, 1.0], size=400))
+        b = pd.Series(rng.choice([0.0, 1.0], size=400))
+        verdict = sr.twin_verdict(a, b)
+        self.assertFalse(verdict["redundant"])
+
+    def test_high_agreement_alone_is_enough(self) -> None:
+        """Either test can flag redundancy; they measure different things."""
+        a = pd.Series(np.tile([1.0, 0.0], 50))
+        b = a * 0.02  # same state, tiny size -> agreement 1.0, corr 1.0
+        self.assertTrue(sr.twin_verdict(a, b)["redundant"])
+
+
 class TestPairTable(unittest.TestCase):
     def test_cross_family_redundancy_is_flagged(self) -> None:
         """The finding the script exists to surface.

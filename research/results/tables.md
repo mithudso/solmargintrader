@@ -30,7 +30,7 @@
 
 _1 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `buy_and_hold`._
 
-### SHORT horizon — pairs (246 configurations evaluated)
+### SHORT horizon — pairs (272 configurations evaluated)
 
 | # | configuration | families | OOS Sharpe | IS Sharpe | OOS return | IS return | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
@@ -50,7 +50,7 @@ _1 configuration(s) excluded from the ranking for fewer than 10 out-of-sample tr
 | 14 | `any(ma_crossover+stochastic)` | trend+oscillator-reversion | **0.513** | -1.670 | 4.0% | -57.9% | -17.4% | 45 |
 | 15 | `any(ma_crossover+keltner)` | trend+breakout | **0.441** | -1.950 | 2.9% | -52.6% | -12.5% | 29 |
 
-_24 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `all(macd+hurst_switch)`, `all(ichimoku+hurst_switch)`, `all(dual_momentum+hurst_switch)`, `all(sma_regime+hurst_switch)`, `all(adx_trend+bb_reversion)`, `all(adx_trend+vwap_reversion)`, `all(adx_trend+ou_reversion)`, `all(hurst_switch+breakout)`, `all(hurst_switch+bb_breakout)`, `all(hurst_switch+keltner)`, `all(hurst_switch+obv_trend)`, `all(vol_regime+keltner)`…._
+_27 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `all(macd+hurst_switch)`, `all(ichimoku+hurst_switch)`, `all(dual_momentum+hurst_switch)`, `all(sma_regime+hurst_switch)`, `all(adx_trend+bb_reversion)`, `all(adx_trend+vwap_reversion)`, `all(adx_trend+ou_reversion)`, `all(hurst_switch+breakout)`, `all(hurst_switch+bb_breakout)`, `all(hurst_switch+keltner)`, `all(hurst_switch+obv_trend)`, `all(vol_regime+keltner)`…._
 
 ### SHORT horizon — triples (14 configurations evaluated)
 
@@ -93,27 +93,27 @@ _5 configuration(s) excluded from the ranking for fewer than 10 out-of-sample tr
 
 _7 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `buy_and_hold`, `ma_crossover_20_50`, `breakout_20_10`, `keltner_20_14_2`, `rsi_14_30_50`, `adx_trend_14_25`, `ou_reversion_250_2.5`._
 
-### MEDIUM horizon — pairs (278 configurations evaluated)
+### MEDIUM horizon — pairs (294 configurations evaluated)
 
 | # | configuration | families | OOS Sharpe | IS Sharpe | OOS return | IS return | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
-| 1 | `all(hurst_switch+bb_reversion)` | regime-filter+mean-reversion | **0.564** | 0.363 | 15.6% | 16.7% | -16.3% | 10 |
-| 2 | `all(hurst_switch+vwap_reversion)` | regime-filter+mean-reversion | **0.564** | -0.000 | 15.6% | -3.8% | -16.3% | 10 |
-| 3 | `all(macd+stochastic)` | trend+oscillator-reversion | **0.391** | 0.223 | 9.9% | 8.0% | -12.4% | 10 |
-| 4 | `any(hurst_switch+breakout)` | regime-filter+breakout | **0.304** | 0.777 | 6.9% | 185.0% | -31.1% | 17 |
-| 5 | `any(hurst_switch+ou_reversion)` | regime-filter+mean-reversion | **0.241** | 1.018 | 4.4% | 177.2% | -27.0% | 11 |
-| 6 | `all(ts_momentum+stochastic)` | momentum+oscillator-reversion | **0.240** | -0.275 | 4.5% | -22.0% | -18.0% | 10 |
-| 7 | `any(hurst_switch+bb_reversion)` | regime-filter+mean-reversion | **0.193** | -0.047 | -4.8% | -52.9% | -52.0% | 10 |
-| 8 | `any(breakout+bb_reversion)` | breakout+mean-reversion | **0.174** | 0.875 | -11.8% | 291.5% | -61.8% | 16 |
-| 9 | `all(macd+vol_regime)` | trend+regime-filter | **0.161** | 0.176 | 1.9% | 3.7% | -21.3% | 11 |
-| 10 | `any(hurst_switch+stochastic)` | regime-filter+oscillator-reversion | **0.103** | 0.541 | -13.5% | 70.1% | -44.5% | 15 |
-| 11 | `all(ts_momentum+breakout)` | momentum+breakout | **0.100** | 1.000 | -2.2% | 361.4% | -31.0% | 10 |
-| 12 | `any(breakout+rsi)` | breakout+oscillator-reversion | **0.081** | 1.139 | -13.8% | 768.0% | -57.9% | 11 |
-| 13 | `any(breakout+ou_reversion)` | breakout+mean-reversion | **0.074** | 0.970 | -8.8% | 340.8% | -40.4% | 12 |
-| 14 | `any(vol_regime+breakout)` | regime-filter+breakout | **0.024** | 0.547 | -9.9% | 73.7% | -35.3% | 15 |
-| 15 | `all(vol_regime+stochastic)` | regime-filter+oscillator-reversion | **-0.009** | -0.070 | -2.7% | -4.9% | -19.9% | 10 |
+| 1 | `all(ma_ribbon+ou_reversion)` | trend+mean-reversion | **0.942** | 0.033 | 17.3% | -0.3% | -6.0% | 18 |
+| 2 | `all(hurst_switch+bb_reversion)` | regime-filter+mean-reversion | **0.564** | 0.363 | 15.6% | 16.7% | -16.3% | 10 |
+| 3 | `all(hurst_switch+vwap_reversion)` | regime-filter+mean-reversion | **0.564** | -0.000 | 15.6% | -3.8% | -16.3% | 10 |
+| 4 | `all(macd+stochastic)` | trend+oscillator-reversion | **0.391** | 0.223 | 9.9% | 8.0% | -12.4% | 10 |
+| 5 | `any(hurst_switch+breakout)` | regime-filter+breakout | **0.304** | 0.777 | 6.9% | 185.0% | -31.1% | 17 |
+| 6 | `any(hurst_switch+ou_reversion)` | regime-filter+mean-reversion | **0.241** | 1.018 | 4.4% | 177.2% | -27.0% | 11 |
+| 7 | `all(ts_momentum+stochastic)` | momentum+oscillator-reversion | **0.240** | -0.275 | 4.5% | -22.0% | -18.0% | 10 |
+| 8 | `any(hurst_switch+bb_reversion)` | regime-filter+mean-reversion | **0.193** | -0.047 | -4.8% | -52.9% | -52.0% | 10 |
+| 9 | `any(breakout+bb_reversion)` | breakout+mean-reversion | **0.174** | 0.875 | -11.8% | 291.5% | -61.8% | 16 |
+| 10 | `all(macd+vol_regime)` | trend+regime-filter | **0.161** | 0.176 | 1.9% | 3.7% | -21.3% | 11 |
+| 11 | `any(hurst_switch+stochastic)` | regime-filter+oscillator-reversion | **0.103** | 0.541 | -13.5% | 70.1% | -44.5% | 15 |
+| 12 | `all(ts_momentum+breakout)` | momentum+breakout | **0.100** | 1.000 | -2.2% | 361.4% | -31.0% | 10 |
+| 13 | `any(breakout+rsi)` | breakout+oscillator-reversion | **0.081** | 1.139 | -13.8% | 768.0% | -57.9% | 11 |
+| 14 | `any(breakout+ou_reversion)` | breakout+mean-reversion | **0.074** | 0.970 | -8.8% | 340.8% | -40.4% | 12 |
+| 15 | `any(vol_regime+breakout)` | regime-filter+breakout | **0.024** | 0.547 | -9.9% | 73.7% | -35.3% | 15 |
 
-_99 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `all(ma_crossover+sma_regime)`, `all(ma_crossover+adx_trend)`, `any(ma_crossover+adx_trend)`, `all(ma_crossover+hurst_switch)`, `all(ma_crossover+breakout)`, `any(ma_crossover+breakout)`, `all(ma_crossover+bb_breakout)`, `any(ma_crossover+bb_breakout)`, `all(ma_crossover+keltner)`, `any(ma_crossover+keltner)`, `all(ma_crossover+rsi)`, `all(ma_crossover+stochastic)`…._
+_100 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `all(ma_crossover+sma_regime)`, `all(ma_crossover+adx_trend)`, `any(ma_crossover+adx_trend)`, `all(ma_crossover+hurst_switch)`, `all(ma_crossover+breakout)`, `any(ma_crossover+breakout)`, `all(ma_crossover+bb_breakout)`, `any(ma_crossover+bb_breakout)`, `all(ma_crossover+keltner)`, `any(ma_crossover+keltner)`, `all(ma_crossover+rsi)`, `all(ma_crossover+stochastic)`…._
 
 ### MEDIUM horizon — triples (14 configurations evaluated)
 
@@ -145,7 +145,7 @@ _6 configuration(s) excluded from the ranking for fewer than 10 out-of-sample tr
 
 _17 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `buy_and_hold`, `ma_crossover_50_200`, `macd_26_52_18`, `sma_regime_200`, `breakout_60_30`, `bb_breakout_60_2`, `keltner_50_30_2`, `rsi_30_35_55`, `stoch_40_5`, `bb_reversion_60_2`, `zscore_60_-2`, `vwap_reversion_60_0.05`…._
 
-### LONG horizon — pairs (276 configurations evaluated)
+### LONG horizon — pairs (280 configurations evaluated)
 
 | # | configuration | families | OOS Sharpe | IS Sharpe | OOS return | IS return | OOS maxDD | OOS trades |
 |---|---|---|---|---|---|---|---|---|
@@ -165,7 +165,7 @@ _17 configuration(s) excluded from the ranking for fewer than 10 out-of-sample t
 | 14 | `any(hurst_switch+obv_trend)` | regime-filter+volume-flow | **0.031** | 1.131 | -14.3% | 588.0% | -37.2% | 20 |
 | 15 | `any(bb_reversion+obv_trend)` | mean-reversion+volume-flow | **0.030** | 0.930 | -28.9% | 368.6% | -66.8% | 17 |
 
-_191 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `all(ma_crossover+ts_momentum)`, `all(ma_crossover+dual_momentum)`, `all(ma_crossover+sma_regime)`, `any(ma_crossover+sma_regime)`, `all(ma_crossover+adx_trend)`, `any(ma_crossover+adx_trend)`, `all(ma_crossover+hurst_switch)`, `any(ma_crossover+hurst_switch)`, `all(ma_crossover+vol_regime)`, `any(ma_crossover+vol_regime)`, `all(ma_crossover+breakout)`, `any(ma_crossover+breakout)`…._
+_195 configuration(s) excluded from the ranking for fewer than 10 out-of-sample trades: `all(ma_crossover+ts_momentum)`, `all(ma_crossover+dual_momentum)`, `all(ma_crossover+sma_regime)`, `any(ma_crossover+sma_regime)`, `all(ma_crossover+adx_trend)`, `any(ma_crossover+adx_trend)`, `all(ma_crossover+hurst_switch)`, `any(ma_crossover+hurst_switch)`, `all(ma_crossover+vol_regime)`, `any(ma_crossover+vol_regime)`, `all(ma_crossover+breakout)`, `any(ma_crossover+breakout)`…._
 
 ### LONG horizon — triples (4 configurations evaluated)
 

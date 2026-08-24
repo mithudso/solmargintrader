@@ -345,6 +345,39 @@ def combination_exposures(
     return frame, warmup
 
 
+def twin_verdict(va: pd.Series, vb: pd.Series) -> dict[str, Any]:
+    """Is this pair of exposure vectors one experiment or two?
+
+    Extracted from the measurement loop so it can be tested without loading a
+    price file. The loop around it is integration-only, and a shadowed variable
+    in that loop once killed every horizon after the first — so the part that
+    decides the verdict is kept separate from the part that iterates.
+    """
+    both_constant = va.std(ddof=0) == 0 and vb.std(ddof=0) == 0
+    if va.std(ddof=0) == 0 or vb.std(ddof=0) == 0:
+        corr = float("nan")
+    else:
+        corr = float(va.corr(vb))
+    sa, sb = np.sign(va), np.sign(vb)
+    active = (sa != 0) | (sb != 0)
+    agree = float((sa == sb)[active].mean()) if active.any() else float("nan")
+    # Correlation is undefined against a constant, but two composites that BOTH
+    # never move and hold the same value are plainly one experiment -- usually
+    # two `all(...)` triples whose members never agree. Leaving them uncollapsed
+    # pads the search with pairs of configurations that do nothing.
+    identical_flat = bool(both_constant and va.equals(vb))
+    return {
+        "corr": corr,
+        "agree_active": agree,
+        "both_flat": identical_flat,
+        "redundant": bool(
+            identical_flat
+            or (np.isfinite(corr) and corr >= REDUNDANT_CORR)
+            or (np.isfinite(agree) and agree >= REDUNDANT_AGREEMENT)
+        ),
+    }
+
+
 def combination_redundancy(
     asset: str, horizon: str, sizes: Sequence[int], modes: Sequence[str]
 ) -> pd.DataFrame:
@@ -388,31 +421,10 @@ def combination_redundancy(
             for group in groups:
                 for a, b in itertools.combinations(group, 2):
                     ka, kb = "+".join(a), "+".join(b)
-                    va, vb = measured[ka], measured[kb]
-                    flat = va.std(ddof=0) == 0 and vb.std(ddof=0) == 0
-                    if va.std(ddof=0) == 0 or vb.std(ddof=0) == 0:
-                        corr = float("nan")
-                    else:
-                        corr = float(va.corr(vb))
-                    sa, sb = np.sign(va), np.sign(vb)
-                    active = (sa != 0) | (sb != 0)
-                    agree = float((sa == sb)[active].mean()) if active.any() else np.nan
-                    # Correlation is undefined against a constant, but two
-                    # composites that BOTH never move and hold the same value are
-                    # plainly one experiment -- usually two `all(...)` triples
-                    # whose members never agree. Leaving them uncollapsed would
-                    # pad the search with pairs of configurations that do nothing.
-                    identical_flat = bool(flat and va.equals(vb))
                     rows.append({
                         "horizon": horizon, "size": size, "mode": mode,
                         "a": f"{mode}({ka})", "b": f"{mode}({kb})",
-                        "corr": corr, "agree_active": agree,
-                        "both_flat": identical_flat,
-                        "redundant": bool(
-                            identical_flat
-                            or (np.isfinite(corr) and corr >= REDUNDANT_CORR)
-                            or (np.isfinite(agree) and agree >= REDUNDANT_AGREEMENT)
-                        ),
+                        **twin_verdict(measured[ka], measured[kb]),
                     })
     print(f"source: {note}", file=sys.stderr)
     return pd.DataFrame(rows)
