@@ -2,12 +2,12 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 499 tests
-python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+python3 -m unittest discover -s soltui/tests -t .       # 286 tests (~160s)
 cd extension && npm test                                # 131 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-725 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
+916 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -105,17 +105,34 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 95 tests
+## soltui — 286 tests
 
-Slower than the others (~70s) because the TUI tests drive real render cycles. Three
-files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
-state) and `test_tui.py` (rendering). Run them with
-`python3 -m unittest discover -s soltui/tests -t .`.
+Slower than the others (~140s) because the TUI tests drive real render cycles.
+`test_signals.py` (signal derivation), `test_status_roster.py` (status and roster state),
+`test_tui.py` and `test_panes.py` (rendering), `test_docs_browser.py`, plus the background
+sweep's three: `test_bgqueue.py` (job identity, ordering, the file contract, the
+leaderboard's evidence floor), `test_bgworker.py` (the run loop — resume, stop, limit,
+per-interval failure) and `test_bgcontrol.py` (the liveness lock and the spawn command).
+Run them with `python3 -m unittest discover -s soltui/tests -t .`.
 
 soltui is read-only over the research side and places no orders, so its tests are about
-display correctness, not money. The packaging paths — the py2app alias bundle and the
-launchd agent — are **not** covered by any test; see `soltui/README.md` for the manual
-checks that stand in for them.
+display correctness, not money. The one place that claim needs care is the background
+sweep, which *ranks* configurations: `test_bgqueue.py` therefore guards the honesty rules
+rather than the rendering — thin-evidence rows never rank however good their Sharpe looks,
+and results are scoped per asset so one sweep cannot top another's table.
+
+Not covered by any test: the packaging paths (the py2app alias bundle and the launchd
+agent) — see `soltui/README.md` for the manual checks that stand in for them — and the
+background worker's *real* priority, which is a property of the OS rather than of the
+code. Verify that one by hand while a sweep runs:
+
+```bash
+ps -o pid,nice,stat,comm -p "$(cat ~/.config/soltui/bg/worker.pid)"
+```
+
+Expect nice 19 and an `N` in STAT. `bgcontrol.describe_priority()` reports what the host
+can actually do, and deliberately says "requests nice 19" rather than asserting a level
+this repo never checked.
 
 ## Adding tests
 
