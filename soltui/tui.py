@@ -45,6 +45,7 @@ from . import analyze as analyze_mod
 from . import cumulative as cumulative_mod
 from . import docs_browser
 from . import top5 as top5_mod
+from . import live_run
 from .config import INTERVALS, Settings, load_settings, save_settings
 from .paper import MODE_LABEL, PaperSession, start_session
 from .roster import Roster, RosterError, available_strategies
@@ -519,6 +520,8 @@ class SolTuiApp(App):
                 yield from self._backtest_pane()
             with TabPane("Top 5", id="tab-top5"):
                 yield from self._top5_pane()
+            with TabPane("Live Run", id="tab-liverun"):
+                yield from self._live_run_pane()
             with TabPane("Execute", id="tab-execute"):
                 yield from self._execute_pane()
             with TabPane("Analyze", id="tab-analyze"):
@@ -654,9 +657,30 @@ class SolTuiApp(App):
             )
             with Horizontal(classes="form-row"):
                 yield Button("Run backtest (r)", variant="primary", id="btn-run")
+                yield Button("Run Untested Sweep", variant="warning", id="btn-run-untested")
                 yield Button("Cancel (c)", variant="error", id="btn-cancel")
                 yield Static("", id="backtest-status")
             yield GlossaryTable(id="results-table")
+
+    def _live_run_pane(self) -> ComposeResult:
+        """Launcher for the Node.js extension in dry-run mode."""
+        with Vertical():
+            yield Static("LIVE RUN LAUNCHER (DRY-RUN OPTION)", id="execute-banner")
+            yield Static(
+                "This tab populates the most profitable/tested configuration and spawns "
+                "the Node.js extension's dry-run engine. The TUI itself places no orders.",
+                classes="hint",
+            )
+            with Horizontal(classes="form-row"):
+                yield Label("Recommended:")
+                yield Static("Loading...", id="live-run-recommendation", classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Label("Strategy:")
+                yield Input(value="", id="live-run-strategy")
+                yield Button("Spawn Node Dryrun", variant="success", id="btn-spawn-dryrun")
+                yield Button("Refresh", id="btn-refresh-live-run")
+            yield Static("", id="live-run-status")
+            yield TextArea(read_only=True, id="live-run-output")
 
     def _execute_pane(self) -> ComposeResult:
         """Dry-run replay. The banner is not decoration."""
@@ -1011,6 +1035,27 @@ class SolTuiApp(App):
             msg += f" · {len(skipped)} skipped (warm-up or trade floor)"
         self.query_one("#backtest-status", Static).update(msg)
 
+    @on(Button.Pressed, "#btn-run-untested")
+    @work(thread=True)
+    def _run_untested_sweep(self) -> None:
+        """Run the untested sweep script."""
+        status = self.query_one("#backtest-status", Static)
+        self.call_from_thread(status.update, "running untested sweep...")
+        try:
+            import subprocess
+            from pathlib import Path
+            repo = Path(__file__).resolve().parent.parent
+            script = repo / "research" / "sweep_untested.py"
+            result = subprocess.run(
+                ["python3", str(script)], capture_output=True, text=True, cwd=str(repo)
+            )
+            if result.returncode == 0:
+                self.call_from_thread(status.update, f"untested sweep done.\n{result.stdout[-200:]}")
+            else:
+                self.call_from_thread(status.update, f"[red]error: {result.stderr}[/]")
+        except Exception as exc:
+            self.call_from_thread(status.update, f"[red]{exc}[/]")
+
     # -- execute (dry run) -----------------------------------------------
 
     @on(Button.Pressed, "#btn-paper-start")
@@ -1114,6 +1159,45 @@ class SolTuiApp(App):
         elif pane == "tab-top5" and not self._top5_loaded:
             self._top5_loaded = True
             self._refresh_top5()
+        elif pane == "tab-liverun":
+            self._refresh_live_run()
+
+    # -- Live Run --------------------------------------------------------
+
+    def _refresh_live_run(self) -> None:
+        best = live_run.get_best_strategy()
+        rec_static = self.query_one("#live-run-recommendation", Static)
+        strat_input = self.query_one("#live-run-strategy", Input)
+        rec_static.update(f"{best['strategy']} (from {best['source']}) — {best['details']}")
+        strat_input.value = best["strategy"]
+        
+    @on(Button.Pressed, "#btn-refresh-live-run")
+    def _btn_refresh_live_run(self) -> None:
+        self._refresh_live_run()
+        self.query_one("#live-run-status", Static).update("refreshed recommendation")
+        
+    @on(Button.Pressed, "#btn-spawn-dryrun")
+    @work(thread=True)
+    def _btn_spawn_dryrun(self) -> None:
+        strategy_name = self.query_one("#live-run-strategy", Input).value.strip()
+        status = self.query_one("#live-run-status", Static)
+        out_area = self.query_one("#live-run-output", TextArea)
+        
+        def _update(msg: str) -> None:
+            if "\n" in msg and "[green]" in msg or "[red]" in msg:
+                # We can update the TextArea for large output
+                # Just strip tags roughly for TextArea or use RichLog
+                import re
+                clean = re.sub(r'\[/?(red|green|b)\]', '', msg)
+                self.call_from_thread(lambda: setattr(out_area, "text", clean))
+            else:
+                self.call_from_thread(status.update, msg)
+                
+        if not strategy_name:
+            self.call_from_thread(status.update, "[red]Please enter a strategy name.[/red]")
+            return
+            
+        live_run.spawn_dryrun(strategy_name, _update)
 
     # -- Top 5: the recommended configurations and their evidence ---------
 
