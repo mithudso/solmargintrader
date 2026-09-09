@@ -1,7 +1,7 @@
 /**
  * Live Jupiter execution venue (standard Swaps).
  */
-import { request } from './http.js';
+import { request } from '../jupiter/http.js';
 
 export class JupiterLiveVenue {
   constructor({ baseMint, quoteMint, userPubkey, signer, budget, fetchImpl }) {

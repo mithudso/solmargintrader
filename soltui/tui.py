@@ -113,6 +113,8 @@ FAMILY_NOTES = {
     "mean-reversion": "Buys distance from a mean. Fails when the mean itself shifts.",
     "volume-flow": "Reads participation, not price. Price-blind, which is why it pairs well.",
     "risk-overlay": "Changes position size, not direction. Reshapes the equity curve.",
+    "sma-gated": "One entry rule -- close above its SMA -- under four sizing schemes. "
+                 "Measured 0.92-1.00 correlated, so treat them as one bet, not four.",
 }
 
 # Indicator functions exposed on the Signals tab, with their equations.
@@ -439,7 +441,7 @@ class SolTuiApp(App):
     TITLE = "soltui — SOL strategy console"
     SUB_TITLE = "dry-run only · no live order path"
     CSS = """
-    #execute-banner {
+    #execute-banner, #live-run-banner {
         background: $warning 30%;
         color: $text;
         border: heavy $warning;
@@ -665,7 +667,10 @@ class SolTuiApp(App):
     def _live_run_pane(self) -> ComposeResult:
         """Launcher for the Node.js extension in dry-run mode."""
         with Vertical():
-            yield Static("LIVE RUN LAUNCHER (DRY-RUN OPTION)", id="execute-banner")
+            # A distinct id: `#execute-banner` is the dry-run safety banner the
+            # Execute tab owns, and two widgets sharing it made `query_one` return
+            # this one instead — silently reading the safety rail off the wrong widget.
+            yield Static("LIVE RUN LAUNCHER (DRY-RUN OPTION)", id="live-run-banner")
             yield Static(
                 "This tab populates the most profitable/tested configuration and spawns "
                 "the Node.js extension's dry-run engine. The TUI itself places no orders.",
