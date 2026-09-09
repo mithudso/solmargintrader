@@ -3,7 +3,7 @@ id: atr_position_sizing
 name: ATR-Normalised Position Sizing
 kind: exposure-strategy
 status: measured
-family: risk-overlay
+family: sma-gated
 summary: Trend entry sized so one ATR of adverse move costs a fixed fraction of equity.
 registry_key: atr_sized
 runner: backtester.cli

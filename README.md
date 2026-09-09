@@ -34,8 +34,8 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 499 tests
-python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+python3 -m unittest discover -s backtester/tests -t .   # 542 tests
+python3 -m unittest discover -s soltui/tests -t .       # 187 tests (~190s)
 cd extension && npm test                                # 131 tests
 ```
 

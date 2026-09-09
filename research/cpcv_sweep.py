@@ -34,7 +34,8 @@ from backtester.core.strategies import FAMILY, build, build_composite  # noqa: E
 from research.sweep import (  # noqa: E402
     COMBO_CANDIDATES,
     HORIZONS,
-    cross_family_combos,
+    PAIR_GATES,
+    independent_combos,
     load_horizon,
 )
 
@@ -249,15 +250,22 @@ def run_combos(
     k_test: int,
     modes: tuple[str, ...],
     candidates: tuple[str, ...],
+    gate: str = "both",
 ) -> tuple[pd.DataFrame, dict]:
-    """CPCV-evaluate cross-family combinations of `size` members at one horizon."""
+    """CPCV-evaluate non-redundant combinations of `size` members at one horizon.
+
+    The gate is the one in `sweep.py`, so a combination the single-split sweep
+    refuses to build is not silently resurrected here. PBO is a statement about
+    the size and content of a search, so measuring it over a search that includes
+    one signal counted twice measures the wrong search.
+    """
     arrays, cfg = load_horizon(horizon)
     params = HORIZONS[horizon]["params"]
     usable = [n for n in candidates if n in params]
     rows: list[dict] = []
     per_config_blocks: dict[str, dict[int, np.ndarray]] = {}
 
-    for combo in cross_family_combos(usable, size):
+    for combo in independent_combos(usable, size, horizon, gate):
         specs = [(n, params[n]) for n in combo]
         for mode in modes:
             label = f"{mode}({'+'.join(combo)})"
@@ -319,6 +327,11 @@ def main(argv: list[str] | None = None) -> int:
         "--quiet", action="store_true",
         help="suppress the how-to-read legend and per-line interpretation",
     )
+    ap.add_argument(
+        "--pair-gate", choices=list(PAIR_GATES), default="both",
+        help="which redundancy test a combination must clear (default: both); "
+             "'family' reproduces the pre-2026-08 published CPCV numbers",
+    )
     args = ap.parse_args(argv)
 
     horizons = args.horizon or list(HORIZONS)
@@ -337,7 +350,8 @@ def main(argv: list[str] | None = None) -> int:
             if "pairs" in stages:
                 print(f"[{h}] CPCV pairs…", file=sys.stderr)
                 df, pbo = run_combos(
-                    h, 2, args.groups, args.k, ("all", "any"), COMBO_CANDIDATES
+                    h, 2, args.groups, args.k, ("all", "any"), COMBO_CANDIDATES,
+                    gate=args.pair_gate,
                 )
                 combo_frames.append(df)
                 combo_pbos.append(pbo)
@@ -352,7 +366,8 @@ def main(argv: list[str] | None = None) -> int:
             if "triples" in stages:
                 print(f"[{h}] CPCV triples (a-priori candidate set)…", file=sys.stderr)
                 df, pbo = run_combos(
-                    h, 3, args.groups, args.k, ("all", "vote"), TRIPLE_CANDIDATES
+                    h, 3, args.groups, args.k, ("all", "vote"), TRIPLE_CANDIDATES,
+                    gate=args.pair_gate,
                 )
                 combo_frames.append(df)
                 combo_pbos.append(pbo)

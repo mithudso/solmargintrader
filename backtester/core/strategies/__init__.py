@@ -73,12 +73,25 @@ REGISTRY: dict[str, Callable[..., Any]] = {
 
 # Taxonomy family per registry key, used by the sweep to reason about
 # orthogonality when proposing pairs.
+#
+# A family here is a claim that two members are NOT independent bets, so it has
+# to answer to measurement. `research/signal_redundancy.py` scores this dict
+# against exposure vectors; when the two disagree, this dict is what changes.
+#
+# Hence `sma-gated`: sma_regime, voltarget, atr_sized and garch_voltarget all
+# gate on `close > sma(closes, trend_window)` with the same window, so their
+# long/flat state is algebraically identical and only position SIZE differs.
+# They were previously split across `regime-filter` and `risk-overlay`, which
+# claimed a diversification that cannot exist. Measured on SOL: correlation
+# 0.92-1.00 with active agreement 1.000 on both daily and hourly.
+# (atr_sized reads 0.92 rather than 1.00 only because it also flattens on a
+# degenerate ATR, an extra exit the other three do not have.)
 FAMILY: dict[str, str] = {
     "buy_and_hold": "baseline",
     "ma_crossover": "trend",
     "macd": "trend",
     "ts_momentum": "momentum",
-    "sma_regime": "regime-filter",
+    "sma_regime": "sma-gated",
     "breakout": "breakout",
     "bb_breakout": "breakout",
     "keltner": "breakout",
@@ -95,10 +108,10 @@ FAMILY: dict[str, str] = {
     "ou_reversion": "mean-reversion",
     "hurst_switch": "regime-filter",
     "vol_regime": "regime-filter",
-    "atr_sized": "risk-overlay",
-    "garch_voltarget": "risk-overlay",
+    "atr_sized": "sma-gated",
+    "garch_voltarget": "sma-gated",
     "obv_trend": "volume-flow",
-    "voltarget": "risk-overlay",
+    "voltarget": "sma-gated",
 }
 
 DEFAULT_SET = ("buy_and_hold", "ma_crossover", "rsi", "breakout")
