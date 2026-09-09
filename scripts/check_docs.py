@@ -132,6 +132,23 @@ def count_tests(suite: unittest.TestSuite | unittest.TestCase) -> int:
     return 1
 
 
+def load_failures(suite: unittest.TestSuite | unittest.TestCase) -> list[str]:
+    """Modules discovery could not import, by name.
+
+    Counting alone is not enough to tell the two stories apart. An uninstalled
+    dependency collapses a whole module into one `_FailedTest`, and the drift
+    that produces reads as "the docs claim 499, actual 33" -- which blames the
+    docs for being right. Naming the unimportable module says what actually
+    broke, so a missing `pip install` is never mistaken for stale prose.
+    """
+    if isinstance(suite, unittest.TestSuite):
+        return [name for child in suite for name in load_failures(child)]
+    cls = type(suite)
+    if cls.__name__ == "_FailedTest":
+        return [getattr(suite, "_testMethodName", str(suite))]
+    return []
+
+
 def discover(rel_dir: str, pattern: str = "test*.py") -> unittest.TestSuite:
     """Discovery over `rel_dir`, which also puts the repo on `sys.path` for us."""
     return unittest.defaultTestLoader.discover(
@@ -293,6 +310,25 @@ def main(argv: list[str] | None = None) -> int:
         "--prune", action="store_true", help="remove dead entries from the JSON index"
     )
     args = ap.parse_args(argv)
+
+    # Before comparing any number, establish that the numbers mean anything. A
+    # module discovery could not import contributes one `_FailedTest` instead of
+    # its real cases, so every downstream count is wrong in the same direction
+    # and the drift it reports points at the docs rather than at the missing
+    # dependency. Refuse to grade the prose against a suite that did not load.
+    unimportable = sorted(
+        set(name for d, _ in SUITES.values() for name in load_failures(discover(d)))
+    )
+    if unimportable:
+        for name in unimportable:
+            print(f"cannot import: {name}", file=sys.stderr)
+        print(
+            f"{len(unimportable)} test module(s) failed to import, so the counts "
+            "below would be wrong. Install the suites' dependencies first:\n"
+            "  pip install -r backtester/requirements.txt -r soltui/requirements.txt",
+            file=sys.stderr,
+        )
+        return 1
 
     actual = {name: count_suite(d) for name, (d, _) in SUITES.items()}
     actual["extension"] = count_extension_tests()

@@ -9,7 +9,7 @@
     ".github/SECURITY.md": 192,
     ".github/copilot-instructions.md": 451,
     ".github/dependabot.yml": 102,
-    ".github/workflows/ci.yml": 419,
+    ".github/workflows/ci.yml": 495,
     ".gitignore": 307,
     ".nvmrc": 2,
     ".remember/remember.md": 3,
@@ -272,7 +272,7 @@
     "research/turnover_table.py": 773,
     "research/verify_numbers.py": 4500,
     "scripts/build_doc_index.py": 625,
-    "scripts/check_docs.py": 1210,
+    "scripts/check_docs.py": 1355,
     "soltui/README.md": 624,
     "soltui/SolTUI.icns": 2731,
     "soltui/__init__.py": 4,
@@ -305,7 +305,7 @@
     "soltui/tui.py": 7102,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-09-09T19:21:25+00:00",
+  "generatedAt": "2026-09-09T19:28:59+00:00",
   "postings": {
     "100": {
       "backtester/tests/test_indicators.py": 1,
@@ -1602,7 +1602,7 @@
       "research/coin-intelligence/hype-hyperliquid.md": 5,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/verify_numbers.py": 15,
-      "scripts/check_docs.py": 10,
+      "scripts/check_docs.py": 11,
       "soltui/README.md": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_top5.py": 1,
@@ -1679,7 +1679,7 @@
       "research/geometry.py": 1,
       "research/signal_redundancy.py": 3,
       "research/sweep.py": 2,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/analyze.py": 1,
       "soltui/docs_browser.py": 1,
       "soltui/make_icon.py": 1,
@@ -3484,7 +3484,7 @@
       "research/sweep.py": 1,
       "research/verify_numbers.py": 1,
       "scripts/build_doc_index.py": 2,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 1,
       "soltui/menubar_launcher.py": 1
     },
@@ -4623,6 +4623,7 @@
       "research/cross_asset_cpcv.py": 3,
       "research/signal_redundancy.py": 1,
       "research/sweep.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/README.md": 2,
       "soltui/docs_browser.py": 4,
       "soltui/make_icon.py": 1,
@@ -4721,7 +4722,8 @@
       "research/coin-intelligence/rain-rain.md": 2,
       "research/cross_asset_cpcv.py": 1,
       "research/decide.py": 1,
-      "research/turnover_table.py": 1
+      "research/turnover_table.py": 1,
+      "scripts/check_docs.py": 1
     },
     "apfs": {
       "backtester/tests/test_cross_asset_cpcv.py": 1
@@ -8492,7 +8494,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 5,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 11,
       ".gitignore": 3,
       "CLAUDE.md": 8,
       "GEMINI.md": 5,
@@ -8644,7 +8646,7 @@
       "research/sweep.py": 5,
       "research/sweep_untested.py": 2,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 9,
+      "scripts/check_docs.py": 10,
       "soltui/README.md": 6,
       "soltui/analyze.py": 2,
       "soltui/config.py": 2,
@@ -11297,6 +11299,9 @@
     "blamed": {
       "docs/SCRIPTS.md": 1
     },
+    "blames": {
+      "scripts/check_docs.py": 1
+    },
     "blank": {
       "docs/API.md": 1,
       "extension/src/ui/dashboard.js": 1,
@@ -12691,6 +12696,7 @@
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
+      "scripts/check_docs.py": 1,
       "soltui/tests/test_panes.py": 1
     },
     "broken": {
@@ -14790,7 +14796,7 @@
       "research/turnover_table.py": 3,
       "research/verify_numbers.py": 8,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 2,
       "soltui/analyze.py": 2,
       "soltui/config.py": 3,
@@ -15681,7 +15687,7 @@
       "docs/FILES.md": 2,
       "extension/test/core.test.js": 2,
       "index/make_files_doc.py": 1,
-      "scripts/check_docs.py": 4,
+      "scripts/check_docs.py": 5,
       "soltui/tests/test_docs_browser.py": 1
     },
     "cash": {
@@ -16802,6 +16808,7 @@
       "docs/high_signal_file_index.json": 1
     },
     "cheap": {
+      ".github/workflows/ci.yml": 1,
       "backtester/README.md": 1,
       "backtester/core/types.py": 1,
       "backtester/strategy_cards/ladder_grid.md": 1,
@@ -16855,7 +16862,7 @@
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 7,
+      ".github/workflows/ci.yml": 8,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
       "README.md": 1,
@@ -17184,7 +17191,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "extension/test/surfaces.test.js": 1,
-      "scripts/check_docs.py": 2
+      "scripts/check_docs.py": 4
     },
     "child_process": {
       "extension/test/surfaces.test.js": 1
@@ -17576,6 +17583,7 @@
     "claim": {
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
+      ".github/workflows/ci.yml": 1,
       "AGENTS.md": 2,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
@@ -17631,7 +17639,7 @@
       "research/sweep.py": 1,
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 11,
-      "scripts/check_docs.py": 3,
+      "scripts/check_docs.py": 4,
       "soltui/cumulative.py": 2,
       "soltui/tui.py": 1
     },
@@ -18555,6 +18563,7 @@
       "backtester/tests/test_cpcv.py": 6,
       "backtester/tests/test_decide.py": 16,
       "backtester/tests/test_indicators.py": 2,
+      "scripts/check_docs.py": 2,
       "soltui/paper.py": 2,
       "soltui/roster.py": 4,
       "soltui/tests/test_status_roster.py": 4
@@ -19161,6 +19170,7 @@
       "research/verify_numbers.py": 1
     },
     "collapses": {
+      ".github/workflows/ci.yml": 1,
       "backtester/strategy_cards/garch_vol_forecast.md": 1,
       "backtester/strategy_cards/sma_regime.md": 1,
       "backtester/strategy_cards/triangular_arbitrage.md": 1,
@@ -19174,6 +19184,7 @@
       "index/make_files_doc.py": 1,
       "research/signal_redundancy.py": 1,
       "research/sweep.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/tests/test_signals.py": 1
     },
     "collapsible": {
@@ -20206,6 +20217,7 @@
       "research/dso_audit.py": 1,
       "research/geometry.py": 1,
       "research/signal_redundancy.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/tui.py": 1
     },
     "comparison": {
@@ -22475,7 +22487,8 @@
       "backtester/core/deflated_sharpe.py": 1,
       "index/build.py": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
-      "research/cpcv_sweep.py": 1
+      "research/cpcv_sweep.py": 1,
+      "scripts/check_docs.py": 1
     },
     "contribution": {
       "backtester/strategy_cards/grid.md": 1,
@@ -22781,6 +22794,7 @@
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 4,
       ".github/copilot-instructions.md": 5,
+      ".github/workflows/ci.yml": 1,
       ".gitignore": 2,
       "AGENTS.md": 2,
       "CLAUDE.md": 7,
@@ -23010,6 +23024,7 @@
     "correct": {
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/copilot-instructions.md": 2,
+      ".github/workflows/ci.yml": 1,
       "backtester/core/deflated_sharpe.py": 2,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/gridcli.py": 1,
@@ -23555,7 +23570,7 @@
       "research/sweep.py": 7,
       "research/verify_numbers.py": 26,
       "scripts/build_doc_index.py": 3,
-      "scripts/check_docs.py": 22,
+      "scripts/check_docs.py": 23,
       "soltui/cumulative.py": 2,
       "soltui/paper.py": 2,
       "soltui/runner.py": 1,
@@ -23588,6 +23603,7 @@
       "research/coin-intelligence/btc-bitcoin.md": 3
     },
     "counted": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/engine.py": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/strategy_cards/triangular_arbitrage.md": 1,
@@ -23664,7 +23680,7 @@
       "research/cross_asset_cpcv.py": 1,
       "research/verify_numbers.py": 5,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 2,
+      "scripts/check_docs.py": 3,
       "soltui/cumulative.py": 1,
       "soltui/tests/test_panes.py": 1
     },
@@ -23738,7 +23754,7 @@
       "research/results/geometry_short_k2.txt": 2,
       "research/sweep.py": 12,
       "research/verify_numbers.py": 9,
-      "scripts/check_docs.py": 12,
+      "scripts/check_docs.py": 13,
       "soltui/analyze.py": 4,
       "soltui/cumulative.py": 3,
       "soltui/docs_browser.py": 4,
@@ -28182,11 +28198,13 @@
       "extension/src/wallet/solana.js": 2,
       "index/make_files_doc.py": 2,
       "research/PROMPT_STRATEGIES.md": 1,
+      "scripts/check_docs.py": 1,
       "soltui/requirements.txt": 4
     },
     "dependency": {
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/dependabot.yml": 1,
+      ".github/workflows/ci.yml": 2,
       "backtester/PROMPT.md": 2,
       "backtester/core/deflated_sharpe.py": 1,
       "backtester/core/strategies/advanced.py": 1,
@@ -28207,6 +28225,7 @@
       "extension/tools/deps.js": 2,
       "index/build.py": 1,
       "index/make_files_doc.py": 2,
+      "scripts/check_docs.py": 2,
       "soltui/app.py": 1,
       "soltui/config.py": 3,
       "soltui/docs_browser.py": 1
@@ -28293,6 +28312,9 @@
       "soltui/README.md": 1,
       "soltui/analyze.py": 1,
       "soltui/tui.py": 1
+    },
+    "depless": {
+      ".github/workflows/ci.yml": 1
     },
     "deploy": {
       "research/coin-intelligence/hype-hyperliquid.md": 1
@@ -29838,6 +29860,7 @@
       "research/perturb.py": 2,
       "research/sweep.py": 2,
       "research/verify_numbers.py": 2,
+      "scripts/check_docs.py": 1,
       "soltui/signals.py": 1,
       "soltui/tests/test_signals.py": 2,
       "soltui/tui.py": 3
@@ -30381,7 +30404,7 @@
       "index/make_files_doc.py": 1,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
-      "scripts/check_docs.py": 7,
+      "scripts/check_docs.py": 8,
       "soltui/README.md": 2
     },
     "discovered": {
@@ -30400,7 +30423,7 @@
       "backtester/tests/test_strategy_duplication.py": 1
     },
     "discovery": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 3,
       "docs/API.md": 1,
       "docs/TESTING.md": 1,
       "docs/dso-skill/SKILL.md": 1,
@@ -30412,7 +30435,7 @@
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
-      "scripts/check_docs.py": 4
+      "scripts/check_docs.py": 6
     },
     "discrepancies": {
       "research/coin-intelligence/zec-zcash.md": 1
@@ -31138,7 +31161,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 4,
       ".github/copilot-instructions.md": 2,
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 7,
       "CLAUDE.md": 2,
       "GEMINI.md": 4,
       "README.md": 38,
@@ -31185,7 +31208,7 @@
       "research/leverage_economics.py": 2,
       "research/verify_numbers.py": 5,
       "scripts/build_doc_index.py": 10,
-      "scripts/check_docs.py": 25,
+      "scripts/check_docs.py": 28,
       "soltui/docs_browser.py": 8,
       "soltui/tests/test_docs_browser.py": 25,
       "soltui/tests/test_panes.py": 18,
@@ -31884,7 +31907,8 @@
       "docs/dso-skill/references/passes.md": 1,
       "docs/trading-signals-concept-family.md": 2,
       "index/make_files_doc.py": 1,
-      "research/coin-intelligence/trx-tron.md": 1
+      "research/coin-intelligence/trx-tron.md": 1,
+      "scripts/check_docs.py": 1
     },
     "downtrend": {
       "backtester/README.md": 1,
@@ -32135,7 +32159,7 @@
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 1,
       "scripts/build_doc_index.py": 3,
-      "scripts/check_docs.py": 5,
+      "scripts/check_docs.py": 7,
       "soltui/analyze.py": 1,
       "soltui/tests/test_top5.py": 2,
       "soltui/top5.py": 1,
@@ -34954,7 +34978,7 @@
       "research/perturb.py": 1,
       "research/sweep.py": 1,
       "research/verify_numbers.py": 2,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/cumulative.py": 1,
       "soltui/make_icon.py": 1,
       "soltui/soltui-service": 1,
@@ -36132,7 +36156,8 @@
       "research/TOP5-RECOMMENDATION.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 5,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
-      "research/coin-intelligence/rain-rain.md": 2
+      "research/coin-intelligence/rain-rain.md": 2,
+      "scripts/check_docs.py": 1
     },
     "established": {
       "backtester/core/pairs.py": 1,
@@ -36929,7 +36954,7 @@
       "research/turnover_table.py": 2,
       "research/verify_numbers.py": 18,
       "scripts/build_doc_index.py": 2,
-      "scripts/check_docs.py": 6,
+      "scripts/check_docs.py": 7,
       "soltui/README.md": 4,
       "soltui/analyze.py": 4,
       "soltui/app.py": 2,
@@ -39537,6 +39562,7 @@
       "soltui/signals.py": 1
     },
     "fact": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/strategy_cards/dex_cex_dislocation.md": 1,
@@ -39734,6 +39760,7 @@
       "soltui/tui.py": 1
     },
     "failed": {
+      ".github/workflows/ci.yml": 2,
       "backtester/core/fetch.py": 2,
       "backtester/core/strategy_cards.py": 1,
       "backtester/core/universe.py": 4,
@@ -39771,6 +39798,7 @@
       "research/cross_asset_cpcv.py": 6,
       "research/leverage_economics.py": 2,
       "research/turnover_table.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/README.md": 1,
       "soltui/live_run.py": 2,
       "soltui/make_icon.py": 1,
@@ -39778,7 +39806,8 @@
       "soltui/tui.py": 1
     },
     "failedtest": {
-      "scripts/check_docs.py": 2
+      ".github/workflows/ci.yml": 2,
+      "scripts/check_docs.py": 5
     },
     "failing": {
       "backtester/core/plotting.py": 2,
@@ -39992,6 +40021,7 @@
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/leverage_economics.py": 1,
       "research/verify_numbers.py": 60,
+      "scripts/check_docs.py": 4,
       "soltui/README.md": 1,
       "soltui/tests/test_status_roster.py": 1
     },
@@ -41697,7 +41727,7 @@
       "research/turnover_table.py": 3,
       "research/verify_numbers.py": 10,
       "scripts/build_doc_index.py": 11,
-      "scripts/check_docs.py": 11,
+      "scripts/check_docs.py": 13,
       "soltui/README.md": 1,
       "soltui/analyze.py": 1,
       "soltui/app.py": 4,
@@ -42760,7 +42790,7 @@
       "research/sweep.py": 3,
       "research/verify_numbers.py": 13,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/analyze.py": 4,
       "soltui/app.py": 4,
       "soltui/config.py": 1,
@@ -44792,6 +44822,7 @@
     },
     "free": {
       ".github/copilot-instructions.md": 1,
+      ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
@@ -46981,6 +47012,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "backtester/tests/test_decide.py": 1,
       "research/decide.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/signals.py": 3,
       "soltui/tests/test_tui.py": 3,
       "soltui/tui.py": 6
@@ -47799,7 +47831,8 @@
     },
     "grade": {
       "docs/dso-skill/SKILL.md": 1,
-      "docs/dso-skill/references/passes.md": 1
+      "docs/dso-skill/references/passes.md": 1,
+      "scripts/check_docs.py": 1
     },
     "graded": {
       "backtester/core/strategies/advanced.py": 1,
@@ -52874,6 +52907,7 @@
       "soltui/tests/test_service.py": 2
     },
     "importerror": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/plotting.py": 1,
       "backtester/core/report.py": 1,
       "index/build.py": 1,
@@ -52905,7 +52939,7 @@
       "soltui/tests/test_service.py": 5
     },
     "imports": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 4,
       "backtester/core/strategies/signals.py": 2,
       "backtester/tests/test_index.py": 5,
       "docs/COMPONENTS.md": 3,
@@ -53728,6 +53762,7 @@
       "research/decide.py": 18
     },
     "indicators": {
+      ".github/workflows/ci.yml": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/cli.py": 1,
@@ -54555,7 +54590,7 @@
     "install": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 9,
       "CLAUDE.md": 1,
       "GEMINI.md": 2,
       "README.md": 4,
@@ -54580,6 +54615,7 @@
       "extension/tools/measure-recentre.js": 1,
       "index/build.py": 1,
       "index/make_files_doc.py": 4,
+      "scripts/check_docs.py": 3,
       "soltui/README.md": 3,
       "soltui/app.py": 5,
       "soltui/config.py": 1,
@@ -54680,6 +54716,7 @@
       "docs/strategy-optimization-concept-family.md": 1
     },
     "instead": {
+      ".github/workflows/ci.yml": 2,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
       "backtester/PROMPT.md": 1,
@@ -54749,7 +54786,7 @@
       "research/sweep.py": 1,
       "research/verify_numbers.py": 1,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 1,
       "soltui/app.py": 1,
       "soltui/cumulative.py": 1,
@@ -56282,7 +56319,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "index/build.py": 8,
       "research/perturb.py": 4,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/signals.py": 1,
       "soltui/tui.py": 2
     },
@@ -56605,6 +56642,7 @@
       "soltui/tests/test_tui.py": 3
     },
     "itself": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/indicators.py": 1,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/strategy_cards/adx_filtered_trend.md": 1,
@@ -60525,7 +60563,7 @@
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 18,
       "scripts/build_doc_index.py": 2,
-      "scripts/check_docs.py": 3,
+      "scripts/check_docs.py": 4,
       "soltui/analyze.py": 3,
       "soltui/app.py": 1,
       "soltui/cumulative.py": 5,
@@ -61990,7 +62028,7 @@
       "research/turnover_table.py": 2,
       "research/verify_numbers.py": 22,
       "scripts/build_doc_index.py": 6,
-      "scripts/check_docs.py": 9,
+      "scripts/check_docs.py": 10,
       "soltui/README.md": 1,
       "soltui/analyze.py": 4,
       "soltui/app.py": 2,
@@ -62604,7 +62642,7 @@
       "research/sweep.py": 7,
       "research/sweep_untested.py": 2,
       "research/verify_numbers.py": 18,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 6,
       "soltui/README.md": 3,
       "soltui/analyze.py": 5,
       "soltui/app.py": 2,
@@ -62658,6 +62696,9 @@
     },
     "load_cpcv": {
       "research/verify_numbers.py": 4
+    },
+    "load_failures": {
+      "scripts/check_docs.py": 4
     },
     "load_geometry": {
       "research/verify_numbers.py": 4
@@ -66989,6 +67030,7 @@
       "research/signal_redundancy.py": 11,
       "research/sweep.py": 1,
       "research/verify_numbers.py": 19,
+      "scripts/check_docs.py": 1,
       "soltui/docs_browser.py": 2,
       "soltui/paper.py": 1,
       "soltui/tests/test_signals.py": 2,
@@ -69216,7 +69258,7 @@
       "research/turnover_table.py": 4,
       "research/verify_numbers.py": 11,
       "scripts/build_doc_index.py": 8,
-      "scripts/check_docs.py": 11,
+      "scripts/check_docs.py": 13,
       "soltui/app.py": 1,
       "soltui/config.py": 4,
       "soltui/docs_browser.py": 2,
@@ -69259,7 +69301,8 @@
     "mistaken": {
       "backtester/strategy_cards/dual_momentum_12_1.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
-      "research/decide.py": 1
+      "research/decide.py": 1,
+      "scripts/check_docs.py": 1
     },
     "mistakes": {
       "docs/strategy-optimization-concept-family.md": 1
@@ -69719,7 +69762,7 @@
       "backtester/tests/test_index.py": 8
     },
     "module": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 3,
       "GEMINI.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 4,
@@ -69770,7 +69813,7 @@
       "research/signal_redundancy.py": 3,
       "research/sweep.py": 2,
       "research/turnover_table.py": 1,
-      "scripts/check_docs.py": 2,
+      "scripts/check_docs.py": 6,
       "soltui/analyze.py": 2,
       "soltui/app.py": 2,
       "soltui/config.py": 2,
@@ -69810,6 +69853,7 @@
       "index/build.py": 1,
       "index/make_files_doc.py": 4,
       "research/PROMPT_STRATEGIES.md": 1,
+      "scripts/check_docs.py": 1,
       "soltui/README.md": 2,
       "soltui/app.py": 2,
       "soltui/docs_browser.py": 2,
@@ -71073,7 +71117,7 @@
     "name": {
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
-      ".github/workflows/ci.yml": 20,
+      ".github/workflows/ci.yml": 21,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/cli.py": 13,
@@ -71226,7 +71270,7 @@
       "research/turnover_table.py": 5,
       "research/verify_numbers.py": 61,
       "scripts/build_doc_index.py": 2,
-      "scripts/check_docs.py": 16,
+      "scripts/check_docs.py": 24,
       "soltui/README.md": 1,
       "soltui/app.py": 3,
       "soltui/config.py": 1,
@@ -71294,7 +71338,7 @@
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 1,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/app.py": 1,
       "soltui/make_icon.py": 1,
       "soltui/menubar_launcher.py": 1,
@@ -71438,7 +71482,7 @@
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/verify_numbers.py": 1,
       "scripts/build_doc_index.py": 2,
-      "scripts/check_docs.py": 3,
+      "scripts/check_docs.py": 4,
       "soltui/config.py": 1
     },
     "nan": {
@@ -71949,7 +71993,7 @@
       ".github/CODEOWNERS": 1,
       ".github/copilot-instructions.md": 2,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 2,
       "CLAUDE.md": 3,
       "GEMINI.md": 2,
       "README.md": 1,
@@ -72583,6 +72627,7 @@
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 10,
       "scripts/build_doc_index.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/README.md": 2,
       "soltui/config.py": 1,
       "soltui/cumulative.py": 4,
@@ -74478,7 +74523,7 @@
       "research/sweep.py": 2,
       "research/turnover_table.py": 2,
       "research/verify_numbers.py": 8,
-      "scripts/check_docs.py": 3,
+      "scripts/check_docs.py": 4,
       "soltui/README.md": 3,
       "soltui/analyze.py": 1,
       "soltui/cumulative.py": 2,
@@ -74575,6 +74620,7 @@
       "research/decide.py": 1,
       "research/geometry.py": 1,
       "research/verify_numbers.py": 5,
+      "scripts/check_docs.py": 1,
       "soltui/analyze.py": 2,
       "soltui/cumulative.py": 1,
       "soltui/docs_browser.py": 2,
@@ -74642,6 +74688,7 @@
     },
     "numpy": {
       ".github/dependabot.yml": 1,
+      ".github/workflows/ci.yml": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/cli.py": 1,
@@ -78231,6 +78278,7 @@
     },
     "own": {
       ".gitattributes": 2,
+      ".github/workflows/ci.yml": 1,
       ".gitignore": 1,
       "CLAUDE.md": 1,
       "backtester/PROMPT.md": 1,
@@ -78549,6 +78597,7 @@
       "index/make_files_doc.py": 2
     },
     "packages": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/indicators.py": 1,
       "backtester/strategy_cards/bb_breakout.md": 1,
       "backtester/tests/test_strategy_duplication.py": 1,
@@ -82117,7 +82166,7 @@
     },
     "pip": {
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 4,
+      ".github/workflows/ci.yml": 7,
       "README.md": 2,
       "backtester/README.md": 1,
       "docs/DEVELOPMENT.md": 2,
@@ -82126,6 +82175,7 @@
       "docs/SCRIPTS.md": 1,
       "docs/onboarding.md": 2,
       "index/make_files_doc.py": 2,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 1,
       "soltui/app.py": 2,
       "soltui/serve.py": 1
@@ -83046,6 +83096,7 @@
       "research/coin-intelligence/hype-hyperliquid.md": 3,
       "research/coin-intelligence/sol-solana.md": 2,
       "research/perturb.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 1
     },
@@ -85395,6 +85446,7 @@
       "research/coin-intelligence/rain-rain.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/verify_numbers.py": 2,
+      "scripts/check_docs.py": 1,
       "soltui/status.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tui.py": 1
@@ -85980,7 +86032,7 @@
       "research/coin-intelligence/sol-solana.md": 2,
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 21,
-      "scripts/check_docs.py": 2,
+      "scripts/check_docs.py": 4,
       "soltui/tests/test_panes.py": 1
     },
     "prose_is_oos": {
@@ -88965,7 +89017,7 @@
       "research/leverage_economics.py": 1
     },
     "rather": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       "README.md": 1,
       "backtester/PROMPT.md": 8,
       "backtester/README.md": 10,
@@ -89113,7 +89165,7 @@
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 13,
       "scripts/build_doc_index.py": 2,
-      "scripts/check_docs.py": 4,
+      "scripts/check_docs.py": 5,
       "soltui/README.md": 2,
       "soltui/analyze.py": 5,
       "soltui/app.py": 1,
@@ -90060,6 +90112,7 @@
       "research/sweep.py": 3,
       "research/turnover_table.py": 2,
       "scripts/build_doc_index.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/README.md": 2,
       "soltui/analyze.py": 3,
       "soltui/app.py": 3,
@@ -90091,6 +90144,7 @@
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/SECURITY.md": 3,
       ".github/copilot-instructions.md": 3,
+      ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 2,
       "README.md": 3,
@@ -90206,7 +90260,7 @@
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 4,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 4,
+      "scripts/check_docs.py": 5,
       "soltui/README.md": 2,
       "soltui/app.py": 1,
       "soltui/docs_browser.py": 5,
@@ -91715,6 +91769,7 @@
       "research/signal_redundancy.py": 1,
       "research/sweep.py": 1,
       "research/verify_numbers.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/docs_browser.py": 2,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 1,
@@ -93587,6 +93642,7 @@
       "soltui/tui.py": 1
     },
     "reports": {
+      ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 2,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 5,
@@ -93626,7 +93682,7 @@
       "research/perturb.py": 9,
       "research/signal_redundancy.py": 2,
       "research/verify_numbers.py": 1,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 1,
       "soltui/analyze.py": 4,
       "soltui/app.py": 2,
@@ -94083,7 +94139,7 @@
     },
     "requirements": {
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 7,
       "CLAUDE.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 4,
@@ -94106,6 +94162,7 @@
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 1,
       "soltui/app.py": 1,
       "soltui/requirements.txt": 1
@@ -96104,7 +96161,7 @@
       "research/decide.py": 2,
       "research/perturb.py": 2,
       "research/verify_numbers.py": 2,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 2,
       "soltui/analyze.py": 1,
       "soltui/serve.py": 1,
@@ -97713,7 +97770,7 @@
       "soltui/tests/test_panes.py": 1
     },
     "runner": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       "backtester/core/strategy_cards.py": 22,
       "backtester/strategy_cards/README.md": 4,
       "backtester/strategy_cards/adx_filtered_trend.md": 1,
@@ -97784,6 +97841,7 @@
       "extension/src/venues/triggerVenue.js": 2
     },
     "running": {
+      ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 4,
@@ -98605,6 +98663,7 @@
       "research/decide.py": 7,
       "research/signal_redundancy.py": 2,
       "research/verify_numbers.py": 12,
+      "scripts/check_docs.py": 1,
       "soltui/docs_browser.py": 1,
       "soltui/requirements.txt": 1,
       "soltui/tests/test_signals.py": 2,
@@ -98961,6 +99020,9 @@
       "research/PROMPT_STRATEGIES.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
       "soltui/requirements.txt": 1
+    },
+    "scopes": {
+      ".github/workflows/ci.yml": 1
     },
     "scoping": {
       "docs/FILES.md": 1,
@@ -99476,7 +99538,6 @@
       "research/coin-intelligence/zec-zcash.md": 10
     },
     "seconds": {
-      ".github/workflows/ci.yml": 1,
       "backtester/PROMPT.md": 1,
       "backtester/cli.py": 2,
       "backtester/core/data.py": 8,
@@ -100948,7 +101009,7 @@
       "research/turnover_table.py": 6,
       "research/verify_numbers.py": 21,
       "scripts/build_doc_index.py": 2,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 1,
       "soltui/config.py": 1,
       "soltui/roster.py": 2,
@@ -103540,6 +103601,7 @@
     },
     "single": {
       ".github/CODEOWNERS": 2,
+      ".github/workflows/ci.yml": 1,
       "GEMINI.md": 2,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 2,
@@ -105511,7 +105573,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 2,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 9,
       ".gitignore": 5,
       "CLAUDE.md": 1,
       "GEMINI.md": 2,
@@ -105535,7 +105597,7 @@
       "index/build.py": 1,
       "index/make_files_doc.py": 12,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 9,
+      "scripts/check_docs.py": 10,
       "soltui/README.md": 9,
       "soltui/SolTUI.icns": 3,
       "soltui/__init__.py": 1,
@@ -105787,7 +105849,7 @@
       "research/sweep_untested.py": 1,
       "research/turnover_table.py": 3,
       "research/verify_numbers.py": 16,
-      "scripts/check_docs.py": 3,
+      "scripts/check_docs.py": 4,
       "soltui/analyze.py": 3,
       "soltui/cumulative.py": 2,
       "soltui/docs_browser.py": 4,
@@ -107349,7 +107411,7 @@
       "research/decide.py": 8,
       "research/turnover_table.py": 2,
       "research/verify_numbers.py": 5,
-      "scripts/check_docs.py": 4,
+      "scripts/check_docs.py": 5,
       "soltui/docs_browser.py": 1,
       "soltui/runner.py": 1,
       "soltui/status.py": 1,
@@ -108365,7 +108427,7 @@
       "research/sweep.py": 8,
       "research/verify_numbers.py": 6,
       "scripts/build_doc_index.py": 1,
-      "scripts/check_docs.py": 2,
+      "scripts/check_docs.py": 4,
       "soltui/app.py": 5,
       "soltui/live_run.py": 2,
       "soltui/make_icon.py": 2,
@@ -108973,7 +109035,8 @@
     },
     "stories": {
       "docs/FILES.md": 1,
-      "docs/INSTALLATION.md": 2
+      "docs/INSTALLATION.md": 2,
+      "scripts/check_docs.py": 1
     },
     "storm": {
       "docs/COMPONENTS.md": 1,
@@ -109053,7 +109116,7 @@
       "research/turnover_table.py": 4,
       "research/verify_numbers.py": 53,
       "scripts/build_doc_index.py": 13,
-      "scripts/check_docs.py": 23,
+      "scripts/check_docs.py": 25,
       "soltui/analyze.py": 19,
       "soltui/app.py": 7,
       "soltui/config.py": 11,
@@ -110669,7 +110732,7 @@
     },
     "suite": {
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 5,
       "README.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/core/strategy_cards.py": 1,
@@ -110696,7 +110759,7 @@
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 2,
       "research/cpcv_sweep.py": 1,
-      "scripts/check_docs.py": 26,
+      "scripts/check_docs.py": 33,
       "soltui/app.py": 1,
       "soltui/requirements.txt": 1,
       "soltui/tests/test_panes.py": 1
@@ -110707,9 +110770,10 @@
     "suites": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
+      ".github/workflows/ci.yml": 1,
       "docs/TESTING.md": 1,
       "docs/dso-skill/SKILL.md": 1,
-      "scripts/check_docs.py": 3
+      "scripts/check_docs.py": 5
     },
     "sum": {
       "backtester/core/archive_price.py": 1,
@@ -112100,7 +112164,7 @@
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 7,
       "scripts/build_doc_index.py": 2,
-      "scripts/check_docs.py": 4,
+      "scripts/check_docs.py": 6,
       "soltui/analyze.py": 3,
       "soltui/app.py": 4,
       "soltui/make_icon.py": 2,
@@ -113074,6 +113138,7 @@
       "research/results/perturb_long_obv_trend.txt": 1,
       "research/results/perturb_long_vol_regime.txt": 1,
       "research/signal_redundancy.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/app.py": 1,
       "soltui/serve.py": 2
     },
@@ -113353,7 +113418,7 @@
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 3,
       ".github/copilot-instructions.md": 5,
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 6,
       "AGENTS.md": 1,
       "CLAUDE.md": 7,
       "GEMINI.md": 3,
@@ -113470,7 +113535,7 @@
       "research/results/perturb_long_vol_regime.txt": 2,
       "research/sweep.py": 4,
       "research/sweep_untested.py": 5,
-      "scripts/check_docs.py": 28,
+      "scripts/check_docs.py": 29,
       "soltui/README.md": 6,
       "soltui/app.py": 1,
       "soltui/paper.py": 1,
@@ -115901,7 +115966,7 @@
       "backtester/tests/test_strategy_duplication.py": 1,
       "backtester/tests/test_sweep_pair_gate.py": 2,
       "backtester/tests/test_universe.py": 3,
-      "scripts/check_docs.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_panes.py": 4,
       "soltui/tests/test_service.py": 1,
@@ -116199,6 +116264,9 @@
       "docs/FILES.md": 1,
       "soltui/tests/test_status_roster.py": 2
     },
+    "testmethodname": {
+      "scripts/check_docs.py": 1
+    },
     "testnearnoise": {
       "backtester/tests/test_interpret.py": 2,
       "docs/FILES.md": 1
@@ -116291,7 +116359,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 3,
       ".github/copilot-instructions.md": 6,
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 8,
       "CLAUDE.md": 8,
       "GEMINI.md": 5,
       "README.md": 7,
@@ -116411,7 +116479,7 @@
       "docs/FILES.md": 1
     },
     "testsuite": {
-      "scripts/check_docs.py": 3
+      "scripts/check_docs.py": 5
     },
     "testsweepdrift": {
       "backtester/tests/test_strategy_cards.py": 2,
@@ -117120,6 +117188,7 @@
       "soltui/tui.py": 2
     },
     "though": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/strategy_cards/buy_and_hold.md": 1,
       "backtester/strategy_cards/obv_trend.md": 1,
@@ -121302,6 +121371,7 @@
     },
     "tui": {
       ".github/copilot-instructions.md": 1,
+      ".github/workflows/ci.yml": 1,
       "README.md": 1,
       "docs/COMPONENTS.md": 2,
       "docs/FILES.md": 11,
@@ -121526,6 +121596,7 @@
       "soltui/tui.py": 1
     },
     "turns": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/strategies/signals.py": 2,
       "backtester/strategy_cards/pairs_cointegration.md": 1,
       "backtester/strategy_cards/sma_regime.md": 1,
@@ -121703,7 +121774,7 @@
       "extension/src/venues/triggerVenue.js": 2
     },
     "txt": {
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 6,
       "CLAUDE.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
@@ -121742,6 +121813,7 @@
       "research/results/perturb_long_vol_regime.txt": 1,
       "research/signal_redundancy.py": 1,
       "scripts/build_doc_index.py": 1,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 1,
       "soltui/app.py": 1,
       "soltui/docs_browser.py": 1,
@@ -121856,6 +121928,7 @@
       "research/perturb.py": 4,
       "research/signal_redundancy.py": 2,
       "research/sweep.py": 1,
+      "scripts/check_docs.py": 1,
       "soltui/config.py": 1,
       "soltui/runner.py": 2,
       "soltui/serve.py": 1,
@@ -122758,6 +122831,9 @@
       "docs/trading-signals-concept-family.md": 1,
       "research/STRATEGIES.md": 1
     },
+    "unimportable": {
+      "scripts/check_docs.py": 5
+    },
     "uninformative": {
       "backtester/tests/test_interpret.py": 1,
       "research/cpcv_sweep.py": 1
@@ -122775,6 +122851,7 @@
       "soltui/soltui-service": 4
     },
     "uninstalled": {
+      "scripts/check_docs.py": 1,
       "soltui/soltui-service": 1
     },
     "union": {
@@ -122909,7 +122986,7 @@
       "index/make_files_doc.py": 1,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
-      "scripts/check_docs.py": 7,
+      "scripts/check_docs.py": 10,
       "soltui/README.md": 2,
       "soltui/tests/test_docs_browser.py": 6,
       "soltui/tests/test_panes.py": 6,
@@ -124322,6 +124399,7 @@
     },
     "used": {
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
+      ".github/workflows/ci.yml": 1,
       "backtester/cli.py": 1,
       "backtester/core/data.py": 2,
       "backtester/core/indicators.py": 2,
@@ -125334,7 +125412,7 @@
       "research/sweep.py": 3,
       "research/turnover_table.py": 2,
       "research/verify_numbers.py": 5,
-      "scripts/check_docs.py": 3,
+      "scripts/check_docs.py": 4,
       "soltui/analyze.py": 1,
       "soltui/signals.py": 1,
       "soltui/tests/test_signals.py": 3,
@@ -128495,6 +128573,7 @@
       "research/signal_redundancy.py": 1
     },
     "whole": {
+      ".github/workflows/ci.yml": 1,
       "backtester/README.md": 1,
       "backtester/core/cpcv.py": 1,
       "backtester/core/data.py": 2,
@@ -128575,6 +128654,7 @@
       "research/sweep.py": 2,
       "research/turnover_table.py": 1,
       "research/verify_numbers.py": 6,
+      "scripts/check_docs.py": 1,
       "soltui/analyze.py": 1,
       "soltui/app.py": 2,
       "soltui/cumulative.py": 1,
@@ -129253,6 +129333,7 @@
       "tradingskilllist/trading-skills.md": 2
     },
     "without": {
+      ".github/workflows/ci.yml": 1,
       ".gitignore": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 3,
@@ -130327,6 +130408,7 @@
       "research/signal_redundancy.py": 1,
       "research/sweep.py": 1,
       "research/verify_numbers.py": 4,
+      "scripts/check_docs.py": 2,
       "soltui/README.md": 1,
       "soltui/analyze.py": 1,
       "soltui/cumulative.py": 3,
@@ -132053,10 +132135,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 971.5,
+    "avgDocLength": 972.2,
     "documents": 304,
-    "terms": 15542,
-    "termsBeforePrune": 15545,
-    "totalTokens": 295334
+    "terms": 15548,
+    "termsBeforePrune": 15551,
+    "totalTokens": 295555
   }
 }
