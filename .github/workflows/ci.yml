@@ -88,16 +88,27 @@ jobs:
           python-version: '3.13'
           cache: pip
 
+      # soltui/tui.py imports backtester.core.indicators, which imports numpy,
+      # so the backtester's requirements are a real dependency of this suite even
+      # though soltui/requirements.txt scopes itself to soltui's own packages.
+      # Without this the suite still "runs" -- discovery turns each failed import
+      # into one _FailedTest, so it reports 54 tests instead of 187.
       - name: Install dependencies
-        run: pip install -r soltui/requirements.txt
+        run: |
+          pip install -r backtester/requirements.txt
+          pip install -r soltui/requirements.txt
 
       - name: Unit tests
         run: python3 -m unittest discover -s soltui/tests -t .
 
   # Documentation drift is a build failure, not a nit: the docs claimed 250
   # backtester tests for several commits while the suite had grown to 454, and
-  # nothing caught it. Counts come from unittest discovery, so this job needs no
-  # dependencies and runs in seconds.
+  # nothing caught it. Counts come from unittest discovery rather than from
+  # running the suites, so this job is still cheap -- but it is NOT dependency
+  # free, which is what it used to claim. Discovery imports each test module, and
+  # an ImportError collapses a whole module into a single _FailedTest, so a
+  # depless runner counted 33 backtester tests instead of 499 and the check
+  # failed against docs that were in fact correct.
   docs:
     name: docs (drift check)
     runs-on: ubuntu-latest
@@ -107,6 +118,11 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          pip install -r backtester/requirements.txt
+          pip install -r soltui/requirements.txt
 
       - name: Test counts and retrieval indexes agree with the repo
         run: python3 scripts/check_docs.py

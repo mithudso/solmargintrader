@@ -800,6 +800,145 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(panel.display)
 
 
+class TestHeaderGlossary(unittest.IsolatedAsyncioTestCase):
+    """Hovering a column header explains the term (Sharpe, IQR, ...)."""
+
+    async def test_every_column_header_in_the_app_has_a_glossary_entry(self) -> None:
+        """Pins coverage: a future table column without a definition fails
+        here, instead of silently shipping a header that explains nothing."""
+        from soltui.tui import HEADER_GLOSSARY, GlossaryTable
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            from textual.widgets import TabbedContent
+            # Activate the lazy tabs so their tables exist with columns.
+            for tab in ("tab-top5", "tab-cumulative", "tab-docs"):
+                app.query_one(TabbedContent).active = tab
+                await pilot.pause()
+            missing = [
+                (table.id, label)
+                for table in app.query(GlossaryTable)
+                for label in (str(c.label) for c in table.ordered_columns)
+                if label.strip().casefold() not in HEADER_GLOSSARY
+            ]
+            self.assertEqual(missing, [])
+
+    async def test_hovering_a_header_yields_its_definition(self) -> None:
+        from soltui.tui import GlossaryTable
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            table = app.query_one("#results-table", GlossaryTable)
+            labels = [str(c.label) for c in table.ordered_columns]
+            sharpe_col = labels.index("median Sharpe")
+            iqr_col = labels.index("IQR")
+
+            self.assertIn("risk-adjusted", table.header_tooltip(sharpe_col))
+            self.assertIn("Interquartile", table.header_tooltip(iqr_col))
+            self.assertIsNone(table.header_tooltip(99))
+
+    async def test_delta_header_survives_casefolding(self) -> None:
+        """str.casefold() lowercases Δ to δ; the lookup must still hit."""
+        from soltui.tui import GlossaryTable
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            from textual.widgets import TabbedContent
+            app.query_one(TabbedContent).active = "tab-top5"
+            await pilot.pause()
+            table = app.query_one("#top5-transfers", GlossaryTable)
+            labels = [str(c.label) for c in table.ordered_columns]
+            delta_col = labels.index("Δ vs SOL")
+            self.assertIn("transfer", table.header_tooltip(delta_col))
+
+
+class TestTop5Tab(unittest.IsolatedAsyncioTestCase):
+    """The recommended-configurations tab: evidence shown, re-test wired."""
+
+    async def _open(self, app, pilot):
+        from textual.widgets import TabbedContent
+        app.query_one(TabbedContent).active = "tab-top5"
+        await pilot.pause()
+
+    async def test_shows_five_configs_and_their_transfers(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await self._open(app, pilot)
+            table = app.query_one("#top5-table", DataTable)
+            self.assertEqual(table.row_count, 5)
+            # Rank 1's published SOL Sharpe, straight from the evidence file.
+            self.assertEqual(str(table.get_row_at(0)[4]), "+1.345")
+            transfers = app.query_one("#top5-transfers", DataTable)
+            self.assertEqual(transfers.row_count, 10)  # 5 configs x DOGE, ZEC
+
+    async def test_warning_names_the_pbo_finding_not_sharpe_rank(self) -> None:
+        """The tab must carry the study's own caveat: selection is by
+        robustness checks, because ranking by Sharpe selects noise."""
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await self._open(app, pilot)
+            hints = " ".join(str(getattr(w, "content", "") or
+                                 getattr(w, "renderable", ""))
+                             for w in app.query(".hint"))
+            self.assertIn("0.700", hints)
+            self.assertIn("NOT by Sharpe", hints)
+            self.assertIn("buy_and_hold", hints)
+
+    async def test_add_all_puts_the_five_member_signals_in_the_roster(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await self._open(app, pilot)
+            app.roster.clear()
+            await pilot.click("#top5-add-all")
+            await pilot.pause()
+            names = {e.name for e in app.roster}
+            self.assertEqual(names, {"dual_momentum", "vol_regime",
+                                     "hurst_switch", "ou_reversion",
+                                     "obv_trend"})
+            self.assertIn("added", text_of(app, "#top5-status"))
+
+    async def test_add_all_twice_reports_instead_of_erroring(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await self._open(app, pilot)
+            app.roster.clear()
+            await pilot.click("#top5-add-all")
+            await pilot.pause()
+            await pilot.click("#top5-add-all")
+            await pilot.pause()
+            self.assertIn("already in roster", text_of(app, "#top5-status"))
+
+    async def test_add_selected_adds_only_that_configs_members(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await self._open(app, pilot)
+            app.roster.clear()
+            table = app.query_one("#top5-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[1]) == "obv_trend_60")
+            table.move_cursor(row=row)
+            await pilot.click("#top5-add-selected")
+            await pilot.pause()
+            self.assertEqual({e.name for e in app.roster}, {"obv_trend"})
+
+    async def test_missing_evidence_file_reports_the_command(self) -> None:
+        from unittest import mock
+        from pathlib import Path
+
+        from soltui import top5 as top5_mod
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            with mock.patch.object(top5_mod, "TOP5_CSV",
+                                   Path("/nonexistent/top5.csv")):
+                await self._open(app, pilot)
+            headline = text_of(app, "#top5-headline")
+            self.assertIn("--top5", headline)
+            self.assertEqual(
+                app.query_one("#top5-table", DataTable).row_count, 0)
+
+
 class _VimHarness(App):
     """A bare app around one `VimTextArea` -- exercising the widget directly
     is both faster and more precise than mounting the full `SolTuiApp` (nine

@@ -1,8 +1,9 @@
-"""Textual TUI: five tabs over the backtester.
+"""Textual TUI: the console over the backtester.
 
     python3 -m soltui.tui
 
-Tabs: Settings, Strategies, Signals, Backtest, Execute (dry-run only).
+Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only),
+Analyze, Cumulative, Research, Docs.
 
 All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`,
 `status`); this file is presentation and wiring. That split is what lets the
@@ -45,6 +46,8 @@ from . import bgcontrol
 from . import bgqueue
 from . import cumulative as cumulative_mod
 from . import docs_browser
+from . import top5 as top5_mod
+from . import live_run
 from .config import INTERVALS, Settings, load_settings, save_settings
 from .paper import MODE_LABEL, PaperSession, start_session
 from .roster import Roster, RosterError, available_strategies
@@ -167,6 +170,133 @@ def sort_key(value: Any) -> tuple[int, float, str]:
         return (0, float(text.replace(",", "").replace("%", "").lstrip("+")), "")
     except ValueError:
         return (1, 0.0, text.casefold())
+
+
+# Column-header glossary, keyed by the exact header label (case-insensitive).
+# One dict for every table on purpose: "median Sharpe" must mean the same
+# thing on the Backtest, Top 5 and Cumulative tabs, and a single lookup makes
+# a divergence impossible. A label with no entry shows no tooltip -- better
+# than a generic sentence pretending to explain it.
+HEADER_GLOSSARY = {
+    "median sharpe": (
+        "Sharpe ratio = mean return / volatility of returns (annualised): "
+        "risk-adjusted performance, >0 means paid for the risk taken. This is "
+        "the MEDIAN across all CPCV paths, not one backtest's number."),
+    "iqr": (
+        "Interquartile range: the spread between the 25th and 75th percentile "
+        "of per-path Sharpe. Large IQR = the result depends heavily on which "
+        "slice of history you test — less trustworthy."),
+    "% paths +": (
+        "Fraction of CPCV paths (regime-mixed train/test splits) where the "
+        "Sharpe was positive. 100% of 15 is still only 15 paths."),
+    "median ret": (
+        "Median total return across CPCV paths over the tested window, "
+        "after fees and slippage."),
+    "median return": (
+        "Median total return across CPCV paths over the tested window, "
+        "after fees and slippage."),
+    "trades": (
+        "Total trades executed. Below 10 the engine refuses to rank the row "
+        "(the evidence floor) — a great Sharpe on 6 trades is noise."),
+    "paths": (
+        "Number of CPCV paths evaluated. Nominal is C(blocks, k), but slow "
+        "strategies lose warm-up blocks; fewer paths = weaker estimate."),
+    "rankable": (
+        "Rows with at least 1 path AND ≥10 trades — enough evidence to "
+        "appear in a ranking at all."),
+    "below floor": (
+        "Rows the engine evaluated but refused: fewer than 10 trades. "
+        "Counted separately, never mixed into rankings."),
+    "positive": "Rankable rows whose median Sharpe is above zero.",
+    "made money": "Rankable rows whose median return is above zero.",
+    "best (rankable)": (
+        "Highest median Sharpe among rankable rows only — below-floor rows "
+        "are excluded no matter what they claim."),
+    "claims sharpe": (
+        "The Sharpe this below-floor row reports. Shown to make the point: "
+        "on this few trades it would often top a naive ranking."),
+    # NB: str.casefold() lowercases Δ to δ, so the key must be δ.
+    "δ vs sol": (
+        "Change in median Sharpe versus the SOL result the configuration was "
+        "selected on. Large negative delta = does not transfer off-asset."),
+    "horizon": (
+        "Bar-interval class from research/sweep.py: short/medium/long map to "
+        "different intervals and parameter scalings."),
+    "signals": (
+        "The member indicator strategies. (all) = every member must agree "
+        "before a position; (any) = one agreeing member is enough."),
+    "configuration": "Strategy (or composite) plus its parameter values.",
+    "strategy": "The registered strategy name.",
+    "in roster": "Strategy label with parameters, as the sweep will run it.",
+    "family": (
+        "Behavioural family (trend, momentum, mean-reversion, ...) — see the "
+        "Signals tab for when each kind fails."),
+    "warm-up": (
+        "Bars of history the strategy needs before its first signal. Warm-up "
+        "eats CPCV blocks, which is why slow strategies have fewer paths."),
+    "file": "Source CSV in research/results/ — results are never pooled across files.",
+    "equation": "The indicator's formula as implemented in backtester/core/indicators.py.",
+    "kind": "Coarse file classification from the repo index (code, doc, result, test...).",
+    "editable": "Whether the Docs editor may write this file. research/results/ never is.",
+    "lines": "Line count at index build time.",
+    "summary": "One-line summary extracted when the repo index was built.",
+    "path": "File path relative to the repository root.",
+    "bar": "Bar index within the replayed series.",
+    "side": "buy or sell.",
+    "reason": "Which rule produced the intended fill.",
+    "units": "Position size in units of the asset.",
+    "cost": "Cash spent or received including fees.",
+    "equity": "Account value after the fill, marked at that bar's close.",
+    "driver": "The research script that produces this artifact.",
+    "answers": "The question the driver was built to answer.",
+    "established": "What the run actually established, quoted from the docs.",
+    "action": "What the rule would decide at the chosen bar: buy, sell or hold.",
+    "holding -> wants": "Position it would be holding, versus what it wants now.",
+    "warmup": "Bars of history the strategy needs before its first signal.",
+    "bars": "Bars of the truncated series available to the replay.",
+    "#": "Rank in research/TOP5-RECOMMENDATION.md — by robustness checks cleared, not by Sharpe.",
+    "asset": "The coin the configuration was evaluated on for this row.",
+    "when": "Timestamp of the bar (UTC).",
+    "price": "Fill price used by the simulation for that bar.",
+    "signal": "The indicator this row defines parameters for.",
+    "what it is / when it fails": (
+        "The family's bet in one line, and the market condition that "
+        "reliably breaks it."),
+}
+
+
+class GlossaryTable(DataTable):
+    """`DataTable` that explains its column headers on hover.
+
+    Textual tooltips are per-widget, not per-cell, so a static tooltip could
+    only describe the whole table. Header cells carry their position in the
+    segment style meta (`row == -1` marks the header row — the same meta the
+    widget's own hover cursor uses), so the tooltip is swapped on every
+    mouse move: over a known header it becomes that column's glossary entry,
+    anywhere else it clears rather than lingering half-screen away from what
+    it describes.
+    """
+
+    def header_tooltip(self, column_index: int) -> str | None:
+        """The glossary entry for one column, or None when there isn't one."""
+        try:
+            label = str(self.ordered_columns[column_index].label)
+        except IndexError:
+            return None
+        return HEADER_GLOSSARY.get(label.strip().casefold())
+
+    def _on_mouse_move(self, event: events.MouseMove) -> None:
+        super()._on_mouse_move(event)
+        meta = event.style.meta
+        tooltip = None
+        if meta and meta.get("row") == -1 and meta.get("column", -1) >= 0:
+            tooltip = self.header_tooltip(meta["column"])
+        if self.tooltip != tooltip:
+            self.tooltip = tooltip
+
+    def _on_leave(self, event: events.Leave) -> None:
+        super()._on_leave(event)
+        self.tooltip = None
 
 
 class VimTextArea(TextArea):
@@ -321,12 +451,12 @@ class VimTextArea(TextArea):
 
 
 class SolTuiApp(App):
-    """The five-tab console."""
+    """The console: ten tabs over the tested modules."""
 
     TITLE = "soltui — SOL strategy console"
     SUB_TITLE = "dry-run only · no live order path"
     CSS = """
-    #execute-banner {
+    #execute-banner, #live-run-banner {
         background: $warning 30%;
         color: $text;
         border: heavy $warning;
@@ -395,6 +525,8 @@ class SolTuiApp(App):
         # How far the results file has been consumed, and which file that was, so
         # a refresh parses only what the worker appended since last time.
         self._queue_cursor = bgqueue.ResultsCursor()
+        self._top5_loaded = False
+        self._top5_configs: list[top5_mod.Top5Config] = []
 
     # -- layout ----------------------------------------------------------
 
@@ -411,6 +543,10 @@ class SolTuiApp(App):
                 yield from self._signals_pane()
             with TabPane("Backtest", id="tab-backtest"):
                 yield from self._backtest_pane()
+            with TabPane("Top 5", id="tab-top5"):
+                yield from self._top5_pane()
+            with TabPane("Live Run", id="tab-liverun"):
+                yield from self._live_run_pane()
             with TabPane("Execute", id="tab-execute"):
                 yield from self._execute_pane()
             with TabPane("Analyze", id="tab-analyze"):
@@ -491,8 +627,8 @@ class SolTuiApp(App):
                 classes="hint",
             )
             with Horizontal():
-                yield DataTable(id="available-table")
-                yield DataTable(id="roster-table")
+                yield GlossaryTable(id="available-table")
+                yield GlossaryTable(id="roster-table")
             with Horizontal(classes="form-row"):
                 yield Label("Params (k=v):")
                 yield Input(placeholder="fast=20 slow=50", id="strategy-params")
@@ -533,9 +669,9 @@ class SolTuiApp(App):
                 "backtester/core/indicators.py:",
                 classes="hint",
             )
-            yield DataTable(id="signals-table")
+            yield GlossaryTable(id="signals-table")
             yield Static("\nFamily behaviour — when each kind fails:", classes="hint")
-            yield DataTable(id="families-table")
+            yield GlossaryTable(id="families-table")
 
     def _backtest_pane(self) -> ComposeResult:
         """Run a CPCV sweep over the roster and show the distribution."""
@@ -548,9 +684,33 @@ class SolTuiApp(App):
             )
             with Horizontal(classes="form-row"):
                 yield Button("Run backtest (r)", variant="primary", id="btn-run")
+                yield Button("Run Untested Sweep", variant="warning", id="btn-run-untested")
                 yield Button("Cancel (c)", variant="error", id="btn-cancel")
                 yield Static("", id="backtest-status")
-            yield DataTable(id="results-table")
+            yield GlossaryTable(id="results-table")
+
+    def _live_run_pane(self) -> ComposeResult:
+        """Launcher for the Node.js extension in dry-run mode."""
+        with Vertical():
+            # A distinct id: `#execute-banner` is the dry-run safety banner the
+            # Execute tab owns, and two widgets sharing it made `query_one` return
+            # this one instead — silently reading the safety rail off the wrong widget.
+            yield Static("LIVE RUN LAUNCHER (DRY-RUN OPTION)", id="live-run-banner")
+            yield Static(
+                "This tab populates the most profitable/tested configuration and spawns "
+                "the Node.js extension's dry-run engine. The TUI itself places no orders.",
+                classes="hint",
+            )
+            with Horizontal(classes="form-row"):
+                yield Label("Recommended:")
+                yield Static("Loading...", id="live-run-recommendation", classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Label("Strategy:")
+                yield Input(value="", id="live-run-strategy")
+                yield Button("Spawn Node Dryrun", variant="success", id="btn-spawn-dryrun")
+                yield Button("Refresh", id="btn-refresh-live-run")
+            yield Static("", id="live-run-status")
+            yield TextArea(read_only=True, id="live-run-output")
 
     def _execute_pane(self) -> ComposeResult:
         """Dry-run replay. The banner is not decoration."""
@@ -572,7 +732,7 @@ class SolTuiApp(App):
                 yield Button("To end", id="btn-step-end")
                 yield Button("Reset", id="btn-paper-reset")
             yield Static("No dry run started.", id="exec-summary")
-            yield DataTable(id="fills-table")
+            yield GlossaryTable(id="fills-table")
 
     # -- lifecycle -------------------------------------------------------
 
@@ -932,6 +1092,27 @@ class SolTuiApp(App):
             msg += f" · {len(skipped)} skipped (warm-up or trade floor)"
         self.query_one("#backtest-status", Static).update(msg)
 
+    @on(Button.Pressed, "#btn-run-untested")
+    @work(thread=True)
+    def _run_untested_sweep(self) -> None:
+        """Run the untested sweep script."""
+        status = self.query_one("#backtest-status", Static)
+        self.call_from_thread(status.update, "running untested sweep...")
+        try:
+            import subprocess
+            from pathlib import Path
+            repo = Path(__file__).resolve().parent.parent
+            script = repo / "research" / "sweep_untested.py"
+            result = subprocess.run(
+                ["python3", str(script)], capture_output=True, text=True, cwd=str(repo)
+            )
+            if result.returncode == 0:
+                self.call_from_thread(status.update, f"untested sweep done.\n{result.stdout[-200:]}")
+            else:
+                self.call_from_thread(status.update, f"[red]error: {result.stderr}[/]")
+        except Exception as exc:
+            self.call_from_thread(status.update, f"[red]{exc}[/]")
+
     # -- execute (dry run) -----------------------------------------------
 
     @on(Button.Pressed, "#btn-paper-start")
@@ -1037,6 +1218,222 @@ class SolTuiApp(App):
             # is being written by another process right now, so re-reading on
             # every activation is the correct behaviour rather than waste.
             self._refresh_queue()
+        elif pane == "tab-top5" and not self._top5_loaded:
+            self._top5_loaded = True
+            self._refresh_top5()
+        elif pane == "tab-liverun":
+            self._refresh_live_run()
+
+    # -- Live Run --------------------------------------------------------
+
+    def _refresh_live_run(self) -> None:
+        best = live_run.get_best_strategy()
+        rec_static = self.query_one("#live-run-recommendation", Static)
+        strat_input = self.query_one("#live-run-strategy", Input)
+        rec_static.update(f"{best['strategy']} (from {best['source']}) — {best['details']}")
+        strat_input.value = best["strategy"]
+        
+    @on(Button.Pressed, "#btn-refresh-live-run")
+    def _btn_refresh_live_run(self) -> None:
+        self._refresh_live_run()
+        self.query_one("#live-run-status", Static).update("refreshed recommendation")
+        
+    @on(Button.Pressed, "#btn-spawn-dryrun")
+    @work(thread=True)
+    def _btn_spawn_dryrun(self) -> None:
+        strategy_name = self.query_one("#live-run-strategy", Input).value.strip()
+        status = self.query_one("#live-run-status", Static)
+        out_area = self.query_one("#live-run-output", TextArea)
+        
+        def _update(msg: str) -> None:
+            if "\n" in msg and "[green]" in msg or "[red]" in msg:
+                # We can update the TextArea for large output
+                # Just strip tags roughly for TextArea or use RichLog
+                import re
+                clean = re.sub(r'\[/?(red|green|b)\]', '', msg)
+                self.call_from_thread(lambda: setattr(out_area, "text", clean))
+            else:
+                self.call_from_thread(status.update, msg)
+                
+        if not strategy_name:
+            self.call_from_thread(status.update, "[red]Please enter a strategy name.[/red]")
+            return
+            
+        live_run.spawn_dryrun(strategy_name, _update)
+
+    # -- Top 5: the recommended configurations and their evidence ---------
+
+    def _top5_pane(self) -> ComposeResult:
+        """The five recommended configurations, their data, and re-test paths.
+
+        Deliberately titled by the selection rule, not "best by Sharpe": the
+        study's PBO of 0.700 means ranking by in-sample Sharpe selects noise,
+        so the five here are the ones of research/TOP5-RECOMMENDATION.md --
+        drawn from the only seven configurations tested on two independent
+        robustness axes, ordered by checks cleared.
+        """
+        with VerticalScroll():
+            yield Static(
+                "Selected by robustness checks (CPCV path distribution + ±10% "
+                "parameter perturbation, 0 sign flips), NOT by Sharpe rank: "
+                "PBO is 0.700 against a 0.500 noise line, so 'top 5 by Sharpe' "
+                "would list the rows most likely to be noise. Source: "
+                "research/TOP5-RECOMMENDATION.md.",
+                classes="hint",
+            )
+            yield Static("", id="top5-headline")
+            configs = GlossaryTable(id="top5-table")
+            configs.add_columns("#", "configuration", "horizon", "signals",
+                                "median Sharpe", "IQR", "% paths +",
+                                "median ret", "trades", "paths")
+            configs.cursor_type = "row"
+            yield configs
+            yield Static(
+                "[b]Transfer test — the same configurations off SOL[/b]  "
+                "(fitted on SOL; a recommendation that only works there is "
+                "an overfit, and two of the five go negative off-asset)",
+                classes="hint",
+            )
+            transfers = GlossaryTable(id="top5-transfers")
+            transfers.add_columns("#", "configuration", "asset",
+                                  "median Sharpe", "Δ vs SOL", "% paths +",
+                                  "median ret", "trades", "paths")
+            yield transfers
+            yield Static(
+                "Benchmark that must stay in view: buy_and_hold, zero "
+                "parameters, medium/long median Sharpe +0.534, 68% of paths "
+                "positive, +9.4% median return — 2nd of 25 at the medium "
+                "horizon. A configuration that does not clearly beat it is "
+                "not worth its complexity.",
+                classes="hint",
+            )
+            with Horizontal(classes="form-row"):
+                yield Button("Add selected row's signals to roster",
+                             id="top5-add-selected")
+                yield Button("Add all top-5 signals to roster",
+                             id="top5-add-all")
+                yield Button("Run backtest on roster", variant="primary",
+                             id="top5-run")
+                yield Button("Reload", id="top5-reload")
+            yield Static("", id="top5-status")
+            yield Static(
+                "Re-testing: adding to the roster sweeps each member signal "
+                "as a single via the Backtest tab (asset/interval/costs come "
+                "from Settings). The all()/any() composites themselves cannot "
+                "live in the roster — reproduce those exactly with:\n"
+                f"    {top5_mod.REPRO_COMMAND}",
+                classes="hint",
+            )
+
+    def _refresh_top5(self) -> None:
+        headline = self.query_one("#top5-headline", Static)
+        try:
+            self._top5_configs = top5_mod.load_top5()
+        except top5_mod.EvidenceUnavailable as exc:
+            self._top5_configs = []
+            headline.update(f"[b]{exc}[/b]")
+            return
+
+        def fmt(v: float | None, spec: str) -> str:
+            return "-" if v is None else format(v, spec)
+
+        table = self.query_one("#top5-table", DataTable)
+        table.clear()
+        for cfg in self._top5_configs:
+            home = cfg.home
+            if home is None:
+                continue
+            table.add_row(
+                str(cfg.rank), cfg.label, cfg.horizon,
+                " + ".join(cfg.members) + (f" ({cfg.mode})"
+                                           if cfg.mode != "single" else ""),
+                f"{home.median_sharpe:+.3f}", fmt(home.iqr, ".3f"),
+                fmt(home.frac_positive, ".0%"),
+                "-" if home.median_return is None
+                else format_pct(home.median_return),
+                fmt(home.trades, "d"), fmt(home.n_paths, "d"),
+                key=str(cfg.rank),
+            )
+        transfers = self.query_one("#top5-transfers", DataTable)
+        transfers.clear()
+        for cfg in self._top5_configs:
+            for t in cfg.transfers:
+                transfers.add_row(
+                    str(cfg.rank), cfg.label, t.asset,
+                    f"{t.median_sharpe:+.3f}", fmt(t.delta_vs_sol, "+.3f"),
+                    fmt(t.frac_positive, ".0%"),
+                    "-" if t.median_return is None
+                    else format_pct(t.median_return),
+                    fmt(t.trades, "d"), fmt(t.n_paths, "d"),
+                )
+        n = len(self._top5_configs)
+        headline.update(
+            f"{n} configurations · fitted on {top5_mod.HOME_ASSET} · "
+            f"each transfer-tested on "
+            f"{', '.join(sorted({t.asset for c in self._top5_configs for t in c.transfers}))}")
+
+    def _top5_add_members(self, configs: list) -> None:
+        """Add each distinct member signal to the roster, reporting per-name.
+
+        Uses the same path as the Strategies tab's Add button (signal
+        defaults via merged_params), so a name added here behaves identically
+        to one added there. Already-present names are counted, not errors —
+        clicking twice must not turn into a wall of red.
+        """
+        added, present = [], []
+        for name in top5_mod.roster_candidates(configs):
+            try:
+                self.roster.add(name, **merged_params(name, self.signals))
+                added.append(name)
+            except RosterError:
+                present.append(name)
+        self._refresh_roster_table()
+        self._refresh_exec_choices()
+        parts = []
+        if added:
+            parts.append(f"added {', '.join(added)}")
+        if present:
+            parts.append(f"already in roster: {', '.join(present)}")
+        self.query_one("#top5-status", Static).update(
+            (" · ".join(parts) or "nothing to add") +
+            " — sweep them from here or the Backtest tab")
+
+    @on(Button.Pressed, "#top5-add-selected")
+    def _top5_add_selected(self) -> None:
+        table = self.query_one("#top5-table", DataTable)
+        status = self.query_one("#top5-status", Static)
+        try:
+            rank = int(str(table.get_row_at(table.cursor_row)[0]))
+        except Exception:  # noqa: BLE001 - empty table, nothing selected
+            status.update("select a configuration row first")
+            return
+        cfg = next((c for c in self._top5_configs if c.rank == rank), None)
+        if cfg is None:
+            status.update("select a configuration row first")
+            return
+        self._top5_add_members([cfg])
+
+    @on(Button.Pressed, "#top5-add-all")
+    def _top5_add_all(self) -> None:
+        if not self._top5_configs:
+            self.query_one("#top5-status", Static).update(
+                "no configurations loaded")
+            return
+        self._top5_add_members(self._top5_configs)
+
+    @on(Button.Pressed, "#top5-run")
+    def _top5_run(self) -> None:
+        """Start the same CPCV sweep the Backtest tab runs, from here."""
+        status = self.query_one("#top5-status", Static)
+        try:
+            self.runner.start(self.roster, self.settings, on_done=self._sweep_done)
+            status.update("running — results land on the Backtest tab")
+        except Exception as exc:  # noqa: BLE001 - surfaced to the user
+            status.update(f"[red]{exc}[/]")
+
+    @on(Button.Pressed, "#top5-reload")
+    def _top5_reload(self) -> None:
+        self._refresh_top5()
 
     # -- Analyze: any coin, any moment -----------------------------------
 
@@ -1074,7 +1471,7 @@ class SolTuiApp(App):
             with Horizontal(classes="form-row"):
                 yield Button("Analyze", id="analyze-run", variant="primary")
             yield Static("", id="analyze-headline")
-            table = DataTable(id="analyze-table")
+            table = GlossaryTable(id="analyze-table")
             table.add_columns("strategy", "family", "action", "holding -> wants",
                               "warmup", "bars")
             yield table
@@ -1119,13 +1516,13 @@ class SolTuiApp(App):
             with Horizontal(classes="form-row"):
                 yield Button("Reload", id="cumulative-reload", variant="primary")
             yield Static("", id="cumulative-headline")
-            per_file = DataTable(id="cumulative-table")
+            per_file = GlossaryTable(id="cumulative-table")
             per_file.add_columns("file", "rankable", "below floor", "positive",
                                  "made money", "median Sharpe", "paths", "best (rankable)")
             yield per_file
             yield Static("[b]Below the floor — what a naive aggregate would rank first[/b]",
                          classes="hint")
-            dropped = DataTable(id="cumulative-dropped")
+            dropped = GlossaryTable(id="cumulative-dropped")
             dropped.add_columns("file", "configuration", "claims Sharpe", "trades", "paths")
             yield dropped
 
@@ -1359,7 +1756,7 @@ class SolTuiApp(App):
                 "console. docs/SCRIPTS.md carries the full options.",
                 classes="hint",
             )
-            table = DataTable(id="research-table")
+            table = GlossaryTable(id="research-table")
             table.add_columns("driver", "answers", "established")
             for driver, answers, found in RESEARCH_DRIVERS:
                 table.add_row(driver, answers, found)
@@ -1393,7 +1790,7 @@ class SolTuiApp(App):
                 yield Input(placeholder="filter by path or summary…", id="docs-filter")
                 yield Select(kinds, value="", id="docs-kind")
             with Horizontal():
-                listing = DataTable(id="docs-table")
+                listing = GlossaryTable(id="docs-table")
                 listing.add_columns("path", "kind", "editable", "lines", "summary")
                 # Row cursor, not the DataTable default of cell: a click must
                 # land on *a row*, not one cell in it, for RowHighlighted to

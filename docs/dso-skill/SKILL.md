@@ -20,7 +20,7 @@ whenToUse:
   - "this strategy looked great in-sample then died out of sample"
   - "check my strategy card against the code"
 origin: local
-model: claude-opus-4-8
+model: claude-opus-5
 effort: xhigh
 version: "1.1.1"
 updated: "2026-08-05"

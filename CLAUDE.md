@@ -1,3 +1,9 @@
+# Semantic Indexing Rule
+- Do NOT use `view_file` to blindly explore large files.
+- ALWAYS use the `search_codebase` MCP tool (local semantic index) first to pull semantic chunks.
+- If the index does not exist, build it using `scripts/semantic_indexer.py`.
+- If the MCP server is not running or fails, attempt to start it. If it still fails, only then fallback to `view_file`.
+
 # CLAUDE.md — solmargintrader
 
 Instructions for agents working in this repository. Read before changing code.
@@ -58,7 +64,7 @@ Three components with different risk profiles. Know which one you are in:
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 542 tests
-python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+python3 -m unittest discover -s soltui/tests -t .       # 295 tests (~300s)
 cd extension && npm test                                # 131 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 node tools/verify-endpoints.js                          # live Jupiter reachability
