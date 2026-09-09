@@ -12,12 +12,26 @@ signal that nothing is reaching a venue.
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import mock
 
+from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Static
 
+from soltui import bgqueue
 from soltui.config import Settings
 from soltui.tui import FAMILY_NOTES, SIGNAL_REFERENCE, SolTuiApp
+
+
+def _queue_row(job_id: str, sharpe: float, trades: int) -> bgqueue.JobResult:
+    """One background-sweep result row, for the Queue-tab tests."""
+    return bgqueue.JobResult(
+        job_id=job_id, strategy="rsi", horizon="medium", asset="SOL",
+        interval="1d", params={}, tier=0, variation="", family="mean-reversion",
+        median_sharpe=sharpe, iqr=0.2, frac_positive=0.6, median_return=0.1,
+        trades=trades, evaluable=True,
+    )
 
 
 # Terminal big enough that every button is on-screen; Pilot.click() raises
@@ -42,6 +56,85 @@ def text_of(app, selector: str) -> str:
 def make_settings() -> Settings:
     """Settings pointing at the repo's real data dir, with a fast poll."""
     return Settings(poll_interval_seconds=0.01)
+
+
+class TestSortKey(unittest.TestCase):
+    """`sort_key` decides how header-click sorting ranks cell text."""
+
+    def test_numeric_strings_rank_numerically_not_lexically(self) -> None:
+        from soltui.tui import sort_key
+        # Lexically "10" < "9" and "-0.9" < "-3.7"; numerically neither is.
+        self.assertLess(sort_key("9"), sort_key("10"))
+        self.assertLess(sort_key("-3.736213"), sort_key("-0.9"))
+
+    def test_decorated_numbers_parse(self) -> None:
+        from soltui.tui import sort_key
+        self.assertLess(sort_key("+0.128"), sort_key("+0.534"))
+        self.assertLess(sort_key("33%"), sort_key("85%"))
+        self.assertLess(sort_key("680"), sort_key("4,304"))
+
+    def test_text_sorts_case_insensitively_after_numbers(self) -> None:
+        from soltui.tui import sort_key
+        self.assertLess(sort_key("apple"), sort_key("Banana"))
+        self.assertLess(sort_key("99999"), sort_key("aardvark"))
+
+    def test_placeholder_cells_rank_last(self) -> None:
+        from soltui.tui import sort_key
+        self.assertLess(sort_key("zebra"), sort_key("-"))
+        self.assertLess(sort_key("zebra"), sort_key(""))
+
+
+class TestSortableTables(unittest.IsolatedAsyncioTestCase):
+    """Clicking a column header sorts the table; clicking again flips it.
+
+    Driven by posting `DataTable.HeaderSelected` from the table (what a real
+    header click emits, bubbling to the app-level handler) rather than
+    `pilot.click` at a pixel coordinate, which would couple the test to
+    column widths.
+    """
+
+    @staticmethod
+    def _column_values(table, column_index: int) -> list[str]:
+        return [str(table.get_row_at(i)[column_index])
+                for i in range(table.row_count)]
+
+    @staticmethod
+    def _click_header(table, column_index: int) -> None:
+        """Post exactly what DataTable emits for a header click."""
+        from rich.text import Text
+
+        column = table.ordered_columns[column_index]
+        table.post_message(DataTable.HeaderSelected(
+            table, column.key, column_index, Text(str(column.label))))
+
+    async def test_header_click_sorts_then_reverses(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            table = app.query_one("#signals-table", DataTable)
+
+            self._click_header(table, 0)  # the "signal" column
+            await pilot.pause()
+            ascending = self._column_values(table, 0)
+            self.assertEqual(ascending, sorted(ascending, key=str.casefold))
+
+            self._click_header(table, 0)
+            await pilot.pause()
+            self.assertEqual(self._column_values(table, 0), ascending[::-1])
+
+    async def test_numeric_column_sorts_by_value(self) -> None:
+        """The Strategies roster's warm-up column is numeric text -- the
+        column type someone actually sorts to rank."""
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            table = app.query_one("#roster-table", DataTable)
+
+            self._click_header(table, 2)  # "warm-up"
+            await pilot.pause()
+
+            warmups = [int(v) for v in self._column_values(table, 2)]
+            self.assertEqual(warmups, sorted(warmups))
 
 
 class TestAppMounts(unittest.IsolatedAsyncioTestCase):
@@ -76,6 +169,143 @@ class TestAppMounts(unittest.IsolatedAsyncioTestCase):
                 tabs.active = tab
                 await pilot.pause()
             self.assertEqual(tabs.active, "tab-execute")
+
+
+class TestQueueTab(unittest.IsolatedAsyncioTestCase):
+    """The Queue tab reads files another process writes, so its tests point at
+    the reading, not at a sweep."""
+
+    def _patch_paths(self, tmp: Path):
+        """Point the pane at a scratch results/state pair, not the real one."""
+        return (
+            mock.patch.object(bgqueue, "RESULTS_PATH", tmp / "results.jsonl"),
+            mock.patch.object(bgqueue, "STATE_PATH", tmp / "state.json"),
+        )
+
+    async def test_tab_exists_and_activates(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            from textual.widgets import TabbedContent
+
+            self.assertTrue(app.query("#tab-queue"))
+            app.query_one(TabbedContent).active = "tab-queue"
+            await pilot.pause()
+
+    async def test_an_empty_queue_renders_without_a_worker(self) -> None:
+        """Opening the tab before any sweep has run must not error."""
+        with TemporaryDirectory() as tmp:
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                self.assertEqual(app.query_one("#queue-table", DataTable).row_count, 0)
+
+    async def test_a_thin_evidence_row_lands_below_the_floor_not_on_top(self) -> None:
+        """The pane's whole honesty claim: a huge Sharpe on 3 trades must appear
+        in the floor table, never as rank 1."""
+        with TemporaryDirectory() as tmp:
+            results = Path(tmp) / "results.jsonl"
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            bgqueue.append_result(_queue_row("lucky", 9.9, 3), results)
+            bgqueue.append_result(_queue_row("honest", 0.4, 50), results)
+
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                ranked = app.query_one("#queue-table", DataTable)
+                floor = app.query_one("#queue-floor", DataTable)
+                self.assertEqual(ranked.row_count, 1)
+                self.assertEqual(floor.row_count, 1)
+
+    async def test_missing_data_is_named_with_the_command_that_fixes_it(self) -> None:
+        """Discovering it mid-sweep would mean the whole short horizon is quietly
+        absent from the results with the pane still reporting "running"."""
+        with TemporaryDirectory() as tmp:
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            settings = make_settings()
+            settings.data_dir = tmp  # empty: every series is missing
+            app = SolTuiApp(settings)
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                text = text_of(app, "#queue-data")
+                self.assertIn("missing price data", text)
+                self.assertIn("backtester.core.fetch", text)
+
+    async def test_cached_data_says_nothing(self) -> None:
+        with TemporaryDirectory() as tmp:
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            settings = make_settings()
+            settings.data_dir = tmp
+            for interval in ("1d", "1h"):
+                Path(tmp, f"{settings.asset}_{interval}.csv").write_text("x")
+            app = SolTuiApp(settings)
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                self.assertEqual(text_of(app, "#queue-data"), "")
+
+    async def test_refreshing_twice_does_not_duplicate_rows(self) -> None:
+        """The pane reads incrementally from a byte offset; a bad offset would
+        re-append every row on each refresh."""
+        with TemporaryDirectory() as tmp:
+            results = Path(tmp) / "results.jsonl"
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            bgqueue.append_result(_queue_row("a", 1.0, 50), results)
+            bgqueue.append_result(_queue_row("b", 0.5, 50), results)
+
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                table = app.query_one("#queue-table", DataTable)
+                self.assertEqual(table.row_count, 2)
+                await pilot.click("#queue-refresh")
+                await pilot.pause()
+                self.assertEqual(table.row_count, 2)
+
+    async def test_a_new_result_appears_on_refresh(self) -> None:
+        with TemporaryDirectory() as tmp:
+            results = Path(tmp) / "results.jsonl"
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            bgqueue.append_result(_queue_row("a", 1.0, 50), results)
+
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                from textual.widgets import TabbedContent
+
+                app.query_one(TabbedContent).active = "tab-queue"
+                await pilot.pause()
+                table = app.query_one("#queue-table", DataTable)
+                self.assertEqual(table.row_count, 1)
+                bgqueue.append_result(_queue_row("b", 0.5, 50), results)
+                await pilot.click("#queue-refresh")
+                await pilot.pause()
+                self.assertEqual(table.row_count, 2)
 
 
 class TestExecuteTabSafety(unittest.IsolatedAsyncioTestCase):
@@ -153,6 +383,55 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             status = text_of(app, "#roster-status")
             self.assertIn("expected key=value", status)
+
+    async def test_clicking_an_available_strategy_opens_its_source_file(self) -> None:
+        """The strategy list is a shortcut into the code that defines it."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-strategies"
+            await pilot.pause()
+            table = app.query_one("#available-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "rsi")
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path,
+                              "backtester/core/strategies/rsi.py")
+            self.assertIn("RSI mean-reversion",
+                          app.query_one("#docs-view", TextArea).text)
+
+    async def test_unknown_strategy_name_reports_instead_of_crashing(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            app._open_strategy_file("not_a_real_strategy")
+            await pilot.pause()
+            self.assertIn("not in the Docs catalogue",
+                          text_of(app, "#docs-view-status"))
+
+    async def test_clicking_a_roster_entry_opens_its_source_file(self) -> None:
+        """The roster table's first column is a label, not a REGISTRY name --
+        this pins that the lookup goes through the roster entry, not the
+        display text, to find the right file."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-strategies"
+            await pilot.pause()
+            table = app.query_one("#roster-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "rsi_14_30_50")
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path,
+                              "backtester/core/strategies/rsi.py")
+            self.assertIn("RSI mean-reversion",
+                          app.query_one("#docs-view", TextArea).text)
 
 
 class TestSignalsTab(unittest.IsolatedAsyncioTestCase):
@@ -286,6 +565,459 @@ class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
             entry = app.roster.add("rsi", **merged_params("rsi", app.signals))
             self.assertEqual(entry.params["period"], 9)
             self.assertIn("rsi_9", entry.label)
+
+
+class TestDocsTab(unittest.IsolatedAsyncioTestCase):
+    """The click-to-open bug: a row cursor move must load the viewer.
+
+    `DataTable.RowSelected` (Enter) was previously the only wired event, and
+    the table never set `cursor_type = "row"` -- so a mouse click moved a
+    *cell* cursor and nothing opened. `move_cursor` is used here rather than
+    `pilot.click` on a table cell because it is what a click, an arrow key,
+    and the "o" binding all ultimately act on: the row cursor position.
+    """
+
+    async def test_table_uses_row_cursor_not_cell(self) -> None:
+        """Without this, a click never fires RowHighlighted at all."""
+        from textual.widgets import DataTable, TabbedContent
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            self.assertEqual(
+                app.query_one("#docs-table", DataTable).cursor_type, "row")
+
+    async def test_moving_the_row_cursor_opens_an_editable_file(self) -> None:
+        """A click (which moves the cursor) must load the file, not just
+        highlight a row and wait for a separate Enter press."""
+        from textual.widgets import Button, DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "soltui/config.py")
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path, "soltui/config.py")
+            view = app.query_one("#docs-view", TextArea)
+            self.assertFalse(view.read_only)
+            self.assertIn("Settings", view.text)
+            self.assertFalse(app.query_one("#docs-save", Button).disabled)
+            self.assertIn("editable", text_of(app, "#docs-view-status"))
+
+    async def test_a_results_file_opens_read_only_with_save_disabled(self) -> None:
+        """research/results/ is evidence; opening one must never look editable."""
+        from textual.widgets import Button, DataTable, Input, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            app.query_one("#docs-filter", Input).value = "research/results/"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            self.assertGreater(table.row_count, 0)
+            # The filter also matches a summary that merely *mentions* the
+            # path, so pick the row that is actually under the prefix rather
+            # than trusting row 0.
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]).startswith("research/results/"))
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            self.assertTrue(app.query_one("#docs-view", TextArea).read_only)
+            self.assertTrue(app.query_one("#docs-save", Button).disabled)
+            self.assertIn("read-only", text_of(app, "#docs-view-status"))
+
+    async def test_o_binding_opens_the_highlighted_row(self) -> None:
+        """The explicit fallback for when a click's RowHighlighted doesn't
+        land through the browser-rendered terminal (textual-serve)."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "soltui/config.py")
+            table.move_cursor(row=row)
+            await pilot.pause()
+            app.query_one("#docs-view", TextArea).text = ""  # prove "o" reloads it
+
+            await pilot.press("o")
+            await pilot.pause()
+
+            self.assertIn("Settings", app.query_one("#docs-view", TextArea).text)
+
+    async def test_read_only_file_rejects_keystrokes(self) -> None:
+        """`read_only` is the actual policy enforcement for research/results/
+        -- a widget that accepted the flag but ignored it would still pass
+        the "looks read-only" assertions above, so this checks behavior."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]).startswith("research/results/"))
+            table.move_cursor(row=row)
+            await pilot.pause()
+            view = app.query_one("#docs-view", TextArea)
+            before = view.text
+
+            view.focus()
+            await pilot.press("x")
+            await pilot.pause()
+
+            self.assertEqual(view.text, before)
+
+    async def test_passive_navigation_never_discards_an_unsaved_edit(self) -> None:
+        """The bug report: editing, then moving to another row, silently lost
+        the edit. Navigating (RowHighlighted) must refuse; an explicit Enter
+        on the new row is what is allowed to discard it."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row_a = next(i for i in range(table.row_count)
+                         if str(table.get_row_at(i)[0]) == "soltui/config.py")
+            row_b = next(i for i in range(table.row_count)
+                         if str(table.get_row_at(i)[0]) == "soltui/roster.py")
+            table.focus()  # Enter later must route to the table, not elsewhere
+            table.move_cursor(row=row_a)
+            await pilot.pause()
+            view = app.query_one("#docs-view", TextArea)
+            view.text = "EDITED, NOT SAVED\n" + view.text
+            await pilot.pause()
+            self.assertIn("unsaved", text_of(app, "#docs-view-status"))
+
+            table.move_cursor(row=row_b)
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path, "soltui/config.py")
+            self.assertIn("EDITED, NOT SAVED", view.text)
+            self.assertIn("unsaved changes", text_of(app, "#docs-view-status"))
+
+            # Cursor is already on row_b; Enter is the deliberate-open action
+            # and may discard where the RowHighlighted move just refused to.
+            await pilot.press("enter")
+            await pilot.pause()
+
+            self.assertEqual(app._docs_current_path, "soltui/roster.py")
+            self.assertNotIn("EDITED, NOT SAVED", view.text)
+
+    async def test_editor_panel_is_visible_from_a_different_tab(self) -> None:
+        """The whole point of moving it out of _docs_pane: it must still be
+        on screen after switching away from Docs."""
+        from textual.widgets import DataTable, TabbedContent, TextArea
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            table = app.query_one("#docs-table", DataTable)
+            row = next(i for i in range(table.row_count)
+                       if str(table.get_row_at(i)[0]) == "soltui/config.py")
+            table.move_cursor(row=row)
+            await pilot.pause()
+
+            app.query_one(TabbedContent).active = "tab-strategies"
+            await pilot.pause()
+
+            view = app.query_one("#docs-view", TextArea)
+            self.assertIn("Settings", view.text)
+            self.assertTrue(app.query_one("#editor-panel").display)
+
+    async def test_ctrl_s_saves_from_any_tab(self) -> None:
+        """`ctrl+s` is an App-level binding precisely so it works without
+        switching to Docs first. Uses a temp-repo fixture (see
+        `test_docs_browser.py`'s `WriteDocumentTests`) rather than a real
+        tracked file, so a save actually lands on disk somewhere throwaway.
+        """
+        from pathlib import Path
+        from unittest import mock
+        from tempfile import TemporaryDirectory
+        from textual.widgets import TabbedContent, TextArea
+
+        from soltui import docs_browser
+
+        with TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            target = repo / "scratch.py"
+            target.write_text("original\n", encoding="utf-8")
+            entries = [docs_browser.DocEntry(
+                path="scratch.py", name="scratch.py", directory="",
+                kind="code-python", summary="", summary_source="none",
+                lines=1, size=9,
+            )]
+
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                # Let the real Docs-tab table's mount-time RowHighlighted
+                # (against the real catalogue) drain before swapping
+                # `self._docs` out from under it below.
+                await pilot.pause()
+                with mock.patch.object(docs_browser, "REPO", repo):
+                    app._docs = entries
+                    app._open_doc("scratch.py")
+                    await pilot.pause()
+
+                    app.query_one(TabbedContent).active = "tab-strategies"
+                    await pilot.pause()
+                    view = app.query_one("#docs-view", TextArea)
+                    view.text = "edited\n"
+                    await pilot.pause()
+
+                    await pilot.press("ctrl+s")
+                    await pilot.pause()
+
+                    self.assertIn("saved", text_of(app, "#docs-view-status"))
+                    self.assertEqual(target.read_text(encoding="utf-8"), "edited\n")
+
+    async def test_ctrl_e_toggles_the_editor_panel(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            panel = app.query_one("#editor-panel")
+            self.assertTrue(panel.display)
+
+            await pilot.press("ctrl+e")
+            await pilot.pause()
+            self.assertFalse(panel.display)
+
+            await pilot.press("ctrl+e")
+            await pilot.pause()
+            self.assertTrue(panel.display)
+
+
+class _VimHarness(App):
+    """A bare app around one `VimTextArea` -- exercising the widget directly
+    is both faster and more precise than mounting the full `SolTuiApp` (nine
+    tabs, the ~270-row Docs catalogue) for every motion/mode assertion."""
+
+    def __init__(self, text: str = "", *, read_only: bool = False,
+                 on_save=None) -> None:
+        super().__init__()
+        self._text = text
+        self._read_only = read_only
+        self._on_save = on_save
+
+    def compose(self) -> ComposeResult:
+        from soltui.tui import VimTextArea
+        yield VimTextArea(self._text, id="ta", read_only=self._read_only,
+                          on_save=self._on_save)
+
+
+class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
+    """The subset documented on `VimTextArea` itself."""
+
+    async def test_starts_in_normal_mode(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("hello")
+        async with app.run_test() as pilot:
+            await pilot.pause()
+            ta = app.query_one("#ta", VimTextArea)
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
+
+    async def test_unbound_key_in_normal_mode_types_nothing(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("hello")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("z")  # not bound to anything below
+            await pilot.pause()
+            self.assertEqual(ta.text, "hello")
+
+    async def test_hjkl_move_the_cursor(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("ab\ncd")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("l")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 1))
+            await pilot.press("j")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (1, 1))
+            await pilot.press("h")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (1, 0))
+            await pilot.press("k")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 0))
+
+    async def test_0_and_dollar_move_to_line_start_and_end(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("hello")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 2))
+            await pilot.press("dollar_sign")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 5))
+            await pilot.press("0")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 0))
+
+    async def test_gg_and_G_move_to_document_start_and_end(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("one\ntwo\nthree")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("G")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, ta.document.end)
+            await pilot.press("g")
+            await pilot.press("g")
+            await pilot.pause()
+            self.assertEqual(ta.cursor_location, (0, 0))
+
+    async def test_i_enters_insert_and_types_before_cursor(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("bc")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("i")
+            await pilot.pause()
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.INSERT)
+            await pilot.press("a")  # a literal "a", not the vim command now
+            await pilot.pause()
+            self.assertEqual(ta.text, "abc")
+
+    async def test_a_enters_insert_after_cursor(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("ac")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("a")
+            await pilot.press("b")
+            await pilot.pause()
+            self.assertEqual(ta.text, "abc")
+
+    async def test_o_opens_a_line_below_and_enters_insert(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("first")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("o")
+            await pilot.pause()
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.INSERT)
+            await pilot.press("s", "e", "c", "o", "n", "d")
+            await pilot.pause()
+            self.assertEqual(ta.text, "first\nsecond")
+
+    async def test_escape_returns_to_normal_mode(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("x")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("i")
+            await pilot.pause()
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.INSERT)
+            await pilot.press("escape")
+            await pilot.pause()
+            self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
+            # Back in NORMAL, "x" is delete-char-under-cursor, not a letter.
+            await pilot.press("x")
+            await pilot.pause()
+            self.assertEqual(ta.text, "")
+
+    async def test_x_deletes_the_character_under_the_cursor(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("abc")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("x")
+            await pilot.pause()
+            self.assertEqual(ta.text, "bc")
+
+    async def test_dd_deletes_the_current_line(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("one\ntwo\nthree")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((1, 0))  # "two"
+            await pilot.press("d")
+            await pilot.press("d")
+            await pilot.pause()
+            self.assertEqual(ta.text, "one\nthree")
+
+    async def test_mismatched_pending_key_is_dropped_not_misapplied(self) -> None:
+        """"g" then "x" (not "gg") must not delete or move unexpectedly --
+        the documented simplification is to drop it, never guess."""
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("abc")
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            ta.move_cursor((0, 0))
+            await pilot.press("g")
+            await pilot.press("x")
+            await pilot.pause()
+            self.assertEqual(ta.text, "abc")
+
+    async def test_colon_w_calls_the_save_callback(self) -> None:
+        from soltui.tui import VimTextArea
+
+        saved = []
+        app = _VimHarness("abc", on_save=lambda: saved.append(True))
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            await pilot.press("colon")
+            await pilot.press("w")
+            await pilot.press("enter")
+            await pilot.pause()
+            self.assertEqual(saved, [True])
+
+    async def test_read_only_refuses_to_enter_insert_mode(self) -> None:
+        from soltui.tui import VimTextArea
+
+        app = _VimHarness("abc", read_only=True)
+        async with app.run_test() as pilot:
+            ta = app.query_one("#ta", VimTextArea)
+            ta.focus()
+            for key in ("i", "a", "o"):
+                await pilot.press(key)
+                await pilot.pause()
+                self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
+            self.assertEqual(ta.text, "abc")
 
 
 if __name__ == "__main__":
