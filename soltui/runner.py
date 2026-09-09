@@ -89,21 +89,49 @@ def load_arrays(settings: Settings) -> dict[str, np.ndarray]:
     return frame_to_arrays(df)
 
 
-def engine_config(settings: Settings) -> EngineConfig:
-    """Build an EngineConfig from settings.
+def engine_config(settings: Settings, interval: str | None = None) -> EngineConfig:
+    """Build an EngineConfig from settings, optionally overriding the interval.
 
     Mode is hard-wired to SPOT: this build has no live path and no leverage
     surface in the UI, so there is nothing that should be selecting PERP here.
+    That invariant is the reason this function is shared rather than copied --
+    the background sweep (`bgworker`) needs the same config at a per-job
+    interval, and a second copy would mean a future PERP guard had two places to
+    be added and one place to be forgotten.
     """
     return EngineConfig(
         mode=Mode.SPOT,
         leverage=1.0,
         initial_capital=settings.capital,
-        interval=settings.interval,
+        interval=interval or settings.interval,
         fill_delay=settings.fill_delay,
         costs=CostConfig(
             fee_bps=settings.fee_bps, slippage_bps=settings.slippage_bps
         ),
+    )
+
+
+def run_cpcv(
+    label: str,
+    factory: Callable[[], Any],
+    arrays: dict[str, np.ndarray],
+    cfg: EngineConfig,
+    settings: Settings,
+) -> Any:
+    """CPCV-evaluate one configuration at the settings' geometry.
+
+    Shared by the in-app sweep and the background sweep so the two cannot
+    disagree about what a configuration scored. The geometry (`cpcv_groups`,
+    `cpcv_k`) is the part that must not drift: a divergence there produces two
+    different Sharpes for the same strategy with nothing to indicate why.
+    """
+    return cpcv_evaluate(
+        label,
+        factory,
+        arrays,
+        cfg,
+        n_groups=settings.cpcv_groups,
+        k_test=settings.cpcv_k,
     )
 
 
@@ -215,13 +243,12 @@ class SweepRunner:
         """CPCV-evaluate one roster entry."""
         from backtester.core.strategies import build
 
-        res = cpcv_evaluate(
+        res = run_cpcv(
             entry.label,
             lambda: build(entry.name, **entry.params),
             arrays,
             cfg,
-            n_groups=settings.cpcv_groups,
-            k_test=settings.cpcv_k,
+            settings,
         )
         return SweepRow(
             label=entry.label,

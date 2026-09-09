@@ -4,8 +4,18 @@
 # to extension/ (ESM, no build step, no packages). The Python side already takes
 # pandas and numpy for the backtester; these two are additive to soltui only.
 
-# Textual TUI (the five-tab console). Same choice as ~/dev/story-tui.
+# Textual TUI (the nine-tab console). Same choice as ~/dev/story-tui.
 textual>=8.0
+
+# Optional: serves that same console as a real browser window, which is what
+# soltui/serve.py and the menu bar's "Open console" use. It earns its own line
+# because it fixes a specific failure. A menu-bar process has no controlling
+# terminal, so the console could previously only be reached by spawning
+# Terminal.app through osascript -- and when Terminal automation is not permitted
+# (the default on a fresh macOS install) that call fails silently, so the app
+# appeared to have no interface at all. Without this package the menu item falls
+# back to the Terminal route and says so; nothing else degrades.
+textual-serve>=1.1
 
 # macOS menu-bar status item. Optional and macOS-only: the TUI and the entire
 # test suite run without it, and soltui/app.py reports this install line rather
