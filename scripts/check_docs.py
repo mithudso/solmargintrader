@@ -334,6 +334,26 @@ def main(argv: list[str] | None = None) -> int:
     actual["extension"] = count_extension_tests()
     actual["total"] = sum(actual.values())
 
+    # Counts come from HEAD, so a test file that exists on disk but is not yet
+    # committed is deliberately not counted. That is right for CI and a trap
+    # locally: you run this before committing, write the number it prints into
+    # the docs, commit, and CI -- which now sees the new files in HEAD -- reports
+    # drift against the number this told you. Say so rather than let the loop
+    # repeat.
+    for suite_name, (rel_dir, _) in SUITES.items():
+        committed = set(committed_test_files(rel_dir) or [])
+        on_disk = {
+            p.name for p in REPO.joinpath(rel_dir).glob("test*.py")
+        }
+        pending = sorted(on_disk - committed)
+        if pending:
+            print(
+                f"note: {suite_name} has {len(pending)} uncommitted test file(s) "
+                f"({', '.join(pending)}); the count above will change once they "
+                "are committed, so write the docs after the commit, not before.",
+                file=sys.stderr,
+            )
+
     problems = (
         check_counts(actual)
         + check_index(args.prune)
