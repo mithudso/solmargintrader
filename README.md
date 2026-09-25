@@ -1,6 +1,6 @@
 # solmargintrader
 
-SOL trading research and execution tooling, in four parts:
+SOL trading research and execution tooling, in five parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |
@@ -8,6 +8,7 @@ SOL trading research and execution tooling, in four parts:
 | [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
 | [`extension/`](extension/README.md) | Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **This is the part that can place real orders.** | JavaScript (ESM, no deps) |
 | [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI that surfaces signals and paper positions, supervised by launchd. Read-only over the research side. | Python 3.13 |
+| [`mongo/`](mongo/README.md) | Local MongoDB copy of everything measured — bars, strategies, readouts, backtests, CPCV results — plus a runnable query reference. Derived; the files stay the source of truth. | Python 3.13 + pymongo |
 
 > Research and educational tooling, not financial advice. Simulated past performance does not
 > predict future results. Grid trading is short volatility: it earns in a range and loses in a trend.
@@ -36,6 +37,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 571 tests
 python3 -m unittest discover -s soltui/tests -t .       # 313 tests (~300s)
+python3 -m unittest discover -s mongo/tests -t .        # 20 tests
 cd extension && npm test                                # 131 tests
 ```
 
@@ -83,12 +85,13 @@ ships.
 **Start here**
 
 - [docs/onboarding.md](docs/onboarding.md) — a first hour that ends with every component run
-- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all four components
+- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all five components
 - [docs/COMPONENTS.md](docs/COMPONENTS.md) — what each module does and depends on
 
 **Working in it**
 
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — setup, commands, env vars, troubleshooting
+- [mongo/README.md](mongo/README.md) — the local research store and its query reference
 - [docs/INSTALLATION.md](docs/INSTALLATION.md) — prerequisites, install, verify, uninstall
 - [docs/SCRIPTS.md](docs/SCRIPTS.md) — every runnable entry point: purpose, options, real output, when *not* to use it
 - [docs/TESTING.md](docs/TESTING.md) — what is covered, what is not, how to verify

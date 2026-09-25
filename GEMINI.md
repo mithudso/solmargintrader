@@ -10,6 +10,7 @@ first — it is the single source of truth, and this file only points at it.
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability.** The danger is a dishonest backtest |
 | `research/` (Python) | Analysis on the backtester. The danger is overstating a result |
 | `soltui/` (Python) | Read-only macOS display. Places no orders |
+| `mongo/` (Python) | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software |
 
 ## The rules most often broken here
@@ -34,6 +35,7 @@ first — it is the single source of truth, and this file only points at it.
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 454 tests
 python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+python3 -m unittest discover -s mongo/tests -t .        # 20 tests
 cd extension && npm test                                # 114 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes

@@ -37,6 +37,7 @@ REPO = Path(__file__).resolve().parents[1]
 SUITES: dict[str, tuple[str, str]] = {
     "backtester": ("backtester/tests", "backtester"),
     "soltui": ("soltui/tests", "soltui"),
+    "mongo": ("mongo/tests", "mongo"),
 }
 
 # Docs that quote a test count, and the suite each quoted number belongs to.
@@ -211,6 +212,7 @@ def claimed_counts(text: str) -> dict[str, list[int]]:
         "backtester": [],
         "soltui": [],
         "extension": [],
+        "mongo": [],
         "total": [],
     }
     for line in text.splitlines():
@@ -226,6 +228,8 @@ def claimed_counts(text: str) -> dict[str, list[int]]:
             found["total"].append(value)
         elif "soltui" in lowered:
             found["soltui"].append(value)
+        elif "mongo" in lowered:
+            found["mongo"].append(value)
         elif "backtester" in lowered or "research" in lowered:
             found["backtester"].append(value)
         elif "npm test" in lowered or "extension" in lowered:
@@ -298,7 +302,7 @@ def check_components_covered() -> list[str]:
     text = path.read_text(encoding="utf-8").lower()
     return [
         f"{OVERVIEW_MD}: no section for component {name}/"
-        for name in ("backtester", "research", "extension", "soltui")
+        for name in ("backtester", "research", "extension", "soltui", "mongo")
         if f"{name}/" not in text
     ]
 

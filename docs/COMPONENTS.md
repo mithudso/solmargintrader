@@ -6,16 +6,17 @@ is the flat file map; this page is the shape of the thing.
 Dependency direction, strictly one-way:
 
 ```
-extension/  (JavaScript)          soltui/  (Python)
-     |                                 |
-     | ports grid economics            | reads
-     v                                 v
-backtester/core/gridsim.py <---- backtester/  <---- research/
+extension/  (JavaScript)      soltui/  (Python)        mongo/  (Python)
+     |                             |                        |
+     | ports grid economics        | reads                  | reads all of it
+     v                             v                        v
+backtester/core/gridsim.py <-- backtester/ <-- research/ ---+
 ```
 
 `backtester/` depends on nothing else in the repo. `research/` imports `backtester`.
-`soltui/` reads the research side. `extension/` shares no code with any of them — only an
-obligation, described below.
+`soltui/` reads the research side. `mongo/` imports both in order to load them and is
+imported by neither, so dropping it changes nothing. `extension/` shares no code with any
+of them — only an obligation, described below.
 
 ---
 
@@ -172,6 +173,31 @@ submitted.
 Do not add a package to solve what this already solves.
 
 ---
+
+## `mongo/`
+
+A derived MongoDB store plus a runnable query reference. Full detail in
+`mongo/README.md`.
+
+`schema.py` holds the collection specs, `$jsonSchema` validators and indexes, and
+`describe()` prints the layout with neither a server nor the driver present. `load.py`
+builds every document and inserts it.
+
+```python
+schema.create(db, drop=True)                              # collections, validators, indexes
+load.build_all(only=None, run_suites=False) -> dict[str, list[dict]]
+```
+
+Two constraints drive the design. **Time series collections accept no unique index**, so
+there is no upsert key for a bar — `load.py` drops and rebuilds instead, and
+`mongo/tests/test_load.py` asserts two consecutive loads leave identical counts, because
+nothing else would catch a second load silently doubling every bar. And **every document
+carries provenance**, because a figure that cannot be traced back to a file is not a
+figure; that is the same reason `RunManifest` exists.
+
+`decisions` documents are `research.decide.build_report()` output verbatim rather than a
+Mongo-specific shape, so the store and the readout cannot disagree about what a strategy
+said.
 
 ## `soltui/`
 

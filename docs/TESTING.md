@@ -3,6 +3,7 @@
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 571 tests
 python3 -m unittest discover -s soltui/tests -t .       # 313 tests (~300s)
+python3 -m unittest discover -s mongo/tests -t .        # 20 tests
 cd extension && npm test                                # 131 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
@@ -117,6 +118,23 @@ display correctness, not money. The packaging paths — the py2app alias bundle 
 launchd agent — are **not** covered by any test; see `soltui/README.md` for the manual
 checks that stand in for them.
 
+## mongo — 20 tests
+
+Split between pure helpers that need nothing and integration tests that **skip cleanly
+when no mongod is listening**, so a checkout without a database runs the suite green
+rather than red.
+
+The one that earns its keep asserts *idempotency*. `load.py` drops before it writes, and
+two consecutive loads must leave identical counts — a time series collection accepts no
+unique index, so nothing else would catch a second load silently doubling all 18,381
+bars. It runs over a three-collection subset to stay fast; the mechanism is the same for
+every collection.
+
+The rest guard the store's honesty: every document carries provenance, the server refuses
+one that does not (strict validation, proven by an insert that must raise), NaN never
+reaches the store, and the card counts track the registry — 45 cards with `registry_key`
+set on exactly 25, every key real.
+
 ## Adding tests
 
 - Extension: `extension/test/*.test.js`, `node:test` + `node:assert/strict`. Assert behaviour and
@@ -124,5 +142,7 @@ checks that stand in for them.
 - Backtester and research: `backtester/tests/`, `unittest`. `research/` has no test directory of
   its own; its modules are tested from there (`test_decide.py`, `test_cpcv.py`, `test_interpret.py`).
 - soltui: `soltui/tests/`, `unittest`.
+- mongo: `mongo/tests/`, `unittest`. Guard anything server-dependent with the module's
+  `needs_server` decorator so a checkout without mongod still passes.
 - A new command needs no new parity test — the registry-driven suite picks it up automatically. If it
   takes an argument that changes money, add a behavioural test for that argument.
