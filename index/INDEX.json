@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-25T20:17:00+00:00",
+  "generatedAt": "2026-09-25T20:29:42+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "6c68182",
+  "commit": "3366fbf",
   "counts": {
     "files": 319,
-    "bytes": 4696039,
+    "bytes": 4696041,
     "byKind": {
       "code-python": 71,
       "result": 60,
@@ -1443,9 +1443,9 @@
       "title": "Core dependencies. Versions are those verified on the development machine;",
       "summary": "Generated report. Opens: # Core dependencies. Versions are those verified on the development machine; / # the code does not require these exact pins.",
       "summarySource": "derived",
-      "bytes": 500,
+      "bytes": 502,
       "lines": 14,
-      "sha1": "91f9c4da5644a9b2a1a39860e53f93e22383d96d",
+      "sha1": "f549698cebe438099f71d8b491640fb878531c5f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
