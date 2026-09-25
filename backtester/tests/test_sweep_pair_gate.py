@@ -264,6 +264,77 @@ class TestCanonicalDeduplication(GateFixture):
         self.assertEqual(combos_a, combos_b)
 
 
+COMBO_CSV = """horizon,size,mode,a,b,corr,agree_active,both_flat,redundant
+medium,2,all,all(ma_crossover+rsi),all(ma_crossover+bb_reversion),0.99,0.99,False,True
+medium,2,any,any(ma_crossover+rsi),any(ma_crossover+bb_reversion),0.98,0.98,False,True
+medium,2,all,all(macd+rsi),all(macd+bb_reversion),0.20,0.30,False,False
+medium,2,any,any(macd+rsi),any(macd+bb_reversion),0.95,0.95,False,True
+"""
+
+
+class TestMeasuredRedundantCombinations(GateFixture):
+    """The correction to collapsing a class outright.
+
+    Class membership is measured on a strategy's STANDALONE exposure. Applying it
+    to combinations assumes the members stay interchangeable once a partner
+    decides which bars either may act on, and that assumption is not free.
+    """
+
+    def plant(self) -> None:
+        (self.out / sweep.combination_redundancy_filename("SOL", "medium")).write_text(
+            COMBO_CSV
+        )
+
+    def test_absent_evidence_reads_as_none_not_as_empty(self) -> None:
+        """None means 'fall back to the class rule'; an empty set would mean
+        'nothing is redundant', which would silently stop all collapsing."""
+        self.assertIsNone(sweep.measured_redundant_combinations("medium"))
+
+    def test_a_pair_redundant_in_every_mode_collapses(self) -> None:
+        self.plant()
+        evidence = sweep.measured_redundant_combinations("medium")
+        key = frozenset((frozenset({"ma_crossover", "rsi"}),
+                         frozenset({"ma_crossover", "bb_reversion"})))
+        self.assertIn(key, evidence)
+
+    def test_one_dissenting_mode_keeps_the_pair(self) -> None:
+        """macd is redundant under `any` but not under `all`, so it stays.
+
+        The gate picks combinations before modes are applied, so a single mode
+        that tells two combinations apart is enough to keep both — discarding on
+        the strength of the modes where they happen to agree would throw away a
+        distinguishable experiment.
+        """
+        self.plant()
+        evidence = sweep.measured_redundant_combinations("medium")
+        key = frozenset((frozenset({"macd", "rsi"}),
+                         frozenset({"macd", "bb_reversion"})))
+        self.assertNotIn(key, evidence)
+
+    def test_the_gate_keeps_a_twin_the_class_rule_would_discard(self) -> None:
+        """End to end: evidence present, one twin measured distinguishable."""
+        self.plant()
+        combos = sweep.independent_combos(NAMES, 2, "medium", "measured")
+        self.assertIn(("macd", "rsi"), combos)
+        self.assertIn(("macd", "bb_reversion"), combos)
+
+    def test_no_combination_is_emitted_twice(self) -> None:
+        """The two-pass walk revisits everything; duplicates would make the
+        admitted count exceed the family gate's, which is impossible for an
+        intersection."""
+        self.plant()
+        for gate in ("measured", "both"):
+            with self.subTest(gate=gate):
+                combos = sweep.independent_combos(NAMES, 2, "medium", gate)
+                self.assertEqual(len(combos), len(set(combos)))
+
+    def test_both_never_admits_more_than_family(self) -> None:
+        self.plant()
+        family = sweep.independent_combos(NAMES, 2, "medium", "family")
+        both = sweep.independent_combos(NAMES, 2, "medium", "both")
+        self.assertLessEqual(len(both), len(family))
+
+
 class TestGateCounts(GateFixture):
     def test_reports_every_gate(self) -> None:
         line = sweep.gate_counts(NAMES, 2, "medium")
