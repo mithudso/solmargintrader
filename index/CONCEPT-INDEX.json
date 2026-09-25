@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-09T20:27:57+00:00",
+  "generatedAt": "2026-09-25T09:28:02+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,9 +22,13 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 140,
+      "matchingFiles": 144,
       "shown": 30,
       "files": [
+        {
+          "path": "llms-full.txt",
+          "hits": 67
+        },
         {
           "path": "docs/FILES.md",
           "hits": 32
@@ -140,10 +144,6 @@
         {
           "path": "docs/codebase-overview.md",
           "hits": 7
-        },
-        {
-          "path": "docs/high_signal_file_index.json",
-          "hits": 7
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,9 +161,13 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 122,
+      "matchingFiles": 126,
       "shown": 30,
       "files": [
+        {
+          "path": "llms-full.txt",
+          "hits": 102
+        },
         {
           "path": "pagesource",
           "hits": 98
@@ -279,10 +283,6 @@
         {
           "path": "soltui/make_icon.py",
           "hits": 10
-        },
-        {
-          "path": "extension/src/ui/dashboard.html",
-          "hits": 9
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 119,
+      "matchingFiles": 121,
       "shown": 30,
       "files": [
         {
@@ -314,6 +314,10 @@
         {
           "path": "backtester/core/strategies/signals.py",
           "hits": 26
+        },
+        {
+          "path": "llms-full.txt",
+          "hits": 24
         },
         {
           "path": "backtester/tests/test_engine.py",
@@ -418,10 +422,6 @@
         {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 5
-        },
-        {
-          "path": "soltui/roster.py",
-          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -438,7 +438,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 115,
+      "matchingFiles": 116,
       "shown": 30,
       "files": [
         {
@@ -574,7 +574,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 113,
+      "matchingFiles": 115,
       "shown": 30,
       "files": [
         {
@@ -711,7 +711,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 109,
+      "matchingFiles": 110,
       "shown": 30,
       "files": [
         {
@@ -849,12 +849,16 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 101,
+      "matchingFiles": 105,
       "shown": 30,
       "files": [
         {
           "path": "backtester/tests/test_gridsim.py",
           "hits": 148
+        },
+        {
+          "path": "llms-full.txt",
+          "hits": 129
         },
         {
           "path": "backtester/core/gridsim.py",
@@ -967,10 +971,6 @@
         {
           "path": "extension/src/ui/ui.css",
           "hits": 10
-        },
-        {
-          "path": "research/SWEEP-9COIN.md",
-          "hits": 10
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -987,7 +987,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 97,
+      "matchingFiles": 98,
       "shown": 30,
       "files": [
         {
@@ -1059,6 +1059,10 @@
           "hits": 4
         },
         {
+          "path": "llms-full.txt",
+          "hits": 4
+        },
+        {
           "path": "index/make_files_doc.py",
           "hits": 4
         },
@@ -1105,10 +1109,6 @@
         {
           "path": "backtester/core/gridsim.py",
           "hits": 3
-        },
-        {
-          "path": "backtester/core/strategies/advanced.py",
-          "hits": 3
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1122,7 +1122,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 91,
+      "matchingFiles": 92,
       "shown": 30,
       "files": [
         {
@@ -1256,7 +1256,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 85,
+      "matchingFiles": 86,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 83,
+      "matchingFiles": 85,
       "shown": 30,
       "files": [
         {
@@ -1533,7 +1533,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 75,
+      "matchingFiles": 79,
       "shown": 30,
       "files": [
         {
@@ -1543,6 +1543,10 @@
         {
           "path": "backtester/core/gridsim.py",
           "hits": 53
+        },
+        {
+          "path": "llms-full.txt",
+          "hits": 46
         },
         {
           "path": "backtester/core/engine.py",
@@ -1651,10 +1655,6 @@
         {
           "path": "backtester/tests/test_strategy_cards.py",
           "hits": 5
-        },
-        {
-          "path": "index/README.md",
-          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1670,7 +1670,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 72,
+      "matchingFiles": 73,
       "shown": 30,
       "files": [
         {
@@ -1808,7 +1808,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 64,
+      "matchingFiles": 65,
       "shown": 30,
       "files": [
         {
@@ -1930,6 +1930,145 @@
         {
           "path": "research/STRATEGIES.md",
           "hits": 6
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "transfer",
+      "label": "Cross-asset and cross-timeframe transfer",
+      "why": "The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.",
+      "terms": [
+        "cross_asset",
+        "cross-asset",
+        "transfer",
+        "doge",
+        "zec",
+        "universe",
+        "top_coins"
+      ],
+      "matchingFiles": 61,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/coin-intelligence/zec-zcash.md",
+          "hits": 196
+        },
+        {
+          "path": "research/coin-intelligence/doge-dogecoin.md",
+          "hits": 147
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 60
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 48
+        },
+        {
+          "path": "backtester/tests/test_cross_asset_cpcv.py",
+          "hits": 46
+        },
+        {
+          "path": "backtester/tests/test_universe.py",
+          "hits": 40
+        },
+        {
+          "path": "backtester/core/universe.py",
+          "hits": 35
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 34
+        },
+        {
+          "path": ".remember/remember.md",
+          "hits": 33
+        },
+        {
+          "path": "research/coin-intelligence/README.md",
+          "hits": 33
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 31
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 28
+        },
+        {
+          "path": "research/coin-intelligence/trx-tron.md",
+          "hits": 21
+        },
+        {
+          "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 19
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 18
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 17
+        },
+        {
+          "path": "research/TOP_COINS.md",
+          "hits": 16
+        },
+        {
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 15
+        },
+        {
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 11
+        },
+        {
+          "path": "index/build.py",
+          "hits": 9
+        },
+        {
+          "path": "soltui/top5.py",
+          "hits": 9
+        },
+        {
+          "path": "research/turnover_table.py",
+          "hits": 9
+        },
+        {
+          "path": "backtester/strategy_cards/xs_momentum.md",
+          "hits": 8
+        },
+        {
+          "path": "docs/codebase-overview.md",
+          "hits": 7
+        },
+        {
+          "path": "docs/high_signal_file_index.json",
+          "hits": 7
+        },
+        {
+          "path": "research/coin-intelligence/bnb-binance-coin.md",
+          "hits": 6
+        },
+        {
+          "path": "research/coin-intelligence/rain-rain.md",
+          "hits": 6
+        },
+        {
+          "path": "research/coin-intelligence/xrp-ripple.md",
+          "hits": 6
+        },
+        {
+          "path": "index/make_files_doc.py",
+          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2072,145 +2211,6 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
-      "id": "transfer",
-      "label": "Cross-asset and cross-timeframe transfer",
-      "why": "The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.",
-      "terms": [
-        "cross_asset",
-        "cross-asset",
-        "transfer",
-        "doge",
-        "zec",
-        "universe",
-        "top_coins"
-      ],
-      "matchingFiles": 60,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/coin-intelligence/zec-zcash.md",
-          "hits": 196
-        },
-        {
-          "path": "research/coin-intelligence/doge-dogecoin.md",
-          "hits": 147
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 60
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 48
-        },
-        {
-          "path": "backtester/tests/test_cross_asset_cpcv.py",
-          "hits": 46
-        },
-        {
-          "path": "backtester/tests/test_universe.py",
-          "hits": 40
-        },
-        {
-          "path": "backtester/core/universe.py",
-          "hits": 35
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 34
-        },
-        {
-          "path": ".remember/remember.md",
-          "hits": 33
-        },
-        {
-          "path": "research/coin-intelligence/README.md",
-          "hits": 33
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 31
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 28
-        },
-        {
-          "path": "research/coin-intelligence/trx-tron.md",
-          "hits": 21
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 19
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 18
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 17
-        },
-        {
-          "path": "research/TOP_COINS.md",
-          "hits": 16
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 15
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 11
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 11
-        },
-        {
-          "path": "index/build.py",
-          "hits": 9
-        },
-        {
-          "path": "soltui/top5.py",
-          "hits": 9
-        },
-        {
-          "path": "research/turnover_table.py",
-          "hits": 9
-        },
-        {
-          "path": "backtester/strategy_cards/xs_momentum.md",
-          "hits": 8
-        },
-        {
-          "path": "docs/codebase-overview.md",
-          "hits": 7
-        },
-        {
-          "path": "docs/high_signal_file_index.json",
-          "hits": 7
-        },
-        {
-          "path": "research/coin-intelligence/bnb-binance-coin.md",
-          "hits": 6
-        },
-        {
-          "path": "research/coin-intelligence/rain-rain.md",
-          "hits": 6
-        },
-        {
-          "path": "research/coin-intelligence/xrp-ripple.md",
-          "hits": 6
-        },
-        {
-          "path": "index/make_files_doc.py",
-          "hits": 5
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "family:oscillator-reversion",
       "label": "Strategy family: oscillator-reversion",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -2219,7 +2219,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 57,
+      "matchingFiles": 58,
       "shown": 30,
       "files": [
         {
@@ -2354,7 +2354,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 56,
+      "matchingFiles": 57,
       "shown": 30,
       "files": [
         {
@@ -2474,8 +2474,8 @@
           "hits": 3
         },
         {
-          "path": ".remember/remember.md",
-          "hits": 2
+          "path": "llms-full.txt",
+          "hits": 3
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2489,7 +2489,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 52,
+      "matchingFiles": 53,
       "shown": 30,
       "files": [
         {
