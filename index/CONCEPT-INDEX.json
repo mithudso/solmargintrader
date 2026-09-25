@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T20:32:02+00:00",
+  "generatedAt": "2026-09-25T20:33:27+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -51,7 +51,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 32
+          "hits": 36
         },
         {
           "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
@@ -66,6 +66,10 @@
           "hits": 22
         },
         {
+          "path": "docs/CONCEPTS.md",
+          "hits": 20
+        },
+        {
           "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
           "hits": 20
         },
@@ -76,10 +80,6 @@
         {
           "path": "skills/trading-and-investing/references/the-greeks.md",
           "hits": 19
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 18
         },
         {
           "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
@@ -201,6 +201,10 @@
           "hits": 79
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 75
+        },
+        {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
           "hits": 72
         },
@@ -225,10 +229,6 @@
           "hits": 53
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 48
-        },
-        {
           "path": "extension/README.md",
           "hits": 39
         },
@@ -241,16 +241,16 @@
           "hits": 35
         },
         {
+          "path": "docs/CONCEPTS.md",
+          "hits": 30
+        },
+        {
           "path": "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
           "hits": 26
         },
         {
           "path": "extension/src/venues/index.js",
           "hits": 26
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 24
         },
         {
           "path": "backtester/tests/test_engine.py",
@@ -340,7 +340,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 47
+          "hits": 49
         },
         {
           "path": "backtester/gridcli.py",
@@ -359,11 +359,11 @@
           "hits": 29
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 27
+          "path": "backtester/strategy_cards/grid.md",
+          "hits": 26
         },
         {
-          "path": "backtester/strategy_cards/grid.md",
+          "path": "docs/CONCEPTS.md",
           "hits": 26
         },
         {
@@ -465,6 +465,10 @@
           "hits": 20
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 19
+        },
+        {
           "path": "backtester/tests/test_candle_gap_audit.py",
           "hits": 16
         },
@@ -474,6 +478,10 @@
         },
         {
           "path": "backtester/core/universe.py",
+          "hits": 11
+        },
+        {
+          "path": "docs/CONCEPTS.md",
           "hits": 11
         },
         {
@@ -497,20 +505,12 @@
           "hits": 10
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 8
-        },
-        {
           "path": "research/ratio_rotation.py",
           "hits": 8
         },
         {
           "path": "research/results/minute_coverage.json",
           "hits": 8
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 7
         },
         {
           "path": "index/build.py",
@@ -599,7 +599,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 50
+          "hits": 61
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -726,12 +726,12 @@
           "hits": 89
         },
         {
-          "path": "soltui/signals.py",
-          "hits": 63
+          "path": "docs/FILES.md",
+          "hits": 66
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 55
+          "path": "soltui/signals.py",
+          "hits": 63
         },
         {
           "path": "skills/trading-and-investing/references/technical-analysis.md",
@@ -1011,6 +1011,10 @@
           "hits": 22
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 19
+        },
+        {
           "path": "index/build.py",
           "hits": 19
         },
@@ -1025,10 +1029,6 @@
         {
           "path": "research/RANKED_LISTS.md",
           "hits": 17
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 16
         },
         {
           "path": "docs/CONCEPTS.md",
@@ -1242,11 +1242,11 @@
           "hits": 11
         },
         {
-          "path": "backtester/paircli.py",
-          "hits": 9
+          "path": "docs/FILES.md",
+          "hits": 10
         },
         {
-          "path": "soltui/config.py",
+          "path": "backtester/paircli.py",
           "hits": 9
         }
       ],
@@ -1265,12 +1265,12 @@
       "shown": 30,
       "files": [
         {
-          "path": "research/perturb.py",
-          "hits": 29
+          "path": "docs/FILES.md",
+          "hits": 31
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 28
+          "path": "research/perturb.py",
+          "hits": 29
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -1404,7 +1404,7 @@
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 63
+          "hits": 69
         },
         {
           "path": "research/verify_numbers.py",
@@ -1436,7 +1436,7 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 26
+          "hits": 25
         },
         {
           "path": "backtester/tests/test_cpcv.py",
@@ -1537,12 +1537,12 @@
       "shown": 30,
       "files": [
         {
-          "path": "research/perturb.py",
-          "hits": 29
+          "path": "docs/FILES.md",
+          "hits": 30
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 27
+          "path": "research/perturb.py",
+          "hits": 29
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -1692,7 +1692,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 31
+          "hits": 34
         },
         {
           "path": "mongo/queries/06-experiments-and-pbo.js",
@@ -1826,16 +1826,16 @@
           "hits": 60
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 56
+        },
+        {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 54
         },
         {
           "path": "docs/SCRIPTS.md",
           "hits": 50
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 48
         },
         {
           "path": "backtester/tests/test_cross_asset_cpcv.py",
@@ -1882,16 +1882,16 @@
           "hits": 18
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 17
-        },
-        {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
           "hits": 16
         },
         {
           "path": "research/TOP_COINS.md",
           "hits": 16
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 15
         },
         {
           "path": "research/coin-intelligence/eth-ethereum.md",
@@ -1972,7 +1972,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 22
+          "hits": 21
         },
         {
           "path": "backtester/tests/test_strategy_duplication.py",
@@ -2126,16 +2126,16 @@
           "hits": 23
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 21
-        },
-        {
           "path": "research/STRATEGIES.md",
           "hits": 18
         },
         {
           "path": "soltui/tests/test_signals.py",
           "hits": 18
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 17
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -2224,7 +2224,7 @@
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 88
+          "hits": 96
         },
         {
           "path": "research/perturb.py",
@@ -2374,16 +2374,16 @@
           "hits": 32
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 31
-        },
-        {
           "path": "docs/CONCEPTS.md",
           "hits": 23
         },
         {
           "path": "research/STRATEGIES.md",
           "hits": 23
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 20
         },
         {
           "path": "soltui/signals.py",
@@ -2514,7 +2514,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 24
+          "hits": 26
         },
         {
           "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",

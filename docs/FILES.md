@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `ef61210` (2026-09-25T20:32:02+00:00). 423 tracked files, 7.0 MB.
+**Generated** from `index/INDEX.json` at commit `7c0f4bb` (2026-09-25T20:33:27+00:00). 423 tracked files, 7.0 MB.
 
 Regenerate with:
 
@@ -195,7 +195,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 312 lines · 14,637 B · description: **extracted**
+`doc` · 312 lines · 15,221 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -211,7 +211,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 2803 lines · 141,194 B · description: **extracted**
+`doc` · 4039 lines · 197,235 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -253,7 +253,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 149 lines · 9,488 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 571 tests python3 -m unittest discover -s soltui/tests -t . # 313 tests (~300s) python3 -m unittest discover -s mongo/tests -t . # 20 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 649 tests python3 -m unittest discover -s soltui/tests -t . # 313 tests (~300s) python3 -m unittest discover -s mongo/tests -t . # 20 tests
 
 **Use.** Read it.
 
@@ -275,7 +275,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 840 lines · 23,681 B · description: **derived**
+`doc` · 828 lines · 23,343 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 

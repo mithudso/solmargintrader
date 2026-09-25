@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-09-25T20:32:02+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-09-25T20:33:27+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -33,7 +33,7 @@ Strongest files:
 - `skills/trading-and-investing/references/strategies-and-risk.md` (54 hits)
 - `skills/trading-and-investing/SKILL.md` (51 hits)
 - `skills/trading-and-investing/references/options-trading-and-strategies.md` (38 hits)
-- `docs/FILES.md` (32 hits)
+- `docs/FILES.md` (36 hits)
 - `skills/trading-and-investing/references/defi-and-onchain-trading.md` (31 hits)
 
 Full list: `python3 index/search.py --concept risk-rails -n 215`
@@ -90,8 +90,8 @@ Strongest files:
 - `docs/SCRIPTS.md` (24 hits)
 - `research/CANDLE-GAP-AUDIT.md` (23 hits)
 - `research/candle_gap_audit.py` (20 hits)
+- `docs/FILES.md` (19 hits)
 - `backtester/tests/test_candle_gap_audit.py` (16 hits)
-- `pagesource` (16 hits)
 
 Full list: `python3 index/search.py --concept data-integrity -n 153`
 
@@ -127,9 +127,9 @@ Strongest files:
 - `research/CANDLE-GAP-AUDIT.md` (36 hits)
 - `backtester/tests/test_cross_asset_cpcv.py` (33 hits)
 - `research/ratio_rotation.py` (22 hits)
+- `docs/FILES.md` (19 hits)
 - `index/build.py` (19 hits)
 - `research/cpcv_sweep.py` (18 hits)
-- `soltui/tui.py` (17 hits)
 
 Full list: `python3 index/search.py --concept evidence-floor -n 133`
 
@@ -160,8 +160,8 @@ Zero parameters, and it out-ranked all but one or two strategies on SOL and all 
 
 Strongest files:
 
+- `docs/FILES.md` (31 hits)
 - `research/perturb.py` (29 hits)
-- `docs/FILES.md` (28 hits)
 - `research/RANKED_LISTS.md` (25 hits)
 - `backtester/core/deflated_sharpe.py` (21 hits)
 - `docs/CONCEPTS.md` (14 hits)
@@ -179,7 +179,7 @@ The repo's primary evaluation method: 8 blocks, k=2, up to 28 paths. Replaced th
 
 Strongest files:
 
-- `docs/FILES.md` (63 hits)
+- `docs/FILES.md` (69 hits)
 - `research/verify_numbers.py` (63 hits)
 - `backtester/core/cpcv.py` (60 hits)
 - `research/cpcv_sweep.py` (54 hits)
@@ -202,7 +202,7 @@ Strongest files:
 - `backtester/tests/test_cpcv.py` (58 hits)
 - `research/RANKED_LISTS.md` (42 hits)
 - `research/verify_numbers.py` (39 hits)
-- `docs/FILES.md` (31 hits)
+- `docs/FILES.md` (34 hits)
 - `mongo/queries/06-experiments-and-pbo.js` (27 hits)
 - `docs/strategy-optimization-concept-family.md` (25 hits)
 - `backtester/tests/test_interpret.py` (24 hits)
@@ -220,9 +220,9 @@ Strongest files:
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
 - `research/CROSS-ASSET-TRANSFER.md` (60 hits)
+- `docs/FILES.md` (56 hits)
 - `research/results/minute_sweep_x1_common.txt` (54 hits)
 - `docs/SCRIPTS.md` (50 hits)
-- `docs/FILES.md` (48 hits)
 - `backtester/tests/test_cross_asset_cpcv.py` (46 hits)
 - `backtester/tests/test_universe.py` (40 hits)
 
@@ -236,7 +236,7 @@ Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A p
 
 Strongest files:
 
-- `docs/FILES.md` (88 hits)
+- `docs/FILES.md` (96 hits)
 - `research/perturb.py` (54 hits)
 - `research/verify_numbers.py` (31 hits)
 - `research/RANKED_LISTS.md` (25 hits)
