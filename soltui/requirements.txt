@@ -5,7 +5,7 @@
 # pandas and numpy for the backtester; these two are additive to soltui only.
 
 # Textual TUI (the nine-tab console). Same choice as ~/dev/story-tui.
-textual>=8.0
+textual>=8.2.8
 
 # Optional: serves that same console as a real browser window, which is what
 # soltui/serve.py and the menu bar's "Open console" use. It earns its own line
