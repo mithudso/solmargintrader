@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import argparse
 import math
+import os
 import sys
 from pathlib import Path
 from typing import Callable
@@ -60,6 +61,21 @@ from backtester.core.engine import EngineConfig  # noqa: E402
 from backtester.core.strategies import build, build_composite  # noqa: E402
 from backtester.core.types import CostConfig  # noqa: E402
 from research.sweep import HORIZONS  # noqa: E402
+from research import sweep as _sweep  # noqa: E402
+
+
+def data_dir():
+    """The bar cache to read, deferring to sweep so one flag moves both.
+
+    Falls back to THIS module's REPO rather than sweep's when nothing was
+    overridden, because the test suite sandboxes this module by monkeypatching
+    its REPO and expects the preflight to look inside the sandbox.
+    """
+    if _sweep._DATA_DIR_OVERRIDE is not None:
+        return _sweep._DATA_DIR_OVERRIDE
+    env = os.environ.get("SOLMT_DATA_DIR")
+    return Path(env) if env else REPO / "data"
+
 
 OUT = REPO / "research" / "results"
 
@@ -252,8 +268,11 @@ def unusable_data_files(assets: list[str], horizons: list[str]) -> list[str]:
     problems: list[str] = []
     for asset in assets:
         for horizon in loads.values():
-            path = REPO / "data" / f"{asset}_{HORIZONS[horizon]['interval']}.csv"
-            label = path.relative_to(REPO)
+            path = data_dir() / f"{asset}_{HORIZONS[horizon]['interval']}.csv"
+            try:
+                label = path.relative_to(REPO)
+            except ValueError:
+                label = path  # a data dir outside the repo still needs a label
             if not path.exists():
                 problems.append(f"{label} (absent)")
                 continue
@@ -282,7 +301,7 @@ def load_asset(asset: str, horizon: str) -> tuple[dict, EngineConfig, str]:
     """
     spec = HORIZONS[horizon]
     interval = spec["interval"]
-    path = REPO / "data" / f"{asset}_{interval}.csv"
+    path = data_dir() / f"{asset}_{interval}.csv"
     loader = CsvLoader(path, allow_gaps=spec["allow_gaps"])
     df = loader.load(asset, None, None, interval)
     ts = pd.to_datetime(df["timestamp"], unit="s", utc=True)
@@ -572,7 +591,24 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-control", action="store_true", help="omit the SOL control row from --top5")
     ap.add_argument("--out", default=None, help="output CSV name (default derived from assets)")
     ap.add_argument("--skip-self-test", action="store_true", help="run new assets without the gate")
+    ap.add_argument(
+        "--data-dir",
+        default=None,
+        help="read bars from here instead of data/ (e.g. data/authoritative "
+        "to re-run against a tick-rebuilt series). Also settable via SOLMT_DATA_DIR",
+    )
     args = ap.parse_args(argv)
+
+    if args.data_dir:
+        _sweep.set_data_dir(args.data_dir)
+    print(f"bars from: {data_dir()}", file=sys.stderr)
+    if data_dir().name != "data":
+        # The self-test reproduces a committed reference produced from the candle
+        # cache. Against a different series it must fail, and that failure would
+        # look like a regression in this script rather than the intended
+        # difference in inputs.
+        print("  note: --self-test compares against a reference built from data/;"
+              " expect it to differ here", file=sys.stderr)
 
     # Validated before anything is printed or computed. --groups below 2 makes
     # make_groups raise, which cpcv_evaluate turns into zero-path rows, so the run

@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+import os
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -39,6 +40,33 @@ if str(REPO) not in sys.path:
 from backtester.core.data import (  # noqa: E402
     CsvLoader, frame_to_arrays, resolve_data_dir,
 )
+
+# Where the bar cache is read from. Overridable so a run can be pointed at a
+# rebuilt series (data/authoritative/) and compared against the same run on the
+# candle cache, WITHOUT swapping files underneath data/ -- silently substituting
+# one provenance for another under a fixed path is how a result stops being
+# reproducible.
+_DATA_DIR_OVERRIDE: Path | None = None
+
+
+def data_dir() -> Path:
+    """The bar cache to read.
+
+    Resolved on every call, never captured at import. Two reasons: --data-dir is
+    parsed long after import, and a module-level constant would ignore both.
+    """
+    if _DATA_DIR_OVERRIDE is not None:
+        return _DATA_DIR_OVERRIDE
+    env = os.environ.get("SOLMT_DATA_DIR")
+    return Path(env) if env else resolve_data_dir()
+
+
+def set_data_dir(path: str | Path) -> None:
+    """Point subsequent loads at a different bar cache."""
+    global _DATA_DIR_OVERRIDE
+    _DATA_DIR_OVERRIDE = Path(path)
+
+
 from backtester.core.engine import EngineConfig, run_backtest  # noqa: E402
 from backtester.core.metrics import Metrics, compute_metrics  # noqa: E402
 from backtester.core.strategies import (  # noqa: E402
@@ -250,7 +278,7 @@ def load_horizon(
     # The horizon's path names SOL; substitute the requested asset into it, and
     # resolve against the main checkout because data/ is a gitignored cache.
     filename = Path(spec["data"]).name.replace("SOL", asset.upper())
-    path = resolve_data_dir() / filename
+    path = data_dir() / filename
     if not path.exists():
         raise FileNotFoundError(
             f"{path} not found. Fetch it first:\n"
@@ -742,7 +770,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         default="both",
         help="which redundancy test a combination must clear (default: both)",
     )
+    ap.add_argument(
+        "--data-dir",
+        default=None,
+        help="read bars from here instead of data/ (e.g. data/authoritative "
+        "to re-run against a tick-rebuilt series). Also settable via SOLMT_DATA_DIR",
+    )
     args = ap.parse_args(argv)
+
+    if args.data_dir:
+        set_data_dir(args.data_dir)
+    print(f"bars from: {data_dir()}", file=sys.stderr)
 
     stages = args.stage or ["singles", "pairs", "triples"]
     horizons = args.horizon or list(HORIZONS)
