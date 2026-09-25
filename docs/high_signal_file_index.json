@@ -710,7 +710,7 @@
       "component": "repo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 325
+      "lines": 329
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",

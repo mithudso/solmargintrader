@@ -424,7 +424,7 @@
     "tools/land.sh": 399,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-09-25T20:59:11+00:00",
+  "generatedAt": "2026-09-25T21:11:25+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -4061,9 +4061,6 @@
     },
     "af_max": {
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 3
-    },
-    "afccb0f": {
-      "docs/FILES.md": 1
     },
     "affairs": {
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -47455,6 +47452,9 @@
     },
     "dff": {
       "pagesource": 5
+    },
+    "dff47a": {
+      "docs/FILES.md": 1
     },
     "dfh5dzrgsvvcfdoyc2citkmrbdfrkyba4sofbpmapump": {
       "pagesource": 1
@@ -179909,11 +179909,11 @@
       "soltui/SolTUI.icns": 1
     },
     "t20": {
-      "docs/CONCEPTS.md": 1,
-      "docs/FILES.md": 1,
       "pagesource": 3
     },
     "t21": {
+      "docs/CONCEPTS.md": 1,
+      "docs/FILES.md": 1,
       "pagesource": 3
     },
     "t22": {

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `724dd4e` (2026-09-25T20:59:11+00:00). 423 tracked files, 7.0 MB.
+**Generated** from `index/INDEX.json` at commit `6dff47a` (2026-09-25T21:11:25+00:00). 423 tracked files, 7.0 MB.
 
 Regenerate with:
 
@@ -485,7 +485,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/requirements.txt`
 
-`data` · 14 lines · 505 B · description: **curated**
+`data` · 14 lines · 507 B · description: **curated**
 
 **Purpose.** Dependencies for the engine and research drivers — deliberately thin: pandas and numpy. No network client, no broker SDK, nothing that could place an order.
 
