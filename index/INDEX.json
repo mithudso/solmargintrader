@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-09T20:27:57+00:00",
+  "generatedAt": "2026-09-25T09:28:02+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "072728e",
+  "commit": "3d62a1f",
   "counts": {
-    "files": 310,
-    "bytes": 4441309,
+    "files": 314,
+    "bytes": 4556641,
     "byKind": {
       "code-python": 69,
       "result": 59,
@@ -16,8 +16,8 @@
       "coin-reference": 11,
       "ci": 8,
       "other": 7,
+      "data": 6,
       "code-web": 3,
-      "data": 2,
       "config": 2
     },
     "byTopDir": {
@@ -26,14 +26,14 @@
       "extension": 37,
       "soltui": 36,
       "docs": 23,
-      "(root)": 9,
+      "(root)": 13,
       ".github": 8,
       "index": 5,
       "scripts": 2,
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 289
+    "withSummary": 293
   },
   "files": [
     {
@@ -5150,6 +5150,78 @@
         "sys",
         "urllib"
       ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "llms-facts.txt",
+      "path": "llms-facts.txt",
+      "dir": "",
+      "name": "llms-facts.txt",
+      "ext": ".txt",
+      "kind": "data",
+      "title": "solmargintrader: Sourced Facts",
+      "summary": "Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader: Sourced Facts",
+      "summarySource": "derived",
+      "bytes": 2827,
+      "lines": 32,
+      "sha1": "2289b25bad69e947a9bf3fa23bd9adad18704438",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "llms-full.txt",
+      "path": "llms-full.txt",
+      "dir": "",
+      "name": "llms-full.txt",
+      "ext": ".txt",
+      "kind": "data",
+      "title": "solmargintrader",
+      "summary": "Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / ---",
+      "summarySource": "derived",
+      "bytes": 108845,
+      "lines": 2111,
+      "sha1": "b70bdd762646628bb1f2d6477bc91ac06800a494",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "llms-small.txt",
+      "path": "llms-small.txt",
+      "dir": "",
+      "name": "llms-small.txt",
+      "ext": ".txt",
+      "kind": "data",
+      "title": "solmargintrader (small)",
+      "summary": "Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader (small)",
+      "summarySource": "derived",
+      "bytes": 1320,
+      "lines": 10,
+      "sha1": "0da1a6edeb371424c404a0f4fb038d05f98e7c44",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "llms.txt",
+      "path": "llms.txt",
+      "dir": "",
+      "name": "llms.txt",
+      "ext": ".txt",
+      "kind": "data",
+      "title": "solmargintrader",
+      "summary": "Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader",
+      "summarySource": "derived",
+      "bytes": 2340,
+      "lines": 41,
+      "sha1": "d6462d4a78f09576a23cf7b9527cba72877d37d3",
+      "symbols": [],
+      "imports": [],
       "internalImports": [],
       "frontmatter": {}
     },
