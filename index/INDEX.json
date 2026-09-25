@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-25T20:10:53+00:00",
+  "generatedAt": "2026-09-25T20:17:00+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "0639932",
+  "commit": "6c68182",
   "counts": {
     "files": 319,
-    "bytes": 4696037,
+    "bytes": 4696039,
     "byKind": {
       "code-python": 71,
       "result": 60,
@@ -8505,9 +8505,9 @@
       "title": "soltui dependencies, kept in this package rather than widened into the repo.",
       "summary": "Generated report. Opens: # soltui dependencies, kept in this package rather than widened into the repo. / #",
       "summarySource": "derived",
-      "bytes": 1361,
+      "bytes": 1363,
       "lines": 27,
-      "sha1": "328fe64bdcd6164de0fe94e9cdc72a0bf84fe1f4",
+      "sha1": "3b748fa0dc0fe8e6e0ff116779802072fcf0c135",
       "symbols": [],
       "imports": [],
       "internalImports": [],
