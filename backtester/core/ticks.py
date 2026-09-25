@@ -53,9 +53,12 @@ def _parse_trades(rows: list[dict]) -> pd.DataFrame:
             # format="ISO8601" (not a fixed format string) because Coinbase
             # mixes fractional-second precision across eras: recent trades
             # carry 6 digits, 2021-era trades carry 3.
+            # as_unit("ns") because pandas >= 3 infers a coarser resolution from
+            # the strings (microseconds here), and astype("int64") then counts
+            # that unit, not nanoseconds -- every timestamp came out 1000x small.
             "timestamp": pd.to_datetime(
                 [r["time"] for r in rows], utc=True, format="ISO8601"
-            ).astype("int64")
+            ).as_unit("ns").astype("int64")
             / 1e9,
             "trade_id": [int(r["trade_id"]) for r in rows],
             "price": [float(r["price"]) for r in rows],
