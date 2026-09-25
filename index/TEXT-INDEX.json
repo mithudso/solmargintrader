@@ -128,7 +128,7 @@
     "docs/API.md": 648,
     "docs/ARCHITECTURE.md": 687,
     "docs/COMPONENTS.md": 931,
-    "docs/CONCEPTS.md": 1722,
+    "docs/CONCEPTS.md": 1723,
     "docs/DEVELOPMENT.md": 651,
     "docs/FILES.md": 19674,
     "docs/INSTALLATION.md": 527,
@@ -424,7 +424,7 @@
     "tools/land.sh": 399,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-09-25T20:33:27+00:00",
+  "generatedAt": "2026-09-25T20:44:12+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -22318,6 +22318,9 @@
     },
     "c0d": {
       "soltui/SolTUI.icns": 1
+    },
+    "c0f4bb": {
+      "docs/FILES.md": 1
     },
     "c0xcy": {
       "soltui/SolTUI.icns": 2
@@ -50755,7 +50758,7 @@
       "docs/API.md": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 4,
-      "docs/CONCEPTS.md": 13,
+      "docs/CONCEPTS.md": 15,
       "docs/DEVELOPMENT.md": 4,
       "docs/FILES.md": 64,
       "docs/INSTALLATION.md": 2,
@@ -54643,9 +54646,6 @@
     },
     "ef2": {
       "pagesource": 5
-    },
-    "ef61210": {
-      "docs/FILES.md": 1
     },
     "ef6625af": {
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1
@@ -67478,7 +67478,7 @@
       "backtester/tests/test_universe.py": 2,
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/CONCEPTS.md": 34,
+      "docs/CONCEPTS.md": 36,
       "docs/FILES.md": 57,
       "docs/INSTALLATION.md": 1,
       "docs/SCRIPTS.md": 8,
@@ -125916,7 +125916,7 @@
     },
     "pagesource": {
       ".gitattributes": 1,
-      "docs/CONCEPTS.md": 2,
+      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/known-issues.md": 1,
@@ -169024,7 +169024,7 @@
       "README.md": 3,
       "backtester/tests/test_index.py": 1,
       "docs/COMPONENTS.md": 4,
-      "docs/CONCEPTS.md": 2,
+      "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 21,
       "docs/FILES.md": 103,
       "docs/INSTALLATION.md": 25,
@@ -193947,7 +193947,6 @@
       ".github/workflows/ci.yml": 1,
       "README.md": 1,
       "docs/COMPONENTS.md": 2,
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 13,
       "docs/SCRIPTS.md": 1,
       "docs/TESTING.md": 2,
@@ -210430,6 +210429,6 @@
     "documents": 423,
     "terms": 20613,
     "termsBeforePrune": 20619,
-    "totalTokens": 493668
+    "totalTokens": 493669
   }
 }

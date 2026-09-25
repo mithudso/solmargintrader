@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `7c0f4bb` (2026-09-25T20:33:27+00:00). 423 tracked files, 7.0 MB.
+**Generated** from `index/INDEX.json` at commit `afccb0f` (2026-09-25T20:44:12+00:00). 423 tracked files, 7.0 MB.
 
 Regenerate with:
 
@@ -195,7 +195,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 312 lines · 15,221 B · description: **extracted**
+`doc` · 312 lines · 15,224 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -485,7 +485,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/requirements.txt`
 
-`data` · 14 lines · 500 B · description: **curated**
+`data` · 14 lines · 505 B · description: **curated**
 
 **Purpose.** Dependencies for the engine and research drivers — deliberately thin: pandas and numpy. No network client, no broker SDK, nothing that could place an order.
 
@@ -3013,7 +3013,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/requirements.txt`
 
-`data` · 27 lines · 1,359 B · description: **curated**
+`data` · 27 lines · 1,363 B · description: **curated**
 
 **Purpose.** Runtime dependencies for the menu-bar app (rumps/pyobjc and the py2app build tooling).
 

@@ -5,7 +5,7 @@
 # pandas and numpy for the backtester; these two are additive to soltui only.
 
 # Textual TUI (the nine-tab console). Same choice as ~/dev/story-tui.
-textual>=8.0
+textual>=8.2.8
 
 # Optional: serves that same console as a real browser window, which is what
 # soltui/serve.py and the menu bar's "Open console" use. It earns its own line
@@ -15,7 +15,7 @@ textual>=8.0
 # (the default on a fresh macOS install) that call fails silently, so the app
 # appeared to have no interface at all. Without this package the menu item falls
 # back to the Terminal route and says so; nothing else degrades.
-textual-serve>=1.1
+textual-serve>=1.1.3
 
 # macOS menu-bar status item. Optional and macOS-only: the TUI and the entire
 # test suite run without it, and soltui/app.py reports this install line rather
