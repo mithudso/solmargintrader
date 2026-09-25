@@ -57,6 +57,7 @@ from backtester.core.deflated_sharpe import (  # noqa: E402
     expected_max_sharpe,
     trial_sharpe_variance,
 )
+from backtester.core.data import resolve_data_dir  # noqa: E402
 from backtester.core.types import periods_per_year  # noqa: E402
 
 RESULTS = Path(__file__).resolve().parent / "results"
@@ -95,6 +96,38 @@ KNOWN_DUPLICATE_GROUPS = (2,)
 # `--k` of them, so one path Sharpe rests on k/groups of the series.
 DEFAULT_GROUPS, DEFAULT_K = 8, 2
 
+# Histories are NOT the same length across assets, and T matters to the DSR: more
+# observations raise confidence in the same Sharpe. Assuming one length for all of
+# them borrows the wrong number. Measured lengths differ by a lot -- ZEC has 2,043
+# daily bars against SOL's 1,875, and SOL hourly has 8,823 -- so this reads each
+# asset's own history from the fetch cache.
+DATA_DIR = resolve_data_dir(REPO)
+
+# A result file with no `asset` column predates the multi-asset runs and is SOL.
+DEFAULT_ASSET = "SOL"
+
+ASSET_TOKENS = ("BTC", "ETH", "SOL", "DOGE", "ZEC", "JUP", "JLP")
+
+
+def bars_for(asset: str, interval: str, fallback: int) -> tuple[int, str]:
+    """Bars in `asset`'s history, read from the fetch cache when it is present.
+
+    Returns (bars, provenance). `data/` is a gitignored cache, so a caller on a
+    fresh clone gets the fallback and is told so rather than being handed a silent
+    guess.
+    """
+    path = DATA_DIR / f"{asset.upper()}_{interval}.csv"
+    if not path.exists():
+        return fallback, f"fallback --bars ({path.name} not in the cache)"
+    try:
+        with path.open(encoding="utf-8") as handle:
+            n = max(0, sum(1 for _ in handle) - 1)
+    except OSError:
+        return fallback, f"fallback --bars ({path.name} unreadable)"
+    if n < 2:
+        return fallback, f"fallback --bars ({path.name} has {n} rows)"
+    return n, f"measured from {path.name}"
+
 
 def interval_of(filename: str) -> str:
     """Bar interval encoded in a result filename, e.g. cpcv_all25_1h.csv -> 1h."""
@@ -121,49 +154,52 @@ def s2_burden(
         f"  A best-of-{eff:.0f} Sharpe is expected to look good with no edge present, so the\n"
         "  benchmark below is that expected maximum rather than zero."
     )
-
-    n_obs = max(2, k * bars // groups)
     out.append(
-        f"\n  Deflated Sharpe per file (T={n_obs} observations per path, from "
-        f"bars={bars}, groups={groups}, k={k}).\n"
-        "  Normality assumed (skew 0, kurtosis 3): the result CSVs carry no higher moments,\n"
-        "  and assuming normality is the GENEROUS direction, so a strategy failing here\n"
-        "  would also fail with real skew and fat tails."
+        f"\n  T is derived PER ASSET as k/groups of that asset's own history (k={k}, "
+        f"groups={groups}),\n"
+        "  because histories differ and T changes the DSR. Normality is assumed (skew 0,\n"
+        "  kurtosis 3): the result CSVs carry no higher moments, and normality is the\n"
+        "  GENEROUS direction, so a strategy failing here also fails with real fat tails."
     )
+
     for name, df in frames.items():
         if "median_sharpe" not in df:
             continue
-        ppy = periods_per_year(interval_of(name))
+        interval = interval_of(name)
+        ppy = periods_per_year(interval)
         try:
             var_annual = trial_sharpe_variance(df["median_sharpe"].to_numpy())
         except DeflatedSharpeError as exc:
             out.append(f"  [{name}] cannot deflate: {exc}")
             continue
-        # De-annualise the whole cross-section, so SR and V[SR] share units.
+        # De-annualise the whole cross-section so SR and V[SR] share units.
         var = var_annual / ppy
         sr0 = expected_max_sharpe(eff, var)
         out.append(
-            f"\n  [{name}] interval {interval_of(name)}, trial Sharpe sd "
+            f"\n  [{name}] interval {interval}, trial Sharpe sd "
             f"{var_annual ** 0.5:+.3f} annualised\n"
             f"      benchmark SR_0 = {sr0 * (ppy ** 0.5):+.3f} annualised "
             f"({sr0:+.5f} per bar) — this is what a result must beat"
         )
         ordered = df.sort_values("median_sharpe", ascending=False).head(top)
         for _, r in ordered.iterrows():
-            label = f"{r.get('asset', '')} {r['strategy']}".strip()
+            asset = str(r.get("asset", DEFAULT_ASSET)) or DEFAULT_ASSET
+            label = f"{asset} {r['strategy']}".strip()
+            n_bars, provenance = bars_for(asset, interval, bars)
+            n_obs = max(2, k * n_bars // groups)
             try:
                 res = deflated_sharpe_ratio(
-                    deannualise(float(r["median_sharpe"]), ppy),
-                    n_obs, eff, var,
+                    deannualise(float(r["median_sharpe"]), ppy), n_obs, eff, var,
                 )
             except DeflatedSharpeError as exc:
                 out.append(f"      {label}: cannot deflate ({exc})")
                 continue
             verdict = "beats the benchmark" if res.survives else "DOES NOT beat it"
             out.append(
-                f"      {label:<28} Sharpe {r['median_sharpe']:+.3f} annualised  "
+                f"      {label:<24} Sharpe {r['median_sharpe']:+.3f}  T={n_obs:<5} "
                 f"DSR {res.deflated_sharpe:.3f}  {verdict}"
             )
+            out.append(f"          T from {n_bars} bars, {provenance}")
     return out
 
 
@@ -273,7 +309,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--floor", type=int, default=30, help="minimum trades to count as evidence")
     ap.add_argument("--swing", type=int, default=10, help="rank change that triggers S5")
     ap.add_argument("--glob", default="cpcv_all25*.csv", help="which result files to audit")
-    ap.add_argument("--bars", type=int, default=1875, help="bars in the underlying series")
+    ap.add_argument("--bars", type=int, default=1875,
+                    help="fallback series length when an asset is not in data/")
     ap.add_argument("--groups", type=int, default=DEFAULT_GROUPS, help="CPCV blocks used")
     ap.add_argument("--k", type=int, default=DEFAULT_K, help="blocks per CPCV path")
     ap.add_argument("--top", type=int, default=5, help="leaders to deflate per file")

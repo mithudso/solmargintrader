@@ -34,6 +34,11 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 -m backtester.paircli` | cointegration / pairs backtest | no |
 | `python3 -m backtester.core.fetch` | fetch one asset's bars into `data/` | **yes** |
 | `python3 -m backtester.core.universe` | fetch many assets, refuse a partial set | **yes** |
+| `python3 -m backtester.core.ticks` | fetch trade ticks into `data/ticks/` | **yes** |
+| `python3 research/candle_gap_audit.py` | classify and repair candle gaps using ticks | **yes** |
+| `./research/run_backfill.sh` | long, resumable, low-priority tick backfill + audit | **yes** |
+| `python3 -m backtester.core.fetch_minutes` | fetch 1-minute history (hours; resumable) | **yes** |
+| `python3 research/minute_sweep.py` | preliminary 1-minute strategy sweep (no CPCV) | no |
 | `python3 research/sweep.py` | the horizon parameter tables; single-split walk-forward | no |
 | `python3 research/cpcv_sweep.py` | **primary evaluation** — CPCV + PBO | no |
 | `python3 research/cross_asset_cpcv.py` | does a result transfer to another coin | no |
@@ -45,6 +50,7 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 research/turnover_table.py` | the one comparable turnover table | no |
 | `python3 research/leverage_economics.py` | what leverage costs before it earns; the viable region | no |
 | `python3 research/ratio_rotation.py` | multi-asset numeraire-switching rotation; chained-vs-direct routing | no |
+| `python3 research/short_horizon_economics.py` | the same cost question below one hour, where turnover dominates | no |
 | `python3 index/build.py` | build the four repo indexes | localhost only |
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
@@ -154,6 +160,173 @@ Options: `--asset`, `--quote`, `--start`, `--interval`, `--out`.
 **When *not* to use it.** To "fix" a gap. It refuses gappy series on purpose;
 `--allow-gaps` is a disclosure, not a repair. A forward-filled gap flatters every
 volatility and mean-reversion statistic computed afterwards.
+
+### `python3 -m backtester.core.ticks` — trade ticks, not bars
+
+**Purpose.** Fetch individual trades from `/products/<id>/trades`, below the 1m
+floor of the candle endpoint, and optionally aggregate them into bars.
+
+```bash
+python3 -m backtester.core.ticks --asset SOL --start 2026-08-05T12:00:00Z \
+    --end 2026-08-05T12:05:00Z --bars 1m
+```
+
+Options: `--asset`, `--quote`, `--start`, `--end`, `--max-trades`,
+`--allow-truncated`, `--out`, `--bars`, `--bars-out`.
+
+Output lands in `data/ticks/`, deliberately outside the `data/<ASSET>_<interval>.csv`
+namespace `CsvLoader` reads — a tick frame is not a bar frame and a backtest that
+loaded one as the other would be a confident wrong number.
+
+**When *not* to use it.** For a long window. The endpoint takes no time range at
+all (`start`/`end` are silently ignored, which is why the window is located by
+bisecting `trade_id`), and a month of SOL-USD is millions of trades. `--max-trades`
+defaults to 500,000; a window cut short is **refused** rather than written, because
+`to_csv` drops the in-frame truncation marker and the file name would still claim
+the full window. `--allow-truncated` is a disclosure, not a repair.
+
+**Why this exists.** It is the only source below 1m, and the only way to check the
+candle endpoint against raw prints. It found that the candle endpoint drops minutes
+that traded — see **Candle data is not trustworthy near a gap** below.
+
+### `python3 research/candle_gap_audit.py` — why a candle is missing, and repair
+
+**Purpose.** A missing 1m candle has two causes that look identical in the file and
+mean opposite things: the minute genuinely had no trades, or the minute traded and
+the endpoint dropped it. Only the trades endpoint can tell them apart. This script
+asks it, and can rebuild the affected bars.
+
+```bash
+# classify a sample of gap runs, no writes
+python3 research/candle_gap_audit.py --assets SOL,BTC,ETH --sample 5
+
+# rebuild every gap window from ticks into data/repaired/
+python3 research/candle_gap_audit.py --assets SOL --repair --report research/CANDLE-GAP-AUDIT.md
+```
+
+Options: `--assets`, `--quote`, `--interval`, `--suffix`, `--data-dir`, `--sample`,
+`--seed`, `--repair`, `--max-runs`, `--out-dir`, `--report`.
+
+**Repaired series are mixed-provenance and say so.** Output goes to `data/repaired/`,
+never over the candle cache: the file is candle bars everywhere except the repaired
+windows, which are tick-derived. A capped run (`--max-runs`) is written as
+`..._repaired_PARTIAL.csv` — an asset with thousands of quiet minutes cannot be
+repaired in one pass, because every gap run costs a tick fetch.
+
+`data/` is gitignored, so repaired series are **not in git** and are regenerable by
+re-running the command above. Point `--out-dir` at the repo you actually want them in
+when running from a worktree.
+
+### Candle data is not trustworthy near a gap
+
+Established 2026-08-06 by `candle_gap_audit.py` against the trades endpoint, over
+2026-07-06 .. 2026-08-06. **This is a data-integrity finding, not a tooling note.**
+
+1. **A missing candle is usually not a quiet minute.** Across **31 gap runs sampled
+   over five assets, 26 (84%) had trades the endpoint dropped.** Per asset:
+
+   | asset | gap runs | missing min | sampled | dropped | est. dropped minutes (95% CI) |
+   |---|---:|---:|---:|---:|---|
+   | SOL | 5 | 6 | 5 of 5 | 4 | 4 (2–5) |
+   | BTC | 1 | 1 | 1 of 1 | 1 | 1 (0–1) |
+   | ETH | 1 | 2 | 1 of 1 | 1 | 2 (0–2) |
+   | DOGE | 3,739 | 4,260 | 12 of 3,739 | **11** | **3,905 (2,752–4,196)** |
+   | ZEC | 987 | 1,062 | 12 of 987 | 9 | 796 (496–967) |
+
+   DOGE's 9.5% missing month is therefore mostly **dropped trading, not illiquidity** —
+   the reading a single spot-check wrongly suggested. DOGE and ZEC figures are
+   sample-based estimates (Wilson intervals), not censuses.
+
+   The same minutes — 2026-07-06 01:38 and 01:39 — are missing for **SOL, BTC, ETH,
+   DOGE and ZEC**, so that one is an exchange-side event, not a per-series artefact.
+   BTC lost 390 trades in one minute; ETH lost 428 across two.
+
+2. **The loss is permanent, not a transient serving hiccup.** Re-requesting the
+   affected ranges narrowly, weeks later, still omits 07-26 07:28 and 07-31 23:29 and
+   still reports 65.3978 for 07:27. **Refetching does not repair it** — which is why
+   the tick path is the only remedy.
+
+3. **Bars adjacent to a gap can be wrong too, in both directions.** They are
+   *present*, so nothing flags them:
+
+   | asset | minute | field | candle | ticks |
+   |---|---|---|---|---|
+   | DOGE | 07-06 01:37 | volume | 112.9 | **11,630.4** |
+   | BTC | 07-06 01:37 | volume | 0.719 | **9.171** |
+   | BTC | 07-06 01:39 | volume | 0.046 | **1.221** |
+   | SOL | 07-06 01:37 | volume | 120.4 | **204.2** |
+   | SOL | 07-26 07:27 | volume | 65.398 | **60.042** |
+
+   In the two isolated single-minute drops the neighbour is *too big* by exactly the
+   dropped minute's volume (07-26 07:27 by 5.3562; 07-31 23:28 by 0.2402), which looks
+   like the dropped minute being folded into its neighbour. That tidy explanation does
+   **not** extend to the 01:38–01:39 outage, where the neighbouring candles are too
+   *small* instead — BTC 01:37 by 12×. Two exact matches are a pattern worth knowing;
+   they are not a validated mechanism, and the outage neighbourhood behaves differently.
+
+   **Not every diff is candle error.** Some are boundary attribution: at SOL 07-31,
+   23:30 is −0.135896 and 23:31 is +0.135896, exactly zero-sum. That is one trade on
+   the minute boundary, assigned to different sides by the two surfaces. No volume is
+   lost, and the repair rewrites those bars on a convention that has not been
+   validated — treat sub-0.01 price shifts and zero-sum volume pairs as attribution
+   noise, not recovered data.
+
+4. **The damage propagates to coarser bars, including prices.** The 5m bar at
+   2026-07-06 01:35 is short **254.782 SOL (9.6% of real volume)** and reports a low
+   of **81.91 against a true 81.86**. A wrong low is what stop-loss and liquidation
+   logic reads, which makes this a correctness problem for any backtest that models
+   intrabar stops, not merely a volume-accuracy one.
+
+5. **The corruption is not confined to gaps.** A full tick reconstruction of
+   2026-08-04 — a day with **zero gaps** in the SOL 1m cache — disagrees with the
+   candle file on **133 of 1,440 minutes (9.2%)** by volume, plus 2.8% of opens,
+   3.1% of closes, 1.7% of highs and 1.4% of lows. 100 of those 133 are exact
+   adjacent-pair reassignments (volume mis-binned into the neighbouring minute), but
+   the day's total volume still differs by 932.4 SOL, so it is not purely a binning
+   convention. Two independent tick paths — the streaming backfill and
+   `fetch_trades` — agree with each other exactly and disagree with the candle, and
+   there are no trades near the affected boundaries, so this is not rounding.
+
+**What to do about it.** Treat a gap as *suspected data loss* until classified —
+never assume a quiet minute — and do not treat a gapless window as clean either.
+Before trusting a result that depends on volume or on intrabar extremes, rebuild the
+range from ticks (`research/tick_backfill.py`) and compare. Small spot checks will
+mislead you here: many windows match bit-exactly, and roughly one minute in eleven
+does not.
+
+Full evidence, per asset, with the sampled gap runs: **`research/CANDLE-GAP-AUDIT.md`**.
+
+### `research/run_backfill.sh` — the long, polite version
+
+**Purpose.** `candle_gap_audit.py` pays a ~29-request bisection to locate each gap,
+which is fine for five gaps and absurd for DOGE's 3,739 (~24,000 requests, mostly
+spent finding windows rather than reading them). `research/tick_backfill.py` walks
+the window **once**, backward, at `total_trades / 1000` requests, and classifies
+every gap instead of a sample — while producing an authoritative bar series that
+also exposes the errors in bars that are *present*.
+
+```bash
+./research/run_backfill.sh            # start or resume, detached
+./research/run_backfill.sh --status   # progress and checkpoints
+./research/run_backfill.sh --tail     # follow the log
+./research/run_backfill.sh --stop     # checkpoint and stop cleanly
+```
+
+Env: `BACKFILL_ASSETS`, `BACKFILL_START`, `BACKFILL_END`, `BACKFILL_PAUSE`,
+`BACKFILL_HOME` (**set this to the main checkout when running from a worktree**, or
+hours of output are deleted with the worktree).
+
+**"Polite" means three things, only one of which is the scheduler.** `nice -n 19`
+yields CPU; macOS `taskpolicy -b` also throttles disk I/O and parks the job on
+efficiency cores, which `nice` alone does not do; and the Python side rate-limits
+itself, because the resource most likely to disrupt other work is the shared public
+API quota, which no scheduler priority can protect.
+
+**It is interruptible without loss.** State is checkpointed every 25 pages via an
+atomic write, `--stop` sends SIGTERM which is trapped to checkpoint after the
+current page, and a resumed run is verified to produce byte-identical results to an
+uninterrupted one. A run that was interrupted **refuses to write** its bar series,
+so a partial series can never be mistaken for a complete one.
 
 ### `python3 -m backtester.core.universe` — many assets
 
@@ -392,6 +565,49 @@ are on-chain and undocumented), nor are keeper latency, priority fees, failed
 transactions, or the liquidation penalty itself. Every omission makes the real picture
 worse, never better. Verify venue parameters at `docs.jup.ag` before relying on them.
 
+### `python3 research/short_horizon_economics.py` — the same question below one hour
+
+**Purpose.** The sibling of `leverage_economics.py` for holds of seconds to hours, where
+the cost picture inverts. Generates every table in
+`docs/short-horizon-leverage-concept-family.md`: the toll decomposed by sub-hour holding
+period, fixed Solana transaction cost in bps of notional, the win rate a symmetric trade
+needs to break even, daily fee burn by turnover, and where the liquidation barrier sits
+relative to the noise band.
+
+**When to use it.** Before taking seriously any strategy that holds for minutes. It
+answers "how often can this trade before the fee eats the account" and "is the target
+move even reachable net of costs".
+
+**When *not* to use it.** As evidence about any specific strategy, and — more sharply
+than for its sibling — as anything resembling a backtest. **This repo has no sub-hourly
+data at all.** Every empirical result in `research/` is on 1-hour bars, which cannot
+resolve the intrabar path that decides whether a leveraged position survives.
+
+**The results worth knowing even if you never run it.**
+
+- **Below an hour, carry is ~0.1% of the toll.** The 12 bps round-trip fee is the whole
+  cost, which makes turnover — not leverage, and not duration — the binding constraint.
+- **One-minute turnover costs 173% of collateral per day in fees at 1× leverage.** At 10×
+  it is 1,728%. This is the number that ends most short-horizon designs.
+- **A target move below the toll cannot break even at any win rate**, including 100%. A
+  5 bps or 10 bps target is arithmetically dead, not merely difficult.
+- **Fixed transaction cost is the one term leverage improves**, because it amortises
+  across a larger notional: a contested-priority round trip is 20 bps on $500 of notional
+  and 0.04 bps on $250,000.
+
+```bash
+python3 research/short_horizon_economics.py --self-test   # gate: 10 load-bearing claims
+python3 research/short_horizon_economics.py               # all tables
+python3 research/short_horizon_economics.py --markdown    # the doc's tables, regenerated
+python3 research/short_horizon_economics.py --vol 1.2     # barrier table at a different vol
+```
+
+**Limits.** It inherits every limit of `leverage_economics.py` — venue parameters are not
+a live read, price impact is not modelled — and adds one of its own: the barrier table
+assumes 70% annualised volatility with square-root-of-time scaling. **That is an
+assumption, not a measurement**, and `--vol` exists so the sensitivity is visible rather
+than buried. Keeper latency is not modelled because Jupiter publishes no figure for it.
+
 ---
 
 ### `python3 research/ratio_rotation.py` — hold whichever coin is cheapest against its peers
@@ -599,6 +815,85 @@ covers the unit suite only — the packaging paths are verified by hand.
 
 ---
 
+## The 1-minute pipeline
+
+Separate from the daily and hourly fetch and sweep sections because the scale changes the engineering: ~2.6M bars per asset, ~1GB of CSV,
+and a fetch measured in hours.
+
+### `python3 -m backtester.core.fetch_minutes` — fetch 1-minute history
+
+```bash
+python3 -m backtester.core.fetch_minutes --asset BTC --years 5
+python3 -m backtester.core.fetch_minutes --all --years 5 --workers 6
+python3 -m backtester.core.fetch_minutes --all --coverage-only      # measure, fetch nothing
+python3 -m backtester.core.fetch_minutes --asset BTC --max-windows 50   # pilot
+```
+
+| Flag | Meaning |
+| --- | --- |
+| `--asset` | repeatable |
+| `--all` | BTC, ETH, SOL, DOGE, ZEC, XRP, BNB, HYPE — the Coinbase-listed subset |
+| `--years` | default 5 |
+| `--workers` | concurrent requests, default 6; a **shared** limiter still caps aggregate throughput at 8/s |
+| `--max-windows` | stop after N windows per asset, for piloting |
+| `--no-resume` | refetch everything, ignoring the progress sidecar |
+| `--coverage-only` | re-measure what is on disk |
+
+**It is resumable — kill it and re-run it.** Each completed 300-minute window is appended immediately
+and its start recorded in `data/<ASSET>_1m.progress.json`.
+
+**Read the coverage table, not just the bar count.** Two different absences look identical in a bar
+count and the table separates them:
+
+- **`short by`** — missing *calendar*. The venue has no more history. XRP starts at its 2023
+  relisting; BNB has ~287 days; HYPE ~181.
+- **`complete`** — missing *minutes inside* the calendar it does cover. **ZEC covers the full five
+  years and is only 60.2% complete** — it does not trade every minute. Every lookback in the engine
+  counts *bars*, so a 200-bar average on ZEC spans far more wall-clock time than 200 minutes, and
+  nothing downstream can tell.
+
+Coverage is recorded in `research/results/minute_coverage.json`, which is tracked. The CSVs are not.
+
+### `python3 research/minute_sweep.py` — preliminary 1-minute sweep
+
+```bash
+python3 research/minute_sweep.py                                  # 500k bars per asset
+python3 research/minute_sweep.py --common-window --tag common     # like-for-like
+python3 research/minute_sweep.py --all-bars                       # full history; hours
+python3 research/minute_sweep.py --param-scale 60                 # wall-clock params; slow
+python3 research/minute_sweep.py --asset BTC --strategy macd --bars 50000
+```
+
+| Flag | Meaning |
+| --- | --- |
+| `--asset`, `--strategy` | repeatable filters |
+| `--bars` | most recent bars per asset, default 500,000 (~347 days) |
+| `--all-bars` | every cached bar |
+| `--common-window` | intersect all assets' calendars so cells are comparable |
+| `--param-scale` | multiply bar-count parameters (60 preserves the hourly wall-clock window) |
+| `--workers` | default `min(6, cpu-2)` |
+| `--tag` | suffix for the output filenames |
+
+**Three things to know before reading its output.**
+
+**It is preliminary, and the word is load-bearing.** One pass per cell — no CPCV, no PBO, no split.
+This repo's own finding 1c measures in-sample rank as anti-informative, so a good number here is a
+reason to spend a real protocol on that cell, not evidence.
+
+**`--common-window` vs the default is a real choice.** By default each asset uses its own recent
+bars, so spans differ and **cross-asset rows are not like-for-like**. `--common-window` intersects the
+calendars, which is comparable but bounded by the shortest history (~181 days, HYPE).
+
+**Parameters are bar counts.** `ma_crossover(fast=12, slow=48)` was tuned on hourly bars; at 1m the
+same numbers mean 12 and 48 *minutes* — a different strategy, not the same one at finer resolution.
+`--param-scale 60` restores the wall-clock window and only scales genuine bar-count keys, never a
+threshold like `num_std`. It is expensive: `macd` went from 0.1s to 29.6s on 20k bars.
+
+**Expect costs to dominate.** Measured on 100k bars of BTC, 22 of 25 strategies lost 79–100% of
+capital with $7,800–$9,900 of fees against $10,000. Every row reports gross beside net for that
+
+---
+
 ## Reading the numbers correctly
 
 The scripts are honest; the risk is in what a reader does with their output. Five
@@ -646,3 +941,21 @@ and 28 paths, giving it the tightest interval in the study by construction.
 **Not investment advice.** Every figure here is a backtest on historical data, and
 the point of the findings above is that most of them did not survive contact with a
 different asset, timeframe, or evaluation geometry.
+
+### 1-minute pipeline troubleshooting
+
+**`fetch_minutes` is slow.** Expected throughput is ~6-7 windows/s against a shared 8/s limit. The
+endpoint answers in ~0.20s median but ~15% of connections stall, which is why `REQUEST_TIMEOUT` is 3s
+-- raising it makes throughput *worse*, not better.
+
+**`fetch_minutes` reports `PARTIAL`.** Some windows were not attempted. Re-run the same command; it
+resumes.
+
+**`minute_sweep.py` dies with `BrokenProcessPool`.** Out of memory. Lower `--workers` or `--bars`.
+Slices are prepared once in the parent precisely to bound this; if it still happens the slice itself
+is too large for your machine.
+
+**A strategy takes minutes per cell at 1m.** Indicator cost is proportional to the window, so
+`--param-scale 60` multiplies it. `rsi` extrapolates to ~1.8h per asset on a full 2.6M-bar series.
+Bound it with `--bars`.
+

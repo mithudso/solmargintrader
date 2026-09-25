@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+import os
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -36,7 +37,36 @@ REPO = Path(__file__).resolve().parent.parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from backtester.core.data import CsvLoader, frame_to_arrays  # noqa: E402
+from backtester.core.data import (  # noqa: E402
+    CsvLoader, frame_to_arrays, resolve_data_dir,
+)
+
+# Where the bar cache is read from. Overridable so a run can be pointed at a
+# rebuilt series (data/authoritative/) and compared against the same run on the
+# candle cache, WITHOUT swapping files underneath data/ -- silently substituting
+# one provenance for another under a fixed path is how a result stops being
+# reproducible.
+_DATA_DIR_OVERRIDE: Path | None = None
+
+
+def data_dir() -> Path:
+    """The bar cache to read.
+
+    Resolved on every call, never captured at import. Two reasons: --data-dir is
+    parsed long after import, and a module-level constant would ignore both.
+    """
+    if _DATA_DIR_OVERRIDE is not None:
+        return _DATA_DIR_OVERRIDE
+    env = os.environ.get("SOLMT_DATA_DIR")
+    return Path(env) if env else resolve_data_dir()
+
+
+def set_data_dir(path: str | Path) -> None:
+    """Point subsequent loads at a different bar cache."""
+    global _DATA_DIR_OVERRIDE
+    _DATA_DIR_OVERRIDE = Path(path)
+
+
 from backtester.core.engine import EngineConfig, run_backtest  # noqa: E402
 from backtester.core.metrics import Metrics, compute_metrics  # noqa: E402
 from backtester.core.strategies import (  # noqa: E402
@@ -234,11 +264,29 @@ class Row:
         return rec
 
 
-def load_horizon(h: str) -> tuple[dict[str, np.ndarray], EngineConfig]:
-    """Load the price series and engine config for a horizon."""
+def load_horizon(
+    h: str, asset: str = "SOL"
+) -> tuple[dict[str, np.ndarray], EngineConfig]:
+    """Load the price series and engine config for a horizon.
+
+    `asset` defaults to SOL, so every published figure is reproduced unchanged.
+    Passing another asset swaps the series while holding the horizon's interval,
+    costs and fill delay fixed, which is what makes a cross-asset comparison a
+    comparison rather than two different experiments.
+    """
     spec = HORIZONS[h]
-    loader = CsvLoader(REPO / spec["data"], allow_gaps=spec["allow_gaps"])
-    df = loader.load("SOL", None, None, spec["interval"])
+    # The horizon's path names SOL; substitute the requested asset into it, and
+    # resolve against the main checkout because data/ is a gitignored cache.
+    filename = Path(spec["data"]).name.replace("SOL", asset.upper())
+    path = data_dir() / filename
+    if not path.exists():
+        raise FileNotFoundError(
+            f"{path} not found. Fetch it first:\n"
+            f"  python3 -m backtester.core.fetch --asset {asset.upper()} "
+            f"--interval {spec['interval']}"
+        )
+    loader = CsvLoader(path, allow_gaps=spec["allow_gaps"])
+    df = loader.load(asset.upper(), None, None, spec["interval"])
     cfg = EngineConfig(
         interval=spec["interval"],
         fill_delay=1,
@@ -353,6 +401,16 @@ def redundancy_filename(asset: str, horizon: str) -> str:
     return f"signal_redundancy_{asset.lower()}_{horizon}.csv"
 
 
+def combination_redundancy_filename(asset: str, horizon: str) -> str:
+    """Canonical name of the COMBINATION-level redundancy evidence.
+
+    Separate from the singles file because it answers a different question: not
+    "are these two signals interchangeable" but "are these two combinations the
+    same experiment". The second does not follow from the first.
+    """
+    return f"combination_redundancy_{asset.lower()}_{horizon}.csv"
+
+
 def measured_redundant_pairs(
     horizon: str, asset: str = "SOL"
 ) -> frozenset[frozenset[str]]:
@@ -391,6 +449,43 @@ def measured_redundant_pairs(
             )
     flagged = table[flags.to_numpy(dtype=bool)]
     return frozenset(frozenset((a, b)) for a, b in zip(flagged["a"], flagged["b"]))
+
+
+def measured_redundant_combinations(
+    horizon: str, asset: str = "SOL"
+) -> frozenset[frozenset[str]] | None:
+    """Twin COMBINATIONS measured redundant as combinations, keyed by label.
+
+    Returns None when the evidence has not been generated, which callers treat as
+    "fall back to collapsing the whole class" -- the previous behaviour, and a
+    documented over-collapse rather than a silent one.
+
+    Why this file exists at all: class membership is measured on a strategy's
+    STANDALONE exposure, and applying it to combinations assumes the members stay
+    interchangeable once a partner decides which bars either may act on. Measured
+    on SOL that assumption mostly holds -- 926 of 1,019 measurable twin pairs are
+    redundant as combinations too -- but roughly 90 are not, and those are the
+    combinations the class rule discards without evidence.
+    """
+    path = OUT_DIR / combination_redundancy_filename(asset, horizon)
+    if not path.exists():
+        return None
+    table = pd.read_csv(path)
+
+    def members(label: str) -> frozenset[str]:
+        return frozenset(label[label.index("(") + 1 : -1].split("+"))
+
+    # The evidence is per-mode; the gate is not, because sweep_combos picks the
+    # combinations first and applies every mode to each. Resolve conservatively:
+    # a twin pair collapses only if it is redundant under EVERY mode measured, so
+    # a single mode that tells them apart is enough to keep both. Erring the other
+    # way would discard a distinguishable experiment on the strength of the modes
+    # where it happens to look the same.
+    verdicts: dict[frozenset[frozenset[str]], list[bool]] = {}
+    for a, b, flag in zip(table["a"], table["b"], table["redundant"]):
+        key = frozenset((members(a), members(b)))
+        verdicts.setdefault(key, []).append(str(flag).lower() == "true")
+    return frozenset(k for k, flags in verdicts.items() if all(flags))
 
 
 def redundancy_classes(
@@ -520,8 +615,14 @@ def independent_combos(
             return False
         return True
 
+    combo_evidence = (
+        measured_redundant_combinations(horizon)
+        if gate in ("measured", "both")
+        else None
+    )
     out: list[tuple[str, ...]] = []
-    seen: set[frozenset[str]] = set()
+    seen: dict[frozenset[str], tuple[str, ...]] = {}
+    added: set[tuple[str, ...]] = set()
     if not local_rep:
         return [c for c in itertools.combinations(names, size) if admissible(c)]
 
@@ -541,9 +642,26 @@ def independent_combos(
             # their own pair being flagged -- reachable only through a chained
             # component, and dropped for the same reason.
             key = frozenset(local_rep.get(n, n) for n in combo)
-            if len(key) < size or key in seen:
+            if len(key) < size:
                 continue
-            seen.add(key)
+            if combo in added:
+                # The second pass revisits every combination, including the ones
+                # the first pass already kept. Without this the representative is
+                # emitted twice and the admitted count exceeds the family gate's,
+                # which is arithmetically impossible for an intersection.
+                continue
+            if key in seen:
+                # A twin of something already kept. Collapse it only if the two
+                # were measured redundant AS COMBINATIONS; the class rule alone
+                # asserts that without evidence.
+                if combo_evidence is None:
+                    continue
+                twin = frozenset((frozenset(combo), frozenset(seen[key])))
+                if twin in combo_evidence:
+                    continue
+            else:
+                seen[key] = combo
+            added.add(combo)
             out.append(combo)
     return out
 
@@ -652,7 +770,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         default="both",
         help="which redundancy test a combination must clear (default: both)",
     )
+    ap.add_argument(
+        "--data-dir",
+        default=None,
+        help="read bars from here instead of data/ (e.g. data/authoritative "
+        "to re-run against a tick-rebuilt series). Also settable via SOLMT_DATA_DIR",
+    )
     args = ap.parse_args(argv)
+
+    if args.data_dir:
+        set_data_dir(args.data_dir)
+    print(f"bars from: {data_dir()}", file=sys.stderr)
 
     stages = args.stage or ["singles", "pairs", "triples"]
     horizons = args.horizon or list(HORIZONS)

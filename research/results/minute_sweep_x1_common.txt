@@ -1,0 +1,264 @@
+PRELIMINARY 1-MINUTE SWEEP -- all cached assets x all registered strategies
+parameter scale: x1 (bar counts as written)   window: common calendar across assets, capped at 500,000   fees 6bps + slippage 2bps
+
+HOW TO READ THIS -- and what it is not
+--------------------------------------
+PRELIMINARY. One pass per cell: no CPCV, no PBO, no walk-forward, no out-of-sample
+split. This repository's own finding 1c measures in-sample rank as ANTI-INFORMATIVE at
+the daily horizons (PBO 0.700, above the 0.500 noise line), and finding 1f shows even
+the CPCV ordering is largely an artifact of the block count. So a good number here is
+not evidence that a strategy works. It is a reason to spend a real protocol on that
+cell; a bad number is a reason not to.
+
+net vs gross   net is after fees, slippage and borrow. gross is the same strategy with
+               the cost path removed. At one minute the gap between them IS the result:
+               if gross is near zero and net is -90%, the strategy has no edge to pay
+               the spread with, which is a different diagnosis from a broken signal.
+cost share     total fees + borrow as a fraction of the $10,000 starting capital. Above
+               ~1.0 the account has been spent on round trips.
+trades         a round trip is two fees. Tens of thousands of trades at 8bps a side is
+               the whole story for most rows below.
+window         each asset uses its own most recent bars unless --common-window was
+               passed, so spans DIFFER and cross-asset rows are not like-for-like.
+
+PER-ASSET WINDOW ACTUALLY USED
+------------------------------------------------------------------------------
+asset          bars         from           to  cells  net>0
+BNB         186,731   2026-02-05   2026-08-05     25      0
+BTC         259,913   2026-02-05   2026-08-05     25      0
+DOGE        251,261   2026-02-05   2026-08-05     25      1
+ETH         259,906   2026-02-05   2026-08-05     25      1
+HYPE        232,749   2026-02-05   2026-08-05     25      1
+SOL         259,898   2026-02-05   2026-08-05     25      1
+XRP         259,868   2026-02-05   2026-08-05     25      0
+ZEC         255,595   2026-02-05   2026-08-05     25      1
+
+EVERY CELL, WORST COST SHARE FIRST
+----------------------------------------------------------------------------------------------------
+asset strategy           trades     net %   gross %   net Sh  gross Sh   costs $ cost/cap   secs
+ZEC   breakout            6,393    -99.99     30.60   -21.10      2.58    13,059     1.31    1.3
+ZEC   vol_regime          6,053    -99.99     28.17   -31.84      3.36    12,816     1.28   15.3
+ZEC   ichimoku            7,138   -100.00     25.94   -23.19      2.22    12,593     1.26    3.1
+ZEC   ma_crossover        3,541    -99.51     22.79   -10.95      1.54    12,230     1.22    1.6
+BNB   keltner             3,698    -99.52     21.83   -57.10      5.40    12,135     1.21   29.2
+ZEC   bb_breakout         4,771    -99.91     20.91   -18.10      1.88    12,081     1.21    2.6
+HYPE  breakout            6,056    -99.99     18.83   -34.49      2.08    11,882     1.19    1.2
+ZEC   macd               19,327   -100.00     18.19   -63.52      2.13    11,819     1.18   11.4
+BNB   breakout            5,359    -99.97     15.74   -66.34      3.34    11,570     1.16    1.0
+DOGE  macd               18,895   -100.00     15.19  -121.51      2.61    11,519     1.15   10.2
+BNB   atr_sized           3,785    -99.55     15.34   -42.06      2.79    11,489     1.15   15.7
+HYPE  ichimoku            6,086    -99.98     14.86   -29.89      1.63    11,485     1.15    2.6
+BNB   sma_regime          3,757    -99.56     15.04   -41.94      2.71    11,460     1.15    0.9
+BNB   garch_voltarget     3,757    -99.56     15.04   -41.94      2.71    11,460     1.15  713.9
+BNB   voltarget           3,757    -99.56     15.04   -41.94      2.71    11,460     1.15    1.6
+ZEC   atr_sized           7,049    -99.97     14.57   -18.33      1.29    11,454     1.15   25.6
+ZEC   bb_reversion        4,808    -99.90     14.29   -19.93      1.59    11,419     1.14    2.5
+HYPE  ma_crossover        3,110    -99.33     14.41   -15.82      1.21    11,374     1.14    1.4
+XRP   stochastic          4,331    -99.88     13.81   -38.43      1.73    11,369     1.14    3.5
+BNB   bb_breakout         3,453    -99.44     13.97   -50.45      3.11    11,342     1.13    1.9
+BNB   ichimoku            5,139    -99.95     12.94   -61.33      2.71    11,289     1.13    2.1
+DOGE  obv_trend           9,268   -100.00     12.37   -64.14      1.90    11,237     1.12  165.1
+ZEC   zscore              4,588    -99.86     12.50   -19.07      1.41    11,236     1.12    2.5
+ZEC   voltarget           5,449    -99.96     11.87   -16.42      1.05    11,183     1.12    2.2
+ZEC   garch_voltarget     5,449    -99.96     11.87   -16.42      1.05    11,183     1.12 1296.4
+XRP   ichimoku            7,082   -100.00     11.75   -54.97      1.41    11,175     1.12    2.9
+XRP   adx_trend          11,939   -100.00     11.73   -97.89      1.62    11,173     1.12  160.6
+BNB   ts_momentum         8,780   -100.00     11.56   -97.86      2.62    11,156     1.12    0.6
+ZEC   sma_regime          5,450    -99.96     11.53   -16.43      1.02    11,149     1.11    1.2
+SOL   stochastic          4,338    -99.83     11.59   -31.89      1.36    11,142     1.11    3.5
+XRP   zscore              4,790    -99.93     10.84   -43.64      1.52    11,077     1.11    2.6
+BNB   adx_trend           8,604   -100.00     10.66  -110.91      2.78    11,066     1.11   92.3
+ETH   ma_crossover        3,590    -99.63     10.68   -26.30      1.22    11,031     1.10    1.7
+XRP   macd               18,605   -100.00     10.09  -136.03      1.38    11,009     1.10   10.5
+ZEC   stochastic          4,459    -99.88     10.08   -18.34      1.05    10,996     1.10    3.4
+ZEC   ou_reversion        3,338    -99.25     10.29   -20.44      1.48    10,954     1.10    3.9
+BNB   macd               13,845   -100.00      8.79  -140.12      2.22    10,879     1.09    7.5
+XRP   rsi                 5,525    -99.98      8.32   -48.27      1.19    10,830     1.08 7827.7
+XRP   sma_regime          5,748    -99.99      8.30   -44.14      0.91    10,829     1.08    1.2
+XRP   garch_voltarget     5,748    -99.99      8.30   -44.14      0.91    10,829     1.08 1312.8
+XRP   voltarget           5,748    -99.99      8.30   -44.14      0.91    10,829     1.08    2.2
+XRP   bb_reversion        4,974    -99.95      8.32   -45.02      1.18    10,827     1.08    2.6
+ZEC   ts_momentum        12,534   -100.00      7.99   -40.78      0.91    10,799     1.08    0.8
+ETH   obv_trend          13,088   -100.00      7.50   -93.90      1.23    10,750     1.07  194.4
+DOGE  rsi                 5,347    -99.98      7.16   -43.23      1.12    10,714     1.07 7395.6
+SOL   obv_trend          11,226   -100.00      6.91   -74.55      1.04    10,691     1.07  189.4
+BNB   vol_regime          4,227    -99.86      7.00   -73.62      2.10    10,686     1.07   11.2
+XRP   atr_sized           5,890    -99.99      6.84   -44.95      0.82    10,683     1.07   26.5
+ZEC   keltner             3,214    -99.18      7.64   -16.03      0.88    10,682     1.07   58.7
+XRP   dual_momentum      13,138   -100.00      6.67   -95.30      0.90    10,667     1.07    0.7
+XRP   keltner             2,665    -98.49      8.04   -33.11      1.25    10,653     1.07   55.1
+BTC   stochastic          4,453    -99.89      6.33   -47.93      1.18    10,622     1.06    4.1
+DOGE  stochastic          4,422    -99.89      6.27   -35.20      0.91    10,617     1.06    3.3
+XRP   obv_trend          11,405   -100.00      6.15   -84.13      0.83    10,615     1.06  180.2
+BTC   zscore              4,647    -99.93      6.20   -53.68      1.25    10,612     1.06    3.3
+ETH   ichimoku            7,495   -100.00      5.98   -57.55      0.93    10,598     1.06    3.4
+BTC   ts_momentum        12,718   -100.00      5.97  -111.62      1.20    10,597     1.06    1.3
+SOL   zscore              4,770    -99.93      5.93   -38.07      0.82    10,586     1.06    2.6
+SOL   ts_momentum        12,987   -100.00      5.77   -86.80      0.89    10,577     1.06    0.8
+XRP   ou_reversion        3,495    -99.59      6.16   -46.47      1.23    10,576     1.06    4.1
+XRP   ma_crossover        3,503    -99.61      6.13   -25.89      0.67    10,573     1.06    1.5
+BTC   ichimoku            7,160   -100.00      5.44   -69.33      1.03    10,544     1.05    3.3
+BTC   macd               15,950   -100.00      5.31   -36.94      1.17    10,531     1.05   13.7
+ZEC   rsi                 5,336    -99.96      5.23   -22.01      0.68    10,520     1.05 7679.4
+ETH   zscore              4,768    -99.93      4.75   -42.20      0.82    10,468     1.05    2.7
+HYPE  ts_momentum        10,786   -100.00      4.67   -52.21      0.65    10,467     1.05    0.7
+SOL   macd               18,556   -100.00      4.48  -127.25      0.77    10,448     1.04   11.6
+BNB   obv_trend           6,809   -100.00      4.44   -77.45      1.02    10,444     1.04   82.4
+BTC   bb_reversion        4,862    -99.95      4.47   -55.64      0.92    10,442     1.04    2.9
+SOL   ichimoku            7,519   -100.00      4.33   -53.93      0.66    10,433     1.04    3.2
+SOL   bb_reversion        4,998    -99.95      4.37   -39.42      0.63    10,432     1.04    2.7
+ETH   adx_trend          11,634   -100.00      4.29   -93.51      0.82    10,429     1.04  237.3
+BTC   vol_regime          6,022    -99.99      4.28   -83.59      1.14    10,427     1.04   24.5
+DOGE  grid               71,723    -98.51      5.73   -66.86      1.90    10,424     1.04    1.5
+BNB   ma_crossover        2,554    -98.20      6.03   -31.06      1.07    10,423     1.04    1.1
+ETH   atr_sized           5,709    -99.99      4.14   -42.78      0.62    10,413     1.04   44.9
+XRP   ts_momentum        12,598   -100.00      4.02   -91.47      0.57    10,402     1.04    0.8
+ETH   bb_reversion        4,987    -99.95      4.05   -43.64      0.71    10,400     1.04    3.4
+HYPE  keltner             3,851    -99.75      4.02   -31.24      0.64    10,376     1.04   44.9
+ZEC   adx_trend          11,516   -100.00      3.59   -42.57      0.50    10,359     1.04  155.2
+DOGE  bb_breakout         4,562    -99.94      3.59   -40.20      0.60    10,353     1.04    2.6
+XRP   ma_ribbon          90,867    -99.99      3.53   -62.23      0.57    10,352     1.04    4.1
+SOL   adx_trend          12,024   -100.00      3.33   -91.82      0.59    10,333     1.03  180.2
+BNB   dual_momentum       9,132   -100.00      3.28  -106.50      0.82    10,328     1.03    0.5
+HYPE  bb_breakout         4,259    -99.88      3.40   -28.38      0.50    10,328     1.03    2.4
+BTC   adx_trend          11,909   -100.00      3.24  -119.09      0.76    10,324     1.03  236.7
+HYPE  adx_trend          11,052   -100.00      3.22   -67.27      0.54    10,322     1.03  134.4
+ETH   garch_voltarget     5,654    -99.99      3.18   -42.52      0.49    10,317     1.03 1491.2
+ETH   sma_regime          5,654    -99.99      3.18   -42.52      0.49    10,317     1.03    1.9
+ETH   voltarget           5,654    -99.99      3.18   -42.52      0.49    10,317     1.03    2.4
+BTC   atr_sized           5,481    -99.98      2.97   -51.79      0.54    10,295     1.03   38.2
+DOGE  breakout            6,320   -100.00      2.95   -48.59      0.49    10,294     1.03    1.3
+BTC   voltarget           5,466    -99.98      2.72   -51.73      0.50    10,271     1.03    2.7
+BTC   garch_voltarget     5,466    -99.98      2.72   -51.73      0.50    10,271     1.03 1547.6
+BTC   sma_regime          5,466    -99.98      2.72   -51.73      0.50    10,271     1.03    1.4
+SOL   rsi                 5,482    -99.98      2.70   -42.00      0.42    10,267     1.03 7983.2
+HYPE  stochastic          4,188    -99.80      2.82   -24.32      0.42    10,262     1.03    3.1
+HYPE  vol_regime          5,482    -99.98      2.62   -41.19      0.48    10,260     1.03   14.0
+BTC   ma_crossover        3,487    -99.64      2.92   -33.59      0.47    10,256     1.03    1.8
+SOL   ou_reversion        3,465    -99.59      2.72   -41.83      0.56    10,231     1.02    3.8
+ZEC   obv_trend           9,670   -100.00      2.29   -31.57      0.33    10,229     1.02  179.5
+ETH   keltner             2,793    -98.84      3.33   -34.39      0.62    10,217     1.02   71.4
+ETH   ts_momentum        12,809   -100.00      2.08   -92.15      0.39    10,208     1.02    0.8
+BTC   ma_ribbon          89,672    -99.99      2.01   -78.37      0.48    10,201     1.02    6.4
+ZEC   ma_ribbon          83,491    -99.99      1.99   -26.24      0.31    10,198     1.02    4.5
+BTC   rsi                 5,336    -99.98      1.79   -59.02      0.41    10,176     1.02 8104.8
+XRP   hurst_switch        3,352    -99.46      2.01   -55.11      0.55    10,147     1.01    5.6
+BTC   obv_trend          13,094   -100.00      1.44  -116.86      0.34    10,144     1.01  259.3
+BNB   ma_ribbon          64,545    -99.89      1.44   -70.37      0.42    10,133     1.01    3.0
+DOGE  bb_reversion        4,865    -99.95      1.26   -39.76      0.25    10,122     1.01    2.5
+XRP   grid               73,836    -98.36      2.70   -72.59      0.92    10,105     1.01    1.6
+ETH   vol_regime          6,078    -99.99      0.96   -70.88      0.25    10,096     1.01   16.8
+ETH   ma_ribbon          90,238   -100.00      0.65   -63.31      0.17    10,064     1.01    4.9
+BTC   grid               69,541    -98.29      2.09   -90.71      1.07    10,039     1.00    1.8
+HYPE  macd               17,518   -100.00      0.09   -81.79      0.10    10,009     1.00    9.5
+DOGE  adx_trend          11,390   -100.00      0.04   -89.15      0.06    10,004     1.00  153.9
+ZEC   dual_momentum      13,027   -100.00      0.02   -44.33      0.10    10,002     1.00    0.7
+DOGE  zscore              4,663    -99.93      0.08   -38.50      0.08    10,002     1.00    2.5
+DOGE  vol_regime          5,896    -99.99     -0.01   -65.61      0.05     9,998     1.00   15.2
+SOL   vol_regime          5,821    -99.99     -0.09   -61.03      0.04     9,990     1.00   15.8
+BTC   dual_momentum      13,350   -100.00     -0.26  -118.49     -0.00     9,974     1.00    0.7
+ETH   grid               69,965    -98.39      1.34   -73.78      0.56     9,973     1.00    2.0
+BTC   ou_reversion        3,385    -99.59     -0.05   -58.12      0.02     9,954     1.00    4.5
+SOL   grid               73,588    -98.54      0.68   -62.05      0.21     9,922     0.99    1.8
+ETH   breakout            6,389   -100.00     -0.95   -53.32     -0.07     9,905     0.99    1.8
+HYPE  ma_ribbon          78,434    -99.98     -1.09   -36.04     -0.06     9,888     0.99    3.7
+ETH   rsi                 5,468    -99.98     -1.11   -47.12     -0.12     9,886     0.99 7992.5
+DOGE  atr_sized           5,578    -99.99     -1.13   -39.26     -0.08     9,886     0.99   25.3
+DOGE  ma_ribbon          89,188    -99.99     -1.15   -56.75     -0.14     9,884     0.99    4.2
+SOL   ma_crossover        3,589    -99.71     -1.05   -24.89     -0.01     9,866     0.99    1.7
+ETH   ou_reversion        3,484    -99.60     -1.32   -46.26     -0.23     9,828     0.98    4.3
+SOL   dual_momentum      13,557   -100.00     -1.76   -91.51     -0.20     9,824     0.98    0.7
+SOL   ma_ribbon          92,370   -100.00     -1.77   -57.70     -0.23     9,822     0.98    4.7
+DOGE  voltarget           5,529    -99.99     -1.82   -39.08     -0.17     9,817     0.98    2.2
+DOGE  garch_voltarget     5,529    -99.99     -1.82   -39.08     -0.17     9,817     0.98 1248.0
+DOGE  sma_regime          5,529    -99.99     -1.82   -39.08     -0.17     9,817     0.98    1.2
+ETH   dual_momentum      13,369   -100.00     -1.86   -97.00     -0.24     9,814     0.98    0.8
+XRP   vol_regime          5,962   -100.00     -1.95   -69.52     -0.26     9,805     0.98   15.7
+ETH   bb_breakout         4,787    -99.96     -2.10   -44.28     -0.27     9,785     0.98    3.2
+ZEC   hurst_switch        3,090    -99.10     -1.47   -27.47     -0.18     9,764     0.98    6.1
+SOL   breakout            6,015   -100.00     -2.43   -47.39     -0.26     9,756     0.98    1.4
+DOGE  ts_momentum        12,564   -100.00     -2.74   -86.12     -0.42     9,726     0.97    0.7
+SOL   atr_sized           5,491    -99.99     -3.22   -37.77     -0.33     9,677     0.97   29.3
+ETH   hurst_switch        3,253    -99.52     -2.78   -52.47     -0.82     9,674     0.97    6.5
+ZEC   grid               69,168    -98.21     -1.53   -29.10     -0.35     9,668     0.97    1.7
+BTC   bb_breakout         4,800    -99.96     -3.43   -56.62     -0.62     9,653     0.97    3.0
+SOL   garch_voltarget     5,431    -99.99     -3.50   -37.62     -0.36     9,648     0.96 1416.6
+SOL   voltarget           5,431    -99.99     -3.50   -37.62     -0.36     9,648     0.96    2.3
+SOL   sma_regime          5,431    -99.99     -3.50   -37.62     -0.36     9,648     0.96    1.2
+DOGE  ichimoku            7,438   -100.00     -3.72   -54.76     -0.52     9,628     0.96    2.8
+DOGE  keltner             3,561    -99.67     -3.44   -39.60     -0.56     9,623     0.96   53.7
+HYPE  hurst_switch        2,557    -98.57     -2.50   -34.60     -0.46     9,608     0.96    4.9
+ETH   stochastic          4,330    -99.89     -3.97   -38.87     -0.53     9,592     0.96    4.0
+SOL   hurst_switch        3,258    -99.51     -3.92   -51.23     -0.90     9,559     0.96    6.1
+HYPE  sma_regime          4,817    -99.93     -4.80   -23.31     -0.38     9,514     0.95    1.1
+ETH   macd               18,034   -100.00     -4.88   -40.92     -0.84     9,512     0.95   12.4
+DOGE  dual_momentum      13,219   -100.00     -4.88   -91.51     -0.81     9,512     0.95    0.7
+BTC   hurst_switch        3,192    -99.50     -4.46   -68.36     -1.89     9,504     0.95    6.5
+HYPE  voltarget           4,817    -99.93     -5.03   -23.32     -0.41     9,491     0.95    2.0
+HYPE  garch_voltarget     4,817    -99.93     -5.03   -23.32     -0.41     9,491     0.95 1098.6
+HYPE  atr_sized           5,007    -99.93     -6.30   -23.56     -0.57     9,363     0.94   22.5
+BTC   keltner             3,000    -99.28     -5.72   -48.44     -1.34     9,356     0.94   78.4
+SOL   bb_breakout         4,779    -99.97     -6.46   -43.15     -0.89     9,351     0.94    2.9
+XRP   breakout            6,001   -100.00     -6.66   -50.51     -0.78     9,333     0.93    1.4
+BNB   stochastic          3,513    -99.69     -7.13   -49.99     -1.52     9,257     0.93    2.5
+BNB   hurst_switch        2,106    -96.88     -4.48   -51.52     -1.47     9,240     0.92    3.9
+HYPE  dual_momentum      11,330   -100.00     -7.93   -58.21     -0.94     9,207     0.92    0.6
+DOGE  ma_crossover        3,534    -99.77     -7.84   -26.48     -0.82     9,193     0.92    1.5
+HYPE  zscore              4,067    -99.85     -8.36   -27.34     -0.96     9,149     0.91    2.3
+HYPE  rsi                 4,990    -99.97     -8.63   -31.57     -1.01     9,134     0.91 6359.3
+DOGE  ou_reversion        3,483    -99.67     -8.54   -42.56     -1.69     9,113     0.91    3.6
+BTC   breakout            6,643   -100.00     -8.89   -70.79     -1.74     9,111     0.91    1.6
+HYPE  bb_reversion        4,264    -99.89     -9.63   -28.35     -1.14     9,027     0.90    2.3
+DOGE  hurst_switch        3,400    -99.65     -9.64   -54.45     -3.01     9,001     0.90    5.4
+XRP   bb_breakout         4,846    -99.97    -11.86   -47.62     -1.62     8,812     0.88    2.6
+HYPE  obv_trend           8,738   -100.00    -12.27   -44.40     -1.53     8,773     0.88  145.4
+SOL   keltner             2,706    -99.00    -11.46   -33.33     -1.95     8,754     0.88   62.5
+BNB   grid               50,262    -95.60     -8.05   -85.67     -4.60     8,754     0.88    1.1
+HYPE  grid               63,920    -97.64    -10.95   -46.61     -3.35     8,669     0.87    1.4
+BNB   zscore              3,384    -99.69    -13.51   -51.95     -3.13     8,617     0.86    1.9
+BNB   bb_reversion        3,545    -99.76    -14.01   -53.70     -3.26     8,575     0.86    1.9
+BNB   ou_reversion        2,288    -98.23    -14.28   -54.47     -5.00     8,396     0.84    2.6
+BNB   rsi                 3,986    -99.90    -18.30   -59.26     -4.36     8,160     0.82 4065.4
+HYPE  ou_reversion        2,813    -99.39    -21.44   -29.49     -3.37     7,794     0.78    3.2
+ZEC   vwap_reversion        466    -49.19      3.88    -2.54      0.40     5,308     0.53    1.7
+HYPE  vwap_reversion        246    -13.29     25.86    -1.19      2.63     3,916     0.39    1.5
+DOGE  vwap_reversion         84     17.88     32.35     2.47      4.34     1,447     0.14    1.7
+SOL   vwap_reversion         85      3.87     17.42     0.56      2.20     1,355     0.14    1.7
+ETH   vwap_reversion         61      0.18      9.70     0.09      1.77       952     0.10    1.8
+XRP   vwap_reversion         44     -5.27      1.55    -0.85      0.32       682     0.07    1.7
+BNB   vwap_reversion         30     -0.46      4.35    -0.08      1.28       482     0.05    1.2
+BTC   vwap_reversion         20     -3.15     -0.03    -0.92      0.02       312     0.03    2.0
+ZEC   buy_and_hold            1    145.75    146.03     2.06      2.06        28     0.00    0.6
+HYPE  buy_and_hold            1     74.66     74.88     1.77      1.78        22     0.00    0.6
+ETH   buy_and_hold            1     -3.14     -2.98     0.19      0.19        16     0.00    0.7
+BTC   buy_and_hold            1     -2.30     -2.14     0.13      0.13        16     0.00    0.7
+XRP   buy_and_hold            1    -13.94    -13.79    -0.22     -0.21        15     0.00    0.6
+SOL   buy_and_hold            1    -10.07     -9.91     0.01      0.01        15     0.00    0.7
+BNB   buy_and_hold            1     -6.74     -6.58    -0.13     -0.12        15     0.00    0.5
+DOGE  buy_and_hold            1    -23.83    -23.69    -0.51     -0.51        14     0.00    0.6
+
+CELLS WITH A POSITIVE NET RETURN
+------------------------------------------------------------------------------
+  ZEC   buy_and_hold       net  +145.75%  Sharpe   +2.06        1 trades  costs $      28
+  HYPE  buy_and_hold       net   +74.66%  Sharpe   +1.77        1 trades  costs $      22
+  DOGE  vwap_reversion     net   +17.88%  Sharpe   +2.47       84 trades  costs $   1,447
+  SOL   vwap_reversion     net    +3.87%  Sharpe   +0.56       85 trades  costs $   1,355
+  ETH   vwap_reversion     net    +0.18%  Sharpe   +0.09       61 trades  costs $     952
+
+WHAT THE COSTS DID
+------------------------------------------------------------------------------
+  cells run                     : 200
+  cells with positive net return: 5 (2%)
+  cells whose costs exceeded capital: 118
+  median cost share of capital  : 1.02
+  median trades per cell        : 5,449
+  cells better gross than net   : 200 of 200
+  cells positive BEFORE costs   : 129 (64%) -- against 5 after
+
+NEXT STEP, IF ANY CELL SURVIVED
+------------------------------------------------------------------------------
+  A positive cell here has been selected by looking at the whole sample, which
+  is the definition of in-sample. Put it through CPCV before believing it:
+      python3 research/cpcv_sweep.py
+  and check it is not an artifact of one evaluation geometry:
+      python3 research/geometry.py --horizon long --blocks 6 12 --k 2

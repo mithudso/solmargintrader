@@ -1,7 +1,7 @@
 
-### SHORT — pairs under CPCV (246 evaluated, 237 evaluable, 8 with positive median Sharpe)
+### SHORT — pairs under CPCV (272 evaluated, 262 evaluable, 8 with positive median Sharpe)
 
-**PBO = 0.229** across 35 splits of 237 configurations.
+**PBO = 0.229** across 35 splits of 262 configurations.
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
@@ -17,39 +17,39 @@
 | 10 | `all(vol_regime+vwap_reversion)` | regime-filter+mean-reversion | **-0.117** | 2.696 | 48% | -0.7% | 132 |
 | 11 | `all(breakout+bb_reversion)` | breakout+mean-reversion | **-0.227** | 2.944 | 43% | -0.5% | 12 |
 | 12 | `all(vol_regime+keltner)` | regime-filter+breakout | **-0.234** | 1.830 | 38% | -0.7% | 34 |
-| 13 | `all(ma_ribbon+bb_reversion)` | trend+mean-reversion | **-0.260** | 2.789 | 33% | -0.5% | 949 |
-| 14 | `all(stochastic+ou_reversion)` | oscillator-reversion+mean-reversion | **-0.328** | 1.790 | 48% | -2.5% | 128 |
-| 15 | `all(ma_ribbon+ou_reversion)` | trend+mean-reversion | **-0.331** | 3.397 | 48% | -0.4% | 549 |
+| 13 | `all(ts_momentum+ou_reversion)` | momentum+mean-reversion | **-0.237** | 0.949 | 29% | -0.3% | 40 |
+| 14 | `all(ma_ribbon+bb_reversion)` | trend+mean-reversion | **-0.260** | 2.789 | 33% | -0.5% | 949 |
+| 15 | `all(stochastic+ou_reversion)` | oscillator-reversion+mean-reversion | **-0.328** | 1.790 | 48% | -2.5% | 128 |
 
-_Top 15 of 237 evaluable shown._
+_Top 15 of 262 evaluable shown._
 
-### SHORT — triples under CPCV (40 evaluated, 36 evaluable, 1 with positive median Sharpe)
+### SHORT — triples under CPCV (60 evaluated, 52 evaluable, 5 with positive median Sharpe)
 
-**PBO = 0.229** across 35 splits of 36 configurations.
+**PBO = 0.086** across 35 splits of 52 configurations.
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
-| 1 | `all(sma_regime+rsi+obv_trend)` | sma-gated+oscillator-reversion+volume-flow | **+0.950** | 2.734 | 67% | +1.8% | 68 |
-| 2 | `all(ts_momentum+sma_regime+rsi)` | momentum+sma-gated+oscillator-reversion | **-0.104** | 2.363 | 48% | -0.2% | 58 |
-| 3 | `all(ma_crossover+sma_regime+rsi)` | trend+sma-gated+oscillator-reversion | **-0.458** | 1.902 | 38% | -0.9% | 88 |
-| 4 | `all(ma_crossover+rsi+obv_trend)` | trend+oscillator-reversion+volume-flow | **-1.517** | 2.147 | 24% | -2.2% | 54 |
-| 5 | `all(sma_regime+breakout+obv_trend)` | sma-gated+breakout+volume-flow | **-1.559** | 1.888 | 10% | -12.6% | 350 |
-| 6 | `all(ts_momentum+breakout+obv_trend)` | momentum+breakout+volume-flow | **-1.606** | 2.544 | 24% | -13.5% | 476 |
-| 7 | `vote(sma_regime+breakout+obv_trend)` | sma-gated+breakout+volume-flow | **-1.924** | 1.463 | 0% | -13.7% | 3951 |
-| 8 | `all(ma_crossover+ts_momentum+rsi)` | trend+momentum+oscillator-reversion | **-1.933** | 2.256 | 19% | -3.7% | 86 |
-| 9 | `vote(ma_crossover+sma_regime+obv_trend)` | trend+sma-gated+volume-flow | **-1.942** | 2.066 | 0% | -15.0% | 3888 |
-| 10 | `vote(ma_crossover+breakout+obv_trend)` | trend+breakout+volume-flow | **-1.973** | 2.045 | 14% | -12.9% | 3744 |
-| 11 | `vote(breakout+rsi+obv_trend)` | breakout+oscillator-reversion+volume-flow | **-1.986** | 0.898 | 0% | -15.0% | 6809 |
-| 12 | `all(ma_crossover+sma_regime+breakout)` | trend+sma-gated+breakout | **-2.058** | 2.602 | 5% | -14.7% | 250 |
-| 13 | `vote(ma_crossover+ts_momentum+sma_regime)` | trend+momentum+sma-gated | **-2.063** | 3.267 | 5% | -15.0% | 3092 |
-| 14 | `vote(ma_crossover+ts_momentum+obv_trend)` | trend+momentum+volume-flow | **-2.079** | 1.885 | 5% | -14.4% | 3172 |
-| 15 | `vote(sma_regime+rsi+obv_trend)` | sma-gated+oscillator-reversion+volume-flow | **-2.084** | 0.529 | 0% | -17.0% | 6948 |
+| 1 | `all(ma_crossover+sma_regime+zscore)` | trend+sma-gated+mean-reversion | **+1.907** | 2.680 | 76% | +2.7% | 62 |
+| 2 | `all(sma_regime+zscore+obv_trend)` | sma-gated+mean-reversion+volume-flow | **+1.844** | 2.091 | 81% | +2.3% | 42 |
+| 3 | `all(sma_regime+rsi+obv_trend)` | sma-gated+oscillator-reversion+volume-flow | **+0.950** | 2.734 | 67% | +1.8% | 68 |
+| 4 | `all(ts_momentum+sma_regime+zscore)` | momentum+sma-gated+mean-reversion | **+0.708** | 2.138 | 71% | +0.5% | 26 |
+| 5 | `all(ma_crossover+ts_momentum+zscore)` | trend+momentum+mean-reversion | **+0.239** | 1.847 | 62% | +0.2% | 44 |
+| 6 | `all(ts_momentum+sma_regime+rsi)` | momentum+sma-gated+oscillator-reversion | **-0.104** | 2.363 | 48% | -0.2% | 58 |
+| 7 | `all(ma_crossover+sma_regime+rsi)` | trend+sma-gated+oscillator-reversion | **-0.458** | 1.902 | 38% | -0.9% | 88 |
+| 8 | `all(ma_crossover+zscore+obv_trend)` | trend+mean-reversion+volume-flow | **-0.485** | 3.945 | 29% | -0.1% | 22 |
+| 9 | `all(ma_crossover+rsi+obv_trend)` | trend+oscillator-reversion+volume-flow | **-1.517** | 2.147 | 24% | -2.2% | 54 |
+| 10 | `all(sma_regime+breakout+obv_trend)` | sma-gated+breakout+volume-flow | **-1.559** | 1.888 | 10% | -12.6% | 350 |
+| 11 | `all(ts_momentum+breakout+obv_trend)` | momentum+breakout+volume-flow | **-1.606** | 2.544 | 24% | -13.5% | 476 |
+| 12 | `vote(sma_regime+breakout+obv_trend)` | sma-gated+breakout+volume-flow | **-1.924** | 1.463 | 0% | -13.7% | 3951 |
+| 13 | `all(ma_crossover+ts_momentum+rsi)` | trend+momentum+oscillator-reversion | **-1.933** | 2.256 | 19% | -3.7% | 86 |
+| 14 | `vote(ma_crossover+sma_regime+obv_trend)` | trend+sma-gated+volume-flow | **-1.942** | 2.066 | 0% | -15.0% | 3888 |
+| 15 | `all(ts_momentum+zscore+obv_trend)` | momentum+mean-reversion+volume-flow | **-1.971** | 2.764 | 29% | -0.9% | 26 |
 
-_Top 15 of 36 evaluable shown._
+_Top 15 of 52 evaluable shown._
 
-### MEDIUM — pairs under CPCV (278 evaluated, 244 evaluable, 170 with positive median Sharpe)
+### MEDIUM — pairs under CPCV (294 evaluated, 260 evaluable, 177 with positive median Sharpe)
 
-**PBO = 0.700** across 20 splits of 244 configurations.
+**PBO = 0.650** across 20 splits of 260 configurations.
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
@@ -59,17 +59,17 @@ _Top 15 of 36 evaluable shown._
 | 4 | `any(macd+ou_reversion)` | trend+mean-reversion | **+0.996** | 0.929 | 87% | +84.3% | 100 |
 | 5 | `any(macd+hurst_switch)` | trend+regime-filter | **+0.925** | 1.083 | 93% | +72.6% | 118 |
 | 6 | `any(hurst_switch+bb_breakout)` | regime-filter+breakout | **+0.924** | 1.380 | 87% | +48.3% | 72 |
-| 7 | `any(hurst_switch+stochastic)` | regime-filter+oscillator-reversion | **+0.875** | 1.080 | 87% | +53.5% | 58 |
-| 8 | `any(adx_trend+ou_reversion)` | regime-filter+mean-reversion | **+0.850** | 1.353 | 80% | +54.7% | 58 |
-| 9 | `any(bb_breakout+stochastic)` | breakout+oscillator-reversion | **+0.802** | 1.676 | 62% | +47.9% | 110 |
-| 10 | `all(macd+adx_trend)` | trend+regime-filter | **+0.712** | 1.796 | 71% | +34.2% | 52 |
-| 11 | `any(breakout+ou_reversion)` | breakout+mean-reversion | **+0.698** | 1.413 | 87% | +34.8% | 70 |
-| 12 | `any(keltner+ou_reversion)` | breakout+mean-reversion | **+0.692** | 1.312 | 87% | +33.8% | 62 |
-| 13 | `any(dual_momentum+ou_reversion)` | momentum+mean-reversion | **+0.638** | 1.224 | 73% | +30.4% | 184 |
-| 14 | `any(ts_momentum+ou_reversion)` | momentum+mean-reversion | **+0.635** | 1.542 | 60% | +30.5% | 122 |
-| 15 | `all(adx_trend+obv_trend)` | regime-filter+volume-flow | **+0.632** | 1.511 | 67% | +23.5% | 70 |
+| 7 | `all(ma_ribbon+hurst_switch)` | trend+regime-filter | **+0.881** | 1.238 | 93% | +7.9% | 25 |
+| 8 | `any(hurst_switch+stochastic)` | regime-filter+oscillator-reversion | **+0.875** | 1.080 | 87% | +53.5% | 58 |
+| 9 | `any(adx_trend+ou_reversion)` | regime-filter+mean-reversion | **+0.850** | 1.353 | 80% | +54.7% | 58 |
+| 10 | `any(bb_breakout+stochastic)` | breakout+oscillator-reversion | **+0.802** | 1.676 | 62% | +47.9% | 110 |
+| 11 | `all(macd+adx_trend)` | trend+regime-filter | **+0.712** | 1.796 | 71% | +34.2% | 52 |
+| 12 | `any(breakout+ou_reversion)` | breakout+mean-reversion | **+0.698** | 1.413 | 87% | +34.8% | 70 |
+| 13 | `any(keltner+ou_reversion)` | breakout+mean-reversion | **+0.692** | 1.312 | 87% | +33.8% | 62 |
+| 14 | `any(dual_momentum+ou_reversion)` | momentum+mean-reversion | **+0.638** | 1.224 | 73% | +30.4% | 184 |
+| 15 | `any(ts_momentum+ou_reversion)` | momentum+mean-reversion | **+0.635** | 1.542 | 60% | +30.5% | 122 |
 
-_Top 15 of 244 evaluable shown._
+_Top 15 of 260 evaluable shown._
 
 ### MEDIUM — triples under CPCV (70 evaluated, 51 evaluable, 38 with positive median Sharpe)
 
@@ -95,9 +95,9 @@ _Top 15 of 244 evaluable shown._
 
 _Top 15 of 51 evaluable shown._
 
-### LONG — pairs under CPCV (276 evaluated, 250 evaluable, 209 with positive median Sharpe)
+### LONG — pairs under CPCV (280 evaluated, 252 evaluable, 211 with positive median Sharpe)
 
-**PBO = 0.650** across 20 splits of 250 configurations.
+**PBO = 0.650** across 20 splits of 252 configurations.
 
 | # | combination | families | median Sharpe | IQR | % paths + | median ret | trades |
 |---|---|---|---|---|---|---|---|
@@ -117,7 +117,7 @@ _Top 15 of 51 evaluable shown._
 | 14 | `any(macd+ou_reversion)` | trend+mean-reversion | **+0.847** | 1.195 | 80% | +52.7% | 58 |
 | 15 | `any(vol_regime+ou_reversion)` | regime-filter+mean-reversion | **+0.829** | 0.548 | 100% | +50.4% | 68 |
 
-_Top 15 of 250 evaluable shown._
+_Top 15 of 252 evaluable shown._
 
 ### LONG — triples under CPCV (70 evaluated, 47 evaluable, 45 with positive median Sharpe)
 

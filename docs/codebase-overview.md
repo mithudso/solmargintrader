@@ -3,10 +3,11 @@
 A file map for orientation, grouped by directory. Every path here is checked by
 `scripts/check_docs.py`, so a rename that is not reflected below fails the build.
 
-Four components, in ascending order of how much damage a bug can do:
+Five components, in ascending order of how much damage a bug can do:
 
 | Component | Language | Can it move money? |
 | --- | --- | --- |
+| `mongo/` | Python 3.13 + pymongo | No — a derived datastore, rebuildable |
 | `research/` | Python 3.13 | No — analysis over the backtester |
 | `soltui/` | Python 3.13 | No — read-only display |
 | `backtester/` | Python 3.13 | No — simulation only, by design |
@@ -159,6 +160,45 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/soltui-service` | `status` / `start` / `stop` / `build` / `install` for the launchd agent |
 | `soltui/README.md` | Packaging traps already paid for — read before rebuilding |
 | `soltui/tests/` | 95 tests (~70s) |
+
+---
+
+## `mongo/` — the local research store
+
+A read-mostly MongoDB copy of everything the repo has measured (~29,000 documents in
+the `solmargintrader` database), plus a runnable query reference. Derived: the files
+on disk stay the source of truth, so the store can be dropped and rebuilt freely.
+Nothing in the other four components imports it.
+
+| Path | What it is |
+| --- | --- |
+| `mongo/README.md` | Entry point: setup, collection map, question -> query index |
+| `mongo/schema.py` | Collection specs, `$jsonSchema` validators, indexes. `--describe` needs no server |
+| `mongo/load.py` | The loader. Drops and rebuilds, stamping provenance on every document |
+| `mongo/requirements.txt` | `pymongo`, kept out of `backtester/requirements.txt` on purpose |
+| `mongo/tests/test_load.py` | 20 tests: idempotency, provenance, strict validation, card semantics |
+| `mongo/queries/01-coins-and-bars.js` | Price history, staleness, per-coin return, biggest drops |
+| `mongo/queries/02-strategies-and-cards.js` | The inventory, warm-up cost, what is buildable next |
+| `mongo/queries/03-signals-and-indicators.js` | Rule definitions and which mirror a strategy's defaults |
+| `mongo/queries/04-decisions.js` | Per-bar readouts and where strategy families disagree |
+| `mongo/queries/05-backtests.js` | Manifests, per-strategy metrics, drawdown, fills |
+| `mongo/queries/06-experiments-and-pbo.js` | CPCV, sweeps, and PBO -- read this before any Sharpe |
+| `mongo/queries/07-documents-and-search.js` | Full-text search over the write-ups |
+| `mongo/queries/08-provenance-and-health.js` | Trace a number to a file; check the store is sane |
+
+Three things about the shape, because they will come up:
+
+- **Bars, spot prices and equity curves are native time series collections.** They
+  accept no `$jsonSchema` validator and no unique index, which is exactly why
+  `load.py` drops and rebuilds instead of upserting: nothing else would stop a
+  second run from silently doubling every bar.
+- **Strategy cards keep their own vocabulary.** `registry_key` is null for the 20
+  cards that are not `Strategy` implementations, and that is not the same as
+  "unimplemented" -- the ladder grid is `implemented` with no key because it is not a
+  `Strategy` at all.
+- **Every document carries provenance** (`source_path`, `source_sha256`,
+  `loaded_at`), and bar series additionally carry `frame_checksum`, the identity a
+  backtest manifest and a readout both print.
 
 ---
 

@@ -21,6 +21,7 @@ repository; this file is a pointer plus the rules that get broken most often.
 | `backtester/` | Python 3.13 | Simulation only. **Never add live-trading capability here.** The danger is a dishonest backtest, not a lost trade |
 | `research/` | Python 3.13 | Analysis built on the backtester. The danger is overstating a result |
 | `soltui/` | Python 3.13 | Read-only macOS menu-bar app and TUI. Places no orders |
+| `mongo/` | Python 3.13 | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
 | `extension/` | JavaScript (ESM) | **Can place real orders and move real money.** Production software |
 
 ## Non-negotiables — extension
@@ -56,6 +57,7 @@ repository; this file is a pointer plus the rules that get broken most often.
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 454 tests
 python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+python3 -m unittest discover -s mongo/tests -t .        # 20 tests
 cd extension && npm test                                # 114 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes

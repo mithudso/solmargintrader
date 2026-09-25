@@ -9,6 +9,12 @@
   ],
   "files": [
     {
+      "path": "mongo",
+      "component": "repo",
+      "kind": "directory",
+      "summary": "Python 3.13 + pymongo | No \u2014 a derived datastore, rebuildable"
+    },
+    {
       "path": "research",
       "component": "research",
       "kind": "directory",
@@ -133,7 +139,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "CsvLoader, SyntheticLoader, bar validation, checksums",
-      "lines": 288
+      "lines": 315
     },
     {
       "path": "backtester/core/fetch.py",
@@ -203,7 +209,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "REGISTRY (25 strategies), FAMILY taxonomy, build()",
-      "lines": 137
+      "lines": 150
     },
     {
       "path": "backtester/core/strategies/signals.py",
@@ -266,21 +272,21 @@
       "component": "research",
       "kind": "python",
       "summary": "Parameter sweeps",
-      "lines": 493
+      "lines": 871
     },
     {
       "path": "research/cpcv_sweep.py",
       "component": "research",
       "kind": "python",
       "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading",
-      "lines": 461
+      "lines": 476
     },
     {
       "path": "research/cross_asset_cpcv.py",
       "component": "research",
       "kind": "python",
       "summary": "Whether a result on one coin transfers to another",
-      "lines": 798
+      "lines": 834
     },
     {
       "path": "research/turnover_table.py",
@@ -294,7 +300,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out",
-      "lines": 1081
+      "lines": 1101
     },
     {
       "path": "research/geometry.py",
@@ -308,21 +314,21 @@
       "component": "research",
       "kind": "python",
       "summary": "Parameter perturbation for robustness",
-      "lines": 450
+      "lines": 452
     },
     {
       "path": "research/STRATEGIES.md",
       "component": "research",
       "kind": "markdown",
       "summary": "The strategy survey",
-      "lines": 778
+      "lines": 785
     },
     {
       "path": "research/RANKED_LISTS.md",
       "component": "research",
       "kind": "markdown",
       "summary": "Ranked results",
-      "lines": 928
+      "lines": 1068
     },
     {
       "path": "research/TOP_COINS.md",
@@ -383,14 +389,14 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 411
+      "lines": 470
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 485
+      "lines": 508
     },
     {
       "path": "extension/src/core/risk.js",
@@ -404,7 +410,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Ladder geometry. backtester/core/gridsim.py is its port",
-      "lines": 267
+      "lines": 373
     },
     {
       "path": "extension/src/core/pnl.js",
@@ -418,7 +424,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The tick loop: reconcile, then plan",
-      "lines": 421
+      "lines": 444
     },
     {
       "path": "extension/src/bg/service-worker.js",
@@ -467,7 +473,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Venue selection",
-      "lines": 237
+      "lines": 245
     },
     {
       "path": "extension/src/wallet/solana.js",
@@ -488,7 +494,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Storage interface",
-      "lines": 248
+      "lines": 254
     },
     {
       "path": "extension/src/storage/fileStore.js",
@@ -558,14 +564,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Grid, risk, P&L, reconciliation, tick guards",
-      "lines": 1091
+      "lines": 1307
     },
     {
       "path": "extension/test/surfaces.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Parity across the three surfaces",
-      "lines": 375
+      "lines": 443
     },
     {
       "path": "extension/test/wallet.test.js",
@@ -579,7 +585,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The menu-bar app",
-      "lines": 167
+      "lines": 253
     },
     {
       "path": "soltui/menubar_launcher.py",
@@ -593,7 +599,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 609
+      "lines": 1975
     },
     {
       "path": "soltui/signals.py",
@@ -628,7 +634,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The loop that refreshes state",
-      "lines": 253
+      "lines": 280
     },
     {
       "path": "soltui/config.py",
@@ -656,14 +662,14 @@
       "component": "soltui",
       "kind": "other",
       "summary": "status / start / stop / build / install for the launchd agent",
-      "lines": 313
+      "lines": 348
     },
     {
       "path": "soltui/README.md",
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 121
+      "lines": 167
     },
     {
       "path": "soltui/tests",
@@ -672,11 +678,102 @@
       "summary": "95 tests (~70s)"
     },
     {
+      "path": "mongo/README.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Entry point: setup, collection map, question -> query index",
+      "lines": 171
+    },
+    {
+      "path": "mongo/schema.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Collection specs, $jsonSchema validators, indexes. --describe needs no server",
+      "lines": 465
+    },
+    {
+      "path": "mongo/load.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "The loader. Drops and rebuilds, stamping provenance on every document",
+      "lines": 793
+    },
+    {
+      "path": "mongo/requirements.txt",
+      "component": "repo",
+      "kind": "text",
+      "summary": "pymongo, kept out of backtester/requirements.txt on purpose",
+      "lines": 5
+    },
+    {
+      "path": "mongo/tests/test_load.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
+      "lines": 329
+    },
+    {
+      "path": "mongo/queries/01-coins-and-bars.js",
+      "component": "repo",
+      "kind": "javascript",
+      "summary": "Price history, staleness, per-coin return, biggest drops",
+      "lines": 109
+    },
+    {
+      "path": "mongo/queries/02-strategies-and-cards.js",
+      "component": "repo",
+      "kind": "javascript",
+      "summary": "The inventory, warm-up cost, what is buildable next",
+      "lines": 104
+    },
+    {
+      "path": "mongo/queries/03-signals-and-indicators.js",
+      "component": "repo",
+      "kind": "javascript",
+      "summary": "Rule definitions and which mirror a strategy's defaults",
+      "lines": 71
+    },
+    {
+      "path": "mongo/queries/04-decisions.js",
+      "component": "repo",
+      "kind": "javascript",
+      "summary": "Per-bar readouts and where strategy families disagree",
+      "lines": 130
+    },
+    {
+      "path": "mongo/queries/05-backtests.js",
+      "component": "repo",
+      "kind": "javascript",
+      "summary": "Manifests, per-strategy metrics, drawdown, fills",
+      "lines": 118
+    },
+    {
+      "path": "mongo/queries/06-experiments-and-pbo.js",
+      "component": "repo",
+      "kind": "javascript",
+      "summary": "CPCV, sweeps, and PBO -- read this before any Sharpe",
+      "lines": 150
+    },
+    {
+      "path": "mongo/queries/07-documents-and-search.js",
+      "component": "repo",
+      "kind": "javascript",
+      "summary": "Full-text search over the write-ups",
+      "lines": 74
+    },
+    {
+      "path": "mongo/queries/08-provenance-and-health.js",
+      "component": "repo",
+      "kind": "javascript",
+      "summary": "Trace a number to a file; check the store is sane",
+      "lines": 124
+    },
+    {
       "path": "CLAUDE.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 93
+      "lines": 102
     },
     {
       "path": "AGENTS.md",
@@ -690,28 +787,28 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 54
+      "lines": 56
     },
     {
       "path": ".github/copilot-instructions.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Copilot CLI equivalent",
-      "lines": 86
+      "lines": 88
     },
     {
       "path": ".github/workflows/ci.yml",
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui and doc-drift jobs",
-      "lines": 129
+      "lines": 218
     },
     {
       "path": "scripts/check_docs.py",
       "component": "repo",
       "kind": "python",
       "summary": "Fails the build on stale test counts or dead index entries",
-      "lines": 320
+      "lines": 380
     },
     {
       "path": "docs",
@@ -724,7 +821,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Session handoff notes",
-      "lines": 785
+      "lines": 92
     }
   ]
 }

@@ -65,7 +65,9 @@ must be re-measured before being quoted anywhere else.
 from __future__ import annotations
 
 import argparse
+import itertools
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -77,7 +79,12 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from backtester.core.data import CsvLoader, frame_to_arrays  # noqa: E402
-from backtester.core.strategies import FAMILY, REGISTRY, build  # noqa: E402
+from backtester.core.strategies import (  # noqa: E402
+    FAMILY,
+    REGISTRY,
+    build,
+    build_composite,
+)
 from backtester.core.types import BarWindow  # noqa: E402
 # The shared names below are defined in sweep.py, not here, so the import stays
 # one-directional -- this module already depends on that one for HORIZONS.
@@ -85,6 +92,7 @@ from research.sweep import (  # noqa: E402
     HORIZONS,
     REDUNDANT_AGREEMENT,
     REDUNDANT_CORR,
+    combination_redundancy_filename,
     redundancy_filename,
 )
 
@@ -289,6 +297,139 @@ def family_verdict(pairs: pd.DataFrame) -> pd.DataFrame:
     return out.sort_values("mean_corr", ascending=False).reset_index()
 
 
+def twin_groups(
+    names: Sequence[str], size: int, canonical: dict[str, str]
+) -> list[list[tuple[str, ...]]]:
+    """Combinations that the member-level rule would collapse into one.
+
+    Grouping is by canonical key, so every group holds combinations built from
+    interchangeable members -- `X+zscore` beside `X+bb_reversion`. A group of one
+    has no twin and is dropped: there is nothing to measure.
+    """
+    grouped: dict[frozenset[str], list[tuple[str, ...]]] = {}
+    for combo in itertools.combinations(names, size):
+        key = frozenset(canonical.get(n, n) for n in combo)
+        if len(key) < size:
+            continue
+        grouped.setdefault(key, []).append(combo)
+    return [g for g in grouped.values() if len(g) > 1]
+
+
+def combination_exposures(
+    arrays: dict[str, np.ndarray],
+    params: dict[str, Any],
+    combos: Sequence[tuple[str, ...]],
+    mode: str,
+    *,
+    progress_every: int = 2000,
+) -> tuple[pd.DataFrame, int]:
+    """Exposure vector per COMBINATION, stepped exactly like the singles walk.
+
+    Composites are stateful for the same reason their members are, so each is
+    stepped from bar 0 and the burn-in removed afterwards.
+    """
+    built = {c: build_composite([(n, params[n]) for n in c], mode=mode) for c in combos}
+    warmup = max(int(s.warmup_bars()) for s in built.values())
+    n_bars = len(arrays["close"])
+    columns = {c: np.full(n_bars, np.nan) for c in combos}
+    for i in range(n_bars):
+        if progress_every and i and i % progress_every == 0:
+            print(f"  ... {mode} {i}/{n_bars} bars", file=sys.stderr, flush=True)
+        window = BarWindow(
+            arrays["ts"], arrays["open"], arrays["high"],
+            arrays["low"], arrays["close"], arrays["volume"], i,
+        )
+        for combo in combos:
+            columns[combo][i] = float(built[combo].on_bar(window))
+    frame = pd.DataFrame({"+".join(c): v for c, v in columns.items()})
+    return frame, warmup
+
+
+def twin_verdict(va: pd.Series, vb: pd.Series) -> dict[str, Any]:
+    """Is this pair of exposure vectors one experiment or two?
+
+    Extracted from the measurement loop so it can be tested without loading a
+    price file. The loop around it is integration-only, and a shadowed variable
+    in that loop once killed every horizon after the first — so the part that
+    decides the verdict is kept separate from the part that iterates.
+    """
+    both_constant = va.std(ddof=0) == 0 and vb.std(ddof=0) == 0
+    if va.std(ddof=0) == 0 or vb.std(ddof=0) == 0:
+        corr = float("nan")
+    else:
+        corr = float(va.corr(vb))
+    sa, sb = np.sign(va), np.sign(vb)
+    active = (sa != 0) | (sb != 0)
+    agree = float((sa == sb)[active].mean()) if active.any() else float("nan")
+    # Correlation is undefined against a constant, but two composites that BOTH
+    # never move and hold the same value are plainly one experiment -- usually
+    # two `all(...)` triples whose members never agree. Leaving them uncollapsed
+    # pads the search with pairs of configurations that do nothing.
+    identical_flat = bool(both_constant and va.equals(vb))
+    return {
+        "corr": corr,
+        "agree_active": agree,
+        "both_flat": identical_flat,
+        "redundant": bool(
+            identical_flat
+            or (np.isfinite(corr) and corr >= REDUNDANT_CORR)
+            or (np.isfinite(agree) and agree >= REDUNDANT_AGREEMENT)
+        ),
+    }
+
+
+def combination_redundancy(
+    asset: str, horizon: str, sizes: Sequence[int], modes: Sequence[str]
+) -> pd.DataFrame:
+    """Measure whether candidate twin COMBINATIONS are actually redundant.
+
+    This is the correction to collapsing a redundancy class outright. Class
+    membership is measured on a strategy's STANDALONE exposure: how often two
+    signals hold the same position when each trades alone. A combination changes
+    which bars its members are allowed to act on at all, so two signals that
+    agree 85% of the time alone can disagree on exactly the bars a gate leaves
+    live. Measured on SOL, `all(sma_regime+zscore)` and `all(sma_regime+bb_reversion)`
+    score identically while `any(breakout+zscore)` and `any(breakout+bb_reversion)`
+    differ by 42 percentage points of return and opposite signs -- from the same
+    class, on the same threshold.
+
+    So only the pairs measured redundant AS COMBINATIONS are reported here, and
+    only those may be collapsed. Cost of the correction: both combinations must
+    be built to decide whether to keep one, which makes the saving statistical --
+    a smaller multiple-testing denominator -- rather than computational.
+    """
+    from research.sweep import COMBO_CANDIDATES, redundancy_classes
+
+    arrays, params, note = load_series(asset, horizon)
+    canonical, _ = redundancy_classes(horizon, asset)
+    usable = [n for n in COMBO_CANDIDATES if n in params]
+    rows: list[dict[str, Any]] = []
+
+    for size in sizes:
+        groups = twin_groups(usable, size, canonical)
+        if not groups:
+            continue
+        flat = [c for g in groups for c in g]
+        for mode in modes:
+            print(
+                f"[{horizon}] size-{size} {mode}: {len(flat)} combinations in "
+                f"{len(groups)} twin groups",
+                file=sys.stderr,
+            )
+            frame, warmup = combination_exposures(arrays, params, flat, mode)
+            measured = frame.iloc[warmup:].reset_index(drop=True)
+            for group in groups:
+                for a, b in itertools.combinations(group, 2):
+                    ka, kb = "+".join(a), "+".join(b)
+                    rows.append({
+                        "horizon": horizon, "size": size, "mode": mode,
+                        "a": f"{mode}({ka})", "b": f"{mode}({kb})",
+                        **twin_verdict(measured[ka], measured[kb]),
+                    })
+    print(f"source: {note}", file=sys.stderr)
+    return pd.DataFrame(rows)
+
+
 def load_series(
     asset: str, horizon: str
 ) -> tuple[dict[str, np.ndarray], dict[str, Any], str]:
@@ -360,7 +501,40 @@ def main(argv: list[str] | None = None) -> int:
         help="bare CSV filename under results/, or 'auto' for the canonical name",
     )
     parser.add_argument("--force", action="store_true", help="allow overwriting --out")
+    parser.add_argument(
+        "--combinations",
+        action="store_true",
+        help="measure twin COMBINATIONS instead of singles, and write the "
+             "evidence sweep.py's gate collapses on",
+    )
     args = parser.parse_args(argv)
+
+    if args.combinations:
+        table = combination_redundancy(
+            args.asset, args.horizon, sizes=(2, 3), modes=("all", "any", "vote")
+        )
+        flagged = int(table["redundant"].sum()) if len(table) else 0
+        print(f"\n=== combination redundancy: {args.asset} {args.horizon} ===")
+        print(f"twin pairs measured : {len(table)}")
+        print(f"measured redundant  : {flagged}")
+        print(f"kept as distinct    : {len(table) - flagged}")
+        if len(table):
+            print("\n--- twin pairs the member-level rule would have collapsed ---")
+            show = table.sort_values("corr", ascending=False)
+            print(
+                show[["mode", "a", "b", "corr", "agree_active", "redundant"]]
+                .to_string(index=False, float_format=lambda v: f"{v:.3f}")
+            )
+        name = (
+            combination_redundancy_filename(args.asset, args.horizon)
+            if args.out in (None, "auto")
+            else args.out
+        )
+        target = resolve_output_path(name, force=args.force)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        table.to_csv(target, index=False)
+        print(f"\nwrote {len(table)} rows to {target}")
+        return 0
 
     arrays, params, note = load_series(args.asset, args.horizon)
     raw, warmups = exposure_matrix(arrays, params)
