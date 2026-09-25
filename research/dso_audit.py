@@ -37,7 +37,6 @@ inputs at all.
 from __future__ import annotations
 
 import argparse
-import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -58,6 +57,7 @@ from backtester.core.deflated_sharpe import (  # noqa: E402
     expected_max_sharpe,
     trial_sharpe_variance,
 )
+from backtester.core.data import resolve_data_dir  # noqa: E402
 from backtester.core.types import periods_per_year  # noqa: E402
 
 RESULTS = Path(__file__).resolve().parent / "results"
@@ -101,27 +101,7 @@ DEFAULT_GROUPS, DEFAULT_K = 8, 2
 # them borrows the wrong number. Measured lengths differ by a lot -- ZEC has 2,043
 # daily bars against SOL's 1,875, and SOL hourly has 8,823 -- so this reads each
 # asset's own history from the fetch cache.
-def _data_dir() -> Path:
-    """`data/` in the MAIN checkout, which is the only place it exists.
-
-    It is a gitignored fetch cache, so a worktree does not have one; resolving it
-    against the worktree root silently falls back to a wrong series length. The
-    main checkout is the parent of the common git dir -- `--show-toplevel` would
-    return the worktree and reintroduce the bug.
-    """
-    try:
-        out = subprocess.run(
-            ["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
-            cwd=REPO, capture_output=True, text=True, timeout=10, check=True,
-        ).stdout.strip()
-        if out:
-            return Path(out).parent / "data"
-    except (OSError, subprocess.SubprocessError):
-        pass
-    return REPO / "data"
-
-
-DATA_DIR = _data_dir()
+DATA_DIR = resolve_data_dir(REPO)
 
 # A result file with no `asset` column predates the multi-asset runs and is SOL.
 DEFAULT_ASSET = "SOL"

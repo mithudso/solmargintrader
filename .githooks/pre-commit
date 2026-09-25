@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Keep the committed index in step with the tree, and refuse a commit whose
+# backtester suite is red.
+#
+# The index staleness check is a TEST (backtester/tests/test_index.py), so adding
+# any file turns the suite red until index/ is rebuilt. Failing the commit and
+# making the author read a traceback is the wrong trade when `index/build.py all`
+# is idempotent and takes under a second: rebuild, stage it, say so.
+#
+# Skip with `git commit --no-verify` when you genuinely mean to (a WIP commit you
+# will amend). Nothing here touches a remote.
+
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+# Only bother when something is actually staged.
+git diff --cached --quiet && exit 0
+
+if [ -f index/build.py ]; then
+  if python3 index/build.py all >/dev/null 2>&1; then
+    if ! git diff --quiet -- index/; then
+      git add index/
+      echo "pre-commit: index rebuilt and staged"
+    fi
+  else
+    echo "pre-commit: index/build.py failed — commit refused" >&2
+    exit 1
+  fi
+fi
+
+if ! out=$(python3 -m unittest discover -s backtester/tests -t . 2>&1); then
+  echo "pre-commit: backtester suite is red — commit refused" >&2
+  printf '%s\n' "$out" | tail -20 >&2
+  echo "pre-commit: use --no-verify only if you mean to commit a known-red tree" >&2
+  exit 1
+fi
+
+exit 0
