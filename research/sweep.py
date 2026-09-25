@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+import os
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -33,6 +34,34 @@ import pandas as pd
 REPO = Path(__file__).resolve().parent.parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
+
+# Where the bar cache is read from. Overridable so a run can be pointed at a
+# rebuilt series (data/authoritative/) and compared against the same run on the
+# candle cache, WITHOUT swapping files underneath data/ -- silently substituting
+# one provenance for another under a fixed path is how a result stops being
+# reproducible.
+_DATA_DIR_OVERRIDE: Path | None = None
+
+
+def data_dir() -> Path:
+    """The bar cache to read.
+
+    Resolved on every call, never captured at import. Two reasons: --data-dir is
+    parsed long after import, and the test suite sandboxes this module by
+    monkeypatching REPO -- a module-level constant would ignore both and read the
+    real cache while the log claimed otherwise.
+    """
+    if _DATA_DIR_OVERRIDE is not None:
+        return _DATA_DIR_OVERRIDE
+    env = os.environ.get("SOLMT_DATA_DIR")
+    return Path(env) if env else REPO / "data"
+
+
+def set_data_dir(path: str | Path) -> None:
+    """Point subsequent loads at a different bar cache."""
+    global _DATA_DIR_OVERRIDE
+    _DATA_DIR_OVERRIDE = Path(path)
+
 
 from backtester.core.data import CsvLoader, frame_to_arrays  # noqa: E402
 from backtester.core.engine import EngineConfig, run_backtest  # noqa: E402
@@ -235,7 +264,9 @@ class Row:
 def load_horizon(h: str) -> tuple[dict[str, np.ndarray], EngineConfig]:
     """Load the price series and engine config for a horizon."""
     spec = HORIZONS[h]
-    loader = CsvLoader(REPO / spec["data"], allow_gaps=spec["allow_gaps"])
+    # spec["data"] is repo-relative ("data/SOL_1h.csv"); only its filename is used
+    # so DATA_DIR can redirect the read without rewriting every spec.
+    loader = CsvLoader(data_dir() / Path(spec["data"]).name, allow_gaps=spec["allow_gaps"])
     df = loader.load("SOL", None, None, spec["interval"])
     cfg = EngineConfig(
         interval=spec["interval"],
@@ -402,7 +433,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--horizon", action="append", choices=list(HORIZONS), default=None)
     ap.add_argument("--triple-top", type=int, default=6,
                     help="restrict triples to combos drawn from the top-N singles")
+    ap.add_argument(
+        "--data-dir",
+        default=None,
+        help="read bars from here instead of data/ (e.g. data/authoritative "
+        "to re-run against a tick-rebuilt series). Also settable via SOLMT_DATA_DIR",
+    )
     args = ap.parse_args(argv)
+
+    if args.data_dir:
+        set_data_dir(args.data_dir)
+    print(f"bars from: {data_dir()}", file=sys.stderr)
 
     stages = args.stage or ["singles", "pairs", "triples"]
     horizons = args.horizon or list(HORIZONS)
