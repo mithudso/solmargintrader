@@ -9,7 +9,7 @@
     ".github/SECURITY.md": 192,
     ".github/copilot-instructions.md": 469,
     ".github/dependabot.yml": 102,
-    ".github/workflows/ci.yml": 558,
+    ".github/workflows/ci.yml": 628,
     ".gitignore": 307,
     ".nvmrc": 2,
     ".remember/remember.md": 541,
@@ -295,7 +295,7 @@
     "soltui/tui.py": 2277,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-08-06T00:58:55+00:00",
+  "generatedAt": "2026-08-06T05:15:23+00:00",
   "postings": {
     "100": {
       "backtester/tests/test_indicators.py": 1,
@@ -1401,7 +1401,7 @@
     },
     "actions": {
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 12,
+      ".github/workflows/ci.yml": 13,
       "AGENTS.md": 1,
       "GEMINI.md": 1,
       "backtester/tests/test_decide.py": 2,
@@ -5967,6 +5967,7 @@
       "scripts/build_doc_index.py": 1
     },
     "asks": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/cointegration.py": 1,
       "backtester/tests/test_decide.py": 3,
       "backtester/tests/test_geometry.py": 1,
@@ -8081,7 +8082,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 5,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 8,
+      ".github/workflows/ci.yml": 10,
       ".gitignore": 3,
       ".remember/remember.md": 2,
       "CLAUDE.md": 8,
@@ -8770,6 +8771,7 @@
       "soltui/make_icon.py": 5
     },
     "bare": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/data.py": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/gridcli.py": 2,
@@ -9840,6 +9842,7 @@
     },
     "becomes": {
       ".github/copilot-instructions.md": 2,
+      ".github/workflows/ci.yml": 1,
       "AGENTS.md": 1,
       "CLAUDE.md": 3,
       "GEMINI.md": 2,
@@ -13588,7 +13591,7 @@
     },
     "cache": {
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 4,
+      ".github/workflows/ci.yml": 5,
       ".remember/remember.md": 1,
       "CLAUDE.md": 2,
       "backtester/PROMPT.md": 4,
@@ -16222,7 +16225,7 @@
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 8,
+      ".github/workflows/ci.yml": 9,
       ".remember/remember.md": 3,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
@@ -16321,7 +16324,7 @@
     "check_docs": {
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 2,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
@@ -18960,7 +18963,6 @@
       "research/verify_numbers.py": 4
     },
     "come": {
-      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 2,
       "backtester/core/gridsim.py": 1,
       "backtester/core/indicators.py": 1,
@@ -22225,6 +22227,7 @@
     "correct": {
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/copilot-instructions.md": 2,
+      ".github/workflows/ci.yml": 1,
       "backtester/core/deflated_sharpe.py": 2,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/gridcli.py": 1,
@@ -22665,6 +22668,7 @@
     },
     "count": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
+      ".github/workflows/ci.yml": 2,
       ".gitignore": 1,
       ".remember/remember.md": 2,
       "README.md": 1,
@@ -22856,6 +22860,7 @@
       "backtester/strategy_cards/dex_cex_dislocation.md": 1
     },
     "counting": {
+      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
@@ -22879,7 +22884,7 @@
     "counts": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 3,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
@@ -27239,7 +27244,7 @@
     "dependencies": {
       ".github/copilot-instructions.md": 2,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 7,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
       "README.md": 1,
@@ -30124,7 +30129,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 4,
       ".github/copilot-instructions.md": 2,
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 8,
       ".remember/remember.md": 9,
       "CLAUDE.md": 2,
       "GEMINI.md": 4,
@@ -31018,7 +31023,7 @@
       "research/coin-intelligence/xrp-ripple.md": 1
     },
     "drift": {
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       ".remember/remember.md": 2,
       "backtester/README.md": 3,
       "backtester/core/data.py": 4,
@@ -37688,7 +37693,7 @@
       ".github/SECURITY.md": 4,
       ".github/copilot-instructions.md": 5,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 7,
       ".gitignore": 2,
       ".remember/remember.md": 2,
       "AGENTS.md": 3,
@@ -38290,6 +38295,7 @@
       "soltui/soltui-service": 2
     },
     "failedtest": {
+      ".github/workflows/ci.yml": 1,
       "scripts/check_docs.py": 2
     },
     "failing": {
@@ -38316,6 +38322,7 @@
     "fails": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
+      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
       "README.md": 3,
@@ -50975,7 +50982,7 @@
     },
     "imports": {
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
       "backtester/core/strategies/signals.py": 2,
@@ -52609,7 +52616,7 @@
     "install": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 8,
+      ".github/workflows/ci.yml": 12,
       "CLAUDE.md": 1,
       "GEMINI.md": 2,
       "README.md": 4,
@@ -52735,6 +52742,7 @@
       "docs/strategy-optimization-concept-family.md": 1
     },
     "instead": {
+      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
@@ -55053,7 +55061,7 @@
       "soltui/SolTUI.icns": 1
     },
     "job": {
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 4,
       "backtester/core/indicators.py": 1,
       "backtester/strategy_cards/jlp_vs_sol_relative_value.md": 1,
       "backtester/strategy_cards/ou_half_life_sizing.md": 1,
@@ -57359,6 +57367,7 @@
       "research/coin-intelligence/sol-solana.md": 1
     },
     "lands": {
+      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "backtester/core/cpcv.py": 2,
       "backtester/strategy_cards/README.md": 1,
@@ -67415,7 +67424,7 @@
       "backtester/tests/test_index.py": 8
     },
     "module": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 3,
       "GEMINI.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 4,
@@ -67693,7 +67702,7 @@
     },
     "mongo": {
       ".github/copilot-instructions.md": 2,
-      ".github/workflows/ci.yml": 8,
+      ".github/workflows/ci.yml": 9,
       ".remember/remember.md": 3,
       "CLAUDE.md": 2,
       "GEMINI.md": 2,
@@ -68761,7 +68770,7 @@
     "name": {
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
-      ".github/workflows/ci.yml": 25,
+      ".github/workflows/ci.yml": 26,
       ".remember/remember.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -69584,7 +69593,7 @@
       ".github/CODEOWNERS": 1,
       ".github/copilot-instructions.md": 2,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 2,
       "CLAUDE.md": 3,
       "GEMINI.md": 2,
@@ -70699,7 +70708,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 2,
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 3,
-      ".github/workflows/ci.yml": 12,
+      ".github/workflows/ci.yml": 16,
       ".gitignore": 2,
       ".remember/remember.md": 1,
       "CLAUDE.md": 4,
@@ -75627,6 +75636,7 @@
     },
     "own": {
       ".gitattributes": 2,
+      ".github/workflows/ci.yml": 1,
       ".gitignore": 1,
       ".remember/remember.md": 2,
       "CLAUDE.md": 1,
@@ -79295,6 +79305,7 @@
     },
     "pinned": {
       ".github/dependabot.yml": 1,
+      ".github/workflows/ci.yml": 1,
       "backtester/README.md": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/core/report.py": 1,
@@ -79328,6 +79339,7 @@
       "docs/TESTING.md": 1
     },
     "pins": {
+      ".github/workflows/ci.yml": 1,
       "backtester/README.md": 1,
       "backtester/requirements.txt": 2,
       "backtester/strategy_cards/bb_reversion.md": 1,
@@ -79348,7 +79360,7 @@
     },
     "pip": {
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 7,
+      ".github/workflows/ci.yml": 11,
       "README.md": 2,
       "backtester/README.md": 1,
       "docs/DEVELOPMENT.md": 2,
@@ -86056,7 +86068,7 @@
       "research/leverage_economics.py": 1
     },
     "rather": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 8,
@@ -87482,6 +87494,7 @@
       "research/coin-intelligence/eth-ethereum.md": 1
     },
     "reason": {
+      ".github/workflows/ci.yml": 1,
       "backtester/README.md": 1,
       "backtester/core/archive_price.py": 2,
       "backtester/core/cpcv.py": 12,
@@ -88901,6 +88914,7 @@
       "research/verify_numbers.py": 1
     },
     "regex": {
+      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "backtester/tests/test_geometry.py": 1,
       "research/verify_numbers.py": 2,
@@ -90312,6 +90326,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 3,
       ".github/SECURITY.md": 2,
       ".github/copilot-instructions.md": 1,
+      ".github/workflows/ci.yml": 1,
       "backtester/PROMPT.md": 14,
       "backtester/README.md": 8,
       "backtester/cli.py": 6,
@@ -90844,6 +90859,7 @@
       "backtester/tests/test_pairs.py": 1
     },
     "required": {
+      ".github/workflows/ci.yml": 1,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 2,
       "backtester/core/data.py": 2,
@@ -90967,7 +90983,7 @@
     },
     "requirements": {
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 4,
+      ".github/workflows/ci.yml": 7,
       "CLAUDE.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 4,
@@ -94486,6 +94502,7 @@
       "extension/src/venues/triggerVenue.js": 2
     },
     "running": {
+      ".github/workflows/ci.yml": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 4,
       "backtester/cli.py": 3,
@@ -96135,7 +96152,6 @@
       "research/coin-intelligence/zec-zcash.md": 10
     },
     "seconds": {
-      ".github/workflows/ci.yml": 1,
       "backtester/PROMPT.md": 1,
       "backtester/cli.py": 2,
       "backtester/core/data.py": 8,
@@ -97788,7 +97804,7 @@
       "research/coin-intelligence/rain-rain.md": 1
     },
     "setup": {
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 7,
       "README.md": 1,
       "backtester/core/strategies/signals.py": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
@@ -100059,6 +100075,7 @@
     },
     "single": {
       ".github/CODEOWNERS": 2,
+      ".github/workflows/ci.yml": 1,
       "GEMINI.md": 2,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 2,
@@ -101981,7 +101998,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 2,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 6,
       ".gitignore": 5,
       "CLAUDE.md": 2,
       "GEMINI.md": 2,
@@ -102292,7 +102309,7 @@
     },
     "source": {
       ".github/copilot-instructions.md": 2,
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       ".gitignore": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 2,
@@ -106918,6 +106935,7 @@
     "suites": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
+      ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/TESTING.md": 1,
@@ -109422,7 +109440,7 @@
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 3,
       ".github/copilot-instructions.md": 5,
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 9,
       ".remember/remember.md": 5,
       "AGENTS.md": 1,
       "CLAUDE.md": 7,
@@ -112730,6 +112748,7 @@
       "research/verify_numbers.py": 9
     },
     "though": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/strategy_cards/buy_and_hold.md": 1,
       "backtester/strategy_cards/obv_trend.md": 1,
@@ -116476,6 +116495,7 @@
       "research/verify_numbers.py": 1
     },
     "trusting": {
+      ".github/workflows/ci.yml": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
       "backtester/strategy_cards/zscore.md": 1,
@@ -117119,7 +117139,7 @@
       "extension/src/venues/triggerVenue.js": 2
     },
     "txt": {
-      ".github/workflows/ci.yml": 4,
+      ".github/workflows/ci.yml": 7,
       "CLAUDE.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
@@ -119839,7 +119859,7 @@
       "backtester/core/engine.py": 1
     },
     "uses": {
-      ".github/workflows/ci.yml": 12,
+      ".github/workflows/ci.yml": 13,
       "backtester/PROMPT.md": 2,
       "backtester/core/cpcv.py": 1,
       "backtester/core/engine.py": 1,
@@ -121242,7 +121262,7 @@
     },
     "verified": {
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
       "backtester/PROMPT.md": 2,
@@ -121397,7 +121417,7 @@
     "version": {
       ".github/ISSUE_TEMPLATE/bug_report.md": 2,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 8,
+      ".github/workflows/ci.yml": 9,
       "backtester/README.md": 1,
       "backtester/__init__.py": 1,
       "backtester/core/report.py": 2,
@@ -121671,6 +121691,9 @@
     },
     "vip": {
       "research/coin-intelligence/bnb-binance-coin.md": 2
+    },
+    "virtualenv": {
+      ".github/workflows/ci.yml": 1
     },
     "virtuals": {
       "research/coin-intelligence/rain-rain.md": 1
@@ -124436,7 +124459,7 @@
       "tradingskilllist/trading-skills.md": 2
     },
     "without": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       ".gitignore": 1,
       ".remember/remember.md": 1,
       "backtester/PROMPT.md": 1,
@@ -127120,10 +127143,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 953.9,
+    "avgDocLength": 954.1,
     "documents": 294,
-    "terms": 15023,
-    "termsBeforePrune": 15028,
-    "totalTokens": 280448
+    "terms": 15024,
+    "termsBeforePrune": 15029,
+    "totalTokens": 280518
   }
 }
