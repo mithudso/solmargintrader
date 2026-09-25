@@ -1,0 +1,31 @@
+<!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative -->
+
+# solmargintrader: Sourced Facts
+
+One declarative fact per line, each tagged with the repo-relative file it came from.
+
+## Facts
+
+- The repository has four components: backtester/, research/, extension/ and soltui/ [src: README.md]
+- The backtester is an offline event-driven harness for spot and Jupiter-Perps-style leveraged strategies with a modelled borrow fee [src: README.md]
+- The backtester has no live-trading capability and none should be added [src: backtester/README.md]
+- The extension is the only component that can place real orders [src: README.md]
+- The extension installs disarmed and in dry-run, and DEFAULT_CONFIG.mode is dry-run [src: CLAUDE.md]
+- Every extension action lives in one command registry, extension/src/core/commands.js, and the Chrome handler, CLI and HTTP API are thin adapters over it [src: README.md]
+- A parity test fails the build if the extension surfaces drift from the registry [src: README.md]
+- Risk rails are gates in extension/src/core/risk.js and must fail closed [src: CLAUDE.md]
+- The executable venue is Jupiter Trigger V2 because Jupiter Perps had no public REST write API at the time of writing [src: README.md]
+- The bundled jup.ag HTML dump contains 16 rendered HTML files and no .js bundles [src: README.md]
+- The backtester defaults --fill-delay to 1, filling at the open of bar t+1 [src: backtester/README.md]
+- Backtester fees, slippage and the perp borrow fee must stay in the P&L path [src: CLAUDE.md]
+- The backtester engine does not touch the network; fetching is a separate explicit step [src: CLAUDE.md]
+- Every registered backtester strategy must have a card at backtester/strategy_cards/<id>.md [src: CLAUDE.md]
+- core/gridsim.py is a port of extension/src/core/grid.js and the two must change together [src: CLAUDE.md]
+- A grid exit sell must sit one rung above its entry; expectedRoundTripUsd and its test exist because this bug shipped once [src: CLAUDE.md]
+- soltui has no order path: no keys, no signing and no venue client [src: soltui/README.md]
+- soltui runs the roster through CPCV and shows median path Sharpe, IQR and percent of paths positive [src: soltui/README.md]
+- The documented suites are 499 backtester tests, 95 soltui tests and 131 extension tests, asserted by CI [src: README.md]
+- Signing seeds are AES-GCM encrypted under a PBKDF2-SHA256 key with 600,000 iterations [src: docs/SECURITY.md]
+- The kill command is latching: it disarms and blocks every rail until clearKill is run [src: docs/OPERATIONS.md]
+- Kill does not cancel resting venue orders; they are removed with cancelOrder [src: docs/OPERATIONS.md]
+- The README states grid trading is short volatility: it earns in a range and loses in a trend [src: README.md]

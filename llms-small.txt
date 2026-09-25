@@ -1,0 +1,9 @@
+<!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative -->
+
+# solmargintrader (small)
+
+solmargintrader is SOL trading research and execution tooling. It has four parts: `backtester/` (Python 3.13, offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies with a modelled borrow fee; no live-trading capability by design), `research/` (strategy survey, ranked lists and sweeps built on the backtester), `extension/` (Chrome MV3 grid trader on Jupiter, plus a CLI and local HTTP API over one command registry; the only part that can place real orders; installs disarmed and in dry-run) and `soltui/` (Textual TUI and macOS menu-bar indicator; read-only, no order path).
+
+Key rules: dry-run is the default; risk rails in `extension/src/core/risk.js` fail closed; never guess a price, quantity or fee that becomes an order; reconcile against the venue before planning; no secret material in logs or synced storage; the backtester has no lookahead and never drops costs. Each registered strategy has a card in `backtester/strategy_cards/`.
+
+Verify: `python3 -m unittest discover -s backtester/tests -t .`, `python3 -m unittest discover -s soltui/tests -t .`, `cd extension && npm test`, `python3 scripts/check_docs.py`. Not financial advice.
