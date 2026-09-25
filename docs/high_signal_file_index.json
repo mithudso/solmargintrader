@@ -139,7 +139,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "CsvLoader, SyntheticLoader, bar validation, checksums",
-      "lines": 288
+      "lines": 315
     },
     {
       "path": "backtester/core/fetch.py",
@@ -209,7 +209,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "REGISTRY (25 strategies), FAMILY taxonomy, build()",
-      "lines": 137
+      "lines": 150
     },
     {
       "path": "backtester/core/strategies/signals.py",
@@ -272,21 +272,21 @@
       "component": "research",
       "kind": "python",
       "summary": "Parameter sweeps",
-      "lines": 493
+      "lines": 871
     },
     {
       "path": "research/cpcv_sweep.py",
       "component": "research",
       "kind": "python",
       "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading",
-      "lines": 461
+      "lines": 476
     },
     {
       "path": "research/cross_asset_cpcv.py",
       "component": "research",
       "kind": "python",
       "summary": "Whether a result on one coin transfers to another",
-      "lines": 798
+      "lines": 834
     },
     {
       "path": "research/turnover_table.py",
@@ -300,7 +300,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out",
-      "lines": 1081
+      "lines": 1101
     },
     {
       "path": "research/geometry.py",
@@ -314,21 +314,21 @@
       "component": "research",
       "kind": "python",
       "summary": "Parameter perturbation for robustness",
-      "lines": 450
+      "lines": 452
     },
     {
       "path": "research/STRATEGIES.md",
       "component": "research",
       "kind": "markdown",
       "summary": "The strategy survey",
-      "lines": 778
+      "lines": 785
     },
     {
       "path": "research/RANKED_LISTS.md",
       "component": "research",
       "kind": "markdown",
       "summary": "Ranked results",
-      "lines": 943
+      "lines": 1068
     },
     {
       "path": "research/TOP_COINS.md",
@@ -473,7 +473,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Venue selection",
-      "lines": 237
+      "lines": 245
     },
     {
       "path": "extension/src/wallet/solana.js",
@@ -585,7 +585,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The menu-bar app",
-      "lines": 167
+      "lines": 253
     },
     {
       "path": "soltui/menubar_launcher.py",
@@ -599,7 +599,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 609
+      "lines": 1975
     },
     {
       "path": "soltui/signals.py",
@@ -634,7 +634,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The loop that refreshes state",
-      "lines": 253
+      "lines": 280
     },
     {
       "path": "soltui/config.py",
@@ -662,14 +662,14 @@
       "component": "soltui",
       "kind": "other",
       "summary": "status / start / stop / build / install for the launchd agent",
-      "lines": 313
+      "lines": 348
     },
     {
       "path": "soltui/README.md",
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 121
+      "lines": 167
     },
     {
       "path": "soltui/tests",
@@ -773,7 +773,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 96
+      "lines": 102
     },
     {
       "path": "AGENTS.md",
@@ -801,32 +801,20 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui and doc-drift jobs",
-      "lines": 182
+      "lines": 218
     },
     {
       "path": "scripts/check_docs.py",
       "component": "repo",
       "kind": "python",
       "summary": "Fails the build on stale test counts or dead index entries",
-      "lines": 324
+      "lines": 380
     },
     {
       "path": "docs",
       "component": "repo",
       "kind": "directory",
       "summary": "The documentation suite; README.md links every page"
-    },
-    {
-      "path": "data",
-      "component": "repo",
-      "kind": "directory",
-      "summary": "Regenerable OHLCV cache \u2014 gitignored. Refetch with backtester.core.fetch"
-    },
-    {
-      "path": "results",
-      "component": "repo",
-      "kind": "directory",
-      "summary": "Generated backtest output \u2014 not source"
     },
     {
       "path": ".remember/remember.md",

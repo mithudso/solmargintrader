@@ -1,14 +1,14 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 571 tests
+python3 -m unittest discover -s backtester/tests -t .   # 649 tests
 python3 -m unittest discover -s soltui/tests -t .       # 313 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 20 tests
 cd extension && npm test                                # 131 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1015 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
+1113 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -65,7 +65,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 571 tests
+## Backtester — 649 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
