@@ -211,6 +211,66 @@ class TestWeights(unittest.TestCase):
             target_weights(bad, 30, 1)
 
 
+class TestNeutralBook(unittest.TestCase):
+    """The long/short book, whose cheapest failure mode is a free short."""
+
+    def test_rows_are_dollar_neutral_with_gross_one(self):
+        panel = make_panel(N=6)
+        for top_k in (1, 2, 3):
+            w = target_weights(panel.closes, 30, top_k, "momentum", 0.0, "neutral")
+            live = w[np.any(w != 0.0, axis=1)]
+            np.testing.assert_allclose(live.sum(axis=1), 0.0, atol=1e-12)
+            np.testing.assert_allclose(np.abs(live).sum(axis=1), 1.0, atol=1e-12)
+
+    def test_legs_never_overlap(self):
+        panel = make_panel(N=6)
+        for margin in (0.0, 0.5, 2.0):
+            w = target_weights(panel.closes, 30, 2, "momentum", margin, "neutral")
+            live = w[np.any(w != 0.0, axis=1)]
+            longs = np.count_nonzero(live > 0, axis=1)
+            shorts = np.count_nonzero(live < 0, axis=1)
+            self.assertTrue(np.all(longs > 0))
+            self.assertTrue(np.all(shorts > 0))
+
+    def test_top_k_is_capped_so_the_legs_fit(self):
+        """A 3-asset panel cannot support a 2-long/2-short book."""
+        panel = make_panel(N=3)
+        w = target_weights(panel.closes, 30, 2, "momentum", 0.0, "neutral")
+        live = w[np.any(w != 0.0, axis=1)]
+        self.assertTrue(np.all(np.count_nonzero(live, axis=1) <= 3))
+        np.testing.assert_allclose(live.sum(axis=1), 0.0, atol=1e-12)
+
+    def test_a_short_is_financed_even_unlevered(self):
+        """The single easiest way to fake a market-neutral edge is a free short."""
+        panel = make_panel()
+        neutral = simulate(panel, target_weights(panel.closes, 30, 1, "momentum", 0.0, "neutral"))
+        self.assertGreater(neutral.borrow_cost_total, 0.0)
+
+    def test_long_only_spot_is_not_financed_unlevered(self):
+        panel = make_panel()
+        res = simulate(panel, target_weights(panel.closes, 30, 1, "momentum", 0.0))
+        self.assertEqual(res.borrow_cost_total, 0.0)
+
+    def test_neutral_book_is_insensitive_to_a_common_market_move(self):
+        """Dollar-neutral means a uniform move across all assets nets to zero.
+
+        Scaling every asset's return path by the same factor changes what a
+        long-only book earns and must not change what the neutral book earns from
+        market direction -- that is the property the construction exists for.
+        """
+        panel = make_panel(N=6)
+        w = target_weights(panel.closes, 30, 2, "momentum", 0.0, "neutral")
+        live = w[np.any(w != 0.0, axis=1)]
+        # A return vector identical across assets produces zero portfolio return.
+        common_move = np.full(live.shape[1], 0.05)
+        np.testing.assert_allclose(live @ common_move, 0.0, atol=1e-12)
+
+    def test_rejects_unknown_book(self):
+        panel = make_panel()
+        with self.assertRaises(ValueError):
+            target_weights(panel.closes, 30, 1, "momentum", 0.0, "leveraged")
+
+
 class TestControlsAndAttribution(unittest.TestCase):
     def test_single_asset_rotation_degenerates_to_buy_and_hold(self):
         panel = make_panel(N=1)

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T19:16:47+00:00",
+  "generatedAt": "2026-09-25T19:27:19+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 147,
+      "matchingFiles": 148,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 129,
+      "matchingFiles": 130,
       "shown": 30,
       "files": [
         {
@@ -455,7 +455,7 @@
         },
         {
           "path": "research/ratio_rotation.py",
-          "hits": 21
+          "hits": 22
         },
         {
           "path": "index/build.py",
@@ -987,7 +987,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 100,
+      "matchingFiles": 101,
       "shown": 30,
       "files": [
         {
@@ -1533,12 +1533,12 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 82,
+      "matchingFiles": 83,
       "shown": 30,
       "files": [
         {
           "path": "research/ratio_rotation.py",
-          "hits": 83
+          "hits": 89
         },
         {
           "path": "backtester/tests/test_engine.py",
@@ -1585,15 +1585,15 @@
           "hits": 17
         },
         {
+          "path": "backtester/tests/test_ratio_rotation.py",
+          "hits": 15
+        },
+        {
           "path": "backtester/core/report.py",
           "hits": 14
         },
         {
           "path": "backtester/core/types.py",
-          "hits": 13
-        },
-        {
-          "path": "backtester/tests/test_ratio_rotation.py",
           "hits": 13
         },
         {
@@ -1947,7 +1947,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 63,
+      "matchingFiles": 64,
       "shown": 30,
       "files": [
         {
@@ -2007,6 +2007,10 @@
           "hits": 21
         },
         {
+          "path": "backtester/core/funding.py",
+          "hits": 20
+        },
+        {
           "path": "research/TOP5-RECOMMENDATION.md",
           "hits": 19
         },
@@ -2064,10 +2068,6 @@
         },
         {
           "path": "research/coin-intelligence/bnb-binance-coin.md",
-          "hits": 6
-        },
-        {
-          "path": "research/coin-intelligence/rain-rain.md",
           "hits": 6
         }
       ],
@@ -2553,8 +2553,16 @@
           "hits": 9
         },
         {
+          "path": "backtester/tests/test_ratio_rotation.py",
+          "hits": 9
+        },
+        {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
         },
         {
           "path": "research/results/geometry_long_k2.txt",
@@ -2574,10 +2582,6 @@
         },
         {
           "path": "index/build.py",
-          "hits": 6
-        },
-        {
-          "path": "research/ratio_rotation.py",
           "hits": 6
         },
         {
@@ -2606,10 +2610,6 @@
         },
         {
           "path": "research/cross_asset_cpcv.py",
-          "hits": 4
-        },
-        {
-          "path": "research/perturb.py",
           "hits": 4
         }
       ],

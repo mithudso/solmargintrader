@@ -160,6 +160,12 @@ SWEEP_DIRECTIONS = ("reversion", "momentum")
 # score beats the incumbent's by this margin. A pure argmax rotates on noise.
 SWEEP_MARGINS = (0.0, 0.25, 0.5)
 
+# Long-only holds the top `top_k`; neutral additionally shorts the bottom `top_k`
+# dollar-neutral. The neutral book exists because the long-only sweep found the
+# reversion side reliably negative, and "the cheap coin keeps getting cheaper" is
+# a claim about the SHORT side that a long-only book cannot test.
+SWEEP_BOOKS = ("long_only", "neutral")
+
 
 # --------------------------------------------------------------------------
 # Data
@@ -349,22 +355,53 @@ def rolling_zscore_of_relative_log_price(
     return out
 
 
+def _select_with_hysteresis(
+    row: np.ndarray, k: int, margin: float, held: np.ndarray | None
+) -> np.ndarray:
+    """Top-`k` indices of `row`, keeping the incumbent unless beaten by `margin`.
+
+    Hysteresis is not a tuning knob added for performance: a bare argmax over
+    noisy scores rotates whenever two assets cross, and at 16 bps a rotation
+    decided by a coin-flip is a guaranteed loss.
+    """
+    ranked = np.argsort(-row, kind="stable")[:k]
+    if held is None or margin <= 0.0:
+        return np.asarray(ranked, dtype=int)
+    incumbent_worst = float(np.min(row[held]))
+    challengers = [i for i in ranked if i not in set(held.tolist())]
+    if challengers and float(np.max(row[challengers])) < incumbent_worst + margin:
+        return np.asarray(held, dtype=int)
+    return np.asarray(ranked, dtype=int)
+
+
 def target_weights(
     closes: np.ndarray,
     window: int,
     top_k: int = 1,
     direction: str = "reversion",
     margin: float = 0.0,
+    book: str = "long_only",
 ) -> np.ndarray:
     """(T, N) target weights, row `t` computed from closes through `t` inclusive.
 
-    `margin` is hysteresis, not a tuning knob added for performance: a bare argmax
-    over noisy scores rotates whenever two assets cross, and at 16 bps a rotation
-    that is a coin-flip is a guaranteed loss. An incumbent is displaced only when
-    the challenger's score exceeds it by `margin`.
+    `book="long_only"` holds `top_k` assets at equal weight, summing to 1.0.
+
+    `book="neutral"` additionally **shorts** the bottom `top_k`, dollar-neutral:
+    each side carries 0.5 of gross exposure so the rows sum to 0.0 and the gross
+    `|w|` sums to 1.0. Gross rather than net is deliberately held at 1.0 so the
+    neutral book is not handed a free doubling of position size relative to the
+    long-only book it is compared against -- otherwise any return difference
+    would partly be leverage.
+
+    The neutral book is the untested half implied by the long-only result. If
+    buying the relatively cheap coin loses reliably, then *shorting* it is the
+    claim that has never been evaluated, and a long-strength / short-weakness
+    book is the direct expression of that.
     """
     if direction not in ("reversion", "momentum"):
         raise ValueError(f"direction must be 'reversion' or 'momentum', got {direction!r}")
+    if book not in ("long_only", "neutral"):
+        raise ValueError(f"book must be 'long_only' or 'neutral', got {book!r}")
     if top_k < 1:
         raise ValueError(f"top_k must be >= 1, got {top_k}")
     if margin < 0:
@@ -376,23 +413,40 @@ def target_weights(
 
     T, N = scores.shape
     k = min(top_k, N)
+    if book == "neutral":
+        if N < 2:
+            raise ValueError("a neutral book needs at least 2 assets")
+        # The two legs must not overlap, or an asset would be simultaneously
+        # bought and sold and the book would quietly shrink instead of erroring.
+        k = min(top_k, N // 2)
+
     weights = np.zeros((T, N), dtype=np.float64)
-    held: np.ndarray | None = None
+    held_long: np.ndarray | None = None
+    held_short: np.ndarray | None = None
 
     for t in range(T):
         row = scores[t]
         if not np.all(np.isfinite(row)):
-            held = None  # still in warm-up: hold nothing, not something arbitrary
+            held_long = held_short = None  # warm-up: hold nothing, not something arbitrary
             continue
-        ranked = np.argsort(-row, kind="stable")[:k]
-        if held is not None and margin > 0.0:
-            incumbent_worst = float(np.min(row[held]))
-            challengers = [i for i in ranked if i not in set(held.tolist())]
-            # Keep the incumbent set unless a challenger clears it by `margin`.
-            if challengers and float(np.max(row[challengers])) < incumbent_worst + margin:
-                ranked = held
-        held = np.asarray(ranked, dtype=int)
-        weights[t, held] = 1.0 / held.size
+
+        held_long = _select_with_hysteresis(row, k, margin, held_long)
+        if book == "long_only":
+            weights[t, held_long] = 1.0 / held_long.size
+            continue
+
+        held_short = _select_with_hysteresis(-row, k, margin, held_short)
+        overlap = set(held_long.tolist()) & set(held_short.tolist())
+        if overlap:
+            # Can only happen if hysteresis pinned both legs onto a shared asset.
+            # Drop the short claim: leaving it would net the position to zero
+            # while still paying two sets of fees on it.
+            held_short = np.asarray(
+                [i for i in held_short.tolist() if i not in overlap], dtype=int
+            )
+        weights[t, held_long] = 0.5 / held_long.size
+        if held_short.size:
+            weights[t, held_short] = -0.5 / held_short.size
     return weights
 
 
@@ -551,7 +605,13 @@ def simulate(
 
     hours = hours_per_bar(panel.interval)
     borrow_rate = 0.0
-    if accrue_borrow if accrue_borrow is not None else leverage > 1.0:
+    # A short leg is financed whether or not the book is levered -- you cannot
+    # short spot, so any negative weight implies a perp or margin venue and its
+    # borrow fee. Defaulting on `leverage > 1.0` alone would let a dollar-neutral
+    # book at 1x carry a short for free, which is the single easiest way to
+    # manufacture a fake market-neutral edge.
+    has_short = bool(np.any(weights < 0.0))
+    if accrue_borrow if accrue_borrow is not None else (leverage > 1.0 or has_short):
         util = borrow_utilization if borrow_utilization is not None else costs.utilization
         borrow_rate = hourly_borrow_rate(costs, Side.LONG, util)
 
@@ -807,6 +867,7 @@ def carry_table(
     costs: CostConfig | None = None,
     split: float = SPLIT,
     leverages: Sequence[float] = (1.0, 2.0, 3.0, 5.0),
+    book: str = "long_only",
 ) -> pd.DataFrame:
     """Leverage-cost sensitivity of one configuration on the out-of-sample slice.
 
@@ -825,7 +886,7 @@ def carry_table(
     question in RATIO-ROTATION.md rather than guessed at here.
     """
     costs = costs or CostConfig()
-    weights = target_weights(panel.closes, window, top_k, direction, margin)
+    weights = target_weights(panel.closes, window, top_k, direction, margin, book)
     cut = int(panel.n_bars * split)
     oos = slice_panel(panel, cut, panel.n_bars)
 
@@ -893,6 +954,7 @@ def walk_forward(
     margin: float,
     costs: CostConfig | None = None,
     split: float = SPLIT,
+    book: str = "long_only",
 ) -> tuple[RotationResult, RotationResult]:
     """In-sample and out-of-sample halves of one configuration.
 
@@ -904,9 +966,15 @@ def walk_forward(
     burns. Slicing after the fact keeps the OOS half fully invested from its first
     bar while still using no information from it.
     """
-    weights = target_weights(panel.closes, window, top_k, direction, margin)
+    weights = target_weights(panel.closes, window, top_k, direction, margin, book)
     cut = int(panel.n_bars * split)
-    params = {"window": window, "top_k": top_k, "direction": direction, "margin": margin}
+    params = {
+        "window": window,
+        "top_k": top_k,
+        "direction": direction,
+        "margin": margin,
+        "book": book,
+    }
 
     # Each slice starts flat (`prev = zeros` inside `simulate`), so the first
     # out-of-sample bar re-enters the position carried across the split and books
@@ -930,6 +998,7 @@ def block_returns(
     margin: float,
     costs: CostConfig | None = None,
     n_groups: int = 8,
+    book: str = "long_only",
 ) -> list[np.ndarray]:
     """Per-block net returns, for `pbo_cscv` and for a spread across regimes.
 
@@ -937,7 +1006,7 @@ def block_returns(
     reusable here -- it takes single-asset arrays and calls `run_backtest`
     internally -- so this is the minimum re-implementation, not a parallel one.
     """
-    weights = target_weights(panel.closes, window, top_k, direction, margin)
+    weights = target_weights(panel.closes, window, top_k, direction, margin, book)
     out: list[np.ndarray] = []
     for start, end in make_groups(panel.n_bars, n_groups):
         sub = slice_panel(panel, start, end)
@@ -956,17 +1025,24 @@ def sweep(
     directions: Sequence[str] = SWEEP_DIRECTIONS,
     margins: Sequence[float] = SWEEP_MARGINS,
     split: float = SPLIT,
+    books: Sequence[str] = SWEEP_BOOKS,
 ) -> pd.DataFrame:
     """Every configuration, in-sample beside out-of-sample, with the count printed.
 
     The denominator is the point. `research/sweep.py`'s house rule is that a top
     row is uninterpretable without the number of configurations it won against,
-    and the deflated Sharpe below consumes exactly that count.
+    and the deflated Sharpe below consumes exactly that count. Adding the neutral
+    book doubles that denominator, which raises the bar the winner must clear --
+    correctly, and it is why `books` is a parameter rather than a second script.
     """
     rows: list[dict[str, Any]] = []
-    for window, top_k, direction, margin in itertools.product(windows, top_ks, directions, margins):
+    for window, top_k, direction, margin, book in itertools.product(
+        windows, top_ks, directions, margins, books
+    ):
         try:
-            is_res, oos_res = walk_forward(panel, window, top_k, direction, margin, costs, split)
+            is_res, oos_res = walk_forward(
+                panel, window, top_k, direction, margin, costs, split, book
+            )
         except ValueError:
             continue
         rows.append(
@@ -975,6 +1051,7 @@ def sweep(
                 "top_k": top_k,
                 "direction": direction,
                 "margin": margin,
+                "book": book,
                 "is_sharpe": is_res.sharpe(),
                 "is_monthly_pct": is_res.monthly_pct(),
                 "oos_sharpe": oos_res.sharpe(),
@@ -990,7 +1067,13 @@ def sweep(
 
 
 def holding_attribution(
-    panel: Panel, window: int, top_k: int, direction: str, margin: float, split: float = SPLIT
+    panel: Panel,
+    window: int,
+    top_k: int,
+    direction: str,
+    margin: float,
+    split: float = SPLIT,
+    book: str = "long_only",
 ) -> pd.DataFrame:
     """Fraction of out-of-sample bars spent holding each asset.
 
@@ -1001,16 +1084,23 @@ def holding_attribution(
     than to the rule. Compare each row against the same asset's standalone
     buy-and-hold on this slice before crediting the strategy with anything.
     """
-    weights = target_weights(panel.closes, window, top_k, direction, margin)
+    weights = target_weights(panel.closes, window, top_k, direction, margin, book)
     cut = int(panel.n_bars * split)
     oos_w = weights[cut:]
     invested = oos_w[np.any(oos_w != 0.0, axis=1)]
     if invested.size == 0:
         return pd.DataFrame([{"asset": a, "share_of_invested_bars": 0.0} for a in panel.assets])
+    # Signed for the long leg, absolute for total involvement. On a neutral book
+    # the signed column sums to zero by construction, so reporting only that
+    # would hide which assets the book was actually short.
     share = invested.sum(axis=0) / invested.shape[0]
+    gross = np.abs(invested).sum(axis=0) / invested.shape[0]
     return pd.DataFrame(
-        [{"asset": a, "share_of_invested_bars": float(s)} for a, s in zip(panel.assets, share)]
-    ).sort_values("share_of_invested_bars", ascending=False)
+        [
+            {"asset": a, "share_of_invested_bars": float(s), "gross_share": float(g)}
+            for a, s, g in zip(panel.assets, share, gross)
+        ]
+    ).sort_values("gross_share", ascending=False)
 
 
 def oos_bars_per_rotation(frame: pd.DataFrame, panel: Panel, split: float = SPLIT) -> float:
@@ -1057,7 +1147,7 @@ def deflate(frame: pd.DataFrame, panel: Panel, split: float = SPLIT) -> dict[str
     )
     return {
         "insufficient": False,
-        "best_config": {k: best[k] for k in ("window", "top_k", "direction", "margin")},
+        "best_config": {k: best[k] for k in ("window", "top_k", "direction", "margin", "book")},
         "best_oos_sharpe": float(best["oos_sharpe"]),
         "n_configs": int(len(frame)),
         "n_rankable": int(len(sharpes)),
@@ -1194,7 +1284,26 @@ def self_test() -> int:
     else:
         check("ruin_path_constructed", False, "synthetic doom path did not ruin; check the fixture")
 
-    # 15. Sharpe is scale-invariant when every cost term scales with leverage.
+    # 15. The neutral book is dollar-neutral with gross 1.0, and its legs never
+    #     overlap -- an asset simultaneously long and short would net to nothing
+    #     while still paying fees on both claims.
+    nw = target_weights(panel.closes, 30, 1, "momentum", 0.0, "neutral")
+    live = nw[np.any(nw != 0.0, axis=1)]
+    check("neutral_is_dollar_neutral", bool(np.allclose(live.sum(axis=1), 0.0, atol=1e-12)))
+    check("neutral_gross_is_one", bool(np.allclose(np.abs(live).sum(axis=1), 1.0, atol=1e-12)))
+    check(
+        "neutral_legs_disjoint",
+        bool(np.all(np.count_nonzero(live > 0, axis=1) == np.count_nonzero(live < 0, axis=1))),
+    )
+
+    # 16. A short leg pays financing even at 1x -- shorting spot is impossible,
+    #     so a free short is the easiest way to fake a market-neutral edge.
+    neutral_run = simulate(panel, nw, label="neutral")
+    check("neutral_pays_borrow_at_1x", neutral_run.borrow_cost_total > 0.0)
+    long_only_run = simulate(panel, target_weights(panel.closes, 30, 1, "momentum", 0.0))
+    check("long_only_spot_pays_no_borrow_at_1x", long_only_run.borrow_cost_total == 0.0)
+
+    # 17. Sharpe is scale-invariant when every cost term scales with leverage.
     #     Asserted rather than merely noted, because a future change that breaks
     #     it would mean a cost stopped scaling -- which is a real bug.
     a = simulate(panel, w, label="a", leverage=2.0, accrue_borrow=True)
@@ -1287,6 +1396,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 int(best["top_k"]),
                 str(best["direction"]),
                 float(best["margin"]),
+                book=str(best["book"]),
             )
         )
         return 0
@@ -1309,8 +1419,31 @@ def main(argv: Sequence[str] | None = None) -> int:
         _print_frame(controls[
             ["label", "bars", "rotations", "total_return", "monthly_pct", "sharpe", "max_drawdown"]
         ])
-        print(f"\nbest sweep row for comparison: {dict(best_row[['window','top_k','direction','margin']])}"
-              f" -> {best_row['oos_monthly_pct']:.4f}%/mo, sharpe {best_row['oos_sharpe']:.4f}")
+        print(
+            "\nbest sweep row for comparison: "
+            f"{dict(best_row[['window','top_k','direction','margin','book']])}"
+            f" -> {best_row['oos_monthly_pct']:.4f}%/mo, sharpe {best_row['oos_sharpe']:.4f}"
+        )
+
+        print("\n--- best row of EACH book, so the neutral result is not hidden by ranking ---")
+        per_book = (
+            frame[frame["rankable"]]
+            .sort_values("oos_sharpe", ascending=False)
+            .groupby("book", as_index=False)
+            .head(1)
+        )
+        _print_frame(
+            per_book[
+                ["book", "window", "top_k", "direction", "margin",
+                 "is_sharpe", "oos_sharpe", "oos_monthly_pct", "oos_rotations", "oos_max_dd"]
+            ]
+        )
+        print("\nout-of-sample Sharpe by book and direction (median):")
+        _print_frame(
+            frame.groupby(["book", "direction"], as_index=False)["oos_sharpe"]
+            .agg(["median", "max", "min"])
+            .reset_index()
+        )
 
         print("\n--- where the best row actually spent its out-of-sample time ---")
         _print_frame(
@@ -1320,6 +1453,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 int(best_row["top_k"]),
                 str(best_row["direction"]),
                 float(best_row["margin"]),
+                book=str(best_row["book"]),
             )
         )
 
@@ -1329,9 +1463,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("\n--- probability of backtest overfitting (CSCV) ---")
         blocks: dict[str, list[np.ndarray]] = {}
         for _, row in frame.iterrows():
-            key = f"w{int(row['window'])}_k{int(row['top_k'])}_{row['direction']}_m{row['margin']}"
+            key = (
+                f"w{int(row['window'])}_k{int(row['top_k'])}_{row['direction']}"
+                f"_m{row['margin']}_{row['book']}"
+            )
             blocks[key] = block_returns(
-                panel, int(row["window"]), int(row["top_k"]), str(row["direction"]), float(row["margin"])
+                panel,
+                int(row["window"]),
+                int(row["top_k"]),
+                str(row["direction"]),
+                float(row["margin"]),
+                book=str(row["book"]),
             )
         print(json.dumps(pbo_cscv(blocks), indent=2, default=float))
 
