@@ -37,6 +37,8 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 -m backtester.core.ticks` | fetch trade ticks into `data/ticks/` | **yes** |
 | `python3 research/candle_gap_audit.py` | classify and repair candle gaps using ticks | **yes** |
 | `./research/run_backfill.sh` | long, resumable, low-priority tick backfill + audit | **yes** |
+| `python3 -m backtester.core.fetch_minutes` | fetch 1-minute history (hours; resumable) | **yes** |
+| `python3 research/minute_sweep.py` | preliminary 1-minute strategy sweep (no CPCV) | no |
 | `python3 research/sweep.py` | the horizon parameter tables; single-split walk-forward | no |
 | `python3 research/cpcv_sweep.py` | **primary evaluation** — CPCV + PBO | no |
 | `python3 research/cross_asset_cpcv.py` | does a result transfer to another coin | no |
@@ -769,6 +771,85 @@ covers the unit suite only — the packaging paths are verified by hand.
 
 ---
 
+## The 1-minute pipeline
+
+Separate from the daily and hourly fetch and sweep sections because the scale changes the engineering: ~2.6M bars per asset, ~1GB of CSV,
+and a fetch measured in hours.
+
+### `python3 -m backtester.core.fetch_minutes` — fetch 1-minute history
+
+```bash
+python3 -m backtester.core.fetch_minutes --asset BTC --years 5
+python3 -m backtester.core.fetch_minutes --all --years 5 --workers 6
+python3 -m backtester.core.fetch_minutes --all --coverage-only      # measure, fetch nothing
+python3 -m backtester.core.fetch_minutes --asset BTC --max-windows 50   # pilot
+```
+
+| Flag | Meaning |
+| --- | --- |
+| `--asset` | repeatable |
+| `--all` | BTC, ETH, SOL, DOGE, ZEC, XRP, BNB, HYPE — the Coinbase-listed subset |
+| `--years` | default 5 |
+| `--workers` | concurrent requests, default 6; a **shared** limiter still caps aggregate throughput at 8/s |
+| `--max-windows` | stop after N windows per asset, for piloting |
+| `--no-resume` | refetch everything, ignoring the progress sidecar |
+| `--coverage-only` | re-measure what is on disk |
+
+**It is resumable — kill it and re-run it.** Each completed 300-minute window is appended immediately
+and its start recorded in `data/<ASSET>_1m.progress.json`.
+
+**Read the coverage table, not just the bar count.** Two different absences look identical in a bar
+count and the table separates them:
+
+- **`short by`** — missing *calendar*. The venue has no more history. XRP starts at its 2023
+  relisting; BNB has ~287 days; HYPE ~181.
+- **`complete`** — missing *minutes inside* the calendar it does cover. **ZEC covers the full five
+  years and is only 60.2% complete** — it does not trade every minute. Every lookback in the engine
+  counts *bars*, so a 200-bar average on ZEC spans far more wall-clock time than 200 minutes, and
+  nothing downstream can tell.
+
+Coverage is recorded in `research/results/minute_coverage.json`, which is tracked. The CSVs are not.
+
+### `python3 research/minute_sweep.py` — preliminary 1-minute sweep
+
+```bash
+python3 research/minute_sweep.py                                  # 500k bars per asset
+python3 research/minute_sweep.py --common-window --tag common     # like-for-like
+python3 research/minute_sweep.py --all-bars                       # full history; hours
+python3 research/minute_sweep.py --param-scale 60                 # wall-clock params; slow
+python3 research/minute_sweep.py --asset BTC --strategy macd --bars 50000
+```
+
+| Flag | Meaning |
+| --- | --- |
+| `--asset`, `--strategy` | repeatable filters |
+| `--bars` | most recent bars per asset, default 500,000 (~347 days) |
+| `--all-bars` | every cached bar |
+| `--common-window` | intersect all assets' calendars so cells are comparable |
+| `--param-scale` | multiply bar-count parameters (60 preserves the hourly wall-clock window) |
+| `--workers` | default `min(6, cpu-2)` |
+| `--tag` | suffix for the output filenames |
+
+**Three things to know before reading its output.**
+
+**It is preliminary, and the word is load-bearing.** One pass per cell — no CPCV, no PBO, no split.
+This repo's own finding 1c measures in-sample rank as anti-informative, so a good number here is a
+reason to spend a real protocol on that cell, not evidence.
+
+**`--common-window` vs the default is a real choice.** By default each asset uses its own recent
+bars, so spans differ and **cross-asset rows are not like-for-like**. `--common-window` intersects the
+calendars, which is comparable but bounded by the shortest history (~181 days, HYPE).
+
+**Parameters are bar counts.** `ma_crossover(fast=12, slow=48)` was tuned on hourly bars; at 1m the
+same numbers mean 12 and 48 *minutes* — a different strategy, not the same one at finer resolution.
+`--param-scale 60` restores the wall-clock window and only scales genuine bar-count keys, never a
+threshold like `num_std`. It is expensive: `macd` went from 0.1s to 29.6s on 20k bars.
+
+**Expect costs to dominate.** Measured on 100k bars of BTC, 22 of 25 strategies lost 79–100% of
+capital with $7,800–$9,900 of fees against $10,000. Every row reports gross beside net for that
+
+---
+
 ## Reading the numbers correctly
 
 The scripts are honest; the risk is in what a reader does with their output. Five
@@ -816,3 +897,21 @@ and 28 paths, giving it the tightest interval in the study by construction.
 **Not investment advice.** Every figure here is a backtest on historical data, and
 the point of the findings above is that most of them did not survive contact with a
 different asset, timeframe, or evaluation geometry.
+
+### 1-minute pipeline troubleshooting
+
+**`fetch_minutes` is slow.** Expected throughput is ~6-7 windows/s against a shared 8/s limit. The
+endpoint answers in ~0.20s median but ~15% of connections stall, which is why `REQUEST_TIMEOUT` is 3s
+-- raising it makes throughput *worse*, not better.
+
+**`fetch_minutes` reports `PARTIAL`.** Some windows were not attempted. Re-run the same command; it
+resumes.
+
+**`minute_sweep.py` dies with `BrokenProcessPool`.** Out of memory. Lower `--workers` or `--bars`.
+Slices are prepared once in the parent precisely to bound this; if it still happens the slice itself
+is too large for your machine.
+
+**A strategy takes minutes per cell at 1m.** Indicator cost is proportional to the window, so
+`--param-scale 60` multiplies it. `rsi` extrapolates to ~1.8h per asset on a full 2.6M-bar series.
+Bound it with `--bars`.
+

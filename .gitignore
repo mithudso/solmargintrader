@@ -98,3 +98,8 @@ index/semantic-embeddings.npz
 
 # data may be a symlink to the shared cache, which "data/" does not match
 /data
+
+# Sliced 1m arrays, rebuilt on demand by research/minute_sweep.py. Regenerable from
+# data/*_1m.csv, and large; the coverage manifest in research/results/ is the artifact
+# worth keeping, not this cache.
+research/results/.slices/
