@@ -240,11 +240,46 @@ def reload_agent(timeout: float = 10.0) -> bool:
 
 
 def start() -> int:
-    """Create the flag file; launchd starts and supervises the app."""
+    """Create the flag file; launchd starts and supervises the app.
+
+    Loads the agent first when launchd does not already know about it. A plist
+    can sit on disk unloaded -- a bootstrap that lost the race described in
+    `reload_agent`, or a machine where `install` was never run to completion --
+    and in that state `kickstart` targets a job that does not exist and fails.
+    Its return code was ignored, so `start` printed "started" while nothing ran:
+    no menu-bar item, no console window, and an *empty* launchd log, because a
+    job that never started writes nothing to explain itself. That combination is
+    close to undiagnosable from the outside, which is why both this and the
+    kickstart result are now checked. `status` reports the same state as
+    `launchd : not loaded`.
+    """
+    if not AGENT.exists():
+        print(f"no agent at {AGENT}. Run: soltui/soltui-service install",
+              file=sys.stderr)
+        return 1
+
     SUPPORT.mkdir(parents=True, exist_ok=True)
     FLAG.touch()
     print(f"flag created → {FLAG}")
-    run(["launchctl", "kickstart", f"gui/{uid()}/{LABEL}"])
+
+    # Only when it is absent: booting out a healthy job would stop a running app
+    # for no reason, and KeepAlive would then restart it on the throttle delay.
+    if not is_loaded():
+        print("  agent was not loaded; loading it")
+        if not reload_agent():
+            print(
+                "\nThe agent could not be loaded, so nothing will start:\n"
+                f"    launchctl bootstrap gui/{uid()} {AGENT}",
+                file=sys.stderr,
+            )
+            return 1
+
+    res = run(["launchctl", "kickstart", f"gui/{uid()}/{LABEL}"])
+    if res.returncode != 0:
+        detail = (res.stderr or res.stdout).strip()
+        print(f"kickstart failed: {detail or 'no output'}", file=sys.stderr)
+        return 1
+
     print("started (and will start at login while the flag exists)")
     return 0
 

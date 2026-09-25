@@ -2,7 +2,7 @@
   {
     "pbo": 0.22857142857142856,
     "n_splits": 35.0,
-    "n_configs": 320.0,
+    "n_configs": 237.0,
     "horizon": "short",
     "kind": "pair",
     "common_blocks": [
@@ -16,9 +16,9 @@
     ]
   },
   {
-    "pbo": 0.08571428571428572,
+    "pbo": 0.22857142857142856,
     "n_splits": 35.0,
-    "n_configs": 61.0,
+    "n_configs": 36.0,
     "horizon": "short",
     "kind": "triple",
     "common_blocks": [
@@ -32,9 +32,9 @@
     ]
   },
   {
-    "pbo": 0.65,
+    "pbo": 0.7,
     "n_splits": 20.0,
-    "n_configs": 297.0,
+    "n_configs": 244.0,
     "horizon": "medium",
     "kind": "pair",
     "common_blocks": [
@@ -65,7 +65,7 @@
   {
     "pbo": 0.65,
     "n_splits": 20.0,
-    "n_configs": 295.0,
+    "n_configs": 250.0,
     "horizon": "long",
     "kind": "pair",
     "common_blocks": [

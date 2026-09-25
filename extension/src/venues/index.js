@@ -23,8 +23,10 @@
  */
 
 import { TriggerVenue, MARGIN_SOURCE } from './triggerVenue.js';
+import { KrakenVenue } from './krakenVenue.js';
+import { JupiterLiveVenue } from './jupiterLiveVenue.js';
 
-export { TriggerVenue, MARGIN_SOURCE };
+export { TriggerVenue, KrakenVenue, JupiterLiveVenue, MARGIN_SOURCE };
 
 export const MODE = {
   DRY_RUN: 'dry-run', // default: real prices, simulated fills, zero writes
@@ -200,10 +202,16 @@ export class NotImplemented extends Error {
 export function buildVenue({ config, signer, apiKey, budget, fetchImpl }) {
   const { venue = 'trigger', mode = MODE.DRY_RUN, baseMint, quoteMint, userPubkey, rpcUrl } = config;
 
-  const inner =
-    venue === 'perps'
-      ? new PerpsVenueReadOnly({ baseMint, quoteMint, rpcUrl })
-      : new TriggerVenue({ baseMint, quoteMint, userPubkey, apiKey, signer, budget, fetchImpl });
+  let inner;
+  if (venue === 'perps') {
+    inner = new PerpsVenueReadOnly({ baseMint, quoteMint, rpcUrl });
+  } else if (venue === 'kraken') {
+    inner = new KrakenVenue({ baseMint, quoteMint, apiKey, apiSecret: config.apiSecret, fetchImpl });
+  } else if (venue === 'jupiter_live') {
+    inner = new JupiterLiveVenue({ baseMint, quoteMint, userPubkey, signer, budget, fetchImpl });
+  } else {
+    inner = new TriggerVenue({ baseMint, quoteMint, userPubkey, apiKey, signer, budget, fetchImpl });
+  }
 
   if (mode === MODE.DRY_RUN) return new DryRunVenue({ inner });
 

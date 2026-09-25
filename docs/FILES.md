@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `af3206e` (2026-08-05T18:49:35+00:00). 276 tracked files, 3.7 MB.
+**Generated** from `index/INDEX.json` at commit `439c58e` (2026-08-06T05:55:19+00:00). 285 tracked files, 3.8 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (184 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 74/78 Python modules and 25/28 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (192 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 80/84 Python modules and 25/28 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (50 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,12 +34,12 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 9 files
-- [`docs`](#docs) — 22 files
+- [`docs`](#docs) — 23 files
 - [`index`](#index) — 5 files
 - [`backtester`](#backtester) — 96 files
-- [`research`](#research) — 78 files
+- [`research`](#research) — 81 files
 - [`extension`](#extension) — 34 files
-- [`soltui`](#soltui) — 20 files
+- [`soltui`](#soltui) — 25 files
 - [`.github`](#github) — 8 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
@@ -131,7 +131,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-22 files.
+23 files.
 
 #### `docs/API.md`
 
@@ -159,7 +159,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 312 lines · 14,595 B · description: **extracted**
+`doc` · 312 lines · 14,637 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -175,7 +175,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 2719 lines · 136,287 B · description: **extracted**
+`doc` · 2803 lines · 141,194 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -194,6 +194,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 122 lines · 4,883 B · description: **extracted**
 
 **Purpose.** cd extension && node tools/cli.js kill cannot resume trading. In the extension, the popup's red KILL SWITCH button does the same thing. node tools/cli.js data --json # find venueOrderId values
+
+**Use.** Read it.
+
+#### `docs/SCRIPTS.md`
+
+`doc` · 589 lines · 27,263 B · description: **extracted**
+
+**Purpose.** Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual — the commands you actually type.
 
 **Use.** Read it.
 
@@ -1337,13 +1345,21 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-78 files.
+81 files.
 
 #### `research/CROSS-ASSET-TRANSFER.md`
 
 `doc` · 225 lines · 14,429 B · description: **extracted**
 
 **Purpose.** python3 research/cross_asset_cpcv.py --self-test # gate: reproduces the BTC/ETH file python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC # 25 singles, medium horizon python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC # the five, with SOL as control
+
+**Use.** Read it.
+
+#### `research/LEVERAGE-ECONOMICS.md`
+
+`doc` · 162 lines · 8,146 B · description: **extracted**
+
+**Purpose.** No network, no data files — this is closed-form arithmetic over published venue parameters, so it reproduces exactly. python3 research/leverage_economics.py --self-test # gate: 7 load-bearing claims
 
 **Use.** Read it.
 
@@ -1368,6 +1384,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 779 lines · 39,574 B · description: **extracted**
 
 **Purpose.** The request asked for a `/dr` deep-research pass. Subagent fan-out is unavailable in this environment, so this is grounded in the **local citation-backed corpus** — technical analysis, trading styles, algorithmic/quant methods, ML-for-trading pitfalls, crypto
+
+**Use.** Read it.
+
+#### `research/SWEEP-9COIN.md`
+
+`doc` · 146 lines · 7,123 B · description: **extracted**
+
+**Purpose.** into `sweep_results_9coin.json`, `sweep_wf_9coin.json` and `sweep_grid_9coin.json`. cd ~/Downloads/sol-backtest-data/_scripts python3 run_sweep.py --interval 1h --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,LINKUSDT,AVAXUSDT,TRXUSDT
 
 **Use.** Read it.
 
@@ -1436,6 +1460,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `OUT`, `class GeometryRun`, `spearman()`, `evaluate_geometry()`, `tidy_frame()`, `render()`, `verdict()`, `main()`. Depends on `backtester`, `research`.
 
 **Use.** `python3 research/geometry.py --help`.
+
+#### `research/leverage_economics.py`
+
+`code-python` · 170 lines · 8,131 B · description: **extracted**
+
+**Purpose.** Cost economics of high-leverage perpetuals, for Jupiter Perps specifically. Generates every table in research/LEVERAGE-ECONOMICS.md. No network, no data files -- this is closed-form arithmetic over published venue parameters, so it reproduces exactly.
+
+**Contents.** Defines `FEE_RT`, `R_LONG`, `R_SHORT`, `HOLDS`, `LEVS`, `break_even_move()`, `carry_crossover_hours()`, `hours_to_zero_collateral()`, `liquidation_move()`, `_fmt_h()` and 3 more.
+
+**Use.** `python3 research/leverage_economics.py --help`
 
 #### `research/perturb.py`
 
@@ -2391,7 +2425,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
 
-20 files.
+25 files.
 
 #### `soltui/README.md`
 
@@ -2417,13 +2451,23 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** Nothing to run.
 
+#### `soltui/analyze.py`
+
+`code-python` · 214 lines · 8,255 B · description: **extracted**
+
+**Purpose.** What every strategy, signal and indicator said about one coin at one moment. Pure logic behind the Analyze tab. No Textual import, no widget. ## It wraps `research/decide.py`; it does not reimplement it `decide.py`'s one substantive guarantee is that the exposures it reports are the numbers the engine would have acted on.
+
+**Contents.** Defines `REPO`, `DATA_DIR`, `class Series`, `class Analysis`, `available_assets()`, `load_series()`, `parse_as_of()`, `slice_to()`, `analyse()`. Depends on `backtester`, `research`.
+
+**Use.** `import soltui.analyze`
+
 #### `soltui/app.py`
 
-`code-python` · 168 lines · 5,933 B · description: **extracted**
+`code-python` · 250 lines · 9,909 B · description: **extracted**
 
 **Purpose.** macOS menu-bar shell. Thin by design. python3 -m soltui.app Mirrors `netdnsmonitor/app.py`: every decision lives in already-tested modules (`status`, `config`, `roster`, `runner`), and this file only wires them to a `rumps.Timer` and a status-item title.
 
-**Contents.** Defines `REPO`, `RESULTS_DIR`, `_rumps()`, `build_app()`, `main()`.
+**Contents.** Defines `REPO`, `RESULTS_DIR`, `_wait_for_port()`, `_rumps()`, `build_app()`, `main()`.
 
 **Use.** `python3 soltui/app.py --help`
 
@@ -2436,6 +2480,26 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `CONFIG_DIR`, `CONFIG_PATH`, `CONFIG_PATH_JSON`, `INTERVALS`, `MODES`, `class ConfigError`, `class Settings`, `default_settings()`, `validate()`, `load_settings()` and 3 more.
 
 **Use.** `import soltui.config`
+
+#### `soltui/cumulative.py`
+
+`code-python` · 242 lines · 9,053 B · description: **extracted**
+
+**Purpose.** Aggregate every committed backtest result — with the evidence floor applied. Pure logic behind the Cumulative tab. No Textual import, no widget. ## The defect this module is built to avoid `cpcv_evaluate` marks a configuration `insufficient` when it falls below `min_total_trades`, prints it **DROPPED**, and **still returns a full path count**.
+
+**Contents.** Defines `REPO`, `RESULTS_DIR`, `MIN_RANKABLE_TRADES`, `COLUMNS`, `_pick()`, `_as_float()`, `_as_int()`, `class ResultRow`, `class FileSummary`, `load_result_file()` and 4 more.
+
+**Use.** `import soltui.cumulative`
+
+#### `soltui/docs_browser.py`
+
+`code-python` · 187 lines · 7,315 B · description: **extracted**
+
+**Purpose.** Read-only catalogue and file reader behind the Docs tab. Pure logic: no Textual import, no widget, no I/O beyond reading files the catalogue already lists. That split is what lets this be tested without driving a terminal, and it matches `config.py`, `roster.py` and the other modules the TUI sits on.
+
+**Contents.** Defines `REPO`, `INDEX_JSON`, `MAX_VIEW_BYTES`, `LANGUAGES`, `class DocEntry`, `class CatalogUnavailable`, `load_catalog()`, `kinds_of()`, `filter_entries()`, `group_by_directory()` and 3 more.
+
+**Use.** `import soltui.docs_browser`
 
 #### `soltui/make_icon.py`
 
@@ -2469,7 +2533,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/requirements.txt`
 
-`data` · 17 lines · 726 B · description: **curated**
+`data` · 27 lines · 1,357 B · description: **curated**
 
 **Purpose.** Runtime dependencies for the menu-bar app (rumps/pyobjc and the py2app build tooling).
 
@@ -2494,6 +2558,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `class SweepRow`, `class SweepOutcome`, `load_arrays()`, `engine_config()`, `class SweepRunner`, `quick_backtest()`. Depends on `backtester`.
 
 **Use.** `import soltui.runner`
+
+#### `soltui/serve.py`
+
+`code-python` · 134 lines · 4,875 B · description: **extracted**
+
+**Purpose.** Serve the Textual console as a real window, without needing a TTY. python3 -m soltui.serve # then open the printed URL python3 -m soltui.serve --port 8899 --no-open ## Why this exists The console has had five tabs, buttons and settings since it was written — but the only way to reach them was `app.py`'s "Open TUI" menu item, which does: tell application "Terminal" to do script "cd <repo> && python
+
+**Contents.** Defines `REPO`, `DEFAULT_PORT`, `HOST`, `app_command()`, `port_is_free()`, `find_port()`, `url_for()`, `serve()`, `main()`.
+
+**Use.** `python3 soltui/serve.py --help`
 
 #### `soltui/setup_app.py`
 
@@ -2535,11 +2609,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 610 lines · 25,482 B · description: **extracted**
+`code-python` · 889 lines · 39,213 B · description: **extracted**
 
 **Purpose.** Textual TUI: five tabs over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Execute (dry-run only). All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
-**Contents.** Defines `FAMILY_NOTES`, `SIGNAL_REFERENCE`, `class SolTuiApp`, `main()`. Depends on `backtester`.
+**Contents.** Defines `RESEARCH_DRIVERS`, `RESEARCH_FINDINGS`, `FAMILY_NOTES`, `SIGNAL_REFERENCE`, `class SolTuiApp`, `main()`. Depends on `backtester`.
 
 **Use.** `python3 soltui/tui.py --help`
 
@@ -2552,6 +2626,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Purpose.** Package marker for the app's tests. Empty.
 
 **Use.** Nothing to run.
+
+#### `soltui/tests/test_panes.py`
+
+`test` · 250 lines · 11,038 B · description: **extracted**
+
+**Purpose.** The four modules behind the new console tabs. No test here drives a terminal, opens a socket, or reads `data/`. That is the same split the rest of this package keeps: `tui.py` is presentation, and the logic lives in modules that can be tested without an event loop. The two worth reading first are `test_a_below_floor_row_is_never_rankable` and `test_slicing_happens_before_the_replay`.
+
+**Contents.** Defines `write_index()`, `class DocsBrowserTests`, `class CumulativeTests`, `class AnalyzeTests`, `class ServeTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_panes.py -q`
 
 #### `soltui/tests/test_signals.py`
 
@@ -2685,9 +2769,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.remember/remember.md`
 
-`doc` · 843 lines · 48,099 B · description: **extracted**
+`doc` · 0 lines · 0 B · description: **none**
 
-**Purpose.** Run unchanged on DOGE and ZEC, **all ten transfers degraded and not one improved** (median −0.821 DOGE, −0.753 ZEC). Only #3 `any(ou_reversion+obv_trend)` and #4 `obv_trend_60` stayed positive on all three assets. On ZEC, zero-parameter `buy_and_hold` (+0.659) beat all five, the
+**Purpose.** _No description available._
 
 **Use.** Read it.
 

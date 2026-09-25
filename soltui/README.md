@@ -47,7 +47,7 @@ Long titles clip from the **head**, never the tail, because the figure is at the
 end — an earlier version clipped the tail and silently ate the number the
 indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_label`.
 
-## The five tabs
+## The tabs
 
 | Tab | What it does |
 |---|---|
@@ -56,6 +56,49 @@ indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_la
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
 | **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, median return, trades. Cancellable. |
 | **Execute** | Dry-run replay. Step a simulation bar by bar and see the fills a strategy *would* have made. |
+| **Queue** | Starts and reads the low-priority background sweep. Start/Stop/Refresh, a live status line, a ranked table and a below-the-floor table. |
+
+### The Queue tab — a sweep you interrupt, not one you finish
+
+`python3 -m soltui.bgworker --asset SOL` grinds through parameter space in a
+separate process at background QoS (`taskpolicy -b`, nice 19), so it can run
+while you use the machine. The TUI only *reads* what it writes — the sweep keeps
+going with the console closed, and resumes where it stopped after a reboot.
+
+Because it is always interrupted rather than completed, the **order** is the
+design, not the extent: every strategy card's own published preset is evaluated
+before any variation of one, then near variations (0.75x/1.5x), then far
+(0.5x/2x). Presets and the promise ordering come from the cards themselves
+(`success_likelihood`, per-horizon presets), never a copy.
+
+Two tables, and the split is the point. Ranking is out-of-sample CPCV median
+Sharpe; anything under the 10-trade evidence floor is **listed but never
+ranked**, because a Sharpe from three trades sorted descending is a ranking of
+luck. The status line reports how many rows are *rankable*, not how many were
+evaluated — the second number flatters the sweep.
+
+```bash
+python3 -m soltui.bgworker --plan --asset SOL      # what it would run, in order
+python3 -m soltui.bgworker --asset SOL --max-tier 0  # presets only
+```
+
+**Missing price data is reported before the sweep, not during it.** The queue
+interleaves 1h and 1d jobs by promise, so an absent `data/SOL_1h.csv` would
+otherwise surface minutes in — with the whole short horizon quietly absent from
+the results while the pane still said "running". The tab names each missing
+series and the exact `backtester.core.fetch` command, and **Fetch missing data**
+runs those commands for you.
+
+That button is the only network action in this package, and it stays the
+separate explicit step `CLAUDE.md` requires: it runs `backtester.core.fetch`,
+writes a local cache, and does **not** start a sweep as a side effect. A sweep
+missing one interval still runs every job at the intervals it does have, and
+says so rather than reporting a clean "done". Note the hourly series is refused
+unless `--allow-gaps` is passed (it has disclosed gaps); when a fetch leaves a
+series missing, the tab points at `~/.config/soltui/bg/fetch.log`.
+
+Inspect it while it runs: `~/.config/soltui/bg/` holds `results.jsonl` (one JSON
+object per job), `state.json` (progress) and `worker.log`.
 
 ### Read the Backtest tab correctly
 
@@ -112,7 +155,10 @@ soltui/
   roster.py    pure: Roster add/remove, validated against the strategy registry
   paper.py     pure: PaperSession replay cursor over one backtest
   runner.py    worker thread: roster -> CPCV rows, progress for the indicator
-  tui.py       Textual app, five tabs (presentation only)
+  tui.py       Textual app, one tab per pane (presentation only)
+  bgqueue.py   background sweep: job list, ordering, file contract, leaderboard
+  bgworker.py  the background sweep process itself (python3 -m soltui.bgworker)
+  bgcontrol.py spawn/stop the worker; the liveness lock
   app.py       rumps menu-bar shell (wiring only, lazy rumps import)
 ```
 

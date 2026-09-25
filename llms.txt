@@ -1,0 +1,40 @@
+<!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative -->
+
+# solmargintrader
+
+> SOL trading research and execution tooling in four parts: an offline backtester, strategy research, a Chrome MV3 grid-trading extension (dry-run by default), and a read-only macOS menu-bar/TUI console. Research and educational tooling, not financial advice.
+
+## Start here
+
+- [README.md](README.md): Four components, quick start, three-surfaces-one-registry design, findings that shaped the extension
+- [docs/onboarding.md](docs/onboarding.md): A first hour that ends with every component run
+- [docs/codebase-overview.md](docs/codebase-overview.md): File map for all four components
+- [docs/COMPONENTS.md](docs/COMPONENTS.md): What each module does and depends on
+
+## Components
+
+- [backtester/README.md](backtester/README.md): Offline event-driven backtester for spot and leveraged perps, with a modelled borrow fee and no live trading
+- [extension/README.md](extension/README.md): Chrome MV3 grid trader on Jupiter with risk rails and P&L tracking
+- [soltui/README.md](soltui/README.md): Textual TUI and macOS menu-bar indicator over the backtester; no order path
+- [research/STRATEGIES.md](research/STRATEGIES.md): Strategy survey built on the backtester
+
+## Design and safety
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): Component map, the tick, restart safety, venue seam
+- [docs/SECURITY.md](docs/SECURITY.md): Key custody, API token, threat model
+- [docs/OPERATIONS.md](docs/OPERATIONS.md): Dry run to live, kill switch, incident steps
+- [docs/API.md](docs/API.md): Every command across the extension, CLI and HTTP surfaces
+- [docs/external-calls.md](docs/external-calls.md): Every call that leaves the machine
+
+## Working in the repo
+
+- [CLAUDE.md](CLAUDE.md): Rules for agents: non-negotiables for extension and backtester, verification commands
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md): Setup, commands, env vars, troubleshooting
+- [docs/TESTING.md](docs/TESTING.md): What is covered, what is not, how to verify
+- [docs/known-issues.md](docs/known-issues.md): Known broken or unproven behaviour
+
+## Companion files
+
+- [llms-full.txt](llms-full.txt): concatenated key docs
+- [llms-small.txt](llms-small.txt): condensed summary
+- [llms-facts.txt](llms-facts.txt): sourced one-line facts

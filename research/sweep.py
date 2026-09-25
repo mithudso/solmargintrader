@@ -13,8 +13,10 @@ Design rules this script exists to enforce:
     that makes a top row interpretable under multiple testing.
   * **Flag thin evidence.** A high Sharpe on 3 trades is noise, so rows below
     MIN_OOS_TRADES are listed but never ranked.
-  * Pairs and triples are **cross-family by construction** -- combining two
-    trend signals mostly measures the same thing twice.
+  * Pairs and triples must clear a **measured** redundancy gate, not merely the
+    asserted FAMILY labels -- combining two trend signals mostly measures the
+    same thing twice, and the labels have been wrong about which pairs those
+    are. See `independent_combos` and `--pair-gate`.
 """
 
 from __future__ import annotations
@@ -314,7 +316,12 @@ def sweep_singles(horizon: str) -> list[Row]:
 
 
 def cross_family_combos(names: Sequence[str], size: int) -> list[tuple[str, ...]]:
-    """Combinations whose members all come from different families."""
+    """Combinations whose members all come from different families.
+
+    The label-only gate. Kept because `cpcv_sweep.py` still uses it and its
+    published results were produced with it; new work here should prefer
+    `independent_combos`, which measures instead of trusting the labels.
+    """
     out = []
     for combo in itertools.combinations(names, size):
         fams = {FAMILY[n] for n in combo}
@@ -323,15 +330,252 @@ def cross_family_combos(names: Sequence[str], size: int) -> list[tuple[str, ...]
     return out
 
 
+# Thresholds for READING the redundancy diagnostic, not calibrated constants:
+# the defensible claim is the ordering (higher means more redundant), not the
+# cutoff. They live here rather than in `signal_redundancy.py` for the same
+# reason `redundancy_filename` does -- that module imports from this one, so
+# owning shared constants there would make the pair circular.
+REDUNDANT_CORR = 0.80
+REDUNDANT_AGREEMENT = 0.90
+
+
+def redundancy_filename(asset: str, horizon: str) -> str:
+    """Canonical name of a measured-redundancy result under `research/results/`.
+
+    Defined here rather than in `signal_redundancy.py` purely to keep the import
+    graph one-directional: that module already imports HORIZONS from this one, so
+    owning the shared convention there would make the pair circular.
+
+    Keyed on the HORIZON, not the interval: `medium` and `long` are the same 1d
+    series with different parameters, so keying on interval would collide two
+    different measurements onto one filename.
+    """
+    return f"signal_redundancy_{asset.lower()}_{horizon}.csv"
+
+
+def measured_redundant_pairs(
+    horizon: str, asset: str = "SOL"
+) -> frozenset[frozenset[str]]:
+    """Strategy pairs `signal_redundancy.py` flagged at this horizon's parameters.
+
+    Refuses when the measurement is absent rather than falling back to FAMILY
+    labels. A silent fallback would reinstate exactly the mislabelling the
+    measurement exists to catch, and would do it invisibly -- the sweep would
+    print a configuration count that reads as measured when it was not.
+    """
+    path = OUT_DIR / redundancy_filename(asset, horizon)
+    if not path.exists():
+        raise SystemExit(
+            f"missing {path}\n"
+            f"run: python3 research/signal_redundancy.py --asset {asset} "
+            f"--horizon {horizon} --out auto"
+        )
+    table = pd.read_csv(path)
+    flags = table["redundant"]
+    if flags.dtype != bool:
+        # read_csv infers bool from True/False, so this is normally a no-op --
+        # but if the column ever arrives as text, `astype(bool)` makes every
+        # non-empty string truthy INCLUDING "false", every pair reads as
+        # redundant, and the gate silently drops the entire search. Map the
+        # strings explicitly and refuse anything that is not a boolean.
+        flags = (
+            flags.astype(str)
+            .str.strip()
+            .str.lower()
+            .map({"true": True, "false": False})
+        )
+        if flags.isna().any():
+            raise SystemExit(
+                f"{path}: `redundant` column holds non-boolean values; "
+                f"regenerate it with research/signal_redundancy.py"
+            )
+    flagged = table[flags.to_numpy(dtype=bool)]
+    return frozenset(frozenset((a, b)) for a, b in zip(flagged["a"], flagged["b"]))
+
+
+def redundancy_classes(
+    horizon: str, asset: str = "SOL"
+) -> tuple[dict[str, str], list[tuple[list[str], float]]]:
+    """Group interchangeable strategies and pick one representative for each.
+
+    Excluding a redundant pair INSIDE a combination does not stop two DIFFERENT
+    combinations from being the same experiment reported twice. zscore and
+    bb_reversion measure 0.96-1.00 correlated, so every triple containing one has
+    a twin containing the other; both clear the pair test, both get ranked, and
+    the pair of identical results reads as corroboration. Grouping the members
+    and keeping one per group is what removes the twin.
+
+    Groups are connected components over the measured-redundant pairs, and each
+    collapses to its alphabetically-first member -- an arbitrary but stable
+    choice, so the surviving combination does not depend on iteration order.
+
+    Connected components can CHAIN: a~b and b~c does not make a~c, so a component
+    can be looser than any pair in it. The minimum intra-class correlation is
+    returned with each group for exactly that reason -- a value below
+    REDUNDANT_CORR means the group over-merged and should not be trusted.
+    Measured on SOL none of them chain; the loosest is 0.806.
+    """
+    pairs = measured_redundant_pairs(horizon, asset)
+    parent: dict[str, str] = {}
+
+    def find(x: str) -> str:
+        parent.setdefault(x, x)
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for pair in pairs:
+        a, b = sorted(pair)
+        parent[find(a)] = find(b)
+
+    grouped: dict[str, list[str]] = {}
+    for member in list(parent):
+        grouped.setdefault(find(member), []).append(member)
+
+    path = OUT_DIR / redundancy_filename(asset, horizon)
+    table = pd.read_csv(path)
+    corr = {
+        frozenset((a, b)): c
+        for a, b, c in zip(table["a"], table["b"], table["corr"])
+    }
+
+    canonical: dict[str, str] = {}
+    classes: list[tuple[list[str], float]] = []
+    for members in grouped.values():
+        members = sorted(members)
+        rep = members[0]
+        for member in members:
+            canonical[member] = rep
+        inner = [
+            corr[frozenset(p)]
+            for p in itertools.combinations(members, 2)
+            if frozenset(p) in corr
+        ]
+        classes.append((members, min(inner) if inner else float("nan")))
+    return canonical, sorted(classes)
+
+
+# Gates a combination has to clear to enter the sweep. They disagree, and the
+# disagreement is the finding -- see `independent_combos`.
+PAIR_GATES = ("both", "measured", "family")
+
+
+def independent_combos(
+    names: Sequence[str], size: int, horizon: str, gate: str = "both"
+) -> list[tuple[str, ...]]:
+    """Combinations of `size` members containing no redundant pair.
+
+    Three gates:
+
+      * `family`   -- every member from a different asserted FAMILY. The original
+                      behaviour; reproduces the published tables.
+      * `measured` -- no member pair flagged by `signal_redundancy.py`. What the
+                      exposure vectors actually support. It EXCLUDES cross-family
+                      pairs that measure redundant, and ADMITS same-family pairs
+                      that measure independent -- so it does not simply tighten
+                      the filter, it grows the search in one direction while
+                      shrinking it in the other.
+      * `both`     -- the default, and the strictest: dropped by either test.
+
+    `both` is the default because this script ranks on a search whose size it
+    prints, and widening that search silently is the one thing its design rules
+    forbid. Measured over the 20 combo candidates on SOL: 190 possible pairs, of
+    which `family` admits 170, `measured` 186-188, and `both` 168-170; for
+    triples `measured` admits 1,070-1,104 against `both`'s 772-800, so choosing
+    it enlarges the triple search by roughly a third. Use `measured` to see what
+    the labels cost, `family` to reproduce an older table.
+    """
+    if gate not in PAIR_GATES:
+        raise SystemExit(f"--pair-gate must be one of {PAIR_GATES}, got {gate!r}")
+    redundant: frozenset[frozenset[str]] = frozenset()
+    canonical: dict[str, str] = {}
+    if gate in ("measured", "both"):
+        redundant = measured_redundant_pairs(horizon)
+        canonical, _ = redundancy_classes(horizon)
+
+    # Representatives are chosen among the names actually being combined. A class
+    # whose alphabetical head is not a candidate (sma_regime's class leads with
+    # atr_sized, which is not one) would otherwise elect an absent member and no
+    # combination could ever be the representative one.
+    present = set(names)
+    local_rep: dict[str, str] = {}
+    if canonical:
+        by_class: dict[str, list[str]] = {}
+        for member, rep in canonical.items():
+            if member in present:
+                by_class.setdefault(rep, []).append(member)
+        for members in by_class.values():
+            head = sorted(members)[0]
+            for member in members:
+                local_rep[member] = head
+
+    def admissible(combo: tuple[str, ...]) -> bool:
+        if gate in ("family", "both") and len({FAMILY[n] for n in combo}) != size:
+            return False
+        if gate in ("measured", "both") and any(
+            frozenset(pair) in redundant
+            for pair in itertools.combinations(combo, 2)
+        ):
+            return False
+        return True
+
+    out: list[tuple[str, ...]] = []
+    seen: set[frozenset[str]] = set()
+    if not local_rep:
+        return [c for c in itertools.combinations(names, size) if admissible(c)]
+
+    # Two passes so the survivor is PREDICTABLE rather than an artifact of
+    # enumeration order: the combination built entirely from class
+    # representatives wins, and only if none exists does the first admissible
+    # variant stand in. Enumeration order alone would keep whichever twin the
+    # candidate list happened to mention first, silently retiring the label a
+    # reader was told to look for.
+    for representatives_only in (True, False):
+        for combo in itertools.combinations(names, size):
+            if not admissible(combo):
+                continue
+            if representatives_only and any(local_rep.get(n, n) != n for n in combo):
+                continue
+            # A key shorter than `size` means two members share a class without
+            # their own pair being flagged -- reachable only through a chained
+            # component, and dropped for the same reason.
+            key = frozenset(local_rep.get(n, n) for n in combo)
+            if len(key) < size or key in seen:
+                continue
+            seen.add(key)
+            out.append(combo)
+    return out
+
+
+def gate_counts(names: Sequence[str], size: int, horizon: str) -> str:
+    """What each gate admits, for the log line.
+
+    Printed on every combo stage so the multiple-testing denominator is visible
+    at the moment it is chosen, not reconstructed afterwards from a CSV.
+    """
+    return "  ".join(
+        f"{g}={len(independent_combos(names, size, horizon, g))}" for g in PAIR_GATES
+    )
+
+
 def sweep_combos(
-    horizon: str, size: int, modes: Iterable[str] = ("all", "any")
+    horizon: str,
+    size: int,
+    modes: Iterable[str] = ("all", "any"),
+    gate: str = "both",
 ) -> list[Row]:
-    """Cross-family combinations of `size` members, under each combine mode."""
+    """Non-redundant combinations of `size` members, under each combine mode."""
     arrays, cfg = load_horizon(horizon)
     params = HORIZONS[horizon]["params"]
     candidates = [n for n in COMBO_CANDIDATES if n in params]
+    print(
+        f"[{horizon}] size-{size} gate={gate}  admitted: "
+        f"{gate_counts(candidates, size, horizon)}",
+        file=sys.stderr,
+    )
     rows: list[Row] = []
-    for combo in cross_family_combos(candidates, size):
+    for combo in independent_combos(candidates, size, horizon, gate):
         specs = [(n, params[n]) for n in combo]
         for mode in modes:
             try:
@@ -402,6 +646,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--horizon", action="append", choices=list(HORIZONS), default=None)
     ap.add_argument("--triple-top", type=int, default=6,
                     help="restrict triples to combos drawn from the top-N singles")
+    ap.add_argument(
+        "--pair-gate",
+        choices=list(PAIR_GATES),
+        default="both",
+        help="which redundancy test a combination must clear (default: both)",
+    )
     args = ap.parse_args(argv)
 
     stages = args.stage or ["singles", "pairs", "triples"]
@@ -420,12 +670,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         if "pairs" in stages:
             print(f"[{h}] pairs…", file=sys.stderr)
-            rows = sweep_combos(h, 2)
+            rows = sweep_combos(h, 2, gate=args.pair_gate)
             all_rows += rows
             counts[f"{h}/pairs"] = len(rows)
 
         if "triples" in stages:
-            # Bound the triple space: cross-family triples over all candidates
+            # Bound the triple space: admissible triples over all candidates
             # would be hundreds of runs, and ranking that many by measured
             # performance is precisely the data-snooping this script warns about.
             singles = [r for r in all_rows if r.kind == "single" and r.horizon == h]
@@ -443,7 +693,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 arrays, cfg = load_horizon(h)
                 params = HORIZONS[h]["params"]
                 rows = []
-                for combo in cross_family_combos(top, 3):
+                for combo in independent_combos(top, 3, h, args.pair_gate):
                     specs = [(n, params[n]) for n in combo]
                     for mode in ("all", "vote"):
                         try:

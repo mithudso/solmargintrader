@@ -3,7 +3,7 @@ id: sma_regime
 name: Slow-MA Regime Filter
 kind: exposure-strategy
 status: measured
-family: regime-filter
+family: sma-gated
 summary: Long above a slow moving average, flat below it. The most valuable partner in the set.
 registry_key: sma_regime
 runner: backtester.cli

@@ -28,6 +28,7 @@ import sys
 import webbrowser
 from pathlib import Path
 
+from . import serve as serve_mod
 from .config import Settings, load_settings
 from .roster import Roster
 from .runner import SweepRunner
@@ -35,6 +36,27 @@ from .status import AppState, Phase, build_menu_summary, build_title
 
 REPO = Path(__file__).resolve().parent.parent
 RESULTS_DIR = REPO / "research" / "results"
+
+
+def _wait_for_port(port: int, timeout: float = 8.0, host: str = "127.0.0.1") -> bool:
+    """Block until something accepts on `port`, or `timeout` elapses.
+
+    The browser is opened only after this returns True. Opening it first showed a
+    connection error during the second the server takes to bind, which reads as
+    "the console is broken" -- the exact impression this whole change exists to
+    remove.
+    """
+    import socket
+    import time
+
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.3)
+            if s.connect_ex((host, port)) == 0:
+                return True
+        time.sleep(0.2)
+    return False
 
 
 def _rumps():
@@ -81,8 +103,15 @@ def build_app(settings: Settings | None = None):
             if len(self.roster) == 0:
                 self.roster = Roster.default()
             self.runner = SweepRunner(self.state)
+            # The served console, if one has been opened. Tracked so a second
+            # click focuses the existing window rather than binding another port
+            # and leaving orphaned servers behind.
+            self.serve_proc: subprocess.Popen | None = None
+            self.serve_port: int | None = None
             self.menu = [
-                "Open TUI",
+                "Open console",
+                "Open console in Terminal",
+                None,
                 "Run backtest",
                 "Cancel sweep",
                 None,
@@ -92,6 +121,10 @@ def build_app(settings: Settings | None = None):
             ]
             self.timer = rumps.Timer(self.tick, cfg.poll_interval_seconds)
             self.timer.start()
+            # Auto-open the console on launch. Without this the app is a bare
+            # menu-bar icon until someone clicks "Open console" -- reads as
+            # having no interface at all (see open_console's docstring).
+            self.open_console(None)
 
         def tick(self, _sender) -> None:
             """Refresh the title and the status submenu from live state."""
@@ -101,18 +134,71 @@ def build_app(settings: Settings | None = None):
             if item is not None:
                 item.title = summary[0] if summary else "Status"
 
-        @rumps.clicked("Open TUI")
-        def open_tui(self, _sender) -> None:
-            """Launch the Textual console in a new Terminal window.
+        @rumps.clicked("Open console")
+        def open_console(self, _sender) -> None:
+            """Open the console as a real window, via a loopback HTTP server.
 
-            The TUI needs a TTY, which a menu-bar process does not have, so it is
-            opened in Terminal rather than run in-process.
+            This is the default because the Terminal route below fails *silently*
+            when Terminal automation is not permitted — the default on a fresh
+            macOS install. The result was a menu-bar app that appeared to have no
+            interface at all, when in fact it has had five tabs all along.
+
+            `soltui.serve` needs no TTY, which is the constraint that forced the
+            Terminal detour in the first place.
+            """
+            if self.serve_proc is not None and self.serve_proc.poll() is None:
+                webbrowser.open(serve_mod.url_for(self.serve_port))
+                return
+            port = serve_mod.find_port()
+            if port is None:
+                rumps.notification("soltui", "Could not open the console",
+                                   "No free port near 8899.")
+                return
+            try:
+                self.serve_proc = subprocess.Popen(
+                    [sys.executable, "-m", "soltui.serve",
+                     "--port", str(port), "--no-open"],
+                    cwd=str(REPO),
+                    stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                )
+            except OSError as exc:
+                rumps.notification("soltui", "Could not open the console", str(exc))
+                return
+            self.serve_port = port
+            # The server needs a moment to bind. Opening the browser first would
+            # show a connection error the user would read as "it is broken".
+            if not _wait_for_port(port, timeout=8.0):
+                err = ""
+                if self.serve_proc.poll() is not None and self.serve_proc.stderr:
+                    err = self.serve_proc.stderr.read().decode()[:200]
+                rumps.notification(
+                    "soltui", "Console did not start",
+                    err or "Is textual-serve installed? "
+                           "python3 -m pip install textual-serve")
+                return
+            webbrowser.open(serve_mod.url_for(port))
+
+        @rumps.clicked("Open console in Terminal")
+        def open_tui(self, _sender) -> None:
+            """Fallback: launch the console in a new Terminal window.
+
+            Kept because it needs no extra dependency, but it is no longer the
+            default and it no longer fails quietly: `osascript` returning non-zero
+            almost always means Terminal automation was denied, which the user must
+            grant in System Settings > Privacy & Security > Automation.
             """
             script = (
                 f'tell application "Terminal" to do script '
-                f'"cd {REPO} && python3 -m soltui.tui"'
+                f'"cd {REPO} && {sys.executable} -m soltui.tui"'
             )
-            subprocess.run(["osascript", "-e", script], check=False)
+            result = subprocess.run(["osascript", "-e", script],
+                                    capture_output=True, text=True, check=False)
+            if result.returncode != 0:
+                rumps.notification(
+                    "soltui", "Could not open Terminal",
+                    (result.stderr or "").strip()[:160]
+                    or "Grant Terminal automation in System Settings > Privacy & "
+                       "Security > Automation.")
 
         @rumps.clicked("Run backtest")
         def run_backtest(self, _sender) -> None:

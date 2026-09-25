@@ -1,11 +1,12 @@
 {
-  "long/pairs": 140,
-  "long/singles": 16,
-  "medium/pairs": 140,
-  "medium/singles": 16,
-  "medium/triples": 20,
-  "short/pairs": 140,
-  "short/singles": 16,
-  "short/triples": 32,
-  "total": 520
+  "long/pairs": 276,
+  "long/singles": 25,
+  "long/triples": 4,
+  "medium/pairs": 278,
+  "medium/singles": 25,
+  "medium/triples": 14,
+  "short/pairs": 246,
+  "short/singles": 25,
+  "short/triples": 14,
+  "total": 907
 }

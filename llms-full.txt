@@ -1,0 +1,2110 @@
+<!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative -->
+
+---
+title: README.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/README.md
+---
+
+# solmargintrader
+
+SOL trading research and execution tooling, in four parts:
+
+| Path | What it is | Language |
+| --- | --- | --- |
+| [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
+| [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
+| [`extension/`](extension/README.md) | Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **This is the part that can place real orders.** | JavaScript (ESM, no deps) |
+| [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI that surfaces signals and paper positions, supervised by launchd. Read-only over the research side. | Python 3.13 |
+
+> Research and educational tooling, not financial advice. Simulated past performance does not
+> predict future results. Grid trading is short volatility: it earns in a range and loses in a trend.
+> Leveraged positions can be liquidated. Trade only capital you can lose entirely.
+
+## Quick start
+
+```bash
+# Backtester — fetch once, then simulate offline
+pip install -r backtester/requirements.txt
+python3 -m backtester.core.fetch --asset SOL --interval 1d --start 2021-01-01
+python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
+
+# Extension — no install step, no dependencies
+cd extension
+npm test                                               # 131 tests
+node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
+node tools/cli.js                                      # every available command
+```
+
+Load the extension: `chrome://extensions` → Developer mode → **Load unpacked** → select
+`extension/`. It loads **disarmed, in dry-run**.
+
+## Tests
+
+```bash
+python3 -m unittest discover -s backtester/tests -t .   # 499 tests
+python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+cd extension && npm test                                # 131 tests
+```
+
+Counts are asserted by CI, so a stale number here fails the build rather than
+misleading a reader. See [docs/TESTING.md](docs/TESTING.md) for what each suite covers.
+
+## Three surfaces, one registry
+
+Every extension action lives in `extension/src/core/commands.js`. The Chrome message handler, the
+CLI and the HTTP API are thin adapters over that registry, and a parity test fails the build if any
+surface drifts. So anything you can do in the extension UI, you can script:
+
+```bash
+cd extension
+node tools/cli.js setConfig --lower 60 --upper 90 --rungs 7 --notionalPerRungUsd 12
+node tools/cli.js levels          # rung ladder + gross spread per round trip
+node tools/cli.js plan --price 75 # what it WOULD place; places nothing
+node tools/cli.js arm
+node tools/cli.js tick --count 3
+node tools/cli.js pnl --json
+```
+
+```bash
+node tools/api-server.js --port 8787     # prints a bearer token
+curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
+```
+
+Full reference: [docs/API.md](docs/API.md).
+
+## Two findings that shaped the extension
+
+**The bundled HTML dump is not Jupiter's code.** `jup.ag/` holds 16 rendered HTML files and zero
+`.js` bundles — it references `jup.ag/assets/index-*.js` but never fetched them. It was still
+useful: it identified the intended venue, yielded real token mints, and revealed a bundled
+`vendor-anchor-*.js` implying client-side Anchor instruction building. It is gitignored (~42 MB).
+
+**Jupiter Perps has no public REST write API.** Jupiter's docs state the Perps API is a work in
+progress and point at Anchor IDL parsing, so opening or closing a leveraged position is not
+shippable from a service worker today. The executable venue is **Trigger V2**, whose price orders
+are exactly the ladder a grid needs. Both sit behind one `VenueAdapter`; Perps drops in when its API
+ships.
+
+## Docs
+
+**Start here**
+
+- [docs/onboarding.md](docs/onboarding.md) — a first hour that ends with every component run
+- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all four components
+- [docs/COMPONENTS.md](docs/COMPONENTS.md) — what each module does and depends on
+
+**Working in it**
+
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — setup, commands, env vars, troubleshooting
+- [docs/INSTALLATION.md](docs/INSTALLATION.md) — prerequisites, install, verify, uninstall
+- [docs/SCRIPTS.md](docs/SCRIPTS.md) — every runnable entry point: purpose, options, real output, when *not* to use it
+- [docs/TESTING.md](docs/TESTING.md) — what is covered, what is not, how to verify
+- [docs/known-issues.md](docs/known-issues.md) — what is already known to be broken
+
+**Design and behaviour**
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — component map, the tick, restart safety, venue seam
+- [docs/API.md](docs/API.md) — every command across all three surfaces
+- [docs/integrations-and-assumptions.md](docs/integrations-and-assumptions.md) — external services and the assumptions baked in
+- [docs/external-calls.md](docs/external-calls.md) — every call that leaves the machine
+- [docs/logging.md](docs/logging.md) — what is recorded, and which paths record nothing
+
+**Operating and safety**
+
+- [docs/SECURITY.md](docs/SECURITY.md) — key custody, API token, threat model
+- [docs/OPERATIONS.md](docs/OPERATIONS.md) — dry run to live, kill switch, incident steps
+- [CLAUDE.md](CLAUDE.md) / [AGENTS.md](AGENTS.md) / [GEMINI.md](GEMINI.md) — rules for agents working in this repo
+
+`docs/high_signal_file_index.json` is the machine-readable form of the overview, generated by
+`scripts/build_doc_index.py`. `scripts/check_docs.py` fails the build if either drifts from the
+code — including the test counts quoted above.
+
+---
+title: CLAUDE.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/CLAUDE.md
+---
+
+# Semantic Indexing Rule
+- Do NOT use `view_file` to blindly explore large files.
+- ALWAYS use the `search_codebase` MCP tool (local semantic index) first to pull semantic chunks.
+- If the index does not exist, build it using `scripts/semantic_indexer.py`.
+- If the MCP server is not running or fails, attempt to start it. If it still fails, only then fallback to `view_file`.
+
+# CLAUDE.md — solmargintrader
+
+Instructions for agents working in this repository. Read before changing code.
+
+## What this is
+
+Three components with different risk profiles. Know which one you are in:
+
+| Component | Risk |
+| --- | --- |
+| `backtester/` (Python) | Simulation only. **Never add live-trading capability here** — see its README's Scope section. The danger is a dishonest backtest, not a lost trade. |
+| `research/` (Python) | Analysis built on the backtester. The danger is overstating a result. |
+| `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software. |
+
+## Non-negotiables — extension
+
+1. **Dry-run stays the default.** `DEFAULT_CONFIG.mode` is `dry-run` and the extension installs
+   disarmed. Never change a default so a fresh install can place an order.
+2. **Risk rails live in code.** Every rail is a gate in `src/core/risk.js` that an order must pass. A
+   rail documented but not enforced is not a rail. Rails must **fail closed** — a missing or NaN
+   state field must not silently disable one (see `normaliseState`).
+3. **Never guess a number that becomes an order.** If a price, quantity or fee is missing or
+   unusable, refuse and surface it. Do not fall back to config, and do not fall back to zero.
+4. **Reconcile before plan.** The venue's live order list is the source of truth at the top of every
+   tick; local state is a cache. An intent that was submitted but is not live becomes `unknown` and
+   is **never auto-retried** — that is how a rung double-fires after a crash.
+5. **No secret material in logs, `chrome.storage.sync`, the DOM, or a response body.** The API key
+   and the session-key vault are `chrome.storage.local` / mode-0600 file only. `setApiKey` returns a
+   length, never the key.
+6. **Three surfaces, one registry.** Every action belongs in `src/core/commands.js`. Do not add a
+   message handler, CLI branch or HTTP route carrying its own logic — `test/surfaces.test.js` will
+   fail, and correctly so.
+7. **The exit is one rung above the entry.** A sell placed at the level it was bought at captures
+   zero and pays two fees. `expectedRoundTripUsd` and its test exist because this bug shipped once.
+
+## Non-negotiables — backtester
+
+1. **Correctness of the simulation outranks the number of strategies.** A tool that honestly reports
+   a losing strategy is a success; one that reports an inflated Sharpe from a leaked bar is a
+   failure even if it runs.
+2. **No lookahead.** A signal at bar *t* may only use data through bar *t*. Any change touching
+   signal generation or fill timing needs a test that would catch a one-bar leak.
+3. **Costs are never optional.** Fees, slippage and the perp borrow fee stay in the P&L path.
+4. **The engine does not touch the network.** Fetching is a separate, explicit step
+   (`backtester.core.fetch`) writing a local cache.
+5. **Every registered strategy has a card.** `backtester/strategy_cards/<id>.md` carries its
+   equations, reasoning, limitations and parameter defaults, and `tests/test_strategy_cards.py`
+   checks the machine-readable half against the code in both directions — a registry entry with no
+   card fails, and so does a card whose defaults have drifted. Add the card in the same commit as
+   the strategy.
+6. **The ladder grid must agree with the extension.** `core/gridsim.py` is a port of
+   `extension/src/core/grid.js`; a change to either one's economics needs the matching change in the
+   other, or the backtest becomes a confident wrong number about the live strategy. Do not confuse it
+   with the `grid` strategy in `core/strategies/signals.py`, which is an exposure staircase, not a
+   ladder of resting orders.
+
+## Before you claim a change works
+
+```bash
+python3 -m unittest discover -s backtester/tests -t .   # 499 tests
+python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+cd extension && npm test                                # 131 tests
+node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
+node tools/verify-endpoints.js                          # live Jupiter reachability
+python3 scripts/check_docs.py                           # doc counts and retrieval indexes
+```
+
+Loading the extension unpacked cannot be automated (`chrome://extensions` needs a human). Do not
+claim it as verified — the headless dry run is the integration gate instead.
+
+## House style
+
+**JavaScript** — ESM, no build step, **zero runtime dependencies**. Do not add a package to solve
+something the ~150 lines of `src/wallet/solana.js` already solve. Tests are `node:test` +
+`node:assert/strict`. Keep `src/core/grid.js`, `risk.js` and `pnl.js` free of I/O and `chrome.*`.
+
+**Python** — 3.13, stdlib-first. Dependencies are declared in `backtester/requirements.txt` and kept
+minimal on purpose (`pyarrow`, `requests` and `pytest` are deliberately excluded; tests use
+`unittest`). Type hints with `from __future__ import annotations`.
+
+**Both** — comments explain *why*, especially where the obvious implementation is wrong (MV3 timers,
+base58 zero bytes, FIFO vs paired-lot attribution, one-bar leaks). Do not narrate *what*.
+
+## Known-unverified areas
+
+Read "Verification status" in `extension/README.md` before extending it. In short: **no live order
+has ever been placed**, the Trigger order-list response envelope is guessed, and fee attribution is
+unconfirmed. Do not present any of them as working.
+
+## Related
+
+`AGENTS.md` points here. Component detail lives in `backtester/README.md` and
+`extension/README.md`; cross-cutting detail in `docs/`.
+
+---
+title: docs/COMPONENTS.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/docs/COMPONENTS.md
+---
+
+# Components
+
+What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md`
+is the flat file map; this page is the shape of the thing.
+
+Dependency direction, strictly one-way:
+
+```
+extension/  (JavaScript)          soltui/  (Python)
+     |                                 |
+     | ports grid economics            | reads
+     v                                 v
+backtester/core/gridsim.py <---- backtester/  <---- research/
+```
+
+`backtester/` depends on nothing else in the repo. `research/` imports `backtester`.
+`soltui/` reads the research side. `extension/` shares no code with any of them — only an
+obligation, described below.
+
+---
+
+## `backtester/`
+
+### `core/engine.py` — the bar loop
+
+The single place execution ordering is decided, and the reason lookahead is structurally
+impossible rather than merely avoided. Per bar, in this order: accrue borrow fees, execute
+a fill scheduled for this bar at this bar's **open**, check liquidation against this bar's
+range, ask the strategy for a target using data `<= i` only, then schedule the resulting
+order for `i + fill_delay`.
+
+```python
+run_backtest(strategy, arrays, config) -> BacktestResult
+```
+
+`EngineConfig` carries mode, leverage, `fill_delay` (default 1 — the conservative choice),
+`rebalance_threshold` and costs. `BacktestResult.exposure` is the **applied** exposure
+(signed notional over equity), not the raw target — a distinction that matters to anything
+comparing against it.
+
+**Depends on:** `types`, `metrics`, `perps`. No I/O, no network.
+
+### `core/types.py` — the lookahead guard
+
+`BarWindow` is the guard. A strategy receives only this object, every accessor truncates at
+bar `i`, and reading past `i` raises `LookAheadError`. Also `CostConfig` (fees, slippage,
+borrow rates in **bps per hour** to sidestep the venue's deci-bps ambiguity), `Position`,
+`Trade`, and `RunManifest` — everything needed to reproduce a run byte-for-byte.
+
+### `core/strategies/` — the registry
+
+```python
+REGISTRY: dict[str, Callable]   # 25 strategies, name -> factory
+FAMILY: dict[str, str]          # taxonomy: trend, mean-reversion, regime-filter, ...
+build(name, **params) -> Strategy
+```
+
+Factories rather than instances, because several strategies carry state and a shared
+instance would leak position state between runs. A strategy implements
+`warmup_bars()` and `on_bar(history) -> float`, returning a target exposure in `[-1, 1]`
+for the **next** bar.
+
+Adding one requires a module plus one `REGISTRY` entry — no engine change — **and** a
+`strategy_cards/<id>.md` in the same commit, whose machine-readable half is checked against
+the code in both directions.
+
+### `core/indicators.py`
+
+Trailing-window functions, each returning a scalar for the current bar rather than a
+series — strategies are called once per bar, so a series would be wasted work and would
+invite indexing the wrong position. Exponential recursions use a capped lookback
+(`EMA_CAP_MULTIPLE = 12`, chosen for a measured 2.4e-13 relative error) and a smaller
+warm-up multiple (`EMA_WARMUP_MULTIPLE = 3`).
+
+### `core/gridsim.py` — the ladder grid
+
+Separate from the exposure engine and deliberately so: the extension's edge comes from
+limit orders filling *intrabar* at known prices, which a target exposure cannot express.
+Own bar loop, own entry point (`backtester.gridcli`).
+
+**This module is a port of `extension/src/core/grid.js`.** A change to either one's
+economics needs the matching change in the other, or the backtest becomes a confident
+wrong number about the live strategy. Do not confuse it with the `grid` strategy in
+`core/strategies/signals.py`, which is an exposure staircase, not a ladder of resting
+orders.
+
+### `core/data.py` and `core/fetch.py`
+
+`CsvLoader` and `SyntheticLoader` both satisfy one `DataLoader` protocol, so tests need no
+network. `validate_bars` checks schema, ordering and gaps; `checksum_frame` makes a run
+traceable to its input. `fetch.py` is the only network path and writes a cache — the engine
+never fetches.
+
+---
+
+## `research/`
+
+### `decide.py` — the per-bar readout
+
+What every strategy, signal and indicator says about the last cached bar.
+
+```python
+replay_targets(strategy, arrays, *, mode, allow_short) -> np.ndarray
+decide_strategy(key, arrays, ...) -> StrategyDecision
+build_report(arrays, *, asset, interval, ...) -> dict
+```
+
+Strategies are replayed bar-by-bar from the start of history, because several are
+path-dependent: a Donchian position opened on a breakout stays long through bars whose own
+close would never have opened it. It imports the engine's own `_resolve_target` rather than
+reimplementing the clamp, and its test suite asserts parity against a recording wrapper
+around `run_backtest`.
+
+### `cpcv_sweep.py` — and why `interpret()` exists
+
+Combinatorial purged cross-validation over the strategy space. `interpret()` turns four
+numbers into the reading a person should take from them, specifically to catch two
+dangerous misreadings: a high positive-count with a high PBO ("lots of strategies work!"),
+and a low PBO with a low positive-count. It has its own test file.
+
+### `verify_numbers.py`
+
+Re-derives every figure quoted in the research documents. Exit 0 means the prose matches
+the code. This is the component's honesty gate — `research/`'s failure mode is overstating
+a result, and this is what makes that detectable.
+
+---
+
+## `extension/`
+
+### `src/core/commands.js` — one registry, three surfaces
+
+Every action lives here. The Chrome message handler, `tools/cli.js` and
+`tools/api-server.js` are thin adapters over it, and `test/surfaces.test.js` fails the
+build if any surface drifts. Do not add a handler, CLI branch or HTTP route carrying its
+own logic.
+
+### `src/core/risk.js` — the rails
+
+Every rail is a gate an order must pass. Two properties matter more than the list: a rail
+documented but not enforced here is not a rail, and rails **fail closed** — a missing or
+NaN state field must not silently disable one (see `normaliseState`).
+
+### `src/core/engine.js` — reconcile, then plan
+
+The venue's live order list is the source of truth at the top of every tick; local state is
+a cache. An intent submitted but not found live becomes `unknown` and is **never**
+auto-retried — that is exactly how a rung double-fires after a crash.
+
+### `src/core/grid.js` and `pnl.js`
+
+Ladder geometry and FIFO/paired-lot attribution. `grid.js` owns `expectedRoundTripUsd`,
+which exists because the "exit at the level you bought at" bug shipped once: it captures
+zero and pays two fees. Both files stay free of I/O and `chrome.*`.
+
+### `src/jupiter/http.js`
+
+The single HTTP layer: 4 attempts, full-jitter exponential backoff, a token-bucket request
+budget charged **per attempt** so a retry storm cannot bypass it, 15s per-attempt timeout.
+See `docs/external-calls.md`.
+
+### `src/storage/`
+
+Three implementations of one interface — `store.js` (IndexedDB: intents, fills, carry,
+events), `fileStore.js` (mode-0600, for secret material), `memoryStore.js` (tests). The
+intent journal is what makes the bot restart-safe: an intent is written before it is
+submitted.
+
+### `src/wallet/solana.js`
+
+~150 lines that make a Solana dependency unnecessary, including the base58 zero-byte case.
+Do not add a package to solve what this already solves.
+
+---
+
+## `soltui/`
+
+macOS menu-bar app plus a TUI. Read-only over the research side; places no orders.
+
+- `app.py` is the menu-bar app; `tui.py` the terminal UI; `signals.py`, `status.py`,
+  `roster.py`, `paper.py` the display model.
+- `menubar_launcher.py` exists because py2app runs its target as a top-level script, which
+  breaks relative imports — and because a Finder or launchd launch starts at `/`, so it
+  `chdir`s to the repo before `data_dir="data"` is resolved.
+- `setup_app.py` is an **alias** build, so the bundle references this checkout and must be
+  rebuilt if the repo moves. Never install a bundle built from a worktree — the worktree
+  gets deleted and login startup breaks silently.
+- `soltui-service` is the operational surface: `status`, `start`, `stop`, `build`,
+  `install`.
+
+---
+title: docs/ARCHITECTURE.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/docs/ARCHITECTURE.md
+---
+
+# Architecture
+
+Two independent systems that share a subject (SOL) and nothing else. There is no code path from the
+backtester into the extension: research does not place orders, and the extension does not simulate.
+
+```
+backtester/            research/              extension/
+  core/fetch.py  ──▶ data/            core/commands.js ◀── bg/service-worker.js  (Chrome)
+  core/engine.py       sweep.py         │                ◀── tools/cli.js          (CLI)
+  core/strategies/     STRATEGIES.md    │                ◀── tools/api-server.js  (HTTP)
+  ▼                    ▼                ▼
+  results/             research/results/  core/engine.js ──▶ venues/ ──▶ Jupiter API
+```
+
+## Extension
+
+### Module map
+
+| Path | Responsibility |
+| --- | --- |
+| `src/core/grid.js` | Pure grid engine: levels, side selection, paired exits, planning, capital |
+| `src/core/risk.js` | Risk rails and batch admission. Fails closed |
+| `src/core/pnl.js` | FIFO lot matching, snapshots, equity curve, drawdown, CSV |
+| `src/core/engine.js` | The tick: reconcile → ingest fills → plan → admit → place |
+| `src/core/commands.js` | The command registry — every action, transport-agnostic |
+| `src/jupiter/http.js` | Retry, backoff, `Retry-After`, per-attempt budget, per-attempt timeout |
+| `src/jupiter/price.js` | Price and decimals, tolerant of two response shapes |
+| `src/jupiter/trigger.js` | Trigger V2: auth, vault, deposit craft, create, manage |
+| `src/venues/index.js` | `VenueAdapter` contract, dry-run wrapper, read-only Perps |
+| `src/venues/triggerVenue.js` | The one live-capable adapter |
+| `src/wallet/solana.js` | base58, shortvec, signature insertion — no `@solana/web3.js` |
+| `src/wallet/signer.js` | Null / pending-approval / session-key signers, encrypted vault |
+| `src/storage/store.js` | IndexedDB journal + `chrome.storage` config |
+| `src/storage/fileStore.js` | The same interfaces on JSON files, for CLI and API |
+| `src/bg/service-worker.js` | Alarms, badge, message plumbing. No strategy logic |
+| `src/ui/` | Popup and dashboard. Hand-built SVG charts, CSP-safe |
+
+`core/grid.js`, `risk.js` and `pnl.js` take no I/O and no `chrome.*`. That is what makes the strategy
+unit-testable and lets the same code run under `node --test`, in the CLI, and in the browser.
+
+### The tick
+
+Order of operations is the design. **Reconcile before plan, always.**
+
+1. **Price** — refuse a non-finite or non-positive price outright. A NaN price would flow into P&L,
+   get persisted as the daily realized figure, and permanently poison the daily-loss rail.
+2. **Reconcile** — fetch live orders and match them to journal intents by `(side, level±1bp)`.
+   Exact price equality is unsafe: `intentKey` rounds to `level × 1e6`, so a venue echoing `69.2384`
+   for our `69.238424` yields a different key. Each intent backs at most one live order.
+3. **Ingest fills** — idempotent by venue order id. Quantity comes from the fill or its intent, never
+   from current config, so editing `notionalPerRungUsd` cannot rewrite history.
+4. **Plan** — exits from open lots (one rung up), entries at levels below the market not already
+   holding a lot.
+5. **Admit** — every candidate through the rails, applied incrementally.
+6. **Place** — write the intent as `submitting` **before** the network call, then promote or fail it.
+
+### Restart safety
+
+Solana has no client-order-ID primitive, and an MV3 service worker can be killed at any moment —
+including between "write the intent" and "the venue accepted the order". Two mechanisms:
+
+- **Write-ahead journal.** An intent is persisted as `submitting` before the network call, so a
+  worker that dies mid-submit leaves a record.
+- **Reconcile as truth.** An intent marked `submitting` that is not live becomes `unknown` and is
+  **never auto-retried** — auto-retry is precisely how a rung double-fires. Live orders with no
+  journal entry are adopted so they occupy cap space.
+
+The tick also records the **actual wake delta**, because Chrome silently clamps short alarm periods
+and an unnoticed clamp makes a live run behave unlike its dry run.
+
+### The venue seam
+
+```
+getPrice · getDecimals · getOpenOrders · getFills · getCarryCosts · placeOrder · cancelOrder
+```
+
+| Adapter | State |
+| --- | --- |
+| `TriggerVenue` | Live-capable. Spot. Trigger V2 returns signable transactions over HTTP |
+| `DryRunVenue` | Wraps any adapter: real prices and real code paths, simulated fills, zero writes |
+| `PerpsVenueReadOnly` | Writes throw `NotImplemented` with the concrete next step. Jupiter has no public REST write API for Perps |
+
+Fills in dry run are modelled **pessimistically** — each rung fills at its trigger price moved
+against us by the full slippage allowance. An optimistic simulator makes a losing grid look
+profitable.
+
+### Why the grid earns anything
+
+Each exit rests **one rung above** the lot it closes, so gross per round trip equals the rung width.
+Assigning sides purely by comparing each level to the current price looks equivalent and is not: a
+level whose bid just filled gets an offer at that same price as soon as the market gaps below it,
+capturing zero and paying two fees. That bug shipped once;`expectedRoundTripUsd` plus a test asserting
+`gross === notional × rungWidth` keep it fixed.
+
+**Known attribution limitation:** the planner pairs each exit to a specific lot, but realized P&L
+matches FIFO (tax-correct). With several rungs open these disagree — portfolio totals are right,
+per-round-trip figures follow FIFO. Add lot linkage on the fill record if you need per-rung
+attribution.
+
+## Backtester
+
+Event-driven, offline, and deliberately separate. `core/fetch.py` is the only component that touches
+the network; it writes a local CSV cache that `core/engine.py` reads. Strategies live in
+`core/strategies/` behind a registry, so adding one does not touch the engine. Spot and
+Jupiter-Perps-style leveraged modes share the engine, with the borrow fee modelled in the P&L path
+rather than bolted on.
+
+**Two execution models, on purpose.** `core/engine.py` runs `Strategy` objects, which map history to
+one target exposure filled at a bar boundary. `core/gridsim.py` runs the resting-ladder grid — the
+extension's strategy — whose edge comes from limit orders filling *intrabar* at known prices, which
+a target exposure cannot express. It owns its own bar loop and its own entry point
+(`backtester.gridcli`), and it ports `extension/src/core/grid.js` function for function so the
+backtest and the live strategy agree on what a round trip earns. Keeping them separate is deliberate:
+folding the ladder into the exposure engine would imply the two are comparable on the same axis.
+
+Its correctness priorities — no lookahead, costs always applied, honest reporting of a losing
+strategy — are documented in `backtester/README.md` and enforced by 499 tests.
+
+---
+title: docs/SECURITY.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/docs/SECURITY.md
+---
+
+# Security model
+
+This repository contains software that can move real money. Two assets matter: **signing keys** and
+the **Jupiter API key**.
+
+## Threat model
+
+| Adversary | Can they act? | Mitigation |
+| --- | --- | --- |
+| A web page you visit | Would try to reach the local API — a page **can** `fetch` localhost | Bearer token required; any request carrying `Origin` or `Sec-Fetch-Site` is refused outright; no CORS headers are ever sent |
+| Another local process | Can read files it has permission to read | Config and journal files are written mode `0600`; the session-key seed is AES-GCM encrypted at rest |
+| A malicious or compromised extension | Could read `chrome.storage` | Nothing is stored in `chrome.storage.sync`; a full-auto key holds working capital only |
+| A compromised Jupiter response | Feeds bad prices or order data | Non-finite or non-positive prices abort the tick; a fill without a reliable price or quantity is refused, not guessed; venue-supplied strings never reach `innerHTML` |
+| Someone reading your terminal or shell history | Sees whatever you typed | `setApiKey` returns a length, never the key; the dashboard clears the field after save; the API never echoes secrets |
+
+## Key custody
+
+`full-auto` is the only mode where a signing key exists on the machine. Rules, all enforced in
+`extension/src/wallet/signer.js`:
+
+- Use a **dedicated keypair** holding grid working capital only. Never your main wallet.
+- The 32-byte seed is **AES-GCM** encrypted under a passphrase-derived key (**PBKDF2-SHA256,
+  600,000 iterations**), with a fresh 16-byte salt and 12-byte IV per encryption. Identical
+  plaintext never produces identical ciphertext — there is a test for that.
+- Storage is `chrome.storage.local` or a mode-0600 file. **Never** `chrome.storage.sync`, which would
+  upload it to Google.
+- The decrypted seed exists only inside a signing call. It is never logged, never stringified, and
+  never crosses a message boundary. The generated seed buffer is zeroed after use.
+- A wrong passphrase fails closed and does not distinguish "wrong passphrase" from "tampered record".
+- The wrap key is derived non-extractable, so it cannot be read back out of WebCrypto.
+
+### The three modes are not interchangeable
+
+An injected browser wallet cannot produce a silent signature, and `window.solana` does not exist in a
+service worker at all. "Unattended bot" and "wallet approves every trade" are mutually exclusive, so
+both are named rather than one being quietly chosen:
+
+| Mode | Signing | Unattended |
+| --- | --- | --- |
+| `dry-run` (default) | never signs | yes |
+| `semi-auto` | you approve each signature | **no** |
+| `full-auto` | dedicated session key | yes |
+
+### Custody fact you cannot change
+
+Trigger V2 deposits land in a **Privy-managed custodial vault**, one per wallet. Funds backing
+resting orders sit there, not in your wallet, and recovering them from an unfilled order is a
+two-step cancel-and-withdraw.
+
+## The local HTTP API
+
+It can arm the engine and place orders, so it is locked down by default:
+
+- **Loopback only.** Binds `127.0.0.1` unless `--host` is passed explicitly, and warns loudly when
+  it is not loopback.
+- **Bearer token on every command route.** Generated at startup and printed, or pinned with
+  `SMT_API_TOKEN`. Compared with `timingSafeEqual` after a length check.
+- **Browser requests refused.** A token alone is insufficient because a page can post to localhost;
+  `Origin` or `Sec-Fetch-Site` on a request means refusal.
+- **`GET` is read-only.** Nothing that changes state is reachable from a URL alone, so a link cannot
+  arm your grid.
+- **Bounded input.** Bodies are capped at 256 KB and must be a JSON object.
+- **No stacks in responses.** Errors return a message only.
+
+Do not put this behind a tunnel or reverse proxy without adding transport security and access
+control of your own. It has no rate limiting, no audit log, and no multi-user concept.
+
+## Secrets and git
+
+`.gitignore` excludes `.solmargintrader/`, `journal.json`, `config.json`, `.env*` and the
+`jup.ag/` reference dump. Before committing, confirm no key material is staged:
+
+```bash
+git diff --cached | grep -iE 'BS58_PRIVATE_KEY|x-api-key|SMT_API_TOKEN|passphrase|seed'
+```
+
+## Reporting
+
+This is personal tooling with no support commitment. If you find a defect that could lose funds, stop
+trading with it first (`node tools/cli.js kill`), then fix it.
+
+---
+title: docs/OPERATIONS.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/docs/OPERATIONS.md
+---
+
+# Operations runbook
+
+## Stop everything
+
+```bash
+cd extension && node tools/cli.js kill
+```
+
+`kill` is latching: it disarms **and** blocks every rail until you run `clearKill`. A stray `arm`
+cannot resume trading. In the extension, the popup's red KILL SWITCH button does the same thing.
+
+`kill` does **not** cancel resting venue orders. To remove those:
+
+```bash
+node tools/cli.js data --json          # find venueOrderId values
+node tools/cli.js cancelOrder --venueOrderId <id>
+```
+
+## Dry run to live, in order
+
+Do not skip steps. Each one can fail cheaply; the next one cannot.
+
+1. **Shape the grid and read the economics.**
+   ```bash
+   node tools/cli.js setConfig --lower 60 --upper 90 --rungs 7 --notionalPerRungUsd 12
+   node tools/cli.js levels     # rung width and gross per round trip
+   node tools/cli.js capital    # what it needs funded
+   ```
+   If gross per round trip is not comfortably larger than two fills' fees plus slippage, the grid
+   cannot win. Widen the rungs or stop here.
+
+2. **Confirm the plan matches your intent.**
+   ```bash
+   node tools/cli.js plan --price <current>
+   ```
+   Every sell must sit one rung above a lot you hold. No sell should share a price with its entry.
+
+3. **Run it in dry-run for a while.** Real prices, simulated fills, zero writes.
+   ```bash
+   node tools/cli.js arm
+   node tools/cli.js tick --count 5
+   node tools/cli.js pnl
+   ```
+
+4. **Set the rails deliberately.** The defaults are conservative, not correct for you.
+   ```bash
+   node tools/cli.js setLimits --maxTotalNotionalUsd 250 --dailyLossLimitUsd 25 --maxOrdersPerTick 2
+   ```
+
+5. **Add credentials.**
+   ```bash
+   node tools/cli.js setApiKey --apiKey <key-from-developers.jup.ag/portal>
+   ```
+
+6. **Choose a signing mode.** `semi-auto` approves each signature by hand and cannot run unattended.
+   `full-auto` needs a dedicated key funded with grid capital only:
+   ```bash
+   node tools/cli.js createSessionKey --passphrase '<12+ chars>'
+   # fund the printed address with working capital ONLY, then:
+   node tools/cli.js setConfig --mode full-auto
+   ```
+
+7. **Go live at the smallest possible size.** One rung at the $10 venue minimum, and watch it.
+   ```bash
+   node tools/cli.js setConfig --rungs 2 --notionalPerRungUsd 10
+   node tools/cli.js arm --confirmLive
+   node tools/cli.js tick
+   node tools/cli.js data --json
+   ```
+   Confirm the order exists on the venue and that `reconcile` matches it on the next tick before
+   scaling up. This is the step that validates everything listed as unverified in
+   [TESTING.md](TESTING.md).
+
+## Daily checks
+
+```bash
+node tools/cli.js status | head -40
+node tools/cli.js pnl
+```
+
+Watch for:
+
+| Signal | Meaning |
+| --- | --- |
+| Intents stuck in `unknown` | A submit was ambiguous. Reconcile them by hand against the venue — the engine will never auto-retry |
+| Intents in `failed` | The submit threw. Safe to retry, and the next tick will re-plan |
+| `lastTickDeltaMs` far above your `tickSeconds` | Chrome clamped the alarm, or the worker is being killed |
+| `realizedPnlUsdToday` at the daily limit | The engine has halted for the UTC day. It resumes tomorrow |
+| Rising `feeTotalUsd` with flat `roundTripCount` | Paying to trade without capturing spread. Stop and re-check step 1 |
+| `unmatchedSellQty` above zero | A sell had no lot behind it. The fill log is incomplete |
+
+## Common situations
+
+**A tick reports `venue returned an unusable price`.** Correct behaviour — the tick aborted rather
+than writing a NaN into P&L. Check Jupiter's status and `node tools/cli.js price`.
+
+**Leverage is refused.** Trigger V2 is a spot venue. `leverage > 1` there is unreachable, so the
+engine refuses to tick rather than trading unleveraged while the config claims otherwise. Set
+`--leverage 1`, or wait for the Perps write API.
+
+**Every order fails with 401/403.** The JWT was rejected. The venue adapter clears and re-authenticates
+once automatically; if it persists, the API key is wrong or revoked.
+
+**Rate limited (429).** The client backs off and honours `Retry-After`, and a per-tick budget caps
+requests. If it recurs, raise `tickSeconds` or lower `maxOrdersPerTick`.
+
+**The service worker seems dead.** MV3 terminates it when idle; it wakes on the alarm. Confirm with
+`chrome://extensions` → Service worker → Inspect, and check `lastTickMs` in `status`.
+
+## Recovering local state
+
+The journal is a plain JSON file (`~/.solmargintrader/journal.json`, or IndexedDB in the browser —
+the two are separate).
+
+```bash
+node tools/cli.js exportCsv > fills-$(date +%F).csv   # back up before anything destructive
+node tools/cli.js reset --confirm                     # erases LOCAL history only
+```
+
+`reset` does not cancel venue-side orders. Cancel them first, or you will have live orders with no
+local record — the reconciler will adopt them on the next tick, which is recoverable but noisy.
+
+---
+title: docs/TESTING.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/docs/TESTING.md
+---
+
+# Testing
+
+```bash
+python3 -m unittest discover -s backtester/tests -t .   # 499 tests
+python3 -m unittest discover -s soltui/tests -t .       # 95 tests (~70s)
+cd extension && npm test                                # 131 tests
+python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
+```
+
+725 tests total, no test-framework dependency in any component (`unittest` and `node:test`).
+
+Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
+discovery and fails on a stale figure. That exists because these numbers were wrong for
+several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
+nothing caught it.
+
+## Extension — what the 131 tests cover
+
+| Area | Examples |
+| --- | --- |
+| Grid math | Arithmetic and geometric ladders against hand-computed values; endpoint pinning; degenerate configs rejected |
+| **Round-trip economics** | An exit rests one rung above its lot, never at the same level; `gross === notional × rungWidth` |
+| Planning | Lot aggregation (two lots on one rung produce **one** order, not a duplicate key); venue minimum; deadband; already-resting suppression |
+| Risk rails | Each rail fires on its own breach; a batch cannot collectively breach a cap each member passes; rails **fail closed** on missing or NaN state; unusable orders blocked |
+| P&L | FIFO across lots; partial closes realizing a proportional share of entry fees; carry subtracted; fees turning a gross win into a net loss; unmatched sells surfaced |
+| Reconciliation | A venue echoing fewer decimals is matched, **not duplicated**; a missing order is orphaned and never auto-retried; unknown live orders adopted; two near-identical orders do not bind to one intent |
+| Tick guards | Unusable price aborts before P&L; the daily counter measures today, not lifetime; a short grid on a spot venue says so |
+| Wallet | base58 against real mints and the all-zero pubkey; shortvec boundaries; signature insertion into the correct slot; non-signer refused |
+| Crypto | Sealed-seed round trip; wrong passphrase fails closed; fresh salt and IV per seal; Ed25519 signing |
+| **Surface parity** | Every command routable over the API; `GET` restricted to read-only; CLI help lists all commands and every argument; UI messages all map to real commands |
+
+The parity suite probes all 22 commands with a deliberately invalid argument, which proves the route
+resolved **without executing the handler** — no side effects, no network calls.
+
+## What is NOT covered
+
+Read this before trusting anything with money.
+
+1. **No live order has ever been placed.** The write path (auth → vault → deposit craft → sign →
+   create) matches the documented shapes but has never executed. It needs an API key and a funded
+   wallet. Test with one rung at the $10 minimum.
+2. **The Trigger order-list response envelope is guessed.** `normaliseOrders()` infers field names for
+   the orders/history endpoint, and reconciliation depends on them. Verify against a real response.
+3. **Fee attribution is unconfirmed.** Fills take `feeUsd` from the venue when present and 0
+   otherwise. Zero fees make a grid look better than it is.
+4. **Signature insertion is tested against synthetic transactions**, not a real Jupiter deposit.
+5. **Loading unpacked in Chrome is not automated.** `chrome://extensions` requires a human. The
+   headless dry run is the integration gate instead; the CI job validates the manifest statically.
+6. **The Chrome alarm floor is assumed to be 30s.** The engine logs the real wake delta — watch it
+   before trusting a sub-minute tick.
+
+## Verification commands
+
+```bash
+cd extension
+
+npm test                                              # unit + parity
+node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # a round trip must close positive
+node tools/dryrun.js --ticks 4 --walk 5 --offline 100 # trending case: bids fill, no exits
+node tools/verify-endpoints.js                        # live Jupiter reachability
+find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
+```
+
+The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
+the only one that can detect a zero-spread regression.
+
+## Backtester — 499 tests
+
+Correctness of the simulation is the priority, so the suite concentrates on the things that silently
+inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
+signal generation or fill timing needs a test that would catch a one-bar leak. See
+`backtester/README.md`.
+
+32 of those cover the ladder-grid simulator (`core/gridsim.py`), and they exist because that module
+has to agree with `extension/src/core/grid.js` about what a round trip earns. Three groups matter
+most: the **round-trip invariant** (gross `== notional × rung width`, plus rung width asserted
+against the JavaScript implementation's own figures), the **no-lookahead group** (nothing fills on
+bar 0; a bar spanning both legs books only the entry), and the **failure modes** (a one-way
+downtrend fills every bid and loses; an unfundable rung is skipped rather than overdrawn; a forced
+end-of-run exit is never counted as a captured rung).
+
+36 of them cover the **strategy cards** (`core/strategy_cards.py`). Those tests exist because a card's
+frontmatter supplies numbers to a backtest, so the machine-readable half is checked against the code
+rather than trusted: registry drift is asserted in **both** directions (every registered strategy has
+a card, every card's `registry_key` still exists), every declared default is compared against its
+constructor's actual default, `warmup_bars` and `family` against the code, and every card's presets
+against `research/sweep.py` so a card documents the same experiment the sweep runs. Every buildable
+card is also constructed and run through a full backtest. Prose in a card can still be wrong — no
+test catches that — but a number cannot.
+
+31 more cover the **nine strategies implemented from spec-only cards**
+(`core/strategies/advanced.py`). Each test targets what that mechanism could get
+*wrong* rather than that it runs: the excluded window in dual momentum, the strength
+gate in ADX, and above all the **displacement trap in Ichimoku** — the cloud sitting
+at the current bar was computed 26 bars ago, so reading it as current reads 26 bars of
+future data. That test asserts the value used equals the cloud computed from the
+truncated slice *and* differs from the full-history cloud, so the distinction is
+verified rather than assumed.
+
+63 cover the **per-bar rule readout** (`research/decide.py`), and the one that matters
+asserts *engine parity*: a recording wrapper captures every `on_bar` return
+`run_backtest` asks for, and the readout's replay must reproduce that index sequence and
+those values exactly for all 25 strategies. The rest guard the two ways the readout can
+lie — a truncated-history test that fails if the replay is ever "optimised" into a single
+call on the last bar, and a constructed series where that shortcut gives the *opposite*
+answer, so the first test is known to be load-bearing rather than vacuously true.
+
+## soltui — 95 tests
+
+Slower than the others (~70s) because the TUI tests drive real render cycles. Three
+files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
+state) and `test_tui.py` (rendering). Run them with
+`python3 -m unittest discover -s soltui/tests -t .`.
+
+soltui is read-only over the research side and places no orders, so its tests are about
+display correctness, not money. The packaging paths — the py2app alias bundle and the
+launchd agent — are **not** covered by any test; see `soltui/README.md` for the manual
+checks that stand in for them.
+
+## Adding tests
+
+- Extension: `extension/test/*.test.js`, `node:test` + `node:assert/strict`. Assert behaviour and
+  observable effects, not line execution.
+- Backtester and research: `backtester/tests/`, `unittest`. `research/` has no test directory of
+  its own; its modules are tested from there (`test_decide.py`, `test_cpcv.py`, `test_interpret.py`).
+- soltui: `soltui/tests/`, `unittest`.
+- A new command needs no new parity test — the registry-driven suite picks it up automatically. If it
+  takes an argument that changes money, add a behavioural test for that argument.
+
+---
+title: docs/known-issues.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/docs/known-issues.md
+---
+
+# Known issues
+
+Active limitations, in descending order of how much damage they could do. Nothing here is
+speculative — each item is either stated in the code or was reproduced.
+
+There are no `TODO`, `FIXME`, `XXX` or `HACK` markers anywhere in
+`backtester/`, `research/`, `extension/` or `soltui/`. This page is the substitute for
+grepping for them.
+
+---
+
+## Extension — the money path
+
+### No live order has ever been placed
+
+The whole live path is unexercised against a real venue. Every test and the headless dry
+run go through fakes. Do not present any live-path behaviour as working; read the
+**Verification status** section of `extension/README.md` before extending it.
+
+**Consequence:** the first real order is the first real test.
+
+### The Trigger order-list response envelope is guessed
+
+Reconciliation reads the venue's live order list at the top of every tick and treats it as
+the source of truth. The shape of that response was inferred from documentation, not
+observed. If the real envelope differs, reconciliation is wrong in the most consequential
+place in the system — and because neither Jupiter call logs its request or outcome
+(`docs/logging.md`, gap 1), the failure would be hard to diagnose after the fact.
+
+**Mitigation in place:** an intent that was submitted but is not found live becomes
+`unknown` and is **never** auto-retried. That converts a mis-parsed envelope into a stalled
+rung rather than a double-fire.
+
+### Fee attribution is unconfirmed
+
+`src/jupiter/attribution.js` has never been checked against a real fill. Reported P&L may
+attribute fees differently from the venue.
+
+### Unlogged paths
+
+Four, listed with evidence in `docs/logging.md`: every Jupiter call, per-rail risk
+rejections, the `unknown` intent transition, and a thrown tick (which goes to
+`console.error` and does not survive service-worker eviction). Fixing these is
+`code-deep-optimizer` pass S5 work.
+
+### Loading unpacked cannot be automated
+
+`chrome://extensions` needs a human, so the MV3 load path is never covered by CI. The
+headless dry run (`tools/dryrun.js --ticks 8 --osc 6 --offline 100`) stands in for it and
+is the integration gate.
+
+---
+
+## Backtester and research
+
+### The cached data is a snapshot with no freshness contract
+
+`data/` is gitignored and regenerable, and nothing in a CSV records when it was fetched.
+`research/decide.py` prints the decision bar's age in bars and says `STALE` past two, which
+is a mitigation, not a fix — the underlying cache still has to be refetched by hand.
+
+As of the last check, `data/SOL_1h.csv` ended 40 hourly bars behind wall clock while
+`SOL_1d.csv` was 1.7 daily bars behind. Both were "current" by file mtime.
+
+### `data/SOL_1h.csv` has two gaps larger than one bar
+
+Reading it requires `--allow-gaps`, which is a knowing acceptance of an incomplete series.
+The largest gap is 21,600s where 3,600s was expected, after epoch 1761404400. Any
+statistic computed across that boundary spans a hole.
+
+### `data/JLP_spot.csv` is not a bar series
+
+One row, columns `timestamp,iso,mint,usd_price,source` — a Jupiter price snapshot from
+`core/archive_price.py`, not OHLCV. Bar tools refuse it by naming the missing columns,
+which is correct behaviour, but the filename invites the mistake.
+
+### Coinbase is the only market-data source
+
+Binance is geo-blocked from here. That means a single vendor's outage or history revision
+moves every backtest, and Coinbase's non-OHLCV row ordering has to be handled on the way
+in.
+
+### No registry default emits a short
+
+Every registered strategy's default parameters are long-or-flat; only
+`ma_crossover(short_when_below=True)` can go short, and nothing constructs it that way.
+So `research/decide.py --allow-short` widens the stated exposure bound and changes nothing
+else, and `HOLD-SHORT` is unreachable through that CLI. A test asserts this, so a future
+shorting default will fail rather than quietly make the help text wrong.
+
+### The full readout is slow on hourly data
+
+Every strategy is replayed over the whole series, so cost is bars × strategies: about 18
+seconds for 25 strategies over 8,823 hourly bars. It announces itself on stderr rather than
+looking hung. Not a bug — the price of engine parity.
+
+---
+
+## soltui
+
+### The packaging paths have no tests
+
+The 95 tests cover signal derivation, status/roster state and rendering. The py2app alias
+build and the launchd agent are verified by hand only; `soltui/README.md` lists those
+checks.
+
+### It is an alias build, so it references this checkout
+
+`setup_app.py` runs `py2app -A`, so the installed bundle points at
+`~/dev/solmargintrader`. Move the repo and the app breaks — rebuild with
+`soltui-service build`. A full freeze would have to embed pandas and numpy.
+
+### Never install a bundle built from a worktree
+
+`.claude/worktrees/` gets deleted, and login startup then fails silently.
+`soltui-service install` refuses a worktree target and warns on a worktree source.
+
+### Quit does not stop it
+
+`KeepAlive` necessarily overrides the menu-bar Quit item. The real off switch is removing
+`~/Library/Application Support/soltui/supervise.enabled`, which is what
+`soltui-service stop` does.
+
+### A py2app launch-error dialog keeps the process alive
+
+So a liveness check alone will report a healthy agent while the app is showing an error
+dialog and doing nothing. Check the log, not just the process.
+
+---
+
+## Repo-level
+
+### `docs/external-calls.md` is not machine-checked
+
+`scripts/check_docs.py` validates test counts and index paths, but nothing diffs the
+external-call inventory against the source. A new `fetch` call will not fail the build for
+being undocumented.
+
+### Captured artifacts are checked in
+
+`build/`, `dist/`, `jup.ag/`, `jup.ag.zip`, `pagesource/` and `tradingskilllist` are
+scratch and captured material. Nothing imports them. `.gitattributes` marks them vendored
+or generated so they do not distort language statistics, but they still inflate the clone.
+
+---
+title: backtester/README.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/backtester/README.md
+---
+
+# SOL Crypto Strategy Backtester
+
+An offline, event-driven backtesting harness for crypto trading strategies,
+built around SOL. Supports unlevered **spot** and **Jupiter-Perps-style
+leveraged perpetuals** with a correctly-modelled borrow fee.
+
+> **Historical simulation for research and education only. NOT investment
+> advice, and not a recommendation to trade anything.** Simulated past
+> performance does not predict future results. Leveraged perpetuals can lose
+> your entire collateral. There is no live-trading capability in this codebase
+> and none should be added — see [Scope](#scope).
+
+## Why this exists
+
+The ask was "backtest different crypto trading strategies, primarily SOL." The
+hard part of that is not running strategies; it is running them *honestly*. A
+backtester that is 20 lines shorter and silently leaks one future bar will
+report a beautiful Sharpe ratio and lose money in production. So the design
+priority here is: **correctness of the simulation outranks the number of
+strategies shipped.** A tool that honestly reports a losing strategy is a
+success; one that reports an inflated Sharpe because of a leaked bar is a
+failure even if it runs.
+
+## Install
+
+```bash
+cd ~/dev/solmargintrader
+pip install -r backtester/requirements.txt   # pandas, numpy, matplotlib
+```
+
+Python 3.13. `matplotlib` is optional (charts degrade to "skipped"); `pyarrow`,
+`requests`, and `pytest` are deliberately **not** required.
+
+## Usage
+
+Fetch data once, then backtest from the local cache. The engine never touches
+the network.
+
+```bash
+# 1. Populate the local CSV cache from the Coinbase public API (no key needed)
+python3 -m backtester.core.fetch --asset SOL --interval 1d --start 2021-01-01
+
+# 2. Compare all strategies, with a 70/30 walk-forward split
+python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
+
+# 3. Leveraged perpetual run
+python3 -m backtester.cli --asset SOL --mode perp --leverage 10 \
+    --strategy breakout --start 2024-01-01
+
+# Offline demo with no data file at all
+python3 -m backtester.cli --synthetic 800 --strategy all
+```
+
+Run with no arguments to print usage. `python3 -m backtester.cli --help` lists
+every flag.
+
+### Key flags
+
+| Flag | Meaning |
+|---|---|
+| `--mode {spot,perp}` | Unlevered spot, or Jupiter-style perpetual |
+| `--leverage N` | Perp leverage. Spot rejects anything but 1 |
+| `--fill-delay N` | `0` = fill at this bar's close; `N` = fill at open of bar *t+N*. **Default 1** |
+| `--fee-bps` / `--slippage-bps` | Per-fill costs, charged on notional |
+| `--split F` | Walk-forward in-sample fraction, e.g. `0.7` |
+| `--rebalance-threshold F` | Deadband before rebalancing, as a fraction of equity |
+| `--borrow-bps-long/short` | Max hourly borrow rate, bps (`1.6` = 0.016%/hr) |
+| `--utilization U` | Pool utilization in `[0,1]`, drives the borrow rate |
+| `--min-borrow-bps` | Hourly rate floor — models the *proposed* dual-slope minimum |
+| `--seed N` | Recorded in the manifest; runs are deterministic |
+
+## Output
+
+`--out DIR` writes deterministically:
+
+| File | Contents |
+|---|---|
+| `comparison.csv` | One row per strategy per book (`net`, `gross`), one column per metric |
+| `run_manifest.json` | Asset, range, params, costs, data checksum, library versions |
+| `trades_<strategy>.csv` | One row per fill, with fee, slippage, borrow settled, realized PnL |
+| `equity_<strategy>.csv` | Per-bar equity and signed exposure |
+| `report.md` | The human-readable report, including caveats |
+| `equity_comparison.png`, `exposure.png` | Charts |
+
+Machine-readable files carry no caveat prose, so a downstream consumer never
+has to parse around it. The caveats live in stdout and `report.md`.
+
+## How look-ahead bias is prevented
+
+Structurally, not by convention. The per-bar ordering is:
+
+1. accrue borrow fees for the elapsed bar (perp only)
+2. execute any fill scheduled for this bar, **at this bar's open**
+3. liquidation check against this bar's low/high (perp only)
+4. ask the strategy for a target, **given data ≤ *i* only**
+5. schedule that target for bar *i + fill_delay*
+6. mark to market at this bar's close
+
+A strategy receives a `BarWindow`, whose every accessor returns `arr[:i+1]`.
+There is no unguarded path to the underlying arrays, so a strategy reaching for
+`closes[i+1]` gets an `IndexError` rather than tomorrow's price. `tests/`
+includes a deliberately-cheating strategy and asserts that it raises — a guard
+that cannot fail is not a guard.
+
+Also enforced: rolling statistics use trailing windows only (never full-sample
+normalization, the most common form of this bug); indicator warm-up produces no
+trades; and fees/slippage are charged on the fill, never netted at the end.
+
+## The leverage cost model — a borrow fee, *not* a funding rate
+
+This is the single most important thing to get right about Jupiter Perps, and
+it is where a generic perp backtester goes wrong.
+
+```
+utilization      = custody.assets.locked / custody.assets.owned
+hourlyBorrowRate = max_hourly_rate * utilization
+hourlyBorrowFee  = hourlyBorrowRate * positionSizeUsd     # notional
+```
+
+* **Both sides always pay.** Longs and shorts both owe fees to the liquidity
+  pool. There is no long-pays-short transfer, and no position is ever *paid* to
+  stay open. The rate is a product of two non-negative quantities, so it is
+  floor-bounded at zero. Porting funding-rate intuition here understates
+  holding cost in one direction: always too low.
+* The fee accrues on **notional**, not collateral and not units.
+* Accrual is an index difference × notional — **additive, not fee-on-fee**.
+  What feels like compounding is second-order: fees erode collateral,
+  effective leverage rises, and the liquidation price drifts toward spot.
+* Longs borrow volatile custody, shorts borrow stable custody, so the two sides
+  take **separate rates** (`1.6` vs `0.3` bps/hr by default).
+
+Rates are configured in **bps per hour** to sidestep the deci-bps ambiguity in
+the venue docs: `1.6 bps/hr == 0.016%/hr == ~140% APR`, the documented SOL
+reference point.
+
+### Liquidation
+
+Maintenance margin is `size / max_lev` where `max_lev` is a **protocol constant
+of 500** — i.e. **0.2% of notional** — which is *not* the user-facing leverage
+cap. The buffer as a fraction of entry price is:
+
+```
+buffer = 1/L - f_close - 0.002 - borrow_fee/size
+```
+
+| Leverage | Buffer at t=0 |
+|---|---|
+| 10× | 9.74% |
+| 100× | 0.74% |
+| 250× | 0.14% |
+
+Because accrued borrow fees appear in that expression, **the liquidation price
+drifts toward spot the longer you hold** — it is recomputed every bar, not
+fixed at entry. Liquidation fills at the liquidation price and checks the
+intrabar wick, so a bar that spikes through your level and recovers still
+liquidates you.
+
+The published formula's `abs()` bars are only valid while the bracketed term is
+positive; past that the sign flips and the formula leaves its domain. That case
+is flagged (`in_domain=False`) rather than propagated as a plausible price.
+
+### One open question, not papered over
+
+The published borrow formula is flat-linear in utilization, so the rate → 0 as
+utilization → 0. But protocol governance separately proposed a **dual-slope
+("jump rate") model with a kink near 80% utilization and a minimum floor around
+10% APR**, which is mathematically *incompatible* with `utilization × max`.
+Which is live cannot be settled from documentation.
+
+So: flat-linear is the default, and `--min-borrow-bps` / `--kink-utilization`
+let you model the proposed alternative. **If you are modelling low-utilization
+periods, set the floor rather than trusting the flat-linear result, and read
+the live value from the on-chain custody account.** All rate constants here are
+governance-set configuration defaults, not constants of nature.
+
+## Metric definitions
+
+Ambiguous annualization is the most common source of a wrong Sharpe ratio, so:
+
+* **Sharpe** = `mean(excess) / stdev(excess, ddof=1) × sqrt(periods_per_year)`.
+  `periods_per_year` derives from the bar interval using a **365-day crypto
+  year** (crypto trades every day — not 252). `stdev` is the **sample**
+  standard deviation. The risk-free rate is an explicit parameter defaulting
+  to 0. This convention is printed in every report, not just documented here.
+* **Sortino** — same, against downside deviation.
+* **Max drawdown** — peak-to-trough on the equity curve, reported with start
+  date, end date, and duration in bars. Negative fraction (`-0.42` = −42%).
+* **Calmar** = CAGR / |max drawdown|.
+* **Profit factor** — gross wins / gross losses. Reported as `inf` when there
+  are no losing trades; that is information, not an error.
+* **Win rate / trade count** — over *closing* fills only. An opening fill has
+  no outcome yet, so counting it would dilute the rate.
+* **Exposure fraction** — mean |signed notional / equity|.
+* Every run reports **gross** (zero-cost) alongside **net**, from a parallel
+  book that mirrors each decision, so cost drag can't drift out of sync.
+
+## Honest reporting
+
+The comparison report is where a tool like this most easily misleads, so it
+carries its own caveats:
+
+* **Buy-and-hold is always included** as the baseline, and is added
+  automatically if you leave it out. Underperformance against it is stated
+  plainly, not buried in a sorted table.
+* **Walk-forward** reports in-sample and out-of-sample as separate columns. The
+  out-of-sample slice starts `warmup_bars` early so indicators warm from
+  trailing in-sample bars — reading earlier history is not look-ahead, and
+  starting cold would silently discard real out-of-sample data.
+* **The multiple-comparisons warning is printed with the ranking.** The best of
+  N backtests is upward-biased by selection, and the bias grows with N.
+  Harvey, Liu & Zhu (2016) argue the significance bar should rise from t ≈ 2.0
+  to **t ≈ 3.0+** once multiple testing is accounted for. McLean & Pontiff
+  (2016) measured **26% in-sample and 58% out-of-sample decay** across 97
+  published factors. The report prints how many configurations were evaluated.
+
+### What the real data actually showed
+
+On 1,875 real SOL daily bars (2021-06-17 → 2026-08-04), spot, 6bps fee + 2bps
+slippage, 70/30 walk-forward:
+
+| Strategy | Full-sample return | In-sample | **Out-of-sample** |
+|---|---|---|---|
+| buy_and_hold | +87.6% | +565.2% | **−70.8%** |
+| ma_crossover_20_50 | +298.3% | +735.6% | **−52.3%** |
+| rsi_14_30_50 | −15.7% | −9.6% | **−21.9%** |
+| breakout_20_10 | +620.7% | +860.2% | **−7.5%** |
+
+Read that table before trusting any full-sample number, here or anywhere. Every
+strategy looked excellent in-sample and lost money out-of-sample. The
+full-sample column is dominated by one enormous bull run inside the in-sample
+window. This is the tool working correctly — it is *supposed* to make that
+visible rather than hide it behind a ranked Sharpe leaderboard.
+
+**Leveraged runs are worse, and the reason is the borrow fee.** A 10× long from
+2024-01-01 goes to −100% with 26 liquidations, and the cost breakdown is
+\$722 of borrow fees against only \$211 of trading fees — carry, not churn, is
+what kills it. At 3× with a 15% rebalance deadband, borrow fees reach **\$10,023
+on \$10,000 of starting capital** over ~580 days. That is the documented venue
+behaviour, not a modelling artifact: this is a venue built for short holding
+periods, and its fee structure actively penalises carrying a position.
+
+## Adding a strategy
+
+Implement the Protocol and add one registry entry. No engine changes.
+
+```python
+# core/strategies/my_strategy.py
+from ..types import BarWindow
+
+class MyStrategy:
+    def __init__(self, lookback: int = 30) -> None:
+        self.name = f"my_strategy_{lookback}"
+        self.params = {"lookback": lookback}
+        self.lookback = lookback
+
+    def warmup_bars(self) -> int:
+        return self.lookback
+
+    def on_bar(self, history: BarWindow) -> float:
+        """Target exposure for the NEXT bar, in [-1, 1]."""
+        closes = history.closes          # only bars <= now
+        return 1.0 if closes[-1] > closes[-self.lookback:].mean() else 0.0
+```
+
+Then in `core/strategies/__init__.py`:
+
+```python
+REGISTRY["my_strategy"] = MyStrategy
+```
+
+**Then add its card.** `backtester/strategy_cards/my_strategy.md` carries the equations,
+the reasoning, the failure modes and the parameter defaults — and
+`tests/test_strategy_cards.py` fails if a registry entry has no card, or if a card's
+declared defaults, `warmup_bars` or `family` drift from the code. That check runs in both
+directions on purpose: a strategy nobody documented and a card for a strategy nobody
+kept are both silent failures. See `strategy_cards/README.md` for the schema, and
+`python3 -m backtester.core.strategy_cards` for the current inventory.
+
+The engine — not the strategy — owns position sizing, fee application, and fill
+timing. A strategy that can only emit a target exposure for the next bar cannot
+leak the future.
+
+**Sizing rule:** target exposure `e` means notional of
+`|e| × current_equity × leverage`, marked at the fill price. Current equity,
+not initial capital — so strategies compound.
+
+## The ladder grid — backtesting what the extension actually trades
+
+There are two different things called "grid" in this repo, and conflating them
+would put a wrong number under the strategy that runs live:
+
+| | What it is | Where |
+|---|---|---|
+| `grid` (`GridLong`) | An **exposure staircase**: exposure rises one rung per `step` below a rolling SMA anchor. A `Strategy` like any other, filled at a bar boundary. | `core/strategies/signals.py`, run via `backtester.cli` |
+| **ladder grid** | A **ladder of resting limit orders** with paired exits one rung above each lot — the extension's strategy. Fills intrabar at known prices. | `core/gridsim.py`, run via `backtester.gridcli` |
+
+`GridLong` can imitate a grid's *position profile*, but it can never capture a
+rung width, because it never has an order sitting at a level waiting to be hit.
+That capture is the entire economic engine of a real grid, so it needs its own
+simulator rather than a `Strategy` returning one target exposure per bar.
+
+```bash
+# The ladder and what it costs to fund, without running anything
+python3 -m backtester.gridcli --lower 60 --upper 90 --rungs 7 \
+    --notional-per-rung 12 --levels
+
+# A run on cached bars, or offline on synthetic ones
+python3 -m backtester.gridcli --lower 60 --upper 90 --rungs 7 \
+    --notional-per-rung 12 --interval 1h
+python3 -m backtester.gridcli --lower 60 --upper 90 --rungs 7 \
+    --notional-per-rung 12 --synthetic 400 --capital 500 --json
+```
+
+`core/gridsim.py` ports `extension/src/core/grid.js` function for function —
+geometric/arithmetic spacing with pinned endpoints, top-rung extrapolation,
+paired exits, the deadband, the $10 venue minimum, FIFO realization. Divergence
+between the two would be worse than having no grid backtest at all, so
+`rung_width_bps` is asserted against figures read off the JavaScript
+implementation (699.1319 bps for a 60–90/7 ladder; 516.7 bps for the 0.85×–1.15×
+ladder `tools/dryrun.js` builds).
+
+**Three conventions keep it pessimistic**, because an optimistic grid simulator
+makes a losing grid look profitable:
+
+1. **An order cannot fill on the bar that planned it.** Planning happens at a
+   bar's close, so the earliest fill is the next bar. This is the no-lookahead
+   guard and it also makes a same-bar round trip impossible — "price dipped to
+   the bid then rallied to the offer" is an assumption about the intrabar path,
+   not an observation of it.
+2. **Fills are adverse.** A buy fills at its level moved up by the full slippage
+   allowance, a sell at its level moved down by it.
+3. **Buys settle before sells**, so cash freed by a sell cannot fund a buy in the
+   same bar.
+
+FIFO is additionally bounded to lots opened *before* the current bar. Without
+that bound, two exits filling in one bar let the second reach inventory bought
+that same bar — an indirect same-bar round trip. It fired on synthetic data
+during development, so the bound is load-bearing rather than theoretical; when
+old inventory runs short the exit fills partially and the remainder is re-planned.
+
+**Read per-round-trip gross carefully.** The planner pairs each exit to a
+specific lot while realization matches FIFO, so with several rungs open the two
+disagree per trip — an exit meant to close a cheap lot is matched against an older
+expensive one, and gross per trip comes in below the nominal rung width.
+Portfolio totals are identical either way. The extension documents the same
+divergence; `test_pairing_and_fifo_disagree_per_trip_but_not_in_total` pins it.
+
+Carry defaults to **0 bps/hr** because Trigger V2 is a spot venue with no borrow
+leg — not because carry is free. `--carry-bps-per-hour` models a borrowed-margin
+ladder, and the rate is echoed in the output so a run can never quietly claim a
+cost structure it did not use.
+
+Every run prints a buy-and-hold baseline on the same bars, paying entry costs
+once. A grid that underperforms holding the asset has not earned its complexity.
+
+## Peer-relative value: the rigorous version of a z-score
+
+`zscore` assumes the series it measures is stationary, and raw price is not. A
+cointegrated spread is *constructed* to be stationary and the assumption is **tested**:
+
+```bash
+python3 -m backtester.core.fetch --asset BTC --interval 1d --start 2021-06-17
+python3 -m backtester.paircli --asset SOL --peer BTC --interval 1d --split 0.7
+```
+
+`core/cointegration.py` implements an Augmented Dickey-Fuller test and the
+Engle-Granger two-step with MacKinnon critical values — no `statsmodels`, since
+`requirements.txt` stays minimal. `core/pairs.py` refits beta every bar on trailing data
+only and **refuses to trade** while the ADF test fails.
+
+That refusal is the measured result. SOL and ETH are cointegrated on the full daily
+sample (ADF −3.127, p≈0.032); SOL and BTC are not (p≈0.087). Either way the strategy took
+**zero out-of-sample trades** — and with the gate disabled it took two and lost
+**24.7%**. The screen, not the z-score, is what the mechanism contributes.
+
+It runs through its own entry point rather than the strategy registry because it needs
+two price series, and a registered strategy that silently does nothing when its peer is
+absent would be a footgun.
+
+## Archiving a series nobody publishes
+
+Some data cannot be fetched retroactively at all. JLP is the example: Coinbase does not
+list it, and Jupiter serves its spot price but no history.
+
+```bash
+python3 -m backtester.core.archive_price --mint JLP    # append one observation
+```
+
+Append-only, refuses a non-positive price rather than writing a zero, and warns while
+the file is too short to backtest. It accumulates history going forward; it cannot
+recover the past.
+
+## Tests
+
+```bash
+python3 -m unittest discover -s backtester/tests -t . -v
+```
+
+250 known-answer tests, no network required. The load-bearing ones:
+
+| Test | Known answer |
+|---|---|
+| Buy-and-hold identity | Total return `== last_close/first_close − 1` at zero cost, to 12 dp |
+| Look-ahead guard | A cheating strategy **raises** |
+| Fill timing | Signal at bar *t* fills at bar *t+1*'s open |
+| Fee arithmetic | Round-trip cost equals the hand-computed value |
+| Borrow-fee sign | Non-negative for both sides at every utilization in `[0,1]` |
+| Liquidation | Entry 100, 10×, zero borrow → **90.26** (matches venue docs) |
+| Liquidation drift | Buffer shrinks monotonically as borrow fees accrue |
+| Data validation | Duplicate/gap/negative/NaN/millisecond input is rejected |
+| Determinism | Two runs produce identical output |
+| Ladder round trip | Gross `== notional × rung width`, to 9 dp — the same contract the extension asserts |
+| Ladder rung width | Matches the JavaScript `rungWidthBps` to 3 dp |
+| Ladder same-bar guard | A bar spanning entry and exit books the entry only |
+| Ladder first bar | A bar-0 sweep of the whole ladder fills nothing |
+| Ladder downtrend | Every bid fills, no round trips, final equity below capital |
+| Ladder cash limit | An unfundable rung is skipped, equity never negative |
+| Ladder book identity | At zero cost, final equity `== capital + realized P&L` |
+
+## Scope
+
+**Out of scope, deliberately.** No live or paper order execution, no exchange
+API keys, no wallet or private-key handling, and no code path that can place,
+sign, or transmit a real trade. No automated parameter search — the tool
+evaluates the configurations it is given and reports their metrics; sweeping
+for a winner is exactly the overfitting this harness exists to expose. (You can
+still run it repeatedly by hand, which is why the report counts configurations
+evaluated. Counting is not searching.)
+
+## Known limitations
+
+* **Single asset per run.** No cross-sectional universe, so no survivorship
+  bias — but also no portfolio-level analysis.
+* **Bar-resolution fills.** No order book, no partial fills, no queue position.
+  Slippage is a flat bps assumption, which understates cost in a crash.
+* **Utilization is an input, not a history.** Real Jupiter utilization varies;
+  a constant is a modelling simplification. Governance has documented SOL
+  utilization sitting at 100% for sustained periods, which more than doubles
+  the borrow cost versus the 0.5 default.
+* **Oracle execution is not modelled.** Jupiter is oracle-priced peer-to-pool
+  with keeper fulfilment and no FIFO guarantee; a stop can lose the race to a
+  liquidation. This harness assumes your stop/target logic executes.
+* **Liquidation ignores the price-impact fee** a real liquidation would incur,
+  so it is still mildly optimistic — but it does fill at `min(level, bar_open)`
+  for longs, so a bar that *gaps* through your level fills at the open rather
+  than at a price that never traded.
+* **Resize costs assume the venue's merge semantics** — a same-side size change
+  pays the base fee on `|Δnotional|` and blends the entry price, rather than
+  paying a synthetic round trip. If you point this at a venue that really does
+  charge a full round trip per adjustment, leveraged costs here are too low.
+* **No funding-rate mode.** By design — this models Jupiter's borrow fee. Do
+  not repurpose it for a CEX perp without adding a signed funding model.
+
+## Provenance
+
+The specification this was built from is in `PROMPT.md`, produced by running
+the deep prompt optimizer over the original one-line request. The venue
+mechanics (borrow-fee formula, maintenance-margin constant, liquidation
+formula) and the backtesting-statistics citations trace to the
+`trading-and-investing` skill references, verified as of 2026-08-03. **Volatile
+protocol values change — verify against the live on-chain custody account
+before relying on them.**
+
+---
+title: soltui/README.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/soltui/README.md
+---
+
+# soltui — SOL strategy console
+
+A five-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
+Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
+wiring shell.
+
+> **Dry run only.** There is no order path in this package — no keys, no signing,
+> no venue client, not even unreachable code. Every figure it shows is a
+> historical simulation or a replay of one. See [Safety](#safety).
+
+## Install and run
+
+```bash
+cd ~/dev/solmargintrader
+pip install -r soltui/requirements.txt
+
+python3 -m soltui.tui     # the five-tab console
+python3 -m soltui.app     # the macOS menu-bar indicator (needs rumps)
+```
+
+The TUI needs price data. If a sweep reports "no data", fetch it:
+
+```bash
+python3 -m backtester.core.fetch --asset SOL --interval 1d --start 2021-01-01
+```
+
+## The menu-bar indicator
+
+`status.build_title()` is a pure function, so what the bar shows is tested
+without a macOS event loop. What you see, and why:
+
+| State | Title | Why this and not something else |
+|---|---|---|
+| Idle | `◦ SOL: idle` | |
+| Sweeping | `⟳ SOL: backtest 340/630` | While work is in flight, "how much is left" is the live question |
+| Finished | `✓ SOL: last backtest +9.4%` | **"last backtest" is load-bearing** |
+| Dry run open | `▷ SOL: paper +2.1% (12 fills)` | **"paper" is load-bearing** |
+| Failed | `✕ SOL: error — no data` | Failures must be visible, not silent |
+
+**Why every number carries a word.** A bare `+9.4%` in a menu bar reads, at a
+glance, as *my money is up 9.4% right now*. There is no live account here. So the
+source is always in the string, and a test asserts that exhaustively across every
+phase rather than trusting review. If you add a phase that can show a percentage,
+that test will fail until you label it.
+
+Long titles clip from the **head**, never the tail, because the figure is at the
+end — an earlier version clipped the tail and silently ate the number the
+indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_label`.
+
+## The five tabs
+
+| Tab | What it does |
+|---|---|
+| **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry. Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
+| **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. |
+| **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
+| **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, median return, trades. Cancellable. |
+| **Execute** | Dry-run replay. Step a simulation bar by bar and see the fills a strategy *would* have made. |
+
+### Read the Backtest tab correctly
+
+Median Sharpe alone is not the answer. A median of `+0.5` with an IQR of `1.4`
+straddles zero heavily, and `% paths positive` below ~70% means the sign of the
+result depends on which regime you happened to sample. Both columns are shown for
+that reason. The measured PBO for this strategy set is 0.43–0.46 against a 0.500
+pure-noise control — so treat *ordering* as weakly informative at best, and read
+the distribution.
+
+## Safety
+
+`CLAUDE.md` for this repo states: dry-run is the default, the extension installs
+disarmed, and *"never change a default so that a fresh install can place an
+order."* This package holds to that:
+
+- **No order path exists.** Not stubbed, not disabled — absent. `grep` the package
+  for a venue client and you will find none.
+- **`config.MODES` contains only `dry-run`.** A config selecting `live` is refused
+  by `validate()` with an explanatory error.
+- **`armed` cannot be inherited.** Setting it requires an explicit second
+  acknowledgement flag, so an old config file cannot silently arm a future build.
+  Nothing in this build reads `armed` for anything.
+- **The Execute tab is a replay, not a live loop.** Stepping bars and computing
+  fills would create a *second* order-execution path alongside
+  `backtester/core/engine.py`, outside the coverage of the engine's known-answer
+  tests, and the two could diverge into wrong money. Instead `paper.py` runs the
+  tested engine once and exposes a cursor over the result.
+- `summary()["live_orders_placed"]` is structurally always `0`, and a test asserts
+  it so a regression is loud.
+
+Adding live execution later means routing through
+`extension/src/core/commands.js` and its risk rails as separate, explicit work —
+not extending this package.
+
+## Tests
+
+```bash
+python3 -m unittest discover -s soltui/tests -t .        # 61 tests
+python3 -m unittest discover -s backtester/tests -t .    # 119 tests
+```
+
+The TUI tests mount the real app through Textual's `run_test()` headless harness
+and click real buttons, so a crash-on-mount is caught rather than shipped. Two
+genuine bugs were found this way: a timer that queried a widget during teardown
+and took the app down with it, and the title-clipping bug above.
+
+## Layout
+
+```
+soltui/
+  status.py    pure: AppState, build_title(), build_menu_summary()
+  config.py    pure: Settings, validate(), load/save
+  roster.py    pure: Roster add/remove, validated against the strategy registry
+  paper.py     pure: PaperSession replay cursor over one backtest
+  runner.py    worker thread: roster -> CPCV rows, progress for the indicator
+  tui.py       Textual app, five tabs (presentation only)
+  app.py       rumps menu-bar shell (wiring only, lazy rumps import)
+```
+
+Anything that makes a decision lives in the top five. `tui.py` and `app.py` are
+deliberately dumb, which is what lets the logic be tested without a terminal or a
+macOS event loop.
+
+---
+title: extension/README.md
+url: https://github.com/mithudso/solmargintrader/blob/HEAD/extension/README.md
+---
+
+# SolMarginTrader
+
+A Chrome MV3 extension that runs a **grid trading strategy on Jupiter (Solana)** with hard risk
+rails and full P&L tracking. **Dry-run by default** — it will not place an order until you change
+the mode and type a confirmation.
+
+> **Not financial advice.** Grid trading is a short-volatility strategy: it makes money in a
+> range and loses money in a trend. Any leveraged position can be liquidated. In the included dry
+> run, a simulated 24% drawdown leaves the grid **−$8.62 on $48 of deployed capital** with four
+> open lots and no closed round trips — that is what a grid does in a one-way move. Trade only
+> capital you can lose entirely.
+
+---
+
+## Two findings that changed the design
+
+**1. The downloaded site copy does not contain Jupiter's code.**
+`../jup.ag/` is a 16-file rendered-HTML dump (~42 MB) from the "Website Downloader" extension.
+It has **zero `.js` bundles** — it references `https://jup.ag/assets/index-*.js` and friends, but
+never downloaded them. So the premise "should have all of the code it runs" does not hold.
+
+What it *was* good for: confirming the intended venue (the saved root page is
+`jup.ag/perps/long/SOL-SOL.html`), extracting real token mints (SOL, USDC, USDT, JUP, jupSOL,
+jupUSD), and showing the site bundles `vendor-anchor-*.js` — a hint that on-chain interaction is
+built client-side with Anchor rather than driven by a REST API.
+
+**2. Jupiter Perps has no public REST write API.**
+Jupiter's own docs, checked live on 2026-08-04:
+
+> **WARNING** — The Perps API is still a **work in progress**, stay tuned!
+
+with a pointer to Anchor IDL parsing of the perps program. Opening or closing a leveraged position
+therefore requires building Anchor instructions and going through the keeper request/fulfil flow —
+not something to ship inside a service worker on a first pass.
+
+So the **executable** venue is the **Trigger V2 API**, which does return signable transactions over
+HTTP. A grid is a ladder of resting limit orders, which is precisely what Trigger is for. It also
+keeps pending orders **off-chain**, so your ladder is not a public roadmap for front-runners — a
+real advantage over the V1 on-chain PDA model.
+
+Both venues sit behind one `VenueAdapter` interface, so Perps drops in when its API ships.
+
+---
+
+## Install
+
+```bash
+cd ~/dev/solmargintrader/extension
+npm test              # 110 tests, no dependencies to install
+node tools/dryrun.js  # end-to-end tick against the live SOL price
+```
+
+Then load it in Chrome:
+
+1. `chrome://extensions` → enable **Developer mode**
+2. **Load unpacked** → select `~/dev/solmargintrader/extension`
+3. Open the extension → **Dashboard & settings** → set your grid, then **Save**
+
+Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which landed in 137.
+Everything else works from Chrome 120.
+
+---
+
+## Modes, and what each one can actually do
+
+| Mode | Places orders | Signing | Unattended |
+|---|---|---|---|
+| `dry-run` *(default)* | No — simulated fills | Never signs | Yes |
+| `semi-auto` | Yes | You approve every signature | **No** |
+| `full-auto` | Yes | Dedicated session key | Yes |
+
+**Why three modes and not one:** an injected browser wallet (Phantom et al.) cannot produce a
+silent signature, and `window.solana` does not exist in a service worker at all. "Unattended bot"
+and "wallet popup per trade" are mutually exclusive. A single "live" mode would have to quietly
+pick one, so both are named instead.
+
+`dry-run` is not a mock: it uses the real price feed, the real grid engine, the real risk rails and
+the real journal. Only the fills are simulated, and they are simulated **pessimistically** — every
+rung fills at its trigger price moved against you by the full slippage allowance, because an
+optimistic simulator makes a losing grid look profitable.
+
+---
+
+## Key custody
+
+`full-auto` is the only mode where a key exists in the browser. The rules it follows:
+
+- Use a **dedicated keypair** holding only grid working capital. Never your main wallet.
+- At rest the 32-byte seed is **AES-GCM** encrypted under a passphrase-derived key
+  (**PBKDF2-SHA256, 600,000 iterations**), with a fresh 16-byte salt and 12-byte IV per
+  encryption. Same plaintext never produces the same ciphertext — there is a test for that.
+- It is stored in `chrome.storage.local` **only**. Never `.sync`, which would upload it to Google.
+- The decrypted seed exists only inside a signing call, is never logged, never stringified, and
+  never crosses a message boundary.
+- A wrong passphrase fails closed and does not distinguish "wrong passphrase" from "tampered
+  record".
+- The Jupiter API key gets the same `.local`-only treatment and is cleared from the DOM after save.
+
+One custody fact you should know and cannot change: Trigger V2 deposits go into a **Privy-managed
+custodial vault**, one per wallet. Funds for resting orders sit there, not in your wallet. Getting
+them back from an unfilled order is a two-step cancel-and-withdraw.
+
+---
+
+## Risk rails
+
+All enforced in `src/core/risk.js` as a gate every order must pass. A rail that lives only in a
+README is not a rail.
+
+| Rail | Default | What it stops |
+|---|---|---|
+| `killSwitch` | off | Latching hard stop; a stray "arm" cannot resume trading |
+| `maxTotalNotionalUsd` | 500 | Total capital at risk across all rungs |
+| `maxNotionalPerOrderUsd` | 100 | One fat-fingered rung |
+| `maxConcurrentOrders` | 12 | Ladder sprawl |
+| `maxLeverage` | 1 | Leverage creep |
+| `dailyLossLimitUsd` | 50 | Halts the engine for the UTC day when realized P&L hits it |
+| `maxSlippageBps` | 300 | Getting filled at a terrible price |
+| `minLiquidationDistancePct` | 25 | Perps only; ignored when the venue reports no liquidation price |
+| `maxOrdersPerTick` | 4 | Rate-limit blowout on a cold start |
+
+Batch admission applies caps **incrementally**, so six orders that each pass the per-order cap
+cannot collectively breach the total cap. There is a test for that too.
+
+---
+
+## How restart-safety works
+
+Solana has no client-order-ID primitive, and an MV3 service worker can be killed at any moment —
+including between "write the intent" and "the venue accepted the order". Two mechanisms handle it:
+
+1. **Write-ahead journal.** An intent is persisted with status `submitting` *before* the network
+   call. A worker that dies mid-submit leaves a record.
+2. **Reconcile before plan, every tick.** The venue's live order list is the source of truth; local
+   state is only a cache. An intent marked `submitting` that is *not* live becomes `unknown` and is
+   **never auto-retried** — auto-retry is exactly how you double-fire a rung after a crash. Live
+   orders with no journal entry are adopted so they occupy cap space.
+
+Rung identity is derived from `(gridId, side, level)`, the only things the venue echoes back.
+
+The tick also records the **actual wake delta**. Chrome silently clamps short alarm periods, and a
+clamp that goes unnoticed makes a live run behave unlike its dry run.
+
+---
+
+## Leverage — read this before setting it above 1
+
+Trigger V2 is a **spot** venue. Setting `leverage: 3` on it does not create leverage. Rather than
+trade unleveraged while the config claims 3x, the worker **refuses to tick** and logs why.
+
+Real leverage needs one of:
+
+- **Jupiter Perps** — native leverage, blocked on the missing write API described above.
+- **Jupiter Lend borrow** — borrow against collateral, grid the borrowed size, and track the borrow
+  rate as a carry cost. **Not implemented** (see stubs below).
+
+The P&L module never assumes a funding rate. Carry costs are passed in explicitly, because
+Jupiter perps charges a borrow rate against the pool rather than a symmetric CEX-style funding
+payment between longs and shorts — hardcoding the latter would be a silent lie in your numbers.
+
+---
+
+## How the grid actually earns its spread
+
+Each exit rests **one rung above** the lot it closes, so the gross captured per round trip equals
+the rung width. This sounds obvious and is easy to get wrong: assigning each level a side purely by
+comparing it to the current price means a level whose bid just filled gets an *offer at that same
+price* as soon as the market gaps below it. That round trip captures zero and still pays two fees.
+The first working version of this file had exactly that bug; `expectedRoundTripUsd()` and a test
+asserting `gross === notional × rungWidth` exist to keep it fixed.
+
+Consequently:
+
+- Bids are placed at levels below the market that do not already hold a lot
+- Every sell is the paired exit of a specific buy, derived from open lots — never from a level's
+  position relative to the market
+- Only the bids need funding up front; each becomes the inventory backing its own exit
+
+**Known attribution limitation.** The planner pairs each exit to a specific lot, but realized P&L
+matches **FIFO** (tax-correct, see below). When several rungs are open at once these disagree: an
+exit intended to close the $85 lot may be matched against an older $98 lot instead. Portfolio-level
+totals are right either way; per-round-trip figures reflect FIFO, not the intended pairing. If you
+need per-rung strategy attribution, add lot linkage on the fill record.
+
+## Auto re-centring — opt-in, and narrower than it sounds
+
+`lower`/`upper` are static config, so a ladder can end up nowhere near the market. The stock
+defaults are 60–90; on the real SOL daily series that band is outside the market on **87.3% of
+bars**. `autoRecentre` lets `planGrid` move the ladder to `0.85x–1.15x` of price — the same
+convention `tools/dryrun.js` uses, so there is only one.
+
+It is **off by default** and a fresh install behaves exactly as it did before it existed. To turn it
+on, and to see what it would do before arming anything:
+
+```bash
+node tools/cli.js setConfig --autoRecentre true --recentreSpanPct 0.15
+node tools/cli.js plan          # reports `recentre`; computes only, places nothing
+```
+
+`setConfig` range-checks both values, because `ConfigStore.setConfig` is a blind merge — an
+out-of-range span would otherwise not surface until it threw inside every tick, which fails closed
+but bricks the grid silently instead of refusing the input.
+
+**`recentreDecision()` refuses far more often than it acts, and the refusals are the feature.**
+Moving the bounds changes every level, and a level is what an order's identity and a lot's paired
+exit are derived from:
+
+| Refusal | Why |
+| --- | --- |
+| `open-lots-would-be-stranded` | An open lot's exit is derived from the *current* levels. Re-centre downward while holding inventory and that lot's sell is recomputed onto the new, lower ladder — **below its own entry**. That is the zero-spread bug above, except now it realizes a loss. Counted, not summed, so a `NaN` quantity cannot read as flat. |
+| `resting-orders-would-be-stranded-and-tick-cannot-cancel` | `tick()` has **no cancel step** — `cancelOrder` is a manual command. A moved ladder would leave real orders live at abandoned levels with capital committed to a ladder the strategy no longer believes in. |
+| `price-inside-ladder` | Nothing to fix. `recentreDriftBps` adds slack beyond the bounds first. |
+| `auto-recentre-disabled`, `unusable-price`, `already-centred` | Off; no usable price; would be a no-op. |
+
+So it can only act on a grid holding nothing with nothing resting. **Measure it before believing
+it helps:**
+
+```bash
+node tools/measure-recentre.js --csv ../data/SOL_1d.csv
+```
+
+On SOL daily (1,875 bars) it fires **exactly once, on the first bar** — because once bids rest they
+stay resting, and if they fill there is a lot. And the honest result is that on this path it made
+placement **worse**: one inception-time re-centre locked the ladder onto the 2021 price of $39.25
+(→ 33.36–45.14) and the market left it behind, giving **93.1%** of bars outside the ladder versus
+**87.3%** for the untouched 60–90 default.
+
+Read that as what it is. The value here is *not* return; it is that a grid armed today starts with a
+ladder around today's price instead of a hardcoded band. Tracking the market after that needs a
+cancel path in `tick()`, which is a change to the order lifecycle and is not this.
+
+And to keep it in proportion: at the time of writing (2026-08-04) SOL is **$74.03**, which the stock
+60–90 ladder already contains, so `autoRecentre` would return `price-inside-ladder` and change
+nothing at all. Turning it on is not a decision with much upside; leaving it off costs nothing.
+
+The moved bounds are **persisted before any order is placed** (`engine.js`), for the same reason the
+intent journal is written before the network call. `planGrid` is pure, so an uncommitted re-centre
+would vanish: the next tick would see the new orders resting, refuse to re-centre, fall back to the
+old bounds and place a **second ladder** at the levels this tick just abandoned. There is a test.
+
+## P&L accounting
+
+Realized P&L uses **FIFO lot matching** — the IRS default for property and what crypto tax tools
+expect, so the CSV export reconciles.
+
+- Entry fees ride on the lot, so a partial close realizes only its proportional share
+- Unrealized is net of entry fees still sitting on open lots
+- Carry costs are subtracted from realized P&L and folded into the equity curve at their own
+  timestamps
+- A sell with no lot behind it is surfaced as `unmatchedSellQty`, never silently dropped
+- Equity curve, max drawdown (dollars and % of peak), win rate, total fees, CSV export
+
+A worked case from the test suite: buy 1 @ $100 (fee $0.50), sell 1 @ $110 (fee $0.55) →
+gross $10.00, fees $1.05, **net $8.95**; with $2.00 carry, **realized $6.95**.
+
+---
+
+## Three surfaces, one registry
+
+Every action lives in `src/core/commands.js` (22 commands). The Chrome message handler, the CLI and
+the HTTP API are thin adapters over it, so anything you can do in the UI you can script — and
+`test/surfaces.test.js` fails the build if any surface drifts.
+
+```bash
+node tools/cli.js                                   # all commands, auto-generated help
+node tools/cli.js <command> --help                  # arguments and types
+node tools/cli.js setConfig --lower 60 --upper 90 --rungs 7 --notionalPerRungUsd 12
+node tools/cli.js levels                            # rung ladder + gross per round trip
+node tools/cli.js plan --price 75                   # what it WOULD place; places nothing
+node tools/cli.js arm && node tools/cli.js tick --count 3
+node tools/cli.js pnl --json
+```
+
+```bash
+node tools/api-server.js --port 8787                # prints a bearer token
+curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
+```
+
+The API is loopback-bound, requires a bearer token compared in constant time, allows `GET` only for
+read-only commands, and refuses any request carrying `Origin` or `Sec-Fetch-Site` — a web page *can*
+post to localhost, so a token alone would not be enough.
+
+Useful CLI flags: `--json` for machine output, `--ephemeral` for throwaway in-memory state, and
+`--store-path` / `--config-path` to isolate a run. An unknown flag is rejected rather than ignored;
+a silently dropped `--notionalPerRungUsd` would be a money bug.
+
+Full reference: [../docs/API.md](../docs/API.md).
+
+---
+
+## Layout
+
+```
+manifest.json              MV3 manifest, minimal permissions (storage, alarms + 3 Jupiter hosts)
+src/core/grid.js           Pure grid engine — levels, side selection, planning, capital needs
+src/core/risk.js           Risk rails and batch admission
+src/core/pnl.js            FIFO matching, snapshots, equity curve, drawdown, CSV
+src/core/engine.js         The tick: reconcile -> ingest fills -> plan -> admit -> place
+src/core/commands.js       The command registry — every action, transport-agnostic
+src/jupiter/http.js        Retry/backoff, Retry-After, request budget, per-attempt timeout
+src/jupiter/price.js       Price API, tolerant of both response shapes
+src/jupiter/trigger.js     Trigger V2: auth, vault, deposit craft, create, manage
+src/venues/index.js        VenueAdapter contract, dry-run wrapper, read-only Perps
+src/venues/triggerVenue.js The live-capable adapter
+src/wallet/solana.js       base58, shortvec, signature insertion (no web3.js dependency)
+src/wallet/signer.js       Null / pending-approval / session-key signers + encrypted vault
+src/storage/store.js       IndexedDB journal + chrome.storage config
+src/storage/fileStore.js   The same interfaces on JSON files, for the CLI and API
+src/bg/service-worker.js   Alarm scheduling, message plumbing, badge
+src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe)
+tools/cli.js               CLI surface, generated from the registry
+tools/api-server.js        Local HTTP API surface, generated from the registry
+tools/dryrun.js            Headless end-to-end tick
+test/                      110 tests, zero dependencies (node:test)
+```
+
+No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
+`@solana/web3.js` would have added a megabyte to a service worker for base58 and one signature
+insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests against real mints.
+
+---
+
+## Verification status
+
+**Done and proven:**
+
+- `npm test` → **110 passing, 0 failing** (unit, integration and three-surface parity)
+- `node tools/dryrun.js --ticks 8 --osc 6 --offline 100` → full tick loop with a down-then-up path:
+  4 bids placed, filled as price fell, exits placed one rung above each lot, and on tick 8 an exit
+  filled and took net P&L from −$2.33 to **+$0.04**. The closed trip captured **$0.620**, which is
+  exactly `$12 notional × 516.7 bps rung width` — the economic contract holding end to end.
+- `node tools/dryrun.js --ticks 4 --walk 5 --offline 100` → trending case: 4 bids placed, all 4
+  fill as price falls to $85, no exit fills, net **−$3.90**. Correct for a one-way move, and the
+  reason `--osc` exists. At the deeper trough of the oscillating run (price $76, −24%) the same
+  grid sits at **−$8.62** with four open lots and no closed round trips.
+- Price endpoint verified live with `curl` (keyless `lite-api.jup.ag/price/v3` → 200, SOL $73.64)
+- Trigger V2 request/response shapes transcribed from the live docs, with client-side validation
+  mirroring the documented server rules
+- Ed25519 signing and the encrypted vault round-trip are covered by real WebCrypto tests
+
+**Bugs caught and fixed during development:**
+
+1. **Zero-spread exits** — the planner offered at the level it had just bought at. Gross zero, two
+   fees paid, every cycle a loss. Fixed with the paired-exit model above.
+2. **base58 phantom leading zero** — `base58Encode` returned 33 characters for 32 zero bytes and
+   `base58Decode` returned 33 bytes for an all-`1` string, from a seeded `[0]` digit. That is the
+   system-program / uninitialised-pubkey case.
+3. **Reconciliation matched on exact price equality** — `intentKey` rounds to `level * 1e6`, so a
+   venue echoing `69.2384` for our `69.238424` produced a different key, orphaning a live order and
+   re-planning the same rung. That is a double-fire. Matching is now tolerant to 1 bp, and a test
+   feeds real `normaliseOrders()`-shaped input (no `intentKey`, 4-decimal price) through
+   `reconcile()` to assert one journal entry, not two.
+4. **Fill quantity derived from current config** — editing `notionalPerRungUsd` would retroactively
+   rewrite historical fill sizes. Quantity now comes from the fill or its intent, and a fill with
+   neither is refused and surfaced rather than guessed.
+5. **XSS-shaped table rendering** — journal rows interpolated venue-supplied order IDs and error
+   strings into `innerHTML` behind a hand-rolled escaper, on a page holding extension privileges.
+   Rows are now built with `createElement`/`textContent`.
+6. **`window.prompt()` as the live-arm gate** — Chrome suppresses modal dialogs in an extension
+   popup, so the confirmation would silently no-op or close the popup. Replaced with an inline
+   typed confirmation.
+7. **Cancelled orders booked as fills.** `getFills()` reads the orders/**history** endpoint, and
+   history holds every *terminal* order — cancelled and expired as well as filled. There was no
+   execution gate, so a cancelled order took its price from `triggerPriceUsd` and its quantity from
+   the intent's **planned** size, then stored a fill for inventory the wallet never acquired and
+   marked the intent `filled`. Reproduced end to end before fixing. `ingestFills` now requires
+   positive evidence of execution — a real `filledBaseQty` or a real `executedPriceUsd` — and the
+   gate is deliberately positive rather than a blacklist of status strings, because the status
+   vocabulary is part of the unverified envelope.
+8. **An unrecognised order envelope read as "no orders".** Covered under "Not verified" #2 below:
+   an empty list is indistinguishable from a misread one to reconciliation, which treats it as
+   "nothing is live" and re-plans every resting rung. Now refused.
+
+**Measured on real SOL for the first time (2026-08-04).** The ladder economics were run
+against the real daily and hourly series, not just synthetic bars —
+`backtester/strategy_cards/ladder_grid.md` and `research/results/ladder_grid_sol.csv`.
+Two results matter here:
+
+- **A static ladder is out of range 86–93% of the time.** Using this extension's own
+  `tools/dryrun.js` convention (0.85x–1.15x of price, 7 rungs, $12/rung), the ladder set
+  once at the start of the daily series sat outside the market for 93.1% of bars. It still
+  cut max drawdown from holding's **−96.27% to −11.46%**, which is the honest case for the
+  strategy, but it earned +5.21% while holding earned +88.25%.
+- **Re-centring in the simulator looked like the fix. The version that is safe to ship is
+  not the version that was measured.** Reset the ladder from each block's opening price and
+  the daily median becomes **+7.5% of deployed capital with 5 of 8 blocks positive**; the
+  worst block still lost **22.5%**, consistent with the −$8.62 on $48 from the dry run.
+  `planGrid` now has an opt-in `autoRecentre` (below) — but **that +7.5% does not transfer to
+  it**, and the two must not be quoted together. The simulator moved the ladder
+  unconditionally every block. `recentreDecision()` may only move it when nothing is resting
+  and no lot is open, because `tick()` cannot cancel, so it fires far less often. Measured on
+  the same daily series with `tools/measure-recentre.js`, it fires **once, on the first bar**,
+  and then the ladder is frozen again for 1,874 bars.
+
+**Not verified — do these before risking money:**
+
+1. **No live order has been placed.** The write path (auth → vault → deposit craft → sign →
+   create) is written to the documented shapes but never executed. It needs a Jupiter API key and a
+   funded wallet. Test with one rung at the $10 minimum.
+2. **Order-list response envelope — still unverified, but now loud.** The field names in
+   `normaliseOrders()` have never been checked against a real response, and that has not changed.
+   What changed is the failure mode. It used to return `[]` for a shape it did not recognise, and
+   reconciliation reads an empty list as "nothing is live" — so every resting rung looks orphaned
+   and gets re-planned, which is the double-fire path. It now throws `OrderEnvelopeError`, and
+   because `tick()` wraps its whole body, an unreadable envelope aborts the tick before anything is
+   placed. An order missing a field reconciliation needs (`venueOrderId`, `side`,
+   `triggerPriceUsd`) is refused by name rather than passed along unmatchable.
+
+   So this item is *safer*, not *closed*: the mapping still needs checking against a live response.
+   Use `normaliseOrders(body, { strict: false })` to inspect one by hand — it flags unusable orders
+   instead of throwing. Accepted envelopes are `ORDER_LIST_KEYS`; required fields are
+   `ORDER_REQUIRED_FIELDS`. Both are exported so correcting them is a one-line, visible diff.
+
+   Strictness is **asymmetric by design**. `getOpenOrders()` refuses per record, because planning
+   against a live list known to be incomplete is the double-fire vector. `getFills()` refuses the
+   *envelope* but degrades per record, because a skipped history record can only delay P&L — it can
+   never place an order — and refusing the whole list would trade a recoverable accounting lag for an
+   engine that never ticks again. Two candidate list keys holding arrays (`{orders: [], data: [...]}`)
+   is treated as ambiguous and refused: taking the first would reintroduce the empty-list bug through
+   a second door. A trigger price must be positive, not merely present, since `Number('')` is `0`.
+3. **Fee attribution — where Trigger reports fees is still unconfirmed.** Fees are no longer
+   coerced to zero when absent. `normaliseOrders()` leaves `feeUsd` as `null` and sets
+   `feeUnknown`; `ingestFills()` still records the fill (dropping a real fill would lose inventory
+   the wallet holds) but flags it and counts it on `result.feeUnknownFills`. A non-zero count means
+   the reported P&L understates costs by however much those fees were. The count reaches humans in
+   three places: `summarise()` puts it in the event log, the popup appends `?` to the fee total, and
+   the dashboard renders `$0.00?` on any fill whose fee the venue never reported. A safeguard nobody
+   can see is not a safeguard.
+4. **Chrome alarm floor.** 30s is assumed; the engine logs the real wake delta. Watch it before
+   trusting a sub-minute tick.
+5. **Transaction signature insertion** is tested against synthetic transactions, not a real
+   Jupiter deposit transaction.
+
+**Deliberately stubbed, each throwing a message that says how to finish it:**
+
+- `PerpsVenueReadOnly` — all methods throw `NotImplemented` with the concrete next step
+  (decode position accounts via `getProgramAccounts` + the perps IDL)
+- Jupiter Lend borrow as a margin source — `leverageFeasibility()` refuses and explains
+- `PendingApprovalSigner` queues transactions but the dashboard has no approval UI yet, so
+  `semi-auto` currently queues and reports `PendingApproval` rather than completing an order
+- OCO/OTOCO bracket bodies exist in the client but the grid only emits `single` orders
+
+---
+
+## Legal and operational notes
+
+- This integrates via Jupiter's **documented public APIs**, not by automating the jup.ag UI.
+  Scraping or driving the frontend would be brittle and a worse ToS position. Review the
+  [Jupiter SDK/API License Agreement](https://developers.jup.ag/docs/legal/sdk-api-license-agreement)
+  before running this against real funds.
+- **Three licence obligations this extension does not yet meet.** The agreement was read on
+  2026-08-04 (see `../docs/trading-signals-concept-family.md` §6.1 for the full reading; **not legal
+  advice**). It contains no clause against bots or automated trading, but it does require:
+  §8.4 — the product must **prominently display "Powered by Jupiter"** to end users; §2.3 — it must
+  prominently label *which* routing API is used ("Jupiter Ultra" vs "Metis"), and presenting output
+  as merely "Jupiter" is explicitly called out; §6.1 and §13.1 — use is **fee-bearing with a 30-day
+  minimum term paid in advance**, which sits awkwardly beside the portal's $0 "Free" tier. Liability
+  is capped at **USD 100** (§10) under **Panama law** (§14).
+- **§3.2(g) forbids combining API content with scraped content.** This repository contains both a
+  scraped `../jup.ag/` mirror and `../pagesource` alongside this API client. Reading them to
+  *understand* the platform is a different act from feeding them into the running product beside API
+  responses. Keep that boundary explicit — nothing in `src/` reads either artifact today, and it
+  should stay that way.
+- Trigger V2 requires an API key for every call, and rate limits apply per tier. The client
+  implements backoff and a request budget, but a tight tick across many rungs will still find the
+  ceiling.
+- Automated trading may have tax and reporting consequences. Every fill is a disposal; the CSV
+  export exists for that reason.
+- Minimum order size is **$10**, so a 7-rung grid needs meaningful capital before it is even legal
+  on the venue. The dashboard computes the requirement for your configuration.

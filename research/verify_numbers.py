@@ -49,12 +49,32 @@ DOCS = (RESEARCH / "RANKED_LISTS.md", RESEARCH / "STRATEGIES.md")
 # Update these in the same commit that changes the documents' figures -- deliberately,
 # after reading the new count. Never lower one to make a red run go green; that is
 # the same act as deleting the evidence.
+# prose 8 -> 7 on 2026-08-05, and this is the one case the rule above allows: the
+# figure was not made unverifiable, its SUBJECT left the evaluated set. The top
+# short-horizon triple `all(bb_reversion+sma_regime+rsi)` scored +2.555 OOS under
+# the family-label gate; `research/signal_redundancy.py` measures rsi/bb_reversion
+# at 0.841 correlated on that horizon, so the measured gate now excludes the
+# combination and the sweep produces no OOS Sharpe for it at all. RANKED_LISTS.md
+# still records the +2.555 as history, deliberately phrased so it no longer claims
+# to be a live "OOS Sharpe" -- because it is not one. Restoring the figure would
+# mean restoring the combination, i.e. re-admitting one signal counted twice.
 EXPECTED_FIGURES = {
     "RANKED_LISTS.md": {
-        "prose": 8, "walk_forward": 180, "cpcv": 615,
-        "perturb": 7, "geometry": 58, "geometry_xref": 15, "pair": 36,
+        # pair 36 -> 52 on 2026-08-05: the long-horizon result was a prose
+        # sentence naming one configuration and is now a four-row table, because
+        # the measured gate changed the long ranking enough that one row no
+        # longer represented it. More figures checked, not fewer.
+        # walk_forward 180 -> 300 on 2026-08-05: the three singles tables were
+        # rebuilt from the 25-strategy run, going from 30 rows to 50 at six
+        # checked figures each. An increase, so nothing stopped being verified.
+        "prose": 7, "walk_forward": 300, "cpcv": 615,
+        "perturb": 7, "geometry": 58, "geometry_xref": 15, "pair": 52,
     },
-    "STRATEGIES.md": {"prose": 31},
+    # STRATEGIES.md prose 31 -> 30 on 2026-08-05, same reason as the RANKED_LISTS
+    # entry above: any(breakout+zscore) left the evaluated set when its class
+    # collapsed, so the sweep produces no OOS Sharpe for it. Its +0.584 is kept
+    # as history, phrased so it no longer claims to be a live figure.
+    "STRATEGIES.md": {"prose": 30},
 }
 
 # Sharpe values are quoted to 3dp, returns to 1dp; allow half a unit of the
