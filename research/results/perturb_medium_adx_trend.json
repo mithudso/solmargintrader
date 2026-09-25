@@ -1,0 +1,10 @@
+{
+  "target": "adx_trend",
+  "horizon": "medium",
+  "baseline_median_sharpe": 1.0371696540461388,
+  "baseline_iqr": 1.7426597052413169,
+  "max_abs_delta": 0.4229673341875513,
+  "ratio_to_iqr": 0.24271367089937984,
+  "sign_flips": 0,
+  "perturbations": 7
+}

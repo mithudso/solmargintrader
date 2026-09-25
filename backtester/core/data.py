@@ -7,6 +7,8 @@ CsvLoader (primary, used by the engine and every test), SyntheticLoader
 
 from __future__ import annotations
 
+import subprocess
+
 import hashlib
 from pathlib import Path
 from typing import Protocol, runtime_checkable
@@ -15,6 +17,31 @@ import numpy as np
 import pandas as pd
 
 from .types import BAR_COLUMNS, INTERVAL_SECONDS
+
+
+def resolve_data_dir(start: Path | None = None) -> Path:
+    """`data/` in the MAIN checkout, which is the only place it exists.
+
+    `data/` is a gitignored fetch cache, so a git worktree does not have one.
+    Resolving it against the working tree root therefore yields a directory that
+    is simply absent, and every caller then reports "no data" from inside a
+    worktree. The main checkout is the parent of the COMMON git dir;
+    `--show-toplevel` returns the worktree and would reintroduce the bug.
+
+    Falls back to `<repo>/data` when git cannot answer, so a plain source tree
+    with no git still works.
+    """
+    root = (start or Path(__file__).resolve().parent.parent.parent)
+    try:
+        out = subprocess.run(
+            ["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+            cwd=root, capture_output=True, text=True, timeout=10, check=True,
+        ).stdout.strip()
+        if out:
+            return Path(out).parent / "data"
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return root / "data"
 
 
 class DataValidationError(ValueError):

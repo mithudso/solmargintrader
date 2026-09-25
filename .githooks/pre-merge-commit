@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Run the full gate before a merge COMMIT is created.
+#
+# Note the limit, because it is the whole reason tools/land.sh exists: git does
+# NOT run this hook for a fast-forward merge. `git merge --ff-only` creates no
+# commit, so no hook fires and nothing here can protect master. Use
+# `tools/land.sh <branch>` for that path.
+#
+# This hook therefore covers the other case: merging master INTO a branch, or any
+# merge that produces a real merge commit.
+
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+if [ ! -x tools/gate.sh ]; then
+  echo "pre-merge-commit: tools/gate.sh missing or not executable — merge refused" >&2
+  exit 1
+fi
+
+if ! ./tools/gate.sh --quick; then
+  echo "pre-merge-commit: gate failed — merge refused" >&2
+  echo "pre-merge-commit: resolve, or use --no-verify if you are deliberately" >&2
+  echo "                  committing a conflict resolution you will fix next." >&2
+  exit 1
+fi
+exit 0
