@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-25T20:41:24+00:00",
+  "generatedAt": "2026-09-25T20:43:12+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "c513a71",
+  "commit": "1cfe4e7",
   "counts": {
-    "files": 321,
-    "bytes": 4697258,
+    "files": 319,
+    "bytes": 4696046,
     "byKind": {
       "code-python": 71,
       "result": 60,
@@ -15,13 +15,13 @@
       "code-js": 31,
       "coin-reference": 11,
       "ci": 8,
-      "data": 8,
       "other": 7,
+      "data": 6,
       "code-web": 3,
       "config": 2
     },
     "byTopDir": {
-      "backtester": 102,
+      "backtester": 100,
       "research": 93,
       "extension": 37,
       "soltui": 36,
@@ -33,7 +33,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 300
+    "withSummary": 298
   },
   "files": [
     {
@@ -1443,45 +1443,9 @@
       "title": "Core dependencies. Versions are those verified on the development machine;",
       "summary": "Generated report. Opens: # Core dependencies. Versions are those verified on the development machine; / # the code does not require these exact pins.",
       "summarySource": "derived",
-      "bytes": 573,
-      "lines": 19,
-      "sha1": "d28dcb29766b658cc1010eb1e6d3a1fd2d819840",
-      "symbols": [],
-      "imports": [],
-      "internalImports": [],
-      "frontmatter": {}
-    },
-    {
-      "id": "backtester/requirements.txt",
-      "path": "backtester/requirements.txt",
-      "dir": "backtester",
-      "name": "requirements.txt",
-      "ext": ".txt",
-      "kind": "data",
-      "title": "Core dependencies. Versions are those verified on the development machine;",
-      "summary": "Generated report. Opens: # Core dependencies. Versions are those verified on the development machine; / # the code does not require these exact pins.",
-      "summarySource": "derived",
-      "bytes": 573,
-      "lines": 19,
-      "sha1": "d28dcb29766b658cc1010eb1e6d3a1fd2d819840",
-      "symbols": [],
-      "imports": [],
-      "internalImports": [],
-      "frontmatter": {}
-    },
-    {
-      "id": "backtester/requirements.txt",
-      "path": "backtester/requirements.txt",
-      "dir": "backtester",
-      "name": "requirements.txt",
-      "ext": ".txt",
-      "kind": "data",
-      "title": "Core dependencies. Versions are those verified on the development machine;",
-      "summary": "Generated report. Opens: # Core dependencies. Versions are those verified on the development machine; / # the code does not require these exact pins.",
-      "summarySource": "derived",
-      "bytes": 573,
-      "lines": 19,
-      "sha1": "d28dcb29766b658cc1010eb1e6d3a1fd2d819840",
+      "bytes": 507,
+      "lines": 14,
+      "sha1": "d9b3b3748716eef82e8e04c705da29fd5ab1d607",
       "symbols": [],
       "imports": [],
       "internalImports": [],

@@ -50,7 +50,7 @@
     "backtester/core/universe.py": 1303,
     "backtester/gridcli.py": 1325,
     "backtester/paircli.py": 1080,
-    "backtester/requirements.txt": 72,
+    "backtester/requirements.txt": 67,
     "backtester/strategy_cards/README.md": 1120,
     "backtester/strategy_cards/adx_filtered_trend.md": 520,
     "backtester/strategy_cards/atr_position_sizing.md": 488,
@@ -320,7 +320,7 @@
     "soltui/tui.py": 8082,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-09-25T20:41:24+00:00",
+  "generatedAt": "2026-09-25T20:43:12+00:00",
   "postings": {
     "100": {
       ".remember/remember.md": 1,
@@ -53669,7 +53669,6 @@
       "soltui/SolTUI.icns": 1
     },
     "head": {
-      "backtester/requirements.txt": 1,
       "docs/OPERATIONS.md": 1,
       "extension/src/ui/dashboard.html": 2,
       "extension/src/ui/popup.html": 2,
@@ -71938,7 +71937,6 @@
     "master": {
       ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 7,
-      "backtester/requirements.txt": 1,
       "research/coin-intelligence/eth-ethereum.md": 2,
       "soltui/make_icon.py": 4,
       "soltui/soltui-service": 1
@@ -81337,7 +81335,7 @@
       "backtester/core/strategies/rsi.py": 1,
       "backtester/core/strategies/signals.py": 1,
       "backtester/core/types.py": 4,
-      "backtester/requirements.txt": 2,
+      "backtester/requirements.txt": 1,
       "backtester/tests/test_advanced_strategies.py": 1,
       "backtester/tests/test_cpcv.py": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 2,
@@ -84150,7 +84148,6 @@
       "index/make_files_doc.py": 1
     },
     "origin": {
-      "backtester/requirements.txt": 1,
       "backtester/strategy_cards/obv_trend.md": 1,
       "docs/API.md": 1,
       "docs/SECURITY.md": 2,
@@ -86052,7 +86049,7 @@
       "backtester/core/plotting.py": 1,
       "backtester/core/report.py": 2,
       "backtester/core/universe.py": 1,
-      "backtester/requirements.txt": 2,
+      "backtester/requirements.txt": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "backtester/tests/test_decide.py": 1,
       "backtester/tests/test_engine.py": 1,
@@ -144417,6 +144414,6 @@
     "documents": 319,
     "terms": 16346,
     "termsBeforePrune": 16352,
-    "totalTokens": 335105
+    "totalTokens": 335100
   }
 }
