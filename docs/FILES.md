@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `afccb0f` (2026-09-25T20:44:12+00:00). 423 tracked files, 7.0 MB.
+**Generated** from `index/INDEX.json` at commit `724dd4e` (2026-09-25T20:59:11+00:00). 423 tracked files, 7.0 MB.
 
 Regenerate with:
 
@@ -3475,7 +3475,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `mongo/tests/test_load.py`
 
-`test` · 326 lines · 13,584 B · description: **extracted**
+`test` · 330 lines · 13,919 B · description: **extracted**
 
 **Purpose.** Tests for the local MongoDB research store. The load is destructive by design, so the test that matters most asserts it is therefore *idempotent*: loading twice must leave identical counts. Without that, the time series collections would silently double on a second run -- they accept no unique index, so nothing else would catch it.
 

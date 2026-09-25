@@ -245,6 +245,8 @@ class TestLoadedStore(unittest.TestCase):
 
     def test_decisions_are_stored_as_the_readout_emits_them(self) -> None:
         """Same shape as `decide.build_report()`, so the two cannot disagree."""
+        if self.db.decisions.count_documents({}) == 0:
+            self.skipTest("decisions load from gitignored data/; CI loads only the tracked collections")
         doc = self.db.decisions.find_one({"interval": "1d"})
         self.assertIsNotNone(doc)
         for key in ("asset", "interval", "bars", "decision_bar", "execution", "disclaimer"):
@@ -263,6 +265,8 @@ class TestLoadedStore(unittest.TestCase):
 
     def test_pbo_by_horizon_is_queryable(self) -> None:
         """The query the list-sidecar split exists to make possible."""
+        if self.db.experiment_rows.count_documents({}) == 0:
+            self.skipTest("experiment_rows load from gitignored results/; CI loads only the tracked collections")
         rows = list(
             self.db.experiment_rows.aggregate(
                 [
