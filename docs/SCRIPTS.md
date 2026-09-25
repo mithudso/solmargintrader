@@ -44,6 +44,7 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 research/verify_numbers.py` | **gate:** every quoted figure vs its CSV | no |
 | `python3 research/turnover_table.py` | the one comparable turnover table | no |
 | `python3 research/leverage_economics.py` | what leverage costs before it earns; the viable region | no |
+| `python3 research/ratio_rotation.py` | multi-asset numeraire-switching rotation; chained-vs-direct routing | no |
 | `python3 index/build.py` | build the four repo indexes | localhost only |
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
@@ -390,6 +391,65 @@ as an order-of-magnitude frame. **Price impact is not modelled** (per-custody pa
 are on-chain and undocumented), nor are keeper latency, priority fees, failed
 transactions, or the liquidation penalty itself. Every omission makes the real picture
 worse, never better. Verify venue parameters at `docs.jup.ag` before relying on them.
+
+---
+
+### `python3 research/ratio_rotation.py` — hold whichever coin is cheapest against its peers
+
+**Purpose.** Test the folk strategy of chaining discounted pairs — buy ETH because
+ETH/BTC is cheap, then spend that ETH on SOL because SOL/ETH is cheap. Separates the
+three claims bundled in that idea and answers each: chained routing, buy-the-discount
+rotation, and its inverse. Generates every table in `research/RATIO-ROTATION.md`.
+
+**Why it is not a registered strategy.** The engine is single-asset — `run_backtest`
+takes one series and a strategy returning exposure on *that* asset, so "which of five
+coins do I hold now" has no expression in the `Strategy` protocol. This is a standalone
+portfolio simulator that borrows the project's cost model, `make_groups`, `pbo_cscv`
+and the whole `deflated_sharpe` module, and implements only the missing part. It has no
+strategy card for the same reason: there is no `registry_key` to attach one to.
+
+**When to use it.** Before building anything cross-sectional or rotational, and any
+time someone proposes routing through an intermediate asset to capture a better rate.
+
+**When *not* to use it.** As evidence about triangular arbitrage. All series here are
+USD-quoted, so cross rates are consistent by construction and no parity deviation can
+exist to trade — see `backtester/strategy_cards/triangular_arbitrage.md`, which explains
+at length why measuring it on this data would manufacture a spurious equity curve.
+
+**The result worth knowing even if you never run it.** Cross rates derived from a common
+numeraire close exactly:
+
+```
+(ETH/BTC) x (SOL/ETH) = SOL/BTC        to floating point
+```
+
+So BTC->ETH->SOL and BTC->SOL end holding the identical quantity of SOL, and the chained
+route simply paid **two fee legs instead of one** (15.99 bps vs 8.00 bps). Chaining
+cannot add return; it can only subtract cost. What survives is asset *selection* — and
+measured over 72 configurations, **all 36 buy-the-discount variants had negative
+out-of-sample Sharpe** (best -0.061, median -0.399). The inverse, buying relative
+strength, was positive (best Sharpe 1.771, +12.93%/month) but **failed Deflated Sharpe on
+both universes** and still lost to simply holding ZEC (+13.71%/month) on the same slice.
+
+```bash
+# data/ is gitignored; fetch the panel first on a clean checkout.
+python3 -m backtester.core.universe --assets BTC,ETH,SOL,DOGE,ZEC --interval 1d
+
+python3 research/ratio_rotation.py --self-test        # gate: 23 checks
+python3 research/ratio_rotation.py --universes        # why the panel is 5 coins, not 8
+python3 research/ratio_rotation.py --turnover-table   # cost drag by holding period
+python3 research/ratio_rotation.py --demo-chain       # chained vs direct routing
+python3 research/ratio_rotation.py --sweep --out rotation_5coin_1d.csv
+python3 research/ratio_rotation.py --carry            # borrow-fee sensitivity
+```
+
+**Limits, stated in the script and the doc.** Rotation needs every asset present at bar
+`t`, so the panel is the **intersection** and its length is set by the shortest member —
+adding BNB or HYPE collapses the study from 1,875 bars to 287 or 181, which is why the
+universe is five coins rather than "all of them". Long-only, one venue, daily closes, and
+an out-of-sample slice containing one dominant idiosyncratic move (ZEC +979%). The
+`--carry` table is a **borrow-fee cost curve, not a carry strategy**: `perps.py` models a
+fee both sides pay, whereas funding changes sign, and no funding history is cached here.
 
 ---
 
