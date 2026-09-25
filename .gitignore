@@ -95,3 +95,6 @@ data/
 # what the index was and whether it would still be valid without holding the
 # vectors. Same reasoning as data/ above.
 index/semantic-embeddings.npz
+
+# data may be a symlink to the shared cache, which "data/" does not match
+/data
