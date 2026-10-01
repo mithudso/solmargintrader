@@ -168,7 +168,7 @@ jobs:
       # Node is pinned for the same reason the extension job pins it, and because
       # `check_docs.py` asks `node --test` for the extension count rather than
       # trusting a source regex.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
 
@@ -212,7 +212,7 @@ jobs:
         working-directory: extension
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
       - run: node tools/verify-endpoints.js
