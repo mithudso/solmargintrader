@@ -46,11 +46,21 @@ from __future__ import annotations
 
 import argparse
 import os
-import plistlib
 import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+try:
+    from launchd_supervisor import ServiceSpec, atomic_write, render_plist
+    from launchd_supervisor import manage as launchd_manage
+    from launchd_supervisor.plist import plist_dict
+except ImportError:  # pragma: no cover - environment problem, not a code path
+    raise SystemExit(
+        "soltui-service needs macos-launchd-supervisor:\n"
+        "    pip install 'macos-launchd-supervisor @ "
+        "git+https://github.com/mithudso/macos-launchd-supervisor'"
+    ) from None
 
 LABEL = "com.mitchhudson.soltui"
 APP_NAME = "SolTUI"
@@ -95,23 +105,32 @@ def build() -> int:
     return 0
 
 
+def service_spec() -> ServiceSpec:
+    """The declarative spec macos-launchd-supervisor renders the agent from.
+
+    Every choice in the module docstring is carried by it: the program is the
+    executable inside the bundle (lesson 2, passed as the executable path rather
+    than the .app so ProgramArguments does not depend on Info.plist); `supervise`
+    gives KeepAlive+PathState on FLAG and never RunAtLoad (lesson 4); the library's
+    default `lang` is the explicit LANG. tests/test_service_plist_parity.py pins
+    the rendered plist to the one this script generated before the migration.
+    """
+    return ServiceSpec(
+        label=LABEL,
+        program=str(BUNDLE_EXE),
+        env={"PYTHONUTF8": "1"},
+        supervise=True,
+        state_dir=str(SUPPORT),
+        throttle_interval=15,
+        process_type="Interactive",
+        stdout_path=str(LOG),
+        stderr_path=str(LOG),
+    )
+
+
 def agent_plist() -> dict:
     """The LaunchAgent definition. See the module docstring for every choice."""
-    return {
-        "Label": LABEL,
-        # Lesson 2: the bundle executable, not `python -m`.
-        "ProgramArguments": [str(BUNDLE_EXE)],
-        # Lesson 4: no RunAtLoad. KeepAlive+PathState starts it when the flag
-        # exists and stops supervising when it does not.
-        "KeepAlive": {"PathState": {str(FLAG): True}},
-        "ThrottleInterval": 15,
-        "ProcessType": "Interactive",
-        # launchd provides no LANG; without this the locale encoding is US-ASCII
-        # and non-ASCII output raises UnicodeEncodeError.
-        "EnvironmentVariables": {"LANG": "en_US.UTF-8", "PYTHONUTF8": "1"},
-        "StandardOutPath": str(LOG),
-        "StandardErrorPath": str(LOG),
-    }
+    return plist_dict(service_spec())
 
 
 def install() -> int:
@@ -150,7 +169,7 @@ def install() -> int:
     SUPPORT.mkdir(parents=True, exist_ok=True)
     LOG.parent.mkdir(parents=True, exist_ok=True)
     AGENT.parent.mkdir(parents=True, exist_ok=True)
-    AGENT.write_bytes(plistlib.dumps(agent_plist()))
+    atomic_write(AGENT, render_plist(service_spec()))
     print(f"wrote agent → {AGENT}")
 
     if not reload_agent():
@@ -201,10 +220,10 @@ def dereference_resources(bundle: Path) -> list[Path]:
 
 def is_loaded() -> bool:
     """Whether launchd currently knows about the agent."""
-    return run(["launchctl", "print", f"gui/{uid()}/{LABEL}"]).returncode == 0
+    return launchd_manage.is_loaded(service_spec())
 
 
-def reload_agent(timeout: float = 10.0) -> bool:
+def reload_agent() -> bool:
     """Bootout then bootstrap, waiting for each step to actually take effect.
 
     `launchctl bootout` is ASYNCHRONOUS: it returns before the job is gone, so a
@@ -216,24 +235,7 @@ def reload_agent(timeout: float = 10.0) -> bool:
     So: poll until the old job has really gone, then bootstrap, then poll until
     the new one is really there. Returns True only if the agent ends up loaded.
     """
-    import time
-
-    if is_loaded():
-        run(["launchctl", "bootout", f"gui/{uid()}/{LABEL}"])
-        deadline = time.monotonic() + timeout
-        while is_loaded() and time.monotonic() < deadline:
-            time.sleep(0.3)
-        if is_loaded():
-            print("  bootout did not complete within the timeout", file=sys.stderr)
-            return False
-
-    res = run(["launchctl", "bootstrap", f"gui/{uid()}", str(AGENT)])
-    deadline = time.monotonic() + timeout
-    while not is_loaded() and time.monotonic() < deadline:
-        time.sleep(0.3)
-    if not is_loaded():
-        detail = (res.stderr or res.stdout).strip()
-        print(f"  bootstrap failed: {detail or 'no output'}", file=sys.stderr)
+    if not launchd_manage.reload_agent(service_spec()):
         return False
     print("  agent loaded")
     return True

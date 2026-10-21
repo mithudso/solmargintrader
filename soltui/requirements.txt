@@ -24,3 +24,7 @@ rumps>=0.4.0 ; sys_platform == "darwin"
 
 # Optional: YAML config instead of JSON. config.py falls back to JSON when absent.
 PyYAML>=6.0.3
+
+# Renders and loads the LaunchAgent for soltui/soltui-service (plist, bootout/bootstrap).
+# Needed wherever that script runs. Private repo: needs git credentials for github.com/mithudso.
+macos-launchd-supervisor @ git+https://github.com/mithudso/macos-launchd-supervisor
