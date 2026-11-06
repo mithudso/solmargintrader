@@ -517,3 +517,14 @@ class TestLiquidityTab(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WalletWordingTests(unittest.TestCase):
+    def test_non_idle_wallet_coins_are_not_called_deployed(self) -> None:
+        status = {"wallet": {"tokens": [{"symbol": "WETH", "usd": 20.0, "idle": False},
+                                        {"symbol": "USDC", "usd": 5.0, "idle": True}]}}
+        line = liq.wallet_line(status)
+        self.assertIn("WETH", line)
+        self.assertIn("held, not idle yet", line)
+        self.assertIn("(idle)", line)
+        self.assertNotIn("in positions", line)

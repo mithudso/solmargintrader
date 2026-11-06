@@ -496,3 +496,313 @@ def test_withdraw_failure_is_wrapped_with_partial_result():
         assert e.partial.stages == ["unstake"] and "withdraw failed" in str(e)
     else:
         raise AssertionError("expected RebalanceError")
+
+
+# ---------------------------------------------------------------- deploy, topup, claim, collect, swap_exact, unwrap
+
+
+FEES1 = 3 * 10**5  # fees the unstake collects, in token1 raw units
+CLAIM = 2 * 10**18
+
+
+class WalletRunner(FakeRunner):
+    """FakeRunner plus the labels the new operations send; every executed tx adds a fixed fee."""
+
+    fee_wei = 0
+
+    def __init__(self, *a):
+        super().__init__(*a)
+        self.increased: dict = {}
+        self.fail_on: str | None = None
+        self.fail_always: set[str] = set()
+        self.unstake_fees1 = 0
+
+    def execute(self, txs):
+        logs = []
+        for tx in txs:
+            if tx.label in self.fail_always or tx.label == self.fail_on:
+                self.fail_on = None
+                raise RuntimeError(f"tx '{tx.label}' reverted")
+            self.fee_wei += 1_000
+            if tx.label == "gauge.claimEmissions":
+                self.txs.append(tx)
+                self.bal[AERO] += CLAIM
+            elif tx.label == "collect":
+                self.txs.append(tx)
+                self.bal[T0] += 10**15
+                self.bal[T1] += 7
+            elif tx.label == "increaseLiquidity":
+                self.txs.append(tx)
+                self.increased = self_npm().decode_function_input(tx.data)[1]["params"]
+                self.bal[T0] -= self.increased["amount0Desired"]
+                self.bal[T1] -= self.increased["amount1Desired"]
+            elif tx.label == "weth.withdraw":
+                self.txs.append(tx)
+            else:
+                logs += super().execute([tx]).logs
+                if tx.label == "gauge.withdraw":
+                    self.bal[T1] += self.unstake_fees1
+        return StageResult(logs, dict(self.bal), sqrt_price_x96=self.sqrt_p)
+
+
+def test_swap_exact_reports_the_measured_output_and_checks_its_arguments():
+    pos = make_position(staked=False)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    amount = 10**15
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).swap_exact(pos.pool, T0, amount, runner, 123)
+    price = clmath.sqrtx96_to_price(pos.pool.sqrt_price_x96)
+    assert res.amount_out == int(amount * price * 0.999) and res.stages == ["swap"]
+    params = W3.eth.contract(abi=abi.SWAP_ROUTER).decode_function_input(runner.txs[-1].data)[1]["params"]
+    assert (params["tokenIn"], params["tokenOut"], params["amountIn"], params["amountOutMinimum"]) == (
+        T0,
+        T1,
+        amount,
+        123,
+    )
+    # the other direction sells token1 for token0
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).swap_exact(pos.pool, T1, 10**6, runner, 1)
+    assert res.amount_out == int(10**6 / price * 0.999)
+    with pytest.raises(ValueError, match="not a token of pool"):
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).swap_exact(pos.pool, AERO, 1, runner, 0)
+    with pytest.raises(ValueError, match="amount_in"):
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).swap_exact(pos.pool, T0, 0, runner, 0)
+
+
+def test_swap_exact_failure_carries_the_gas_already_paid():
+    pos = make_position(staked=False)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    runner.fail_always = {f"swap {10**15}"}
+    with pytest.raises(RebalanceError) as e:
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).swap_exact(pos.pool, T0, 10**15, runner, 1)
+    assert e.value.partial.fee_wei == 1_000  # the approve went through
+
+
+def test_claim_reports_only_the_aero_that_arrived():
+    pos = make_position(staked=True)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).claim(pos, runner)
+    assert res.aero_claimed == CLAIM and res.stages == ["claim"] and res.fee_wei == 1_000
+    _, args = W3.eth.contract(abi=abi.CL_GAUGE).decode_function_input(runner.txs[0].data)
+    assert args["_account"] == OWNER and args["_recipient"] == OWNER and args["_tokenIds"] == [42]
+
+
+def test_collect_reports_the_fees_that_arrived_and_never_touches_liquidity():
+    pos = make_position(staked=False)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).collect(pos, runner)
+    assert res.amounts_in_position == (10**15, 7)
+    fn, args = self_npm().decode_function_input(runner.txs[0].data)
+    assert fn.fn_name == "collect" and args["params"]["recipient"] == OWNER
+
+
+def test_unwrap_weth_sends_one_withdraw_for_the_amount():
+    pos = make_position(staked=False)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).unwrap_weth(5 * 10**14, runner)
+    fn, args = W3.eth.contract(abi=abi.WETH).decode_function_input(runner.txs[0].data)
+    assert fn.fn_name == "withdraw" and args["wad"] == 5 * 10**14 and res.stages == ["unwrap"]
+    assert runner.txs[0].to == Web3.to_checksum_address(addresses.WETH)
+
+
+def test_deploy_spends_only_the_designated_amounts_and_stakes():
+    pos = make_position(staked=False)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    pool = pos.pool
+    new = Range(-199700, -198700)
+    designated = 3 * 10**15  # token0 only; the wallet holds 1e30 of everything
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).deploy(pool, new, True, designated, 0, runner, 2232.0, 1.0)
+    assert res.stages == ["swap", "mint", "stake"] and res.new_token_id == 777 and res.staked
+    m = runner.minted
+    swapped_out = runner.bal[T1] - HUGE + m["amount1Desired"] * 0.999
+    assert m["amount0Desired"] <= designated
+    assert m["amount0Desired"] + m["amount1Desired"] > 0
+    assert m["amount1Desired"] <= int(swapped_out) + 1  # token1 can only come from our own swap
+    assert m["tickLower"] == new.tick_lower and m["recipient"] == OWNER
+
+
+def test_deploy_without_gauge_leaves_the_nft_unstaked_with_a_note():
+    pos = make_position(staked=False)
+    pos.pool.gauge_alive = False
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).deploy(
+        pos.pool, Range(-199700, -198700), True, 3 * 10**15, 0, runner, 2232.0, 1.0
+    )
+    assert not res.staked and any("gauge not activated" in n for n in res.notes)
+
+
+def _one_sided_topup_position(staked: bool):
+    """The price sits above the range, so the position takes token1 only and no swap is needed."""
+    return make_position(staked=staked)
+
+
+def test_staked_topup_includes_the_fees_the_unstake_collected_even_without_a_swap():
+    pos = _one_sided_topup_position(staked=True)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    runner.unstake_fees1 = FEES1
+    designated = 10**6
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).topup(pos, 0, designated, runner, 2232.0, 1.0)
+    assert res.stages == ["unstake", "increase", "stake"] and res.staked
+    # designated amount + fees collected by the unstake, and nothing from the 1e30 wallet balance
+    assert runner.increased["amount1Desired"] == designated + FEES1
+    assert runner.increased["amount0Desired"] == 0
+    labels = [t.label for t in runner.txs]
+    assert labels[0] == "gauge.withdraw" and labels[-2:] == ["npm.approve(gauge)", "gauge.deposit"]
+
+
+def test_unstaked_topup_uses_exactly_the_designated_amounts():
+    pos = _one_sided_topup_position(staked=False)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).topup(pos, 0, 10**6, runner, 2232.0, 1.0)
+    assert res.stages == ["increase"] and runner.increased["amount1Desired"] == 10**6
+    assert not any(t.label.startswith("gauge") for t in runner.txs)
+
+
+def test_topup_with_a_swap_still_stays_inside_the_designated_amounts():
+    pos = make_position(staked=False, tick=-199700)  # in range: the deposit needs both tokens
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    designated = 5 * 10**6
+    Rebalancer(FakeChain(), OWNER, ExecConfig()).topup(pos, 0, designated, runner, 2232.0, 1.0)
+    inc = runner.increased
+    swap_out0 = runner.bal[T0] - HUGE + inc["amount0Desired"]
+    assert inc["amount0Desired"] > 0 and inc["amount0Desired"] <= swap_out0
+    assert inc["amount1Desired"] <= designated
+
+
+def test_failed_increase_puts_the_unstaked_nft_back_in_the_gauge():
+    pos = _one_sided_topup_position(staked=True)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    runner.fail_on = "increaseLiquidity"
+    with pytest.raises(RebalanceError, match="topup failed") as e:
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).topup(pos, 0, 10**6, runner, 2232.0, 1.0)
+    assert [t.label for t in runner.txs][-2:] == ["npm.approve(gauge)", "gauge.deposit"]
+    assert e.value.partial.staked and any("restaked" in n for n in e.value.partial.notes)
+
+
+def test_failed_restake_is_reported_with_the_increase_already_done():
+    pos = _one_sided_topup_position(staked=True)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    runner.fail_always = {"gauge.deposit"}
+    with pytest.raises(RebalanceError) as e:
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).topup(pos, 0, 10**6, runner, 2232.0, 1.0)
+    partial = e.value.partial
+    assert "increase" in partial.stages and partial.amounts_in_position[1] > 0 and not partial.staked
+    assert any("restake also failed" in n for n in partial.notes)
+
+
+def test_failure_before_the_unstake_does_not_attempt_a_restake():
+    pos = _one_sided_topup_position(staked=True)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    runner.fail_always = {"gauge.withdraw"}
+    with pytest.raises(RebalanceError):
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).topup(pos, 0, 10**6, runner, 2232.0, 1.0)
+    assert runner.txs == []
+
+
+def test_gas_paid_before_a_failure_is_carried_by_rebalance_and_withdraw_results():
+    pos = make_position(staked=True)
+    runner = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    runner.fail_always = {"npm.approve(gauge)"}  # fails after unstake, remove, swap, mint all succeeded
+    with pytest.raises(RebalanceError) as e:
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).rebalance(pos, Range(-199700, -198700), True, runner, 2232.0, 1.0)
+    assert e.value.partial.fee_wei == runner.fee_wei > 0
+    ok = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).withdraw(pos, ok)
+    assert res.fee_wei == ok.fee_wei == 2_000
+    bad = WalletRunner(pos, pos.pool.sqrt_price_x96)
+    bad.fail_always = {"remove liquidity + collect + burn"}
+    with pytest.raises(RebalanceError) as e:
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).withdraw(pos, bad)
+    assert e.value.partial.fee_wei == 1_000  # the unstake was paid for
+
+
+def test_receipt_fee_covers_execution_and_l1_data_fee_in_any_encoding():
+    from aero_lp.executor import receipt_fee_wei
+
+    base = {"gasUsed": 100, "effectiveGasPrice": 7}
+    assert receipt_fee_wei(base) == 700
+    assert receipt_fee_wei({**base, "l1Fee": "0x10"}) == 716
+    assert receipt_fee_wei({**base, "l1Fee": 5}) == 705
+    assert receipt_fee_wei({**base, "l1Fee": None, "effectiveGasPrice": None}) == 0
+    assert receipt_fee_wei({"gasUsed": 3}) == 0
+
+
+class MintReadFails(WalletRunner):
+    """The mint receipt arrives (its Transfer log is recorded) but the follow-up state read then fails."""
+
+    def __init__(self, *a):
+        super().__init__(*a)
+        self.logs: list = []
+
+    def execute(self, txs):
+        if any(t.label.startswith("mint") for t in txs):
+            r = super().execute(txs)
+            self.logs.extend(r.logs)
+            raise RuntimeError("RPC could not serve state at block 101")
+        return super().execute(txs)
+
+
+def test_a_minted_nft_is_recovered_from_the_logs_when_the_post_receipt_read_fails():
+    pos = make_position(staked=False)
+    runner = MintReadFails(pos, pos.pool.sqrt_price_x96)
+    with pytest.raises(RebalanceError, match="could not serve state") as e:
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).deploy(
+            pos.pool, Range(-199700, -198700), True, 3 * 10**15, 0, runner, 2232.0, 1.0
+        )
+    p = e.value.partial
+    assert p.new_token_id == 777 and any("was minted" in n for n in p.notes)
+    assert sum(p.amounts_in_position) > 0  # so the caller can book the deposit
+
+
+def test_a_rebalance_whose_mint_read_fails_still_reports_the_new_nft():
+    pos = make_position(staked=True)
+    runner = MintReadFails(pos, pos.pool.sqrt_price_x96)
+    with pytest.raises(RebalanceError) as e:
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).rebalance(pos, Range(-199700, -198700), True, runner, 2232.0, 1.0)
+    assert e.value.partial.new_token_id == 777
+
+
+class FakeEthWithLogs(FakeEth):
+    mint_topic0 = "0x" + Web3.keccak(text="Transfer(address,address,uint256)").hex().removeprefix("0x")
+    status = 1
+
+    def wait_for_transaction_receipt(self, h, timeout):
+        self.block_no += 1
+        log = {
+            "address": addresses.NONFUNGIBLE_POSITION_MANAGER,
+            "topics": [
+                HexBytes(self.mint_topic0),
+                HexBytes("0x" + "0" * 64),
+                HexBytes("0x" + "0" * 24 + OWNER[2:].lower()),
+                HexBytes(hex(777)),
+            ],
+            "data": b"",
+        }
+        return {
+            "status": self.status,
+            "gasUsed": 90_000,
+            "effectiveGasPrice": 10**6,
+            "l1Fee": "0x10",
+            "blockNumber": self.block_no,
+            "logs": [log],
+        }
+
+
+def test_live_runner_keeps_receipt_logs_when_the_state_read_after_them_fails(monkeypatch):
+    from aero_lp.executor import minted_token_id
+
+    monkeypatch.setattr(LiveRunner, "READ_RETRY_DELAY_S", 0)
+    runner = LiveRunner(LaggingChain(FakeEthWithLogs(), 10**6), ACCT, [T0], ExecConfig())
+    with pytest.raises(RuntimeError, match="could not serve state"):
+        runner.execute([TX])
+    assert minted_token_id(runner.logs, addresses.NONFUNGIBLE_POSITION_MANAGER, OWNER) == 777
+    assert runner.chain.min_block == 101  # later balance reads are pinned to at least this block
+
+
+def test_live_runner_books_the_gas_of_a_reverted_transaction():
+    eth = FakeEthWithLogs()
+    eth.status = 0
+    runner = LiveRunner(LaggingChain(eth, 0), ACCT, [T0], ExecConfig())
+    with pytest.raises(RuntimeError, match="reverted"):
+        runner.execute([TX])
+    assert runner.fee_wei == 90_000 * 10**6 + 16

@@ -336,7 +336,9 @@ def wallet_line(status: Mapping[str, Any]) -> str:
     wallet = wallet if isinstance(wallet, dict) else {}
     bits = []
     for t in _dicts(wallet.get("tokens")):
-        tag = "idle" if t.get("idle") else "in positions"
+        # Wallet tokens are never "in positions" (deployed value is in positions[]). A coin the daemon has not
+        # yet seen untouched for its idle window is held but not deployable.
+        tag = "idle" if t.get("idle") else "held, not idle yet"
         bits.append(f"{_text(t.get('symbol'))} {fmt_usd(t.get('usd'))} ({tag})")
     eth = num(wallet.get("eth"))
     if eth is not None:

@@ -35,6 +35,7 @@ case "${1:-}" in
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><true/>
   <key>ThrottleInterval</key><integer>60</integer>
+  <key>ExitTimeOut</key><integer>180</integer>
   <key>ProcessType</key><string>Background</string>
   <key>StandardOutPath</key><string>$LP_HOME/daemon.log</string>
   <key>StandardErrorPath</key><string>$LP_HOME/daemon.log</string>

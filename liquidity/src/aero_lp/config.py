@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import tomllib
 import warnings
 from dataclasses import dataclass, field, fields
@@ -66,6 +67,39 @@ class AllocatorConfig:
             raise ValueError("bad allocator sizing")
         if not 0 <= self.compare_margin < 1:
             raise ValueError("compare_margin must be in [0, 1)")
+        numbers = {
+            f.name: getattr(self, f.name) for f in fields(self) if isinstance(getattr(self, f.name), int | float)
+        }
+        bad = sorted(k for k, v in numbers.items() if not math.isfinite(v))
+        if bad:
+            raise ValueError(f"allocator values must be finite numbers: {bad}")
+        # A negative margin would close every arm including near-ties; a zero interval would run a step every tick.
+        negative = [
+            k
+            for k in (
+                "min_edge_ratio",
+                "min_tvl_usd",
+                "max_total_deployed_usd",
+                "experiment_days",
+                "graduate_margin_apr",
+                "idle_window_hours",
+                "gas_reserve_eth",
+                "unwrap_chunk_eth",
+                "compound_min_usd",
+                "compound_gas_multiple",
+                "scout_top_by_volume",
+            )
+            if numbers[k] < 0
+        ]
+        if negative:
+            raise ValueError(f"allocator values must be >= 0: {negative}")
+        nonpositive = [
+            k
+            for k in ("scout_interval_h", "allocate_interval_h", "compound_interval_h", "snapshot_interval_min")
+            if numbers[k] <= 0
+        ]
+        if nonpositive:
+            raise ValueError(f"allocator intervals must be > 0: {nonpositive}")
 
 
 @dataclass(frozen=True)

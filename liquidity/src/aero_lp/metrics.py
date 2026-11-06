@@ -41,6 +41,7 @@ from .market import (
 from .strategy import StrategyConfig, best_width, lvr_fraction_per_day, rebalances_per_day, score_widths, target_range
 
 REF_HALF_WIDTH = math.log1p(0.10)  # +/-10%: where the *_apr_ref figures are quoted
+NO_DATA = -1e9  # stands in for a number that could not be computed (see PoolMetrics.to_json)
 
 # Base tokens treated as known/liquid. Anything else is flagged, and the allocator ignores it by default.
 KNOWN_TOKENS = {
@@ -90,12 +91,17 @@ class PoolMetrics:
     backtest_net_apr: float = 0.0  # best width replayed on the pool's actual price path, vs holding the pair
     backtest_half_width_pct: float = 0.0
     backtest_days: float = 0.0
+    # Replay at the half-width that would actually be deployed (best_half_width_pct): what the allocator gates on.
+    # backtest_net_apr is the best of a width grid and can come from a different width.
+    backtest_deploy_apr: float = 0.0
 
     def to_json(self) -> dict[str, Any]:
         d = asdict(self)
         for k, v in list(d.items()):
             if isinstance(v, float):
-                d[k] = round(v, 6)
+                # NaN / inf are not valid JSON (soltui's parser would reject the whole file). -1e9 is an obvious
+                # "no data" value that fails every minimum the allocator checks.
+                d[k] = round(v, 6) if math.isfinite(v) else NO_DATA
         return d
 
 
@@ -168,8 +174,11 @@ def backtest_best(
     Returns (best net APR % vs holding the pair, its half-width %, days replayed). Unlike the LVR
     formula, this sees mean reversion: a pegged pair that wobbles inside the range and comes back
     costs nothing here, while the formula charges every wobble as informed flow.
+
+    Fewer than 24 closes or a zero deposit return (0, 0, 0): `days == 0` is how callers tell "no replay"
+    from "a replay that earned 0%". A replay whose every width gives NaN or inf also reports no replay.
     """
-    if len(closes) < 24 or deposit_usd <= 0:
+    if len(closes) < 24 or not deposit_usd > 0:
         return 0.0, 0.0, 0.0
     days = (len(closes) - 1) / 24
     min_w = tick_spacing * math.log(1.0001)
@@ -178,9 +187,31 @@ def backtest_best(
         hw = max(math.log1p(pct / 100), min_w)
         r = backtest.run(closes, hw, yield_fn, start_value=deposit_usd, gas_cost=gas_usd, pool_fee=pool_fee, cfg=cfg)
         apr = r.pnl_vs_hodl / deposit_usd * 365 / days * 100
-        if apr > best[0]:
+        if math.isfinite(apr) and apr > best[0]:
             best = (apr, (math.exp(hw) - 1) * 100)
+    if not math.isfinite(best[0]):
+        return 0.0, 0.0, 0.0
     return best[0], best[1], days
+
+
+def backtest_at_width(
+    closes: list[float],
+    yield_fn: Any,
+    deposit_usd: float,
+    gas_usd: float,
+    pool_fee: float,
+    tick_spacing: int,
+    cfg: StrategyConfig,
+    half_width: float,
+) -> float:
+    """Net APR % vs holding when the replay uses exactly `half_width` (log). 0 without a replay (no data),
+    NO_DATA when the result is not a number."""
+    if len(closes) < 24 or not deposit_usd > 0:
+        return 0.0
+    hw = max(half_width, tick_spacing * math.log(1.0001))
+    r = backtest.run(closes, hw, yield_fn, start_value=deposit_usd, gas_cost=gas_usd, pool_fee=pool_fee, cfg=cfg)
+    apr = r.pnl_vs_hodl / deposit_usd * 365 / ((len(closes) - 1) / 24) * 100
+    return apr if math.isfinite(apr) else NO_DATA
 
 
 def evaluate_pool(
@@ -232,6 +263,9 @@ def evaluate_pool(
     bt_apr, bt_w, bt_days = backtest_best(
         closes, yield_curve(mode == "aero"), deposit_usd, gas_usd, pool.fee, pool.tick_spacing, cfg
     )
+    bt_deploy = backtest_at_width(
+        closes, yield_curve(mode == "aero"), deposit_usd, gas_usd, pool.fee, pool.tick_spacing, cfg, chosen.half_width
+    )
     tvl = ctx["tvl_usd"]
     vol = ctx["volume_24h_usd"]
     staked_share = pool.staked_liquidity / pool.liquidity if pool.liquidity else 0.0
@@ -250,10 +284,26 @@ def evaluate_pool(
         flags.append("turnover > 50x/day")
     if edge < 1:
         flags.append("income below LVR at every width")
+    if not ctx["eth_usd"]:
+        flags.append("ETH price unavailable: gas cost understated")
+    if not (econ.price0_usd and econ.price1_usd):
+        flags.append("missing USD price for a pool token")
+    net_apr = chosen.net_frac_day * 36500
+    if not math.isfinite(net_apr):
+        net_apr = NO_DATA
+        flags.append("net APR not computable")
     confidence = "high"
     if hist_days < 2 or ctx["fee_history_days"] < 1 or tvl < 50_000:
         confidence = "medium"
-    if sigma is None or any(f.startswith("unlisted") for f in flags) or tvl < 10_000:
+    # Without the ETH price the gas leg of every cost is ~0, and without a token price every USD figure is wrong:
+    # either would let a pool look better than it is.
+    if (
+        sigma is None
+        or any(f.startswith("unlisted") for f in flags)
+        or tvl < 10_000
+        or not ctx["eth_usd"]
+        or not (econ.price0_usd and econ.price1_usd)
+    ):
         confidence = "low"
 
     return PoolMetrics(
@@ -274,7 +324,7 @@ def evaluate_pool(
         edge_ratio=edge if math.isfinite(edge) else 1e9,
         best_mode=mode,
         best_half_width_pct=(math.exp(chosen.half_width) - 1) * 100,
-        expected_net_apr=chosen.net_frac_day * 36500,
+        expected_net_apr=net_apr,
         rebalances_per_week=rb_day * 7,
         cost_per_rebalance_usd=cost_per_rebalance,
         break_even_deposit_usd=break_even if math.isfinite(break_even) else 1e12,
@@ -286,4 +336,5 @@ def evaluate_pool(
         backtest_net_apr=bt_apr,
         backtest_half_width_pct=bt_w,
         backtest_days=bt_days,
+        backtest_deploy_apr=bt_deploy,
     )

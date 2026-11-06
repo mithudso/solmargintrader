@@ -24,6 +24,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+# Wallet samples further apart than this do not prove a coin stayed in the wallet (the daemon samples every 10 min).
+IDLE_MAX_GAP_S = 3600.0
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS slots (
     slot TEXT PRIMARY KEY,
@@ -264,7 +267,10 @@ class Ledger:
         snap = self.db.execute(
             "SELECT value_usd, hodl_usd, unclaimed_usd FROM snapshots WHERE slot=? ORDER BY ts DESC LIMIT 1", (slot,)
         ).fetchone()
-        value, hodl, unclaimed = (snap[0], snap[1], snap[2]) if snap else (0.0, float(dep), 0.0)
+        # No snapshot yet (just opened): assume the net money still in the position, not a total loss.
+        value, hodl, unclaimed = (
+            (snap[0], snap[1], snap[2]) if snap else (max(0.0, float(dep) - float(wd)), float(dep), 0.0)
+        )
         if s["closed_at"] is not None:
             value, unclaimed = 0.0, 0.0
         return SlotPnl(
@@ -312,17 +318,35 @@ class Ledger:
             for r in reversed(rows)
         ]
 
-    def idle_amount(self, token: str, now_amount: float, window_s: float, now: float | None = None) -> float:
+    def idle_amount(
+        self,
+        token: str,
+        now_amount: float,
+        window_s: float,
+        now: float | None = None,
+        max_gap_s: float = IDLE_MAX_GAP_S,
+    ) -> float:
         """The part of `now_amount` that has been in the wallet for the whole window.
 
-        That is the minimum recorded balance over the window, capped by the current amount. If the history
-        does not cover the full window yet, the answer is 0 (not proven idle).
+        That is the minimum recorded balance over the window (including the sample in force when the window
+        began), capped by the current amount. It is 0 unless the samples cover the whole window: one must
+        predate it, and no two neighbours (nor the last one and now) may be further apart than `max_gap_s`.
+        After the daemon was down for a day, a coin that arrived during the outage is not proven idle just
+        because the first sample after the restart shows it.
         """
         t = now or time.time()
-        first = self.db.execute("SELECT MIN(ts) FROM wallet_balances WHERE token=?", (token.lower(),)).fetchone()[0]
-        if first is None or first > t - window_s:
+        start = t - window_s
+        key = token.lower()
+        anchor = self.db.execute(
+            "SELECT ts, amount FROM wallet_balances WHERE token=? AND ts < ? ORDER BY ts DESC LIMIT 1", (key, start)
+        ).fetchone()
+        if anchor is None:
             return 0.0
-        low = self.db.execute(
-            "SELECT MIN(amount) FROM wallet_balances WHERE token=? AND ts >= ?", (token.lower(), t - window_s)
-        ).fetchone()[0]
-        return max(0.0, min(float(low if low is not None else 0.0), now_amount))
+        inside = self.db.execute(
+            "SELECT ts, amount FROM wallet_balances WHERE token=? AND ts >= ? ORDER BY ts", (key, start)
+        ).fetchall()
+        points = [(float(anchor[0]), float(anchor[1]))] + [(float(r[0]), float(r[1])) for r in inside]
+        stamps = [ts for ts, _ in points] + [t]
+        if any(b - a > max_gap_s for a, b in zip(stamps, stamps[1:], strict=False)):
+            return 0.0
+        return max(0.0, min(min(amount for _, amount in points), now_amount))

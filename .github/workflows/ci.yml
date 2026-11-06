@@ -108,7 +108,9 @@ jobs:
   # idempotency check -- actually run.
   mongo:
     name: mongo (python)
-    runs-on: ubuntu-latest
+    # MongoDB refuses to start on Linux kernel 6.19+ (SERVER-121912), which ubuntu-24.04 runners now ship.
+    # The 22.04 image is on an older kernel. Move back to ubuntu-latest once mongo:8 carries the fix.
+    runs-on: ubuntu-22.04
     services:
       mongodb:
         image: mongo:8

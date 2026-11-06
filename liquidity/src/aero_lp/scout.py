@@ -71,9 +71,13 @@ def candidate_pools(chain: AeroChain, market: MarketData, top_by_volume: int = 2
 
 
 def rank(results: list[PoolMetrics]) -> list[PoolMetrics]:
-    """Highest expected net APR first; low-confidence pools after the rest at equal APR."""
-    order = {"high": 0, "medium": 1, "low": 2}
-    return sorted(results, key=lambda m: (-m.expected_net_apr, order.get(m.confidence, 3)))
+    """High/medium-confidence pools first, by expected net APR; low-confidence pools after them.
+
+    A low-confidence row (tiny TVL, no price history, unlisted token) can show an absurd model APR. With no
+    sigma the LVR term is 0. Such a row must not top the list a human reads first. The allocator rejects it
+    anyway.
+    """
+    return sorted(results, key=lambda m: (m.confidence == "low", -m.expected_net_apr))
 
 
 def run_scout(
@@ -87,11 +91,20 @@ def run_scout(
     progress: Callable[[str], None] | None = None,
     gas_units: int = 2_700_000,
     l1_fee_usd: float = 0.005,
+    max_seconds: float | None = None,
 ) -> dict[str, Any]:
+    """Score the candidate pools and write `out`. `max_seconds` bounds the run (the daemon blocks on it, and
+    GeckoTerminal rate limits can make a full scan slow): pools not reached are listed under `errors`."""
     pools = pools or candidate_pools(chain, market, top_by_volume)
     results: list[PoolMetrics] = []
     errors: list[dict[str, str]] = []
+    started = time.monotonic()
     for i, addr in enumerate(pools, 1):
+        if max_seconds is not None and time.monotonic() - started > max_seconds:
+            errors.extend({"pool": a, "error": "skipped: scout time budget used up"} for a in pools[i - 1 :])
+            if progress:
+                progress(f"time budget of {max_seconds:.0f}s used up after {i - 1} of {len(pools)} pools")
+            break
         try:
             m = evaluate_pool(chain, market, addr, deposit_usd, cfg, gas_units=gas_units, l1_fee_usd=l1_fee_usd)
             results.append(m)

@@ -15,7 +15,7 @@ from typing import Any
 from web3 import Web3
 
 from . import abi, addresses, clmath
-from .chain import MAX_HEAD_LAG_S, AeroChain, PositionState, realized_vol_daily
+from .chain import MAX_HEAD_LAG_S, AeroChain, PoolState, PositionState, realized_vol_daily
 from .config import Config
 from .executor import (
     LiveRunner,
@@ -79,6 +79,16 @@ class Engine:
         self.chain = chain or AeroChain(cfg.rpc_url)
         self.market = market or MarketData()
         self.state = State(cfg.state_file)
+        # Called right before any transaction is broadcast; it raises to stop the sequence. The daemon uses it
+        # so a kill switch created while a rebalance is being simulated still stops that rebalance.
+        self.gate: Callable[[], None] | None = None
+        # Called with the signal number when Ctrl-C or SIGTERM arrived during a live sequence. Without it the
+        # signal is raised after the sequence, which discards the sequence's result before the caller has booked it.
+        self.on_stop: Callable[[int], None] | None = None
+
+    def _gate(self) -> None:
+        if self.gate is not None:
+            self.gate()
 
     # ------------------------------------------------------------------ inputs
 
@@ -95,12 +105,19 @@ class Engine:
 
     def twap_deviation_bps(self, pos: PositionState) -> float | None:
         """|spot tick - 10-min TWAP tick|. One tick is a 0.01% price move, so ticks ~= bps."""
-        p = self.chain._c(pos.pool.address, abi.CL_POOL)
+        return self.pool_twap_deviation_bps(pos.pool)
+
+    def pool_twap_deviation_bps(self, pool: PoolState) -> float | None:
+        p = self.chain._c(pool.address, abi.CL_POOL)
         try:
-            cums, _ = p.functions.observe([600, 0]).call(block_identifier=pos.pool.block)
+            cums, _ = p.functions.observe([600, 0]).call(block_identifier=pool.block)
         except Exception:  # noqa: BLE001 - oracle history too short
             return None
-        return abs(pos.pool.tick - (cums[1] - cums[0]) / 600)
+        return abs(pool.tick - (cums[1] - cums[0]) / 600)
+
+    def pool_blocks(self, pool: PoolState, live: bool) -> list[str]:
+        """Manipulation-guard reasons (empty = clear) for sending a swap or deposit into `pool` now."""
+        return self._twap_blocks(self.pool_twap_deviation_bps(pool), live)
 
     # ------------------------------------------------------------------ evaluate
 
@@ -319,7 +336,8 @@ class Engine:
         blocks = self._twap_blocks(self.twap_deviation_bps(fresh), live=True)
         if blocks:
             raise RuntimeError("blocked before broadcast: " + "; ".join(blocks))
-        with defer_sigint():
+        self._gate()
+        with defer_sigint(self.on_stop):
             return rb.rebalance(
                 fresh,
                 ev.decision.new_range,
@@ -363,7 +381,8 @@ class Engine:
                 f"wallet holds {have_wei / 1e18:.6f} ETH, below the {need_wei / 1e18:.6f} ETH gas reserve"
             )
         fresh = self.chain.position(token_id, owner_hint=self.cfg.owner)
-        with defer_sigint():
+        self._gate()
+        with defer_sigint(self.on_stop):
             try:
                 res = rb.withdraw(fresh, LiveRunner(self.chain, signer, tokens, self.cfg.execution, pos.pool.address))
             except RebalanceError as e:
@@ -454,9 +473,15 @@ class Engine:
 
 
 @contextlib.contextmanager
-def defer_sigint() -> Iterator[None]:
-    """Hold Ctrl-C until a live transaction sequence finishes; interrupting between the burn and the
-    mint would leave the funds out of any position. A second Ctrl-C still exits immediately."""
+def defer_sigint(on_stop: Callable[[int], None] | None = None) -> Iterator[None]:
+    """Hold Ctrl-C and SIGTERM (what `launchctl bootout` sends) until a live transaction sequence finishes;
+    interrupting between the burn and the mint would leave the funds out of any position. A second signal
+    still exits immediately.
+
+    Afterwards a held signal is handed to `on_stop(signum)` (also when the block raised), so the caller can book
+    the result and stop at a safe point. Without `on_stop` it is raised once the block has finished normally
+    (KeyboardInterrupt for Ctrl-C, SystemExit for SIGTERM).
+    """
     if threading.current_thread() is not threading.main_thread():
         yield
         return
@@ -466,14 +491,19 @@ def defer_sigint() -> Iterator[None]:
         if pending:
             raise KeyboardInterrupt
         pending.append(signum)
-        print("\nCtrl-C received: finishing the in-flight rebalance first (press again to force quit)")
+        print("\nstop requested: finishing the in-flight transaction sequence first (send it again to force quit)")
 
-    previous = signal.signal(signal.SIGINT, handler)
+    previous = {sig: signal.signal(sig, handler) for sig in (signal.SIGINT, signal.SIGTERM)}
     try:
         yield
     finally:
-        signal.signal(signal.SIGINT, previous)
-    if pending:
+        for sig, old in previous.items():
+            signal.signal(sig, old)
+        if pending and on_stop is not None:
+            on_stop(pending[0])
+    if pending and on_stop is None:
+        if pending[0] == signal.SIGTERM:
+            raise SystemExit(128 + signal.SIGTERM)
         raise KeyboardInterrupt
 
 

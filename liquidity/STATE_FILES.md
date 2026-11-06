@@ -70,7 +70,7 @@ file. Readers must tolerate a missing file, an unknown `schema`, and missing opt
 - In a position, `range` and `price` are human prices (token1 per token0).
 - In a position, `decision` is one of the strategy actions: `hold`, `rebalance`, `wait_confirm`, `wait_cooldown`, `wait_penalty` or `skip_unprofitable`.
 - An experiment's `status` is either `"running"` or `"graduated"`.
-- `actions` holds the newest 50 entries, newest last. An action's `kind` is one of `rebalance`, `compound`, `deploy`, `withdraw`, `topup`, `unwrap`, `scout`, `skip`, `graduate` or `error`.
+- `actions` holds the newest 50 entries, newest last. An action's `kind` is one of `rebalance`, `compound`, `deploy`, `withdraw`, `topup`, `unwrap`, `scout`, `skip`, `graduate`, `error`, `claim`, `collect`, `swap`, `register` or `closed`. Readers must show an unknown `kind` as plain text.
 
 ## `scout.json` — schema `aero-lp-scout/1`
 

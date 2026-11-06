@@ -247,3 +247,33 @@ def test_dry_run_hook_never_touches_state(tmp_path, monkeypatch):
     _step_with(eng, monkeypatch, sim)
     eng.step(42, live=False)
     assert eng.state.slot(42).current_token_id == 42
+
+
+def test_defer_sigint_also_holds_sigterm_and_then_exits_the_process():
+    import os
+    import signal
+
+    from aero_lp.engine import defer_sigint
+
+    finished = []
+    with pytest.raises(SystemExit) as e, defer_sigint():
+        os.kill(os.getpid(), signal.SIGTERM)
+        finished.append(True)
+    assert finished == [True] and e.value.code == 128 + signal.SIGTERM
+    assert signal.getsignal(signal.SIGTERM) == signal.SIG_DFL  # handlers restored
+
+
+def test_defer_sigint_hands_a_held_signal_to_the_caller_even_when_the_block_fails():
+    import os
+    import signal
+
+    from aero_lp.engine import defer_sigint
+
+    got = []
+    with pytest.raises(ValueError, match="sequence failed"), defer_sigint(got.append):
+        os.kill(os.getpid(), signal.SIGTERM)
+        raise ValueError("sequence failed")  # the caller still sees its own error, and the stop is not lost
+    assert got == [signal.SIGTERM]
+    with defer_sigint(got.append):  # no signal: nothing is reported
+        pass
+    assert got == [signal.SIGTERM]

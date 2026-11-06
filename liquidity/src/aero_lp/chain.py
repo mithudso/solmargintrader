@@ -41,6 +41,10 @@ def _type_str(p: dict[str, Any]) -> str:
     return t
 
 
+MIN_BLOCK_READ_TRIES = 8
+MIN_BLOCK_READ_DELAY_S = 1.5
+
+
 class PositionGone(RuntimeError):
     pass
 
@@ -171,6 +175,10 @@ class AeroChain:
         self.gauge_factory = self._c(addresses.CL_GAUGE_FACTORY, abi.CL_GAUGE_FACTORY)
         self.mc = self._c(MULTICALL3, MULTICALL3_ABI)
         self._tokens: dict[str, Token] = {}
+        # Highest block in which this process mined a transaction (set by LiveRunner). Balance reads that ask for
+        # "latest" are served at a block no older than this, so a load-balanced RPC node that is one block behind
+        # cannot return pre-transaction balances for the next operation's "before" snapshot.
+        self.min_block: int | None = None
 
     def _c(self, address: str, contract_abi: list[dict[str, Any]]) -> Contract:
         return self.w3.eth.contract(address=Web3.to_checksum_address(address), abi=contract_abi)
@@ -368,13 +376,19 @@ class AeroChain:
         return sorted({int(i) for i in ids})
 
     def erc20_balances(self, owner: str, tokens: list[str], block: int | str = "latest") -> list[int]:
-        return [
-            int(x)
-            for x in self.multicall(
-                [Call(self._c(t, abi.ERC20), "balanceOf", (Web3.to_checksum_address(owner),)) for t in tokens],
-                block=block,
-            )
-        ]
+        calls = [Call(self._c(t, abi.ERC20), "balanceOf", (Web3.to_checksum_address(owner),)) for t in tokens]
+        if block != "latest" or not self.min_block:
+            return [int(x) for x in self.multicall(calls, block=block)]
+        last: Exception | None = None
+        for attempt in range(MIN_BLOCK_READ_TRIES):
+            try:
+                pinned = max(self.min_block, int(self.w3.eth.block_number))
+                return [int(x) for x in self.multicall(calls, block=pinned)]
+            except Exception as e:  # noqa: BLE001 - the node has not imported our last block yet: wait and retry
+                last = e
+                if attempt + 1 < MIN_BLOCK_READ_TRIES:
+                    time.sleep(MIN_BLOCK_READ_DELAY_S)
+        raise RuntimeError(f"RPC could not serve balances at or after block {self.min_block}: {last}") from last
 
     def gauge_aero_per_day(self, gauge: str, head: int, blocks_per_day: int = 43_200) -> float:
         """AERO emitted to `gauge` per day, from LeafVoter.projectedCumulativeRewardShare over the last day.
