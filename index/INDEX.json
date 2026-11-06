@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-06T16:32:46+00:00",
+  "generatedAt": "2026-11-06T17:26:04+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "45a4643",
+  "commit": "6791797",
   "counts": {
     "files": 479,
-    "bytes": 8136701,
+    "bytes": 8136671,
     "byKind": {
       "doc": 112,
       "code-python": 103,
@@ -389,9 +389,9 @@
       "title": "Semantic Indexing Rule",
       "summary": "Instructions for agents working in this repository. Read before changing code. Three components with different risk profiles. Know which one you are in: The owner has given this instruction three times (last on 2026-11-06). Do not ask for it again.",
       "summarySource": "opening-prose",
-      "bytes": 9820,
+      "bytes": 9790,
       "lines": 149,
-      "sha1": "d2deb0df2c00745f013164b7f07d5fa06cc1d3e0",
+      "sha1": "247e51f2ec9f211618f4fbf74fed5cc98629a7ea",
       "symbols": [],
       "imports": [],
       "internalImports": [],

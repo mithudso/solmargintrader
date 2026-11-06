@@ -18,7 +18,7 @@
     ".nvmrc": 2,
     ".remember/remember.md": 541,
     "AGENTS.md": 104,
-    "CLAUDE.md": 995,
+    "CLAUDE.md": 991,
     "CLAUDE.md-E": 780,
     "GEMINI.md": 299,
     "README.md": 688,
@@ -480,7 +480,7 @@
     "tools/land.sh": 417,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-06T16:32:46+00:00",
+  "generatedAt": "2026-11-06T17:26:04+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -24018,6 +24018,7 @@
     },
     "bound": {
       ".github/SECURITY.md": 1,
+      "CLAUDE.md": 1,
       "backtester/README.md": 2,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/strategy_cards/bb_reversion.md": 2,
@@ -34677,7 +34678,7 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 1
     },
     "cited": {
-      "CLAUDE.md": 2,
+      "CLAUDE.md": 1,
       "backtester/core/strategies/signals.py": 1,
       "backtester/strategy_cards/dex_cex_dislocation.md": 1,
       "backtester/strategy_cards/triangular_arbitrage.md": 1,
@@ -34810,7 +34811,7 @@
       ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "AGENTS.md": 2,
-      "CLAUDE.md": 3,
+      "CLAUDE.md": 2,
       "CLAUDE.md-E": 2,
       "GEMINI.md": 1,
       "backtester/README.md": 1,
@@ -43561,7 +43562,6 @@
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 1
     },
     "contradicted": {
-      "CLAUDE.md": 1,
       "backtester/tests/test_decide.py": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
@@ -71487,7 +71487,7 @@
     },
     "evidence": {
       ".gitignore": 2,
-      "CLAUDE.md": 3,
+      "CLAUDE.md": 2,
       "CLAUDE.md-E": 1,
       "backtester/core/report.py": 1,
       "backtester/core/strategy_cards.py": 5,
@@ -71708,7 +71708,7 @@
     },
     "exact": {
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
-      "CLAUDE.md": 1,
+      "CLAUDE.md": 2,
       "CLAUDE.md-E": 1,
       "backtester/core/cointegration.py": 1,
       "backtester/core/data.py": 1,
@@ -89251,7 +89251,7 @@
       ".githooks/pre-merge-commit": 6,
       ".github/copilot-instructions.md": 2,
       ".remember/remember.md": 4,
-      "CLAUDE.md": 3,
+      "CLAUDE.md": 4,
       "CLAUDE.md-E": 2,
       "GEMINI.md": 1,
       "backtester/README.md": 1,
@@ -109016,6 +109016,7 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 1
     },
     "judged": {
+      "CLAUDE.md": 1,
       "backtester/strategy_cards/buy_and_hold.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -110034,7 +110035,7 @@
     },
     "kept": {
       ".gitignore": 1,
-      "CLAUDE.md": 1,
+      "CLAUDE.md": 2,
       "CLAUDE.md-E": 1,
       "backtester/README.md": 1,
       "backtester/core/funding.py": 1,
@@ -113301,7 +113302,6 @@
       "soltui/SolTUI.icns": 2
     },
     "lead": {
-      "CLAUDE.md": 1,
       "backtester/core/cpcv.py": 3,
       "backtester/tests/test_cpcv.py": 1,
       "backtester/tests/test_geometry.py": 2,
@@ -115998,7 +115998,7 @@
       ".gitattributes": 2,
       ".github/ISSUE_TEMPLATE/bug_report.md": 2,
       ".remember/remember.md": 2,
-      "CLAUDE.md": 2,
+      "CLAUDE.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/cli.py": 2,
@@ -146303,7 +146303,7 @@
       "llms-full.txt": 2
     },
     "packs": {
-      "CLAUDE.md": 1,
+      "CLAUDE.md": 2,
       "liquidity/CLAUDE.md": 3
     },
     "pad": {
@@ -163324,6 +163324,7 @@
       "extension/tools/verify-endpoints.js": 1
     },
     "quotes": {
+      "CLAUDE.md": 1,
       "backtester/strategy_cards/avellaneda_stoikov_mm.md": 2,
       "backtester/strategy_cards/triangular_arbitrage.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
@@ -174504,7 +174505,7 @@
       ".github/SECURITY.md": 2,
       ".github/copilot-instructions.md": 1,
       ".gitignore": 6,
-      "CLAUDE.md": 4,
+      "CLAUDE.md": 3,
       "CLAUDE.md-E": 2,
       "GEMINI.md": 1,
       "README.md": 7,
@@ -174801,6 +174802,7 @@
       "soltui/tui.py": 2
     },
     "researched": {
+      "CLAUDE.md": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 1,
       "skills/trading-and-investing/references/jupiter-jlp-pool.md": 1,
@@ -175501,6 +175503,7 @@
     "rest": {
       ".github/SECURITY.md": 1,
       ".remember/remember.md": 1,
+      "CLAUDE.md": 1,
       "README.md": 1,
       "README.md-E": 1,
       "backtester/PROMPT.md": 1,
@@ -181089,7 +181092,7 @@
     "runs": {
       ".claude/agents/aero-pool-scout.md": 2,
       ".github/workflows/ci.yml": 10,
-      "CLAUDE.md": 2,
+      "CLAUDE.md": 1,
       "CLAUDE.md-E": 1,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 8,
@@ -181751,7 +181754,6 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1
     },
     "sample": {
-      "CLAUDE.md": 1,
       "backtester/PROMPT.md": 13,
       "backtester/README.md": 20,
       "backtester/cli.py": 8,
@@ -199472,7 +199474,7 @@
     "status": {
       ".claude/agents/aero-pool-scout.md": 1,
       ".github/SECURITY.md": 1,
-      "CLAUDE.md": 2,
+      "CLAUDE.md": 1,
       "CLAUDE.md-E": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/funding.py": 1,
@@ -221078,7 +221080,7 @@
       ".claude/agents/aero-pool-scout.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/SECURITY.md": 1,
-      "CLAUDE.md": 2,
+      "CLAUDE.md": 1,
       "CLAUDE.md-E": 1,
       "GEMINI.md": 1,
       "backtester/PROMPT.md": 2,
@@ -225304,7 +225306,6 @@
       "skills/trading-and-investing/references/options-fundamentals.md": 1
     },
     "ungated": {
-      "CLAUDE.md": 1,
       "backtester/strategy_cards/adx_filtered_trend.md": 1,
       "backtester/tests/test_decide.py": 1,
       "research/RANKED_LISTS.md": 1
@@ -225511,6 +225512,7 @@
     },
     "unit": {
       ".github/workflows/ci.yml": 5,
+      "CLAUDE.md": 1,
       "backtester/cli.py": 2,
       "backtester/core/cointegration.py": 2,
       "backtester/core/data.py": 1,
@@ -227001,7 +227003,7 @@
     },
     "unverified": {
       ".github/copilot-instructions.md": 1,
-      "CLAUDE.md": 2,
+      "CLAUDE.md": 1,
       "CLAUDE.md-E": 1,
       "backtester/strategy_cards/ladder_grid.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
@@ -241553,6 +241555,6 @@
     "documents": 479,
     "terms": 25164,
     "termsBeforePrune": 25167,
-    "totalTokens": 598558
+    "totalTokens": 598554
   }
 }
