@@ -28,6 +28,20 @@ class SlotState:
         return ((now or time.time()) - self.last_rebalance_ts) / 60
 
 
+def home() -> Path:
+    """State directory: $AERO_LP_HOME or ~/.aero-lp."""
+    return Path(os.environ.get("AERO_LP_HOME", "~/.aero-lp")).expanduser()
+
+
+def atomic_write_json(path: Path, doc: Any) -> None:
+    """Write JSON so a reader never sees a half-written file (temp file in the same dir + rename)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
+    with os.fdopen(fd, "w") as f:
+        json.dump(doc, f, indent=2, default=str)
+    os.replace(tmp, path)
+
+
 class State:
     def __init__(self, path: Path):
         self.path = path

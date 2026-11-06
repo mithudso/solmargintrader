@@ -199,6 +199,67 @@ def cmd_withdraw(a: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_scout(a: argparse.Namespace) -> int:
+    from .scout import candidate_pools, format_report, run_scout
+    from .state import home
+
+    chain = AeroChain(a.rpc)
+    market = MarketData()
+    pools = a.pool or candidate_pools(chain, market, a.top_by_volume)
+    print(f"scoring {len(pools)} pools for a ${a.deposit_usd:,.2f} deposit (about 15 s each)...", flush=True)
+    doc = run_scout(
+        chain, market, a.deposit_usd, pools=pools, out=home() / "scout.json", progress=lambda m: print(m, flush=True)
+    )
+    print()
+    print(format_report(doc, a.top))
+    print(f"\nwritten: {home() / 'scout.json'}")
+    return 0
+
+
+def cmd_daemon(a: argparse.Namespace) -> int:
+    from .daemon import Daemon
+
+    cfg = load(a.config)
+    signer = None
+    if a.live:
+        from .wallet import load_signer
+
+        problems = AeroChain(cfg.rpc_url).verify_deployment()
+        if problems:
+            print("refusing live mode:\n" + "\n".join(problems))
+            return 2
+        signer = load_signer(cfg.owner, cfg.key_file or None)
+        print(f"LIVE daemon: signing as {signer.address}. Kill switch: touch $AERO_LP_HOME/KILL", flush=True)
+    else:
+        print("DRY-RUN daemon: plans and simulations only. Add --live to act.", flush=True)
+    Daemon(cfg, a.live, signer).run(once=a.once)
+    return 0
+
+
+def cmd_pnl(a: argparse.Namespace) -> int:
+    from .ledger import Ledger
+    from .state import home
+
+    lg = Ledger(home() / "ledger.sqlite")
+    rows = [lg.pnl(r["slot"]) for r in lg.db.execute("SELECT slot FROM slots ORDER BY opened_at")]
+    if not rows:
+        print("no positions in the ledger yet")
+        return 0
+    print(
+        f"{'slot':>9} {'pair':14} {'state':7} {'deposited':>10} {'value':>9} {'rewards':>8} {'gas':>6} "
+        f"{'P&L':>8} {'vs HODL':>8} {'APR':>7}  experiment"
+    )
+    for p in rows:
+        if p is None:
+            continue
+        print(
+            f"{p.slot:>9} {p.pair[:14]:14} {'closed' if p.closed_at else 'open':7} {p.deposited_usd:>10.2f} "
+            f"{p.value_usd:>9.2f} {p.rewards_usd:>8.2f} {p.gas_usd:>6.3f} {p.pnl_usd:>+8.2f} "
+            f"{p.pnl_vs_hodl_usd:>+8.2f} {p.apr_realized:>+6.1f}%  {p.experiment or ''}"
+        )
+    return 0
+
+
 def cmd_run(a: argparse.Namespace) -> int:
     cfg, eng = _engine(a)
     signer = None
@@ -318,6 +379,18 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--live", action="store_true", help="sign and broadcast transactions")
             p.add_argument("--once", action="store_true")
         p.set_defaults(fn=fn)
+    p = with_rpc(sub.add_parser("scout", help="rank pools by likely profit for a deposit size"))
+    p.add_argument("--deposit-usd", type=float, default=50.0)
+    p.add_argument("--pool", action="append", help="score only these pools (repeatable)")
+    p.add_argument("--top-by-volume", type=int, default=20)
+    p.add_argument("--top", type=int, default=20)
+    p.set_defaults(fn=cmd_scout)
+    p = sub.add_parser("daemon", help="manage, compound, scout and allocate in one loop")
+    p.add_argument("-c", "--config", default="~/.aero-lp/config.toml")
+    p.add_argument("--live", action="store_true", help="sign and broadcast")
+    p.add_argument("--once", action="store_true", help="one tick, then exit")
+    p.set_defaults(fn=cmd_daemon)
+    sub.add_parser("pnl", help="per-slot P&L from the ledger").set_defaults(fn=cmd_pnl)
     p = with_rpc(sub.add_parser("backtest"))
     p.add_argument("--pool", required=True)
     p.add_argument("--widths", type=lambda s: [float(x) for x in s.split(",")], default=[2, 4, 8, 15, 30])

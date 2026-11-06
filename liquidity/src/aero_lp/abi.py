@@ -79,7 +79,13 @@ _MINT = (
 _DECREASE = "tuple(uint256 tokenId, uint128 liquidity, uint256 amount0Min, uint256 amount1Min, uint256 deadline) params"
 _COLLECT = "tuple(uint256 tokenId, address recipient, uint128 amount0Max, uint128 amount1Max) params"
 
+_INCREASE = (
+    "tuple(uint256 tokenId, uint256 amount0Desired, uint256 amount1Desired, uint256 amount0Min, "
+    "uint256 amount1Min, uint256 deadline) params"
+)
+
 NPM = [
+    fn("increaseLiquidity", _INCREASE, "uint128 liquidity, uint256 amount0, uint256 amount1", "payable"),
     fn(
         "positions",
         "uint256 tokenId",
@@ -179,4 +185,9 @@ _EXACT_IN = (
 )
 SWAP_ROUTER = [
     fn("exactInputSingle", _EXACT_IN, "uint256 amountOut", "payable"),
+]
+
+WETH = [
+    fn("withdraw", "uint256 wad", "", "nonpayable"),
+    fn("deposit", "", "", "payable"),
 ]

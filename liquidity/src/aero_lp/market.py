@@ -92,15 +92,27 @@ class MarketData:
         return out
 
 
-def vol_from_closes(closes: list[float], step_hours: float = 1.0) -> float | None:
-    """Daily log-return vol from a price series."""
+def vol_from_closes(closes: list[float], step_hours: float = 1.0, horizon_hours: float = 24.0) -> float | None:
+    """Daily log-return vol from a price series.
+
+    Uses overlapping `horizon_hours` returns when there are at least three horizons of data. Trade prices
+    bounce between bid and ask inside a tick; that noise is mean-reverting, so it inflates the variance of
+    short returns but cancels out over a day. Scaling hourly variance by 24 would count the bounce 24
+    times, which for pegged pairs (LST/ETH, stable/stable) overstates daily vol, and therefore LVR, several
+    fold. Falls back to one-step returns for short histories.
+    """
     pts = [c for c in closes if c > 0]
     if len(pts) < 12:
         return None
-    rets = [math.log(pts[i + 1] / pts[i]) for i in range(len(pts) - 1)]
+    k = max(1, round(horizon_hours / step_hours))
+    if len(pts) < 3 * k + 1:
+        k = 1
+    rets = [math.log(pts[i + k] / pts[i]) for i in range(len(pts) - k)]
+    if len(rets) < 2:
+        return None
     mean = sum(rets) / len(rets)
     var = sum((r - mean) ** 2 for r in rets) / (len(rets) - 1)
-    return math.sqrt(var) * math.sqrt(24 / step_hours)
+    return math.sqrt(var / k) * math.sqrt(24 / step_hours)
 
 
 # ---------------------------------------------------------------------------- earnings model

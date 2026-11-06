@@ -4,7 +4,7 @@
 # to extension/ (ESM, no build step, no packages). The Python side already takes
 # pandas and numpy for the backtester; these two are additive to soltui only.
 
-# Textual TUI (the nine-tab console). Same choice as ~/dev/story-tui.
+# Textual TUI (the thirteen-tab console). Same choice as ~/dev/story-tui.
 textual>=8.2.8
 
 # Optional: serves that same console as a real browser window, which is what

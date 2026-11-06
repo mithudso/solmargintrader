@@ -216,3 +216,20 @@ jobs:
         with:
           node-version: '22'
       - run: node tools/verify-endpoints.js
+
+  # liquidity/ manages Aero LP positions on Base. It has its own pyproject + lock (web3 lives only here),
+  # so it gets its own job, the same way the extension does. Network tests (-m network) are excluded by
+  # default and are run by hand: they read live chain state.
+  liquidity:
+    name: liquidity (python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: liquidity
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --extra dev -p 3.13
+      - run: uv run ruff check src tests
+      - run: uv run ruff format --check src tests
+      - run: uv run pytest -q

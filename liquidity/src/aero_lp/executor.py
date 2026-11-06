@@ -27,7 +27,7 @@ from hexbytes import HexBytes
 from web3 import Web3
 
 from . import abi, addresses, clmath
-from .chain import AeroChain, PositionState
+from .chain import AeroChain, PoolState, PositionState
 from .strategy import Range
 
 T = TypeVar("T")
@@ -145,6 +145,7 @@ class LiveRunner:
         # still leaves the hash on record (see RebalanceError).
         self.sent_hashes: list[str] = []
         self._next_nonce: int | None = None
+        self.fee_wei = 0  # execution + L1 data fee actually paid, summed over every receipt
 
     def block_timestamp(self) -> int:
         return int(self.w3.eth.get_block("latest")["timestamp"])
@@ -235,6 +236,7 @@ class LiveRunner:
             if rcpt["status"] != 1:
                 raise RuntimeError(f"tx '{tx.label}' reverted: {_hex(h)}")
             self.gas_used[tx.label] = int(rcpt["gasUsed"])
+            self.fee_wei += receipt_fee_wei(rcpt)
             hashes.append(_hex(h))
             block = int(rcpt["blockNumber"])
             logs.extend(
@@ -266,6 +268,7 @@ class RebalanceResult:
     amounts_in_position: tuple[int, int] = (0, 0)
     aero_claimed: int = 0
     notes: list[str] = field(default_factory=list)
+    fee_wei: int = 0  # gas actually paid (live runner only)
 
 
 class RebalanceError(RuntimeError):
@@ -436,11 +439,45 @@ class Rebalancer:
                     "not swapping into a possibly manipulated price. Tokens are in the wallet."
                 )
 
-        # Swap toward the new range's value ratio. Our own swap moves the price, so after the first
-        # pass we recompute at the post-swap price and do one small corrective pass if still off.
         sp = r.sqrt_price_x96 or pool.sqrt_price_x96
-        avail0, avail1 = got0, got1
-        value_usd = got0 / 10**pool.token0.decimals * usd0 + got1 / 10**pool.token1.decimals * usd1
+
+        def avail(b: dict[str, int]) -> tuple[int, int]:
+            # Only what came out of the position (balance change since before the exit) is redeployed.
+            return max(0, b[t0] - start[t0]), max(0, b[t1] - start[t1])
+
+        avail0, avail1, sp_now = self._ratio_swap_loop(
+            pos.pool, new, runner, res, on_stage, avail, got0, got1, sp, usd0, usd1, deadline, slip
+        )
+        self._mint_and_stake(
+            pos.pool, new, stake_new, runner, res, on_stage, start, avail0, avail1, sp_now, deadline, slip
+        )
+        self._finish(res, runner)
+        return res
+
+    # -------------------------------------------------------------- shared building blocks
+
+    def _finish(self, res: RebalanceResult, runner: Runner) -> None:
+        res.gas_used = dict(getattr(runner, "gas_used", {}))
+        res.fee_wei = int(getattr(runner, "fee_wei", 0))
+
+    def _ratio_swap_loop(
+        self,
+        pool: PoolState,
+        new: Range,
+        runner: Runner,
+        res: RebalanceResult,
+        on_stage: StageHook,
+        avail: Callable[[dict[str, int]], tuple[int, int]],
+        avail0: int,
+        avail1: int,
+        sp: int,
+        usd0: float,
+        usd1: float,
+        deadline: Callable[[], int],
+        slip: float,
+    ) -> tuple[int, int, int]:
+        t0, t1 = pool.token0.address, pool.token1.address
+        value_usd = avail0 / 10**pool.token0.decimals * usd0 + avail1 / 10**pool.token1.decimals * usd1
         for attempt in range(2):
             raw_p = clmath.sqrtx96_to_price(sp)
             frac0 = clmath.value0_fraction(
@@ -470,12 +507,28 @@ class Rebalancer:
             res.stages.append("swap")
             res.tx_hashes += r.tx_hashes
             on_stage("swap", res)
-            avail0, avail1 = max(0, r.balances[t0] - start[t0]), max(0, r.balances[t1] - start[t1])
+            avail0, avail1 = avail(r.balances)
             sp = r.sqrt_price_x96 or sp
-        sp_now = sp
-        if not new.contains(clmath_tick(sp_now)):
-            res.notes.append("price left the target range during the swap; mint will be single-sided")
+        if not new.contains(clmath_tick(sp)):
+            res.notes.append("price is outside the target range after the swap; the deposit will be single-sided")
+        return avail0, avail1, sp
 
+    def _mint_and_stake(
+        self,
+        pool: PoolState,
+        new: Range,
+        stake_new: bool,
+        runner: Runner,
+        res: RebalanceResult,
+        on_stage: StageHook,
+        start: dict[str, int],
+        avail0: int,
+        avail1: int,
+        sp_now: int,
+        deadline: Callable[[], int],
+        slip: float,
+    ) -> None:
+        t0, t1 = pool.token0.address, pool.token1.address
         sa, sb = clmath.get_sqrt_ratio_at_tick(new.tick_lower), clmath.get_sqrt_ratio_at_tick(new.tick_upper)
         liq = clmath.get_liquidity_for_amounts(sp_now, sa, sb, avail0, avail1)
         if liq <= 0:
@@ -509,31 +562,248 @@ class Rebalancer:
         res.stages.append("mint")
         res.tx_hashes += r.tx_hashes
         res.new_token_id = minted_token_id(r.logs, self.npm.address, self.owner)
-        res.amounts_in_position = (avail0 - (r.balances[t0] - start[t0]), avail1 - (r.balances[t1] - start[t1]))
+        res.amounts_in_position = (e0, e1)  # expected deposit; the NPM refunds any remainder
         if res.new_token_id is None:
             raise RuntimeError("mint succeeded but no Transfer(0x0 -> owner) log found")
         on_stage("mint", res)
-
         if stake_new and pool.gauge_alive:
-            g = self.chain.gauge_contract(pool.gauge)
+            self._stake(pool, res.new_token_id, runner, res, on_stage)
+        elif stake_new:
+            res.notes.append("gauge not activated: left the new deposit unstaked (earning fees)")
+
+    def _stake(self, pool: PoolState, token_id: int, runner: Runner, res: RebalanceResult, on_stage: StageHook) -> None:
+        g = self.chain.gauge_contract(pool.gauge)
+        r = runner.execute(
+            [
+                PlannedTx(
+                    "npm.approve(gauge)", self.npm.address, self.npm.encode_abi("approve", args=[g.address, token_id])
+                ),
+                PlannedTx("gauge.deposit", g.address, g.encode_abi("deposit", args=[token_id])),
+            ]
+        )
+        res.stages.append("stake")
+        res.tx_hashes += r.tx_hashes
+        res.staked = True
+        on_stage("stake", res)
+
+    def _wrap(self, op: str, res: RebalanceResult, runner: Runner, fn: Callable[[], None]) -> RebalanceResult:
+        try:
+            fn()
+            self._finish(res, runner)
+            return res
+        except Exception as e:
+            res.tx_hashes = list(getattr(runner, "sent_hashes", None) or res.tx_hashes)
+            self._finish(res, runner)
+            where = res.stages[-1] if res.stages else "start"
+            raise RebalanceError(f"{op} failed after stage '{where}': {e}", res) from e
+
+    def _snapshot(self, tokens: list[str]) -> dict[str, int]:
+        return dict(zip(tokens, self.chain.erc20_balances(self.owner, tokens), strict=True))
+
+    # -------------------------------------------------------------- new positions and additions
+
+    def deploy(
+        self,
+        pool: PoolState,
+        new: Range,
+        stake: bool,
+        amount0: int,
+        amount1: int,
+        runner: Runner,
+        usd0: float,
+        usd1: float,
+        on_stage: StageHook | None = None,
+    ) -> RebalanceResult:
+        """Open a new position from wallet funds: swap toward the range's ratio inside `pool`, mint, stake.
+
+        Only `amount0`/`amount1` (plus what our own swaps turn them into) are used; other wallet funds are not.
+        """
+        res = RebalanceResult(None, False, [], [], {})
+        hook = on_stage or (lambda stage, r: None)
+        tokens = runner_tokens(pool.token0.address, pool.token1.address)
+
+        def go() -> None:
+            start = self._snapshot(tokens)
+            slip = self.cfg.max_slippage_bps / 1e4
+
+            def deadline() -> int:
+                return runner.block_timestamp() + self.cfg.deadline_s
+
+            t0, t1 = pool.token0.address, pool.token1.address
+
+            def avail(b: dict[str, int]) -> tuple[int, int]:
+                return max(0, amount0 + b[t0] - start[t0]), max(0, amount1 + b[t1] - start[t1])
+
+            a0, a1, sp = self._ratio_swap_loop(
+                pool, new, runner, res, hook, avail, amount0, amount1, pool.sqrt_price_x96, usd0, usd1, deadline, slip
+            )
+            self._mint_and_stake(pool, new, stake, runner, res, hook, start, a0, a1, sp, deadline, slip)
+
+        return self._wrap("deploy", res, runner, go)
+
+    def topup(
+        self,
+        pos: PositionState,
+        amount0: int,
+        amount1: int,
+        runner: Runner,
+        usd0: float,
+        usd1: float,
+        on_stage: StageHook | None = None,
+    ) -> RebalanceResult:
+        """Add wallet funds to an existing position (compounding or reinforcing a winner).
+
+        A staked NFT belongs to the gauge, so it is unstaked first (which also claims its AERO) and restaked
+        after the increase. The same token id is kept.
+        """
+        res = RebalanceResult(pos.token_id, pos.staked, [], [], {})
+        hook = on_stage or (lambda stage, r: None)
+        pool = pos.pool
+        tokens = runner_tokens(pool.token0.address, pool.token1.address)
+        rng = Range(pos.tick_lower, pos.tick_upper)
+
+        def go() -> None:
+            start = self._snapshot(tokens)
+            slip = self.cfg.max_slippage_bps / 1e4
+
+            def deadline() -> int:
+                return runner.block_timestamp() + self.cfg.deadline_s
+
+            t0, t1 = pool.token0.address, pool.token1.address
+            sp = pool.sqrt_price_x96
+            if pos.staked:
+                g = self.chain.gauge_contract(pool.gauge)
+                r = runner.execute(
+                    [PlannedTx("gauge.withdraw", g.address, g.encode_abi("withdraw", args=[pos.token_id]))]
+                )
+                res.stages.append("unstake")
+                res.tx_hashes += r.tx_hashes
+                res.aero_claimed = r.balances[addresses.AERO_TOKEN] - start[addresses.AERO_TOKEN]
+                hook("unstake", res)
+                sp = r.sqrt_price_x96 or sp
+
+            def avail(b: dict[str, int]) -> tuple[int, int]:
+                # Unstaking collects the position's fees to the wallet; they are compounded too.
+                return max(0, amount0 + b[t0] - start[t0]), max(0, amount1 + b[t1] - start[t1])
+
+            a0, a1, sp = self._ratio_swap_loop(
+                pool, rng, runner, res, hook, avail, amount0, amount1, sp, usd0, usd1, deadline, slip
+            )
+            sa, sb = clmath.get_sqrt_ratio_at_tick(pos.tick_lower), clmath.get_sqrt_ratio_at_tick(pos.tick_upper)
+            liq = clmath.get_liquidity_for_amounts(sp, sa, sb, a0, a1)
+            if liq <= 0:
+                raise RuntimeError("nothing to add: amounts give zero liquidity at the current price")
+            e0, e1 = clmath.get_amounts_for_liquidity(sp, sa, sb, liq)
+            params = (pos.token_id, a0, a1, int(e0 * (1 - slip)), int(e1 * (1 - slip)), deadline())
+            r = runner.execute(
+                [
+                    self._approve(t0, self.npm.address, a0),
+                    self._approve(t1, self.npm.address, a1),
+                    PlannedTx(
+                        "increaseLiquidity", self.npm.address, self.npm.encode_abi("increaseLiquidity", args=[params])
+                    ),
+                ]
+            )
+            res.stages.append("increase")
+            res.tx_hashes += r.tx_hashes
+            res.amounts_in_position = (e0, e1)
+            hook("increase", res)
+            if pos.staked:
+                self._stake(pool, pos.token_id, runner, res, hook)
+
+        return self._wrap("topup", res, runner, go)
+
+    def claim(self, pos: PositionState, runner: Runner) -> RebalanceResult:
+        """Claim AERO for a staked position to the wallet (no unstake)."""
+        res = RebalanceResult(pos.token_id, pos.staked, [], [], {})
+        tokens = runner_tokens(pos.pool.token0.address, pos.pool.token1.address)
+
+        def go() -> None:
+            start = self._snapshot(tokens)
+            g = self.chain.gauge_contract(pos.pool.gauge)
             r = runner.execute(
                 [
                     PlannedTx(
-                        "npm.approve(gauge)",
-                        self.npm.address,
-                        self.npm.encode_abi("approve", args=[g.address, res.new_token_id]),
-                    ),
-                    PlannedTx("gauge.deposit", g.address, g.encode_abi("deposit", args=[res.new_token_id])),
+                        "gauge.claimEmissions",
+                        g.address,
+                        g.encode_abi("claimEmissions", args=[self.owner, self.owner, [pos.token_id]]),
+                    )
                 ]
             )
-            res.stages.append("stake")
+            res.stages.append("claim")
             res.tx_hashes += r.tx_hashes
-            res.staked = True
-            on_stage("stake", res)
-        elif stake_new:
-            res.notes.append("gauge not activated: left the new deposit unstaked (earning fees)")
-        res.gas_used = dict(getattr(runner, "gas_used", {}))
-        return res
+            res.aero_claimed = r.balances[addresses.AERO_TOKEN] - start[addresses.AERO_TOKEN]
+
+        return self._wrap("claim", res, runner, go)
+
+    def collect(self, pos: PositionState, runner: Runner) -> RebalanceResult:
+        """Collect an unstaked position's fees to the wallet (liquidity untouched)."""
+        res = RebalanceResult(pos.token_id, False, [], [], {})
+        tokens = runner_tokens(pos.pool.token0.address, pos.pool.token1.address)
+
+        def go() -> None:
+            start = self._snapshot(tokens)
+            r = runner.execute(
+                [
+                    PlannedTx(
+                        "collect",
+                        self.npm.address,
+                        self.npm.encode_abi("collect", args=[(pos.token_id, self.owner, UINT128_MAX, UINT128_MAX)]),
+                    )
+                ]
+            )
+            t0, t1 = pos.pool.token0.address, pos.pool.token1.address
+            res.stages.append("collect")
+            res.tx_hashes += r.tx_hashes
+            res.amounts_in_position = (r.balances[t0] - start[t0], r.balances[t1] - start[t1])
+
+        return self._wrap("collect", res, runner, go)
+
+    def swap_exact(
+        self, pool: PoolState, token_in: str, amount_in: int, runner: Runner, min_out: int
+    ) -> RebalanceResult:
+        """One exactInputSingle on `pool` (used to turn an idle token into a target pool's token)."""
+        res = RebalanceResult(None, False, [], [], {})
+        t0, t1 = pool.token0.address, pool.token1.address
+        token_out = t1 if token_in.lower() == t0.lower() else t0
+
+        def go() -> None:
+            deadline = runner.block_timestamp() + self.cfg.deadline_s
+            params = (token_in, token_out, pool.tick_spacing, self.owner, deadline, amount_in, min_out, 0)
+            r = runner.execute(
+                [
+                    self._approve(token_in, self.router.address, amount_in),
+                    PlannedTx(
+                        f"swap {amount_in}",
+                        self.router.address,
+                        self.router.encode_abi("exactInputSingle", args=[params]),
+                    ),
+                ]
+            )
+            res.stages.append("swap")
+            res.tx_hashes += r.tx_hashes
+
+        return self._wrap("swap", res, runner, go)
+
+    def unwrap_weth(self, amount: int, runner: Runner) -> RebalanceResult:
+        """WETH -> native ETH, to keep a gas reserve without asking the owner to send ETH."""
+        res = RebalanceResult(None, False, [], [], {})
+        weth = self.chain.w3.eth.contract(address=Web3.to_checksum_address(addresses.WETH), abi=abi.WETH)
+
+        def go() -> None:
+            r = runner.execute([PlannedTx("weth.withdraw", weth.address, weth.encode_abi("withdraw", args=[amount]))])
+            res.stages.append("unwrap")
+            res.tx_hashes += r.tx_hashes
+
+        return self._wrap("unwrap", res, runner, go)
+
+
+def receipt_fee_wei(rcpt: Any) -> int:
+    """Execution fee + OP-stack L1 data fee from a receipt (l1Fee may be hex, int or absent)."""
+    fee = int(rcpt["gasUsed"]) * int(rcpt.get("effectiveGasPrice", 0) or 0)
+    l1 = rcpt.get("l1Fee", 0) or 0
+    fee += int(l1, 16) if isinstance(l1, str) else int(l1)
+    return fee
 
 
 def clmath_tick(sqrt_price_x96: int) -> int:

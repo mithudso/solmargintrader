@@ -78,9 +78,26 @@ def test_vol_from_closes_scales_hourly_to_daily():
     rets = [math.log(closes[i + 1] / closes[i]) for i in range(48)]
     mean = sum(rets) / 48
     hourly = math.sqrt(sum((r - mean) ** 2 for r in rets) / 47)
+    # Short history (< 3 horizons): plain one-step returns scaled to a day.
     assert vol_from_closes(closes) == pytest.approx(hourly * math.sqrt(24))
-    assert vol_from_closes(closes, step_hours=4) == pytest.approx(hourly * math.sqrt(6))
+    assert vol_from_closes(closes, step_hours=4, horizon_hours=4) == pytest.approx(hourly * math.sqrt(6))
     assert vol_from_closes([1.0] * 5) is None  # too short
+
+
+def test_vol_from_closes_ignores_bid_ask_bounce_but_keeps_real_moves():
+    import random
+
+    bounce = [100.0 * (1.001 if i % 2 else 1.0) for i in range(169)]  # pegged pair bouncing in one tick
+    one_step = vol_from_closes(bounce, horizon_hours=1)
+    robust = vol_from_closes(bounce)
+    assert robust < one_step / 20  # the bounce cancels over a day
+
+    rng = random.Random(7)
+    walk = [100.0]
+    for _ in range(168 * 4):
+        walk.append(walk[-1] * math.exp(rng.gauss(0, 0.01)))  # 1%/h true vol -> 4.9%/day
+    est = vol_from_closes(walk)
+    assert est == pytest.approx(0.01 * math.sqrt(24), rel=0.25)
 
 
 def _market(handler) -> MarketData:

@@ -40,7 +40,7 @@ class StrategyConfig:
     fixed_half_width_pct: float = 8.0
     vol_k: float = 2.0
     horizon_days: float = 3.0
-    min_half_width_pct: float = 2.0
+    min_half_width_pct: float = 0.05  # pegged pairs need a few-bp ranges; snapping to tick spacing widens it
     max_half_width_pct: float = 40.0
     edge_buffer: float = 0.10  # fraction of range (log space) treated as "about to exit"
     confirm_checks: int = 2
@@ -131,7 +131,7 @@ def score_widths(
     sigma_daily: float | None,
     cost_per_rebalance_frac: float,
     cfg: StrategyConfig,
-    points: int = 40,
+    points: int = 60,
 ) -> list[WidthScore]:
     """Score a geometric grid of half-widths between the configured min and max.
 
