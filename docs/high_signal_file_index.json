@@ -411,14 +411,14 @@
       "component": "extension",
       "kind": "json",
       "summary": "Scripts only \u2014 no runtime and no dev dependencies",
-      "lines": 20
+      "lines": 21
     },
     {
       "path": "extension/README.md",
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 492
+      "lines": 501
     },
     {
       "path": "extension/src/core/commands.js",
@@ -837,7 +837,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 161
+      "lines": 168
     },
     {
       "path": "AGENTS.md",
@@ -851,7 +851,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 61
+      "lines": 62
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -865,7 +865,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity and doc/index drift jobs",
-      "lines": 234
+      "lines": 265
     },
     {
       "path": "CONTRIBUTING.md",

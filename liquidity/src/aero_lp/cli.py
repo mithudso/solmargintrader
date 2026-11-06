@@ -8,6 +8,11 @@ aero-lp simulate -c config.toml [--force] [--token-id N]
                                        full rebalance via eth_simulateV1 (nothing signed)
 aero-lp run      -c config.toml [--live] [--once]
                                        loop: evaluate, simulate, and (only with --live) execute
+aero-lp exit-to-safe -c config.toml [--live] [--token-id N] [--convert-to USDC]
+                                       withdraw EVERY managed position to the wallet (dry run unless --live);
+                                       live sets the KILL file first. Not gated by soak/research gates.
+aero-lp gates status|grandfather|record-research -c config.toml
+                                       dry-run soak and research-gate records (live signing is refused without them)
 aero-lp backtest --pool 0x.. [--widths 2,5,8,15] [--hours 720] [--value 10000] [--mode aero|fees]
 aero-lp providers [--chain base] [--deposit-usd 50] [--top 25] [--max-pools N]
                                        compare every liquidity provider on a chain (read-only); writes
@@ -22,9 +27,9 @@ import sys
 import time
 import traceback
 
-from . import __version__, addresses, backtest, clmath
+from . import __version__, addresses, backtest, clmath, gates
 from .chain import DEFAULT_RPCS, AeroChain
-from .config import Config, load
+from .config import SAFE_EXIT_TARGETS, Config, load
 from .engine import Engine, Evaluation
 from .executor import RebalanceError, RebalanceResult, fmt_amount
 from .market import (
@@ -202,6 +207,76 @@ def cmd_withdraw(a: argparse.Namespace) -> int:
     return 0
 
 
+def _live_gate(cfg: Config) -> bool:
+    """Refuse live mode unless the soak and research gates pass. Prints the gate notes either way."""
+    from .state import home
+
+    try:
+        for note in gates.check_live_allowed(home(), cfg):
+            print(note, flush=True)
+    except gates.LiveGateError as e:
+        print(str(e), file=sys.stderr)
+        return False
+    return True
+
+
+def cmd_exit_to_safe(a: argparse.Namespace) -> int:
+    from . import safe_exit
+    from .ledger import Ledger
+    from .state import home
+
+    cfg, eng = _engine(a)
+    convert_to = a.convert_to if a.convert_to is not None else cfg.safe_exit.convert_to
+    if convert_to and convert_to not in SAFE_EXIT_TARGETS:
+        print(f"--convert-to must be one of {SAFE_EXIT_TARGETS}", file=sys.stderr)
+        return 2
+    ledger_path = home() / "ledger.sqlite"
+    ledger_ids = []
+    if ledger_path.exists():
+        ledger_ids = [int(r["token_id"]) for r in Ledger(ledger_path).open_slots() if r["token_id"]]
+    ids = safe_exit.managed_token_ids(cfg, eng, ledger_ids, a.token_id)
+    signer = None
+    if a.live:
+        from .wallet import load_signer
+
+        problems = eng.chain.verify_deployment()
+        if problems:
+            print("refusing live mode:\n" + "\n".join(problems))
+            return 2
+        signer = load_signer(cfg.owner, cfg.key_file or None)
+    report = safe_exit.run_exit(eng, ids, live=a.live, signer=signer, convert_to=convert_to, root=home())
+    print(safe_exit.format_plan(report))
+    if a.live:
+        print(f"report: {safe_exit.write_report(home(), report)}")
+    return 0 if report.ok else 1
+
+
+def cmd_gates(a: argparse.Namespace) -> int:
+    from .state import home
+
+    cfg = load(a.config)
+    root = home()
+    if a.gates_cmd == "grandfather":
+        try:
+            gates.grandfather(root, cfg, a.reason)
+        except (gates.LiveGateError, ValueError) as e:
+            print(f"refused: {e}", file=sys.stderr)
+            return 1
+        print(f"grandfather entry written to {root / 'soak.json'} for the current configuration only")
+    elif a.gates_cmd == "record-research":
+        if not a.result or not a.source.strip():
+            print("record-research needs --result and --source", file=sys.stderr)
+            return 2
+        gates.record_research_result(root, cfg, a.strategy or cfg.gates.strategy_id, a.result, a.source, a.note)
+        print(f"recorded {a.result} for {a.strategy or cfg.gates.strategy_id} in {gates.research_path(root, cfg)}")
+    s = gates.summary(root, cfg)
+    print(f"soak     : {'OK' if s['soak_ok'] else 'NOT MET'}  {s['soak_reason']}")
+    print(f"research : {'OK' if s['research_ok'] else 'NOT MET'}  {s['research_reason']}")
+    if s["research_override"]:
+        print("override : [gates].allow_failed_research_gate is true (each live start is logged)")
+    return 0
+
+
 def cmd_scout(a: argparse.Namespace) -> int:
     from .scout import candidate_pools, format_report, run_scout
     from .state import home
@@ -265,6 +340,8 @@ def cmd_daemon(a: argparse.Namespace) -> int:
     if a.live:
         from .wallet import load_signer
 
+        if not _live_gate(cfg):
+            return 3
         problems = AeroChain(cfg.rpc_url).verify_deployment()
         if problems:
             print("refusing live mode:\n" + "\n".join(problems))
@@ -307,6 +384,8 @@ def cmd_run(a: argparse.Namespace) -> int:
     if a.live:
         from .wallet import load_signer
 
+        if not _live_gate(cfg):
+            return 3
         problems = eng.chain.verify_deployment()
         if problems:
             print("refusing live mode:\n" + "\n".join(problems))
@@ -420,6 +499,23 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--live", action="store_true", help="sign and broadcast transactions")
             p.add_argument("--once", action="store_true")
         p.set_defaults(fn=fn)
+    p = sub.add_parser("exit-to-safe", help="withdraw every managed position to the wallet (dry run unless --live)")
+    p.add_argument("-c", "--config", default="~/.aero-lp/config.toml")
+    p.add_argument("--live", action="store_true", help="sign and broadcast (also sets the KILL file)")
+    p.add_argument("--token-id", type=int, action="append", help="exit only this NFT (repeatable)")
+    p.add_argument(
+        "--convert-to", choices=SAFE_EXIT_TARGETS, default=None, help="also swap the coins into a stable coin"
+    )
+    p.set_defaults(fn=cmd_exit_to_safe)
+    p = sub.add_parser("gates", help="pre-live gates: dry-run soak and research gate")
+    p.add_argument("gates_cmd", choices=["status", "grandfather", "record-research"])
+    p.add_argument("-c", "--config", default="~/.aero-lp/config.toml")
+    p.add_argument("--reason", default="", help="grandfather: why this configuration is exempt")
+    p.add_argument("--strategy", default="", help="record-research: strategy id (default [gates].strategy_id)")
+    p.add_argument("--result", choices=["pass", "fail"], help="record-research")
+    p.add_argument("--source", default="", help="record-research: where the result came from")
+    p.add_argument("--note", default="")
+    p.set_defaults(fn=cmd_gates)
     p = with_rpc(sub.add_parser("scout", help="rank pools by likely profit for a deposit size"))
     p.add_argument("--deposit-usd", type=float, default=50.0)
     p.add_argument("--pool", action="append", help="score only these pools (repeatable)")

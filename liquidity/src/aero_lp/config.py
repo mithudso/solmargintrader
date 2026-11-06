@@ -118,6 +118,41 @@ class AllocatorConfig:
             raise ValueError(f"allocator intervals must be > 0: {nonpositive}")
 
 
+SAFE_EXIT_TARGETS = ("USDC", "USDT", "DAI")
+
+
+@dataclass(frozen=True)
+class GateConfig:
+    """Pre-live gates (`aero-lp daemon --live` / `run --live`). None of them applies to `exit-to-safe`."""
+
+    soak_hours: float = 24.0  # the configuration must have run in dry-run this long before live signing
+    strategy_id: str = "aero-slipstream-lp"  # the strategy whose research-gate result is checked
+    research_gate_file: str = ""  # default: $AERO_LP_HOME/research-gate.json
+    # Owner override. Live mode proceeds although the latest research-gate result failed or is missing; every
+    # use prints a warning and appends a line to $AERO_LP_HOME/gate-overrides.jsonl. Default off.
+    allow_failed_research_gate: bool = False
+
+    def __post_init__(self) -> None:
+        finite_number(self.soak_hours, "soak_hours")
+        if self.soak_hours < 0:
+            raise ValueError("soak_hours must be >= 0")
+        if not isinstance(self.strategy_id, str) or not self.strategy_id:
+            raise ValueError("strategy_id must be a non-empty string")
+        if not isinstance(self.allow_failed_research_gate, bool):
+            raise ValueError("allow_failed_research_gate must be a boolean")
+
+
+@dataclass(frozen=True)
+class SafeExitConfig:
+    """`aero-lp exit-to-safe`. Converting to a stable coin is off unless `convert_to` is set."""
+
+    convert_to: str = ""  # "" = leave the withdrawn coins as they are; or one of SAFE_EXIT_TARGETS
+
+    def __post_init__(self) -> None:
+        if self.convert_to and self.convert_to not in SAFE_EXIT_TARGETS:
+            raise ValueError(f"convert_to must be empty or one of {SAFE_EXIT_TARGETS}")
+
+
 @dataclass(frozen=True)
 class Config:
     owner: str
@@ -134,6 +169,8 @@ class Config:
     execution: ExecConfig = field(default_factory=ExecConfig)
     safety: SafetyConfig = field(default_factory=SafetyConfig)
     allocator: AllocatorConfig = field(default_factory=AllocatorConfig)
+    gates: GateConfig = field(default_factory=GateConfig)
+    safe_exit: SafeExitConfig = field(default_factory=SafeExitConfig)
 
     def __post_init__(self) -> None:
         finite_number(self.gas_units_estimate, "gas_units_estimate", positive=True, integer=True)
@@ -181,8 +218,25 @@ def load(path: str | Path) -> Config:
                 raise ValueError(f"{k} must be an array of token symbols")
             alloc_raw[k] = tuple(alloc_raw[k])
     allocator = _pick(AllocatorConfig, alloc_raw)
-    top_names = {f.name for f in fields(Config)} - {"strategy", "execution", "safety", "allocator"}
+    gates = _pick(GateConfig, raw.pop("gates", {}))
+    safe_exit = _pick(SafeExitConfig, raw.pop("safe_exit", {}))
+    top_names = {f.name for f in fields(Config)} - {
+        "strategy",
+        "execution",
+        "safety",
+        "allocator",
+        "gates",
+        "safe_exit",
+    }
     unknown = set(raw) - top_names
     if unknown:
         raise ValueError(f"unknown config keys: {sorted(unknown)}")
-    return Config(strategy=strategy, execution=execution, safety=safety, allocator=allocator, **raw)
+    return Config(
+        strategy=strategy,
+        execution=execution,
+        safety=safety,
+        allocator=allocator,
+        gates=gates,
+        safe_exit=safe_exit,
+        **raw,
+    )

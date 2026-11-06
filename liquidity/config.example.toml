@@ -42,3 +42,12 @@ max_position_usd = 10000    # live mode refuses to touch a bigger position (rais
 max_gas_usd = 2.0           # live mode refuses a rebalance whose gas estimate exceeds this
 max_twap_deviation_bps = 75 # skip a round when spot is this far from the 10-min TWAP (manipulation guard)
 min_check_interval_s = 30
+
+[gates]
+soak_hours = 24                       # live signing needs this long in dry-run first (`aero-lp daemon` without --live)
+strategy_id = "aero-slipstream-lp"    # strategy whose research-gate result must be a pass
+# research_gate_file = "~/.aero-lp/research-gate.json"
+allow_failed_research_gate = false    # OWNER OVERRIDE: allow live although the latest research gate failed or is missing (logged)
+
+[safe_exit]
+convert_to = ""                       # "" = leave withdrawn coins as they are; or "USDC" | "USDT" | "DAI"
