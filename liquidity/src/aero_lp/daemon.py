@@ -40,7 +40,7 @@ from typing import Any
 
 from web3 import Web3
 
-from . import addresses
+from . import addresses, gates
 from .allocator import plan_allocation, plan_graduation
 from .chain import ZERO, AeroChain, PoolState, PositionGone, PositionState
 from .config import Config
@@ -1235,6 +1235,7 @@ class Daemon:
             "generated_at": time.time(),
             "mode": "live" if self.live else "dry-run",
             "killed": self.killed,
+            "gates": gates.summary(self.root, self.cfg),
             "owner": self.cfg.owner,
             "last_scout_at": (load_scout(self.root / "scout.json") or {}).get("generated_at"),
             "wallet": {
@@ -1265,6 +1266,11 @@ class Daemon:
         now = time.time()
         a = self.cfg.allocator
         self._check_stop()
+        if not self.live:
+            try:  # credit this dry-run interval to the soak gate; bookkeeping must never stop a tick
+                gates.record_dry_run_tick(self.root, self.cfg, now)
+            except Exception as e:  # noqa: BLE001
+                self.log("error", f"soak record failed: {e}")
         if self.live:
             self._reconcile_submissions()
         self.chain.check_fresh()

@@ -1317,3 +1317,19 @@ def test_gas_topup_is_planned_not_sent_when_dry_run_or_killed(make_daemon):
         d.test.chain.w3.eth.get_code = lambda a: bytes.fromhex("ef0100") + bytes(20)
         d._gas_topup(_low_gas_wallet())
         assert not d.rb.calls
+
+
+def test_dry_run_tick_credits_the_soak_gate_and_status_shows_it(make_daemon):
+    d = make_daemon(live_mode=False)
+    d.tick()
+    d.tick()
+    soak = json.loads((d.root / "soak.json").read_text())
+    assert soak["schema"] == "aero-lp-soak/1" and soak["accumulated_s"] >= 0
+    status = json.loads((d.root / "status.json").read_text())
+    assert status["gates"]["soak_ok"] is False and status["gates"]["research_ok"] is False
+
+
+def test_live_tick_does_not_write_a_soak_record(make_daemon):
+    d = make_daemon(live_mode=True)
+    d.tick()
+    assert not (d.root / "soak.json").exists()

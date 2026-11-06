@@ -78,7 +78,8 @@ Run it as a service (launchd, restarts on crash, logs to `~/.aero-lp/daemon.log`
 ```bash
 scripts/aero-lp-service install            # live; `install --dry-run` for plans only
 scripts/aero-lp-service status | logs
-scripts/aero-lp-service kill | resume      # pause / resume every on-chain action
+scripts/aero-lp-service kill | resume      # pause / resume every on-chain action (positions stay open)
+scripts/aero-lp-service exit-to-safe [--live]   # withdraw every position to the wallet
 scripts/aero-lp-service uninstall
 ```
 
@@ -125,6 +126,46 @@ The daemon adds these:
 - the kill switch;
 - dry-run code defaults. A fresh install never signs.
 
+## Exit to safe
+
+`KILL` only halts the daemon; open positions keep earning or losing. `aero-lp exit-to-safe -c ~/.aero-lp/config.toml`
+takes the money out: for every managed position (configured slots and open ledger slots) it unstakes, removes all
+liquidity, collects fees and burns the empty NFT, leaving the coins in the wallet.
+
+- **Dry run by default.** It prints the exact plan per position (stages, coins received, simulated gas) and signs
+  nothing. Add `--live` to send. `--token-id N` (repeatable) limits it to chosen NFTs.
+- **Same checks as any live withdrawal.** Whole sequence simulated with `eth_simulateV1`; `safety.max_gas_usd`; wallet ETH
+  reserve; fail-closed ETH price; the 10-minute TWAP guard (a missing TWAP blocks in live mode). A blocked position is
+  reported and left untouched. `safety.max_position_usd` does not apply, because an exit only reduces exposure.
+- **Live sets `KILL` first**, so the daemon cannot redeploy the returned coins or race for the nonce. It stays set; run
+  `scripts/aero-lp-service resume` when you want the daemon back. The result is also written to `exit-to-safe.json`.
+- **Stable conversion is off.** Set `[safe_exit].convert_to` (or `--convert-to USDC|USDT|DAI`) to also swap. It uses only the
+  amounts the withdrawal returned, only a direct pool, only if the pool price is within 2% of market, and simulates each
+  swap on the real balances before sending. A refused swap leaves the coins in the wallet.
+- **Never gated.** The soak and research gates below do not apply to it.
+
+## Pre-live gates
+
+Evidence (2026-11-06): the research gate failed (9 of 70 claims unsupported), the bot went live within hours, and KILL could
+not undo the positions. Live signing (`daemon --live`, `run --live`) now needs both gates:
+
+1. **Dry-run soak.** The configuration must run `aero-lp daemon` (no `--live`) for `[gates].soak_hours` (default 24). The
+   daemon credits each dry-run tick to `soak.json`, at most 30 minutes per tick, so downtime does not count. Changing
+   strategy, execution, safety or allocator settings, `reward_mode` or `owner` resets the soak. Polling, RPC and gate
+   settings do not.
+2. **Research gate.** `research-gate.json` holds results per strategy. Live is refused when the latest result for
+   `[gates].strategy_id` is `fail` or missing. Record one with
+   `aero-lp gates record-research --result pass|fail --source "<where it came from>"`. The owner can override with
+   `[gates].allow_failed_research_gate = true`; each live start then prints a warning and appends to `gate-overrides.jsonl`.
+   The override does not waive the soak.
+
+`aero-lp gates status` shows both; `status.json` carries a `gates` block.
+
+**Grandfather record.** The daemon was already live when the gates were added. `aero-lp gates grandfather --reason "..."` writes
+a one-time entry in `soak.json` exempting that exact configuration from the soak, so a restart does not stop it. It is visible
+in `gates status` and `status.json`, is never renewed, and goes stale at the first strategy or cap change. It does **not**
+cover the research gate.
+
 ## Layout
 
 | Path | Role |
@@ -134,6 +175,8 @@ The daemon adds these:
 | `src/aero_lp/providers.py`, `providers_report.py` | Cross-provider comparison (Tier 1 measured, Tier 2 quoted) → `providers.json`, `providers-report.md` |
 | `src/aero_lp/allocator.py` | Pure deploy / experiment / graduation decisions |
 | `src/aero_lp/ledger.py` | SQLite P&L ledger: slots, flows, events, snapshots, wallet history |
+| `src/aero_lp/gates.py` | Dry-run soak, grandfather record and research-gate check (fail closed) |
+| `src/aero_lp/safe_exit.py` | `exit-to-safe`: plan, withdraw every position, optional stable conversion |
 | `src/aero_lp/daemon.py` | The loop: manage, compound, scout, allocate, status |
 | `src/aero_lp/executor.py` | Transaction sequences: rebalance, withdraw, deploy, topup, claim, collect, swap, unwrap |
 | `src/aero_lp/engine.py` | Per-position evaluation, decision and safety gates |
