@@ -1,21 +1,21 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 649 tests
+python3 -m unittest discover -s backtester/tests -t .   # 651 tests
 python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 140 tests
+cd extension && npm test                                # 147 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1177 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+1186 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 140 tests cover
+## Extension — what the 147 tests cover
 
 | Area | Examples |
 | --- | --- |
