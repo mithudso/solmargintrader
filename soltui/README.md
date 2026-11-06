@@ -1,12 +1,13 @@
 # soltui — SOL strategy console
 
-A five-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
+A thirteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 wiring shell.
 
-> **Dry run only.** There is no order path in this package — no keys, no signing,
+> **No order path.** There is no order path in this package — no keys, no signing,
 > no venue client, not even unreachable code. Every figure it shows is a
-> historical simulation or a replay of one. See [Safety](#safety).
+> historical simulation, a replay of one, or (Liquidity tab only) a figure read
+> from the liquidity daemon's state files. See [Safety](#safety).
 
 ## Install and run
 
@@ -14,7 +15,7 @@ wiring shell.
 cd /Users/mitch.hudson/dev/solmargintrader
 pip install -r soltui/requirements.txt
 
-python3 -m soltui.tui     # the five-tab console
+python3 -m soltui.tui     # the thirteen-tab console
 python3 -m soltui.app     # the macOS menu-bar indicator (needs rumps)
 ```
 
@@ -57,6 +58,21 @@ indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_la
 | **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, median return, trades. Cancellable. |
 | **Execute** | Dry-run replay. Step a simulation bar by bar and see the fills a strategy *would* have made. |
 | **Queue** | Starts and reads the low-priority background sweep. Start/Stop/Refresh, a live status line, a ranked table and a below-the-floor table. |
+| **Liquidity** | Read-only view of the Aero (aero.xyz) liquidity daemon's state files (`$AERO_LP_HOME`, default `~/.aero-lp/`): mode badge (LIVE is red, dry-run is yellow), KILLED banner, idle vs deployed USD, totals; Positions, Scout (top pools by modelled net APR), Experiments (arms side by side, winner marked) and Recent actions (newest first, basescan tx links) tables. Refresh / Kill / Resume buttons (`F5` refresh, `F8` kill-resume toggle while the tab is open); re-reads every 15 s. |
+
+### The Liquidity tab — a window onto a daemon, not a controller
+
+`liquidity/` (the `aero-lp` daemon) manages the positions and writes
+`status.json` (`aero-lp-status/1`) and `scout.json` (`aero-lp-scout/1`); the
+contract is `liquidity/STATE_FILES.md`. `soltui/liquidity.py` is the pure reader
+and formatter. A missing, corrupt or unknown-schema file shows "no data" and never
+raises. If `generated_at` is older than three minutes the summary says the daemon
+may be down.
+
+Same labelling rule as the menu bar: P&L and APR columns say `live` or `dry-run`
+(whichever the daemon reports; an unknown mode is `reported`, never guessed
+`live`), and scout figures say `modelled`, because they are estimates, not results.
+`test_every_percentage_column_carries_a_source_word` enforces it.
 
 ### The Queue tab — a sweep you interrupt, not one you finish
 
@@ -137,7 +153,7 @@ not extending this package.
 ## Tests
 
 ```bash
-python3 -m unittest discover -s soltui/tests -t .        # 61 tests
+python3 -m unittest discover -s soltui/tests -t .        # see docs/DEVELOPMENT.md for the current count
 python3 -m unittest discover -s backtester/tests -t .    # 119 tests
 ```
 
@@ -159,9 +175,10 @@ soltui/
   bgqueue.py   background sweep: job list, ordering, file contract, leaderboard
   bgworker.py  the background sweep process itself (python3 -m soltui.bgworker)
   bgcontrol.py spawn/stop the worker; the liveness lock
+  liquidity.py pure: read/validate/format the liquidity daemon's state files; KILL toggle
   app.py       rumps menu-bar shell (wiring only, lazy rumps import)
 ```
 
-Anything that makes a decision lives in the top five. `tui.py` and `app.py` are
+Anything that makes a decision lives in the pure modules. `tui.py` and `app.py` are
 deliberately dumb, which is what lets the logic be tested without a terminal or a
 macOS event loop.

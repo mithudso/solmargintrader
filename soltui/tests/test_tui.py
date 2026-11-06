@@ -144,7 +144,8 @@ class TestAppMounts(unittest.IsolatedAsyncioTestCase):
         """All five requested tabs exist."""
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            for tab in ("settings", "strategies", "signals", "backtest", "execute"):
+            for tab in ("settings", "strategies", "signals", "backtest", "execute",
+                        "liquidity"):
                 with self.subTest(tab=tab):
                     self.assertTrue(app.query(f"#tab-{tab}"), f"missing #tab-{tab}")
             await pilot.pause()
@@ -165,10 +166,10 @@ class TestAppMounts(unittest.IsolatedAsyncioTestCase):
 
             tabs = app.query_one(TabbedContent)
             for tab in ("tab-settings", "tab-strategies", "tab-signals",
-                        "tab-backtest", "tab-execute"):
+                        "tab-backtest", "tab-execute", "tab-liquidity"):
                 tabs.active = tab
                 await pilot.pause()
-            self.assertEqual(tabs.active, "tab-execute")
+            self.assertEqual(tabs.active, "tab-liquidity")
 
 
 class TestQueueTab(unittest.IsolatedAsyncioTestCase):

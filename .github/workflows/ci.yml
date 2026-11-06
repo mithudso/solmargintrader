@@ -96,7 +96,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r backtester/requirements.txt
-          pip install -r soltui/requirements.txt
+          grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
+          pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
 
       - name: Unit tests
         run: python3 -m unittest discover -s soltui/tests -t .
@@ -107,7 +108,9 @@ jobs:
   # idempotency check -- actually run.
   mongo:
     name: mongo (python)
-    runs-on: ubuntu-latest
+    # MongoDB refuses to start on Linux kernel 6.19+ (SERVER-121912), which ubuntu-24.04 runners now ship.
+    # The 22.04 image is on an older kernel. Move back to ubuntu-latest once mongo:8 carries the fix.
+    runs-on: ubuntu-22.04
     services:
       mongodb:
         image: mongo:8
@@ -181,13 +184,15 @@ jobs:
       - name: Install the suites' dependencies
         run: |
           pip install -r backtester/requirements.txt
-          pip install -r soltui/requirements.txt
+          grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
+          pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
           pip install -r mongo/requirements.txt
 
       - name: Install dependencies
         run: |
           pip install -r backtester/requirements.txt
-          pip install -r soltui/requirements.txt
+          grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
+          pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
 
       - name: Test counts and retrieval indexes agree with the repo
         run: python3 scripts/check_docs.py
@@ -216,3 +221,20 @@ jobs:
         with:
           node-version: '22'
       - run: node tools/verify-endpoints.js
+
+  # liquidity/ manages Aero LP positions on Base. It has its own pyproject + lock (web3 lives only here),
+  # so it gets its own job, the same way the extension does. Network tests (-m network) are excluded by
+  # default and are run by hand: they read live chain state.
+  liquidity:
+    name: liquidity (python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: liquidity
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --extra dev -p 3.13
+      - run: uv run ruff check src tests
+      - run: uv run ruff format --check src tests
+      - run: uv run pytest -q
