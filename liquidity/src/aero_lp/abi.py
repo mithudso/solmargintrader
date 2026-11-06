@@ -193,3 +193,52 @@ WETH = [
     fn("withdraw", "uint256 wad", "", "nonpayable"),
     fn("deposit", "", "", "payable"),
 ]
+
+# ---------------------------------------------------------------------------- other venues (read-only)
+# Uniswap-v3-compatible pools (Uniswap v3, PancakeSwap v3, SushiSwap v3, Alien Base v3, ...). Signatures follow
+# IUniswapV3PoolState / IUniswapV3PoolImmutables. Uniswap's slot0 has 7 outputs (feeProtocol is uint8 there and
+# uint32 on PancakeSwap, so it is declared uint32 to decode both). Slipstream's slot0 has 6 outputs (CL_POOL
+# above); the Aero-only members (unstakedFee, stakedLiquidity, gauge) are read with allow_failure.
+V3_POOL = [
+    fn(
+        "slot0",
+        "",
+        "uint160 sqrtPriceX96, int24 tick, uint16 observationIndex, uint16 observationCardinality, "
+        "uint16 observationCardinalityNext, uint32 feeProtocol, bool unlocked",
+    ),
+    fn("token0", "", "address "),
+    fn("token1", "", "address "),
+    fn("tickSpacing", "", "int24 "),
+    fn("fee", "", "uint24 "),
+    fn("liquidity", "", "uint128 "),
+    fn("feeGrowthGlobal0X128", "", "uint256 "),
+    fn("feeGrowthGlobal1X128", "", "uint256 "),
+    fn("factory", "", "address "),
+    fn("unstakedFee", "", "uint24 "),
+    fn("stakedLiquidity", "", "uint128 "),
+    fn("gauge", "", "address "),
+    fn("observe", "uint32[] secondsAgos", "int56[] tickCumulatives, uint160[] secondsPerLiquidityCumulativeX128s"),
+]
+
+# Factories of the Uniswap v3 family key pools by fee (Slipstream keys by tick spacing: CL_FACTORY above).
+V3_FACTORY = [
+    fn("getPool", "address tokenA, address tokenB, uint24 fee", "address pool"),
+    fn("feeAmountTickSpacing", "uint24 fee", "int24 "),
+]
+
+# Uniswap v4 (singleton PoolManager). StateView is the read-only lens: pools are addressed by poolId, not by
+# address. PositionManager.poolKeys maps the first 25 bytes of a poolId back to its PoolKey.
+V4_STATE_VIEW = [
+    fn("poolManager", "", "address "),
+    fn("getSlot0", "bytes32 poolId", "uint160 sqrtPriceX96, int24 tick, uint24 protocolFee, uint24 lpFee"),
+    fn("getLiquidity", "bytes32 poolId", "uint128 liquidity"),
+    fn("getFeeGrowthGlobals", "bytes32 poolId", "uint256 feeGrowthGlobal0, uint256 feeGrowthGlobal1"),
+]
+V4_POSITION_MANAGER = [
+    fn("poolManager", "", "address "),
+    fn(
+        "poolKeys",
+        "bytes25 poolId",
+        "address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks",
+    ),
+]

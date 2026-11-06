@@ -105,19 +105,21 @@ class PoolMetrics:
         return d
 
 
-def pool_economics(chain: AeroChain, market: MarketData, pool: PoolState) -> tuple[PoolEconomics, dict[str, Any]]:
-    """Build the earnings inputs for `pool` plus context (prices, TVL, volume, history length)."""
+def economics_from(
+    pool: PoolState,
+    prices: dict[str, float],
+    info: dict[str, float],
+    aero_per_day: float,
+    fee_delta: tuple[int, int, float] | None,
+) -> PoolEconomics:
+    """Earnings inputs from already-fetched pieces. `fee_delta` is (d growth0, d growth1, days) or None when the
+    24h fee-growth history could not be read (income then falls back to volume x current fee)."""
     t0, t1 = pool.token0, pool.token1
-    prices = market.token_prices_usd([t0.address, t1.address, addresses.AERO_TOKEN, addresses.WETH])
-    try:
-        info = market.pool_info(pool.address)
-    except Exception:  # noqa: BLE001 - GeckoTerminal is context, not a gate
-        info = {"volume_24h_usd": 0.0, "reserve_usd": 0.0}
     econ = PoolEconomics(
         volume_usd_per_day=info.get("volume_24h_usd", 0.0),
         fee=pool.fee,
         unstaked_fee_share=pool.unstaked_fee_pips / 1e6,
-        aero_per_day=chain.gauge_aero_per_day(pool.gauge, pool.block) if pool.gauge != ZERO else 0.0,
+        aero_per_day=aero_per_day,
         aero_usd=prices.get(addresses.AERO_TOKEN.lower(), 0.0),
         active_liquidity=pool.liquidity,
         staked_liquidity=pool.staked_liquidity,
@@ -126,13 +128,32 @@ def pool_economics(chain: AeroChain, market: MarketData, pool: PoolState) -> tup
         dec0=t0.decimals,
         dec1=t1.decimals,
     )
+    if fee_delta is not None and fee_delta[2] > 0:
+        d0, d1, days = fee_delta
+        econ = dataclasses.replace(econ, fee_usd_per_l_day=fee_usd_per_liquidity_per_day(d0, d1, days, econ))
+    return econ
+
+
+def pool_economics(chain: AeroChain, market: MarketData, pool: PoolState) -> tuple[PoolEconomics, dict[str, Any]]:
+    """Build the earnings inputs for `pool` plus context (prices, TVL, volume, history length)."""
+    t0, t1 = pool.token0, pool.token1
+    prices = market.token_prices_usd([t0.address, t1.address, addresses.AERO_TOKEN, addresses.WETH])
+    try:
+        info = market.pool_info(pool.address)
+    except Exception:  # noqa: BLE001 - GeckoTerminal is context, not a gate
+        info = {"volume_24h_usd": 0.0, "reserve_usd": 0.0}
     try:
         d0, d1, days = chain.fee_growth_delta(pool.address, pool.block)
     except Exception:  # noqa: BLE001 - fall back to volume x current fee
         d0 = d1 = 0
         days = 0.0
-    if days > 0:
-        econ = dataclasses.replace(econ, fee_usd_per_l_day=fee_usd_per_liquidity_per_day(d0, d1, days, econ))
+    econ = economics_from(
+        pool,
+        prices,
+        info,
+        chain.gauge_aero_per_day(pool.gauge, pool.block) if pool.gauge != ZERO else 0.0,
+        (d0, d1, days),
+    )
     ctx = {
         "prices": prices,
         "eth_usd": prices.get(addresses.WETH.lower(), 0.0),
@@ -214,6 +235,20 @@ def backtest_at_width(
     return apr if math.isfinite(apr) else NO_DATA
 
 
+@dataclass(frozen=True)
+class ScoreDetail:
+    """Extra figures from one pool scoring that PoolMetrics does not carry (PoolMetrics feeds scout.json, so its
+    fields stay fixed). All APRs are annualized % of the deposit at the chosen (best) width."""
+
+    income_apr: float  # fee or gauge income at the chosen width, in the chosen mode
+    lvr_apr: float
+    rebalance_cost_apr: float
+    net_fees_only_apr: float  # best width with no gauge income (what an unstaked or non-Aero deposit earns)
+    net_gauge_apr: float | None  # best width staked in the gauge; None when the pool has no live gauge
+    income_measured: bool  # True: 24h feeGrowthGlobal change. False: fell back to volume x current fee.
+    fee_history_days: float
+
+
 def evaluate_pool(
     chain: AeroChain,
     market: MarketData,
@@ -224,10 +259,62 @@ def evaluate_pool(
     l1_fee_usd: float = 0.005,
     impact_bps: float = 5.0,
 ) -> PoolMetrics:
-    cfg = cfg or StrategyConfig()
+    return evaluate_pool_detail(chain, market, pool_address, deposit_usd, cfg, gas_units, l1_fee_usd, impact_bps)[0]
+
+
+def evaluate_pool_detail(
+    chain: AeroChain,
+    market: MarketData,
+    pool_address: str,
+    deposit_usd: float,
+    cfg: StrategyConfig | None = None,
+    gas_units: int = 2_700_000,
+    l1_fee_usd: float = 0.005,
+    impact_bps: float = 5.0,
+) -> tuple[PoolMetrics, ScoreDetail]:
+    """`evaluate_pool` plus the extra figures in ScoreDetail (Aero Slipstream pools)."""
     pool = chain.pool_state(pool_address)
     econ, ctx = pool_economics(chain, market, pool)
     sigma, sigma_src, hist_days, closes = pool_sigma(chain, market, pool.address)
+    return score_pool(
+        pool,
+        econ,
+        ctx,
+        sigma,
+        sigma_src,
+        hist_days,
+        closes,
+        deposit_usd,
+        cfg,
+        chain.gas_price_wei(),
+        gas_units,
+        l1_fee_usd,
+        impact_bps,
+    )
+
+
+def score_pool(
+    pool: PoolState,
+    econ: PoolEconomics,
+    ctx: dict[str, Any],
+    sigma: float | None,
+    sigma_src: str,
+    hist_days: float,
+    closes: list[float],
+    deposit_usd: float,
+    cfg: StrategyConfig | None,
+    gas_price_wei: int,
+    gas_units: int = 2_700_000,
+    l1_fee_usd: float = 0.005,
+    impact_bps: float = 5.0,
+) -> tuple[PoolMetrics, ScoreDetail]:
+    """Every profitability measure for one concentrated-liquidity pool, venue-neutral.
+
+    The inputs are already fetched: `pool` (any v3-compatible pool; a pool without a gauge has gauge == ZERO and
+    gauge_alive False, so only the fee mode is scored), `econ` (earnings model), `ctx` (prices, TVL, volume and
+    fee-history days) and the pair's volatility with its hourly closes.
+    """
+    cfg = cfg or StrategyConfig()
     flags: list[str] = []
 
     def yield_curve(staked: bool):
@@ -240,7 +327,7 @@ def evaluate_pool(
 
         return f
 
-    gas_usd = gas_cost_usd(gas_units, chain.gas_price_wei(), ctx["eth_usd"], l1_fee_usd)
+    gas_usd = gas_cost_usd(gas_units, gas_price_wei, ctx["eth_usd"], l1_fee_usd)
     cost_per_rebalance = gas_usd + 0.5 * deposit_usd * (pool.fee + impact_bps / 1e4)
     cost_frac = cost_per_rebalance / deposit_usd if deposit_usd > 0 else 1.0
 
@@ -306,7 +393,7 @@ def evaluate_pool(
     ):
         confidence = "low"
 
-    return PoolMetrics(
+    metrics = PoolMetrics(
         pool=pool.address,
         pair=f"{pool.token0.symbol}/{pool.token1.symbol}",
         token0=pool.token0.address,
@@ -338,3 +425,13 @@ def evaluate_pool(
         backtest_days=bt_days,
         backtest_deploy_apr=bt_deploy,
     )
+    detail = ScoreDetail(
+        income_apr=chosen.yield_frac_day * 36500,
+        lvr_apr=chosen.lvr_frac_day * 36500,
+        rebalance_cost_apr=chosen.rebalance_cost_frac_day * 36500,
+        net_fees_only_apr=best["fees"].net_frac_day * 36500,
+        net_gauge_apr=best["aero"].net_frac_day * 36500 if pool.gauge_alive else None,
+        income_measured=econ.fee_usd_per_l_day > 0,
+        fee_history_days=ctx["fee_history_days"],
+    )
+    return metrics, detail
