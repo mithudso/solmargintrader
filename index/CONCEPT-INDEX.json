@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T12:58:34+00:00",
+  "generatedAt": "2026-11-06T13:07:38+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 237,
+      "matchingFiles": 241,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 197,
+      "matchingFiles": 201,
       "shown": 30,
       "files": [
         {
@@ -299,12 +299,12 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 157,
+      "matchingFiles": 161,
       "shown": 30,
       "files": [
         {
           "path": "backtester/tests/test_gridsim.py",
-          "hits": 148
+          "hits": 167
         },
         {
           "path": "llms-full.txt",
@@ -327,15 +327,15 @@
           "hits": 56
         },
         {
+          "path": "extension/test/core.test.js",
+          "hits": 53
+        },
+        {
           "path": "skills/trading-and-investing/references/empirical-backtest-findings-log.md",
           "hits": 53
         },
         {
           "path": "extension/README.md",
-          "hits": 52
-        },
-        {
-          "path": "extension/test/core.test.js",
           "hits": 52
         },
         {
@@ -411,16 +411,16 @@
           "hits": 13
         },
         {
-          "path": "extension/tools/measure-recentre.js",
+          "path": "docs/ARCHITECTURE.md",
           "hits": 13
         },
         {
-          "path": "docs/ARCHITECTURE.md",
-          "hits": 12
+          "path": "docs/ARCHITECTURE.md-E",
+          "hits": 13
         },
         {
-          "path": "extension/src/ui/dashboard.js",
-          "hits": 12
+          "path": "extension/tools/measure-recentre.js",
+          "hits": 13
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -564,6 +564,142 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
+      "id": "family:trend",
+      "label": "Strategy family: trend",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "trend",
+        "ma_crossover",
+        "macd",
+        "ichimoku"
+      ],
+      "matchingFiles": 152,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 132
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 114
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 89
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 66
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 63
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis.md",
+          "hits": 55
+        },
+        {
+          "path": "backtester/core/strategies/advanced.py",
+          "hits": 52
+        },
+        {
+          "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 44
+        },
+        {
+          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
+          "hits": 41
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 40
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 40
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 39
+        },
+        {
+          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
+          "hits": 38
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 37
+        },
+        {
+          "path": "skills/trading-and-investing/references/empirical-backtest-findings-log.md",
+          "hits": 37
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 24
+        },
+        {
+          "path": "research/results/cpcv_tables.md",
+          "hits": 24
+        },
+        {
+          "path": "backtester/strategy_cards/macd.md",
+          "hits": 23
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
+          "hits": 23
+        },
+        {
+          "path": "backtester/core/strategies/signals.py",
+          "hits": 21
+        },
+        {
+          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
+          "hits": 19
+        },
+        {
+          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 18
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
+          "hits": 18
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 17
+        },
+        {
+          "path": "skills/trading-and-investing/SKILL.md",
+          "hits": 17
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
+          "hits": 17
+        },
+        {
+          "path": "backtester/strategy_cards/garch_vol_forecast.md",
+          "hits": 16
+        },
+        {
+          "path": "backtester/strategy_cards/voltarget.md",
+          "hits": 14
+        },
+        {
+          "path": "backtester/core/indicators.py",
+          "hits": 13
+        },
+        {
+          "path": "backtester/strategy_cards/vol_regime_hmm.md",
+          "hits": 13
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
       "id": "family:regime-filter",
       "label": "Strategy family: regime-filter",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -701,142 +837,6 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
-      "id": "family:trend",
-      "label": "Strategy family: trend",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "trend",
-        "ma_crossover",
-        "macd",
-        "ichimoku"
-      ],
-      "matchingFiles": 150,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 132
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 114
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 89
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 66
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 63
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis.md",
-          "hits": 55
-        },
-        {
-          "path": "backtester/core/strategies/advanced.py",
-          "hits": 52
-        },
-        {
-          "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 44
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 41
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 40
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 40
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 39
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 38
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 37
-        },
-        {
-          "path": "skills/trading-and-investing/references/empirical-backtest-findings-log.md",
-          "hits": 37
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 24
-        },
-        {
-          "path": "backtester/strategy_cards/macd.md",
-          "hits": 23
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 23
-        },
-        {
-          "path": "backtester/core/strategies/signals.py",
-          "hits": 21
-        },
-        {
-          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
-          "hits": 19
-        },
-        {
-          "path": "backtester/strategy_cards/adx_filtered_trend.md",
-          "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 18
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
-          "hits": 17
-        },
-        {
-          "path": "backtester/strategy_cards/garch_vol_forecast.md",
-          "hits": 16
-        },
-        {
-          "path": "backtester/strategy_cards/voltarget.md",
-          "hits": 14
-        },
-        {
-          "path": "backtester/core/indicators.py",
-          "hits": 13
-        },
-        {
-          "path": "backtester/strategy_cards/vol_regime_hmm.md",
-          "hits": 13
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
       "id": "lookahead",
       "label": "Lookahead and fill timing",
       "why": "A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.",
@@ -849,7 +849,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 148,
+      "matchingFiles": 150,
       "shown": 30,
       "files": [
         {
@@ -988,7 +988,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 137,
+      "matchingFiles": 140,
       "shown": 30,
       "files": [
         {
@@ -1399,7 +1399,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 103,
+      "matchingFiles": 105,
       "shown": 30,
       "files": [
         {
@@ -2489,7 +2489,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 71,
+      "matchingFiles": 72,
       "shown": 30,
       "files": [
         {

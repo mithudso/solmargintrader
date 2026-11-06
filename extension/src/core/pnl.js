@@ -1,10 +1,22 @@
 /**
  * P&L accounting.
  *
- * Realized P&L uses FIFO lot matching: a sell fill is matched against the
- * oldest unmatched buy lots, which is both the IRS default for property and
- * the convention every crypto tax tool expects, so the CSV export lines up
- * with whatever you reconcile against later.
+ * Two lot-matching modes, because two consumers want different answers:
+ *
+ *   PAIRED (default)  A sell fill that records the lots its intent was paired
+ *     with (`closesLots`) closes THOSE lots. Grid exits are placed one rung above a
+ *     specific buy, so when rung B's exit fills before rung A's, the inventory still
+ *     held is A's, and strict FIFO would instead consume A and leave B behind. The
+ *     planner derives exits from the residual, so a wrong residual re-points a
+ *     lot's exit one rung too low: a sell at the level that lot was bought at,
+ *     zero spread and two fees. The daily-loss rail reads realized P&L from the
+ *     same pass, so it needs the lot that was actually sold too.
+ *   FIFO (`{ linkage: false }`)  Ignores `closesLots`; oldest lot first. This is
+ *     the IRS default for property and what a tax-style export expects. Nothing
+ *     in the live strategy path uses it.
+ *
+ * Fills stored before linkage existed carry no `closesLots`, so they take the
+ * FIFO path in either mode.
  *
  * Costs are never optional. Every fill carries its fee, and any carry cost
  * (perps borrow, lend interest) is passed in explicitly rather than assumed —
@@ -21,7 +33,14 @@
  * @property {number} feeUsd          all execution costs for this fill
  * @property {number} tsMs
  * @property {number} [level]         the rung this fill belongs to
+ * @property {Array<{priceUsd:number, baseQty:number}>} [closesLots]
+ *   sells only: the entry lots the originating intent was paired with
  */
+
+const EPS = 1e-12;
+
+/** Entry prices come from the same buy fills, so equality is exact; tolerance is for JSON round trips. */
+const samePrice = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
 
 /** Sum of carry cost entries, e.g. perps borrow or lend interest accrued. */
 export function totalCarryUsd(carryEntries = []) {
@@ -39,7 +58,7 @@ export function totalCarryUsd(carryEntries = []) {
  *   unmatchedSellQty:number
  * }}
  */
-export function matchFifo(fills) {
+export function matchFifo(fills, { linkage = true } = {}) {
   const ordered = [...fills].sort((a, b) => a.tsMs - b.tsMs || a.id.localeCompare(b.id));
   /** @type {Array<{baseQty:number, priceUsd:number, feeUsd:number, tsMs:number}>} */
   const openLots = [];
@@ -64,9 +83,9 @@ export function matchFifo(fills) {
     let remaining = fill.baseQty;
     const sellFeeRate = fill.baseQty > 0 ? (fill.feeUsd || 0) / fill.baseQty : 0;
 
-    while (remaining > 1e-12 && openLots.length > 0) {
-      const lot = openLots[0];
-      const qty = Math.min(remaining, lot.baseQty);
+    const closeLot = (idx, want) => {
+      const lot = openLots[idx];
+      const qty = Math.min(want, lot.baseQty);
       const lotFeeShare = lot.baseQty > 0 ? (lot.feeUsd * qty) / lot.baseQty : 0;
       const sellFeeShare = sellFeeRate * qty;
 
@@ -92,8 +111,27 @@ export function matchFifo(fills) {
       lot.baseQty -= qty;
       lot.feeUsd -= lotFeeShare;
       remaining -= qty;
-      if (lot.baseQty <= 1e-12) openLots.shift();
+      if (lot.baseQty <= EPS) openLots.splice(idx, 1);
+    };
+
+    // Linked closes first: the lots this sell's intent was paired with, oldest
+    // matching lot per entry. Anything the link cannot cover (lot already gone,
+    // fill larger than the linked qty) falls through to FIFO below rather than
+    // being dropped.
+    if (linkage && Array.isArray(fill.closesLots)) {
+      for (const link of fill.closesLots) {
+        let want = Math.min(remaining, link.baseQty);
+        while (want > EPS) {
+          const idx = openLots.findIndex((l) => samePrice(l.priceUsd, link.priceUsd));
+          if (idx < 0) break;
+          const before = remaining;
+          closeLot(idx, want);
+          want -= before - remaining;
+        }
+      }
     }
+
+    while (remaining > EPS && openLots.length > 0) closeLot(0, remaining);
 
     // A sell with no lot behind it means the grid went short, or the fill log
     // is missing a buy. Surfaced rather than silently dropped.
@@ -116,10 +154,11 @@ export function matchFifo(fills) {
  * @param {object} arg
  * @param {Fill[]} arg.fills
  * @param {number} arg.markPriceUsd  current mark for open inventory
+ * @param {boolean} [arg.linkage]    false for strict FIFO (tax-style); default pairs sells to their lots
  * @param {Array<{costUsd:number}>} [arg.carryEntries] borrow/funding costs
  */
-export function snapshot({ fills, markPriceUsd, carryEntries = [] }) {
-  const m = matchFifo(fills);
+export function snapshot({ fills, markPriceUsd, carryEntries = [], linkage = true }) {
+  const m = matchFifo(fills, { linkage });
   const carryUsd = totalCarryUsd(carryEntries);
 
   const openBaseQty = m.openLots.reduce((a, l) => a + l.baseQty, 0);

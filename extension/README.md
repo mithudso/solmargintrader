@@ -179,11 +179,13 @@ Consequently:
   position relative to the market
 - Only the bids need funding up front; each becomes the inventory backing its own exit
 
-**Known attribution limitation.** The planner pairs each exit to a specific lot, but realized P&L
-matches **FIFO** (tax-correct, see below). When several rungs are open at once these disagree: an
-exit intended to close the $85 lot may be matched against an older $98 lot instead. Portfolio-level
-totals are right either way; per-round-trip figures reflect FIFO, not the intended pairing. If you
-need per-rung strategy attribution, add lot linkage on the fill record.
+**Lot linkage.** The planner pairs each exit to specific lots (`lots` on the exit intent) and the
+sell fill records them as `closesLots`. P&L closes those lots first, so the residual `planGrid` and
+`recentreDecision` read is the inventory actually held, and realized P&L (including the daily-loss
+rail) is that of the lot actually sold. Without this, an exit for the $90 lot filling before the
+$100 lot's exit would consume the $100 lot under FIFO and leave a phantom $90 lot, whose exit would
+then rest at $100: zero spread. Fills stored before linkage have no `closesLots` and fall back to
+FIFO.
 
 ## Auto re-centring — opt-in, and narrower than it sounds
 
@@ -243,8 +245,12 @@ old bounds and place a **second ladder** at the levels this tick just abandoned.
 
 ## P&L accounting
 
-Realized P&L uses **FIFO lot matching** — the IRS default for property and what crypto tax tools
-expect, so the CSV export reconciles.
+Realized P&L closes the lots each sell was **paired** with (`closesLots`), then falls back to **FIFO**
+for anything unlinked (legacy fills, unmatched sells). The planner, `recentreDecision` and the
+daily-loss rail all use this paired view. Strict FIFO — the IRS default for property, which tax tools
+expect — is `snapshot({ linkage: false })` / `matchFifo(fills, { linkage: false })`; nothing in the live
+path uses it, so use it for a tax-style reconciliation. The CSV export is the raw fill log and is
+unaffected.
 
 - Entry fees ride on the lot, so a partial close realizes only its proportional share
 - Unrealized is net of entry fees still sitting on open lots
