@@ -6,6 +6,7 @@ about 30 requests/minute, so responses are cached for `ttl` seconds.
 
 from __future__ import annotations
 
+import dataclasses
 import math
 import time
 from dataclasses import dataclass
@@ -120,6 +121,20 @@ class PoolEconomics:
     price1_usd: float
     dec0: int
     dec1: int
+    # Realized fee income per unit of unstaked in-range liquidity per day, in USD, measured from the
+    # change in feeGrowthGlobal over the last day. CLPool.calculateFees credits feeGrowthGlobal per unit of
+    # *unstaked* liquidity, already net of the unstaked fee, so this captures dynamic fees and MEV capture.
+    # 0 = not measured; fall back to volume * current fee.
+    fee_usd_per_l_day: float = 0.0
+
+
+def fee_usd_per_liquidity_per_day(d_growth0_x128: int, d_growth1_x128: int, days: float, e: PoolEconomics) -> float:
+    """Convert feeGrowthGlobal deltas (Q128 per unit liquidity) into USD per unit liquidity per day."""
+    if days <= 0:
+        return 0.0
+    q128 = 1 << 128
+    usd = d_growth0_x128 / q128 / 10**e.dec0 * e.price0_usd + d_growth1_x128 / q128 / 10**e.dec1 * e.price1_usd
+    return usd / days
 
 
 def liquidity_for_usd(value_usd: float, sqrt_p: int, tick_lower: int, tick_upper: int, e: PoolEconomics) -> int:
@@ -144,5 +159,21 @@ def earn_usd_per_day(liquidity: int, staked: bool, in_range: bool, e: PoolEconom
     if staked:
         denom = e.staked_liquidity + (0 if already_counted else liquidity)
         return e.aero_per_day * e.aero_usd * liquidity / max(1, denom)
+    if e.fee_usd_per_l_day > 0:
+        # Measured per-unit growth; a new deposit dilutes it by its share of unstaked in-range liquidity.
+        unstaked = max(0, e.active_liquidity - e.staked_liquidity)
+        dilution = 1.0 if already_counted else unstaked / max(1, unstaked + liquidity)
+        return e.fee_usd_per_l_day * liquidity * dilution
     denom = e.active_liquidity + (0 if already_counted else liquidity)
     return e.volume_usd_per_day * e.fee * (1 - e.unstaked_fee_share) * liquidity / max(1, denom)
+
+
+def with_realized_fees(chain: Any, pool: str, head: int, e: PoolEconomics) -> PoolEconomics:
+    """Return `e` with fee_usd_per_l_day measured on chain (unchanged if history is unavailable)."""
+    try:
+        d0, d1, days = chain.fee_growth_delta(pool, head)
+    except Exception:  # noqa: BLE001
+        return e
+    if days <= 0:
+        return e
+    return dataclasses.replace(e, fee_usd_per_l_day=fee_usd_per_liquidity_per_day(d0, d1, days, e))

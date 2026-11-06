@@ -129,3 +129,33 @@ def test_state_round_trip_and_atomic_file(tmp_path):
     assert json.loads(path.read_text())["slots"]["7"]["current_token_id"] == 99
     assert again.minutes_since_rebalance(now=1000.0 + 600) == pytest.approx(10.0)
     assert State(path).slot(8).current_token_id == 8  # a new slot starts at its configured id
+
+
+def test_realized_fee_growth_drives_unstaked_income_and_dilutes_new_liquidity():
+    from aero_lp.market import PoolEconomics, earn_usd_per_day, fee_usd_per_liquidity_per_day
+
+    e = PoolEconomics(
+        volume_usd_per_day=1e9,  # would dominate if the fallback were used
+        fee=0.01,
+        unstaked_fee_share=0.05,
+        aero_per_day=0.0,
+        aero_usd=0.0,
+        active_liquidity=3 * 10**18,
+        staked_liquidity=2 * 10**18,  # 1e18 unstaked
+        price0_usd=2000.0,
+        price1_usd=1.0,
+        dec0=18,
+        dec1=6,
+    )
+    # 1e-12 token0 (raw 1e6 wei) per unit liquidity per day, i.e. growth delta of 1e6 * 2^128
+    per_l = fee_usd_per_liquidity_per_day(10**6 << 128, 0, 1.0, e)
+    assert per_l == 10**6 / 10**18 * 2000.0
+    import dataclasses
+
+    em = dataclasses.replace(e, fee_usd_per_l_day=per_l)
+    existing = earn_usd_per_day(10**18, False, True, em, already_counted=True)
+    new = earn_usd_per_day(10**18, False, True, em, already_counted=False)
+    assert existing == pytest.approx(per_l * 10**18)
+    assert new == pytest.approx(existing / 2)  # doubles the unstaked liquidity -> half the per-unit growth
+    # staked income is unaffected by fee growth
+    assert earn_usd_per_day(10**18, True, True, em, already_counted=False) == 0.0

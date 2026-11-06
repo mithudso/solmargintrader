@@ -394,6 +394,22 @@ class AeroChain:
             return (now - then) / 1e18 * blocks_per_day / back
         return 0.0
 
+    def fee_growth_delta(self, pool_address: str, head: int, blocks_per_day: int = 43_200) -> tuple[int, int, float]:
+        """(d feeGrowthGlobal0X128, d feeGrowthGlobal1X128, days) over the last day, shorter if history is
+        missing. Returns zeros when no historical state is available."""
+        p = self._c(pool_address, abi.CL_POOL)
+        mod = 1 << 256
+        now0, now1 = self.multicall([Call(p, "feeGrowthGlobal0X128"), Call(p, "feeGrowthGlobal1X128")], block=head)
+        for back in (blocks_per_day, blocks_per_day // 4, 1800):
+            try:
+                then0, then1 = self.multicall(
+                    [Call(p, "feeGrowthGlobal0X128"), Call(p, "feeGrowthGlobal1X128")], block=head - back
+                )
+            except Exception:  # noqa: BLE001 - RPC without enough history, or pool younger than the window
+                continue
+            return (now0 - then0) % mod, (now1 - then1) % mod, back / blocks_per_day
+        return 0, 0, 0.0
+
     def gas_price_wei(self) -> int:
         return int(self.w3.eth.gas_price)
 

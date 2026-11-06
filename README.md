@@ -60,7 +60,8 @@ cp config.example.toml config.toml           # set owner + token_ids
 ### Going live
 
 1. Create a dedicated wallet. Move only the position you want managed into it.
-2. Store its key in the macOS Keychain. `security` prompts for the value, so the key stays out of shell history:
+2. Store its key in the macOS Keychain, or set `key_file` in the config to a file you own with mode 600 (the bot refuses a key file another user can read).
+   Keychain: `security` prompts for the value, so the key stays out of shell history:
    ```bash
    security add-generic-password -s aero-lp -a 0xyour-owner-address-lowercase -w
    ```

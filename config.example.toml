@@ -11,6 +11,7 @@ poll_seconds = 60
 reward_mode = "auto"        # "auto" picks AERO rewards (staked) or trading fees (unstaked) by expected net yield;
                             # "aero" | "fees" force one; "keep" keeps whatever the position uses now
 state_path = "~/.aero-lp/state.json"
+# key_file = "~/.ssh/wallet.private"   # optional; must be owned by you and chmod 600 (checked before use)
 gas_units_estimate = 2700000  # measured: unstake+remove+2 swaps+mint+stake ~= 1.9M-2.6M gas
 l1_fee_usd_estimate = 0.05
 

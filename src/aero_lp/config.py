@@ -35,6 +35,7 @@ class Config:
     pools: list[str] = field(default_factory=list)  # pools whose gauges to scan for staked positions
     poll_seconds: float = 60.0
     reward_mode: str = "auto"
+    key_file: str = ""  # optional path to a chmod-600 file holding the signing key (live mode only)
     state_path: str = "~/.aero-lp/state.json"
     gas_units_estimate: int = 2_700_000  # measured: full staked rebalance with two swaps ~2.6M gas
     l1_fee_usd_estimate: float = 0.05

@@ -24,7 +24,14 @@ from .chain import DEFAULT_RPCS, AeroChain
 from .config import Config, load
 from .engine import Engine, Evaluation
 from .executor import RebalanceError, RebalanceResult, fmt_amount
-from .market import MarketData, PoolEconomics, earn_usd_per_day, liquidity_for_usd, vol_from_closes
+from .market import (
+    MarketData,
+    PoolEconomics,
+    earn_usd_per_day,
+    liquidity_for_usd,
+    vol_from_closes,
+    with_realized_fees,
+)
 from .strategy import Action
 
 
@@ -167,7 +174,7 @@ def cmd_run(a: argparse.Namespace) -> int:
         if problems:
             print("refusing live mode:\n" + "\n".join(problems))
             return 2
-        signer = load_signer(cfg.owner)
+        signer = load_signer(cfg.owner, cfg.key_file or None)
         print(f"LIVE MODE: signing as {signer.address}. Ctrl-C to stop.")
     else:
         print("DRY RUN: decisions + eth_simulateV1 only. Add --live to sign and broadcast.")
@@ -218,6 +225,7 @@ def cmd_backtest(a: argparse.Namespace) -> int:
         dec0=pool.token0.decimals,
         dec1=pool.token1.decimals,
     )
+    econ = with_realized_fees(chain, a.pool, pool.block, econ)
     staked = a.mode == "aero"
 
     def yield_curve(hw: float) -> float:

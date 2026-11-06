@@ -27,7 +27,14 @@ from .executor import (
     gas_cost_usd,
     runner_tokens,
 )
-from .market import MarketData, PoolEconomics, earn_usd_per_day, liquidity_for_usd, vol_from_closes
+from .market import (
+    MarketData,
+    PoolEconomics,
+    earn_usd_per_day,
+    liquidity_for_usd,
+    vol_from_closes,
+    with_realized_fees,
+)
 from .state import SlotState, State
 from .strategy import (
     Action,
@@ -131,6 +138,7 @@ class Engine:
             dec0=t0.decimals,
             dec1=t1.decimals,
         )
+        econ = with_realized_fees(self.chain, pool.address, pool.block, econ)
         a0, a1 = pos.human_amounts()
         value_usd = a0 * usd0 + a1 * usd1
         sigma, sigma_src = self.sigma(pool.address)

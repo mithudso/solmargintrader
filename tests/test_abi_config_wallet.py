@@ -104,3 +104,22 @@ def test_misplaced_strategy_slippage_key_warns_instead_of_silently_doing_nothing
 def test_config_rejects_negative_safety_limits(tmp_path):
     with pytest.raises(ValueError):
         config.SafetyConfig(max_gas_usd=-1)
+
+
+def test_key_file_must_be_private_and_owned(tmp_path, monkeypatch):
+    import os
+
+    acct = Account.create()
+    f = tmp_path / "wallet.private"
+    f.write_text(acct.key.hex() + "\n")
+    monkeypatch.delenv("AERO_LP_PRIVATE_KEY", raising=False)
+    monkeypatch.setattr(wallet, "_from_keychain", lambda owner: None)
+    os.chmod(f, 0o644)
+    with pytest.raises(wallet.WalletError, match="readable by other users") as e:
+        wallet.load_signer(acct.address, str(f))
+    assert acct.key.hex().removeprefix("0x") not in str(e.value)
+    os.chmod(f, 0o600)
+    assert wallet.load_signer(acct.address, str(f)).address == acct.address
+    monkeypatch.setattr(os, "getuid", lambda: 12345)
+    with pytest.raises(wallet.WalletError, match="not you"):
+        wallet.load_signer(acct.address, str(f))
