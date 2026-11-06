@@ -13,7 +13,7 @@
     ".github/SECURITY.md": 192,
     ".github/copilot-instructions.md": 469,
     ".github/dependabot.yml": 102,
-    ".github/workflows/ci.yml": 866,
+    ".github/workflows/ci.yml": 792,
     ".gitignore": 337,
     ".nvmrc": 2,
     ".remember/remember.md": 541,
@@ -131,7 +131,7 @@
     "docs/ARCHITECTURE.md": 687,
     "docs/COMPONENTS.md": 1095,
     "docs/CONCEPTS.md": 1723,
-    "docs/DEVELOPMENT.md": 651,
+    "docs/DEVELOPMENT.md": 657,
     "docs/FILES.md": 19674,
     "docs/INSTALLATION.md": 527,
     "docs/OPERATIONS.md": 502,
@@ -143,7 +143,7 @@
     "docs/dso-skill/SKILL.md": 2025,
     "docs/dso-skill/references/passes.md": 782,
     "docs/external-calls.md": 549,
-    "docs/high_signal_file_index.json": 1831,
+    "docs/high_signal_file_index.json": 2031,
     "docs/integrations-and-assumptions.md": 557,
     "docs/known-issues.md": 608,
     "docs/logging.md": 410,
@@ -366,8 +366,8 @@
     "research/tick_backfill.py": 1492,
     "research/turnover_table.py": 773,
     "research/verify_numbers.py": 4500,
-    "scripts/build_doc_index.py": 625,
-    "scripts/check_docs.py": 1455,
+    "scripts/build_doc_index.py": 627,
+    "scripts/check_docs.py": 1465,
     "skills/README.md": 158,
     "skills/trading-and-investing/SCHEDULED-RESEARCH.md": 374,
     "skills/trading-and-investing/SKILL.md": 6708,
@@ -470,12 +470,12 @@
     "soltui/tests/test_tui.py": 5229,
     "soltui/top5.py": 820,
     "soltui/tui.py": 8853,
-    "tools/gate.sh": 242,
+    "tools/gate.sh": 253,
     "tools/install-hooks.sh": 107,
-    "tools/land.sh": 399,
+    "tools/land.sh": 417,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-06T10:57:15+00:00",
+  "generatedAt": "2026-11-06T12:56:02+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -5500,6 +5500,7 @@
       "README.md": 2,
       "docs/COMPONENTS.md": 4,
       "docs/codebase-overview.md": 11,
+      "docs/high_signal_file_index.json": 9,
       "liquidity/CLAUDE.md": 16,
       "liquidity/README.md": 48,
       "liquidity/STATE_FILES.md": 18,
@@ -5572,6 +5573,7 @@
     },
     "aero_lp": {
       "docs/codebase-overview.md": 6,
+      "docs/high_signal_file_index.json": 6,
       "liquidity/CLAUDE.md": 1,
       "liquidity/README.md": 11,
       "liquidity/STATE_FILES.md": 2,
@@ -5966,7 +5968,7 @@
       "docs/codebase-overview.md": 4,
       "docs/dso-skill/SKILL.md": 2,
       "docs/dso-skill/references/passes.md": 1,
-      "docs/high_signal_file_index.json": 2,
+      "docs/high_signal_file_index.json": 3,
       "docs/known-issues.md": 2,
       "docs/logging.md": 1,
       "docs/strategy-optimization-concept-family.md": 2,
@@ -6007,7 +6009,7 @@
       "docs/FILES.md": 4,
       "docs/codebase-overview.md": 2,
       "docs/dso-skill/SKILL.md": 1,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/short-horizon-leverage-concept-family.md": 2,
       "index/README.md": 1,
       "index/build.py": 1,
@@ -7061,6 +7063,7 @@
     "allocate": {
       "backtester/core/engine.py": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/README.md": 2,
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/config.py": 2,
@@ -7136,6 +7139,7 @@
       ".claude/agents/aero-pool-scout.md": 2,
       "docs/COMPONENTS.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/CLAUDE.md": 2,
       "liquidity/README.md": 3,
       "liquidity/STATE_FILES.md": 1,
@@ -13785,6 +13789,7 @@
       "extension/tools/verify-endpoints.js": 2,
       "llms-full.txt": 3,
       "research/coin-intelligence/eth-ethereum.md": 1,
+      "scripts/check_docs.py": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1,
       "skills/trading-and-investing/references/fixed-income-and-bond-markets.md": 1,
@@ -14750,6 +14755,7 @@
       "README.md": 1,
       "docs/API.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 1,
       "extension/src/jupiter/http.js": 1,
@@ -14763,6 +14769,7 @@
     },
     "authorized": {
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/CLAUDE.md": 2,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 2,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1
@@ -17079,7 +17086,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 5,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 15,
+      ".github/workflows/ci.yml": 13,
       ".gitignore": 3,
       ".remember/remember.md": 2,
       "CLAUDE.md": 9,
@@ -24188,9 +24195,9 @@
       "research/candle_crosscheck.py": 1,
       "research/cross_asset_cpcv.py": 3,
       "soltui/make_icon.py": 2,
-      "tools/gate.sh": 1,
+      "tools/gate.sh": 2,
       "tools/install-hooks.sh": 2,
-      "tools/land.sh": 25
+      "tools/land.sh": 27
     },
     "branches": {
       ".github/workflows/ci.yml": 1,
@@ -28773,6 +28780,7 @@
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/references/passes.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/strategy-optimization-concept-family.md": 2,
       "extension/README.md": 1,
       "extension/src/core/risk.js": 1,
@@ -28931,7 +28939,7 @@
     },
     "cannot": {
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
@@ -33620,6 +33628,7 @@
       "soltui/tests/test_tui.py": 2,
       "soltui/top5.py": 1,
       "soltui/tui.py": 4,
+      "tools/gate.sh": 1,
       "tools/land.sh": 1
     },
     "checksum": {
@@ -34991,7 +35000,7 @@
       "docs/codebase-overview.md": 7,
       "docs/dso-skill/README.md": 9,
       "docs/dso-skill/SKILL.md": 10,
-      "docs/high_signal_file_index.json": 2,
+      "docs/high_signal_file_index.json": 4,
       "docs/known-issues.md": 1,
       "docs/onboarding.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 2,
@@ -35034,7 +35043,7 @@
       "soltui/config.py": 1,
       "soltui/soltui-service": 3,
       "soltui/tui.py": 1,
-      "tools/gate.sh": 1,
+      "tools/land.sh": 1,
       "tradingskilllist/trading-skills.md": 1
     },
     "clause": {
@@ -35631,7 +35640,7 @@
       "skills/trading-and-investing/references/forex-and-currency-trading.md": 1
     },
     "clone": {
-      ".github/workflows/ci.yml": 4,
+      ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "backtester/tests/test_decide.py": 1,
@@ -37172,7 +37181,7 @@
       "skills/trading-and-investing/references/options-fundamentals.md": 1
     },
     "collapses": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       "backtester/strategy_cards/garch_vol_forecast.md": 1,
       "backtester/strategy_cards/sma_regime.md": 1,
       "backtester/strategy_cards/triangular_arbitrage.md": 1,
@@ -39485,7 +39494,7 @@
       "docs/codebase-overview.md": 5,
       "docs/dso-skill/SKILL.md": 2,
       "docs/external-calls.md": 2,
-      "docs/high_signal_file_index.json": 120,
+      "docs/high_signal_file_index.json": 132,
       "docs/logging.md": 3,
       "docs/onboarding.md": 4,
       "docs/short-horizon-leverage-concept-family.md": 2,
@@ -39653,6 +39662,7 @@
       "backtester/README.md": 1,
       "backtester/core/metrics.py": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/CLAUDE.md": 1,
       "liquidity/README.md": 1,
       "liquidity/STATE_FILES.md": 1,
@@ -42935,6 +42945,7 @@
       "docs/FILES.md": 3,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/SKILL.md": 5,
+      "docs/high_signal_file_index.json": 1,
       "docs/known-issues.md": 1,
       "docs/trading-signals-concept-family.md": 2,
       "extension/README.md": 2,
@@ -43724,7 +43735,8 @@
       ".github/copilot-instructions.md": 3,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 2,
-      "docs/high_signal_file_index.json": 2
+      "docs/high_signal_file_index.json": 2,
+      "scripts/check_docs.py": 1
     },
     "copper": {
       "skills/trading-and-investing/references/asset-classes-and-instruments.md": 1
@@ -49447,6 +49459,7 @@
       "CLAUDE.md": 1,
       "docs/COMPONENTS.md": 2,
       "docs/codebase-overview.md": 3,
+      "docs/high_signal_file_index.json": 3,
       "liquidity/CLAUDE.md": 2,
       "liquidity/README.md": 10,
       "liquidity/STATE_FILES.md": 7,
@@ -51744,7 +51757,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 4,
       "docs/codebase-overview.md": 2,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/trading-signals-concept-family.md": 1,
       "index/README.md": 1,
       "liquidity/README.md": 1,
@@ -53632,8 +53645,7 @@
       "soltui/signals.py": 1,
       "soltui/status.py": 1,
       "soltui/tests/test_signals.py": 2,
-      "soltui/tui.py": 5,
-      "tools/land.sh": 1
+      "soltui/tui.py": 5
     },
     "delist": {
       "research/coin-intelligence/hype-hyperliquid.md": 3
@@ -53722,7 +53734,9 @@
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 1,
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 9,
       "skills/trading-and-investing/references/market-participants-and-structure.md": 1,
-      "skills/trading-and-investing/references/options-trading-and-strategies.md": 1
+      "skills/trading-and-investing/references/options-trading-and-strategies.md": 1,
+      "tools/gate.sh": 1,
+      "tools/land.sh": 2
     },
     "delo": {
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 1
@@ -54088,7 +54102,7 @@
       "soltui/SolTUI.icns": 1
     },
     "dep": {
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 1,
       "docs/FILES.md": 1,
       "extension/src/jupiter/trigger.js": 1,
       "liquidity/src/aero_lp/ledger.py": 4,
@@ -54180,7 +54194,7 @@
     "dependencies": {
       ".github/copilot-instructions.md": 2,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 8,
+      ".github/workflows/ci.yml": 6,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
       "README.md": 1,
@@ -54411,6 +54425,7 @@
       ".claude/agents/aero-pool-scout.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/CLAUDE.md": 2,
       "liquidity/README.md": 2,
       "liquidity/STATE_FILES.md": 1,
@@ -56016,6 +56031,7 @@
       "mongo/tests/test_load.py": 1,
       "research/coin-intelligence/rain-rain.md": 3,
       "research/coin-intelligence/zec-zcash.md": 1,
+      "scripts/check_docs.py": 1,
       "skills/trading-and-investing/SKILL.md": 6,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 2,
       "skills/trading-and-investing/references/grid-trading-strategy.md": 1,
@@ -57678,7 +57694,7 @@
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 2,
       "docs/dso-skill/README.md": 2,
-      "docs/high_signal_file_index.json": 11,
+      "docs/high_signal_file_index.json": 12,
       "index/make_files_doc.py": 1,
       "liquidity/STATE_FILES.md": 1,
       "liquidity/src/aero_lp/state.py": 1,
@@ -58286,7 +58302,7 @@
       "GEMINI.md": 3,
       "README.md": 3,
       "backtester/README.md": 1,
-      "docs/DEVELOPMENT.md": 2,
+      "docs/DEVELOPMENT.md": 3,
       "docs/FILES.md": 5,
       "docs/INSTALLATION.md": 4,
       "docs/TESTING.md": 7,
@@ -58353,6 +58369,7 @@
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/SKILL.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "extension/src/core/commands.js": 1,
       "extension/test/surfaces.test.js": 2,
@@ -59705,7 +59722,7 @@
       "research/short_horizon_economics.py": 3,
       "research/verify_numbers.py": 5,
       "scripts/build_doc_index.py": 10,
-      "scripts/check_docs.py": 30,
+      "scripts/check_docs.py": 32,
       "skills/trading-and-investing/SCHEDULED-RESEARCH.md": 4,
       "skills/trading-and-investing/SKILL.md": 8,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 2,
@@ -69707,7 +69724,7 @@
       "docs/FILES.md": 18,
       "docs/SCRIPTS.md": 16,
       "docs/codebase-overview.md": 2,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/strategy-optimization-concept-family.md": 4,
       "docs/trading-signals-concept-family.md": 1,
       "index/make_files_doc.py": 1,
@@ -69834,6 +69851,7 @@
       "CLAUDE.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/engine.py": 2,
@@ -72308,6 +72326,7 @@
     "executor": {
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/trading-signals-concept-family.md": 2,
       "extension/src/core/grid.js": 1,
       "extension/src/core/risk.js": 2,
@@ -73559,6 +73578,7 @@
       "docs/FILES.md": 2,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "liquidity/README.md": 4,
       "liquidity/STATE_FILES.md": 2,
@@ -80419,7 +80439,7 @@
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 2,
       "docs/dso-skill/README.md": 1,
-      "docs/high_signal_file_index.json": 2,
+      "docs/high_signal_file_index.json": 3,
       "docs/logging.md": 3,
       "docs/onboarding.md": 1,
       "extension/README.md": 1,
@@ -82353,7 +82373,7 @@
       "soltui/SolTUI.icns": 2
     },
     "five": {
-      "README.md": 3,
+      "README.md": 1,
       "backtester/core/fetch_minutes.py": 9,
       "backtester/core/strategy_cards.py": 1,
       "backtester/strategy_cards/adx_filtered_trend.md": 7,
@@ -83071,7 +83091,9 @@
       "soltui/bgqueue.py": 2,
       "soltui/runner.py": 1,
       "soltui/status.py": 1,
-      "soltui/tests/test_bgqueue.py": 1
+      "soltui/tests/test_bgqueue.py": 1,
+      "tools/gate.sh": 1,
+      "tools/land.sh": 1
     },
     "flip": {
       "backtester/core/engine.py": 1,
@@ -88361,9 +88383,9 @@
       "soltui/config.py": 2,
       "soltui/docs_browser.py": 1,
       "soltui/tui.py": 1,
-      "tools/gate.sh": 10,
+      "tools/gate.sh": 11,
       "tools/install-hooks.sh": 1,
-      "tools/land.sh": 10
+      "tools/land.sh": 11
     },
     "gate_counts": {
       "backtester/tests/test_sweep_pair_gate.py": 1,
@@ -88646,6 +88668,7 @@
       "docs/codebase-overview.md": 2,
       "docs/high_signal_file_index.json": 2,
       "llms-full.txt": 2,
+      "scripts/check_docs.py": 1,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 1
     },
     "gems": {
@@ -90062,7 +90085,7 @@
     "git": {
       ".githooks/pre-commit": 5,
       ".githooks/pre-merge-commit": 3,
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 1,
       ".gitignore": 2,
       ".remember/remember.md": 2,
       "backtester/core/data.py": 6,
@@ -90149,10 +90172,12 @@
       "research/coin-intelligence/rain-rain.md": 5,
       "research/coin-intelligence/trx-tron.md": 2,
       "scripts/build_doc_index.py": 1,
+      "scripts/check_docs.py": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 3,
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 2,
       "soltui/requirements.txt": 2,
-      "soltui/soltui-service": 1
+      "soltui/soltui-service": 1,
+      "tools/land.sh": 1
     },
     "githubusercontent": {
       "pagesource": 21
@@ -91176,6 +91201,7 @@
     },
     "graduation": {
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/daemon.py": 4,
@@ -91347,7 +91373,7 @@
       "soltui/make_icon.py": 4,
       "soltui/tui.py": 2,
       "tools/gate.sh": 1,
-      "tools/land.sh": 1
+      "tools/land.sh": 2
     },
     "greensboro": {
       "skills/trading-and-investing/references/technical-analysis.md": 1
@@ -91357,7 +91383,7 @@
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1
     },
     "grep": {
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 1,
       "docs/SECURITY.md": 1,
       "liquidity/scripts/aero-lp-service": 1,
       "llms-full.txt": 2,
@@ -92372,7 +92398,8 @@
     "guesses": {
       ".github/SECURITY.md": 1,
       "backtester/strategy_cards/README.md": 1,
-      "docs/codebase-overview.md": 1
+      "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1
     },
     "guessing": {
       ".github/copilot-instructions.md": 1,
@@ -93026,6 +93053,7 @@
       "research/ratio_rotation.py": 1
     },
     "handful": {
+      ".github/workflows/ci.yml": 1,
       "backtester/strategy_cards/breakout.md": 1,
       "docs/dso-skill/references/passes.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -103003,7 +103031,7 @@
     "install": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 16,
+      ".github/workflows/ci.yml": 10,
       "CLAUDE.md": 1,
       "GEMINI.md": 2,
       "README.md": 4,
@@ -103018,7 +103046,7 @@
       "docs/INSTALLATION.md": 16,
       "docs/SCRIPTS.md": 4,
       "docs/codebase-overview.md": 2,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/known-issues.md": 2,
       "docs/onboarding.md": 3,
       "extension/README.md": 3,
@@ -103177,7 +103205,7 @@
     },
     "instead": {
       ".claude/agents/aero-pool-scout.md": 1,
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
@@ -103313,7 +103341,7 @@
       "soltui/tests/test_tui.py": 4,
       "soltui/top5.py": 1,
       "soltui/tui.py": 5,
-      "tools/land.sh": 1
+      "tools/land.sh": 2
     },
     "instid": {
       "backtester/core/funding.py": 1,
@@ -103414,6 +103442,7 @@
       "llms-full.txt": 2,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/decide.py": 1,
+      "scripts/check_docs.py": 1,
       "skills/trading-and-investing/references/options-fundamentals.md": 1
     },
     "instructive": {
@@ -103830,6 +103859,7 @@
       "docs/integrations-and-assumptions.md": 3,
       "llms-full.txt": 2,
       "research/coin-intelligence/doge-dogecoin.md": 1,
+      "scripts/check_docs.py": 1,
       "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md": 1
     },
     "integrators": {
@@ -106766,7 +106796,8 @@
       "soltui/tests/test_service_plist_parity.py": 2,
       "soltui/tests/test_tui.py": 1,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 5
+      "soltui/tui.py": 5,
+      "tools/gate.sh": 1
     },
     "iuniswapv3poolimmutables": {
       "liquidity/src/aero_lp/abi.py": 1
@@ -107677,7 +107708,7 @@
       "docs/SCRIPTS.md": 6,
       "docs/SECURITY.md": 3,
       "docs/codebase-overview.md": 4,
-      "docs/high_signal_file_index.json": 6,
+      "docs/high_signal_file_index.json": 8,
       "docs/trading-signals-concept-family.md": 2,
       "extension/README.md": 4,
       "extension/manifest.json": 2,
@@ -107850,6 +107881,7 @@
     "judged": {
       "backtester/strategy_cards/buy_and_hold.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "extension/tools/measure-recentre.js": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/providers_report.py": 1,
@@ -109475,7 +109507,7 @@
       "docs/SCRIPTS.md": 1,
       "docs/SECURITY.md": 1,
       "docs/codebase-overview.md": 3,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 3,
       "docs/trading-signals-concept-family.md": 1,
       "extension/src/bg/service-worker.js": 1,
       "extension/src/core/commands.js": 3,
@@ -109659,7 +109691,7 @@
       "docs/API.md": 1,
       "docs/FILES.md": 11,
       "docs/SCRIPTS.md": 1,
-      "docs/high_signal_file_index.json": 118,
+      "docs/high_signal_file_index.json": 130,
       "docs/strategy-optimization-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/src/core/commands.js": 5,
@@ -110951,6 +110983,7 @@
       "soltui/bgworker.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 4,
+      "tools/gate.sh": 1,
       "tools/install-hooks.sh": 1,
       "tools/land.sh": 13
     },
@@ -110982,14 +111015,12 @@
       "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md": 2,
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 1,
       "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md": 1,
-      "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
-      "tools/gate.sh": 1
+      "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1
     },
     "landmark": {
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 2
     },
     "lands": {
-      ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "backtester/core/cpcv.py": 2,
       "backtester/strategy_cards/README.md": 1,
@@ -111818,7 +111849,7 @@
       "soltui/tests/test_service_plist_parity.py": 1
     },
     "launchd": {
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 3,
       "README.md": 1,
       "backtester/core/archive_price.py": 1,
       "docs/COMPONENTS.md": 1,
@@ -111828,7 +111859,7 @@
       "docs/SCRIPTS.md": 1,
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 3,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/integrations-and-assumptions.md": 3,
       "docs/known-issues.md": 1,
       "docs/logging.md": 2,
@@ -112621,6 +112652,7 @@
       "backtester/core/fetch_minutes.py": 3,
       "backtester/tests/test_fetch_minutes.py": 2,
       "docs/codebase-overview.md": 2,
+      "docs/high_signal_file_index.json": 2,
       "liquidity/CLAUDE.md": 3,
       "liquidity/README.md": 4,
       "liquidity/src/aero_lp/allocator.py": 2,
@@ -114672,6 +114704,7 @@
       "docs/FILES.md": 4,
       "docs/SCRIPTS.md": 4,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/strategy-optimization-concept-family.md": 3,
       "docs/trading-signals-concept-family.md": 4,
       "extension/README.md": 1,
@@ -114955,7 +114988,7 @@
       "docs/FILES.md": 424,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/SKILL.md": 1,
-      "docs/high_signal_file_index.json": 108,
+      "docs/high_signal_file_index.json": 119,
       "extension/README.md": 1,
       "extension/src/core/pnl.js": 2,
       "extension/test/core.test.js": 4,
@@ -115402,6 +115435,7 @@
       "docs/FILES.md": 1,
       "docs/TESTING.md": 2,
       "docs/codebase-overview.md": 15,
+      "docs/high_signal_file_index.json": 23,
       "docs/trading-signals-concept-family.md": 1,
       "liquidity/.gitignore": 1,
       "liquidity/CLAUDE.md": 4,
@@ -115462,6 +115496,8 @@
       "research/coin-intelligence/trx-tron.md": 5,
       "research/coin-intelligence/xrp-ripple.md": 4,
       "research/coin-intelligence/zec-zcash.md": 5,
+      "scripts/build_doc_index.py": 1,
+      "scripts/check_docs.py": 1,
       "skills/trading-and-investing/SKILL.md": 11,
       "skills/trading-and-investing/manifest.yaml": 4,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
@@ -116170,7 +116206,7 @@
       "docs/dso-skill/SKILL.md": 6,
       "docs/dso-skill/references/passes.md": 2,
       "docs/external-calls.md": 5,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 3,
       "docs/integrations-and-assumptions.md": 2,
       "docs/known-issues.md": 5,
       "docs/logging.md": 1,
@@ -116375,6 +116411,7 @@
     },
     "liverunner": {
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/engine.py": 3,
@@ -117210,8 +117247,9 @@
       "soltui/bin/soltui": 1,
       "soltui/serve.py": 1,
       "soltui/tests/test_panes.py": 1,
-      "tools/gate.sh": 3,
-      "tools/install-hooks.sh": 1
+      "tools/gate.sh": 4,
+      "tools/install-hooks.sh": 1,
+      "tools/land.sh": 1
     },
     "local_data": {
       "docs/FILES.md": 2,
@@ -117276,7 +117314,8 @@
       "research/coin-intelligence/xrp-ripple.md": 3,
       "scripts/check_docs.py": 1,
       "skills/trading-and-investing/references/market-microstructure-and-execution.md": 1,
-      "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1
+      "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
+      "tools/land.sh": 1
     },
     "locals": {
       "soltui/bgcontrol.py": 1
@@ -118530,7 +118569,7 @@
       "docs/codebase-overview.md": 6,
       "docs/dso-skill/SKILL.md": 8,
       "docs/external-calls.md": 1,
-      "docs/high_signal_file_index.json": 4,
+      "docs/high_signal_file_index.json": 6,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 1,
       "index/make_files_doc.py": 1,
@@ -120414,7 +120453,7 @@
     },
     "macos": {
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 7,
+      ".github/workflows/ci.yml": 5,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
       "README.md": 1,
@@ -121539,6 +121578,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 1,
       "extension/src/jupiter/trigger.js": 2,
@@ -122402,7 +122442,7 @@
       "backtester/tests/test_index.py": 1,
       "docs/FILES.md": 3,
       "docs/SCRIPTS.md": 2,
-      "docs/high_signal_file_index.json": 16,
+      "docs/high_signal_file_index.json": 20,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "index/build.py": 1,
       "index/make_files_doc.py": 2,
@@ -122934,7 +122974,7 @@
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 5,
       "soltui/make_icon.py": 4,
       "soltui/soltui-service": 1,
-      "tools/gate.sh": 2,
+      "tools/gate.sh": 1,
       "tools/install-hooks.sh": 1,
       "tools/land.sh": 19
     },
@@ -124965,6 +125005,7 @@
       "docs/FILES.md": 6,
       "docs/SCRIPTS.md": 2,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 3,
       "extension/tools/measure-recentre.js": 5,
@@ -126394,8 +126435,9 @@
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 1,
       "skills/trading-and-investing/references/investing-vs-trading.md": 1,
       "soltui/soltui-service": 1,
+      "tools/gate.sh": 1,
       "tools/install-hooks.sh": 3,
-      "tools/land.sh": 11
+      "tools/land.sh": 12
     },
     "merged": {
       "backtester/core/strategy_cards.py": 3,
@@ -126908,7 +126950,7 @@
       "docs/COMPONENTS.md": 2,
       "docs/FILES.md": 8,
       "docs/codebase-overview.md": 3,
-      "docs/high_signal_file_index.json": 2,
+      "docs/high_signal_file_index.json": 3,
       "docs/strategy-optimization-concept-family.md": 1,
       "liquidity/README.md": 2,
       "liquidity/src/aero_lp/allocator.py": 7,
@@ -130029,10 +130071,11 @@
       "README.md": 5,
       "docs/COMPONENTS.md": 6,
       "docs/CONCEPTS.md": 1,
+      "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 41,
       "docs/TESTING.md": 5,
       "docs/codebase-overview.md": 15,
-      "docs/high_signal_file_index.json": 14,
+      "docs/high_signal_file_index.json": 29,
       "mongo/README.md": 18,
       "mongo/__init__.py": 1,
       "mongo/load.py": 14,
@@ -130048,6 +130091,7 @@
       "mongo/schema.py": 7,
       "mongo/tests/__init__.py": 1,
       "mongo/tests/test_load.py": 5,
+      "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 7
     },
     "mongoclient": {
@@ -132013,7 +132057,7 @@
       ".claude/agents/aero-pool-scout.md": 2,
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
-      ".github/workflows/ci.yml": 28,
+      ".github/workflows/ci.yml": 26,
       ".remember/remember.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -134642,7 +134686,7 @@
       "soltui/tests/test_tui.py": 6,
       "soltui/top5.py": 1,
       "soltui/tui.py": 18,
-      "tools/land.sh": 3
+      "tools/land.sh": 4
     },
     "never_ran": {
       "soltui/tests/test_panes.py": 1
@@ -141047,6 +141091,7 @@
     "operation": {
       "CLAUDE.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "extension/src/venues/index.js": 1,
       "liquidity/CLAUDE.md": 3,
       "liquidity/README.md": 1,
@@ -144140,7 +144185,7 @@
       "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 5,
       "docs/dso-skill/references/passes.md": 1,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/integrations-and-assumptions.md": 1,
       "docs/onboarding.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 4,
@@ -144315,6 +144360,7 @@
       "CLAUDE.md": 7,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 2,
+      "docs/high_signal_file_index.json": 2,
       "index/search.py": 2,
       "liquidity/CLAUDE.md": 8,
       "liquidity/README.md": 2,
@@ -147410,7 +147456,7 @@
       "docs/dso-skill/SKILL.md": 7,
       "docs/dso-skill/references/passes.md": 6,
       "docs/external-calls.md": 3,
-      "docs/high_signal_file_index.json": 119,
+      "docs/high_signal_file_index.json": 131,
       "docs/integrations-and-assumptions.md": 3,
       "docs/known-issues.md": 4,
       "docs/short-horizon-leverage-concept-family.md": 7,
@@ -147576,7 +147622,7 @@
       "soltui/tests/test_tui.py": 27,
       "soltui/top5.py": 8,
       "soltui/tui.py": 75,
-      "tools/land.sh": 1
+      "tools/land.sh": 2
     },
     "path_range": {
       "soltui/cumulative.py": 1,
@@ -150826,7 +150872,7 @@
     },
     "pip": {
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 14,
+      ".github/workflows/ci.yml": 10,
       "README.md": 2,
       "backtester/README.md": 1,
       "docs/DEVELOPMENT.md": 2,
@@ -152574,6 +152620,7 @@
       "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 2,
       "docs/codebase-overview.md": 2,
+      "docs/high_signal_file_index.json": 2,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 1,
@@ -152775,6 +152822,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/README.md": 8,
       "liquidity/STATE_FILES.md": 5,
       "liquidity/src/aero_lp/abi.py": 3,
@@ -153032,7 +153080,8 @@
       "soltui/tests/test_panes.py": 1
     },
     "portable": {
-      "soltui/setup_app.py": 1
+      "soltui/setup_app.py": 1,
+      "tools/gate.sh": 1
     },
     "portal": {
       "docs/OPERATIONS.md": 1,
@@ -154254,9 +154303,9 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 5,
       "soltui/liquidity.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1,
-      "tools/gate.sh": 1,
+      "tools/gate.sh": 2,
       "tools/install-hooks.sh": 2,
-      "tools/land.sh": 1,
+      "tools/land.sh": 2,
       "tradingskilllist/trading-skills.md": 1
     },
     "preamble": {
@@ -156421,7 +156470,7 @@
       "soltui/app.py": 2
     },
     "private": {
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -157406,6 +157455,7 @@
       "docs/FILES.md": 1,
       "docs/SCRIPTS.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
@@ -158482,7 +158532,8 @@
       "research/cross_asset_cpcv.py": 1,
       "research/verify_numbers.py": 3,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 2,
-      "soltui/tests/test_tui.py": 1
+      "soltui/tests/test_tui.py": 1,
+      "tools/land.sh": 1
     },
     "proved": {
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
@@ -159302,6 +159353,7 @@
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/SKILL.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "extension/README.md": 2,
       "extension/src/core/commands.js": 1,
       "extension/src/core/engine.js": 1,
@@ -159978,7 +160030,7 @@
       "docs/codebase-overview.md": 5,
       "docs/dso-skill/SKILL.md": 3,
       "docs/external-calls.md": 1,
-      "docs/high_signal_file_index.json": 54,
+      "docs/high_signal_file_index.json": 61,
       "docs/integrations-and-assumptions.md": 1,
       "docs/onboarding.md": 2,
       "index/README.md": 2,
@@ -160055,7 +160107,7 @@
       "backtester/strategy_cards/zscore.md": 1,
       "backtester/tests/test_index.py": 1,
       "docs/CONCEPTS.md": 19,
-      "docs/DEVELOPMENT.md": 17,
+      "docs/DEVELOPMENT.md": 18,
       "docs/FILES.md": 147,
       "docs/INSTALLATION.md": 14,
       "docs/SCRIPTS.md": 112,
@@ -161188,6 +161240,7 @@
       "docs/FILES.md": 1,
       "docs/SCRIPTS.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/CLAUDE.md": 2,
       "liquidity/README.md": 1,
       "llms-full.txt": 1,
@@ -162978,6 +163031,7 @@
       "docs/FILES.md": 4,
       "docs/SCRIPTS.md": 4,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/strategy-optimization-concept-family.md": 2,
       "index/make_files_doc.py": 2,
       "liquidity/README.md": 1,
@@ -164425,7 +164479,7 @@
       "docs/codebase-overview.md": 9,
       "docs/dso-skill/SKILL.md": 7,
       "docs/dso-skill/references/passes.md": 2,
-      "docs/high_signal_file_index.json": 4,
+      "docs/high_signal_file_index.json": 5,
       "docs/known-issues.md": 1,
       "docs/onboarding.md": 6,
       "docs/short-horizon-leverage-concept-family.md": 5,
@@ -165017,7 +165071,7 @@
       "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/external-calls.md": 1,
-      "docs/high_signal_file_index.json": 6,
+      "docs/high_signal_file_index.json": 7,
       "docs/known-issues.md": 2,
       "docs/onboarding.md": 1,
       "extension/README.md": 2,
@@ -171068,7 +171122,7 @@
       "docs/dso-skill/README.md": 4,
       "docs/dso-skill/SKILL.md": 3,
       "docs/external-calls.md": 4,
-      "docs/high_signal_file_index.json": 25,
+      "docs/high_signal_file_index.json": 12,
       "docs/integrations-and-assumptions.md": 3,
       "docs/known-issues.md": 2,
       "docs/onboarding.md": 1,
@@ -171641,7 +171695,6 @@
       "soltui/docs_browser.py": 1,
       "soltui/tui.py": 1,
       "tools/install-hooks.sh": 1,
-      "tools/land.sh": 1,
       "tradingskilllist/trading-skills.md": 1
     },
     "repr": {
@@ -171902,7 +171955,7 @@
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1
     },
     "req": {
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 2,
       "backtester/core/archive_price.py": 2,
       "backtester/core/fetch.py": 2,
       "backtester/core/fetch_minutes.py": 5,
@@ -172334,7 +172387,7 @@
     },
     "requirements": {
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 12,
+      ".github/workflows/ci.yml": 8,
       "CLAUDE.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 4,
@@ -172688,7 +172741,7 @@
       "docs/dso-skill/README.md": 2,
       "docs/dso-skill/SKILL.md": 4,
       "docs/external-calls.md": 2,
-      "docs/high_signal_file_index.json": 37,
+      "docs/high_signal_file_index.json": 38,
       "docs/known-issues.md": 4,
       "docs/logging.md": 1,
       "docs/onboarding.md": 4,
@@ -174407,6 +174460,7 @@
       "docs/OPERATIONS.md": 2,
       "docs/SCRIPTS.md": 2,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "extension/README.md": 1,
       "liquidity/README.md": 2,
       "liquidity/scripts/aero-lp-service": 4,
@@ -178880,7 +178934,7 @@
       "soltui/tests/test_panes.py": 1
     },
     "runner": {
-      ".github/workflows/ci.yml": 8,
+      ".github/workflows/ci.yml": 4,
       "backtester/core/strategy_cards.py": 22,
       "backtester/strategy_cards/README.md": 4,
       "backtester/strategy_cards/adx_filtered_trend.md": 1,
@@ -178963,7 +179017,7 @@
       "liquidity/tests/test_daemon.py": 2
     },
     "runner_temp": {
-      ".github/workflows/ci.yml": 6
+      ".github/workflows/ci.yml": 2
     },
     "runner_tokens": {
       "liquidity/src/aero_lp/daemon.py": 7,
@@ -179229,6 +179283,7 @@
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 2,
       "soltui/tui.py": 3,
+      "tools/gate.sh": 2,
       "tools/install-hooks.sh": 3,
       "tools/land.sh": 1,
       "tradingskilllist/trading-skills.md": 1
@@ -179574,6 +179629,7 @@
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "docs/dso-skill/references/passes.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "extension/README.md": 1,
       "extension/src/core/grid.js": 1,
       "index/build.py": 1,
@@ -181242,6 +181298,7 @@
       "README.md": 1,
       "docs/COMPONENTS.md": 4,
       "docs/codebase-overview.md": 5,
+      "docs/high_signal_file_index.json": 5,
       "liquidity/README.md": 10,
       "liquidity/STATE_FILES.md": 5,
       "liquidity/src/aero_lp/allocator.py": 4,
@@ -181479,7 +181536,7 @@
       "docs/codebase-overview.md": 5,
       "docs/dso-skill/SKILL.md": 1,
       "docs/external-calls.md": 1,
-      "docs/high_signal_file_index.json": 4,
+      "docs/high_signal_file_index.json": 5,
       "docs/known-issues.md": 1,
       "docs/onboarding.md": 1,
       "extension/package.json": 1,
@@ -181865,6 +181922,7 @@
       "docs/codebase-overview.md": 2,
       "docs/dso-skill/README.md": 1,
       "docs/dso-skill/SKILL.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/integrations-and-assumptions.md": 4,
       "docs/short-horizon-leverage-concept-family.md": 7,
       "docs/strategy-optimization-concept-family.md": 1,
@@ -182523,7 +182581,8 @@
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 4,
-      "tools/gate.sh": 2
+      "tools/gate.sh": 1,
+      "tools/land.sh": 1
     },
     "seed": {
       "backtester/PROMPT.md": 4,
@@ -183875,6 +183934,7 @@
       "backtester/core/strategy_cards.py": 2,
       "backtester/strategy_cards/README.md": 2,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/daemon.py": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
@@ -184277,7 +184337,7 @@
       "docs/SCRIPTS.md": 1,
       "docs/SECURITY.md": 1,
       "docs/codebase-overview.md": 4,
-      "docs/high_signal_file_index.json": 3,
+      "docs/high_signal_file_index.json": 4,
       "docs/integrations-and-assumptions.md": 4,
       "docs/known-issues.md": 4,
       "docs/logging.md": 4,
@@ -188682,6 +188742,7 @@
     },
     "simrunner": {
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/src/aero_lp/daemon.py": 5,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 3,
@@ -188769,6 +188830,7 @@
       "CLAUDE.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/engine.py": 2,
@@ -189512,6 +189574,7 @@
       "soltui/SolTUI.icns": 1
     },
     "six": {
+      "README.md": 2,
       "backtester/core/funding.py": 1,
       "backtester/core/universe.py": 1,
       "backtester/strategy_cards/README.md": 2,
@@ -190091,7 +190154,7 @@
     },
     "skip": {
       ".githooks/pre-commit": 1,
-      ".github/workflows/ci.yml": 4,
+      ".github/workflows/ci.yml": 2,
       "backtester/cli.py": 9,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/funding.py": 3,
@@ -192313,7 +192376,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 2,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 16,
+      ".github/workflows/ci.yml": 10,
       ".gitignore": 5,
       "CLAUDE.md": 2,
       "GEMINI.md": 2,
@@ -192329,7 +192392,7 @@
       "docs/codebase-overview.md": 20,
       "docs/dso-skill/README.md": 1,
       "docs/external-calls.md": 1,
-      "docs/high_signal_file_index.json": 34,
+      "docs/high_signal_file_index.json": 35,
       "docs/integrations-and-assumptions.md": 7,
       "docs/known-issues.md": 7,
       "docs/logging.md": 1,
@@ -194835,6 +194898,7 @@
     },
     "sqlite": {
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/CLAUDE.md": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/cli.py": 1,
@@ -194973,6 +195037,10 @@
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 2,
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1
     },
+    "squash": {
+      "tools/gate.sh": 1,
+      "tools/land.sh": 1
+    },
     "squeeze": {
       "backtester/core/indicators.py": 1,
       "backtester/core/strategies/signals.py": 18,
@@ -195051,7 +195119,7 @@
       "docs/TESTING.md": 2,
       "docs/codebase-overview.md": 26,
       "docs/external-calls.md": 8,
-      "docs/high_signal_file_index.json": 20,
+      "docs/high_signal_file_index.json": 26,
       "docs/integrations-and-assumptions.md": 5,
       "docs/known-issues.md": 1,
       "docs/logging.md": 8,
@@ -196206,7 +196274,7 @@
       "docs/INSTALLATION.md": 2,
       "docs/SCRIPTS.md": 15,
       "docs/codebase-overview.md": 2,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/onboarding.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/README.md": 2,
@@ -196601,7 +196669,7 @@
       "docs/codebase-overview.md": 2,
       "docs/dso-skill/references/passes.md": 1,
       "docs/external-calls.md": 2,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/integrations-and-assumptions.md": 1,
       "docs/known-issues.md": 1,
       "docs/logging.md": 1,
@@ -196737,6 +196805,7 @@
     "state_files": {
       ".claude/agents/aero-pool-scout.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/README.md": 2,
       "liquidity/src/aero_lp/scout.py": 1,
       "soltui/README.md": 1,
@@ -197292,7 +197361,7 @@
       "docs/dso-skill/SKILL.md": 2,
       "docs/dso-skill/references/passes.md": 1,
       "docs/external-calls.md": 1,
-      "docs/high_signal_file_index.json": 4,
+      "docs/high_signal_file_index.json": 7,
       "docs/known-issues.md": 2,
       "docs/onboarding.md": 1,
       "docs/strategy-optimization-concept-family.md": 8,
@@ -201792,7 +201861,7 @@
       "docs/dso-skill/SKILL.md": 2,
       "docs/dso-skill/references/passes.md": 1,
       "docs/external-calls.md": 1,
-      "docs/high_signal_file_index.json": 118,
+      "docs/high_signal_file_index.json": 130,
       "docs/logging.md": 2,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/strategy-optimization-concept-family.md": 3,
@@ -202054,7 +202123,7 @@
       "soltui/soltui-service": 1
     },
     "supervisor": {
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 1,
       "soltui/bgworker.py": 1,
       "soltui/requirements.txt": 2,
       "soltui/soltui-service": 7,
@@ -205846,7 +205915,7 @@
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 4
     },
     "temp": {
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 2,
       ".gitignore": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 4,
       "extension/src/storage/fileStore.js": 1,
@@ -211418,7 +211487,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 3,
       ".github/copilot-instructions.md": 8,
-      ".github/workflows/ci.yml": 17,
+      ".github/workflows/ci.yml": 15,
       ".remember/remember.md": 8,
       "CLAUDE.md": 11,
       "GEMINI.md": 7,
@@ -211463,7 +211532,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 4,
       "docs/CONCEPTS.md": 12,
-      "docs/DEVELOPMENT.md": 7,
+      "docs/DEVELOPMENT.md": 9,
       "docs/FILES.md": 119,
       "docs/INSTALLATION.md": 4,
       "docs/SCRIPTS.md": 2,
@@ -215772,6 +215841,7 @@
       "soltui/status.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 1,
+      "tools/gate.sh": 1,
       "tools/install-hooks.sh": 1,
       "tools/land.sh": 1
     },
@@ -215919,7 +215989,7 @@
       "skills/trading-and-investing/references/technical-analysis.md": 2,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
       "soltui/live_run.py": 2,
-      "tools/gate.sh": 6,
+      "tools/gate.sh": 7,
       "tools/install-hooks.sh": 5,
       "tools/land.sh": 5,
       "tradingskilllist/trading-skills.md": 1
@@ -218063,6 +218133,7 @@
       "docs/FILES.md": 6,
       "docs/SCRIPTS.md": 2,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "docs/short-horizon-leverage-concept-family.md": 7,
       "docs/trading-signals-concept-family.md": 5,
       "extension/README.md": 2,
@@ -221071,7 +221142,7 @@
       "extension/src/venues/triggerVenue.js": 2
     },
     "txt": {
-      ".github/workflows/ci.yml": 17,
+      ".github/workflows/ci.yml": 9,
       "CLAUDE.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
@@ -221663,7 +221734,7 @@
       "soltui/SolTUI.icns": 1
     },
     "u2014": {
-      "docs/high_signal_file_index.json": 8
+      "docs/high_signal_file_index.json": 9
     },
     "u4g": {
       "soltui/SolTUI.icns": 1
@@ -223195,7 +223266,7 @@
       "backtester/tests/test_tick_backfill.py": 4,
       "backtester/tests/test_ticks.py": 6,
       "backtester/tests/test_universe.py": 5,
-      "docs/DEVELOPMENT.md": 3,
+      "docs/DEVELOPMENT.md": 4,
       "docs/FILES.md": 5,
       "docs/INSTALLATION.md": 4,
       "docs/TESTING.md": 11,
@@ -228255,6 +228326,7 @@
       "README.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "liquidity/.gitignore": 1,
       "liquidity/CLAUDE.md": 3,
       "liquidity/README.md": 7,
@@ -231971,6 +232043,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
+      "docs/high_signal_file_index.json": 1,
       "extension/README.md": 2,
       "extension/src/wallet/solana.js": 2,
       "liquidity/STATE_FILES.md": 2,
@@ -234882,7 +234955,6 @@
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tui.py": 6,
-      "tools/gate.sh": 1,
       "tools/land.sh": 2,
       "tradingskilllist/trading-skills.md": 2
     },
@@ -237598,7 +237670,7 @@
       "docs/SECURITY.md": 2,
       "docs/codebase-overview.md": 2,
       "docs/external-calls.md": 4,
-      "docs/high_signal_file_index.json": 1,
+      "docs/high_signal_file_index.json": 2,
       "docs/logging.md": 3,
       "docs/trading-signals-concept-family.md": 2,
       "extension/README.md": 4,
@@ -238936,10 +239008,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1248.7,
+    "avgDocLength": 1249.1,
     "documents": 474,
-    "terms": 25164,
-    "termsBeforePrune": 25167,
-    "totalTokens": 591889
+    "terms": 25165,
+    "termsBeforePrune": 25168,
+    "totalTokens": 592062
   }
 }

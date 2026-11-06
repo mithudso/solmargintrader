@@ -15,7 +15,11 @@
 # So the gate has to live in the thing you run, not in a hook. This is that thing.
 #
 # It refuses rather than fixes: no stashing, no auto-commit, no --force anywhere,
-# and it never touches a remote (this repository deliberately has none).
+# and it never touches a remote.
+#
+# This is the LOCAL pre-flight gate, not the delivery path. Delivery is
+# branch -> PR -> CI -> squash merge on GitHub (see CLAUDE.md); run this to prove a
+# branch is green locally, never instead of CI.
 
 set -uo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/.." && git rev-parse --path-format=absolute --git-common-dir)"
@@ -25,7 +29,7 @@ cd "$REPO_ROOT"
 BRANCH="${1:-}"
 shift || true
 if [ -z "$BRANCH" ] || [ "$BRANCH" = "-h" ] || [ "$BRANCH" = "--help" ]; then
-  sed -n '2,20p' "$0"
+  sed -n '2,24p' "$0"
   exit 0
 fi
 

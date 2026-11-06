@@ -1,6 +1,6 @@
 # solmargintrader
 
-SOL trading research and execution tooling, in five parts:
+SOL trading research and execution tooling, in six parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |

@@ -30,7 +30,7 @@ REPO = Path(__file__).resolve().parents[1]
 OVERVIEW = REPO / "docs" / "codebase-overview.md"
 INDEX = REPO / "docs" / "high_signal_file_index.json"
 
-COMPONENTS = ("backtester", "research", "extension", "soltui")
+COMPONENTS = ("backtester", "research", "extension", "soltui", "mongo", "liquidity")
 
 # `| `some/path` | description |` -- the table shape used throughout the overview.
 ROW = re.compile(r"^\| `([\w./-]+)` \| (.+?) \|$", re.MULTILINE)

@@ -7,7 +7,8 @@
 #
 # This exists because master was once left with a failing test: a branch was
 # fast-forwarded in after its last green run but before a later commit went stale.
-# See "Landing work on master" in CLAUDE.md.
+# This is the LOCAL pre-flight gate (tools/land.sh runs it too). Delivery itself is
+# branch -> PR -> CI -> squash merge; CI re-runs the portable checks.
 #
 # Exit 0 iff every selected check passes. Prints one line per check.
 

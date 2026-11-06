@@ -92,7 +92,7 @@ numpy.
 | Chrome | Present, extension loadable | None — never loaded in CI | Needed for the extension |
 
 Two consequences worth stating: **no test may require the network or a cached CSV**, since
-CI has neither; and **`soltui/` cannot be tested on the Linux runner**, so its 95 tests are
+CI has neither; and **`soltui/` cannot be tested on the Linux runner**, so its 368 tests are
 a local gate rather than a CI one.
 
 ## What would need changing to run this elsewhere
