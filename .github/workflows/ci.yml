@@ -93,6 +93,12 @@ jobs:
       # though soltui/requirements.txt scopes itself to soltui's own packages.
       # Without this the suite still "runs" -- discovery turns each failed import
       # into one _FailedTest, so it reports 54 tests instead of 187.
+      - name: Install dependencies
+        run: |
+          pip install -r backtester/requirements.txt
+          grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
+          pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
+
       - name: Unit tests
         run: python3 -m unittest discover -s soltui/tests -t .
 

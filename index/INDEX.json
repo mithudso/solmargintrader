@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-06T12:56:02+00:00",
+  "generatedAt": "2026-11-06T12:58:07+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "d368290",
+  "commit": "f94001a",
   "counts": {
     "files": 474,
-    "bytes": 8068142,
+    "bytes": 8068458,
     "byKind": {
       "doc": 110,
       "code-python": 103,
@@ -299,9 +299,9 @@
       "title": "Read-only by default; nothing here needs write access to the repo.",
       "summary": "",
       "summarySource": "none",
-      "bytes": 8585,
-      "lines": 229,
-      "sha1": "786dbb64b5cb9cdaa6de366e6b38ae5851468717",
+      "bytes": 8901,
+      "lines": 235,
+      "sha1": "2b9a92af427041b19cf46c3a055a333fb06e8246",
       "symbols": [],
       "imports": [],
       "internalImports": [],
