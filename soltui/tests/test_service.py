@@ -22,6 +22,12 @@ from pathlib import Path
 from types import ModuleType
 from unittest import mock
 
+# soltui-service imports the private macos-launchd-supervisor package and exits without it. CI cannot clone
+# that private repo, so these tests run wherever it is installed (the owner's Mac) and skip elsewhere.
+HAVE_SUPERVISOR = importlib.util.find_spec("launchd_supervisor") is not None
+SKIP_REASON = "macos-launchd-supervisor (private git dependency) is not installed"
+
+
 REPO = Path(__file__).resolve().parent.parent.parent
 SERVICE = REPO / "soltui" / "soltui-service"
 
@@ -48,6 +54,7 @@ def fail(cmd: list[str]) -> subprocess.CompletedProcess:
     return subprocess.CompletedProcess(cmd, 1, "", "No such process")
 
 
+@unittest.skipUnless(HAVE_SUPERVISOR, SKIP_REASON)
 class ServiceTestCase(unittest.TestCase):
     """Base: a loaded module and a scratch directory for its state paths."""
 
@@ -71,6 +78,7 @@ class ServiceTestCase(unittest.TestCase):
             self.addCleanup(patch.stop)
 
 
+@unittest.skipUnless(HAVE_SUPERVISOR, SKIP_REASON)
 class StartLoadsTheAgent(ServiceTestCase):
     """`start` must ensure the agent is loaded, not assume it."""
 
