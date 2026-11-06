@@ -327,7 +327,8 @@ src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe;
 tools/cli.js               CLI surface, generated from the registry
 tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/dryrun.js            Headless end-to-end tick
-test/                      237 tests, zero dependencies (node:test)
+tools/e2e.mjs              Real-browser e2e (Chrome for Testing, DevTools pipe); helpers in e2e/
+test/                      242 tests, zero dependencies (node:test)
 ```
 
 No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
@@ -338,12 +339,20 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 
 ## Verification status
 
-**Current offline gate (2026-11-06):** 237 tests pass. The deterministic oscillating
+**Current offline gate (2026-11-06):** 242 tests pass. The deterministic oscillating
 dry run closes one round trip: gross $0.3738, fees $0.0246, net +$0.3492, with no
 unknown-fee fills. Public endpoint reachability passed; the keyed price check skipped.
 Live money movement remains blocked without the transaction-intent verifier described
 in `docs/jupiter-trigger-contract.md`. Unmatched sales, missing execution evidence and
 unknown accounting costs hold new planning. The planner allows at most 10,000 rungs.
+
+**Real-browser e2e (2026-11-06):** `npm run e2e` loads the unpacked extension into Chrome for
+Testing (156.0.8078.47) and passes 14 of 14 checks: the MV3 service worker starts, the extension
+installs disarmed in dry-run, the popup and dashboard render, a dry-run `plan` is priced by a stubbed
+read, a disarmed `tick` is skipped and journals nothing, the rails fail closed in the browser, a canary
+API key appears in no DOM, response or `chrome.storage.sync`, and Chrome-level interception saw no request
+other than the stubbed price read. This verifies loading and dry-run behaviour only. It never arms or
+signs, it does not exercise authenticated Jupiter responses, and **no live order has ever been placed**.
 
 **Historical development receipts (the figures below are not the current gate):**
 

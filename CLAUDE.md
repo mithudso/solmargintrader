@@ -103,15 +103,20 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 python3 -m unittest discover -s backtester/tests -t .   # 681 tests
 python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 237 tests
+cd extension && npm test                                # 242 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
+cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 cd liquidity && .venv/bin/pytest -q                     # liquidity (own venv; -m network for live reads)
 ```
 
-Loading the extension unpacked cannot be automated (`chrome://extensions` needs a human). Do not
-claim it as verified — the headless dry run is the integration gate instead.
+`npm run e2e` (`extension/tools/e2e.mjs`) loads the unpacked extension into Chrome for Testing over the
+DevTools pipe and checks loading and dry-run behaviour in a real browser (needs Chrome for Testing:
+`npx @puppeteer/browsers install chrome@stable`, or set `CHROME`; exit 2 means no usable browser).
+It never arms, signs or changes mode, limits or keys (`extension/e2e/lib/guard.mjs` enforces that),
+and it blocks all network but a stubbed price read. It does not verify live orders. Do not describe
+it as live verification; the headless dry run stays the economics gate.
 
 ## House style
 
@@ -131,7 +136,9 @@ base58 zero bytes, FIFO vs paired-lot attribution, one-bar leaks). Do not narrat
 ## Known-unverified areas
 
 Read "Verification status" in `extension/README.md` before extending it. In short: **no live order
-has ever been placed**. Trigger history/cancellation have public-contract fixtures, but authenticated
+has ever been placed**. The unpacked extension is now loaded and exercised in a real browser (`npm run e2e`,
+dry-run only), so the MV3 load path, service worker, popup, dashboard and message routing are
+covered; live trading is not. Trigger history/cancellation have public-contract fixtures, but authenticated
 wallet responses, execution USD valuation and fee attribution remain unverified. The bundled signer
 has no semantic transaction verifier, so Trigger live signing stays blocked. Do not present live
 execution as working.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T18:06:51+00:00",
+  "generatedAt": "2026-11-06T20:11:24+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -74,6 +74,10 @@
           "hits": 22
         },
         {
+          "path": "extension/README.md",
+          "hits": 21
+        },
+        {
           "path": "liquidity/src/aero_lp/providers.py",
           "hits": 21
         },
@@ -83,10 +87,6 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 20
-        },
-        {
-          "path": "extension/README.md",
           "hits": 20
         },
         {
@@ -230,7 +230,7 @@
         },
         {
           "path": "extension/README.md",
-          "hits": 40
+          "hits": 41
         },
         {
           "path": "backtester/core/gridsim.py",

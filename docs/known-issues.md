@@ -40,11 +40,13 @@ request/outcome metadata and some failure paths remain outside a common sink.
 `docs/logging.md` and the dated code-optimizer report distinguish verified changes from
 remaining coverage. Do not infer a complete request history from a tick summary.
 
-### Loading unpacked cannot be automated
+### The real-browser e2e covers loading and dry-run only
 
-`chrome://extensions` needs a human, so the MV3 load path is never covered by CI. The
-headless dry run (`tools/dryrun.js --ticks 8 --osc 6 --offline 100`) stands in for it and
-is the integration gate.
+`npm run e2e` loads the unpacked extension in Chrome for Testing and checks install state, the
+service worker, popup, dashboard, a dry-run plan and tick, the rails and secret handling. It never
+arms or signs and stubs the network, so it is not evidence about live orders. The headless dry run
+(`tools/dryrun.js --ticks 8 --osc 6 --offline 100`) remains the economics gate. Branded Chrome
+cannot load an extension from the command line, so the e2e needs Chrome for Testing or Chromium.
 
 ---
 
