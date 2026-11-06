@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T10:57:15+00:00",
+  "generatedAt": "2026-11-06T13:04:22+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -86,12 +86,12 @@
           "hits": 20
         },
         {
-          "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
+          "path": "extension/README.md",
           "hits": 20
         },
         {
-          "path": "extension/README.md",
-          "hits": 19
+          "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
+          "hits": 20
         },
         {
           "path": "skills/trading-and-investing/references/the-greeks.md",
@@ -102,15 +102,19 @@
           "hits": 18
         },
         {
+          "path": "docs/API.md",
+          "hits": 17
+        },
+        {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 17
         },
         {
-          "path": "index/build.py",
+          "path": "extension/src/core/commands.js",
           "hits": 16
         },
         {
-          "path": "docs/API.md",
+          "path": "index/build.py",
           "hits": 16
         },
         {
@@ -138,12 +142,8 @@
           "hits": 15
         },
         {
-          "path": "liquidity/src/aero_lp/daemon.py",
-          "hits": 14
-        },
-        {
           "path": "extension/src/core/risk.js",
-          "hits": 13
+          "hits": 14
         }
       ],
       "source": "curated-from-repo-vocabulary"
