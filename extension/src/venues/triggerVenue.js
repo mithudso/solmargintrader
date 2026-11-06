@@ -25,7 +25,7 @@ export class TriggerVenue {
    * @param {string} cfg.baseMint
    * @param {string} cfg.quoteMint
    * @param {string} cfg.userPubkey
-   * @param {object} cfg.signer   see SigningBridge — supplies signMessage/signTransaction
+   * @param {object} cfg.signer Authentication signer; live writes additionally require verified Trigger operations.
    */
   constructor({ baseMint, quoteMint, userPubkey, apiKey, signer, budget, fetchImpl }) {
     this.id = 'jupiter-trigger-v2';
@@ -113,14 +113,8 @@ export class TriggerVenue {
   }
 
   /**
-   * Terminal orders. Deliberately NON-strict per record, unlike `getOpenOrders`.
-   *
-   * The asymmetry is the point. An unreadable *live* list must abort the tick,
-   * because planning against a list known to be incomplete is how a rung
-   * double-fires. A skipped *history* record can only delay P&L — it can never
-   * place an order — so refusing the whole list would trade a recoverable
-   * accounting lag for an engine that never ticks again. Unusable records come
-   * back flagged and `ingestFills` rejects them individually.
+   * Terminal orders retain per-record diagnostics. The engine holds new planning
+   * if execution evidence is unusable; skipped history could hide inventory or loss.
    *
    * The envelope itself is still strict: an unrecognised shape throws here too,
    * because that is the case where we cannot tell an empty history from a
