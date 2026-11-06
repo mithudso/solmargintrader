@@ -17,12 +17,24 @@ Still required:
 - Never read, print or copy the key file (`key_file`). The program reads it itself and refuses it unless
   it is mode 600 and owned by the user.
 - Code defaults stay dry-run. A fresh install must never sign.
-- To stop everything, use `scripts/aero-lp-service kill`. Do not edit the config.
+- To stop everything, use `scripts/aero-lp-service kill`. Do not edit the config. Kill only halts: positions stay open.
+  To take the money out of the pools, use `scripts/aero-lp-service exit-to-safe` (dry run) and add `--live` to send.
+
+## Pre-live gates (DOC-754)
+
+- `aero-lp daemon --live` and `run --live` are refused until (1) the configuration has soaked in dry-run for
+  `[gates].soak_hours` (24 h default; `soak.json`) and (2) the latest research-gate result for `[gates].strategy_id`
+  is a pass (`research-gate.json`). Any strategy or cap change resets the soak (`gates.config_fingerprint`).
+- Never write `allow_failed_research_gate = true`, a grandfather entry or a research result on your own initiative.
+  Those are the owner's decisions. A grandfather entry (`aero-lp gates grandfather`) exists for the configuration that
+  was live on 2026-11-06; it is one-time and covers only that exact configuration.
+- `exit-to-safe` is never gated. Keep it that way.
 
 ## Code rules
 
 - Contract addresses live only in `src/aero_lp/addresses.py`. Change them only when two sources agree
   (the Aero docs Security page and the dromos-labs/metadex-slipstream-public deployment JSON).
+- `gates.py` fails closed: a missing or unreadable record is a refusal. `safe_exit.py` converts only withdrawn amounts through a direct pool.
 - `strategy.py` and `allocator.py` stay pure (no I/O). Unit-test every decision branch.
 - Every on-chain sequence goes through `Rebalancer` and a `Runner`, so dry-run simulates exactly what
   live would send.

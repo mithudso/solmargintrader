@@ -4,6 +4,7 @@
 #   aero-lp-service uninstall             stop it and remove the plist
 #   aero-lp-service status | logs         launchctl state / tail the log
 #   aero-lp-service kill | resume         pause on-chain actions (KILL file) / resume them
+#   aero-lp-service exit-to-safe [--live] withdraw EVERY position to the wallet (dry run unless --live)
 set -euo pipefail
 
 LABEL="com.mithudso.aero-lp"
@@ -54,5 +55,6 @@ PL
   logs) tail -n "${2:-50}" "$LP_HOME/daemon.log" ;;
   kill) touch "$LP_HOME/KILL" && echo "KILL set: the daemon takes no on-chain action until resume" ;;
   resume) rm -f "$LP_HOME/KILL" && echo "KILL cleared" ;;
-  *) sed -n '2,7p' "$0"; exit 2 ;;
+  exit-to-safe) shift; exec "$BIN" exit-to-safe -c "$CONFIG" "$@" ;;
+  *) sed -n '2,8p' "$0"; exit 2 ;;
 esac

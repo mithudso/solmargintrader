@@ -18,6 +18,8 @@ file. Readers must tolerate a missing file, an unknown `schema`, and missing opt
   "generated_at": 1762400000.0,
   "mode": "live",
   "killed": false,
+  "gates": {"soak_ok": false, "soak_reason": "...", "soak_hours": 0.0, "soak_required_hours": 24.0,
+            "grandfathered": false, "research_ok": false, "research_reason": "...", "research_override": false},
   "owner": "0x901a…5314",
   "last_scout_at": 1762390000.0,
   "wallet": {
@@ -67,6 +69,7 @@ file. Readers must tolerate a missing file, an unknown `schema`, and missing opt
 
 - `mode` is either `"live"` or `"dry-run"`.
 - `killed` is true while `$AERO_LP_HOME/KILL` exists. The daemon then takes no on-chain action.
+- `gates` reports the pre-live gates (README "Pre-live gates"). soltui may show it; it must treat a missing key as unknown.
 - In a position, `range` and `price` are human prices (token1 per token0).
 - In a position, `decision` is one of the strategy actions: `hold`, `rebalance`, `wait_confirm`, `wait_cooldown`, `wait_penalty` or `skip_unprofitable`.
 - An experiment's `status` is either `"running"` or `"graduated"`.
@@ -141,3 +144,11 @@ Rows are sorted low-confidence last, then by `expected_net_apr`. Any number may 
 ## `KILL`
 
 When the file exists, the daemon takes no on-chain action. It keeps writing `status.json` with `killed: true`. Deleting the file resumes normal operation. The file's contents are ignored.
+
+## `soak.json`, `research-gate.json`, `gate-overrides.jsonl`, `exit-to-safe.json`
+
+Written by `aero-lp` (see README "Pre-live gates" and "Exit to safe"). soltui does not need them.
+- `soak.json` (`aero-lp-soak/1`): `fingerprint`, `accumulated_s`, `started_at`, `last_tick_at`, `resets[]`, and `grandfather` (null or `{fingerprint, at, reason, owner}`).
+- `research-gate.json` (`aero-lp-research-gate/1`): `results[]` of `{strategy, result: pass|fail, checked_at, source, note}`.
+- `gate-overrides.jsonl`: one line per live start that used `[gates].allow_failed_research_gate`.
+- `exit-to-safe.json` (`aero-lp-exit-to-safe/1`): the last live exit: per position status, stages, tx hashes and conversions.
