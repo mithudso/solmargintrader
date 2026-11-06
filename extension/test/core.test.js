@@ -797,6 +797,104 @@ test('FIFO consumes the oldest lot first', () => {
   near(m.openLots[0].priceUsd, 120);
 });
 
+// ------------------------------------------------------- lot linkage ---
+
+// Five-rung 80..120 ladder: 80, 90, 100, 110, 120. Lot A bought at 100, lot B at
+// 90; B's exit (rung above 90 = 100) fills first.
+const LINK_CONFIG = { ...CONFIG, lower: 80, upper: 120, rungs: 5 };
+const linkFills = (linked) => [
+  fill({ id: 'a', side: 'buy', baseQty: 0.25, priceUsd: 100, tsMs: 1 }),
+  fill({ id: 'b', side: 'buy', baseQty: 0.25, priceUsd: 90, tsMs: 2 }),
+  fill({
+    id: 'c', side: 'sell', baseQty: 0.25, priceUsd: 100, tsMs: 3,
+    ...(linked ? { closesLots: [{ priceUsd: 90, baseQty: 0.25 }] } : {}),
+  }),
+];
+
+test('a linked sell closes the lot it was paired with, so the exit for the inventory still held is one rung above its TRUE entry', () => {
+  const s = snapshot({ fills: linkFills(true), markPriceUsd: 105 });
+  assert.equal(s.openLots.length, 1);
+  near(s.openLots[0].priceUsd, 100, 1e-9); // the 100 lot is what is still held
+  near(s.realizedGrossUsd, 0.25 * (100 - 90)); // B sold one rung above its entry
+
+  const { intents } = planGrid({ config: LINK_CONFIG, price: 105, openLots: s.openLots });
+  const sells = intents.filter((i) => i.side === SIDE.SELL);
+  assert.equal(sells.length, 1);
+  assert.equal(sells[0].level, 110, 'a sell at 100 would capture zero for the lot bought at 100');
+  assert.equal(sells[0].entryPriceUsd, 100);
+});
+
+test('without linkage FIFO misdirects the exit to the level the held lot was bought at (the defect)', () => {
+  const s = snapshot({ fills: linkFills(false), markPriceUsd: 105 });
+  near(s.openLots[0].priceUsd, 90, 1e-9); // FIFO consumed A, though A is what is held
+  const strict = snapshot({ fills: linkFills(true), markPriceUsd: 105, linkage: false });
+  near(strict.openLots[0].priceUsd, 90, 1e-9); // strict FIFO ignores the link by design
+  const { intents } = planGrid({ config: LINK_CONFIG, price: 105, openLots: s.openLots });
+  assert.equal(intents.find((i) => i.side === SIDE.SELL).level, 100);
+});
+
+test('legacy fills with no closesLots still load and match FIFO', () => {
+  const m = matchFifo(linkFills(false));
+  near(m.roundTrips[0].entryUsd, 0.25 * 100);
+  assert.equal(m.openLots.length, 1);
+});
+
+test('a link to a lot that is no longer open falls back to FIFO instead of dropping the sell', () => {
+  const m = matchFifo([
+    fill({ id: 'a', side: 'buy', baseQty: 1, priceUsd: 100, tsMs: 1 }),
+    fill({ id: 'c', side: 'sell', baseQty: 1, priceUsd: 110, tsMs: 2, closesLots: [{ priceUsd: 77, baseQty: 1 }] }),
+  ]);
+  assert.equal(m.openLots.length, 0);
+  assert.equal(m.unmatchedSellQty, 0);
+  near(m.realizedNetUsd, 10);
+});
+
+test('an aggregated exit closes every lot it covers, in link order, and a partial fill leaves the rest', () => {
+  const buys = [
+    fill({ id: 'a', side: 'buy', baseQty: 0.1, priceUsd: 100, tsMs: 1 }),
+    fill({ id: 'b', side: 'buy', baseQty: 0.2, priceUsd: 90, tsMs: 2 }),
+    fill({ id: 'x', side: 'buy', baseQty: 0.1, priceUsd: 100, tsMs: 3 }),
+  ];
+  const links = [{ priceUsd: 90, baseQty: 0.2 }, { priceUsd: 100, baseQty: 0.1 }];
+  const full = matchFifo([...buys, fill({ id: 's', side: 'sell', baseQty: 0.3, priceUsd: 110, tsMs: 4, closesLots: links })]);
+  near(full.openLots.reduce((a, l) => a + l.baseQty, 0), 0.1); // the other 100 lot
+  const part = matchFifo([...buys, fill({ id: 's', side: 'sell', baseQty: 0.25, priceUsd: 110, tsMs: 4, closesLots: links })]);
+  near(part.roundTrips.reduce((a, r) => a + r.baseQty, 0), 0.25);
+  near(part.openLots.reduce((a, l) => a + l.baseQty, 0), 0.15);
+});
+
+test('ingestFills links a sell to the lots on its journalled intent; buys and unlinked sells carry none', async () => {
+  const store = new MemoryStore();
+  const key = intentKey({ gridId: 'g1', side: 'sell', level: 100 });
+  await store.putIntent({
+    intentKey: key, gridId: 'g1', side: 'sell', level: 100, baseQty: 0.25, status: INTENT_STATUS.RESTING,
+    lots: [{ priceUsd: 90, baseQty: 0.25 }],
+  });
+  const venue = {
+    async getFills() {
+      return [
+        { venueOrderId: 'o1', side: 'sell', intentKey: key, triggerPriceUsd: 100, executedPriceUsd: 100, filledBaseQty: 0.25, feeUsd: 0, updatedAtMs: 3 },
+        { venueOrderId: 'o2', side: 'buy', triggerPriceUsd: 90, executedPriceUsd: 90, filledBaseQty: 0.25, feeUsd: 0, updatedAtMs: 1 },
+      ];
+    },
+  };
+  const { added } = await ingestFills({ venue, store, config: RECON_CONFIG });
+  assert.deepEqual(added.find((f) => f.id === 'o1').closesLots, [{ priceUsd: 90, baseQty: 0.25 }]);
+  assert.equal(added.find((f) => f.id === 'o2').closesLots, undefined);
+});
+
+test('planGrid exit intents list every lot they close', () => {
+  const { intents } = planGrid({
+    config: CONFIG,
+    price: 150,
+    openLots: [{ baseQty: 0.1, priceUsd: 125 }, { baseQty: 0.15, priceUsd: 125 }],
+  });
+  assert.deepEqual(intents.find((i) => i.side === SIDE.SELL).lots, [
+    { priceUsd: 125, baseQty: 0.1 },
+    { priceUsd: 125, baseQty: 0.15 },
+  ]);
+});
+
 test('a sell with no lot behind it is surfaced, not swallowed', () => {
   const m = matchFifo([fill({ id: 'a', side: 'sell', baseQty: 2, priceUsd: 100, tsMs: 1 })]);
   assert.equal(m.roundTrips.length, 0);

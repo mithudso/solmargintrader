@@ -313,7 +313,7 @@ python3 -m backtester.gridcli --lower 60 --upper 90 --rungs 7 \
 
 `core/gridsim.py` ports `extension/src/core/grid.js` function for function —
 geometric/arithmetic spacing with pinned endpoints, top-rung extrapolation,
-paired exits, the deadband, the $10 venue minimum, FIFO realization. Divergence
+paired exits, the deadband, the $10 venue minimum, paired-lot realization with FIFO fallback. Divergence
 between the two would be worse than having no grid backtest at all, so
 `rung_width_bps` is asserted against figures read off the JavaScript
 implementation (699.1319 bps for a 60–90/7 ladder; 516.7 bps for the 0.85×–1.15×
@@ -332,18 +332,18 @@ makes a losing grid look profitable:
 3. **Buys settle before sells**, so cash freed by a sell cannot fund a buy in the
    same bar.
 
-FIFO is additionally bounded to lots opened *before* the current bar. Without
+Lot matching is additionally bounded to lots opened *before* the current bar. Without
 that bound, two exits filling in one bar let the second reach inventory bought
 that same bar — an indirect same-bar round trip. It fired on synthetic data
 during development, so the bound is load-bearing rather than theoretical; when
 old inventory runs short the exit fills partially and the remainder is re-planned.
 
-**Read per-round-trip gross carefully.** The planner pairs each exit to a
-specific lot while realization matches FIFO, so with several rungs open the two
-disagree per trip — an exit meant to close a cheap lot is matched against an older
-expensive one, and gross per trip comes in below the nominal rung width.
-Portfolio totals are identical either way. The extension documents the same
-divergence; `test_pairing_and_fifo_disagree_per_trip_but_not_in_total` pins it.
+**Realization is paired, as in the extension.** Each resting exit carries the lots it
+was planned to close (`RestingOrder.closes`) and a fill closes those first, then falls
+back to FIFO for the rest (`TASK-348`). Strict FIFO let an exit paired to a cheap lot
+consume an older, dearer one, leaving a residual whose re-planned exit sat at the level
+the held inventory was bought at: a zero-spread sell. `test_the_residual_after_an_exit_is_the_inventory_actually_held`
+pins it; the end-of-run forced exit has no pairing and is FIFO.
 
 Carry defaults to **0 bps/hr** because Trigger V2 is a spot venue with no borrow
 leg — not because carry is free. `--carry-bps-per-hour` models a borrowed-margin

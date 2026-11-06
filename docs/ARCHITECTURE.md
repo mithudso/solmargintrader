@@ -92,10 +92,16 @@ level whose bid just filled gets an offer at that same price as soon as the mark
 capturing zero and paying two fees. That bug shipped once;`expectedRoundTripUsd` plus a test asserting
 `gross === notional × rungWidth` keep it fixed.
 
-**Known attribution limitation:** the planner pairs each exit to a specific lot, but realized P&L
-matches FIFO (tax-correct). With several rungs open these disagree — portfolio totals are right,
-per-round-trip figures follow FIFO. Add lot linkage on the fill record if you need per-rung
-attribution.
+**Lot linkage.** The planner pairs each exit to specific lots and records them on the exit intent
+(`lots`). `ingestFills` copies them onto the sell fill as `closesLots`, and `pnl.js` closes those lots
+first. This matters because the planner reads its exits off the residual open lots: with strict FIFO,
+rung B's exit filling before rung A's consumed A and left B's lot as the "residual", so the next plan
+rested a sell at the level the real inventory was bought at — zero spread, two fees. Linkage keeps the
+residual equal to the inventory actually held, and makes realized P&L (and so the daily-loss rail) the
+P&L of the lot actually sold. Paired matching is the default for `snapshot` and `matchFifo`. Strict
+FIFO (`{ linkage: false }`, the tax-style convention) is available but unused by the live path. Fills
+stored before linkage have no `closesLots` and still match FIFO. `gridsim.py` mirrors this
+(`RestingOrder.closes`).
 
 ## Backtester
 

@@ -241,7 +241,7 @@ export function planGrid({ config, price, openIntentKeys = [], openLots = [] }) 
   // identical keys in one batch, and the executor would submit the rung twice
   // while the journal kept only one record of it.
   const lotLevelIndexes = new Set();
-  const exitBuckets = new Map(); // exitLevel -> {baseQty, entries: number[]}
+  const exitBuckets = new Map(); // exitLevel -> {baseQty, entries: number[], lots}
 
   for (const lot of openLots) {
     if (!(lot.baseQty > 0)) continue;
@@ -253,9 +253,10 @@ export function planGrid({ config, price, openIntentKeys = [], openLots = [] }) 
     }
 
     const exitLevel = pairedExitLevel({ levels, entryPrice: lot.priceUsd });
-    const bucket = exitBuckets.get(exitLevel) ?? { baseQty: 0, entries: [] };
+    const bucket = exitBuckets.get(exitLevel) ?? { baseQty: 0, entries: [], lots: [] };
     bucket.baseQty += lot.baseQty;
     bucket.entries.push(lot.priceUsd);
+    bucket.lots.push({ priceUsd: lot.priceUsd, baseQty: lot.baseQty });
     exitBuckets.set(exitLevel, bucket);
   }
 
@@ -281,6 +282,9 @@ export function planGrid({ config, price, openIntentKeys = [], openLots = [] }) 
       baseQty: bucket.baseQty,
       entryPriceUsd: bucket.entries.length === 1 ? bucket.entries[0] : null,
       lotCount: bucket.entries.length,
+      // Every lot this exit closes, so the fill can be linked back to them
+      // (pnl.matchFifo `closesLots`) even when several lots share one order.
+      lots: bucket.lots,
       priceAtPlan: price,
     });
   }

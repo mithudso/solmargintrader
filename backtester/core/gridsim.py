@@ -37,8 +37,8 @@ point — an optimistic grid simulator makes a losing grid look profitable:
 One more convention worth stating, because it changes *attribution* rather than
 totals: when a single bar sweeps through several bids they fill **highest level
 first**, since a falling price reaches the higher rung earlier. That ordering
-sets lot age, and lot age is what FIFO realization consumes. Portfolio totals do
-not depend on it; which lot a given exit is matched against does.
+sets lot age, and lot age is what the FIFO fallback consumes (paired exits close
+their own lots first). Portfolio totals do not depend on it.
 
 Costs are never optional here (see the backtester's non-negotiables): the taker
 fee, the slippage allowance and an explicit carry rate all stay in the P&L path.
@@ -275,6 +275,10 @@ class RestingOrder:
     qty: float
     notional_usd: float
     planned_index: int
+    # Exits only: the (lot rung level, qty) pairs this order was planned to close.
+    # Port of `lots` on the extension's exit intents / `closesLots` on its fills.
+    # Realization closes these lots first, then falls back to FIFO.
+    closes: tuple[tuple[float, float], ...] = ()
 
 
 @dataclass
@@ -435,20 +439,28 @@ class _GridBook:
         index: int,
         reason: str,
         max_open_index: int | None = None,
+        closes: Sequence[tuple[float, float]] = (),
     ) -> tuple[float, float]:
-        """Fill a resting offer against the oldest lots (FIFO).
+        """Fill a resting offer, closing the lots it was paired with first.
 
         Returns `(realized, matched_qty)`.
 
-        FIFO is the IRS default for property and what crypto tax tools expect, so
-        the numbers here reconcile with the extension's CSV export. Note that the
-        *planner* pairs each exit to a specific lot while realization matches
-        FIFO; with several rungs open these disagree per-trip, though portfolio
-        totals are identical. The extension documents the same divergence.
+        `closes` is the `(rung level, qty)` list the planner paired this exit with
+        (port of `closesLots` in `extension/src/core/pnl.js`). Those lots are
+        closed first, oldest per rung; whatever they cannot cover, and any sell
+        with no `closes` (the end-of-run forced exit), is matched FIFO.
 
-        `max_open_index` bounds FIFO to lots opened strictly before that bar. It
-        exists because the divergence above can otherwise become a real leak:
-        when two exits fill in one bar, the first consumes the oldest lots, and
+        Pairing first matters because the planner derives each exit from the
+        residual inventory's rung. Strict FIFO let exit B (paired to a lot bought
+        at a lower rung) consume the older, higher-rung lot A, leaving B's lot as
+        the residual; the next plan then rested that lot's exit at the level A
+        was bought at, so the sell captured zero spread and paid two fees. The
+        extension had the same defect and the same fix, and the two must agree
+        (CLAUDE.md backtester rule 6).
+
+        `max_open_index` bounds matching to lots opened strictly before that bar. It
+        exists because pairing and FIFO can otherwise become a real leak:
+        when two exits fill in one bar, the first can consume the older lots, and
         the second can then reach a lot bought *in this same bar* — an indirect
         same-bar round trip, which is the path assumption this simulator refuses
         to make. Short of old inventory the exit fills partially and the rest is
@@ -479,9 +491,10 @@ class _GridBook:
         entry_fee_share = 0.0
         entry_slip_share = 0.0
         carry_share = 0.0
-        while remaining > 1e-15 and eligible:
-            lot = eligible[0]
-            take = min(lot.qty, remaining)
+
+        def close(lot: Lot, want: float) -> None:
+            nonlocal remaining, gross, entry_fee_share, entry_slip_share, carry_share
+            take = min(lot.qty, want)
             frac = take / lot.qty
             # Gross is the rung spread, measured level to level. Measuring it
             # between *fill* prices would fold both slippage legs into gross and
@@ -498,8 +511,21 @@ class _GridBook:
             lot.qty -= take
             remaining -= take
             if lot.qty <= 1e-15:
-                eligible.pop(0)
+                eligible.remove(lot)
                 self.lots.remove(lot)
+
+        # Paired lots first. Lots match on their rung level, which is the exact
+        # float the planner read from the lot, so equality is safe.
+        for link_level, link_qty in closes:
+            want = min(remaining, link_qty)
+            for lot in [l for l in eligible if l.level == link_level]:
+                if want <= 1e-15:
+                    break
+                before = remaining
+                close(lot, want)
+                want -= before - remaining
+        while remaining > 1e-15 and eligible:
+            close(eligible[0], remaining)
 
         realized = gross - fee - slip - entry_fee_share - entry_slip_share - carry_share
         # Carry leaves cash when it settles. Subtracting it from `realized` only
@@ -569,7 +595,7 @@ def _plan(
     """
     wanted: list[RestingOrder] = []
     lot_level_indexes: set[int] = set()
-    exit_buckets: dict[float, float] = {}
+    exit_buckets: dict[float, list[tuple[float, float]]] = {}
 
     for lot in lots:
         if lot.qty <= 0:
@@ -587,9 +613,10 @@ def _plan(
             if idx < len(levels) - 1
             else paired_exit_level(levels, lot.level)
         )
-        exit_buckets[exit_level] = exit_buckets.get(exit_level, 0.0) + lot.qty
+        exit_buckets.setdefault(exit_level, []).append((lot.level, lot.qty))
 
-    for exit_level, qty in exit_buckets.items():
+    for exit_level, closes in exit_buckets.items():
+        qty = sum(q for _, q in closes)
         notional = qty * exit_level
         if notional < cfg.min_order_usd:
             skipped["exit-below-venue-minimum"] += 1
@@ -601,6 +628,7 @@ def _plan(
                 qty=qty,
                 notional_usd=notional,
                 planned_index=-1,
+                closes=tuple(closes),
             )
         )
 
@@ -769,6 +797,7 @@ def run_grid_backtest(
                     i,
                     reason="grid_exit",
                     max_open_index=i,
+                    closes=order.closes,
                 )
                 if matched <= 0:
                     skipped["exit-deferred-no-older-inventory"] += 1

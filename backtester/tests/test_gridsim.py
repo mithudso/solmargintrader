@@ -19,6 +19,7 @@ from backtester.core.gridsim import (
     SIDE_SELL,
     SPACING_ARITH,
     GridConfig,
+    _GridBook,
     capital_requirement,
     expected_round_trip_usd,
     grid_levels,
@@ -200,11 +201,12 @@ class TestRoundTripEconomics(unittest.TestCase):
         self.assertEqual(len(sells), 1)
         self.assertGreater(sells[0].price, buys[0].price)
 
-    def test_pairing_and_fifo_disagree_per_trip_but_not_in_total(self) -> None:
-        # Documented limitation, mirrored from extension/README.md: the planner
-        # pairs each exit to a specific lot, while realization matches FIFO. With
-        # several rungs open those differ per round trip. The guard is that the
-        # portfolio total still reconciles exactly.
+    def test_an_exit_closes_the_lot_it_was_paired_with(self) -> None:
+        # A dip sweeps several bids, so several lots are open when the lowest
+        # lot's exit fills. That exit must realize the lot it was paired with: one
+        # full rung. Strict FIFO matched it to the oldest lot instead, which was
+        # bought a rung ABOVE the exit and booked a loss on a trip that earned its
+        # spread (the extension had the identical defect; TASK-348).
         rows = flat(90.0, 2) + [
             (90.0, 90.0, self.levels[3], self.levels[3]),
             (self.levels[3], self.levels[4] + 0.5, self.levels[3], self.levels[4] + 0.5),
@@ -214,17 +216,32 @@ class TestRoundTripEconomics(unittest.TestCase):
         )
         self.assertGreater(res.buys_filled, 1, "a dip should sweep several bids")
         self.assertEqual(res.round_trips, 1)
-        # Per-trip gross is measured against the FIFO lot, which here was bought
-        # higher than the lot the planner paired the exit with, so it is smaller
-        # than the nominal rung width.
-        self.assertLess(
-            res.gross_captured_usd, expected_round_trip_usd(self.cfg, self.levels[3])
+        first_exit = next(t for t in res.trades if t.reason == "grid_exit")
+        self.assertAlmostEqual(
+            first_exit.realized_pnl, expected_round_trip_usd(self.cfg, self.levels[3]), places=9
         )
         # Totals still tie out: zero costs means final equity is capital plus
         # realized P&L once everything is closed.
         self.assertAlmostEqual(
             res.metrics.final_equity, 1_000.0 + res.realized_pnl_usd, places=6
         )
+
+    def test_the_residual_after_an_exit_is_the_inventory_actually_held(self) -> None:
+        # The misdirection itself. Lots are bought at rungs 5, 4 and 3; rung 3's
+        # exit (at rung 4) fills first. The inventory still held is rungs 5 and 4.
+        # FIFO would close rung 5 and leave rungs 4 and 3, so the next plan would
+        # rest the "rung 4" lot's exit at rung 5... and the true rung-4 lot's exit
+        # at rung 5 as well, while rung 3's phantom lot kept an exit at rung 4: a
+        # sell at the level the real rung-4 inventory was bought at, zero spread.
+        rows = flat(90.0, 2) + [
+            (90.0, 90.0, self.levels[3], self.levels[3]),
+            (self.levels[3], self.levels[4] + 0.5, self.levels[3], self.levels[4] + 0.5),
+        ]
+        res = run_grid_backtest(
+            self.cfg, bars(rows), initial_capital=1_000.0, costs=FREE, close_at_end=False
+        )
+        held = sorted(lot.level for lot in res.open_lots_at_end)
+        self.assertEqual(held, sorted([self.levels[4], self.levels[5]]))
 
     def test_costs_reduce_realized_below_gross(self) -> None:
         entry = self.levels[3]
@@ -420,37 +437,39 @@ class TestAccounting(unittest.TestCase):
         self.cfg = GridConfig(lower=60.0, upper=90.0, rungs=7, notional_per_rung_usd=12.0)
         self.levels = grid_levels(self.cfg)
 
-    def test_fifo_matches_the_oldest_lot_first(self) -> None:
-        # A falling bar fills the highest bid first, so the oldest lot is the most
-        # expensive one. FIFO must realize the first exit against *that* lot, not
-        # against a cheaper one bought later — picking the cheaper lot would
-        # inflate every early round trip.
-        rows = flat(90.0, 2)
-        rows.append((90.0, 90.0, self.levels[4], self.levels[4]))
-        rows.append((self.levels[4], self.levels[4], self.levels[2], self.levels[2]))
-        rows.append((self.levels[2], self.levels[5] + 0.5, self.levels[2], self.levels[5] + 0.5))
-        res = run_grid_backtest(
-            self.cfg, bars(rows), initial_capital=1_000.0, costs=FREE
+    def test_an_unpaired_sell_matches_the_oldest_lot_first(self) -> None:
+        # No `closes` (the end-of-run forced exit, or a link whose lot is gone)
+        # falls back to FIFO. A falling bar fills the highest bid first, so the
+        # oldest lot is the most expensive; picking a cheaper one would inflate
+        # the realized figure.
+        book = _GridBook(1_000.0, FREE)
+        book.buy(self.levels[4], 0.1, 1, 1)
+        book.buy(self.levels[2], 0.1, 2, 2)
+        realized, matched = book.sell(self.levels[5], 0.1, 3, 3, reason="grid_exit")
+        self.assertAlmostEqual(matched, 0.1)
+        self.assertAlmostEqual(realized, (self.levels[5] - self.levels[4]) * 0.1, places=12)
+        self.assertEqual([lot.level for lot in book.lots], [self.levels[2]])
+
+    def test_a_paired_sell_closes_its_own_lots_before_falling_back_to_fifo(self) -> None:
+        book = _GridBook(1_000.0, FREE)
+        book.buy(self.levels[4], 0.1, 1, 1)  # oldest
+        book.buy(self.levels[2], 0.1, 2, 2)
+        book.buy(self.levels[3], 0.1, 3, 3)
+        # Linked to rung 2 (0.1) and rung 3 (0.05); fill is 0.2, so 0.05 is left
+        # for FIFO, which takes the oldest (rung 4).
+        realized, matched = book.sell(
+            self.levels[5], 0.2, 4, 4, reason="grid_exit",
+            closes=((self.levels[2], 0.1), (self.levels[3], 0.05)),
         )
-        self.assertGreaterEqual(res.buys_filled, 2)
-        self.assertGreaterEqual(res.sells_filled, 1)
-
-        buys = [t for t in res.trades if t.reason == "grid_entry"]
-        oldest_price = buys[0].price
-        self.assertAlmostEqual(oldest_price, max(t.price for t in buys), places=9)
-
-        # The first exit's quantity spans more than one lot, so its implied entry
-        # is the quantity-weighted average of the lots FIFO consumed. Two bounds
-        # pin that down: it cannot exceed the oldest lot's price, and it must sit
-        # ABOVE the portfolio-average entry — because the oldest lots are the
-        # expensive ones. A LIFO or cheapest-lot-first matcher would land below
-        # the average and quietly inflate every early round trip.
-        first_exit = next(t for t in res.trades if t.reason == "grid_exit")
-        implied_entry = first_exit.price - first_exit.realized_pnl / abs(first_exit.units)
-        total_units = sum(t.units for t in buys)
-        weighted_avg = sum(t.price * t.units for t in buys) / total_units
-        self.assertLessEqual(implied_entry, oldest_price + 1e-9)
-        self.assertGreater(implied_entry, weighted_avg)
+        self.assertAlmostEqual(matched, 0.2)
+        expected = (
+            (self.levels[5] - self.levels[2]) * 0.1
+            + (self.levels[5] - self.levels[3]) * 0.05
+            + (self.levels[5] - self.levels[4]) * 0.05
+        )
+        self.assertAlmostEqual(realized, expected, places=12)
+        left = {lot.level: round(lot.qty, 12) for lot in book.lots}
+        self.assertEqual(left, {self.levels[4]: 0.05, self.levels[3]: 0.05})
 
     def test_equity_equals_cash_plus_inventory_at_every_bar(self) -> None:
         rows = flat(90.0, 2) + [

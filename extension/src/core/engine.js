@@ -213,6 +213,12 @@ export async function ingestFills({ venue, store, config, log = () => {} }) {
       tsMs: f.updatedAtMs ?? f.createdAtMs ?? Date.now(),
       level: f.triggerPriceUsd ?? null,
     };
+    // Link a sell to the lots its intent was paired with, so P&L closes the
+    // inventory actually sold. Absent for legacy intents and for sells matched to
+    // no intent; pnl.js then falls back to FIFO, which is the old behaviour.
+    if (f.side === 'sell' && Array.isArray(matched?.lots) && matched.lots.length > 0) {
+      fill.closesLots = matched.lots.map((l) => ({ priceUsd: l.priceUsd, baseQty: l.baseQty }));
+    }
     await store.putFill(fill);
     added.push(fill);
     if (!feeKnown) {
