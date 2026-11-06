@@ -1,20 +1,21 @@
-# Copilot instructions
-
 ## Default Execution Strategy
 
 Read [CLAUDE.md](../CLAUDE.md) before proposing a change. It is the source of truth for this
 repository; this file is a pointer plus the rules that get broken most often.
 
-1. **Identify the component first.** The correct level of caution differs by an order of
+1. Read relevant source before editing; never invent a command or path.
+2. Save requests in `prompts.md` and update versioned `memory.md` continuation notes.
+3. Run the applicable verification commands after changes.
+4. **Identify the component first.** The correct level of caution differs by an order of
    magnitude between them.
-2. **Do not weaken a safety default.** Dry-run stays the default; the extension installs
+5. **Do not weaken a safety default.** Dry-run stays the default; the extension installs
    disarmed.
-3. **Verify before claiming.** Run the suites below and paste real output. A passing
+6. **Verify before claiming.** Run the suites below and paste real output. A passing
    suggestion that was never run is worse than no suggestion.
-4. **Prefer refusing to guessing.** In the money path, a missing number must surface as an
+7. **Prefer refusing to guessing.** In the money path, a missing number must surface as an
    error, never as a default or a zero.
 
-## Components and their risk
+## High-level Architecture
 
 | Component | Language | Risk |
 | --- | --- | --- |
@@ -23,6 +24,7 @@ repository; this file is a pointer plus the rules that get broken most often.
 | `soltui/` | Python 3.13 | Read-only macOS menu-bar app and TUI. Places no orders |
 | `mongo/` | Python 3.13 | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
 | `extension/` | JavaScript (ESM) | **Can place real orders and move real money.** Production software |
+| `liquidity/` | Python, own venv | **Moves real money on Base.** Read `liquidity/CLAUDE.md` before changes |
 
 ## Non-negotiables — extension
 
@@ -52,13 +54,13 @@ repository; this file is a pointer plus the rules that get broken most often.
 - `core/gridsim.py` is a port of `extension/src/core/grid.js`; a change to either one's
   economics needs the matching change in the other.
 
-## Verification
+## Build, Test, and Validation Commands
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 651 tests
-python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
-python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 168 tests
+python3 -m unittest discover -s backtester/tests -t .   # 681 tests
+python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
+python3 -m unittest discover -s mongo/tests -t .        # 33 tests
+cd extension && npm test                                # 237 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
@@ -66,11 +68,13 @@ python3 scripts/check_docs.py                           # doc counts and retriev
 The unpacked Chrome load cannot be automated, so never report it as verified. The headless
 dry run is the integration gate.
 
-## Style
+## Key Conventions
 
-**Python** — 3.13, stdlib-first, `from __future__ import annotations`, type hints, `unittest`
-(not `pytest`). Dependencies are deliberately minimal; `pyarrow`, `requests` and `pytest`
-are excluded on purpose.
+**Python** — 3.13, stdlib-first, `from __future__ import annotations`, type hints.
+Backtester, research, soltui and mongo use `unittest`. Liquidity has its own `pytest`,
+Ruff and locked dependencies; verify from `liquidity/` with `.venv/bin/ruff check src tests`
+and `.venv/bin/pytest -q`. The backtester deliberately excludes `pyarrow`, `requests`,
+and `pytest`.
 
 **JavaScript** — ESM, no build step, **zero runtime dependencies**. Do not suggest a package
 for something `src/wallet/solana.js` already solves. Tests are `node:test` +

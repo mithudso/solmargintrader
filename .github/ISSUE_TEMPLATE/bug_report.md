@@ -6,7 +6,7 @@ labels: bug
 
 ## Component
 
-`backtester/` · `research/` · `extension/` · `soltui/` · repo-level
+`backtester/` · `research/` · `extension/` · `soltui/` · `mongo/` · `liquidity/` · repo-level
 
 ## What happened
 

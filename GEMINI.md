@@ -3,6 +3,9 @@
 Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file
 first — it is the single source of truth, and this file only points at it.
 
+Save requests in `prompts.md` and versioned continuation records in `memory.md`, as
+`CLAUDE.md` requires. Gemini shares those rules; this repo defines no Gemini-only tools.
+
 ## Know which component you are in
 
 | Component | Risk |
@@ -12,6 +15,7 @@ first — it is the single source of truth, and this file only points at it.
 | `soltui/` (Python) | Read-only macOS display. Places no orders |
 | `mongo/` (Python) | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software |
+| `liquidity/` (Python, own venv) | **Can move real money on Base.** Read `liquidity/CLAUDE.md` first |
 
 ## The rules most often broken here
 
@@ -33,10 +37,10 @@ first — it is the single source of truth, and this file only points at it.
 ## Before claiming a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 651 tests
-python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
-python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 168 tests
+python3 -m unittest discover -s backtester/tests -t .   # 681 tests
+python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
+python3 -m unittest discover -s mongo/tests -t .        # 33 tests
+cd extension && npm test                                # 237 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
@@ -46,7 +50,8 @@ Do not claim it as verified — the headless dry run is the integration gate ins
 
 ## House style
 
-Python 3.13, stdlib-first, `from __future__ import annotations`, `unittest` not `pytest`.
+Python 3.13, stdlib-first, `from __future__ import annotations`. Backtester, soltui and
+mongo use `unittest`; liquidity uses `pytest` and Ruff in its own virtualenv.
 JavaScript ESM with **zero runtime dependencies** and `node:test`. Comments explain *why*,
 especially where the obvious implementation is wrong. Do not narrate *what*.
 

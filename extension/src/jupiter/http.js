@@ -22,7 +22,7 @@ function safePath(url) {
     const u = new URL(url);
     return `${u.origin}${u.pathname}`;
   } catch {
-    return String(url);
+    return 'invalid URL';
   }
 }
 
@@ -58,6 +58,12 @@ export function backoffDelayMs(attempt, { baseMs = 500, maxMs = 15_000, jitter =
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+function defaultRequestLog(event) {
+  // stderr preserves JSON-only CLI stdout; Chrome has no process global.
+  if (globalThis.process?.versions?.node) console.error(JSON.stringify(event));
+  else console.debug(event);
+}
+
 /** A hung request must not outlive the tick that started it. */
 export const DEFAULT_TIMEOUT_MS = 15_000;
 
@@ -78,68 +84,71 @@ export async function request({
   timeoutMs = DEFAULT_TIMEOUT_MS,
   fetchImpl = globalThis.fetch,
   sleepImpl = sleep,
+  log = defaultRequestLog,
 }) {
-  // Budget is charged per ATTEMPT, not per call: a retry storm that bypassed
-  // the budget would defeat the point of having one.
-  if (budget && !budget.tryTake()) {
-    throw new JupiterHttpError('local request budget exhausted', { status: 0, body: null, url });
+  if (!Number.isSafeInteger(maxAttempts) || maxAttempts < 1 ||
+      !Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+    throw new RangeError('HTTP attempts and timeout must be positive finite values');
   }
-
+  // A lost write response does not prove the server rejected the operation.
+  // Only read requests can be replayed without creating a second order/deposit.
+  const readOnly = ['GET', 'HEAD'].includes((init.method ?? 'GET').toUpperCase());
+  const attempts = readOnly ? maxAttempts : 1;
+  const method = (init.method ?? 'GET').toUpperCase();
+  const context = { transport: 'jupiter-http', path: safePath(url),
+    method: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(method) ? method : 'OTHER' };
+  const emit = (event) => {
+    try { log({ ...context, ...event }); } catch { /* Diagnostic sinks cannot replay a write. */ }
+  };
   let lastError;
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    if (attempt > 0 && budget && !budget.tryTake()) {
-      throw new JupiterHttpError('local request budget exhausted mid-retry', {
-        status: 0,
-        body: null,
-        url,
-      });
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    if (budget && !budget.tryTake()) {
+      emit({ level: 'warn', msg: 'request budget exhausted', attempt: attempt + 1 });
+      throw new JupiterHttpError('local request budget exhausted', { status: 0, body: null, url });
     }
-
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     let res;
-    // Without a timeout a stalled connection hangs the tick until Chrome kills
-    // the whole service worker, losing the journal flush with it.
-    const controller = typeof AbortController === 'function' ? new AbortController() : null;
-    const timer = controller && timeoutMs > 0 ? setTimeout(() => controller.abort(), timeoutMs) : null;
+    let text;
+    emit({ level: 'info', msg: 'request started', attempt: attempt + 1 });
     try {
-      res = await fetchImpl(url, controller ? { ...init, signal: controller.signal } : init);
+      res = await fetchImpl(url, { ...init, signal: controller.signal });
+      // Keep the deadline active until the body is read, not just the headers.
+      text = await res.text();
     } catch (err) {
-      // Network-level failure (offline, DNS, timeout abort): retryable.
-      const timedOut = err.name === 'AbortError';
+      const timedOut = err?.name === 'AbortError';
       lastError = new JupiterHttpError(
-        timedOut ? `request timed out after ${timeoutMs}ms` : `network failure: ${err.message}`,
+        timedOut ? `request timed out after ${timeoutMs}ms` : 'network request failed',
         { status: 0, body: null, url },
       );
       lastError.timedOut = timedOut;
-      if (attempt === maxAttempts - 1) break;
-      await sleepImpl(backoffDelayMs(attempt));
-      continue;
+      emit({ level: 'error', msg: timedOut ? 'request timed out' : 'network request failed', attempt: attempt + 1 });
     } finally {
-      if (timer) clearTimeout(timer);
+      clearTimeout(timer);
     }
-
-    if (res.ok) {
-      const text = await res.text();
-      if (!text) return null;
-      try {
-        return JSON.parse(text);
-      } catch {
-        throw new JupiterHttpError('response was not JSON', {
-          status: res.status,
-          body: text.slice(0, 200),
-          url,
-        });
+    if (text !== undefined) {
+      if (res.ok) {
+        if (!text) {
+          emit({ level: 'info', msg: 'request completed', status: res.status, attempt: attempt + 1 });
+          return null;
+        }
+        try {
+          const value = JSON.parse(text);
+          emit({ level: 'info', msg: 'request completed', status: res.status, attempt: attempt + 1 });
+          return value;
+        } catch {
+          emit({ level: 'error', msg: 'response was not JSON', status: res.status, attempt: attempt + 1 });
+          throw new JupiterHttpError('response was not JSON', { status: res.status, body: null, url });
+        }
       }
+      lastError = new JupiterHttpError(`HTTP ${res.status}`, { status: res.status, body: null, url });
+      emit({ level: 'error', msg: 'HTTP request failed', status: res.status, attempt: attempt + 1 });
+      if (!RETRYABLE_STATUS.has(res.status)) break;
     }
-
-    const body = await res.text().catch(() => '');
-    lastError = new JupiterHttpError(`HTTP ${res.status}`, { status: res.status, body: body.slice(0, 400), url });
-
-    if (!RETRYABLE_STATUS.has(res.status) || attempt === maxAttempts - 1) break;
-
-    // Honour Retry-After when the server sends one; it knows better than our curve.
-    const retryAfter = Number(res.headers?.get?.('retry-after'));
+    if (attempt === attempts - 1) break;
+    const retryAfter = Number(res?.headers?.get?.('retry-after'));
     const delay = Number.isFinite(retryAfter) && retryAfter > 0
-      ? retryAfter * 1000
+      ? Math.min(retryAfter * 1000, 15_000)
       : backoffDelayMs(attempt);
     await sleepImpl(delay);
   }

@@ -50,13 +50,15 @@ grid, and the number will be labelled in the result.
 from __future__ import annotations
 
 from collections import Counter
+import math
+from numbers import Real
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Sequence
 
 import numpy as np
 
 from .metrics import Metrics, compute_metrics
-from .types import CostConfig, Trade, hours_per_bar, periods_per_year
+from .types import CostConfig, Trade, hours_per_bar, periods_per_year, validate_bar_arrays
 
 SPACING_GEOM = "geom"
 SPACING_ARITH = "arith"
@@ -68,6 +70,12 @@ SIDE_SELL = "sell"
 # Jupiter Trigger V2's hard floor. A rung below it is not a small order, it is a
 # rejected one, so the planner has to know the number.
 VENUE_MIN_ORDER_USD = 10.0
+MAX_GRID_RUNGS = 10_000
+
+
+def _validate_rung_count(rungs: int) -> None:
+    if not isinstance(rungs, int) or not 2 <= rungs <= MAX_GRID_RUNGS:
+        raise ValueError(f"rungs must be an integer in [2, {MAX_GRID_RUNGS}]")
 
 
 @dataclass(frozen=True)
@@ -84,12 +92,15 @@ class GridConfig:
 
     def __post_init__(self) -> None:
         """Reject a ladder that cannot be built, with the offending value named."""
+        for name in ("lower", "upper", "notional_per_rung_usd", "deadband_bps", "min_order_usd"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value):
+                raise ValueError(f"{name} must be finite")
         if not self.lower > 0:
             raise ValueError(f"lower must be > 0, got {self.lower}")
         if not self.upper > self.lower:
             raise ValueError(f"upper ({self.upper}) must exceed lower ({self.lower})")
-        if not isinstance(self.rungs, int) or self.rungs < 2:
-            raise ValueError(f"rungs must be an int >= 2, got {self.rungs!r}")
+        _validate_rung_count(self.rungs)
         if not self.notional_per_rung_usd > 0:
             raise ValueError(
                 f"notional_per_rung_usd must be > 0, got {self.notional_per_rung_usd}"
@@ -101,19 +112,12 @@ class GridConfig:
         if self.min_order_usd < 0:
             raise ValueError("min_order_usd cannot be negative")
 
-        # Order identity rounds the level to 1e-6 (see `_level_key`, which mirrors
-        # the extension's `intentKey`). A ladder finer than that resolution maps
-        # several distinct rungs onto one key, and they would silently collapse
-        # into a single order — 1000 rungs across a $0.0001 range becomes 101
-        # orders with 899 of them quietly dropped.
+        # Check actual identities: rounding the minimum gap can miss two
+        # distinct levels that fall into the same quantization interval.
         levels = grid_levels(self)
-        min_gap = min(b - a for a, b in zip(levels, levels[1:]))
-        if round(min_gap * 1e6) == 0:
-            raise ValueError(
-                f"rungs are {min_gap:.3e} USD apart, finer than the 1e-6 resolution of "
-                "an order key, so distinct rungs would collapse into one order. "
-                "Widen the range or use fewer rungs."
-            )
+        keys = [_level_key(SIDE_BUY, level) for level in levels]
+        if len(set(keys)) != len(levels):
+            raise ValueError("distinct rungs collide at the 1e-6 resolution of an order key")
 
     def to_dict(self) -> dict[str, Any]:
         """Plain-dict form for the run manifest."""
@@ -141,6 +145,7 @@ def grid_levels(cfg: GridConfig) -> list[float]:
     width. Endpoints are pinned because float drift otherwise leaves the top rung
     a hair off `upper`, which reads as a phantom level change every re-plan.
     """
+    _validate_rung_count(cfg.rungs)
     levels: list[float] = []
     if cfg.spacing == SPACING_ARITH:
         step = (cfg.upper - cfg.lower) / (cfg.rungs - 1)
@@ -235,7 +240,14 @@ def capital_requirement(cfg: GridConfig, price: float) -> dict[str, float]:
 
 def _level_key(side: str, level: float) -> str:
     """Restart-stable order identity, mirroring the extension's `intentKey`."""
-    return f"{side}:{round(level * 1e6)}"
+    scaled = level * 1e6
+    if not math.isfinite(scaled):
+        raise ValueError("order key requires a finite scaled level")
+    integer = math.floor(scaled)
+    # Python round uses ties-to-even; JavaScript Math.round rounds positive
+    # halves upward. Avoid adding 0.5, which can itself round near a boundary.
+    rounded = integer + (scaled - integer >= 0.5)
+    return f"{side}:{rounded}"
 
 
 # -- book -----------------------------------------------------------------
@@ -613,6 +625,9 @@ def _plan(
             if idx < len(levels) - 1
             else paired_exit_level(levels, lot.level)
         )
+        if not math.isfinite(exit_level) or exit_level <= lot.price:
+            skipped["exit-not-above-entry"] += 1
+            continue
         exit_buckets.setdefault(exit_level, []).append((lot.level, lot.qty))
 
     for exit_level, closes in exit_buckets.items():
@@ -691,7 +706,13 @@ def run_grid_backtest(
     is spot; it is a parameter rather than a constant so a borrowed-margin grid
     can be modelled without editing the P&L path.
     """
-    costs = costs or CostConfig()
+    costs = CostConfig() if costs is None else costs
+    if not isinstance(costs, CostConfig):
+        raise ValueError("costs must be a CostConfig")
+    costs.validate()
+    for name, value in (("initial_capital", initial_capital), ("carry_bps_per_hour", carry_bps_per_hour), ("risk_free_rate", risk_free_rate)):
+        if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value):
+            raise ValueError(f"{name} must be finite")
     if initial_capital <= 0:
         raise ValueError("initial_capital must be positive")
     if carry_bps_per_hour < 0:
@@ -705,53 +726,9 @@ def run_grid_backtest(
     if costs.fee_bps < 0:
         raise ValueError(f"fee_bps cannot be negative, got {costs.fee_bps}")
 
-    missing = [k for k in ("ts", "high", "low", "close") if k not in arrays]
-    if missing:
-        raise ValueError(f"arrays is missing required series: {', '.join(missing)}")
-
-    ts = np.asarray(arrays["ts"])
-    highs = np.asarray(arrays["high"], dtype="float64")
-    lows = np.asarray(arrays["low"], dtype="float64")
-    closes = np.asarray(arrays["close"], dtype="float64")
+    checked = validate_bar_arrays(arrays, interval, require_open_volume=False)
+    ts, highs, lows, closes = (checked[name] for name in ("ts", "high", "low", "close"))
     n = closes.size
-    if n == 0:
-        raise ValueError("cannot backtest an empty series")
-
-    # Length and finiteness are checked up front rather than trusted. A `high`
-    # array longer than `close` would silently truncate the run — the dangerous
-    # direction, because it returns a plausible number for the wrong window — and
-    # a NaN close survives `max(0.0, nan)` as 0.0, poisoning every metric with no
-    # error anywhere.
-    lengths = {"ts": ts.size, "high": highs.size, "low": lows.size, "close": closes.size}
-    if len(set(lengths.values())) != 1:
-        raise ValueError(f"series lengths disagree: {lengths}")
-    for name, series in (("high", highs), ("low", lows), ("close", closes)):
-        if not np.all(np.isfinite(series)):
-            bad = int(np.argmin(np.isfinite(series)))
-            raise ValueError(f"{name} contains a non-finite value at index {bad}")
-    if np.any(lows <= 0.0):
-        raise ValueError(
-            f"low contains a non-positive price at index {int(np.argmin(lows > 0.0))}; "
-            "a grid divides by its levels and cannot price a zero market"
-        )
-    if np.any(highs < lows):
-        raise ValueError(
-            f"high < low at index {int(np.argmax(highs < lows))}; the bars are malformed"
-        )
-    if np.any(closes <= 0.0):
-        raise ValueError(
-            f"close contains a non-positive price at index "
-            f"{int(np.argmin(closes > 0.0))}; it is the mark for every bar and the "
-            "price of the final forced exit"
-        )
-    outside = (closes < lows) | (closes > highs)
-    if np.any(outside):
-        # A close outside its own bar's range would mark the book — and liquidate
-        # the final position — at a price the market never traded.
-        raise ValueError(
-            f"close is outside [low, high] at index {int(np.argmax(outside))}; "
-            "the bars are malformed"
-        )
 
     levels = grid_levels(cfg)
     # The ladder is fixed for the whole run, so its level -> index map is built
@@ -866,10 +843,11 @@ def run_grid_backtest(
         exposure[-1] = 0.0
 
     ppy = periods_per_year(interval)
-    metrics = compute_metrics(equity, ts, book.trades, exposure, ppy, risk_free_rate, 0)
+    metrics = compute_metrics(equity, ts, book.trades, exposure, ppy, risk_free_rate, 0, initial_equity=initial_capital)
     baseline = _baseline_equity(closes, initial_capital, costs)
     baseline_metrics = compute_metrics(
-        baseline, ts, [], np.ones(n, dtype="float64"), ppy, risk_free_rate, 0
+        baseline, ts, [], np.ones(n, dtype="float64"), ppy, risk_free_rate, 0,
+        initial_equity=initial_capital,
     )
 
     return GridRunResult(

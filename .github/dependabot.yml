@@ -29,3 +29,20 @@ updates:
     commit-message:
       prefix: "deps"
     open-pull-requests-limit: 3
+
+  - package-ecosystem: pip
+    directory: /mongo
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 3
+
+  # uv owns both pyproject.toml and uv.lock here.
+  - package-ecosystem: uv
+    directory: /liquidity
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 3

@@ -44,10 +44,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from numbers import Integral, Real
 from pathlib import Path
 from typing import Any, Callable, Sequence
 
@@ -108,6 +110,59 @@ NO_DIRECTION = "no-direction"
 # --------------------------------------------------------------------------
 # strategies
 # --------------------------------------------------------------------------
+
+
+def finite_number(value: Any, name: str) -> float:
+    """Reject invalid evidence rather than turning it into a directional reading."""
+    if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value):
+        raise ValueError(f"{name} must be a finite number")
+    return float(value)
+
+
+def validate_tolerance(value: Any) -> float:
+    value = finite_number(value, "tolerance")
+    if value < 0:
+        raise ValueError("tolerance must be >= 0")
+    return value
+
+
+def validate_arrays(arrays: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
+    """Validate the public array boundary without fetching or repairing bars."""
+    checked = {}
+    for name in ("ts", "open", "high", "low", "close", "volume"):
+        if name not in arrays:
+            raise ValueError(f"missing bar array: {name}")
+        value = np.asarray(arrays[name])
+        if value.ndim != 1 or value.dtype.kind not in "iuf" or not np.isfinite(value).all():
+            raise ValueError(f"{name} must be a one-dimensional finite numeric array")
+        checked[name] = value
+    n = len(checked["close"])
+    if n == 0:
+        raise ValueError("no bars to decide on")
+    if any(len(value) != n for value in checked.values()):
+        raise ValueError("bar arrays must have equal lengths")
+    ts = checked["ts"]
+    if (ts != np.floor(ts)).any() or (ts[1:] <= ts[:-1]).any() or (ts > 10_000_000_000).any():
+        raise ValueError("timestamps must be ascending integral epoch seconds")
+    op, hi, lo, cl = (checked[name] for name in ("open", "high", "low", "close"))
+    if any((price <= 0).any() for price in (op, hi, lo, cl)):
+        raise ValueError("bar prices must be positive")
+    if ((hi < lo).any() or (hi < np.maximum(op, cl) - 1e-9).any() or
+            (lo > np.minimum(op, cl) + 1e-9).any()):
+        raise ValueError("bar high/low must contain open and close")
+    if (checked["volume"] < 0).any():
+        raise ValueError("volume must be nonnegative")
+    return checked
+
+
+def execution_mode(mode: Mode, allow_short: bool) -> Mode:
+    try:
+        mode = Mode(mode)
+    except (ValueError, TypeError) as exc:
+        raise ValueError("mode must be spot or perp") from exc
+    if not isinstance(allow_short, bool):
+        raise ValueError("allow_short must be boolean")
+    return mode
 
 
 @dataclass
@@ -176,6 +231,8 @@ def replay_targets(
     not asked about. The NaNs are the point: they mark bars where there is no
     decision, as opposed to a decision to stay flat.
     """
+    arrays = validate_arrays(arrays)
+    mode = execution_mode(mode, allow_short)
     ts, op = arrays["ts"], arrays["open"]
     hi, lo, cl, vol = arrays["high"], arrays["low"], arrays["close"], arrays["volume"]
     n = len(cl)
@@ -203,9 +260,9 @@ def classify(
     comparison, so an unchanged flat position reports as a BUY. That is a wrong
     answer, not a loose one.
     """
-    if not tolerance >= 0.0:
-        raise ValueError(f"tolerance must be >= 0, got {tolerance!r}")
-    prior = 0.0 if previous is None else previous
+    tolerance = validate_tolerance(tolerance)
+    target = finite_number(target, "target")
+    prior = 0.0 if previous is None else finite_number(previous, "previous")
     delta = target - prior
     if delta > tolerance:
         return BUY
@@ -227,6 +284,9 @@ def decide_strategy(
     tolerance: float = DEFAULT_TOLERANCE,
 ) -> StrategyDecision:
     """Replay one registered strategy and report its final decision."""
+    arrays = validate_arrays(arrays)
+    mode = execution_mode(mode, allow_short)
+    tolerance = validate_tolerance(tolerance)
     strategy = build(key)
     n = len(arrays["close"])
     warmup = max(0, int(strategy.warmup_bars()))
@@ -909,7 +969,10 @@ def staleness(
     fresh one unless the age is printed, so it is printed. `STALE_AFTER_BARS`
     is the point past which the readout says so out loud.
     """
-    wall = time.time() if now is None else now
+    wall = finite_number(time.time() if now is None else now, "clock")
+    last_ts = finite_number(last_ts, "last timestamp")
+    if interval not in INTERVAL_SECONDS:
+        raise ValueError("unsupported bar interval")
     seconds = max(0.0, wall - last_ts)
     bars = seconds / INTERVAL_SECONDS[interval]
     return {
@@ -958,11 +1021,17 @@ def build_report(
     `now` overrides the wall clock used for the staleness reading; it exists so
     the age of the decision bar is testable.
     """
+    arrays = validate_arrays(arrays)
     n = len(arrays["close"])
-    if n == 0:
-        raise ValueError("no bars to decide on")
-    if fill_delay < 0:
-        raise ValueError(f"fill_delay must be >= 0, got {fill_delay!r}")
+    tolerance = validate_tolerance(tolerance)
+    mode = execution_mode(mode, allow_short)
+    if isinstance(fill_delay, bool) or not isinstance(fill_delay, Integral) or fill_delay < 0:
+        raise ValueError("fill_delay must be >= 0 and an integer")
+    fill_delay = int(fill_delay)
+    if interval not in INTERVAL_SECONDS:
+        raise ValueError("unsupported bar interval")
+    if now is not None:
+        now = finite_number(now, "clock")
     check_interval(arrays["ts"], interval)
     window = final_window(arrays)
     decisions = strategy_decisions(
@@ -1108,7 +1177,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     ap.add_argument(
         "--asset",
-        default=DEFAULT_ASSET,
+        default=None,
         help="base asset symbol; inferred from a --data filename when left at the default",
     )
     ap.add_argument(
@@ -1164,9 +1233,9 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry point."""
     args = build_parser().parse_args(argv)
-    path = Path(args.data) if args.data else default_data_path(args.asset, args.interval)
-    asset = args.asset
-    if args.data and asset == DEFAULT_ASSET:
+    asset = DEFAULT_ASSET if args.asset is None else args.asset
+    path = Path(args.data) if args.data else default_data_path(asset, args.interval)
+    if args.data and args.asset is None:
         # An explicit --asset always wins; this only stops the default from
         # labelling someone else's bars as SOL.
         asset = asset_from_path(path) or asset

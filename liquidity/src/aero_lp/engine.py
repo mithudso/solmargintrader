@@ -25,8 +25,10 @@ from .executor import (
     SimRunner,
     StageHook,
     gas_cost_usd,
+    minted_token_id,
     runner_tokens,
 )
+from .ledger import Ledger
 from .market import (
     MarketData,
     PoolEconomics,
@@ -35,6 +37,7 @@ from .market import (
     vol_from_closes,
     with_realized_fees,
 )
+from .recovery import LedgerRecovery
 from .state import SlotState, State
 from .strategy import (
     Action,
@@ -51,6 +54,19 @@ from .strategy import (
     score_widths,
     target_range,
 )
+from .submissions import SubmissionJournal
+from .validation import measured_gas
+
+_signal_scope = threading.local()
+
+
+def _finite(value: object, *, positive: bool = False) -> bool:
+    return (
+        not isinstance(value, bool)
+        and isinstance(value, int | float)
+        and math.isfinite(value)
+        and (value > 0 if positive else value >= 0)
+    )
 
 
 @dataclass
@@ -85,6 +101,85 @@ class Engine:
         # Called with the signal number when Ctrl-C or SIGTERM arrived during a live sequence. Without it the
         # signal is raised after the sequence, which discards the sequence's result before the caller has booked it.
         self.on_stop: Callable[[int], None] | None = None
+
+    def submission_journal(self) -> SubmissionJournal:
+        if not hasattr(self, "journal"):
+            self.journal = SubmissionJournal(self.cfg.state_file.with_name("submissions.json"), self.cfg.owner)
+        return self.journal
+
+    def recover_submission(self, record: dict[str, Any], group: list[dict[str, Any]]) -> None:
+        receipt = record["receipt"]
+        if receipt["status"] != 1:
+            return
+        kind = record["intent"]["kind"]
+        if kind == "remove" and not any(r["intent"]["kind"] == "mint" and r["receipt"]["status"] == 1 for r in group):
+            for slot in self.state.slots.values():
+                if slot.current_token_id == record["intent"]["token_id"] and not any(
+                    record["hash"] in h.get("tx", []) for h in slot.history
+                ):
+                    slot.history.append(
+                        {
+                            "ts": time.time(),
+                            "withdrawn": slot.current_token_id,
+                            "tx": [record["hash"]],
+                            "stages": ["remove"],
+                            "recovered": True,
+                        }
+                    )
+            self.state.save()
+            return
+        if kind != "mint":
+            return
+        token_id = minted_token_id(receipt["logs"], addresses.NONFUNGIBLE_POSITION_MANAGER, self.cfg.owner)
+        if token_id is None:
+            raise RuntimeError("confirmed mint has no verified recipient Transfer receipt")
+        pos = self.chain.position(token_id, owner_hint=self.cfg.owner)
+        if pos.owner.lower() != self.cfg.owner.lower() or pos.pool.address.lower() != record["pool"].lower():
+            raise RuntimeError("confirmed mint ownership or pool does not match the recorded intent")
+        old_ids = {r["intent"]["token_id"] for r in group if r["intent"]["kind"] == "remove"}
+        for configured in self.cfg.token_ids:
+            if configured in old_ids:
+                self.state.slot(configured)
+        for slot in self.state.slots.values():
+            if slot.current_token_id in old_ids or slot.current_token_id == token_id:
+                slot.current_token_id = token_id
+                slot.last_rebalance_ts = slot.last_rebalance_ts or time.time()
+                if not any(record["hash"] in h.get("tx", []) for h in slot.history):
+                    slot.history.append({"ts": time.time(), "new": token_id, "tx": [record["hash"]], "recovered": True})
+        self.state.save()
+
+    def reconcile_submissions(self) -> None:
+        journal = self.submission_journal()
+        recovery_ledger = None
+
+        def apply(record: dict[str, Any], group: list[dict[str, Any]]) -> None:
+            nonlocal recovery_ledger
+            self.recover_submission(record, group)
+            callback = getattr(self, "recovery_handler", None)
+            if callback is not None:
+                callback(record, group)
+            else:
+                # CLI calls must not consume the journal without applying the daemon's monetary effects.
+                if recovery_ledger is None:
+                    recovery_ledger = Ledger(journal.ledger_file())
+                tokens = {t for r in group for t in r["tokens"]} | {addresses.AERO_TOKEN, addresses.WETH}
+                for r in group:
+                    if r["intent"]["kind"] == "mint":
+                        tokens.update((r["intent"]["token0"], r["intent"]["token1"]))
+
+                def prices():
+                    return self.market.token_prices_usd(list(tokens))
+
+                LedgerRecovery(self.cfg, self.chain, recovery_ledger, prices).apply(record, group)
+
+        try:
+            journal.reconcile(self.chain, apply)
+        finally:
+            if recovery_ledger is not None:
+                recovery_ledger.db.close()
+
+    def _live_runner(self, signer: Any, tokens: list[str], pool: str) -> LiveRunner:
+        return LiveRunner(self.chain, signer, tokens, self.cfg.execution, pool, journal=self.submission_journal())
 
     def _gate(self) -> None:
         if self.gate is not None:
@@ -264,7 +359,7 @@ class Engine:
 
     def _twap_blocks(self, deviation_bps: float | None, live: bool) -> list[str]:
         sc = self.cfg.safety
-        if deviation_bps is None:
+        if deviation_bps is None or not _finite(deviation_bps):
             # The guard cannot run (oracle history too short, or the RPC call failed). A dry run only reports
             # it; live mode must not trade with the manipulation guard silently off.
             if live:
@@ -277,9 +372,11 @@ class Engine:
     def safety_blocks(self, ev: Evaluation, live: bool) -> list[str]:
         sc = self.cfg.safety
         out = self._twap_blocks(ev.twap_deviation_bps, live)
-        if live and not (ev.econ.price0_usd and ev.econ.price1_usd and ev.eth_usd):
+        if live and not all(_finite(p, positive=True) for p in (ev.econ.price0_usd, ev.econ.price1_usd, ev.eth_usd)):
             # With a price missing, value_usd and gas_usd are understated and the two limits below pass vacuously.
             out.append("missing USD price for a pool token or ETH: max_position_usd / max_gas_usd cannot be enforced")
+        if live and not all(_finite(v) for v in (ev.value_usd, ev.gas_usd)):
+            out.append("invalid position value or gas estimate; safety caps cannot be enforced")
         if live and ev.value_usd > sc.max_position_usd:
             out.append(f"position ${ev.value_usd:,.0f} > safety.max_position_usd ${sc.max_position_usd:,.0f}")
         if live and ev.gas_usd > sc.max_gas_usd:
@@ -290,6 +387,8 @@ class Engine:
         self, ev: Evaluation, live: bool, signer: Any = None, on_stage: StageHook | None = None
     ) -> RebalanceResult:
         """Always simulates the full sequence first; broadcasts only when live=True."""
+        if live:
+            self.reconcile_submissions()
         assert ev.decision.new_range is not None
         pool = ev.pos.pool
         tokens = runner_tokens(pool.token0.address, pool.token1.address)
@@ -307,10 +406,14 @@ class Engine:
             return sim
         if signer is None:
             raise RuntimeError("live mode needs a signer")
+        if not _finite(ev.eth_usd, positive=True):
+            raise RuntimeError("ETH price unavailable or invalid; cannot enforce safety.max_gas_usd")
         # The gas limit is checked against the simulated gas, not only the config's fixed estimate.
         sim_gas_usd = gas_cost_usd(
-            sum(sim.gas_used.values()), self.chain.gas_price_wei(), ev.eth_usd, self.cfg.l1_fee_usd_estimate
+            measured_gas(sim.gas_used), self.chain.gas_price_wei(), ev.eth_usd, self.cfg.l1_fee_usd_estimate
         )
+        if not _finite(sim_gas_usd):
+            raise RuntimeError("invalid simulated gas cost; safety.max_gas_usd cannot be enforced")
         if sim_gas_usd > self.cfg.safety.max_gas_usd:
             raise RuntimeError(
                 f"simulated gas ${sim_gas_usd:.2f} > safety.max_gas_usd ${self.cfg.safety.max_gas_usd:.2f}"
@@ -336,15 +439,29 @@ class Engine:
         blocks = self._twap_blocks(self.twap_deviation_bps(fresh), live=True)
         if blocks:
             raise RuntimeError("blocked before broadcast: " + "; ".join(blocks))
+        fresh_prices = self.market.token_prices_usd([fresh.pool.token0.address, fresh.pool.token1.address])
+        u0, u1 = (fresh_prices.get(t.address.lower(), 0.0) for t in (fresh.pool.token0, fresh.pool.token1))
+        if not all(_finite(p, positive=True) for p in (u0, u1)):
+            raise RuntimeError("fresh USD price unavailable or invalid; cannot enforce safety.max_position_usd")
+        a0, a1 = fresh.human_amounts()
+        fresh_value = a0 * u0 + a1 * u1
+        if not _finite(fresh_value) or fresh_value > self.cfg.safety.max_position_usd:
+            raise RuntimeError(
+                f"fresh position value ${fresh_value} exceeds safety.max_position_usd "
+                f"${self.cfg.safety.max_position_usd}"
+            )
+        if not any(slot.current_token_id == fresh.token_id for slot in self.state.slots.values()):
+            self.state.slot(fresh.token_id)
+        self.state.save()  # persist the old-slot mapping before a burn or ambiguous mint can be broadcast
         self._gate()
         with defer_sigint(self.on_stop):
             return rb.rebalance(
                 fresh,
                 ev.decision.new_range,
                 ev.stake_new,
-                LiveRunner(self.chain, signer, tokens, self.cfg.execution, pool.address),
-                ev.econ.price0_usd,
-                ev.econ.price1_usd,
+                self._live_runner(signer, tokens, pool.address),
+                u0,
+                u1,
                 on_stage=on_stage,
             )
 
@@ -353,6 +470,8 @@ class Engine:
 
         Returns (position before exit, result, simulated gas in USD).
         """
+        if live:
+            self.reconcile_submissions()
         self.chain.check_fresh()
         pos = self.chain.position(token_id, owner_hint=self.cfg.owner)
         if pos.owner.lower() != self.cfg.owner.lower():
@@ -361,7 +480,9 @@ class Engine:
         rb = Rebalancer(self.chain, self.cfg.owner, self.cfg.execution)
         sim = rb.withdraw(pos, SimRunner(self.chain, self.cfg.owner, tokens, pos.pool.address))
         eth_usd = self.market.token_prices_usd([addresses.WETH]).get(addresses.WETH.lower(), 0.0)
-        sim_gas = sum(sim.gas_used.values())
+        if live and not _finite(eth_usd, positive=True):
+            raise RuntimeError("ETH price unavailable or invalid; cannot enforce safety.max_gas_usd")
+        sim_gas = measured_gas(sim.gas_used)
         sim_gas_usd = gas_cost_usd(sim_gas, self.chain.gas_price_wei(), eth_usd, self.cfg.l1_fee_usd_estimate)
         if not live:
             sim.notes.append("dry run: simulated with eth_simulateV1, nothing signed or broadcast")
@@ -370,6 +491,8 @@ class Engine:
             raise RuntimeError("live mode needs a signer")
         if not eth_usd:
             raise RuntimeError("ETH price unavailable; cannot enforce safety.max_gas_usd")
+        if not _finite(sim_gas_usd):
+            raise RuntimeError("invalid simulated gas cost; safety.max_gas_usd cannot be enforced")
         if sim_gas_usd > self.cfg.safety.max_gas_usd:
             raise RuntimeError(
                 f"simulated gas ${sim_gas_usd:.2f} > safety.max_gas_usd ${self.cfg.safety.max_gas_usd:.2f}"
@@ -381,14 +504,15 @@ class Engine:
                 f"wallet holds {have_wei / 1e18:.6f} ETH, below the {need_wei / 1e18:.6f} ETH gas reserve"
             )
         fresh = self.chain.position(token_id, owner_hint=self.cfg.owner)
+        self.state.save()
         self._gate()
         with defer_sigint(self.on_stop):
             try:
-                res = rb.withdraw(fresh, LiveRunner(self.chain, signer, tokens, self.cfg.execution, pos.pool.address))
+                res = rb.withdraw(fresh, self._live_runner(signer, tokens, pos.pool.address))
             except RebalanceError as e:
                 self._record_withdraw(token_id, e.partial, error=str(e))
                 raise
-        self._record_withdraw(token_id, res)
+            self._record_withdraw(token_id, res)
         return pos, res, sim_gas_usd
 
     def _record_withdraw(self, token_id: int, result: RebalanceResult, error: str = "") -> None:
@@ -435,6 +559,8 @@ class Engine:
     ) -> tuple[Evaluation, RebalanceResult | None]:
         if force and live:
             raise ValueError("force skips the strategy's triggers and is only allowed for dry runs")
+        if live:
+            self.reconcile_submissions()
         slot = self.state.slot(configured_id)
         ev = self.evaluate(slot)
         if force and ev.decision.action != Action.REBALANCE:
@@ -459,15 +585,18 @@ class Engine:
                         slot.current_token_id = partial.new_token_id
                         self.state.save()
 
-                try:
-                    result = self.rebalance(ev, live, signer, on_stage=persist)
-                except RebalanceError as e:
-                    if live and e.partial.tx_hashes:
-                        self._record_partial(slot, ev, e)
-                        self.state.save()
-                    raise
-                if live and result.new_token_id:
-                    self._record_rebalance(slot, ev, result)
+                with defer_sigint(self.on_stop) if live else contextlib.nullcontext():
+                    try:
+                        result = self.rebalance(ev, live, signer, on_stage=persist)
+                    except RebalanceError as e:
+                        if live and e.partial.tx_hashes:
+                            self._record_partial(slot, ev, e)
+                            self.state.save()
+                        raise
+                    if live and result.new_token_id:
+                        self._record_rebalance(slot, ev, result)
+                    self.state.save()
+
         self.state.save()
         return ev, result
 
@@ -482,7 +611,7 @@ def defer_sigint(on_stop: Callable[[int], None] | None = None) -> Iterator[None]
     the result and stop at a safe point. Without `on_stop` it is raised once the block has finished normally
     (KeyboardInterrupt for Ctrl-C, SystemExit for SIGTERM).
     """
-    if threading.current_thread() is not threading.main_thread():
+    if threading.current_thread() is not threading.main_thread() or getattr(_signal_scope, "active", False):
         yield
         return
     pending: list[int] = []
@@ -494,9 +623,11 @@ def defer_sigint(on_stop: Callable[[int], None] | None = None) -> Iterator[None]
         print("\nstop requested: finishing the in-flight transaction sequence first (send it again to force quit)")
 
     previous = {sig: signal.signal(sig, handler) for sig in (signal.SIGINT, signal.SIGTERM)}
+    _signal_scope.active = True
     try:
         yield
     finally:
+        _signal_scope.active = False
         for sig, old in previous.items():
             signal.signal(sig, old)
         if pending and on_stop is not None:

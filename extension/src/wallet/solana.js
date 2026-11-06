@@ -96,25 +96,32 @@ export function bytesToBase64(bytes) {
  * @returns {{value:number, size:number}}
  */
 export function decodeShortVec(bytes, offset = 0) {
+  if (!(bytes instanceof Uint8Array) || !Number.isInteger(offset) || offset < 0 || offset >= bytes.length) {
+    throw new RangeError('invalid or truncated shortvec');
+  }
   let value = 0;
-  let size = 0;
-  for (;;) {
+  for (let size = 0; size < 3; size++) {
     if (offset + size >= bytes.length) throw new RangeError('truncated shortvec');
     const byte = bytes[offset + size];
+    if (size === 2 && (byte & 0xfc) !== 0) throw new RangeError('shortvec exceeds compact-u16 range');
     value |= (byte & 0x7f) << (size * 7);
-    size += 1;
-    if ((byte & 0x80) === 0) break;
-    if (size > 3) throw new RangeError('shortvec longer than 3 bytes');
+    if ((byte & 0x80) === 0) {
+      if (size > 0 && byte === 0) throw new RangeError('noncanonical shortvec');
+      return { value, size: size + 1 };
+    }
   }
-  return { value, size };
+  throw new RangeError('shortvec longer than 3 bytes');
 }
 
 export function encodeShortVec(value) {
+  if (!Number.isInteger(value) || value < 0 || value > 65535) {
+    throw new RangeError('shortvec value must be an integer 0-65535');
+  }
   const out = [];
   let v = value;
   for (;;) {
     let byte = v & 0x7f;
-    v >>= 7;
+    v >>>= 7;
     if (v === 0) {
       out.push(byte);
       break;
@@ -134,7 +141,7 @@ export function parseTransaction(txBytes) {
   const { value: sigCount, size } = decodeShortVec(txBytes, 0);
   const sigStart = size;
   const messageStart = sigStart + sigCount * 64;
-  if (messageStart > txBytes.length) throw new RangeError('truncated signature array');
+  if (messageStart >= txBytes.length) throw new RangeError('truncated signature array or message');
 
   const signatures = [];
   for (let i = 0; i < sigCount; i++) {
@@ -158,9 +165,14 @@ export function parseTransaction(txBytes) {
  * required signatures, always < 128) never does.
  */
 export function messageSigners(message) {
+  if (!(message instanceof Uint8Array) || message.length === 0) throw new RangeError('truncated message');
   let o = 0;
   const versioned = (message[0] & 0x80) !== 0;
-  if (versioned) o += 1;
+  if (versioned) {
+    if (message[0] !== 0x80) throw new RangeError('unsupported transaction message version');
+    o += 1;
+  }
+  if (message.length < o + 4) throw new RangeError('truncated message header');
 
   const numRequiredSignatures = message[o];
   o += 3; // numRequiredSignatures, numReadonlySigned, numReadonlyUnsigned
@@ -168,6 +180,7 @@ export function messageSigners(message) {
   const { value: numKeys, size } = decodeShortVec(message, o);
   o += size;
   if (numRequiredSignatures > numKeys) throw new RangeError('more signers than account keys');
+  if (o + numKeys * 32 > message.length) throw new RangeError('truncated account keys');
 
   const signers = [];
   for (let i = 0; i < numRequiredSignatures; i++) {
@@ -178,6 +191,21 @@ export function messageSigners(message) {
   return { signers, versioned, numRequiredSignatures, numKeys };
 }
 
+/** Validate the physical signature slots before a caller signs the message. */
+export function transactionSigningContext({ txBytes, pubkeyBs58 }) {
+  const parsed = parseTransaction(txBytes);
+  const { signers, numRequiredSignatures } = messageSigners(parsed.message);
+  if (parsed.sigCount !== numRequiredSignatures) {
+    throw new RangeError('transaction signature count does not match message signer count');
+  }
+  const signerIndex = signers.indexOf(pubkeyBs58);
+  if (signerIndex === -1) throw new Error('public key is not a required signer of this transaction');
+  if (signerIndex >= parsed.sigCount || parsed.sigStart + (signerIndex + 1) * 64 > parsed.messageStart) {
+    throw new RangeError('signature slot extends into the transaction message');
+  }
+  return { ...parsed, signerIndex };
+}
+
 /**
  * Write a signature into the slot belonging to `pubkeyBs58`.
  *
@@ -185,19 +213,12 @@ export function messageSigners(message) {
  * cannot leave a half-signed transaction behind.
  */
 export function withSignature({ txBytes, pubkeyBs58, signature }) {
-  if (signature.length !== 64) {
-    throw new RangeError(`signature must be 64 bytes, got ${signature.length}`);
+  if (!(signature instanceof Uint8Array) || signature.length !== 64) {
+    throw new RangeError('signature must be 64 bytes');
   }
-  const parsed = parseTransaction(txBytes);
-  const { signers } = messageSigners(parsed.message);
-  const index = signers.indexOf(pubkeyBs58);
-  if (index === -1) {
-    throw new Error(
-      `${pubkeyBs58} is not a required signer of this transaction (signers: ${signers.join(', ')})`,
-    );
-  }
+  const parsed = transactionSigningContext({ txBytes, pubkeyBs58 });
 
   const out = Uint8Array.from(txBytes);
-  out.set(signature, parsed.sigStart + index * 64);
+  out.set(signature, parsed.sigStart + parsed.signerIndex * 64);
   return out;
 }

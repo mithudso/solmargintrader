@@ -368,18 +368,23 @@ def connect(uri: str = "mongodb://localhost:27017"):
     return MongoClient(uri, serverSelectionTimeoutMS=3000)
 
 
-def create(db, *, drop: bool = True) -> list[str]:
-    """Create every collection with its validator and indexes.
+def create(db, *, drop: bool = True, only: set[str] | None = None) -> list[str]:
+    """Create selected collections with their validators and indexes (all by default).
 
     Drops first by default: this store is derived from files in the repo, so
     recreating it is always safe and is the only way to keep the time series
     collections idempotent (they accept no unique index, so a second load would
     silently double every measurement).
     """
+    wanted = set(ALL_COLLECTIONS) if only is None else set(only)
+    if not wanted or wanted - set(ALL_COLLECTIONS):
+        raise ValueError('collection selection must be nonempty and contain only known names')
     from pymongo.errors import CollectionInvalid
 
     created = []
     for name, spec in TIME_SERIES.items():
+        if name not in wanted:
+            continue
         if drop:
             db.drop_collection(name)
         try:
@@ -390,6 +395,8 @@ def create(db, *, drop: bool = True) -> list[str]:
         created.append(name)
 
     for name, spec in COLLECTIONS.items():
+        if name not in wanted:
+            continue
         if drop:
             db.drop_collection(name)
         try:

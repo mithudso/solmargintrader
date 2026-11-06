@@ -143,6 +143,7 @@ def _trimmed_metrics(
         periods,
         risk_free,
         res.liquidation_count,
+        initial_equity=float(res.equity[skip - 1]),
     )
 
 
@@ -225,17 +226,17 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     arrays = frame_to_arrays(df)
 
-    costs = CostConfig(
-        fee_bps=args.fee_bps,
-        slippage_bps=args.slippage_bps,
-        perp_base_fee_bps=6.0,
-        max_hourly_rate_bps_long=args.borrow_bps_long,
-        max_hourly_rate_bps_short=args.borrow_bps_short,
-        utilization=args.utilization,
-        min_hourly_rate_bps=args.min_borrow_bps,
-        kink_utilization=args.kink_utilization,
-    )
     try:
+        costs = CostConfig(
+            fee_bps=args.fee_bps,
+            slippage_bps=args.slippage_bps,
+            perp_base_fee_bps=6.0,
+            max_hourly_rate_bps_long=args.borrow_bps_long,
+            max_hourly_rate_bps_short=args.borrow_bps_short,
+            utilization=args.utilization,
+            min_hourly_rate_bps=args.min_borrow_bps,
+            kink_utilization=args.kink_utilization,
+        )
         cfg = EngineConfig(
             mode=mode,
             leverage=args.leverage,

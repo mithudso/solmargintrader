@@ -8,7 +8,10 @@ configurations evaluated is printed so a reader can weigh the selection bias.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
+import tempfile
 import platform
 from dataclasses import dataclass
 from pathlib import Path
@@ -278,9 +281,25 @@ def write_outputs(
     Machine-readable files carry no caveat prose -- the caveats live in stdout
     and report.md, so a downstream consumer never has to parse around them.
     """
+    names = [s.full.strategy_name for s in splits]
+    if not names or len(set(names)) != len(names) or any(
+        not isinstance(name, str) or not name.strip() or "/" in name or "\\" in name or "\x00" in name
+        for name in names
+    ):
+        raise ValueError("output strategies must have unique safe file identities")
+    if set(names) != set(manifest.to_dict().get("strategies", {})):
+        raise ValueError("run manifest strategies do not match output strategies")
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
+    inventory: dict[str, str] = {}
+
+    def write_artifact(name: str, text: str) -> None:
+        raw = text.encode("utf-8")
+        path = out / name
+        path.write_bytes(raw)
+        inventory[name] = hashlib.sha256(raw).hexdigest()
+        written.append(path)
 
     full = [s.full for s in splits]
 
@@ -289,13 +308,7 @@ def write_outputs(
     gross = results_frame(full, gross=True)
     gross.insert(1, "book", "gross")
     comparison = pd.concat([net, gross], ignore_index=True)
-    p = out / "comparison.csv"
-    comparison.to_csv(p, index=False)
-    written.append(p)
-
-    p = out / "run_manifest.json"
-    p.write_text(json.dumps(manifest.to_dict(), indent=2, sort_keys=True) + "\n")
-    written.append(p)
+    write_artifact("comparison.csv", comparison.to_csv(index=False))
 
     for s in splits:
         r = s.full
@@ -319,9 +332,7 @@ def write_outputs(
                 for t in r.trades
             ]
         )
-        p = out / f"trades_{r.strategy_name}.csv"
-        trades.to_csv(p, index=False)
-        written.append(p)
+        write_artifact(f"trades_{r.strategy_name}.csv", trades.to_csv(index=False))
 
         equity = pd.DataFrame(
             {
@@ -331,11 +342,27 @@ def write_outputs(
                 "exposure": r.exposure,
             }
         )
-        p = out / f"equity_{r.strategy_name}.csv"
-        equity.to_csv(p, index=False)
-        written.append(p)
+        write_artifact(f"equity_{r.strategy_name}.csv", equity.to_csv(index=False))
 
-    p = out / "report.md"
-    p.write_text("```\n" + report_text + "\n```\n")
-    written.append(p)
+    write_artifact("report.md", "```\n" + report_text + "\n```\n")
+    # Publish the manifest last. A reader either sees the prior proof and refuses
+    # changed files, or sees this complete exact-byte inventory.
+    for name, expected in inventory.items():
+        if hashlib.sha256((out / name).read_bytes()).hexdigest() != expected:
+            raise RuntimeError("output artifacts changed before manifest publication")
+    payload = {**manifest.to_dict(), "artifact_sha256": inventory}
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=out,
+                                         prefix=".run-manifest-", suffix=".tmp", delete=False) as handle:
+            temporary = Path(handle.name)
+            handle.write(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        target = out / "run_manifest.json"
+        temporary.replace(target)
+        written.append(target)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
     return written

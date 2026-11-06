@@ -1,21 +1,21 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 651 tests
-python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
-python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 168 tests
+python3 -m unittest discover -s backtester/tests -t .   # 681 tests
+python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
+python3 -m unittest discover -s mongo/tests -t .        # 33 tests
+cd extension && npm test                                # 237 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1207 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+1353 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 168 tests cover
+## Extension — what the 237 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -40,10 +40,11 @@ Read this before trusting anything with money.
 1. **No live order has ever been placed.** The write path (auth → vault → deposit craft → sign →
    create) matches the documented shapes but has never executed. It needs an API key and a funded
    wallet. Test with one rung at the $10 minimum.
-2. **The Trigger order-list response envelope is guessed.** `normaliseOrders()` infers field names for
-   the orders/history endpoint, and reconciliation depends on them. Verify against a real response.
-3. **Fee attribution is unconfirmed.** Fills take `feeUsd` from the venue when present and 0
-   otherwise. Zero fees make a grid look better than it is.
+2. **The Trigger contract has offline fixtures, not live acceptance.** History pagination and
+   cancellation were checked against current public documentation. Wallet-specific responses,
+   execution USD valuation and semantic transaction verification still need verified fixtures.
+3. **Fee attribution is unconfirmed.** Unknown costs remain flagged for inspection and hold new
+   admission. Uncertain execution price, quantity or timing also holds planning.
 4. **Signature insertion is tested against synthetic transactions**, not a real Jupiter deposit.
 5. **Loading unpacked in Chrome is not automated.** `chrome://extensions` requires a human. The
    headless dry run is the integration gate instead; the CI job validates the manifest statically.
@@ -65,7 +66,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 651 tests
+## Backtester — 681 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -106,7 +107,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 368 tests
+## soltui — 402 tests
 
 Slower than the others (~70s) because the TUI tests drive real render cycles. Three
 files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
@@ -120,7 +121,7 @@ lookup, the module choice and argument pass-through without starting Textual. Th
 packaging paths — the py2app alias bundle and the launchd agent — are **not** covered by
 any test; see `soltui/README.md` for the manual checks that stand in for them.
 
-## mongo — 20 tests
+## mongo — 33 tests
 
 Split between pure helpers that need nothing and integration tests that **skip cleanly
 when no mongod is listening**, so a checkout without a database runs the suite green
@@ -148,3 +149,20 @@ set on exactly 25, every key real.
   `needs_server` decorator so a checkout without mongod still passes.
 - A new command needs no new parity test — the registry-driven suite picks it up automatically. If it
   takes an argument that changes money, add a behavioural test for that argument.
+
+
+## Coverage target and CI gates
+
+The coverage target is meaningful assertions on important and changed paths, including
+failure modes, state transitions and emitted logs. This repository does not configure a
+numeric line-coverage threshold. A blanket 100% line target is not an existing CI gate.
+
+`.github/workflows/ci.yml` runs extension unit/parity/syntax/manifest/offline-dry-run
+checks, backtester tests/imports, soltui tests on macOS, MongoDB integration tests with
+a service container, documentation/index drift checks, and liquidity Ruff/format/pytest.
+The default liquidity pytest selection excludes the `network` marker. Public Jupiter
+reachability is informational and runs on workflow dispatch, not on each PR.
+
+A green suite does not prove that the installed Chrome extension, macOS bundle, live
+liquidity daemon, or venue envelope matches the tested source. Record those acceptance
+gaps separately. Installed-service tests must not be replaced by process-liveness alone.

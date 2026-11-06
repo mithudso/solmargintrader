@@ -22,9 +22,9 @@ jobs:
       run:
         working-directory: extension
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           # Ed25519 in WebCrypto and node:test's current output both need a
           # recent runtime; 22 is the floor the test suite is verified on.
@@ -57,9 +57,9 @@ jobs:
     name: backtester (python)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: '3.13'
           cache: pip
@@ -81,9 +81,9 @@ jobs:
     name: soltui (python, macos)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: '3.13'
           cache: pip
@@ -122,9 +122,9 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: '3.13'
           cache: pip
@@ -141,10 +141,10 @@ jobs:
 
       - name: Load what a fresh clone has
         # `data/` and `results/` are gitignored, so most collections load empty
-        # here. The collections built from tracked files -- strategies, signals,
-        # indicators, documents -- are the ones under test, and they are enough to
-        # exercise validation and idempotency.
-        run: python3 mongo/load.py --only strategies,signals,indicators,documents
+        # here. Request the empty bars collection explicitly too: its native
+        # time-series layout is under test. --only now preserves unselected
+        # collections instead of accidentally creating the whole schema.
+        run: python3 mongo/load.py --only bars,strategies,signals,indicators,documents
 
       - name: Unit and integration tests
         run: python3 -m unittest discover -s mongo/tests -t .
@@ -161,9 +161,9 @@ jobs:
     name: docs (drift check)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: '3.13'
           cache: pip
@@ -171,7 +171,7 @@ jobs:
       # Node is pinned for the same reason the extension job pins it, and because
       # `check_docs.py` asks `node --test` for the extension count rather than
       # trusting a source regex.
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '22'
 
@@ -210,8 +210,8 @@ jobs:
       run:
         working-directory: extension
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '22'
       - run: node tools/verify-endpoints.js
@@ -226,8 +226,8 @@ jobs:
       run:
         working-directory: liquidity
     steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
       - run: uv sync --extra dev -p 3.13
       - run: uv run ruff check src tests
       - run: uv run ruff format --check src tests

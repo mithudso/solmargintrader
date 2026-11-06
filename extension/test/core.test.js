@@ -620,7 +620,7 @@ test('a fill that arrives for an UNKNOWN intent frees its rung', async () => {
   const key = await seedUnknown(store, { gridId: 'g1', side: 'buy', level: 150 });
   const venue = echoVenue(160);
   venue.getFills = async () => [
-    { venueOrderId: 'gone-1', intentKey: key, side: 'buy', triggerPriceUsd: 150, executedPriceUsd: 150, filledBaseQty: 0.1, feeUsd: 0.01 },
+    { venueOrderId: 'gone-1', intentKey: key, side: 'buy', triggerPriceUsd: 150, executedPriceUsd: 150, filledBaseQty: 0.1, feeUsd: 0.01, updatedAtMs: 1 },
   ];
   const result = await tick({ venue, store, configStore });
   assert.equal((await store.getIntent(key)).status, INTENT_STATUS.FILLED);
@@ -1177,7 +1177,7 @@ test('a cancelled order in history is never booked as a fill', async () => {
   const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
   assert.equal(added.length, 0, 'a cancelled order must not become a fill');
   assert.equal(rejected.length, 1);
-  assert.match(rejected[0].reason, /no execution/);
+  assert.match(rejected[0].reason, /no reliable execution/);
   assert.equal((await store.allFills()).length, 0, 'no phantom inventory may be stored');
   assert.notEqual(
     (await store.getIntent(key)).status,
@@ -1186,8 +1186,9 @@ test('a cancelled order in history is never booked as a fill', async () => {
   );
 });
 
-test('execution evidence in either field is enough to book a fill', async () => {
-  // Quantity alone, or price alone, is evidence the venue executed something.
+test('execution needs both observed price and quantity; sparse evidence cannot book a fill', async () => {
+  // One observed field establishes uncertainty, not the missing traded amount.
+  // A trigger price and planned intent quantity cannot complete the execution.
   for (const [label, extra] of [
     ['quantity only', { filledBaseQty: 0.12, executedPriceUsd: null }],
     ['price only', { filledBaseQty: null, executedPriceUsd: 101 }],
@@ -1218,15 +1219,17 @@ test('execution evidence in either field is enough to book a fill', async () => 
         ];
       },
     };
-    const { added, rejected } = await ingestFills({ venue, store, config: RECON_CONFIG });
-    assert.equal(added.length, 1, `${label} should book a fill`);
-    assert.equal(rejected.length, 0, `${label} should not be rejected`);
+    const { added, rejected, blocked } = await ingestFills({ venue, store, config: RECON_CONFIG });
+    assert.equal(added.length, 0, `${label} cannot establish a complete fill`);
+    assert.equal(rejected.length, 1);
+    assert.equal(blocked, true);
+    assert.equal((await store.getIntent(key)).status, INTENT_STATUS.UNKNOWN);
   }
 });
 
-test('an unusable history record is rejected individually, not fatally', async () => {
-  // The history path is non-strict per record precisely so one bad record cannot
-  // brick the engine; ingestFills must still refuse to book it.
+test('an unusable history record is rejected and blocks further admission', async () => {
+  // Record-level parsing can retain other verified fills, but an uncertain
+  // execution must prevent planning against an incomplete inventory.
   const store = new MemoryStore();
   const venue = {
     async getFills() {
@@ -1489,7 +1492,7 @@ const echoVenue = (price) => {
     async getFills() { return []; },
     async getCarryCosts() { return []; },
     async placeOrder({ intent }) {
-      live.push({ intentKey: intent.intentKey, side: intent.side, triggerPriceUsd: intent.level });
+      live.push({ venueOrderId: `v-${intent.intentKey}`, intentKey: intent.intentKey, side: intent.side, triggerPriceUsd: intent.level });
       return { venueOrderId: `v-${intent.intentKey}`, simulated: true };
     },
   };

@@ -36,6 +36,8 @@ export async function createNodeDeps(opts = {}) {
   const configStore = new ConfigStore(area);
   const store = ephemeral ? new MemoryStore() : await FileStore.open(storePath);
   const budget = new RequestBudget({ maxPerWindow: 30, windowMs: 60_000 });
+  let dryVenue = null;
+  let dryContext = null;
 
   return {
     store,
@@ -51,7 +53,23 @@ export async function createNodeDeps(opts = {}) {
       const config = await configStore.getConfig();
       const secrets = await configStore.get('secrets', {});
       const signer = await makeSigner({ mode: config.mode, passphrase, area });
-      return buildVenue({ config, signer, apiKey: secrets.apiKey, budget });
+      const fresh = buildVenue({ config, signer, apiKey: secrets.apiKey, budget });
+      if (!fresh.capabilities.dryRun) {
+        dryVenue = null;
+        dryContext = null;
+        return fresh;
+      }
+      const context = JSON.stringify([config.gridId, config.venue, config.mode,
+        config.baseMint, config.quoteMint, config.userPubkey, config.rpcUrl]);
+      if (dryContext !== context || !dryVenue) {
+        dryVenue = fresh;
+        dryContext = context;
+      } else {
+        // Refresh credentials/read configuration while retaining resting paper
+        // orders across the sequential ticks of one CLI/API process.
+        dryVenue.inner = fresh.inner;
+      }
+      return dryVenue;
     },
 
     clock: () => Date.now(),

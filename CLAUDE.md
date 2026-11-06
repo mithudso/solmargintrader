@@ -1,16 +1,25 @@
-# Semantic Indexing Rule
-- Do NOT use `view_file` to blindly explore large files.
-- ALWAYS use the `search_codebase` MCP tool (local semantic index) first to pull semantic chunks.
-- If the index does not exist, build it using `scripts/semantic_indexer.py`.
-- If the MCP server is not running or fails, attempt to start it. If it still fails, only then fallback to `view_file`.
+# Retrieval before exploration
+
+Use the configured global AI hub semantic search first when it is available. If the
+connector is unreachable or returns no relevant hit, use the existing local keyword
+index (`python3 index/search.py --text "<query>"`) and targeted source reads. See
+`index/README.md`. Do not start an indexer, watcher, inference runtime or embeddings
+merely to begin a repository task. Semantic regeneration is a separate explicit action.
 
 # CLAUDE.md — solmargintrader
 
 Instructions for agents working in this repository. Read before changing code.
 
+## Workflow records
+
+Save each user request verbatim in `prompts.md` before implementation. Keep `memory.md`
+current with the target, completed work, verification, and remaining steps. Increment the
+record version and its delta fields on each update. These workflow versions are separate
+from component package versions. Commit only the files owned by the current task.
+
 ## What this is
 
-Three components with different risk profiles. Know which one you are in:
+Six components with different risk profiles. Know which one you are in:
 
 | Component | Risk |
 | --- | --- |
@@ -91,10 +100,10 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 ## Before you claim a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 651 tests
-python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
-python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 168 tests
+python3 -m unittest discover -s backtester/tests -t .   # 681 tests
+python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
+python3 -m unittest discover -s mongo/tests -t .        # 33 tests
+cd extension && npm test                                # 237 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 node tools/verify-endpoints.js                          # live Jupiter reachability
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
@@ -110,9 +119,11 @@ claim it as verified — the headless dry run is the integration gate instead.
 something the ~150 lines of `src/wallet/solana.js` already solve. Tests are `node:test` +
 `node:assert/strict`. Keep `src/core/grid.js`, `risk.js` and `pnl.js` free of I/O and `chrome.*`.
 
-**Python** — 3.13, stdlib-first. Dependencies are declared in `backtester/requirements.txt` and kept
-minimal on purpose (`pyarrow`, `requests` and `pytest` are deliberately excluded; tests use
-`unittest`). Type hints with `from __future__ import annotations`.
+**Python** — 3.13, stdlib-first. Backtester dependencies live in
+`backtester/requirements.txt`; its tests use `unittest` and deliberately exclude
+`pyarrow`, `requests`, and `pytest`. `mongo/` and `soltui/` declare their own requirements.
+`liquidity/` uses its own `pyproject.toml`, locked virtualenv, `pytest`, and Ruff; follow
+`liquidity/CLAUDE.md` there. Use `from __future__ import annotations` and type hints.
 
 **Both** — comments explain *why*, especially where the obvious implementation is wrong (MV3 timers,
 base58 zero bytes, FIFO vs paired-lot attribution, one-bar leaks). Do not narrate *what*.
@@ -120,8 +131,10 @@ base58 zero bytes, FIFO vs paired-lot attribution, one-bar leaks). Do not narrat
 ## Known-unverified areas
 
 Read "Verification status" in `extension/README.md` before extending it. In short: **no live order
-has ever been placed**, the Trigger order-list response envelope is guessed, and fee attribution is
-unconfirmed. Do not present any of them as working.
+has ever been placed**. Trigger history/cancellation have public-contract fixtures, but authenticated
+wallet responses, execution USD valuation and fee attribution remain unverified. The bundled signer
+has no semantic transaction verifier, so Trigger live signing stays blocked. Do not present live
+execution as working.
 
 ## Related
 

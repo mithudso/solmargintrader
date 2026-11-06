@@ -4,6 +4,12 @@ A Chrome MV3 extension that runs a **grid trading strategy on Jupiter (Solana)**
 rails and full P&L tracking. **Dry-run by default** — it will not place an order until you change
 the mode and type a confirmation.
 
+**Live signing gate:** the bundled signer does not yet verify the economic intent of
+remote-crafted deposit/withdrawal transactions. Trigger live writes therefore refuse
+automatic signing, even with a session key and live confirmation. Dry-run works. A trusted
+semantic-verification bridge and validated live fixtures are required before enabling
+those writes; see `../docs/jupiter-trigger-contract.md`.
+
 > **Not financial advice.** Grid trading is a short-volatility strategy: it makes money in a
 > range and loses money in a trend. Any leveraged position can be liquidated. In the included dry
 > run, a simulated 24% drawdown leaves the grid **−$8.62 on $48 of deployed capital** with four
@@ -281,7 +287,8 @@ node tools/cli.js pnl --json
 ```
 
 ```bash
-node tools/api-server.js --port 8787                # prints a bearer token
+export SMT_API_TOKEN="$(openssl rand -hex 24)"       # value is not printed
+node tools/api-server.js --port 8787                # requires SMT_API_TOKEN
 curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 ```
 
@@ -320,7 +327,7 @@ src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe;
 tools/cli.js               CLI surface, generated from the registry
 tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/dryrun.js            Headless end-to-end tick
-test/                      110 tests, zero dependencies (node:test)
+test/                      237 tests, zero dependencies (node:test)
 ```
 
 No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
@@ -331,7 +338,14 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 
 ## Verification status
 
-**Done and proven:**
+**Current offline gate (2026-11-06):** 237 tests pass. The deterministic oscillating
+dry run closes one round trip: gross $0.3738, fees $0.0246, net +$0.3492, with no
+unknown-fee fills. Public endpoint reachability passed; the keyed price check skipped.
+Live money movement remains blocked without the transaction-intent verifier described
+in `docs/jupiter-trigger-contract.md`. Unmatched sales, missing execution evidence and
+unknown accounting costs hold new planning. The planner allows at most 10,000 rungs.
+
+**Historical development receipts (the figures below are not the current gate):**
 
 - `npm test` → **110 passing, 0 failing** (unit, integration and three-surface parity)
 - `node tools/dryrun.js --ticks 8 --osc 6 --offline 100` → full tick loop with a down-then-up path:
@@ -360,8 +374,8 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
    feeds real `normaliseOrders()`-shaped input (no `intentKey`, 4-decimal price) through
    `reconcile()` to assert one journal entry, not two.
 4. **Fill quantity derived from current config** — editing `notionalPerRungUsd` would retroactively
-   rewrite historical fill sizes. Quantity now comes from the fill or its intent, and a fill with
-   neither is refused and surfaced rather than guessed.
+   rewrite historical fill sizes. Quantity and execution value now require actual fill evidence;
+   a planned intent does not prove either quantity or execution price.
 5. **XSS-shaped table rendering** — journal rows interpolated venue-supplied order IDs and error
    strings into `innerHTML` behind a hand-rolled escaper, on a page holding extension privileges.
    Rows are now built with `createElement`/`textContent`.
@@ -373,9 +387,9 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
    execution gate, so a cancelled order took its price from `triggerPriceUsd` and its quantity from
    the intent's **planned** size, then stored a fill for inventory the wallet never acquired and
    marked the intent `filled`. Reproduced end to end before fixing. `ingestFills` now requires
-   positive evidence of execution — a real `filledBaseQty` or a real `executedPriceUsd` — and the
-   gate is deliberately positive rather than a blacklist of status strings, because the status
-   vocabulary is part of the unverified envelope.
+   positive evidence of both execution quantity and price, plus a real timestamp. Missing values
+   hold planning. An explicit unexecuted cancellation can be ignored; other uncertain history
+   remains visible for review.
 8. **An unrecognised order envelope read as "no orders".** Covered under "Not verified" #2 below:
    an empty list is indistinguishable from a misread one to reconciliation, which treats it as
    "nothing is live" and re-plans every resting rung. Now refused.
@@ -403,9 +417,10 @@ Two results matter here:
 
 **Not verified — do these before risking money:**
 
-1. **No live order has been placed.** The write path (auth → vault → deposit craft → sign →
-   create) is written to the documented shapes but never executed. It needs a Jupiter API key and a
-   funded wallet. Test with one rung at the $10 minimum.
+1. **No live order has been placed.** The bundled signer cannot verify the economic intent of
+   a remote-crafted deposit/cancellation transaction. Live signing refuses before sending it to
+   the raw signer. A trusted verifier must be implemented and tested before any funded live test;
+   a key and funded wallet alone do not satisfy that requirement.
 2. **Order-list response envelope — still unverified, but now loud.** The field names in
    `normaliseOrders()` have never been checked against a real response, and that has not changed.
    What changed is the failure mode. It used to return `[]` for a shape it did not recognise, and
@@ -420,11 +435,9 @@ Two results matter here:
    instead of throwing. Accepted envelopes are `ORDER_LIST_KEYS`; required fields are
    `ORDER_REQUIRED_FIELDS`. Both are exported so correcting them is a one-line, visible diff.
 
-   Strictness is **asymmetric by design**. `getOpenOrders()` refuses per record, because planning
-   against a live list known to be incomplete is the double-fire vector. `getFills()` refuses the
-   *envelope* but degrades per record, because a skipped history record can only delay P&L — it can
-   never place an order — and refusing the whole list would trade a recoverable accounting lag for an
-   engine that never ticks again. Two candidate list keys holding arrays (`{orders: [], data: [...]}`)
+   `getOpenOrders()` refuses unusable configured-pair records. `getFills()` preserves flagged
+   records for inspection, but the engine holds planning when execution evidence is incomplete:
+   skipped history could otherwise hide inventory or daily loss. Two candidate list keys holding arrays (`{orders: [], data: [...]}`)
    is treated as ambiguous and refused: taking the first would reintroduce the empty-list bug through
    a second door. A trigger price must be positive, not merely present, since `Number('')` is `0`.
 3. **Fee attribution — where Trigger reports fees is still unconfirmed.** Fees are no longer
@@ -446,7 +459,7 @@ Two results matter here:
   (decode position accounts via `getProgramAccounts` + the perps IDL)
 - Jupiter Lend borrow as a margin source — `leverageFeasibility()` refuses and explains
 - `PendingApprovalSigner` queues transactions but the dashboard has no approval UI yet, so
-  `semi-auto` currently queues and reports `PendingApproval` rather than completing an order
+  the pending-approval primitive cannot complete an order; Trigger also requires its trusted verifier
 - OCO/OTOCO bracket bodies exist in the client but the grid only emits `single` orders
 
 ---

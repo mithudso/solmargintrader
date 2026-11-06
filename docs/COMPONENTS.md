@@ -18,7 +18,8 @@ backtester/core/gridsim.py <-- backtester/ <-- research/ ---+
 imported by neither, so dropping it changes nothing. `extension/` shares no code with any
 of them — only an obligation, described below. `liquidity/` is self-contained (own venv, own
 tests) and shares only files with soltui: it writes `~/.aero-lp/status.json` and `scout.json`,
-and soltui's Liquidity tab reads them.
+and soltui's Liquidity tab reads them. The tab can also create/remove the daemon's `KILL`
+flag. It never signs or imports the liquidity executor.
 
 ---
 
@@ -91,8 +92,8 @@ orders.
 
 `CsvLoader` and `SyntheticLoader` both satisfy one `DataLoader` protocol, so tests need no
 network. `validate_bars` checks schema, ordering and gaps; `checksum_frame` makes a run
-traceable to its input. `fetch.py` is the only network path and writes a cache — the engine
-never fetches.
+traceable to its input. The explicit fetch modules write caches: Coinbase bars/minutes/ticks/products, Jupiter
+spot snapshots and signed funding history. The simulation engine never fetches.
 
 ---
 

@@ -76,7 +76,7 @@ every flag.
 | File | Contents |
 |---|---|
 | `comparison.csv` | One row per strategy per book (`net`, `gross`), one column per metric |
-| `run_manifest.json` | Asset, range, params, costs, data checksum, library versions |
+| `run_manifest.json` | Asset, range, params, costs, data checksum, library versions and artifact byte hashes; published after artifacts |
 | `trades_<strategy>.csv` | One row per fill, with fee, slippage, borrow settled, realized PnL |
 | `equity_<strategy>.csv` | Per-bar equity and signed exposure |
 | `report.md` | The human-readable report, including caveats |
@@ -105,6 +105,15 @@ that cannot fail is not a guard.
 Also enforced: rolling statistics use trailing windows only (never full-sample
 normalization, the most common form of this bug); indicator warm-up produces no
 trades; and fees/slippage are charged on the fill, never netted at the end.
+
+Both public simulators validate finite, equal-length OHLCV arrays and require the
+timestamp cadence to equal the configured interval. A loader's `--allow-gaps` flag
+does not waive that simulation requirement. Missing bars refuse rather than producing
+unsupported borrowing costs or annualization. Public history arrays own only the visible
+prefix and cannot mutate future/caller data; this is not a sandbox for hostile Python.
+Metrics include initial entry costs against explicit starting capital. The ladder limits
+planning to 10,000 rungs, rejects key collisions and never exits below the actual lot entry.
+Triple construction in `research/sweep.py` uses in-sample scores/trade counts only.
 
 ## The leverage cost model — a borrow fee, *not* a funding rate
 

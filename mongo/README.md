@@ -153,6 +153,16 @@ the exact frame a reported number came from.
 That is the point of the store rather than a nicety. A figure you cannot trace to
 a file is not a figure, which is the same reason `RunManifest` exists.
 
+The loader hashes the exact byte snapshot it parses for CSV, JSON and Markdown.
+Source columns cannot overwrite loader metadata; colliding fields stay under
+`source_fields`. A shared manifest snapshot binds a run and its strategy artifacts.
+Only manifest-declared strategies load, and every curve/trade file must match its
+`artifact_sha256` entry. The report writer publishes this inventory in the manifest
+after writing the artifacts. Legacy output without those hashes must be regenerated;
+the loader refuses it rather than assigning stale files to a new run.
+`--only` validates names before connecting or dropping collections and recreates only
+the selected collections. Empty/unknown selectors refuse.
+
 ## Files
 
 | Path | What it does |

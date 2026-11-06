@@ -82,6 +82,9 @@ OUT_DIR = REPO / "research" / "results"
 # merely listed. Three lucky trades can produce any Sharpe you like.
 MIN_OOS_TRADES = 10
 
+# Constituent eligibility is a discovery decision, independent of held-out data.
+MIN_DISCOVERY_TRADES = 10
+
 # Walk-forward in-sample fraction.
 SPLIT = 0.70
 
@@ -332,8 +335,19 @@ def walk_forward(
         periods_per_year(cfg.interval),
         cfg.risk_free_rate,
         oos_res.liquidation_count,
+        initial_equity=float(oos_res.equity[skip - 1]) if skip > 0 else cfg.initial_capital,
     )
     return full, is_metrics, oos_metrics
+
+
+def select_triple_candidates(singles: Sequence[Row], limit: int) -> list[str]:
+    """Construct triples using only qualified in-sample single-strategy evidence."""
+    qualified = [row for row in singles if len(row.members) == 1
+                 and row.members[0] in COMBO_CANDIDATES and row.in_sample is not None
+                 and row.in_sample.trade_count >= MIN_DISCOVERY_TRADES
+                 and np.isfinite(row.in_sample.sharpe)]
+    qualified.sort(key=lambda row: (-row.in_sample.sharpe, row.members[0]))
+    return [row.members[0] for row in qualified[:max(0, limit)]]
 
 
 def sweep_singles(horizon: str) -> list[Row]:
@@ -763,7 +777,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     ap.add_argument("--horizon", action="append", choices=list(HORIZONS), default=None)
     ap.add_argument("--triple-top", type=int, default=6,
-                    help="restrict triples to combos drawn from the top-N singles")
+                    help="restrict triples to top-N in-sample-qualified singles")
     ap.add_argument(
         "--pair-gate",
         choices=list(PAIR_GATES),
@@ -803,21 +817,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             counts[f"{h}/pairs"] = len(rows)
 
         if "triples" in stages:
-            # Bound the triple space: admissible triples over all candidates
-            # would be hundreds of runs, and ranking that many by measured
-            # performance is precisely the data-snooping this script warns about.
+            # Bound the space using discovery evidence only. Held-out scores
+            # and held-out trade counts cannot select their own future models.
             singles = [r for r in all_rows if r.kind == "single" and r.horizon == h]
-            top = [
-                r.members[0]
-                for r in sorted(
-                    [r for r in singles if r.rankable],
-                    key=lambda r: r.oos_sharpe,
-                    reverse=True,
-                )
-                if r.members[0] in COMBO_CANDIDATES
-            ][: args.triple_top]
+            top = select_triple_candidates(singles, args.triple_top)
             if len(top) >= 3:
-                print(f"[{h}] triples from top-{len(top)} singles…", file=sys.stderr)
+                print(f"[{h}] triples from top-{len(top)} discovery singles…", file=sys.stderr)
                 arrays, cfg = load_horizon(h)
                 params = HORIZONS[h]["params"]
                 rows = []

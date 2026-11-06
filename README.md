@@ -17,6 +17,13 @@ SOL trading research and execution tooling, in six parts:
 
 ## Quick start
 
+The dated research tables preserve earlier experiments. The 2026-11-06 audit changes
+simulation accounting and metrics; rerun experiments before treating stored rankings as
+current-engine results. Archive-number checks verify transcription, not a fresh experiment.
+
+Trigger live signing also requires an independent transaction-intent verifier that the
+bundled signer does not yet provide. Dry-run remains the verified execution path.
+
 ```bash
 # Backtester — fetch once, then simulate offline
 pip install -r backtester/requirements.txt
@@ -25,7 +32,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 168 tests
+npm test                                               # 237 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -36,10 +43,10 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 651 tests
-python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
-python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 168 tests
+python3 -m unittest discover -s backtester/tests -t .   # 681 tests
+python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
+python3 -m unittest discover -s mongo/tests -t .        # 33 tests
+cd extension && npm test                                # 237 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than
@@ -86,11 +93,14 @@ ships.
 **Start here**
 
 - [docs/onboarding.md](docs/onboarding.md) — a first hour that ends with every component run
-- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all five components
+- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all six components
 - [docs/COMPONENTS.md](docs/COMPONENTS.md) — what each module does and depends on
 
 **Working in it**
 
+- [CONTRIBUTING.md](CONTRIBUTING.md) — focused changes, verification and workflow records
+- [docs/requirements.md](docs/requirements.md) — implemented requirements and runtime boundaries
+- [docs/MCP.md](docs/MCP.md) — connector boundaries and offline retrieval
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — setup, commands, env vars, troubleshooting
 - [mongo/README.md](mongo/README.md) — the local research store and its query reference
 - [docs/INSTALLATION.md](docs/INSTALLATION.md) — prerequisites, install, verify, uninstall
@@ -104,11 +114,15 @@ ships.
 - [docs/API.md](docs/API.md) — every command across all three surfaces
 - [docs/integrations-and-assumptions.md](docs/integrations-and-assumptions.md) — external services and the assumptions baked in
 - [docs/external-calls.md](docs/external-calls.md) — every call that leaves the machine
+- [docs/caching-and-optimization.md](docs/caching-and-optimization.md) — cache ownership and invalidation
 - [docs/logging.md](docs/logging.md) — what is recorded, and which paths record nothing
 
 **Operating and safety**
 
 - [docs/SECURITY.md](docs/SECURITY.md) — key custody, API token, threat model
+- [docs/runbooks/incident.md](docs/runbooks/incident.md) — stop execution and reconcile an unknown outcome
+- [docs/runbooks/rollback.md](docs/runbooks/rollback.md) — revert code while preserving live-state evidence
+- [docs/runbooks/handoff.md](docs/runbooks/handoff.md) — resume from prompt, memory and Git state
 - [docs/OPERATIONS.md](docs/OPERATIONS.md) — dry run to live, kill switch, incident steps
 - [CLAUDE.md](CLAUDE.md) / [AGENTS.md](AGENTS.md) / [GEMINI.md](GEMINI.md) — rules for agents working in this repo
 

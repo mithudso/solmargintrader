@@ -9,6 +9,8 @@
 export const SPACING = { ARITH: 'arith', GEOM: 'geom' };
 export const SIDE = { BUY: 'buy', SELL: 'sell' };
 export const DIRECTION = { LONG: 'long', SHORT: 'short', NEUTRAL: 'neutral' };
+// Allocation bound shared with the Python ladder simulator.
+export const MAX_GRID_RUNGS = 10_000;
 
 /**
  * Grid price levels, lowest first.
@@ -18,10 +20,10 @@ export const DIRECTION = { LONG: 'long', SHORT: 'short', NEUTRAL: 'neutral' };
  * gives every rung the same dollar width.
  */
 export function gridLevels({ lower, upper, rungs, spacing = SPACING.GEOM }) {
-  if (!(lower > 0)) throw new RangeError(`lower must be > 0, got ${lower}`);
-  if (!(upper > lower)) throw new RangeError(`upper (${upper}) must exceed lower (${lower})`);
-  if (!Number.isInteger(rungs) || rungs < 2) {
-    throw new RangeError(`rungs must be an integer >= 2, got ${rungs}`);
+  if (!Number.isFinite(lower) || !(lower > 0)) throw new RangeError(`lower must be > 0, got ${lower}`);
+  if (!Number.isFinite(upper) || !(upper > lower)) throw new RangeError(`upper (${upper}) must exceed lower (${lower})`);
+  if (!Number.isSafeInteger(rungs) || rungs < 2 || rungs > MAX_GRID_RUNGS) {
+    throw new RangeError(`rungs must be an integer from 2 through ${MAX_GRID_RUNGS}`);
   }
 
   const levels = [];
@@ -39,6 +41,10 @@ export function gridLevels({ lower, upper, rungs, spacing = SPACING.GEOM }) {
   // `upper`, which shows up as a phantom "level changed" diff every tick.
   levels[0] = lower;
   levels[levels.length - 1] = upper;
+  const keys = levels.map((level) => Math.round(level * 1e6));
+  if (!keys.every(Number.isFinite) || new Set(keys).size !== levels.length) {
+    throw new RangeError('distinct rungs collide at the 1e-6 resolution of an order key');
+  }
   return levels;
 }
 
@@ -253,6 +259,10 @@ export function planGrid({ config, price, openIntentKeys = [], openLots = [] }) 
     }
 
     const exitLevel = pairedExitLevel({ levels, entryPrice: lot.priceUsd });
+    if (!Number.isFinite(exitLevel) || !(exitLevel > lot.priceUsd)) {
+      skipped.push({ level: exitLevel, entryPriceUsd: lot.priceUsd, side: SIDE.SELL, reason: 'exit-not-above-entry' });
+      continue;
+    }
     const bucket = exitBuckets.get(exitLevel) ?? { baseQty: 0, entries: [], lots: [] };
     bucket.baseQty += lot.baseQty;
     bucket.entries.push(lot.priceUsd);

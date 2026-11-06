@@ -82,6 +82,21 @@ CREATE TABLE IF NOT EXISTS wallet_balances (
     token TEXT NOT NULL,
     amount REAL NOT NULL
 );
+CREATE TABLE IF NOT EXISTS transaction_effects (
+    tx_hash TEXT NOT NULL,
+    effect TEXT NOT NULL,
+    PRIMARY KEY(tx_hash, effect)
+);
+CREATE TABLE IF NOT EXISTS slot_tokens (
+    token_id INTEGER NOT NULL,
+    slot TEXT NOT NULL,
+    PRIMARY KEY(token_id, slot)
+);
+CREATE TABLE IF NOT EXISTS transaction_slots (
+    tx_hash TEXT PRIMARY KEY,
+    slot TEXT NOT NULL
+);
+INSERT OR IGNORE INTO slot_tokens SELECT token_id, slot FROM slots WHERE token_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS ix_snap ON snapshots(slot, ts);
 CREATE INDEX IF NOT EXISTS ix_wb ON wallet_balances(token, ts);
 """
@@ -165,19 +180,67 @@ class Ledger:
                 " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
                 (slot, pool, pair, token0, token1, dec0, dec1, token_id, ts or time.time(), experiment, source),
             )
+            db.execute(
+                "INSERT OR IGNORE INTO slot_tokens SELECT token_id,slot FROM slots"
+                " WHERE slot=? AND token_id IS NOT NULL",
+                (slot,),
+            )
 
     def set_token_id(self, slot: str, token_id: int) -> None:
         with self.tx() as db:
+            db.execute(
+                "INSERT OR IGNORE INTO slot_tokens SELECT token_id,slot FROM slots"
+                " WHERE slot=? AND token_id IS NOT NULL",
+                (slot,),
+            )
             db.execute("UPDATE slots SET token_id=? WHERE slot=?", (token_id, slot))
+            db.execute("INSERT OR IGNORE INTO slot_tokens SELECT token_id,slot FROM slots WHERE slot=?", (slot,))
+
+    def bind_transaction_slots(self, hashes: list[str], slot: str) -> None:
+        """Bind the whole receipt group before its first mutable accounting effect."""
+        with self.tx() as db:
+            for tx_hash in hashes:
+                old = db.execute("SELECT slot FROM transaction_slots WHERE tx_hash=?", (tx_hash,)).fetchone()
+                if old is not None and old[0] != slot:
+                    raise ValueError("receipt already belongs to a different strategy slot")
+                db.execute("INSERT OR IGNORE INTO transaction_slots VALUES (?,?)", (tx_hash, slot))
+
+    def transaction_slot(self, tx_hash: str) -> str | None:
+        row = self.db.execute("SELECT slot FROM transaction_slots WHERE tx_hash=?", (tx_hash,)).fetchone()
+        return row[0] if row is not None else None
+
+    def token_slots(self, token_ids: set[int]) -> set[str]:
+        """Include closed slots and NFTs replaced by an earlier rebalance."""
+        return {
+            row[0]
+            for token_id in token_ids
+            for row in self.db.execute("SELECT slot FROM slot_tokens WHERE token_id=?", (token_id,))
+        }
 
     def close_slot(self, slot: str, ts: float | None = None) -> None:
         with self.tx() as db:
             db.execute("UPDATE slots SET closed_at=? WHERE slot=? AND closed_at IS NULL", (ts or time.time(), slot))
 
-    def flow(self, slot: str, kind: str, amount0: float, amount1: float, usd: float, ts: float | None = None) -> None:
+    def flow(
+        self,
+        slot: str,
+        kind: str,
+        amount0: float,
+        amount1: float,
+        usd: float,
+        ts: float | None = None,
+        *,
+        receipt_hash: str | None = None,
+    ) -> None:
         if kind not in ("deposit", "topup", "withdraw"):
             raise ValueError(f"unknown flow kind {kind}")
         with self.tx() as db:
+            if receipt_hash is not None:
+                inserted = db.execute(
+                    "INSERT OR IGNORE INTO transaction_effects VALUES (?,?)", (receipt_hash, f"flow:{kind}")
+                )
+                if not inserted.rowcount:
+                    return
             db.execute(
                 "INSERT INTO flows(slot,ts,kind,amount0,amount1,usd) VALUES (?,?,?,?,?,?)",
                 (slot, ts or time.time(), kind, amount0, amount1, usd),
@@ -192,8 +255,23 @@ class Ledger:
         detail: str = "",
         tx: list[str] | None = None,
         ts: float | None = None,
+        *,
+        receipt_fees: dict[str, float] | None = None,
+        receipt_rewards: dict[str, float] | None = None,
     ) -> None:
         with self.tx() as db:
+            if receipt_fees is not None:
+                gas_usd = 0.0
+                for tx_hash, value in receipt_fees.items():
+                    if db.execute("INSERT OR IGNORE INTO transaction_effects VALUES (?,?)", (tx_hash, "fee")).rowcount:
+                        gas_usd += value
+            if receipt_rewards is not None:
+                reward_usd = 0.0
+                for tx_hash, value in receipt_rewards.items():
+                    if db.execute(
+                        "INSERT OR IGNORE INTO transaction_effects VALUES (?,?)", (tx_hash, "reward")
+                    ).rowcount:
+                        reward_usd += value
             db.execute(
                 "INSERT INTO events(ts,slot,kind,gas_usd,reward_usd,detail,tx) VALUES (?,?,?,?,?,?,?)",
                 (ts or time.time(), slot, kind, gas_usd, reward_usd, detail[:2000], json.dumps(tx or [])),

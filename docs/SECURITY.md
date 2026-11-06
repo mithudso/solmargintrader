@@ -15,7 +15,7 @@ the **Jupiter API key**.
 
 ## Key custody
 
-`full-auto` is the only mode where a signing key exists on the machine. Rules, all enforced in
+For the extension, `full-auto` is the only mode that uses its local signing key. Rules, all enforced in
 `extension/src/wallet/signer.js`:
 
 - Use a **dedicated keypair** holding grid working capital only. Never your main wallet.
@@ -24,8 +24,9 @@ the **Jupiter API key**.
   plaintext never produces identical ciphertext — there is a test for that.
 - Storage is `chrome.storage.local` or a mode-0600 file. **Never** `chrome.storage.sync`, which would
   upload it to Google.
-- The decrypted seed exists only inside a signing call. It is never logged, never stringified, and
-  never crosses a message boundary. The generated seed buffer is zeroed after use.
+- Plaintext seed bytes exist only during bounded initialization. The signer retains one
+  nonextractable operational key. Seed, PKCS8 and decrypted temporary buffers are zeroed;
+  plaintext never crosses a message boundary or enters a log.
 - A wrong passphrase fails closed and does not distinguish "wrong passphrase" from "tampered record".
 - The wrap key is derived non-extractable, so it cannot be read back out of WebCrypto.
 
@@ -39,13 +40,35 @@ both are named rather than one being quietly chosen:
 | --- | --- | --- |
 | `dry-run` (default) | never signs | yes |
 | `semi-auto` | you approve each signature | **no** |
-| `full-auto` | dedicated session key | yes |
+| `full-auto` | dedicated session key; Trigger writes require a semantic verifier | writes blocked by bundled adapter |
+
+Raw cryptographic signing does not verify economic intent. The Trigger adapter refuses
+automatic deposit/withdrawal signing without a trusted verification bridge; the bundled
+signer supplies none. See `docs/jupiter-trigger-contract.md` for the exact boundary.
 
 ### Custody fact you cannot change
 
 Trigger V2 deposits land in a **Privy-managed custodial vault**, one per wallet. Funds backing
 resting orders sit there, not in your wallet, and recovering them from an unfilled order is a
 two-step cancel-and-withdraw.
+
+## Liquidity custody and controls
+
+The separate liquidity component can sign Base transactions. `wallet.py` loads from
+an explicitly configured owner-only mode-0600 key file, macOS Keychain, or a legacy
+private-key environment fallback. Agents never read, print or copy those key values.
+`liquidity/CLAUDE.md` governs the owner's standing live authorization and its limits.
+
+- The RPC chain id, stale head, TWAP, gas/position/total-deployed caps and token allow-list
+  are execution boundaries. Do not raise caps or lower `min_net_apr` during a code audit.
+- Every sequence goes through a Rebalancer and Runner. Simulation is not a mined receipt;
+  a timeout after broadcast does not prove failure. Retain transaction hashes and partial state.
+- The daemon reads `AERO_LP_HOME/KILL`. Soltui may create/remove that flag but never imports
+  the signing/executor stack. Resuming permits an already-live daemon to act inside its caps.
+- `liquidity/scripts/aero-lp-service install` defaults to live operation. Dependency setup
+  and offline tests do not require installing or restarting the service.
+- Pool labels, remote responses and unsolicited-token metadata are untrusted input.
+  Contract addresses are centralized and require the two-source review in component rules.
 
 ## The local HTTP API
 

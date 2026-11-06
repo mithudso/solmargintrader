@@ -7,11 +7,16 @@ be wrong somewhere else. The second list is the one that bites.
 
 | Service | Used by | For | If it changes |
 | --- | --- | --- | --- |
-| Coinbase Exchange (`api.exchange.coinbase.com`) | `backtester/core/fetch.py` | All OHLCV history | Every backtest moves. There is no second source |
+| Coinbase Exchange (`api.exchange.coinbase.com`) | `backtester/core/fetch.py`, `fetch_minutes.py`, `ticks.py`, `universe.py` | OHLCV, trade ticks, listed products | Revalidate refreshed caches; cached simulations remain offline |
+| Hyperliquid / OKX | `backtester/core/funding.py` | Historical signed funding, with OKX as a shallow cross-check | Carry research must retain venue, interval and coverage limits |
+| Base RPC, Aero / Multicall3 contracts | `liquidity/src/aero_lp/chain.py`, `executor.py` | On-chain reads, exact simulation, optional signed transactions | Wrong chain/stale head must fail closed; ambiguous sends need reconciliation |
+| GeckoTerminal | `liquidity/src/aero_lp/market.py` | Prices, pool discovery and hourly closes | Missing or rate-limited data can prevent scoring |
+| DefiLlama | `liquidity/src/aero_lp/providers.py` | Comparison-only yield/price inputs | Quoted rows are labelled; no non-Aero deployment is authorized |
+| MongoDB | `mongo/schema.py`, `mongo/load.py` | Derived research records | Rebuild selected collections from tracked evidence and local caches |
 | Jupiter Price v3 (`api.jup.ag`, `lite-api.jup.ag`) | `extension/src/jupiter/price.js`, `backtester/core/archive_price.py` | Live and snapshot prices | The extension cannot price a tick; it refuses rather than guessing |
 | Jupiter Trigger v2 (`api.jup.ag/trigger/v2`) | `extension/src/jupiter/trigger.js` | Placing, listing, cancelling real orders | The money path. Reconciliation depends on its response shape, which is **guessed** |
 | Chrome extension APIs (MV3) | `extension/src/bg/`, `src/storage/` | Service worker, alarms, `chrome.storage`, IndexedDB | MV3 timer and lifetime rules are load-bearing, not incidental |
-| launchd (macOS) | `soltui/soltui-service` | Supervising the menu-bar app at login | `KeepAlive` overriding Quit is a launchd property, not a bug in the app |
+| launchd (macOS) | `soltui/soltui-service`, `liquidity/scripts/aero-lp-service` | Optional login services | `KeepAlive` overriding Quit is a launchd property, not a bug in the app |
 
 Full per-call detail — timeouts, retries, what is logged — is in `docs/external-calls.md`.
 
@@ -84,16 +89,18 @@ numpy.
 
 | | Development here | CI | Someone else's machine |
 | --- | --- | --- | --- |
-| OS | macOS (Darwin) | `ubuntu-latest` | Anything, except `soltui/` needs macOS |
+| OS | macOS (Darwin) | Ubuntu jobs plus a macOS soltui job; MongoDB job pins Ubuntu 22.04 | Core CLI tools are portable; menu-bar/launchd integration needs macOS |
 | Python | 3.13 | 3.13, pinned | Must be 3.13 |
 | Node | 22 (`.nvmrc`) | 22, pinned | Must be 22+ for WebCrypto Ed25519 |
 | `data/` | Populated by hand | Absent — gitignored | Absent; refetch required |
 | Jupiter reachability | Available | Only on `workflow_dispatch`, `continue-on-error` | Needs a key for the non-`lite` host |
 | Chrome | Present, extension loadable | None — never loaded in CI | Needed for the extension |
 
-Two consequences worth stating: **no test may require the network or a cached CSV**, since
-CI has neither; and **`soltui/` cannot be tested on the Linux runner**, so its 368 tests are
-a local gate rather than a CI one.
+Offline unit suites must not require public network access or pre-existing cached CSVs.
+MongoDB integration tests use a service container in CI and skip locally if no server is
+available. Soltui runs on a macOS CI runner; its private supervisor dependency is excluded
+there, so dependent checks can skip. Liquidity network tests are a separate explicit gate.
+The installed app bundle and live services still need manual acceptance beyond CI.
 
 ## What would need changing to run this elsewhere
 

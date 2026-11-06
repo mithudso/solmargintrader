@@ -190,21 +190,27 @@ class FakeRB:
         self.calls.append(("claim", self._kind(runner)))
         if self.on_claim:
             self.on_claim()
-        return RebalanceResult(pos.token_id, True, ["claim"], ["0xc1"], {}, aero_claimed=self.claimed, fee_wei=10**12)
+        return RebalanceResult(
+            pos.token_id, True, ["claim"], ["0xc1"], {"claim": 100000}, aero_claimed=self.claimed, fee_wei=10**12
+        )
 
     def collect(self, pos, runner):
         self.calls.append(("collect", self._kind(runner)))
-        return RebalanceResult(pos.token_id, False, ["collect"], ["0xc2"], {}, amounts_in_position=self.collected)
+        return RebalanceResult(
+            pos.token_id, False, ["collect"], ["0xc2"], {"collect": 100000}, amounts_in_position=self.collected
+        )
 
-    def topup(self, pos, a0, a1, runner, u0, u1):
+    def topup(self, pos, a0, a1, runner, u0, u1, *, include_unstake_proceeds=True):
         self.calls.append(("topup", self._kind(runner), a0, a1))
         if self.topup_error and runner[0] == "live":  # the preflight simulation passes; the live send fails
             raise self.topup_error
-        return RebalanceResult(pos.token_id, pos.staked, ["increase"], ["0xt"], {}, amounts_in_position=(a0, a1))
+        return RebalanceResult(
+            pos.token_id, pos.staked, ["increase"], ["0xt"], {"increase": 100000}, amounts_in_position=(a0, a1)
+        )
 
     def swap_exact(self, pool, token_in, amount, runner, min_out):
         self.calls.append(("swap_exact", self._kind(runner), token_in, amount, min_out, runner[1][2], runner[1][3]))
-        return RebalanceResult(None, False, ["swap"], ["0xs"], {}, amount_out=self.swap_out)
+        return RebalanceResult(None, False, ["swap"], ["0xs"], {"swap": 100000}, amount_out=self.swap_out)
 
     def deploy(self, pool, rng, stake, a0, a1, runner, u0, u1, on_stage=None):
         self.calls.append(("deploy", self._kind(runner), a0, a1, stake))
@@ -215,7 +221,13 @@ class FakeRB:
                 on_stage("mint", partial)
             raise self.deploy_error
         res = RebalanceResult(
-            self.new_token_id, stake, ["swap", "mint"], ["0xd"], {}, amounts_in_position=(a0, a1), fee_wei=10**12
+            self.new_token_id,
+            stake,
+            ["swap", "mint"],
+            ["0xd"],
+            {"mint": 100000},
+            amounts_in_position=(a0, a1),
+            fee_wei=10**12,
         )
         if on_stage and live:
             on_stage("mint", res)
@@ -223,7 +235,7 @@ class FakeRB:
 
     def unwrap_weth(self, amount, runner):
         self.calls.append(("unwrap_weth", self._kind(runner), amount))
-        return RebalanceResult(None, False, ["unwrap"], ["0xu"], {})
+        return RebalanceResult(None, False, ["unwrap"], ["0xu"], {"unwrap": 100000})
 
     swap_to_eth_error: Exception | None = None
 
@@ -231,7 +243,7 @@ class FakeRB:
         self.calls.append(("swap_to_eth", self._kind(runner), token_in, amount_in, min_eth_out))
         if self.swap_to_eth_error:
             raise self.swap_to_eth_error
-        return RebalanceResult(None, False, ["swap_to_eth"], ["0xe"], {})
+        return RebalanceResult(None, False, ["swap_to_eth"], ["0xe"], {"swap_to_eth": 100000})
 
 
 @pytest.fixture
@@ -243,7 +255,7 @@ def make_daemon(tmp_path, monkeypatch):
         constructed.append(("sim", chain_, owner, tokens, pool))
         return ("sim", (chain_, owner, tokens, pool))
 
-    def live(chain_, signer, tokens, cfg, pool=None):
+    def live(chain_, signer, tokens, cfg, pool=None, *, journal=None):
         constructed.append(("live", chain_, signer, tokens, pool))
         return ("live", (chain_, signer, tokens, pool))
 
@@ -262,7 +274,12 @@ def make_daemon(tmp_path, monkeypatch):
     ) -> dmod.Daemon:
         root = tmp_path / f"home{len(count)}"  # one state directory per daemon: KILL files must not leak between them
         count.append(root)
-        cfg = Config(owner=OWNER, allocator=AllocatorConfig(**alloc), safety=safety or SafetyConfig())
+        cfg = Config(
+            owner=OWNER,
+            state_path=str(root / "state.json"),
+            allocator=AllocatorConfig(**alloc),
+            safety=safety or SafetyConfig(),
+        )
         d = dmod.Daemon(cfg, live_mode, signer=object() if live_mode else None, root=root)
         d.test = SimpleNamespace(chain=chain, market=market, constructed=constructed)
         if killed:
@@ -552,10 +569,10 @@ def test_deploy_arm_uses_pool_tokens_first_and_never_counts_a_conversion_twice(m
     d.deploy_arm(_arm(pool, 25.0), idle, None)
     kinds = [(c[0], c[1]) for c in d.rb.calls]
     # only AERO was converted (the pool's own tokens need no swap); the deposit is simulated, then sent
-    assert kinds == [("swap_exact", "live"), ("deploy", "sim"), ("deploy", "live")]
+    assert kinds == [("swap_exact", "sim"), ("swap_exact", "live"), ("deploy", "sim"), ("deploy", "live")]
     swap = d.rb.calls[0]
     assert swap[2] == AERO and swap[3] == 5 * 10**18
-    deploy = d.rb.calls[2]
+    deploy = next(c for c in d.rb.calls if c[:2] == ("deploy", "live"))
     assert deploy[1] == "live"
     assert deploy[2] == 5 * 10**15 + 2 * 10**15  # idle WETH + the swap's output, each counted once
     assert deploy[3] == 10 * 10**6
@@ -686,7 +703,7 @@ def test_unwrap_is_capped_by_the_balance_and_the_wallet_is_reread_before_idle_is
     real = d.read_wallet
     monkeypatch.setattr(d, "read_wallet", lambda: (reads.append(1), real())[1])
     d.allocate(wallet)
-    unwrap = [c for c in d.rb.calls if c[0] == "unwrap_weth"][0]
+    unwrap = [c for c in d.rb.calls if c[:2] == ("unwrap_weth", "live")][0]
     assert unwrap[1] == "live" and unwrap[2] == raw
     assert reads == [1]  # idle amounts are computed from the wallet as it is after the unwrap
 
@@ -711,7 +728,9 @@ def test_staked_compound_books_the_claim_once_and_the_topup_as_a_flow(make_daemo
     d.rb.swap_out = 10**15
     d.compound_slot("42")
     assert [(c[0], c[1]) for c in d.rb.calls] == [
+        ("claim", "sim"),
         ("claim", "live"),
+        ("swap_exact", "sim"),
         ("swap_exact", "live"),
         ("topup", "sim"),  # the preflight simulation
         ("topup", "live"),
@@ -743,7 +762,12 @@ def test_compound_waits_when_the_guard_blocks_or_the_price_left_the_range(make_d
     d.test.chain.positions[42] = make_pos(staked=True, in_range=False, pool=pos.pool)
     d.rb.swap_out = 10**15
     d.compound_slot("42")
-    assert [c[0] for c in d.rb.calls] == ["claim", "swap_exact"]  # claimed + converted, then stopped
+    assert [(c[0], c[1]) for c in d.rb.calls] == [
+        ("claim", "sim"),
+        ("claim", "live"),
+        ("swap_exact", "sim"),
+        ("swap_exact", "live"),
+    ]  # both writes were preflighted; the refreshed out-of-range position was not topped up
     assert d.ledger.db.execute("SELECT COUNT(*) FROM flows WHERE kind='topup'").fetchone()[0] == 0
 
 
@@ -758,6 +782,9 @@ def test_failed_restake_after_the_increase_still_books_the_added_liquidity(make_
         d.compound_slot("42")
     assert d.ledger.db.execute("SELECT COUNT(*) FROM flows WHERE kind='topup'").fetchone()[0] == 1
     d.rb.topup_error = RebalanceError("revert", RebalanceResult(42, False, ["unstake"], [], {}))
+    # A later tick must refresh the position before another compound after a partial live outcome.
+    pos = d.test.chain.position(42)
+    d.decisions["42"] = {"_pos": pos, "_ev": decision_ev(pos)}
     with pytest.raises(RebalanceError):
         d.compound_slot("42")
     assert d.ledger.db.execute("SELECT COUNT(*) FROM flows WHERE kind='topup'").fetchone()[0] == 1  # nothing added
@@ -1261,7 +1288,7 @@ def test_smart_account_tops_up_gas_by_swapping_a_stable_not_unwrapping_weth(make
     d.test.chain.add_pool(make_pool(WETH, USDC, tick_for(2000 * 10**6 / 10**18), address=addr(0x33)))
     d._gas_topup(_low_gas_wallet())
     assert not [c for c in d.rb.calls if c[0] == "unwrap_weth"]
-    swap = [c for c in d.rb.calls if c[0] == "swap_to_eth"][0]
+    swap = [c for c in d.rb.calls if c[:2] == ("swap_to_eth", "live")][0]
     assert swap[1] == "live" and swap[2] == USDC
     assert 1_000_000 < swap[3] < 1_100_000  # ~0.0005 ETH x $2000 x 1.03 of USDC (6 decimals)
     assert 0.0005e18 < swap[4] < 0.00055e18  # ~0.0005 ETH bought with a 3% buffer, minus fee and slippage
@@ -1272,7 +1299,7 @@ def test_plain_eoa_still_unwraps_weth(make_daemon):
     d = make_daemon(live_mode=True, gas_reserve_eth=0.0003, unwrap_chunk_eth=0.0005)
     d.test.chain.w3.eth.get_code = lambda a: b""
     d._gas_topup(_low_gas_wallet())
-    assert [c[0] for c in d.rb.calls] == ["unwrap_weth"]
+    assert [(c[0], c[1]) for c in d.rb.calls] == [("unwrap_weth", "sim"), ("unwrap_weth", "live")]
 
 
 def test_failed_gas_topup_is_logged_and_does_not_raise(make_daemon):

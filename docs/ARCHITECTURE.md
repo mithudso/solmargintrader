@@ -1,7 +1,8 @@
 # Architecture
 
-Two independent systems that share a subject (SOL) and nothing else. There is no code path from the
-backtester into the extension: research does not place orders, and the extension does not simulate.
+Six components with explicit execution boundaries. The backtester and research do not place orders.
+The extension and liquidity manager each have their own live-capable execution path. Soltui reads
+research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
 ```
 backtester/            research/              extension/
@@ -105,8 +106,8 @@ stored before linkage have no `closesLots` and still match FIFO. `gridsim.py` mi
 
 ## Backtester
 
-Event-driven, offline, and deliberately separate. `core/fetch.py` is the only component that touches
-the network; it writes a local CSV cache that `core/engine.py` reads. Strategies live in
+Event-driven, offline, and deliberately separate. Explicit fetch modules (`fetch.py`, `fetch_minutes.py`, `ticks.py`, `universe.py`,
+`funding.py`, `archive_price.py`) touch the network; it writes a local CSV cache that `core/engine.py` reads. Strategies live in
 `core/strategies/` behind a registry, so adding one does not touch the engine. Spot and
 Jupiter-Perps-style leveraged modes share the engine, with the borrow fee modelled in the P&L path
 rather than bolted on.
@@ -120,4 +121,32 @@ backtest and the live strategy agree on what a round trip earns. Keeping them se
 folding the ladder into the exposure engine would imply the two are comparable on the same axis.
 
 Its correctness priorities — no lookahead, costs always applied, honest reporting of a losing
-strategy — are documented in `backtester/README.md` and enforced by 651 tests.
+strategy — are documented in `backtester/README.md` and enforced by 681 tests.
+
+
+## Companion components
+
+- **Research** imports the backtester and operates on cached data. Explicit data-preparation
+  commands can delegate to fetch modules; simulation and strategy readout remain offline.
+- **Soltui** displays research results and paper positions. Its background controls can explicitly
+  start a data fetch or a sweep subprocess. The Liquidity tab reads `status.json` and `scout.json`;
+  it never imports the executor or signs. Its kill/resume control writes/removes only the
+  liquidity KILL flag; resuming can allow an already-live daemon to act inside configured caps. The optional browser console binds loopback.
+- **MongoDB** imports research/backtester definitions and rebuilds selected derived collections.
+  It is not imported by an execution component. Loading is destructive to the selected derived
+  collections; tests prove repeat-load idempotency.
+- **Liquidity** has its own virtualenv and one `Rebalancer`/`Runner` execution seam. `SimRunner`
+  performs `eth_simulateV1`; `LiveRunner` signs and sends. Pure strategy and allocator decisions
+  remain separate from RPC/market I/O. The daemon writes a SQLite ledger and state files for soltui.
+
+## Recorded architecture decisions
+
+1. **Keep simulation separate from execution.** The backtester never gains a live submit path.
+   Explicit fetches write caches. A backtest only reads those caches.
+2. **Share commands across extension surfaces.** Chrome messages, CLI and HTTP invoke the same
+   registry. Their parity test detects extra handlers or missing routes.
+3. **Mirror ladder economics, not runtime code.** Python gridsim and JavaScript grid code retain
+   separate engines with matching rung/lot economics and regression tests.
+4. **Use existing retrieval tools.** `index/build.py` owns offline metadata/text/concept indexes;
+   `scripts/build_doc_index.py` derives the short retrieval map from the overview. Semantic
+   embeddings are optional and explicit, not a startup requirement.

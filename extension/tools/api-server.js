@@ -28,7 +28,7 @@
  */
 
 import { createServer } from 'node:http';
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { timingSafeEqual } from 'node:crypto';
 import { runCommand, describeCommands, COMMANDS, CommandError } from '../src/core/commands.js';
 import { createNodeDeps } from './deps.js';
 
@@ -46,6 +46,7 @@ function parseArgs(argv) {
 }
 
 export function tokenMatches(provided, token) {
+  if (typeof token !== 'string' || !token.trim() || typeof provided !== 'string' || !provided) return false;
   const a = Buffer.from(provided ?? '');
   const b = Buffer.from(token);
   // Compare lengths separately: timingSafeEqual throws on a length mismatch.
@@ -90,8 +91,8 @@ function readJsonBody(req) {
           return;
         }
         resolve(parsed);
-      } catch (err) {
-        reject(new CommandError(`body is not valid JSON: ${err.message}`, 400));
+      } catch {
+        reject(new CommandError('body is not valid JSON', 400));
       }
     });
     req.on('error', reject);
@@ -112,7 +113,11 @@ function coerceQuery(name, query) {
     } else if (param.type === 'bool') {
       out[key] = raw === 'true' || raw === '1' || raw === 'yes';
     } else if (param.type === 'json') {
-      out[key] = JSON.parse(raw);
+      try {
+        out[key] = JSON.parse(raw);
+      } catch {
+        throw new CommandError(`"${key}" must contain valid JSON`, 400);
+      }
     } else {
       out[key] = raw;
     }
@@ -125,6 +130,7 @@ function coerceQuery(name, query) {
  * ephemeral port without the module launching a listener on import.
  */
 export function createRequestHandler({ deps, token }) {
+  if (typeof token !== 'string' || !token.trim()) throw new TypeError('API bearer token must be a nonempty string');
   return async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host ?? 'localhost'}`);
@@ -138,6 +144,7 @@ export function createRequestHandler({ deps, token }) {
     // A browser-initiated request is refused outright: a page you visit must not
     // be able to drive the grid, token or no token.
     if (req.headers.origin || req.headers['sec-fetch-site']) {
+      deps.log?.({ level: 'warn', msg: 'API browser request refused' });
       send(res, 403, {
         ok: false,
         error: 'browser-originated requests are refused; use a CLI or server-side client',
@@ -148,6 +155,7 @@ export function createRequestHandler({ deps, token }) {
     const auth = req.headers.authorization ?? '';
     const bearer = auth.startsWith('Bearer ') ? auth.slice(7) : '';
     if (!tokenMatches(bearer, token)) {
+      deps.log?.({ level: 'warn', msg: 'API authentication refused' });
       send(res, 401, { ok: false, error: 'missing or invalid bearer token' });
       return;
     }
@@ -191,12 +199,13 @@ export function createRequestHandler({ deps, token }) {
     send(res, 200, { ok: true, command: name, result });
   } catch (err) {
     if (err instanceof CommandError) {
+      deps.log?.({ level: 'warn', msg: 'API request rejected', status: err.status ?? 400 });
       send(res, err.status ?? 400, { ok: false, error: err.message });
       return;
     }
-    // Message only, never a stack: paths and internals do not belong in a
-    // response body.
-      send(res, 500, { ok: false, error: String(err?.message ?? err) });
+    // Upstream exception messages may contain credentials or response bodies.
+      deps.log?.({ level: 'error', msg: 'API request failed', status: 500 });
+      send(res, 500, { ok: false, error: 'internal command failure' });
     }
   };
 }
@@ -210,7 +219,10 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   const port = Number(args.port ?? process.env.SMT_API_PORT ?? 8787);
   const host = typeof args.host === 'string' ? args.host : '127.0.0.1';
-  const token = process.env.SMT_API_TOKEN || randomBytes(24).toString('base64url');
+  const token = process.env.SMT_API_TOKEN;
+  if (typeof token !== 'string' || !token.trim()) {
+    throw new Error('SMT_API_TOKEN must be set before starting the API; credentials are never printed');
+  }
 
   const deps = await createNodeDeps({
     ephemeral: args.ephemeral === true,
@@ -225,9 +237,6 @@ async function main() {
   server.listen(port, host, () => {
     console.log(`solmargintrader API on http://${host}:${port}`);
     console.log(`commands: ${Object.keys(COMMANDS).length}  state: ${deps.paths.store}`);
-    if (!process.env.SMT_API_TOKEN) {
-      console.log(`\ngenerated token (set SMT_API_TOKEN to pin it):\n  ${token}\n`);
-    }
     console.log(
       `example:\n  curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://${host}:${port}/v1/status`,
     );

@@ -20,7 +20,8 @@ and the sweep survives closing the TUI.
 
 A background job is never "finished", it is interrupted -- by a reboot, by a
 laptop lid, by the user. So every job's result is flushed to disk the moment it
-is computed, and startup skips ids already present. Batching writes would be
+is computed. Startup skips existing ids only when their settings, price files,
+and evaluation code still match the persisted proof. Batching writes would be
 faster and would throw away an hour of work on a power cut.
 
 ## What this deliberately does not do
@@ -34,9 +35,12 @@ exists to prevent. A missing price file is reported, never repaired.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import os
 import signal
 import sys
+import tempfile
 import time
 import traceback
 from pathlib import Path
@@ -79,6 +83,120 @@ from .runner import engine_config, run_cpcv  # noqa: E402
 NICE_LEVEL = 19
 
 
+def evaluation_code_fingerprint() -> dict[str, str]:
+    """Hash local execution sources without importing or running them."""
+    return {
+        str(path.relative_to(REPO)): _file_hash(path)
+        for component in ("backtester", "research", "soltui")
+        for path in sorted((REPO / component).rglob("*.py"))
+        if "tests" not in path.relative_to(REPO).parts
+    }
+
+
+def _file_hash(path: Path) -> str:
+    with path.open("rb") as source:
+        return hashlib.file_digest(source, "sha256").hexdigest()
+
+
+def evaluation_proof(settings: Settings, jobs: Sequence[Job]) -> dict[str, Any]:
+    """The settings, exact price inputs, and source code behind one sweep."""
+    data: dict[str, str | None] = {}
+    for job in jobs:
+        path = (Path(settings.data_dir) / f"{job.asset}_{job.interval}.csv").resolve()
+        if str(path) not in data:
+            try:
+                data[str(path)] = _file_hash(path)
+            except FileNotFoundError:
+                data[str(path)] = None
+    return {
+        "settings": {
+            name: getattr(settings, name)
+            for name in (
+                "start", "end", "capital", "fee_bps", "slippage_bps",
+                "fill_delay", "cpcv_groups", "cpcv_k",
+            )
+        },
+        "data": data,
+        "code": evaluation_code_fingerprint(),
+    }
+
+
+def verify_evaluation_proof(
+    asset: str, settings: Settings, jobs: Sequence[Job], results: Sequence[JobResult],
+    results_path: Path, *, persist: bool = True,
+) -> dict[str, Any]:
+    """Refuse incompatible historical rows; atomically bind new rows to proof.
+
+    Results stay append-only. An old file without proof needs a fresh output
+    path; adopting it would falsely assert which code and inputs produced it.
+    Each asset has its own proof because assets share the default results file.
+    """
+    proof = evaluation_proof(settings, jobs)
+    evaluation_id = hashlib.sha256(
+        json.dumps(proof, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    ).hexdigest()
+    path = results_path.with_name(results_path.name + ".proof.json")
+    manifest: dict[str, Any] = {"version": 1, "assets": {}}
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        pass
+    except (ValueError, OSError) as exc:
+        raise ValueError(f"unreadable evaluation proof at {path}; use --results-path for a fresh file") from exc
+    if not isinstance(manifest, dict) or manifest.get("version") != 1 or not isinstance(manifest.get("assets"), dict):
+        raise ValueError(f"invalid evaluation proof at {path}; use --results-path for a fresh file")
+    expected = {"evaluation_id": evaluation_id, "proof": proof}
+    if any(row.asset == asset for row in results) and manifest["assets"].get(asset) != expected:
+        raise ValueError(
+            f"evaluation proof is missing or differs for {asset} at {results_path}; "
+            "preserve this history and use --results-path for a fresh file"
+        )
+    if persist and manifest["assets"].get(asset) != expected:
+        manifest["assets"][asset] = expected
+        ensure_dir(path.parent)
+        temporary: str | None = None
+        try:
+            with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
+                temporary = handle.name
+                json.dump(manifest, handle, sort_keys=True, allow_nan=False)
+                handle.write("\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, path)
+        finally:
+            if temporary is not None:
+                Path(temporary).unlink(missing_ok=True)
+    return proof
+
+
+def _validate_limit(limit: int | None) -> None:
+    if limit is not None and (type(limit) is not int or limit < 0):
+        raise ValueError("limit must be a non-negative integer")
+
+
+def _limit_argument(raw: str) -> int:
+    try:
+        value = int(raw)
+        _validate_limit(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("limit must be a non-negative integer") from exc
+    return value
+
+
+class EvaluationContextChanged(ValueError):
+    """The input file changed while the worker was loading its arrays."""
+
+
+def _check_price_input(proof: dict[str, Any], job: Job, settings: Settings) -> None:
+    path = (Path(settings.data_dir) / f"{job.asset}_{job.interval}.csv").resolve()
+    try:
+        actual = _file_hash(path)
+    except FileNotFoundError:
+        actual = None
+    if proof["data"].get(str(path)) != actual:
+        raise EvaluationContextChanged(f"evaluation context changed while loading {path}; restart with a fresh results path")
+
+
 class _Stop:
     """Cooperative stop flag, set from a signal handler.
 
@@ -88,8 +206,19 @@ class _Stop:
     written and would be recomputed on resume anyway.
     """
 
-    def __init__(self) -> None:
-        self.requested = False
+    def __init__(self, control: bgcontrol.WorkerControl | None = None) -> None:
+        self._requested = False
+        self.control = control
+
+    @property
+    def requested(self) -> bool:
+        if not self._requested and self.control is not None:
+            self._requested = self.control.stop_requested()
+        return self._requested
+
+    @requested.setter
+    def requested(self, value: bool) -> None:
+        self._requested = value
 
     def install(self) -> None:
         """Catch the signals a supervisor or a Ctrl-C actually sends."""
@@ -237,6 +366,7 @@ def run(
 
     Returns the final state, which is also the last thing written to disk.
     """
+    _validate_limit(limit)
     settings = settings or load_settings()
     stop = stop or _Stop()
     ensure_dir(state_path.parent)
@@ -245,7 +375,9 @@ def run(
     # but the symbol is used below to label state, so normalise it here too.
     asset = validate_asset(asset)
     jobs = build_queue(asset, horizons=horizons, max_tier=max_tier)
-    already = completed_ids(read_results(results_path))
+    results = read_results(results_path)
+    proof = verify_evaluation_proof(asset, settings, jobs, results, results_path)
+    already = completed_ids(results)
     todo = pending(jobs, already)
     if limit is not None:
         todo = todo[:limit]
@@ -273,6 +405,7 @@ def run(
     # the first hourly job and abandon every runnable daily one. A missing series
     # disqualifies its own interval and nothing else.
     missing: dict[str, str] = {}
+    checked_intervals: set[str] = set()
     evaluated = 0
     for index, job in enumerate(todo, start=1):
         if stop.requested:
@@ -286,8 +419,15 @@ def run(
         state.updated_at = time.time()
         write_state(state, state_path)
         try:
+            if job.interval not in checked_intervals:
+                _check_price_input(proof, job, settings)
             arrays = cache.get(job.asset, job.interval)
+            if job.interval not in checked_intervals:
+                _check_price_input(proof, job, settings)
+                checked_intervals.add(job.interval)
             result = evaluate(job, arrays, engine_config(settings, job.interval), settings)
+        except EvaluationContextChanged:
+            raise
         except FileNotFoundError as exc:
             # Not this job's fault, and it will hit every job at this interval --
             # so record it once and skip the rest of that interval rather than
@@ -330,9 +470,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--max-tier",
         type=int,
         default=2,
-        help="0 = card presets only, 1 = +half/double, 2 = +near variations",
+        help="0 = card presets only, 1 = +near variations, 2 = +half/double",
     )
-    p.add_argument("--limit", type=int, default=None, help="stop after N jobs")
+    p.add_argument("--limit", type=_limit_argument, default=None, help="stop after N jobs")
+    p.add_argument("--results-path", type=Path, default=RESULTS_PATH,
+                   help="append results here; choose a fresh file when evaluation proof differs")
     p.add_argument(
         "--plan",
         action="store_true",
@@ -347,7 +489,10 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.plan:
         jobs = build_queue(args.asset, horizons=args.horizons, max_tier=args.max_tier)
-        done = completed_ids(read_results())
+        results = read_results(args.results_path)
+        verify_evaluation_proof(validate_asset(args.asset), load_settings(), jobs, results,
+                                args.results_path, persist=False)
+        done = completed_ids(results)
         todo = pending(jobs, done)
         print(f"{len(jobs)} jobs, {len(jobs) - len(todo)} already done, {len(todo)} pending")
         for job in todo[:40]:
@@ -361,8 +506,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     # ourselves -- flock conflicts between two descriptors even inside one
     # process. Run by hand, we must take it, so that a hand-run sweep and a
     # TUI-run sweep cannot both append to one results file.
-    lock_fd: int | None = None
-    if bgcontrol.LOCK_FD_ENV not in os.environ:
+    lock_fd = bgcontrol.inherited_lock(os.environ.get(bgcontrol.LOCK_FD_ENV))
+    owned_lock = lock_fd is None
+    if owned_lock:
         lock_fd = bgcontrol.acquire_lock()
         if lock_fd is None:
             print(
@@ -372,18 +518,27 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 1
 
-    level = lower_priority()
-    stop = _Stop()
-    stop.install()
-    ensure_dir()
-    PID_PATH.write_text(str(os.getpid()), encoding="utf-8")
-    print(f"soltui background sweep — pid {os.getpid()}, priority {level}", flush=True)
+    pid_written = False
+    control: bgcontrol.WorkerControl | None = None
     try:
+        level = lower_priority()
+        ensure_dir()
+        control = bgcontrol.inherited_control(
+            lock_fd, os.environ.get(bgcontrol.CONTROL_FD_ENV), consume=True,
+        )
+        if control is None:
+            control = bgcontrol.create_control(lock_fd)
+        stop = _Stop(control=control)
+        stop.install()
+        PID_PATH.write_text(str(os.getpid()), encoding="utf-8")
+        pid_written = True
+        print(f"soltui background sweep — pid {os.getpid()}, priority {level}", flush=True)
         state = run(
             args.asset,
             horizons=args.horizons,
             max_tier=args.max_tier,
             limit=args.limit,
+            results_path=args.results_path,
             stop=stop,
         )
     except Exception as exc:  # noqa: BLE001 - report, never a bare traceback to a log
@@ -398,7 +553,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         traceback.print_exc()
         return 1
     finally:
-        PID_PATH.unlink(missing_ok=True)
+        try:
+            if pid_written:
+                PID_PATH.unlink(missing_ok=True)
+        finally:
+            try:
+                if control is not None:
+                    control.close()
+            finally:
+                if owned_lock and lock_fd is not None:
+                    os.close(lock_fd)
     print(f"{state.phase}: {state.done}/{state.total} evaluated", flush=True)
     return 0 if state.phase in ("done", "stopped") else 1
 

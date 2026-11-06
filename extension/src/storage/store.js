@@ -23,7 +23,7 @@ export const INTENT_STATUS = {
   RESTING: 'resting', // confirmed live on the venue
   FILLED: 'filled',
   CANCELLED: 'cancelled',
-  FAILED: 'failed', // submit threw; safe to retry
+  FAILED: 'failed', // a definitive rejection; ambiguous submissions stay unknown
   UNKNOWN: 'unknown', // submitted but not found on the venue — needs human review
 };
 
@@ -226,7 +226,10 @@ export class ConfigStore {
 
   async getConfig() {
     const stored = await this.get(CONFIG_KEY, {});
-    return { ...DEFAULT_CONFIG, ...stored };
+    // Public configuration cannot expose legacy unknown fields such as apiKey.
+    const values = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
+    return Object.fromEntries(Object.entries(DEFAULT_CONFIG).map(([key, fallback]) =>
+      [key, Object.hasOwn(values, key) ? values[key] : fallback]));
   }
 
   async setConfig(patch) {

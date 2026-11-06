@@ -24,7 +24,8 @@ silent: `describe_priority()` reports which path was taken, so the pane can say
 constraints (a flag file as the real on/off switch, and a refusal to run from a
 worktree path). A second agent competing for that surface would be a second
 source of truth for "is soltui running". This module spawns a plain child
-process instead: it lives as long as it is useful, and stopping it is a signal.
+process instead: it lives as long as it is useful. Stop queues a request on that
+worker instance's private local control socket.
 
 ## Liveness is a lock, not a pid
 
@@ -39,20 +40,26 @@ the PARENT opens before spawning and the child inherits, which means it is held
 from before the process exists until after it dies -- including a SIGKILL, since
 the kernel closes the descriptor and drops the lock for us. There is no window
 where a sweep is running but unlocked, and no stale lock to clean up. The pidfile
-survives only as the address to send the signal to, never as evidence of life.
+survives only as diagnostic information. A held lock does not prove that a
+separate pidfile still names its owner. Stop never signals a recorded PID: the
+launcher binds a unique control socket under the lock before spawning, and the
+worker inherits its receiver. Requests carry that instance's nonce and are
+consumed only at a job boundary. An old request cannot target a replacement.
 """
 
 from __future__ import annotations
 
 import fcntl
+import json
 import os
+import secrets
 import shlex
 import shutil
-import signal
+import socket
 import subprocess
 import sys
 from pathlib import Path
-from typing import Sequence
+from typing import Any, Sequence
 
 from .bgqueue import BG_DIR, PID_PATH, ensure_dir
 
@@ -62,6 +69,7 @@ from .bgqueue import BG_DIR, PID_PATH, ensure_dir
 # conflicts between two descriptors even inside a single process.
 LOCK_PATH = BG_DIR / "worker.lock"
 LOCK_FD_ENV = "SOLTUI_BG_LOCK_FD"
+CONTROL_FD_ENV = "SOLTUI_BG_CONTROL_FD"
 
 # Where `taskpolicy` actually lives on macOS. It is /usr/sbin, NOT /usr/bin, and
 # /usr/sbin is not always on a GUI-launched app's PATH -- so the known location is
@@ -137,6 +145,161 @@ def acquire_lock(path: Path | None = None) -> int | None:
         os.close(fd)
         return None
     return fd
+
+
+def inherited_lock(marker: str | None) -> int | None:
+    """Adopt a descriptor only if it can hold the exact worker lock.
+
+    The environment marker is a hint, not proof. A descriptor for another file
+    must never be closed or unlocked here. Reasserting LOCK_EX on the inherited
+    open-file description preserves its lock; a separately opened descriptor
+    fails when a different worker owns the lock.
+    """
+    if marker is None:
+        return None
+    try:
+        fd = int(marker)
+        if fd < 0:
+            return None
+        supplied = os.fstat(fd)
+        expected = LOCK_PATH.stat()
+        if (supplied.st_dev, supplied.st_ino) != (expected.st_dev, expected.st_ino):
+            return None
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except (OSError, ValueError, OverflowError):
+        return None
+    return fd
+
+
+class WorkerControl:
+    """One worker instance's nonblocking cooperative stop receiver."""
+
+    def __init__(self, receiver: socket.socket, owner: dict[str, Any]) -> None:
+        self.receiver = receiver
+        self.path = Path(owner["endpoint"])
+        self.nonce = owner["nonce"]
+        self.identity = (owner["endpoint_device"], owner["endpoint_inode"])
+
+    def fileno(self) -> int:
+        return self.receiver.fileno()
+
+    def stop_requested(self) -> bool:
+        # Bound work per job boundary even if another local caller floods the
+        # socket. Invalid or old-instance messages never become stop requests.
+        for _ in range(64):
+            try:
+                raw = self.receiver.recv(1024)
+            except BlockingIOError:
+                return False
+            try:
+                request = json.loads(raw)
+            except (ValueError, UnicodeError):
+                continue
+            if request == {"command": "stop", "nonce": self.nonce}:
+                return True
+        return False
+
+    def close(self, *, remove_endpoint: bool = True) -> None:
+        self.receiver.close()
+        if remove_endpoint:
+            try:
+                stat = self.path.stat()
+                if (stat.st_dev, stat.st_ino) == self.identity:
+                    self.path.unlink()
+            except FileNotFoundError:
+                pass
+
+
+def read_control_owner(fd: int) -> dict[str, Any] | None:
+    """Read bounded metadata from the same inode whose lock was inspected."""
+    try:
+        owner = json.loads(os.pread(fd, 4096, 0))
+        stat = os.fstat(fd)
+        if not isinstance(owner, dict) or owner.get("version") != 1:
+            return None
+        nonce = owner.get("nonce")
+        if not isinstance(nonce, str) or len(nonce) != 32 or any(c not in "0123456789abcdef" for c in nonce):
+            return None
+        if (owner.get("device"), owner.get("inode")) != (stat.st_dev, stat.st_ino):
+            return None
+        if not isinstance(owner.get("endpoint"), str):
+            return None
+        endpoint = Path(owner["endpoint"])
+        if not endpoint.is_absolute() or endpoint.name != f".s-{nonce[:16]}":
+            return None
+        endpoint_stat = endpoint.stat()
+        if (owner.get("endpoint_device"), owner.get("endpoint_inode")) != (endpoint_stat.st_dev, endpoint_stat.st_ino):
+            return None
+    except (OSError, ValueError, UnicodeError):
+        return None
+    return owner
+
+
+def create_control(lock_fd: int) -> WorkerControl:
+    """Publish a receiver before spawn, so early Stop requests queue safely."""
+    if inherited_lock(str(lock_fd)) is None:
+        raise RuntimeError("worker control requires the current worker lock")
+    os.fchmod(lock_fd, 0o600)
+    nonce = secrets.token_hex(16)
+    path = LOCK_PATH.parent.resolve() / f".s-{nonce[:16]}"
+    receiver = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+    bound = False
+    try:
+        receiver.bind(str(path))
+        bound = True
+        path.chmod(0o600)
+        receiver.setblocking(False)
+        stat = os.fstat(lock_fd)
+        endpoint_stat = path.stat()
+        owner = {
+            "version": 1, "nonce": nonce, "endpoint": str(path),
+            "device": stat.st_dev, "inode": stat.st_ino,
+            "endpoint_device": endpoint_stat.st_dev, "endpoint_inode": endpoint_stat.st_ino,
+        }
+        payload = json.dumps(owner, separators=(",", ":")).encode()
+        os.ftruncate(lock_fd, 0)
+        os.lseek(lock_fd, 0, os.SEEK_SET)
+        while payload:
+            written = os.write(lock_fd, payload)
+            if written == 0:
+                raise OSError("worker control metadata write made no progress")
+            payload = payload[written:]
+        return WorkerControl(receiver, owner)
+    except BaseException:
+        receiver.close()
+        if bound:
+            path.unlink(missing_ok=True)
+        raise
+
+
+def inherited_control(
+    lock_fd: int, marker: str | None, *, consume: bool = False,
+) -> WorkerControl | None:
+    """Validate a passed receiver without closing a foreign descriptor."""
+    owner = read_control_owner(lock_fd)
+    if marker is None or owner is None or Path(owner["endpoint"]).parent != LOCK_PATH.parent.resolve():
+        return None
+    duplicate: int | None = None
+    receiver: socket.socket | None = None
+    try:
+        duplicate = os.dup(int(marker))
+        receiver = socket.socket(fileno=duplicate)
+        duplicate = None
+        if receiver.family != socket.AF_UNIX or receiver.type != socket.SOCK_DGRAM or receiver.getsockname() != owner["endpoint"]:
+            receiver.close()
+            return None
+        receiver.setblocking(False)
+        if consume:
+            # Only the child opts in to consuming its inherited copy. Probe
+            # callers retain their descriptor, including every invalid marker.
+            os.close(int(marker))
+        return WorkerControl(receiver, owner)
+    except (OSError, ValueError, OverflowError):
+        if receiver is not None:
+            receiver.close()
+        if duplicate is not None:
+            os.close(duplicate)
+        return None
 
 
 def is_running(path: Path | None = None) -> bool:
@@ -220,7 +383,9 @@ def start(
         handle.close()
         raise RuntimeError("a background sweep is already running")
 
+    control: WorkerControl | None = None
     try:
+        control = create_control(lock_fd)
         proc = subprocess.Popen(  # noqa: S603 - argv list, no shell
             worker_command(asset, horizons=horizons, max_tier=max_tier, limit=limit),
             cwd=str(repo),
@@ -231,25 +396,32 @@ def start(
             # Hand the locked descriptor to the child. It inherits the lock, so
             # the sweep is protected from before it starts until the kernel
             # closes the fd on its death -- no gap, and no cleanup on a crash.
-            pass_fds=(lock_fd,),
-            env={**os.environ, LOCK_FD_ENV: str(lock_fd)},
+            pass_fds=(lock_fd, control.fileno()),
+            env={**os.environ, LOCK_FD_ENV: str(lock_fd), CONTROL_FD_ENV: str(control.fileno())},
         )
-        # Record the pid HERE rather than leaving it to the child, which takes a
-        # few hundred ms to import numpy and reach its own write. Inside the try
-        # so a failure to write it kills the child instead of orphaning a worker
-        # that nothing can signal. `taskpolicy` execs in place, so the pid holds.
+        # Diagnostic only: Stop already has its private receiver before this
+        # publication and never uses this number as a signal destination.
         PID_PATH.write_text(str(proc.pid), encoding="utf-8")
     except BaseException:
         proc = locals().get("proc")
-        if proc is not None:
-            proc.kill()
-        os.close(lock_fd)
-        handle.close()
+        try:
+            if proc is not None:
+                proc.kill()
+        finally:
+            try:
+                if control is not None:
+                    control.close()
+            finally:
+                try:
+                    os.close(lock_fd)
+                finally:
+                    handle.close()
         raise
     # The child holds the lock and its own copy of the log fd now; both of the
     # parent's copies are dead weight, and leaking them per sweep would exhaust
     # the TUI's descriptors over a long session.
     os.close(lock_fd)
+    control.close(remove_endpoint=False)
     handle.close()
     return proc
 
@@ -306,23 +478,32 @@ def start_fetch(
 
 
 def stop(path: Path | None = None, lock_path: Path | None = None) -> bool:
-    """Ask the worker to finish its current job and exit. True when signalled.
+    """Queue this worker instance's stop request. True means queued, not exited.
 
-    SIGTERM, never SIGKILL: the worker stops at a job boundary and writes its
-    final state, and killing it outright would leave the state file reading
-    "running" for a process that no longer exists.
-
-    The lock is checked BEFORE the pid is used. Signalling on the strength of a
-    pidfile alone is how a stale pid gets a SIGTERM sent to whatever unrelated
-    process the OS has since given that number to.
+    `path` remains accepted for callers using the old pidfile API, but PID data
+    has no authority. A held lock and its private receiver identify the target.
+    Exit or replacement races can refuse delivery; they cannot signal another
+    process or deliver an old-instance request to a new worker.
     """
-    if not is_running(lock_path):
-        return False
-    pid = read_pid(path)
-    if pid is None:
-        return False
+    lock_path = lock_path or LOCK_PATH
+    fd: int | None = None
     try:
-        os.kill(pid, signal.SIGTERM)
-    except (ProcessLookupError, PermissionError, OSError):
+        fd = os.open(lock_path, os.O_RDONLY)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            pass
+        else:
+            return False
+        owner = read_control_owner(fd)
+        if owner is None or Path(owner["endpoint"]).parent != lock_path.parent.resolve():
+            return False
+        with socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM) as sender:
+            sender.setblocking(False)
+            sender.sendto(json.dumps({"command": "stop", "nonce": owner["nonce"]}).encode(), owner["endpoint"])
+    except OSError:
         return False
+    finally:
+        if fd is not None:
+            os.close(fd)
     return True

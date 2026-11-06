@@ -30,6 +30,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import io
 import json
 import math
 import re
@@ -62,13 +63,19 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def provenance(path: Path) -> dict[str, Any]:
-    """The three fields every document in this store carries."""
-    return {
-        "source_path": str(path.relative_to(REPO)),
-        "source_sha256": sha256(path),
+def source_snapshot(path: Path) -> tuple[bytes, dict[str, Any]]:
+    """Read once and bind provenance to exactly those bytes."""
+    raw = path.read_bytes()
+    return raw, {
+        "source_path": str(path.relative_to(REPO)) if path.is_relative_to(REPO) else str(path.resolve()),
+        "source_sha256": hashlib.sha256(raw).hexdigest(),
         "loaded_at": LOADED_AT,
     }
+
+
+def provenance(path: Path) -> dict[str, Any]:
+    """Provenance for metadata-only callers; parsed data uses source_snapshot."""
+    return source_snapshot(path)[1]
 
 
 def clean(value: Any) -> Any:
@@ -110,13 +117,25 @@ def maybe_number(text: str) -> Any:
     return number if math.isfinite(number) else None
 
 
+def read_csv_snapshot(path: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    raw, prov = source_snapshot(path)
+    rows = [
+        {key: maybe_number(val) for key, val in row.items() if key is not None}
+        for row in csv.DictReader(io.StringIO(raw.decode("utf-8"), newline=""))
+    ]
+    return rows, prov
+
+
 def read_csv_rows(path: Path) -> list[dict[str, Any]]:
     """CSV rows as dicts, with numeric cells parsed."""
-    with path.open(newline="", encoding="utf-8") as handle:
-        return [
-            {key: maybe_number(val) for key, val in row.items() if key is not None}
-            for row in csv.DictReader(handle)
-        ]
+    return read_csv_snapshot(path)[0]
+
+
+def read_bar_snapshot(path: Path, interval: str):
+    import pandas as pd
+    from backtester.core.data import validate_bars
+    raw, prov = source_snapshot(path)
+    return validate_bars(pd.read_csv(io.BytesIO(raw)), interval, strict_gaps=False), prov
 
 
 def git_sha() -> str:
@@ -138,7 +157,9 @@ def utc(epoch_seconds: float) -> datetime:
 
 
 def bar_files() -> list[tuple[Path, str, str]]:
-    """Cached OHLCV files as (path, asset, interval), from the filename convention."""
+    """Cached OHLCV files, excluding other cache contracts before bar loading."""
+    from backtester.core.types import BAR_COLUMNS, INTERVAL_SECONDS
+
     found = []
     for path in sorted((REPO / "data").glob("*.csv")):
         stem = path.stem
@@ -146,20 +167,27 @@ def bar_files() -> list[tuple[Path, str, str]]:
             continue
         asset, interval = stem.rsplit("_", 1)
         # JLP_spot.csv is a price snapshot, not a bar series; it has its own loader.
-        if interval == "spot":
+        if interval not in INTERVAL_SECONDS:
             continue
+        with path.open(newline="", encoding="utf-8") as handle:
+            columns = set(next(csv.reader(handle), []))
+        if not set(BAR_COLUMNS).issubset(columns):
+            # Funding/tick snapshots share the data directory but are not bars.
+            if ({'timestamp', 'funding_rate', 'premium'}.issubset(columns) or
+                    {'timestamp', 'trade_id', 'price', 'size', 'side'}.issubset(columns)):
+                continue
+            raise ValueError(f"{path.name} has ambiguous or missing OHLCV bar columns")
         found.append((path, asset, interval))
     return found
 
 
 def load_bars() -> list[dict[str, Any]]:
     """One measurement per bar, with the series identity in the metaField."""
-    from backtester.core.data import CsvLoader, checksum_frame
+    from backtester.core.data import checksum_frame
 
     docs: list[dict[str, Any]] = []
     for path, asset, interval in bar_files():
-        frame = CsvLoader(path, allow_gaps=True).load(asset, None, None, interval)
-        prov = provenance(path)
+        frame, prov = read_bar_snapshot(path, interval)
         meta = {
             "asset": asset,
             "interval": interval,
@@ -193,14 +221,15 @@ def load_spot_prices() -> list[dict[str, Any]]:
     if not path.exists():
         return []
     docs = []
-    for row in read_csv_rows(path):
+    table, prov = read_csv_snapshot(path)
+    for row in table:
         docs.append(
             {
                 "ts": utc(row["timestamp"]),
                 "snapshot": {
                     "mint": row.get("mint"),
                     "source": row.get("source"),
-                    **provenance(path),
+                    **prov,
                 },
                 "usd_price": float(row["usd_price"]),
                 "iso": row.get("iso"),
@@ -318,12 +347,12 @@ def load_decisions() -> list[dict[str, Any]]:
     Re-deriving a Mongo-specific shape here would let the store and the readout
     disagree about what a strategy said, which is the one thing this must not do.
     """
-    from backtester.core.data import CsvLoader, checksum_frame, frame_to_arrays
+    from backtester.core.data import checksum_frame, frame_to_arrays
     from research import decide
 
     docs = []
     for path, asset, interval in bar_files():
-        frame = CsvLoader(path, allow_gaps=True).load(asset, None, None, interval)
+        frame, prov = read_bar_snapshot(path, interval)
         report = decide.build_report(
             frame_to_arrays(frame),
             asset=asset,
@@ -331,94 +360,99 @@ def load_decisions() -> list[dict[str, Any]]:
             source=str(path.relative_to(REPO)),
             checksum=checksum_frame(frame),
         )
-        docs.append({**clean(report), **provenance(path)})
+        docs.append({**clean(report), **prov})
     return docs
 
 
-def load_backtest_runs() -> list[dict[str, Any]]:
-    """The run in `results/`: its manifest plus the per-strategy comparison table."""
-    manifest_path = REPO / "results" / "run_manifest.json"
-    if not manifest_path.exists():
+def run_context() -> tuple[dict[str, Any], dict[str, Any]] | None:
+    path = REPO / "results" / "run_manifest.json"
+    if not path.exists():
+        return None
+    raw, prov = source_snapshot(path)
+    manifest = json.loads(raw.decode("utf-8"))
+    names = manifest.get("strategies") if isinstance(manifest, dict) else None
+    if not isinstance(names, (dict, list)) or any(
+        not isinstance(name, str) or not name or "/" in name or "\\" in name or "\x00" in name
+        for name in names
+    ):
+        raise ValueError("run manifest has invalid strategy identities")
+    return manifest, prov
+
+
+def artifact_rows(path: Path, context: tuple[dict[str, Any], dict[str, Any]]):
+    table, prov = read_csv_snapshot(path)
+    inventory = context[0].get("artifact_sha256")
+    if not isinstance(inventory, dict) or inventory.get(path.name) != prov["source_sha256"]:
+        raise ValueError(f"run artifact {path.name} lacks matching manifest hash proof; regenerate the run")
+    return table, prov
+
+
+def load_backtest_runs(*, run_snapshot=None) -> list[dict[str, Any]]:
+    """One manifest and its proven comparison artifact."""
+    context = run_snapshot if run_snapshot is not None else run_context()
+    if context is None:
         return []
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    comparison_path = REPO / "results" / "comparison.csv"
-    results = read_csv_rows(comparison_path) if comparison_path.exists() else []
-    run_id = run_identifier(manifest)
-    return [
-        {
-            "_id": run_id,
-            "asset": manifest.get("asset"),
-            "interval": manifest.get("interval"),
-            "mode": manifest.get("mode"),
-            "manifest": clean(manifest),
-            "results": clean(results),
-            **provenance(manifest_path),
-        }
-    ]
+    manifest, prov = context
+    comparison = REPO / "results" / "comparison.csv"
+    results, comparison_prov = artifact_rows(comparison, context) if comparison.exists() else ([], None)
+    return [{"_id": run_identifier(manifest), "manifest": clean(manifest),
+             "comparison": clean(results), "comparison_provenance": comparison_prov, **prov}]
 
 
 def run_identifier(manifest: dict[str, Any]) -> str:
-    """A stable id for a run, from the manifest fields that define it."""
-    parts = [
-        str(manifest.get("asset", "?")),
-        str(manifest.get("interval", "?")),
-        str(manifest.get("mode", "?")),
-        str(manifest.get("data_checksum", "?"))[:12],
-    ]
-    return "-".join(parts)
+    """A stable id for a run, including economics and artifact identity."""
+    canonical = json.dumps(manifest, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    identity = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    return "-".join([str(manifest.get(k, "?")) for k in ("asset", "interval", "mode")] + [identity])
 
 
-def load_equity_points() -> list[dict[str, Any]]:
-    """Equity curves as measurements, one per bar per strategy."""
-    manifest_path = REPO / "results" / "run_manifest.json"
-    if not manifest_path.exists():
+def load_equity_points(*, run_snapshot=None) -> list[dict[str, Any]]:
+    context = run_snapshot if run_snapshot is not None else run_context()
+    if context is None:
         return []
-    run_id = run_identifier(json.loads(manifest_path.read_text(encoding="utf-8")))
+    manifest, manifest_prov = context
+    run_id = run_identifier(manifest)
     docs = []
     for path in sorted((REPO / "results").glob("equity_*.csv")):
-        strategy = path.stem[len("equity_") :]
-        meta = {"run_id": run_id, "strategy": strategy, **provenance(path)}
-        for row in read_csv_rows(path):
-            ts = row.get("timestamp") or row.get("ts")
-            if ts is None:
-                continue
-            docs.append(
-                {
-                    "ts": utc(ts),
-                    "curve": meta,
-                    "equity": clean(row.get("equity")),
-                    "loaded_at": LOADED_AT,
-                }
-            )
+        strategy = path.stem[len("equity_"):]
+        if strategy not in manifest["strategies"]:
+            continue
+        table, prov = artifact_rows(path, context)
+        meta = {"run_id": run_id, "strategy": strategy, "manifest_provenance": manifest_prov, **prov}
+        for row in table:
+            ts = row.get("timestamp") if row.get("timestamp") is not None else row.get("ts")
+            if ts is not None:
+                docs.append({"ts": utc(ts), "curve": meta, "equity": clean(row.get("equity")), "loaded_at": LOADED_AT})
     return docs
 
 
-def load_trades() -> list[dict[str, Any]]:
-    """One document per fill."""
-    manifest_path = REPO / "results" / "run_manifest.json"
-    if not manifest_path.exists():
+def protected_row(row: dict[str, Any], metadata: dict[str, Any]) -> dict[str, Any]:
+    reserved = set(metadata) | {"_id", "source_fields"}
+    result = {k: clean(v) for k, v in row.items() if k not in reserved}
+    collisions = {k: clean(v) for k, v in row.items() if k in reserved}
+    if collisions:
+        result["source_fields"] = collisions
+    return {**result, **metadata}
+
+
+def load_trades(*, run_snapshot=None) -> list[dict[str, Any]]:
+    context = run_snapshot if run_snapshot is not None else run_context()
+    if context is None:
         return []
-    run_id = run_identifier(json.loads(manifest_path.read_text(encoding="utf-8")))
+    manifest, manifest_prov = context
+    run_id = run_identifier(manifest)
     docs = []
     for path in sorted((REPO / "results").glob("trades_*.csv")):
-        strategy = path.stem[len("trades_") :]
-        for row in read_csv_rows(path):
-            ts = row.get("ts") or row.get("timestamp")
-            if ts is None:
-                continue
-            docs.append(
-                {
-                    "run_id": run_id,
-                    "strategy": strategy,
-                    "ts": utc(ts),
-                    **{
-                        k: clean(v)
-                        for k, v in row.items()
-                        if k not in ("ts", "timestamp")
-                    },
-                    **provenance(path),
-                }
-            )
+        strategy = path.stem[len("trades_"):]
+        if strategy not in manifest["strategies"]:
+            continue
+        table, prov = artifact_rows(path, context)
+        for row in table:
+            ts = row.get("ts") if row.get("ts") is not None else row.get("timestamp")
+            if ts is not None:
+                data = {k: v for k, v in row.items() if k not in ("ts", "timestamp")}
+                docs.append(protected_row(data, {"run_id": run_id, "strategy": strategy, "ts": utc(ts),
+                                                "manifest_provenance": manifest_prov, **prov}))
     return docs
 
 
@@ -454,15 +488,29 @@ def read_sidecar(path: Path) -> tuple[dict[str, Any] | None, list[dict[str, Any]
     horizon") unreachable without client-side parsing. Only a genuine object is kept
     as `summary`.
     """
+    summary, rows, _ = read_sidecar_snapshot(path)
+    return summary, rows
+
+
+def read_sidecar_snapshot(path: Path) -> tuple[dict[str, Any] | None, list[dict[str, Any]], dict[str, Any] | None]:
+    """Bind parsed sidecar values to the exact bytes that supplied them."""
     if not path.exists():
-        return None, []
-    payload = clean(json.loads(path.read_text(encoding="utf-8")))
+        return None, [], None
+    raw, prov = source_snapshot(path)
+    payload = clean(json.loads(raw.decode("utf-8")))
     if isinstance(payload, list):
-        return None, [row for row in payload if isinstance(row, dict)]
+        return None, [row for row in payload if isinstance(row, dict)], prov
     if isinstance(payload, dict):
-        return payload, []
+        return payload, [], prov
     # A scalar or string sidecar: keep it addressable rather than dropping it.
-    return {"value": payload}, []
+    return {"value": payload}, [], prov
+
+
+def experiment_row(row: dict[str, Any], *, experiment_id: str, kind: str,
+                   section: str, index: int, prov: dict[str, Any]) -> dict[str, Any]:
+    """Keep source values without allowing them to overwrite loader identity."""
+    metadata = {"experiment_id": experiment_id, "kind": kind, "section": section, "row": index, **prov}
+    return protected_row(row, metadata)
 
 
 def load_experiments() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -484,11 +532,10 @@ def load_experiments() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         kind = experiment_kind(name)
         if kind is None:
             continue
-        table = read_csv_rows(path)
+        table, prov = read_csv_snapshot(path)
         experiment_id = f"{kind}/{name}"
-        prov = provenance(path)
 
-        summary, summary_rows = read_sidecar(path.with_suffix(".json"))
+        summary, summary_rows, summary_prov = read_sidecar_snapshot(path.with_suffix(".json"))
         experiments.append(
             {
                 "_id": experiment_id,
@@ -498,31 +545,16 @@ def load_experiments() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                 "summary_row_count": len(summary_rows),
                 "columns": sorted({k for row in table for k in row}),
                 "summary": summary,
+                "summary_provenance": summary_prov,
                 **prov,
             }
         )
         for index, row in enumerate(table):
-            rows.append(
-                {
-                    "experiment_id": experiment_id,
-                    "kind": kind,
-                    "section": "result",
-                    "row": index,
-                    **{k: clean(v) for k, v in row.items()},
-                    **prov,
-                }
-            )
+            rows.append(experiment_row(row, experiment_id=experiment_id, kind=kind,
+                                       section="result", index=index, prov=prov))
         for index, row in enumerate(summary_rows):
-            rows.append(
-                {
-                    "experiment_id": experiment_id,
-                    "kind": kind,
-                    "section": "summary",
-                    "row": index,
-                    **row,
-                    **prov,
-                }
-            )
+            rows.append(experiment_row(row, experiment_id=experiment_id, kind=kind,
+                                       section="summary", index=index, prov=summary_prov))
 
     # JSON-only experiments: a sidecar with no CSV beside it still carries results.
     for path in sorted(results_dir.glob("*.json")):
@@ -532,8 +564,7 @@ def load_experiments() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         if kind is None:
             continue
         experiment_id = f"{kind}/{path.stem}"
-        prov = provenance(path)
-        summary, summary_rows = read_sidecar(path)
+        summary, summary_rows, prov = read_sidecar_snapshot(path)
         experiments.append(
             {
                 "_id": experiment_id,
@@ -543,20 +574,13 @@ def load_experiments() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                 "summary_row_count": len(summary_rows),
                 "columns": [],
                 "summary": summary,
+                "summary_provenance": prov,
                 **prov,
             }
         )
         for index, row in enumerate(summary_rows):
-            rows.append(
-                {
-                    "experiment_id": experiment_id,
-                    "kind": kind,
-                    "section": "summary",
-                    "row": index,
-                    **row,
-                    **prov,
-                }
-            )
+            rows.append(experiment_row(row, experiment_id=experiment_id, kind=kind,
+                                       section="summary", index=index, prov=prov))
 
     return experiments, rows
 
@@ -591,7 +615,8 @@ def load_documents() -> list[dict[str, Any]]:
             if key in seen:
                 continue
             seen.add(key)
-            body = path.read_text(encoding="utf-8")
+            raw, prov = source_snapshot(path)
+            body = raw.decode("utf-8")
             docs.append(
                 {
                     "_id": key,
@@ -600,7 +625,7 @@ def load_documents() -> list[dict[str, Any]]:
                     "title": first_heading(body, slug),
                     "body": body,
                     "words": len(body.split()),
-                    **provenance(path),
+                    **prov,
                 }
             )
     return docs
@@ -706,9 +731,11 @@ def build_all(
     )
     batches: dict[str, list[dict[str, Any]]] = {}
 
+    backtest_names = {"backtest_runs", "equity_points", "trades"}
+    context = run_context() if wanted & backtest_names else None
     for name, loader in SIMPLE_LOADERS.items():
         if name in wanted:
-            batches[name] = loader()
+            batches[name] = ([] if context is None else loader(run_snapshot=context)) if name in backtest_names else loader()
 
     if {"experiments", "experiment_rows"} & wanted:
         experiments, rows = load_experiments()
@@ -753,10 +780,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = ap.parse_args(argv)
 
-    only = {name.strip() for name in args.only.split(",")} if args.only else None
-    if only:
+    only = None
+    if args.only is not None:
         from mongo.schema import ALL_COLLECTIONS
 
+        names = [name.strip() for name in args.only.split(",")]
+        if not all(names):
+            print("error: --only requires a nonempty list of collection names", file=sys.stderr)
+            return 2
+        only = set(names)
         unknown = only - set(ALL_COLLECTIONS)
         if unknown:
             print(f"error: unknown collection(s): {sorted(unknown)}", file=sys.stderr)
@@ -771,14 +803,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     db = connect(args.uri)[DB_NAME]
-    # Recreate only what is being loaded, so `--only` does not wipe the rest.
-    create_for = only if only else None
-    if create_for is None:
-        create(db, drop=True)
-    else:
-        for name in create_for:
-            db.drop_collection(name)
-        create(db, drop=False)
+    # Schema changes, indexes and drops all obey the same explicit selection.
+    create(db, drop=True, only=only)
 
     for name, docs in sorted(batches.items()):
         if docs:

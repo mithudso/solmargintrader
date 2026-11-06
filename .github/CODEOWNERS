@@ -3,9 +3,14 @@
 # money-touching component has no second owner -- if that ever changes, the
 # extension is the first path that needs one.
 
-*                       @mitch-hudson
+*                       @mithudso
 
 # Reviewed with the most care, in this order.
-/extension/             @mitch-hudson
-/extension/src/core/    @mitch-hudson
-/backtester/core/       @mitch-hudson
+/extension/             @mithudso
+/extension/src/core/    @mithudso
+/backtester/core/       @mithudso
+
+/liquidity/             @mithudso
+/mongo/                 @mithudso
+/soltui/                @mithudso
+/research/              @mithudso

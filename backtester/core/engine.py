@@ -2,21 +2,23 @@
 
 Bar ordering inside the loop is the whole correctness story:
 
-    1. accrue borrow fees for the elapsed bar        (perp only)
-    2. execute any fill scheduled for this bar       at this bar's OPEN
+    1. execute any fill scheduled for this bar       at this bar's OPEN
+    2. accrue borrow fees through this bar's close   (perp only)
     3. liquidation check against this bar's low/high (perp only)
     4. ask the strategy for a target, given data <= i only
     5. schedule that target for bar i + fill_delay   (or fill at close if 0)
     6. mark to market at this bar's close and record
 
 The strategy is consulted at step 4 with a BarWindow that cannot read past
-bar i, and the resulting order is filled at step 2 of a LATER bar. There is no
+bar i, and the resulting order is filled at step 1 of a LATER bar. There is no
 code path by which a decision uses a price it could not have observed.
 """
 
 from __future__ import annotations
 
 import warnings
+import math
+from numbers import Integral, Real
 from dataclasses import dataclass, field
 from typing import Any, Protocol, Sequence, runtime_checkable
 
@@ -33,6 +35,8 @@ from .types import (
     Trade,
     hours_per_bar,
     periods_per_year,
+    INTERVAL_SECONDS,
+    validate_bar_arrays,
 )
 
 
@@ -71,18 +75,7 @@ class EngineConfig:
 
     def __post_init__(self) -> None:
         """Validate settings that would otherwise fail deep in the loop."""
-        if self.initial_capital <= 0:
-            raise ValueError("initial_capital must be positive")
-        if self.fill_delay < 0:
-            raise ValueError("fill_delay cannot be negative")
-        if self.leverage <= 0:
-            raise ValueError("leverage must be positive")
-        if self.mode is Mode.SPOT and self.leverage != 1.0:
-            raise ValueError(
-                "spot mode does not borrow; use --mode perp for leverage > 1"
-            )
-        if self.rebalance_threshold < 0:
-            raise ValueError("rebalance_threshold cannot be negative")
+        self.validate()
         if self.allow_short and self.mode is Mode.SPOT:
             # Silently clamping to long-only would hide a contradictory config.
             warnings.warn(
@@ -91,6 +84,32 @@ class EngineConfig:
                 UserWarning,
                 stacklevel=2,
             )
+
+    def validate(self) -> None:
+        """Validate again at run entry because callers may mutate this config."""
+        try:
+            self.mode = Mode(self.mode)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("mode must be spot or perp") from exc
+        for name in ("initial_capital", "leverage", "rebalance_threshold", "risk_free_rate"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value):
+                raise ValueError(f"{name} must be finite")
+        if self.initial_capital <= 0 or self.leverage <= 0:
+            raise ValueError("initial_capital and leverage must be positive")
+        if self.rebalance_threshold < 0:
+            raise ValueError("rebalance_threshold cannot be negative")
+        if isinstance(self.fill_delay, bool) or not isinstance(self.fill_delay, Integral) or self.fill_delay < 0:
+            raise ValueError("fill_delay must be a nonnegative integer")
+        if not isinstance(self.interval, str) or self.interval not in INTERVAL_SECONDS:
+            raise ValueError("unsupported bar interval")
+        if not isinstance(self.allow_short, bool):
+            raise ValueError("allow_short must be boolean")
+        if self.mode is Mode.SPOT and self.leverage != 1.0:
+            raise ValueError("spot mode does not borrow; use --mode perp for leverage > 1")
+        if not isinstance(self.costs, CostConfig):
+            raise ValueError("costs must be a CostConfig")
+        self.costs.validate()
 
 
 @dataclass
@@ -179,18 +198,26 @@ class _Book:
         fee, slip = self._costs_on(notional)
         borrow = self.pos.accrued_borrow_fee
         price_pnl = self.pos.unrealized_pnl(price)
+        collateral = self.pos.collateral
+        entry_costs = self.pos.entry_costs
 
         if self.cfg.mode is Mode.SPOT:
             self.cash += self.pos.units * price - fee - slip
         else:
-            self.cash += self.pos.collateral + price_pnl - borrow - fee - slip
+            # Isolated margin cannot debit the wallet's unposted free cash,
+            # including when a gap overshoots the liquidation threshold.
+            payout = max(0.0, collateral + price_pnl - borrow - fee - slip)
+            self.cash += payout
 
-        realized = price_pnl - borrow - fee - slip
+        realized = (price_pnl - borrow - fee - slip if self.cfg.mode is Mode.SPOT
+                    else payout - collateral) - entry_costs
         units_closed = self.pos.units
         self.pos = Position()
 
         # Mirror the decision in the gross book at zero cost.
         self.gross_cash += self.gross_units * price
+        if self.cfg.mode is Mode.PERP:
+            self.gross_cash += max(0.0, -collateral - price_pnl)
         self.gross_units = 0.0
 
         self.trades.append(
@@ -251,9 +278,10 @@ class _Book:
                 cur_units * self.pos.entry_price + delta_units * price
             ) / new_units
             self.pos.units = new_units * direction
-            realized = -(fee + slip)
+            self.pos.entry_costs += fee + slip
+            realized = 0.0
             borrow_settled = 0.0
-            self.gross_cash -= delta_notional
+            self.gross_cash -= delta_units * direction * price
             self.gross_units += delta_units * direction
         else:
             # -- decrease: realise PnL and a proportional share of borrow ---
@@ -261,16 +289,22 @@ class _Book:
             price_pnl = direction * (price - self.pos.entry_price) * delta_units
             borrow_settled = self.pos.accrued_borrow_fee * frac
             self.pos.accrued_borrow_fee -= borrow_settled
+            entry_cost_share = self.pos.entry_costs * frac
+            self.pos.entry_costs -= entry_cost_share
             if self.cfg.mode is Mode.SPOT:
                 self.cash += delta_units * price - fee - slip
             else:
                 released = self.pos.collateral * frac
                 self.pos.collateral -= released
-                self.cash += released + price_pnl - borrow_settled - fee - slip
+                payout = max(0.0, released + price_pnl - borrow_settled - fee - slip)
+                self.cash += payout
             new_units = cur_units - delta_units
             self.pos.units = new_units * direction
-            realized = price_pnl - borrow_settled - fee - slip
-            self.gross_cash += delta_units * price
+            realized = (price_pnl - borrow_settled - fee - slip if self.cfg.mode is Mode.SPOT
+                        else payout - released) - entry_cost_share
+            self.gross_cash += delta_units * direction * price
+            if self.cfg.mode is Mode.PERP:
+                self.gross_cash += max(0.0, -released - price_pnl)
             self.gross_units -= delta_units * direction
             if abs(new_units) <= 1e-12:
                 self.pos = Position()
@@ -348,6 +382,7 @@ class _Book:
             opened_ts=ts,
             opened_index=index,
             accrued_borrow_fee=0.0,
+            entry_costs=fee + slip,
         )
 
         # Gross book: same notional, no costs.
@@ -392,6 +427,8 @@ def run_backtest(
 
     See the module docstring for the per-bar ordering that prevents look-ahead.
     """
+    config.validate()
+    arrays = validate_bar_arrays(arrays, config.interval)
     ts = arrays["ts"]
     op, hi, lo, cl, vol = (
         arrays["open"],
@@ -404,7 +441,9 @@ def run_backtest(
     if n == 0:
         raise ValueError("cannot backtest an empty series")
 
-    warmup = max(0, int(strategy.warmup_bars()))
+    warmup = strategy.warmup_bars()
+    if isinstance(warmup, bool) or not isinstance(warmup, Integral) or warmup < 0:
+        raise ValueError("strategy warmup_bars must be a nonnegative integer")
     if warmup >= n:
         raise ValueError(
             f"strategy '{strategy.name}' needs {warmup} warmup bars but the "
@@ -424,18 +463,17 @@ def run_backtest(
     first_tradeable = warmup
 
     for i in range(n):
-        # -- 1. borrow-fee accrual for the bar just elapsed ---------------
-        if is_perp and book.pos.is_open:
-            book.pos.accrued_borrow_fee += perps.accrue_borrow_fee(
-                config.costs,
-                book.pos.side,
-                book.pos.entry_notional,
-                hpb,
-            )
-
-        # -- 2. execute a fill scheduled for this bar, at this bar's open --
+        # -- 1. execute open-price fills before this bar starts accruing --
         if i in pending:
             _apply_target(book, pending.pop(i), op[i], ts[i], i, config)
+
+        # -- 2. accrue through this bar for the position held after OPEN --
+        # A close at OPEN owes no new interval; an entry at OPEN owes this one.
+        # A fill_delay=0 entry happens later at CLOSE and starts accruing next bar.
+        if is_perp and book.pos.is_open:
+            book.pos.accrued_borrow_fee += perps.accrue_borrow_fee(
+                config.costs, book.pos.side, book.pos.entry_notional, hpb,
+            )
 
         # -- 3. liquidation check on this bar's range ----------------------
         if is_perp and book.pos.is_open:
@@ -509,9 +547,11 @@ def run_backtest(
         ppy,
         config.risk_free_rate,
         book.liquidations,
+        initial_equity=config.initial_capital,
     )
     gross = compute_metrics(
-        gross_curve, ts, [], exposure_curve, ppy, config.risk_free_rate, 0
+        gross_curve, ts, [], exposure_curve, ppy, config.risk_free_rate, 0,
+        initial_equity=config.initial_capital,
     )
 
     return BacktestResult(

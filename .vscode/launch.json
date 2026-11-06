@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backtester CLI help",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "backtester.cli",
+      "cwd": "${workspaceFolder}",
+      "args": ["--help"]
+    },
+    {
+      "name": "Extension offline dry run",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/extension/tools/dryrun.js",
+      "cwd": "${workspaceFolder}/extension",
+      "args": ["--ticks", "8", "--osc", "6", "--offline", "100"]
+    }
+  ]
+}

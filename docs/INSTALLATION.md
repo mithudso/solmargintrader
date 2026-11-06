@@ -1,19 +1,21 @@
 # Installation
 
-Four components, four different install stories. Only one of them installs anything
-persistent on your machine.
+Six components with separate dependencies. The optional soltui app and liquidity daemon
+can each install a persistent macOS launchd service. Test commands below do not install them.
 
 | Component | Install | Persistent? |
 | --- | --- | --- |
 | `backtester/` | `pip install -r backtester/requirements.txt` | No |
 | `research/` | Covered by the backtester's requirements | No |
 | `extension/` | Nothing — zero dependencies. Load unpacked in Chrome | Browser profile only |
-| `soltui/` | `pip install -r soltui/requirements.txt`, then a launchd agent | **Yes** — starts at login |
+| `soltui/` | `pip install -r soltui/requirements.txt`, optionally install a launchd agent | Optional login service |
+| `mongo/` | `pip install -r mongo/requirements.txt`, plus backtester deps | Local MongoDB service managed separately |
+| `liquidity/` | `uv sync --extra dev -p 3.13` in its directory | Optional live daemon; separate from installation |
 
 ## Prerequisites
 
-- **Python 3.13.** Verify with `python3 -V`. CI pins 3.13 and the code uses 3.13-era
-  features (`enum.StrEnum`).
+- **Python 3.13.** Verify with `python3 -V`. CI pins 3.13 and the main Python suites are
+  verified against that runtime. Liquidity declares its own Python range in `pyproject.toml`.
 - **Node 22.** Verify with `node -v`. Pinned in `.nvmrc`. Ed25519 in WebCrypto and
   `node:test`'s output format both need a recent runtime.
 - **Chrome or a Chromium browser**, for the extension.
@@ -28,7 +30,7 @@ pip install -r backtester/requirements.txt
 Verify:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .     # 454 OK
+python3 -m unittest discover -s backtester/tests -t .
 python3 -c "import backtester.cli; print('imports ok')"
 ```
 
@@ -47,7 +49,7 @@ There is nothing to install: zero runtime and zero dev dependencies, by design.
 
 ```bash
 cd extension
-npm test                                              # 114 pass
+npm test
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # round trip must close positive
 ```
 
@@ -65,11 +67,13 @@ verified by CI. Do not claim it as verified; the headless dry run is the gate.
 ### Optional: the local HTTP surface
 
 ```bash
+export SMT_API_TOKEN="$(openssl rand -hex 24)"
 node tools/api-server.js
 ```
 
-Reads `SMT_API_PORT`, `SMT_API_TOKEN` and `SMT_PASSPHRASE` from the environment. Put values
-in a local `.env` (already gitignored) and treat the port as trusted-local only. An empty
+Reads `SMT_API_PORT`, `SMT_API_TOKEN` and `SMT_PASSPHRASE` from the environment. Export values
+in the invoking shell and treat the port as trusted-local only. The program does not load
+a `.env` file automatically. An empty
 `SMT_PASSPHRASE` leaves the session-key vault sealed, which makes full-auto degrade to
 approval rather than fail silently.
 
@@ -79,7 +83,7 @@ This one installs a launchd agent that runs at login, so read `soltui/README.md`
 
 ```bash
 pip install -r soltui/requirements.txt
-python3 -m unittest discover -s soltui/tests -t .   # 95 OK, ~70s
+python3 -m unittest discover -s soltui/tests -t .
 python3 soltui/soltui-service build                 # build the app bundle
 python3 soltui/soltui-service install               # install bundle + launchd agent
 python3 soltui/soltui-service status                # bundle / agent / flag / launchd state
@@ -104,6 +108,39 @@ Expect the launchd state to read `running` with a clean log. A liveness check al
 enough: a py2app "Launch error" dialog keeps the process alive, so a broken app can report
 as healthy. Read the log.
 
+## MongoDB
+
+```bash
+pip install -r backtester/requirements.txt -r mongo/requirements.txt
+python3 mongo/schema.py --describe
+python3 -m unittest discover -s mongo/tests -t .
+```
+
+Schema description works without a server. The integration tests skip when mongod is
+unavailable. Follow `mongo/README.md` to start a local server and load data; the loader
+rebuilds its selected derived collections and is not a harmless connectivity probe.
+
+## Liquidity
+
+Read `liquidity/CLAUDE.md` and `liquidity/README.md` before live operation.
+
+```bash
+cd liquidity
+uv sync --extra dev -p 3.13
+.venv/bin/ruff check src tests
+.venv/bin/ruff format --check src tests
+.venv/bin/pytest -q
+cd ..
+```
+
+This installs the CLI into the component's own virtualenv. Offline tests exclude the
+`network` marker. It does not start a daemon or load a signing key. Live reads and
+`eth_simulateV1` still require network access even when no transaction is signed.
+
+The service installer in `liquidity/scripts/aero-lp-service` defaults to a live daemon;
+use its `install --dry-run` option for a simulated service. Installation is a separate
+operational choice. Never raise the configured caps or lower `min_net_apr` during setup.
+
 ## Uninstall
 
 ```bash
@@ -114,6 +151,10 @@ python3 soltui/soltui-service uninstall   # remove the bundle and the agent
 Use the subcommand rather than deleting files by hand — it removes the bundle from
 `~/Applications`, the `com.mitchhudson.soltui` agent, and the supervise flag together. The
 full subcommand set is `build`, `install`, `start`, `stop`, `status`, `uninstall`.
+
+For liquidity, `liquidity/scripts/aero-lp-service kill` stops on-chain actions and
+`liquidity/scripts/aero-lp-service uninstall` removes its agent. Preserve the state and
+ledger for reconciliation; uninstalling a service does not withdraw an on-chain position.
 
 For the extension: remove it at `chrome://extensions`. That also discards the API key and
 the session-key vault, both of which live in `chrome.storage.local` and were never synced.
@@ -128,7 +169,7 @@ git pull
 pip install -r backtester/requirements.txt   # in case deps moved
 python3 -m unittest discover -s backtester/tests -t .
 python3 -m unittest discover -s soltui/tests -t .
-cd extension && npm test
+(cd extension && npm test)
 python3 scripts/check_docs.py
 ```
 

@@ -10,12 +10,15 @@ Setup, the commands you will actually use, and the environment each component ne
 | Node | 22 | Ed25519 in WebCrypto and `node:test`'s current output both need a recent runtime; `.nvmrc` pins it |
 | macOS | Any recent | Only for `soltui/` — the menu-bar app and launchd agent are macOS-only |
 
-Everything else is stdlib. There is no build step anywhere in the repo.
+Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual
+and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
+The extension has no build step. The optional soltui app bundle is built with py2app.
 
 ## Setup
 
 ```bash
-git clone <this repo> && cd solmargintrader
+git clone https://github.com/mithudso/solmargintrader.git
+cd solmargintrader
 
 # Python side: the backtester's deps cover research/ too.
 pip install -r backtester/requirements.txt
@@ -63,10 +66,10 @@ document that quotes a number.
 
 ```bash
 cd extension
-npm test                                              # 168 tests
+npm test                                              # 237 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # the integration gate
 node tools/cli.js                                     # lists every command in the registry
-node tools/api-server.js                              # local HTTP surface
+node tools/api-server.js                              # local HTTP surface; requires SMT_API_TOKEN
 node tools/verify-endpoints.js                        # live Jupiter reachability
 ```
 
@@ -88,15 +91,40 @@ necessarily overrides Quit, so stopping it means removing
 `~/Library/Application Support/soltui/supervise.enabled`. Read `soltui/README.md` before
 rebuilding — the py2app traps there have already been paid for once.
 
+### MongoDB
+
+```bash
+pip install -r mongo/requirements.txt
+python3 mongo/schema.py --describe   # read-only; no server required
+python3 -m unittest discover -s mongo/tests -t .
+```
+
+The integration cases require a running mongod. Loading with `mongo/load.py` drops and
+rebuilds selected collections; use the separate instructions in `mongo/README.md`.
+
+### Liquidity
+
+```bash
+cd liquidity
+uv sync --extra dev -p 3.13
+.venv/bin/ruff check src tests
+.venv/bin/ruff format --check src tests
+.venv/bin/pytest -q
+cd ..
+```
+
+This component has its own dependencies and lockfile. Offline pytest excludes the
+`network` marker by default. See `liquidity/CLAUDE.md` before any live command.
+
 ## Verification
 
 Run all of these before claiming a change works:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 651 tests
-python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
-python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 168 tests
+python3 -m unittest discover -s backtester/tests -t .   # 681 tests
+python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
+python3 -m unittest discover -s mongo/tests -t .        # 33 tests
+cd extension && npm test                                # 237 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
@@ -106,18 +134,28 @@ round trip, so it is the only one that can catch a zero-spread regression.
 
 ## Environment variables
 
-Only `extension/tools/` reads the environment. The backtester, research and soltui
-components read none.
+The extension tools read the variables below. Python tools also accept the research cache
+and liquidity settings listed here. Programs do not automatically load a `.env` file;
+export settings in the invoking shell or use the component's config file.
 
 | Variable | Read by | Purpose |
 | --- | --- | --- |
 | `JUPITER_API_KEY` | `tools/verify-endpoints.js:18` | Live reachability check. The extension itself does **not** read this — its key lives in `chrome.storage.local` |
 | `SMT_API_PORT` | `tools/api-server.js:211` | Port for the local HTTP surface |
 | `SMT_API_TOKEN` | `tools/api-server.js:213,228` | Bearer token the HTTP surface requires |
-| `SMT_PASSPHRASE` | `tools/api-server.js:220` | Unseals the session-key vault for that surface |
+| `SMT_PASSPHRASE` | `extension/tools/api-server.js` | Unseals the session-key vault for that surface |
+| `SOLMT_DATA_DIR` | `research/sweep.py`, `research/cross_asset_cpcv.py` | Overrides the research CSV-cache directory |
+| `AERO_LP_HOME` | `liquidity/src/aero_lp/state.py`, `soltui/liquidity.py` | Overrides the liquidity state directory |
+| `AERO_LP_KEY_FILE` | `liquidity/src/aero_lp/wallet.py` | Optional path to an owner-only mode-0600 signing-key file |
+| `AERO_LP_PRIVATE_KEY` | `liquidity/src/aero_lp/wallet.py` | Legacy signing-key fallback; prefer the key file or Keychain, never put a value in tracked files |
+| `SOLTUI_PYTHON` | `soltui/bin/soltui` | Interpreter override for the shell launcher |
 
-Put real values in a local `.env` — `.gitignore` already covers `.env` and `.env.*` while
-un-ignoring `.env.example`. Never commit one, and never log a value; see
+`SOLTUI_BG_LOCK_FD` is an internal worker handoff, not a user setting. The macOS launcher
+sets `PYTHONUTF8` and `LANG` if absent. Standard runtime variables such as `PATH` and `HOME`
+retain their normal meaning.
+
+A local `.env` may document shell settings: `.gitignore` covers `.env` and `.env.*` while
+un-ignoring `.env.example`. Load/export settings explicitly; the programs do not source it. Never commit one, and never log a value; see
 `docs/logging.md`.
 
 ## Data

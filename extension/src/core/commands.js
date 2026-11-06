@@ -17,12 +17,12 @@
  * chrome.*, process.*, Request or Response.
  */
 
-import { tick } from './engine.js';
+import { tick, withStoreLock, stopEngine, resumeEngine, engineStopGeneration, occupiedIntentKeys } from './engine.js';
 import { planGrid, gridLevels, capitalRequirement, rungWidthBps, expectedRoundTripUsd } from './grid.js';
 import { DEFAULT_LIMITS, dayKey } from './risk.js';
 import { snapshot, equityCurve, maxDrawdown, fillsToCsv } from './pnl.js';
-import { INTENT_STATUS } from '../storage/store.js';
-import { MODE, leverageFeasibility } from '../venues/index.js';
+import { INTENT_STATUS, DEFAULT_CONFIG } from '../storage/store.js';
+import { MODE, MARGIN_SOURCE, leverageFeasibility } from '../venues/index.js';
 import { createSessionKey } from '../wallet/signer.js';
 
 /** Argument types the surfaces know how to coerce. */
@@ -54,6 +54,43 @@ async function pnlSnapshot(deps, { markPriceUsd } = {}) {
 function summarisePnl(pnl) {
   const { roundTrips, openLots, ...rest } = pnl;
   return { ...rest, roundTripCount: pnl.roundTripCount, openLotCount: openLots.length };
+}
+
+const CONTEXT_FIELDS = ['mode', 'venue', 'userPubkey', 'baseMint', 'quoteMint', 'gridId'];
+const LADDER_FIELDS = ['lower', 'upper', 'rungs', 'spacing', 'direction'];
+const DISARM_FIELDS = [...CONTEXT_FIELDS, ...LADDER_FIELDS];
+const plainObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value)
+  && [Object.prototype, null].includes(Object.getPrototypeOf(value));
+
+function configPatch(args) {
+  const { patch, ...flat } = args;
+  const merged = { ...(patch ?? {}), ...flat };
+  if (!Object.keys(merged).length) throw new CommandError('nothing to set — pass --patch or a named field', 400);
+  if (Object.keys(merged).some((key) => !Object.hasOwn(DEFAULT_CONFIG, key))) {
+    throw new CommandError('unknown configuration field; secrets use their dedicated command', 400);
+  }
+  return merged;
+}
+
+function validateConfig(config) {
+  const invalid = (key) => { throw new CommandError(`invalid configuration field "${key}"`, 400); };
+  for (const [key, fallback] of Object.entries(DEFAULT_CONFIG)) {
+    const value = config[key];
+    if (fallback === null) {
+      if (value !== null && (typeof value !== 'string' || !value.trim())) invalid(key);
+    } else if (typeof value !== typeof fallback || (typeof value === 'number' && !Number.isFinite(value))) invalid(key);
+    if (typeof fallback === 'string' && !value.trim()) invalid(key);
+  }
+  if (!Object.values(MODE).includes(config.mode)) invalid('mode');
+  if (!['trigger', 'perps'].includes(config.venue)) invalid('venue');
+  if (!['neutral', 'long', 'short'].includes(config.direction)) invalid('direction');
+  if (!Object.values(MARGIN_SOURCE).includes(config.marginSource)) invalid('marginSource');
+  for (const key of ['notionalPerRungUsd', 'ttlMs', 'tickSeconds', 'minOrderUsd']) if (!(config[key] > 0)) invalid(key);
+  if (config.leverage < 1) invalid('leverage');
+  for (const key of ['slippageBps', 'deadbandBps', 'recentreDriftBps']) if (config[key] < 0) invalid(key);
+  if (!(config.recentreSpanPct > 0 && config.recentreSpanPct < 1)) invalid('recentreSpanPct');
+  if (config.baseMint === config.quoteMint) invalid('quoteMint');
+  try { gridLevels(config); } catch { throw new CommandError('invalid grid bounds, rung count or spacing', 400); }
 }
 
 /* ---------------------------------------------------------------- registry -- */
@@ -153,9 +190,7 @@ export const COMMANDS = {
       const config = await deps.configStore.getConfig();
       const price = args.price ?? (await currentPrice(deps));
       const { pnl } = await pnlSnapshot(deps, { markPriceUsd: price });
-      const resting = (await deps.store.allIntents())
-        .filter((i) => i.status === INTENT_STATUS.RESTING)
-        .map((i) => i.intentKey);
+      const resting = occupiedIntentKeys(await deps.store.allIntents());
       const { intents, skipped, recentre } = planGrid({
         config,
         price,
@@ -245,33 +280,23 @@ export const COMMANDS = {
       { name: 'quoteMint', type: TYPE.STRING },
     ],
     async handler({ deps, args }) {
-      const { patch, ...flat } = args;
-      const merged = { ...(patch ?? {}), ...flat };
-      if (Object.keys(merged).length === 0) {
-        throw new CommandError('nothing to set — pass --patch or a named field', 400);
+      const patch = configPatch(args);
+      const current = await deps.configStore.getConfig();
+      const config = { ...current, ...patch };
+      validateConfig(config);
+      const contextChanged = CONTEXT_FIELDS.some((key) => config[key] !== current[key]);
+      if (DISARM_FIELDS.some((key) => config[key] !== current[key])) {
+        await deps.configStore.setRuntime({ armed: false });
       }
-      if (merged.mode && !Object.values(MODE).includes(merged.mode)) {
-        throw new CommandError(`mode must be one of ${Object.values(MODE).join(', ')}`, 400);
+      if (contextChanged) {
+        const [intents, fills, carry] = await Promise.all([
+          deps.store.allIntents(), deps.store.allFills(), deps.store.allCarry(),
+        ]);
+        if (intents.length || fills.length || carry.length) {
+          throw new CommandError('execution context has financial history; reconcile venue orders and explicitly reset before changing context', 409);
+        }
       }
-      if (
-        merged.recentreSpanPct !== undefined
-        && !(merged.recentreSpanPct > 0 && merged.recentreSpanPct < 1)
-      ) {
-        throw new CommandError(
-          `recentreSpanPct must be between 0 and 1 exclusive, got ${merged.recentreSpanPct}`,
-          400,
-        );
-      }
-      if (
-        merged.recentreDriftBps !== undefined
-        && !(Number.isFinite(merged.recentreDriftBps) && merged.recentreDriftBps >= 0)
-      ) {
-        throw new CommandError(
-          `recentreDriftBps must be a finite number >= 0, got ${merged.recentreDriftBps}`,
-          400,
-        );
-      }
-      return { config: await deps.configStore.setConfig(merged) };
+      return { config: await deps.configStore.setConfig(patch) };
     },
   },
 
@@ -293,13 +318,17 @@ export const COMMANDS = {
       // value makes that comparison false and silently turns the rail off. Refuse
       // it here so a bad patch is never stored (risk.js re-checks on every read).
       for (const [key, value] of Object.entries(merged)) {
-        if (key === 'killSwitch') continue;
-        if (!(key in DEFAULT_LIMITS)) {
+        if (key === 'killSwitch') {
+          if (typeof value !== 'boolean') throw new CommandError('killSwitch must be boolean', 400);
+          continue;
+        }
+        if (!Object.hasOwn(DEFAULT_LIMITS, key)) {
           throw new CommandError(`unknown limit "${key}"`, 400);
         }
-        if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+        if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 ||
+            (['maxConcurrentOrders', 'maxOrdersPerTick'].includes(key) && !Number.isSafeInteger(value))) {
           throw new CommandError(
-            `${key} must be a finite number >= 0, got ${JSON.stringify(value)}`,
+            `${key} must be a finite nonnegative number (count limits require safe integers)`,
             400,
           );
         }
@@ -350,19 +379,22 @@ export const COMMANDS = {
     params: [
       { name: 'confirmLive', type: TYPE.BOOL, describe: 'Required to arm any non-dry-run mode.' },
     ],
-    async handler({ deps, args }) {
+    async handler({ deps, args, stopGeneration }) {
       const config = await deps.configStore.getConfig();
       const runtime = await deps.configStore.getRuntime();
       if (runtime.killSwitch) {
         throw new CommandError('kill switch is engaged — clearKill first', 409);
       }
-      if (config.mode !== MODE.DRY_RUN && !args.confirmLive) {
+      if (config.mode !== MODE.DRY_RUN && args.confirmLive !== true) {
         throw new CommandError(
           `mode is "${config.mode}" and will spend real funds — re-run with confirmLive`,
           412,
         );
       }
-      return { runtime: await deps.configStore.setRuntime({ armed: true }) };
+      validateConfig(config);
+      const next = await deps.configStore.setRuntime({ armed: true });
+      resumeEngine(deps.store, stopGeneration);
+      return { runtime: next };
     },
   },
 
@@ -397,21 +429,20 @@ export const COMMANDS = {
     ],
     async handler({ deps, args }) {
       const count = Math.max(1, Math.min(50, args.count ?? 1));
-      const limits = { ...DEFAULT_LIMITS, ...(await deps.configStore.get('limits', {})) };
+      if (!Number.isSafeInteger(count)) throw new CommandError('count must be an integer', 400);
       const results = [];
       for (let i = 0; i < count; i++) {
-        const venue = await deps.buildVenue();
         const result = await tick({
-          venue,
+          buildVenue: () => deps.buildVenue(),
+          readLimits: async () => ({ ...DEFAULT_LIMITS, ...(await deps.configStore.get('limits', {})) }),
           store: deps.store,
           configStore: deps.configStore,
-          limits,
           clock: deps.clock,
           log: deps.log,
         });
         results.push({ ...result, pnl: result.pnl ? summarisePnl(result.pnl) : null });
       }
-      await deps.configStore.set('lastTick', results.at(-1));
+      await withStoreLock(deps.store, () => deps.configStore.set('lastTick', results.at(-1)));
       return count === 1 ? results[0] : { ticks: results };
     },
   },
@@ -420,15 +451,24 @@ export const COMMANDS = {
     describe: 'Cancel one resting order on the venue and mark its intent cancelled.',
     params: [{ name: 'venueOrderId', type: TYPE.STRING, required: true }],
     async handler({ deps, args }) {
+      const intent = (await deps.store.allIntents()).find((i) => i.venueOrderId === args.venueOrderId);
+      if (!intent) throw new CommandError('order is not journaled; run tick to reconcile before cancelling', 409);
+      // The cancellation request itself can have an ambiguous outcome. Retain
+      // occupancy even if the venue throws after accepting it.
+      await deps.store.updateIntent(intent.intentKey, { status: INTENT_STATUS.UNKNOWN });
       const venue = await deps.buildVenue();
-      const result = await venue.cancelOrder({ venueOrderId: args.venueOrderId });
-      const intent = (await deps.store.allIntents()).find(
-        (i) => i.venueOrderId === args.venueOrderId,
-      );
-      if (intent) {
-        await deps.store.updateIntent(intent.intentKey, { status: INTENT_STATUS.CANCELLED });
+      let result;
+      try { result = await venue.cancelOrder({ venueOrderId: args.venueOrderId }); }
+      catch {
+        deps.log?.({ level: 'warn', msg: 'cancellation outcome unknown; intent held', intentKey: intent.intentKey });
+        throw new CommandError('cancellation outcome unknown; intent held for review', 502);
       }
-      return { result, intentKey: intent?.intentKey ?? null };
+      if (result?.cancelled === true) {
+        await deps.store.updateIntent(intent.intentKey, { status: INTENT_STATUS.CANCELLED });
+      } else {
+        deps.log?.({ level: 'warn', msg: 'cancellation unconfirmed; intent held', intentKey: intent.intentKey });
+      }
+      return { result, intentKey: intent.intentKey };
     },
   },
 
@@ -483,6 +523,7 @@ export const COMMANDS = {
       if (typeof deps.store.clearAll !== 'function') {
         throw new CommandError('this store does not support reset', 501);
       }
+      await deps.configStore.setRuntime({ armed: false });
       await deps.store.clearAll();
       await deps.configStore.setRuntime({
         armed: false,
@@ -513,11 +554,12 @@ export const COMMAND_NAMES = Object.freeze(Object.keys(COMMANDS));
  * the list of valid ones rather than silently doing nothing.
  */
 export async function runCommand({ name, args = {}, deps }) {
-  const command = COMMANDS[name];
+  const command = Object.hasOwn(COMMANDS, name) ? COMMANDS[name] : null;
   if (!command) {
     throw new CommandError(`unknown command "${name}". Known: ${COMMAND_NAMES.join(', ')}`, 404);
   }
 
+  if (!plainObject(args)) throw new CommandError('arguments must be an object', 400);
   for (const param of command.params) {
     if (param.required && args[param.name] == null) {
       throw new CommandError(`command "${name}" requires --${param.name}`, 400);
@@ -534,7 +576,26 @@ export async function runCommand({ name, args = {}, deps }) {
     );
   }
 
-  return command.handler({ deps, args });
+  for (const param of command.params) {
+    if (!Object.hasOwn(args, param.name)) continue;
+    const value = args[param.name];
+    const valid = param.type === TYPE.JSON ? plainObject(value)
+      : typeof value === (param.type === TYPE.BOOL ? 'boolean' : param.type) && (param.type !== TYPE.NUMBER || Number.isFinite(value));
+    if (!valid) throw new CommandError(`argument "${param.name}" must have type ${param.type}`, 400);
+  }
+
+  if (name === 'setConfig') {
+    const patch = configPatch(args);
+    const current = await deps.configStore.getConfig();
+    validateConfig({ ...current, ...patch });
+    if (DISARM_FIELDS.some((key) => Object.hasOwn(patch, key) && patch[key] !== current[key])) stopEngine(deps.store);
+  }
+  if (name === 'kill' || name === 'disarm' || (name === 'reset' && args.confirm === true)) stopEngine(deps.store);
+  const stopGeneration = engineStopGeneration(deps.store);
+  const operation = () => command.handler({ deps, args, stopGeneration });
+  // Tick owns its per-iteration queue entry so lifecycle/limit changes can run
+  // between ticks in a count=N command. Read-only commands never mutate state.
+  return command.readOnly || name === 'tick' ? operation() : withStoreLock(deps.store, operation);
 }
 
 /** Machine-readable description of every command — powers CLI help and API discovery. */
