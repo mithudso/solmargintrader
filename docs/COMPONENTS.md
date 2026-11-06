@@ -16,7 +16,9 @@ backtester/core/gridsim.py <-- backtester/ <-- research/ ---+
 `backtester/` depends on nothing else in the repo. `research/` imports `backtester`.
 `soltui/` reads the research side. `mongo/` imports both in order to load them and is
 imported by neither, so dropping it changes nothing. `extension/` shares no code with any
-of them — only an obligation, described below.
+of them — only an obligation, described below. `liquidity/` is self-contained (own venv, own
+tests) and shares only files with soltui: it writes `~/.aero-lp/status.json` and `scout.json`,
+and soltui's Liquidity tab reads them.
 
 ---
 
@@ -213,3 +215,26 @@ macOS menu-bar app plus a TUI. Read-only over the research side; places no order
   gets deleted and login startup breaks silently.
 - `soltui-service` is the operational surface: `status`, `start`, `stop`, `build`,
   `install`.
+
+---
+
+## `liquidity/`
+
+An Aero (aero.xyz) Slipstream liquidity manager on Base. Full detail in `liquidity/README.md`.
+
+```python
+metrics.evaluate_pool(chain, market, pool, deposit_usd) -> PoolMetrics   # income, LVR, edge, model + backtest APR
+scout.run_scout(chain, market, deposit_usd, out=path) -> dict            # ranked scout.json
+allocator.plan_allocation(pools, idle_usd, deployed_usd, cfg) -> AllocationPlan
+Rebalancer.rebalance / withdraw / deploy / topup / claim / collect       # every on-chain sequence
+Daemon(cfg, live, signer).run()                                          # the loop
+```
+
+Three constraints shape it:
+- **Income is measured, never quoted.** Fees come from `feeGrowthGlobal` deltas and AERO from the gauge's
+  reward share. A volume × fee estimate overstated fee income about 5× on the pool where it was checked.
+- **A pool must clear the bar twice.** The forward model and a replay of the pool's actual price path must
+  both beat `min_net_apr`. When candidates are close, the daemon runs a side-by-side experiment instead of
+  guessing.
+- **Every on-chain sequence goes through one `Rebalancer` with a `Runner`.** Dry-run therefore simulates with
+  `eth_simulateV1` exactly what live mode would sign. soltui never imports any of it; it reads the state files.

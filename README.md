@@ -9,6 +9,7 @@ SOL trading research and execution tooling, in five parts:
 | [`extension/`](extension/README.md) | Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **This is the part that can place real orders.** | JavaScript (ESM, no deps) |
 | [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI that surfaces signals and paper positions, supervised by launchd. Read-only over the research side. | Python 3.13 |
 | [`mongo/`](mongo/README.md) | Local MongoDB copy of everything measured — bars, strategies, readouts, backtests, CPCV results — plus a runnable query reference. Derived; the files stay the source of truth. | Python 3.13 + pymongo |
+| [`liquidity/`](liquidity/README.md) | **Liquidity instead of trading strategies.** It manages Aero (aero.xyz) Slipstream LP positions on Base: per-pool profitability measures, a pool scout, auto-rebalancing, auto-compounding, deployment of idle coins, and side-by-side experiments with P&L tracking. It moves real money in live mode; soltui's Liquidity tab shows it. | Python 3.13 + web3 (own venv) |
 
 > Research and educational tooling, not financial advice. Simulated past performance does not
 > predict future results. Grid trading is short volatility: it earns in a range and loses in a trend.
@@ -36,7 +37,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 649 tests
-python3 -m unittest discover -s soltui/tests -t .       # 313 tests (~300s)
+python3 -m unittest discover -s soltui/tests -t .       # 362 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 20 tests
 cd extension && npm test                                # 131 tests
 ```
