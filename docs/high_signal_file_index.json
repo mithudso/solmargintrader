@@ -140,7 +140,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
-      "lines": 874
+      "lines": 903
     },
     {
       "path": "backtester/core/data.py",
@@ -397,42 +397,42 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 470
+      "lines": 479
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 508
+      "lines": 554
     },
     {
       "path": "extension/src/core/risk.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Every risk rail, as a gate an order must pass. Rails fail closed",
-      "lines": 188
+      "lines": 220
     },
     {
       "path": "extension/src/core/grid.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Ladder geometry. backtester/core/gridsim.py is its port",
-      "lines": 373
+      "lines": 377
     },
     {
       "path": "extension/src/core/pnl.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "FIFO/paired-lot attribution, fees included",
-      "lines": 213
+      "lines": 252
     },
     {
       "path": "extension/src/core/engine.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The tick loop: reconcile, then plan",
-      "lines": 444
+      "lines": 477
     },
     {
       "path": "extension/src/bg/service-worker.js",
@@ -572,14 +572,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Grid, risk, P&L, reconciliation, tick guards",
-      "lines": 1307
+      "lines": 1537
     },
     {
       "path": "extension/test/surfaces.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Parity across the three surfaces",
-      "lines": 443
+      "lines": 468
     },
     {
       "path": "extension/test/wallet.test.js",
@@ -809,14 +809,14 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui and doc-drift jobs",
-      "lines": 240
+      "lines": 234
     },
     {
       "path": "scripts/check_docs.py",
       "component": "repo",
       "kind": "python",
       "summary": "Fails the build on stale test counts or dead index entries",
-      "lines": 380
+      "lines": 389
     },
     {
       "path": "docs",
