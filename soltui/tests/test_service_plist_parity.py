@@ -20,6 +20,12 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+# soltui-service imports the private macos-launchd-supervisor package and exits without it. CI cannot clone
+# that private repo, so these tests run wherever it is installed (the owner's Mac) and skip elsewhere.
+HAVE_SUPERVISOR = importlib.util.find_spec("launchd_supervisor") is not None
+SKIP_REASON = "macos-launchd-supervisor (private git dependency) is not installed"
+
+
 SERVICE = Path(__file__).resolve().parent.parent / "soltui-service"
 
 GOLDEN = {
@@ -45,6 +51,7 @@ def load_service():
     return module
 
 
+@unittest.skipUnless(HAVE_SUPERVISOR, SKIP_REASON)
 class PlistParity(unittest.TestCase):
     def test_agent_plist_equals_the_pre_migration_plist(self) -> None:
         self.assertEqual(load_service().agent_plist(), GOLDEN)
