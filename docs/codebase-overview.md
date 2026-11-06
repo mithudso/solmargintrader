@@ -3,7 +3,7 @@
 A file map for orientation, grouped by directory. Every path here is checked by
 `scripts/check_docs.py`, so a rename that is not reflected below fails the build.
 
-Five components, in ascending order of how much damage a bug can do:
+Six components, in ascending order of how much damage a bug can do:
 
 | Component | Language | Can it move money? |
 | --- | --- | --- |
@@ -12,6 +12,7 @@ Five components, in ascending order of how much damage a bug can do:
 | `soltui/` | Python 3.13 | No — read-only display |
 | `backtester/` | Python 3.13 | No — simulation only, by design |
 | `extension/` | JavaScript (ESM, no deps) | **Yes** |
+| `liquidity/` | Python 3.13 + web3 (own venv) | **Yes** — live Aero LP daemon (owner-authorized) |
 
 Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 component.
@@ -216,6 +217,26 @@ Three things about the shape, because they will come up:
 | `data/` | Regenerable OHLCV cache — gitignored. Refetch with `backtester.core.fetch` |
 | `results/` | Generated backtest output — not source |
 | `.remember/remember.md` | Session handoff notes |
+
+## `liquidity/` — Aero Slipstream LP manager
+
+Manages concentrated-liquidity positions on Aero (Base). It works alongside the trading strategies, not in
+place of them. In live mode it signs real transactions. Full detail: `liquidity/README.md`; agent rules:
+`liquidity/CLAUDE.md`.
+
+| File | Role |
+| --- | --- |
+| `liquidity/README.md` | How pools are judged, quick start, the daemon loop, safety |
+| `liquidity/CLAUDE.md` | Owner's live-operation authorization and its limits |
+| `liquidity/STATE_FILES.md` | `status.json` / `scout.json` / `KILL` contract with soltui |
+| `liquidity/src/aero_lp/metrics.py` | Every profitability measure for one pool |
+| `liquidity/src/aero_lp/scout.py` | Candidate discovery and ranking |
+| `liquidity/src/aero_lp/allocator.py` | Pure deploy / experiment / graduation decisions |
+| `liquidity/src/aero_lp/ledger.py` | SQLite P&L ledger |
+| `liquidity/src/aero_lp/daemon.py` | The loop: manage, compound, scout, allocate, status |
+| `liquidity/src/aero_lp/executor.py` | Transaction sequences; `SimRunner` (eth_simulateV1) and `LiveRunner` |
+| `liquidity/scripts/aero-lp-service` | launchd install / status / kill / resume |
+| `.claude/agents/aero-pool-scout.md` | Read-only research agent that second-guesses the scout |
 
 ### Not source
 

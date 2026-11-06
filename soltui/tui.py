@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from textual import events, on, work
+from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import (
@@ -46,6 +47,7 @@ from . import bgcontrol
 from . import bgqueue
 from . import cumulative as cumulative_mod
 from . import docs_browser
+from . import liquidity as liq
 from . import top5 as top5_mod
 from . import live_run
 from .config import INTERVALS, Settings, load_settings, save_settings
@@ -265,6 +267,10 @@ HEADER_GLOSSARY = {
 }
 
 
+
+# Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.
+DOCS_TABLE_CAP = 1000
+
 class GlossaryTable(DataTable):
     """`DataTable` that explains its column headers on hover.
 
@@ -451,7 +457,7 @@ class VimTextArea(TextArea):
 
 
 class SolTuiApp(App):
-    """The console: ten tabs over the tested modules."""
+    """The console: thirteen tabs over the tested modules."""
 
     TITLE = "soltui — SOL strategy console"
     SUB_TITLE = "dry-run only · no live order path"
@@ -482,6 +488,8 @@ class SolTuiApp(App):
         ("o", "open_doc", "Open in editor"),
         ("ctrl+s", "save_doc", "Save"),
         ("ctrl+e", "toggle_editor", "Show/hide editor"),
+        ("f5", "liq_refresh", "Liquidity: refresh"),
+        ("f8", "liq_toggle_kill", "Liquidity: kill/resume"),
     ]
 
     def __init__(self, settings: Settings | None = None) -> None:
@@ -525,6 +533,10 @@ class SolTuiApp(App):
         # How far the results file has been consumed, and which file that was, so
         # a refresh parses only what the worker appended since last time.
         self._queue_cursor = bgqueue.ResultsCursor()
+        # Liquidity tab: (status mtime, scout mtime, KILL present) last rendered,
+        # so the 15 s tick rebuilds the tables only when a file actually changed
+        # (a rebuild resets the table cursors).
+        self._liq_signature: tuple | None = None
         self._top5_loaded = False
         self._top5_configs: list[top5_mod.Top5Config] = []
 
@@ -555,6 +567,8 @@ class SolTuiApp(App):
                 yield from self._cumulative_pane()
             with TabPane("Queue", id="tab-queue"):
                 yield from self._queue_pane()
+            with TabPane("Liquidity", id="tab-liquidity"):
+                yield from self._liquidity_pane()
             with TabPane("Research", id="tab-research"):
                 yield from self._research_pane()
             with TabPane("Docs", id="tab-docs"):
@@ -772,6 +786,8 @@ class SolTuiApp(App):
 
         self._refresh_exec_choices()
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
+        self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
+        self._refresh_liquidity(force=True)
 
     def _tick(self) -> None:
         """Refresh the in-app indicator line. Mirrors the menu-bar title exactly.
@@ -1218,6 +1234,8 @@ class SolTuiApp(App):
             # is being written by another process right now, so re-reading on
             # every activation is the correct behaviour rather than waste.
             self._refresh_queue()
+        elif pane == "tab-liquidity":
+            self._refresh_liquidity(force=True)
         elif pane == "tab-top5" and not self._top5_loaded:
             self._top5_loaded = True
             self._refresh_top5()
@@ -1744,6 +1762,144 @@ class SolTuiApp(App):
                 r.reason or f"under the {bgqueue.MIN_TRADES}-trade floor",
             )
 
+    # -- Liquidity: the Aero LP daemon's state files ---------------------
+
+    def _liquidity_pane(self) -> ComposeResult:
+        """A read-only view of `status.json` / `scout.json`, plus the KILL switch.
+
+        soltui holds no keys and has no order path: the daemon (`liquidity/`)
+        does the managing and writes files; this pane reads them. The only thing
+        it writes is the `KILL` file, via the Kill/Resume buttons.
+        """
+        with VerticalScroll():
+            yield Static("", id="liq-banner")
+            yield Static("", id="liq-summary")
+            yield Static("", id="liq-wallet", classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Button("Refresh", id="liq-refresh")
+                yield Button("Kill", variant="error", id="liq-kill")
+                yield Button("Resume", variant="success", id="liq-resume")
+            yield Static("", id="liq-status", classes="hint")
+            yield Static("[b]Positions[/b]", classes="hint")
+            yield DataTable(id="liq-positions")
+            yield Static("[b]Scout[/b] — top pools by modelled net APR", classes="hint")
+            yield Static("", id="liq-scout-note", classes="hint")
+            yield DataTable(id="liq-scout")
+            yield Static("[b]Experiments[/b] — arms side by side", classes="hint")
+            yield DataTable(id="liq-experiments")
+            yield Static("[b]Recent actions[/b] — newest first", classes="hint")
+            yield DataTable(id="liq-actions")
+
+    def _liq_tick(self) -> None:
+        """Auto-refresh. A no-op until the pane exists (teardown-safe)."""
+        if self.query("#liq-summary"):
+            self._refresh_liquidity()
+
+    def _liq_signature_now(self, home: Path) -> tuple:
+        def mt(name: str) -> int | None:
+            try:
+                return (home / name).stat().st_mtime_ns
+            except OSError:
+                return None
+        return (mt(liq.STATUS_FILE), mt(liq.SCOUT_FILE), mt(liq.KILL_FILE))
+
+    def _fill_table(self, table_id: str, table: liq.Table) -> None:
+        widget = self.query_one(table_id, DataTable)
+        widget.clear(columns=True)
+        widget.add_columns(*table.headers)
+        # Text() so a "[" in a daemon-supplied reason is never read as markup.
+        for row in table.rows:
+            widget.add_row(*(Text(cell) for cell in row))
+
+    def _refresh_liquidity(self, force: bool = False) -> None:
+        """Re-read the state files and redraw.
+
+        The summary and banner are cheap and redrawn every time (the "updated Ns
+        ago" text must keep moving, and a stale daemon must show). The tables are
+        rebuilt only when a file changed, or on `force`.
+        """
+        if not self.query("#liq-summary"):
+            return
+        home = liq.state_dir()
+        status = liq.load_status(home)
+        scout = liq.load_scout(home)
+        killed_file = liq.is_killed(home)
+
+        banner = self.query_one("#liq-banner", Static)
+        summary = self.query_one("#liq-summary", Static)
+        wallet = self.query_one("#liq-wallet", Static)
+        if status.data is None:
+            summary.update(Text(f"Liquidity: no data. {status.reason}"))
+            wallet.update("")
+        else:
+            s = liq.summarise(status.data, kill_file_present=killed_file)
+            badge = Text(f" {liq.mode_badge_text(s.mode)} ",
+                         style="bold white on red" if s.live else "bold black on yellow")
+            line = Text.assemble(badge, "  ", s.line())
+            summary.update(line)
+            wallet.update(Text(liq.wallet_line(status.data)))
+        killed = killed_file or bool(status.data and status.data.get("killed"))
+        if killed:
+            banner.update(Text(
+                " KILLED: the daemon takes no on-chain action. Press Resume to "
+                "delete the KILL file. ",
+                style="bold white on red"))
+        else:
+            banner.update("")
+
+        sig = self._liq_signature_now(home)
+        if force or sig != self._liq_signature:
+            self._liq_signature = sig
+            empty_status = liq.Table((), ())
+            self._fill_table("#liq-positions",
+                             liq.positions_table(status.data) if status.data else empty_status)
+            self._fill_table("#liq-experiments",
+                             liq.experiments_table(status.data) if status.data else empty_status)
+            self._fill_table("#liq-actions",
+                             liq.actions_table(status.data) if status.data else empty_status)
+            self._fill_table("#liq-scout",
+                             liq.scout_table(scout.data) if scout.data else empty_status)
+            note = (liq.scout_line(scout.data) if scout.data
+                    else f"Scout: no data. {scout.reason}")
+            self.query_one("#liq-scout-note", Static).update(Text(note))
+
+    @on(Button.Pressed, "#liq-refresh")
+    def _liq_refresh_pressed(self) -> None:
+        self._refresh_liquidity(force=True)
+        self.query_one("#liq-status", Static).update("refreshed")
+
+    @on(Button.Pressed, "#liq-kill")
+    def _liq_kill_pressed(self) -> None:
+        self._liq_set_kill(True)
+
+    @on(Button.Pressed, "#liq-resume")
+    def _liq_resume_pressed(self) -> None:
+        self._liq_set_kill(False)
+
+    def _liq_set_kill(self, on: bool) -> None:
+        """The pane's only write: create or delete the KILL file."""
+        status = self.query_one("#liq-status", Static)
+        try:
+            liq.set_kill(on)
+        except OSError as exc:
+            status.update(Text(f"could not {'create' if on else 'delete'} KILL: {exc}"))
+            return
+        status.update(Text(
+            f"KILL file created in {liq.state_dir()}" if on
+            else f"KILL file removed from {liq.state_dir()}; the daemon may act again"))
+        self._refresh_liquidity(force=True)
+
+    def _liq_tab_active(self) -> bool:
+        return self.query_one(TabbedContent).active == "tab-liquidity"
+
+    def action_liq_refresh(self) -> None:
+        if self._liq_tab_active():
+            self._liq_refresh_pressed()
+
+    def action_liq_toggle_kill(self) -> None:
+        if self._liq_tab_active():
+            self._liq_set_kill(not liq.is_killed())
+
     # -- Research: the drivers and what they established -----------------
 
     def _research_pane(self) -> ComposeResult:
@@ -1809,12 +1965,17 @@ class SolTuiApp(App):
             self._docs, query, kind if isinstance(kind, str) else "")
         table = self.query_one("#docs-table", DataTable)
         table.clear()
-        for e in rows[:400]:
+        shown = rows[:DOCS_TABLE_CAP]
+        for e in shown:
             editable = "yes" if docs_browser.is_editable(e) else ""
             table.add_row(e.path, e.kind, editable, str(e.lines), e.summary[:90],
                           key=e.path)
+        # The cap keeps the table responsive; say so when it bites instead of silently
+        # hiding files (a fixed 400-row cap once hid soltui/ entirely once the repo grew).
+        capped = (f" (first {len(shown)} listed; filter to narrow)"
+                  if len(rows) > len(shown) else "")
         self.query_one("#docs-headline", Static).update(
-            f"{len(rows)} of {len(self._docs)} shown · "
+            f"{len(rows)} of {len(self._docs)} match{capped} · "
             f"{docs_browser.summarise_catalog(self._docs)}")
 
     @on(Input.Changed, "#docs-filter")

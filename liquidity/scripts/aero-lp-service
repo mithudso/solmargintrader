@@ -1,0 +1,58 @@
+#!/bin/zsh
+# Run the liquidity daemon as a per-user launchd agent.
+#   aero-lp-service install [--dry-run]   write the plist and start it (live unless --dry-run)
+#   aero-lp-service uninstall             stop it and remove the plist
+#   aero-lp-service status | logs         launchctl state / tail the log
+#   aero-lp-service kill | resume         pause on-chain actions (KILL file) / resume them
+set -euo pipefail
+
+LABEL="com.mithudso.aero-lp"
+HERE="${0:A:h}"
+LIQ="${HERE:h}"
+BIN="$LIQ/.venv/bin/aero-lp"
+LP_HOME="${AERO_LP_HOME:-$HOME/.aero-lp}"
+CONFIG="$LP_HOME/config.toml"
+PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
+DOMAIN="gui/$(id -u)"
+
+case "${1:-}" in
+  install)
+    [[ -x "$BIN" ]] || { echo "missing $BIN — run: cd $LIQ && uv sync --extra dev -p 3.13"; exit 1; }
+    [[ -f "$CONFIG" ]] || { echo "missing $CONFIG — copy $LIQ/config.example.toml there and edit it"; exit 1; }
+    mode_args="<string>--live</string>"
+    [[ "${2:-}" == "--dry-run" ]] && mode_args=""
+    mkdir -p "$LP_HOME" "${PLIST:h}"
+    cat > "$PLIST" <<PL
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>$LABEL</string>
+  <key>ProgramArguments</key><array>
+    <string>$BIN</string><string>daemon</string><string>-c</string><string>$CONFIG</string>$mode_args
+  </array>
+  <key>EnvironmentVariables</key><dict><key>AERO_LP_HOME</key><string>$LP_HOME</string>
+    <key>PYTHONUNBUFFERED</key><string>1</string></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>60</integer>
+  <key>ExitTimeOut</key><integer>180</integer>
+  <key>ProcessType</key><string>Background</string>
+  <key>StandardOutPath</key><string>$LP_HOME/daemon.log</string>
+  <key>StandardErrorPath</key><string>$LP_HOME/daemon.log</string>
+</dict></plist>
+PL
+    launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
+    launchctl bootstrap "$DOMAIN" "$PLIST"
+    echo "started $LABEL (${mode_args:+live}${mode_args:-dry-run}); log: $LP_HOME/daemon.log"
+    ;;
+  uninstall)
+    launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
+    rm -f "$PLIST"
+    echo "stopped and removed $LABEL"
+    ;;
+  status) launchctl print "$DOMAIN/$LABEL" 2>/dev/null | grep -E "state =|pid =|last exit" || echo "not loaded" ;;
+  logs) tail -n "${2:-50}" "$LP_HOME/daemon.log" ;;
+  kill) touch "$LP_HOME/KILL" && echo "KILL set: the daemon takes no on-chain action until resume" ;;
+  resume) rm -f "$LP_HOME/KILL" && echo "KILL cleared" ;;
+  *) sed -n '2,7p' "$0"; exit 2 ;;
+esac
