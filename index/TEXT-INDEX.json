@@ -463,13 +463,13 @@
     "soltui/tests/test_top5.py": 605,
     "soltui/tests/test_tui.py": 5229,
     "soltui/top5.py": 820,
-    "soltui/tui.py": 8798,
+    "soltui/tui.py": 8852,
     "tools/gate.sh": 242,
     "tools/install-hooks.sh": 107,
     "tools/land.sh": 399,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-06T07:43:08+00:00",
+  "generatedAt": "2026-11-06T07:51:31+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -21671,7 +21671,8 @@
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 1,
       "skills/trading-and-investing/references/regime-detection-and-classification.md": 1,
       "skills/trading-and-investing/references/strategies-and-risk.md": 1,
-      "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1
+      "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1,
+      "soltui/tui.py": 1
     },
     "bitfinex": {
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 1
@@ -28821,6 +28822,7 @@
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
       "soltui/docs_browser.py": 1,
       "soltui/status.py": 4,
+      "soltui/tui.py": 5,
       "tradingskilllist/trading-skills.md": 1
     },
     "cap_multiple": {
@@ -29067,7 +29069,8 @@
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 2,
       "skills/trading-and-investing/references/strategies-and-risk.md": 2,
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1,
-      "soltui/status.py": 2
+      "soltui/status.py": 2,
+      "soltui/tui.py": 2
     },
     "capping": {
       "backtester/core/fetch_minutes.py": 1,
@@ -58854,7 +58857,7 @@
       "soltui/tests/test_docs_browser.py": 25,
       "soltui/tests/test_panes.py": 18,
       "soltui/tests/test_tui.py": 51,
-      "soltui/tui.py": 118
+      "soltui/tui.py": 122
     },
     "docs_browser": {
       "docs/FILES.md": 2,
@@ -58897,6 +58900,9 @@
     },
     "docs_save": {
       "soltui/tui.py": 1
+    },
+    "docs_table_cap": {
+      "soltui/tui.py": 3
     },
     "docs_view_changed": {
       "soltui/tui.py": 1
@@ -65030,7 +65036,7 @@
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/top5.py": 5,
-      "soltui/tui.py": 34,
+      "soltui/tui.py": 35,
       "tools/gate.sh": 3,
       "tools/land.sh": 1
     },
@@ -66805,7 +66811,8 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1,
-      "soltui/tests/test_status_roster.py": 1
+      "soltui/tests/test_status_roster.py": 1,
+      "soltui/tui.py": 1
     },
     "entities": {
       "research/coin-intelligence/bnb-binance-coin.md": 3,
@@ -79282,7 +79289,7 @@
       "soltui/tests/test_liquidity.py": 4,
       "soltui/tests/test_panes.py": 5,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 10
+      "soltui/tui.py": 12
     },
     "files_for": {
       "index/build.py": 3
@@ -79814,7 +79821,7 @@
       "soltui/make_icon.py": 3,
       "soltui/tests/test_panes.py": 5,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 9
+      "soltui/tui.py": 10
     },
     "filter_entries": {
       "docs/FILES.md": 1,
@@ -80908,7 +80915,7 @@
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 5,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 24,
+      "soltui/tui.py": 25,
       "tools/land.sh": 2
     },
     "first_available": {
@@ -81330,7 +81337,8 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 3,
       "soltui/paper.py": 1,
       "soltui/setup_app.py": 1,
-      "soltui/tests/test_panes.py": 1
+      "soltui/tests/test_panes.py": 1,
+      "soltui/tui.py": 1
     },
     "fixed_cost_frac": {
       "research/short_horizon_economics.py": 9
@@ -89971,7 +89979,8 @@
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
       "skills/trading-and-investing/references/portfolio-theory-and-asset-allocation.md": 1,
-      "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1
+      "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1,
+      "soltui/tui.py": 1
     },
     "grey": {
       "soltui/make_icon.py": 1
@@ -92660,7 +92669,8 @@
     },
     "headroom": {
       "research/cross_asset_cpcv.py": 1,
-      "skills/trading-and-investing/references/jupiter-jlp-pool.md": 3
+      "skills/trading-and-investing/references/jupiter-jlp-pool.md": 3,
+      "soltui/tui.py": 1
     },
     "heads": {
       "pagesource": 7
@@ -93191,6 +93201,9 @@
     "hiccup": {
       "docs/SCRIPTS.md": 1
     },
+    "hid": {
+      "soltui/tui.py": 1
+    },
     "hidden": {
       "backtester/PROMPT.md": 1,
       "backtester/core/strategies/advanced.py": 1,
@@ -93257,7 +93270,8 @@
       "docs/dso-skill/SKILL.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/cumulative.py": 1,
-      "soltui/tests/test_bgqueue.py": 1
+      "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tui.py": 1
     },
     "hie": {
       "soltui/SolTUI.icns": 1
@@ -101681,7 +101695,7 @@
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_tui.py": 4,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 4,
+      "soltui/tui.py": 5,
       "tools/land.sh": 1
     },
     "instid": {
@@ -107066,7 +107080,7 @@
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 1,
-      "soltui/tui.py": 6
+      "soltui/tui.py": 7
     },
     "kek": {
       "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 1
@@ -110746,7 +110760,7 @@
       "soltui/bgworker.py": 1,
       "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_bgworker.py": 1,
-      "soltui/tui.py": 3
+      "soltui/tui.py": 4
     },
     "leaves": {
       "README.md": 1,
@@ -111294,7 +111308,7 @@
       "soltui/tests/test_status_roster.py": 11,
       "soltui/tests/test_top5.py": 2,
       "soltui/tests/test_tui.py": 5,
-      "soltui/tui.py": 11
+      "soltui/tui.py": 14
     },
     "len__": {
       "backtester/core/types.py": 1,
@@ -114010,7 +114024,7 @@
       "soltui/README.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/tests/test_signals.py": 1,
-      "soltui/tui.py": 3,
+      "soltui/tui.py": 4,
       "tradingskilllist/trading-skills.md": 1
     },
     "listed_products": {
@@ -121063,7 +121077,7 @@
       "soltui/liquidity.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 3
+      "soltui/tui.py": 4
     },
     "match_hold_bars": {
       "research/ratio_rotation.py": 5
@@ -130577,7 +130591,8 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 1,
       "soltui/docs_browser.py": 1,
-      "soltui/status.py": 2
+      "soltui/status.py": 2,
+      "soltui/tui.py": 1
     },
     "narrowed": {
       "docs/codebase-overview.md": 1,
@@ -167720,7 +167735,7 @@
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "rendertables": {
       "extension/src/ui/dashboard.js": 3
@@ -168276,7 +168291,7 @@
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 6,
       "soltui/top5.py": 4,
-      "soltui/tui.py": 8,
+      "soltui/tui.py": 10,
       "tools/land.sh": 6
     },
     "repo_root": {
@@ -170365,7 +170380,7 @@
       "skills/trading-and-investing/references/forex-and-currency-trading.md": 1,
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1,
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 2,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "responsiveness": {
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1
@@ -174449,7 +174464,7 @@
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 95,
       "soltui/top5.py": 22,
-      "soltui/tui.py": 91
+      "soltui/tui.py": 92
     },
     "row0": {
       "research/ratio_rotation.py": 1
@@ -174623,7 +174638,7 @@
       "soltui/tests/test_top5.py": 5,
       "soltui/tests/test_tui.py": 1,
       "soltui/top5.py": 7,
-      "soltui/tui.py": 19
+      "soltui/tui.py": 21
     },
     "rowselected": {
       "soltui/tests/test_tui.py": 1,
@@ -176974,7 +176989,7 @@
       "soltui/status.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_signals.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "saying": {
       "backtester/core/fetch_minutes.py": 1,
@@ -183375,7 +183390,7 @@
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 7
+      "soltui/tui.py": 10
     },
     "shows": {
       ".remember/remember.md": 1,
@@ -185054,7 +185069,7 @@
       "soltui/tests/test_signals.py": 4,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 6,
+      "soltui/tui.py": 7,
       "tradingskilllist/trading-skills.md": 1
     },
     "silhouette": {
@@ -188896,7 +188911,7 @@
       "soltui/tests/test_top5.py": 2,
       "soltui/tests/test_tui.py": 39,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 7,
+      "soltui/tui.py": 8,
       "tools/gate.sh": 2
     },
     "soltui_bg_lock_fd": {
@@ -200784,7 +200799,7 @@
       "soltui/tests/test_liquidity.py": 22,
       "soltui/tests/test_top5.py": 2,
       "soltui/tests/test_tui.py": 114,
-      "soltui/tui.py": 121
+      "soltui/tui.py": 126
     },
     "table_columns": {
       "backtester/core/report.py": 3,
@@ -212928,7 +212943,7 @@
       "soltui/app.py": 1,
       "soltui/docs_browser.py": 4,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 2
     },
     "tracked_files": {
       "index/build.py": 4
@@ -234383,10 +234398,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1227.4,
+    "avgDocLength": 1227.5,
     "documents": 468,
-    "terms": 24693,
-    "termsBeforePrune": 24697,
-    "totalTokens": 574437
+    "terms": 24695,
+    "termsBeforePrune": 24699,
+    "totalTokens": 574491
   }
 }

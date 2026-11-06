@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-06T07:43:08+00:00",
+  "generatedAt": "2026-11-06T07:51:31+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "67687ee",
+  "commit": "d0ec9b8",
   "counts": {
     "files": 468,
-    "bytes": 7903077,
+    "bytes": 7903529,
     "byKind": {
       "doc": 110,
       "code-python": 101,
@@ -13378,9 +13378,9 @@
       "title": "The Research tab's content. Kept here as data rather than fetched or computed:",
       "summary": "Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.",
       "summarySource": "docstring",
-      "bytes": 98008,
-      "lines": 2128,
-      "sha1": "b9a08fea0c08fad0681bf8b10006edc174f5ae1a",
+      "bytes": 98460,
+      "lines": 2137,
+      "sha1": "62a07dd7652f4f1af6d45ef7439ce54d60a21964",
       "symbols": [
         "RESEARCH_DRIVERS",
         "RESEARCH_FINDINGS",
@@ -13389,6 +13389,7 @@
         "_mtime()",
         "sort_key()",
         "HEADER_GLOSSARY",
+        "DOCS_TABLE_CAP",
         "class GlossaryTable",
         "class VimTextArea",
         "class SolTuiApp",

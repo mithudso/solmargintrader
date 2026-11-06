@@ -267,6 +267,10 @@ HEADER_GLOSSARY = {
 }
 
 
+
+# Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.
+DOCS_TABLE_CAP = 1000
+
 class GlossaryTable(DataTable):
     """`DataTable` that explains its column headers on hover.
 
@@ -1961,12 +1965,17 @@ class SolTuiApp(App):
             self._docs, query, kind if isinstance(kind, str) else "")
         table = self.query_one("#docs-table", DataTable)
         table.clear()
-        for e in rows[:400]:
+        shown = rows[:DOCS_TABLE_CAP]
+        for e in shown:
             editable = "yes" if docs_browser.is_editable(e) else ""
             table.add_row(e.path, e.kind, editable, str(e.lines), e.summary[:90],
                           key=e.path)
+        # The cap keeps the table responsive; say so when it bites instead of silently
+        # hiding files (a fixed 400-row cap once hid soltui/ entirely once the repo grew).
+        capped = (f" (first {len(shown)} listed; filter to narrow)"
+                  if len(rows) > len(shown) else "")
         self.query_one("#docs-headline", Static).update(
-            f"{len(rows)} of {len(self._docs)} shown · "
+            f"{len(rows)} of {len(self._docs)} match{capped} · "
             f"{docs_browser.summarise_catalog(self._docs)}")
 
     @on(Input.Changed, "#docs-filter")
