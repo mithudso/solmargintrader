@@ -141,10 +141,10 @@ jobs:
 
       - name: Load what a fresh clone has
         # `data/` and `results/` are gitignored, so most collections load empty
-        # here. The collections built from tracked files -- strategies, signals,
-        # indicators, documents -- are the ones under test, and they are enough to
-        # exercise validation and idempotency.
-        run: python3 mongo/load.py --only strategies,signals,indicators,documents
+        # here. Request the empty bars collection explicitly too: its native
+        # time-series layout is under test. --only now preserves unselected
+        # collections instead of accidentally creating the whole schema.
+        run: python3 mongo/load.py --only bars,strategies,signals,indicators,documents
 
       - name: Unit and integration tests
         run: python3 -m unittest discover -s mongo/tests -t .

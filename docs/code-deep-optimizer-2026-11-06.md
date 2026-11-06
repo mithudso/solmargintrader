@@ -1,6 +1,6 @@
 # Deep code optimizer — 2026-11-06
 
-Version: 1.0.0. Delta: source audit, corroborated repairs and bounded independent-review record.
+Version: 1.1.0. Delta: record CI fixture correction after real-server validation.
 Target: solmargintrader, base `eebadbb`; integration preserves newer upstream work.
 
 This run audits 17 primary risk-first files across six components and their necessary
@@ -92,6 +92,11 @@ worker PID file before its paths were isolated. No process was launched or signa
 The later inspected default directory contained only the old lock, no PID/state/results,
 and no background worker was running. The prior PID-file contents cannot be proven.
 All later worker/control fixtures use temporary paths.
+
+The first server-backed CI run exposed a setup assumption: its selected load omitted
+`bars`, while the integration test asserted that collection existed. `--only` correctly
+no longer creates unselected collections. CI now explicitly requests `bars`; the native
+time-series test remains unchanged. The final receipt must show the rerun passing.
 
 ## 4. Activated skills
 
