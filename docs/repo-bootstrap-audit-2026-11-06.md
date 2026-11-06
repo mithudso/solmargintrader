@@ -149,4 +149,11 @@ Remaining gaps:
 - Live extension envelope/fee attribution, installed Chrome/app/service acceptance and
   real operation outcomes remain separate from offline tests.
 
-Next recommended action: complete the parent's integrated verification and delivery.
+The paired optimizer report records integrated verification and delivery. Its result remains
+BLIND-AUDIT-DISSENT; focused repairs do not imply repository-wide or live acceptance.
+
+Final local gate: 681 backtester tests pass; 402 TUI tests run with one skip; 33 Mongo
+tests run with 17 driver/server skips; 237 extension tests pass; liquidity 427 pass
+with six network tests deselected. Ruff check/format, module syntax, deterministic
+offline round trip, documentation counts and offline index checks pass. CI supplies
+the service-backed MongoDB and independent runner receipt before merge.
