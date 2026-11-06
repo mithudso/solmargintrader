@@ -51,7 +51,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Entry point: python3 -m backtester.cli",
-      "lines": 323
+      "lines": 324
     },
     {
       "path": "backtester/gridcli.py",
@@ -65,7 +65,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Entry point for pairs/cointegration runs",
-      "lines": 236
+      "lines": 237
     },
     {
       "path": "backtester/requirements.txt",
@@ -79,7 +79,7 @@
       "component": "backtester",
       "kind": "markdown",
       "summary": "Scope, correctness priorities, usage",
-      "lines": 462
+      "lines": 471
     },
     {
       "path": "backtester/PROMPT.md",
@@ -98,21 +98,21 @@
       "path": "backtester/tests",
       "component": "backtester",
       "kind": "directory",
-      "summary": "454 tests (unittest), including the research modules"
+      "summary": "Unittest suites, including the research modules; counts in docs/TESTING.md"
     },
     {
       "path": "backtester/core/engine.py",
       "component": "backtester",
       "kind": "python",
       "summary": "The bar loop. Owns the per-bar ordering that makes lookahead impossible",
-      "lines": 588
+      "lines": 628
     },
     {
       "path": "backtester/core/types.py",
       "component": "backtester",
       "kind": "python",
       "summary": "BarWindow (the structural lookahead guard), CostConfig, RunManifest",
-      "lines": 292
+      "lines": 384
     },
     {
       "path": "backtester/core/indicators.py",
@@ -126,7 +126,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Sharpe, drawdown, CAGR, with the conventions stated in the manifest",
-      "lines": 251
+      "lines": 274
     },
     {
       "path": "backtester/core/perps.py",
@@ -140,7 +140,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
-      "lines": 903
+      "lines": 881
     },
     {
       "path": "backtester/core/data.py",
@@ -153,8 +153,29 @@
       "path": "backtester/core/fetch.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "The only network path: Coinbase OHLCV into a local CSV cache",
+      "summary": "Explicit Coinbase OHLCV fetch into a local CSV cache; the engine stays offline",
       "lines": 221
+    },
+    {
+      "path": "backtester/core/fetch_minutes.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Resumable minute-bar cache fetch with rate limiting and coverage",
+      "lines": 720
+    },
+    {
+      "path": "backtester/core/ticks.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Explicit Coinbase trade-tick fetch and bar aggregation",
+      "lines": 315
+    },
+    {
+      "path": "backtester/core/funding.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Signed Hyperliquid funding history, optional OKX cross-check",
+      "lines": 491
     },
     {
       "path": "backtester/core/archive_price.py",
@@ -195,8 +216,8 @@
       "path": "backtester/core/report.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "Run reports and walk-forward split output",
-      "lines": 341
+      "summary": "Run reports, walk-forward splits and manifest-last artifact hashes",
+      "lines": 368
     },
     {
       "path": "backtester/core/plotting.py",
@@ -273,14 +294,14 @@
       "component": "research",
       "kind": "python",
       "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar",
-      "lines": 1218
+      "lines": 1287
     },
     {
       "path": "research/sweep.py",
       "component": "research",
       "kind": "python",
       "summary": "Parameter sweeps",
-      "lines": 871
+      "lines": 876
     },
     {
       "path": "research/cpcv_sweep.py",
@@ -397,28 +418,28 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 479
+      "lines": 492
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 554
+      "lines": 615
     },
     {
       "path": "extension/src/core/risk.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Every risk rail, as a gate an order must pass. Rails fail closed",
-      "lines": 220
+      "lines": 292
     },
     {
       "path": "extension/src/core/grid.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Ladder geometry. backtester/core/gridsim.py is its port",
-      "lines": 377
+      "lines": 387
     },
     {
       "path": "extension/src/core/pnl.js",
@@ -432,7 +453,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The tick loop: reconcile, then plan",
-      "lines": 477
+      "lines": 559
     },
     {
       "path": "extension/src/bg/service-worker.js",
@@ -446,14 +467,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The HTTP layer for every Jupiter call",
-      "lines": 156
+      "lines": 165
     },
     {
       "path": "extension/src/jupiter/trigger.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Trigger order API; the order-list response envelope is guessed",
-      "lines": 304
+      "lines": 339
     },
     {
       "path": "extension/src/jupiter/price.js",
@@ -474,7 +495,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Venue adapter over the Trigger API",
-      "lines": 442
+      "lines": 519
     },
     {
       "path": "extension/src/venues/index.js",
@@ -488,21 +509,21 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "~150 lines that make a Solana dependency unnecessary",
-      "lines": 203
+      "lines": 224
     },
     {
       "path": "extension/src/wallet/signer.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Signing, and the session-key vault boundary",
-      "lines": 251
+      "lines": 318
     },
     {
       "path": "extension/src/storage/store.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Storage interface",
-      "lines": 254
+      "lines": 257
     },
     {
       "path": "extension/src/storage/fileStore.js",
@@ -523,7 +544,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dashboard view",
-      "lines": 340
+      "lines": 375
     },
     {
       "path": "extension/src/ui/popup.js",
@@ -544,7 +565,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Local HTTP surface; reads SMT_API_PORT, SMT_API_TOKEN, SMT_PASSPHRASE",
-      "lines": 250
+      "lines": 259
     },
     {
       "path": "extension/tools/dryrun.js",
@@ -565,14 +586,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dependency wiring",
-      "lines": 66
+      "lines": 84
     },
     {
       "path": "extension/test/core.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Grid, risk, P&L, reconciliation, tick guards",
-      "lines": 1537
+      "lines": 1540
     },
     {
       "path": "extension/test/surfaces.test.js",
@@ -645,6 +666,41 @@
       "lines": 280
     },
     {
+      "path": "soltui/bgcontrol.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Explicit worker/fetch processes, lock handoff and nonce-bound socket Stop",
+      "lines": 509
+    },
+    {
+      "path": "soltui/bgworker.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Detached offline sweep worker and per-process array cache",
+      "lines": 571
+    },
+    {
+      "path": "soltui/liquidity.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Reads daemon state; creates/removes only the KILL flag",
+      "lines": 576
+    },
+    {
+      "path": "soltui/serve.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Optional loopback browser console",
+      "lines": 133
+    },
+    {
+      "path": "soltui/bin/soltui",
+      "component": "soltui",
+      "kind": "other",
+      "summary": "Shell launcher with interpreter override",
+      "lines": 38
+    },
+    {
       "path": "soltui/config.py",
       "component": "soltui",
       "kind": "python",
@@ -677,34 +733,34 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 192
+      "lines": 200
     },
     {
       "path": "soltui/tests",
       "component": "soltui",
       "kind": "directory",
-      "summary": "95 tests (~70s)"
+      "summary": "Unittest suites for models, rendering, workers, launchers and local controls"
     },
     {
       "path": "mongo/README.md",
       "component": "mongo",
       "kind": "markdown",
       "summary": "Entry point: setup, collection map, question -> query index",
-      "lines": 171
+      "lines": 181
     },
     {
       "path": "mongo/schema.py",
       "component": "mongo",
       "kind": "python",
       "summary": "Collection specs, $jsonSchema validators, indexes. --describe needs no server",
-      "lines": 465
+      "lines": 472
     },
     {
       "path": "mongo/load.py",
       "component": "mongo",
       "kind": "python",
       "summary": "The loader. Drops and rebuilds, stamping provenance on every document",
-      "lines": 793
+      "lines": 819
     },
     {
       "path": "mongo/requirements.txt",
@@ -781,35 +837,91 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 148
+      "lines": 161
     },
     {
       "path": "AGENTS.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Points at CLAUDE.md",
-      "lines": 16
+      "lines": 27
     },
     {
       "path": "GEMINI.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 56
+      "lines": 61
     },
     {
       "path": ".github/copilot-instructions.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Copilot CLI equivalent",
-      "lines": 88
+      "lines": 92
     },
     {
       "path": ".github/workflows/ci.yml",
       "component": "repo",
       "kind": "yaml",
-      "summary": "Extension, backtester, soltui and doc-drift jobs",
+      "summary": "Extension, backtester, soltui, mongo, liquidity and doc/index drift jobs",
       "lines": 234
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Contribution boundaries and validation workflow",
+      "lines": 22
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Contributor conduct and reporting boundary",
+      "lines": 9
+    },
+    {
+      "path": "docs/requirements.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Existing functional/runtime/safety requirements",
+      "lines": 35
+    },
+    {
+      "path": "docs/MCP.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "No repo MCP server; global connectors and offline fallback",
+      "lines": 24
+    },
+    {
+      "path": "docs/caching-and-optimization.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Cache freshness and performance invariants",
+      "lines": 35
+    },
+    {
+      "path": "docs/runbooks/incident.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Kill, preserve evidence, reconcile unknown outcomes",
+      "lines": 45
+    },
+    {
+      "path": "docs/runbooks/rollback.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Revert code without discarding execution state",
+      "lines": 33
+    },
+    {
+      "path": "docs/runbooks/handoff.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Prompt/memory/Git continuation workflow",
+      "lines": 33
     },
     {
       "path": "scripts/check_docs.py",
@@ -853,6 +965,69 @@
       "lines": 143
     },
     {
+      "path": "liquidity/pyproject.toml",
+      "component": "liquidity",
+      "kind": "other",
+      "summary": "Component dependencies, CLI entry point, pytest/Ruff configuration",
+      "lines": 39
+    },
+    {
+      "path": "liquidity/uv.lock",
+      "component": "liquidity",
+      "kind": "other",
+      "summary": "Locked component dependencies",
+      "lines": 1714
+    },
+    {
+      "path": "liquidity/src/aero_lp/chain.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Base RPC and Multicall3 read boundary",
+      "lines": 485
+    },
+    {
+      "path": "liquidity/src/aero_lp/market.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "GeckoTerminal transport/cache and income model helpers",
+      "lines": 199
+    },
+    {
+      "path": "liquidity/src/aero_lp/providers.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Read-only provider comparison and source labels",
+      "lines": 1624
+    },
+    {
+      "path": "liquidity/src/aero_lp/validation.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Shared finite-number validation for liquidity safety configuration",
+      "lines": 31
+    },
+    {
+      "path": "liquidity/src/aero_lp/config.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "TOML risk/custody/configuration boundary",
+      "lines": 188
+    },
+    {
+      "path": "liquidity/src/aero_lp/state.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Daemon state directory and state-file writes",
+      "lines": 79
+    },
+    {
+      "path": "liquidity/src/aero_lp/wallet.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Mode-0600 key file / Keychain loading; never print its output",
+      "lines": 77
+    },
+    {
       "path": "liquidity/src/aero_lp/metrics.py",
       "component": "liquidity",
       "kind": "python",
@@ -878,21 +1053,35 @@
       "component": "liquidity",
       "kind": "python",
       "summary": "SQLite P&L ledger",
-      "lines": 352
+      "lines": 430
+    },
+    {
+      "path": "liquidity/src/aero_lp/submissions.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Durable owner-bound transaction journal; unresolved submissions block new writes",
+      "lines": 223
+    },
+    {
+      "path": "liquidity/src/aero_lp/recovery.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Receipt-based idempotent ledger recovery and historical slot attribution",
+      "lines": 159
     },
     {
       "path": "liquidity/src/aero_lp/daemon.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "The loop: manage, compound, scout, allocate, status",
-      "lines": 1080
+      "lines": 1343
     },
     {
       "path": "liquidity/src/aero_lp/executor.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Transaction sequences; SimRunner (eth_simulateV1) and LiveRunner",
-      "lines": 935
+      "lines": 1133
     },
     {
       "path": "liquidity/scripts/aero-lp-service",
@@ -907,6 +1096,34 @@
       "kind": "markdown",
       "summary": "Read-only research agent that second-guesses the scout",
       "lines": 41
+    },
+    {
+      "path": "docs/repo-bootstrap-audit-2026-11-06.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Standards audit, changes and explicit remaining infrastructure gaps",
+      "lines": 159
+    },
+    {
+      "path": "docs/code-deep-optimizer-2026-11-06.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Bounded code audit, regressions, review dissent and verification limits",
+      "lines": 898
+    },
+    {
+      "path": "docs/code-optimizer-scope-2026-11-06.json",
+      "component": "repo",
+      "kind": "json",
+      "summary": "Primary/dependency source scope and every remaining source path",
+      "lines": 328
+    },
+    {
+      "path": "docs/jupiter-trigger-contract.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Public API contract fixtures and blocked live-signing boundary",
+      "lines": 61
     }
   ]
 }
