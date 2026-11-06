@@ -55,6 +55,7 @@ cp config.example.toml config.toml           # set owner + token_ids
 .venv/bin/aero-lp status -c config.toml      # state, economics, decision (read-only)
 .venv/bin/aero-lp simulate -c config.toml --force   # full rebalance via eth_simulateV1
 .venv/bin/aero-lp run -c config.toml --once  # one dry-run cycle
+.venv/bin/aero-lp withdraw -c config.toml --token-id N   # simulate exiting a position to the wallet (--live to do it)
 ```
 
 ### Going live

@@ -330,6 +330,62 @@ class Engine:
                 on_stage=on_stage,
             )
 
+    def withdraw(self, token_id: int, live: bool, signer: Any = None) -> tuple[PositionState, RebalanceResult, float]:
+        """Exit `token_id` to the wallet. Always simulates first; broadcasts only when live=True.
+
+        Returns (position before exit, result, simulated gas in USD).
+        """
+        self.chain.check_fresh()
+        pos = self.chain.position(token_id, owner_hint=self.cfg.owner)
+        if pos.owner.lower() != self.cfg.owner.lower():
+            raise RuntimeError(f"token {token_id} belongs to {pos.owner}, not the configured owner")
+        tokens = runner_tokens(pos.pool.token0.address, pos.pool.token1.address)
+        rb = Rebalancer(self.chain, self.cfg.owner, self.cfg.execution)
+        sim = rb.withdraw(pos, SimRunner(self.chain, self.cfg.owner, tokens, pos.pool.address))
+        eth_usd = self.market.token_prices_usd([addresses.WETH]).get(addresses.WETH.lower(), 0.0)
+        sim_gas = sum(sim.gas_used.values())
+        sim_gas_usd = gas_cost_usd(sim_gas, self.chain.gas_price_wei(), eth_usd, self.cfg.l1_fee_usd_estimate)
+        if not live:
+            sim.notes.append("dry run: simulated with eth_simulateV1, nothing signed or broadcast")
+            return pos, sim, sim_gas_usd
+        if signer is None:
+            raise RuntimeError("live mode needs a signer")
+        if not eth_usd:
+            raise RuntimeError("ETH price unavailable; cannot enforce safety.max_gas_usd")
+        if sim_gas_usd > self.cfg.safety.max_gas_usd:
+            raise RuntimeError(
+                f"simulated gas ${sim_gas_usd:.2f} > safety.max_gas_usd ${self.cfg.safety.max_gas_usd:.2f}"
+            )
+        need_wei = 3 * sim_gas * self.chain.gas_price_wei()
+        have_wei = int(self.chain.w3.eth.get_balance(Web3.to_checksum_address(self.cfg.owner)))
+        if have_wei < need_wei:
+            raise RuntimeError(
+                f"wallet holds {have_wei / 1e18:.6f} ETH, below the {need_wei / 1e18:.6f} ETH gas reserve"
+            )
+        fresh = self.chain.position(token_id, owner_hint=self.cfg.owner)
+        with defer_sigint():
+            try:
+                res = rb.withdraw(fresh, LiveRunner(self.chain, signer, tokens, self.cfg.execution, pos.pool.address))
+            except RebalanceError as e:
+                self._record_withdraw(token_id, e.partial, error=str(e))
+                raise
+        self._record_withdraw(token_id, res)
+        return pos, res, sim_gas_usd
+
+    def _record_withdraw(self, token_id: int, result: RebalanceResult, error: str = "") -> None:
+        for slot in self.state.slots.values():
+            if slot.current_token_id == token_id:
+                entry: dict[str, Any] = {
+                    "ts": time.time(),
+                    "withdrawn": token_id,
+                    "tx": result.tx_hashes,
+                    "stages": result.stages,
+                }
+                if error:
+                    entry["error"] = error
+                slot.history.append(entry)
+        self.state.save()
+
     def _record_rebalance(self, slot: SlotState, ev: Evaluation, result: RebalanceResult, error: str = "") -> None:
         """Point the slot at the newly minted NFT and log the rebalance."""
         new = ev.decision.new_range

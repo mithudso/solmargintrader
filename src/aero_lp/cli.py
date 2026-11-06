@@ -164,6 +164,41 @@ def cmd_simulate(a: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_withdraw(a: argparse.Namespace) -> int:
+    cfg, eng = _engine(a)
+    tid = a.token_id or (eng.state.slot(cfg.token_ids[0]).current_token_id if cfg.token_ids else None)
+    if not tid:
+        print("no token id: pass --token-id")
+        return 1
+    signer = None
+    if a.live:
+        from .wallet import load_signer
+
+        problems = eng.chain.verify_deployment()
+        if problems:
+            print("refusing live mode:\n" + "\n".join(problems))
+            return 2
+        signer = load_signer(cfg.owner, cfg.key_file or None)
+        print(f"LIVE: withdrawing #{tid} to {signer.address}")
+    else:
+        print(f"DRY RUN: simulating withdrawal of #{tid}. Add --live to sign and broadcast.")
+    try:
+        pos, res, gas_usd = eng.withdraw(tid, a.live, signer)
+    except RebalanceError as e:
+        print(f"WITHDRAW FAILED: {e}", file=sys.stderr)
+        _print_result(e.partial)
+        return 1
+    t0, t1 = pos.pool.token0, pos.pool.token1
+    r0, r1 = res.amounts_in_position
+    print(f"   position #{pos.token_id} {t0.symbol}/{t1.symbol} CL{pos.pool.tick_spacing} staked={pos.staked}")
+    print(
+        f"   {'received' if a.live else 'would receive'}: {fmt_amount(r0, t0.decimals)} {t0.symbol} + "
+        f"{fmt_amount(r1, t1.decimals)} {t1.symbol}   (simulated gas ${gas_usd:.3f})"
+    )
+    _print_result(res)
+    return 0
+
+
 def cmd_run(a: argparse.Namespace) -> int:
     cfg, eng = _engine(a)
     signer = None
@@ -270,12 +305,15 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--owner", required=True)
     p.add_argument("--pool", action="append", help="pool address whose gauge to scan for staked positions")
     p.set_defaults(fn=cmd_positions)
-    for name, fn in (("status", cmd_status), ("simulate", cmd_simulate), ("run", cmd_run)):
+    for name, fn in (("status", cmd_status), ("simulate", cmd_simulate), ("run", cmd_run), ("withdraw", cmd_withdraw)):
         p = sub.add_parser(name)
         p.add_argument("-c", "--config", default="config.toml")
         if name == "simulate":
             p.add_argument("--force", action="store_true", help="simulate a rebalance even if not triggered")
             p.add_argument("--token-id", type=int)
+        if name == "withdraw":
+            p.add_argument("--token-id", type=int, help="position to exit (default: first configured slot)")
+            p.add_argument("--live", action="store_true", help="sign and broadcast transactions")
         if name == "run":
             p.add_argument("--live", action="store_true", help="sign and broadcast transactions")
             p.add_argument("--once", action="store_true")

@@ -343,6 +343,64 @@ class Rebalancer:
             where = res.stages[-1] if res.stages else "start"
             raise RebalanceError(f"rebalance failed after stage '{where}': {e}", res) from e
 
+    def _exit(
+        self,
+        pos: PositionState,
+        runner: Runner,
+        res: RebalanceResult,
+        start: dict[str, int],
+        deadline: Callable[[], int],
+        slip: float,
+        on_stage: StageHook,
+    ) -> StageResult:
+        """Unstake (if staked) and remove all liquidity + collect + burn. Shared by rebalance and withdraw."""
+        if pos.staked:
+            g = self.chain.gauge_contract(pos.pool.gauge)
+            r = runner.execute([PlannedTx("gauge.withdraw", g.address, g.encode_abi("withdraw", args=[pos.token_id]))])
+            res.stages.append("unstake")
+            res.tx_hashes += r.tx_hashes
+            res.aero_claimed = r.balances[addresses.AERO_TOKEN] - start[addresses.AERO_TOKEN]
+            if res.aero_claimed <= 0 and pos.earned_aero > 0:
+                res.notes.append(
+                    "no AERO arrived on unstake although some had accrued: the gauge either applied the early-exit "
+                    "penalty or deferred the reward (check gauge.deferredEmissions(owner))"
+                )
+            on_stage("unstake", res)
+        r = runner.execute([self.remove_calls(pos, deadline(), slip)])
+        res.stages.append("remove")
+        res.tx_hashes += r.tx_hashes
+        on_stage("remove", res)
+        return r
+
+    def withdraw(self, pos: PositionState, runner: Runner, on_stage: StageHook | None = None) -> RebalanceResult:
+        """Exit the position to the wallet: unstake, remove all liquidity, collect fees, burn the empty NFT.
+
+        `amounts_in_position` holds the token0/token1 amounts *received* by the wallet.
+        """
+        res = RebalanceResult(None, False, [], [], {})
+        hook = on_stage or (lambda stage, r: None)
+        t0, t1 = pos.pool.token0.address, pos.pool.token1.address
+        tokens = runner_tokens(t0, t1)
+        try:
+            start = dict(zip(tokens, self.chain.erc20_balances(self.owner, tokens), strict=True))
+            r = self._exit(
+                pos,
+                runner,
+                res,
+                start,
+                lambda: runner.block_timestamp() + self.cfg.deadline_s,
+                self.cfg.max_slippage_bps / 1e4,
+                hook,
+            )
+            res.amounts_in_position = (max(0, r.balances[t0] - start[t0]), max(0, r.balances[t1] - start[t1]))
+            res.gas_used = dict(getattr(runner, "gas_used", {}))
+            return res
+        except Exception as e:
+            res.tx_hashes = list(getattr(runner, "sent_hashes", None) or res.tx_hashes)
+            res.gas_used = dict(getattr(runner, "gas_used", {}))
+            where = res.stages[-1] if res.stages else "start"
+            raise RebalanceError(f"withdraw failed after stage '{where}': {e}", res) from e
+
     def _run(
         self,
         pos: PositionState,
@@ -366,26 +424,10 @@ class Rebalancer:
             # expired deadline after the old NFT is already burned.
             return runner.block_timestamp() + self.cfg.deadline_s
 
-        if pos.staked:
-            g = self.chain.gauge_contract(pool.gauge)
-            r = runner.execute([PlannedTx("gauge.withdraw", g.address, g.encode_abi("withdraw", args=[pos.token_id]))])
-            res.stages.append("unstake")
-            res.tx_hashes += r.tx_hashes
-            res.aero_claimed = r.balances[addresses.AERO_TOKEN] - start[addresses.AERO_TOKEN]
-            if res.aero_claimed <= 0 and pos.earned_aero > 0:
-                res.notes.append(
-                    "no AERO arrived on unstake although some had accrued: the gauge either applied the early-exit "
-                    "penalty or deferred the reward (check gauge.deferredEmissions(owner))"
-                )
-            on_stage("unstake", res)
-
-        r = runner.execute([self.remove_calls(pos, deadline(), slip)])
-        res.stages.append("remove")
-        res.tx_hashes += r.tx_hashes
+        r = self._exit(pos, runner, res, start, deadline, slip, on_stage)
         got0, got1 = max(0, r.balances[t0] - start[t0]), max(0, r.balances[t1] - start[t1])
         if t0 == addresses.AERO_TOKEN or t1 == addresses.AERO_TOKEN:
             res.notes.append("pool contains AERO: claimed AERO is included in the redeposit")
-        on_stage("remove", res)
         if r.sqrt_price_x96:
             drift = abs(clmath_tick(r.sqrt_price_x96) - pool.tick)
             if drift > self.cfg.max_stage_drift_bps:

@@ -460,3 +460,39 @@ def test_missing_aero_on_unstake_is_flagged():
         pos, Range(-199700, -198700), True, NoAeroRunner(pos, pos.pool.sqrt_price_x96), 2232, 1
     )
     assert res.aero_claimed == 0 and any("deferredEmissions" in n for n in res.notes)
+
+
+def test_withdraw_staked_position_unstakes_removes_and_reports_received_amounts():
+    pos = make_position(staked=True)
+    runner = FakeRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).withdraw(pos, runner)
+    assert res.stages == ["unstake", "remove"]
+    assert [t.label for t in runner.txs] == ["gauge.withdraw", "remove liquidity + collect + burn"]
+    assert res.amounts_in_position == (pos.amount0, pos.amount1)
+    assert res.aero_claimed == 5 * 10**18 and res.new_token_id is None
+
+
+def test_withdraw_unstaked_position_has_no_gauge_step():
+    pos = make_position(staked=False)
+    runner = FakeRunner(pos, pos.pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).withdraw(pos, runner)
+    assert res.stages == ["remove"] and len(runner.txs) == 1
+
+
+def test_withdraw_failure_is_wrapped_with_partial_result():
+    from aero_lp.executor import RebalanceError
+
+    pos = make_position(staked=True)
+
+    class FailRemove(FakeRunner):
+        def execute(self, txs):
+            if any(t.label.startswith("remove") for t in txs):
+                raise RuntimeError("reverted: PSC")
+            return super().execute(txs)
+
+    try:
+        Rebalancer(FakeChain(), OWNER, ExecConfig()).withdraw(pos, FailRemove(pos, pos.pool.sqrt_price_x96))
+    except RebalanceError as e:
+        assert e.partial.stages == ["unstake"] and "withdraw failed" in str(e)
+    else:
+        raise AssertionError("expected RebalanceError")
