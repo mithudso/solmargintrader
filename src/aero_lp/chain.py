@@ -342,6 +342,8 @@ class AeroChain:
             ]
             if owner_hint:
                 calls.append(Call(g, "earned", (owner, [token_id]), True))
+                # AERO whose mint reverted during an earlier withdraw/claim is parked here, not paid out.
+                calls.append(Call(g, "deferredEmissions", (owner,), True))
             res = self.multicall(calls, block=head)
             st.fees0 = st.fees1 = 0
             st.deposit_block = int(res[0])
@@ -349,6 +351,7 @@ class AeroChain:
                 st.penalty_min_blocks, st.penalty_rate = int(res[1][0]), res[1][1] / res[2]
             if owner_hint:
                 st.earned_aero = int(res[3] or 0)
+                st.extra["deferred_aero"] = int(res[4] or 0)
         return st
 
     def positions_of(self, owner: str, pools: list[str] | None = None) -> list[int]:

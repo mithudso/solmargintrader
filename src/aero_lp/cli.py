@@ -46,7 +46,10 @@ def _print_eval(ev: Evaluation) -> None:
             f"   unclaimed AERO {p.earned_aero / 1e18:,.4f}   gauge penalty {p.penalty_rate:.0%} "
             f"within {p.penalty_min_blocks} blocks of deposit ({left} blocks left)"
         )
-    else:
+    deferred = p.extra.get("deferred_aero", 0)
+    if deferred:
+        print(f"   deferred AERO {deferred / 1e18:,.4f} held by the gauge (an earlier reward mint reverted)")
+    if not p.staked:
         print(
             f"   uncollected fees {fmt_amount(p.fees0, pool.token0.decimals)} {t0} + "
             f"{fmt_amount(p.fees1, pool.token1.decimals)} {t1}"

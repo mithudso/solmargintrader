@@ -442,3 +442,21 @@ def test_hook_exception_aborts_with_partial_result():
         assert e.partial.stages == ["unstake", "remove"]
     else:
         raise AssertionError("expected RebalanceError")
+
+
+def test_missing_aero_on_unstake_is_flagged():
+    pos = make_position(staked=True)
+    pos.earned_aero = 3 * 10**18
+
+    class NoAeroRunner(FakeRunner):
+        def execute(self, txs):
+            r = super().execute(txs)
+            if any(t.label == "gauge.withdraw" for t in txs):
+                self.bal[AERO] -= 5 * 10**18  # undo the fake payout: reward deferred / forfeited
+                r = StageResult(r.logs, dict(self.bal), sqrt_price_x96=self.sqrt_p)
+            return r
+
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).rebalance(
+        pos, Range(-199700, -198700), True, NoAeroRunner(pos, pos.pool.sqrt_price_x96), 2232, 1
+    )
+    assert res.aero_claimed == 0 and any("deferredEmissions" in n for n in res.notes)

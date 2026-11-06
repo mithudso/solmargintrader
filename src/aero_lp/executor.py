@@ -372,6 +372,11 @@ class Rebalancer:
             res.stages.append("unstake")
             res.tx_hashes += r.tx_hashes
             res.aero_claimed = r.balances[addresses.AERO_TOKEN] - start[addresses.AERO_TOKEN]
+            if res.aero_claimed <= 0 and pos.earned_aero > 0:
+                res.notes.append(
+                    "no AERO arrived on unstake although some had accrued: the gauge either applied the early-exit "
+                    "penalty or deferred the reward (check gauge.deferredEmissions(owner))"
+                )
             on_stage("unstake", res)
 
         r = runner.execute([self.remove_calls(pos, deadline(), slip)])
