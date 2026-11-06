@@ -43,7 +43,16 @@ SUITES: dict[str, tuple[str, str]] = {
 # Docs that quote a test count, and the suite each quoted number belongs to.
 # The pattern is the count immediately followed by "tests" on the same line as
 # the suite's discover command, or in a heading naming the suite.
-COUNT_DOCS = ("README.md", "CLAUDE.md", "docs/TESTING.md", "docs/ARCHITECTURE.md")
+COUNT_DOCS = (
+    "README.md",
+    "CLAUDE.md",
+    "docs/TESTING.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DEVELOPMENT.md",
+    "docs/integrations-and-assumptions.md",
+    "GEMINI.md",
+    ".github/copilot-instructions.md",
+)
 
 INDEX_JSON = "docs/high_signal_file_index.json"
 OVERVIEW_MD = "docs/codebase-overview.md"
@@ -302,7 +311,7 @@ def check_components_covered() -> list[str]:
     text = path.read_text(encoding="utf-8").lower()
     return [
         f"{OVERVIEW_MD}: no section for component {name}/"
-        for name in ("backtester", "research", "extension", "soltui", "mongo")
+        for name in ("backtester", "research", "extension", "soltui", "mongo", "liquidity")
         if f"{name}/" not in text
     ]
 

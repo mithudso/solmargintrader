@@ -5,12 +5,14 @@
     "backtester",
     "research",
     "extension",
-    "soltui"
+    "soltui",
+    "mongo",
+    "liquidity"
   ],
   "files": [
     {
       "path": "mongo",
-      "component": "repo",
+      "component": "mongo",
       "kind": "directory",
       "summary": "Python 3.13 + pymongo | No \u2014 a derived datastore, rebuildable"
     },
@@ -37,6 +39,12 @@
       "component": "extension",
       "kind": "directory",
       "summary": "JavaScript (ESM, no deps) | Yes"
+    },
+    {
+      "path": "liquidity",
+      "component": "liquidity",
+      "kind": "directory",
+      "summary": "Python 3.13 + web3 (own venv) | Yes \u2014 live Aero LP daemon (owner-authorized)"
     },
     {
       "path": "backtester/cli.py",
@@ -599,7 +607,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 1975
+      "lines": 2136
     },
     {
       "path": "soltui/signals.py",
@@ -662,14 +670,14 @@
       "component": "soltui",
       "kind": "other",
       "summary": "status / start / stop / build / install for the launchd agent",
-      "lines": 348
+      "lines": 350
     },
     {
       "path": "soltui/README.md",
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 167
+      "lines": 192
     },
     {
       "path": "soltui/tests",
@@ -679,91 +687,91 @@
     },
     {
       "path": "mongo/README.md",
-      "component": "repo",
+      "component": "mongo",
       "kind": "markdown",
       "summary": "Entry point: setup, collection map, question -> query index",
       "lines": 171
     },
     {
       "path": "mongo/schema.py",
-      "component": "repo",
+      "component": "mongo",
       "kind": "python",
       "summary": "Collection specs, $jsonSchema validators, indexes. --describe needs no server",
       "lines": 465
     },
     {
       "path": "mongo/load.py",
-      "component": "repo",
+      "component": "mongo",
       "kind": "python",
       "summary": "The loader. Drops and rebuilds, stamping provenance on every document",
       "lines": 793
     },
     {
       "path": "mongo/requirements.txt",
-      "component": "repo",
+      "component": "mongo",
       "kind": "text",
       "summary": "pymongo, kept out of backtester/requirements.txt on purpose",
       "lines": 5
     },
     {
       "path": "mongo/tests/test_load.py",
-      "component": "repo",
+      "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
       "lines": 329
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",
-      "component": "repo",
+      "component": "mongo",
       "kind": "javascript",
       "summary": "Price history, staleness, per-coin return, biggest drops",
       "lines": 109
     },
     {
       "path": "mongo/queries/02-strategies-and-cards.js",
-      "component": "repo",
+      "component": "mongo",
       "kind": "javascript",
       "summary": "The inventory, warm-up cost, what is buildable next",
       "lines": 104
     },
     {
       "path": "mongo/queries/03-signals-and-indicators.js",
-      "component": "repo",
+      "component": "mongo",
       "kind": "javascript",
       "summary": "Rule definitions and which mirror a strategy's defaults",
       "lines": 71
     },
     {
       "path": "mongo/queries/04-decisions.js",
-      "component": "repo",
+      "component": "mongo",
       "kind": "javascript",
       "summary": "Per-bar readouts and where strategy families disagree",
       "lines": 130
     },
     {
       "path": "mongo/queries/05-backtests.js",
-      "component": "repo",
+      "component": "mongo",
       "kind": "javascript",
       "summary": "Manifests, per-strategy metrics, drawdown, fills",
       "lines": 118
     },
     {
       "path": "mongo/queries/06-experiments-and-pbo.js",
-      "component": "repo",
+      "component": "mongo",
       "kind": "javascript",
       "summary": "CPCV, sweeps, and PBO -- read this before any Sharpe",
       "lines": 150
     },
     {
       "path": "mongo/queries/07-documents-and-search.js",
-      "component": "repo",
+      "component": "mongo",
       "kind": "javascript",
       "summary": "Full-text search over the write-ups",
       "lines": 74
     },
     {
       "path": "mongo/queries/08-provenance-and-health.js",
-      "component": "repo",
+      "component": "mongo",
       "kind": "javascript",
       "summary": "Trace a number to a file; check the store is sane",
       "lines": 124
@@ -773,7 +781,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 102
+      "lines": 129
     },
     {
       "path": "AGENTS.md",
@@ -801,7 +809,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui and doc-drift jobs",
-      "lines": 218
+      "lines": 240
     },
     {
       "path": "scripts/check_docs.py",
@@ -822,6 +830,83 @@
       "kind": "markdown",
       "summary": "Session handoff notes",
       "lines": 92
+    },
+    {
+      "path": "liquidity/README.md",
+      "component": "liquidity",
+      "kind": "markdown",
+      "summary": "How pools are judged, quick start, the daemon loop, safety",
+      "lines": 154
+    },
+    {
+      "path": "liquidity/CLAUDE.md",
+      "component": "liquidity",
+      "kind": "markdown",
+      "summary": "Owner's live-operation authorization and its limits",
+      "lines": 52
+    },
+    {
+      "path": "liquidity/STATE_FILES.md",
+      "component": "liquidity",
+      "kind": "markdown",
+      "summary": "status.json / scout.json / KILL contract with soltui",
+      "lines": 143
+    },
+    {
+      "path": "liquidity/src/aero_lp/metrics.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Every profitability measure for one pool",
+      "lines": 437
+    },
+    {
+      "path": "liquidity/src/aero_lp/scout.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Candidate discovery and ranking",
+      "lines": 155
+    },
+    {
+      "path": "liquidity/src/aero_lp/allocator.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Pure deploy / experiment / graduation decisions",
+      "lines": 188
+    },
+    {
+      "path": "liquidity/src/aero_lp/ledger.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "SQLite P&L ledger",
+      "lines": 352
+    },
+    {
+      "path": "liquidity/src/aero_lp/daemon.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "The loop: manage, compound, scout, allocate, status",
+      "lines": 1080
+    },
+    {
+      "path": "liquidity/src/aero_lp/executor.py",
+      "component": "liquidity",
+      "kind": "python",
+      "summary": "Transaction sequences; SimRunner (eth_simulateV1) and LiveRunner",
+      "lines": 935
+    },
+    {
+      "path": "liquidity/scripts/aero-lp-service",
+      "component": "liquidity",
+      "kind": "other",
+      "summary": "launchd install / status / kill / resume",
+      "lines": 58
+    },
+    {
+      "path": ".claude/agents/aero-pool-scout.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Read-only research agent that second-guesses the scout",
+      "lines": 41
     }
   ]
 }

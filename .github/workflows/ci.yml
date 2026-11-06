@@ -178,7 +178,7 @@ jobs:
       # Counting is by unittest DISCOVERY, which imports each test module -- so the
       # suites' own dependencies are required here even though no test runs. Without
       # them every backtester module fails to import, each becomes a single
-      # `_FailedTest`, and the count lands at 31 instead of 499: this job would then
+      # `_FailedTest`, and the count collapses to a handful: this job would then
       # report drift against docs that are correct. Verified by running it in a bare
       # virtualenv.
       - name: Install the suites' dependencies
@@ -187,12 +187,6 @@ jobs:
           grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
           pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
           pip install -r mongo/requirements.txt
-
-      - name: Install dependencies
-        run: |
-          pip install -r backtester/requirements.txt
-          grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
-          pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
 
       - name: Test counts and retrieval indexes agree with the repo
         run: python3 scripts/check_docs.py
