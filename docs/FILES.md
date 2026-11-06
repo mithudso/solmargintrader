@@ -2613,18 +2613,6 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
-#### `extension/src/jupiter/websocket.js`
-
-`code-js` · 95 lines · 2,377 B · description: **extracted**
-
-**Purpose.** Jupiter / Solana native RPC WebSocket integration. Subscribes to account/log events for real-time trade data and execution feedback without polling.
-
-**Contents.** Defines `class JupiterWebsocket`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-### `extension/src/storage/`
-
 #### `extension/src/storage/fileStore.js`
 
 `code-js` · 157 lines · 4,443 B · description: **extracted**
@@ -2710,26 +2698,6 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 **Purpose.** Venue layer. The grid engine is venue-agnostic: it emits intents, and a venue adapter turns them into orders. That seam exists because the two candidate venues on Jupiter are in very different states of readiness: Trigger V2 — REST, returns signable transactions. Live-capable today. SPOT. Perps — NO public REST write API as of 2026-08-04.
 
 **Contents.** Defines `MODE`, `buildVenue`, `class DryRunVenue`, `class NotImplemented`, `class PerpsVenueReadOnly`, `leverageFeasibility`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `extension/src/venues/jupiterLiveVenue.js`
-
-`code-js` · 86 lines · 2,580 B · description: **extracted**
-
-**Purpose.** Live Jupiter execution venue (standard Swaps).
-
-**Contents.** Defines `class JupiterLiveVenue`.
-
-**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
-
-#### `extension/src/venues/krakenVenue.js`
-
-`code-js` · 154 lines · 4,955 B · description: **extracted**
-
-**Purpose.** Kraken REST and WebSocket venue adapter. Handles live order execution and margin capabilities on Kraken.
-
-**Contents.** Defines `class KrakenVenue`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
