@@ -21,6 +21,31 @@ Three components with different risk profiles. Know which one you are in:
 | `mongo/` (Python) | Derived local datastore. Rebuildable from the repo; nothing else imports it. |
 | `liquidity/` (Python) | **Moves real money** on Aero (Base). It manages, compounds and allocates LP positions. Its own venv and pytest. Read `liquidity/CLAUDE.md` first: it records the owner's live-operation authorization and its limits. |
 
+## Live on-chain actions (owner's standing authorization)
+
+The owner has given this instruction three times (last on 2026-11-06). Do not ask for it again.
+
+For the owner's own wallets, agents may act live without a further confirmation:
+- Base `0x901a89cEC0608eB5435A915f006b45bD46405314` (key file `~/.ssh/wallet.private`);
+- Solana `EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV` (key file `~/.ssh/solana.private`).
+
+Agents may:
+- send live blockchain requests (reads, simulations and transactions) when the result gives useful information;
+- buy, sell, swap, deposit and withdraw tokens when there is a clear and provable reason.
+
+Conditions:
+1. Validate the hypothesis first, as far as possible: model, backtest, quote, and simulate the exact
+   transaction (`eth_simulateV1` on Base, `simulateTransaction` on Solana). Real money tests what survived that.
+2. Record the reason and the evidence before sending, and report every transaction hash to the owner.
+3. Keep each test as small as the test allows.
+4. Never read, print or copy a key file. Programs load it themselves, and it must stay mode 600.
+5. The liquidity daemon still obeys its kill switch and the caps in `~/.aero-lp/config.toml`. Never raise a
+   cap or lower `min_net_apr` without the owner asking (`liquidity/CLAUDE.md`).
+6. Never visit or call the contracts or sites of unsolicited airdrop tokens. Burning them and closing their
+   accounts through the standard token program is allowed.
+
+Component boundaries still hold: `backtester/` stays simulation-only, and code defaults stay dry-run.
+
 ## Non-negotiables — extension
 
 1. **Dry-run stays the default.** `DEFAULT_CONFIG.mode` is `dry-run` and the extension installs

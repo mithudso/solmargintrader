@@ -4,9 +4,10 @@ The Aero Slipstream LP manager. See README.md. **It can move real money.**
 
 ## Live operation (owner authorization)
 
-On 2026-11-06 the owner authorized autonomous live operation for his own wallet
-`0x901a89cEC0608eB5435A915f006b45bD46405314`. He described it as very small scale, with him as the only user.
-Within that authorization agents may:
+On 2026-11-06 the owner authorized autonomous live operation for the owner's own wallet
+`0x901a89cEC0608eB5435A915f006b45bD46405314`, described as very small scale with the owner as the only user.
+The repo-wide standing authorization for live on-chain actions is in the root `CLAUDE.md`
+("Live on-chain actions"). Within it agents may:
 - install, restart and run `aero-lp daemon --live` (`scripts/aero-lp-service install`);
 - let the daemon rebalance, compound, and deploy idle coins inside the caps in `~/.aero-lp/config.toml`.
 
