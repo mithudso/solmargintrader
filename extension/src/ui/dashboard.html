@@ -117,6 +117,30 @@
     </section>
 
     <section>
+      <h2>Session key</h2>
+      <p class="note">
+        Creates a dedicated signing key for <code>full-auto</code> mode, encrypted under your
+        passphrase in <code>chrome.storage.local</code>. The passphrase is never stored: if you lose
+        it, the key cannot be reopened. Fund the address shown with grid working capital only.
+      </p>
+      <form id="sessionKeyForm" class="grid-form" autocomplete="off">
+        <label>Passphrase (12+ characters)
+          <input name="passphrase" type="password" autocomplete="new-password" />
+        </label>
+        <label>Confirm passphrase
+          <input name="confirmPassphrase" type="password" autocomplete="new-password" />
+        </label>
+        <label>
+          <input name="acknowledged" type="checkbox" />
+          I understand this replaces any existing session key; funds left in the old one stay
+          unreachable unless I have backed it up.
+        </label>
+        <button type="submit" class="primary">Create session key</button>
+      </form>
+      <p id="sessionKeyResult" class="note" role="status"></p>
+    </section>
+
+    <section>
       <h2>Order journal</h2>
       <table id="intents">
         <thead>
