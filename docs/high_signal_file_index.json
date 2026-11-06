@@ -1109,7 +1109,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Bounded code audit, regressions, review dissent and verification limits",
-      "lines": 898
+      "lines": 903
     },
     {
       "path": "docs/code-optimizer-scope-2026-11-06.json",
