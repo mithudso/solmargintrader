@@ -154,7 +154,13 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
         await Promise.race([exit, sleep(EXIT_GRACE_MS)]);
       }
     }
-    fs.rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    // Chrome's helper processes can still be flushing into the profile for a moment.
+    // A leftover temp directory must not turn a finished run into a failure.
+    try {
+      fs.rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+    } catch (err) {
+      console.warn(`e2e: could not remove ${profile}: ${err.code ?? err.message}`);
+    }
   };
 
   let extensionId;

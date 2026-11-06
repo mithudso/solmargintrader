@@ -155,11 +155,16 @@ try {
     assert(t, 'no service_worker target for src/bg/service-worker.js');
     const sessionId = await browser.attach(t.targetId);
     await browser.call('Runtime.enable', {}, sessionId);
+    // On Linux the target is listed before the worker's global scope exists, so an
+    // immediate evaluate sees no `chrome`. Wait until the extension API is there.
+    const ready = await browser.waitFor(() =>
+      browser.evaluate(sessionId, `typeof chrome !== 'undefined' && typeof chrome.runtime?.id === 'string'`).catch(() => false),
+    );
+    assert(ready, 'worker never exposed chrome.runtime');
     // Intercept at the browser, below the extension's own code, so the audit
     // cannot be fooled by anything the worker does to `fetch`.
     await browser.call('Fetch.enable', { patterns: [{ urlPattern: '*' }] }, sessionId);
     sw = { sessionId, ev: (expr) => browser.evaluate(sessionId, expr) };
-    assert((await sw.ev('typeof chrome.runtime.id')) === 'string', 'worker has no chrome.runtime');
   });
   if (!sw) throw new Error('cannot continue without the service worker');
 
