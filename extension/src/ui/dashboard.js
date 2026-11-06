@@ -9,6 +9,11 @@
 
 import { snapshot, equityCurve, maxDrawdown, fillsToCsv } from '../core/pnl.js';
 import { gridLevels, capitalRequirement } from '../core/grid.js';
+import {
+  validateSessionKeyInputs,
+  buildCreateSessionKeyMessage,
+  describeCreateResult,
+} from './session-key-form.js';
 import { attributionLine, attributionDetail } from '../jupiter/attribution.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -322,6 +327,36 @@ $('#keyForm').addEventListener('submit', async (e) => {
   await send({ type: 'setApiKey', apiKey: input.value });
   input.value = ''; // do not leave the key sitting in the DOM
   await refresh();
+});
+
+$('#sessionKeyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = $('#sessionKeyForm');
+  const out = $('#sessionKeyResult');
+  const clear = () => {
+    // Success or failure, never leave the passphrase sitting in the DOM.
+    form.elements.passphrase.value = '';
+    form.elements.confirmPassphrase.value = '';
+    form.elements.acknowledged.checked = false;
+  };
+  const problem = validateSessionKeyInputs({
+    passphrase: form.elements.passphrase.value,
+    confirmPassphrase: form.elements.confirmPassphrase.value,
+    acknowledged: form.elements.acknowledged.checked,
+  });
+  if (problem) {
+    clear();
+    out.textContent = problem;
+    return;
+  }
+  const message = buildCreateSessionKeyMessage(form.elements.passphrase.value);
+  clear();
+  try {
+    out.textContent = describeCreateResult(await send(message)).text;
+  } catch (err) {
+    // err.message comes from the runtime, not from our inputs; it holds no passphrase.
+    out.textContent = `Failed: ${err.message}`;
+  }
 });
 
 $('#exportCsv').addEventListener('click', () => {
