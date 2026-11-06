@@ -439,7 +439,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 178
+      "lines": 230
     },
     {
       "path": "extension/src/jupiter/http.js",
@@ -481,7 +481,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Venue selection",
-      "lines": 245
+      "lines": 256
     },
     {
       "path": "extension/src/wallet/solana.js",
@@ -551,7 +551,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The headless integration gate \u2014 a round trip must close positive",
-      "lines": 149
+      "lines": 162
     },
     {
       "path": "extension/tools/verify-endpoints.js",
@@ -781,14 +781,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 129
+      "lines": 148
     },
     {
       "path": "AGENTS.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Points at CLAUDE.md",
-      "lines": 14
+      "lines": 16
     },
     {
       "path": "GEMINI.md",

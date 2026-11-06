@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T13:24:32+00:00",
+  "generatedAt": "2026-11-06T15:29:26+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 241,
+      "matchingFiles": 243,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 201,
+      "matchingFiles": 200,
       "shown": 30,
       "files": [
         {
@@ -201,12 +201,12 @@
           "hits": 79
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 75
-        },
-        {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
           "hits": 72
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 71
         },
         {
           "path": "research/coin-intelligence/hype-hyperliquid.md",
@@ -245,11 +245,11 @@
           "hits": 30
         },
         {
-          "path": "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
-          "hits": 26
+          "path": "extension/src/venues/index.js",
+          "hits": 27
         },
         {
-          "path": "extension/src/venues/index.js",
+          "path": "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
           "hits": 26
         },
         {
@@ -988,7 +988,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 140,
+      "matchingFiles": 141,
       "shown": 30,
       "files": [
         {
