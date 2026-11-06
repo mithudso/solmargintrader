@@ -1,0 +1,38 @@
+#!/bin/zsh
+# soltui launcher: `soltui` opens the console from anywhere.
+#
+#   soltui              the console (python -m soltui.tui)
+#   soltui app          the macOS menu-bar indicator (python -m soltui.app)
+#   soltui serve        the console in a browser window (python -m soltui.serve)
+#   soltui <module> ... any other soltui module, e.g. `soltui bgworker --asset SOL`
+#
+# Install once:  ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui   (from the repo root)
+#
+# The interpreter is $SOLTUI_PYTHON, else ~/.venvs/soltui/bin/python, else python3. The console needs
+# textual and the backtester's numpy/pandas (soltui/requirements.txt + backtester/requirements.txt), which a
+# bare system python3 usually lacks. The repo root is found from this file's real location, so the symlink
+# can live anywhere on PATH. It cds there because soltui reads data/ and results/ relative to the repo.
+set -euo pipefail
+
+SELF="${0:A}"                 # resolves symlinks
+REPO="${SELF:h:h:h}"          # <repo>/soltui/bin/soltui -> <repo>
+PY="${SOLTUI_PYTHON:-$HOME/.venvs/soltui/bin/python}"
+[[ -x "$PY" ]] || PY="$(command -v python3)"
+
+module="tui"
+if [[ $# -gt 0 && "$1" != -* ]]; then
+  module="$1"
+  shift
+fi
+if [[ ! -f "$REPO/soltui/$module.py" ]]; then
+  echo "soltui: no module soltui.$module (try: soltui, soltui app, soltui serve)" >&2
+  exit 2
+fi
+if ! "$PY" -c "import textual" 2>/dev/null; then
+  echo "soltui: $PY cannot import textual. Set up the environment once:" >&2
+  echo "  uv venv ~/.venvs/soltui -p 3.13 && uv pip install -p ~/.venvs/soltui/bin/python \\" >&2
+  echo "    -r $REPO/backtester/requirements.txt -r $REPO/soltui/requirements.txt" >&2
+  exit 1
+fi
+cd "$REPO"
+exec "$PY" -m "soltui.$module" "$@"

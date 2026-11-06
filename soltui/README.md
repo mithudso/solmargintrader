@@ -13,11 +13,19 @@ wiring shell.
 
 ```bash
 cd /Users/mitch.hudson/dev/solmargintrader
-pip install -r soltui/requirements.txt
+uv venv ~/.venvs/soltui -p 3.13
+uv pip install -p ~/.venvs/soltui/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
+ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui    # once; ~/.local/bin must be on PATH
 
-python3 -m soltui.tui     # the thirteen-tab console
-python3 -m soltui.app     # the macOS menu-bar indicator (needs rumps)
+soltui          # the thirteen-tab console, from any directory
+soltui app      # the macOS menu-bar indicator (needs rumps)
+soltui serve    # the console in a browser window
 ```
+
+`soltui` is [`soltui/bin/soltui`](bin/soltui). It finds the repo through the
+symlink, changes to the repo root and runs `python -m soltui.<module>` with
+`$SOLTUI_PYTHON`, else `~/.venvs/soltui/bin/python`, else `python3`. Without the
+launcher, `python3 -m soltui.tui` from the repo root still works.
 
 The TUI needs price data. If a sweep reports "no data", fetch it:
 
