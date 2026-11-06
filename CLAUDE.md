@@ -134,7 +134,7 @@ unconfirmed. Do not present any of them as working.
 
 | File | Path | Holds | Ask it for |
 |---|---|---|---|
-| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs from /dr research runs of 2026-11-06, for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Evidence status: research claims ungated (v4 evidence gate not passed; a 10-claim sample per run: 113 of 121 SUPPORTED, 7 UNVERIFIED, 1 CONTRADICTED), so treat every line as a lead with a cited source. Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
+| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Every unit in the -v4 packs passed the research-gate/v4 evidence gate on 2026-11-06 (708 claims kept of about 5,000 researched; the rest could not be bound to exact source quotes or were not judged SUPPORTED). Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
 
 ### Quick answers
 
