@@ -133,7 +133,10 @@ including between "write the intent" and "the venue accepted the order". Two mec
    call. A worker that dies mid-submit leaves a record.
 2. **Reconcile before plan, every tick.** The venue's live order list is the source of truth; local
    state is only a cache. An intent marked `submitting` that is *not* live becomes `unknown` and is
-   **never auto-retried** — auto-retry is exactly how you double-fire a rung after a crash. Live
+   **never auto-retried** — auto-retry is exactly how you double-fire a rung after a crash. `tick()`
+   holds every `unknown` rung out of planning and re-centring (result reason
+   `unknown-intent-needs-review`, key list in `unknownIntents`) until a fill arrives or a human runs
+   `resolveIntent --intentKey <key> --confirm`. Live
    orders with no journal entry are adopted so they occupy cap space.
 
 Rung identity is derived from `(gridId, side, level)`, the only things the venue echoes back.
@@ -257,7 +260,7 @@ gross $10.00, fees $1.05, **net $8.95**; with $2.00 carry, **realized $6.95**.
 
 ## Three surfaces, one registry
 
-Every action lives in `src/core/commands.js` (22 commands). The Chrome message handler, the CLI and
+Every action lives in `src/core/commands.js` (23 commands). The Chrome message handler, the CLI and
 the HTTP API are thin adapters over it, so anything you can do in the UI you can script — and
 `test/surfaces.test.js` fails the build if any surface drifts.
 

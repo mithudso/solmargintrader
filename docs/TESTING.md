@@ -30,7 +30,7 @@ nothing caught it.
 | Crypto | Sealed-seed round trip; wrong passphrase fails closed; fresh salt and IV per seal; Ed25519 signing |
 | **Surface parity** | Every command routable over the API; `GET` restricted to read-only; CLI help lists all commands and every argument; UI messages all map to real commands |
 
-The parity suite probes all 22 commands with a deliberately invalid argument, which proves the route
+The parity suite probes all 23 commands with a deliberately invalid argument, which proves the route
 resolved **without executing the handler** — no side effects, no network calls.
 
 ## What is NOT covered

@@ -173,6 +173,31 @@ test('reset refuses without confirmation and works with it', async () => {
   assert.match(result.note, /NOT cancelled/);
 });
 
+test('resolveIntent releases only UNKNOWN intents and only with confirm', async () => {
+  const deps = testDeps();
+  await deps.store.putIntent({ intentKey: 'k-unk', status: 'unknown', side: 'buy', level: 1 });
+  await deps.store.putIntent({ intentKey: 'k-rest', status: 'resting', side: 'buy', level: 2 });
+
+  await assert.rejects(() => runCommand({ name: 'resolveIntent', args: { intentKey: 'k-unk' }, deps }), CommandError);
+  await assert.rejects(() => runCommand({ name: 'resolveIntent', args: { intentKey: 'k-rest', confirm: true }, deps }), /only "unknown"/);
+  await assert.rejects(() => runCommand({ name: 'resolveIntent', args: { intentKey: 'nope', confirm: true }, deps }), /no intent/);
+  assert.equal((await deps.store.getIntent('k-unk')).status, 'unknown');
+
+  const ok = await runCommand({ name: 'resolveIntent', args: { intentKey: 'k-unk', confirm: true }, deps });
+  assert.equal(ok.now, 'cancelled');
+  assert.equal((await deps.store.getIntent('k-unk')).status, 'cancelled');
+});
+
+test('setLimits rejects non-finite and negative limits and stores nothing', async () => {
+  const deps = testDeps();
+  for (const patch of [{ maxTotalNotionalUsd: NaN }, { maxLeverage: 'abc' }, { dailyLossLimitUsd: -1 }, { maxSlippageBps: Infinity }, { bogus: 1 }]) {
+    await assert.rejects(() => runCommand({ name: 'setLimits', args: { patch }, deps }), CommandError, JSON.stringify(patch));
+  }
+  assert.deepEqual(await deps.configStore.get('limits', {}), {});
+  const ok = await runCommand({ name: 'setLimits', args: { maxTotalNotionalUsd: 100 }, deps });
+  assert.equal(ok.limits.maxTotalNotionalUsd, 100);
+});
+
 test('arming a live mode requires confirmLive', async () => {
   const deps = testDeps();
   await deps.configStore.setConfig({ mode: 'full-auto' });

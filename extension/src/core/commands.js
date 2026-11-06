@@ -289,6 +289,21 @@ export const COMMANDS = {
       if (Object.keys(merged).length === 0) {
         throw new CommandError('nothing to set — pass --patch or a named limit', 400);
       }
+      // A limit is compared against with `>` / `<=`; a NaN, string or missing
+      // value makes that comparison false and silently turns the rail off. Refuse
+      // it here so a bad patch is never stored (risk.js re-checks on every read).
+      for (const [key, value] of Object.entries(merged)) {
+        if (key === 'killSwitch') continue;
+        if (!(key in DEFAULT_LIMITS)) {
+          throw new CommandError(`unknown limit "${key}"`, 400);
+        }
+        if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+          throw new CommandError(
+            `${key} must be a finite number >= 0, got ${JSON.stringify(value)}`,
+            400,
+          );
+        }
+      }
       const current = await deps.configStore.get('limits', {});
       const limits = { ...DEFAULT_LIMITS, ...current, ...merged };
       await deps.configStore.set('limits', limits);
@@ -418,6 +433,37 @@ export const COMMANDS = {
   },
 
   /* ---- destructive ---- */
+
+  resolveIntent: {
+    describe:
+      'Release an UNKNOWN intent (submitted but not found on the venue) so its rung can be planned again. '
+      + 'Check the venue and your wallet first: if the order actually filled or is still live, releasing it can double-fire the rung.',
+    params: [
+      { name: 'intentKey', type: TYPE.STRING, required: true, describe: 'Key of an UNKNOWN intent, as listed by data or the tick result.' },
+      { name: 'confirm', type: TYPE.BOOL, required: true, describe: 'Must be true.' },
+    ],
+    destructive: true,
+    async handler({ deps, args }) {
+      if (args.confirm !== true) {
+        throw new CommandError('releasing an unknown intent can double-fire its rung — pass confirm', 412);
+      }
+      const intent = (await deps.store.allIntents()).find((i) => i.intentKey === args.intentKey);
+      if (!intent) throw new CommandError(`no intent with key ${args.intentKey}`, 404);
+      // Only UNKNOWN: a RESTING or FILLED intent is not ambiguous, and releasing
+      // it would hide a live order or a booked position from the planner.
+      if (intent.status !== INTENT_STATUS.UNKNOWN) {
+        throw new CommandError(
+          `intent ${args.intentKey} is "${intent.status}", only "${INTENT_STATUS.UNKNOWN}" intents can be released`,
+          409,
+        );
+      }
+      await deps.store.updateIntent(args.intentKey, {
+        status: INTENT_STATUS.CANCELLED,
+        resolvedByHuman: true,
+      });
+      return { intentKey: args.intentKey, was: intent.status, now: INTENT_STATUS.CANCELLED };
+    },
+  },
 
   reset: {
     describe: 'Erase the local journal, fills, carry and events. Does NOT cancel venue orders.',
