@@ -114,6 +114,30 @@ file. Readers must tolerate a missing file, an unknown `schema`, and missing opt
 - `confidence` is `high`, `medium` or `low`.
 - Pools are sorted by `expected_net_apr`, highest first.
 
+## `providers.json` and `providers-report.md`, written by `aero-lp providers`
+
+Written on demand (not by the daemon), read-only analysis, schema `aero-lp-providers/1`. soltui does not read it yet.
+`providers-report.md` is the human version: provider summary, top pools by expected net APR, and how to read them.
+
+Top-level keys: `schema`, `generated_at`, `chain`, `deposit_usd`, `min_net_apr`, `params`, `sources`, `registry`
+(factory, position manager and the two sources of each address), `providers` (one summary per provider), `pools`
+(ranked rows), `excluded`, `unscored`, `errors`.
+
+Each row in `pools` has:
+- `venue`, `project`, `amm_type`, `pool`, `pair`, `fee_pct`, `tvl_usd`, `volume_24h_usd`;
+- `tier`: `measured` (read on chain; income is the 24h `feeGrowthGlobal` change) or `quoted` (DefiLlama `apyBase`);
+- `income_apr`, `lvr_apr`, `rebalance_cost_apr`, `edge_ratio`, `expected_net_apr` (income - LVR - rebalance cost),
+  `replay_net_apr` (measured rows only), `best_half_width_pct`, `break_even_deposit_usd`, `sigma_daily_pct`;
+- `quoted_apy_base`: DefiLlama's figure, kept beside the measurement. It is a quote.
+- `incentive_apr` and `net_apr_with_incentives`: DefiLlama `apyReward`, separate from income. Absent on an Aero row
+  that already counts measured AERO emissions;
+- `confidence` (`high`, `medium`, `low`), `clears_bar` (the allocator's rule: measured, model and replay at or above
+  `min_net_apr`, edge >= 1.2, confidence at least medium), `flags`;
+- `venue_info` and `actionable`: chain id, factory, position manager, pool (or v4 poolId, hooks, StateView) so a later
+  change can act on the row. Nothing acts on it today.
+
+Rows are sorted low-confidence last, then by `expected_net_apr`. Any number may be `null`.
+
 ## `KILL`
 
 When the file exists, the daemon takes no on-chain action. It keeps writing `status.json` with `killed: true`. Deleting the file resumes normal operation. The file's contents are ignored.

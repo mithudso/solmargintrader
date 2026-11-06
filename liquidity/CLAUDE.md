@@ -25,5 +25,27 @@ Still required:
 - `strategy.py` and `allocator.py` stay pure (no I/O). Unit-test every decision branch.
 - Every on-chain sequence goes through `Rebalancer` and a `Runner`, so dry-run simulates exactly what
   live would send.
+- `aero-lp providers` is comparison only and read-only. Its non-Aero venues have a `venue` field so a later change can
+  act on them, but the allocator and executor must not deploy outside Aero until the owner asks. Its registry addresses
+  live in `addresses.py` and follow the same two-source rule; `providers.verify_registry` is the on-chain half.
 - Income figures must be *measured*: fee growth and gauge reward share. Never use a quoted APR.
 - Verify with `.venv/bin/ruff check src tests && .venv/bin/pytest -q` (offline) and `.venv/bin/pytest -q -m network` (live reads).
+
+<!-- llms-routing:start -->
+## llms routing
+> Cached from the llms files below on 2026-11-06; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
+
+| File | Path | Holds | Ask it for |
+|---|---|---|---|
+| llms.txt | ~/.global-ai-hub/llms-concepts/aero-slipstream-lp-automation.family/llms.txt | Source-anchored concept packs on Aero (aero.xyz, MetaDEX03) and its Slipstream concentrated-liquidity AMM on Base, for building an automated range-rebalancing LP bot. Three extractive docs packs come from the Aero docs mirror and the dromos-labs interfaces; ten research packs hold gate-verified claims from two /dr runs. Private reading aid, not for republication. | Members, Gate-verified research, Shared, Facts |
+
+### Quick answers
+
+_none found: no misbelief, default, file-role, formula or command lines in the facts files_
+
+### Indexes
+
+- Semantic: ChromaDB collections under ~/.global-ai-hub (hub/scripts/docset_indexer.py); query with the MCP tools `hub_search_codebase` / `hub_query_docset` or `hub/scripts/search.py "<query>"`.
+- Keyword: SQLite FTS5 table `files_fts` in ~/.global-ai-hub/hub.db (hub/scripts/keyword_index.py); query with `hub_search_keyword` or `keyword_index.py query "<term>"`.
+- Access ledger: ~/.global-ai-hub/llms-access-ledger.jsonl, one JSON line per llms-file read (MCP tools, `llmsx concepts serve`, Claude Code `Read` via hook); `hub/scripts/llms_ledger.py report --days 30`. A shell `cat` is not recorded.
+<!-- llms-routing:end -->

@@ -9,6 +9,9 @@ aero-lp simulate -c config.toml [--force] [--token-id N]
 aero-lp run      -c config.toml [--live] [--once]
                                        loop: evaluate, simulate, and (only with --live) execute
 aero-lp backtest --pool 0x.. [--widths 2,5,8,15] [--hours 720] [--value 10000] [--mode aero|fees]
+aero-lp providers [--chain base] [--deposit-usd 50] [--top 25] [--max-pools N]
+                                       compare every liquidity provider on a chain (read-only); writes
+                                       providers.json and providers-report.md
 """
 
 from __future__ import annotations
@@ -216,6 +219,44 @@ def cmd_scout(a: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_providers(a: argparse.Namespace) -> int:
+    from . import providers
+    from .providers_report import pool_table, provider_table
+    from .state import home
+
+    chain = AeroChain(a.rpc) if a.chain == "base" else None
+    if chain is None:
+        print(f"on-chain (Tier 1) scoring reads Base only: {a.chain} gets quoted (Tier 2) rows only", flush=True)
+    market = MarketData(min_interval=2.2)  # GeckoTerminal allows about 30 requests a minute
+    out_json, out_report = home() / "providers.json", home() / "providers-report.md"
+    print(
+        f"comparing providers on {a.chain} for a ${a.deposit_usd:,.2f} deposit (time budget {a.budget_s:.0f}s)...",
+        flush=True,
+    )
+    doc = providers.run_providers(
+        chain,
+        market,
+        a.deposit_usd,
+        chain_name=a.chain,
+        min_tvl_usd=a.min_tvl,
+        min_volume_usd=a.min_volume,
+        max_pools=a.max_pools,
+        aero_pools=a.aero_pools,
+        probe=not a.no_probe,
+        max_seconds=a.budget_s,
+        refresh=a.refresh,
+        progress=lambda m: print(m, flush=True),
+        out_json=out_json,
+        out_report=out_report,
+    )
+    print()
+    print("\n".join(provider_table(doc)))
+    print()
+    print("\n".join(pool_table(doc, a.top)))
+    print(f"\nwritten: {out_json}\n         {out_report}")
+    return 0
+
+
 def cmd_daemon(a: argparse.Namespace) -> int:
     from .daemon import Daemon
 
@@ -385,6 +426,18 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--top-by-volume", type=int, default=20)
     p.add_argument("--top", type=int, default=20)
     p.set_defaults(fn=cmd_scout)
+    p = with_rpc(sub.add_parser("providers", help="compare every liquidity provider on a chain (read-only)"))
+    p.add_argument("--chain", default="base", help="DefiLlama chain; only base is scored on chain")
+    p.add_argument("--deposit-usd", type=float, default=50.0)
+    p.add_argument("--top", type=int, default=25, help="rows in the top-pools table")
+    p.add_argument("--max-pools", type=int, default=60, help="most non-Aero pools read on chain")
+    p.add_argument("--aero-pools", type=int, default=12, help="most Aero Slipstream pools scored")
+    p.add_argument("--min-tvl", type=float, default=100_000.0)
+    p.add_argument("--min-volume", type=float, default=10_000.0, help="minimum 24h volume (USD) for non-vault pools")
+    p.add_argument("--budget-s", type=float, default=1500.0, help="time budget for the on-chain part")
+    p.add_argument("--no-probe", action="store_true", help="skip probing unregistered Uniswap-v3 forks")
+    p.add_argument("--refresh", action="store_true", help="ignore the cached DefiLlama pools")
+    p.set_defaults(fn=cmd_providers)
     p = sub.add_parser("daemon", help="manage, compound, scout and allocate in one loop")
     p.add_argument("-c", "--config", default="~/.aero-lp/config.toml")
     p.add_argument("--live", action="store_true", help="sign and broadcast")

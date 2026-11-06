@@ -42,6 +42,23 @@ After 7 days it closes any arm that trails the winner by at least 5% APR.
 
 The daemon therefore holds your coins and rescans every 6 h. That is the intended behaviour.
 
+## Comparing providers (`aero-lp providers`)
+
+`aero-lp providers --deposit-usd 50` asks the wider question: which AMM on Base pays a small passive LP best? It is
+read-only. It never signs, and the allocator and executor still act on Aero only.
+
+- **Tier 1, measured on chain.** Uniswap v3, PancakeSwap v3, SushiSwap v3, Alien Base v3, Aero Slipstream, Uniswap v4
+  (through StateView), and any unlisted Uniswap-v3 fork whose pool answers `slot0()`. Income is the 24h change in
+  `feeGrowthGlobal0/1X128`. The pool then gets the same LVR, width optimizer, price-path replay and break-even
+  deposit as an Aero pool (`metrics.score_pool`).
+- **Tier 2, quoted.** Constant-product, stableswap, weighted and ALM-vault pools, from DefiLlama `apyBase`, with
+  closed-form LVR. Such rows are labelled `quoted`, capped at medium confidence, and cannot clear the bar.
+- Incentive APR (DefiLlama `apyReward`) is a separate column and is never added to income.
+
+It writes `providers.json` and `providers-report.md` to `$AERO_LP_HOME`. Options: `--chain`, `--top`, `--max-pools`,
+`--aero-pools`, `--budget-s`, `--no-probe`, `--refresh`. It paces GeckoTerminal to about 27 requests a minute. A full run
+takes 5 to 10 minutes. DefiLlama pools are cached for 6 h in `$AERO_LP_HOME/llama-pools-<chain>.json`.
+
 ## Quick start
 
 ```bash
@@ -114,6 +131,7 @@ The daemon adds these:
 |---|---|
 | `src/aero_lp/metrics.py` | Every profitability measure for one pool |
 | `src/aero_lp/scout.py` | Candidate discovery + ranking → `scout.json` |
+| `src/aero_lp/providers.py`, `providers_report.py` | Cross-provider comparison (Tier 1 measured, Tier 2 quoted) → `providers.json`, `providers-report.md` |
 | `src/aero_lp/allocator.py` | Pure deploy / experiment / graduation decisions |
 | `src/aero_lp/ledger.py` | SQLite P&L ledger: slots, flows, events, snapshots, wallet history |
 | `src/aero_lp/daemon.py` | The loop: manage, compound, scout, allocate, status |

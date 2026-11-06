@@ -26,8 +26,12 @@ STABLES = {
 
 
 class MarketData:
-    def __init__(self, ttl: float = 120.0, client: httpx.Client | None = None):
+    def __init__(self, ttl: float = 120.0, client: httpx.Client | None = None, min_interval: float = 0.0):
         self.ttl = ttl
+        # Minimum seconds between two network requests (0 = no pacing). The providers run sets ~2.2 s so a long
+        # scan stays under GeckoTerminal's ~30 requests/minute.
+        self.min_interval = min_interval
+        self._last_request = 0.0
         self.http = client or httpx.Client(timeout=20, headers={"accept": "application/json"})
         self._cache: dict[str, tuple[float, Any]] = {}
 
@@ -37,6 +41,10 @@ class MarketData:
         if hit and time.time() - hit[0] < self.ttl:
             return hit[1]
         for attempt in range(4):
+            wait = self._last_request + self.min_interval - time.monotonic()
+            if wait > 0:
+                time.sleep(wait)
+            self._last_request = time.monotonic()
             r = self.http.get(url, params=params)
             if r.status_code == 429:
                 time.sleep(2 * (attempt + 1) ** 2)

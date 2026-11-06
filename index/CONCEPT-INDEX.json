@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T10:02:11+00:00",
+  "generatedAt": "2026-11-06T10:08:42+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 234,
+      "matchingFiles": 237,
       "shown": 30,
       "files": [
         {
@@ -67,11 +67,15 @@
         },
         {
           "path": "soltui/tests/test_liquidity.py",
-          "hits": 26
+          "hits": 28
         },
         {
           "path": "skills/trading-and-investing/references/volatility-and-pricing.md",
           "hits": 22
+        },
+        {
+          "path": "liquidity/src/aero_lp/providers.py",
+          "hits": 21
         },
         {
           "path": "liquidity/tests/test_daemon.py",
@@ -140,10 +144,6 @@
         {
           "path": "extension/src/core/risk.js",
           "hits": 13
-        },
-        {
-          "path": "research/coin-intelligence/bnb-binance-coin.md",
-          "hits": 13
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 196,
+      "matchingFiles": 197,
       "shown": 30,
       "files": [
         {
@@ -437,7 +437,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 156,
+      "matchingFiles": 157,
       "shown": 30,
       "files": [
         {
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 134,
+      "matchingFiles": 136,
       "shown": 30,
       "files": [
         {
@@ -1202,6 +1202,10 @@
           "hits": 8
         },
         {
+          "path": "liquidity/src/aero_lp/providers.py",
+          "hits": 8
+        },
+        {
           "path": "research/signal_redundancy.py",
           "hits": 8
         },
@@ -1244,10 +1248,6 @@
         {
           "path": "backtester/strategy_cards/ts_momentum.md",
           "hits": 4
-        },
-        {
-          "path": "index/make_files_doc.py",
-          "hits": 3
         }
       ],
       "source": "curated-from-repo-vocabulary"
