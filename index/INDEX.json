@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-11-06T08:25:25+00:00",
+  "generatedAt": "2026-11-06T10:02:11+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "d0bfca8",
+  "commit": "48f2b6d",
   "counts": {
-    "files": 468,
-    "bytes": 7914123,
+    "files": 470,
+    "bytes": 7919047,
     "byKind": {
       "doc": 110,
       "code-python": 101,
       "result": 69,
-      "test": 51,
+      "test": 52,
       "strategy-card": 46,
       "code-js": 39,
-      "other": 18,
+      "other": 19,
       "coin-reference": 11,
       "ci": 9,
       "data": 7,
@@ -24,8 +24,8 @@
       "research": 109,
       "backtester": 106,
       "skills": 61,
+      "soltui": 41,
       "liquidity": 40,
-      "soltui": 39,
       "extension": 37,
       "docs": 24,
       "mongo": 15,
@@ -39,7 +39,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 426
+    "withSummary": 427
   },
   "files": [
     {
@@ -391,7 +391,7 @@
       "summarySource": "opening-prose",
       "bytes": 6603,
       "lines": 105,
-      "sha1": "5d62cc2a5abe9d6e6bbd8656045d3f8eaa2bdfd5",
+      "sha1": "96a13b7d1de8aa1abd93bfa02e2cf8ef298194e8",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -427,7 +427,7 @@
       "summarySource": "opening-prose",
       "bytes": 6714,
       "lines": 118,
-      "sha1": "6d9346330be589f368a69be96b72c4d6f50aa7d1",
+      "sha1": "400d44ecb3b19799eae9d332f86c24a4838c0173",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -4230,11 +4230,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Testing",
-      "summary": "python3 -m unittest discover -s backtester/tests -t . # 649 tests python3 -m unittest discover -s soltui/tests -t . # 363 tests (~300s) python3 -m unittest discover -s mongo/tests -t . # 20 tests",
+      "summary": "python3 -m unittest discover -s backtester/tests -t . # 649 tests python3 -m unittest discover -s soltui/tests -t . # 368 tests (~300s) python3 -m unittest discover -s mongo/tests -t . # 20 tests",
       "summarySource": "opening-prose",
-      "bytes": 9556,
-      "lines": 149,
-      "sha1": "3e05d2aeaf35f2bb81a8d6dd3598b5396c533544",
+      "bytes": 9774,
+      "lines": 151,
+      "sha1": "8e466df9916dea41f3e5f7486d9792c245e1a646",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -12012,9 +12012,9 @@
       "title": "soltui \u2014 SOL strategy console",
       "summary": "A thirteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.",
       "summarySource": "opening-prose",
-      "bytes": 10152,
-      "lines": 185,
-      "sha1": "0d4d1f68ab52d8f657ae65f998f54d6e77cc2efd",
+      "bytes": 10691,
+      "lines": 193,
+      "sha1": "e56c7feafbd4dcc5fc41d498b7324f8d232a2250",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -12295,6 +12295,24 @@
       "internalImports": [
         "backtester"
       ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/bin/soltui",
+      "path": "soltui/bin/soltui",
+      "dir": "soltui/bin",
+      "name": "soltui",
+      "ext": "",
+      "kind": "other",
+      "title": "soltui launcher: `soltui` opens the console from anywhere.",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1718,
+      "lines": 39,
+      "sha1": "08c34e068d471df5649968cee6dbdb14423abf82",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
       "frontmatter": {}
     },
     {
@@ -13027,6 +13045,36 @@
       "internalImports": [
         "soltui"
       ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_launcher.py",
+      "path": "soltui/tests/test_launcher.py",
+      "dir": "soltui/tests",
+      "name": "test_launcher.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_launcher",
+      "summary": "The `soltui` shell launcher (soltui/bin/soltui). A fake interpreter stands in for Python, so these tests check the launcher's own job \u2014 find the repo through a symlink, cd there, pick the module, pass arguments through \u2014 without starting Textual.",
+      "summarySource": "docstring",
+      "bytes": 2449,
+      "lines": 73,
+      "sha1": "11f5da1f76f95c5e40f7af6db380141407ccee3c",
+      "symbols": [
+        "REPO",
+        "LAUNCHER",
+        "FAKE_PY",
+        "class LauncherTest"
+      ],
+      "imports": [
+        "os",
+        "pathlib",
+        "shutil",
+        "subprocess",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [],
       "frontmatter": {}
     },
     {

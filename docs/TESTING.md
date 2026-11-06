@@ -2,13 +2,13 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 649 tests
-python3 -m unittest discover -s soltui/tests -t .       # 363 tests (~300s)
+python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 20 tests
 cd extension && npm test                                # 131 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1163 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+1168 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -106,7 +106,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 363 tests
+## soltui — 368 tests
 
 Slower than the others (~70s) because the TUI tests drive real render cycles. Three
 files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
@@ -114,9 +114,11 @@ state) and `test_tui.py` (rendering). Run them with
 `python3 -m unittest discover -s soltui/tests -t .`.
 
 soltui is read-only over the research side and places no orders, so its tests are about
-display correctness, not money. The packaging paths — the py2app alias bundle and the
-launchd agent — are **not** covered by any test; see `soltui/README.md` for the manual
-checks that stand in for them.
+display correctness, not money. `test_launcher.py` drives the `soltui` shell command
+(`soltui/bin/soltui`) through a symlink with a fake interpreter, so it checks the repo
+lookup, the module choice and argument pass-through without starting Textual. The
+packaging paths — the py2app alias bundle and the launchd agent — are **not** covered by
+any test; see `soltui/README.md` for the manual checks that stand in for them.
 
 ## mongo — 20 tests
 
