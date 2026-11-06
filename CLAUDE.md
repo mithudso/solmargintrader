@@ -127,3 +127,22 @@ unconfirmed. Do not present any of them as working.
 
 `AGENTS.md` points here. Component detail lives in `backtester/README.md` and
 `extension/README.md`; cross-cutting detail in `docs/`.
+
+<!-- llms-routing:start -->
+## llms routing
+> Cached from the llms files below on 2026-11-06; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
+
+| File | Path | Holds | Ask it for |
+|---|---|---|---|
+| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs from /dr research runs of 2026-11-06, for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Evidence status: research claims ungated (v4 evidence gate not passed; a 10-claim sample per run: 113 of 121 SUPPORTED, 7 UNVERIFIED, 1 CONTRADICTED), so treat every line as a lead with a cited source. Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
+
+### Quick answers
+
+_none found: no misbelief, default, file-role, formula or command lines in the facts files_
+
+### Indexes
+
+- Semantic: ChromaDB collections under ~/.global-ai-hub (hub/scripts/docset_indexer.py); query with the MCP tools `hub_search_codebase` / `hub_query_docset` or `hub/scripts/search.py "<query>"`.
+- Keyword: SQLite FTS5 table `files_fts` in ~/.global-ai-hub/hub.db (hub/scripts/keyword_index.py); query with `hub_search_keyword` or `keyword_index.py query "<term>"`.
+- Access ledger: ~/.global-ai-hub/llms-access-ledger.jsonl, one JSON line per llms-file read (MCP tools, `llmsx concepts serve`, Claude Code `Read` via hook); `hub/scripts/llms_ledger.py report --days 30`. A shell `cat` is not recorded.
+<!-- llms-routing:end -->

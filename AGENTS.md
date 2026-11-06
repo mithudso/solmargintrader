@@ -12,3 +12,5 @@ Summary of the rules most often broken here:
 - No secrets in logs, `chrome.storage.sync`, the DOM, or a response body.
 
 Verification commands are in [CLAUDE.md](CLAUDE.md#before-you-claim-a-change-works).
+
+<!-- llms-routing:pointer --> See `## llms routing` in CLAUDE.md for the llms files and quick answers.
