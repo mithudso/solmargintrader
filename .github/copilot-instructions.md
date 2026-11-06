@@ -55,10 +55,10 @@ repository; this file is a pointer plus the rules that get broken most often.
 ## Verification
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 649 tests
+python3 -m unittest discover -s backtester/tests -t .   # 651 tests
 python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 140 tests
+cd extension && npm test                                # 147 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
