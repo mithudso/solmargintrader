@@ -18,6 +18,7 @@ import { ConfigStore, DEFAULT_CONFIG } from '../src/storage/store.js';
 import { DryRunVenue, TriggerVenue } from '../src/venues/index.js';
 import { tick } from '../src/core/engine.js';
 import { DEFAULT_LIMITS } from '../src/core/risk.js';
+import { snapshot } from '../src/core/pnl.js';
 import { capitalRequirement, gridLevels, rungWidthBps } from '../src/core/grid.js';
 import { NullSigner } from '../src/wallet/signer.js';
 
@@ -84,6 +85,7 @@ async function main() {
   const oscPct = Number(args.osc ?? 0);
   const ticks = Number(args.ticks ?? 3);
   let step = 0;
+  let lastPrice = price;
 
   /**
    * `--walk` trends one direction, which fills bids but never their exits.
@@ -108,6 +110,7 @@ async function main() {
   // its own base by filling bids first. That makes this an honest run.
   for (step = 0; step < ticks; step++) {
     const r = await tick({ venue, store, configStore, limits: DEFAULT_LIMITS });
+    lastPrice = r.price;
     const filled = (await store.allFills()).length
     console.log(
       `\ntick ${step + 1}  price $${r.price.toFixed(4)}  placed ${r.placed.length}  ` +
@@ -126,6 +129,16 @@ async function main() {
   const byStatus = {};
   for (const i of intents) byStatus[i.status] = (byStatus[i.status] ?? 0) + 1;
   console.log(`statuses: ${JSON.stringify(byStatus)}`);
+
+  // The gate is the CLOSED round trips, net of fees. The per-tick `net` above
+  // also marks open lots to the last price, so it can be negative while every
+  // closed round trip is positive.
+  const snap = snapshot({ fills, markPriceUsd: lastPrice });
+  console.log(
+    `closed round trips: ${snap.roundTripCount}  gross $${snap.realizedGrossUsd.toFixed(4)}  ` +
+      `fees $${snap.realizedFeeUsd.toFixed(4)}  net $${snap.realizedNetUsd.toFixed(4)}  ` +
+      `unknown-fee fills ${fills.filter((f) => f.feeUnknown).length}`,
+  );
 }
 
 function round(n) {

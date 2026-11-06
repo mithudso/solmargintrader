@@ -23,10 +23,8 @@
  */
 
 import { TriggerVenue, MARGIN_SOURCE } from './triggerVenue.js';
-import { KrakenVenue } from './krakenVenue.js';
-import { JupiterLiveVenue } from './jupiterLiveVenue.js';
 
-export { TriggerVenue, KrakenVenue, JupiterLiveVenue, MARGIN_SOURCE };
+export { TriggerVenue, MARGIN_SOURCE };
 
 export const MODE = {
   DRY_RUN: 'dry-run', // default: real prices, simulated fills, zero writes
@@ -84,6 +82,11 @@ export class DryRunVenue {
       triggerPriceUsd: intent.level,
       intentKey: intent.intentKey,
       slippageBps,
+      // Carried so the fill can report its own quantity and fee. Absent when
+      // the intent has no usable size: the fill then reports neither, and the
+      // engine falls back to the journal quantity and flags the fee unknown
+      // rather than this simulator guessing a number.
+      baseQty: Number.isFinite(intent.baseQty) && intent.baseQty > 0 ? intent.baseQty : undefined,
       createdAtMs: this.clock(),
     });
     return { venueOrderId: id, txSignature: null, confirmed: true, simulated: true };
@@ -113,6 +116,13 @@ export class DryRunVenue {
       const executedPriceUsd = o.triggerPriceUsd * slipFactor;
       o.status = 'filled';
       o.executedPriceUsd = executedPriceUsd;
+      if (o.baseQty !== undefined) {
+        // Fee on the notional actually traded, at the slipped price. A dry run
+        // that fills for free overstates every grid's edge by two fees a round
+        // trip, which is exactly the lie this venue exists to avoid.
+        o.filledBaseQty = o.baseQty;
+        o.feeUsd = (o.baseQty * executedPriceUsd * this.feeBps) / 10_000;
+      }
       o.updatedAtMs = this.clock();
       fills.push(o);
     }
@@ -205,12 +215,13 @@ export function buildVenue({ config, signer, apiKey, budget, fetchImpl }) {
   let inner;
   if (venue === 'perps') {
     inner = new PerpsVenueReadOnly({ baseMint, quoteMint, rpcUrl });
-  } else if (venue === 'kraken') {
-    inner = new KrakenVenue({ baseMint, quoteMint, apiKey, apiSecret: config.apiSecret, fetchImpl });
-  } else if (venue === 'jupiter_live') {
-    inner = new JupiterLiveVenue({ baseMint, quoteMint, userPubkey, signer, budget, fetchImpl });
-  } else {
+  } else if (venue === 'trigger') {
     inner = new TriggerVenue({ baseMint, quoteMint, userPubkey, apiKey, signer, budget, fetchImpl });
+  } else {
+    // An unrecognised name must not fall through to a live-capable venue: a
+    // config that says "kraken" and silently trades on Jupiter is a wrong-venue
+    // order with real money.
+    throw new Error(`unknown venue "${venue}": expected "trigger" or "perps"`);
   }
 
   if (mode === MODE.DRY_RUN) return new DryRunVenue({ inner });
