@@ -185,6 +185,8 @@ _EXACT_IN = (
 )
 SWAP_ROUTER = [
     fn("exactInputSingle", _EXACT_IN, "uint256 amountOut", "payable"),
+    fn("multicall", "bytes[] data", "bytes[] results", "payable"),
+    fn("unwrapWETH9", "uint256 amountMinimum, address recipient", "", "payable"),
 ]
 
 WETH = [

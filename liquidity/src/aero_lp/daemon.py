@@ -41,7 +41,7 @@ from typing import Any
 from web3 import Web3
 
 from . import addresses
-from .allocator import gas_topup_needed, plan_allocation, plan_graduation
+from .allocator import plan_allocation, plan_graduation
 from .chain import ZERO, AeroChain, PoolState, PositionGone, PositionState
 from .config import Config
 from .engine import Engine, Evaluation, defer_sigint
@@ -106,6 +106,7 @@ class Daemon:
         self.rb = Rebalancer(self.chain, cfg.owner, cfg.execution)
         self.timers = Timers()
         self.decisions: dict[str, dict[str, Any]] = {}
+        self._owner_has_code: bool | None = None
         self.wallet: dict[str, Any] = {}
         self._last_prices: dict[str, float] = {}
         self._prices_failed_at = 0.0
@@ -232,6 +233,92 @@ class Daemon:
             return
         print(f"{time.strftime('%H:%M:%S')} stop: signal {sig} received; exiting between steps", flush=True)
         raise SystemExit(128 + sig)
+
+    # ------------------------------------------------------------------ gas reserve
+
+    def _is_contract_account(self) -> bool:
+        """True when the owner address has code (a smart account or an EIP-7702-delegated EOA)."""
+        if self._owner_has_code is None:
+            get_code = getattr(self.chain.w3.eth, "get_code", None)
+            try:
+                code = get_code(Web3.to_checksum_address(self.cfg.owner)) if get_code else b""
+            except Exception:  # noqa: BLE001 - unknown: assume a plain EOA; the unwrap simulation would catch it
+                code = b""
+            self._owner_has_code = len(code or b"") > 0
+        return bool(self._owner_has_code)
+
+    def _gas_topup(self, wallet: dict[str, Any]) -> dict[str, Any]:
+        """Keep native ETH above `gas_reserve_eth`. A failed top-up is logged and allocation continues: every
+        live send has its own ETH-reserve check, so a deploy that cannot afford gas is still refused."""
+        a = self.cfg.allocator
+        if wallet["eth"] >= a.gas_reserve_eth:
+            return wallet
+        want_eth = max(a.unwrap_chunk_eth, a.gas_reserve_eth - wallet["eth"])
+        if not self.acting():
+            if self.timers.due("unwrap-dry", 6 * 3600, time.time()):
+                self.log("skip", f"would top up {want_eth:.6f} ETH for gas ({self.paused_reason})")
+            return wallet
+        try:
+            if self._is_contract_account():
+                res, detail = self._swap_for_gas(wallet, want_eth)
+            else:
+                weth = next((t for t in wallet["tokens"] if t["symbol"] == "WETH"), None)
+                if weth is None or weth["raw"] <= 0:
+                    raise RuntimeError("no WETH to unwrap")
+                amount = min(int(want_eth * 1e18), int(weth["raw"]))  # float round-off must not exceed the balance
+                res = self._send(
+                    lambda: self.rb.unwrap_weth(
+                        amount, self.runner(runner_tokens(addresses.WETH, addresses.AERO_TOKEN), None)
+                    )
+                )
+                detail = f"unwrapped {amount / 1e18:.6f} WETH for gas"
+        except Exception as e:  # noqa: BLE001 - gas top-up is best effort
+            partial = e.partial if isinstance(e, RebalanceError) else None
+            if partial is not None or self.timers.due("gas-topup-err", 6 * 3600, time.time()):
+                self.log("error", f"gas top-up failed: {e}", None, partial)
+            return wallet
+        self.log("unwrap", detail, None, res)
+        return self.read_wallet()  # idle amounts below must not include what was just spent
+
+    def _swap_for_gas(self, wallet: dict[str, Any], want_eth: float) -> tuple[RebalanceResult, str]:
+        """Smart-account path: sell a little of a non-WETH coin for ETH through the router (see swap_to_eth).
+        Stablecoins first, then other coins with a direct WETH pool; the largest balance wins within a group."""
+        prices = self.known_prices()
+        eth_usd = prices.get(addresses.WETH.lower(), 0.0)
+        if eth_usd <= 0:
+            raise RuntimeError("ETH price unavailable")
+        want_usd = want_eth * eth_usd
+        stables = ("USDC", "USDbC", "USDT", "DAI", "EURC")
+        candidates = [
+            t
+            for t in wallet["tokens"]
+            if t["symbol"] != "WETH"
+            and t["symbol"] not in self.cfg.allocator.exclude_tokens
+            and t["usd"] >= want_usd * 1.1
+        ]
+        candidates.sort(key=lambda t: (t["symbol"] not in stables, -t["usd"]))
+        weth = Web3.to_checksum_address(addresses.WETH)
+        for t in candidates:
+            pool = self.best_direct_pool(t["address"], weth)
+            if pool is None:
+                continue
+            token_usd = prices.get(t["address"].lower(), 0.0)
+            if token_usd <= 0:
+                continue
+            amount_in = min(int(want_usd * 1.03 / token_usd * 10 ** t["decimals"]), int(t["raw"]))
+            fwd = t["address"].lower() == pool.token0.address.lower()
+            raw_p = pool.raw_price
+            expected = amount_in * raw_p * (1 - pool.fee) if fwd else amount_in / raw_p * (1 - pool.fee)
+            market = amount_in / 10 ** t["decimals"] * token_usd / eth_usd * 1e18
+            if expected < 0.98 * market:
+                continue  # pool price more than 2% worse than the market: do not sell into it
+            min_out = int(expected * (1 - self.cfg.execution.max_slippage_bps / 1e4))
+            tokens = runner_tokens(pool.token0.address, pool.token1.address)
+            runner = self.runner(tokens, pool.address)
+            res = self._send(self.rb.swap_to_eth, pool, t["address"], amount_in, min_out, runner)
+            sold = f"{amount_in / 10 ** t['decimals']:.6g} {t['symbol']}"
+            return res, f"swapped {sold} for ~{expected / 1e18:.6f} ETH gas (smart account)"
+        raise RuntimeError(f"no coin worth ${want_usd:.2f} with a direct WETH pool to swap for gas")
 
     # ------------------------------------------------------------------ wallet
 
@@ -619,20 +706,7 @@ class Daemon:
                 self.log("skip", "allocation paused: kill switch engaged")
             return
         a = self.cfg.allocator
-        weth = next((t for t in wallet["tokens"] if t["symbol"] == "WETH"), None)
-        need = gas_topup_needed(wallet["eth"], weth["amount"] if weth else 0.0, a)
-        if need > 0 and weth is not None:
-            if self.acting():
-                amount = min(int(need * 1e18), int(weth["raw"]))  # float round-off must not exceed the balance
-                res = self._send(
-                    lambda: self.rb.unwrap_weth(
-                        amount, self.runner(runner_tokens(addresses.WETH, addresses.AERO_TOKEN), None)
-                    )
-                )
-                self.log("unwrap", f"unwrapped {amount / 1e18:.6f} WETH for gas", None, res)
-                wallet = self.read_wallet()  # the idle amounts below must not include the WETH just unwrapped
-            elif self.timers.due("unwrap-dry", 6 * 3600, time.time()):
-                self.log("skip", f"would unwrap {need:.6f} WETH for gas ({self.paused_reason})")
+        wallet = self._gas_topup(wallet)
         doc = load_scout(self.root / "scout.json")
         if not doc:
             self.log("skip", "allocation waits for the first scout run")

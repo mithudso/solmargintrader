@@ -847,6 +847,44 @@ class Rebalancer:
 
         return self._wrap("unwrap", res, runner, go)
 
+    def swap_to_eth(
+        self, pool: PoolState, token_in: str, amount_in: int, min_eth_out: int, runner: Runner
+    ) -> RebalanceResult:
+        """Swap `token_in` -> WETH held by the router, then `unwrapWETH9` to the owner, in one router multicall.
+
+        For smart accounts (e.g. an EIP-7702-delegated EOA): WETH9.withdraw pays ETH with a 2300-gas
+        `transfer`, which a delegated account cannot receive, so it reverts. The router's unwrapWETH9 pays
+        with a full-gas `call` (TransferHelper.safeTransferETH). Recipient 0 makes the router keep the WETH
+        between the two calls inside the same transaction, so nothing is left exposed across transactions.
+        """
+        res = RebalanceResult(None, False, [], [], {})
+        weth = Web3.to_checksum_address(addresses.WETH)
+        if weth not in (pool.token0.address, pool.token1.address):
+            raise ValueError("swap_to_eth needs a pool that contains WETH")
+
+        def go() -> None:
+            deadline = runner.block_timestamp() + self.cfg.deadline_s
+            zero = "0x0000000000000000000000000000000000000000"
+            swap = self.router.encode_abi(
+                "exactInputSingle",
+                args=[(token_in, weth, pool.tick_spacing, zero, deadline, amount_in, min_eth_out, 0)],
+            )
+            unwrap = self.router.encode_abi("unwrapWETH9", args=[min_eth_out, self.owner])
+            r = runner.execute(
+                [
+                    self._approve(token_in, self.router.address, amount_in),
+                    PlannedTx(
+                        f"router multicall: {amount_in} -> ETH (swap + unwrapWETH9)",
+                        self.router.address,
+                        self.router.encode_abi("multicall", args=[[HexBytes(swap), HexBytes(unwrap)]]),
+                    ),
+                ]
+            )
+            res.stages.append("swap_to_eth")
+            res.tx_hashes += r.tx_hashes
+
+        return self._wrap("swap_to_eth", res, runner, go)
+
 
 def receipt_fee_wei(rcpt: Any) -> int:
     """Execution fee + OP-stack L1 data fee from a receipt (l1Fee may be hex, int or absent)."""
