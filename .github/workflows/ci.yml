@@ -38,6 +38,7 @@ jobs:
       - name: Syntax check every module
         run: |
           find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
+          find e2e tools -name '*.mjs' -print0 | xargs -0 -n1 node --check
 
       - name: Validate the MV3 manifest
         run: |
@@ -52,6 +53,36 @@ jobs:
 
       - name: Headless dry run (offline, deterministic)
         run: node tools/dryrun.js --ticks 8 --osc 6 --offline 100
+
+  # Loads the unpacked extension into a real Chrome for Testing and drives it over
+  # the DevTools pipe (extension/tools/e2e.mjs). Dry-run only: it never arms or
+  # signs, and every request but a stubbed price read is blocked, so it verifies
+  # loading and dry-run behaviour, not live orders. Branded Chrome (preinstalled
+  # on the runner) ignores command-line extension loading, so a Chrome for Testing
+  # build is fetched. @puppeteer/browsers runs through npx only to download that
+  # browser: it is not a dependency of the extension and is pinned for that reason.
+  extension-e2e:
+    name: extension (real browser e2e)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22'
+
+      - name: Install Chrome for Testing
+        run: |
+          out="$(npx --yes @puppeteer/browsers@3.2.6 install chrome@156.0.8078.47 --path "$RUNNER_TEMP/cft")"
+          echo "$out"
+          echo "CHROME=$(echo "$out" | tail -n1 | sed -E 's/^[^ ]+ //')" >> "$GITHUB_ENV"
+
+      - name: Real-browser e2e (dry-run only)
+        # No user namespaces on hosted runners, so Chrome's sandbox cannot start.
+        run: E2E_NO_SANDBOX=1 node tools/e2e.mjs
 
   backtester:
     name: backtester (python)

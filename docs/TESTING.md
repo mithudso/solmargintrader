@@ -4,18 +4,18 @@
 python3 -m unittest discover -s backtester/tests -t .   # 681 tests
 python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 237 tests
+cd extension && npm test                                # 242 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1353 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+1358 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 237 tests cover
+## Extension — what the 242 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -46,10 +46,36 @@ Read this before trusting anything with money.
 3. **Fee attribution is unconfirmed.** Unknown costs remain flagged for inspection and hold new
    admission. Uncertain execution price, quantity or timing also holds planning.
 4. **Signature insertion is tested against synthetic transactions**, not a real Jupiter deposit.
-5. **Loading unpacked in Chrome is not automated.** `chrome://extensions` requires a human. The
-   headless dry run is the integration gate instead; the CI job validates the manifest statically.
+5. **The e2e covers loading and dry-run only.** `npm run e2e` loads the unpacked extension in
+   Chrome for Testing and checks install state, service worker, popup, dashboard, a dry-run plan
+   and tick, rails and secrets. It never arms or signs and stubs the network, so it says nothing
+   about live orders. Needs Chrome for Testing; it is not part of `npm test`.
 6. **The Chrome alarm floor is assumed to be 30s.** The engine logs the real wake delta — watch it
    before trusting a sub-minute tick.
+
+## Extension — real-browser e2e
+
+`npm run e2e` (`extension/tools/e2e.mjs`, helpers in `extension/e2e/`) launches Chrome for Testing
+headless, loads `extension/` with `Extensions.loadUnpacked` over the DevTools pipe, and drives the
+real service worker, popup and dashboard. It uses Node built-ins only. 14 checks:
+
+| Check | What it proves |
+| --- | --- |
+| Service worker starts | The manifest entry point loads as an MV3 worker |
+| Installs disarmed in dry-run | `runtime.armed` and `killSwitch` are false and `config.mode` equals `DEFAULT_CONFIG.mode` after a real `onInstalled` |
+| Install event and alarm | The journal holds the `installed` event; the tick alarm is scheduled |
+| Popup and dashboard | Both render from the worker's `status`; dry-run and disarmed are shown |
+| Registry parity | The worker's command list equals `COMMAND_NAMES`; unknown messages are refused |
+| Plan and tick | `plan` is priced by the stubbed read and returns intents; a disarmed `tick` is skipped as `not-armed` and journals nothing |
+| Rails fail closed | Missing, NaN or malformed state and limits block, run in the browser |
+| Secrets | A canary API key appears in no DOM, no response and no `chrome.storage.sync` |
+| Network audit | Chrome-level interception saw only keyless GET price reads; every other request was blocked |
+| Disarmed at the end | The run never changed `armed` or the kill switch |
+
+Safety is structural: `e2e/lib/guard.mjs` allowlists the messages the harness may send and
+`test/e2e-harness.test.js` (part of `npm test`) fails when a new registry command is not classified.
+Install a browser with `npx @puppeteer/browsers install chrome@stable` (branded Chrome ignores
+command-line extension loading); set `CHROME` for another build and `E2E_NO_SANDBOX=1` in containers.
 
 ## Verification commands
 
@@ -58,6 +84,7 @@ cd extension
 
 npm test                                              # unit + parity
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # a round trip must close positive
+npm run e2e                                           # real-browser load + dry-run checks (needs Chrome for Testing)
 node tools/dryrun.js --ticks 4 --walk 5 --offline 100 # trending case: bids fill, no exits
 node tools/verify-endpoints.js                        # live Jupiter reachability
 find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check

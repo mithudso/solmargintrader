@@ -61,8 +61,9 @@ ever be changed such that a fresh install can place an order. Leave it that way 
 have read `extension/README.md`'s **Verification status** section — no live order has ever
 been placed through this code.
 
-The unpacked load cannot be automated (`chrome://extensions` needs a human), so it is never
-verified by CI. Do not claim it as verified; the headless dry run is the gate.
+`npm run e2e` loads the unpacked extension in Chrome for Testing and checks the dry-run path
+(see `docs/TESTING.md`); it does not verify live orders. Loading it by hand in your own Chrome via
+`chrome://extensions` is still how you install it. Do not claim live execution as verified.
 
 ### Optional: the local HTTP surface
 
