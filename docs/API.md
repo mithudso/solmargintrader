@@ -22,7 +22,7 @@ curl -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 
 ## Commands
 
-`*` marks a required argument. 22 commands as of this writing.
+`*` marks a required argument. 23 commands as of this writing.
 
 ### Inspection — read-only, safe to poll
 
@@ -45,7 +45,7 @@ curl -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 | Command | Arguments | Notes |
 | --- | --- | --- |
 | `setConfig` | `patch`:json, plus flat fields (`mode`, `lower`, `upper`, `rungs`, `spacing`, `notionalPerRungUsd`, `direction`, `slippageBps`, `leverage`, `marginSource`, `tickSeconds`, `userPubkey`, `baseMint`, `quoteMint`) | A blank numeric field is omitted, never coerced to 0 |
-| `setLimits` | `patch`:json, plus each rail as a flat number | See [risk rails](#risk-rails) |
+| `setLimits` | `patch`:json, plus each rail as a flat number | See [risk rails](#risk-rails). Non-finite or negative values are rejected (400); an unusable stored limit falls back to its default and is reported as `limitProblems` |
 | `setApiKey` | `apiKey`:string\* | Returns a length only. The key is never echoed back |
 | `createSessionKey` | `passphrase`:string\* | Generates a dedicated full-auto signing key, encrypted at rest. Minimum 12 characters |
 
@@ -69,6 +69,7 @@ curl -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 
 | Command | Arguments | Notes |
 | --- | --- | --- |
+| `resolveIntent` | `intentKey`:string\*, `confirm`:bool\* | Releases an `unknown` intent (submitted, not found on the venue) so its rung can be planned again. Verify the venue and wallet first: releasing an order that actually filled or is still live can double-fire the rung |
 | `reset` | `confirm`:bool\* | Erases the local journal, fills, carry and events. **Does not cancel venue-side orders** |
 
 ## CLI

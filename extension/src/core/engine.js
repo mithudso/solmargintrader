@@ -262,6 +262,8 @@ export async function tick({
     rejected: [],
     skipped: [],
     orphaned: [],
+    // Intent keys held out of planning pending a human decision (resolveIntent).
+    unknownIntents: [],
     errors: [],
     pnl: null,
     // Stays 0 when a tick aborts early, so the field's absence never has to be
@@ -334,10 +336,31 @@ export async function tick({
 
     // Exits are derived from the open lots, so each sell rests one rung above
     // the specific buy it closes.
+    //
+    // The occupied set is wider than the live order list. An UNKNOWN intent was
+    // submitted and then not found on the venue: it may have filled, been lost,
+    // or still be in flight, and `reconcile()` cannot tell which. Treating it as
+    // merely "not resting" would let planGrid re-emit the same intentKey and
+    // place the rung a second time — the crash double-fire this journal exists to
+    // prevent. A SUBMITTING record can only be left over from a prior tick (this
+    // tick's reconcile already resolved it), so it is held for the same reason.
+    // Read AFTER ingestFills: a fill that just arrived flips UNKNOWN to FILLED,
+    // and that rung is legitimately free again.
+    const held = (await store.allIntents()).filter(
+      (i) => i.status === INTENT_STATUS.UNKNOWN || i.status === INTENT_STATUS.SUBMITTING,
+    );
+    const heldKeys = held.map((i) => i.intentKey);
+    if (heldKeys.length) {
+      result.unknownIntents = heldKeys;
+      result.skipped.push({ reason: 'unknown-intent-needs-review', intentKeys: heldKeys });
+      log({ level: 'warn', msg: 'unresolved intents hold their rungs', intentKeys: heldKeys });
+    }
+    const occupiedKeys = [...new Set([...rec.restingKeys, ...heldKeys])];
+
     const plan = planGrid({
       config,
       price,
-      openIntentKeys: rec.restingKeys,
+      openIntentKeys: occupiedKeys,
       openLots: pnl.openLots,
     });
     result.skipped.push(...plan.skipped);
@@ -366,20 +389,24 @@ export async function tick({
     }
 
     const state = {
-      openNotionalUsd: rec.restingKeys.length * config.notionalPerRungUsd,
-      openOrderCount: rec.restingKeys.length,
+      // Held rungs count against the caps too: an unresolved order may be live.
+      openNotionalUsd: occupiedKeys.length * config.notionalPerRungUsd,
+      openOrderCount: occupiedKeys.length,
       realizedPnlUsdToday,
       leverage: config.leverage,
       liquidationDistancePct: null,
     };
 
-    const { admitted, rejected } = admitBatch({
+    const { admitted, rejected, limitProblems } = admitBatch({
       intents: plan.intents,
       state,
       limits: effectiveLimits,
       slippageBps: config.slippageBps,
     });
     result.rejected = rejected;
+    // A limit that was unusable and fell back to its default: surface it so the
+    // bad setLimits value gets fixed instead of silently running on defaults.
+    result.limitProblems = limitProblems;
 
     for (const intent of admitted) {
       // WRITE-AHEAD: the journal entry must exist before the network call, or a

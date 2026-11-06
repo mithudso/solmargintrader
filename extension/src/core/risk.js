@@ -114,6 +114,37 @@ export function normaliseState(state = {}) {
 }
 
 /**
+ * Limits with every numeric cap guaranteed finite and non-negative.
+ *
+ * The mirror of `normaliseState`: every rail compares against a limit, and a
+ * comparison against NaN, undefined or a string is false, so a bad limit would
+ * silently switch its rail off. An unusable value falls back to the DEFAULT_LIMITS
+ * value (never to Infinity) and is reported. The kill switch is the one limit
+ * where "unclear" must mean ENGAGED: any truthy non-boolean engages it.
+ *
+ * Does not tighten or loosen anything for valid input.
+ */
+export function normaliseLimits(limits = {}) {
+  const problems = [];
+  const merged = { ...DEFAULT_LIMITS, ...limits };
+  for (const key of Object.keys(DEFAULT_LIMITS)) {
+    if (key === 'killSwitch') continue;
+    const v = merged[key];
+    if (typeof v !== 'number' || !Number.isFinite(v) || v < 0) {
+      problems.push(`${key} was ${JSON.stringify(v) ?? 'undefined'}; fell back to default ${DEFAULT_LIMITS[key]}`);
+      merged[key] = DEFAULT_LIMITS[key];
+    }
+  }
+  if (typeof merged.killSwitch !== 'boolean') {
+    if (merged.killSwitch) {
+      problems.push(`killSwitch was ${JSON.stringify(merged.killSwitch)}; treated as engaged`);
+    }
+    merged.killSwitch = Boolean(merged.killSwitch);
+  }
+  return { ...merged, problems };
+}
+
+/**
  * @param {object} arg
  * @param {{notionalUsd:number, slippageBps:number}} arg.order  candidate order
  * @param {object} arg.state  live account state
@@ -121,7 +152,7 @@ export function normaliseState(state = {}) {
  * @returns {{verdict:string, blockedBy:string[], reasons:string[]}}
  */
 export function evaluate({ order, state, limits = DEFAULT_LIMITS }) {
-  const merged = { ...DEFAULT_LIMITS, ...limits };
+  const { problems: limitProblems, ...merged } = normaliseLimits(limits);
   const safeState = normaliseState(state);
   const blockedBy = [];
   const reasons = [];
@@ -148,6 +179,7 @@ export function evaluate({ order, state, limits = DEFAULT_LIMITS }) {
     blockedBy,
     reasons,
     stateProblems: safeState.problems,
+    limitProblems,
   };
 }
 
@@ -157,7 +189,7 @@ export function evaluate({ order, state, limits = DEFAULT_LIMITS }) {
  * passes individually.
  */
 export function admitBatch({ intents, state, limits = DEFAULT_LIMITS, slippageBps }) {
-  const merged = { ...DEFAULT_LIMITS, ...limits };
+  const { problems: limitProblems, ...merged } = normaliseLimits(limits);
   const admitted = [];
   const rejected = [];
   const running = normaliseState(state);
@@ -179,7 +211,7 @@ export function admitBatch({ intents, state, limits = DEFAULT_LIMITS, slippageBp
     }
   }
 
-  return { admitted, rejected };
+  return { admitted, rejected, limitProblems };
 }
 
 /** Rolling UTC-day key, used to reset the daily loss counter. */

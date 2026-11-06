@@ -4,18 +4,18 @@
 python3 -m unittest discover -s backtester/tests -t .   # 649 tests
 python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 131 tests
+cd extension && npm test                                # 140 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1168 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+1177 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 131 tests cover
+## Extension — what the 140 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -30,7 +30,7 @@ nothing caught it.
 | Crypto | Sealed-seed round trip; wrong passphrase fails closed; fresh salt and IV per seal; Ed25519 signing |
 | **Surface parity** | Every command routable over the API; `GET` restricted to read-only; CLI help lists all commands and every argument; UI messages all map to real commands |
 
-The parity suite probes all 22 commands with a deliberately invalid argument, which proves the route
+The parity suite probes all 23 commands with a deliberately invalid argument, which proves the route
 resolved **without executing the handler** — no side effects, no network calls.
 
 ## What is NOT covered

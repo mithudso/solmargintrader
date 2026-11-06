@@ -32,6 +32,7 @@ import {
   evaluate,
   admitBatch,
   normaliseState,
+  normaliseLimits,
   VERDICT,
   DEFAULT_LIMITS,
   dayKey,
@@ -431,6 +432,64 @@ test('rails still fire normally through the normalised path', () => {
   assert.ok(r.blockedBy.includes('daily-loss-limit'));
 });
 
+test('a non-finite or missing limit falls back to its default and is reported', () => {
+  // Every rail is a comparison; against NaN/undefined/"abc" it is false, so the
+  // rail used to vanish. State far over every cap must still be blocked.
+  const overEverything = {
+    openNotionalUsd: 10_000,
+    openOrderCount: 99,
+    realizedPnlUsdToday: -10_000,
+    leverage: 50,
+    liquidationDistancePct: 1,
+  };
+  const bad = {
+    maxTotalNotionalUsd: NaN,
+    maxNotionalPerOrderUsd: undefined,
+    maxConcurrentOrders: 'abc',
+    maxLeverage: null,
+    dailyLossLimitUsd: Infinity,
+    maxSlippageBps: -5,
+    minLiquidationDistancePct: NaN,
+  };
+  const r = evaluate({ order: { notionalUsd: 500, slippageBps: 9999 }, state: overEverything, limits: bad });
+  assert.equal(r.verdict, VERDICT.BLOCK);
+  for (const id of [
+    'slippage-bound', 'per-order-notional', 'total-notional', 'concurrent-orders',
+    'leverage-cap', 'daily-loss-limit', 'liquidation-distance',
+  ]) {
+    assert.ok(r.blockedBy.includes(id), `${id} must still fire with an unusable limit`);
+  }
+  for (const key of Object.keys(bad)) {
+    assert.ok(r.limitProblems.some((p) => p.startsWith(key)), `${key} should be reported`);
+  }
+});
+
+test('normaliseLimits never falls back to a looser value than the default', () => {
+  const l = normaliseLimits({ maxTotalNotionalUsd: NaN, maxOrdersPerTick: 'x', dailyLossLimitUsd: 20 });
+  assert.equal(l.maxTotalNotionalUsd, DEFAULT_LIMITS.maxTotalNotionalUsd);
+  assert.equal(l.maxOrdersPerTick, DEFAULT_LIMITS.maxOrdersPerTick);
+  assert.equal(l.dailyLossLimitUsd, 20, 'a valid tighter limit is kept untouched');
+  assert.deepEqual(normaliseLimits({}).problems, []);
+});
+
+test('a truthy non-boolean kill switch engages instead of being ignored', () => {
+  for (const killSwitch of ['true', 1, 'yes']) {
+    const r = evaluate({ order: { notionalUsd: 25, slippageBps: 100 }, state: STATE, limits: { killSwitch } });
+    assert.equal(r.verdict, VERDICT.BLOCK, `killSwitch ${JSON.stringify(killSwitch)}`);
+    assert.ok(r.blockedBy.includes('kill-switch'));
+  }
+});
+
+test('admitBatch applies default caps when a limit is unusable', () => {
+  const intents = Array.from({ length: 10 }, (_, i) => ({ intentKey: `k${i}`, notionalUsd: 100 }));
+  const { admitted, limitProblems } = admitBatch({
+    intents, state: STATE, limits: { maxOrdersPerTick: NaN, maxTotalNotionalUsd: 'abc' }, slippageBps: 100,
+  });
+  // defaults: 4 per tick, $500 total -> at most 4 admitted
+  assert.ok(admitted.length <= 4);
+  assert.equal(limitProblems.length, 2);
+});
+
 // ------------------------------------------------------------ tick guards --
 
 /** Minimal venue stub: fixed price, no orders, no fills. */
@@ -493,6 +552,79 @@ test("the daily loss counter measures TODAY, not lifetime realized P&L", async (
 
   const runtime = await configStore.getRuntime();
   near(runtime.dayStartRealizedUsd, result.pnl.realizedNetUsd, 1e-9);
+});
+
+/** Seed an intent the way reconcile leaves one that vanished from the venue. */
+async function seedUnknown(store, { gridId, side, level }) {
+  const key = intentKey({ gridId, side, level });
+  await store.putIntent({
+    intentKey: key, gridId, side, level, notionalUsd: 25,
+    status: INTENT_STATUS.UNKNOWN, venueOrderId: 'gone-1',
+  });
+  return key;
+}
+
+test('an UNKNOWN intent is never re-placed, however many ticks pass', async () => {
+  // reconcile() marks a submitted-but-not-live intent UNKNOWN. planGrid used to
+  // see it as merely "not resting" and re-emit the same key, so tick() placed the
+  // rung a second time — the crash double-fire the journal exists to prevent.
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setConfig({
+    gridId: 'g1', lower: 100, upper: 200, rungs: 5, spacing: 'arith', notionalPerRungUsd: 25,
+  });
+  await configStore.setRuntime({ armed: true });
+  const key = await seedUnknown(store, { gridId: 'g1', side: 'buy', level: 150 });
+
+  const venue = echoVenue(160); // lists nothing for the seeded intent
+  const placedKeys = [];
+  const inner = venue.placeOrder;
+  venue.placeOrder = async (a) => { placedKeys.push(a.intent.intentKey); return inner(a); };
+
+  const first = await tick({ venue, store, configStore });
+  const second = await tick({ venue, store, configStore });
+
+  assert.ok(!placedKeys.includes(key), 'the UNKNOWN rung must not be placed again');
+  assert.ok(placedKeys.length > 0, 'other rungs still trade');
+  for (const r of [first, second]) {
+    const note = r.skipped.find((s) => s.reason === 'unknown-intent-needs-review');
+    assert.deepEqual(note?.intentKeys, [key]);
+    assert.deepEqual(r.unknownIntents, [key]);
+  }
+  assert.equal((await store.getIntent(key)).status, INTENT_STATUS.UNKNOWN, 'stays unknown until a human resolves it');
+});
+
+test('an UNKNOWN intent blocks auto-recentre like a resting order', async () => {
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setConfig({
+    gridId: 'g1', lower: 100, upper: 200, rungs: 5, spacing: 'arith',
+    notionalPerRungUsd: 25, autoRecentre: true, recentreSpanPct: 0.15,
+  });
+  await configStore.setRuntime({ armed: true });
+  await seedUnknown(store, { gridId: 'g1', side: 'buy', level: 150 });
+
+  const result = await tick({ venue: echoVenue(400), store, configStore });
+  assert.equal(result.recentre.applied, false);
+  const after = await configStore.getConfig();
+  assert.deepEqual([after.lower, after.upper], [100, 200], 'bounds must not move under an unresolved intent');
+});
+
+test('a fill that arrives for an UNKNOWN intent frees its rung', async () => {
+  const store = new MemoryStore();
+  const configStore = new ConfigStore(null);
+  await configStore.setConfig({
+    gridId: 'g1', lower: 100, upper: 200, rungs: 5, spacing: 'arith', notionalPerRungUsd: 25,
+  });
+  await configStore.setRuntime({ armed: true });
+  const key = await seedUnknown(store, { gridId: 'g1', side: 'buy', level: 150 });
+  const venue = echoVenue(160);
+  venue.getFills = async () => [
+    { venueOrderId: 'gone-1', intentKey: key, side: 'buy', triggerPriceUsd: 150, executedPriceUsd: 150, filledBaseQty: 0.1, feeUsd: 0.01 },
+  ];
+  const result = await tick({ venue, store, configStore });
+  assert.equal((await store.getIntent(key)).status, INTENT_STATUS.FILLED);
+  assert.deepEqual(result.unknownIntents, []);
 });
 
 test('a short grid on a spot venue says so instead of sitting idle', async () => {
