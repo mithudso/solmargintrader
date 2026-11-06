@@ -1,0 +1,43 @@
+# aero-lp configuration. Copy to config.toml (git-ignored) and edit.
+#
+# Use a DEDICATED wallet that holds only the position(s) this bot manages.
+# The signing key is read from the macOS Keychain (service "aero-lp", account = owner, lowercase)
+# or the AERO_LP_PRIVATE_KEY environment variable - never from this file.
+
+owner = "0x0000000000000000000000000000000000000000"   # wallet that owns (or staked) the position
+token_ids = [123456]                                     # Slipstream NFT id(s); see `aero-lp positions`
+rpc_url = "https://base-rpc.publicnode.com"              # a private RPC (Alchemy/QuickNode/...) is better
+poll_seconds = 60
+reward_mode = "auto"        # "auto" picks AERO rewards (staked) or trading fees (unstaked) by expected net yield;
+                            # "aero" | "fees" force one; "keep" keeps whatever the position uses now
+state_path = "~/.aero-lp/state.json"
+gas_units_estimate = 2700000  # measured: unstake+remove+2 swaps+mint+stake ~= 1.9M-2.6M gas
+l1_fee_usd_estimate = 0.05
+
+[strategy]
+width_mode = "optimal"      # "optimal": maximise yield - LVR - rebalance cost; "vol": k*sigma*sqrt(horizon); "fixed"
+fixed_half_width_pct = 8.0  # used by "fixed", and as the fallback when volatility is unknown
+vol_k = 2.0
+horizon_days = 3.0
+min_half_width_pct = 2.0
+max_half_width_pct = 40.0
+edge_buffer = 0.10          # rebalance early when price sits in the outer 10% of the range...
+confirm_checks = 2          # ...for this many consecutive checks
+cooldown_minutes = 60       # never rebalance twice within this window (whipsaw protection)
+benefit_cost_ratio = 1.5    # expected gain over the horizon must beat 1.5x the rebalance cost
+expected_price_impact_bps = 5.0
+lvr_weight = 1.0            # 1.0 = profit-maximising (won't re-enter when fees/AERO < LVR);
+                            # 0.0 = "always back in range" regardless of expected adverse selection
+
+[execution]
+max_slippage_bps = 50       # min-out / min-amount protection on every swap, remove and mint
+max_stage_drift_bps = 100   # abort before swapping if spot moved >1% since the pre-send check
+max_priority_fee_gwei = 0.001  # keep tiny: Slipstream charges an extra MEV fee above a priority-fee threshold
+deadline_s = 600
+min_swap_usd = 1.0
+
+[safety]
+max_position_usd = 10000    # live mode refuses to touch a bigger position (raise deliberately)
+max_gas_usd = 2.0           # live mode refuses a rebalance whose gas estimate exceeds this
+max_twap_deviation_bps = 75 # skip a round when spot is this far from the 10-min TWAP (manipulation guard)
+min_check_interval_s = 30
