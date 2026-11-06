@@ -12,12 +12,13 @@ Two runners execute stages:
   LiveRunner - signs locally and broadcasts; simulates every tx with eth_estimateGas first.
 
 The bot only ever spends tokens that came out of the position being rebalanced: amounts are
-measured as wallet balance deltas from the start of the rebalance.
+measured from token transfers in this operation's confirmed transaction receipts.
 """
 
 from __future__ import annotations
 
 import time
+import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Protocol, TypeVar
@@ -29,6 +30,8 @@ from web3 import Web3
 from . import abi, addresses, clmath
 from .chain import AeroChain, PoolState, PositionState
 from .strategy import Range
+from .submissions import PendingSubmission, SubmissionJournal
+from .validation import finite_number
 
 T = TypeVar("T")
 
@@ -49,6 +52,10 @@ class ExecConfig:
     max_stage_drift_bps: float = 100.0
 
     def __post_init__(self) -> None:
+        for name in ("max_slippage_bps", "max_priority_fee_gwei", "min_swap_usd", "max_stage_drift_bps"):
+            finite_number(getattr(self, name), name, positive=name == "max_stage_drift_bps")
+        for name in ("deadline_s", "receipt_timeout_s"):
+            finite_number(getattr(self, name), name, positive=True, integer=True)
         # A slippage of 100% (10_000 bps) makes every min-out zero, i.e. no protection at all.
         if not 0 <= self.max_slippage_bps < 10_000:
             raise ValueError("max_slippage_bps must be in [0, 10000)")
@@ -69,6 +76,12 @@ class PlannedTx:
 
 
 @dataclass
+class ConfirmedTx:
+    tx: PlannedTx
+    logs: list[dict[str, Any]]
+
+
+@dataclass
 class StageResult:
     logs: list[dict[str, Any]]
     balances: dict[str, int]
@@ -85,12 +98,52 @@ def _hex(b: bytes | str) -> str:
     return b if isinstance(b, str) else "0x" + bytes(b).hex()
 
 
+def token_delta(logs: list[dict[str, Any]], token: str, owner: str) -> int:
+    """Net ERC20 transfers in these receipts only; unrelated block transfers cannot enter a budget."""
+    delta = 0
+    owner_topic = "0x" + "0" * 24 + owner.lower()[2:]
+    for lg in logs:
+        topics = [_hex(t).lower() for t in lg["topics"]]
+        if str(lg["address"]).lower() != token.lower() or len(topics) != 3:
+            continue
+        if topics[0] != _hex(TRANSFER_TOPIC).lower():
+            continue
+        data = HexBytes(lg["data"])
+        if len(data) != 32:
+            raise RuntimeError("malformed ERC20 Transfer receipt")
+        amount = int.from_bytes(data)
+        delta += amount * ((topics[2] == owner_topic) - (topics[1] == owner_topic))
+    return delta
+
+
+def increased_amounts(logs: list[dict[str, Any]], npm: str, token_id: int) -> tuple[int, int]:
+    topic = _hex(Web3.keccak(text="IncreaseLiquidity(uint256,uint128,uint256,uint256)")).lower()
+    matches = []
+    for lg in logs:
+        topics = [_hex(t).lower() for t in lg["topics"]]
+        if (
+            str(lg["address"]).lower() == npm.lower()
+            and len(topics) == 2
+            and topics[0] == topic
+            and int(topics[1], 16) == token_id
+        ):
+            data = HexBytes(lg["data"])
+            if len(data) != 96:
+                raise RuntimeError("malformed IncreaseLiquidity receipt")
+            matches.append((int.from_bytes(data[32:64]), int.from_bytes(data[64:96])))
+    if len(matches) != 1:
+        raise RuntimeError("confirmed IncreaseLiquidity receipt missing or ambiguous")
+    return matches[0]
+
+
 class SimRunner:
     """Accumulates every tx and re-simulates the whole sequence with eth_simulateV1 at each stage."""
 
     def __init__(self, chain: AeroChain, owner: str, tokens: list[str], pool: str | None = None):
         self.chain, self.owner, self.tokens, self.pool = chain, Web3.to_checksum_address(owner), tokens, pool
         self.history: list[PlannedTx] = []
+        self.confirmed: list[ConfirmedTx] = []
+        self.logs: list[dict[str, Any]] = []
         self.base_block = chain.head()[0]
         self._ts = int(chain.w3.eth.get_block(self.base_block)["timestamp"])
         self.gas_used: dict[str, int] = {}
@@ -120,12 +173,22 @@ class SimRunner:
             if int(r["status"], 16) != 1:
                 err = r.get("error") or {}
                 raise RuntimeError(f"simulated tx '{tx.label}' reverted: {err.get('message') or err}")
-            self.gas_used[tx.label] = int(r.get("gasUsed", "0x0"), 16)
+            try:
+                raw_gas = r["gasUsed"]
+                if not isinstance(raw_gas, str) or not raw_gas.startswith("0x"):
+                    raise ValueError("gasUsed must be an RPC hex quantity")
+                gas = int(raw_gas, 16)
+                finite_number(gas, "simulated gas", positive=True, integer=True)
+            except (KeyError, TypeError, ValueError) as error:
+                raise RuntimeError(f"simulated tx '{tx.label}' has invalid or missing gas evidence") from error
+            self.gas_used[tx.label] = self.gas_used.get(tx.label, 0) + gas
         logs = [lg for r in out[n_hist : n_hist + len(txs)] for lg in r.get("logs", [])]
         first_probe = len(calls) - len(probes)
         bals = {t: int(out[first_probe + j]["returnData"], 16) for j, t in enumerate(self.tokens)}
         sqrt_p = int(out[-1]["returnData"][2:66], 16) if self.pool else 0
         self.history.extend(txs)
+        self.logs.extend(logs)
+        self.confirmed.extend(ConfirmedTx(tx, out[n_hist + i].get("logs", [])) for i, tx in enumerate(txs))
         return StageResult(logs, bals, sqrt_price_x96=sqrt_p)
 
 
@@ -136,10 +199,21 @@ class LiveRunner:
     READ_RETRY_DELAY_S = 1.5
 
     def __init__(
-        self, chain: AeroChain, account: LocalAccount, tokens: list[str], cfg: ExecConfig, pool: str | None = None
+        self,
+        chain: AeroChain,
+        account: LocalAccount,
+        tokens: list[str],
+        cfg: ExecConfig,
+        pool: str | None = None,
+        *,
+        journal: SubmissionJournal | None = None,
     ):
         self.chain, self.acct, self.tokens, self.cfg, self.pool = chain, account, tokens, cfg, pool
         self.w3 = chain.w3
+        self.journal = journal
+        self.group = uuid.uuid4().hex
+        self._uncertain = False
+        self._lease = None
         self.gas_used: dict[str, int] = {}
         # Every hash broadcast so far, appended before waiting for the receipt, so a timeout or revert
         # still leaves the hash on record (see RebalanceError).
@@ -148,6 +222,7 @@ class LiveRunner:
         self.fee_wei = 0  # execution + L1 data fee actually paid, summed over every receipt
         # Every log of every receipt so far, kept even if a later read fails, so a minted NFT's id is not lost.
         self.logs: list[dict[str, Any]] = []
+        self.confirmed: list[ConfirmedTx] = []
 
     def block_timestamp(self) -> int:
         return int(self.w3.eth.get_block("latest")["timestamp"])
@@ -203,11 +278,36 @@ class LiveRunner:
             prio = cap
         return base * 2 + prio, prio
 
+    def finish_submission(self) -> None:
+        if self._lease is not None:
+            self._lease.close()
+            self._lease = None
+
     def execute(self, txs: list[PlannedTx]) -> StageResult:
+        if txs:
+            if self.journal is None:
+                raise RuntimeError("a durable submission journal is required before live writes")
+            if self._lease is None:
+                self._lease = self.journal.acquire()
+        try:
+            return self._execute(txs)
+        except BaseException:
+            self.finish_submission()
+            raise
+
+    def _execute(self, txs: list[PlannedTx]) -> StageResult:
         logs: list[dict[str, Any]] = []
         hashes: list[str] = []
         block: int | str = "latest"
         for tx in txs:
+            if self.journal is None:
+                raise RuntimeError("a durable submission journal is required before live writes")
+            if self.journal.owner.lower() != self.acct.address.lower():
+                raise PendingSubmission("submission journal owner does not match the signer")
+            if self._uncertain:
+                raise PendingSubmission(
+                    "this runner has an unresolved submitted outcome; reconcile before any new write"
+                )
             max_fee, prio = self._fees()
             req: dict[str, Any] = {
                 "from": self.acct.address,
@@ -221,12 +321,15 @@ class LiveRunner:
                 "type": 2,
             }
             req["gas"] = int(self._estimate_gas(req) * 1.25)  # reverts here if the tx would fail
-            self._next_nonce = req["nonce"] + 1
             signed = self.acct.sign_transaction(req)
             h = HexBytes(signed.hash)
             # Recorded before broadcasting: the RPC layer retries transport errors, so a send that raises may
             # still have reached the mempool, and the hash is then the only handle on that transaction.
+            self._uncertain = True
+            self.journal.before_submit(_hex(h), req["nonce"], tx, self.group, self.pool, self.tokens)
+            self._next_nonce = req["nonce"] + 1
             self.sent_hashes.append(_hex(h))
+            self._uncertain = True
             try:
                 self.w3.eth.send_raw_transaction(signed.raw_transaction)
             except Exception:
@@ -235,10 +338,12 @@ class LiveRunner:
                 if not self._visible(h):
                     raise
             rcpt = self.w3.eth.wait_for_transaction_receipt(h, timeout=self.cfg.receipt_timeout_s)
+            self.journal.receipt(_hex(h), rcpt)
+            self._uncertain = False
             self.fee_wei += receipt_fee_wei(rcpt)  # a reverted transaction still paid for its gas
             if rcpt["status"] != 1:
                 raise RuntimeError(f"tx '{tx.label}' reverted: {_hex(h)}")
-            self.gas_used[tx.label] = int(rcpt["gasUsed"])
+            self.gas_used[tx.label] = self.gas_used.get(tx.label, 0) + int(rcpt["gasUsed"])
             hashes.append(_hex(h))
             block = int(rcpt["blockNumber"])
             self.chain.min_block = max(getattr(self.chain, "min_block", None) or 0, block)
@@ -248,6 +353,7 @@ class LiveRunner:
             ]
             logs.extend(new_logs)
             self.logs.extend(new_logs)
+            self.confirmed.append(ConfirmedTx(tx, new_logs))
         # Read the post-stage state at the last receipt's block, never at a possibly lagging "latest".
         bals = dict(
             zip(
@@ -352,6 +458,9 @@ class Rebalancer:
             self._recover_mint(res, runner)
             where = res.stages[-1] if res.stages else "start"
             raise RebalanceError(f"rebalance failed after stage '{where}': {e}", res) from e
+        finally:
+            if hasattr(runner, "finish_submission"):
+                runner.finish_submission()
 
     def _exit(
         self,
@@ -364,12 +473,14 @@ class Rebalancer:
         on_stage: StageHook,
     ) -> StageResult:
         """Unstake (if staked) and remove all liquidity + collect + burn. Shared by rebalance and withdraw."""
+        exit_logs: list[dict[str, Any]] = []
         if pos.staked:
             g = self.chain.gauge_contract(pos.pool.gauge)
             r = runner.execute([PlannedTx("gauge.withdraw", g.address, g.encode_abi("withdraw", args=[pos.token_id]))])
             res.stages.append("unstake")
             res.tx_hashes += r.tx_hashes
-            res.aero_claimed = r.balances[addresses.AERO_TOKEN] - start[addresses.AERO_TOKEN]
+            exit_logs.extend(r.logs)
+            res.aero_claimed = token_delta(r.logs, addresses.AERO_TOKEN, self.owner)
             if res.aero_claimed <= 0 and pos.earned_aero > 0:
                 res.notes.append(
                     "no AERO arrived on unstake although some had accrued: the gauge either applied the early-exit "
@@ -380,6 +491,11 @@ class Rebalancer:
         res.stages.append("remove")
         res.tx_hashes += r.tx_hashes
         on_stage("remove", res)
+        r.logs = exit_logs + r.logs
+        if pos.liquidity > 0 and not any(
+            token_delta(r.logs, t, self.owner) > 0 for t in (pos.pool.token0.address, pos.pool.token1.address)
+        ):
+            raise RuntimeError("remove receipt has no token proceeds; refusing to infer funds from wallet balances")
         return r
 
     def withdraw(self, pos: PositionState, runner: Runner, on_stage: StageHook | None = None) -> RebalanceResult:
@@ -390,9 +506,8 @@ class Rebalancer:
         res = RebalanceResult(None, False, [], [], {})
         hook = on_stage or (lambda stage, r: None)
         t0, t1 = pos.pool.token0.address, pos.pool.token1.address
-        tokens = runner_tokens(t0, t1)
         try:
-            start = dict(zip(tokens, self.chain.erc20_balances(self.owner, tokens), strict=True))
+            start = runner.execute([]).balances
             r = self._exit(
                 pos,
                 runner,
@@ -402,14 +517,21 @@ class Rebalancer:
                 self.cfg.max_slippage_bps / 1e4,
                 hook,
             )
-            res.amounts_in_position = (max(0, r.balances[t0] - start[t0]), max(0, r.balances[t1] - start[t1]))
+            res.amounts_in_position = (token_delta(r.logs, t0, self.owner), token_delta(r.logs, t1, self.owner))
             self._finish(res, runner)
             return res
         except Exception as e:
             res.tx_hashes = list(getattr(runner, "sent_hashes", None) or res.tx_hashes)
             self._finish(res, runner)
+            self._recover_confirmed(res, runner)
+            if "remove" in res.stages:
+                receipts = [lg for record in getattr(runner, "confirmed", ()) for lg in record.logs]
+                res.amounts_in_position = (token_delta(receipts, t0, self.owner), token_delta(receipts, t1, self.owner))
             where = res.stages[-1] if res.stages else "start"
             raise RebalanceError(f"withdraw failed after stage '{where}': {e}", res) from e
+        finally:
+            if hasattr(runner, "finish_submission"):
+                runner.finish_submission()
 
     def _run(
         self,
@@ -425,9 +547,7 @@ class Rebalancer:
         pool = pos.pool
         t0, t1 = pool.token0.address, pool.token1.address
         slip = self.cfg.max_slippage_bps / 1e4
-        start = dict(
-            zip(runner_tokens(t0, t1), self.chain.erc20_balances(self.owner, runner_tokens(t0, t1)), strict=True)
-        )
+        start = runner.execute([]).balances
 
         def deadline() -> int:
             # Fresh per stage: on the live runner a slow earlier stage must not leave a later one with an
@@ -435,22 +555,19 @@ class Rebalancer:
             return runner.block_timestamp() + self.cfg.deadline_s
 
         r = self._exit(pos, runner, res, start, deadline, slip, on_stage)
-        got0, got1 = max(0, r.balances[t0] - start[t0]), max(0, r.balances[t1] - start[t1])
+        got0, got1 = (
+            min(max(0, token_delta(r.logs, t, self.owner)), max(0, r.balances[t] - start[t])) for t in (t0, t1)
+        )
         if t0 == addresses.AERO_TOKEN or t1 == addresses.AERO_TOKEN:
             res.notes.append("pool contains AERO: claimed AERO is included in the redeposit")
-        if r.sqrt_price_x96:
-            drift = abs(clmath_tick(r.sqrt_price_x96) - pool.tick)
-            if drift > self.cfg.max_stage_drift_bps:
-                raise RuntimeError(
-                    f"spot moved {drift} ticks since the pre-send check (> {self.cfg.max_stage_drift_bps}); "
-                    "not swapping into a possibly manipulated price. Tokens are in the wallet."
-                )
+        self._check_drift(pool, r.sqrt_price_x96)
 
         sp = r.sqrt_price_x96 or pool.sqrt_price_x96
 
-        def avail(b: dict[str, int]) -> tuple[int, int]:
-            # Only what came out of the position (balance change since before the exit) is redeployed.
-            return max(0, b[t0] - start[t0]), max(0, b[t1] - start[t1])
+        funds = [got0, got1]
+
+        def avail(r: StageResult) -> tuple[int, int]:
+            return self._available(funds, (t0, t1), r, start, (0, 0))
 
         avail0, avail1, sp_now = self._ratio_swap_loop(
             pos.pool, new, runner, res, on_stage, avail, got0, got1, sp, usd0, usd1, deadline, slip
@@ -463,14 +580,90 @@ class Rebalancer:
 
     # -------------------------------------------------------------- shared building blocks
 
+    def _check_drift(self, pool: PoolState, sqrt_price: int) -> None:
+        if not sqrt_price:
+            raise RuntimeError("post-stage pool price unavailable")
+        drift = abs(clmath_tick(sqrt_price) - pool.tick)
+        if drift > self.cfg.max_stage_drift_bps:
+            raise RuntimeError(
+                f"spot moved {drift} ticks since the pre-send check (> {self.cfg.max_stage_drift_bps}); "
+                "not swapping into a possibly manipulated price. Tokens are in the wallet."
+            )
+
+    def _available(
+        self,
+        funds: list[int],
+        tokens: tuple[str, str],
+        r: StageResult,
+        start: dict[str, int],
+        designated: tuple[int, int],
+    ) -> tuple[int, int]:
+        for i, t in enumerate(tokens):
+            funds[i] += token_delta(r.logs, t, self.owner)
+            if funds[i] < 0:
+                raise RuntimeError("receipt spent more than this operation's token budget")
+            funds[i] = min(funds[i], max(0, designated[i] + r.balances[t] - start[t]))
+        return funds[0], funds[1]
+
+    def _recover_amounts(self, res: RebalanceResult, logs: list[dict[str, Any]], token_id: int) -> None:
+        try:
+            res.amounts_in_position = increased_amounts(logs, self.npm.address, token_id)
+        except RuntimeError as error:
+            res.notes.append(f"confirmed NFT #{token_id}: deposited amounts unknown ({error}); no estimate substituted")
+
+    def _recover_confirmed(self, res: RebalanceResult, runner: Runner) -> None:
+        """Recover committed outcomes before a later state read or stage hook failed."""
+        records = getattr(runner, "confirmed", ())
+        stages = []
+        for record in records:
+            label, logs = record.tx.label, record.logs
+            stage = None
+            if label == "gauge.withdraw":
+                stage, res.staked = "unstake", False
+                res.aero_claimed = token_delta(logs, addresses.AERO_TOKEN, self.owner)
+            elif label.startswith("remove"):
+                stage = "remove"
+            elif label.startswith("mint"):
+                tid = minted_token_id(logs, self.npm.address, self.owner)
+                if tid is not None:
+                    res.new_token_id = tid
+                    self._recover_amounts(res, logs, tid)
+                    stage = "mint"
+            elif label == "increaseLiquidity":
+                params = self.npm.decode_function_input(record.tx.data)[1]["params"]
+                self._recover_amounts(res, logs, params["tokenId"])
+                stage = "increase"
+            elif label == "gauge.deposit":
+                stage, res.staked = "stake", True
+            elif label.startswith("swap"):
+                stage = "swap"
+            elif label == "gauge.claimEmissions":
+                stage = "claim"
+                res.aero_claimed = token_delta(logs, addresses.AERO_TOKEN, self.owner)
+            elif label == "collect":
+                stage = "collect"
+            elif label == "weth.withdraw":
+                stage = "unwrap"
+            elif label.startswith("router multicall:"):
+                stage = "swap_to_eth"
+            if stage:
+                stages.append(stage)
+        if stages:
+            res.stages = stages
+
     def _recover_mint(self, res: RebalanceResult, runner: Runner) -> None:
         """If a mint receipt arrived but a later read failed, the stage never reported the new NFT. Its id is in the
         runner's logs; without it the position would sit in the wallet untracked."""
+        before = res.new_token_id
+        self._recover_confirmed(res, runner)
         if res.new_token_id is not None:
+            if before is None:
+                res.notes.append(f"NFT #{res.new_token_id} was minted; recovered from its confirmed receipt")
             return
         tid = minted_token_id(getattr(runner, "logs", None) or [], self.npm.address, self.owner)
         if tid is not None:
             res.new_token_id = tid
+            self._recover_amounts(res, getattr(runner, "logs", []), tid)
             res.notes.append(f"NFT #{tid} was minted; the mint stage failed after its receipt")
 
     def _finish(self, res: RebalanceResult, runner: Runner) -> None:
@@ -484,7 +677,7 @@ class Rebalancer:
         runner: Runner,
         res: RebalanceResult,
         on_stage: StageHook,
-        avail: Callable[[dict[str, int]], tuple[int, int]],
+        avail: Callable[[StageResult], tuple[int, int]],
         avail0: int,
         avail1: int,
         sp: int,
@@ -524,7 +717,9 @@ class Rebalancer:
             res.stages.append("swap")
             res.tx_hashes += r.tx_hashes
             on_stage("swap", res)
-            avail0, avail1 = avail(r.balances)
+            if token_delta(r.logs, t_in, self.owner) != -amt_i or token_delta(r.logs, t_out, self.owner) <= 0:
+                raise RuntimeError("swap receipt does not prove the expected token transfers")
+            avail0, avail1 = avail(r)
             sp = r.sqrt_price_x96 or sp
         if not new.contains(clmath_tick(sp)):
             res.notes.append("price is outside the target range after the swap; the deposit will be single-sided")
@@ -565,9 +760,6 @@ class Rebalancer:
             deadline(),
             0,
         )
-        # Expected deposit (the NPM refunds any remainder). Set before sending so that, if the NFT is found in the
-        # logs after a later failure, the caller can book it.
-        res.amounts_in_position = (e0, e1)
         r = runner.execute(
             [
                 self._approve(t0, self.npm.address, avail0),
@@ -584,6 +776,7 @@ class Rebalancer:
         res.new_token_id = minted_token_id(r.logs, self.npm.address, self.owner)
         if res.new_token_id is None:
             raise RuntimeError("mint succeeded but no Transfer(0x0 -> owner) log found")
+        res.amounts_in_position = increased_amounts(r.logs, self.npm.address, res.new_token_id)
         on_stage("mint", res)
         if stake_new and pool.gauge_alive:
             self._stake(pool, res.new_token_id, runner, res, on_stage)
@@ -616,9 +809,9 @@ class Rebalancer:
             self._recover_mint(res, runner)
             where = res.stages[-1] if res.stages else "start"
             raise RebalanceError(f"{op} failed after stage '{where}': {e}", res) from e
-
-    def _snapshot(self, tokens: list[str]) -> dict[str, int]:
-        return dict(zip(tokens, self.chain.erc20_balances(self.owner, tokens), strict=True))
+        finally:
+            if hasattr(runner, "finish_submission"):
+                runner.finish_submission()
 
     # -------------------------------------------------------------- new positions and additions
 
@@ -640,10 +833,9 @@ class Rebalancer:
         """
         res = RebalanceResult(None, False, [], [], {})
         hook = on_stage or (lambda stage, r: None)
-        tokens = runner_tokens(pool.token0.address, pool.token1.address)
 
         def go() -> None:
-            start = self._snapshot(tokens)
+            start = runner.execute([]).balances
             slip = self.cfg.max_slippage_bps / 1e4
 
             def deadline() -> int:
@@ -651,8 +843,10 @@ class Rebalancer:
 
             t0, t1 = pool.token0.address, pool.token1.address
 
-            def avail(b: dict[str, int]) -> tuple[int, int]:
-                return max(0, amount0 + b[t0] - start[t0]), max(0, amount1 + b[t1] - start[t1])
+            funds = [amount0, amount1]
+
+            def avail(r: StageResult) -> tuple[int, int]:
+                return self._available(funds, (t0, t1), r, start, (amount0, amount1))
 
             a0, a1, sp = self._ratio_swap_loop(
                 pool, new, runner, res, hook, avail, amount0, amount1, pool.sqrt_price_x96, usd0, usd1, deadline, slip
@@ -670,20 +864,22 @@ class Rebalancer:
         usd0: float,
         usd1: float,
         on_stage: StageHook | None = None,
+        *,
+        include_unstake_proceeds: bool = True,
     ) -> RebalanceResult:
         """Add wallet funds to an existing position (compounding or reinforcing a winner).
 
         A staked NFT belongs to the gauge, so it is unstaked first (which also claims its AERO) and restaked
-        after the increase. The same token id is kept.
+        after the increase. The same token id is kept. Set include_unstake_proceeds=False to spend only
+        the designated amounts and leave any pool-token fees or rewards released by unstaking in the wallet.
         """
         res = RebalanceResult(pos.token_id, pos.staked, [], [], {})
         hook = on_stage or (lambda stage, r: None)
         pool = pos.pool
-        tokens = runner_tokens(pool.token0.address, pool.token1.address)
         rng = Range(pos.tick_lower, pos.tick_upper)
 
         def go() -> None:
-            start = self._snapshot(tokens)
+            start = runner.execute([]).balances
             slip = self.cfg.max_slippage_bps / 1e4
 
             def deadline() -> int:
@@ -691,10 +887,10 @@ class Rebalancer:
 
             t0, t1 = pool.token0.address, pool.token1.address
 
-            def avail(b: dict[str, int]) -> tuple[int, int]:
-                # Only the designated amounts, plus what this call itself moved into the wallet: the fees the
-                # unstake collects and the proceeds of our own swaps. Other wallet funds are never touched.
-                return max(0, amount0 + b[t0] - start[t0]), max(0, amount1 + b[t1] - start[t1])
+            funds = [amount0, amount1]
+
+            def avail(r: StageResult) -> tuple[int, int]:
+                return self._available(funds, (t0, t1), r, start, (amount0, amount1))
 
             a0, a1, sp = amount0, amount1, pool.sqrt_price_x96
             try:
@@ -706,10 +902,18 @@ class Rebalancer:
                     res.stages.append("unstake")
                     res.staked = False
                     res.tx_hashes += r.tx_hashes
-                    res.aero_claimed = r.balances[addresses.AERO_TOKEN] - start[addresses.AERO_TOKEN]
+                    res.aero_claimed = token_delta(r.logs, addresses.AERO_TOKEN, self.owner)
                     hook("unstake", res)
                     sp = r.sqrt_price_x96 or sp
-                    a0, a1 = avail(r.balances)  # includes the fees the unstake just collected
+                    if include_unstake_proceeds:
+                        a0, a1 = avail(r)
+                    else:
+                        a0, a1 = (
+                            min(amount, max(0, amount + r.balances[t] - start[t]))
+                            for amount, t in ((amount0, t0), (amount1, t1))
+                        )
+                        funds[:] = [a0, a1]
+                    self._check_drift(pool, r.sqrt_price_x96)
                 a0, a1, sp = self._ratio_swap_loop(
                     pool, rng, runner, res, hook, avail, a0, a1, sp, usd0, usd1, deadline, slip
                 )
@@ -732,11 +936,12 @@ class Rebalancer:
                 )
                 res.stages.append("increase")
                 res.tx_hashes += r.tx_hashes
-                res.amounts_in_position = (e0, e1)
+                res.amounts_in_position = increased_amounts(r.logs, self.npm.address, pos.token_id)
                 hook("increase", res)
                 if pos.staked:
                     self._stake(pool, pos.token_id, runner, res, hook)
             except Exception:
+                self._recover_confirmed(res, runner)
                 # A staked NFT that was unstaked must not stay out of the gauge (it would earn no AERO until
                 # the next rebalance). Try once to put it back, then re-raise the original failure.
                 if pos.staked and not res.staked and (res.stages or getattr(runner, "sent_hashes", None)):
@@ -752,10 +957,8 @@ class Rebalancer:
     def claim(self, pos: PositionState, runner: Runner) -> RebalanceResult:
         """Claim AERO for a staked position to the wallet (no unstake)."""
         res = RebalanceResult(pos.token_id, pos.staked, [], [], {})
-        tokens = runner_tokens(pos.pool.token0.address, pos.pool.token1.address)
 
         def go() -> None:
-            start = self._snapshot(tokens)
             g = self.chain.gauge_contract(pos.pool.gauge)
             r = runner.execute(
                 [
@@ -768,17 +971,15 @@ class Rebalancer:
             )
             res.stages.append("claim")
             res.tx_hashes += r.tx_hashes
-            res.aero_claimed = r.balances[addresses.AERO_TOKEN] - start[addresses.AERO_TOKEN]
+            res.aero_claimed = token_delta(r.logs, addresses.AERO_TOKEN, self.owner)
 
         return self._wrap("claim", res, runner, go)
 
     def collect(self, pos: PositionState, runner: Runner) -> RebalanceResult:
         """Collect an unstaked position's fees to the wallet (liquidity untouched)."""
         res = RebalanceResult(pos.token_id, False, [], [], {})
-        tokens = runner_tokens(pos.pool.token0.address, pos.pool.token1.address)
 
         def go() -> None:
-            start = self._snapshot(tokens)
             r = runner.execute(
                 [
                     PlannedTx(
@@ -791,7 +992,7 @@ class Rebalancer:
             t0, t1 = pos.pool.token0.address, pos.pool.token1.address
             res.stages.append("collect")
             res.tx_hashes += r.tx_hashes
-            res.amounts_in_position = (r.balances[t0] - start[t0], r.balances[t1] - start[t1])
+            res.amounts_in_position = (token_delta(r.logs, t0, self.owner), token_delta(r.logs, t1, self.owner))
 
         return self._wrap("collect", res, runner, go)
 
@@ -800,8 +1001,8 @@ class Rebalancer:
     ) -> RebalanceResult:
         """One exactInputSingle on `pool` (used to turn an idle token into a target pool's token).
 
-        `RebalanceResult.amount_out` is the output token's balance change, read from the runner (the live
-        runner reads the receipt's block; the sim runner reports the simulated swap), so it works in dry run.
+        `RebalanceResult.amount_out` comes from this swap's confirmed ERC20 transfer logs. Both runners
+        report the same receipt evidence, so unrelated wallet transfers cannot inflate the output.
         """
         res = RebalanceResult(None, False, [], [], {})
         t0, t1 = pool.token0.address, pool.token1.address
@@ -812,7 +1013,6 @@ class Rebalancer:
         token_out = t1 if token_in.lower() == t0.lower() else t0
 
         def go() -> None:
-            out_before = self._snapshot([token_out])[token_out]
             deadline = runner.block_timestamp() + self.cfg.deadline_s
             params = (token_in, token_out, pool.tick_spacing, self.owner, deadline, amount_in, min_out, 0)
             r = runner.execute(
@@ -827,11 +1027,9 @@ class Rebalancer:
             )
             res.stages.append("swap")
             res.tx_hashes += r.tx_hashes
-            after = {k.lower(): v for k, v in r.balances.items()}.get(token_out.lower())
-            if after is None:
-                res.notes.append("the runner does not track the output token; amount_out unknown")
-            else:
-                res.amount_out = max(0, after - out_before)
+            res.amount_out = token_delta(r.logs, token_out, self.owner)
+            if token_delta(r.logs, token_in, self.owner) != -amount_in or res.amount_out <= 0:
+                raise RuntimeError("swap receipt does not prove the expected token transfers")
 
         return self._wrap("swap", res, runner, go)
 

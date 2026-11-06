@@ -39,7 +39,18 @@ def atomic_write_json(path: Path, doc: Any) -> None:
     fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
     with os.fdopen(fd, "w") as f:
         json.dump(doc, f, indent=2, default=str)
+        f.flush()
+        os.fsync(f.fileno())
     os.replace(tmp, path)
+    _sync_directory(path.parent)
+
+
+def _sync_directory(path: Path) -> None:
+    descriptor = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
 
 
 class State:
@@ -62,4 +73,7 @@ class State:
         fd, tmp = tempfile.mkstemp(dir=self.path.parent, prefix=".state.")
         with os.fdopen(fd, "w") as f:
             f.write(data)
-        os.replace(tmp, self.path)  # atomic: a crash never leaves a half-written state file
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, self.path)
+        _sync_directory(self.path.parent)  # atomic: a crash never leaves a half-written state file

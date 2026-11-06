@@ -4,6 +4,12 @@ A Chrome MV3 extension that runs a **grid trading strategy on Jupiter (Solana)**
 rails and full P&L tracking. **Dry-run by default** — it will not place an order until you change
 the mode and type a confirmation.
 
+**Live signing gate:** the bundled signer does not yet verify the economic intent of
+remote-crafted deposit/withdrawal transactions. Trigger live writes therefore refuse
+automatic signing, even with a session key and live confirmation. Dry-run works. A trusted
+semantic-verification bridge and validated live fixtures are required before enabling
+those writes; see `../docs/jupiter-trigger-contract.md`.
+
 > **Not financial advice.** Grid trading is a short-volatility strategy: it makes money in a
 > range and loses money in a trend. Any leveraged position can be liquidated. In the included dry
 > run, a simulated 24% drawdown leaves the grid **−$8.62 on $48 of deployed capital** with four
@@ -281,7 +287,8 @@ node tools/cli.js pnl --json
 ```
 
 ```bash
-node tools/api-server.js --port 8787                # prints a bearer token
+export SMT_API_TOKEN="$(openssl rand -hex 24)"       # value is not printed
+node tools/api-server.js --port 8787                # requires SMT_API_TOKEN
 curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 ```
 

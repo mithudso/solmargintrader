@@ -10,8 +10,9 @@ from web3 import Web3
 
 from aero_lp import abi, addresses, clmath
 from aero_lp.chain import PoolState, PositionState, Token
-from aero_lp.executor import ExecConfig, LiveRunner, PlannedTx, RebalanceError, Rebalancer, StageResult
+from aero_lp.executor import ConfirmedTx, ExecConfig, LiveRunner, PlannedTx, RebalanceError, Rebalancer, StageResult
 from aero_lp.strategy import Range
+from aero_lp.submissions import SubmissionJournal
 
 W3 = Web3()
 OWNER = Web3.to_checksum_address("0x" + "ab" * 20)
@@ -20,6 +21,29 @@ T0 = Web3.to_checksum_address(addresses.WETH)
 T1 = Web3.to_checksum_address("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
 AERO = Web3.to_checksum_address(addresses.AERO_TOKEN)
 HUGE = 10**30  # pre-existing wallet balance the bot must never touch
+
+
+def transfer_log(token, sender, recipient, amount):
+    return {
+        "address": token,
+        "topics": [
+            Web3.keccak(text="Transfer(address,address,uint256)"),
+            HexBytes("0x" + "0" * 24 + sender[2:]),
+            HexBytes("0x" + "0" * 24 + recipient[2:]),
+        ],
+        "data": HexBytes(int(amount).to_bytes(32, "big")),
+    }
+
+
+def increase_log(token_id, amount0, amount1):
+    return {
+        "address": addresses.NONFUNGIBLE_POSITION_MANAGER,
+        "topics": [
+            Web3.keccak(text="IncreaseLiquidity(uint256,uint128,uint256,uint256)"),
+            HexBytes(token_id.to_bytes(32, "big")),
+        ],
+        "data": HexBytes(W3.codec.encode(["uint128", "uint256", "uint256"], [1, amount0, amount1])),
+    }
 
 
 class FakeChain:
@@ -45,6 +69,7 @@ class FakeRunner:
         self.pos, self.sqrt_p = pos, sqrt_p
         self.txs: list[PlannedTx] = []
         self.minted: dict = {}
+        self.confirmed: list[ConfirmedTx] = []
 
     def block_timestamp(self) -> int:
         return 1_800_000_000
@@ -52,33 +77,55 @@ class FakeRunner:
     def execute(self, txs):
         logs = []
         for tx in txs:
+            tx_logs = []
             self.txs.append(tx)
             if tx.label == "gauge.withdraw":
                 self.bal[AERO] += 5 * 10**18
+                tx_logs.append(transfer_log(AERO, GAUGE, OWNER, 5 * 10**18))
             elif tx.label.startswith("remove"):
-                self.bal[T0] += self.pos.amount0
-                self.bal[T1] += self.pos.amount1
+                for t, amount in ((T0, self.pos.amount0), (T1, self.pos.amount1)):
+                    self.bal[t] += amount
+                    if amount:
+                        tx_logs.append(transfer_log(t, self.pos.pool.address, OWNER, amount))
             elif tx.label.startswith("swap"):
                 _, args = W3.eth.contract(abi=abi.SWAP_ROUTER).decode_function_input(tx.data)
                 p = args["params"]
                 price = clmath.sqrtx96_to_price(self.sqrt_p)
-                out = p["amountIn"] * price * 0.999 if p["tokenIn"] == T0 else p["amountIn"] / price * 0.999
+                out = int(p["amountIn"] * price * 0.999 if p["tokenIn"] == T0 else p["amountIn"] / price * 0.999)
                 self.bal[p["tokenIn"]] -= p["amountIn"]
-                self.bal[p["tokenOut"]] += int(out)
+                self.bal[p["tokenOut"]] += out
+                tx_logs.extend(
+                    [
+                        transfer_log(p["tokenIn"], OWNER, self.pos.pool.address, p["amountIn"]),
+                        transfer_log(p["tokenOut"], self.pos.pool.address, OWNER, out),
+                    ]
+                )
             elif tx.label.startswith("mint"):
                 _, args = self_npm().decode_function_input(tx.data)
                 m = args["params"]
-                self.bal[T0] -= int(m["amount0Desired"] * 0.999)
-                self.bal[T1] -= int(m["amount1Desired"] * 0.999)
+                used0, used1 = (int(m[f"amount{i}Desired"] * 0.999) for i in (0, 1))
+                self.bal[T0] -= used0
+                self.bal[T1] -= used1
                 self.minted = m
-                topic0 = "0x" + Web3.keccak(text="Transfer(address,address,uint256)").hex().removeprefix("0x")
-                logs.append(
-                    {
-                        "address": addresses.NONFUNGIBLE_POSITION_MANAGER,
-                        "topics": [topic0, "0x" + "0" * 64, "0x" + "0" * 24 + OWNER[2:].lower(), hex(777)],
-                        "data": "0x",
-                    }
+                tx_logs.extend(
+                    [
+                        transfer_log(T0, OWNER, self.pos.pool.address, used0),
+                        transfer_log(T1, OWNER, self.pos.pool.address, used1),
+                        increase_log(777, used0, used1),
+                        {
+                            "address": addresses.NONFUNGIBLE_POSITION_MANAGER,
+                            "topics": [
+                                Web3.keccak(text="Transfer(address,address,uint256)"),
+                                "0x" + "0" * 64,
+                                "0x" + "0" * 24 + OWNER[2:].lower(),
+                                hex(777),
+                            ],
+                            "data": "0x",
+                        },
+                    ]
                 )
+            logs.extend(tx_logs)
+            self.confirmed.append(ConfirmedTx(tx, tx_logs))
         return StageResult(logs, dict(self.bal), sqrt_price_x96=self.sqrt_p)
 
 
@@ -169,7 +216,7 @@ class StakeFailsRunner(FakeRunner):
     """Everything works until the stake stage, which reverts."""
 
     def execute(self, txs):
-        if txs[-1].label == "gauge.deposit":
+        if txs and txs[-1].label == "gauge.deposit":
             raise RuntimeError("tx 'gauge.deposit' reverted")
         return super().execute(txs)
 
@@ -221,7 +268,7 @@ class SpentElsewhereRunner(FakeRunner):
 
     def execute(self, txs):
         r = super().execute(txs)
-        if txs[0].label.startswith("remove"):
+        if txs and txs[0].label.startswith("remove"):
             self.bal[T0] -= 10**20
             self.bal[T1] -= 10**20
             r = StageResult(r.logs, dict(self.bal), sqrt_price_x96=self.sqrt_p)
@@ -279,7 +326,14 @@ class FakeEth:
 
     def wait_for_transaction_receipt(self, h, timeout):
         self.block_no += 1
-        return {"status": 1, "gasUsed": 90_000, "blockNumber": self.block_no, "logs": []}
+        return {
+            "transactionHash": h,
+            "status": 1,
+            "gasUsed": 90_000,
+            "effectiveGasPrice": 10**6,
+            "blockNumber": self.block_no,
+            "logs": [],
+        }
 
 
 class LaggingChain:
@@ -316,11 +370,17 @@ ACCT = SimpleNamespace(
 TX = PlannedTx("approve", T0, "0x")
 
 
-def test_live_runner_reads_state_at_the_receipt_block_and_waits_for_a_lagging_node(monkeypatch):
+def journal_runner(tmp_path, *args, **kwargs):
+    return LiveRunner(*args, **kwargs, journal=SubmissionJournal(tmp_path / "submissions.json", OWNER))
+
+
+def test_live_runner_reads_state_at_the_receipt_block_and_waits_for_a_lagging_node(monkeypatch, tmp_path):
     monkeypatch.setattr(LiveRunner, "READ_RETRY_DELAY_S", 0)
     eth = FakeEth()
     chain = LaggingChain(eth, ready_after_calls=2)
-    runner = LiveRunner(chain, ACCT, [T0, T1], ExecConfig(), pool=Web3.to_checksum_address("0x" + "11" * 20))
+    runner = journal_runner(
+        tmp_path, chain, ACCT, [T0, T1], ExecConfig(), pool=Web3.to_checksum_address("0x" + "11" * 20)
+    )
     res = runner.execute([TX])
     assert res.balances == {T0: 5, T1: 5} and res.sqrt_price_x96 == 123
     assert set(chain.calls) == {101}  # never "latest": always the receipt's block
@@ -328,31 +388,31 @@ def test_live_runner_reads_state_at_the_receipt_block_and_waits_for_a_lagging_no
     assert runner.sent_hashes == ["0x" + "01" * 32]
 
 
-def test_live_runner_fails_loudly_if_the_node_never_catches_up(monkeypatch):
+def test_live_runner_fails_loudly_if_the_node_never_catches_up(monkeypatch, tmp_path):
     monkeypatch.setattr(LiveRunner, "READ_RETRY_DELAY_S", 0)
-    runner = LiveRunner(LaggingChain(FakeEth(), 10**6), ACCT, [T0], ExecConfig())
+    runner = journal_runner(tmp_path, LaggingChain(FakeEth(), 10**6), ACCT, [T0], ExecConfig())
     with pytest.raises(RuntimeError, match="could not serve state at block 101"):
         runner.execute([TX])
     assert runner.sent_hashes  # the broadcast hash is still on record
 
 
-def test_send_error_after_node_accepted_the_tx_carries_on_to_the_receipt():
+def test_send_error_after_node_accepted_the_tx_carries_on_to_the_receipt(tmp_path):
     eth = FakeEth()
     eth.send_error, eth.known = ValueError("already known"), True  # a transport retry hit the same tx twice
-    res = LiveRunner(LaggingChain(eth, 0), ACCT, [T0], ExecConfig()).execute([TX])
+    res = journal_runner(tmp_path, LaggingChain(eth, 0), ACCT, [T0], ExecConfig()).execute([TX])
     assert res.tx_hashes == ["0x" + "01" * 32]
 
 
-def test_send_error_for_an_unknown_tx_is_raised_but_the_hash_stays_on_record():
+def test_send_error_for_an_unknown_tx_is_raised_but_the_hash_stays_on_record(tmp_path):
     eth = FakeEth()
     eth.send_error = ValueError("insufficient funds")
-    runner = LiveRunner(LaggingChain(eth, 0), ACCT, [T0], ExecConfig())
+    runner = journal_runner(tmp_path, LaggingChain(eth, 0), ACCT, [T0], ExecConfig())
     with pytest.raises(ValueError, match="insufficient funds"):
         runner.execute([TX])
     assert runner.sent_hashes == ["0x" + "01" * 32]
 
 
-def test_nonce_never_goes_backwards_on_a_lagging_node(monkeypatch):
+def test_nonce_never_goes_backwards_on_a_lagging_node(monkeypatch, tmp_path):
     monkeypatch.setattr(LiveRunner, "READ_RETRY_DELAY_S", 0)
     eth = FakeEth()
     eth.get_transaction_count = lambda addr, tag: 5  # stale: ignores our first transaction
@@ -363,11 +423,11 @@ def test_nonce_never_goes_backwards_on_a_lagging_node(monkeypatch):
             nonces.append(req["nonce"]) or SimpleNamespace(raw_transaction=b"raw", hash=HexBytes(b"\x01" * 32))
         ),
     )
-    LiveRunner(LaggingChain(eth, 0), acct, [T0], ExecConfig()).execute([TX, TX])
+    journal_runner(tmp_path, LaggingChain(eth, 0), acct, [T0], ExecConfig()).execute([TX, TX])
     assert nonces == [5, 6]
 
 
-def test_estimate_gas_is_retried_for_a_lagging_node(monkeypatch):
+def test_estimate_gas_is_retried_for_a_lagging_node(monkeypatch, tmp_path):
     monkeypatch.setattr(LiveRunner, "READ_RETRY_DELAY_S", 0)
     eth, calls = FakeEth(), []
 
@@ -378,7 +438,7 @@ def test_estimate_gas_is_retried_for_a_lagging_node(monkeypatch):
         return 100_000
 
     eth.estimate_gas = flaky
-    LiveRunner(LaggingChain(eth, 0), ACCT, [T0], ExecConfig()).execute([TX])
+    journal_runner(tmp_path, LaggingChain(eth, 0), ACCT, [T0], ExecConfig()).execute([TX])
     assert len(calls) == 3
 
 
@@ -453,7 +513,7 @@ def test_missing_aero_on_unstake_is_flagged():
             r = super().execute(txs)
             if any(t.label == "gauge.withdraw" for t in txs):
                 self.bal[AERO] -= 5 * 10**18  # undo the fake payout: reward deferred / forfeited
-                r = StageResult(r.logs, dict(self.bal), sqrt_price_x96=self.sqrt_p)
+                r = StageResult([], dict(self.bal), sqrt_price_x96=self.sqrt_p)
             return r
 
     res = Rebalancer(FakeChain(), OWNER, ExecConfig()).rebalance(
@@ -524,24 +584,43 @@ class WalletRunner(FakeRunner):
                 self.fail_on = None
                 raise RuntimeError(f"tx '{tx.label}' reverted")
             self.fee_wei += 1_000
+            own_logs = []
+            handled = True
             if tx.label == "gauge.claimEmissions":
                 self.txs.append(tx)
                 self.bal[AERO] += CLAIM
+                own_logs.append(transfer_log(AERO, GAUGE, OWNER, CLAIM))
             elif tx.label == "collect":
                 self.txs.append(tx)
                 self.bal[T0] += 10**15
                 self.bal[T1] += 7
+                own_logs.extend(
+                    [
+                        transfer_log(T0, self.pos.pool.address, OWNER, 10**15),
+                        transfer_log(T1, self.pos.pool.address, OWNER, 7),
+                    ]
+                )
             elif tx.label == "increaseLiquidity":
                 self.txs.append(tx)
                 self.increased = self_npm().decode_function_input(tx.data)[1]["params"]
                 self.bal[T0] -= self.increased["amount0Desired"]
                 self.bal[T1] -= self.increased["amount1Desired"]
+                own_logs.append(
+                    increase_log(self.pos.token_id, self.increased["amount0Desired"], self.increased["amount1Desired"])
+                )
             elif tx.label == "weth.withdraw":
                 self.txs.append(tx)
             else:
-                logs += super().execute([tx]).logs
-                if tx.label == "gauge.withdraw":
+                handled = False
+                result = super().execute([tx])
+                if tx.label == "gauge.withdraw" and self.unstake_fees1:
                     self.bal[T1] += self.unstake_fees1
+                    result.logs.append(transfer_log(T1, self.pos.pool.address, OWNER, self.unstake_fees1))
+                    self.confirmed[-1].logs = result.logs
+                logs.extend(result.logs)
+            if handled:
+                self.confirmed.append(ConfirmedTx(tx, own_logs))
+            logs.extend(own_logs)
         return StageResult(logs, dict(self.bal), sqrt_price_x96=self.sqrt_p)
 
 
@@ -779,6 +858,7 @@ class FakeEthWithLogs(FakeEth):
             "data": b"",
         }
         return {
+            "transactionHash": h,
             "status": self.status,
             "gasUsed": 90_000,
             "effectiveGasPrice": 10**6,
@@ -788,21 +868,21 @@ class FakeEthWithLogs(FakeEth):
         }
 
 
-def test_live_runner_keeps_receipt_logs_when_the_state_read_after_them_fails(monkeypatch):
+def test_live_runner_keeps_receipt_logs_when_the_state_read_after_them_fails(monkeypatch, tmp_path):
     from aero_lp.executor import minted_token_id
 
     monkeypatch.setattr(LiveRunner, "READ_RETRY_DELAY_S", 0)
-    runner = LiveRunner(LaggingChain(FakeEthWithLogs(), 10**6), ACCT, [T0], ExecConfig())
+    runner = journal_runner(tmp_path, LaggingChain(FakeEthWithLogs(), 10**6), ACCT, [T0], ExecConfig())
     with pytest.raises(RuntimeError, match="could not serve state"):
         runner.execute([TX])
     assert minted_token_id(runner.logs, addresses.NONFUNGIBLE_POSITION_MANAGER, OWNER) == 777
     assert runner.chain.min_block == 101  # later balance reads are pinned to at least this block
 
 
-def test_live_runner_books_the_gas_of_a_reverted_transaction():
+def test_live_runner_books_the_gas_of_a_reverted_transaction(tmp_path):
     eth = FakeEthWithLogs()
     eth.status = 0
-    runner = LiveRunner(LaggingChain(eth, 0), ACCT, [T0], ExecConfig())
+    runner = journal_runner(tmp_path, LaggingChain(eth, 0), ACCT, [T0], ExecConfig())
     with pytest.raises(RuntimeError, match="reverted"):
         runner.execute([TX])
     assert runner.fee_wei == 90_000 * 10**6 + 16

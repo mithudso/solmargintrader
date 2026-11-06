@@ -1,0 +1,8 @@
+{
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "[python]": { "editor.tabSize": 4 },
+  "[markdown]": { "files.trimTrailingWhitespace": false }
+}

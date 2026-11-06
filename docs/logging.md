@@ -9,9 +9,12 @@ currently record nothing.
 | --- | --- | --- |
 | `extension/` | IndexedDB: the `events` store, the intent journal, the fill log (`src/storage/store.js`) | Yes |
 | `extension/` | `console.error` in the service worker | No — lost when the worker is evicted |
+| Jupiter transport | Structured attempt/outcome metadata on Node stderr or browser debug console | No shared persistent sink |
 | `backtester/` | The run manifest and report (`core/report.py`), written per run | Yes, as output files |
 | `research/` | stdout, plus written result files | Output files only |
-| `soltui/` | `print` to stdout/stderr, captured by the launchd agent's log | Yes, via launchd |
+| `soltui/` | App stdout/stderr plus detached sweep/fetch logs | Yes, via launchd or worker files |
+| `mongo/` | Loader counts, subprocess output and provenance stored in derived documents | Console/output records; no common JSONL error sink |
+| `liquidity/` | `Daemon.log` writes SQLite ledger events and stdout; stage results retain transaction hashes | Ledger, state files and service `daemon.log` |
 
 The extension's real log is **not the console**. `src/storage/store.js` defines four
 object stores — `intents`, `fills`, `carry`, `events` — and the intent journal is what
@@ -28,9 +31,9 @@ const recent = await store.recentEvents(100);                          // for th
 
 ## Levels
 
-There is no level system, and adding one would be premature: the events store is queried
-by `type`, not filtered by severity. Use a specific `type` (`tick`, `blocked`,
-`submitted`, `orphaned`) rather than a level string.
+Engine and transport callbacks carry `level` for diagnostics. The durable events store
+is queried by `type`; keep that type (`tick`, `blocked`, `submitted`, `orphaned`) when
+adding an event. Transport logs contain method, safe path, attempt and outcome only.
 
 ## Sensitive data — the hard rule
 
@@ -50,32 +53,29 @@ logged — they are what makes a wrong order diagnosable after the fact.
 
 ## Coverage gaps
 
-Audited against the code, not assumed. There are exactly two `logEvent` call sites in the
-whole extension:
+The code-optimizer report records changes to engine state-transition logging. The
+following distinctions remain load-bearing after any such fix:
 
-| Call site | Event |
-| --- | --- |
-| `extension/src/core/engine.js:402` | `{ type: 'tick', summary }` — one per tick |
-| `extension/src/bg/service-worker.js:73` | `{ type: 'blocked', reason }` — feasibility refusal |
+- A persistent **tick summary** is not a complete transport attempt log. Jupiter price
+  and Trigger calls share `extension/src/jupiter/http.js`; it emits safe structured
+  request/outcome metadata, but has no common persistent error sink.
+- Risk diagnostics must name the refusing rail and preserve safe input metadata. Pure
+  `risk.js` stays free of I/O; the owning engine/surface records outcomes.
+- An **unknown** intent means submission may have succeeded. Its journal state is the
+  durable authority for withholding another order; a human-visible event helps diagnosis
+  but does not itself resolve the ambiguity.
+- `console.error` in an evicted MV3 worker is not persistent history. A thrown tick needs
+  a persistent failure record if it is to remain visible after restart.
+- Liquidity's **ledger event** is an operation-level outcome, not per-RPC logging.
+  `MarketData._get`, `LlamaPrices` and Web3 provider retries do not all write attempts to
+  a shared sink. A simulated result, a broadcast hash and a mined receipt are different
+  states; their labels must survive into any displayed action.
+- Offline data fetchers print progress/outcomes, but do not share a central JSONL error
+  schema. Some subprocesses also lack an overall timeout. See `docs/external-calls.md`.
 
-So the following paths are silent, and each one is a gap rather than a design choice:
-
-1. **Every Jupiter call.** `src/jupiter/http.js` is the single HTTP layer for price and
-   Trigger requests and it records neither request nor outcome. A venue that returns an
-   unexpected envelope — and the Trigger order-list envelope is *guessed*, see
-   `docs/known-issues.md` — leaves no trace to diagnose from.
-2. **Per-rail risk rejections.** The `blocked` event carries one aggregate reason from the
-   service worker. Which rail in `src/core/risk.js` fired is not recorded.
-3. **The `unknown` intent transition.** An intent submitted but not found live becomes
-   `unknown` and is never auto-retried — that rule exists because it is how a rung
-   double-fires after a crash. It is the single most important state change in the system
-   and it emits no event.
-4. **A thrown tick.** `service-worker.js:129` sends it to `console.error`, which does not
-   survive worker eviction, so a repeated failure is invisible after the fact.
-
-Writing these logs is a code change, not a docs change: it belongs in `code-deep-optimizer`
-pass **S5**, with tests that assert on the emitted event (pass **T1**) — an added log with
-no test is not covered.
+These are remaining coverage/contract limits, not a claim that every listed path is
+silent. Log changes need behavior assertions on the emitted event and redaction. The
+full five-standard contract is not implemented; see `docs/repo-bootstrap-audit-2026-11-06.md`.
 
 ## Testing a log
 

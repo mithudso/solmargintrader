@@ -18,6 +18,7 @@ from web3.contract import Contract
 from web3.providers.rpc.utils import ExceptionRetryConfiguration
 
 from . import abi, addresses, clmath
+from .validation import finite_number
 
 ZERO = "0x0000000000000000000000000000000000000000"
 MULTICALL3 = "0xcA11bde05977b3631167028862bE2a173976CA11"
@@ -211,6 +212,21 @@ class AeroChain:
 
     def head(self) -> tuple[int, int]:
         blk = self.w3.eth.get_block("latest")
+        minimum = getattr(self, "min_block", None)
+        if minimum is not None and int(blk["number"]) < minimum:
+            last: Exception | None = None
+            for attempt in range(MIN_BLOCK_READ_TRIES):
+                try:
+                    blk = self.w3.eth.get_block(minimum)
+                    if int(blk["number"]) < minimum:
+                        raise RuntimeError("RPC returned a block older than the receipt")
+                    break
+                except Exception as error:  # noqa: BLE001 - load-balanced node has not imported the receipt yet
+                    last = error
+                    if attempt + 1 < MIN_BLOCK_READ_TRIES:
+                        time.sleep(MIN_BLOCK_READ_DELAY_S)
+            else:
+                raise RuntimeError(f"RPC could not serve head at or after block {minimum}: {last}") from last
         return int(blk["number"]), int(blk["timestamp"])
 
     def check_fresh(self, max_lag_s: int = MAX_HEAD_LAG_S) -> int:
@@ -328,7 +344,15 @@ class AeroChain:
         (_, _, t0, t1, spacing, tl, tu, liq, fgi0_last, fgi1_last, owed0, owed1) = pos
         pool = self.pool_state(self.pool_address(t0, t1, spacing), block=head)
         staked = pool.gauge != ZERO and nft_owner.lower() == pool.gauge.lower()
-        owner = Web3.to_checksum_address(owner_hint) if (staked and owner_hint) else nft_owner
+        owner = nft_owner
+        if staked and owner_hint:
+            hinted = Web3.to_checksum_address(owner_hint)
+            membership = self.multicall(
+                [Call(self.gauge_contract(pool.gauge), "stakedContains", (hinted, token_id))], block=head
+            )[0]
+            if membership is not True:
+                raise RuntimeError(f"position #{token_id} is not staked by {hinted} (ownership evidence: {membership})")
+            owner = hinted
 
         sa, sb = clmath.get_sqrt_ratio_at_tick(tl), clmath.get_sqrt_ratio_at_tick(tu)
         a0, a1 = clmath.get_amounts_for_liquidity(pool.sqrt_price_x96, sa, sb, liq)
@@ -345,20 +369,34 @@ class AeroChain:
             g = self.gauge_contract(pool.gauge)
             calls = [
                 Call(g, "depositBlock", (token_id,)),
-                Call(self.gauge_factory, "effectivePenaltyConfig", (pool.gauge,), True),
-                Call(self.gauge_factory, "MAX_PIPS", (), True),
+                Call(self.gauge_factory, "effectivePenaltyConfig", (pool.gauge,)),
+                Call(self.gauge_factory, "MAX_PIPS"),
             ]
             if owner_hint:
-                calls.append(Call(g, "earned", (owner, [token_id]), True))
+                calls.append(Call(g, "earned", (owner, [token_id])))
                 # AERO whose mint reverted during an earlier withdraw/claim is parked here, not paid out.
                 calls.append(Call(g, "deferredEmissions", (owner,), True))
             res = self.multicall(calls, block=head)
             st.fees0 = st.fees1 = 0
             st.deposit_block = int(res[0])
-            if res[1] is not None and res[2]:
-                st.penalty_min_blocks, st.penalty_rate = int(res[1][0]), res[1][1] / res[2]
+            try:
+                if not isinstance(res[1], tuple | list) or len(res[1]) != 2:
+                    raise ValueError("penalty configuration missing")
+                minimum_blocks, rate = res[1]
+                finite_number(minimum_blocks, "minStakeBlocks", integer=True)
+                finite_number(rate, "penaltyRate", integer=True)
+                finite_number(res[2], "MAX_PIPS", positive=True, integer=True)
+                if rate > res[2]:
+                    raise ValueError("penaltyRate exceeds MAX_PIPS")
+            except ValueError as error:
+                raise RuntimeError(f"position #{token_id}: penalty data unavailable or invalid: {error}") from error
+            st.penalty_min_blocks, st.penalty_rate = minimum_blocks, rate / res[2]
             if owner_hint:
-                st.earned_aero = int(res[3] or 0)
+                try:
+                    finite_number(res[3], "accrued AERO reward", integer=True)
+                except ValueError as error:
+                    raise RuntimeError(f"position #{token_id}: reward data unavailable or invalid: {error}") from error
+                st.earned_aero = res[3]
                 st.extra["deferred_aero"] = int(res[4] or 0)
         return st
 

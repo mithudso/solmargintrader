@@ -43,7 +43,7 @@ const RAILS = [
   {
     id: 'total-notional',
     test: ({ order, state, limits }) =>
-      state.openNotionalUsd + order.notionalUsd > limits.maxTotalNotionalUsd,
+      order.capitalIncreaseUsd > 0 && state.openNotionalUsd + order.capitalIncreaseUsd > limits.maxTotalNotionalUsd,
     explain: ({ order, state, limits }) =>
       `open $${state.openNotionalUsd} + $${order.notionalUsd} exceeds total cap $${limits.maxTotalNotionalUsd}`,
   },
@@ -75,6 +75,54 @@ const RAILS = [
   },
 ];
 
+const quantityTolerance = (a, b) => 32 * Number.EPSILON * Math.max(Math.abs(a), Math.abs(b));
+
+function inventoryPool(lots) {
+  if (!Array.isArray(lots)) return null;
+  const pool = new Map();
+  for (const lot of lots) {
+    if (!Number.isFinite(lot?.priceUsd) || lot.priceUsd <= 0 || !Number.isFinite(lot?.baseQty) || lot.baseQty <= 0) return null;
+    pool.set(lot.priceUsd, (pool.get(lot.priceUsd) ?? 0) + lot.baseQty);
+  }
+  return pool;
+}
+
+// Coverage must match separately supplied owned lots. A side='sell' or a flag
+// on an order cannot establish ownership, especially for a perp short entry.
+function reserveCoveredExit(intent, pool) {
+  if (!pool || intent.side !== 'sell' || !Number.isFinite(intent.baseQty) || intent.baseQty <= 0
+      || !Array.isArray(intent.lots) || intent.lots.length === 0) return false;
+  const requested = inventoryPool(intent.lots);
+  if (!requested) return false;
+  const total = [...requested.values()].reduce((sum, qty) => sum + qty, 0);
+  if (!Number.isFinite(total) || Math.abs(total - intent.baseQty) > quantityTolerance(total, intent.baseQty)) return false;
+  for (const [price, qty] of requested) {
+    const available = pool.get(price) ?? 0;
+    if (qty - available > quantityTolerance(qty, available)) return false;
+  }
+  for (const [price, qty] of requested) pool.set(price, Math.max(0, pool.get(price) - qty));
+  return true;
+}
+
+const remainingLots = (pool) => pool ? [...pool].filter(([, qty]) => qty > 0)
+  .map(([priceUsd, baseQty]) => ({ priceUsd, baseQty })) : [];
+
+/** Owned inventory at mark plus commitments which add capital at risk. */
+export function capitalExposure({ openLots, outstanding, markPriceUsd }) {
+  const pool = inventoryPool(openLots);
+  const inventoryKnown = pool && Number.isFinite(markPriceUsd) && markPriceUsd > 0;
+  let notional = inventoryKnown
+    ? openLots.reduce((sum, lot) => sum + lot.baseQty * markPriceUsd, 0) : NaN;
+  for (const intent of outstanding) {
+    if (!reserveCoveredExit(intent, pool)) {
+      // Missing size is uncertainty, not available headroom. A covered sell
+      // reserves owned units but does not add a second copy of their value.
+      notional += Number.isFinite(intent.notionalUsd) && intent.notionalUsd > 0 ? intent.notionalUsd : NaN;
+    }
+  }
+  return { openNotionalUsd: notional, openOrderCount: outstanding.length, unreservedLots: remainingLots(pool) };
+}
+
 /**
  * Account state with every numeric field guaranteed present and finite.
  *
@@ -84,6 +132,7 @@ const RAILS = [
  * default, so unusable numbers become 0 and are reported.
  */
 export function normaliseState(state = {}) {
+  if (!state || typeof state !== 'object' || Array.isArray(state)) state = {};
   const problems = [];
   const num = (key, fallback = 0) => {
     const v = state[key];
@@ -95,9 +144,17 @@ export function normaliseState(state = {}) {
       problems.push(`${key} was ${v}; treated as ${fallback}`);
       return fallback;
     }
+    if ((key !== 'realizedPnlUsdToday' && v < 0) ||
+        (key === 'openOrderCount' && !Number.isSafeInteger(v))) {
+      problems.push(`${key} was outside its valid domain; treated as ${fallback}`);
+      return fallback;
+    }
     return v;
   };
 
+  if (state.liquidationDistancePct != null && !Number.isFinite(state.liquidationDistancePct)) {
+    problems.push('liquidationDistancePct was non-finite');
+  }
   return {
     openNotionalUsd: num('openNotionalUsd'),
     openOrderCount: num('openOrderCount'),
@@ -130,7 +187,8 @@ export function normaliseLimits(limits = {}) {
   for (const key of Object.keys(DEFAULT_LIMITS)) {
     if (key === 'killSwitch') continue;
     const v = merged[key];
-    if (typeof v !== 'number' || !Number.isFinite(v) || v < 0) {
+    if (typeof v !== 'number' || !Number.isFinite(v) || v < 0 ||
+        (['maxConcurrentOrders', 'maxOrdersPerTick'].includes(key) && !Number.isSafeInteger(v))) {
       problems.push(`${key} was ${JSON.stringify(v) ?? 'undefined'}; fell back to default ${DEFAULT_LIMITS[key]}`);
       merged[key] = DEFAULT_LIMITS[key];
     }
@@ -151,22 +209,30 @@ export function normaliseLimits(limits = {}) {
  * @param {object} arg.limits configured limits
  * @returns {{verdict:string, blockedBy:string[], reasons:string[]}}
  */
-export function evaluate({ order, state, limits = DEFAULT_LIMITS }) {
+export function evaluate({ order, state, limits = DEFAULT_LIMITS, openLots = [] }) {
   const { problems: limitProblems, ...merged } = normaliseLimits(limits);
   const safeState = normaliseState(state);
   const blockedBy = [];
   const reasons = [];
 
   // An order whose own numbers are unusable cannot be risk-checked at all.
-  if (!Number.isFinite(order?.notionalUsd) || !Number.isFinite(order?.slippageBps)) {
+  if (!Number.isFinite(order?.notionalUsd) || order.notionalUsd <= 0 ||
+      !Number.isFinite(order?.slippageBps) || order.slippageBps < 0) {
     return {
       verdict: VERDICT.BLOCK,
       blockedBy: ['unusable-order'],
-      reasons: [`order has non-finite notionalUsd or slippageBps: ${JSON.stringify(order)}`],
+      reasons: ['order requires finite positive notionalUsd and finite nonnegative slippageBps'],
     };
   }
 
-  const ctx = { order, state: safeState, limits: merged };
+  if (safeState.problems.length) {
+    blockedBy.push('unusable-state');
+    reasons.push(...safeState.problems);
+  }
+
+  const coveredExit = reserveCoveredExit(order, inventoryPool(openLots));
+  const capitalIncreaseUsd = coveredExit ? 0 : order.notionalUsd;
+  const ctx = { order: { ...order, capitalIncreaseUsd }, state: safeState, limits: merged };
   for (const rail of RAILS) {
     if (rail.test(ctx)) {
       blockedBy.push(rail.id);
@@ -180,6 +246,7 @@ export function evaluate({ order, state, limits = DEFAULT_LIMITS }) {
     reasons,
     stateProblems: safeState.problems,
     limitProblems,
+    capitalIncreaseUsd,
   };
 }
 
@@ -188,11 +255,12 @@ export function evaluate({ order, state, limits = DEFAULT_LIMITS }) {
  * incrementally so a batch cannot collectively breach a cap that each member
  * passes individually.
  */
-export function admitBatch({ intents, state, limits = DEFAULT_LIMITS, slippageBps }) {
+export function admitBatch({ intents, state, limits = DEFAULT_LIMITS, slippageBps, openLots = [] }) {
   const { problems: limitProblems, ...merged } = normaliseLimits(limits);
   const admitted = [];
   const rejected = [];
   const running = normaliseState(state);
+  const unreserved = inventoryPool(openLots);
 
   for (const intent of intents) {
     if (admitted.length >= merged.maxOrdersPerTick) {
@@ -200,11 +268,15 @@ export function admitBatch({ intents, state, limits = DEFAULT_LIMITS, slippageBp
       continue;
     }
 
-    const order = { notionalUsd: intent.notionalUsd, slippageBps };
-    const result = evaluate({ order, state: running, limits: merged });
+    const order = { ...intent, slippageBps };
+    // Keep the original invalid fields visible to evaluate; normalization alone
+    // cannot turn missing exposure or P&L into proof that an order is safe.
+    const result = evaluate({ order, state: running.problems.length ? state : running, limits: merged, openLots: remainingLots(unreserved) });
     if (result.verdict === VERDICT.ALLOW) {
       admitted.push(intent);
-      running.openNotionalUsd += intent.notionalUsd;
+      running.openNotionalUsd += result.capitalIncreaseUsd;
+      if (result.capitalIncreaseUsd === 0) reserveCoveredExit(intent, unreserved);
+      // A resting exit has not sold anything yet, so it cannot fund a new buy.
       running.openOrderCount += 1;
     } else {
       rejected.push({ intent, blockedBy: result.blockedBy, reasons: result.reasons });

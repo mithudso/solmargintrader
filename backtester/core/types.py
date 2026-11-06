@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import enum
+import math
+from numbers import Real
+from collections.abc import Mapping
 from dataclasses import dataclass, field, asdict
 from typing import Any
 
@@ -33,6 +36,61 @@ def periods_per_year(interval: str) -> float:
 def hours_per_bar(interval: str) -> float:
     """Length of one bar in hours (borrow fees accrue hourly)."""
     return INTERVAL_SECONDS[interval] / 3600.0
+
+
+def validate_bar_arrays(
+    arrays: Mapping[str, Any], interval: str, *, require_open_volume: bool = True,
+) -> dict[str, np.ndarray]:
+    """Normalize finite 1-D bars and refuse cadence this simulator cannot model.
+
+    Loaders may retain gaps for inspection. Simulation requires every nominal
+    interval: missing bars hide liquidation extremes and elapsed carry, so this
+    boundary never invents OHLC or treats missing time as one observed bar.
+    """
+    if not isinstance(arrays, Mapping):
+        raise ValueError("market arrays must be a mapping")
+    if not isinstance(interval, str) or interval not in INTERVAL_SECONDS:
+        raise ValueError("unsupported bar interval")
+    required = ("ts", "high", "low", "close") + (("open", "volume") if require_open_volume else ())
+    missing = [name for name in required if name not in arrays]
+    if missing:
+        raise ValueError(f"market arrays missing required series: {', '.join(missing)}")
+    names = tuple(dict.fromkeys((*required, *(name for name in ("open", "volume") if name in arrays))))
+    checked: dict[str, np.ndarray] = {}
+    for name in names:
+        raw = np.asarray(arrays[name])
+        if raw.ndim != 1 or raw.dtype.kind not in "iuf":
+            raise ValueError(f"{name} must be a one-dimensional numeric series")
+        values = raw.astype("float64", copy=False)
+        if not np.all(np.isfinite(values)):
+            raise ValueError(f"{name} contains non-finite values")
+        checked[name] = values
+    n = checked["close"].size
+    if n == 0:
+        raise ValueError("cannot backtest an empty series")
+    if any(values.size != n for values in checked.values()):
+        raise ValueError("market series lengths disagree")
+    timestamp = checked["ts"]
+    if np.any(np.abs(timestamp) > 10_000_000_000) or np.any(timestamp != np.floor(timestamp)):
+        raise ValueError("timestamps must be integral UTC epoch seconds, not milliseconds")
+    ts = timestamp.astype("int64")
+    if n > 1:
+        deltas = np.diff(ts)
+        if np.any(deltas <= 0):
+            raise ValueError("timestamps must be strictly ascending UTC epoch seconds")
+        if np.any(deltas != INTERVAL_SECONDS[interval]):
+            raise ValueError(f"timestamp cadence must equal {interval}; gapped or mismatched bars are unsupported")
+    checked["ts"] = ts
+    for name in ("open", "high", "low", "close"):
+        if name in checked and np.any(checked[name] <= 0):
+            raise ValueError(f"{name} must contain positive prices")
+    high, low, close = checked["high"], checked["low"], checked["close"]
+    open_ = checked.get("open", close)
+    if np.any(high < low) or np.any(high < np.maximum(open_, close) - 1e-9) or np.any(low > np.minimum(open_, close) + 1e-9):
+        raise ValueError("OHLC high/low do not contain the open and close")
+    if "volume" in checked and np.any(checked["volume"] < 0):
+        raise ValueError("volume must be nonnegative")
+    return checked
 
 
 class Mode(enum.StrEnum):
@@ -77,11 +135,13 @@ class BarWindow:
     object, and every accessor truncates at `i`. Reading past `i` raises
     LookAheadError rather than returning a future value.
 
-    The arrays are stored once and sliced per access; slicing a numpy array
-    is a view, so this is cheap.
+    Public arrays are owned, read-only copies of visible history, cached for
+    this window. A NumPy view would expose future bars through its public .base
+    and could let an indicator modify the engine's original market data. Private
+    attributes are implementation details, not a hostile-Python sandbox.
     """
 
-    __slots__ = ("_ts", "_open", "_high", "_low", "_close", "_volume", "_i")
+    __slots__ = ("_ts", "_open", "_high", "_low", "_close", "_volume", "_i", "_visible")
 
     def __init__(
         self,
@@ -100,6 +160,14 @@ class BarWindow:
         self._close = close
         self._volume = volume
         self._i = i
+        self._visible: dict[str, np.ndarray] = {}
+
+    def _series(self, name: str, source: np.ndarray) -> np.ndarray:
+        if name not in self._visible:
+            values = np.array(source[: self._i + 1], copy=True)
+            values.setflags(write=False)
+            self._visible[name] = values
+        return self._visible[name]
 
     @property
     def i(self) -> int:
@@ -117,32 +185,32 @@ class BarWindow:
     @property
     def ts(self) -> np.ndarray:
         """Timestamps up to and including the current bar."""
-        return self._ts[: self._i + 1]
+        return self._series("ts", self._ts)
 
     @property
     def opens(self) -> np.ndarray:
         """Open prices up to and including the current bar."""
-        return self._open[: self._i + 1]
+        return self._series("opens", self._open)
 
     @property
     def highs(self) -> np.ndarray:
         """High prices up to and including the current bar."""
-        return self._high[: self._i + 1]
+        return self._series("highs", self._high)
 
     @property
     def lows(self) -> np.ndarray:
         """Low prices up to and including the current bar."""
-        return self._low[: self._i + 1]
+        return self._series("lows", self._low)
 
     @property
     def closes(self) -> np.ndarray:
         """Close prices up to and including the current bar."""
-        return self._close[: self._i + 1]
+        return self._series("closes", self._close)
 
     @property
     def volumes(self) -> np.ndarray:
         """Volumes up to and including the current bar."""
-        return self._volume[: self._i + 1]
+        return self._series("volumes", self._volume)
 
     def bar(self, offset: int = 0) -> Bar:
         """Bar at `offset` bars before the current one (offset >= 0).
@@ -206,6 +274,8 @@ class Position:
     opened_ts: int = 0
     opened_index: int = -1
     accrued_borrow_fee: float = 0.0
+    # Paid at entry/increase, allocated to decided outcomes when units close.
+    entry_costs: float = 0.0
 
     @property
     def is_open(self) -> bool:
@@ -253,6 +323,28 @@ class CostConfig:
     kink_slope_multiplier: float = 3.0
     # Protocol constant. Distinct from the user-facing leverage cap.
     max_lev_constant: float = 500.0
+
+    def __post_init__(self) -> None:
+        self.validate()
+
+    def validate(self) -> None:
+        """Refuse unusable costs before they can subsidize or poison a run."""
+        for name in ("fee_bps", "slippage_bps", "perp_base_fee_bps",
+                     "max_hourly_rate_bps_long", "max_hourly_rate_bps_short",
+                     "min_hourly_rate_bps", "kink_slope_multiplier"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value) or value < 0:
+                raise ValueError(f"{name} must be finite and nonnegative")
+        if self.slippage_bps >= 10_000:
+            raise ValueError("slippage_bps must be below 10000")
+        if not isinstance(self.max_lev_constant, Real) or isinstance(self.max_lev_constant, bool) or not math.isfinite(self.max_lev_constant) or self.max_lev_constant <= 0:
+            raise ValueError("max_lev_constant must be finite and positive")
+        for name in ("utilization", "kink_utilization"):
+            value = getattr(self, name)
+            if name == "kink_utilization" and value is None:
+                continue
+            if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value) or not 0 <= value <= 1:
+                raise ValueError(f"{name} must be finite and in [0, 1]")
 
     @property
     def maintenance_margin_fraction(self) -> float:

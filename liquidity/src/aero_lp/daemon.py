@@ -52,14 +52,18 @@ from .executor import (
     RebalanceResult,
     SimRunner,
     gas_cost_usd,
+    receipt_fee_wei,
     runner_tokens,
 )
 from .ledger import Ledger
 from .market import MarketData
 from .metrics import KNOWN_TOKENS
+from .recovery import LedgerRecovery
 from .scout import load_scout, run_scout
 from .state import atomic_write_json, home
 from .strategy import target_range
+from .submissions import SubmissionJournal
+from .validation import finite_number, measured_gas
 
 STATUS_SCHEMA = "aero-lp-status/1"
 SYMBOL_TO_ADDR = {v: Web3.to_checksum_address(k) for k, v in KNOWN_TOKENS.items()}
@@ -103,6 +107,11 @@ class Daemon:
         self._stop_signal: int | None = None
         self._wake = threading.Event()
         self.ledger = Ledger(self.root / "ledger.sqlite")
+        self.journal = SubmissionJournal(
+            cfg.state_file.with_name("submissions.json"), cfg.owner, ledger_path=self.ledger.path
+        )
+        self.engine.journal = self.journal
+        self.engine.recovery_handler = self._apply_submission
         self.rb = Rebalancer(self.chain, cfg.owner, cfg.execution)
         self.timers = Timers()
         self.decisions: dict[str, dict[str, Any]] = {}
@@ -140,8 +149,26 @@ class Daemon:
         gas_usd = 0.0
         if res is not None and res.fee_wei:
             gas_usd = res.fee_wei / 1e18 * self.eth_usd()
+        fee_receipts = None
+        reward_receipts = None
+        if res is not None:
+            records = [r for r in self.journal.records() if r["hash"] in res.tx_hashes and r["receipt"] is not None]
+            eth_price = self.eth_usd()
+            if records and eth_price > 0:
+                fee_receipts = {r["hash"]: receipt_fee_wei(r["receipt"]) / 1e18 * eth_price for r in records}
+            if reward_usd:
+                key = self._receipt_hash(res, {"claim", "collect", "unstake"})
+                if key:
+                    reward_receipts = {key: reward_usd}
         self.ledger.event(
-            kind, slot, gas_usd=gas_usd, reward_usd=reward_usd, detail=detail, tx=res.tx_hashes if res else None
+            kind,
+            slot,
+            gas_usd=gas_usd,
+            reward_usd=reward_usd,
+            detail=detail,
+            tx=res.tx_hashes if res else None,
+            receipt_fees=fee_receipts,
+            receipt_rewards=reward_receipts,
         )
         print(time.strftime("%H:%M:%S"), kind, slot or "-", detail, flush=True)
 
@@ -149,6 +176,8 @@ class Daemon:
         """Fresh USD prices (raises if the feed is down). Use this for anything that sizes or gates a trade."""
         tokens = [SYMBOL_TO_ADDR[s] for s in self.cfg.allocator.allowed_tokens if s in SYMBOL_TO_ADDR]
         out = self.market.token_prices_usd(tokens + [addresses.AERO_TOKEN, addresses.WETH])
+        for token, price in out.items():
+            finite_number(price, f"{token} USD price", positive=True)
         self._last_prices = out
         return out
 
@@ -172,8 +201,94 @@ class Daemon:
     def runner(self, tokens: list[str], pool: str | None) -> Any:
         if self.live:
             self.assert_acting()
-            return LiveRunner(self.chain, self.signer, tokens, self.cfg.execution, pool)
+            return LiveRunner(self.chain, self.signer, tokens, self.cfg.execution, pool, journal=self.journal)
         return SimRunner(self.chain, self.cfg.owner, tokens, pool)
+
+    def _receipt_hash(self, res: RebalanceResult, kinds: set[str]) -> str | None:
+        matches = [
+            r["hash"] for r in self.journal.records() if r["hash"] in res.tx_hashes and r["intent"]["kind"] in kinds
+        ]
+        return matches[-1] if matches else (res.tx_hashes[-1] if res.tx_hashes else None)
+
+    def _reconcile_submissions(self) -> None:
+        def apply(record: dict[str, Any], group: list[dict[str, Any]]) -> None:
+            recover = getattr(self.engine, "recover_submission", None)
+            if recover is not None:
+                recover(record, group)
+            self._apply_submission(record, group)
+
+        self.journal.reconcile(self.chain, apply)
+
+    def _apply_submission(self, record: dict[str, Any], group: list[dict[str, Any]]) -> None:
+        LedgerRecovery(self.cfg, self.chain, self.ledger, self.prices, self.decisions).apply(record, group)
+
+    def _pool_prices(self, pool: PoolState, prices: dict[str, float] | None = None) -> tuple[float, float]:
+        p = self.prices() if prices is None else prices
+        values = tuple(p.get(t.address.lower(), 0.0) for t in (pool.token0, pool.token1))
+        for token, price in zip((pool.token0, pool.token1), values, strict=True):
+            finite_number(price, f"{token.symbol} USD price", positive=True)
+        return values
+
+    def _require_owner(self, pos: PositionState) -> None:
+        if pos.owner.lower() != self.cfg.owner.lower():
+            raise RuntimeError(f"position #{pos.token_id} owner {pos.owner} is not configured owner {self.cfg.owner}")
+
+    def _capital_values(self, current: PositionState | None = None) -> dict[str, float]:
+        """Fresh values of every open position. Unknown evidence blocks new capital deployment."""
+        self.chain.check_fresh()
+        prices = self.prices()
+        values = {}
+        for row in self.ledger.open_slots():
+            tid = row["token_id"]
+            if tid is None:
+                raise RuntimeError(f"slot {row['slot']} has no tracked NFT; capital exposure is unknown")
+            pos = (
+                current
+                if current is not None and current.token_id == int(tid)
+                else self.chain.position(int(tid), owner_hint=self.cfg.owner)
+            )
+            self._require_owner(pos)
+            u0, u1 = self._pool_prices(pos.pool, prices)
+            a0, a1 = pos.human_amounts()
+            value = a0 * u0 + a1 * u1
+            finite_number(value, "position value USD")
+            values[row["slot"]] = value
+        return values
+
+    def _compound_budget(self, slot: str, pos: PositionState) -> float:
+        values = self._capital_values(pos)
+        if slot not in values:
+            raise RuntimeError(f"slot {slot} is not registered; capital exposure is unknown")
+        a = self.cfg.allocator
+        return max(
+            0.0,
+            min(
+                min(a.max_position_usd, self.cfg.safety.max_position_usd) - values[slot],
+                a.max_total_deployed_usd - sum(values.values()),
+            ),
+        )
+
+    def _cap_amounts(self, pool: PoolState, a0: int, a1: int, budget: float, u0: float, u1: float) -> tuple[int, int]:
+        value = a0 / 10**pool.token0.decimals * u0 + a1 / 10**pool.token1.decimals * u1
+        finite_number(value, "designated deposit value USD")
+        if value <= budget:
+            return a0, a1
+        if budget <= 0 or value <= 0:
+            return 0, 0
+        # Round down each exact raw amount. Never increase a quantity to fill a USD budget.
+        a0, a1 = int(a0 * (budget / value)), int(a1 * (budget / value))
+        actual = a0 / 10**pool.token0.decimals * u0 + a1 / 10**pool.token1.decimals * u1
+        if actual > budget:
+            raise RuntimeError("rounded deposit exceeds the remaining capital cap")
+        return a0, a1
+
+    def _refresh_compound(self, slot: str, res: RebalanceResult) -> None:
+        self.decisions[slot]["_stale"] = True
+        try:
+            self.snapshot_now(slot)
+        except Exception as error:  # noqa: BLE001 - the confirmed flow is already booked; allocation re-reads exposure
+            res.notes.append(f"post-compound valuation unavailable: {error}")
+            self.log("error", f"post-compound valuation unavailable: {error}", slot)
 
     def best_direct_pool(self, a: str, b: str) -> PoolState | None:
         best: PoolState | None = None
@@ -186,32 +301,50 @@ class Daemon:
                 best = ps
         return best
 
-    def _preflight(self, pool: PoolState, run: Callable[[SimRunner], RebalanceResult]) -> str | None:
+    def _preflight(
+        self,
+        pool: PoolState | None,
+        run: Callable[[SimRunner], RebalanceResult],
+        *,
+        tokens: list[str] | None = None,
+        reserve: bool = True,
+    ) -> str | None:
         """Simulate a sequence on live state before signing it. Returns why it must not be sent, or None.
 
         Checks what `Engine.rebalance` checks for a rebalance: the whole sequence simulates, its gas is within
         `safety.max_gas_usd`, and the wallet holds enough ETH to pay for every stage with a 3x margin.
         """
-        sim = run(
-            SimRunner(self.chain, self.cfg.owner, runner_tokens(pool.token0.address, pool.token1.address), pool.address)
-        )
-        eth_usd = self.eth_usd()
-        if not eth_usd:
-            return "ETH price unavailable; cannot enforce safety.max_gas_usd"
-        gas_units = sum(sim.gas_used.values())
+        self.chain.check_fresh()
+        tracked = tokens if tokens is not None else runner_tokens(pool.token0.address, pool.token1.address)
+        sim = run(SimRunner(self.chain, self.cfg.owner, tracked, pool.address if pool else None))
+        eth_usd = self.prices().get(addresses.WETH.lower(), 0.0)
+        try:
+            finite_number(eth_usd, "ETH price", positive=True)
+            gas_units = measured_gas(sim.gas_used)
+        except (ValueError, RuntimeError) as error:
+            return f"cannot enforce safety.max_gas_usd: {error}"
         gas_price = self.chain.gas_price_wei()
         gas_usd = gas_cost_usd(gas_units, gas_price, eth_usd, self.cfg.l1_fee_usd_estimate)
+        finite_number(gas_usd, "simulated gas USD")
         if gas_usd > self.cfg.safety.max_gas_usd:
             return f"simulated gas ${gas_usd:.2f} > safety.max_gas_usd ${self.cfg.safety.max_gas_usd:.2f}"
-        need_wei = 3 * gas_units * gas_price
+        # A reserve refill must be affordable itself, but need not already have the reserve it is restoring.
+        need_wei = math.ceil((3 if reserve else 1.25) * gas_units * gas_price)
         have_wei = int(self.chain.w3.eth.get_balance(Web3.to_checksum_address(self.cfg.owner)))
         if have_wei < need_wei:
             return f"wallet holds {have_wei / 1e18:.6f} ETH, below the {need_wei / 1e18:.6f} ETH gas reserve"
+        if pool is not None:
+            latest = self.chain.pool_state(pool.address)
+            blocks = self.engine.pool_blocks(latest, live=True)
+            if blocks:
+                return "; ".join(blocks)
         return None
 
     def _send(self, fn: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
         """Run a live transaction sequence with Ctrl-C and SIGTERM held until it ends (see defer_sigint). A held
         signal only sets a flag; the caller books the result and the loop stops at the next safe point."""
+        if self.live:
+            self._reconcile_submissions()
         with defer_sigint(self._request_stop):
             return fn(*args, **kwargs)
 
@@ -266,6 +399,10 @@ class Daemon:
                 if weth is None or weth["raw"] <= 0:
                     raise RuntimeError("no WETH to unwrap")
                 amount = min(int(want_eth * 1e18), int(weth["raw"]))  # float round-off must not exceed the balance
+                tokens = runner_tokens(addresses.WETH, addresses.AERO_TOKEN)
+                why = self._preflight(None, lambda sim: self.rb.unwrap_weth(amount, sim), tokens=tokens, reserve=False)
+                if why:
+                    raise RuntimeError(why)
                 res = self._send(
                     lambda: self.rb.unwrap_weth(
                         amount, self.runner(runner_tokens(addresses.WETH, addresses.AERO_TOKEN), None)
@@ -283,10 +420,9 @@ class Daemon:
     def _swap_for_gas(self, wallet: dict[str, Any], want_eth: float) -> tuple[RebalanceResult, str]:
         """Smart-account path: sell a little of a non-WETH coin for ETH through the router (see swap_to_eth).
         Stablecoins first, then other coins with a direct WETH pool; the largest balance wins within a group."""
-        prices = self.known_prices()
+        prices = self.prices()
         eth_usd = prices.get(addresses.WETH.lower(), 0.0)
-        if eth_usd <= 0:
-            raise RuntimeError("ETH price unavailable")
+        finite_number(eth_usd, "ETH price", positive=True)
         want_usd = want_eth * eth_usd
         stables = ("USDC", "USDbC", "USDT", "DAI", "EURC")
         candidates = [
@@ -314,6 +450,15 @@ class Daemon:
                 continue  # pool price more than 2% worse than the market: do not sell into it
             min_out = int(expected * (1 - self.cfg.execution.max_slippage_bps / 1e4))
             tokens = runner_tokens(pool.token0.address, pool.token1.address)
+            why = self._preflight(
+                pool,
+                lambda sim, pool=pool, t=t, amount_in=amount_in, min_out=min_out: self.rb.swap_to_eth(
+                    pool, t["address"], amount_in, min_out, sim
+                ),
+                reserve=False,
+            )
+            if why:
+                continue
             runner = self.runner(tokens, pool.address)
             res = self._send(self.rb.swap_to_eth, pool, t["address"], amount_in, min_out, runner)
             sold = f"{amount_in / 10 ** t['decimals']:.6g} {t['symbol']}"
@@ -386,6 +531,7 @@ class Daemon:
 
     def _register(self, tid: int) -> None:
         pos = self.chain.position(tid, owner_hint=self.cfg.owner)
+        self._require_owner(pos)
         p = self.prices()
         a0, a1 = pos.human_amounts()
         usd = a0 * p.get(pos.pool.token0.address.lower(), 0) + a1 * p.get(pos.pool.token1.address.lower(), 0)
@@ -498,6 +644,14 @@ class Daemon:
         elif res is not None:
             self.decisions.setdefault(slot, {})["simulated"] = " -> ".join(res.stages)
         self.record(slot, ev, row, now, rebalanced_to)
+        if rebalanced_to is not None:
+            try:
+                self.snapshot_now(slot)
+            except Exception as error:
+                # The confirmed operation is already booked. Keep the last identified snapshot;
+                # do not manufacture the replacement NFT's valuation from its burned predecessor.
+                self.decisions[slot]["snapshot_error"] = f"replacement snapshot refresh failed: {error}"
+                self.log("error", "replacement snapshot refresh failed", slot)
 
     def record(self, slot: str, ev: Evaluation, row: Any, now: float, rebalanced_to: int | None = None) -> None:
         pos, pool = ev.pos, ev.pos.pool
@@ -508,7 +662,12 @@ class Daemon:
         unclaimed = pos.earned_aero / 1e18 * p.get(addresses.AERO_TOKEN.lower(), 0.0)
         token_id = rebalanced_to or pos.token_id
         # A snapshot taken without both prices would store a value of 0 and book a total loss.
-        if u0 and u1 and self.timers.due(f"snap:{slot}", self.cfg.allocator.snapshot_interval_min * 60, now):
+        if (
+            rebalanced_to is None
+            and u0
+            and u1
+            and self.timers.due(f"snap:{slot}", self.cfg.allocator.snapshot_interval_min * 60, now)
+        ):
             self.ledger.snapshot(slot, token_id, ev.value_usd, hodl, unclaimed)
         lo, hi = pos.price_bounds()
         self.decisions[slot] = {
@@ -556,6 +715,8 @@ class Daemon:
     # ------------------------------------------------------------------ compounding
 
     def compound_slot(self, slot: str) -> None:
+        if self.live:
+            self._reconcile_submissions()
         d = self.decisions.get(slot)
         if not d or d.get("_stale"):
             return
@@ -588,6 +749,10 @@ class Daemon:
             return
         toks = runner_tokens(pos.pool.token0.address, pos.pool.token1.address)
         if pos.staked:
+            why = self._preflight(pos.pool, lambda sim: self.rb.claim(pos, sim))
+            if why:
+                self.log("skip", f"claim not sent: {why}", slot)
+                return
             res = self._send(lambda: self.rb.claim(pos, self.runner(toks, pos.pool.address)))
             claimed = res.aero_claimed
             self.log("claim", f"claimed {claimed / 1e18:.4f} AERO", slot, res, reward_usd=claimed / 1e18 * aero_usd)
@@ -595,6 +760,10 @@ class Daemon:
                 return
             amt0, amt1 = self._convert_into(pos.pool, addresses.AERO_TOKEN, claimed, slot)
         else:
+            why = self._preflight(pos.pool, lambda sim: self.rb.collect(pos, sim))
+            if why:
+                self.log("skip", f"collect not sent: {why}", slot)
+                return
             res = self._send(lambda: self.rb.collect(pos, self.runner(toks, pos.pool.address)))
             amt0, amt1 = (max(0, x) for x in res.amounts_in_position)
             # Booked from the amounts that actually arrived, not from the estimate that triggered the collect.
@@ -606,25 +775,55 @@ class Daemon:
         if not fresh.in_range:
             self.log("skip", "price left the range during the compound; the coins stay in the wallet", slot)
             return
-        why = self._preflight(fresh.pool, lambda sim: self.rb.topup(fresh, amt0, amt1, sim, u0, u1))
+        self._require_owner(fresh)
+        u0, u1 = self._pool_prices(fresh.pool)
+        amt0, amt1 = self._cap_amounts(fresh.pool, amt0, amt1, self._compound_budget(slot, fresh), u0, u1)
+        if amt0 <= 0 and amt1 <= 0:
+            self.log("skip", "compound capital caps reached; reward coins stay in the wallet", slot)
+            return
+        why = self._preflight(
+            fresh.pool, lambda sim: self.rb.topup(fresh, amt0, amt1, sim, u0, u1, include_unstake_proceeds=False)
+        )
         if why:
             self.log("skip", f"compound not sent: {why}; the coins stay in the wallet", slot)
             return
+        # Keep the exact simulated arguments. If exposure changes meanwhile, refuse this attempt instead
+        # of constructing an un-simulated replacement quantity or re-anchoring minimum amounts.
+        checked = self.chain.position(pos.token_id, owner_hint=self.cfg.owner)
+        v0, v1 = self._pool_prices(checked.pool)
+        remaining = self._compound_budget(slot, checked)
+        planned = amt0 / 10**checked.pool.token0.decimals * v0 + amt1 / 10**checked.pool.token1.decimals * v1
+        blocks = self.engine.pool_blocks(checked.pool, live=True)
+        if (
+            planned > remaining
+            or not checked.in_range
+            or checked.staked != fresh.staked
+            or (checked.staked and checked.penalty_blocks_left > 0)
+            or blocks
+        ):
+            self.log("skip", "compound safety state changed after simulation; coins stay in the wallet", slot)
+            return
         try:
-            res = self._send(lambda: self.rb.topup(fresh, amt0, amt1, self.runner(toks, pos.pool.address), u0, u1))
+            res = self._send(
+                lambda: self.rb.topup(
+                    fresh, amt0, amt1, self.runner(toks, pos.pool.address), u0, u1, include_unstake_proceeds=False
+                )
+            )
         except RebalanceError as e:
             if "increase" in e.partial.stages:  # the liquidity was added; only the restake failed
                 self._book_topup(slot, e.partial, pos.pool, u0, u1)
+                self._refresh_compound(slot, e.partial)
             raise
         # (The AERO that accrued in the seconds between the claim and this unstake is not booked: it is dust.)
         usd = self._book_topup(slot, res, pos.pool, u0, u1)
         self.log("compound", f"added ${usd:.2f} back into #{pos.token_id}", slot, res)
+        self._refresh_compound(slot, res)
 
     def _book_topup(self, slot: str, res: RebalanceResult, pool: PoolState, u0: float, u1: float) -> float:
         e0, e1 = res.amounts_in_position
         h0, h1 = e0 / 10**pool.token0.decimals, e1 / 10**pool.token1.decimals
         usd = h0 * u0 + h1 * u1
-        self.ledger.flow(slot, "topup", h0, h1, usd)
+        self.ledger.flow(slot, "topup", h0, h1, usd, receipt_hash=self._receipt_hash(res, {"increase"}))
         return usd
 
     def _conversion_price_problem(
@@ -674,6 +873,16 @@ class Daemon:
             tokens = runner_tokens(t0, t1)
             if Web3.to_checksum_address(token) not in tokens:
                 tokens = tokens + [Web3.to_checksum_address(token)]
+            if self.acting():
+                problem = self._preflight(
+                    route,
+                    lambda sim, route=route, min_out=min_out: self.rb.swap_exact(
+                        route, Web3.to_checksum_address(token), amount, sim, min_out
+                    ),
+                    tokens=tokens,
+                )
+                if problem:
+                    continue
             runner = self.runner(tokens, route.address)
             res = self._send(self.rb.swap_exact, route, Web3.to_checksum_address(token), amount, runner, min_out)
             got = res.amount_out
@@ -701,6 +910,8 @@ class Daemon:
         return max(a.min_position_usd, min(a.max_position_usd, total / a.max_arms))
 
     def allocate(self, wallet: dict[str, Any]) -> None:
+        if self.live:
+            self._reconcile_submissions()
         if self.live and self.killed:
             if self.timers.due("alloc-killed", 6 * 3600, time.time()):
                 self.log("skip", "allocation paused: kill switch engaged")
@@ -721,7 +932,11 @@ class Daemon:
         # From the ledger, not from this process's last evaluations: a slot whose evaluation failed this tick, or
         # one that was just closed, must still (or no longer) count against the caps.
         open_rows = self.ledger.open_slots()
-        deployed = sum(self._slot_value_usd(r["slot"]) for r in open_rows)
+        deployed = (
+            sum(self._capital_values().values())
+            if self.acting()
+            else sum(self._slot_value_usd(r["slot"]) for r in open_rows)
+        )
         held = {r["pool"] for r in open_rows}
         plan = plan_allocation(doc["pools"], idle_usd, deployed, a, held, scored_usd=doc.get("deposit_usd"))
         if not plan.arms:
@@ -743,7 +958,12 @@ class Daemon:
                 traceback.print_exc()
 
     def deploy_arm(self, arm: Any, idle: list[dict[str, Any]], exp_id: str | None, exp_note: str = "") -> None:
+        if self.live:
+            self._reconcile_submissions()
         c = arm.candidate
+        if any(row["pool"].lower() == c.pool.lower() for row in self.ledger.open_slots()):
+            self.log("skip", "pool already has a tracked position; replan allocation")
+            return
         pool = self.chain.pool_state(c.pool)
         p = self.prices()
         u0, u1 = p.get(pool.token0.address.lower(), 0.0), p.get(pool.token1.address.lower(), 0.0)
@@ -756,6 +976,13 @@ class Daemon:
                 self.log("skip", f"not deploying into {c.pair}: {'; '.join(blocks)}")
                 return
         remaining = arm.usd
+        if live:
+            remaining = min(
+                remaining,
+                self.cfg.allocator.max_position_usd,
+                self.cfg.safety.max_position_usd,
+                max(0.0, self.cfg.allocator.max_total_deployed_usd - sum(self._capital_values().values())),
+            )
         amt0 = amt1 = 0
         # Prefer the pool's own tokens, then convert other idle coins.
         ordered = sorted(
@@ -781,6 +1008,25 @@ class Daemon:
             return
         # The conversions took seconds; size the range and anchor the min-outs on the pool as it is now.
         pool = self.chain.pool_state(c.pool)
+        if live:
+            blocks = self.engine.pool_blocks(pool, live=True)
+            if blocks:
+                self.log("skip", f"deploy not sent after conversions: {'; '.join(blocks)}; coins stay in wallet")
+                return
+        if live:
+            u0, u1 = self._pool_prices(pool)
+            budget = max(
+                0.0,
+                min(
+                    self.cfg.allocator.max_position_usd,
+                    self.cfg.safety.max_position_usd,
+                    self.cfg.allocator.max_total_deployed_usd - sum(self._capital_values().values()),
+                ),
+            )
+            amt0, amt1 = self._cap_amounts(pool, amt0, amt1, budget, u0, u1)
+            if amt0 <= 0 and amt1 <= 0:
+                self.log("skip", "deploy capital caps reached after conversions; coins stay in wallet")
+                return
         rng = target_range(pool.tick, pool.tick_spacing, math.log1p(c.half_width_pct / 100))
         stake = c.best_mode == "aero" and pool.gauge_alive
         toks = runner_tokens(pool.token0.address, pool.token1.address)
@@ -807,6 +1053,21 @@ class Daemon:
         why = self._preflight(pool, lambda sim: self.rb.deploy(pool, rng, stake, amt0, amt1, sim, u0, u1))
         if why:
             self.log("skip", f"deploy into {c.pair} not sent: {why}; the coins stay in the wallet")
+            return
+        latest = self.chain.pool_state(pool.address)
+        v0, v1 = self._pool_prices(latest)
+        room = max(
+            0.0,
+            min(
+                self.cfg.allocator.max_position_usd,
+                self.cfg.safety.max_position_usd,
+                self.cfg.allocator.max_total_deployed_usd - sum(self._capital_values().values()),
+            ),
+        )
+        planned = amt0 / 10**latest.token0.decimals * v0 + amt1 / 10**latest.token1.decimals * v1
+        blocks = self.engine.pool_blocks(latest, live=True)
+        if planned > room or blocks:
+            self.log("skip", "deploy safety state changed after simulation; coins stay in wallet")
             return
         opened: list[tuple[str, float]] = []
 
@@ -858,7 +1119,7 @@ class Daemon:
         e0, e1 = res.amounts_in_position
         h0, h1 = e0 / 10**pool.token0.decimals, e1 / 10**pool.token1.decimals
         usd = h0 * u0 + h1 * u1
-        self.ledger.flow(slot, "deposit", h0, h1, usd)
+        self.ledger.flow(slot, "deposit", h0, h1, usd, receipt_hash=self._receipt_hash(res, {"mint"}))
         return slot, usd
 
     def graduate(self) -> None:
@@ -911,7 +1172,7 @@ class Daemon:
         r0, r1 = res.amounts_in_position
         h0, h1 = r0 / 10**pos.pool.token0.decimals, r1 / 10**pos.pool.token1.decimals
         usd = h0 * pr.get(pos.pool.token0.address.lower(), 0) + h1 * pr.get(pos.pool.token1.address.lower(), 0)
-        self.ledger.flow(slot, "withdraw", h0, h1, usd)
+        self.ledger.flow(slot, "withdraw", h0, h1, usd, receipt_hash=self._receipt_hash(res, {"remove"}))
         self.ledger.close_slot(slot)
         self.decisions.pop(slot, None)
         self.log(
@@ -1004,6 +1265,8 @@ class Daemon:
         now = time.time()
         a = self.cfg.allocator
         self._check_stop()
+        if self.live:
+            self._reconcile_submissions()
         self.chain.check_fresh()
         wallet = self.read_wallet()
         if self.timers.due("wallet", 600, now):

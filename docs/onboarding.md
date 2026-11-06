@@ -1,11 +1,11 @@
 # Onboarding
 
-A first hour that ends with you having run every component and knowing which one can lose
-money.
+An offline verification path, followed by optional component setup. Identify the two
+components that can move money before running any live command.
 
 ## The one thing to know first
 
-Four components, three of which are harmless and one of which is not:
+Six components with different failure modes:
 
 | Component | Worst case if you break it |
 | --- | --- |
@@ -13,6 +13,8 @@ Four components, three of which are harmless and one of which is not:
 | `research/` | An overstated result |
 | `soltui/` | A wrong pixel |
 | `extension/` | **A real order for real money** |
+| `mongo/` | Wrong derived research records; selected collections are dropped on load |
+| `liquidity/` | **A real Base transaction or LP position change** |
 
 Read `CLAUDE.md` before touching anything. It carries the non-negotiables per component and
 they are not stylistic — each one is there because the failure it prevents already
@@ -22,7 +24,7 @@ happened or was one review away from happening.
 
 ```bash
 pip install -r backtester/requirements.txt
-python3 -m unittest discover -s backtester/tests -t .     # expect 454 OK
+python3 -m unittest discover -s backtester/tests -t .
 ```
 
 If that passes, the backtester and research components are healthy. No data needed yet —
@@ -57,8 +59,9 @@ there so the output can be disbelieved.
 ## Step 4 — the extension, without arming it (15 minutes)
 
 ```bash
+(cd extension && npm test)
 cd extension
-npm test                                              # expect 114 pass
+# From this directory:
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # a round trip must close POSITIVE
 node tools/cli.js                                     # every command in the registry
 ```
@@ -78,11 +81,13 @@ Then read three files, in this order:
 You may load it unpacked (`chrome://extensions` → Developer mode → Load unpacked →
 `extension/`). It installs **disarmed, in dry-run**, and you should leave it that way.
 
+Return to the repository root with `cd ..` before continuing.
+
 ## Step 5 — soltui, if you are on macOS (10 minutes)
 
 ```bash
 pip install -r soltui/requirements.txt
-python3 -m unittest discover -s soltui/tests -t .   # expect 95 OK, ~70s
+python3 -m unittest discover -s soltui/tests -t .
 python3 soltui/soltui-service status
 ```
 
@@ -90,7 +95,20 @@ Before you install it, read `soltui/README.md`. The packaging traps there have b
 for once already, and the important one is counter-intuitive: the menu-bar **Quit item
 does not stop it** — `KeepAlive` overrides Quit, so the flag file is the real off switch.
 
-## Step 6 — confirm you can verify your own work (5 minutes)
+## Step 6 — optional derived store and liquidity tests
+
+```bash
+pip install -r mongo/requirements.txt
+python3 mongo/schema.py --describe
+python3 -m unittest discover -s mongo/tests -t .
+(cd liquidity && uv sync --extra dev -p 3.13 && .venv/bin/pytest -q)
+```
+
+The MongoDB integration tests skip when no server is available. Liquidity's default test
+selection excludes live network calls. Read `liquidity/README.md` and
+`liquidity/CLAUDE.md` before any daemon install: its service installer defaults to live mode.
+
+## Step 7 — confirm you can verify your own work (5 minutes)
 
 ```bash
 python3 scripts/check_docs.py
@@ -117,8 +135,8 @@ to 454, and nothing caught it.
 
 - **Comments explain why, not what** — especially where the obvious implementation is
   wrong. MV3 timers, base58 zero bytes, FIFO versus paired-lot attribution, one-bar leaks.
-- **Python is stdlib-first**, 3.13, with `from __future__ import annotations`. Do not add a
-  dependency for something `urllib` or `unittest` covers.
+- **Python is stdlib-first**, 3.13, with `from __future__ import annotations`. Backtester
+  uses `unittest`; liquidity has its own web3/httpx dependencies and pytest suite.
 - **JavaScript has zero runtime dependencies**, and that is a hard rule, not a preference.
 - **A new strategy ships its card in the same commit.** The card's numbers are checked
   against the code in both directions.

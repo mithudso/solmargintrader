@@ -201,6 +201,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         oos_metrics = compute_metrics(
             oos.equity[skip:], oos.timestamps[skip:], trades, oos.exposure[skip:],
             periods_per_year(args.interval), 0.0, 0,
+            initial_equity=float(oos.equity[skip - 1]) if skip > 0 else cfg.initial_capital,
         )
         payload["in_sample_metrics"] = in_sample.metrics.to_dict()
         payload["out_of_sample_metrics"] = oos_metrics.to_dict()

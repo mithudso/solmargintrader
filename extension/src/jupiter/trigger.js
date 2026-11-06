@@ -2,7 +2,7 @@
  * Jupiter Trigger V2 client.
  *
  * Endpoint shapes below are transcribed from the live docs (verified
- * 2026-08-04):
+ * 2026-11-06, with contract regression fixtures):
  *   https://developers.jup.ag/docs/trigger
  *   https://developers.jup.ag/docs/trigger/create-order
  *   https://developers.jup.ag/docs/trigger/authentication
@@ -150,6 +150,7 @@ export function rungToOrderBody({
   quoteMint,
   baseDecimals,
   quoteDecimals,
+  quotePriceUsd,
   userPubkey,
   depositRequestId,
   depositSignedTx,
@@ -159,8 +160,11 @@ export function rungToOrderBody({
   const isBuy = intent.side === 'buy';
   const inputMint = isBuy ? quoteMint : baseMint;
   const outputMint = isBuy ? baseMint : quoteMint;
+  if (isBuy && (!Number.isFinite(quotePriceUsd) || quotePriceUsd <= 0)) {
+    throw new RangeError('buy sizing requires a measured positive quote USD price');
+  }
   const inputAmount = isBuy
-    ? toSmallestUnit(intent.notionalUsd, quoteDecimals)
+    ? toSmallestUnit(intent.notionalUsd / quotePriceUsd, quoteDecimals)
     : toSmallestUnit(intent.baseQty, baseDecimals);
 
   return {
@@ -182,8 +186,8 @@ export function rungToOrderBody({
 /**
  * Integer amount in the token's smallest unit.
  *
- * Built as a string via rounding on a scaled integer: `1e9 * 0.1` in float math
- * lands on 100000000.00000001, and Solana rejects a non-integer amount.
+ * Floors the scaled amount so the transfer cannot exceed a known budget or
+ * inventory. A remainder below one atomic unit stays unspent.
  */
 export function toSmallestUnit(amount, decimals) {
   if (!Number.isFinite(amount) || amount < 0) {
@@ -192,7 +196,8 @@ export function toSmallestUnit(amount, decimals) {
   if (!Number.isInteger(decimals) || decimals < 0 || decimals > 18) {
     throw new RangeError(`decimals must be an integer 0-18, got ${decimals}`);
   }
-  const scaled = Math.round(amount * 10 ** decimals);
+  // Never round above the known inventory or budget at a coarse mint precision.
+  const scaled = Math.floor(amount * 10 ** decimals);
   if (!Number.isSafeInteger(scaled)) {
     throw new RangeError(`amount ${amount} at ${decimals} decimals exceeds safe integer range`);
   }
@@ -257,24 +262,53 @@ export function createPriceOrder({ body, apiKey, jwt, budget, fetchImpl }) {
 }
 
 /** Open/historical orders — the reconciliation and fill source. */
-export function listOrders({ apiKey, jwt, status, budget, fetchImpl }) {
-  const qs = status ? `?status=${encodeURIComponent(status)}` : '';
-  return request({
-    url: `${TRIGGER_BASE}/orders${qs}`,
-    init: { headers: headers({ apiKey, jwt }) },
-    budget,
-    fetchImpl,
-  });
+export async function listOrders({ apiKey, jwt, status, budget, fetchImpl }) {
+  const state = status === 'history' ? 'past' : status;
+  if (state && !['active', 'past'].includes(state)) throw new RangeError('unknown order state group');
+  const orders = [];
+  const ids = new Set();
+  let offset = 0;
+  let expectedTotal = null;
+  // Bound remote work; exceeding the bound refuses planning rather than
+  // presenting a truncated live-order list as complete.
+  for (let page = 0; page < 100; page++) {
+    const qs = new URLSearchParams({ limit: '100', offset: String(offset), sort: 'created_at', dir: 'asc' });
+    if (state) qs.set('state', state);
+    const response = await request({
+      url: `${TRIGGER_BASE}/orders/history?${qs}`,
+      init: { headers: headers({ apiKey, jwt }) }, budget, fetchImpl,
+    });
+    if (!response || !Array.isArray(response.orders)) throw new Error('unrecognised paginated order history');
+    for (const order of response.orders) {
+      if (typeof order?.id !== 'string' || !order.id.trim() || ids.has(order.id)) {
+        throw new Error('order history contains invalid or repeated identities');
+      }
+      ids.add(order.id); orders.push(order);
+    }
+    const pagination = response.pagination;
+    if (!pagination) throw new Error('order history completeness is unknown without pagination');
+    if (!Number.isSafeInteger(pagination.total) || pagination.total < 0 ||
+        pagination.offset !== offset || !Number.isSafeInteger(pagination.limit) || pagination.limit < 1 ||
+        response.orders.length > pagination.limit ||
+        (expectedTotal !== null && expectedTotal !== pagination.total)) {
+      throw new Error('inconsistent order history pagination');
+    }
+    expectedTotal = pagination.total;
+    offset += response.orders.length;
+    if (offset === expectedTotal) return { orders };
+    if (!response.orders.length || offset > expectedTotal) throw new Error('incomplete order history pagination');
+  }
+  throw new Error('order history exceeds bounded pagination limit');
 }
 
 /** Update a resting order in place (trigger price and slippage only). */
 export function updateOrder({ orderId, triggerPriceUsd, slippageBps, trailingBps, apiKey, jwt, budget, fetchImpl }) {
-  const patch = {};
+  const patch = { orderType: ORDER_TYPE.SINGLE };
   if (triggerPriceUsd != null) patch.triggerPriceUsd = triggerPriceUsd;
   if (slippageBps != null) patch.slippageBps = slippageBps;
   if (trailingBps != null) patch.trailingBps = trailingBps;
   return request({
-    url: `${TRIGGER_BASE}/orders/${encodeURIComponent(orderId)}`,
+    url: `${TRIGGER_BASE}/orders/price/${encodeURIComponent(orderId)}`,
     init: { method: 'PATCH', headers: headers({ apiKey, jwt }), body: JSON.stringify(patch) },
     budget,
     fetchImpl,
@@ -287,17 +321,18 @@ export function updateOrder({ orderId, triggerPriceUsd, slippageBps, trailingBps
  */
 export function initiateCancel({ orderId, apiKey, jwt, budget, fetchImpl }) {
   return request({
-    url: `${TRIGGER_BASE}/orders/${encodeURIComponent(orderId)}/cancel`,
+    url: `${TRIGGER_BASE}/orders/price/cancel/${encodeURIComponent(orderId)}`,
     init: { method: 'POST', headers: headers({ apiKey, jwt }) },
     budget,
     fetchImpl,
   });
 }
 
-export function confirmCancel({ orderId, signedTx, apiKey, jwt, budget, fetchImpl }) {
+export function confirmCancel({ orderId, signedTx, cancelRequestId, apiKey, jwt, budget, fetchImpl }) {
+  if (typeof cancelRequestId !== 'string' || !cancelRequestId.trim()) throw new RangeError('missing cancel request ID');
   return request({
-    url: `${TRIGGER_BASE}/orders/${encodeURIComponent(orderId)}/cancel/confirm`,
-    init: { method: 'POST', headers: headers({ apiKey, jwt }), body: JSON.stringify({ signedTx }) },
+    url: `${TRIGGER_BASE}/orders/price/confirm-cancel/${encodeURIComponent(orderId)}`,
+    init: { method: 'POST', headers: headers({ apiKey, jwt }), body: JSON.stringify({ signedTransaction: signedTx, cancelRequestId }) },
     budget,
     fetchImpl,
   });

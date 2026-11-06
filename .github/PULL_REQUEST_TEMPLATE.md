@@ -8,7 +8,13 @@
 - [ ] `research/` — analysis. Overstating a result is the failure mode.
 - [ ] `extension/` — **can place real orders.** Treat as production software.
 - [ ] `soltui/` — read-only display.
+- [ ] `mongo/` — derived local datastore.
+- [ ] `liquidity/` — **moves real money on Base**, own pytest/Ruff gates.
 - [ ] Repo-level (docs, CI, tooling).
+
+## Why
+
+<!-- Which concrete problem does this fix? -->
 
 ## Verification
 
@@ -45,3 +51,7 @@ python3 scripts/check_docs.py
 
 - [ ] `scripts/check_docs.py` passes, so no test count or index entry is stale.
 - [ ] A new strategy ships its `backtester/strategy_cards/<id>.md` in this same PR.
+
+## Risk and rollback
+
+<!-- State changed behavior, material residual risks, and the exact revert or recovery step. -->

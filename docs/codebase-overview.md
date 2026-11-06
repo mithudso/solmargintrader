@@ -37,7 +37,7 @@ root, so an abbreviated one fails the build.
 | `backtester/README.md` | Scope, correctness priorities, usage |
 | `backtester/PROMPT.md` | The prompt the component was built from |
 | `backtester/strategy_cards/` | One card per registered strategy: equations, limitations, defaults |
-| `backtester/tests/` | 454 tests (`unittest`), including the research modules |
+| `backtester/tests/` | Unittest suites, including the research modules; counts in `docs/TESTING.md` |
 
 ### `backtester/core/` — the engine
 
@@ -50,13 +50,16 @@ root, so an abbreviated one fails the build.
 | `backtester/core/perps.py` | Borrow-fee accrual and liquidation price for the perp mode |
 | `backtester/core/gridsim.py` | Ladder-grid simulator; a port of `extension/src/core/grid.js` that must agree with it |
 | `backtester/core/data.py` | `CsvLoader`, `SyntheticLoader`, bar validation, checksums |
-| `backtester/core/fetch.py` | The only network path: Coinbase OHLCV into a local CSV cache |
+| `backtester/core/fetch.py` | Explicit Coinbase OHLCV fetch into a local CSV cache; the engine stays offline |
+| `backtester/core/fetch_minutes.py` | Resumable minute-bar cache fetch with rate limiting and coverage |
+| `backtester/core/ticks.py` | Explicit Coinbase trade-tick fetch and bar aggregation |
+| `backtester/core/funding.py` | Signed Hyperliquid funding history, optional OKX cross-check |
 | `backtester/core/archive_price.py` | Jupiter spot-price snapshot (this is what `data/JLP_spot.csv` is) |
 | `backtester/core/cpcv.py` | Combinatorial purged cross-validation |
 | `backtester/core/cointegration.py` | Cointegration tests for the pairs work |
 | `backtester/core/pairs.py` | Pairs-trading construction |
 | `backtester/core/universe.py` | Asset universe selection, with the survivorship-bias refusal |
-| `backtester/core/report.py` | Run reports and walk-forward split output |
+| `backtester/core/report.py` | Run reports, walk-forward splits and manifest-last artifact hashes |
 | `backtester/core/plotting.py` | Chart output |
 | `backtester/core/strategy_cards.py` | Parses the cards and is checked against the registry both ways |
 
@@ -155,12 +158,17 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/roster.py` | Watched-asset roster |
 | `soltui/paper.py` | Paper positions |
 | `soltui/runner.py` | The loop that refreshes state |
+| `soltui/bgcontrol.py` | Explicit worker/fetch processes, lock handoff and nonce-bound socket Stop |
+| `soltui/bgworker.py` | Detached offline sweep worker and per-process array cache |
+| `soltui/liquidity.py` | Reads daemon state; creates/removes only the KILL flag |
+| `soltui/serve.py` | Optional loopback browser console |
+| `soltui/bin/soltui` | Shell launcher with interpreter override |
 | `soltui/config.py` | Configuration |
 | `soltui/setup_app.py` | py2app build config (**alias** build, so the bundle references this checkout) |
 | `soltui/make_icon.py` | Generates `SolTUI.icns` |
 | `soltui/soltui-service` | `status` / `start` / `stop` / `build` / `install` for the launchd agent |
 | `soltui/README.md` | Packaging traps already paid for — read before rebuilding |
-| `soltui/tests/` | 95 tests (~70s) |
+| `soltui/tests/` | Unittest suites for models, rendering, workers, launchers and local controls |
 
 ---
 
@@ -169,7 +177,7 @@ file — not the menu-bar Quit item — is the real off switch.
 A read-mostly MongoDB copy of everything the repo has measured (~29,000 documents in
 the `solmargintrader` database), plus a runnable query reference. Derived: the files
 on disk stay the source of truth, so the store can be dropped and rebuilt freely.
-Nothing in the other four components imports it.
+No other component imports the MongoDB loader.
 
 | Path | What it is |
 | --- | --- |
@@ -211,7 +219,15 @@ Three things about the shape, because they will come up:
 | `AGENTS.md` | Points at `CLAUDE.md` |
 | `GEMINI.md` | Gemini CLI equivalent |
 | `.github/copilot-instructions.md` | Copilot CLI equivalent |
-| `.github/workflows/ci.yml` | Extension, backtester, soltui and doc-drift jobs |
+| `.github/workflows/ci.yml` | Extension, backtester, soltui, mongo, liquidity and doc/index drift jobs |
+| `CONTRIBUTING.md` | Contribution boundaries and validation workflow |
+| `CODE_OF_CONDUCT.md` | Contributor conduct and reporting boundary |
+| `docs/requirements.md` | Existing functional/runtime/safety requirements |
+| `docs/MCP.md` | No repo MCP server; global connectors and offline fallback |
+| `docs/caching-and-optimization.md` | Cache freshness and performance invariants |
+| `docs/runbooks/incident.md` | Kill, preserve evidence, reconcile unknown outcomes |
+| `docs/runbooks/rollback.md` | Revert code without discarding execution state |
+| `docs/runbooks/handoff.md` | Prompt/memory/Git continuation workflow |
 | `scripts/check_docs.py` | Fails the build on stale test counts or dead index entries |
 | `docs/` | The documentation suite; `README.md` links every page |
 | `data/` | Regenerable OHLCV cache — gitignored. Refetch with `backtester.core.fetch` |
@@ -229,14 +245,34 @@ place of them. In live mode it signs real transactions. Full detail: `liquidity/
 | `liquidity/README.md` | How pools are judged, quick start, the daemon loop, safety |
 | `liquidity/CLAUDE.md` | Owner's live-operation authorization and its limits |
 | `liquidity/STATE_FILES.md` | `status.json` / `scout.json` / `KILL` contract with soltui |
+| `liquidity/pyproject.toml` | Component dependencies, CLI entry point, pytest/Ruff configuration |
+| `liquidity/uv.lock` | Locked component dependencies |
+| `liquidity/src/aero_lp/chain.py` | Base RPC and Multicall3 read boundary |
+| `liquidity/src/aero_lp/market.py` | GeckoTerminal transport/cache and income model helpers |
+| `liquidity/src/aero_lp/providers.py` | Read-only provider comparison and source labels |
+| `liquidity/src/aero_lp/validation.py` | Shared finite-number validation for liquidity safety configuration |
+| `liquidity/src/aero_lp/config.py` | TOML risk/custody/configuration boundary |
+| `liquidity/src/aero_lp/state.py` | Daemon state directory and state-file writes |
+| `liquidity/src/aero_lp/wallet.py` | Mode-0600 key file / Keychain loading; never print its output |
 | `liquidity/src/aero_lp/metrics.py` | Every profitability measure for one pool |
 | `liquidity/src/aero_lp/scout.py` | Candidate discovery and ranking |
 | `liquidity/src/aero_lp/allocator.py` | Pure deploy / experiment / graduation decisions |
 | `liquidity/src/aero_lp/ledger.py` | SQLite P&L ledger |
+| `liquidity/src/aero_lp/submissions.py` | Durable owner-bound transaction journal; unresolved submissions block new writes |
+| `liquidity/src/aero_lp/recovery.py` | Receipt-based idempotent ledger recovery and historical slot attribution |
 | `liquidity/src/aero_lp/daemon.py` | The loop: manage, compound, scout, allocate, status |
 | `liquidity/src/aero_lp/executor.py` | Transaction sequences; `SimRunner` (eth_simulateV1) and `LiveRunner` |
 | `liquidity/scripts/aero-lp-service` | launchd install / status / kill / resume |
 | `.claude/agents/aero-pool-scout.md` | Read-only research agent that second-guesses the scout |
+
+### Audit and continuation references
+
+| Path | What it is |
+| --- | --- |
+| `docs/repo-bootstrap-audit-2026-11-06.md` | Standards audit, changes and explicit remaining infrastructure gaps |
+| `docs/code-deep-optimizer-2026-11-06.md` | Bounded code audit, regressions, review dissent and verification limits |
+| `docs/code-optimizer-scope-2026-11-06.json` | Primary/dependency source scope and every remaining source path |
+| `docs/jupiter-trigger-contract.md` | Public API contract fixtures and blocked live-signing boundary |
 
 ### Not source
 

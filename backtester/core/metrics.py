@@ -58,7 +58,7 @@ class Metrics:
         return asdict(self)
 
 
-def simple_returns(equity: np.ndarray) -> np.ndarray:
+def simple_returns(equity: np.ndarray, initial_equity: float | None = None) -> np.ndarray:
     """Per-bar simple returns of an equity curve.
 
     Guards against a zero or negative equity value, which would otherwise
@@ -70,27 +70,34 @@ def simple_returns(equity: np.ndarray) -> np.ndarray:
     prev = equity[:-1]
     safe_prev = np.where(prev <= 0.0, np.nan, prev)
     rets = (equity[1:] - prev) / safe_prev
+    if initial_equity is not None:
+        # Entry costs at the first observation belong to the first elapsed
+        # interval, not to an invented extra bar before the supplied timestamps.
+        rets[0] = equity[1] / initial_equity - 1.0
     # A wiped-out account has no further returns; treat as flat at -100%.
     return np.nan_to_num(rets, nan=0.0, posinf=0.0, neginf=-1.0)
 
 
-def total_return(equity: np.ndarray) -> float:
+def total_return(equity: np.ndarray, initial_equity: float | None = None) -> float:
     """Cumulative return from first to last equity point."""
+    if initial_equity is not None:
+        return float(equity[-1] / initial_equity - 1.0) if len(equity) else 0.0
     if len(equity) < 2 or equity[0] <= 0:
         return 0.0
     return float(equity[-1] / equity[0] - 1.0)
 
 
-def cagr(equity: np.ndarray, periods_per_year: float) -> float:
+def cagr(equity: np.ndarray, periods_per_year: float, initial_equity: float | None = None) -> float:
     """Compound annual growth rate. Returns -1.0 for a wiped-out account."""
-    if len(equity) < 2 or equity[0] <= 0:
+    start = initial_equity if initial_equity is not None else (equity[0] if len(equity) else 0.0)
+    if len(equity) < 2 or start <= 0:
         return 0.0
     if equity[-1] <= 0:
         return -1.0
     years = (len(equity) - 1) / periods_per_year
     if years <= 0:
         return 0.0
-    return float((equity[-1] / equity[0]) ** (1.0 / years) - 1.0)
+    return float((equity[-1] / start) ** (1.0 / years) - 1.0)
 
 
 def sharpe_ratio(
@@ -141,7 +148,7 @@ def annual_volatility(returns: np.ndarray, periods_per_year: float) -> float:
     return float(np.std(returns, ddof=1) * np.sqrt(periods_per_year))
 
 
-def max_drawdown(equity: np.ndarray, timestamps: np.ndarray) -> DrawdownInfo:
+def max_drawdown(equity: np.ndarray, timestamps: np.ndarray, initial_equity: float | None = None) -> DrawdownInfo:
     """Worst peak-to-trough decline, with its location and duration.
 
     Reported as a negative fraction (-0.42 means a 42% decline).
@@ -151,12 +158,18 @@ def max_drawdown(equity: np.ndarray, timestamps: np.ndarray) -> DrawdownInfo:
         return DrawdownInfo(0.0, 0, 0, 0, 0, 0)
 
     running_peak = np.maximum.accumulate(equity)
+    if initial_equity is not None:
+        running_peak = np.maximum(running_peak, initial_equity)
     safe_peak = np.where(running_peak <= 0.0, np.nan, running_peak)
     dd = (equity - running_peak) / safe_peak
     dd = np.nan_to_num(dd, nan=0.0)
 
     trough = int(np.argmin(dd))
     peak = int(np.argmax(equity[: trough + 1])) if trough > 0 else 0
+    if initial_equity is not None and np.max(equity[: trough + 1]) <= initial_equity:
+        # The pre-entry peak belongs to the first supplied timestamp, even if
+        # later samples partially recover without reaching that original peak.
+        peak = 0
     return DrawdownInfo(
         max_drawdown=float(dd[trough]),
         peak_index=peak,
@@ -181,12 +194,11 @@ def trade_stats(trades: Sequence[Trade]) -> dict[str, float]:
 
     Only fills that realise PnL count as a decided trade. An opening fill has
     no outcome yet, and neither does an increase in size -- counting either
-    would dilute the win rate (a resize_up realises only its own cost, so it
-    would register as a guaranteed loser).
+    would dilute the win rate. Entry/increase costs belong to the units still
+    held and are allocated to their eventual closing outcomes.
     """
-    undecided = {"open", "resize_up"}
-    realised = [t.realized_pnl for t in trades if t.reason not in undecided]
-    decided = [p for p in realised if abs(p) > 1e-12]
+    undecided = {"open", "resize_up", "grid_entry"}
+    decided = [t.realized_pnl for t in trades if t.reason not in undecided]
     if not decided:
         return {
             "win_rate": 0.0,
@@ -203,7 +215,7 @@ def trade_stats(trades: Sequence[Trade]) -> dict[str, float]:
         "win_rate": len(wins) / len(decided),
         # An unbounded profit factor is reported as inf deliberately: it means
         # zero losing trades, which is information, not an error.
-        "profit_factor": (gross_win / gross_loss) if gross_loss > 1e-12 else float("inf"),
+        "profit_factor": (gross_win / gross_loss) if gross_loss > 1e-12 else (float("inf") if gross_win > 1e-12 else 0.0),
         "avg_win": (gross_win / len(wins)) if wins else 0.0,
         "avg_loss": (-gross_loss / len(losses)) if losses else 0.0,
         "trade_count": len(decided),
@@ -218,16 +230,27 @@ def compute_metrics(
     periods_per_year: float,
     risk_free_rate: float = 0.0,
     liquidation_count: int = 0,
+    *,
+    initial_equity: float | None = None,
 ) -> Metrics:
-    """Assemble the full metric set for one run."""
+    """Assemble metrics without changing the supplied bar count or timestamps.
+
+    ``initial_equity`` is the pre-entry capital (or the previous equity before
+    a flat-warmup trim). It includes boundary costs in return and drawdown.
+    Annualization still uses the supplied elapsed intervals, not an extra bar.
+    """
     equity = np.asarray(equity, dtype="float64")
-    rets = simple_returns(equity)
-    dd = max_drawdown(equity, timestamps)
+    if not np.all(np.isfinite(equity)):
+        raise ValueError("equity curve contains non-finite values")
+    if initial_equity is not None and (not np.isfinite(initial_equity) or initial_equity <= 0):
+        raise ValueError("initial_equity must be finite and positive")
+    rets = simple_returns(equity, initial_equity)
+    dd = max_drawdown(equity, timestamps, initial_equity)
     ts_stats = trade_stats(trades)
-    c = cagr(equity, periods_per_year)
+    c = cagr(equity, periods_per_year, initial_equity)
 
     return Metrics(
-        total_return=total_return(equity),
+        total_return=total_return(equity, initial_equity),
         cagr=c,
         sharpe=sharpe_ratio(rets, periods_per_year, risk_free_rate),
         sortino=sortino_ratio(rets, periods_per_year, risk_free_rate),

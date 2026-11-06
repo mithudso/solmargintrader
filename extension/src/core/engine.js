@@ -13,9 +13,45 @@
  */
 
 import { planGrid, intentKey } from './grid.js';
-import { admitBatch, dayKey, DEFAULT_LIMITS } from './risk.js';
+import { admitBatch, capitalExposure, dayKey, DEFAULT_LIMITS } from './risk.js';
 import { snapshot } from './pnl.js';
 import { INTENT_STATUS } from '../storage/store.js';
+
+// Store identity survives separate IndexedDB connections and FileStore wrappers in
+// the same runtime. Memory stores keep their own independent queue.
+const engineQueues = new Map();
+const storeIdentity = (store) => store.path ? `file:${store.path}` : store.db?.name ? `indexeddb:${store.db.name}` : store;
+const queueFor = (store) => {
+  const key = storeIdentity(store);
+  if (!engineQueues.has(key)) engineQueues.set(key, { tail: Promise.resolve(), stopped: false, stopGeneration: 0 });
+  return engineQueues.get(key);
+};
+
+export function withStoreLock(store, operation) {
+  const queue = queueFor(store);
+  const result = queue.tail.then(operation);
+  queue.tail = result.catch(() => {});
+  return result;
+}
+
+// A stop request revokes the remainder of a running batch before the lifecycle
+// command waits its turn to persist. It cannot undo an already submitted order.
+export function stopEngine(store) {
+  const queue = queueFor(store);
+  queue.stopped = true;
+  queue.stopGeneration++;
+}
+export function engineStopGeneration(store) { return queueFor(store).stopGeneration; }
+export function resumeEngine(store, generation) {
+  const queue = queueFor(store);
+  // An arm queued before a later stop request cannot revoke that request.
+  if (generation === queue.stopGeneration) queue.stopped = false;
+}
+
+export function occupiedIntentKeys(intents) {
+  return [...new Set(intents.filter((i) => [INTENT_STATUS.RESTING, INTENT_STATUS.UNKNOWN, INTENT_STATUS.SUBMITTING].includes(i.status))
+    .map((i) => i.occupancyKey ?? i.intentKey))];
+}
 
 /**
  * Relative tolerance for matching a venue's echoed trigger price to ours.
@@ -64,39 +100,43 @@ export function keyForLiveOrder({ gridId, order }) {
  *     retry. Retrying is how you double-fire a rung after a crash.
  *   - a live order we have no record of -> adopt it, so it counts against caps
  */
-export async function reconcile({ venue, store, config, log = () => {} }) {
+export function reconcile(args) {
+  return withStoreLock(args.store, () => reconcileUnlocked(args));
+}
+
+async function reconcileUnlocked({ venue, store, config, log = () => {} }) {
   const liveOrders = await venue.getOpenOrders();
   const journal = await store.allIntents();
 
-  // Resolve each live order to a journal intent by tolerant price match. A
-  // venue-supplied intentKey is trusted when present (the dry-run venue sets
-  // one), but real venues never echo it, so the match is what carries live mode.
   const liveByKey = new Map();
-  // Each journal intent may back at most one live order. Without consuming
-  // matches, two live orders a fraction of a basis point apart would both bind
-  // to the same intent and one of them would vanish from the resting set —
-  // leaving a real order the engine no longer counts or cancels.
+  const occupancyKeys = new Set();
   const unmatched = [...journal];
-  const consume = (intent) => {
-    const at = unmatched.indexOf(intent);
-    if (at !== -1) unmatched.splice(at, 1);
-    return intent;
-  };
-
-  for (const o of liveOrders) {
-    const found = o.intentKey
-      ? unmatched.find((i) => i.intentKey === o.intentKey)
-      : matchIntent({ order: o, journal: unmatched });
-    const matched = found ? consume(found) : null;
-    const key = matched?.intentKey ?? o.intentKey ?? keyForLiveOrder({ gridId: config.gridId, order: o });
-    if (key) liveByKey.set(key, o);
+  for (const order of liveOrders) {
+    if (!order.venueOrderId) throw new Error('live order has no venue identity');
+    const candidates = unmatched.filter((i) => !i.venueOrderId || i.venueOrderId === order.venueOrderId);
+    const matched = candidates.find((i) => i.venueOrderId === order.venueOrderId)
+      ?? (order.intentKey ? candidates.find((i) => i.intentKey === order.intentKey)
+        : matchIntent({ order, journal: candidates }));
+    if (matched) unmatched.splice(unmatched.indexOf(matched), 1);
+    const occupancyKey = matched?.occupancyKey ?? matched?.intentKey
+      ?? order.intentKey ?? keyForLiveOrder({ gridId: config.gridId, order });
+    if (!occupancyKey) throw new Error('live order has no usable rung identity');
+    let key = matched?.intentKey ?? occupancyKey;
+    // Two distinct orders may occupy exactly the same rung. Keep the journal
+    // identity separate from planner occupancy so neither order disappears.
+    if (liveByKey.has(key) || (!matched && journal.some((i) => i.intentKey === key))) {
+      key = `${occupancyKey}:venue:${order.venueOrderId}`;
+    }
+    if (liveByKey.has(key)) throw new Error('duplicate venue order identity');
+    liveByKey.set(key, { order, occupancyKey, matched });
+    occupancyKeys.add(occupancyKey);
   }
 
   const adopted = [];
   const orphaned = [];
 
   for (const intent of journal) {
-    const live = liveByKey.get(intent.intentKey);
+    const live = liveByKey.get(intent.intentKey)?.order;
 
     if (intent.status === INTENT_STATUS.SUBMITTING) {
       if (live) {
@@ -123,29 +163,34 @@ export async function reconcile({ venue, store, config, log = () => {} }) {
     }
   }
 
-  // Live orders with no journal entry: adopt so they occupy cap space.
-  const journalKeys = new Set(journal.map((i) => i.intentKey));
-  for (const [key, order] of liveByKey) {
-    if (journalKeys.has(key)) continue;
+  // Missing size stays unknown. A configured rung size says nothing about an
+  // order another client placed, and cannot establish remaining cap headroom.
+  for (const [key, { order, occupancyKey, matched }] of liveByKey) {
+    if (matched) {
+      if (matched.status !== INTENT_STATUS.SUBMITTING) {
+        await store.updateIntent(key, { status: INTENT_STATUS.RESTING, venueOrderId: order.venueOrderId, occupancyKey });
+      }
+      continue;
+    }
     await store.putIntent({
-      intentKey: key,
-      gridId: config.gridId,
-      side: order.side,
-      level: order.triggerPriceUsd,
-      notionalUsd: config.notionalPerRungUsd,
-      status: INTENT_STATUS.RESTING,
-      venueOrderId: order.venueOrderId,
-      adoptedFromVenue: true,
-      updatedAtMs: Date.now(),
+      intentKey: key, occupancyKey, gridId: config.gridId,
+      side: order.side, level: order.triggerPriceUsd,
+      notionalUsd: Number.isFinite(order.notionalUsd) && order.notionalUsd > 0 ? order.notionalUsd : null,
+      status: INTENT_STATUS.RESTING, venueOrderId: order.venueOrderId,
+      adoptedFromVenue: true, updatedAtMs: Date.now(),
     });
     adopted.push(key);
   }
 
-  return { liveOrders, restingKeys: [...liveByKey.keys()], adopted, orphaned };
+  return { liveOrders, restingKeys: [...liveByKey.keys()], occupiedKeys: [...occupancyKeys], adopted, orphaned };
 }
 
 /** Pull venue fills into the local log, idempotently. */
-export async function ingestFills({ venue, store, config, log = () => {} }) {
+export function ingestFills(args) {
+  return withStoreLock(args.store, () => ingestFillsUnlocked(args));
+}
+
+async function ingestFillsUnlocked({ venue, store, config, log = () => {} }) {
   const venueFills = await venue.getFills();
   const known = new Set((await store.allFills()).map((f) => f.id));
   const journal = await store.allIntents();
@@ -155,53 +200,37 @@ export async function ingestFills({ venue, store, config, log = () => {} }) {
 
   for (const f of venueFills) {
     const id = f.venueOrderId;
-    if (!id || known.has(id)) continue;
-
-    // `getFills()` reads the orders/history endpoint, and "history" is every
-    // TERMINAL order — filled, cancelled and expired alike. Without this gate a
-    // cancelled order books a phantom fill: `executedPriceUsd` is absent so the
-    // price falls back to the trigger price, `filledBaseQty` is absent so the
-    // quantity falls back to the intent's PLANNED size, and the result is
-    // inventory the wallet never acquired plus an intent marked FILLED.
-    //
-    // The gate is positive — it requires evidence the venue actually executed
-    // something — rather than a blacklist of status strings, because the status
-    // vocabulary is part of the unverified envelope. An unknown status with real
-    // execution evidence is still a fill; a known-sounding one without it is not.
-    if (f.unusable) {
-      rejected.push({ id, reason: `history record unusable: missing ${(f.missingFields ?? []).join(', ')}` });
+    if (id && known.has(id)) continue;
+    // Only the adapter can prove that terminal history represents zero
+    // execution. A cancelled status alone may still contain a partial fill.
+    if (f.executionAbsent === true && !(f.filledBaseQty > 0) && !(f.executedPriceUsd > 0)) {
+      log({ level: 'info', msg: 'terminal order ignored — verified no execution', id });
       continue;
     }
-    const executedQty = Number.isFinite(f.filledBaseQty) && f.filledBaseQty > 0;
-    const executedPrice = Number.isFinite(f.executedPriceUsd) && f.executedPriceUsd > 0;
-    if (!executedQty && !executedPrice) {
-      rejected.push({ id, reason: 'terminal order shows no execution (cancelled or expired, not filled)' });
-      log({ level: 'info', msg: 'terminal order ignored — no execution evidence', id, status: f.status ?? null });
+    const candidates = journal.filter((i) => !i.venueOrderId || i.venueOrderId === id);
+    const matched = candidates.find((i) => id && i.venueOrderId === id)
+      ?? (f.intentKey ? candidates.find((i) => i.intentKey === f.intentKey) : matchIntent({ order: f, journal: candidates }));
+    const validExecution = id && !f.unusable && ['buy', 'sell'].includes(f.side)
+      && Number.isFinite(f.executedPriceUsd) && f.executedPriceUsd > 0
+      && Number.isFinite(f.filledBaseQty) && f.filledBaseQty > 0
+      && Number.isFinite(f.updatedAtMs ?? f.createdAtMs) && (f.updatedAtMs ?? f.createdAtMs) >= 0;
+    if (!validExecution) {
+      rejected.push({ id: id ?? 'unidentified', reason: 'history record unusable: no reliable execution price, quantity or timestamp' });
+      if (matched) await store.updateIntent(matched.intentKey, { status: INTENT_STATUS.UNKNOWN });
+      log({ level: 'warn', msg: 'execution history incomplete; trading held for review', id: id ?? null });
       continue;
     }
-
-    const priceUsd = f.executedPriceUsd ?? f.triggerPriceUsd;
-    // Quantity must come from the fill or from the intent that created it —
-    // never from current config, which would let editing notionalPerRungUsd
-    // retroactively rewrite historical fill sizes.
-    const matched = f.intentKey
-      ? journal.find((i) => i.intentKey === f.intentKey)
-      : matchIntent({ order: f, journal });
-    const baseQty = f.filledBaseQty ?? matched?.baseQty ?? null;
-
-    if (!(priceUsd > 0) || !(baseQty > 0)) {
-      // Guessing here would silently corrupt P&L. Refuse and surface it.
-      rejected.push({ id, reason: 'no reliable price or quantity on the fill' });
-      log({ level: 'warn', msg: 'fill ingested without usable price/qty — skipped', id });
-      continue;
-    }
+    // A trigger is a condition, and planned quantity is an intention. Neither
+    // establishes the amount or price that the wallet actually exchanged.
+    const priceUsd = f.executedPriceUsd;
+    const baseQty = f.filledBaseQty;
 
     // A real fill must be recorded even when the venue did not report its fee —
     // dropping it would lose inventory the wallet actually holds. But booking an
     // unreported fee as 0 states a cost we do not know, and zero fees make a grid
     // look better than it is. Record 0 so the arithmetic stays finite, flag the
     // fill, and surface the count so P&L is never read as fee-complete.
-    const feeKnown = Number.isFinite(f.feeUsd);
+    const feeKnown = Number.isFinite(f.feeUsd) && f.feeUsd >= 0;
     const fill = {
       id,
       gridId: config.gridId,
@@ -210,7 +239,7 @@ export async function ingestFills({ venue, store, config, log = () => {} }) {
       priceUsd,
       feeUsd: feeKnown ? f.feeUsd : 0,
       feeUnknown: !feeKnown,
-      tsMs: f.updatedAtMs ?? f.createdAtMs ?? Date.now(),
+      tsMs: f.updatedAtMs ?? f.createdAtMs,
       level: f.triggerPriceUsd ?? null,
     };
     // Link a sell to the lots its intent was paired with, so P&L closes the
@@ -226,11 +255,10 @@ export async function ingestFills({ venue, store, config, log = () => {} }) {
       log({ level: 'warn', msg: 'fill recorded with an unreported fee — P&L understates costs', id });
     }
 
-    const key = matched?.intentKey ?? f.intentKey ?? keyForLiveOrder({ gridId: config.gridId, order: f });
-    if (key) await store.updateIntent(key, { status: INTENT_STATUS.FILLED, fillId: id });
+    if (matched) await store.updateIntent(matched.intentKey, { status: INTENT_STATUS.FILLED, fillId: id });
   }
 
-  return { added, rejected, feeUnknown };
+  return { added, rejected, feeUnknown, blocked: rejected.length > 0 };
 }
 
 /**
@@ -238,7 +266,15 @@ export async function ingestFills({ venue, store, config, log = () => {} }) {
  *
  * @returns a summary the popup and dashboard render directly.
  */
-export async function tick({
+export function tick(args) {
+  return withStoreLock(args.store, async () => {
+    const venue = args.buildVenue ? await args.buildVenue() : args.venue;
+    const limits = args.readLimits ? await args.readLimits() : args.limits;
+    return tickUnlocked({ ...args, venue, limits });
+  });
+}
+
+async function tickUnlocked({
   venue,
   store,
   configStore,
@@ -255,7 +291,6 @@ export async function tick({
   const lastTickDeltaMs = runtime.lastTickMs ? now - runtime.lastTickMs : null;
 
   const today = dayKey(now);
-  const isNewDay = runtime.dayKey !== today;
 
   const effectiveLimits = { ...limits, killSwitch: limits.killSwitch || runtime.killSwitch };
 
@@ -290,27 +325,34 @@ export async function tick({
     // Dry-run venues fill resting rungs off the new mark before reconciling.
     if (typeof venue.markPrice === 'function') venue.markPrice(price);
 
-    const rec = await reconcile({ venue, store, config, log });
+    const rec = await reconcileUnlocked({ venue, store, config, log });
     result.orphaned = rec.orphaned;
 
-    const ingested = await ingestFills({ venue, store, config, log });
+    const ingested = await ingestFillsUnlocked({ venue, store, config, log });
     if (ingested.rejected.length) result.errors.push(...ingested.rejected.map((r) => ({ error: `fill ${r.id}: ${r.reason}` })));
     // Not an error — the fills are real — but the P&L below understates costs by
     // however much these fees were, so the count travels with the result.
-    result.feeUnknownFills = ingested.feeUnknown.length;
 
     const fills = await store.allFills();
+    result.feeUnknownFills = fills.filter((f) => f.feeUnknown === true).length;
     const carry = await store.allCarry();
+    const accountingUnknown = result.feeUnknownFills > 0 ||
+      fills.some((f) => !Number.isFinite(f.tsMs) || f.tsMs < 0 || !Number.isFinite(f.feeUsd) || f.feeUsd < 0 ||
+        !Number.isFinite(f.priceUsd) || f.priceUsd <= 0 || !Number.isFinite(f.baseQty) || f.baseQty <= 0 ||
+        !['buy', 'sell'].includes(f.side)) ||
+      carry.some((c) => !Number.isFinite(c.tsMs) || c.tsMs < 0 || !Number.isFinite(c.costUsd));
     const pnl = snapshot({ fills, markPriceUsd: price, carryEntries: carry });
     result.pnl = pnl;
 
-    // TODAY's realized P&L, not lifetime. snapshot() reports cumulative
-    // realized, so the daily-loss rail needs a day-start baseline — comparing
-    // a lifetime figure against a daily limit either never fires or fires
-    // forever, depending on which way the grid has run since inception.
-    const dayStartRealizedUsd = isNewDay
-      ? pnl.realizedNetUsd
-      : (runtime.dayStartRealizedUsd ?? pnl.realizedNetUsd);
+    // Rebuild midnight's realized balance with all earlier fills so a lot
+    // opened yesterday retains its cost basis when it closes before this wake.
+    // Rebuilding also attributes history that arrived late to its actual day.
+    const midnight = Date.parse(`${today}T00:00:00Z`);
+    const dayStartRealizedUsd = snapshot({
+      fills: fills.filter((f) => f.tsMs < midnight),
+      markPriceUsd: price,
+      carryEntries: carry.filter((c) => c.tsMs < midnight),
+    }).realizedNetUsd;
     const realizedPnlUsdToday = pnl.realizedNetUsd - dayStartRealizedUsd;
     result.realizedPnlUsdToday = realizedPnlUsdToday;
 
@@ -323,8 +365,27 @@ export async function tick({
         realizedPnlUsdToday,
       });
 
-    if (!runtime.armed) {
+    if (ingested.blocked) {
+      result.skipped.push({ reason: 'execution-history-needs-review' });
+      await persistRuntime();
+      return result;
+    }
+
+    if (accountingUnknown || !Number.isFinite(pnl.unmatchedSellQty) || pnl.unmatchedSellQty > 0) {
+      result.skipped.push({ reason: 'accounting-evidence-needs-review' });
+      log({ level: 'warn', msg: 'unknown accounting costs or timing; trading held for review' });
+      await persistRuntime();
+      return result;
+    }
+
+    if (!runtime.armed || queueFor(store).stopped) {
       result.skipped.push({ reason: 'not-armed' });
+      await persistRuntime();
+      return result;
+    }
+
+    if (venue.executionBlockedReason) {
+      result.skipped.push({ reason: venue.executionBlockedReason });
       await persistRuntime();
       return result;
     }
@@ -352,7 +413,8 @@ export async function tick({
     // tick's reconcile already resolved it), so it is held for the same reason.
     // Read AFTER ingestFills: a fill that just arrived flips UNKNOWN to FILLED,
     // and that rung is legitimately free again.
-    const held = (await store.allIntents()).filter(
+    const journal = await store.allIntents();
+    const held = journal.filter(
       (i) => i.status === INTENT_STATUS.UNKNOWN || i.status === INTENT_STATUS.SUBMITTING,
     );
     const heldKeys = held.map((i) => i.intentKey);
@@ -361,7 +423,7 @@ export async function tick({
       result.skipped.push({ reason: 'unknown-intent-needs-review', intentKeys: heldKeys });
       log({ level: 'warn', msg: 'unresolved intents hold their rungs', intentKeys: heldKeys });
     }
-    const occupiedKeys = [...new Set([...rec.restingKeys, ...heldKeys])];
+    const occupiedKeys = [...new Set([...rec.occupiedKeys, ...held.map((i) => i.occupancyKey ?? i.intentKey)])];
 
     const plan = planGrid({
       config,
@@ -394,10 +456,15 @@ export async function tick({
       });
     }
 
+    const liveKeys = new Set(rec.restingKeys);
+    const outstanding = journal.filter((i) => liveKeys.has(i.intentKey)
+      || i.status === INTENT_STATUS.UNKNOWN || i.status === INTENT_STATUS.SUBMITTING);
+    const exposure = capitalExposure({ openLots: pnl.openLots, outstanding, markPriceUsd: price });
     const state = {
-      // Held rungs count against the caps too: an unresolved order may be live.
-      openNotionalUsd: occupiedKeys.length * config.notionalPerRungUsd,
-      openOrderCount: occupiedKeys.length,
+      // Owned lots stay at risk after the entry order fills. Covered exits
+      // reserve that inventory without adding a second copy of its value.
+      openNotionalUsd: exposure.openNotionalUsd,
+      openOrderCount: exposure.openOrderCount,
       realizedPnlUsdToday,
       leverage: config.leverage,
       liquidationDistancePct: null,
@@ -408,6 +475,7 @@ export async function tick({
       state,
       limits: effectiveLimits,
       slippageBps: config.slippageBps,
+      openLots: exposure.unreservedLots,
     });
     result.rejected = rejected;
     // A limit that was unusable and fell back to its default: surface it so the
@@ -415,6 +483,11 @@ export async function tick({
     result.limitProblems = limitProblems;
 
     for (const intent of admitted) {
+      const currentRuntime = await configStore.getRuntime();
+      if (queueFor(store).stopped || !currentRuntime.armed || currentRuntime.killSwitch) {
+        result.skipped.push({ reason: 'execution-stopped' });
+        break;
+      }
       // WRITE-AHEAD: the journal entry must exist before the network call, or a
       // crash mid-submit is invisible to the next tick.
       await store.putIntent({
@@ -423,6 +496,15 @@ export async function tick({
         submittedAtMs: clock(),
         updatedAtMs: clock(),
       });
+
+      // Persistence yields to the event loop. An immediate kill/disarm request
+      // may arrive during that await, before any venue submission has started.
+      if (queueFor(store).stopped) {
+        await store.updateIntent(intent.intentKey, { status: INTENT_STATUS.FAILED,
+          error: 'execution stopped before venue submission', definitelyNotSubmitted: true });
+        result.skipped.push({ reason: 'execution-stopped' });
+        break;
+      }
 
       try {
         const placed = await venue.placeOrder({
@@ -438,10 +520,10 @@ export async function tick({
         });
         result.placed.push({ intentKey: intent.intentKey, ...placed });
       } catch (err) {
-        // A failed submit is safe to retry; an ambiguous one is not, and
-        // reconcile() is what decides that on the next tick.
+        // A thrown call may have reached the venue. A local persistence error
+        // after acceptance is equally ambiguous. Neither permits an auto-retry.
         await store.updateIntent(intent.intentKey, {
-          status: INTENT_STATUS.FAILED,
+          status: INTENT_STATUS.UNKNOWN,
           error: String(err.message ?? err).slice(0, 300),
         });
         result.errors.push({ intentKey: intent.intentKey, error: String(err.message ?? err) });

@@ -107,8 +107,8 @@ dropped `--notionalPerRungUsd` would be a money bug.
 
 ```bash
 cd extension
-node tools/api-server.js --port 8787          # prints a generated bearer token
-SMT_API_TOKEN=your-secret node tools/api-server.js   # or pin one
+export SMT_API_TOKEN="$(openssl rand -hex 24)"  # generate without printing the credential
+node tools/api-server.js --port 8787            # refuses startup without SMT_API_TOKEN
 ```
 
 | Route | Auth | Notes |

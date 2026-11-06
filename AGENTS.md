@@ -2,6 +2,17 @@
 
 Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file first.
 
+Save the request in `prompts.md` and keep versioned continuation notes in `memory.md`.
+Follow the workflow-record rule in `CLAUDE.md` before implementation and at delivery.
+
+## Repository-local agents
+
+| Agent | Scope | Model | When to use | Tools / access |
+| --- | --- | --- | --- | --- |
+| [aero-pool-scout](.claude/agents/aero-pool-scout.md) | `liquidity/` research only | sonnet | Independently check the daemon's pool ranking | Bash, Read, Write, WebSearch, WebFetch; Base RPC and public market sources; no signing or config changes |
+
+The agent definition is the source of truth. No other repository-local agents are tracked.
+
 Summary of the rules most often broken here:
 
 - Dry-run is the default and the extension installs disarmed. Do not change that.

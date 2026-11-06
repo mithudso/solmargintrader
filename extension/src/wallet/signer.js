@@ -16,8 +16,8 @@
  *   - at rest it is AES-GCM encrypted under a passphrase-derived key (PBKDF2,
  *     600k iterations), with a fresh 12-byte IV per encryption
  *   - it lives in chrome.storage.local only. `.sync` would upload it
- *   - the decrypted key exists only inside a call, is never logged, never
- *     stringified, and never crosses a message boundary
+ *   - plaintext seed bytes exist only during bounded initialization; the signer
+ *     retains a non-extractable CryptoKey, never raw seed bytes
  */
 
 import {
@@ -25,7 +25,7 @@ import {
   base58Decode,
   base64ToBytes,
   bytesToBase64,
-  parseTransaction,
+  transactionSigningContext,
   withSignature,
 } from './solana.js';
 
@@ -36,6 +36,7 @@ const SALT_BYTES = 16;
 const IV_BYTES = 12;
 const VAULT_KEY = 'sessionKeyVault';
 const PENDING_KEY = 'pendingSignatures';
+const KEY_BINDING_MESSAGE = new TextEncoder().encode('solmargintrader session key binding v1');
 
 /** Ed25519 PKCS#8 prefix: WebCrypto will not import a bare 32-byte seed. */
 const PKCS8_ED25519_PREFIX = Uint8Array.from([
@@ -44,14 +45,18 @@ const PKCS8_ED25519_PREFIX = Uint8Array.from([
 
 /* --------------------------------------------------------------- key vault -- */
 
+function validateSeed(seed) {
+  if (!(seed instanceof Uint8Array) || seed.length !== 32) throw new RangeError('seed must be 32 bytes');
+}
+
 async function deriveWrapKey(passphrase, salt) {
-  const material = await crypto.subtle.importKey(
-    'raw',
-    new TextEncoder().encode(passphrase),
-    'PBKDF2',
-    false,
-    ['deriveKey'],
-  );
+  const passphraseBytes = new TextEncoder().encode(passphrase);
+  let material;
+  try {
+    material = await crypto.subtle.importKey('raw', passphraseBytes, 'PBKDF2', false, ['deriveKey']);
+  } finally {
+    passphraseBytes.fill(0);
+  }
   return crypto.subtle.deriveKey(
     { name: 'PBKDF2', salt, iterations: KDF_ITERATIONS, hash: 'SHA-256' },
     material,
@@ -66,7 +71,8 @@ async function deriveWrapKey(passphrase, salt) {
  * @returns {Promise<object>} the storable vault record — contains no plaintext
  */
 export async function sealSeed({ seed, passphrase }) {
-  if (seed.length !== 32) throw new RangeError(`seed must be 32 bytes, got ${seed.length}`);
+  validateSeed(seed);
+  if (typeof passphrase !== 'string') throw new TypeError('passphrase must be a string');
   const salt = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
   const iv = crypto.getRandomValues(new Uint8Array(IV_BYTES));
   const key = await deriveWrapKey(passphrase, salt);
@@ -81,12 +87,33 @@ export async function sealSeed({ seed, passphrase }) {
 }
 
 export async function openSeed({ vault, passphrase }) {
-  const salt = base64ToBytes(vault.salt);
-  const iv = base64ToBytes(vault.iv);
+  if (!vault || typeof vault !== 'object' || Array.isArray(vault) || vault.v !== 1 ||
+      vault.kdf?.name !== 'PBKDF2' || vault.kdf?.hash !== 'SHA-256' ||
+      vault.kdf?.iterations !== KDF_ITERATIONS || typeof passphrase !== 'string') {
+    throw new Error('unsupported or corrupt session key vault record');
+  }
+  let salt, iv, ct;
+  try {
+    const decode = (value, length) => {
+      if (typeof value !== 'string' || value.length !== 4 * Math.ceil(length / 3)) throw new Error();
+      const bytes = base64ToBytes(value);
+      if (bytes.length !== length || bytesToBase64(bytes) !== value) throw new Error();
+      return bytes;
+    };
+    salt = decode(vault.salt, SALT_BYTES);
+    iv = decode(vault.iv, IV_BYTES);
+    ct = decode(vault.ct, 32 + 16); // 32-byte seed plus the AES-GCM authentication tag.
+  } catch {
+    throw new Error('unsupported or corrupt session key vault record');
+  }
   const key = await deriveWrapKey(passphrase, salt);
   try {
-    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, base64ToBytes(vault.ct));
-    return new Uint8Array(pt);
+    const seed = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct));
+    if (seed.length !== 32) {
+      seed.fill(0);
+      throw new Error('invalid seed');
+    }
+    return seed;
   } catch {
     // AES-GCM authentication failed: wrong passphrase, or the record was
     // tampered with. Do not distinguish the two.
@@ -124,10 +151,15 @@ class PendingApprovalSigner {
   }
 
   async #enqueue(payload) {
-    const res = (await this.area?.get(PENDING_KEY)) ?? {};
-    const queue = res[PENDING_KEY] ?? [];
+    if (!this.area || typeof this.area.get !== 'function' || typeof this.area.set !== 'function') {
+      throw new Error('approval storage is unavailable; no request was queued');
+    }
+    const res = (await this.area.get(PENDING_KEY)) ?? {};
+    const existing = res[PENDING_KEY] ?? [];
+    if (!Array.isArray(existing)) throw new Error('approval storage is corrupt; no request was queued');
+    const queue = [...existing];
     queue.push({ id: crypto.randomUUID(), createdAtMs: Date.now(), ...payload });
-    await this.area?.set({ [PENDING_KEY]: queue.slice(-50) });
+    await this.area.set({ [PENDING_KEY]: queue.slice(-50) });
   }
 
   async signMessageBs58(challenge) {
@@ -151,22 +183,31 @@ export class PendingApproval extends Error {
 /** Signs with a dedicated session keypair. */
 class SessionKeySigner {
   /**
-   * @param {Uint8Array} seed 32-byte Ed25519 seed, held only for this instance's lifetime
+   * @param {Uint8Array} seed Borrowed 32-byte seed; captured synchronously into a temporary owned copy.
    */
   constructor({ seed, pubkeyBs58 }) {
+    validateSeed(seed);
+    if (typeof pubkeyBs58 !== 'string' || base58Decode(pubkeyBs58).length !== 32) {
+      throw new RangeError('public key must encode 32 bytes');
+    }
     this.kind = SIGNER_KIND.SESSION;
-    this.pubkeyBs58 = pubkeyBs58;
-    this.#seed = seed;
+    Object.defineProperty(this, 'pubkeyBs58', { value: pubkeyBs58, enumerable: true });
+    this.#keyPromise = this.#importKey(Uint8Array.from(seed));
+    // A directly constructed signer may not be used immediately. Keep an init
+    // failure handled until ready/sign awaits the original rejected promise.
+    this.#keyPromise.catch(() => {});
   }
 
-  #seed;
+  #keyPromise;
 
-  async #privateKey() {
+  async #importKey(seed) {
     const pkcs8 = new Uint8Array(PKCS8_ED25519_PREFIX.length + 32);
     pkcs8.set(PKCS8_ED25519_PREFIX, 0);
-    pkcs8.set(this.#seed, PKCS8_ED25519_PREFIX.length);
+    pkcs8.set(seed, PKCS8_ED25519_PREFIX.length);
+    seed.fill(0);
+    let key;
     try {
-      return await crypto.subtle.importKey('pkcs8', pkcs8, { name: 'Ed25519' }, false, ['sign']);
+      key = await crypto.subtle.importKey('pkcs8', pkcs8, { name: 'Ed25519' }, false, ['sign']);
     } catch (err) {
       throw new Error(
         `Ed25519 is unavailable in this browser's WebCrypto (${err.message}). Chrome 137+ is required for full-auto signing; use semi-auto until then.`,
@@ -174,10 +215,23 @@ class SessionKeySigner {
     } finally {
       pkcs8.fill(0);
     }
+    // Validate identity without exporting any private key material. A changed
+    // public field beside an intact vault must not produce invalid signatures.
+    const publicKey = await crypto.subtle.importKey('raw', base58Decode(this.pubkeyBs58), 'Ed25519', false, ['verify']);
+    const proof = await crypto.subtle.sign('Ed25519', key, KEY_BINDING_MESSAGE);
+    if (!await crypto.subtle.verify('Ed25519', publicKey, proof, KEY_BINDING_MESSAGE)) {
+      throw new Error('session key public key does not match the seed');
+    }
+    return key;
+  }
+
+  async ready() {
+    await this.#keyPromise;
+    return this;
   }
 
   async signMessageBs58(message) {
-    const key = await this.#privateKey();
+    const key = await this.#keyPromise;
     const sig = await crypto.subtle.sign('Ed25519', key, new TextEncoder().encode(message));
     return base58Encode(new Uint8Array(sig));
   }
@@ -186,8 +240,8 @@ class SessionKeySigner {
     const txBytes = base64ToBytes(txBase64);
     // Statically imported: a dynamic import inside a signing call can fail in a
     // service worker that is mid-termination, leaving the order half-issued.
-    const { message } = parseTransaction(txBytes);
-    const key = await this.#privateKey();
+    const { message } = transactionSigningContext({ txBytes, pubkeyBs58: this.pubkeyBs58 });
+    const key = await this.#keyPromise;
     const sig = new Uint8Array(await crypto.subtle.sign('Ed25519', key, message));
     const signed = withSignature({ txBytes, pubkeyBs58: this.pubkeyBs58, signature: sig });
     return bytesToBase64(signed);
@@ -200,14 +254,21 @@ class SessionKeySigner {
  * this round-trips through WebCrypto's JWK export.
  */
 export async function pubkeyForSeed(seed) {
+  validateSeed(seed);
   const pkcs8 = new Uint8Array(PKCS8_ED25519_PREFIX.length + 32);
   pkcs8.set(PKCS8_ED25519_PREFIX, 0);
   pkcs8.set(seed, PKCS8_ED25519_PREFIX.length);
-  const priv = await crypto.subtle.importKey('pkcs8', pkcs8, { name: 'Ed25519' }, true, ['sign']);
-  pkcs8.fill(0);
-  const jwk = await crypto.subtle.exportKey('jwk', priv);
+  let jwk;
+  try {
+    const priv = await crypto.subtle.importKey('pkcs8', pkcs8, { name: 'Ed25519' }, true, ['sign']);
+    jwk = await crypto.subtle.exportKey('jwk', priv);
+  } finally {
+    pkcs8.fill(0);
+  }
   // JWK 'x' is the base64url public key.
-  return base58Encode(base64UrlToBytes(jwk.x));
+  const publicPart = jwk.x;
+  delete jwk.d;
+  return base58Encode(base64UrlToBytes(publicPart));
 }
 
 function base64UrlToBytes(b64url) {
@@ -242,7 +303,13 @@ export async function makeSigner({ mode, passphrase, area = globalThis.chrome?.s
     const record = res[VAULT_KEY];
     if (!record?.vault || !passphrase) return new PendingApprovalSigner({ area });
     const seed = await openSeed({ vault: record.vault, passphrase });
-    return new SessionKeySigner({ seed, pubkeyBs58: record.pubkeyBs58 });
+    let signer;
+    try {
+      signer = new SessionKeySigner({ seed, pubkeyBs58: record.pubkeyBs58 });
+    } finally {
+      seed.fill(0);
+    }
+    return signer.ready();
   }
 
   return new PendingApprovalSigner({ area });

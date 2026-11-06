@@ -3,9 +3,8 @@
 Active limitations, in descending order of how much damage they could do. Nothing here is
 speculative — each item is either stated in the code or was reproduced.
 
-There are no `TODO`, `FIXME`, `XXX` or `HACK` markers anywhere in
-`backtester/`, `research/`, `extension/` or `soltui/`. This page is the substitute for
-grepping for them.
+Source markers are not an exhaustive issue list. The dated bootstrap and optimizer
+reports record reviewed findings and residuals; this page records ongoing limitations.
 
 ---
 
@@ -19,29 +18,27 @@ run go through fakes. Do not present any live-path behaviour as working; read th
 
 **Consequence:** the first real order is the first real test.
 
-### The Trigger order-list response envelope is guessed
+### Trigger contract has offline fixtures, not live acceptance
 
-Reconciliation reads the venue's live order list at the top of every tick and treats it as
-the source of truth. The shape of that response was inferred from documentation, not
-observed. If the real envelope differs, reconciliation is wrong in the most consequential
-place in the system — and because neither Jupiter call logs its request or outcome
-(`docs/logging.md`, gap 1), the failure would be hard to diagnose after the fact.
+History pagination and cancellation paths are checked against current public documentation
+and offline fixtures. No authenticated wallet response or live order has been accepted.
+Incomplete execution valuation, costs or timing holds new planning. The bundled session
+signer has no independent transaction-intent verifier, so automatic Trigger writes stay
+blocked. See `docs/jupiter-trigger-contract.md`.
 
-**Mitigation in place:** an intent that was submitted but is not found live becomes
-`unknown` and is **never** auto-retried. That converts a mis-parsed envelope into a stalled
-rung rather than a double-fire.
+Unknown submissions retain their journal hold and are never automatically replayed.
 
 ### Fee attribution is unconfirmed
 
 `src/jupiter/attribution.js` has never been checked against a real fill. Reported P&L may
 attribute fees differently from the venue.
 
-### Unlogged paths
+### Incomplete transport observability
 
-Four, listed with evidence in `docs/logging.md`: every Jupiter call, per-rail risk
-rejections, the `unknown` intent transition, and a thrown tick (which goes to
-`console.error` and does not survive service-worker eviction). Fixing these is
-`code-deep-optimizer` pass S5 work.
+Persistent intent/tick events do not replace per-request transport logs. Jupiter
+request/outcome metadata and some failure paths remain outside a common sink.
+`docs/logging.md` and the dated code-optimizer report distinguish verified changes from
+remaining coverage. Do not infer a complete request history from a tick summary.
 
 ### Loading unpacked cannot be automated
 
@@ -59,12 +56,15 @@ is the integration gate.
 `research/decide.py` prints the decision bar's age in bars and says `STALE` past two, which
 is a mitigation, not a fix — the underlying cache still has to be refetched by hand.
 
-As of the last check, `data/SOL_1h.csv` ended 40 hourly bars behind wall clock while
-`SOL_1d.csv` was 1.7 daily bars behind. Both were "current" by file mtime.
+A historical check found bars behind wall clock despite a current file mtime. That
+snapshot is not a current freshness assertion; inspect timestamps/checksum in the
+readout for the cache you are actually using.
 
-### `data/SOL_1h.csv` has two gaps larger than one bar
+### Historical `data/SOL_1h.csv` snapshot had two gaps larger than one bar
 
-Reading it requires `--allow-gaps`, which is a knowing acceptance of an incomplete series.
+Reading that snapshot required the loader's `--allow-gaps`. The simulators now refuse
+irregular cadence even with that loader flag: missing time is not measured carry or
+annualization evidence. Use a complete cache before running a simulation.
 The largest gap is 21,600s where 3,600s was expected, after epoch 1761404400. Any
 statistic computed across that boundary spans a hole.
 
@@ -74,11 +74,12 @@ One row, columns `timestamp,iso,mint,usd_price,source` — a Jupiter price snaps
 `core/archive_price.py`, not OHLCV. Bar tools refuse it by naming the missing columns,
 which is correct behaviour, but the filename invites the mistake.
 
-### Coinbase is the only market-data source
+### Coinbase is the primary bar and trade-tick source
 
 Binance is geo-blocked from here. That means a single vendor's outage or history revision
-moves every backtest, and Coinbase's non-OHLCV row ordering has to be handled on the way
-in.
+affects refreshed price caches, and Coinbase's non-OHLCV row ordering has to be handled
+on the way in. Signed funding history uses Hyperliquid with a shallow OKX cross-check;
+that does not provide an independent bar history.
 
 ### No registry default emits a short
 
@@ -100,14 +101,14 @@ looking hung. Not a bug — the price of engine parity.
 
 ### The packaging paths have no tests
 
-The 95 tests cover signal derivation, status/roster state and rendering. The py2app alias
-build and the launchd agent are verified by hand only; `soltui/README.md` lists those
+Unit tests cover signal derivation, state, rendering, launchers and service/plist helpers.
+The installed py2app alias bundle and launchd behavior still require acceptance; `soltui/README.md` lists those
 checks.
 
 ### It is an alias build, so it references this checkout
 
 `setup_app.py` runs `py2app -A`, so the installed bundle points at
-`/Users/mitch.hudson/dev/solmargintrader`. Move the repo and the app breaks — rebuild with
+the checkout from which it was built. Move the repo and the app breaks — rebuild with
 `soltui-service build`. A full freeze would have to embed pandas and numpy.
 
 ### Never install a bundle built from a worktree
@@ -127,6 +128,13 @@ So a liveness check alone will report a healthy agent while the app is showing a
 dialog and doing nothing. Check the log, not just the process.
 
 ---
+
+## Liquidity
+
+Public RPC and market-data availability can prevent scoring or simulation. Provider
+comparison is read-only and includes explicitly labelled quoted rows. A successful
+simulation does not establish that a live transaction landed. Preserve partial-sequence
+state and receipts before any retry. See `liquidity/README.md` and `liquidity/STATE_FILES.md`.
 
 ## Repo-level
 

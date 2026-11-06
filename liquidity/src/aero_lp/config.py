@@ -12,6 +12,7 @@ from typing import Any
 from .chain import DEFAULT_RPCS
 from .executor import ExecConfig
 from .strategy import StrategyConfig
+from .validation import finite_number
 
 REWARD_MODES = ("auto", "aero", "fees", "keep")
 
@@ -24,6 +25,8 @@ class SafetyConfig:
     min_check_interval_s: float = 30.0
 
     def __post_init__(self) -> None:
+        for f in fields(self):
+            finite_number(getattr(self, f.name), f.name)
         if min(self.max_position_usd, self.max_gas_usd, self.max_twap_deviation_bps, self.min_check_interval_s) < 0:
             raise ValueError("safety limits must be >= 0")
 
@@ -61,6 +64,19 @@ class AllocatorConfig:
     snapshot_interval_min: float = 15.0
 
     def __post_init__(self) -> None:
+        if not isinstance(self.enabled, bool):
+            raise ValueError("enabled must be a boolean")
+        for name in ("allowed_tokens", "exclude_tokens"):
+            value = getattr(self, name)
+            if not isinstance(value, tuple | list) or any(not isinstance(v, str) or not v for v in value):
+                raise ValueError(f"{name} must be an array of token symbols")
+        for name in ("max_arms", "scout_top_by_volume"):
+            finite_number(getattr(self, name), name, positive=name == "max_arms", integer=True)
+        for f in fields(self):
+            if isinstance(f.default, int | float) and not isinstance(f.default, bool):
+                value = getattr(self, f.name)
+                if isinstance(value, bool) or not isinstance(value, int | float) or not math.isfinite(value):
+                    raise ValueError(f"{f.name} must be a finite number")
         if self.min_confidence not in ("high", "medium", "low"):
             raise ValueError("min_confidence must be high, medium or low")
         if self.max_arms < 1 or self.min_position_usd <= 0 or self.max_position_usd < self.min_position_usd:
@@ -120,6 +136,9 @@ class Config:
     allocator: AllocatorConfig = field(default_factory=AllocatorConfig)
 
     def __post_init__(self) -> None:
+        finite_number(self.gas_units_estimate, "gas_units_estimate", positive=True, integer=True)
+        finite_number(self.poll_seconds, "poll_seconds", positive=True)
+        finite_number(self.l1_fee_usd_estimate, "l1_fee_usd_estimate")
         if self.reward_mode not in REWARD_MODES:
             raise ValueError(f"reward_mode must be one of {REWARD_MODES}")
         if not (self.owner.startswith("0x") and len(self.owner) == 42):
@@ -158,6 +177,8 @@ def load(path: str | Path) -> Config:
     alloc_raw = raw.pop("allocator", {})
     for k in ("allowed_tokens", "exclude_tokens"):
         if k in alloc_raw:
+            if not isinstance(alloc_raw[k], list) or any(not isinstance(v, str) or not v for v in alloc_raw[k]):
+                raise ValueError(f"{k} must be an array of token symbols")
             alloc_raw[k] = tuple(alloc_raw[k])
     allocator = _pick(AllocatorConfig, alloc_raw)
     top_names = {f.name for f in fields(Config)} - {"strategy", "execution", "safety", "allocator"}

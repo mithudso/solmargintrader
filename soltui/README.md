@@ -87,7 +87,13 @@ Same labelling rule as the menu bar: P&L and APR columns say `live` or `dry-run`
 `python3 -m soltui.bgworker --asset SOL` grinds through parameter space in a
 separate process at background QoS (`taskpolicy -b`, nice 19), so it can run
 while you use the machine. The TUI only *reads* what it writes — the sweep keeps
-going with the console closed, and resumes where it stopped after a reboot.
+going with the console closed. Resume requires a matching proof sidecar for the
+settings, date range, CSV bytes and relevant Python source. Legacy or changed evidence
+refuses before appending results; it never silently mixes runs or replaces old history.
+Use an explicit fresh `--results-path /absolute/path/results.jsonl` for a new CLI run.
+The Queue pane reads the default results path; it does not discover custom CLI paths.
+Stop sends a nonce-bound request to the current worker's private control socket. It
+never signals a PID taken from an old PID file. The worker consumes requests between jobs.
 
 Because it is always interrupted rather than completed, the **order** is the
 design, not the extent: every strategy card's own published preset is evaluated
@@ -118,8 +124,10 @@ separate explicit step `CLAUDE.md` requires: it runs `backtester.core.fetch`,
 writes a local cache, and does **not** start a sweep as a side effect. A sweep
 missing one interval still runs every job at the intervals it does have, and
 says so rather than reporting a clean "done". Note the hourly series is refused
-unless `--allow-gaps` is passed (it has disclosed gaps); when a fetch leaves a
-series missing, the tab points at `~/.config/soltui/bg/fetch.log`.
+by the loader unless `--allow-gaps` is passed (it has disclosed gaps). Even with that
+loader flag, the simulation engine refuses irregular intervals rather than guessing
+carry cost or annualization. Use a complete cache for simulation. When a fetch leaves
+a series missing, the tab points at `~/.config/soltui/bg/fetch.log`.
 
 Inspect it while it runs: `~/.config/soltui/bg/` holds `results.jsonl` (one JSON
 object per job), `state.json` (progress) and `worker.log`.

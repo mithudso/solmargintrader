@@ -24,6 +24,8 @@ def make_engine(tmp_path, **safety) -> Engine:
     cfg = Config(OWNER, [42], state_path=str(tmp_path / "state.json"), safety=SafetyConfig(**safety))
     eng = Engine.__new__(Engine)
     eng.cfg, eng.state = cfg, State(cfg.state_file)
+    eng.gate, eng.on_stop = None, None
+    eng.chain = SimpleNamespace()
     return eng
 
 
