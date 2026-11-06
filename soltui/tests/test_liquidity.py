@@ -467,7 +467,7 @@ class TestLiquidityTab(unittest.IsolatedAsyncioTestCase):
             await pilot.click("#liq-kill")
             await pilot.pause()
             self.assertTrue((self.home / "KILL").exists())
-            self.assertIn("KILLED", text_of(app, "#liq-banner"))
+            self.assertIn("Kill switch ON", text_of(app, "#liq-banner"))
             await pilot.click("#liq-resume")
             await pilot.pause()
             self.assertFalse((self.home / "KILL").exists())
@@ -479,7 +479,7 @@ class TestLiquidityTab(unittest.IsolatedAsyncioTestCase):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             await pilot.pause()
-            self.assertIn("KILLED", text_of(app, "#liq-banner"))
+            self.assertIn("Kill switch ON", text_of(app, "#liq-banner"))
 
     async def test_refresh_button_and_tick_pick_up_a_new_file(self) -> None:
         app = SolTuiApp(make_settings())

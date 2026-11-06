@@ -1841,8 +1841,8 @@ class SolTuiApp(App):
         killed = killed_file or bool(status.data and status.data.get("killed"))
         if killed:
             banner.update(Text(
-                " KILLED: the daemon takes no on-chain action. Press Resume to "
-                "delete the KILL file. ",
+                " Kill switch ON — bot paused. It sends no transactions and leaves "
+                "positions as they are. Press Resume (F8) to restart it. ",
                 style="bold white on red"))
         else:
             banner.update("")
