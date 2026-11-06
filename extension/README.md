@@ -323,7 +323,7 @@ src/wallet/signer.js       Null / pending-approval / session-key signers + encry
 src/storage/store.js       IndexedDB journal + chrome.storage config
 src/storage/fileStore.js   The same interfaces on JSON files, for the CLI and API
 src/bg/service-worker.js   Alarm scheduling, message plumbing, badge
-src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe)
+src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe; dashboard has a "Create session key" section)
 tools/cli.js               CLI surface, generated from the registry
 tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/dryrun.js            Headless end-to-end tick

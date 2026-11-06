@@ -47,7 +47,7 @@ curl -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 | `setConfig` | `patch`:json, plus flat fields (`mode`, `lower`, `upper`, `rungs`, `spacing`, `notionalPerRungUsd`, `direction`, `slippageBps`, `leverage`, `marginSource`, `tickSeconds`, `userPubkey`, `baseMint`, `quoteMint`) | A blank numeric field is omitted, never coerced to 0 |
 | `setLimits` | `patch`:json, plus each rail as a flat number | See [risk rails](#risk-rails). Non-finite or negative values are rejected (400); an unusable stored limit falls back to its default and is reported as `limitProblems` |
 | `setApiKey` | `apiKey`:string\* | Returns a length only. The key is never echoed back |
-| `createSessionKey` | `passphrase`:string\* | Generates a dedicated full-auto signing key, encrypted at rest. Minimum 12 characters |
+| `createSessionKey` | `passphrase`:string\* | Generates a dedicated full-auto signing key, encrypted at rest. Minimum 12 characters. The dashboard's "Create session key" section sends this with a confirmed passphrase and shows only the public address |
 
 ### Lifecycle
 

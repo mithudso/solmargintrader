@@ -103,7 +103,7 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 python3 -m unittest discover -s backtester/tests -t .   # 681 tests
 python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 231 tests
+cd extension && npm test                                # 237 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 node tools/verify-endpoints.js                          # live Jupiter reachability
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
@@ -147,7 +147,7 @@ execution as working.
 
 | File | Path | Holds | Ask it for |
 |---|---|---|---|
-| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs from /dr research runs of 2026-11-06, for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Evidence status: research claims ungated (v4 evidence gate not passed; a 10-claim sample per run: 113 of 121 SUPPORTED, 7 UNVERIFIED, 1 CONTRADICTED), so treat every line as a lead with a cited source. Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
+| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Every unit in the -v4 packs passed the research-gate/v4 evidence gate on 2026-11-06 (708 claims kept of about 5,000 researched; the rest could not be bound to exact source quotes or were not judged SUPPORTED). Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
 
 ### Quick answers
 
