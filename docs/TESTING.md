@@ -4,7 +4,7 @@
 python3 -m unittest discover -s backtester/tests -t .   # 649 tests
 python3 -m unittest discover -s soltui/tests -t .       # 368 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 20 tests
-cd extension && npm test                                # 131 tests
+cd extension && npm test                                # 140 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -15,7 +15,7 @@ discovery and fails on a stale figure. That exists because these numbers were wr
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 131 tests cover
+## Extension — what the 140 tests cover
 
 | Area | Examples |
 | --- | --- |
