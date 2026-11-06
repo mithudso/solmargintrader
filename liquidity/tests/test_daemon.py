@@ -225,6 +225,14 @@ class FakeRB:
         self.calls.append(("unwrap_weth", self._kind(runner), amount))
         return RebalanceResult(None, False, ["unwrap"], ["0xu"], {})
 
+    swap_to_eth_error: Exception | None = None
+
+    def swap_to_eth(self, pool, token_in, amount_in, min_eth_out, runner):
+        self.calls.append(("swap_to_eth", self._kind(runner), token_in, amount_in, min_eth_out))
+        if self.swap_to_eth_error:
+            raise self.swap_to_eth_error
+        return RebalanceResult(None, False, ["swap_to_eth"], ["0xe"], {})
+
 
 @pytest.fixture
 def make_daemon(tmp_path, monkeypatch):
@@ -1216,3 +1224,69 @@ def test_a_stop_request_ends_a_long_scout_between_pools(make_daemon, monkeypatch
     monkeypatch.setattr(dmod, "run_scout", scout)
     with pytest.raises(SystemExit):
         d.tick()
+
+
+# ---------------------------------------------------------------- gas top-up for smart accounts (EIP-7702)
+
+
+def _low_gas_wallet(usdc_raw=5_000_000, weth_raw=10**16):
+    return {
+        "eth": 0.00005,
+        "tokens": [
+            {
+                "symbol": "WETH",
+                "address": WETH,
+                "amount": weth_raw / 1e18,
+                "usd": weth_raw / 1e18 * 2000,
+                "raw": weth_raw,
+                "decimals": 18,
+            },
+            {
+                "symbol": "USDC",
+                "address": USDC,
+                "amount": usdc_raw / 1e6,
+                "usd": usdc_raw / 1e6,
+                "raw": usdc_raw,
+                "decimals": 6,
+            },
+        ],
+        "human": {WETH: weth_raw / 1e18, USDC: usdc_raw / 1e6},
+    }
+
+
+def test_smart_account_tops_up_gas_by_swapping_a_stable_not_unwrapping_weth(make_daemon):
+    d = make_daemon(live_mode=True, gas_reserve_eth=0.0003, unwrap_chunk_eth=0.0005)
+    d.test.chain.w3.eth.get_code = lambda a: bytes.fromhex("ef0100") + bytes(20)  # EIP-7702 delegation
+    # USDC/WETH pool at 2000 USDC per WETH (token0 = WETH since 0x42.. < 0x83..)
+    d.test.chain.add_pool(make_pool(WETH, USDC, tick_for(2000 * 10**6 / 10**18), address=addr(0x33)))
+    d._gas_topup(_low_gas_wallet())
+    assert not [c for c in d.rb.calls if c[0] == "unwrap_weth"]
+    swap = [c for c in d.rb.calls if c[0] == "swap_to_eth"][0]
+    assert swap[1] == "live" and swap[2] == USDC
+    assert 1_000_000 < swap[3] < 1_100_000  # ~0.0005 ETH x $2000 x 1.03 of USDC (6 decimals)
+    assert 0.0005e18 < swap[4] < 0.00055e18  # ~0.0005 ETH bought with a 3% buffer, minus fee and slippage
+    assert events(d, "unwrap")[-1]["detail"].startswith("swapped")
+
+
+def test_plain_eoa_still_unwraps_weth(make_daemon):
+    d = make_daemon(live_mode=True, gas_reserve_eth=0.0003, unwrap_chunk_eth=0.0005)
+    d.test.chain.w3.eth.get_code = lambda a: b""
+    d._gas_topup(_low_gas_wallet())
+    assert [c[0] for c in d.rb.calls] == ["unwrap_weth"]
+
+
+def test_failed_gas_topup_is_logged_and_does_not_raise(make_daemon):
+    d = make_daemon(live_mode=True, gas_reserve_eth=0.0003)
+    d.test.chain.w3.eth.get_code = lambda a: bytes.fromhex("ef0100") + bytes(20)
+    d.test.chain.add_pool(make_pool(WETH, USDC, tick_for(2000 * 10**6 / 10**18), address=addr(0x33)))
+    d.rb.swap_to_eth_error = RuntimeError("execution reverted")
+    wallet = _low_gas_wallet()
+    assert d._gas_topup(wallet) is wallet  # unchanged; allocation goes on with its own per-send ETH checks
+    assert "gas top-up failed" in events(d, "error")[-1]["detail"]
+
+
+def test_gas_topup_is_planned_not_sent_when_dry_run_or_killed(make_daemon):
+    for d in (make_daemon(live_mode=False), make_daemon(live_mode=True, killed=True)):
+        d.test.chain.w3.eth.get_code = lambda a: bytes.fromhex("ef0100") + bytes(20)
+        d._gas_topup(_low_gas_wallet())
+        assert not d.rb.calls

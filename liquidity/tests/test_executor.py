@@ -806,3 +806,21 @@ def test_live_runner_books_the_gas_of_a_reverted_transaction():
     with pytest.raises(RuntimeError, match="reverted"):
         runner.execute([TX])
     assert runner.fee_wei == 90_000 * 10**6 + 16
+
+
+def test_swap_to_eth_keeps_weth_in_the_router_then_unwraps_to_the_owner():
+    pool = make_position(staked=False).pool  # WETH/USDC
+    runner = FakeRunner(make_position(staked=False), pool.sqrt_price_x96)
+    res = Rebalancer(FakeChain(), OWNER, ExecConfig()).swap_to_eth(pool, T1, 1_000_000, 4 * 10**14, runner)
+    assert res.stages == ["swap_to_eth"]
+    tx = runner.txs[-1]
+    router = W3.eth.contract(address=addresses.SWAP_ROUTER, abi=abi.SWAP_ROUTER)
+    fn, args = router.decode_function_input(tx.data)
+    assert fn.fn_name == "multicall" and len(args["data"]) == 2
+    f1, a1 = router.decode_function_input(args["data"][0])
+    f2, a2 = router.decode_function_input(args["data"][1])
+    assert f1.fn_name == "exactInputSingle" and f2.fn_name == "unwrapWETH9"
+    p = a1["params"]
+    assert p["tokenIn"] == T1 and p["tokenOut"] == T0 and p["amountIn"] == 1_000_000
+    assert p["recipient"] == "0x0000000000000000000000000000000000000000"  # router holds the WETH mid-transaction
+    assert a2["amountMinimum"] == 4 * 10**14 and a2["recipient"] == OWNER

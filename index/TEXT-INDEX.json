@@ -202,7 +202,7 @@
     "liquidity/pyrightconfig.json": 19,
     "liquidity/scripts/aero-lp-service": 315,
     "liquidity/src/aero_lp/__init__.py": 26,
-    "liquidity/src/aero_lp/abi.py": 646,
+    "liquidity/src/aero_lp/abi.py": 658,
     "liquidity/src/aero_lp/addresses.py": 190,
     "liquidity/src/aero_lp/allocator.py": 949,
     "liquidity/src/aero_lp/backtest.py": 546,
@@ -210,9 +210,9 @@
     "liquidity/src/aero_lp/cli.py": 1997,
     "liquidity/src/aero_lp/clmath.py": 1128,
     "liquidity/src/aero_lp/config.py": 807,
-    "liquidity/src/aero_lp/daemon.py": 4625,
+    "liquidity/src/aero_lp/daemon.py": 5042,
     "liquidity/src/aero_lp/engine.py": 2597,
-    "liquidity/src/aero_lp/executor.py": 3896,
+    "liquidity/src/aero_lp/executor.py": 4077,
     "liquidity/src/aero_lp/ledger.py": 1232,
     "liquidity/src/aero_lp/market.py": 908,
     "liquidity/src/aero_lp/metrics.py": 1893,
@@ -225,9 +225,9 @@
     "liquidity/tests/test_backtest.py": 254,
     "liquidity/tests/test_chain_vol.py": 366,
     "liquidity/tests/test_clmath.py": 477,
-    "liquidity/tests/test_daemon.py": 5880,
+    "liquidity/tests/test_daemon.py": 6271,
     "liquidity/tests/test_engine.py": 1470,
-    "liquidity/tests/test_executor.py": 3677,
+    "liquidity/tests/test_executor.py": 3791,
     "liquidity/tests/test_market_state.py": 859,
     "liquidity/tests/test_metrics.py": 1077,
     "liquidity/tests/test_network.py": 333,
@@ -469,7 +469,7 @@
     "tools/land.sh": 399,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-06T07:51:31+00:00",
+  "generatedAt": "2026-11-06T08:17:25+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -1674,11 +1674,11 @@
       "liquidity/src/aero_lp/abi.py": 3,
       "liquidity/src/aero_lp/chain.py": 23,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 29,
+      "liquidity/src/aero_lp/executor.py": 32,
       "liquidity/tests/test_abi_config_wallet.py": 12,
       "liquidity/tests/test_chain_vol.py": 3,
       "liquidity/tests/test_daemon.py": 1,
-      "liquidity/tests/test_executor.py": 20,
+      "liquidity/tests/test_executor.py": 22,
       "liquidity/uv.lock": 5
     },
     "abi3": {
@@ -2481,9 +2481,11 @@
       "liquidity/config.example.toml": 1,
       "liquidity/pyproject.toml": 1,
       "liquidity/src/aero_lp/abi.py": 3,
-      "liquidity/src/aero_lp/executor.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 5,
+      "liquidity/src/aero_lp/executor.py": 4,
       "liquidity/src/aero_lp/wallet.py": 7,
       "liquidity/tests/test_abi_config_wallet.py": 4,
+      "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_executor.py": 1,
       "liquidity/uv.lock": 6,
       "llms-full.txt": 3,
@@ -2617,6 +2619,8 @@
       "docs/trading-signals-concept-family.md": 8,
       "extension/README.md": 1,
       "extension/src/venues/index.js": 2,
+      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "llms-full.txt": 1,
       "research/RANKED_LISTS.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
@@ -3068,6 +3072,7 @@
       "index/build.py": 1,
       "index/make_concepts_doc.py": 1,
       "index/make_files_doc.py": 1,
+      "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/src/aero_lp/ledger.py": 2,
       "liquidity/src/aero_lp/scout.py": 1,
       "llms-full.txt": 7,
@@ -4047,7 +4052,7 @@
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/src/aero_lp/wallet.py": 2,
-      "liquidity/tests/test_daemon.py": 24,
+      "liquidity/tests/test_daemon.py": 26,
       "llms-full.txt": 16,
       "mongo/README.md": 1,
       "mongo/load.py": 6,
@@ -4173,7 +4178,7 @@
       "liquidity/src/aero_lp/cli.py": 8
     },
     "add_pool": {
-      "liquidity/tests/test_daemon.py": 24
+      "liquidity/tests/test_daemon.py": 26
     },
     "add_row": {
       "soltui/tui.py": 16
@@ -4412,7 +4417,7 @@
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/daemon.py": 14,
       "liquidity/src/aero_lp/scout.py": 9,
-      "liquidity/tests/test_daemon.py": 16,
+      "liquidity/tests/test_daemon.py": 18,
       "liquidity/tests/test_executor.py": 2,
       "liquidity/tests/test_network.py": 2
     },
@@ -4430,23 +4435,23 @@
       "extension/test/surfaces.test.js": 1,
       "extension/test/wallet.test.js": 1,
       "liquidity/STATE_FILES.md": 1,
-      "liquidity/src/aero_lp/abi.py": 39,
+      "liquidity/src/aero_lp/abi.py": 40,
       "liquidity/src/aero_lp/addresses.py": 3,
       "liquidity/src/aero_lp/chain.py": 36,
       "liquidity/src/aero_lp/cli.py": 11,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 57,
+      "liquidity/src/aero_lp/daemon.py": 68,
       "liquidity/src/aero_lp/engine.py": 18,
-      "liquidity/src/aero_lp/executor.py": 61,
+      "liquidity/src/aero_lp/executor.py": 66,
       "liquidity/src/aero_lp/market.py": 2,
       "liquidity/src/aero_lp/metrics.py": 16,
       "liquidity/src/aero_lp/scout.py": 6,
       "liquidity/src/aero_lp/wallet.py": 5,
       "liquidity/tests/test_abi_config_wallet.py": 24,
       "liquidity/tests/test_chain_vol.py": 3,
-      "liquidity/tests/test_daemon.py": 42,
+      "liquidity/tests/test_daemon.py": 46,
       "liquidity/tests/test_engine.py": 3,
-      "liquidity/tests/test_executor.py": 24,
+      "liquidity/tests/test_executor.py": 25,
       "liquidity/tests/test_metrics.py": 8,
       "liquidity/tests/test_network.py": 9,
       "llms-full.txt": 1,
@@ -4499,14 +4504,14 @@
       "liquidity/src/aero_lp/addresses.py": 6,
       "liquidity/src/aero_lp/chain.py": 10,
       "liquidity/src/aero_lp/cli.py": 8,
-      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/daemon.py": 14,
       "liquidity/src/aero_lp/engine.py": 7,
-      "liquidity/src/aero_lp/executor.py": 14,
+      "liquidity/src/aero_lp/executor.py": 15,
       "liquidity/src/aero_lp/market.py": 2,
       "liquidity/src/aero_lp/metrics.py": 5,
       "liquidity/tests/test_daemon.py": 3,
       "liquidity/tests/test_engine.py": 2,
-      "liquidity/tests/test_executor.py": 9,
+      "liquidity/tests/test_executor.py": 10,
       "liquidity/tests/test_metrics.py": 3,
       "liquidity/tests/test_network.py": 3,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -5705,6 +5710,7 @@
       "research/coin-intelligence/trx-tron.md": 1
     },
     "afford": {
+      "liquidity/src/aero_lp/daemon.py": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1
     },
@@ -6981,9 +6987,9 @@
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 1,
       "liquidity/src/aero_lp/allocator.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 11,
+      "liquidity/src/aero_lp/daemon.py": 12,
       "liquidity/tests/test_allocator_ledger.py": 14,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 2,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 3,
@@ -7024,7 +7030,7 @@
       "liquidity/README.md": 2,
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/config.py": 10,
-      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/daemon.py": 14,
       "liquidity/src/aero_lp/ledger.py": 3,
       "liquidity/src/aero_lp/metrics.py": 4,
       "liquidity/src/aero_lp/scout.py": 1,
@@ -8114,12 +8120,12 @@
       "liquidity/src/aero_lp/abi.py": 1,
       "liquidity/src/aero_lp/cli.py": 5,
       "liquidity/src/aero_lp/clmath.py": 5,
-      "liquidity/src/aero_lp/daemon.py": 27,
-      "liquidity/src/aero_lp/executor.py": 16,
+      "liquidity/src/aero_lp/daemon.py": 32,
+      "liquidity/src/aero_lp/executor.py": 20,
       "liquidity/src/aero_lp/ledger.py": 11,
       "liquidity/tests/test_allocator_ledger.py": 13,
       "liquidity/tests/test_clmath.py": 2,
-      "liquidity/tests/test_daemon.py": 18,
+      "liquidity/tests/test_daemon.py": 22,
       "liquidity/tests/test_executor.py": 9,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 1,
@@ -8186,7 +8192,9 @@
     },
     "amount_in": {
       "liquidity/src/aero_lp/clmath.py": 2,
-      "liquidity/src/aero_lp/executor.py": 6,
+      "liquidity/src/aero_lp/daemon.py": 6,
+      "liquidity/src/aero_lp/executor.py": 10,
+      "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_executor.py": 1
     },
     "amount_out": {
@@ -8197,7 +8205,11 @@
     },
     "amountin": {
       "liquidity/src/aero_lp/abi.py": 1,
-      "liquidity/tests/test_executor.py": 4
+      "liquidity/tests/test_executor.py": 5
+    },
+    "amountminimum": {
+      "liquidity/src/aero_lp/abi.py": 1,
+      "liquidity/tests/test_executor.py": 1
     },
     "amountout": {
       "liquidity/src/aero_lp/abi.py": 1
@@ -8611,7 +8623,7 @@
       "liquidity/tests/test_allocator_ledger.py": 4,
       "liquidity/tests/test_backtest.py": 6,
       "liquidity/tests/test_clmath.py": 2,
-      "liquidity/tests/test_daemon.py": 21,
+      "liquidity/tests/test_daemon.py": 22,
       "liquidity/tests/test_engine.py": 4,
       "liquidity/tests/test_executor.py": 19,
       "liquidity/tests/test_market_state.py": 6,
@@ -10086,14 +10098,14 @@
       "liquidity/src/aero_lp/cli.py": 4,
       "liquidity/src/aero_lp/daemon.py": 7,
       "liquidity/src/aero_lp/engine.py": 12,
-      "liquidity/src/aero_lp/executor.py": 26,
+      "liquidity/src/aero_lp/executor.py": 27,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 10,
       "liquidity/src/aero_lp/scout.py": 6,
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_chain_vol.py": 3,
-      "liquidity/tests/test_daemon.py": 22,
+      "liquidity/tests/test_daemon.py": 23,
       "liquidity/tests/test_engine.py": 4,
       "liquidity/tests/test_executor.py": 14,
       "liquidity/tests/test_market_state.py": 3,
@@ -10519,7 +10531,7 @@
       "extension/README.md": 1,
       "extension/src/ui/dashboard.html": 1,
       "liquidity/src/aero_lp/abi.py": 2,
-      "liquidity/src/aero_lp/executor.py": 15,
+      "liquidity/src/aero_lp/executor.py": 16,
       "liquidity/tests/test_executor.py": 6,
       "llms-full.txt": 2,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1,
@@ -11145,10 +11157,10 @@
       "liquidity/src/aero_lp/chain.py": 2,
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/daemon.py": 2,
-      "liquidity/src/aero_lp/executor.py": 17,
+      "liquidity/src/aero_lp/executor.py": 20,
       "liquidity/tests/test_abi_config_wallet.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 7,
-      "liquidity/tests/test_executor.py": 14,
+      "liquidity/tests/test_executor.py": 18,
       "mongo/load.py": 8,
       "mongo/schema.py": 6,
       "research/candle_crosscheck.py": 10,
@@ -12430,9 +12442,9 @@
       "liquidity/tests/test_backtest.py": 12,
       "liquidity/tests/test_chain_vol.py": 8,
       "liquidity/tests/test_clmath.py": 20,
-      "liquidity/tests/test_daemon.py": 135,
+      "liquidity/tests/test_daemon.py": 144,
       "liquidity/tests/test_engine.py": 17,
-      "liquidity/tests/test_executor.py": 87,
+      "liquidity/tests/test_executor.py": 93,
       "liquidity/tests/test_market_state.py": 26,
       "liquidity/tests/test_metrics.py": 26,
       "liquidity/tests/test_network.py": 8,
@@ -13298,6 +13310,7 @@
       "docs/trading-signals-concept-family.md": 2,
       "extension/src/core/engine.js": 1,
       "extension/src/venues/index.js": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/ledger.py": 1,
       "llms-full.txt": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -17373,7 +17386,7 @@
       "extension/test/core.test.js": 1,
       "liquidity/src/aero_lp/allocator.py": 5,
       "liquidity/src/aero_lp/chain.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 7,
+      "liquidity/src/aero_lp/daemon.py": 8,
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 3,
       "liquidity/src/aero_lp/ledger.py": 2,
@@ -20602,7 +20615,7 @@
       "liquidity/src/aero_lp/allocator.py": 20,
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 8,
+      "liquidity/src/aero_lp/daemon.py": 10,
       "liquidity/src/aero_lp/engine.py": 10,
       "liquidity/src/aero_lp/metrics.py": 25,
       "liquidity/src/aero_lp/scout.py": 2,
@@ -20681,7 +20694,7 @@
       "research/ratio_rotation.py": 1
     },
     "best_direct_pool": {
-      "liquidity/src/aero_lp/daemon.py": 2
+      "liquidity/src/aero_lp/daemon.py": 3
     },
     "best_dist": {
       "backtester/core/gridsim.py": 3
@@ -21816,7 +21829,7 @@
       "index/search.py": 1,
       "liquidity/src/aero_lp/chain.py": 5,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/daemon.py": 14,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 5,
       "liquidity/src/aero_lp/market.py": 1,
@@ -21974,7 +21987,7 @@
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/engine.py": 7,
-      "liquidity/src/aero_lp/executor.py": 35,
+      "liquidity/src/aero_lp/executor.py": 36,
       "liquidity/src/aero_lp/metrics.py": 2,
       "liquidity/src/aero_lp/strategy.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 1,
@@ -22063,7 +22076,7 @@
       "liquidity/src/aero_lp/strategy.py": 2
     },
     "block_timestamp": {
-      "liquidity/src/aero_lp/executor.py": 8,
+      "liquidity/src/aero_lp/executor.py": 9,
       "liquidity/tests/test_executor.py": 2
     },
     "blockchain": {
@@ -22877,7 +22890,7 @@
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/chain.py": 7,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 8,
+      "liquidity/src/aero_lp/daemon.py": 11,
       "liquidity/src/aero_lp/engine.py": 9,
       "liquidity/src/aero_lp/executor.py": 6,
       "liquidity/src/aero_lp/market.py": 3,
@@ -23338,6 +23351,7 @@
       "extension/README.md": 1,
       "extension/src/core/grid.js": 4,
       "extension/test/core.test.js": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "llms-full.txt": 4,
       "research/RATIO-ROTATION.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
@@ -23664,7 +23678,7 @@
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/clmath.py": 1,
       "liquidity/src/aero_lp/config.py": 9,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/engine.py": 17,
       "liquidity/src/aero_lp/executor.py": 13,
       "liquidity/src/aero_lp/metrics.py": 3,
@@ -24861,6 +24875,7 @@
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/backtest.py": 2,
       "liquidity/src/aero_lp/strategy.py": 8,
+      "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_strategy.py": 2,
       "llms-full.txt": 5,
       "pagesource": 2,
@@ -26292,10 +26307,11 @@
       "index/build.py": 5,
       "index/make_files_doc.py": 2,
       "index/search.py": 2,
-      "liquidity/src/aero_lp/abi.py": 2,
+      "liquidity/src/aero_lp/abi.py": 4,
       "liquidity/src/aero_lp/chain.py": 2,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/tests/test_abi_config_wallet.py": 3,
+      "liquidity/tests/test_daemon.py": 6,
       "llms-full.txt": 3,
       "mongo/load.py": 2,
       "mongo/queries/08-provenance-and-health.js": 1,
@@ -27756,7 +27772,7 @@
       "liquidity/src/aero_lp/chain.py": 46,
       "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 3,
+      "liquidity/src/aero_lp/executor.py": 4,
       "liquidity/src/aero_lp/scout.py": 1,
       "liquidity/tests/test_chain_vol.py": 1,
       "liquidity/tests/test_daemon.py": 13,
@@ -28014,10 +28030,10 @@
       "extension/test/surfaces.test.js": 1,
       "liquidity/src/aero_lp/chain.py": 13,
       "liquidity/src/aero_lp/daemon.py": 1,
-      "liquidity/src/aero_lp/executor.py": 7,
+      "liquidity/src/aero_lp/executor.py": 8,
       "liquidity/tests/test_abi_config_wallet.py": 2,
       "liquidity/tests/test_chain_vol.py": 3,
-      "liquidity/tests/test_daemon.py": 36,
+      "liquidity/tests/test_daemon.py": 41,
       "liquidity/tests/test_executor.py": 13,
       "liquidity/tests/test_market_state.py": 4,
       "llms-full.txt": 5,
@@ -28334,6 +28350,7 @@
       "liquidity/README.md": 3,
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/config.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/scout.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 4,
       "research/RANKED_LISTS.md": 1,
@@ -28541,8 +28558,9 @@
       "index/make_files_doc.py": 7,
       "index/search.py": 2,
       "liquidity/src/aero_lp/chain.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 5,
+      "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/src/aero_lp/engine.py": 5,
+      "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 1,
       "liquidity/tests/test_daemon.py": 5,
       "llms-full.txt": 32,
@@ -30246,6 +30264,7 @@
       "extension/tools/dryrun.js": 1,
       "extension/tools/measure-recentre.js": 1,
       "extension/tools/verify-endpoints.js": 2,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "llms-full.txt": 3,
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "mongo/tests/test_load.py": 2,
@@ -31465,9 +31484,9 @@
       "liquidity/src/aero_lp/allocator.py": 30,
       "liquidity/src/aero_lp/backtest.py": 7,
       "liquidity/src/aero_lp/cli.py": 23,
-      "liquidity/src/aero_lp/daemon.py": 39,
+      "liquidity/src/aero_lp/daemon.py": 43,
       "liquidity/src/aero_lp/engine.py": 41,
-      "liquidity/src/aero_lp/executor.py": 21,
+      "liquidity/src/aero_lp/executor.py": 22,
       "liquidity/src/aero_lp/metrics.py": 12,
       "liquidity/src/aero_lp/scout.py": 2,
       "liquidity/src/aero_lp/strategy.py": 28,
@@ -31608,7 +31627,7 @@
       "liquidity/src/aero_lp/cli.py": 17,
       "liquidity/src/aero_lp/clmath.py": 2,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 31,
+      "liquidity/src/aero_lp/daemon.py": 32,
       "liquidity/src/aero_lp/engine.py": 31,
       "liquidity/src/aero_lp/executor.py": 33,
       "liquidity/src/aero_lp/market.py": 5,
@@ -31617,7 +31636,7 @@
       "liquidity/src/aero_lp/state.py": 2,
       "liquidity/tests/test_abi_config_wallet.py": 1,
       "liquidity/tests/test_chain_vol.py": 11,
-      "liquidity/tests/test_daemon.py": 71,
+      "liquidity/tests/test_daemon.py": 77,
       "liquidity/tests/test_engine.py": 11,
       "liquidity/tests/test_executor.py": 9,
       "liquidity/tests/test_metrics.py": 3,
@@ -32657,7 +32676,7 @@
       "liquidity/src/aero_lp/chain.py": 3,
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 14,
+      "liquidity/src/aero_lp/daemon.py": 15,
       "liquidity/src/aero_lp/engine.py": 5,
       "liquidity/src/aero_lp/executor.py": 4,
       "liquidity/src/aero_lp/wallet.py": 1,
@@ -33030,7 +33049,7 @@
       "liquidity/src/aero_lp/state.py": 1,
       "liquidity/src/aero_lp/strategy.py": 10,
       "liquidity/tests/test_backtest.py": 1,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_executor.py": 1,
       "liquidity/tests/test_market_state.py": 2,
       "liquidity/tests/test_network.py": 2,
@@ -33082,9 +33101,9 @@
       "docs/external-calls.md": 1,
       "docs/onboarding.md": 1,
       "liquidity/src/aero_lp/chain.py": 10,
-      "liquidity/src/aero_lp/daemon.py": 6,
+      "liquidity/src/aero_lp/daemon.py": 8,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 6,
+      "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/scout.py": 4,
       "liquidity/tests/test_daemon.py": 9,
       "liquidity/tests/test_executor.py": 9,
@@ -33546,8 +33565,9 @@
       "index/search.py": 3,
       "liquidity/src/aero_lp/allocator.py": 1,
       "liquidity/src/aero_lp/config.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 1,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 3,
       "mongo/load.py": 2
     },
     "chunk_chars": {
@@ -35884,9 +35904,9 @@
       "liquidity/README.md": 2,
       "liquidity/src/aero_lp/addresses.py": 1,
       "liquidity/src/aero_lp/chain.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 13,
       "liquidity/src/aero_lp/market.py": 1,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 5,
       "liquidity/tests/test_engine.py": 1,
       "llms-full.txt": 20,
       "mongo/README.md": 1,
@@ -36103,6 +36123,7 @@
       "index/make_files_doc.py": 2,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/config.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/ledger.py": 4,
       "liquidity/tests/test_allocator_ledger.py": 1,
       "mongo/README.md": 4,
@@ -36356,7 +36377,7 @@
       "liquidity/CLAUDE.md": 1,
       "liquidity/README.md": 6,
       "liquidity/src/aero_lp/allocator.py": 3,
-      "liquidity/src/aero_lp/daemon.py": 7,
+      "liquidity/src/aero_lp/daemon.py": 8,
       "liquidity/tests/test_daemon.py": 3,
       "mongo/README.md": 5,
       "mongo/load.py": 2,
@@ -41751,7 +41772,7 @@
       "extension/src/wallet/signer.js": 1,
       "extension/tools/cli.js": 2,
       "liquidity/src/aero_lp/engine.py": 1,
-      "liquidity/src/aero_lp/executor.py": 2,
+      "liquidity/src/aero_lp/executor.py": 3,
       "liquidity/src/aero_lp/strategy.py": 2,
       "liquidity/tests/test_strategy.py": 5,
       "llms-facts.txt": 1,
@@ -42084,7 +42105,7 @@
       "liquidity/src/aero_lp/allocator.py": 1,
       "liquidity/src/aero_lp/chain.py": 4,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 14,
+      "liquidity/src/aero_lp/daemon.py": 17,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/tests/test_network.py": 1,
       "mongo/load.py": 10,
@@ -42125,6 +42146,7 @@
     },
     "continues": {
       "backtester/core/fetch_minutes.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "research/tick_backfill.py": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 1,
@@ -42243,10 +42265,11 @@
       "liquidity/src/aero_lp/addresses.py": 5,
       "liquidity/src/aero_lp/chain.py": 16,
       "liquidity/src/aero_lp/cli.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/executor.py": 8,
       "liquidity/tests/test_abi_config_wallet.py": 2,
       "liquidity/tests/test_chain_vol.py": 2,
-      "liquidity/tests/test_executor.py": 12,
+      "liquidity/tests/test_executor.py": 13,
       "llms-full.txt": 5,
       "research/TOP_COINS.md": 2,
       "research/coin-intelligence/README.md": 1,
@@ -48697,7 +48720,7 @@
       "liquidity/src/aero_lp/ledger.py": 3,
       "liquidity/src/aero_lp/scout.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 1,
-      "liquidity/tests/test_daemon.py": 131,
+      "liquidity/tests/test_daemon.py": 140,
       "soltui/README.md": 7,
       "soltui/liquidity.py": 14,
       "soltui/runner.py": 1,
@@ -48715,6 +48738,7 @@
     },
     "dai": {
       "liquidity/src/aero_lp/config.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/scout.py": 2,
@@ -50326,7 +50350,7 @@
     "deadline": {
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/abi.py": 4,
-      "liquidity/src/aero_lp/executor.py": 29,
+      "liquidity/src/aero_lp/executor.py": 32,
       "liquidity/tests/test_executor.py": 8,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 3,
@@ -50335,7 +50359,7 @@
     },
     "deadline_s": {
       "liquidity/config.example.toml": 1,
-      "liquidity/src/aero_lp/executor.py": 8,
+      "liquidity/src/aero_lp/executor.py": 9,
       "liquidity/tests/test_executor.py": 2
     },
     "deadlines": {
@@ -50847,11 +50871,11 @@
       "liquidity/src/aero_lp/abi.py": 1,
       "liquidity/src/aero_lp/chain.py": 10,
       "liquidity/src/aero_lp/cli.py": 10,
-      "liquidity/src/aero_lp/daemon.py": 18,
+      "liquidity/src/aero_lp/daemon.py": 21,
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 6,
       "liquidity/src/aero_lp/metrics.py": 2,
-      "liquidity/tests/test_daemon.py": 6,
+      "liquidity/tests/test_daemon.py": 9,
       "llms-full.txt": 2,
       "pagesource": 107,
       "research/coin-intelligence/rain-rain.md": 1,
@@ -51130,14 +51154,14 @@
       "extension/src/wallet/solana.js": 2,
       "extension/test/wallet.test.js": 1,
       "liquidity/src/aero_lp/chain.py": 1,
-      "liquidity/tests/test_executor.py": 14,
+      "liquidity/tests/test_executor.py": 17,
       "llms-full.txt": 1,
       "soltui/app.py": 1,
       "soltui/bgqueue.py": 1,
       "soltui/docs_browser.py": 1
     },
     "decode_function_input": {
-      "liquidity/tests/test_executor.py": 14
+      "liquidity/tests/test_executor.py": 17
     },
     "decoded": {
       "liquidity/src/aero_lp/chain.py": 4,
@@ -52567,6 +52591,8 @@
     },
     "delegated": {
       "extension/src/venues/jupiterLiveVenue.js": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/executor.py": 2,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 2,
       "research/coin-intelligence/trx-tron.md": 1
@@ -52575,6 +52601,7 @@
       "extension/src/bg/service-worker.js": 1
     },
     "delegation": {
+      "liquidity/tests/test_daemon.py": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 3
     },
     "delenv": {
@@ -53596,7 +53623,7 @@
       "liquidity/README.md": 2,
       "liquidity/STATE_FILES.md": 1,
       "liquidity/src/aero_lp/allocator.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/daemon.py": 13,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/metrics.py": 4,
@@ -54806,9 +54833,9 @@
       "extension/test/core.test.js": 6,
       "extension/tools/verify-endpoints.js": 3,
       "liquidity/STATE_FILES.md": 1,
-      "liquidity/src/aero_lp/daemon.py": 4,
+      "liquidity/src/aero_lp/daemon.py": 7,
       "liquidity/src/aero_lp/ledger.py": 6,
-      "liquidity/tests/test_daemon.py": 9,
+      "liquidity/tests/test_daemon.py": 11,
       "llms-full.txt": 2,
       "mongo/queries/04-decisions.js": 1,
       "research/CANDLE-GAP-AUDIT.md": 1,
@@ -55576,7 +55603,7 @@
       "liquidity/src/aero_lp/allocator.py": 5,
       "liquidity/src/aero_lp/chain.py": 5,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 17,
+      "liquidity/src/aero_lp/daemon.py": 20,
       "liquidity/src/aero_lp/engine.py": 7,
       "liquidity/src/aero_lp/executor.py": 22,
       "liquidity/src/aero_lp/ledger.py": 3,
@@ -56436,7 +56463,7 @@
       "docs/trading-signals-concept-family.md": 1,
       "extension/src/jupiter/price.js": 1,
       "liquidity/README.md": 1,
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/tests/test_daemon.py": 1,
       "research/RANKED_LISTS.md": 5,
       "research/RATIO-ROTATION.md": 2,
@@ -59287,7 +59314,7 @@
       "backtester/tests/test_tick_backfill.py": 1,
       "backtester/tests/test_ticks.py": 1,
       "backtester/tests/test_universe.py": 3,
-      "liquidity/tests/test_daemon.py": 6,
+      "liquidity/tests/test_daemon.py": 7,
       "liquidity/tests/test_executor.py": 1,
       "soltui/tests/test_bgcontrol.py": 4,
       "soltui/tests/test_bgqueue.py": 4,
@@ -61001,7 +61028,7 @@
       "liquidity/src/aero_lp/daemon.py": 7,
       "liquidity/src/aero_lp/engine.py": 5,
       "liquidity/src/aero_lp/executor.py": 2,
-      "liquidity/tests/test_daemon.py": 9,
+      "liquidity/tests/test_daemon.py": 10,
       "liquidity/tests/test_engine.py": 5,
       "llms-facts.txt": 2,
       "llms-full.txt": 28,
@@ -61349,7 +61376,7 @@
     },
     "due": {
       "backtester/strategy_cards/dex_cex_dislocation.md": 1,
-      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/daemon.py": 13,
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/sweep_untested.py": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 3,
@@ -61856,10 +61883,10 @@
     "e18": {
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/cli.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/daemon.py": 14,
       "liquidity/src/aero_lp/engine.py": 5,
       "liquidity/src/aero_lp/executor.py": 1,
-      "liquidity/tests/test_daemon.py": 13,
+      "liquidity/tests/test_daemon.py": 18,
       "liquidity/tests/test_market_state.py": 5
     },
     "e18d1aaa5d910b896d551411c96af1f42a0c56c29afc2016c61ccc2e": {
@@ -64090,6 +64117,9 @@
     "eefdba20de0d938cec6a89bd4d70f346a03108a19b9df4248d3cf0d88f1b0f51": {
       "liquidity/uv.lock": 1
     },
+    "ef0100": {
+      "liquidity/tests/test_daemon.py": 3
+    },
     "ef18e18df0a4d2a1a0edff7dfbba42d4e50ef2425557a5bb7051f77b": {
       "liquidity/uv.lock": 1
     },
@@ -64428,6 +64458,7 @@
     },
     "effort": {
       "docs/dso-skill/SKILL.md": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "research/coin-intelligence/README.md": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
@@ -64514,6 +64545,9 @@
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 3
     },
     "eip": {
+      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/tests/test_daemon.py": 2,
       "research/coin-intelligence/eth-ethereum.md": 33
     },
     "eips": {
@@ -64757,7 +64791,7 @@
       "index/build.py": 7,
       "liquidity/src/aero_lp/abi.py": 1,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/tests/test_executor.py": 8,
@@ -64951,7 +64985,7 @@
       "liquidity/src/aero_lp/chain.py": 3,
       "liquidity/src/aero_lp/cli.py": 16,
       "liquidity/src/aero_lp/clmath.py": 5,
-      "liquidity/src/aero_lp/daemon.py": 27,
+      "liquidity/src/aero_lp/daemon.py": 30,
       "liquidity/src/aero_lp/engine.py": 10,
       "liquidity/src/aero_lp/executor.py": 17,
       "liquidity/src/aero_lp/ledger.py": 3,
@@ -65629,7 +65663,7 @@
       "index/build.py": 1,
       "index/search.py": 1,
       "liquidity/src/aero_lp/chain.py": 1,
-      "liquidity/src/aero_lp/executor.py": 18,
+      "liquidity/src/aero_lp/executor.py": 21,
       "liquidity/tests/test_abi_config_wallet.py": 4,
       "mongo/load.py": 1,
       "mongo/tests/test_load.py": 1,
@@ -65637,7 +65671,7 @@
       "soltui/liquidity.py": 1
     },
     "encode_abi": {
-      "liquidity/src/aero_lp/executor.py": 18,
+      "liquidity/src/aero_lp/executor.py": 21,
       "liquidity/tests/test_abi_config_wallet.py": 2
     },
     "encoded": {
@@ -67327,6 +67361,9 @@
       "soltui/tests/test_service_plist_parity.py": 1
     },
     "eoa": {
+      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "research/coin-intelligence/eth-ethereum.md": 2,
       "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 2
     },
@@ -67990,6 +68027,7 @@
       "extension/tools/dryrun.js": 2,
       "extension/tools/measure-recentre.js": 2,
       "extension/tools/verify-endpoints.js": 4,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 3,
       "liquidity/tests/test_daemon.py": 2,
@@ -68079,13 +68117,13 @@
       "index/build.py": 2,
       "liquidity/STATE_FILES.md": 1,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 13,
+      "liquidity/src/aero_lp/daemon.py": 14,
       "liquidity/src/aero_lp/engine.py": 11,
       "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/scout.py": 3,
       "liquidity/src/aero_lp/wallet.py": 1,
-      "liquidity/tests/test_daemon.py": 20,
+      "liquidity/tests/test_daemon.py": 25,
       "liquidity/tests/test_engine.py": 3,
       "liquidity/tests/test_executor.py": 9,
       "liquidity/tests/test_metrics.py": 3,
@@ -68727,9 +68765,9 @@
       "liquidity/src/aero_lp/chain.py": 11,
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/config.py": 5,
-      "liquidity/src/aero_lp/daemon.py": 20,
+      "liquidity/src/aero_lp/daemon.py": 44,
       "liquidity/src/aero_lp/engine.py": 21,
-      "liquidity/src/aero_lp/executor.py": 24,
+      "liquidity/src/aero_lp/executor.py": 33,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 6,
       "liquidity/src/aero_lp/scout.py": 1,
@@ -68737,9 +68775,9 @@
       "liquidity/tests/test_abi_config_wallet.py": 3,
       "liquidity/tests/test_allocator_ledger.py": 3,
       "liquidity/tests/test_chain_vol.py": 2,
-      "liquidity/tests/test_daemon.py": 5,
+      "liquidity/tests/test_daemon.py": 28,
       "liquidity/tests/test_engine.py": 5,
-      "liquidity/tests/test_executor.py": 31,
+      "liquidity/tests/test_executor.py": 35,
       "liquidity/tests/test_metrics.py": 5,
       "liquidity/tests/test_network.py": 3,
       "liquidity/uv.lock": 48,
@@ -68850,7 +68888,7 @@
       "liquidity/uv.lock": 2
     },
     "eth_usd": {
-      "liquidity/src/aero_lp/daemon.py": 6,
+      "liquidity/src/aero_lp/daemon.py": 10,
       "liquidity/src/aero_lp/engine.py": 10,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/src/aero_lp/metrics.py": 4,
@@ -68977,6 +69015,7 @@
     },
     "eurc": {
       "liquidity/src/aero_lp/config.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "pagesource": 5
     },
@@ -69442,7 +69481,7 @@
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/ledger.py": 7,
-      "liquidity/tests/test_daemon.py": 26,
+      "liquidity/tests/test_daemon.py": 28,
       "llms-full.txt": 1,
       "pagesource": 13,
       "research/LEVERAGE-ECONOMICS.md": 1,
@@ -70015,8 +70054,9 @@
     },
     "exactinputsingle": {
       "liquidity/src/aero_lp/abi.py": 1,
-      "liquidity/src/aero_lp/executor.py": 5,
-      "liquidity/tests/test_abi_config_wallet.py": 1
+      "liquidity/src/aero_lp/executor.py": 6,
+      "liquidity/tests/test_abi_config_wallet.py": 1,
+      "liquidity/tests/test_executor.py": 1
     },
     "exactly": {
       ".remember/remember.md": 1,
@@ -70489,7 +70529,7 @@
       "index/search.py": 2,
       "liquidity/src/aero_lp/chain.py": 6,
       "liquidity/src/aero_lp/cli.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 19,
+      "liquidity/src/aero_lp/daemon.py": 21,
       "liquidity/src/aero_lp/engine.py": 5,
       "liquidity/src/aero_lp/executor.py": 10,
       "liquidity/src/aero_lp/market.py": 1,
@@ -70556,14 +70596,14 @@
       "liquidity/STATE_FILES.md": 2,
       "liquidity/src/aero_lp/chain.py": 7,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/daemon.py": 14,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 12,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 3,
       "liquidity/src/aero_lp/scout.py": 2,
       "liquidity/src/aero_lp/wallet.py": 1,
-      "liquidity/tests/test_daemon.py": 4,
+      "liquidity/tests/test_daemon.py": 5,
       "liquidity/tests/test_executor.py": 3,
       "research/SWEEP-9COIN.md": 1,
       "research/candle_gap_audit.py": 1,
@@ -70783,7 +70823,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "liquidity/src/aero_lp/allocator.py": 1,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "research/STRATEGIES.md": 1,
       "research/TOP_COINS.md": 1,
       "research/coin-intelligence/rain-rain.md": 2,
@@ -70799,7 +70839,7 @@
     "exclude_tokens": {
       "liquidity/src/aero_lp/allocator.py": 1,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 1
+      "liquidity/src/aero_lp/daemon.py": 2
     },
     "excluded": {
       ".gitattributes": 1,
@@ -70962,7 +71002,7 @@
     "execconfig": {
       "liquidity/src/aero_lp/config.py": 5,
       "liquidity/src/aero_lp/executor.py": 4,
-      "liquidity/tests/test_executor.py": 44,
+      "liquidity/tests/test_executor.py": 45,
       "liquidity/tests/test_network.py": 2
     },
     "execfile": {
@@ -71015,7 +71055,7 @@
       "docs/trading-signals-concept-family.md": 6,
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 15,
+      "liquidity/src/aero_lp/executor.py": 16,
       "liquidity/src/aero_lp/ledger.py": 21,
       "liquidity/tests/test_daemon.py": 13,
       "liquidity/tests/test_executor.py": 24,
@@ -71188,10 +71228,11 @@
       "index/search.py": 1,
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/config.py": 11,
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/engine.py": 4,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/tests/test_abi_config_wallet.py": 2,
+      "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_executor.py": 2,
       "llms-full.txt": 10,
       "llms-small.txt": 1,
@@ -72248,7 +72289,7 @@
       "liquidity/src/aero_lp/addresses.py": 1,
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/chain.py": 5,
-      "liquidity/src/aero_lp/daemon.py": 5,
+      "liquidity/src/aero_lp/daemon.py": 9,
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 3,
       "liquidity/src/aero_lp/market.py": 1,
@@ -73137,6 +73178,7 @@
       "backtester/strategy_cards/sma_regime.md": 1,
       "backtester/strategy_cards/voltarget.md": 1,
       "backtester/tests/test_sweep_pair_gate.py": 1,
+      "liquidity/src/aero_lp/executor.py": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 2,
       "research/coin-intelligence/zec-zcash.md": 1,
@@ -75270,11 +75312,11 @@
       "liquidity/src/aero_lp/allocator.py": 1,
       "liquidity/src/aero_lp/chain.py": 3,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 17,
+      "liquidity/src/aero_lp/daemon.py": 19,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 9,
       "liquidity/src/aero_lp/scout.py": 1,
-      "liquidity/tests/test_daemon.py": 9,
+      "liquidity/tests/test_daemon.py": 11,
       "liquidity/tests/test_engine.py": 8,
       "liquidity/tests/test_executor.py": 8,
       "llms-full.txt": 2,
@@ -75759,7 +75801,7 @@
     },
     "fakechain": {
       "liquidity/tests/test_daemon.py": 3,
-      "liquidity/tests/test_executor.py": 36
+      "liquidity/tests/test_executor.py": 37
     },
     "faked": {
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -75785,7 +75827,7 @@
       "liquidity/tests/test_daemon.py": 3
     },
     "fakerunner": {
-      "liquidity/tests/test_executor.py": 15
+      "liquidity/tests/test_executor.py": 16
     },
     "fakes": {
       "docs/known-issues.md": 1,
@@ -77214,7 +77256,7 @@
       "liquidity/src/aero_lp/cli.py": 8,
       "liquidity/src/aero_lp/clmath.py": 7,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 7,
+      "liquidity/src/aero_lp/daemon.py": 9,
       "liquidity/src/aero_lp/engine.py": 11,
       "liquidity/src/aero_lp/executor.py": 27,
       "liquidity/src/aero_lp/market.py": 17,
@@ -77222,7 +77264,7 @@
       "liquidity/src/aero_lp/scout.py": 9,
       "liquidity/src/aero_lp/strategy.py": 6,
       "liquidity/tests/test_clmath.py": 7,
-      "liquidity/tests/test_daemon.py": 16,
+      "liquidity/tests/test_daemon.py": 17,
       "liquidity/tests/test_executor.py": 25,
       "liquidity/tests/test_market_state.py": 11,
       "liquidity/tests/test_metrics.py": 3,
@@ -80783,7 +80825,7 @@
       "liquidity/src/aero_lp/allocator.py": 2,
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 5,
+      "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 6,
       "liquidity/src/aero_lp/ledger.py": 1,
@@ -82027,7 +82069,7 @@
       "liquidity/src/aero_lp/cli.py": 6,
       "liquidity/src/aero_lp/clmath.py": 34,
       "liquidity/src/aero_lp/config.py": 25,
-      "liquidity/src/aero_lp/daemon.py": 26,
+      "liquidity/src/aero_lp/daemon.py": 27,
       "liquidity/src/aero_lp/engine.py": 19,
       "liquidity/src/aero_lp/executor.py": 22,
       "liquidity/src/aero_lp/ledger.py": 51,
@@ -82556,7 +82598,7 @@
       "liquidity/src/aero_lp/chain.py": 3
     },
     "fn_name": {
-      "liquidity/tests/test_executor.py": 4
+      "liquidity/tests/test_executor.py": 7
     },
     "fnm": {
       "soltui/SolTUI.icns": 2
@@ -82868,12 +82910,13 @@
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/clmath.py": 20,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 6,
       "liquidity/src/aero_lp/market.py": 4,
       "liquidity/src/aero_lp/metrics.py": 2,
       "liquidity/tests/test_clmath.py": 4,
-      "liquidity/tests/test_daemon.py": 19,
+      "liquidity/tests/test_daemon.py": 21,
       "liquidity/tests/test_executor.py": 11,
       "liquidity/tests/test_market_state.py": 6,
       "liquidity/tests/test_metrics.py": 2,
@@ -84913,6 +84956,9 @@
       "extension/src/storage/fileStore.js": 1,
       "extension/test/wallet.test.js": 1
     },
+    "fromhex": {
+      "liquidity/tests/test_daemon.py": 3
+    },
     "fromkeys": {
       "research/cross_asset_cpcv.py": 1
     },
@@ -85219,7 +85265,7 @@
       "liquidity/src/aero_lp/config.py": 1,
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/engine.py": 1,
-      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/src/aero_lp/scout.py": 1,
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 2,
@@ -85480,7 +85526,7 @@
       "index/build.py": 2,
       "liquidity/src/aero_lp/abi.py": 1,
       "liquidity/src/aero_lp/chain.py": 2,
-      "liquidity/tests/test_executor.py": 14,
+      "liquidity/tests/test_executor.py": 17,
       "llms-full.txt": 5,
       "mongo/queries/03-signals-and-indicators.js": 1,
       "pagesource": 2,
@@ -86223,7 +86269,7 @@
       "soltui/SolTUI.icns": 2
     },
     "fwd": {
-      "liquidity/src/aero_lp/daemon.py": 5,
+      "liquidity/src/aero_lp/daemon.py": 7,
       "liquidity/tests/test_daemon.py": 2,
       "research/SWEEP-9COIN.md": 1
     },
@@ -86833,9 +86879,9 @@
       "liquidity/src/aero_lp/chain.py": 2,
       "liquidity/src/aero_lp/cli.py": 15,
       "liquidity/src/aero_lp/config.py": 12,
-      "liquidity/src/aero_lp/daemon.py": 44,
+      "liquidity/src/aero_lp/daemon.py": 56,
       "liquidity/src/aero_lp/engine.py": 54,
-      "liquidity/src/aero_lp/executor.py": 22,
+      "liquidity/src/aero_lp/executor.py": 24,
       "liquidity/src/aero_lp/ledger.py": 13,
       "liquidity/src/aero_lp/metrics.py": 20,
       "liquidity/src/aero_lp/scout.py": 3,
@@ -86843,7 +86889,7 @@
       "liquidity/tests/test_abi_config_wallet.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 11,
       "liquidity/tests/test_backtest.py": 3,
-      "liquidity/tests/test_daemon.py": 18,
+      "liquidity/tests/test_daemon.py": 35,
       "liquidity/tests/test_engine.py": 13,
       "liquidity/tests/test_executor.py": 7,
       "liquidity/tests/test_metrics.py": 3,
@@ -86891,11 +86937,16 @@
     "gas_reserve_eth": {
       "liquidity/src/aero_lp/allocator.py": 2,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/tests/test_allocator_ledger.py": 2
+      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/tests/test_allocator_ledger.py": 2,
+      "liquidity/tests/test_daemon.py": 3
+    },
+    "gas_topup": {
+      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/tests/test_daemon.py": 4
     },
     "gas_topup_needed": {
       "liquidity/src/aero_lp/allocator.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 4
     },
     "gas_units": {
@@ -88139,7 +88190,7 @@
       "liquidity/src/aero_lp/chain.py": 8,
       "liquidity/src/aero_lp/cli.py": 5,
       "liquidity/src/aero_lp/clmath.py": 22,
-      "liquidity/src/aero_lp/daemon.py": 38,
+      "liquidity/src/aero_lp/daemon.py": 44,
       "liquidity/src/aero_lp/engine.py": 7,
       "liquidity/src/aero_lp/executor.py": 24,
       "liquidity/src/aero_lp/market.py": 21,
@@ -88149,7 +88200,7 @@
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/src/aero_lp/wallet.py": 2,
       "liquidity/tests/test_clmath.py": 17,
-      "liquidity/tests/test_daemon.py": 6,
+      "liquidity/tests/test_daemon.py": 10,
       "liquidity/tests/test_engine.py": 1,
       "liquidity/tests/test_executor.py": 12,
       "liquidity/tests/test_market_state.py": 6,
@@ -88269,7 +88320,9 @@
       "backtester/tests/test_fetch_minutes.py": 2
     },
     "get_code": {
-      "liquidity/src/aero_lp/chain.py": 1
+      "liquidity/src/aero_lp/chain.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 4,
+      "liquidity/tests/test_daemon.py": 4
     },
     "get_docstring": {
       "index/build.py": 1
@@ -88340,7 +88393,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "backtester/tests/test_decide.py": 1,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/executor.py": 8,
       "mongo/load.py": 1,
       "research/candle_gap_audit.py": 1,
@@ -89274,7 +89327,7 @@
       "index/make_concepts_doc.py": 1,
       "liquidity/CLAUDE.md": 1,
       "liquidity/src/aero_lp/allocator.py": 1,
-      "liquidity/tests/test_daemon.py": 2,
+      "liquidity/tests/test_daemon.py": 3,
       "liquidity/tests/test_executor.py": 2,
       "llms-full.txt": 4,
       "research/CROSS-ASSET-TRANSFER.md": 2,
@@ -90463,6 +90516,7 @@
       "docs/dso-skill/SKILL.md": 8,
       "docs/dso-skill/references/passes.md": 7,
       "index/build.py": 4,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/wallet.py": 2,
       "llms-full.txt": 1,
       "mongo/README.md": 1,
@@ -92155,7 +92209,7 @@
       "backtester/tests/test_index.py": 1,
       "backtester/tests/test_indicators.py": 1,
       "backtester/tests/test_strategy_cards.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/tests/test_allocator_ledger.py": 2,
       "liquidity/tests/test_backtest.py": 2,
       "liquidity/tests/test_executor.py": 4,
@@ -92233,7 +92287,7 @@
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 40,
+      "liquidity/src/aero_lp/executor.py": 42,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/tests/test_engine.py": 2,
       "liquidity/tests/test_executor.py": 4,
@@ -92907,6 +92961,7 @@
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/engine.py": 1,
+      "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 5,
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_engine.py": 2,
@@ -93137,7 +93192,7 @@
     },
     "hexbytes": {
       "liquidity/pyproject.toml": 1,
-      "liquidity/src/aero_lp/executor.py": 5,
+      "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/tests/test_executor.py": 9,
       "liquidity/uv.lock": 8
     },
@@ -94668,7 +94723,7 @@
       "liquidity/src/aero_lp/wallet.py": 2,
       "liquidity/tests/test_daemon.py": 4,
       "liquidity/tests/test_engine.py": 4,
-      "liquidity/tests/test_executor.py": 1,
+      "liquidity/tests/test_executor.py": 2,
       "llms-full.txt": 5,
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -96109,7 +96164,7 @@
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/scout.py": 1,
       "liquidity/tests/test_clmath.py": 3,
-      "liquidity/tests/test_daemon.py": 8,
+      "liquidity/tests/test_daemon.py": 9,
       "llms-full.txt": 4,
       "research/coin-intelligence/rain-rain.md": 2,
       "research/cross_asset_cpcv.py": 1,
@@ -100993,7 +101048,7 @@
       "index/build.py": 1,
       "index/search.py": 1,
       "liquidity/src/aero_lp/daemon.py": 2,
-      "liquidity/tests/test_executor.py": 14,
+      "liquidity/tests/test_executor.py": 17,
       "llms-full.txt": 6,
       "mongo/queries/08-provenance-and-health.js": 1,
       "research/RANKED_LISTS.md": 1,
@@ -101208,7 +101263,7 @@
       "liquidity/src/aero_lp/backtest.py": 3,
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/clmath.py": 6,
-      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/src/aero_lp/ledger.py": 2,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
@@ -102029,9 +102084,9 @@
       "liquidity/src/aero_lp/cli.py": 19,
       "liquidity/src/aero_lp/clmath.py": 62,
       "liquidity/src/aero_lp/config.py": 5,
-      "liquidity/src/aero_lp/daemon.py": 27,
+      "liquidity/src/aero_lp/daemon.py": 30,
       "liquidity/src/aero_lp/engine.py": 9,
-      "liquidity/src/aero_lp/executor.py": 104,
+      "liquidity/src/aero_lp/executor.py": 106,
       "liquidity/src/aero_lp/ledger.py": 7,
       "liquidity/src/aero_lp/market.py": 15,
       "liquidity/src/aero_lp/metrics.py": 4,
@@ -104236,6 +104291,9 @@
       "backtester/paircli.py": 2,
       "research/sweep.py": 2
     },
+    "is_contract_account": {
+      "liquidity/src/aero_lp/daemon.py": 2
+    },
     "is_dir": {
       "backtester/core/strategy_cards.py": 1,
       "mongo/load.py": 2,
@@ -104503,7 +104561,7 @@
       "liquidity/src/aero_lp/allocator.py": 4,
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/executor.py": 3,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/scout.py": 1,
@@ -106883,9 +106941,9 @@
       "liquidity/config.example.toml": 2,
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/src/aero_lp/executor.py": 2,
       "llms-full.txt": 6,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
@@ -107041,7 +107099,7 @@
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_engine.py": 4,
-      "liquidity/tests/test_executor.py": 1,
+      "liquidity/tests/test_executor.py": 2,
       "liquidity/tests/test_market_state.py": 2,
       "llms-full.txt": 2,
       "mongo/schema.py": 1,
@@ -107393,7 +107451,7 @@
       "liquidity/src/aero_lp/chain.py": 4,
       "liquidity/src/aero_lp/cli.py": 4,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/ledger.py": 8,
       "liquidity/src/aero_lp/market.py": 3,
       "liquidity/src/aero_lp/scout.py": 1,
@@ -107851,7 +107909,7 @@
       "extension/src/core/engine.js": 2,
       "liquidity/STATE_FILES.md": 3,
       "liquidity/src/aero_lp/daemon.py": 9,
-      "liquidity/tests/test_daemon.py": 12,
+      "liquidity/tests/test_daemon.py": 14,
       "liquidity/tests/test_engine.py": 1,
       "llms-full.txt": 3,
       "research/minute_sweep.py": 2,
@@ -107992,7 +108050,7 @@
       "liquidity/STATE_FILES.md": 3,
       "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/ledger.py": 17,
-      "liquidity/tests/test_daemon.py": 22,
+      "liquidity/tests/test_daemon.py": 23,
       "mongo/README.md": 1,
       "mongo/load.py": 30,
       "mongo/queries/02-strategies-and-cards.js": 3,
@@ -108322,7 +108380,7 @@
       "extension/test/surfaces.test.js": 1,
       "extension/test/wallet.test.js": 1,
       "liquidity/src/aero_lp/allocator.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 10,
+      "liquidity/src/aero_lp/daemon.py": 11,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/src/aero_lp/metrics.py": 5,
       "liquidity/src/aero_lp/scout.py": 2,
@@ -108387,7 +108445,7 @@
       "docs/FILES.md": 1
     },
     "known_prices": {
-      "liquidity/src/aero_lp/daemon.py": 5,
+      "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/tests/test_daemon.py": 2
     },
     "known_tokens": {
@@ -109157,14 +109215,14 @@
       "index/search.py": 3,
       "liquidity/src/aero_lp/allocator.py": 2,
       "liquidity/src/aero_lp/cli.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 9,
+      "liquidity/src/aero_lp/daemon.py": 10,
       "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/scout.py": 1,
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 3,
       "liquidity/tests/test_backtest.py": 6,
       "liquidity/tests/test_chain_vol.py": 4,
-      "liquidity/tests/test_daemon.py": 18,
+      "liquidity/tests/test_daemon.py": 22,
       "liquidity/tests/test_engine.py": 20,
       "liquidity/tests/test_executor.py": 5,
       "liquidity/tests/test_market_state.py": 1,
@@ -109582,6 +109640,7 @@
       "docs/known-issues.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "llms-full.txt": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -110948,7 +111007,7 @@
       "liquidity/src/aero_lp/cli.py": 4,
       "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/strategy.py": 5,
       "liquidity/tests/test_allocator_ledger.py": 1,
@@ -111257,6 +111316,7 @@
       "liquidity/src/aero_lp/chain.py": 7,
       "liquidity/src/aero_lp/cli.py": 4,
       "liquidity/src/aero_lp/config.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/executor.py": 5,
       "liquidity/src/aero_lp/market.py": 6,
       "liquidity/src/aero_lp/metrics.py": 7,
@@ -111264,7 +111324,7 @@
       "liquidity/tests/test_allocator_ledger.py": 4,
       "liquidity/tests/test_chain_vol.py": 3,
       "liquidity/tests/test_daemon.py": 7,
-      "liquidity/tests/test_executor.py": 9,
+      "liquidity/tests/test_executor.py": 10,
       "liquidity/tests/test_market_state.py": 1,
       "mongo/load.py": 11,
       "mongo/schema.py": 1,
@@ -114313,6 +114373,7 @@
       "backtester/strategy_cards/bb_breakout.md": 1,
       "backtester/tests/test_indicators.py": 1,
       "liquidity/README.md": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "research/RANKED_LISTS.md": 2,
       "research/STRATEGIES.md": 1,
       "research/ratio_rotation.py": 1,
@@ -114432,10 +114493,10 @@
       "liquidity/src/aero_lp/allocator.py": 5,
       "liquidity/src/aero_lp/cli.py": 25,
       "liquidity/src/aero_lp/config.py": 3,
-      "liquidity/src/aero_lp/daemon.py": 26,
+      "liquidity/src/aero_lp/daemon.py": 27,
       "liquidity/src/aero_lp/engine.py": 31,
       "liquidity/src/aero_lp/executor.py": 4,
-      "liquidity/tests/test_daemon.py": 111,
+      "liquidity/tests/test_daemon.py": 117,
       "liquidity/tests/test_engine.py": 42,
       "liquidity/tests/test_executor.py": 8,
       "liquidity/tests/test_network.py": 3,
@@ -114526,7 +114587,7 @@
       "tradingskilllist/trading-skills.md": 2
     },
     "live_mode": {
-      "liquidity/tests/test_daemon.py": 66
+      "liquidity/tests/test_daemon.py": 71
     },
     "live_orders_placed": {
       "llms-full.txt": 1,
@@ -115634,7 +115695,7 @@
       "liquidity/src/aero_lp/chain.py": 2,
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/clmath.py": 6,
-      "liquidity/src/aero_lp/daemon.py": 42,
+      "liquidity/src/aero_lp/daemon.py": 43,
       "liquidity/src/aero_lp/engine.py": 5,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/src/aero_lp/market.py": 2,
@@ -115738,8 +115799,9 @@
       "extension/src/venues/triggerVenue.js": 1,
       "extension/src/wallet/signer.js": 1,
       "extension/test/core.test.js": 1,
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/wallet.py": 2,
+      "liquidity/tests/test_daemon.py": 1,
       "llms-full.txt": 2,
       "research/cross_asset_cpcv.py": 1,
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 1,
@@ -117427,6 +117489,7 @@
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/scout.py": 3,
       "liquidity/tests/test_allocator_ledger.py": 1,
+      "liquidity/tests/test_daemon.py": 5,
       "liquidity/tests/test_market_state.py": 1,
       "liquidity/tests/test_metrics.py": 10,
       "llms-full.txt": 6,
@@ -117501,6 +117564,9 @@
       "soltui/tests/test_liquidity.py": 2,
       "soltui/tui.py": 2
     },
+    "low_gas_wallet": {
+      "liquidity/tests/test_daemon.py": 5
+    },
     "low_is_bullish": {
       "research/decide.py": 9
     },
@@ -117566,7 +117632,7 @@
       "liquidity/src/aero_lp/chain.py": 8,
       "liquidity/src/aero_lp/cli.py": 7,
       "liquidity/src/aero_lp/clmath.py": 13,
-      "liquidity/src/aero_lp/daemon.py": 38,
+      "liquidity/src/aero_lp/daemon.py": 42,
       "liquidity/src/aero_lp/engine.py": 16,
       "liquidity/src/aero_lp/executor.py": 21,
       "liquidity/src/aero_lp/ledger.py": 2,
@@ -119203,9 +119269,9 @@
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/src/aero_lp/scout.py": 1,
-      "liquidity/tests/test_daemon.py": 170,
+      "liquidity/tests/test_daemon.py": 181,
       "liquidity/tests/test_engine.py": 29,
-      "liquidity/tests/test_executor.py": 27,
+      "liquidity/tests/test_executor.py": 29,
       "liquidity/tests/test_metrics.py": 4,
       "llms-full.txt": 4,
       "mongo/load.py": 3,
@@ -119282,7 +119348,7 @@
       "index/make_concepts_doc.py": 6
     },
     "make_daemon": {
-      "liquidity/tests/test_daemon.py": 117
+      "liquidity/tests/test_daemon.py": 126
     },
     "make_engine": {
       "liquidity/tests/test_engine.py": 16
@@ -119323,14 +119389,14 @@
       "docs/FILES.md": 1
     },
     "make_pool": {
-      "liquidity/tests/test_daemon.py": 32,
+      "liquidity/tests/test_daemon.py": 34,
       "liquidity/tests/test_metrics.py": 3
     },
     "make_pos": {
       "liquidity/tests/test_daemon.py": 21
     },
     "make_position": {
-      "liquidity/tests/test_executor.py": 27
+      "liquidity/tests/test_executor.py": 29
     },
     "make_request": {
       "liquidity/src/aero_lp/executor.py": 1
@@ -119456,7 +119522,7 @@
       "extension/tools/dryrun.js": 1,
       "index/build.py": 1,
       "index/make_files_doc.py": 1,
-      "liquidity/src/aero_lp/executor.py": 2,
+      "liquidity/src/aero_lp/executor.py": 3,
       "llms-full.txt": 12,
       "mongo/README.md": 1,
       "mongo/queries/05-backtests.js": 1,
@@ -120646,7 +120712,7 @@
       "extension/tools/measure-recentre.js": 2,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/cli.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 9,
+      "liquidity/src/aero_lp/daemon.py": 12,
       "liquidity/src/aero_lp/engine.py": 10,
       "liquidity/src/aero_lp/ledger.py": 2,
       "liquidity/src/aero_lp/market.py": 3,
@@ -121762,7 +121828,7 @@
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/clmath.py": 11,
       "liquidity/src/aero_lp/config.py": 19,
-      "liquidity/src/aero_lp/daemon.py": 17,
+      "liquidity/src/aero_lp/daemon.py": 19,
       "liquidity/src/aero_lp/engine.py": 21,
       "liquidity/src/aero_lp/executor.py": 39,
       "liquidity/src/aero_lp/ledger.py": 8,
@@ -122109,7 +122175,7 @@
     "max_slippage_bps": {
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/config.py": 7,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 2,
@@ -125096,6 +125162,7 @@
       "extension/tools/verify-endpoints.js": 2,
       "liquidity/tests/test_clmath.py": 2,
       "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_executor.py": 1,
       "llms-full.txt": 3,
       "pagesource": 4,
       "research/RANKED_LISTS.md": 3,
@@ -125340,9 +125407,9 @@
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/clmath.py": 12,
       "liquidity/src/aero_lp/config.py": 20,
-      "liquidity/src/aero_lp/daemon.py": 16,
+      "liquidity/src/aero_lp/daemon.py": 19,
       "liquidity/src/aero_lp/engine.py": 5,
-      "liquidity/src/aero_lp/executor.py": 14,
+      "liquidity/src/aero_lp/executor.py": 17,
       "liquidity/src/aero_lp/ledger.py": 4,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 4,
@@ -125351,7 +125418,7 @@
       "liquidity/tests/test_allocator_ledger.py": 14,
       "liquidity/tests/test_chain_vol.py": 4,
       "liquidity/tests/test_clmath.py": 2,
-      "liquidity/tests/test_daemon.py": 14,
+      "liquidity/tests/test_daemon.py": 16,
       "liquidity/tests/test_engine.py": 1,
       "liquidity/tests/test_executor.py": 1,
       "liquidity/tests/test_metrics.py": 3,
@@ -125445,6 +125512,10 @@
       "liquidity/src/aero_lp/allocator.py": 1,
       "liquidity/src/aero_lp/config.py": 2
     },
+    "min_eth_out": {
+      "liquidity/src/aero_lp/executor.py": 3,
+      "liquidity/tests/test_daemon.py": 2
+    },
     "min_gap": {
       "backtester/core/gridsim.py": 3
     },
@@ -125497,7 +125568,7 @@
       "backtester/strategy_cards/ladder_grid.md": 1
     },
     "min_out": {
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/executor.py": 4,
       "liquidity/tests/test_daemon.py": 5
     },
@@ -125937,6 +126008,7 @@
       "docs/FILES.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "extension/test/core.test.js": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/rain-rain.md": 2,
@@ -126985,7 +127057,7 @@
       "liquidity/src/aero_lp/wallet.py": 3,
       "liquidity/tests/test_abi_config_wallet.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 1,
-      "liquidity/tests/test_daemon.py": 71,
+      "liquidity/tests/test_daemon.py": 76,
       "liquidity/tests/test_engine.py": 4,
       "liquidity/tests/test_metrics.py": 1,
       "liquidity/tests/test_strategy.py": 1,
@@ -129170,10 +129242,11 @@
       "tradingskilllist/trading-skills.md": 1
     },
     "multicall": {
-      "liquidity/src/aero_lp/abi.py": 1,
+      "liquidity/src/aero_lp/abi.py": 2,
       "liquidity/src/aero_lp/chain.py": 13,
-      "liquidity/src/aero_lp/executor.py": 3,
-      "liquidity/tests/test_chain_vol.py": 4
+      "liquidity/src/aero_lp/executor.py": 6,
+      "liquidity/tests/test_chain_vol.py": 4,
+      "liquidity/tests/test_executor.py": 1
     },
     "multicall3": {
       "liquidity/README.md": 1,
@@ -130035,7 +130108,7 @@
       "liquidity/src/aero_lp/scout.py": 2,
       "liquidity/src/aero_lp/state.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 2,
-      "liquidity/tests/test_executor.py": 4,
+      "liquidity/tests/test_executor.py": 7,
       "liquidity/tests/test_market_state.py": 1,
       "liquidity/uv.lock": 154,
       "llms-full.txt": 6,
@@ -130700,7 +130773,7 @@
       "extension/src/jupiter/websocket.js": 2,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/allocator.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/uv.lock": 7,
@@ -131168,7 +131241,7 @@
       "extension/src/venues/jupiterLiveVenue.js": 1,
       "index/make_files_doc.py": 2,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 7,
+      "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/engine.py": 6,
       "liquidity/src/aero_lp/market.py": 3,
       "liquidity/src/aero_lp/strategy.py": 1,
@@ -131248,7 +131321,6 @@
       "extension/tools/dryrun.js": 1,
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/cli.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 4,
       "liquidity/tests/test_executor.py": 1,
       "llms-full.txt": 2,
@@ -131399,7 +131471,7 @@
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/tests/test_chain_vol.py": 2,
       "liquidity/tests/test_daemon.py": 4,
       "liquidity/tests/test_engine.py": 2,
@@ -133646,6 +133718,7 @@
       "index/build.py": 1,
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/allocator.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 2,
       "liquidity/tests/test_metrics.py": 2,
       "llms-full.txt": 14,
@@ -133849,7 +133922,7 @@
       "index/search.py": 1,
       "liquidity/src/aero_lp/chain.py": 5,
       "liquidity/src/aero_lp/cli.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/daemon.py": 14,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 5,
       "liquidity/src/aero_lp/market.py": 1,
@@ -134145,7 +134218,7 @@
       "liquidity/tests/test_allocator_ledger.py": 6,
       "liquidity/tests/test_backtest.py": 2,
       "liquidity/tests/test_chain_vol.py": 2,
-      "liquidity/tests/test_daemon.py": 18,
+      "liquidity/tests/test_daemon.py": 21,
       "liquidity/tests/test_executor.py": 1,
       "llms-full.txt": 2,
       "mongo/tests/test_load.py": 1,
@@ -134508,7 +134581,7 @@
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 3,
+      "liquidity/src/aero_lp/executor.py": 4,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 4,
@@ -140665,10 +140738,10 @@
       "backtester/tests/test_universe.py": 7,
       "docs/FILES.md": 3,
       "liquidity/src/aero_lp/chain.py": 3,
-      "liquidity/src/aero_lp/daemon.py": 10,
-      "liquidity/src/aero_lp/executor.py": 19,
+      "liquidity/src/aero_lp/daemon.py": 12,
+      "liquidity/src/aero_lp/executor.py": 22,
       "liquidity/tests/test_backtest.py": 2,
-      "liquidity/tests/test_daemon.py": 16,
+      "liquidity/tests/test_daemon.py": 18,
       "liquidity/tests/test_executor.py": 4,
       "liquidity/tests/test_market_state.py": 2,
       "liquidity/tests/test_strategy.py": 4,
@@ -141835,9 +141908,9 @@
       "index/search.py": 1,
       "liquidity/CLAUDE.md": 2,
       "liquidity/README.md": 2,
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/executor.py": 2,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_engine.py": 1,
       "liquidity/tests/test_executor.py": 1,
       "liquidity/tests/test_metrics.py": 2,
@@ -141994,16 +142067,16 @@
       "liquidity/src/aero_lp/chain.py": 24,
       "liquidity/src/aero_lp/cli.py": 9,
       "liquidity/src/aero_lp/config.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 21,
+      "liquidity/src/aero_lp/daemon.py": 27,
       "liquidity/src/aero_lp/engine.py": 26,
-      "liquidity/src/aero_lp/executor.py": 31,
+      "liquidity/src/aero_lp/executor.py": 33,
       "liquidity/src/aero_lp/wallet.py": 11,
       "liquidity/tests/test_abi_config_wallet.py": 9,
       "liquidity/tests/test_allocator_ledger.py": 2,
       "liquidity/tests/test_chain_vol.py": 5,
       "liquidity/tests/test_daemon.py": 16,
       "liquidity/tests/test_engine.py": 15,
-      "liquidity/tests/test_executor.py": 49,
+      "liquidity/tests/test_executor.py": 52,
       "liquidity/tests/test_network.py": 3,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
@@ -142015,6 +142088,9 @@
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1
+    },
+    "owner_has_code": {
+      "liquidity/src/aero_lp/daemon.py": 4
     },
     "owner_hint": {
       "liquidity/src/aero_lp/chain.py": 5,
@@ -143571,7 +143647,7 @@
       "liquidity/src/aero_lp/executor.py": 8,
       "liquidity/src/aero_lp/market.py": 4,
       "liquidity/tests/test_abi_config_wallet.py": 6,
-      "liquidity/tests/test_executor.py": 14,
+      "liquidity/tests/test_executor.py": 15,
       "llms-full.txt": 5,
       "mongo/load.py": 4,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -144201,7 +144277,7 @@
       "extension/src/storage/fileStore.js": 1,
       "extension/test/core.test.js": 2,
       "liquidity/src/aero_lp/cli.py": 5,
-      "liquidity/src/aero_lp/daemon.py": 23,
+      "liquidity/src/aero_lp/daemon.py": 27,
       "liquidity/src/aero_lp/engine.py": 8,
       "liquidity/src/aero_lp/executor.py": 6,
       "liquidity/tests/test_daemon.py": 11,
@@ -145041,7 +145117,7 @@
       "liquidity/src/aero_lp/backtest.py": 2,
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/config.py": 10,
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/ledger.py": 7,
       "liquidity/src/aero_lp/metrics.py": 2,
       "liquidity/src/aero_lp/scout.py": 5,
@@ -145606,7 +145682,7 @@
       "soltui/tui.py": 1
     },
     "payable": {
-      "liquidity/src/aero_lp/abi.py": 8,
+      "liquidity/src/aero_lp/abi.py": 10,
       "liquidity/src/aero_lp/chain.py": 1
     },
     "payer": {
@@ -145781,6 +145857,7 @@
       "extension/src/core/grid.js": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/backtest.py": 1,
+      "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_strategy.py": 2,
       "llms-full.txt": 5,
@@ -148845,8 +148922,10 @@
       "extension/src/core/commands.js": 2,
       "liquidity/STATE_FILES.md": 1,
       "liquidity/src/aero_lp/allocator.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 1,
       "liquidity/tests/test_chain_vol.py": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_market_state.py": 1,
       "llms-full.txt": 2,
       "mongo/tests/test_load.py": 1,
@@ -149009,6 +149088,7 @@
       "extension/src/venues/triggerVenue.js": 4,
       "extension/test/core.test.js": 2,
       "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_executor.py": 1,
       "llms-full.txt": 4,
       "skills/trading-and-investing/SKILL.md": 1,
@@ -149025,7 +149105,7 @@
       "backtester/core/gridsim.py": 8
     },
     "plannedtx": {
-      "liquidity/src/aero_lp/executor.py": 21,
+      "liquidity/src/aero_lp/executor.py": 22,
       "liquidity/tests/test_executor.py": 3
     },
     "planner": {
@@ -150130,9 +150210,9 @@
       "liquidity/src/aero_lp/chain.py": 39,
       "liquidity/src/aero_lp/cli.py": 64,
       "liquidity/src/aero_lp/clmath.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 124,
+      "liquidity/src/aero_lp/daemon.py": 138,
       "liquidity/src/aero_lp/engine.py": 64,
-      "liquidity/src/aero_lp/executor.py": 84,
+      "liquidity/src/aero_lp/executor.py": 89,
       "liquidity/src/aero_lp/ledger.py": 7,
       "liquidity/src/aero_lp/market.py": 10,
       "liquidity/src/aero_lp/metrics.py": 72,
@@ -150140,9 +150220,9 @@
       "liquidity/src/aero_lp/strategy.py": 3,
       "liquidity/tests/test_allocator_ledger.py": 8,
       "liquidity/tests/test_chain_vol.py": 1,
-      "liquidity/tests/test_daemon.py": 179,
+      "liquidity/tests/test_daemon.py": 185,
       "liquidity/tests/test_engine.py": 5,
-      "liquidity/tests/test_executor.py": 50,
+      "liquidity/tests/test_executor.py": 54,
       "liquidity/tests/test_metrics.py": 23,
       "liquidity/tests/test_network.py": 13,
       "liquidity/tests/test_strategy.py": 1,
@@ -150312,7 +150392,7 @@
       "liquidity/src/aero_lp/chain.py": 5,
       "liquidity/src/aero_lp/daemon.py": 10,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 6,
+      "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/metrics.py": 2,
       "liquidity/tests/test_daemon.py": 7,
       "liquidity/tests/test_executor.py": 2,
@@ -150740,7 +150820,7 @@
       "liquidity/tests/test_allocator_ledger.py": 7,
       "liquidity/tests/test_daemon.py": 25,
       "liquidity/tests/test_engine.py": 2,
-      "liquidity/tests/test_executor.py": 51,
+      "liquidity/tests/test_executor.py": 53,
       "liquidity/tests/test_network.py": 7,
       "llms-full.txt": 15,
       "mongo/schema.py": 1,
@@ -152971,7 +153051,7 @@
       "liquidity/src/aero_lp/chain.py": 20,
       "liquidity/src/aero_lp/cli.py": 11,
       "liquidity/src/aero_lp/clmath.py": 47,
-      "liquidity/src/aero_lp/daemon.py": 30,
+      "liquidity/src/aero_lp/daemon.py": 33,
       "liquidity/src/aero_lp/engine.py": 17,
       "liquidity/src/aero_lp/executor.py": 25,
       "liquidity/src/aero_lp/market.py": 2,
@@ -152984,7 +153064,7 @@
       "liquidity/tests/test_clmath.py": 10,
       "liquidity/tests/test_daemon.py": 23,
       "liquidity/tests/test_engine.py": 5,
-      "liquidity/tests/test_executor.py": 53,
+      "liquidity/tests/test_executor.py": 54,
       "liquidity/tests/test_market_state.py": 2,
       "liquidity/tests/test_metrics.py": 8,
       "liquidity/tests/test_network.py": 1,
@@ -153279,7 +153359,7 @@
       "liquidity/src/aero_lp/backtest.py": 5,
       "liquidity/src/aero_lp/cli.py": 6,
       "liquidity/src/aero_lp/clmath.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 31,
+      "liquidity/src/aero_lp/daemon.py": 35,
       "liquidity/src/aero_lp/engine.py": 7,
       "liquidity/src/aero_lp/market.py": 4,
       "liquidity/src/aero_lp/metrics.py": 9,
@@ -159332,15 +159412,15 @@
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/clmath.py": 1,
       "liquidity/src/aero_lp/config.py": 12,
-      "liquidity/src/aero_lp/daemon.py": 10,
+      "liquidity/src/aero_lp/daemon.py": 13,
       "liquidity/src/aero_lp/engine.py": 19,
-      "liquidity/src/aero_lp/executor.py": 22,
+      "liquidity/src/aero_lp/executor.py": 23,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/market.py": 2,
       "liquidity/src/aero_lp/strategy.py": 7,
       "liquidity/src/aero_lp/wallet.py": 6,
       "liquidity/tests/test_chain_vol.py": 1,
-      "liquidity/tests/test_daemon.py": 8,
+      "liquidity/tests/test_daemon.py": 10,
       "liquidity/tests/test_engine.py": 5,
       "liquidity/tests/test_executor.py": 12,
       "llms-full.txt": 1,
@@ -161224,13 +161304,13 @@
       "liquidity/src/aero_lp/chain.py": 6,
       "liquidity/src/aero_lp/clmath.py": 7,
       "liquidity/src/aero_lp/config.py": 18,
-      "liquidity/src/aero_lp/daemon.py": 24,
+      "liquidity/src/aero_lp/daemon.py": 30,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 9,
       "liquidity/src/aero_lp/state.py": 2,
       "liquidity/tests/test_chain_vol.py": 1,
       "liquidity/tests/test_clmath.py": 2,
-      "liquidity/tests/test_daemon.py": 37,
+      "liquidity/tests/test_daemon.py": 49,
       "liquidity/tests/test_executor.py": 8,
       "liquidity/tests/test_market_state.py": 1,
       "llms-full.txt": 2,
@@ -161275,14 +161355,14 @@
       "soltui/tui.py": 8
     },
     "raw_p": {
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 5
     },
     "raw_price": {
       "liquidity/src/aero_lp/chain.py": 2,
       "liquidity/src/aero_lp/clmath.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/engine.py": 1,
       "liquidity/tests/test_daemon.py": 4
     },
@@ -163319,7 +163399,7 @@
     },
     "rebalanceerror": {
       "liquidity/src/aero_lp/cli.py": 3,
-      "liquidity/src/aero_lp/daemon.py": 7,
+      "liquidity/src/aero_lp/daemon.py": 8,
       "liquidity/src/aero_lp/engine.py": 4,
       "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/tests/test_daemon.py": 13,
@@ -163336,15 +163416,15 @@
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/tests/test_daemon.py": 5,
       "liquidity/tests/test_engine.py": 4,
-      "liquidity/tests/test_executor.py": 35,
+      "liquidity/tests/test_executor.py": 36,
       "liquidity/tests/test_network.py": 2
     },
     "rebalanceresult": {
       "liquidity/src/aero_lp/cli.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 7,
+      "liquidity/src/aero_lp/daemon.py": 8,
       "liquidity/src/aero_lp/engine.py": 7,
-      "liquidity/src/aero_lp/executor.py": 31,
-      "liquidity/tests/test_daemon.py": 19,
+      "liquidity/src/aero_lp/executor.py": 33,
+      "liquidity/tests/test_daemon.py": 20,
       "liquidity/tests/test_engine.py": 12
     },
     "rebalancers": {
@@ -163584,6 +163664,7 @@
       "extension/src/jupiter/trigger.js": 2,
       "extension/src/venues/index.js": 1,
       "liquidity/src/aero_lp/cli.py": 1,
+      "liquidity/src/aero_lp/executor.py": 1,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 3,
@@ -163815,8 +163896,9 @@
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1
     },
     "recipient": {
-      "liquidity/src/aero_lp/abi.py": 4,
-      "liquidity/tests/test_executor.py": 4,
+      "liquidity/src/aero_lp/abi.py": 5,
+      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/tests/test_executor.py": 6,
       "research/coin-intelligence/zec-zcash.md": 1
     },
     "reciprocal": {
@@ -165548,7 +165630,7 @@
       "extension/test/wallet.test.js": 3,
       "extension/tools/api-server.js": 3,
       "index/build.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/wallet.py": 2,
       "liquidity/tests/test_daemon.py": 7,
       "liquidity/tests/test_engine.py": 2,
@@ -169642,11 +169724,11 @@
       "extension/tools/verify-endpoints.js": 9,
       "liquidity/src/aero_lp/chain.py": 9,
       "liquidity/src/aero_lp/cli.py": 17,
-      "liquidity/src/aero_lp/daemon.py": 49,
+      "liquidity/src/aero_lp/daemon.py": 52,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 120,
+      "liquidity/src/aero_lp/executor.py": 124,
       "liquidity/tests/test_daemon.py": 9,
-      "liquidity/tests/test_executor.py": 57,
+      "liquidity/tests/test_executor.py": 59,
       "liquidity/tests/test_network.py": 6,
       "research/cpcv_sweep.py": 28,
       "research/cross_asset_cpcv.py": 32,
@@ -169779,12 +169861,13 @@
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 7,
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/src/aero_lp/market.py": 4,
       "liquidity/src/aero_lp/metrics.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 4,
+      "liquidity/tests/test_daemon.py": 3,
       "liquidity/tests/test_engine.py": 3,
       "liquidity/tests/test_metrics.py": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
@@ -171022,7 +171105,7 @@
       "index/build.py": 1,
       "index/make_files_doc.py": 3,
       "index/search.py": 1,
-      "liquidity/src/aero_lp/abi.py": 1,
+      "liquidity/src/aero_lp/abi.py": 2,
       "liquidity/src/aero_lp/backtest.py": 2,
       "liquidity/src/aero_lp/chain.py": 2,
       "liquidity/src/aero_lp/cli.py": 4,
@@ -172308,7 +172391,7 @@
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/executor.py": 3,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_engine.py": 3,
       "liquidity/tests/test_executor.py": 6,
       "research/coin-intelligence/README.md": 1,
@@ -172345,7 +172428,7 @@
       "backtester/strategy_cards/triangular_arbitrage.md": 1,
       "backtester/tests/test_advanced_strategies.py": 1,
       "docs/FILES.md": 1,
-      "liquidity/src/aero_lp/executor.py": 2,
+      "liquidity/src/aero_lp/executor.py": 3,
       "liquidity/tests/test_executor.py": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 2,
@@ -174222,10 +174305,11 @@
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/abi.py": 2,
       "liquidity/src/aero_lp/addresses.py": 3,
-      "liquidity/src/aero_lp/executor.py": 9,
+      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/executor.py": 19,
       "liquidity/src/aero_lp/metrics.py": 2,
       "liquidity/tests/test_abi_config_wallet.py": 3,
-      "liquidity/tests/test_executor.py": 3,
+      "liquidity/tests/test_executor.py": 11,
       "pagesource": 1,
       "research/coin-intelligence/sol-solana.md": 1,
       "skills/trading-and-investing/SKILL.md": 2,
@@ -175665,11 +175749,11 @@
       "docs/integrations-and-assumptions.md": 1,
       "index/make_files_doc.py": 3,
       "liquidity/CLAUDE.md": 1,
-      "liquidity/src/aero_lp/daemon.py": 19,
+      "liquidity/src/aero_lp/daemon.py": 23,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 100,
-      "liquidity/tests/test_daemon.py": 30,
-      "liquidity/tests/test_executor.py": 110,
+      "liquidity/src/aero_lp/executor.py": 105,
+      "liquidity/tests/test_daemon.py": 32,
+      "liquidity/tests/test_executor.py": 113,
       "liquidity/tests/test_network.py": 4,
       "llms-full.txt": 1,
       "mongo/README.md": 1,
@@ -175694,7 +175778,7 @@
       ".github/workflows/ci.yml": 6
     },
     "runner_tokens": {
-      "liquidity/src/aero_lp/daemon.py": 6,
+      "liquidity/src/aero_lp/daemon.py": 7,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 9,
       "liquidity/tests/test_network.py": 2
@@ -176023,12 +176107,12 @@
       "backtester/core/gridsim.py": 2,
       "backtester/gridcli.py": 1,
       "liquidity/src/aero_lp/chain.py": 6,
-      "liquidity/src/aero_lp/daemon.py": 4,
+      "liquidity/src/aero_lp/daemon.py": 7,
       "liquidity/src/aero_lp/engine.py": 13,
       "liquidity/src/aero_lp/executor.py": 9,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/wallet.py": 1,
-      "liquidity/tests/test_daemon.py": 8,
+      "liquidity/tests/test_daemon.py": 9,
       "liquidity/tests/test_engine.py": 6,
       "liquidity/tests/test_executor.py": 8,
       "liquidity/tests/test_market_state.py": 1,
@@ -176285,6 +176369,9 @@
     },
     "safestate": {
       "extension/src/core/risk.js": 3
+    },
+    "safetransfereth": {
+      "liquidity/src/aero_lp/executor.py": 1
     },
     "safety": {
       ".github/copilot-instructions.md": 1,
@@ -179093,7 +179180,7 @@
       "liquidity/CLAUDE.md": 2,
       "liquidity/README.md": 2,
       "liquidity/config.example.toml": 1,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/scout.py": 1,
@@ -179680,6 +179767,7 @@
       "extension/src/venues/triggerVenue.js": 2,
       "extension/test/core.test.js": 25,
       "liquidity/src/aero_lp/clmath.py": 5,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "llms-facts.txt": 1,
       "llms-full.txt": 10,
       "research/coin-intelligence/btc-bitcoin.md": 3,
@@ -179926,10 +180014,10 @@
       "extension/tools/api-server.js": 13,
       "liquidity/CLAUDE.md": 1,
       "liquidity/config.example.toml": 1,
-      "liquidity/src/aero_lp/daemon.py": 7,
+      "liquidity/src/aero_lp/daemon.py": 9,
       "liquidity/src/aero_lp/engine.py": 1,
       "liquidity/src/aero_lp/executor.py": 5,
-      "liquidity/tests/test_daemon.py": 4,
+      "liquidity/tests/test_daemon.py": 5,
       "liquidity/tests/test_executor.py": 11,
       "pagesource": 4,
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 2,
@@ -180131,7 +180219,7 @@
       "extension/tools/api-server.js": 1,
       "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/executor.py": 6,
-      "liquidity/tests/test_daemon.py": 2,
+      "liquidity/tests/test_daemon.py": 3,
       "liquidity/tests/test_executor.py": 5,
       "llms-full.txt": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
@@ -185378,6 +185466,7 @@
       "extension/src/venues/index.js": 1,
       "extension/tools/measure-recentre.js": 1,
       "index/make_files_doc.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/engine.py": 1,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/tests/test_daemon.py": 5,
@@ -185511,6 +185600,7 @@
       "liquidity/src/aero_lp/executor.py": 3,
       "liquidity/src/aero_lp/state.py": 1,
       "liquidity/src/aero_lp/strategy.py": 5,
+      "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_market_state.py": 1,
       "liquidity/tests/test_strategy.py": 4,
       "llms-full.txt": 2,
@@ -187156,10 +187246,11 @@
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/clmath.py": 2,
       "liquidity/src/aero_lp/config.py": 7,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/executor.py": 8,
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 5,
+      "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_executor.py": 5,
       "llms-facts.txt": 1,
       "llms-full.txt": 11,
@@ -187902,6 +187993,9 @@
     "smart": {
       "docs/trading-signals-concept-family.md": 3,
       "liquidity/README.md": 1,
+      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/tests/test_daemon.py": 2,
       "research/coin-intelligence/bnb-binance-coin.md": 4,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 1,
@@ -188689,6 +188783,7 @@
       "backtester/tests/test_engine.py": 1,
       "extension/test/core.test.js": 1,
       "liquidity/src/aero_lp/clmath.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/ratio_rotation.py": 1,
@@ -189187,6 +189282,7 @@
       "extension/test/surfaces.test.js": 2,
       "index/build.py": 1,
       "liquidity/src/aero_lp/allocator.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "mongo/README.md": 2,
       "mongo/queries/01-coins-and-bars.js": 5,
       "mongo/queries/02-strategies-and-cards.js": 5,
@@ -189826,7 +189922,7 @@
       "liquidity/src/aero_lp/clmath.py": 9,
       "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/engine.py": 5,
-      "liquidity/src/aero_lp/executor.py": 3,
+      "liquidity/src/aero_lp/executor.py": 4,
       "liquidity/src/aero_lp/metrics.py": 11,
       "liquidity/src/aero_lp/scout.py": 3,
       "liquidity/src/aero_lp/strategy.py": 13,
@@ -190563,6 +190659,7 @@
       "backtester/strategy_cards/ladder_grid.md": 1,
       "docs/SCRIPTS.md": 1,
       "extension/src/jupiter/trigger.js": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "research/RATIO-ROTATION.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -191372,7 +191469,7 @@
       "liquidity/tests/test_chain_vol.py": 1,
       "liquidity/tests/test_clmath.py": 22,
       "liquidity/tests/test_daemon.py": 2,
-      "liquidity/tests/test_executor.py": 58,
+      "liquidity/tests/test_executor.py": 59,
       "liquidity/tests/test_market_state.py": 8,
       "liquidity/tests/test_metrics.py": 1,
       "llms-full.txt": 1,
@@ -191402,7 +191499,7 @@
       "liquidity/src/aero_lp/executor.py": 13,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/tests/test_daemon.py": 1,
-      "liquidity/tests/test_executor.py": 40
+      "liquidity/tests/test_executor.py": 41
     },
     "sqrta": {
       "liquidity/src/aero_lp/clmath.py": 1
@@ -191784,6 +191881,7 @@
       "extension/test/core.test.js": 1,
       "liquidity/src/aero_lp/market.py": 2,
       "liquidity/src/aero_lp/scout.py": 3,
+      "liquidity/tests/test_daemon.py": 1,
       "llms-full.txt": 1,
       "mongo/load.py": 1,
       "pagesource": 7,
@@ -191873,6 +191971,7 @@
       "backtester/core/universe.py": 1,
       "backtester/strategy_cards/exchange_net_flow.md": 3,
       "docs/FILES.md": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 2,
       "research/coin-intelligence/rain-rain.md": 2,
@@ -191884,6 +191983,7 @@
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 3
     },
     "stables": {
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/market.py": 3,
       "liquidity/tests/test_market_state.py": 5,
       "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md": 3,
@@ -191988,8 +192088,8 @@
       "liquidity/src/aero_lp/cli.py": 4,
       "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/engine.py": 4,
-      "liquidity/src/aero_lp/executor.py": 23,
-      "liquidity/tests/test_executor.py": 22,
+      "liquidity/src/aero_lp/executor.py": 24,
+      "liquidity/tests/test_executor.py": 23,
       "liquidity/tests/test_network.py": 2,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/cpcv_sweep.py": 6,
@@ -192065,7 +192165,7 @@
       "liquidity/src/aero_lp/market.py": 5,
       "liquidity/src/aero_lp/metrics.py": 14,
       "liquidity/tests/test_daemon.py": 19,
-      "liquidity/tests/test_executor.py": 48,
+      "liquidity/tests/test_executor.py": 50,
       "liquidity/tests/test_market_state.py": 6,
       "liquidity/tests/test_metrics.py": 1,
       "liquidity/tests/test_network.py": 9,
@@ -192930,7 +193030,7 @@
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 1,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_engine.py": 1,
       "liquidity/tests/test_executor.py": 13,
       "mongo/load.py": 2,
@@ -194455,7 +194555,7 @@
       "backtester/tests/test_interpret.py": 1,
       "backtester/tests/test_signal_redundancy.py": 1,
       "backtester/tests/test_strategy_cards.py": 2,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_executor.py": 2,
       "soltui/tests/test_bgqueue.py": 2
     },
@@ -195223,9 +195323,9 @@
       "liquidity/src/aero_lp/chain.py": 38,
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/config.py": 11,
-      "liquidity/src/aero_lp/daemon.py": 55,
+      "liquidity/src/aero_lp/daemon.py": 59,
       "liquidity/src/aero_lp/engine.py": 17,
-      "liquidity/src/aero_lp/executor.py": 54,
+      "liquidity/src/aero_lp/executor.py": 55,
       "liquidity/src/aero_lp/ledger.py": 31,
       "liquidity/src/aero_lp/market.py": 10,
       "liquidity/src/aero_lp/metrics.py": 14,
@@ -199316,16 +199416,16 @@
       "liquidity/src/aero_lp/addresses.py": 3,
       "liquidity/src/aero_lp/backtest.py": 1,
       "liquidity/src/aero_lp/clmath.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 6,
+      "liquidity/src/aero_lp/daemon.py": 11,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 30,
+      "liquidity/src/aero_lp/executor.py": 38,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/strategy.py": 9,
       "liquidity/tests/test_abi_config_wallet.py": 1,
       "liquidity/tests/test_clmath.py": 3,
-      "liquidity/tests/test_daemon.py": 32,
-      "liquidity/tests/test_executor.py": 29,
+      "liquidity/tests/test_daemon.py": 45,
+      "liquidity/tests/test_executor.py": 34,
       "liquidity/tests/test_strategy.py": 1,
       "pagesource": 37,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -199360,6 +199460,9 @@
     "swap_fee": {
       "liquidity/src/aero_lp/strategy.py": 1
     },
+    "swap_for_gas": {
+      "liquidity/src/aero_lp/daemon.py": 2
+    },
     "swap_fraction": {
       "liquidity/src/aero_lp/engine.py": 1,
       "liquidity/src/aero_lp/strategy.py": 2,
@@ -199379,7 +199482,16 @@
       "liquidity/src/aero_lp/addresses.py": 3,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/tests/test_abi_config_wallet.py": 1,
-      "liquidity/tests/test_executor.py": 3
+      "liquidity/tests/test_executor.py": 5
+    },
+    "swap_to_eth": {
+      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/executor.py": 4,
+      "liquidity/tests/test_daemon.py": 4,
+      "liquidity/tests/test_executor.py": 2
+    },
+    "swap_to_eth_error": {
+      "liquidity/tests/test_daemon.py": 4
     },
     "swap_to_ratio": {
       "liquidity/src/aero_lp/clmath.py": 2,
@@ -199401,9 +199513,10 @@
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "backtester/tests/test_tick_backfill.py": 1,
       "liquidity/src/aero_lp/backtest.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/engine.py": 1,
       "liquidity/src/aero_lp/strategy.py": 1,
-      "liquidity/tests/test_daemon.py": 2,
+      "liquidity/tests/test_daemon.py": 3,
       "liquidity/tests/test_executor.py": 3,
       "research/tick_backfill.py": 1,
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
@@ -199418,6 +199531,7 @@
       "backtester/strategy_cards/discount_to_anchor.md": 1,
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "research/sweep.py": 1,
       "research/tick_backfill.py": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1,
@@ -199952,9 +200066,9 @@
       "liquidity/src/aero_lp/abi.py": 1,
       "liquidity/src/aero_lp/chain.py": 2,
       "liquidity/src/aero_lp/cli.py": 10,
-      "liquidity/src/aero_lp/daemon.py": 15,
+      "liquidity/src/aero_lp/daemon.py": 19,
       "liquidity/src/aero_lp/metrics.py": 3,
-      "liquidity/tests/test_daemon.py": 3,
+      "liquidity/tests/test_daemon.py": 5,
       "liquidity/tests/test_network.py": 2,
       "pagesource": 107,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -202696,9 +202810,9 @@
       "liquidity/tests/test_backtest.py": 12,
       "liquidity/tests/test_chain_vol.py": 10,
       "liquidity/tests/test_clmath.py": 22,
-      "liquidity/tests/test_daemon.py": 122,
+      "liquidity/tests/test_daemon.py": 132,
       "liquidity/tests/test_engine.py": 37,
-      "liquidity/tests/test_executor.py": 60,
+      "liquidity/tests/test_executor.py": 61,
       "liquidity/tests/test_market_state.py": 23,
       "liquidity/tests/test_metrics.py": 28,
       "liquidity/tests/test_network.py": 8,
@@ -204294,6 +204408,9 @@
     "test_exposure_is_the_vol_ratio_capped_at_one": {
       "backtester/tests/test_advanced_strategies.py": 1
     },
+    "test_failed_gas_topup_is_logged_and_does_not_raise": {
+      "liquidity/tests/test_daemon.py": 1
+    },
     "test_failed_increase_puts_the_unstaked_nft_back_in_the_gauge": {
       "liquidity/tests/test_executor.py": 1
     },
@@ -204504,6 +204621,9 @@
     },
     "test_gas_reserve_unwrap": {
       "liquidity/tests/test_allocator_ledger.py": 2
+    },
+    "test_gas_topup_is_planned_not_sent_when_dry_run_or_killed": {
+      "liquidity/tests/test_daemon.py": 1
     },
     "test_gates_disagree_in_both_directions": {
       "backtester/tests/test_sweep_pair_gate.py": 2
@@ -205471,6 +205591,9 @@
     "test_placeholder_cells_rank_last": {
       "soltui/tests/test_tui.py": 1
     },
+    "test_plain_eoa_still_unwraps_weth": {
+      "liquidity/tests/test_daemon.py": 1
+    },
     "test_plain_files_fall_through_to_their_language": {
       "backtester/tests/test_index.py": 1
     },
@@ -205992,6 +206115,9 @@
     "test_small_drift_is_tolerated_and_stage_hook_sees_every_stage": {
       "liquidity/tests/test_executor.py": 2
     },
+    "test_smart_account_tops_up_gas_by_swapping_a_stable_not_unwrapping_weth": {
+      "liquidity/tests/test_daemon.py": 1
+    },
     "test_specificity_wins_over_extension": {
       "backtester/tests/test_index.py": 1
     },
@@ -206136,6 +206262,9 @@
       "liquidity/tests/test_executor.py": 1
     },
     "test_swap_exact_reports_the_measured_output_and_checks_its_arguments": {
+      "liquidity/tests/test_executor.py": 1
+    },
+    "test_swap_to_eth_keeps_weth_in_the_router_then_unwraps_to_the_owner": {
       "liquidity/tests/test_executor.py": 1
     },
     "test_swap_to_ratio_hits_target": {
@@ -208023,7 +208152,7 @@
       "liquidity/tests/test_chain_vol.py": 2,
       "liquidity/tests/test_daemon.py": 49,
       "liquidity/tests/test_engine.py": 14,
-      "liquidity/tests/test_executor.py": 30,
+      "liquidity/tests/test_executor.py": 32,
       "liquidity/tests/test_market_state.py": 4,
       "liquidity/tests/test_metrics.py": 10,
       "liquidity/tests/test_strategy.py": 2,
@@ -208109,6 +208238,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 2,
       "liquidity/tests/test_engine.py": 6,
+      "liquidity/tests/test_executor.py": 1,
       "liquidity/tests/test_market_state.py": 2,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_liquidity.py": 1,
@@ -209412,6 +209542,7 @@
       "liquidity/CLAUDE.md": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/chain.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 2,
       "liquidity/tests/test_executor.py": 1,
       "llms-facts.txt": 1,
@@ -209676,7 +209807,7 @@
       "liquidity/src/aero_lp/config.py": 1,
       "liquidity/src/aero_lp/daemon.py": 13,
       "liquidity/src/aero_lp/engine.py": 27,
-      "liquidity/src/aero_lp/executor.py": 32,
+      "liquidity/src/aero_lp/executor.py": 33,
       "liquidity/src/aero_lp/market.py": 9,
       "liquidity/src/aero_lp/metrics.py": 15,
       "liquidity/src/aero_lp/scout.py": 4,
@@ -209684,7 +209815,7 @@
       "liquidity/tests/test_allocator_ledger.py": 1,
       "liquidity/tests/test_chain_vol.py": 2,
       "liquidity/tests/test_clmath.py": 23,
-      "liquidity/tests/test_daemon.py": 54,
+      "liquidity/tests/test_daemon.py": 56,
       "liquidity/tests/test_engine.py": 4,
       "liquidity/tests/test_executor.py": 19,
       "liquidity/tests/test_market_state.py": 7,
@@ -209737,7 +209868,7 @@
       "liquidity/src/aero_lp/strategy.py": 4
     },
     "tick_for": {
-      "liquidity/tests/test_daemon.py": 13
+      "liquidity/tests/test_daemon.py": 15
     },
     "tick_from_price": {
       "liquidity/src/aero_lp/clmath.py": 2,
@@ -209762,7 +209893,7 @@
       "liquidity/src/aero_lp/cli.py": 6,
       "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/engine.py": 4,
-      "liquidity/src/aero_lp/executor.py": 3,
+      "liquidity/src/aero_lp/executor.py": 4,
       "liquidity/src/aero_lp/metrics.py": 10,
       "liquidity/src/aero_lp/scout.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 1,
@@ -210209,7 +210340,7 @@
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/chain.py": 4,
       "liquidity/src/aero_lp/cli.py": 3,
-      "liquidity/src/aero_lp/daemon.py": 29,
+      "liquidity/src/aero_lp/daemon.py": 31,
       "liquidity/src/aero_lp/engine.py": 10,
       "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/ledger.py": 20,
@@ -210452,7 +210583,7 @@
       ".github/copilot-instructions.md": 1,
       "CLAUDE.md": 1,
       "docs/onboarding.md": 1,
-      "liquidity/src/aero_lp/daemon.py": 15,
+      "liquidity/src/aero_lp/daemon.py": 16,
       "llms-full.txt": 1
     },
     "times": {
@@ -210552,7 +210683,7 @@
       "extension/test/core.test.js": 1,
       "liquidity/src/aero_lp/chain.py": 4,
       "liquidity/src/aero_lp/engine.py": 1,
-      "liquidity/src/aero_lp/executor.py": 10,
+      "liquidity/src/aero_lp/executor.py": 11,
       "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_engine.py": 4,
       "liquidity/tests/test_executor.py": 4,
@@ -210917,9 +211048,9 @@
     },
     "to_checksum_address": {
       "liquidity/src/aero_lp/chain.py": 10,
-      "liquidity/src/aero_lp/daemon.py": 6,
+      "liquidity/src/aero_lp/daemon.py": 8,
       "liquidity/src/aero_lp/engine.py": 2,
-      "liquidity/src/aero_lp/executor.py": 6,
+      "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/scout.py": 4,
       "liquidity/tests/test_daemon.py": 9,
       "liquidity/tests/test_executor.py": 9,
@@ -211215,9 +211346,9 @@
       "liquidity/src/aero_lp/cli.py": 23,
       "liquidity/src/aero_lp/clmath.py": 3,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 76,
+      "liquidity/src/aero_lp/daemon.py": 80,
       "liquidity/src/aero_lp/engine.py": 34,
-      "liquidity/src/aero_lp/executor.py": 60,
+      "liquidity/src/aero_lp/executor.py": 64,
       "liquidity/src/aero_lp/ledger.py": 27,
       "liquidity/src/aero_lp/market.py": 6,
       "liquidity/src/aero_lp/metrics.py": 7,
@@ -211226,7 +211357,7 @@
       "liquidity/tests/test_abi_config_wallet.py": 5,
       "liquidity/tests/test_allocator_ledger.py": 3,
       "liquidity/tests/test_chain_vol.py": 5,
-      "liquidity/tests/test_daemon.py": 63,
+      "liquidity/tests/test_daemon.py": 65,
       "liquidity/tests/test_engine.py": 16,
       "liquidity/tests/test_executor.py": 17,
       "liquidity/tests/test_market_state.py": 9,
@@ -211275,14 +211406,14 @@
       "liquidity/src/aero_lp/chain.py": 9,
       "liquidity/src/aero_lp/cli.py": 10,
       "liquidity/src/aero_lp/clmath.py": 9,
-      "liquidity/src/aero_lp/daemon.py": 30,
+      "liquidity/src/aero_lp/daemon.py": 32,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 17,
+      "liquidity/src/aero_lp/executor.py": 18,
       "liquidity/src/aero_lp/ledger.py": 4,
       "liquidity/src/aero_lp/metrics.py": 6,
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 1,
-      "liquidity/tests/test_daemon.py": 9,
+      "liquidity/tests/test_daemon.py": 10,
       "liquidity/tests/test_engine.py": 1,
       "liquidity/tests/test_executor.py": 4,
       "liquidity/tests/test_market_state.py": 2,
@@ -211298,9 +211429,9 @@
       "liquidity/src/aero_lp/chain.py": 10,
       "liquidity/src/aero_lp/cli.py": 10,
       "liquidity/src/aero_lp/clmath.py": 10,
-      "liquidity/src/aero_lp/daemon.py": 28,
+      "liquidity/src/aero_lp/daemon.py": 29,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 16,
+      "liquidity/src/aero_lp/executor.py": 17,
       "liquidity/src/aero_lp/ledger.py": 4,
       "liquidity/src/aero_lp/metrics.py": 6,
       "liquidity/tests/test_allocator_ledger.py": 1,
@@ -211331,8 +211462,8 @@
       "liquidity/tests/test_daemon.py": 1
     },
     "token_in": {
-      "liquidity/src/aero_lp/executor.py": 6,
-      "liquidity/tests/test_daemon.py": 2
+      "liquidity/src/aero_lp/executor.py": 10,
+      "liquidity/tests/test_daemon.py": 4
     },
     "token_out": {
       "liquidity/src/aero_lp/executor.py": 5
@@ -211354,6 +211485,9 @@
       "liquidity/tests/test_market_state.py": 2,
       "liquidity/tests/test_metrics.py": 1
     },
+    "token_usd": {
+      "liquidity/src/aero_lp/daemon.py": 4
+    },
     "tokena": {
       "liquidity/src/aero_lp/abi.py": 1
     },
@@ -211371,7 +211505,7 @@
     "tokenin": {
       "liquidity/src/aero_lp/abi.py": 1,
       "liquidity/src/aero_lp/executor.py": 2,
-      "liquidity/tests/test_executor.py": 3
+      "liquidity/tests/test_executor.py": 4
     },
     "tokenised": {
       "research/TOP_COINS.md": 1
@@ -211410,7 +211544,7 @@
     },
     "tokenout": {
       "liquidity/src/aero_lp/abi.py": 1,
-      "liquidity/tests/test_executor.py": 2
+      "liquidity/tests/test_executor.py": 3
     },
     "tokenpriceatclose": {
       "docs/short-horizon-leverage-concept-family.md": 1,
@@ -211440,12 +211574,12 @@
       "liquidity/src/aero_lp/allocator.py": 4,
       "liquidity/src/aero_lp/chain.py": 7,
       "liquidity/src/aero_lp/config.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 41,
+      "liquidity/src/aero_lp/daemon.py": 46,
       "liquidity/src/aero_lp/engine.py": 9,
       "liquidity/src/aero_lp/executor.py": 35,
       "liquidity/src/aero_lp/metrics.py": 5,
       "liquidity/src/aero_lp/scout.py": 2,
-      "liquidity/tests/test_daemon.py": 35,
+      "liquidity/tests/test_daemon.py": 36,
       "liquidity/tests/test_executor.py": 6,
       "liquidity/tests/test_metrics.py": 2,
       "liquidity/tests/test_network.py": 2,
@@ -211946,10 +212080,10 @@
       "liquidity/src/aero_lp/allocator.py": 2,
       "liquidity/src/aero_lp/cli.py": 9,
       "liquidity/src/aero_lp/config.py": 4,
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/scout.py": 10,
-      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_daemon.py": 3,
       "llms-full.txt": 6,
       "mongo/load.py": 2,
       "mongo/queries/06-experiments-and-pbo.js": 1,
@@ -212250,6 +212384,7 @@
     },
     "tops": {
       "backtester/tests/test_geometry.py": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1,
       "skills/trading-and-investing/references/technical-analysis.md": 1
     },
@@ -212267,11 +212402,11 @@
       "liquidity/README.md": 1,
       "liquidity/STATE_FILES.md": 1,
       "liquidity/src/aero_lp/allocator.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 8,
+      "liquidity/src/aero_lp/daemon.py": 9,
       "liquidity/src/aero_lp/executor.py": 4,
       "liquidity/src/aero_lp/ledger.py": 6,
       "liquidity/tests/test_allocator_ledger.py": 5,
-      "liquidity/tests/test_daemon.py": 19,
+      "liquidity/tests/test_daemon.py": 25,
       "liquidity/tests/test_executor.py": 17
     },
     "topup_error": {
@@ -214021,9 +214156,9 @@
       "liquidity/src/aero_lp/chain.py": 2,
       "liquidity/src/aero_lp/daemon.py": 6,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 13,
+      "liquidity/src/aero_lp/executor.py": 14,
       "liquidity/tests/test_chain_vol.py": 2,
-      "liquidity/tests/test_executor.py": 13,
+      "liquidity/tests/test_executor.py": 14,
       "llms-full.txt": 2,
       "research/SWEEP-9COIN.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -214085,6 +214220,7 @@
       "extension/src/wallet/solana.js": 1,
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/engine.py": 1,
+      "liquidity/src/aero_lp/executor.py": 1,
       "llms-full.txt": 5,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -214160,7 +214296,7 @@
       "index/make_concepts_doc.py": 1,
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/abi.py": 1,
-      "liquidity/src/aero_lp/executor.py": 5,
+      "liquidity/src/aero_lp/executor.py": 6,
       "liquidity/tests/test_abi_config_wallet.py": 3,
       "liquidity/tests/test_executor.py": 4,
       "llms-full.txt": 2,
@@ -214202,6 +214338,9 @@
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/dso_audit.py": 1,
       "skills/trading-and-investing/references/asset-specific-vs-universal-parameters.md": 2
+    },
+    "transferhelper": {
+      "liquidity/src/aero_lp/executor.py": 1
     },
     "transferred": {
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -216023,7 +216162,7 @@
       "index/search.py": 3,
       "liquidity/src/aero_lp/chain.py": 6,
       "liquidity/src/aero_lp/cli.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 18,
+      "liquidity/src/aero_lp/daemon.py": 20,
       "liquidity/src/aero_lp/engine.py": 6,
       "liquidity/src/aero_lp/executor.py": 11,
       "liquidity/src/aero_lp/market.py": 1,
@@ -216394,7 +216533,7 @@
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/clmath.py": 5,
       "liquidity/src/aero_lp/config.py": 3,
-      "liquidity/src/aero_lp/daemon.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 4,
       "liquidity/src/aero_lp/engine.py": 3,
       "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/ledger.py": 1,
@@ -216908,7 +217047,7 @@
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/engine.py": 3,
-      "liquidity/src/aero_lp/executor.py": 30,
+      "liquidity/src/aero_lp/executor.py": 32,
       "liquidity/tests/test_executor.py": 1
     },
     "tx_link": {
@@ -216953,7 +217092,7 @@
       "liquidity/src/aero_lp/config.py": 1,
       "liquidity/src/aero_lp/executor.py": 8,
       "liquidity/src/aero_lp/strategy.py": 1,
-      "liquidity/tests/test_executor.py": 44,
+      "liquidity/tests/test_executor.py": 45,
       "soltui/SolTUI.icns": 1,
       "soltui/liquidity.py": 7
     },
@@ -217715,7 +217854,7 @@
       "liquidity/src/aero_lp/abi.py": 3
     },
     "uint256": {
-      "liquidity/src/aero_lp/abi.py": 67,
+      "liquidity/src/aero_lp/abi.py": 68,
       "liquidity/src/aero_lp/clmath.py": 1,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 13,
@@ -217934,7 +218073,7 @@
       "extension/src/bg/service-worker.js": 1,
       "extension/src/wallet/signer.js": 1,
       "index/search.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 3,
       "liquidity/src/aero_lp/engine.py": 4,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
@@ -218063,6 +218202,7 @@
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 1,
       "liquidity/tests/test_chain_vol.py": 1,
+      "liquidity/tests/test_daemon.py": 1,
       "research/RANKED_LISTS.md": 3,
       "research/SWEEP-9COIN.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
@@ -219218,6 +219358,7 @@
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/backtest.py": 1,
       "liquidity/src/aero_lp/config.py": 8,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/tests/test_abi_config_wallet.py": 2,
@@ -220360,34 +220501,44 @@
       "liquidity/STATE_FILES.md": 1,
       "liquidity/src/aero_lp/allocator.py": 2,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/src/aero_lp/daemon.py": 4,
-      "liquidity/src/aero_lp/executor.py": 3,
+      "liquidity/src/aero_lp/daemon.py": 6,
+      "liquidity/src/aero_lp/executor.py": 5,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 4,
-      "liquidity/tests/test_daemon.py": 11,
+      "liquidity/tests/test_daemon.py": 16,
       "liquidity/tests/test_executor.py": 4
     },
     "unwrap_chunk_eth": {
       "liquidity/src/aero_lp/allocator.py": 1,
       "liquidity/src/aero_lp/config.py": 2,
-      "liquidity/tests/test_allocator_ledger.py": 1
+      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/tests/test_allocator_ledger.py": 1,
+      "liquidity/tests/test_daemon.py": 2
     },
     "unwrap_weth": {
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/executor.py": 1,
-      "liquidity/tests/test_daemon.py": 4,
+      "liquidity/tests/test_daemon.py": 6,
       "liquidity/tests/test_executor.py": 1
     },
     "unwrapped": {
-      "liquidity/src/aero_lp/daemon.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "mongo/tests/test_load.py": 1
     },
     "unwrapping": {
+      "liquidity/tests/test_daemon.py": 1,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 2
     },
     "unwraps": {
-      "liquidity/README.md": 1
+      "liquidity/README.md": 1,
+      "liquidity/tests/test_daemon.py": 1,
+      "liquidity/tests/test_executor.py": 1
+    },
+    "unwrapweth9": {
+      "liquidity/src/aero_lp/abi.py": 1,
+      "liquidity/src/aero_lp/executor.py": 4,
+      "liquidity/tests/test_executor.py": 1
     },
     "unwritable": {
       "soltui/bgcontrol.py": 1,
@@ -221125,7 +221276,7 @@
       "liquidity/src/aero_lp/backtest.py": 5,
       "liquidity/src/aero_lp/cli.py": 31,
       "liquidity/src/aero_lp/config.py": 16,
-      "liquidity/src/aero_lp/daemon.py": 141,
+      "liquidity/src/aero_lp/daemon.py": 155,
       "liquidity/src/aero_lp/engine.py": 104,
       "liquidity/src/aero_lp/executor.py": 17,
       "liquidity/src/aero_lp/ledger.py": 69,
@@ -221135,7 +221286,7 @@
       "liquidity/src/aero_lp/strategy.py": 19,
       "liquidity/tests/test_abi_config_wallet.py": 3,
       "liquidity/tests/test_allocator_ledger.py": 46,
-      "liquidity/tests/test_daemon.py": 71,
+      "liquidity/tests/test_daemon.py": 73,
       "liquidity/tests/test_engine.py": 16,
       "liquidity/tests/test_market_state.py": 28,
       "liquidity/tests/test_metrics.py": 11,
@@ -221231,6 +221382,7 @@
     },
     "usdbc": {
       "liquidity/src/aero_lp/config.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/scout.py": 1
@@ -221248,13 +221400,14 @@
       "extension/test/wallet.test.js": 3,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/config.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/scout.py": 3,
       "liquidity/tests/test_allocator_ledger.py": 8,
       "liquidity/tests/test_clmath.py": 4,
-      "liquidity/tests/test_daemon.py": 62,
-      "liquidity/tests/test_executor.py": 1,
+      "liquidity/tests/test_daemon.py": 76,
+      "liquidity/tests/test_executor.py": 2,
       "liquidity/tests/test_market_state.py": 7,
       "liquidity/tests/test_network.py": 7,
       "llms-full.txt": 1,
@@ -221280,6 +221433,9 @@
     "usdc_mint": {
       "docs/FILES.md": 1,
       "extension/test/wallet.test.js": 3
+    },
+    "usdc_raw": {
+      "liquidity/tests/test_daemon.py": 5
     },
     "usdcs": {
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1
@@ -221313,6 +221469,7 @@
       "extension/README.md": 1,
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/config.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/scout.py": 2,
@@ -223039,7 +223196,7 @@
       "liquidity/src/aero_lp/config.py": 12,
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/engine.py": 1,
-      "liquidity/src/aero_lp/executor.py": 6,
+      "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/scout.py": 1,
       "liquidity/src/aero_lp/strategy.py": 7,
@@ -226572,14 +226729,14 @@
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/cli.py": 4,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 41,
+      "liquidity/src/aero_lp/daemon.py": 50,
       "liquidity/src/aero_lp/engine.py": 4,
       "liquidity/src/aero_lp/executor.py": 13,
       "liquidity/src/aero_lp/ledger.py": 14,
       "liquidity/src/aero_lp/wallet.py": 4,
       "liquidity/tests/test_abi_config_wallet.py": 18,
       "liquidity/tests/test_allocator_ledger.py": 3,
-      "liquidity/tests/test_daemon.py": 41,
+      "liquidity/tests/test_daemon.py": 49,
       "liquidity/tests/test_executor.py": 4,
       "llms-full.txt": 24,
       "pagesource": 2,
@@ -226694,6 +226851,7 @@
       "index/README.md": 1,
       "index/build.py": 1,
       "liquidity/src/aero_lp/allocator.py": 2,
+      "liquidity/src/aero_lp/daemon.py": 10,
       "research/RATIO-ROTATION.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 2,
       "research/coin-intelligence/rain-rain.md": 1,
@@ -226719,6 +226877,12 @@
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/tests/test_bgqueue.py": 1
+    },
+    "want_eth": {
+      "liquidity/src/aero_lp/daemon.py": 6
+    },
+    "want_usd": {
+      "liquidity/src/aero_lp/daemon.py": 4
     },
     "wanted": {
       "backtester/core/gridsim.py": 8,
@@ -227603,9 +227767,9 @@
       "liquidity/STATE_FILES.md": 2,
       "liquidity/pyproject.toml": 1,
       "liquidity/src/aero_lp/chain.py": 22,
-      "liquidity/src/aero_lp/daemon.py": 8,
+      "liquidity/src/aero_lp/daemon.py": 10,
       "liquidity/src/aero_lp/engine.py": 4,
-      "liquidity/src/aero_lp/executor.py": 9,
+      "liquidity/src/aero_lp/executor.py": 10,
       "liquidity/src/aero_lp/scout.py": 6,
       "liquidity/tests/test_abi_config_wallet.py": 5,
       "liquidity/tests/test_daemon.py": 11,
@@ -228074,16 +228238,16 @@
       "liquidity/src/aero_lp/allocator.py": 3,
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 13,
+      "liquidity/src/aero_lp/daemon.py": 19,
       "liquidity/src/aero_lp/engine.py": 4,
-      "liquidity/src/aero_lp/executor.py": 8,
+      "liquidity/src/aero_lp/executor.py": 15,
       "liquidity/src/aero_lp/metrics.py": 3,
       "liquidity/src/aero_lp/scout.py": 4,
       "liquidity/tests/test_allocator_ledger.py": 45,
       "liquidity/tests/test_clmath.py": 4,
-      "liquidity/tests/test_daemon.py": 92,
+      "liquidity/tests/test_daemon.py": 109,
       "liquidity/tests/test_engine.py": 1,
-      "liquidity/tests/test_executor.py": 7,
+      "liquidity/tests/test_executor.py": 10,
       "liquidity/tests/test_market_state.py": 6,
       "liquidity/tests/test_metrics.py": 8,
       "liquidity/tests/test_network.py": 5,
@@ -228093,8 +228257,14 @@
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 2,
       "soltui/tests/test_liquidity.py": 9
     },
+    "weth9": {
+      "liquidity/src/aero_lp/executor.py": 1
+    },
     "weth_balance": {
       "liquidity/src/aero_lp/allocator.py": 2
+    },
+    "weth_raw": {
+      "liquidity/tests/test_daemon.py": 5
     },
     "wex": {
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 4,
@@ -228213,7 +228383,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "docs/known-issues.md": 1,
       "liquidity/tests/test_allocator_ledger.py": 4,
-      "liquidity/tests/test_daemon.py": 14,
+      "liquidity/tests/test_daemon.py": 15,
       "liquidity/tests/test_engine.py": 4,
       "liquidity/tests/test_executor.py": 2,
       "liquidity/tests/test_strategy.py": 14,
@@ -229596,6 +229766,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "docs/FILES.md": 1,
       "docs/dso-skill/references/passes.md": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "llms-full.txt": 1,
       "research/cross_asset_cpcv.py": 2,
       "research/decide.py": 1,
@@ -229785,7 +229956,7 @@
       "liquidity/src/aero_lp/cli.py": 7,
       "liquidity/src/aero_lp/daemon.py": 5,
       "liquidity/src/aero_lp/engine.py": 6,
-      "liquidity/src/aero_lp/executor.py": 11,
+      "liquidity/src/aero_lp/executor.py": 12,
       "liquidity/src/aero_lp/ledger.py": 8,
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 2,
@@ -229921,7 +230092,7 @@
       "liquidity/src/aero_lp/allocator.py": 2,
       "liquidity/src/aero_lp/cli.py": 1,
       "liquidity/src/aero_lp/config.py": 1,
-      "liquidity/src/aero_lp/daemon.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/tests/test_clmath.py": 1,
       "mongo/schema.py": 1,
       "pagesource": 3,
@@ -230820,6 +230991,7 @@
       "extension/src/venues/index.js": 1,
       "extension/src/venues/triggerVenue.js": 1,
       "index/search.py": 1,
+      "liquidity/src/aero_lp/daemon.py": 1,
       "llms-full.txt": 4,
       "mongo/queries/06-experiments-and-pbo.js": 2,
       "mongo/tests/test_load.py": 1,
@@ -231011,7 +231183,7 @@
       "index/make_files_doc.py": 1,
       "index/search.py": 1,
       "liquidity/src/aero_lp/allocator.py": 3,
-      "liquidity/src/aero_lp/daemon.py": 4,
+      "liquidity/src/aero_lp/daemon.py": 5,
       "liquidity/src/aero_lp/ledger.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 1,
       "liquidity/tests/test_daemon.py": 6,
@@ -231119,7 +231291,7 @@
       "docs/dso-skill/SKILL.md": 1,
       "extension/src/ui/ui.css": 2,
       "extension/src/wallet/signer.js": 1,
-      "liquidity/src/aero_lp/executor.py": 7,
+      "liquidity/src/aero_lp/executor.py": 8,
       "llms-full.txt": 1,
       "research/verify_numbers.py": 2
     },
@@ -232011,7 +232183,9 @@
     },
     "x0000000000000000000000000000000000000000": {
       "liquidity/config.example.toml": 1,
-      "liquidity/src/aero_lp/chain.py": 1
+      "liquidity/src/aero_lp/chain.py": 1,
+      "liquidity/src/aero_lp/executor.py": 1,
+      "liquidity/tests/test_executor.py": 1
     },
     "x00000000000000000000000000000000000000aa": {
       "liquidity/tests/test_abi_config_wallet.py": 5
@@ -232144,7 +232318,7 @@
       "liquidity/src/aero_lp/clmath.py": 1
     },
     "x33": {
-      "liquidity/tests/test_daemon.py": 3
+      "liquidity/tests/test_daemon.py": 5
     },
     "x382409fad8503fbcdbb27a4211551fa03e884078": {
       "liquidity/src/aero_lp/addresses.py": 1
@@ -232173,6 +232347,9 @@
     },
     "x40000": {
       "liquidity/src/aero_lp/clmath.py": 1
+    },
+    "x42": {
+      "liquidity/tests/test_daemon.py": 1
     },
     "x4200": {
       "liquidity/STATE_FILES.md": 1,
@@ -232257,6 +232434,9 @@
     "x80000": {
       "liquidity/src/aero_lp/clmath.py": 1
     },
+    "x83": {
+      "liquidity/tests/test_daemon.py": 1
+    },
     "x833589fcd6edb6e08f4c7c32d4f71b54bda02913": {
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
@@ -232291,7 +232471,7 @@
       "liquidity/src/aero_lp/executor.py": 13,
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/tests/test_daemon.py": 1,
-      "liquidity/tests/test_executor.py": 40,
+      "liquidity/tests/test_executor.py": 41,
       "pagesource": 2
     },
     "x9aa508b5b7a84e1c677de54f3e99bc9": {
@@ -233856,7 +234036,7 @@
       "liquidity/src/aero_lp/chain.py": 6,
       "liquidity/src/aero_lp/config.py": 1,
       "liquidity/src/aero_lp/daemon.py": 2,
-      "liquidity/src/aero_lp/executor.py": 5,
+      "liquidity/src/aero_lp/executor.py": 7,
       "liquidity/src/aero_lp/metrics.py": 3,
       "liquidity/src/aero_lp/scout.py": 2,
       "liquidity/tests/test_abi_config_wallet.py": 2,
@@ -234398,10 +234578,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1227.5,
+    "avgDocLength": 1229.9,
     "documents": 468,
-    "terms": 24695,
-    "termsBeforePrune": 24699,
-    "totalTokens": 574491
+    "terms": 24722,
+    "termsBeforePrune": 24726,
+    "totalTokens": 575606
   }
 }
