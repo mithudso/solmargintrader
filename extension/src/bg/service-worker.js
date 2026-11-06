@@ -38,8 +38,8 @@ const budget = new RequestBudget({ maxPerWindow: 30, windowMs: 60_000 });
  * `passphrase` is never persisted: a full-auto session key can only be unsealed
  * while the user is present to supply it, which is the point.
  */
-async function chromeDeps({ passphrase } = {}) {
-  const store = await Store.open();
+async function chromeDeps({ passphrase, openStore = () => Store.open() } = {}) {
+  const store = await openStore();
   return {
     store,
     configStore,
@@ -110,14 +110,59 @@ async function rescheduleAlarm() {
 
 /* ----------------------------------------------------------------- lifecycle -- */
 
-chrome.runtime.onInstalled.addListener(async () => {
-  // Explicitly disarmed and dry-run on install. An extension that started
-  // trading the moment it was installed would be indefensible.
-  await configStore.setRuntime({ armed: false, killSwitch: false });
-  await configStore.setConfig({ mode: MODE.DRY_RUN });
+/**
+ * Chrome fires onInstalled for 'install', 'update' and 'chrome_update', so the
+ * reason decides what may be reset.
+ *
+ * - install: fresh-install defaults. Explicitly disarmed, dry-run, kill switch
+ *   clear. An extension that started trading the moment it was installed would
+ *   be indefensible.
+ * - anything else (an extension or browser update): the operator's state is
+ *   theirs. The kill switch is a latched hard stop and an update must NEVER
+ *   clear it; the stored mode is kept. The one thing an update changes is
+ *   `armed`, forced to false: the new code has not been watched trading yet, so
+ *   the operator re-arms on purpose. Keeping `mode` is safe because nothing
+ *   trades while disarmed, and rewriting it would silently discard a deliberate
+ *   semi-auto/full-auto choice without making anything safer.
+ *
+ * `store` is injectable for tests. The event log is best-effort and must never
+ * stop the safety writes above it from landing.
+ */
+export async function handleInstalled(details = {}, { store } = {}) {
+  const reason = details.reason ?? 'unknown';
+  const fresh = reason === 'install';
+
+  if (fresh) {
+    await configStore.setRuntime({ armed: false, killSwitch: false });
+    await configStore.setConfig({ mode: MODE.DRY_RUN });
+  } else {
+    await configStore.setRuntime({ armed: false });
+  }
   await configStore.set('limits', { ...DEFAULT_LIMITS, ...(await configStore.get('limits', {})) });
   await rescheduleAlarm();
-  await setBadge('—', '#6b7280');
+
+  const runtime = await configStore.getRuntime();
+  const config = await configStore.getConfig();
+  if (fresh) await setBadge('—', '#6b7280');
+  else await paintBadge({ errors: [] });
+
+  try {
+    const target = store ?? (await Store.open());
+    await target.logEvent({
+      type: fresh ? 'installed' : 'updated',
+      reason,
+      previousVersion: details.previousVersion ?? null,
+      armed: false,
+      killSwitch: runtime.killSwitch === true,
+      mode: config.mode,
+    });
+  } catch (err) {
+    console.warn('[smt] could not log lifecycle event', String(err?.message ?? err));
+  }
+}
+
+chrome.runtime.onInstalled.addListener((details) => {
+  handleInstalled(details).catch((err) => console.error('[smt] onInstalled threw', err));
 });
 
 chrome.runtime.onStartup.addListener(rescheduleAlarm);
@@ -144,7 +189,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, respond) => {
   return true; // keep the channel open for the async reply
 });
 
-export async function handleMessage(msg) {
+export async function handleMessage(msg, { openStore } = {}) {
   const requested = msg?.type;
   const name = ALIASES[requested] ?? requested;
 
@@ -157,7 +202,14 @@ export async function handleMessage(msg) {
   }
 
   const { type, passphrase, ...args } = msg;
-  const deps = await chromeDeps({ passphrase });
+  // The passphrase also unlocks the session key inside the chrome deps, but a
+  // command that DECLARES it (createSessionKey) needs it in its own args too:
+  // runCommand rejects a missing required param. A command that does not
+  // declare it must not receive it, or runCommand rejects it as unknown.
+  if (passphrase !== undefined && COMMANDS[name].params.some((p) => p.name === 'passphrase')) {
+    args.passphrase = passphrase;
+  }
+  const deps = await chromeDeps({ passphrase, openStore });
 
   try {
     const result = await runCommand({ name, args, deps });
