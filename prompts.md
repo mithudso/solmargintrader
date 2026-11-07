@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 27
-Delta: v23 to v27; wallet source, click-to-toggle and unattended training, inverting wrong metrics, status bar and four indicators (v23 is the scorecard paper).
+Version: 28
+Delta: v27 to v28; added the repo-improvement and profitability review request.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -181,4 +181,10 @@ The metrics that score extremely poorly, can you just invert whatever decision m
 
 ```text
 This backtesting table is difficult to understand what's going on. Add a status bar somewhere. But also Add just Volume, Balance of power, zig zag, and exponential moving average to the strategies. Are there any indicators or signals that are mutually exclusive or dont work together?
+```
+
+## v28 - 2026-11-07 (profitability review)
+
+```text
+look at this repo and identify how it can be improved, what features, tests, functionality, monitoring, etc would make this a truly profitable venture?
 ```
