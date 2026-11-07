@@ -43,8 +43,8 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 845 tests
-python3 -m unittest discover -s soltui/tests -t .       # 806 tests (~610s)
+python3 -m unittest discover -s backtester/tests -t .   # 853 tests
+python3 -m unittest discover -s soltui/tests -t .       # 808 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 351 tests
 ```
