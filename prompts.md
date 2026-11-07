@@ -1,6 +1,6 @@
 # Prompt history
 
-Version: 5
+Version: 7
 Delta: added the owner's soltui command-bridge request (extension side, workstream X).
 
 ## v1 - 2026-11-06
@@ -27,7 +27,23 @@ Implement all of the recommendations.
 
 Target: /Users/mitch/dev/solmargintrader. Scope of this record: the real-browser end-to-end test for the extension (DOC-754 workstream L); other recommendations are separate workstreams.
 
-## v5 - 2026-11-07 (soltui command bridge, extension side)
+## v5 - 2026-11-07
+
+```text
+When trying to run the soltui.app I get this error: [Image #1]
+```
+
+The attached screenshot shows the macOS dialog: "SolTUI has encountered a fatal error, and will now terminate. A Python runtime not could be located. You may need to install a framework build of Python, or edit the PyRuntimeLocations array in this application's Info.plist file."
+
+## v6 - 2026-11-07
+
+```text
+In the soltui when I click on "run untested sweep" I get this error: [Image #2]
+```
+
+The attached screenshot shows the Backtest tab status: "error: Traceback (most recent call last): File "/Users/mitch/dev/solmargintrader/research/sweep_untested.py", line 18, in <module> from research.sweep import HORIZONS, load_horizon, walk_forward, Row, fmt_table".
+
+## v7 - 2026-11-07 (soltui command bridge, extension side)
 
 ```text
 Make everything available in the tui also available via the extension, and using the same mechanisms and calls, which will require a helper script. The extension has ID: pnokcppamfghgaimmmghoegjllhonhbh make it auto reload on update. All calls should be available via the extension, TUI, CLI, and API with the same output response, testing, verification, logging, and access.
