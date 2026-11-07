@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 10
-Delta: added the wallet monitoring request (xpubs and addresses in Settings, redacted).
+Version: 11
+Delta: v10 to v11; added the wallet monitoring request after the Coinbase MCP setup.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -72,7 +72,12 @@ Delivered in two PRs: (1) leverage tiers, (2) the reliable-trigger miner.
 The solmargintrader has not changed at all, the version number is the same, I loaded the extension from /Users/mitch/dev/solmargintrader/extension
 ```
 
-## v10 - 2026-11-07
+## v10 - 2026-11-07 (Coinbase account MCP setup)
+
+```text
+Set up coinbase.com/skill.md
+```
+## v11 - 2026-11-07
 
 Saved with the wallet identifiers replaced by `<redacted>`. The real values are in the owner's local soltui config only, never in this repository.
 

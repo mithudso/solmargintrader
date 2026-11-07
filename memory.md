@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 19
-Delta: wallet monitoring from xpubs and addresses (prompts.md v10): Settings fields, UTXO/ETH scans, snapshots, hourly LaunchAgent, extension 0.2.1 button.
+Version: 21
+Delta: v20 to v21; wallet monitoring from xpubs and addresses (Settings fields, UTXO/ETH scans, snapshots, hourly LaunchAgent, extension 0.2.1 button).
 
 ## v1 - 2026-11-06
 
@@ -202,7 +202,26 @@ Safety: no field accepts private-key text; no key file is opened, read, hashed o
 
 Not built (later, separately gated): swaps, signing, the live-run button.
 
-## v19 - 2026-11-07
+## v19 - 2026-11-07 (Coinbase account MCP setup)
+
+Target: connect Coinbase account MCP for Codex. Source: https://coinbase.com/skill.md and https://docs.cdp.coinbase.com/coinbase-for-agents/skill.md (retrieved 2026-11-07).
+
+Completed: read setup guide and metadata; no existing coinbase server. Task TASK-794, decision KNOW-796. Use the documented Codex remote OAuth flow and all ten advertised mcp scopes plus offline_access. Do not install a reusable skill automatically. No transaction or paid data request is authorized by setup.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1b575, branch agent-01a1b575. Original checkout has another live session and six unrelated untracked paths; preserve it.
+
+Remaining: configure server, complete user OAuth, verify exposed portfolio-list tool, then commit/PR/CI/merge continuation records. Credentials stay in the harness credential store.
+
+## v20 - 2026-11-07 (Coinbase configuration and OAuth result)
+
+Completed: `codex mcp add coinbase --url https://agents.coinbase.com/mcp` added the global server in /Users/mitch/.codex/config.toml. Native OAuth returned `Successfully logged in.` with all ten advertised MCP scopes and offline_access. `codex mcp get coinbase` confirms enabled streamable_http at the exact endpoint. `codex mcp list --json` confirms enabled=true and auth_status=o_auth. The harness owns credential storage. No reusable skill installed.
+
+Verification: the live-acceptance-verifier independently confirmed server configuration and OAuth status. This session and the verifier expose no Coinbase tools or native MCP reload tool. Account access is therefore unverified. Do not replace the harness with raw authenticated HTTP or extract credentials. The read-only portfolio-list call must succeed after reload before claiming verified access.
+
+Repository checks: scripts/check_docs.py passed (703 backtester, 305 extension, 33 mongo, 597 soltui tests discovered). Regenerate the three offline retrieval indexes for the two workflow files and run index/build.py --check plus git diff --check before delivery. No product code changed.
+
+Remaining user step: reload Codex to load Coinbase tools. Then call exposed coinbase_portfolios_list with empty arguments, without printing account details, and complete setup task TASK-794. TASK-795 tracks delivery of these records through CI and merge. No trades, transfers, paid requests, wallet-key access or service restarts occurred.
+## v21 - 2026-11-07
 
 Target: prompts.md v10. Branch feat/wallet-xpubs, worktree /Users/mitch/dev/solmargintrader-wt-wallets.
 
