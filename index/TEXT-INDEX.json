@@ -171,7 +171,7 @@
     "docs/COMPONENTS.md": 1231,
     "docs/COMPOUND-5M-PAPER.md": 4836,
     "docs/COMPOUND-5M.md": 3153,
-    "docs/CONCEPTS.md": 1745,
+    "docs/CONCEPTS.md": 1751,
     "docs/DEVELOPMENT.md": 947,
     "docs/FILES.md": 33048,
     "docs/INSTALLATION.md": 812,
@@ -282,7 +282,7 @@
     "extension/test/venues.test.js": 417,
     "extension/test/version.test.js": 168,
     "extension/test/wallet-audit.test.js": 966,
-    "extension/test/wallet-pubkey.test.js": 629,
+    "extension/test/wallet-pubkey.test.js": 634,
     "extension/test/wallet.test.js": 802,
     "extension/tools/api-server.js": 888,
     "extension/tools/cli.js": 675,
@@ -682,7 +682,7 @@
     "tools/land.sh": 425,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-07T22:21:52+00:00",
+  "generatedAt": "2026-11-07T22:23:25+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -9305,6 +9305,7 @@
       "backtester/tests/test_sweep_pair_gate.py": 3,
       "backtester/tests/test_textbook_strategies.py": 1,
       "docs/COMPONENTS.md": 1,
+      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 37,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "liquidity/src/aero_lp/addresses.py": 2,
@@ -21673,6 +21674,9 @@
     },
     "b1ec671775756020a0ee7f4feeaf3c568f0ab86bd3900088cf986937a92": {
       "liquidity/uv.lock": 1
+    },
+    "b1f2877": {
+      "docs/FILES.md": 1
     },
     "b1r": {
       "soltui/SolTUI.icns": 2
@@ -37575,9 +37579,6 @@
     "c85a0a54a19429a17ef449e967baffe7b5089cb4f6ef2894c9168a69fa024d05": {
       "liquidity/uv.lock": 1
     },
-    "c861bb": {
-      "docs/FILES.md": 1
-    },
     "c87fc7a2e21a42f9d57489db32951c37eef56d153840459a80d464f0321d": {
       "liquidity/uv.lock": 1
     },
@@ -44928,6 +44929,7 @@
       "extension/src/ui/ui-kit.js": 6,
       "extension/src/ui/ui.css": 3,
       "extension/test/charts.test.js": 1,
+      "extension/test/wallet-pubkey.test.js": 1,
       "extension/tools/e2e.mjs": 3,
       "extension/vendor/lightweight-charts/README.md": 2,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 5,
@@ -45120,6 +45122,7 @@
       "extension/src/ui/ui.css": 1,
       "extension/src/ui/view-grid.js": 6,
       "extension/test/charts.test.js": 9,
+      "extension/test/wallet-pubkey.test.js": 1,
       "extension/tools/e2e.mjs": 4,
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "extension/vendor/lightweight-charts/NOTICE": 2,
@@ -55330,7 +55333,7 @@
     "concepts": {
       "CLAUDE.md": 2,
       "backtester/tests/test_index.py": 5,
-      "docs/CONCEPTS.md": 10,
+      "docs/CONCEPTS.md": 9,
       "docs/FILES.md": 16,
       "docs/SCRIPTS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
@@ -81318,7 +81321,7 @@
       "docs/COMPONENTS.md": 4,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 1,
-      "docs/CONCEPTS.md": 19,
+      "docs/CONCEPTS.md": 18,
       "docs/DEVELOPMENT.md": 4,
       "docs/FILES.md": 93,
       "docs/INSTALLATION.md": 3,
@@ -93309,6 +93312,7 @@
       "extension/src/ui/view-grid.js": 4,
       "extension/test/charts.test.js": 3,
       "extension/test/core.test.js": 1,
+      "extension/test/wallet-pubkey.test.js": 1,
       "extension/tools/e2e.mjs": 4,
       "llms-full.txt": 16,
       "memory.md": 5,
@@ -159681,6 +159685,7 @@
       "extension/src/ui/charts.js": 9,
       "extension/src/ui/view-grid.js": 2,
       "extension/test/charts.test.js": 6,
+      "extension/test/wallet-pubkey.test.js": 1,
       "extension/tools/e2e.mjs": 3,
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "extension/vendor/lightweight-charts/NOTICE": 2,
@@ -165394,6 +165399,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 2,
+      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 82,
       "docs/SCRIPTS.md": 16,
       "docs/TRADINGVIEW-REFERENCE.md": 57,
@@ -170642,7 +170648,7 @@
       "extension/src/ui/popup.html": 1,
       "extension/test/soltui-panel.test.js": 8,
       "extension/test/version.test.js": 10,
-      "extension/test/wallet-pubkey.test.js": 4,
+      "extension/test/wallet-pubkey.test.js": 5,
       "extension/tools/e2e.mjs": 2,
       "extension/tools/soltui-transport.js": 1,
       "index/README.md": 7,
@@ -209701,7 +209707,7 @@
       "backtester/tests/test_geometry.py": 2,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 1,
-      "docs/CONCEPTS.md": 3,
+      "docs/CONCEPTS.md": 4,
       "docs/FILES.md": 51,
       "docs/SCRIPTS.md": 4,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
@@ -209766,6 +209772,7 @@
       "research/perturb.py": 1
     },
     "perturb_all_singles_long": {
+      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 3,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/results/perturb_all_singles_long.csv": 1,
@@ -233138,7 +233145,6 @@
       "extension/README.md": 1,
       "extension/src/jupiter/attribution.js": 1,
       "extension/src/ui/view-grid.js": 2,
-      "extension/test/wallet-pubkey.test.js": 1,
       "memory.md": 3,
       "prompts.md": 2
     },
@@ -240578,7 +240584,7 @@
       "docs/COMPONENTS.md": 8,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 12,
-      "docs/CONCEPTS.md": 32,
+      "docs/CONCEPTS.md": 33,
       "docs/DEVELOPMENT.md": 16,
       "docs/FILES.md": 363,
       "docs/INSTALLATION.md": 2,
@@ -242858,7 +242864,7 @@
       "docs/ARCHITECTURE.md": 3,
       "docs/COMPOUND-5M-PAPER.md": 7,
       "docs/COMPOUND-5M.md": 8,
-      "docs/CONCEPTS.md": 2,
+      "docs/CONCEPTS.md": 3,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 188,
       "docs/INSTALLATION.md": 1,
@@ -264606,6 +264612,7 @@
       "backtester/strategy_cards/stochastic.md": 2,
       "backtester/tests/test_cross_asset_cpcv.py": 10,
       "backtester/tests/test_simulation_blind_audit.py": 2,
+      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 14,
       "docs/SCRIPTS.md": 9,
       "docs/strategy-optimization-concept-family.md": 5,
@@ -310520,7 +310527,7 @@
       "backtester/strategy_cards/README.md": 1,
       "backtester/strategy_cards/vol_regime_hmm.md": 1,
       "backtester/tests/test_decide.py": 1,
-      "docs/CONCEPTS.md": 6,
+      "docs/CONCEPTS.md": 7,
       "docs/DEVELOPMENT.md": 4,
       "docs/FILES.md": 28,
       "docs/INSTALLATION.md": 9,
@@ -321742,7 +321749,7 @@
       "extension/src/wallet/solana.js": 2,
       "extension/test/version.test.js": 15,
       "extension/test/wallet-audit.test.js": 8,
-      "extension/test/wallet-pubkey.test.js": 3,
+      "extension/test/wallet-pubkey.test.js": 4,
       "extension/tools/e2e.mjs": 1,
       "extension/vendor/lightweight-charts/LICENSE": 3,
       "extension/vendor/lightweight-charts/README.md": 1,
@@ -335604,6 +335611,6 @@
     "documents": 681,
     "terms": 34518,
     "termsBeforePrune": 34522,
-    "totalTokens": 921753
+    "totalTokens": 921764
   }
 }

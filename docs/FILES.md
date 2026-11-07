@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `b1f2877` (2026-11-07T22:21:52+00:00). 681 tracked files, 12.1 MB.
+**Generated** from `index/INDEX.json` at commit `882458d` (2026-11-07T22:23:25+00:00). 681 tracked files, 12.1 MB.
 
 Regenerate with:
 
@@ -263,7 +263,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,273 B · description: **extracted**
+`doc` · 316 lines · 15,302 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -4023,7 +4023,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/wallet-pubkey.test.js`
 
-`code-js` · 134 lines · 6,660 B · description: **none**
+`code-js` · 134 lines · 6,692 B · description: **none**
 
 **Purpose.** _No description available._
 
