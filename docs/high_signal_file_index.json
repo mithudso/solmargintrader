@@ -439,7 +439,7 @@
       "component": "extension",
       "kind": "json",
       "summary": "MV3 manifest; validated in CI",
-      "lines": 25
+      "lines": 46
     },
     {
       "path": "extension/package.json",
@@ -453,14 +453,14 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 572
+      "lines": 610
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 640
+      "lines": 905
     },
     {
       "path": "extension/src/core/risk.js",
@@ -495,7 +495,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 283
+      "lines": 369
     },
     {
       "path": "extension/src/jupiter/http.js",
@@ -523,7 +523,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Fee attribution \u2014 unconfirmed against a real fill",
-      "lines": 60
+      "lines": 72
     },
     {
       "path": "extension/src/venues/triggerVenue.js",
@@ -578,69 +578,78 @@
       "path": "extension/src/core/alerts.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Pure alert rules: only fresh, gated scout figures may say \"act\", backtest says \"review\", quoted APY is only a lead"
+      "summary": "Pure alert rules: only fresh, gated scout figures may say \"act\", backtest says \"review\", quoted APY is only a lead",
+      "lines": 256
     },
     {
       "path": "extension/src/market/holdings.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Read-only Base and Solana balances in USD; partial failures named, never zeroed"
+      "summary": "Read-only Base and Solana balances in USD; partial failures named, never zeroed",
+      "lines": 295
     },
     {
       "path": "extension/src/market/quote.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range"
+      "summary": "Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range",
+      "lines": 200
     },
     {
       "path": "extension/src/market/pools.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "DefiLlama yields, ranked by 30-day mean; every APY labelled quoted"
+      "summary": "DefiLlama yields, ranked by 30-day mean; every APY labelled quoted",
+      "lines": 100
     },
     {
       "path": "extension/src/market/net.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Read-only fetch and JSON-RPC; refuses any non-read method"
+      "summary": "Read-only fetch and JSON-RPC; refuses any non-read method",
+      "lines": 114
     },
     {
       "path": "extension/src/ui/dashboard.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Dashboard shell and hash router; Overview first, Grid last",
-      "lines": 389
+      "lines": 192
     },
     {
       "path": "extension/src/ui/view-overview.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Overview and Alerts views"
+      "summary": "Overview and Alerts views",
+      "lines": 149
     },
     {
       "path": "extension/src/ui/view-markets.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Holdings, Profit & loss and Discover views"
+      "summary": "Holdings, Profit & loss and Discover views",
+      "lines": 221
     },
     {
       "path": "extension/src/ui/view-trade.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Backtest & strategies and Swap views"
+      "summary": "Backtest & strategies and Swap views",
+      "lines": 276
     },
     {
       "path": "extension/src/ui/view-grid.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "The experimental grid's forms, charts and journal"
+      "summary": "The experimental grid's forms, charts and journal",
+      "lines": 362
     },
     {
       "path": "extension/src/ui/popup.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Popup: holdings, alerts, shortcuts; grid controls collapsed",
-      "lines": 130
+      "lines": 219
     },
     {
       "path": "extension/tools/cli.js",
@@ -675,14 +684,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dependency wiring",
-      "lines": 88
+      "lines": 93
     },
     {
       "path": "extension/test/core.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Grid, risk, P&L, reconciliation, tick guards",
-      "lines": 1540
+      "lines": 1554
     },
     {
       "path": "extension/test/surfaces.test.js",
@@ -717,7 +726,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3432
+      "lines": 3540
     },
     {
       "path": "soltui/signals.py",
@@ -933,7 +942,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 168
+      "lines": 174
     },
     {
       "path": "AGENTS.md",
@@ -1051,7 +1060,7 @@
       "component": "liquidity",
       "kind": "markdown",
       "summary": "Owner's live-operation authorization and its limits",
-      "lines": 64
+      "lines": 65
     },
     {
       "path": "liquidity/STATE_FILES.md",
