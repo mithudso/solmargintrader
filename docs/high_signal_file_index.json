@@ -635,7 +635,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2360
+      "lines": 2437
     },
     {
       "path": "soltui/signals.py",
@@ -677,14 +677,14 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Explicit worker/fetch processes, lock handoff and nonce-bound socket Stop",
-      "lines": 509
+      "lines": 514
     },
     {
       "path": "soltui/bgworker.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Detached offline sweep worker and per-process array cache",
-      "lines": 571
+      "lines": 578
     },
     {
       "path": "soltui/liquidity.py",

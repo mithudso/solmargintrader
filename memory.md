@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 26
-Delta: v25 to v26; tradingstrategyresults.json coverage: five strategies, eight cards, soltui mappings and queue entries.
+Version: 27
+Delta: v26 to v27; Strategies tab test history and Backtest selected/untested/all buttons.
 
 ## v1 - 2026-11-06
 
@@ -278,3 +278,13 @@ Completed: backtester/core/strategies/textbook.py (dca, ema_crossover, ppo, fib_
 Verification: backtester 734 pass, soltui 682 pass, check_docs agrees, index check passes. Smoke numbers on SOL daily (single 70/30 split, default params) are in each card and are labelled as not sweep rows: all five lost money out of sample except swing_confluence (-7.5%, Sharpe 0.019). The queue will produce the evaluated numbers.
 
 Remaining: PR, CI, merge. tradingstrategyresults.json itself stays untracked (the owner's source file).
+
+## v27 - 2026-11-07 (Strategies tab test history and backtest buttons)
+
+Target: Strategies tab shows whether each strategy was tested, how many times, when and the result; three buttons Backtest selected, Backtest all untested, Backtest all. Stele TASK-806, worktree /Users/mitch/dev/solmargintrader-wt-strategy-status, branch feat/strategy-test-status.
+
+Completed: JobResult.finished_at (0.0 = pre-field row, shown as "date not recorded"); bgqueue.strategy_history/StrategyHistory/format_when (duplicates collapse by job_id, headline is the card's own parameters, never the best variation); build_queue(strategies=) and bgworker/bgcontrol --strategies; registry commands strategies.history and queue.backtest (scope selected|untested|all, tier 0, refuses cleanly when a sweep is running or nothing is pending); Strategies tab columns tested, times tested, last tested, card-preset result updated in place when the results file changes, three buttons, help text. Tests: test_strategy_history.py (25) and test_strategies_tab_history.py (5).
+
+Verification: backtester 734, soltui 712 pass. Caveat: the worker refuses rows whose evaluation proof (code, data, settings hash) differs, so after a code change old results need a fresh results path; history still lists them with their date.
+
+Remaining: PR, CI, merge. Next request (TASK-807): keyword/semantic/hybrid search over all repo files with mxbai-embed-large, ollama auto-start, idle indexing, lazy-loaded Docs-tab search.
