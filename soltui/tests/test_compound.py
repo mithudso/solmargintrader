@@ -261,6 +261,38 @@ class ForwardLedgerTests(TempConfig):
         seed = compound.ledger_seed(ledger, cfg, W)
         self.assertEqual(sorted(seed["rsi"]), [(-2, 0.0, 1.0), (-1, 1.0, 1.0)])
 
+    def test_one_bar_recorded_under_two_settings_counts_once(self) -> None:
+        cfg = sc.default_config()
+        cfg["aggregate"]["adaptive_window"] = 6
+        sig = compound.component_sig("rsi", cfg["components"]["rsi"]["params"])
+        W = T0 + 3000
+        ledger = [{"type": "call", "id": f"SOL:{W - 300}:{h}", "bar_ts": W - 300, "scores": {"rsi": 0.6},
+                   "sigs": {"rsi": sig}} for h in ("aaa", "bbb")]
+        ledger += [{"type": "resolve", "id": f"SOL:{W - 300}:{h}", "ret_bps": 3.0} for h in ("aaa", "bbb")]
+        self.assertEqual(compound.ledger_seed(ledger, cfg, W)["rsi"], [(-1, 1.0, 1.0)])
+
+    def test_a_second_writer_cannot_record_the_same_bar_again(self) -> None:
+        call = {"type": "call", "id": "SOL:1:h", "bar_ts": T0, "price": 90.0, "call": "UP", "scores": {}}
+        res = {"type": "resolve", "id": "SOL:1:h", "ret_bps": 4.0}
+        self.assertEqual(len(compound._append("SOL", [call, res], unique=True)), 2)
+        ctx = {"type": "ctx", "ts": T0, "asset": "SOL", "oi": 1.0}
+        self.assertEqual(compound._append("SOL", [ctx, call, res], unique=True), [ctx])
+        ledger = compound.read_ledger("SOL")
+        self.assertEqual(sum(r["type"] == "call" for r in ledger), 1)
+        self.assertEqual(sum(r["type"] == "resolve" for r in ledger), 1)
+
+    def test_a_changed_formula_starts_a_fresh_record_and_others_keep_theirs(self) -> None:
+        import hashlib
+
+        params = sc.default_config()["components"]["vwap_reversion"]["params"]
+        old = hashlib.sha1(json.dumps({"id": "vwap_reversion", "params": dict(params)}, sort_keys=True,
+                                      separators=(",", ":")).encode()).hexdigest()[:10]
+        self.assertNotEqual(compound.component_sig("vwap_reversion", params), old)
+        rsi = sc.default_config()["components"]["rsi"]["params"]
+        unchanged = hashlib.sha1(json.dumps({"id": "rsi", "params": dict(rsi)}, sort_keys=True,
+                                            separators=(",", ":")).encode()).hexdigest()[:10]
+        self.assertEqual(compound.component_sig("rsi", rsi), unchanged)
+
     def test_forward_calls_record_metric_signatures(self) -> None:
         venue = Venue(now=T0 + 300 * 19 + 10)
         compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post)

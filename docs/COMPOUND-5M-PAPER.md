@@ -20,6 +20,12 @@
 >   −0.75 to −0.93 at 5m; `vwap_side` and `vwap_reversion` are mirror images (−0.99).
 > * **Wallet sizing**: live calls are sized to the public balance at the Settings Solana address.
 > * **Unattended forward training**: a detached per-asset loop that records and resolves calls.
+> * **VWAP metrics rescaled (2026-11-07, later).** `vwap_side` and `vwap_reversion` measured the
+>   distance from the session VWAP in 5m ATRs. That distance is routinely 1–2% while one ATR is about
+>   0.12%, so `vwap_reversion` sat at ±1 on 57% of SOL bars and held the compound on one side for
+>   hours. Both now divide the distance by its typical size: the RMS of the distance over
+>   `spread_window` bars (default 288), floored at one ATR. They saturate on about 8% of bars. Their
+>   learned records restart (formula version 2). The formulas and results below are the old ones.
 > * With all of this, the default compound's out-of-sample hit rate (static → learned + invert) was
 >   BTC 50.3 → 49.5%, DOGE 44.9 → 55.8%, ETH 45.6 → 52.6%, SOL 47.3 → 51.1%, ZEC 48.3 → 51.1%.
 >   **Returns stayed negative on every coin.**
@@ -500,7 +506,7 @@ Defaults and bounds are as shipped. Ranges are inclusive. A parameter's range is
 | `ema_cross` | `fast` 9 (2–200); `slow` 21 (3–400); `scale` 0.5 (0.05–10); `atr` 14 (2–200) |
 | `macd` | `fast` 12 (2–200); `slow` 26 (3–400); `signal` 9 (2–100); `scale` 0.25 (0.01–10); `atr` 14 (2–200) |
 | `adx_dmi` | `period` 14 (2–100); `threshold` 20 (5–60) |
-| `vwap_side` | `mode` 0 (0–1); `window` 48 (5–2000); `scale` 1.0 (0.05–10); `atr` 14 (2–200) |
+| `vwap_side` | `mode` 0 (0–1); `window` 48 (5–2000); `spread_window` 288 (20–5000, added later); `scale` 1.0 (0.05–10); `atr` 14 (2–200) |
 | `htf_trend` | `tf_minutes` 60 (10–1440); `span` 20 (2–200); `scale` 1.0 (0.05–10); `atr` 14 (2–200) |
 | `ichimoku` | `tenkan` 9 (2–100); `kijun` 26 (3–200); `senkou` 52 (4–400) |
 | `roc` | `window` 12 (1–500); `vol_window` 96 (10–2000); `scale` 1.0 (0.05–10) |
@@ -510,7 +516,7 @@ Defaults and bounds are as shipped. Ranges are inclusive. A parameter's range is
 | `cci` | `period` 20 (2–200); `extreme` 150 (50–400) |
 | `bollinger` | `window` 20 (2–500); `k` 2.0 (0.5–5) |
 | `zscore` | `window` 48 (5–2000); `entry` 2.0 (0.5–5) |
-| `vwap_reversion` | `mode` 0 (0–1); `window` 48 (5–2000); `stretch` 2.0 (0.2–10); `atr` 14 (2–200) |
+| `vwap_reversion` | `mode` 0 (0–1); `window` 48 (5–2000); `spread_window` 288 (20–5000, added later); `stretch` 2.0 (0.2–10); `atr` 14 (2–200) |
 | `donchian` | `window` 20 (2–500); `hold` 3 (1–50) |
 | `squeeze` | `window` 20 (5–500); `k` 2.0 (0.5–5); `lookback` 288 (20–5000); `squeeze_pct` 20 (1–50); `recent` 6 (1–100); `vol_mult` 1.5 (0.5–10); `hold` 3 (1–50) |
 | `trend_continuation` | `fast` 9 (2–200); `slow` 21 (3–400); `vol_window` 20 (2–500); `vol_mult` 1.2 (0.5–10); `hold` 2 (1–50) |

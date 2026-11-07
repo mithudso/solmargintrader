@@ -369,6 +369,14 @@ P = ParamSpec
 # Shared parameter shapes.
 _ATR = P("atr", 14, 2, 200, "int", "ATR period used to normalise distances")
 
+# A metric whose formula changed keeps its id and parameters, so its learned forward record would
+# silently carry over to a different calculation. Its version goes into the record's signature
+# (soltui.compound.component_sig), which starts the record afresh. Version 1 is implicit.
+FORMULA_VERSIONS: dict[str, int] = {
+    "vwap_side": 2,       # 2026-11-07: VWAP distance scaled by its typical size, not one 5m ATR
+    "vwap_reversion": 2,  # same; the ATR version clipped to +/-1 on 57% of SOL bars
+}
+
 
 def _c_ema_cross(b: Bars, p: Params, aux: Params) -> np.ndarray:
     if p["fast"] >= p["slow"]:
@@ -393,10 +401,25 @@ def _c_adx(b: Bars, p: Params, aux: Params) -> np.ndarray:
     return np.where(np.isnan(adx), np.nan, out)
 
 
-def _c_vwap_side(b: Bars, p: Params, aux: Params) -> np.ndarray:
+def _vwap_distance(b: Bars, p: Params) -> np.ndarray:
+    """Distance from VWAP in units of its typical size (RMS over `spread_window` bars, floored at ATR).
+
+    The distance from a session VWAP grows through the day: on SOL it is routinely 1-2% while one
+    5m ATR is about 0.12%. Measured in ATRs it clipped to +/-1 on 57% of bars and held one sign for
+    hours, which pinned the compound to one side (2026-11-07). A short rolling SD of the distance is
+    no better (41%): the distance drifts smoothly, so its local wiggle is small. Its RMS over a day
+    is the typical distance, and the score then saturates on about 8% of bars on SOL, BTC and NEAR.
+    The ATR floor stops a quiet stretch from inflating a tiny distance.
+    """
     v = vwap(b, p["mode"], p["window"])
-    out = np.tanh(_safe_div(b.close - v, p["scale"] * atr(b, p["atr"])))
-    return _undefined_until(out, p["window"] if p["mode"] == 1 else p["atr"])
+    dist = b.close - v
+    rms = np.sqrt(_s(dist * dist).rolling(p["spread_window"], min_periods=p["spread_window"]).mean().to_numpy())
+    spread = np.fmax(rms, atr(b, p["atr"]))
+    return _undefined_until(_safe_div(dist, spread), max(p["spread_window"], p["atr"]))
+
+
+def _c_vwap_side(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    return np.tanh(_vwap_distance(b, p) / p["scale"])
 
 
 def _htf_close(b: Bars, minutes: int) -> np.ndarray:
@@ -499,9 +522,7 @@ def _c_zscore(b: Bars, p: Params, aux: Params) -> np.ndarray:
 
 
 def _c_vwap_reversion(b: Bars, p: Params, aux: Params) -> np.ndarray:
-    v = vwap(b, p["mode"], p["window"])
-    out = _clip(-_safe_div(b.close - v, p["stretch"] * atr(b, p["atr"])))
-    return _undefined_until(out, p["window"] if p["mode"] == 1 else p["atr"])
+    return _clip(-_vwap_distance(b, p) / p["stretch"])
 
 
 def _c_donchian(b: Bars, p: Params, aux: Params) -> np.ndarray:
@@ -956,8 +977,11 @@ COMPONENTS: tuple[Component, ...] = (
               "Abrupt regime changes before smoothing catches up.", "Average Directional Index (ADX)"),
     Component("vwap_side", "Price vs VWAP", "vwap", "trend", "score",
               (P("mode", 0, 0, 1, "int", "0 = UTC-session VWAP, 1 = rolling"), P("window", 48, 5, 2000,
-               "int", "bars, rolling mode only"), P("scale", 1.0, 0.05, 10, "float"), _ATR), _c_vwap_side,
-              "tanh((close - VWAP) / (scale * ATR))",
+               "int", "bars, rolling mode only"),
+               P("spread_window", 288, 20, 5000, "int", "bars over which the typical VWAP distance (RMS) is measured"),
+               P("scale", 1.0, 0.05, 10, "float", "typical VWAP distances for tanh(1)"),
+               P("atr", 14, 2, 200, "int", "ATR period: the floor under the spread")), _c_vwap_side,
+              "tanh(d / scale), d = (close - VWAP) / max(RMS_spread_window(close - VWAP), ATR)",
               "Intraday trend context when other evidence agrees.", "Thin markets; incompatible sessions.",
               "VWAP"),
     Component("htf_trend", "Higher-timeframe trend", "higher-timeframe", "context", "score",
@@ -1006,9 +1030,12 @@ COMPONENTS: tuple[Component, ...] = (
               "clip(-z / entry), z = (P - MA_n) / SD_n", "Ranges with a stable mean.",
               "Strong trends; losses compound without a stop.", "Mean reversion"),
     Component("vwap_reversion", "VWAP stretch fade", "vwap", "reversion", "score",
-              (P("mode", 0, 0, 1, "int", "0 = session, 1 = rolling"), P("window", 48, 5, 2000),
-               P("stretch", 2.0, 0.2, 10, "float", "ATRs from VWAP for a full score"), _ATR), _c_vwap_reversion,
-              "clip(-(close - VWAP) / (stretch * ATR))", "Flat VWAP ranges.", "Trend days.",
+              (P("mode", 0, 0, 1, "int", "0 = session, 1 = rolling"),
+               P("window", 48, 5, 2000, "int", "bars, rolling mode only"),
+               P("spread_window", 288, 20, 5000, "int", "bars over which the typical VWAP distance (RMS) is measured"),
+               P("stretch", 2.0, 0.2, 10, "float", "typical VWAP distances for a full score"),
+               P("atr", 14, 2, 200, "int", "ATR period: the floor under the spread")), _c_vwap_reversion,
+              "clip(-d / stretch), d = (close - VWAP) / max(RMS_spread_window(close - VWAP), ATR)", "Flat VWAP ranges.", "Trend days.",
               "VWAP", default_enabled=False),
     # breakout / volatility / structure
     Component("donchian", "Donchian breakout", "breakout", "breakout", "score",
