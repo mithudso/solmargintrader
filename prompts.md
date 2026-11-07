@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 13
-Delta: v12 to v13; grid profitability review and whole-app SolTUI help.
+Version: 18
+Delta: v17 to v18; compound five-minute scorecard, forward tester, skill and full-suite command.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -121,4 +121,10 @@ Add keyword and symantic indexing to all of the files in the repo, use the mxbai
 
 ```text
 Add looking at the prediction markets as another item to consider.
+```
+
+## v18 - 2026-11-07 (compound five-minute scorecard)
+
+```text
+Read this file /Users/mitch/dev/solmargintrader/5minleveragestrategies.json and create a skill which can check each metric, assign a score to it, and incorporate it into a larger aggregated up/down indication for the next 5 minutes. What else should be checked? The entire technicals arsenal? recent news? An analysis of what lifecycle stage they are at? Implement all of it as a compound strategy tester, where in this tab we will be choosing more than one strategy to test going forward as well as back testing. SO I will need to be able to toggle each choosable item as well as adjust the numbers associated with it. Also tell me what command I need to run to pull new backtesting data, and run a new full suite of back tests on all coins all strategies with all configurationsl
 ```

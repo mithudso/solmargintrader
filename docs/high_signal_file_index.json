@@ -234,6 +234,20 @@
       "lines": 652
     },
     {
+      "path": "backtester/core/scorecard.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
+      "lines": 1427
+    },
+    {
+      "path": "backtester/core/compound.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
+      "lines": 378
+    },
+    {
       "path": "backtester/core/strategies/__init__.py",
       "component": "backtester",
       "kind": "python",
@@ -337,6 +351,13 @@
       "kind": "python",
       "summary": "Re-derives every figure quoted in the research docs; exit 0 means they all check out",
       "lines": 1101
+    },
+    {
+      "path": "research/full_suite.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
+      "lines": 206
     },
     {
       "path": "research/geometry.py",
@@ -635,7 +656,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2503
+      "lines": 2825
     },
     {
       "path": "soltui/signals.py",
@@ -685,6 +706,13 @@
       "kind": "python",
       "summary": "Detached offline sweep worker and per-process array cache",
       "lines": 578
+    },
+    {
+      "path": "soltui/compound.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
+      "lines": 828
     },
     {
       "path": "soltui/liquidity.py",
@@ -740,7 +768,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 392
+      "lines": 393
     },
     {
       "path": "soltui/tests",
@@ -1131,6 +1159,13 @@
       "kind": "markdown",
       "summary": "Public API contract fixtures and blocked live-signing boundary",
       "lines": 61
+    },
+    {
+      "path": "docs/COMPOUND-5M.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
+      "lines": 157
     }
   ]
 }

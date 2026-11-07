@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 29
-Delta: v28 to v29; prediction_markets spec-only card added as an item to consider.
+Version: 28
+Delta: v27 to v28; compound five-minute scorecard, forward tester, skill and full-suite command.
 
 ## v1 - 2026-11-06
 
@@ -308,3 +308,13 @@ Remaining: PR, CI, merge; build the semantic index in the main checkout after me
 Target: "Add looking at the prediction markets as another item to consider." Read as an addition to the strategy catalogue. Stele TASK-817. Added backtester/strategy_cards/prediction_markets.md: spec-only, family event, very-low a-priori, two ideas kept apart (odds as a signal for SOL; the markets as a venue: cross-venue mispricing and calibration bias), data gap named (price history and resolution outcomes, including the resolution-time lookahead trap), legal and venue access flagged as open questions. No code, not queued. soltui coverage test lists it as an extra card.
 
 Also recorded: a side note that the five new strategy cards rest on one SOL daily 70/30 split, which RANKED_LISTS.md calls structurally hostile to long-only rules. The cards are implemented/very-low, not measured; use the soltui queue's sweep output, not the card numbers.
+
+## v28 - 2026-11-07 (compound five-minute scorecard)
+
+Target: score every metric in 5minleveragestrategies.json (plus higher timeframe, positioning, BTC lead, lifecycle, news/event/cost/liquidation gates) for the next 5m bar, aggregate to UP/DOWN/FLAT, and test any selection backward (engine, IS/OOS) and forward (live ledger) from a soltui tab with every item toggleable and every number editable. Stele TASK-815 (decision KNOW-816). Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616, branch feat/compound-5m-signal.
+
+Completed: backtester/core/scorecard.py (30 components, family dedupe, regime weights, gates, forecast stats, prefix-invariance tested); backtester/core/compound.py (5m loader, segments at gaps, PrecomputedTargets through run_backtest, variants grid, leaderboard with evidence floor); soltui/compound.py (config, Coinbase/Hyperliquid/RSS public reads, forward ledger, sweeps, CLI signal/forward/status/backtest/results/sweep/catalog); nine compound.* registry commands; Compound 5m tab; research/full_suite.py; skills/five-minute-signal (live copy ~/.claude/skills/five-minute-signal); docs/COMPOUND-5M.md.
+
+Verification: backtester 802, soltui 742 pass (index gate rebuilt after commit). Independent review: 1 high (errored gate failed open), 6 medium (news partial outage, sweep crash loses rows, OOS reuse denominator, reset dropped events, resolution across gaps, full suite sweeping after a failed fetch); all fixed with regressions. Fee and funding-timestamp questions checked: no double fee (engine.py:200), funding time is the payment time. Sweep run 20261107T130441Z-f7fea5b2368e: 1,420 configurations over BTC/DOGE/ETH/SOL/ZEC 30d; none profitable OOS beyond luck; oracle (perfect one-bar call) nets -7 to -10 bps on four coins; reversion metrics >50% hit on all five, trend metrics <50% on nearly all.
+
+Remaining: user runs research/full_suite.py for a year of 5m data; consider reversion-leaning defaults only after that out-of-sample year; prediction-markets component (prompt v17) not wired into the compound.

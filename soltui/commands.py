@@ -42,6 +42,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from . import analyze as analyze_mod
+from . import compound as compound_mod
 from . import bgcontrol, bgqueue
 from . import cumulative as cumulative_mod
 from . import docs_browser, live_run, pnl as pnl_mod, presets as presets_mod, wallet as wallet_mod
@@ -1095,6 +1096,117 @@ def queue_fetch(ctx: Context, p: dict[str, Any]) -> Any:
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
     return {"fetching": [{"asset": m.asset, "interval": m.interval} for m in missing],
             "log": str(bgqueue.BG_DIR / "fetch.log")}
+
+
+# -- compound five-minute scorecard (backtester/core/scorecard.py; soltui/compound.py) ----------
+
+
+def _compound_asset(ctx: Context, p: dict[str, Any]) -> str:
+    return str(p.get("asset") or ctx.settings.asset)
+
+
+def _compound(fn, *args, **kwargs) -> Any:
+    """Run a compound helper, mapping its user-facing errors onto the `failed` envelope."""
+    from backtester.core import compound as cbt
+    from backtester.core import scorecard as sc
+    try:
+        return fn(*args, **kwargs)
+    except (compound_mod.CompoundError, cbt.CompoundDataError, sc.ScorecardError) as exc:
+        raise CommandError("failed", str(exc)) from exc
+
+
+@command("compound.catalog", "Every five-minute scorecard component and gate: formula, parameters, "
+         "when it works and when it fails; plus catalogue entries that are not direction calls.")
+def compound_catalog(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    return sc.catalog()
+
+
+@command("compound.config", "The saved compound configuration (switches, weights, parameters, "
+         "aggregate and execution settings), its hash, and the scheduled-event list.")
+def compound_config(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    state = _compound(compound_mod.load_state)
+    return {"config": state["config"], "config_hash": sc.config_hash(state["config"]),
+            "events": state["events"], "asset": ctx.settings.asset}
+
+
+@command("compound.save",
+         "Update the compound configuration: a partial patch {components: {id: {enabled, weight, "
+         "params}}, aggregate, execution, blocked_hours}, and/or replace the event list.",
+         (P("patch", "json", "Partial configuration to merge."),
+          P("events", "json", "Scheduled events [{ts: epoch seconds, title}] (replaces the list).")),
+         read_only=False)
+def compound_save(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    patch, events = p.get("patch"), p.get("events")
+    if patch is not None and not isinstance(patch, dict):
+        raise CommandError("bad_params", "patch must be an object")
+    if events is not None and not isinstance(events, list):
+        raise CommandError("bad_params", "events must be a list")
+    if patch is None and events is None:
+        raise CommandError("bad_params", "give a patch, events, or both")
+    state = _compound(compound_mod.save_state, patch, events)
+    return {"config": state["config"], "config_hash": sc.config_hash(state["config"]),
+            "events": state["events"]}
+
+
+@command("compound.reset", "Restore every compound component, weight and setting to its default.",
+         read_only=False)
+def compound_reset(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    state = _compound(compound_mod.save_state, None, None, reset=True)
+    return {"config": state["config"], "config_hash": sc.config_hash(state["config"])}
+
+
+@command("compound.signal",
+         "Score the latest CLOSED 5m bar live (public Coinbase candles; Hyperliquid and RSS only for "
+         "components that need them) and explain every metric's score, weight and vote. No order path.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),),
+         long_running=True)
+def compound_signal(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.signal, _compound_asset(ctx, p))
+
+
+@command("compound.backtest",
+         "Backtest the saved compound and each enabled component alone on cached 5m data: next-bar hit "
+         "rate and engine P&L net of fees, in-sample vs out-of-sample. Appends to the results file.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("perturb", "bool", "Also run one-at-a-time parameter variations."),
+          P("aggregate_grid", "bool", "Also run threshold, gate, regime and leverage variations.")),
+         read_only=False, long_running=True)
+def compound_backtest(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.backtest, _compound_asset(ctx, p), perturb=bool(p.get("perturb")),
+                     aggregate_grid=bool(p.get("aggregate_grid")))
+
+
+@command("compound.results", "The latest compound backtest run and the all-time OOS leaderboard "
+         "(evidence floor applied: thin rows are listed, never ranked).",
+         (P("asset", "string", "Limit to one asset; default every asset."),))
+def compound_results(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.latest_results, p.get("asset") or None)
+
+
+@command("compound.forward_tick",
+         "Forward test: record the call for the latest closed 5m bar (once per configuration) and "
+         "resolve earlier calls whose next bar has closed. Read-only market data; no orders.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),),
+         read_only=False, long_running=True)
+def compound_forward_tick(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.forward_tick, _compound_asset(ctx, p))
+
+
+@command("compound.forward_status",
+         "Forward-test hit rates for the compound, the compound without gates, and each component "
+         "alone, plus the most recent calls.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("current_only", "bool", "Only calls made under the current configuration.")))
+def compound_forward_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    h = None
+    if p.get("current_only"):
+        h = sc.config_hash(_compound(compound_mod.load_state)["config"])
+    return _compound(compound_mod.forward_status, _compound_asset(ctx, p), h)
 
 
 # -- liquidity (read-only view of the aero-lp daemon, plus its KILL file) ------------------------
