@@ -125,9 +125,9 @@ test('the dashboard has the button, loads the module, and the module uses textCo
   assert.ok(!/wallet\.private|solana\.private|xpub/i.test(code.replace(/the extension|never an extended/g, '')), 'no key material handling');
 });
 
-test('the manifest and package are at 0.2.1', async () => {
+test('the manifest and package agree on the version (0.3.0, the redesign)', async () => {
   const manifest = JSON.parse(await readFile(join(ROOT, 'manifest.json'), 'utf8'));
   const pkg = JSON.parse(await readFile(join(ROOT, 'package.json'), 'utf8'));
-  assert.equal(manifest.version, '0.2.1');
-  assert.equal(pkg.version, '0.2.1');
+  assert.equal(manifest.version, '0.3.0');
+  assert.equal(pkg.version, '0.3.0');
 });

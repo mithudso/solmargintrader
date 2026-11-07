@@ -24,7 +24,14 @@ import { snapshot, equityCurve, maxDrawdown, fillsToCsv } from './pnl.js';
 import { INTENT_STATUS, DEFAULT_CONFIG } from '../storage/store.js';
 import { MODE, MARGIN_SOURCE, leverageFeasibility } from '../venues/index.js';
 import { createSessionKey } from '../wallet/signer.js';
-import { soltuiList, soltuiCall } from './soltui.js';
+import { soltuiList, soltuiCall, SOLTUI_TIMEOUT_MS } from './soltui.js';
+import { DEFAULT_PREFS, prefsProblem, computeAlerts, qualifyingLeads, mergeAlerts, notifiable } from './alerts.js';
+import { readHoldings } from '../market/holdings.js';
+import { fetchPoolsCached, rankPools } from '../market/pools.js';
+import { quote } from '../market/quote.js';
+import { BASE_TOKENS, SOLANA_TOKENS, isSolanaAddress } from '../market/tokens.js';
+import { isAddress } from '../market/evm.js';
+import { MarketError } from '../market/net.js';
 
 /** Argument types the surfaces know how to coerce. */
 export const TYPE = { STRING: 'string', NUMBER: 'number', BOOL: 'bool', JSON: 'json' };
@@ -93,6 +100,74 @@ function validateConfig(config) {
   if (!(config.recentreSpanPct > 0 && config.recentreSpanPct < 1)) invalid('recentreSpanPct');
   if (config.baseMint === config.quoteMint) invalid('quoteMint');
   try { gridLevels(config); } catch { throw new CommandError('invalid grid bounds, rung count or spacing', 400); }
+}
+
+/* ------------------------------------------------------- market helpers -- */
+
+const PREFS_KEY = 'prefs';
+const SCAN_KEY = 'scan';
+const ACKS_KEY = 'alertAcks';
+const MAX_ACKS = 500;
+const MAX_ALERT_ID = 200;
+
+// Scans and acknowledgements run one at a time per store: scanAlerts is unlocked
+// (it reads the network for up to a minute and must not stall the engine), so two
+// overlapping scans would each write the whole scan and lose the other's fresh
+// set, and an "acknowledge all" could miss the alerts a running scan is writing.
+const alertQueues = new WeakMap();
+function alertQueue(configStore, fn) {
+  const tail = alertQueues.get(configStore) ?? Promise.resolve();
+  const run = tail.then(fn, fn);
+  alertQueues.set(configStore, run.catch(() => {}));
+  return run;
+}
+
+async function readPrefs(deps) {
+  const stored = await deps.configStore.get(PREFS_KEY, {});
+  const values = plainObject(stored) ? stored : {};
+  return Object.fromEntries(Object.entries(DEFAULT_PREFS).map(([k, v]) => [k, Object.hasOwn(values, k) ? values[k] : v]));
+}
+
+/** A market read failure is a 502 with the source named, never an unhandled throw. */
+async function market(fn) {
+  try {
+    return await fn();
+  } catch (err) {
+    if (err instanceof MarketError) throw new CommandError(err.message, 502);
+    if (err instanceof RangeError) throw new CommandError(err.message, 400);
+    throw err;
+  }
+}
+
+/**
+ * The addresses to read: preferences first, then the grid's wallet pubkey for
+ * Solana, then the public addresses saved in soltui. Each answer says where it
+ * came from so the page never shows a balance for an address nobody chose.
+ */
+async function resolveAddresses(deps, prefs) {
+  const out = { baseAddress: prefs.baseAddress, solanaAddress: prefs.solanaAddress, from: {} };
+  if (out.baseAddress) out.from.base = 'preferences';
+  if (out.solanaAddress) out.from.solana = 'preferences';
+  if (!out.solanaAddress) {
+    const { userPubkey } = await deps.configStore.getConfig();
+    if (isSolanaAddress(userPubkey)) { out.solanaAddress = userPubkey; out.from.solana = 'grid wallet pubkey'; }
+  }
+  if ((!out.baseAddress || !out.solanaAddress) && deps.soltui) {
+    const env = await soltuiCall(deps, { command: 'wallet.addresses', params: {}, timeoutMs: SOLTUI_TIMEOUT_MS.probe });
+    if (env.ok) {
+      if (!out.baseAddress && isAddress(env.result?.base_address)) { out.baseAddress = env.result.base_address; out.from.base = 'soltui settings'; }
+      if (!out.solanaAddress && isSolanaAddress(env.result?.solana_address)) { out.solanaAddress = env.result.solana_address; out.from.solana = 'soltui settings'; }
+    }
+  }
+  return out;
+}
+
+/** One soltui read for the scan: the result, or null with the reason noted. */
+async function soltuiRead(deps, command, params, notes) {
+  if (!deps.soltui) { notes.push(`${command}: soltui is not connected on this surface`); return null; }
+  const env = await soltuiCall(deps, { command, params, timeoutMs: SOLTUI_TIMEOUT_MS.quick });
+  if (!env.ok) { notes.push(`${command}: ${env.error?.message ?? 'failed'}`); return null; }
+  return env.result;
 }
 
 /* ---------------------------------------------------------------- registry -- */
@@ -255,6 +330,196 @@ export const COMMANDS = {
       const venue = await deps.buildVenue();
       return { id: venue.id, kind: venue.kind, capabilities: venue.capabilities };
     },
+  },
+
+  /* ---- portfolio, discovery, swaps and alerts (src/market, src/core/alerts.js) ---- */
+
+  getPrefs: {
+    describe: 'Wallet addresses and alert thresholds used by holdings, the alert scan and notifications.',
+    params: [],
+    readOnly: true,
+    handler: ({ deps }) => readPrefs(deps),
+  },
+
+  setPrefs: {
+    describe: 'Merge a patch into the preferences. Addresses are public addresses only; pass null to clear one.',
+    params: [
+      { name: 'patch', type: TYPE.JSON, describe: 'JSON object of preference fields.' },
+      { name: 'baseAddress', type: TYPE.STRING, describe: 'Public Base (EVM) address, 0x + 40 hex.' },
+      { name: 'solanaAddress', type: TYPE.STRING, describe: 'Public Solana address (base58).' },
+      { name: 'alertsEnabled', type: TYPE.BOOL, describe: 'Run the periodic alert scan and raise notifications.' },
+      { name: 'alertIntervalMinutes', type: TYPE.NUMBER, describe: 'Minutes between scans, 15-1440.' },
+      { name: 'minAprGainPct', type: TYPE.NUMBER, describe: 'APR points a scouted (modelled) pool must beat a position by.' },
+      { name: 'minIdleUsd', type: TYPE.NUMBER, describe: 'Idle Base stablecoins worth an alert.' },
+      { name: 'minNetAprPct', type: TYPE.NUMBER, describe: 'Modelled net APR worth moving idle capital for.' },
+      { name: 'leadMinTvlUsd', type: TYPE.NUMBER, describe: 'TVL floor for a quoted pool lead.' },
+      { name: 'leadMinApyPct', type: TYPE.NUMBER, describe: '30-day mean APY floor for a quoted pool lead.' },
+      { name: 'notifyLeads', type: TYPE.BOOL, describe: 'Also notify for quoted (DefiLlama) pool leads.' },
+      { name: 'maxScoutAgeHours', type: TYPE.NUMBER, describe: 'Scout output older than this cannot raise an act alert (default 48).' },
+      { name: 'activeStrategy', type: TYPE.STRING, describe: 'Top 5 label of the strategy in use, compared on each scan.' },
+      { name: 'minSharpeGain', type: TYPE.NUMBER, describe: 'Median-Sharpe margin for a better-strategy alert.' },
+    ],
+    async handler({ deps, args }) {
+      const { patch, ...flat } = args;
+      const merged = { ...(patch ?? {}), ...flat };
+      if (!Object.keys(merged).length) throw new CommandError('nothing to set — pass --patch or a named preference', 400);
+      const problem = prefsProblem(merged);
+      if (problem) throw new CommandError(problem, 400);
+      if (merged.baseAddress != null && !isAddress(merged.baseAddress)) throw new CommandError('baseAddress must be 0x followed by 40 hex characters', 400);
+      if (merged.solanaAddress != null && !isSolanaAddress(merged.solanaAddress)) throw new CommandError('solanaAddress must be a base58 Solana address', 400);
+      const prefs = { ...(await readPrefs(deps)), ...merged };
+      await deps.configStore.set(PREFS_KEY, prefs);
+      return { prefs };
+    },
+  },
+
+  holdings: {
+    describe: 'Live balances and USD values at the Base and Solana addresses, read from public RPC and price APIs.',
+    params: [{ name: 'chain', type: TYPE.STRING, describe: 'all (default), base or solana.' }],
+    readOnly: true,
+    async handler({ deps, args }) {
+      const chain = args.chain ?? 'all';
+      if (!['all', 'base', 'solana'].includes(chain)) throw new CommandError('chain must be all, base or solana', 400);
+      const addresses = await resolveAddresses(deps, await readPrefs(deps));
+      const summary = await market(() => readHoldings(deps, { ...addresses, chain }));
+      return { ...summary, addressSource: addresses.from };
+    },
+  },
+
+  pools: {
+    describe: 'Base and Solana liquidity pools from DefiLlama, ranked. Every APY is QUOTED by DefiLlama, not measured.',
+    params: [
+      { name: 'chain', type: TYPE.STRING, describe: 'all (default), base or solana.' },
+      { name: 'minTvlUsd', type: TYPE.NUMBER, describe: 'TVL floor (default 250000).' },
+      { name: 'stableOnly', type: TYPE.BOOL, describe: 'Stablecoin pools only.' },
+      { name: 'singleOnly', type: TYPE.BOOL, describe: 'Single-asset (lending/staking) pools only.' },
+      { name: 'includeOutliers', type: TYPE.BOOL, describe: 'Keep rows DefiLlama flags as outliers.' },
+      { name: 'search', type: TYPE.STRING, describe: 'Substring of project, symbol or pool note.' },
+      { name: 'sort', type: TYPE.STRING, describe: 'apyMean30d (default), apy, apyBase or tvlUsd.' },
+      { name: 'limit', type: TYPE.NUMBER, describe: 'Rows to return, 1-500 (default 50).' },
+    ],
+    readOnly: true,
+    async handler({ deps, args }) {
+      const { atMs, pools } = await market(() => fetchPoolsCached(deps));
+      return {
+        fetchedAtMs: atMs,
+        total: pools.length,
+        pools: rankPools(pools, args),
+        quoted: true,
+        note: 'APYs are quoted by DefiLlama and include reward emissions. Measured Aero figures come from the scout (liquidity.data).',
+      };
+    },
+  },
+
+  swapTokens: {
+    describe: 'Tokens the swap quote accepts on each chain, with addresses and decimals.',
+    params: [],
+    readOnly: true,
+    handler: () => ({ base: BASE_TOKENS, solana: SOLANA_TOKENS }),
+  },
+
+  swapQuote: {
+    describe: 'Quote a swap (Jupiter on Solana, Aero Slipstream on Base). Quote only: sign it on the venue page it links to.',
+    params: [
+      { name: 'chain', type: TYPE.STRING, required: true, describe: 'base or solana.' },
+      { name: 'from', type: TYPE.STRING, required: true, describe: 'Input token symbol or address (see swapTokens).' },
+      { name: 'to', type: TYPE.STRING, required: true, describe: 'Output token symbol or address.' },
+      { name: 'amount', type: TYPE.STRING, required: true, describe: 'Input amount as a decimal string, e.g. 0.25.' },
+      { name: 'slippageBps', type: TYPE.NUMBER, describe: 'Slippage tolerance for the minimum received (default 50).' },
+    ],
+    readOnly: true,
+    handler: ({ deps, args }) => market(() => quote(deps, args)),
+  },
+
+  overview: {
+    describe: 'The last alert scan: holdings, alerts with acknowledgement, and notes. Reads storage only.',
+    params: [],
+    readOnly: true,
+    async handler({ deps }) {
+      const [scan, acks, prefs] = await Promise.all([
+        deps.configStore.get(SCAN_KEY, null), deps.configStore.get(ACKS_KEY, []), readPrefs(deps),
+      ]);
+      const acked = new Set(Array.isArray(acks) ? acks : []);
+      return {
+        scan: scan ? { ...scan, alerts: (scan.alerts ?? []).map((a) => ({ ...a, acked: acked.has(a.id) })) } : null,
+        prefs,
+      };
+    },
+  },
+
+  scanAlerts: {
+    describe: 'Read holdings, the Aero scout, Top 5 and pool leads; compute and store alerts. Places nothing.',
+    params: [],
+    // Network reads for up to a minute, and it touches only its own storage keys;
+    // alertQueue serialises it against other scans and acknowledgements.
+    unlocked: true,
+    handler: ({ deps }) => alertQueue(deps.configStore, async () => {
+      const now = deps.clock?.() ?? Date.now();
+      const prefs = await readPrefs(deps);
+      const notes = [];
+      const [previous, acks] = await Promise.all([deps.configStore.get(SCAN_KEY, null), deps.configStore.get(ACKS_KEY, [])]);
+
+      const addresses = await resolveAddresses(deps, prefs);
+      let holdings = null;
+      try { holdings = await readHoldings(deps, addresses); } catch (err) { notes.push(`holdings: ${err.message}`); }
+      const liquidity = await soltuiRead(deps, 'liquidity.data', { top: 25 }, notes);
+      const top5 = await soltuiRead(deps, 'top5.list', {}, notes);
+
+      let qualifying = [];
+      try {
+        const { pools } = await fetchPoolsCached(deps);
+        qualifying = qualifyingLeads(pools, prefs);
+      } catch (err) { notes.push(`pools: ${err.message}`); }
+      const prevLeadIds = Array.isArray(previous?.leadIds) ? previous.leadIds : [];
+      // The first scan that reads the feed records the set without alerting: every
+      // pool would be "new". After that, even an empty set is a baseline.
+      const known = new Set(prevLeadIds);
+      const leads = previous?.leadsBaselined === true ? qualifying.filter((p) => !known.has(p.id)) : [];
+      const feedRead = !notes.some((n) => n.startsWith('pools:'));
+      const leader = top5?.configs?.find?.((c) => c.rank === 1)?.label ?? previous?.leader ?? null;
+
+      const computed = computeAlerts({ holdings, liquidity, leads, top5, previousLeader: previous?.leader ?? null, prefs, nowMs: now });
+      const scoutAge = liquidity?.scout?.generated_at ? (now / 1000 - liquidity.scout.generated_at) / 3600 : null;
+      if (scoutAge !== null && scoutAge > prefs.maxScoutAgeHours) {
+        notes.push(`Aero scout is ${scoutAge.toFixed(0)} h old (limit ${prefs.maxScoutAgeHours} h): no pool can raise an act alert until it reruns`);
+      }
+      const { alerts, fresh } = mergeAlerts(previous?.alerts, computed, now, Array.isArray(acks) ? acks : []);
+      const scan = {
+        scannedAtMs: now,
+        holdings,
+        alerts,
+        leadIds: feedRead ? qualifying.map((p) => p.id) : prevLeadIds,
+        leadsBaselined: previous?.leadsBaselined === true || feedRead,
+        leader,
+        liquidity: liquidity ? { killed: liquidity.killed, mode: liquidity.mode, positions: liquidity.positions,
+          wallet: liquidity.wallet, scoutAt: liquidity.scout?.generated_at ?? null,
+          bestScout: liquidity.scout?.pools?.slice?.(0, 5) ?? [] } : null,
+        notes,
+      };
+      await deps.configStore.set(SCAN_KEY, scan);
+      return { scan, fresh, notify: notifiable(alerts, fresh, prefs) };
+    }),
+  },
+
+  ackAlerts: {
+    describe: 'Acknowledge one alert by id, or all current alerts, so it stops showing as new.',
+    params: [
+      { name: 'id', type: TYPE.STRING, describe: 'Alert id from overview or scanAlerts.' },
+      { name: 'all', type: TYPE.BOOL, describe: 'Acknowledge every current alert.' },
+    ],
+    handler: ({ deps, args }) => alertQueue(deps.configStore, async () => {
+      if (!args.id && args.all !== true) throw new CommandError('pass --id or --all', 400);
+      if (args.id && args.id.length > MAX_ALERT_ID) throw new CommandError(`an alert id is at most ${MAX_ALERT_ID} characters`, 400);
+      const scan = await deps.configStore.get(SCAN_KEY, null);
+      const current = (scan?.alerts ?? []).map((a) => a.id);
+      const ids = args.all === true ? current : [args.id];
+      const acks = new Set(await deps.configStore.get(ACKS_KEY, []));
+      for (const id of ids) acks.add(id);
+      // Newest last; the oldest acknowledgements fall off first.
+      const kept = [...acks].slice(-MAX_ACKS);
+      await deps.configStore.set(ACKS_KEY, kept);
+      return { acked: ids.length, total: kept.length };
+    }),
   },
 
   /* ---- soltui bridge (src/core/soltui.js) ---- */
