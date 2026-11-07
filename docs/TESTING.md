@@ -1,14 +1,14 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 767 tests
-python3 -m unittest discover -s soltui/tests -t .       # 722 tests (~300s)
+python3 -m unittest discover -s backtester/tests -t .   # 798 tests
+python3 -m unittest discover -s soltui/tests -t .       # 737 tests (~400s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 313 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1835 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+1881 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -96,12 +96,19 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 767 tests
+## Backtester — 798 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
 signal generation or fill timing needs a test that would catch a one-bar leak. See
 `backtester/README.md`.
+
+`test_scorecard.py` holds that test for the compound five-minute scorecard: every historical
+component, the composite, the regime label and the target path must give the same value at bar t
+whether or not the bars after t exist (prefix invariance), and a deliberately leaky component is
+shown to fail the check. `test_compound_backtest.py` covers the 5m loader (traded-minute
+aggregation, gaps split into segments, stale funding refused), the engine fill at bar t+1's open,
+and that fees reach the P&L.
 
 32 of those cover the ladder-grid simulator (`core/gridsim.py`), and they exist because that module
 has to agree with `extension/src/core/grid.js` about what a round trip earns. Three groups matter
@@ -137,7 +144,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 722 tests
+## soltui — 737 tests
 
 Slower than the others (~70s) because the TUI tests drive real render cycles. Three
 files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
@@ -145,7 +152,10 @@ state) and `test_tui.py` (rendering). Run them with
 `python3 -m unittest discover -s soltui/tests -t .`.
 
 soltui is read-only over the research side and places no orders, so its tests are about
-display correctness, not money. `test_launcher.py` drives the `soltui` shell command
+display correctness, not money. `test_compound.py` covers the Compound 5m tab end to end
+(toggle, edit, refused values, a stubbed live signal) plus the forward ledger with stub venues:
+the still-forming bar is dropped, a call is recorded once per bar and resolved by the next close,
+and an enabled news gate blocks when its feeds are unreachable. `test_launcher.py` drives the `soltui` shell command
 (`soltui/bin/soltui`) through a symlink with a fake interpreter, so it checks the repo
 lookup, the module choice and argument pass-through without starting Textual. The
 packaging paths — the py2app alias bundle and the launchd agent — are **not** covered by
