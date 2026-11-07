@@ -791,7 +791,9 @@ def _g_cost(b: Bars, p: Params, aux: Params) -> np.ndarray:
 def _g_liquidation(b: Bars, p: Params, aux: Params) -> np.ndarray:
     lev = aux.get("leverage", 5.0)
     stop_pct = p["stop_atr"] * atr(b, p["atr"]) / b.close
-    liq_pct = 1.0 / max(lev, 1e-9)
+    # The venue liquidates at its maintenance margin, not at a 100% loss of collateral: on a
+    # 10x-max Hyperliquid coin that is 5% of notional, so 5x leaves 15% of room, not 20%.
+    liq_pct = max(1.0 / max(lev, 1e-9) - float(aux.get("maintenance_fraction", 0.0)), 1e-9)
     blocked = stop_pct > p["max_fraction"] * liq_pct
     return np.where(np.isnan(stop_pct), True, blocked)
 

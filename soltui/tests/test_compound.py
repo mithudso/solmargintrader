@@ -458,6 +458,15 @@ class WalletTests(TempConfig):
         self.assertFalse(w["available"])
         self.assertIn("connection refused", w["reason"])
 
+    def test_liquidation_price_uses_the_coins_hyperliquid_maintenance_margin(self) -> None:
+        bars = synthetic(400)
+        cfg = sc.default_config()
+        w = {"available": True, "usable_usd": 1000.0, "complete": True}
+        jup = compound.size_call(w, bars, cfg, "UP")["liquidation_price"]
+        near = compound.size_call(w, bars, cfg, "UP", "NEAR")["liquidation_price"]
+        self.assertGreater(near["long"], jup["long"])   # a long is liquidated sooner on a 5% margin
+        self.assertLess(near["short"], jup["short"])
+
     def test_size_is_the_smaller_of_risk_and_leverage_limits_with_venue_liquidation(self) -> None:
         bars = synthetic(400)
         cfg = sc.default_config()
@@ -466,7 +475,7 @@ class WalletTests(TempConfig):
         s = compound.size_call(w, bars, cfg, "UP")
         atr = float(sc.atr(bars, 14)[-1])
         stop = 1.5 * atr / bars.close[-1]
-        cost = 16.0 / 1e4
+        cost = sc.round_trip_bps(cfg["execution"]["fee_bps"], cfg["execution"]["slippage_bps"]) / 1e4
         self.assertAlmostEqual(s["risk_notional_usd"], round(10.0 / (stop + cost), 2), places=1)
         self.assertEqual(s["notional_usd"], round(min(5000.0, 10.0 / (stop + cost)), 2))
         self.assertAlmostEqual(s["loss_at_stop_usd"], 10.0, places=1)

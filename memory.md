@@ -448,6 +448,8 @@ Target: the owner confirmed Hyperliquid access, so all ten coins are live candid
 
 Completed: research/results/hyperliquid-costs-2026-11-07.json (live userFees base schedule: taker 0.045%, maker 0.015%; one l2Book walk per coin at $2k/$10k/$50k). scorecard EXECUTION_SPECS fee_bps default 6.0 -> 4.5, so the default round trip is 13 bps (16 on Jupiter). Docs and the five-minute-signal skill (1.6.0) updated. The owner's saved shared config still holds fee_bps 6.0; set it to 4.5 after merge with soltui.compound.save_state.
 
-Verification: test_compound_backtest expects 13 bps.
+Also: Hyperliquid maintenance margin per coin (HYPERLIQUID_MAX_LEVERAGE in backtester/core/compound.py; 1/(2 x max leverage)) now drives engine liquidation, the sized call's liquidation price and gate_liquidation. Jupiter's 0.2% stays for other coins. The owner's saved shared config fee_bps was set to 4.5 (backup in the session scratchpad).
+
+Verification: test_compound_backtest expects 13 bps; new tests cover the margin table against the screen, earlier liquidation, the gate and the sized liquidation price.
 
 Remaining: wallet sizing still reads the Solana wallet (Jupiter collateral); a Hyperliquid account balance read needs the owner's Hyperliquid address. Then the ten-coin full-history backtest (TASK-844).

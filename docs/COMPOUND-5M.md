@@ -134,6 +134,12 @@ but a 5m call that enters at the next bar's open is a taker order. Funding is no
 separately: the engine's perp borrow charge stands in for it, and over a 5–30 minute hold either
 is a small fraction of one basis point. The 2026-11-07 findings below were measured at 16 bps.
 
+**Liquidation is Hyperliquid's too.** Hyperliquid's maintenance margin is half the initial margin
+at the coin's max leverage (`HYPERLIQUID_MAX_LEVERAGE` in `backtester/core/compound.py`): 1.25% of
+notional on BTC (40x), 2% on ETH (25x), 2.5% on SOL and XRP (20x), 5% on the 10x coins. Jupiter's is
+0.2%. At 5x a 10x-max coin is liquidated about 15% away, not about 19.7%. The engine, the
+liquidation price in each sized call and `gate_liquidation` all use the coin's margin.
+
 * **Data.** `research/full_suite.py` caches 1-minute candles back to each coin's earliest
   available minute: `python3 -m backtester.core.fetch_minutes --assets BTC,ETH,... --years 7`. That
   is the finest history Coinbase serves; trade-by-trade ticks exist but a single month took days

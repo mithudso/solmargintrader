@@ -76,6 +76,41 @@ class EngineWiringTests(unittest.TestCase):
         self.assertGreater(first.fee, 0.0)
 
 
+class HyperliquidMarginTests(unittest.TestCase):
+    def test_maintenance_is_half_the_initial_margin_at_max_leverage(self) -> None:
+        self.assertAlmostEqual(cbt.maintenance_fraction("BTC"), 1 / 80)
+        self.assertAlmostEqual(cbt.maintenance_fraction("near"), 0.05)
+        self.assertIsNone(cbt.maintenance_fraction("TRX"))
+        self.assertAlmostEqual(cbt.engine_config(sc.default_config(), "SUI").costs.maintenance_margin_fraction, 0.05)
+        self.assertAlmostEqual(cbt.engine_config(sc.default_config()).costs.maintenance_margin_fraction, 0.002)
+
+    def test_table_matches_the_dated_screen(self) -> None:
+        import json
+
+        root = Path(__file__).resolve().parents[2]
+        screen = json.loads((root / "research/results/top50-screen-2026-11-07.json").read_text())
+        rows = {r["symbol"]: r for r in screen["coins"]}
+        for coin, max_lev in cbt.HYPERLIQUID_MAX_LEVERAGE.items():
+            with self.subTest(coin=coin):
+                self.assertEqual(rows[coin]["hyperliquid_perp_max_leverage"], max_lev)
+
+    def test_a_higher_maintenance_margin_liquidates_sooner(self) -> None:
+        # At 5x the liquidation buffer is 1/5 - close fee - maintenance: about 19.7% with Jupiter's
+        # 0.2% margin, about 15% with a 10x-max Hyperliquid coin's 5%. A 16% drop separates them.
+        n = 40
+        close = np.full(n, 100.0)
+        close[20:] = 84.0
+        arrays = {"ts": (np.arange(n) * 300 + 1_700_000_000).astype("int64"), "open": close.copy(),
+                  "high": close.copy(), "low": close.copy(), "close": close, "volume": np.ones(n)}
+        targets = np.ones(n)
+        cfg = sc.default_config()
+        cfg["execution"]["leverage"] = 5.0
+        jup = run_backtest(cbt.PrecomputedTargets(targets), arrays, cbt.engine_config(cfg))
+        hl = run_backtest(cbt.PrecomputedTargets(targets), arrays, cbt.engine_config(cfg, "NEAR"))
+        self.assertEqual(jup.liquidation_count, 0)
+        self.assertEqual(hl.liquidation_count, 1)
+
+
 class RunTests(unittest.TestCase):
     def setUp(self) -> None:
         self.dir = Path(tempfile.mkdtemp(prefix="compound-run-"))
