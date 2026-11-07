@@ -152,3 +152,9 @@ And then every time a metric is wrong you could apply bayes theorem to it and re
 ```text
  The number of counted responses will need to have a cap so that in 5 months a wrong  choice doesn't change its weights so small an amount it's meaningless. I'm not sure how long to make it though. Let's set it for 2 weeks and then we can dial it back
 ```
+
+## v23 - 2026-11-07
+
+```text
+Write a paper detailing the metrics, what they check, why they're included, what the tunable parameters are, and perforamnce so far.
+```
