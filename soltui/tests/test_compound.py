@@ -410,12 +410,12 @@ class CandleCacheTests(TempConfig):
         self.assertFalse(compound.unattended_status("BTC")["running"])
         self.assertFalse(compound.unattended_status("SOL")["running"])
 
-    def test_coin_list_and_live_capability(self) -> None:
-        with mock.patch.object(compound.cbt, "available_assets", lambda: ["BTC", "TRX", "LINK"]):
+    def test_coin_list_is_the_owners_ten_whatever_is_cached(self) -> None:
+        # Cached data for a screened-out coin must not pull it back into Backtest all or training.
+        with mock.patch.object(compound.cbt, "available_assets", lambda: ["BTC", "TRX", "ZEC"]):
             got = compound.coins()
-        self.assertEqual(got[: len(compound.COINS)], compound.COINS)
-        self.assertEqual(got[len(compound.COINS):], ("LINK", "TRX"))
-        self.assertTrue(compound.live_capable("LINK"))
+        self.assertEqual(got, ("BTC", "ETH", "SOL", "XRP", "HYPE", "DOGE", "LINK", "NEAR", "SUI", "AVAX"))
+        self.assertTrue(all(compound.live_capable(c) for c in got))
         self.assertFalse(compound.live_capable("TRX"))
 
     def test_overview_has_one_row_per_coin(self) -> None:

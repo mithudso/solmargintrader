@@ -102,27 +102,37 @@ in every row**: a better hit rate does not beat a 16 bps round trip on a 6–9 b
 
 ## Every coin, in parallel, each with its own numbers
 
-The compound runs on every coin with 1-minute candles in the cache. The default universe is the
-top 50 coins by market cap with pegged tokens left out, frozen in
-`research/results/top50-nonpegged-2026-11-07.json` (CoinGecko ranking, Coinbase listing check).
+The compound runs on ten coins: **BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX**
+(`COMPOUND_5M_UNIVERSE` in `backtester/core/universe.py`). The owner chose them on 2026-11-07
+from a screen of the top 50 coins by market cap, pegged tokens left out
+(`research/results/top50-nonpegged-2026-11-07.json`). The screen, with each coin's live turnover,
+perp leverage, Coinbase status, verdict and reason, is `research/results/top50-screen-2026-11-07.json`.
+
+A five-minute call pays only with leverage and a round trip near 16 bps, so the screen asked:
+
+| Test | Why it disqualifies |
+| --- | --- |
+| A perpetual market with 10x or more (Hyperliquid) | Without leverage a 5m move cannot beat the fees. Jupiter Perps lists only SOL, ETH and BTC. |
+| 24h volume above 0.5% of market cap | Below that, a 5m position is the visible order book and the 2 bps slippage model is wrong. |
+| Coinbase USD candles | Live calls and forward training read Coinbase. |
+| No exchange-token, rename or privacy-delisting distortion; enough history | Exchange tokens trade on their exchange's buybacks; a renamed token's history is another token. |
+
+13 coins failed outright: LEO, M, RAIN, CRO, OKB, BGB, HTX, WBT, BTW, QNT, JST (no perp, thin
+volume or exchange token), CC and SKY (perp capped at 3x, turnover near 0.3%). Eight more carry a
+caution: ZEC (60% incomplete bars), XMR, TRX, MNT, GRAM, WLFI, PUMP, ASTER. The screen did not
+check news after early 2026; check for a recent hack, migration or delisting before relying on a
+coin. Cached data for any other coin can still be backtested from the CLI with `--asset`.
 
 * **Data.** `research/full_suite.py` caches 1-minute candles back to each coin's earliest
-  available minute. That is the finest history the venues serve; trade-by-trade ticks exist but a
-  single month took days to backfill.
-  * 36 coins come from Coinbase against USD: `python3 -m backtester.core.fetch_minutes --assets BTC,ETH,... --years 7`.
-  * 14 coins Coinbase does not list come from the venue that does, against **USDT**:
-    `python3 -m backtester.core.fetch_minutes_alt --years 7`. OKX: TRX, LEO, OKB, CC, GRAM.
-    KuCoin: XMR, JST, MNT, HTX, RAIN. Bitget: BGB, M, BTW. WhiteBIT: WBT.
-    Each file gets a `<COIN>_1m.source.json` sidecar naming the venue and pair, and the backtest
-    label shows it, for example `TRX_1m.csv (1m->5m, okx TRX-USDT)`. A USDT price is not a USD
-    price: the two differ by USDT's own drift, small but not zero.
-  * KuCoin and WhiteBIT return rows as `[time, open, close, high, low, ...]`, not OHLC order. The
-    fetcher reorders them, and it stops and writes nothing when more than 1% of a page has a high
-    below its open or close, which is what a wrong column order produces.
-  * These 14 coins are **backtest only**. Live candles for forward training come from Coinbase,
-    so their unattended trainer does not start and the overview says so.
-  The backtest builds 5m bars from those minutes, saves them once per coin as a compact cache,
-  and parallel workers read that cache instead of the multi-million-row minute file.
+  available minute: `python3 -m backtester.core.fetch_minutes --assets BTC,ETH,... --years 7`. That
+  is the finest history Coinbase serves; trade-by-trade ticks exist but a single month took days
+  to backfill.
+  * For a coin Coinbase does not list, `python3 -m backtester.core.fetch_minutes_alt --assets TRX`
+    fetches 1m candles from OKX, KuCoin, Bitget or WhiteBIT against **USDT** (`ASSET_VENUE`). Each
+    file gets a `<COIN>_1m.source.json` sidecar naming the venue and pair, and the backtest label
+    shows it. A USDT price is not a USD price. KuCoin and WhiteBIT return rows as
+    `[time, open, close, high, low, ...]`; the fetcher reorders them and stops when more than 1% of
+    a page has impossible OHLC. These coins are backtest only.
 * **Data quality, per coin.** Coinbase's 1m endpoint drops minutes that *did* trade (84% of
   sampled gaps, `research/CANDLE-GAP-AUDIT.md`), so a 5m bar built from fewer than five minutes
   can carry a wrong close and an understated high or low, which flatters liquidation checks.
@@ -144,8 +154,8 @@ top 50 coins by market cap with pegged tokens left out, frozen in
   **Edits apply to** switches between all coins (the shared base) and this coin. Adopt tuned
   settings always saves to the coin.
 * **Backtest all coins** runs every coin at once in parallel processes, each with its own settings.
-* **Start unattended: all coins** starts one forward-training process for every live coin. Each
-  bar it ticks the coins one after another, so 36 coins cost one background process, not 36.
+* **Start unattended: all coins** starts one forward-training process for all ten coins. Each
+  bar it ticks the coins one after another, so ten coins cost one background process, not ten.
   Each coin keeps its own lock, log and stop file, so **Stop unattended** on one coin releases
   it from the shared loop and the rest keep running. Closed candles are cached per coin, so after
   the first tick each coin costs one request per bar. A rate-limit reply (429) is retried with

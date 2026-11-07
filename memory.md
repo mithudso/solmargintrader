@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 42
-Delta: v41 to v42; editor bar, compound row preview, double-click toggle, compound autopilot.
+Version: 43
+Delta: v42 to v43; compound universe narrowed to the owner's ten coins after a top-50 screen.
 
 ## v1 - 2026-11-06
 
@@ -432,3 +432,12 @@ Honesty: tuning at the 0.95 bar rarely moves (docs/COMPOUND-5M.md: one move in f
 
 Remaining: none in code; install the LaunchAgent from the main checkout after merge.
 
+## v43 - 2026-11-07 (ten-coin compound universe)
+
+Target: the owner asked which top-50 coins fail before testing, then chose BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX. Stele TASK-844. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-quality, branch feat/compound-ten-coin-universe.
+
+Completed: research/results/top50-screen-2026-11-07.json (live CoinGecko turnover, Hyperliquid perp leverage, Coinbase status; verdict and reason per coin; 13 disqualified, 8 caution). COMPOUND_5M_UNIVERSE in backtester/core/universe.py; soltui compound COINS and coins() use it, so cached data for other coins no longer joins Backtest all or unattended training; full_suite defaults to it. Docs and the five-minute-signal skill (1.5.0) say so. The 36-coin and 14-coin downloads were stopped (SIGINT, kill-safe) and a 10-coin Coinbase fetch restarted.
+
+Verification: test_universe (screen matches code), test_full_suite, test_compound pass.
+
+Remaining: finish the 10-coin download (NEAR, SUI, AVAX are new); deliver minute_coverage.json; Backtest all coins on the full history; report per-coin results.

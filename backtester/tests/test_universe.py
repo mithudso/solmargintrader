@@ -237,5 +237,27 @@ class CliTests(unittest.TestCase):
             importlib.reload(uni)
 
 
+
+class CompoundUniverseTests(unittest.TestCase):
+    """The ten coins in code must be the ones the dated screen kept, each live-tradeable."""
+
+    def test_code_matches_the_screen_and_every_coin_passed_it(self) -> None:
+        import json
+
+        from backtester.core.universe import COMPOUND_5M_UNIVERSE
+
+        root = Path(__file__).resolve().parents[2]
+        screen = json.loads((root / "research/results/top50-screen-2026-11-07.json").read_text())
+        self.assertEqual(tuple(screen["kept"]), COMPOUND_5M_UNIVERSE)
+        rows = {r["symbol"]: r for r in screen["coins"]}
+        for coin in COMPOUND_5M_UNIVERSE:
+            with self.subTest(coin=coin):
+                self.assertEqual(rows[coin]["verdict"], "kept")
+                self.assertTrue(rows[coin]["coinbase_usd"])
+                self.assertGreaterEqual(rows[coin]["hyperliquid_perp_max_leverage"] or 0, 10)
+                self.assertGreater(rows[coin]["turnover_pct_24h"], 0.5)
+        self.assertEqual(sum(r["verdict"] != "kept" for r in screen["coins"]), 40)
+
+
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()

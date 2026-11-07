@@ -39,7 +39,6 @@ refuse instead.
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import shutil
 import subprocess
@@ -54,16 +53,11 @@ if str(REPO) not in sys.path:
 
 from backtester.core.data import resolve_data_dir  # noqa: E402
 from backtester.core.fetch_minutes import MINUTE_ASSETS  # noqa: E402
-from backtester.core.universe import EXCLUDED, TOP10_NON_PEGGED  # noqa: E402
+from backtester.core.universe import COMPOUND_5M_UNIVERSE  # noqa: E402
 
-DEFAULT_ASSETS = tuple(a for a in TOP10_NON_PEGGED if a not in EXCLUDED)
-TOP50_RECORD = REPO / "research" / "results" / "top50-nonpegged-2026-11-07.json"
-
-
-def top50() -> tuple[list[str], list[str]]:
-    """(Coinbase-listed, other-venue) symbols from the dated top-50 record."""
-    rec = json.loads(TOP50_RECORD.read_text())
-    return list(rec["coinbase_listed"]), list(rec["not_on_coinbase"])
+# The owner's ten, screened from the top 50 (research/results/top50-screen-2026-11-07.json).
+# Any other coin, including the ones fetch_minutes_alt serves, can still be named with --assets.
+DEFAULT_ASSETS = COMPOUND_5M_UNIVERSE
 
 
 def fetch_steps(assets: list[str], data: Path, args: argparse.Namespace) -> list[tuple[str, list[str]]]:
@@ -167,7 +161,7 @@ def archive_registry_results(stamp: str) -> Path | None:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--assets", default="",
-                    help="comma list (default: the top 50 non-pegged coins in the dated record)")
+                    help="comma list (default: the ten-coin compound universe, backtester/core/universe.py)")
     ap.add_argument("--days-5m", type=int, default=0,
                     help="also fetch N days of native 5m candles (default 0: the 1m history covers it)")
     ap.add_argument("--minutes-years", type=float, default=7.0,
@@ -189,8 +183,7 @@ def main(argv: list[str] | None = None) -> int:
         ap.error("--skip-fetch and --fetch-only contradict each other")
     assets = [a.strip().upper() for a in args.assets.split(",") if a.strip()]
     if not assets:
-        listed, others = top50()
-        assets = listed + others
+        assets = list(DEFAULT_ASSETS)
     data = resolve_data_dir()
     stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     if args.plan:
