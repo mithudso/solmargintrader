@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T15:15:09+00:00",
+  "generatedAt": "2026-11-07T15:25:18+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -380,7 +380,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 24
+          "hits": 25
         },
         {
           "path": "soltui/signals.py",
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 185,
+      "matchingFiles": 184,
       "shown": 30,
       "files": [
         {
@@ -712,7 +712,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 184,
+      "matchingFiles": 183,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 182,
+      "matchingFiles": 181,
       "shown": 30,
       "files": [
         {
@@ -1261,7 +1261,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 140,
+      "matchingFiles": 141,
       "shown": 30,
       "files": [
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 135,
+      "matchingFiles": 136,
       "shown": 30,
       "files": [
         {
@@ -1672,7 +1672,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 120,
+      "matchingFiles": 121,
       "shown": 30,
       "files": [
         {

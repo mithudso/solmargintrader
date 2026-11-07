@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 28
-Delta: v27 to v28; added the repo-improvement and profitability review request.
+Version: 29
+Delta: v28 to v29; triangular arbitrage card design and verification; preserved concurrent grid-holdout records.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -188,3 +188,12 @@ This backtesting table is difficult to understand what's going on. Add a status 
 ```text
 look at this repo and identify how it can be improved, what features, tests, functionality, monitoring, etc would make this a truly profitable venture?
 ```
+
+
+## v29 - 2026-11-07
+
+```text
+There is a type of multi-coin trade that can only happen every now and then using arbitrage percentages across multiple coins. So like if the eth/zec ratio was 1, and the zec/btc ratio was 1.1, and then the btc/eth ratio was .9 then looping in a circle would generate a profit. Explore the feasibility of that and if it could work design a card for this repo to do backtesting.
+```
+
+Target: existing `backtester/strategy_cards/triangular_arbitrage.md`; Stele TASK-826. Design only; no live trading or fabricated backtest results.
