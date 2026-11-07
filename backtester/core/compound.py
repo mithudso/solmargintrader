@@ -62,14 +62,15 @@ def _read(path: Path) -> pd.DataFrame:
 
 
 def resample_complete(df_1m: pd.DataFrame, minutes: int = 5) -> pd.DataFrame:
-    """Aggregate 1m bars into `minutes` bars from the minutes that traded.
+    """Aggregate 1m bars into `minutes` bars from the minutes present, counting them.
 
-    Coinbase emits no candle for a minute without a trade, so a 5m bucket holding three 1m
-    candles is exactly what the venue's own 5m candle shows for that window: OHLC of the trades
-    that happened. Requiring all five minutes would discard most of a thin market (DOGE, ZEC)
-    for no gain in accuracy. A bucket with NO traded minute stays a gap: nothing is invented.
-    The caveat: a data hole (a failed fetch) looks like no-trade minutes here; the minute
-    fetcher's coverage manifest is where holes are recorded.
+    A bucket with no 1m candle stays a gap; nothing is invented. A bucket with SOME minutes
+    missing is kept, because requiring all five discards most of a thin market (DOGE, ZEC had
+    no contiguous run of 300 bars that way). It is not a clean bar, though: Coinbase's candle
+    endpoint drops minutes that DID trade (84% of sampled gaps, research/CANDLE-GAP-AUDIT.md),
+    so such a bucket can carry a wrong close and an understated high/low -- what liquidation
+    checks read. The `minutes` column records how many 1m candles each bar was built from, and
+    the backtest reports the incomplete share per coin so a reader can discount it.
     """
     step = minutes * 60
     d = df_1m.copy()
@@ -82,6 +83,7 @@ def resample_complete(df_1m: pd.DataFrame, minutes: int = 5) -> pd.DataFrame:
         "low": g["low"].min().to_numpy(),
         "close": g["close"].last().to_numpy(),
         "volume": g["volume"].sum().to_numpy(),
+        "minutes": g["timestamp"].count().to_numpy(),
     }).reset_index(drop=True)
 
 
@@ -245,7 +247,16 @@ def prepare(asset: str, data_dir: Path | None = None, *, bars: pd.DataFrame | No
         except CompoundDataError:
             ref = None
     return {"asset": asset.upper(), "bars": bars, "source": source, "funding": load_funding(asset, data_dir),
-            "btc": aligned_reference(bars, ref), "data_hash": _hash_frame(bars)}
+            "btc": aligned_reference(bars, ref), "data_hash": _hash_frame(bars),
+            "incomplete_pct": incomplete_pct(bars)}
+
+
+def incomplete_pct(bars: pd.DataFrame, minutes: int = 5) -> float | None:
+    """Percent of 5m bars built from fewer than five 1m candles; None for native 5m candles
+    (which the venue corrupts the same way, but there is nothing to count)."""
+    if "minutes" not in bars or not len(bars):
+        return None
+    return round(100.0 * float((bars["minutes"] < minutes).mean()), 3)
 
 
 def run_compound(asset: str, config: Mapping[str, Any] | None = None, *, label: str = "compound",
@@ -294,6 +305,7 @@ def run_compound(asset: str, config: Mapping[str, Any] | None = None, *, label: 
         "enabled": enabled, "source": prep.get("source", ""), "data_hash": prep["data_hash"],
         "from_ts": int(ts_all[0]), "to_ts": int(ts_all[-1]), "split_ts": split_ts,
         "segments": len(segments), "bars": int(len(ts_all)), "errors": errors,
+        "data_incomplete_pct": prep.get("incomplete_pct"),
         "leverage": cfg["execution"]["leverage"],
         "is": {"forecast": sc.forecast_stats(evals, None, split_ts), "pnl": _stitch(is_slices)},
         "oos": {"forecast": sc.forecast_stats(evals, split_ts, None), "pnl": _stitch(oos_slices)},
