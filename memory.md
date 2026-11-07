@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 20
-Delta: v19 to v20; native Coinbase MCP configured and OAuth completed; portfolio verification requires Codex reload.
+Version: 22
+Delta: v21 to v22; CDP CLI live authentication verified and downloaded credential permissions restricted.
 
 ## v1 - 2026-11-06
 
@@ -221,3 +221,23 @@ Verification: the live-acceptance-verifier independently confirmed server config
 Repository checks: scripts/check_docs.py passed (703 backtester, 305 extension, 33 mongo, 597 soltui tests discovered). Regenerate the three offline retrieval indexes for the two workflow files and run index/build.py --check plus git diff --check before delivery. No product code changed.
 
 Remaining user step: reload Codex to load Coinbase tools. Then call exposed coinbase_portfolios_list with empty arguments, without printing account details, and complete setup task TASK-794. TASK-795 tracks delivery of these records through CI and merge. No trades, transfers, paid requests, wallet-key access or service restarts occurred.
+
+## v21 - 2026-11-07 (CDP CLI setup verification)
+
+Target: verify the CDP CLI setup using https://docs.cdp.coinbase.com/cdp-cli/skill.md (retrieved 2026-11-07), separate from Coinbase account OAuth MCP.
+
+Observed before changes: /opt/homebrew/bin/cdp version 2.0.145; Node v26.13.0; live environment already configured with wallet indicator. Preserve existing keychain configuration. The downloaded API-key JSON and wallet-secret text are untracked. They were mode 644; restrict them to mode 600 without reading contents or committing them.
+
+Task: TASK-797. Worktree /Users/mitch/dev/solmargintrader-wt-01a1b575 at origin/master 7770e64; preserve original shared checkout and other active sessions.
+
+Remaining: independent read-only cdp evm accounts list verification, final continuation update, offline index refresh, checks, commit/PR/CI/merge. No wallet creation, faucet, trade, transfer, or signing operation is required.
+
+## v22 - 2026-11-07 (CDP CLI verified)
+
+Result: existing CDP CLI setup passes the official guide. Independent live-acceptance-verifier ran /opt/homebrew/bin/cdp evm accounts list at 2026-11-07T10:18:45Z. Exit status was 0. Output was valid JSON with an accounts array containing zero entries and no error. cdp env returned live plus wallet indicators. Executable resolves to /opt/homebrew/lib/node_modules/@coinbase/cdp-cli/dist/index.js, version 2.0.145; Node is v26.13.0. No installation or credential replacement was needed.
+
+Changed outside Git: /Users/mitch/dev/solmargintrader/cdp_api_key.json and /Users/mitch/dev/solmargintrader/cdp_wallet_secret.txt permissions changed from 644 to 600. Contents were not read, displayed, copied or committed. Existing CLI configuration was preserved. No account was created or funded. No transaction, signing or paid request occurred.
+
+Checks: scripts/check_docs.py passed (703 backtester, 305 extension, 33 mongo, 597 soltui discovered); git diff --check passed. Refresh the three offline retrieval indexes for the workflow records and verify index/build.py --check.
+
+Remaining setup steps: none for the CDP CLI. The separate Coinbase account OAuth MCP still needs a Codex reload and exposed portfolio-list call (TASK-794). Delivery for this request: commit only workflow records and offline indexes, PR, wait for all CI, merge, verify remote files and remove the private worktree. Preserve the active shared checkout and unrelated files.
