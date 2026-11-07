@@ -34,7 +34,7 @@ backtester/            research/              extension/
 | `src/storage/store.js` | IndexedDB journal + `chrome.storage` config |
 | `src/storage/fileStore.js` | The same interfaces on JSON files, for CLI and API |
 | `src/bg/service-worker.js` | Alarms, badge, message plumbing. No strategy logic |
-| `src/ui/` | Popup and dashboard. Hand-built SVG charts, CSP-safe |
+| `src/ui/` | Popup and dashboard. Equity chart via vendored Lightweight Charts (`charts.js`, SVG fallback); ladder chart hand-built SVG; CSP-safe |
 
 `core/grid.js`, `risk.js` and `pnl.js` take no I/O and no `chrome.*`. That is what makes the strategy
 unit-testable and lets the same code run under `node --test`, in the CLI, and in the browser.

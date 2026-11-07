@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 49
-Delta: v48 to v49; research landed; Compound frontier (hold, entry quantile, six metrics, buy-and-hold); Base wallet via CDP (v48 is the TradingView distillation).
+Version: 50
+Delta: v49 to v50; equity chart on vendored Lightweight Charts; /dso v2.0.0 shipped in the skills repo.
 
 ## v1 - 2026-11-06
 
@@ -518,4 +518,13 @@ Base wallet: docs/BASE-WALLET-QUERIES.md (CDP MCP recipe); gtUSDCp (Gauntlet USD
 
 Remaining: forward paper test of mom_skip top 0.5% 48 h (not built); maker-fill modelling (no fill-rate data).
 
+## v50 - 2026-11-07 (Lightweight Charts; /dso v2)
+
+Target: owner chose Lightweight Charts (KNOW-859, TASK-860, dev-y3seh) and asked for every evaluation method plus a one-pass-per-method /dso. Worktree /Users/mitch/dev/solmargintrader-wt-lwc, branch feat/lightweight-charts.
+
+Completed (this repo): vendored lightweight-charts 5.2.1 standalone ESM in extension/vendor/lightweight-charts/ (LICENSE, NOTICE, README with npm integrity and file sha256); src/ui/charts.js lazily imports it, draws the grid view's equity curve with the attribution logo on, and falls back to the SVG; test/charts.test.js pins the sha256 and tests the data mapping; CLAUDE.md House style and docs name it as the one runtime library.
+
+Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithudso/skills#90 (45903ec52): 400 evaluation methods, 273 passes in 9 families, legacy mapping, evals, /dso command. docs/dso-skill here is now a stale v1.1.1 copy (Stele KNOW-344, skills project).
+
+Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
 

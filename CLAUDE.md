@@ -113,7 +113,7 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 python3 -m unittest discover -s backtester/tests -t .   # 853 tests
 python3 -m unittest discover -s soltui/tests -t .       # 808 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 351 tests
+cd extension && npm test                                # 361 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability
@@ -130,7 +130,9 @@ it as live verification; the headless dry run stays the economics gate.
 
 ## House style
 
-**JavaScript** — ESM, no build step, **zero runtime dependencies**. Do not add a package to solve
+**JavaScript** — ESM, no build step, **no npm runtime dependencies**. The one sanctioned runtime
+library is TradingView Lightweight Charts 5.2.1, vendored and pinned in `extension/vendor/lightweight-charts/`
+(owner's choice 2026-11-07; read its README before touching it). Do not add a package to solve
 something the ~150 lines of `src/wallet/solana.js` already solve. Tests are `node:test` +
 `node:assert/strict`. Keep `src/core/grid.js`, `risk.js` and `pnl.js` free of I/O and `chrome.*`.
 

@@ -333,6 +333,39 @@ try {
     eq([out.batch.admitted.length, out.batch.rejected.length], [0, 1], 'batch with missing state');
   });
 
+  /* --------------------------------------------------------- equity chart -- */
+
+  // The vendored Lightweight Charts must load under the extension CSP and draw
+  // in a real MV3 page; a node test cannot see either (no DOM, no CSP).
+  await check('equity chart draws with the vendored Lightweight Charts under the extension CSP', async () => {
+    const out = await dash.ev(`(async () => {
+      const { renderEquityChart, disposeChart } = await import(chrome.runtime.getURL('src/ui/charts.js'));
+      const el = document.createElement('div');
+      el.style.width = '600px';
+      document.body.append(el);
+      const points = [
+        { tsMs: Date.UTC(2026, 10, 1), equityUsd: 100 },
+        { tsMs: Date.UTC(2026, 10, 2), equityUsd: 103.5 },
+        { tsMs: Date.UTC(2026, 10, 3), equityUsd: 101.25 },
+      ];
+      const drawnBy = await renderEquityChart(el, points, { label: 'e2e equity', fallbackHtml: () => '<p>fallback</p>' });
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const res = {
+        drawnBy,
+        canvases: el.querySelectorAll('canvas').length,
+        attribution: !!el.querySelector('a[href*="tradingview.com"]'),
+        ariaLabel: el.getAttribute('aria-label'),
+      };
+      disposeChart(el);
+      el.remove();
+      return res;
+    })()`);
+    eq(out.drawnBy, 'lightweight-charts', 'chart renderer (fallback means the vendored library did not load)');
+    assert(out.canvases > 0, 'no canvas drawn');
+    assert(out.attribution, 'TradingView attribution link missing (licence requires it)');
+    eq(out.ariaLabel, 'e2e equity', 'accessible label');
+  });
+
   /* ------------------------------------------------------------------ secrets -- */
 
   await check('no secret material in the DOM, storage.sync or any command response', async () => {

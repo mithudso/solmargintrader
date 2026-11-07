@@ -4,7 +4,7 @@ Version: 1.0.0 (2026-11-07). Delta: first distillation of the `tradingview/` doc
 
 This page distills the TradingView Advanced Charts (Charting Library) and Trading Platform documentation, its TypeScript definitions, and the agentskills.io Agent Skills format into one reference for this repository. It keeps the exact identifiers (method names, option keys, study names, `PineJS.Std` functions), the equations, and the contracts. It maps each part to the repo's components.
 
-It is a reference, not an integration. Nothing in the repo renders TradingView charts today. The Charting Library is licensed by TradingView: request access before using it, and keep the library files out of this public repository (see [Licensing](#licensing-and-what-stays-out-of-git)).
+It is a reference, not an integration of Advanced Charts. **Decision (2026-11-07):** the owner chose Lightweight Charts; the extension's equity chart uses it (vendored 5.2.1, `extension/vendor/lightweight-charts/`, `extension/src/ui/charts.js`). The Charting Library is licensed by TradingView: request access before using it, and keep the library files out of this public repository (see [Licensing](#licensing-and-what-stays-out-of-git)).
 
 ## Sources
 
@@ -69,7 +69,7 @@ Read this before you build anything from this page. The terms decide which produ
 | Download the library only from TradingView's private GitHub repos (`tradingview/charting_library`, `tradingview/trading_platform`) after an access request. Third-party copies are prohibited. | ctx L48032-48297 | Never fetch the library from a mirror or CDN. |
 | Altering the library source is prohibited by the licence agreement. | ctx L50271-50344 | Customize only through options, overrides, featuresets, CSS themes and custom indicators. |
 | Trading Platform is licensed to brokers and has its own fees. Order lines, position lines, execution shapes, multi-chart layouts, the Order Ticket, DOM and Account Manager are Trading Platform only (the three trading primitives since v29.0.0). | ctx L50345-50432, L49230-49313 | The [Trading Platform and Broker API](#trading-platform-and-broker-api) section is reference only. Each on-chart recipe below gives an Advanced Charts fallback with `createShape`. |
-| Lightweight Charts is TradingView's free, open-source charting library (about 45 KB). You push data to it directly. It has no built-in indicators, no datafeed contract and no drawings API. | ctx L47984-48031 | This is the only TradingView product that fits a private, unpublished tool. It still conflicts with the extension's zero-runtime-dependency rule (`CLAUDE.md`, House style). Check its licence and attribution requirement in its repository before adding it. |
+| Lightweight Charts is TradingView's free, open-source charting library (about 45 KB). You push data to it directly. It has no built-in indicators, no datafeed contract and no drawings API. | ctx L47984-48031 | This is the only TradingView product that fits a private, unpublished tool. Adopted 2026-11-07: vendored and pinned (Apache-2.0, NOTICE shipped, attribution logo on); `CLAUDE.md` House style names it as the one runtime library. |
 
 What the rest of this page is good for, given those terms:
 
