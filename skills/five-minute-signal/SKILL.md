@@ -1,6 +1,6 @@
 ---
 name: five-minute-signal
-version: "1.0.0"
+version: "1.1.0"
 updated: "2026-11-07"
 description: >-
   Produce and explain an UP / DOWN / FLAT call for the next five-minute bar of a crypto asset
@@ -41,6 +41,10 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
      multiplier.
    - `unavailable` (a live input is missing) or `warming up` → it did not vote. Never treat it
      as 0 or invent a value.
+   - `learned_hit`, `learned_calls`, `adaptive_mult`, `p_better_than_coinflip` (adaptive=1, the
+     default): the metric's Bayesian record and the multiplier it earned. A multiplier of 0 means
+     it has not beaten a coin flip and did not count, however strong its score.
+   - `tuned_params` (tune=1): settings the metric moved to on evidence; say so if present.
    - gates: `pass` or `blocking`. Any blocking gate makes the call FLAT; name it.
    Group the votes by family (trend, oscillator, bands, breakout, flow, positioning,
    lifecycle) and say which families agree. One family with five members is one opinion.
@@ -95,6 +99,9 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
   not have.
 - So the catalogue's "favour continuation in trends" is backwards at 5m; say this when a call
   rests on trend votes.
+- Adaptive weighting (default on) learns this by itself: on the same data it raised the
+  compound's OOS hit rate on four of five coins (DOGE 44% -> 55%), and live it gives weight only
+  to the reversion metrics. Returns stayed negative: fees, not direction, are the binding limit.
 
 ## Boundaries
 

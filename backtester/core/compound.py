@@ -354,6 +354,15 @@ def variants(cfg: Mapping[str, Any], *, standalone: bool = True, perturb: bool =
         for g in gates:
             no_gates["components"][g]["enabled"] = False
         add("compound no-gates", no_gates)
+        adaptive_on = sc.normalise_config(base)
+        adaptive_on["aggregate"]["adaptive"] = 1 - int(base["aggregate"]["adaptive"])
+        add(f"compound adaptive={adaptive_on['aggregate']['adaptive']}", adaptive_on)
+        flipped = sc.normalise_config(base)
+        flipped["aggregate"].update(adaptive=1, adaptive_flip=1)
+        add("compound adaptive=1 flip=1", flipped)
+        tuned = sc.normalise_config(base)
+        tuned["aggregate"]["tune"] = 1 - int(base["aggregate"]["tune"])
+        add(f"compound tune={tuned['aggregate']['tune']}", tuned)
         for key, value in (("regime_weighting", 0), ("dedupe_families", 0)):
             c = sc.normalise_config(base)
             c["aggregate"][key] = value

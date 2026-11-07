@@ -228,6 +228,35 @@ class ForwardLedgerTests(TempConfig):
         self.assertTrue(any(r["type"] == "resolve" and r["id"].split(":")[1] == str(first["bar_ts"])
                             for r in ledger))
 
+    def test_ledger_seed_counts_only_earlier_calls_with_matching_parameters(self) -> None:
+        cfg = sc.default_config()
+        cfg["aggregate"]["adaptive_halflife"] = 4
+        sig = compound.component_sig("rsi", cfg["components"]["rsi"]["params"])
+        stale = compound.component_sig("rsi", {**cfg["components"]["rsi"]["params"], "period": 9})
+        W = T0 + 3000
+
+        def call(i, bar_ts, score, s=sig):
+            return {"type": "call", "id": f"c{i}", "bar_ts": bar_ts, "scores": {"rsi": score}, "sigs": {"rsi": s}}
+
+        ledger = [call(1, W - 300, 0.6), {"type": "resolve", "id": "c1", "ret_bps": 3.0},       # right, k=-1
+                  call(2, W - 600, -0.6), {"type": "resolve", "id": "c2", "ret_bps": 2.0},      # wrong, k=-2
+                  call(3, W, 0.9), {"type": "resolve", "id": "c3", "ret_bps": 1.0},             # inside window
+                  call(4, W - 900, 0.9, stale), {"type": "resolve", "id": "c4", "ret_bps": 1.0},  # other params
+                  call(5, W - 1200, 0.1), {"type": "resolve", "id": "c5", "ret_bps": 1.0},      # abstained
+                  call(6, W - 1500, 0.8)]                                                       # unresolved
+        seed = compound.ledger_seed(ledger, cfg, W)
+        lam = 0.5 ** (1 / 4)
+        hits, calls = seed["rsi"]
+        self.assertAlmostEqual(hits, lam ** -1)
+        self.assertAlmostEqual(calls, lam ** -1 + lam ** 0)
+
+    def test_forward_calls_record_metric_signatures(self) -> None:
+        venue = Venue(now=T0 + 300 * 19 + 10)
+        compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post)
+        call = next(r for r in compound.read_ledger("SOL") if r["type"] == "call")
+        self.assertEqual(set(call["sigs"]), set(call["scores"]))
+        self.assertTrue(call["adaptive"])
+
     def test_a_call_appended_twice_counts_once(self) -> None:
         call = {"type": "call", "id": "SOL:1:h", "bar_ts": T0, "price": 90.0, "call": "UP", "ungated": 1,
                 "composite": 0.4, "config_hash": "h", "entry": 0.25, "round_trip_bps": 16.0, "scores": {}}
@@ -345,6 +374,41 @@ class CompoundTab(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(saved["components"]["rsi"]["params"]["period"], 9)
         self.assertEqual(saved["aggregate"]["entry"], 0.3)
         self.assertEqual(saved["execution"]["leverage"], 10.0)
+
+
+    async def test_learned_and_tuned_columns_and_adopt(self) -> None:
+        app = SolTuiApp(make_settings())
+        tuned = {**sc.BY_ID["rsi"].defaults(), "period": 11}
+        fake = {"asset": "SOL", "call": "FLAT", "composite": 0.1, "coverage": 1.0, "agreement": 0.5,
+                "regime": "range", "trend_stage": "early", "cycle_phase": "markup", "blocked_by": [],
+                "round_trip_bps": 16.0, "decided_at": T0, "bars_used": 2016,
+                "components": [{"id": "rsi", "status": "scored", "score": 0.4, "kind": "score", "enabled": True,
+                                "learned_hit": 0.534, "learned_calls": 812.0, "adaptive_mult": 0.068,
+                                "tuned_params": tuned},
+                               {"id": "ema_cross", "status": "scored", "score": -0.5, "kind": "score",
+                                "enabled": True, "learned_hit": 0.47, "learned_calls": 900.0, "adaptive_mult": 0.0}]}
+        real = commands.COMMANDS["compound.signal"]
+        stub = commands.Command("compound.signal", "stub", lambda ctx, p: fake, real.params, True, True, False)
+        with mock.patch.dict(commands.COMMANDS, {"compound.signal": stub}):
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                app.query_one(TabbedContent).active = "tab-compound"
+                await pilot.pause()
+                app.query_one("#compound-adopt", Button).press()
+                await pilot.pause()
+                self.assertIn("nothing to adopt", text_of(app, "#compound-status"))
+                app.query_one("#compound-signal", Button).press()
+                await pilot.pause(0.3)
+                await app.workers.wait_for_complete()
+                await pilot.pause()
+                self.assertIn("53.4% (812) x+0.07", self.cell(app, "rsi", "learned hit (n)"))
+                self.assertEqual(self.cell(app, "rsi", "tuned to"), "period=11")
+                self.assertIn("x+0.00", self.cell(app, "ema_cross", "learned hit (n)"))
+                app.query_one("#compound-adopt", Button).press()
+                await pilot.pause()
+                self.assertIn("period=11", self.cell(app, "rsi", "parameters"))
+                self.assertEqual(self.cell(app, "rsi", "tuned to"), "")
+        saved = json.loads(compound.config_path().read_text())["config"]
+        self.assertEqual(saved["components"]["rsi"]["params"]["period"], 11)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 18
-Delta: v17 to v18; compound five-minute scorecard, forward tester, skill and full-suite command.
+Version: 19
+Delta: v18 to v19; adaptive compound weights from each metric's running hit rate.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -127,4 +127,10 @@ Add looking at the prediction markets as another item to consider.
 
 ```text
 Read this file /Users/mitch/dev/solmargintrader/5minleveragestrategies.json and create a skill which can check each metric, assign a score to it, and incorporate it into a larger aggregated up/down indication for the next 5 minutes. What else should be checked? The entire technicals arsenal? recent news? An analysis of what lifecycle stage they are at? Implement all of it as a compound strategy tester, where in this tab we will be choosing more than one strategy to test going forward as well as back testing. SO I will need to be able to toggle each choosable item as well as adjust the numbers associated with it. Also tell me what command I need to run to pull new backtesting data, and run a new full suite of back tests on all coins all strategies with all configurationsl
+```
+
+## v19 - 2026-11-07 (adaptive compound weights)
+
+```text
+What if we set each metric in the compound set and then multiplied it by the percent number of times it's right. And then every time it makes a prediction that percentage count is updated so over time it will naturally favor the metrics that are most often correct without a large number of manual steps.
 ```
