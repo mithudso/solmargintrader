@@ -150,6 +150,13 @@ class SweepRunner:
         """True while a sweep is in flight."""
         return self._thread is not None and self._thread.is_alive()
 
+    def join(self, timeout: float | None = None) -> bool:
+        """Wait for the running sweep to finish. True when no sweep is left running."""
+        thread = self._thread
+        if thread is not None:
+            thread.join(timeout)
+        return not self.running
+
     def cancel(self) -> None:
         """Ask the worker to stop at the next configuration boundary."""
         self._cancel.set()

@@ -19,11 +19,13 @@ so that a future live surface has to pass through a gate rather than inherit one
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Any
 
-CONFIG_DIR = Path.home() / ".config" / "soltui"
+# SOLTUI_CONFIG_DIR exists so tests and the bridge parity suite never touch the owner's real config.
+CONFIG_DIR = Path(os.environ.get("SOLTUI_CONFIG_DIR") or Path.home() / ".config" / "soltui")
 CONFIG_PATH = CONFIG_DIR / "config.yaml"
 CONFIG_PATH_JSON = CONFIG_DIR / "config.json"
 
@@ -66,6 +68,10 @@ class Settings:
     # the config file round-trips through YAML/JSON without a custom
     # representer; `signals.from_dict()` rebuilds and validates the dataclass.
     signal_defaults: dict[str, Any] = field(default_factory=dict)
+    # Roster entries with their parameters ([{"name", "params"}]). `enabled_strategies` keeps only
+    # names, which loses pinned params across a restart; the command registry persists every roster
+    # change here so a CLI/API/extension call and the TUI see the same roster. Empty = use the names.
+    roster: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         """Plain dict for serialisation."""

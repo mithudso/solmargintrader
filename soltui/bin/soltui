@@ -4,6 +4,10 @@
 #   soltui              the console (python -m soltui.tui)
 #   soltui app          the macOS menu-bar indicator (python -m soltui.app)
 #   soltui serve        the console in a browser window (python -m soltui.serve)
+#   soltui call <name> [--param k=v] [--json '{}']   run one registry command; prints the envelope
+#   soltui list         every registry command
+#   soltui api          the HTTP API on 127.0.0.1 (token in ~/Library/Application Support/soltui/api-token)
+#   soltui host-install install|uninstall|status   Chrome native-messaging host registration
 #   soltui <module> ... any other soltui module, e.g. `soltui bgworker --asset SOL`
 #
 # Install once:  ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui   (from the repo root)
@@ -20,6 +24,15 @@ PY="${SOLTUI_PYTHON:-$HOME/.venvs/soltui/bin/python}"
 [[ -x "$PY" ]] || PY="$(command -v python3)"
 
 module="tui"
+if [[ $# -gt 0 && ( "$1" == call || "$1" == list ) ]]; then
+  cd "$REPO"
+  exec "$PY" -m soltui.cli "$@"
+fi
+if [[ $# -gt 0 && "$1" == host-install ]]; then
+  shift
+  cd "$REPO"
+  exec "$PY" -m soltui.native_host_install "$@"
+fi
 if [[ $# -gt 0 && "$1" != -* ]]; then
   module="$1"
   shift
