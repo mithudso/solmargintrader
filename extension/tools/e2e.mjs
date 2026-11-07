@@ -10,6 +10,12 @@
  *   CHROME=/path/to/chrome node tools/e2e.mjs
  *   E2E_NO_SANDBOX=1 node tools/e2e.mjs      containers and CI runners without user namespaces
  *
+ * The soltui bridge is exercised end to end: the real extension talks to the
+ * soltui native messaging host (the production one when soltui is installed, a
+ * protocol-identical fixture otherwise; the run says which) and its replies are
+ * compared with what the extension's CLI and, with the real host, `soltui` print.
+ * Only commands soltui lists as read_only are ever called (e2e/lib/guard.mjs).
+ *
  * Scope, stated plainly: this verifies LOADING and DRY-RUN behaviour. It never
  * arms the extension, never signs, never sends a message that can change mode,
  * limits or keys (see e2e/lib/guard.mjs), and it blocks every network request
@@ -22,7 +28,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findChromeForTesting, launch } from '../e2e/lib/cdp.mjs';
-import { assertAllowedMessage, assertDisarmed } from '../e2e/lib/guard.mjs';
+import { execFile } from 'node:child_process';
+import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
+import { installHost } from '../e2e/lib/soltui-host.mjs';
 
 const EXT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOL = 'So11111111111111111111111111111111111111112';
@@ -74,7 +82,17 @@ try {
   console.error(`e2e: could not launch ${chromePath}: ${err.message}`);
   process.exit(2);
 }
-console.log(`browser   ${browser.version}\nextension ${browser.extensionId}\n`);
+console.log(`browser   ${browser.version}\nextension ${browser.extensionId}`);
+
+let host;
+try {
+  host = await installHost({ profile: browser.profile, extensionId: browser.extensionId });
+} catch (err) {
+  console.error(`e2e: ${err.message}`);
+  await browser.close();
+  process.exit(2);
+}
+console.log(`soltui    ${host.kind} native host\n`);
 
 const watchdog = setTimeout(async () => {
   console.error('e2e: global timeout');
@@ -325,6 +343,122 @@ try {
     // The one allowed home for the key is chrome.storage.local under `secrets`.
     const secrets = await sw.ev(`chrome.storage.local.get('secrets')`);
     eq(secrets.secrets?.apiKey, CANARY, 'the key is stored locally, where the design says it lives');
+  });
+
+  /* ------------------------------------------------------------ soltui bridge -- */
+
+  const runCli = (args, env = host.env) =>
+    new Promise((resolve) => {
+      execFile(process.execPath, [path.join(EXT, 'tools', 'cli.js'), ...args, '--json', '--ephemeral'],
+        { cwd: EXT, env, timeout: 60_000 },
+        (err, stdout, stderr) => resolve({ code: err?.code ?? 0, stdout, stderr }));
+    });
+  const same = (a, b, msg) => assert(JSON.stringify(a) === JSON.stringify(b), `${msg}\n  extension: ${JSON.stringify(a).slice(0, 300)}\n  other:     ${JSON.stringify(b).slice(0, 300)}`);
+
+  let listing;
+  await check('soltuiCommands through the real extension returns the same envelope as the extension CLI', async () => {
+    const res = await send('soltuiCommands');
+    assert(res.ok, `message failed: ${res.error}`);
+    assert(res.result.ok === true, `soltui list failed: ${JSON.stringify(res.result.error)}`);
+    listing = res.result.result;
+    assert(Array.isArray(listing) && listing.length > 0, 'soltui listed no commands');
+    assert(listing.every((c) => c.name && 'read_only' in c && 'long_running' in c && 'requires_confirm' in c && Array.isArray(c.params)), 'list entry missing a contract field');
+    const cli = await runCli(['soltuiCommands']);
+    assert(cli.code === 0, `CLI failed: ${cli.stderr}`);
+    same(res.result, JSON.parse(cli.stdout), 'extension and CLI list envelopes differ');
+  });
+  if (!listing) throw new Error('cannot continue without the soltui command list');
+
+  // A command that cannot change anything (read_only, no confirm, nothing required)
+  // and whose answer is stable across two calls, so a comparison is not a race.
+  let probe;
+  const candidates = listing.filter((c) => c.read_only === true && c.requires_confirm !== true && c.long_running !== true
+    && !(c.params ?? []).some((p) => p.required));
+  for (const c of candidates.slice(0, 8)) {
+    assertSoltuiCallAllowed(c.name, {}, listing);
+    const a = await send('soltuiCall', { command: c.name, params: {} });
+    const b = await send('soltuiCall', { command: c.name, params: {} });
+    if (a.ok && JSON.stringify(a.result) === JSON.stringify(b.result)) { probe = c; break; }
+  }
+
+  await check('a read-only soltuiCall through the real extension returns the same envelope as the extension CLI', async () => {
+    assert(probe, 'soltui lists no stable read-only command that needs no parameters');
+    assertSoltuiCallAllowed(probe.name, {}, listing);
+    const res = await send('soltuiCall', { command: probe.name, params: {} });
+    assert(res.ok, `message failed: ${res.error}`);
+    assert(res.result.command === probe.name, `envelope names ${res.result.command}`);
+    const cli = await runCli(['soltuiCall', '--command', probe.name]);
+    assert(cli.code === 0 || res.result.ok === false, `CLI failed: ${cli.stderr}`);
+    same(res.result, JSON.parse(cli.stdout), `${probe.name} envelopes differ between the extension and its CLI`);
+    console.log(`         compared ${probe.name}: ok=${res.result.ok}`);
+  });
+
+  if (host.cli) {
+    await check('the real extension returns the same envelope as `soltui list` and `soltui call` (the soltui CLI)', async () => {
+      const listed = await host.cli(['list']);
+      same((await send('soltuiCommands')).result, JSON.parse(listed.stdout), 'extension vs `soltui list`');
+      const called = await host.cli(['call', probe.name]);
+      const res = await send('soltuiCall', { command: probe.name, params: {} });
+      same(res.result, JSON.parse(called.stdout), `extension vs \`soltui call ${probe.name}\``);
+      // Byte-level: the CLI prints one line of JSON, and the extension's reply re-serialises to the same text.
+      eq(JSON.stringify(res.result), called.stdout.trim(), 'serialised envelope vs CLI line');
+      console.log(`         compared \`soltui call ${probe.name}\`: byte-identical`);
+    });
+  }
+
+  await check('an unknown soltui command is a clean refusal envelope, identical on the extension and its CLI', async () => {
+    // Sent raw on purpose, like the unknown-message probe above: it is a name soltui
+    // does not have, so it can only come back as unknown_command and runs nothing.
+    const res = await popup.ev(`chrome.runtime.sendMessage({ type: 'soltuiCall', command: 'e2e.no_such_command', params: {} })`);
+    assert(res.ok === true && res.result.ok === false, `unexpected: ${JSON.stringify(res)}`);
+    eq(res.result.error.code, 'unknown_command', 'error code');
+    const cli = await runCli(['soltuiCall', '--command', 'e2e.no_such_command']);
+    same(res.result, JSON.parse(cli.stdout), 'unknown-command envelopes differ');
+  });
+
+  await check('the dashboard SolTUI panel lists the registry commands, renders the result with textContent, and gates confirm', async () => {
+    const options = await browser.waitFor(() =>
+      dash.ev(`[...document.querySelectorAll('#soltuiCommand option')].map((o) => o.value)`).then((v) => (v.length ? v : null)));
+    assert(options, 'the panel never listed commands');
+    eq(options, listing.map((c) => c.name), 'panel options vs soltuiCommands');
+    // Run the read-only probe from the form and compare with the envelope.
+    await dash.ev(`(() => { const s = document.querySelector('#soltuiCommand'); s.value = ${JSON.stringify(probe.name)}; s.dispatchEvent(new Event('change')); })()`);
+    await dash.ev(`document.querySelector('#soltuiForm').requestSubmit()`);
+    const shown = await browser.waitFor(() =>
+      dash.ev(`document.querySelector('#soltuiResult').textContent`).then((t) => (t && t !== 'Running…' ? t : null)));
+    assert(shown, 'the panel showed no result');
+    const expected = (await send('soltuiCall', { command: probe.name, params: {} })).result;
+    eq(JSON.parse(shown), expected, 'panel result vs envelope');
+    assert(await dash.ev(`document.querySelector('#soltuiResult').children.length === 0`), 'result must be text, not markup');
+    // A requires_confirm command: Run is disabled until the box is ticked (never clicked here).
+    const gated = listing.find((c) => c.requires_confirm === true);
+    if (gated) {
+      await dash.ev(`(() => { const s = document.querySelector('#soltuiCommand'); s.value = ${JSON.stringify(gated.name)}; s.dispatchEvent(new Event('change')); })()`);
+      eq(await dash.ev(`document.querySelector('#soltuiForm button[type=submit]').disabled`), true, 'Run disabled before confirm');
+    }
+  });
+
+  await check('the 1-minute soltui build probe alarm is scheduled', async () => {
+    const alarms = await sw.ev(`chrome.alarms.getAll()`);
+    const build = alarms.find((a) => a.name === 'solmargintrader-soltui-build');
+    assert(build, `no build alarm in ${JSON.stringify(alarms)}`);
+    eq(build.periodInMinutes, 1, 'build alarm period');
+  });
+
+  await check('with the native host missing, the extension returns a clean failed envelope, not an exception', async () => {
+    host.remove();
+    try {
+      const res = await send('soltuiCommands');
+      assert(res.ok === true, `message failed: ${res.error}`);
+      eq(res.result.ok, false, 'envelope ok');
+      eq(res.result.error.code, 'failed', 'error code');
+      assert(/not available|could not be started/.test(res.result.error.message), `unhelpful message: ${res.result.error.message}`);
+      assert(/native_host_install/.test(res.result.error.message), 'message does not say how to install the host');
+    } finally {
+      host.restore();
+    }
+    const back = await send('soltuiCommands');
+    assert(back.result.ok === true, 'host did not come back after the manifest was restored');
   });
 
   /* ------------------------------------------------------------ network audit -- */

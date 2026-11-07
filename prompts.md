@@ -49,5 +49,5 @@ The attached screenshot shows the Backtest tab status: "error: Traceback (most r
 Make everything available in the tui also available via the extension, and using the same mechanisms and calls, which will require a helper script. The extension has ID: pnokcppamfghgaimmmghoegjllhonhbh make it auto reload on update. All calls should be available via the extension, TUI, CLI, and API with the same output response, testing, verification, logging, and access.
 ```
 
-Workstream P (Python side) of the soltui command bridge; workstream X builds the extension side against the same contract.
+Workstream P (Python side) of the soltui command bridge, and workstream X (the extension side: soltuiCommands/soltuiCall, transports, `nativeMessaging`, dashboard panel, auto-reload, tests, e2e); workstream X builds the extension side against the same contract.
 

@@ -201,5 +201,5 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
     }
   };
 
-  return { call, on, targets, attach, evaluate, waitFor, extensionId, version, close };
+  return { call, on, targets, attach, evaluate, waitFor, extensionId, version, profile, close };
 }

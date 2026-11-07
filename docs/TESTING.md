@@ -4,18 +4,18 @@
 python3 -m unittest discover -s backtester/tests -t .   # 681 tests
 python3 -m unittest discover -s soltui/tests -t .       # 449 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 242 tests
+cd extension && npm test                                # 303 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1405 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+1466 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 242 tests cover
+## Extension — what the 303 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -29,8 +29,10 @@ nothing caught it.
 | Wallet | base58 against real mints and the all-zero pubkey; shortvec boundaries; signature insertion into the correct slot; non-signer refused |
 | Crypto | Sealed-seed round trip; wrong passphrase fails closed; fresh salt and IV per seal; Ed25519 signing |
 | **Surface parity** | Every command routable over the API; `GET` restricted to read-only; CLI help lists all commands and every argument; UI messages all map to real commands |
+| **soltui bridge** | `soltuiCall` returns the identical envelope through the extension message, the CLI and the API; a refusal, an unknown command and a missing host are the same clean envelope everywhere; the confirm flag is forwarded untouched; a running soltui command does not hold the engine lock; transports (port and child process) time out, ignore other ids and reject junk frames |
+| **Auto-reload gate** | First observation only stores the hash; no reload while a tick is queued or running (the change is retried, not forgotten); the reload runs inside the engine lock and holds it; an unreachable host never reloads and is logged once; a failed `reload()` restores the old hash |
 
-The parity suite probes all 23 commands with a deliberately invalid argument, which proves the route
+The parity suite probes all 25 commands with a deliberately invalid argument, which proves the route
 resolved **without executing the handler** — no side effects, no network calls.
 
 ## What is NOT covered
@@ -57,7 +59,7 @@ Read this before trusting anything with money.
 
 `npm run e2e` (`extension/tools/e2e.mjs`, helpers in `extension/e2e/`) launches Chrome for Testing
 headless, loads `extension/` with `Extensions.loadUnpacked` over the DevTools pipe, and drives the
-real service worker, popup and dashboard. It uses Node built-ins only. 14 checks:
+real service worker, popup and dashboard. It uses Node built-ins only. 20 checks (21 with the production soltui host):
 
 | Check | What it proves |
 | --- | --- |
@@ -70,6 +72,7 @@ real service worker, popup and dashboard. It uses Node built-ins only. 14 checks
 | Rails fail closed | Missing, NaN or malformed state and limits block, run in the browser |
 | Secrets | A canary API key appears in no DOM, no response and no `chrome.storage.sync` |
 | Network audit | Chrome-level interception saw only keyless GET price reads; every other request was blocked |
+| soltui bridge | The real extension talks to the soltui native messaging host (a host manifest is written into the throwaway profile's `NativeMessagingHosts`). `soltuiCommands` and a read-only `soltuiCall` return the same envelope as the extension CLI, and with the production host as `soltui list` / `soltui call`, byte for byte. An unknown command and a missing host are clean failed envelopes. The dashboard SolTUI panel lists the registry and shows the result as text. The 1-minute build probe alarm exists. The run says which host it used: the production host when soltui is installed, a protocol-identical fixture (`e2e/fixtures/`) where it is not, for example the Linux CI runner. `SOLTUI_E2E_HOST=real` fails the run if the production host cannot start |
 | Disarmed at the end | The run never changed `armed` or the kill switch |
 
 Safety is structural: `e2e/lib/guard.mjs` allowlists the messages the harness may send and

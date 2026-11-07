@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T07:23:51+00:00",
+  "generatedAt": "2026-11-07T07:34:15+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 276,
+      "matchingFiles": 283,
       "shown": 30,
       "files": [
         {
@@ -74,11 +74,15 @@
           "hits": 30
         },
         {
+          "path": "extension/README.md",
+          "hits": 26
+        },
+        {
           "path": "skills/trading-and-investing/references/volatility-and-pricing.md",
           "hits": 22
         },
         {
-          "path": "extension/README.md",
+          "path": "extension/src/core/commands.js",
           "hits": 21
         },
         {
@@ -98,6 +102,10 @@
           "hits": 20
         },
         {
+          "path": "docs/API.md",
+          "hits": 20
+        },
+        {
           "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
           "hits": 20
         },
@@ -106,20 +114,16 @@
           "hits": 19
         },
         {
+          "path": "extension/tools/e2e.mjs",
+          "hits": 19
+        },
+        {
           "path": "skills/trading-and-investing/references/the-greeks.md",
           "hits": 19
         },
         {
-          "path": "extension/src/core/commands.js",
-          "hits": 18
-        },
-        {
           "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
           "hits": 18
-        },
-        {
-          "path": "docs/API.md",
-          "hits": 17
         },
         {
           "path": "research/coin-intelligence/eth-ethereum.md",
@@ -139,10 +143,6 @@
         },
         {
           "path": "skills/trading-and-investing/references/forex-and-currency-trading.md",
-          "hits": 16
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
           "hits": 16
         }
       ],
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 173,
+      "matchingFiles": 174,
       "shown": 30,
       "files": [
         {

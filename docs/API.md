@@ -22,7 +22,7 @@ curl -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 
 ## Commands
 
-`*` marks a required argument. 23 commands as of this writing.
+`*` marks a required argument. 25 commands as of this writing.
 
 ### Inspection — read-only, safe to poll
 
@@ -64,6 +64,16 @@ curl -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 | --- | --- | --- |
 | `tick` | `count`:number | One full tick: reconcile → ingest fills → plan → admit → place. `count` is capped at 50 |
 | `cancelOrder` | `venueOrderId`:string\* | Cancels one resting order and marks its intent cancelled |
+
+### SolTUI bridge — forwards to the soltui registry
+
+| Command | Arguments | Notes |
+| --- | --- | --- |
+| `soltuiCommands` | — | `GET`-able. The soltui command list as soltui's own envelope: `[{name, describe, params, read_only, long_running, requires_confirm}]` |
+| `soltuiCall` | `command`:string\*, `params`:json | `POST` only. Runs one soltui command by registry name and returns soltui's envelope `{ok, command, result, error}` unchanged under `result`. A `requires_confirm` command needs `confirm: true` inside `params`; soltui refuses (`forbidden`) without it. A missing or slow host is a `failed` or `timeout` envelope, still HTTP 200 |
+
+Both reach soltui through the `com.mitchhudson.soltui` native messaging host, the same way the extension does. They
+do not take the engine lock. See the [extension README](../extension/README.md#soltui-bridge-and-auto-reload).
 
 ### Destructive
 

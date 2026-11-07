@@ -418,14 +418,14 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 501
+      "lines": 561
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 615
+      "lines": 640
     },
     {
       "path": "extension/src/core/risk.js",
@@ -453,14 +453,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The tick loop: reconcile, then plan",
-      "lines": 559
+      "lines": 575
     },
     {
       "path": "extension/src/bg/service-worker.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 230
+      "lines": 283
     },
     {
       "path": "extension/src/jupiter/http.js",
@@ -544,7 +544,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dashboard view",
-      "lines": 375
+      "lines": 382
     },
     {
       "path": "extension/src/ui/popup.js",
@@ -586,7 +586,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dependency wiring",
-      "lines": 84
+      "lines": 88
     },
     {
       "path": "extension/test/core.test.js",
@@ -733,7 +733,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 220
+      "lines": 272
     },
     {
       "path": "soltui/tests",

@@ -8,6 +8,7 @@ import {
   FORBIDDEN_MESSAGES,
   assertAllowedMessage,
   assertDisarmed,
+  assertSoltuiCallAllowed,
 } from '../e2e/lib/guard.mjs';
 import { parseFrames } from '../e2e/lib/cdp.mjs';
 
@@ -47,4 +48,18 @@ test('parseFrames splits NUL-delimited JSON, keeps a partial tail and counts bad
   assert.deepEqual(b.frames, [{ id: 3 }, { id: 4 }]);
   assert.equal(b.rest, '');
   assert.equal(b.malformed, 1);
+});
+
+test('the harness may call a soltui command only if soltui lists it read-only and without confirm', () => {
+  const listing = [
+    { name: 'a.read', read_only: true, requires_confirm: false },
+    { name: 'b.write', read_only: false, requires_confirm: false },
+    { name: 'c.resume', read_only: true, requires_confirm: true },
+  ];
+  assert.equal(assertSoltuiCallAllowed('a.read', {}, listing).name, 'a.read');
+  assert.throws(() => assertSoltuiCallAllowed('b.write', {}, listing), /not a read-only/);
+  assert.throws(() => assertSoltuiCallAllowed('c.resume', {}, listing), /not a read-only/);
+  assert.throws(() => assertSoltuiCallAllowed('d.unlisted', {}, listing), /does not list/);
+  assert.throws(() => assertSoltuiCallAllowed('a.read', { confirm: true }, listing), /never sends confirm/);
+  assert.throws(() => assertSoltuiCallAllowed('a.read', {}, undefined), /does not list/);
 });

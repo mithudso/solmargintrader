@@ -24,6 +24,7 @@ import { snapshot, equityCurve, maxDrawdown, fillsToCsv } from './pnl.js';
 import { INTENT_STATUS, DEFAULT_CONFIG } from '../storage/store.js';
 import { MODE, MARGIN_SOURCE, leverageFeasibility } from '../venues/index.js';
 import { createSessionKey } from '../wallet/signer.js';
+import { soltuiList, soltuiCall } from './soltui.js';
 
 /** Argument types the surfaces know how to coerce. */
 export const TYPE = { STRING: 'string', NUMBER: 'number', BOOL: 'bool', JSON: 'json' };
@@ -35,6 +36,7 @@ export const TYPE = { STRING: 'string', NUMBER: 'number', BOOL: 'bool', JSON: 'j
  * @property {function} buildVenue () => venue, already wired with signer + key
  * @property {function} [clock]
  * @property {function} [log]
+ * @property {object} [soltui]    transport to the soltui host: request({op, command?, params?}, {timeoutMs}) => envelope
  */
 
 /* ----------------------------------------------------------------- helpers -- */
@@ -253,6 +255,29 @@ export const COMMANDS = {
       const venue = await deps.buildVenue();
       return { id: venue.id, kind: venue.kind, capabilities: venue.capabilities };
     },
+  },
+
+  /* ---- soltui bridge (src/core/soltui.js) ---- */
+
+  soltuiCommands: {
+    describe: 'List the soltui commands (name, params, read_only, long_running, requires_confirm) as soltui\'s own envelope.',
+    params: [],
+    readOnly: true,
+    handler: ({ deps }) => soltuiList(deps),
+  },
+
+  soltuiCall: {
+    describe:
+      'Run one soltui command by its registry name and return soltui\'s envelope unchanged. '
+      + 'A command that has requires_confirm in soltuiCommands needs confirm:true inside params.',
+    params: [
+      { name: 'command', type: TYPE.STRING, required: true, describe: 'A soltui registry name from soltuiCommands, for example liquidity.status.' },
+      { name: 'params', type: TYPE.JSON, describe: 'JSON object of that command\'s parameters, forwarded untouched.' },
+    ],
+    // soltui commands touch no extension state, and a backtest can run for
+    // minutes. Taking the engine's store lock would stall every tick behind it.
+    unlocked: true,
+    handler: ({ deps, args }) => soltuiCall(deps, { command: args.command, params: args.params ?? {} }),
   },
 
   /* ---- configuration (writes settings, never orders) ---- */
@@ -595,7 +620,7 @@ export async function runCommand({ name, args = {}, deps }) {
   const operation = () => command.handler({ deps, args, stopGeneration });
   // Tick owns its per-iteration queue entry so lifecycle/limit changes can run
   // between ticks in a count=N command. Read-only commands never mutate state.
-  return command.readOnly || name === 'tick' ? operation() : withStoreLock(deps.store, operation);
+  return command.readOnly || command.unlocked || name === 'tick' ? operation() : withStoreLock(deps.store, operation);
 }
 
 /** Machine-readable description of every command — powers CLI help and API discovery. */
