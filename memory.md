@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 40
-Delta: v39 to v40; Backtest tab picker and undertested background button.
+Version: 41
+Delta: v40 to v41; wallet scan kept across restarts; key-file rule reworded per owner.
 
 ## v1 - 2026-11-06
 
@@ -408,4 +408,12 @@ Target: prompt v32. Branch feat/backtest-tab-undertested, stacked on PR #68 (htt
 Completed: Backtest tab has a "Strategy to backtest" Select (whole roster or one roster label) and a line listing the roster; `backtest.run` takes optional `labels` and refuses labels not in the roster. The old "Run Untested Sweep" ran research/sweep_untested.py, which printed the untested names and then backtested a fixed handful on one horizon, so it looked like it found work and did none. The button is now "Backtest untested + little-tested": `queue.backtest` scope `undertested` (never tested, or fewer than `min_runs`=3 recorded configurations for the asset) with `max_tier=1` (card parameters plus near variations), started immediately in the background worker; progress mirrors into `#backtest-bg-status` each tick. `backtest.untested_sweep` stays registered for other surfaces. 53 buttons.
 
 Remaining: none in code.
+
+## v41 - 2026-11-07 (wallet across restarts, key-file access)
+
+Target: prompt v33. Finding: soltui settings already persist the wallet addresses (~/.config/soltui/config.yaml); what was lost was the scan, which lived only in the Wallet tab's widgets, so after a restart the tab was empty until Scan wallet. Fix: `portfolio.scan` keeps its result in `~/Library/Application Support/soltui/portfolio/last-scan.json` (mode 600); `portfolio.last` returns it; the real console (main() passes refresh_wallet=True) shows it at start and re-scans in the background. Test apps never read it.
+
+Key files: verified by running the loaders, never printing key material: `aero_lp.wallet.load_signer` with ~/.ssh/wallet.private controls 0x901a89cEC0608eB5435A915f006b45bD46405314; ~/.ssh/solana.private is a 64-byte keypair for EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV; both mode 600. CLAUDE.md rule 4 and liquidity/CLAUDE.md now say agents run the programs that load the keys to sign and move money (owner request 2026-11-07); key material is never printed or copied.
+
+Not changed: the extension's FULL_AUTO passphrase is not persisted (the vault would be pointless with the passphrase stored beside it), and extension live signing stays blocked without a semantic transaction verifier.
 

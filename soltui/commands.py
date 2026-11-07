@@ -1768,6 +1768,10 @@ def portfolio_scan(ctx: Context, p: dict[str, Any]) -> Any:
     if extra is not None and (not isinstance(extra, list) or not all(isinstance(t, str) for t in extra)):
         raise CommandError("bad_params", 'parameter "tokens" must be a list of addresses')
     result = _portfolio_scan(ctx, chain, extra)
+    try:
+        portfolio_mod.save_last_scan(result, chain)
+    except OSError as exc:
+        result.setdefault("notes", []).append(f"scan not kept for the next start: {exc}")
     # A one-chain scan is not a snapshot of the whole portfolio; recording it would read as the others
     # having gone to zero.
     if p.get("record", True) and result["chains"] and chain == "all":
@@ -1776,6 +1780,13 @@ def portfolio_scan(ctx: Context, p: dict[str, Any]) -> Any:
         except OSError as exc:
             result["notes"] = [f"scan not recorded: {exc}"]
     return result
+
+
+@command("portfolio.last",
+         "The newest wallet scan kept on disk ({chain, saved_at, result}, or result null), so a console "
+         "shows the wallet at once after a restart. No network.")
+def portfolio_last(ctx: Context, p: dict[str, Any]) -> Any:
+    return portfolio_mod.load_last_scan() or {"chain": None, "saved_at": None, "result": None}
 
 
 @command("portfolio.snapshot",

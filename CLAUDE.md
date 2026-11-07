@@ -47,7 +47,9 @@ Conditions:
    transaction (`eth_simulateV1` on Base, `simulateTransaction` on Solana). Real money tests what survived that.
 2. Record the reason and the evidence before sending, and report every transaction hash to the owner.
 3. Keep each test as small as the test allows.
-4. Never read, print or copy a key file. Programs load it themselves, and it must stay mode 600.
+4. Agents have the key files: run the programs that load them to sign and move money (the owner asked for
+   this explicitly on 2026-11-07; `liquidity`'s `load_signer` checks owner, mode 600 and the address). Never
+   print, paste or copy key material into chat, logs, commits or other files, and keep both files mode 600.
 5. The liquidity daemon still obeys its kill switch and the caps in `~/.aero-lp/config.toml`. Never raise a
    cap or lower `min_net_apr` without the owner asking (`liquidity/CLAUDE.md`).
 6. Never visit or call the contracts or sites of unsolicited airdrop tokens. Burning them and closing their
@@ -101,7 +103,7 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 829 tests
-python3 -m unittest discover -s soltui/tests -t .       # 787 tests (~610s)
+python3 -m unittest discover -s soltui/tests -t .       # 791 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 313 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive

@@ -574,7 +574,7 @@ class SolTuiApp(App):
     EDITOR_HEIGHT = 16
 
     def __init__(self, settings: Settings | None = None, *, ui_state_path: Path | None = None,
-                 ensure_autopilot: bool = False) -> None:
+                 ensure_autopilot: bool = False, refresh_wallet: bool = False) -> None:
         super().__init__()
         # Where the editor's height and open/closed state persist. None (every test) keeps them
         # in memory, so no test reads or writes the owner's real layout.
@@ -582,6 +582,9 @@ class SolTuiApp(App):
         # The real console starts any coin's training loop that autopilot wants running; a test
         # app must never spawn background processes.
         self._ensure_autopilot = ensure_autopilot
+        # The real console shows the last kept wallet scan at start and re-scans in the background;
+        # a test app must neither read the owner's kept scan nor reach the network.
+        self._refresh_wallet = refresh_wallet
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
         # periodic table refresh does not reload an identical preview and reset its scroll.
@@ -1052,6 +1055,7 @@ class SolTuiApp(App):
         self._refresh_exec_choices()
         self._refresh_key_sources()
         self._refresh_portfolio_notice(toast=True)
+        self._wallet_restore()
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self._refresh_liquidity(force=True)
@@ -2414,6 +2418,24 @@ class SolTuiApp(App):
             contracts.add_columns("chain", "holding", "kind", "address", "program", "explorer")
             yield contracts
 
+    def _wallet_restore(self) -> None:
+        """Real console only: show the newest kept scan at once, then refresh it in the background."""
+        if not self._refresh_wallet:
+            return
+        env = self._call("portfolio.last", quiet=True)
+        last = env["result"] if env["ok"] else {}
+        if last.get("result"):
+            chain = last.get("chain") or "all"
+            select = self.query_one("#wallet-chain", Select)
+            if chain in [value for _, value in select._options]:
+                select.value = chain
+            self._render_wallet({"ok": True, "result": last["result"]})
+            self.query_one("#wallet-status", Static).update(
+                f"last scan {last['result'].get('scanned_at', '?')} (kept from before the restart)"
+                + "; refreshing…")
+        if self.settings.solana_address or self.settings.base_address:
+            self._wallet_worker()
+
     @on(Button.Pressed, "#wallet-scan")
     def _wallet_scan(self) -> None:
         self.query_one("#wallet-status", Static).update("scanning… (public endpoints are rate limited)")
@@ -3464,7 +3486,8 @@ class SolTuiApp(App):
 
 def main(argv: list[str] | None = None) -> int:
     """Entry point for `python3 -m soltui.tui`."""
-    SolTuiApp(ui_state_path=config_mod.CONFIG_DIR / "tui.json", ensure_autopilot=True).run()
+    SolTuiApp(ui_state_path=config_mod.CONFIG_DIR / "tui.json", ensure_autopilot=True,
+              refresh_wallet=True).run()
     return 0
 
 

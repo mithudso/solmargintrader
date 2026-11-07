@@ -1223,6 +1223,46 @@ class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("not in the roster", env["error"]["message"])
 
 
+class WalletRestoreTests(unittest.IsolatedAsyncioTestCase):
+    """After a restart the Wallet tab shows the last scan at once, then refreshes it."""
+
+    async def test_last_scan_is_shown_and_refreshed_at_start(self):
+        import os
+        from soltui import portfolio
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        kept = {"scanned_at": "2026-11-07 09:00", "chains": {}, "partial": False, "total_usd": 42.0,
+                "skipped": [], "counts": {"holdings": 1, "stakes": 0, "positions": 0, "contracts": 0,
+                                          "airdrop_flagged": 0}}
+        scans = []
+        real = commands.COMMANDS["portfolio.scan"]
+
+        def handler(ctx, p):
+            scans.append(p.get("chain"))
+            return {**kept, "scanned_at": "2026-11-07 10:00", "total_usd": 43.0}
+
+        stub = commands.Command("portfolio.scan", real.describe, handler, real.params, real.read_only,
+                                real.long_running, real.requires_confirm)
+        with mock.patch.dict(os.environ, {"SOLTUI_SUPPORT_DIR": tmp.name}), \
+                mock.patch.dict(commands.COMMANDS, {"portfolio.scan": stub}):
+            portfolio.save_last_scan(kept, "all")
+            app = SolTuiApp(make_settings(), refresh_wallet=True)
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await pilot.pause()
+                self.assertTrue("42.00" in text_of(app, "#wallet-summary")
+                                or "43.00" in text_of(app, "#wallet-summary"))
+                await app.workers.wait_for_complete()
+                await pilot.pause()
+                self.assertIn("43.00", text_of(app, "#wallet-summary"))
+        self.assertEqual(scans, ["all"])
+
+    async def test_a_test_app_never_reads_the_kept_scan(self):
+        app = SolTuiApp(make_settings())
+        with mock.patch("soltui.portfolio.load_last_scan", side_effect=AssertionError("must not read")):
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await pilot.pause()
+
+
 class UntestedSweepCommandTest(unittest.TestCase):
     """The Backtest tab's "Run Untested Sweep" button (2026-11-07 regression)."""
 

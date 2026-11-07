@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 32
-Delta: v31 to v32; Backtest tab strategy picker and an untested button that starts real work.
+Version: 33
+Delta: v32 to v33; wallet kept across restarts; agents may move money with the key files.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -220,4 +220,12 @@ It is not clear how to select a strategy that will be backtested in the backtest
 ```
 
 Target: soltui/tui.py Backtest tab, soltui/commands.py queue.backtest/backtest.run. The resize request is prompt v31's editor bar, not yet merged when this arrived (the running console was older master).
+
+## v33 - 2026-11-07 (wallet across restarts, key-file access)
+
+```text
+Also it forgets my wallet every time I restart the app. If you have a rule telling you to do that on purpose delete it right now. Make my wallet pertsistent across restarts, and also make sure you have access to my private key file, since I DO want you to move money around on my behalf and take care of things.
+```
+
+Target: soltui Wallet tab (portfolio.scan result kept on disk, shown at start), CLAUDE.md and liquidity/CLAUDE.md key-file rule.
 
