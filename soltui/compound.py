@@ -69,9 +69,10 @@ HYPERLIQUID_INFO = "https://api.hyperliquid.xyz/info"
 NEWS_FEEDS = ("https://www.coindesk.com/arc/outboundfeeds/rss/", "https://cointelegraph.com/rss")
 USER_AGENT = "soltui-compound/1.0 (read-only research)"
 LIVE_BARS = 600
-# With adaptive weighting on, a week of bars gives each metric a track record to learn from
-# even before the forward ledger has any history (2,016 bars = 7 Coinbase requests).
-ADAPTIVE_LIVE_BARS = 2016
+# With adaptive weighting on, the fetched bars give each metric its track record even before the
+# forward ledger has any history. Fetch up to the whole record window (two weeks = 4,032 bars,
+# 14 Coinbase requests).
+ADAPTIVE_LIVE_BARS = 4032
 HTTP_TIMEOUT = 15
 
 # Names a headline must contain (case-insensitive, word-bounded) to count for an asset.
@@ -405,40 +406,34 @@ def component_sig(cid: str, params: Mapping[str, Any]) -> str:
 
 
 def ledger_seed(ledger: Sequence[Mapping[str, Any]], cfg: Mapping[str, Any],
-                window_start: int) -> dict[str, tuple[float, float]]:
-    """(hits, calls) per metric from resolved forward calls made BEFORE the scored window.
+                window_start: int) -> dict[str, list[tuple[int, float, float]]]:
+    """Resolved forward calls made BEFORE the scored bars, per metric, as (k, hit, call).
 
-    Calls inside the window are counted again by `scorecard.adaptive_counts` from the bars
-    themselves, so only earlier ones are taken here. Each is decayed so that it weighs exactly
-    what it would have weighed had the window started at its bar (see adaptive_counts: a call at
-    relative bar k contributes lam**(t - k - 1) at bar t; the seed enters as lam**(t + 1)).
+    k is the call's bar index relative to the first scored bar (k < 0). Calls inside the scored
+    bars are counted again by `scorecard.adaptive_counts` from the bars themselves, so only
+    earlier ones are taken, and only when the metric's settings then match its settings now.
+    Calls older than the record window are left out; adaptive_counts expires the rest on time.
     """
     agg = cfg["aggregate"]
-    lam = 0.5 ** (1.0 / float(agg["adaptive_halflife"]))
     entry = float(agg["entry"])
+    window = int(agg["adaptive_window"])
     outcome = {r["id"]: float(r["ret_bps"]) for r in ledger if r.get("type") == "resolve" and "ret_bps" in r}
     sigs = {cid: component_sig(cid, e["params"]) for cid, e in cfg["components"].items()}
-    seed: dict[str, list[float]] = {}
+    seed: dict[str, list[tuple[int, float, float]]] = {}
     seen: set[str] = set()
     for call in ledger:
         if call.get("type") != "call" or call.get("id") in seen or call.get("id") not in outcome:
             continue
         seen.add(call["id"])
         k = (int(call["bar_ts"]) - window_start) // 300
-        if k >= 0:
-            continue
         ret = outcome[call["id"]]
-        if ret == 0:
+        if k >= 0 or k + 1 < -window or ret == 0:
             continue
-        weight = lam ** (-k - 2)
         for cid, s in (call.get("scores") or {}).items():
             if s is None or abs(s) < entry or (call.get("sigs") or {}).get(cid) != sigs.get(cid):
                 continue
-            acc = seed.setdefault(cid, [0.0, 0.0])
-            acc[1] += weight
-            if (s > 0) == (ret > 0):
-                acc[0] += weight
-    return {cid: (v[0], v[1]) for cid, v in seed.items()}
+            seed.setdefault(cid, []).append((k, 1.0 if (s > 0) == (ret > 0) else 0.0, 1.0))
+    return seed
 
 
 def _needs(cfg: Mapping[str, Any], *ids: str) -> bool:
@@ -452,7 +447,7 @@ def live_inputs(asset: str, cfg: Mapping[str, Any], events: Sequence[Mapping[str
     """(bars, aux, ctx snapshot) for scoring the latest closed bar."""
     asset = _asset(asset)
     agg = cfg["aggregate"]
-    n_bars = max(LIVE_BARS, min(ADAPTIVE_LIVE_BARS, int(agg["adaptive_halflife"]))) if agg["adaptive"] else LIVE_BARS
+    n_bars = max(LIVE_BARS, min(ADAPTIVE_LIVE_BARS, int(agg["adaptive_window"]))) if agg["adaptive"] else LIVE_BARS
     raw = fetch_closed_candles(asset, now=now, get=get, bars=n_bars)
     closes_all = dict(zip(raw["ts"].astype(int).tolist(), raw["close"].tolist(), strict=True))
     segs = sc.contiguous_segments(raw["ts"])

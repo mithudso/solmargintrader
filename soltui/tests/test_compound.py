@@ -230,7 +230,7 @@ class ForwardLedgerTests(TempConfig):
 
     def test_ledger_seed_counts_only_earlier_calls_with_matching_parameters(self) -> None:
         cfg = sc.default_config()
-        cfg["aggregate"]["adaptive_halflife"] = 4
+        cfg["aggregate"]["adaptive_window"] = 6
         sig = compound.component_sig("rsi", cfg["components"]["rsi"]["params"])
         stale = compound.component_sig("rsi", {**cfg["components"]["rsi"]["params"], "period": 9})
         W = T0 + 3000
@@ -238,17 +238,15 @@ class ForwardLedgerTests(TempConfig):
         def call(i, bar_ts, score, s=sig):
             return {"type": "call", "id": f"c{i}", "bar_ts": bar_ts, "scores": {"rsi": score}, "sigs": {"rsi": s}}
 
-        ledger = [call(1, W - 300, 0.6), {"type": "resolve", "id": "c1", "ret_bps": 3.0},       # right, k=-1
-                  call(2, W - 600, -0.6), {"type": "resolve", "id": "c2", "ret_bps": 2.0},      # wrong, k=-2
-                  call(3, W, 0.9), {"type": "resolve", "id": "c3", "ret_bps": 1.0},             # inside window
-                  call(4, W - 900, 0.9, stale), {"type": "resolve", "id": "c4", "ret_bps": 1.0},  # other params
-                  call(5, W - 1200, 0.1), {"type": "resolve", "id": "c5", "ret_bps": 1.0},      # abstained
-                  call(6, W - 1500, 0.8)]                                                       # unresolved
+        ledger = [call(1, W - 300, 0.6), {"type": "resolve", "id": "c1", "ret_bps": 3.0},        # right, k=-1
+                  call(2, W - 600, -0.6), {"type": "resolve", "id": "c2", "ret_bps": 2.0},       # wrong, k=-2
+                  call(3, W, 0.9), {"type": "resolve", "id": "c3", "ret_bps": 1.0},              # inside the bars
+                  call(4, W - 900, 0.9, stale), {"type": "resolve", "id": "c4", "ret_bps": 1.0},  # other settings
+                  call(5, W - 1200, 0.1), {"type": "resolve", "id": "c5", "ret_bps": 1.0},       # abstained
+                  call(6, W - 1500, 0.8),                                                        # unresolved
+                  call(7, W - 3000, 0.8), {"type": "resolve", "id": "c7", "ret_bps": 1.0}]       # past the window
         seed = compound.ledger_seed(ledger, cfg, W)
-        lam = 0.5 ** (1 / 4)
-        hits, calls = seed["rsi"]
-        self.assertAlmostEqual(hits, lam ** -1)
-        self.assertAlmostEqual(calls, lam ** -1 + lam ** 0)
+        self.assertEqual(sorted(seed["rsi"]), [(-2, 0.0, 1.0), (-1, 1.0, 1.0)])
 
     def test_forward_calls_record_metric_signatures(self) -> None:
         venue = Venue(now=T0 + 300 * 19 + 10)

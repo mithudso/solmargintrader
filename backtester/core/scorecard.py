@@ -1024,8 +1024,10 @@ AGGREGATE_SPECS: tuple[ParamSpec, ...] = (
     P("adaptive", 1, 0, 1, "int", "1 = weight each metric by its own learned edge over a coin flip"),
     P("adaptive_prior", 100, 0, 100000, "float",
       "pseudo-calls at 50% every metric starts with; larger = slower to trust a streak"),
-    P("adaptive_halflife", 2016, 12, 1000000, "int",
-      "bars until an outcome counts half; 2016 = one week of 5m bars"),
+    P("adaptive_window", 4032, 12, 1000000, "int",
+      "only calls from the last N bars count, so the record is capped; 4032 = two weeks of 5m"),
+    P("adaptive_halflife", 0, 0, 1000000, "int",
+      "0 = every call in the window counts equally; N = calls also fade, counting half after N bars"),
     P("adaptive_flip", 0, 0, 1, "int", "1 = invert a metric that is reliably WRONG instead of muting it"),
     P("tune", 0, 0, 1, "int", "1 = each metric moves its numbers to a neighbouring setting once that "
       "neighbour is proving more accurate"),
@@ -1152,40 +1154,58 @@ def standalone_config(cfg: Mapping[str, Any], component_id: str) -> dict[str, An
 # -- evaluation --------------------------------------------------------------------------------
 
 
-def adaptive_counts(score: np.ndarray, close: np.ndarray, entry: float, halflife: float,
-                    seed: tuple[float, float] = (0.0, 0.0)) -> tuple[np.ndarray, np.ndarray]:
-    """(decayed hits, decayed calls) available when deciding at each bar.
+def adaptive_counts(score: np.ndarray, close: np.ndarray, entry: float, window: int, halflife: float = 0,
+                    seed: Sequence[tuple[int, float, float]] = ()) -> tuple[np.ndarray, np.ndarray]:
+    """(hits, calls) a metric has on record when deciding at each bar.
 
     A metric "calls" a bar when |score| >= entry; the call is right when the next bar moves the
     called way (unchanged closes are not counted). The call made at bar k is only known to be
-    right or wrong once bar k+1 has CLOSED, so it enters the count used at bar k+1, never at k.
-    That one-bar lag is what keeps the learned weights free of look-ahead, and the scorecard's
-    prefix-invariance test checks it with adaptive weighting on.
+    right or wrong once bar k+1 has CLOSED, so it enters the record used at bar k+1, never at k.
+    That one-bar lag keeps the learned weights free of look-ahead; the prefix-invariance test
+    checks it with adaptive weighting on.
 
-    Old outcomes decay with the half-life, so a metric that worked last month and stopped
-    working this week loses weight. `seed` is the (hits, calls) state just before bar 0, from
-    the forward ledger, already decayed to that point.
+    The record is CAPPED: only calls resolved within the last `window` bars count. Without a
+    cap, five months of history would make each new miss move the hit rate by a meaningless
+    amount; with it, a miss today moves it as much as a miss did on day one. `halflife` > 0
+    additionally fades calls inside the window.
+
+    `seed` holds earlier resolved calls from the forward ledger as (k, hit, call) with k the
+    call's bar index relative to bar 0 (k < 0). They expire from the window like any other call.
     """
     n = close.size
-    lam = 0.5 ** (1.0 / float(halflife))
+    w = int(window)
+    lam = 1.0 if not halflife else 0.5 ** (1.0 / float(halflife))
     vote = np.where(np.isfinite(score) & (np.abs(np.nan_to_num(score)) >= entry), np.sign(np.nan_to_num(score)), 0.0)
     move = np.zeros(n)
     move[:-1] = np.sign(np.diff(close))
     decided = (vote != 0) & (move != 0)
     decided[-1:] = False  # the last bar's outcome has not happened yet
     hit = decided & (vote == move)
-    x_hit = np.zeros(n)
-    x_call = np.zeros(n)
-    x_hit[1:] = hit[:-1]
-    x_call[1:] = decided[:-1]
+    # Extended timeline: w slots of pre-history (for ledger calls), then the n bars. Position
+    # w + j holds the outcomes that become known at bar j.
+    x_hit = np.zeros(w + n)
+    x_call = np.zeros(w + n)
+    x_hit[w + 1:] = hit[:-1]
+    x_call[w + 1:] = decided[:-1]
+    for k, h, c in seed:
+        pos = w + int(k) + 1
+        if 0 <= pos <= w:
+            x_hit[pos] += h
+            x_call[pos] += c
 
-    def decayed(x: np.ndarray, start: float) -> np.ndarray:
-        # S[t] = lam * S[t-1] + x[t], S[-1] = start. ewm on a zero-prepended series gives
-        # M[j] = lam*M[j-1] + (1-lam)*y[j] with M[0] = 0, so the sum is M / (1 - lam).
-        m = pd.Series(np.concatenate(([0.0], x))).ewm(alpha=1.0 - lam, adjust=False).mean().to_numpy()[1:]
-        return m / (1.0 - lam) + start * lam ** np.arange(1, n + 1)
+    def windowed(x: np.ndarray) -> np.ndarray:
+        # S_inf[q] = lam * S_inf[q-1] + x[q]; dropping everything older than w bars leaves
+        # S[q] = S_inf[q] - lam**w * S_inf[q-w]. With lam == 1 this is a rolling sum.
+        if lam == 1.0:
+            s_inf = np.cumsum(x)
+        else:
+            s_inf = pd.Series(np.concatenate(([0.0], x))).ewm(alpha=1.0 - lam, adjust=False).mean().to_numpy()[1:]
+            s_inf = s_inf / (1.0 - lam)
+        old = np.zeros_like(s_inf)
+        old[w:] = s_inf[:-w] if w else s_inf
+        return (s_inf - (lam ** w) * old)[w:]
 
-    return decayed(x_hit, seed[0]), decayed(x_call, seed[1])
+    return windowed(x_hit), windowed(x_call)
 
 
 def adaptive_multiplier(hits: np.ndarray, calls: np.ndarray, prior: float, flip: bool) -> np.ndarray:
@@ -1279,7 +1299,8 @@ def tune_component(comp: Component, bars: Bars, params: Mapping[str, Any], aux: 
     out = np.full(n, np.nan)
     moves: list[tuple[int, dict[str, Any]]] = []
     start, earliest = 0, 0
-    prior, entry, hl = agg["adaptive_prior"], agg["entry"], agg["adaptive_halflife"]
+    prior, entry = agg["adaptive_prior"], agg["entry"]
+    win, hl = agg["adaptive_window"], agg["adaptive_halflife"]
     while True:
         cands = [active] + neighbours(comp, active, agg["tune_step"])
         series, stats = [], []
@@ -1290,7 +1311,7 @@ def tune_component(comp: Component, bars: Bars, params: Mapping[str, Any], aux: 
                 if c is active:
                     raise
                 continue
-            h, k = adaptive_counts(s, bars.close, entry, hl)
+            h, k = adaptive_counts(s, bars.close, entry, win, hl)
             series.append((c, s, k))
             stats.append(beta_posterior(h, k, prior))
         cur_series = series[0][1]
@@ -1420,8 +1441,8 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     if agg["adaptive"] and n:
         seeds = aux_.get("adaptive_seed") or {}
         for cid in scores:
-            h, c = adaptive_counts(scores[cid], bars.close, agg["entry"], agg["adaptive_halflife"],
-                                   tuple(seeds.get(cid, (0.0, 0.0))))
+            h, c = adaptive_counts(scores[cid], bars.close, agg["entry"], agg["adaptive_window"],
+                                   agg["adaptive_halflife"], seeds.get(cid, ()))
             prior = agg["adaptive_prior"]
             learned[cid] = {
                 "hit_rate": np.where(c + prior > 0, (h + prior / 2.0) / np.maximum(c + prior, 1e-12), 0.5),

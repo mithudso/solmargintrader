@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 28
-Delta: v27 to v28; compound five-minute scorecard, forward tester, skill and full-suite command.
+Version: 30
+Delta: v29 to v30; adaptive compound weights over a capped two-week record, and evidence-gated tuning.
 
 ## v1 - 2026-11-06
 
@@ -318,3 +318,13 @@ Completed: backtester/core/scorecard.py (30 components, family dedupe, regime we
 Verification: backtester 802, soltui 742 pass (index gate rebuilt after commit). Independent review: 1 high (errored gate failed open), 6 medium (news partial outage, sweep crash loses rows, OOS reuse denominator, reset dropped events, resolution across gaps, full suite sweeping after a failed fetch); all fixed with regressions. Fee and funding-timestamp questions checked: no double fee (engine.py:200), funding time is the payment time. Sweep run 20261107T130441Z-f7fea5b2368e: 1,420 configurations over BTC/DOGE/ETH/SOL/ZEC 30d; none profitable OOS beyond luck; oracle (perfect one-bar call) nets -7 to -10 bps on four coins; reversion metrics >50% hit on all five, trend metrics <50% on nearly all.
 
 Remaining: user runs research/full_suite.py for a year of 5m data; consider reversion-leaning defaults only after that out-of-sample year; prediction-markets component (prompt v17) not wired into the compound.
+
+## v30 - 2026-11-07 (adaptive compound weights and tuning)
+
+Target: user asked to multiply each compound metric by how often it is right, updated after every prediction; then to apply Bayes to each miss and move settings toward what would have been right; then to cap the counted record at two weeks ("we can dial it back"). Stele TASK-822. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-adapt, branch feat/compound-adaptive-weights, PR #62. Previous work (PR #60, 41fa9e3) merged.
+
+Completed: scorecard adaptive_counts (one-bar-lagged hit/call counts over a capped record: only the last adaptive_window bars count, default 4032 = two weeks; optional half-life fade inside it, default off), adaptive_multiplier (Beta-prior posterior, edge 2p-1, mute or flip), beta_posterior, p_better_than, neighbours and tune_component (shadow settings at x(1-step)/x(1+step), move only when P(better) > tune_confidence with tune_min_calls, re-centre, cooldown). adaptive defaults ON, tune OFF. soltui: live window up to 4,032 bars when adaptive, ledger_seed passes earlier resolved calls (k, hit, call) still inside the window with matching component_sig; call rows record sigs and multipliers; tab columns learned hit (n) and tuned to, Adopt tuned settings button (46 buttons). Docs COMPOUND-5M.md, skill v1.1.0.
+
+Verification: backtester 817, soltui 745 pass. OOS hit rate of the default compound, static vs learned (two-week window): BTC 48.5/46.5, DOGE 44.0/55.6, ETH 45.6/52.0, SOL 46.3/50.2, ZEC 48.9/51.6; the window and the earlier one-week fade agree within 0.6 points. Tuning at 0.95 moved once in five coins; looser bars add a little inside noise. All returns still negative (16 bps round trip vs 6-9 bps moves). Live SOL: only reversion metrics earn weight.
+
+Remaining: user may shorten or lengthen adaptive_window after watching it; per-regime learned weights not built; a year of 5m data via research/full_suite.py before trusting any of it.

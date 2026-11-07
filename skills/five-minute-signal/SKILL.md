@@ -42,7 +42,8 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
    - `unavailable` (a live input is missing) or `warming up` → it did not vote. Never treat it
      as 0 or invent a value.
    - `learned_hit`, `learned_calls`, `adaptive_mult`, `p_better_than_coinflip` (adaptive=1, the
-     default): the metric's Bayesian record and the multiplier it earned. A multiplier of 0 means
+     default): the metric's Bayesian record over the last two weeks (`adaptive_window`) and the
+     multiplier it earned. A multiplier of 0 means
      it has not beaten a coin flip and did not count, however strong its score.
    - `tuned_params` (tune=1): settings the metric moved to on evidence; say so if present.
    - gates: `pass` or `blocking`. Any blocking gate makes the call FLAT; name it.

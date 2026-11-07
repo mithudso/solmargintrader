@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 19
-Delta: v18 to v19; adaptive compound weights from each metric's running hit rate.
+Version: 21
+Delta: v19 to v21; Bayesian updates with setting moves, and a two-week cap on the counted record.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -133,4 +133,16 @@ Read this file /Users/mitch/dev/solmargintrader/5minleveragestrategies.json and 
 
 ```text
 What if we set each metric in the compound set and then multiplied it by the percent number of times it's right. And then every time it makes a prediction that percentage count is updated so over time it will naturally favor the metrics that are most often correct without a large number of manual steps.
+```
+
+## v20 - 2026-11-07 (Bayes and moving settings)
+
+```text
+And then every time a metric is wrong you could apply bayes theorem to it and reduce its priors if necessary, but also do a calculation to see what it would have to be to be correct and move the settings in that direction.
+```
+
+## v21 - 2026-11-07 (cap the counted record)
+
+```text
+ The number of counted responses will need to have a cap so that in 5 months a wrong  choice doesn't change its weights so small an amount it's meaningless. I'm not sure how long to make it though. Let's set it for 2 weeks and then we can dial it back
 ```
