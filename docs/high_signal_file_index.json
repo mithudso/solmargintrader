@@ -418,7 +418,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 567
+      "lines": 572
     },
     {
       "path": "extension/src/core/commands.js",
@@ -544,7 +544,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dashboard view",
-      "lines": 385
+      "lines": 389
     },
     {
       "path": "extension/src/ui/popup.js",
@@ -614,7 +614,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The menu-bar app",
-      "lines": 253
+      "lines": 283
     },
     {
       "path": "soltui/menubar_launcher.py",
@@ -628,7 +628,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2378
+      "lines": 2420
     },
     {
       "path": "soltui/signals.py",
@@ -705,7 +705,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Configuration",
-      "lines": 192
+      "lines": 229
     },
     {
       "path": "soltui/setup_app.py",
@@ -733,7 +733,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 339
+      "lines": 360
     },
     {
       "path": "soltui/tests",

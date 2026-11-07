@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 18
-Delta: soltui read-only wallet discovery (PR B): Settings addresses, key-source row, portfolio.scan, Wallet tab, wallet (live) P&L section.
+Version: 19
+Delta: wallet monitoring from xpubs and addresses (prompts.md v10): Settings fields, UTXO/ETH scans, snapshots, hourly LaunchAgent, extension 0.2.1 button.
 
 ## v1 - 2026-11-06
 
@@ -201,3 +201,13 @@ Findings: Blockscout answers 403 (Cloudflare challenge) to scripts, Routescan do
 Safety: no field accepts private-key text; no key file is opened, read, hashed or printed; the scan sends no transaction and calls only balanceOf, symbol, decimals, name and tokenOfOwnerByIndex. Airdrop-looking tokens are flagged and excluded from totals.
 
 Not built (later, separately gated): swaps, signing, the live-run button.
+
+## v19 - 2026-11-07
+
+Target: prompts.md v10. Branch feat/wallet-xpubs, worktree /Users/mitch/dev/solmargintrader-wt-wallets.
+
+Completed: `soltui/hdwallet.py` (BIP32 public derivation, Base58Check, bech32, private-key refusal), `utxo_scan.py` (BTC/LTC/DOGE, gap limit 20, P2PKH/P2SH-P2WPKH/P2WPKH), `eth_scan.py`, `spot_prices.py` (Coinbase), `portfolio.py` (snapshots, changes, notice), `portfolio_agent.py` (hourly LaunchAgent com.mitchhudson.soltui.portfolio); Settings fields, redacted on every surface, config file mode 600; commands wallet.addresses, portfolio.snapshot, portfolio.changes, portfolio.notice; TUI and menu-bar notice; extension 0.2.1 "Use soltui Solana address" button. The owner's identifiers are only in the local config, not in this repository.
+
+Verification: soltui suite 669 tests, extension 313, check_docs agrees. Derivation checked on BIP32 vectors 1 and 2 and the BIP84 zpub vector. Live scan: Dogecoin read partial (BlockCypher 429); Base token discovery is partial (Blockscout blocked).
+
+Remaining: none for this request beyond the open partials above.

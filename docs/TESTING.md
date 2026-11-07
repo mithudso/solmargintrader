@@ -2,20 +2,20 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 703 tests
-python3 -m unittest discover -s soltui/tests -t .       # 597 tests (~300s)
+python3 -m unittest discover -s soltui/tests -t .       # 669 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 305 tests
+cd extension && npm test                                # 313 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1638 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+1718 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 305 tests cover
+## Extension — what the 313 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -137,7 +137,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 597 tests
+## soltui — 669 tests
 
 Slower than the others (~70s) because the TUI tests drive real render cycles. Three
 files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
