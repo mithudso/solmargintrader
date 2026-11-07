@@ -35,3 +35,16 @@ The next useful experiments would predeclare: a range/regime entry gate, a firm 
 ## Evidence and limits
 
 `research/results/grid_review_20261107.json` records the exact configuration, engine revision, source SHA256, slices and all nine results. An independent audit reproduced them. The older `research/results/ladder_grid_sol.csv` and its strategy-card tables preserve a different, pre-audit engine result; they should remain historical. Simulated fills and block resets do not validate the extension's live execution or recentering behavior.
+
+## Holdout: bars the review never saw (2026-11-07)
+
+The review's cache ended 2026-08-04. `research/grid_holdout.py` scores the **same predeclared ladder** (85%–115% of the first close, seven geometric rungs, $12 per rung, $144 account) on the 94 finished daily bars from 2026-08-05 through 2026-11-06. Nothing was fitted, and the 2026-11-07 bar is excluded because it was still forming. Result file: `research/results/grid_holdout_20261107.json` (records the data SHA256 and fetch command).
+
+| | Grid | Holding SOL |
+| --- | ---: | ---: |
+| Review costs (6 bps fee + 2 bps slippage) | **+0.83%** ($1.20 realized, 2 round trips) | **+21.6%** |
+| Twice those costs | +0.81% | +21.5% |
+
+SOL rose from $73.97 to $90.02. Price sat above the ladder on **80 of 94 bars**, so the grid held cash while the market rallied. +0.83% over 94 days is about 3% a year, below a staking or cash hurdle. Cost sensitivity is negligible here; the shortfall is idle capital, not fees.
+
+This is one 94-bar path in one regime. It does not refute the eight-block median of +7.67%, and it does not show the grid works. It confirms the structural point above: a ladder armed near the price earns only while price oscillates through it, and trades nothing once price leaves it. Any improvement still has to come from a regime gate or a tracking exit rule, tested on data like this that was not used to design it.

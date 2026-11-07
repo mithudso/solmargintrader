@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 36
-Delta: v35 to v36; triangular arbitrage card design completed and verified; delivery receipt tracked in TASK-829.
+Version: 37
+Delta: v35 to v37; triangular arbitrage card design and verification; preserved concurrent grid-holdout records.
 
 ## v1 - 2026-11-06
 
@@ -347,8 +347,16 @@ Verification: live wallet scan of the Settings address read $2.29 SOL and sized 
 
 Remaining: open Jupiter Perps positions are not read (no documented endpoint); per-regime learned weights; a year of 5m data via research/full_suite.py.
 
+## v35 - 2026-11-07 (grid holdout)
 
-## v35 - 2026-11-07
+Target: profitability review of the repo (prompts.md v28). Review verdict: strong safety/tests/docs, no measured edge, no realized profit, about $1 idle on the LP wallet; every tested strategy lost out of sample (PBO 0.70). Recommended: hurdle rule (beat jupSOL staking net of costs over 90 forward days), holdout rerun, forward shadow ledger, Trigger transaction verifier then one tiny live round trip, carry/yield backtest, regime-gated grid with a cancel path, monitoring (unified equity vs HODL, dead-man heartbeat, cache freshness, realized-vs-modelled costs).
+
+Completed: PR #55 gitignored the two CDP credential files (merged c01412a; never read). Holdout: fetched SOL 1d to the scratchpad (not the shared cache), added research/grid_holdout.py and research/results/grid_holdout_20261107.json, section in research/GRID-REVIEW.md. Predeclared ladder on 94 finished bars 2026-08-05..2026-11-06: +0.83% (about 3% a year) vs hold +21.6%; price above the ladder 80 of 94 bars; double costs +0.81%. Worktree /Users/mitch/dev/solmargintrader-wt-97230e9e, branch agent-97230e9e.
+
+Remaining: forward shadow ledger (dry-run against live prices, log modelled vs real fills); Trigger semantic verifier; carry/yield backtest; monitoring items above. grid_holdout.py has no unit test (thin glue over tested gridsim); add one with the counts update if it grows.
+
+
+## v36 - 2026-11-07
 
 Target: extend the existing triangular_arbitrage card, not add a duplicate strategy. Stele TASK-826; steps TASK-827 (feasibility), TASK-828 (design), TASK-829 (verify/deliver).
 
@@ -363,12 +371,14 @@ Evidence: original abstracts at https://arxiv.org/abs/2105.02784 and https://arx
 Remaining: write card; verify arithmetic, card suite and docs/index freshness; regenerate offline retrieval artifacts as required; review/commit/push/PR/CI/merge; preserve other sessions. Missing historical books and a runner are future implementation requirements, not unfinished deliverables for this design request.
 
 
-## v36 - 2026-11-07
+## v37 - 2026-11-07
 
-Completed on /Users/mitch/dev/solmargintrader-wt-01a1b691: existing backtester/strategy_cards/triangular_arbitrage.md is design v2.0. It contains the corrected worked example, reciprocal-ask conversion, exact fee hurdle, independent-book requirements, delayed three-leg replay, partial-fill/unwind accounting, capital/depth reservations, holdout and stress protocol, acceptance gates, required future fixtures, and original source links. No runner, registry, or live execution changed. Prompt v28 preserves the verbatim request.
+Completed on /Users/mitch/dev/solmargintrader-wt-01a1b691: existing backtester/strategy_cards/triangular_arbitrage.md is design v2.0. It contains the corrected worked example, reciprocal-ask conversion, exact fee hurdle, independent-book requirements, delayed three-leg replay, partial-fill/unwind accounting, capital/depth reservations, holdout and stress protocol, acceptance gates, required future fixtures, and original source links. No runner, registry, or live execution changed. Prompt v29 preserves the verbatim request.
 
 Verification: 40 strategy-card tests pass. Full backtester suite: 829 tests pass. scripts/check_docs.py passes (829 backtester, 313 extension, 33 mongo, 756 soltui discovered; only the backtester suite was run locally for this documentation change). research/verify_numbers.py passes its 1,084 existing research-figure checks; it does not validate literature figures in this card. Card arithmetic independently checked with decimal arithmetic. The first full-suite run failed only because index hashes were stale; offline index/build.py all repaired them and the next full run passed. No semantic indexing, model startup, data collection or live trading ran.
 
 Delivery: commit and PR cover the card, these workflow records, and the three offline retrieval indexes. TASK-829 holds the final PR/check/merge receipt after remote delivery. The shared master checkout and unrelated branches/worktrees remain owned by their active sessions.
 
 Remaining design work: none. Before any measured arbitrage result, a later implementation must audit venue/pair availability, obtain sequence-valid independent cross-pair books and fee/latency metadata, and implement/test the offline replay. The card deliberately remains spec-only with data_available false; profitability is unmeasured.
+
+Integration: preserved the concurrent grid-holdout merge d991ec5 (PR #65), including its prompt v28 and memory v35. This task's records are now prompt v29 and memory v36/v37. Regenerated offline retrieval indexes after combining both histories; final checks run on the integrated tree.

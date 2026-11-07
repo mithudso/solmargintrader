@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T15:24:23+00:00",
+  "generatedAt": "2026-11-07T15:25:18+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 255,
+      "matchingFiles": 257,
       "shown": 30,
       "files": [
         {
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 194,
+      "matchingFiles": 196,
       "shown": 30,
       "files": [
         {
@@ -367,11 +367,19 @@
           "hits": 26
         },
         {
+          "path": "research/GRID-REVIEW.md",
+          "hits": 26
+        },
+        {
           "path": "backtester/tests/test_engine_audit.py",
           "hits": 25
         },
         {
           "path": "docs/code-deep-optimizer-2026-11-06.md",
+          "hits": 25
+        },
+        {
+          "path": "memory.md",
           "hits": 25
         },
         {
@@ -388,10 +396,6 @@
         },
         {
           "path": "backtester/tests/test_strategy_cards.py",
-          "hits": 18
-        },
-        {
-          "path": "research/GRID-REVIEW.md",
           "hits": 18
         },
         {
@@ -417,10 +421,6 @@
         {
           "path": "docs/ARCHITECTURE.md",
           "hits": 16
-        },
-        {
-          "path": "docs/codebase-overview.md",
-          "hits": 15
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 183,
+      "matchingFiles": 184,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 179,
+      "matchingFiles": 181,
       "shown": 30,
       "files": [
         {
@@ -1261,7 +1261,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 140,
+      "matchingFiles": 141,
       "shown": 30,
       "files": [
         {
@@ -1672,7 +1672,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 120,
+      "matchingFiles": 121,
       "shown": 30,
       "files": [
         {
@@ -1810,7 +1810,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 105,
+      "matchingFiles": 106,
       "shown": 30,
       "files": [
         {
