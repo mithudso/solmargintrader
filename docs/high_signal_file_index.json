@@ -424,7 +424,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 561
+      "lines": 567
     },
     {
       "path": "extension/src/core/commands.js",
@@ -550,14 +550,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dashboard view",
-      "lines": 382
+      "lines": 385
     },
     {
       "path": "extension/src/ui/popup.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Popup view",
-      "lines": 125
+      "lines": 130
     },
     {
       "path": "extension/tools/cli.js",
@@ -871,7 +871,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 282
+      "lines": 297
     },
     {
       "path": "CONTRIBUTING.md",
