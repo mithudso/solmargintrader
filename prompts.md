@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 21
-Delta: v19 to v21; Bayesian updates with setting moves, and a two-week cap on the counted record.
+Version: 22
+Delta: v21 to v22; adaptive weights, Bayesian setting moves and a two-week record cap (v19 is the hourly index sweep).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -129,19 +129,25 @@ Add looking at the prediction markets as another item to consider.
 Read this file /Users/mitch/dev/solmargintrader/5minleveragestrategies.json and create a skill which can check each metric, assign a score to it, and incorporate it into a larger aggregated up/down indication for the next 5 minutes. What else should be checked? The entire technicals arsenal? recent news? An analysis of what lifecycle stage they are at? Implement all of it as a compound strategy tester, where in this tab we will be choosing more than one strategy to test going forward as well as back testing. SO I will need to be able to toggle each choosable item as well as adjust the numbers associated with it. Also tell me what command I need to run to pull new backtesting data, and run a new full suite of back tests on all coins all strategies with all configurationsl
 ```
 
-## v19 - 2026-11-07 (adaptive compound weights)
+## v19 - 2026-11-07
+
+```text
+Set the idle indexer to do an index sweep once an hour even if not idle.
+```
+
+## v20 - 2026-11-07 (adaptive compound weights)
 
 ```text
 What if we set each metric in the compound set and then multiplied it by the percent number of times it's right. And then every time it makes a prediction that percentage count is updated so over time it will naturally favor the metrics that are most often correct without a large number of manual steps.
 ```
 
-## v20 - 2026-11-07 (Bayes and moving settings)
+## v21 - 2026-11-07 (Bayes and moving settings)
 
 ```text
 And then every time a metric is wrong you could apply bayes theorem to it and reduce its priors if necessary, but also do a calculation to see what it would have to be to be correct and move the settings in that direction.
 ```
 
-## v21 - 2026-11-07 (cap the counted record)
+## v22 - 2026-11-07 (cap the counted record)
 
 ```text
  The number of counted responses will need to have a cap so that in 5 months a wrong  choice doesn't change its weights so small an amount it's meaningless. I'm not sure how long to make it though. Let's set it for 2 weeks and then we can dial it back

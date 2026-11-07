@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 30
-Delta: v29 to v30; adaptive compound weights over a capped two-week record, and evidence-gated tuning.
+Version: 32
+Delta: v31 to v32; adaptive compound weights over a capped two-week record, and evidence-gated tuning.
 
 ## v1 - 2026-11-06
 
@@ -319,7 +319,11 @@ Verification: backtester 802, soltui 742 pass (index gate rebuilt after commit).
 
 Remaining: user runs research/full_suite.py for a year of 5m data; consider reversion-leaning defaults only after that out-of-sample year; prediction-markets component (prompt v17) not wired into the compound.
 
-## v30 - 2026-11-07 (adaptive compound weights and tuning)
+## v31 - 2026-11-07 (Hourly index sweep)
+
+Target: "Set the idle indexer to do an index sweep once an hour even if not idle." Stele TASK-821. Reason: this Mac's load runs 8 to 12, so the load-under-2.0 rule never fired. index/idle.py: when the semantic index is stale and the machine is busy, a rebuild now starts anyway if an hour has passed since the last one started (state key last_build_at; INDEX_FORCE_INTERVAL seconds, 0 disables; never-rebuilt counts as due). A fresh index is never rebuilt; the lock and nice 19 still apply. `--install-schedule` writes ~/Library/LaunchAgents/com.mitchhudson.solmargintrader.index.plist (StartInterval 3600, runs `idle.py --once`, RunAtLoad false) and bootstraps it; `--uninstall-schedule` removes it. Tests: 9 added to test_index_search_tooling.py.
+
+## v32 - 2026-11-07 (adaptive compound weights and tuning)
 
 Target: user asked to multiply each compound metric by how often it is right, updated after every prediction; then to apply Bayes to each miss and move settings toward what would have been right; then to cap the counted record at two weeks ("we can dial it back"). Stele TASK-822. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-adapt, branch feat/compound-adaptive-weights, PR #62. Previous work (PR #60, 41fa9e3) merged.
 
