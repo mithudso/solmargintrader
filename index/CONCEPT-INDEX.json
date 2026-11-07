@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T15:44:07+00:00",
+  "generatedAt": "2026-11-07T16:55:57+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1949,12 +1949,12 @@
       "shown": 30,
       "files": [
         {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 72
+          "path": "soltui/tests/test_compound.py",
+          "hits": 84
         },
         {
-          "path": "soltui/tests/test_compound.py",
-          "hits": 59
+          "path": "research/RANKED_LISTS.md",
+          "hits": 72
         },
         {
           "path": "research/results/cpcv_combos_tables.md",

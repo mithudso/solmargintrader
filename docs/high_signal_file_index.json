@@ -656,7 +656,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3058
+      "lines": 3431
     },
     {
       "path": "soltui/signals.py",
@@ -712,7 +712,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 1431
+      "lines": 1674
     },
     {
       "path": "soltui/liquidity.py",
@@ -768,7 +768,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 393
+      "lines": 399
     },
     {
       "path": "soltui/tests",
@@ -1165,7 +1165,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 293
+      "lines": 326
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
