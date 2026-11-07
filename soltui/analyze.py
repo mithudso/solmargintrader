@@ -71,6 +71,19 @@ class Analysis:
     decisions: list[Any]           # list[decide.StrategyDecision]
     tally: dict[str, dict[str, int]]
     truncated: bool
+    # Close of the series' first bar, the base of `net_pct`; None when unreadable.
+    first_close: float | None = None
+
+    @property
+    def net_pct(self) -> float | None:
+        """Price change from the first bar to `as_of` (close / first close - 1).
+
+        The asset's own move over the history this replay used. It is data, not a strategy
+        result, which is why the Analyze tab labels it "backtest data price change".
+        """
+        if not self.first_close:
+            return None
+        return self.close / self.first_close - 1.0
 
     @property
     def actions(self) -> dict[str, int]:
@@ -167,18 +180,11 @@ def slice_to(arrays: dict, timestamps, as_of: datetime) -> tuple[dict, int]:
     return {k: v[:cutoff] for k, v in arrays.items()}, cutoff - 1
 
 
-def analyse(asset: str, interval: str = "1d", as_of: datetime | None = None,
-            keys: list[str] | None = None,
-            data_dir: Path | None = None) -> Analysis:
-    """Replay every strategy up to `as_of` and report what each one decided.
-
-    `as_of=None` means the last bar, which is what the Signals tab already shows;
-    supplying a timestamp is what makes this tab different.
-    """
+def _prepare(asset: str, interval: str, as_of: datetime | None, data_dir: Path | None):
+    """Load one series, slice it to `as_of` (before any replay) and describe the cut."""
     import pandas as pd
 
     from backtester.core.data import CsvLoader, frame_to_arrays
-    from research.decide import family_tally, strategy_decisions
 
     series = load_series(asset, interval, data_dir)
 
@@ -201,13 +207,65 @@ def analyse(asset: str, interval: str = "1d", as_of: datetime | None = None,
         sliced, idx = arrays, len(df) - 1
     else:
         sliced, idx = slice_to(arrays, ts.dt.tz_localize(None).to_numpy(), as_of)
-    resolved = ts.iloc[idx].to_pydatetime()
+    return sliced, idx, ts.iloc[idx].to_pydatetime(), truncated
 
-    decisions = strategy_decisions(sliced, keys=keys)
+
+def _first_close(asset: str, interval: str, data_dir: Path | None) -> float | None:
+    """Close of the series' first bar: the base for the price change the headline reports."""
+    import pandas as pd
+
+    path = (data_dir or DATA_DIR) / f"{asset}_{interval}.csv"
+    try:
+        first = float(pd.read_csv(path, usecols=["close"], nrows=1)["close"].iloc[0])
+    except (OSError, KeyError, ValueError, IndexError):
+        return None
+    return first if first > 0 else None
+
+
+def analyse(asset: str, interval: str = "1d", as_of: datetime | None = None,
+            keys: list[str] | None = None,
+            data_dir: Path | None = None, extra: list[Any] | None = None) -> Analysis:
+    """Replay every strategy up to `as_of` and report what each one decided.
+
+    `as_of=None` means the last bar, which is what the Signals tab already shows;
+    supplying a timestamp is what makes this tab different. `extra` is a list of
+    `(key, family, strategy)` for configurations that are not registry names (a Top 5
+    composite): each is replayed by the same `replay_targets`/`classify` pair.
+    """
+    from research.decide import family_tally, strategy_decisions
+
+    sliced, idx, resolved, truncated = _prepare(asset, interval, as_of, data_dir)
+    decisions = strategy_decisions(sliced, keys=keys) if (keys is None or keys) else []
+    for key, family, strategy in extra or []:
+        decisions.append(custom_decision(key, family, strategy, sliced))
     return Analysis(
         asset=asset, interval=interval, as_of=resolved, bar_index=int(idx),
         bars_used=int(len(sliced["close"])),
         close=float(sliced["close"][-1]),
         decisions=decisions, tally=family_tally(decisions),
-        truncated=truncated,
+        truncated=truncated, first_close=_first_close(asset, interval, data_dir),
     )
+
+
+def custom_decision(key: str, family: str, strategy: Any, sliced: dict):
+    """A StrategyDecision for a strategy object that is not a registry name.
+
+    Same two calls `decide.decide_strategy` makes (`replay_targets`, then `classify`), so a
+    Top 5 composite is judged by exactly the rule the registry strategies are.
+    """
+    from research.decide import (DEFAULT_TOLERANCE, INSUFFICIENT, StrategyDecision, classify,
+                                 replay_targets)
+
+    n = len(sliced["close"])
+    warmup = max(0, int(strategy.warmup_bars()))
+    params = dict(getattr(strategy, "params", {}))
+    if n <= warmup:
+        return StrategyDecision(key=key, name=str(strategy.name), family=family, action=INSUFFICIENT,
+                                target=None, previous=None, warmup=warmup, bars=n, params=params,
+                                note=f"needs > {warmup} bars, has {n}")
+    targets = replay_targets(strategy, sliced)
+    target = float(targets[-1])
+    previous = float(targets[-2]) if n >= warmup + 2 else None
+    return StrategyDecision(key=key, name=str(strategy.name), family=family,
+                            action=classify(previous, target, DEFAULT_TOLERANCE), target=target,
+                            previous=previous, warmup=warmup, bars=n, params=params)

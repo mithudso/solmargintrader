@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 6
-Delta: added the SolTUI 'Run Untested Sweep' ModuleNotFoundError request.
+Version: 8
+Delta: added the Top 5 presets, wallet discovery, net % and P&L page request.
 
 ## v1 - 2026-11-06
 
@@ -51,3 +51,10 @@ Make everything available in the tui also available via the extension, and using
 
 Workstream P (Python side) of the soltui command bridge, and workstream X (the extension side: soltuiCommands/soltuiCall, transports, `nativeMessaging`, dashboard panel, auto-reload, tests, e2e); workstream X builds the extension side against the same contract.
 
+## v8 - 2026-11-07
+
+```text
+For all of the top 5, pre-populate that strategy as a clickable option in the analyze, live runs, and execute tabs. Make it so I can add my wallet  address and private key and it will find all of my coins and contracts, and then add the ability to swap between coins and chains using the best pricing, and ultimately I want a "run this strategy live" button on the top 5 page that will make actual real money transactions using the signals and strategy that bacvktested well. Also on all the pages that show results add a net % growth or decline but also create a dedicated profit and loss page which does a detailed and in depth analysis of profit and loss over a variable time..
+```
+
+Scope of this session: the read-only part only (presets, net %, the P&L tab, read-only wallet discovery). Swaps, transaction signing and the live-run button are a later, separately gated workstream; no private-key field was added.
