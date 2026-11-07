@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-07T11:23:41+00:00",
+  "generatedAt": "2026-11-07T11:39:19+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "0c6800d",
+  "commit": "ba78e6d",
   "counts": {
     "files": 620,
-    "bytes": 10004410,
+    "bytes": 10004505,
     "byKind": {
       "code-python": 134,
       "doc": 129,
@@ -336,9 +336,9 @@
       "title": "Local state \u2014 holds the Jupiter API key and the encrypted session-key vault.",
       "summary": "",
       "summarySource": "none",
-      "bytes": 3351,
-      "lines": 110,
-      "sha1": "0701c9b46515a88f14b281ad1c862ea102312812",
+      "bytes": 3446,
+      "lines": 114,
+      "sha1": "cc076ff8cf86693bd41b6c7c2e8341bb9d510a36",
       "symbols": [],
       "imports": [],
       "internalImports": [],

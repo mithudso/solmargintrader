@@ -15,7 +15,7 @@
     ".github/copilot-instructions.md": 524,
     ".github/dependabot.yml": 137,
     ".github/workflows/ci.yml": 1080,
-    ".gitignore": 361,
+    ".gitignore": 376,
     ".nvmrc": 2,
     ".remember/remember.md": 541,
     ".vscode/extensions.json": 16,
@@ -621,7 +621,7 @@
     "tools/land.sh": 417,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-07T11:23:41+00:00",
+  "generatedAt": "2026-11-07T11:39:19+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -11496,7 +11496,7 @@
       ".env.example": 3,
       ".github/SECURITY.md": 6,
       ".github/copilot-instructions.md": 1,
-      ".gitignore": 2,
+      ".gitignore": 3,
       "CLAUDE.md": 1,
       "CLAUDE.md-E": 1,
       "README.md": 12,
@@ -37145,6 +37145,7 @@
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 1
     },
     "cdp": {
+      ".gitignore": 3,
       "extension/e2e/lib/cdp.mjs": 2,
       "extension/test/e2e-harness.test.js": 1,
       "extension/tools/e2e.mjs": 1,
@@ -37152,9 +37153,11 @@
       "prompts.md": 3
     },
     "cdp_api_key": {
+      ".gitignore": 1,
       "memory.md": 1
     },
     "cdp_wallet_secret": {
+      ".gitignore": 1,
       "memory.md": 1
     },
     "cdq": {
@@ -43697,6 +43700,7 @@
       "pagesource": 1
     },
     "coinbase": {
+      ".gitignore": 1,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 2,
       "backtester/core/fetch.py": 19,
@@ -45699,7 +45703,7 @@
     "committed": {
       ".githooks/pre-commit": 2,
       ".github/workflows/ci.yml": 1,
-      ".gitignore": 1,
+      ".gitignore": 2,
       "backtester/core/strategy_cards.py": 1,
       "backtester/strategy_cards/README.md": 2,
       "backtester/tests/test_index.py": 1,
@@ -55474,6 +55478,7 @@
       "memory.md": 3
     },
     "credentials": {
+      ".gitignore": 1,
       "CONTRIBUTING.md": 1,
       "docs/MCP.md": 1,
       "docs/OPERATIONS.md": 1,
@@ -127686,7 +127691,7 @@
       ".editorconfig": 1,
       ".gitattributes": 2,
       ".github/workflows/ci.yml": 9,
-      ".gitignore": 11,
+      ".gitignore": 12,
       ".remember/remember.md": 2,
       ".vscode/extensions.json": 2,
       ".vscode/launch.json": 2,
@@ -129269,7 +129274,7 @@
       ".env.example": 9,
       ".github/SECURITY.md": 6,
       ".github/copilot-instructions.md": 3,
-      ".gitignore": 4,
+      ".gitignore": 5,
       "CLAUDE.md": 6,
       "CLAUDE.md-E": 6,
       "README.md": 1,
@@ -159806,7 +159811,7 @@
       ".github/SECURITY.md": 6,
       ".github/copilot-instructions.md": 9,
       ".github/workflows/ci.yml": 1,
-      ".gitignore": 1,
+      ".gitignore": 2,
       "AGENTS.md": 2,
       "CLAUDE.md": 10,
       "CLAUDE.md-E": 9,
@@ -217540,6 +217545,7 @@
     "secret": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
+      ".gitignore": 1,
       "CLAUDE.md": 1,
       "CLAUDE.md-E": 1,
       "GEMINI.md": 1,
@@ -265468,6 +265474,7 @@
     },
     "txt": {
       ".github/workflows/ci.yml": 13,
+      ".gitignore": 1,
       "CLAUDE.md": 3,
       "CLAUDE.md-E": 1,
       "README.md": 1,
@@ -277475,6 +277482,7 @@
     },
     "wallet": {
       ".github/copilot-instructions.md": 1,
+      ".gitignore": 1,
       "CLAUDE.md": 3,
       "CLAUDE.md-E": 2,
       "backtester/PROMPT.md": 1,
@@ -287109,6 +287117,6 @@
     "documents": 620,
     "terms": 28222,
     "termsBeforePrune": 28226,
-    "totalTokens": 736903
+    "totalTokens": 736918
   }
 }
