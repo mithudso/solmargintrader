@@ -114,6 +114,7 @@ ships.
 - [docs/API.md](docs/API.md) — every command across all three surfaces
 - [docs/integrations-and-assumptions.md](docs/integrations-and-assumptions.md) — external services and the assumptions baked in
 - [docs/external-calls.md](docs/external-calls.md) — every call that leaves the machine
+- [docs/TRADINGVIEW-REFERENCE.md](docs/TRADINGVIEW-REFERENCE.md) — TradingView charting docs distilled: indicator parity, PineJS, datafeed, drawings, Broker API, licensing
 - [docs/caching-and-optimization.md](docs/caching-and-optimization.md) — cache ownership and invalidation
 - [docs/logging.md](docs/logging.md) — what is recorded, and which paths record nothing
 

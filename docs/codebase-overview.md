@@ -290,6 +290,7 @@ place of them. In live mode it signs real transactions. Full detail: `liquidity/
 | `docs/jupiter-trigger-contract.md` | Public API contract fixtures and blocked live-signing boundary |
 | `docs/COMPOUND-5M.md` | Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings |
 | `docs/COMPOUND-5M-PAPER.md` | Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity |
+| `docs/TRADINGVIEW-REFERENCE.md` | TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format |
 
 ### Not source
 

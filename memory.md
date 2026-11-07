@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 48
-Delta: v47 to v48; research landed; Compound frontier (hold, entry quantile, six metrics, buy-and-hold); Base wallet via CDP.
+Version: 49
+Delta: v48 to v49; research landed; Compound frontier (hold, entry quantile, six metrics, buy-and-hold); Base wallet via CDP (v48 is the TradingView distillation).
 
 ## v1 - 2026-11-06
 
@@ -492,9 +492,21 @@ Verification: replaying live SOL bars, vwap_rev saturation fell from 92% to abou
 
 Remaining: after merge, restart the unattended trainers for the ten coins only (the stale ones still train ZEC, BNB, ADA and XLM on old code). The owner must restart the soltui console to load the fix.
 
-## v48 - 2026-11-07 (research landed; frontier; fees; Base wallet via CDP)
+## v48 - 2026-11-07 (TradingView docs distillation)
 
-Target: prompts v41 and v42. Branch research/land-and-frontier, PR #78 (https://github.com/mithudso/solmargintrader/pull/78).
+Target: the owner dropped `tradingview/` (TradingView Advanced Charts docs bundle, three `.d.ts` files, agentskills.io llms-full) and asked for every indicator, signal, script and equation distilled into one Markdown file. Stele TASK-853 (dev-y3seh, COMP-320); decision KNOW-854. Worktree /Users/mitch/dev/solmargintrader-wt-tradingview, branch docs/tradingview-reference.
+
+Completed: `docs/TRADINGVIEW-REFERENCE.md` (13 sections): indicator parity table (repo `indicators.py` vs TradingView built-in defaults), licensing limits, 114 built-in studies with inputs/defaults from `StudyOverrides`, 114 `PineJS.Std` entries and custom-indicator metainfo, datafeed/UDF/marks contracts with a zero-dependency datafeed sketch, chart/drawings API with on-chart recipes, 193 featuresets and widget options, Broker API concepts mapped to the extension's rails, release notes to v33.0.0, Agent Skills spec, repo findings. Seven parallel readers produced fragments; spot checks of `getBars`, `OrderStatus`, `Std.atr`/`Std.stdev` matched the `.d.ts`.
+
+Constraints found: Advanced Charts is free only for public, attributed deployments ("not for private use"); any part of the library is prohibited in public repos. The repo is public, so `tradingview/` is gitignored and nothing from the library is committed. Lightweight Charts is the only TradingView product that fits a private tool, and it conflicts with the extension's zero-dependency rule.
+
+Verification: `scripts/check_docs.py` (venv) passes; `index/build.py --check` passes after `build.py all`, `make_files_doc.py`, `make_concepts_doc.py`.
+
+Remaining: repo findings listed at the end of the reference (z-score ddof mismatch between card and Compound 5m; skills frontmatter violations; no ledger-to-chart exporter) are recorded, not fixed.
+
+## v49 - 2026-11-07 (research landed; frontier; fees; Base wallet via CDP)
+
+Target: prompts v42 and v43. Branch research/land-and-frontier, PR #78 (https://github.com/mithudso/solmargintrader/pull/78).
 
 Landed: the untracked research in the main checkout (research/*.json, *.md, docs/profitable-crypto-strategies-analysis.md, curated llms/ notes). Gitignored: auth/ (CDP API key and wallet secret, never committed), .codex/, llms/ doc mirrors. Other worktrees were all pushed; fix/compound-vwap-saturation belonged to a live session (merged as #77); PR #58 (draft research checkpoint) and #46 (executor, money-moving) were left for their owners.
 
@@ -505,4 +517,5 @@ Findings (research/COMPOUND-FRONTIER.md): reversion metrics' 52% hit is about 0 
 Base wallet: docs/BASE-WALLET-QUERIES.md (CDP MCP recipe); gtUSDCp (Gauntlet USDC Prime, about $86.64) added to KNOWN_BASE_TOKENS; KNOW-852; auto-memory base-wallet-cdp-queries.md.
 
 Remaining: forward paper test of mom_skip top 0.5% 48 h (not built); maker-fill modelling (no fill-rate data).
+
 

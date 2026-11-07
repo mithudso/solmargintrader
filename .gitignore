@@ -120,6 +120,10 @@ index/.idle.lock
 index/.idle-index.log
 index/*.tmp*
 
+# TradingView Advanced Charts docs bundle and library files (licensed by TradingView).
+# This repo is public; the distilled reference lives in docs/TRADINGVIEW-REFERENCE.md.
+tradingview/
+
 # Coinbase CDP credentials (auth/cdp_api_key.json, auth/cdp_wallet_secret.txt). Never commit;
 # keep them mode 600.
 auth/

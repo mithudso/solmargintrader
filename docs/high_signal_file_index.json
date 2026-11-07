@@ -1243,6 +1243,12 @@
       "kind": "markdown",
       "summary": "Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity",
       "lines": 561
+    },
+    {
+      "path": "docs/TRADINGVIEW-REFERENCE.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format"
     }
   ]
 }
