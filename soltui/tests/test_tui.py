@@ -17,9 +17,9 @@ from tempfile import TemporaryDirectory
 from unittest import mock
 
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Static
+from textual.widgets import Button, DataTable, Static, TabbedContent
 
-from soltui import bgqueue
+from soltui import bgqueue, commands
 from soltui.config import Settings
 from soltui.tui import FAMILY_NOTES, SIGNAL_REFERENCE, SolTuiApp, failure_summary, untested_sweep_command
 
@@ -1158,6 +1158,137 @@ class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
                 await pilot.pause()
                 self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
             self.assertEqual(ta.text, "abc")
+
+
+class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
+    """What Run backtest tests is visible and choosable; the untested button starts real work."""
+
+    async def test_picker_lists_the_roster_and_runs_only_the_pick(self):
+        from textual.widgets import Select
+        app = SolTuiApp(make_settings())
+        seen = []
+        real = commands.COMMANDS["backtest.run"]
+
+        def handler(ctx, p):
+            seen.append(p.get("labels"))
+            return {"rows": [], "evaluable": 0, "positive": 0, "skipped": [], "cancelled": False,
+                    "message": "done"}
+
+        stub = commands.Command("backtest.run", real.describe, handler, real.params, real.read_only,
+                                real.long_running, real.requires_confirm)
+        with mock.patch.dict(commands.COMMANDS, {"backtest.run": stub}):
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                app.query_one(TabbedContent).active = "tab-backtest"
+                await pilot.pause()
+                labels = app.roster.labels
+                pick = app.query_one("#backtest-pick", Select)
+                self.assertIn(f"Whole roster ({len(labels)} strategies)", str(pick._options[0][0]))
+                self.assertIn(labels[0], text_of(app, "#backtest-roster"))
+                app.query_one("#btn-run", Button).press()
+                await pilot.pause(0.2)
+                await app.workers.wait_for_complete()
+                pick.value = labels[0]
+                await pilot.pause()
+                app.query_one("#btn-run", Button).press()
+                await pilot.pause(0.2)
+                await app.workers.wait_for_complete()
+        self.assertEqual(seen, [None, [labels[0]]])
+
+    async def test_untested_button_starts_the_background_worker_at_once(self):
+        app = SolTuiApp(make_settings())
+        calls = []
+        real = commands.COMMANDS["queue.backtest"]
+
+        def handler(ctx, p):
+            calls.append(dict(p))
+            return {"started": True, "scope": p["scope"], "strategies": ["dca", "macd"], "jobs": 9,
+                    "asset": "SOL", "message": "started: 9 configuration(s) across 2 strategy(ies)"}
+
+        stub = commands.Command("queue.backtest", real.describe, handler, real.params, real.read_only,
+                                real.long_running, real.requires_confirm)
+        with mock.patch.dict(commands.COMMANDS, {"queue.backtest": stub}):
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                app.query_one(TabbedContent).active = "tab-backtest"
+                await pilot.pause()
+                app.query_one("#btn-run-untested", Button).press()
+                await pilot.pause()
+                self.assertIn("started: 9 configuration(s)", text_of(app, "#backtest-status"))
+                self.assertIn("dca, macd", text_of(app, "#backtest-status"))
+                self.assertIn("Background backtests:", text_of(app, "#backtest-bg-status"))
+        self.assertEqual(calls, [{"scope": "undertested"}])
+
+    def test_backtest_run_rejects_labels_outside_the_roster(self):
+        env = commands.dispatch("backtest.run", {"labels": ["no_such_label"]}, surface="cli")
+        self.assertFalse(env["ok"])
+        self.assertIn("not in the roster", env["error"]["message"])
+
+
+class WalletRestoreTests(unittest.IsolatedAsyncioTestCase):
+    """After a restart the Wallet tab shows the last scan at once, then refreshes it."""
+
+    async def test_last_scan_is_shown_and_refreshed_at_start(self):
+        import os
+        from soltui import portfolio
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        kept = {"scanned_at": "2026-11-07 09:00", "chains": {}, "partial": False, "total_usd": 42.0,
+                "skipped": [], "counts": {"holdings": 1, "stakes": 0, "positions": 0, "contracts": 0,
+                                          "airdrop_flagged": 0}}
+        scans = []
+        real = commands.COMMANDS["portfolio.scan"]
+
+        def handler(ctx, p):
+            scans.append(p.get("chain"))
+            return {**kept, "scanned_at": "2026-11-07 10:00", "total_usd": 43.0}
+
+        stub = commands.Command("portfolio.scan", real.describe, handler, real.params, real.read_only,
+                                real.long_running, real.requires_confirm)
+        with mock.patch.dict(os.environ, {"SOLTUI_SUPPORT_DIR": tmp.name}), \
+                mock.patch.dict(commands.COMMANDS, {"portfolio.scan": stub}):
+            portfolio.save_last_scan(kept, "all")
+            app = SolTuiApp(make_settings(), refresh_wallet=True)
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await pilot.pause()
+                self.assertTrue("42.00" in text_of(app, "#wallet-summary")
+                                or "43.00" in text_of(app, "#wallet-summary"))
+                await app.workers.wait_for_complete()
+                await pilot.pause()
+                self.assertIn("43.00", text_of(app, "#wallet-summary"))
+        self.assertEqual(scans, ["all"])
+
+    async def test_a_test_app_never_reads_the_kept_scan(self):
+        app = SolTuiApp(make_settings())
+        with mock.patch("soltui.portfolio.load_last_scan", side_effect=AssertionError("must not read")):
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await pilot.pause()
+
+
+class TableTitleTests(unittest.IsolatedAsyncioTestCase):
+    """Every table has a title line above it saying what it shows (owner, 2026-11-07)."""
+
+    async def test_every_table_has_a_title_above_it(self):
+        from textual.containers import Horizontal
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            missing = []
+            for table in app.query(DataTable):
+                anchor = table.parent if isinstance(table.parent, Horizontal) else table
+                siblings = list(anchor.parent.children)
+                before = []
+                for w in reversed(siblings[:siblings.index(anchor)]):
+                    if isinstance(w, DataTable) or w.query(DataTable):
+                        break  # the title must belong to this table, not to the one above it
+                    before.append(w)
+                titled = [w for w in before[:4] if w.has_class("table-title")]
+                if not titled or not any(str(w.render()).strip() for w in titled):
+                    missing.append(table.id)
+            self.assertEqual(missing, [])
+            app.query_one(TabbedContent).active = "tab-compound"
+            await pilot.pause()
+            self.assertIn("Metrics and gates for SOL", text_of(app, "#compound-table-title"))
+            self.assertIn("Backtest results for SOL", text_of(app, "#compound-results-title"))
+            self.assertIn("Forward test for SOL", text_of(app, "#compound-forward-title"))
 
 
 class UntestedSweepCommandTest(unittest.TestCase):

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 42
-Delta: v41 to v42; editor bar, compound row preview, double-click toggle, compound autopilot.
+Version: 43
+Delta: v42 to v43; Backtest tab picker and undertested button, wallet scan kept across restarts, key-file rule per owner, table titles.
 
 ## v1 - 2026-11-06
 
@@ -431,4 +431,18 @@ Completed: `EditorBar` replaces the editor's orange border-top: drag to resize (
 Honesty: tuning at the 0.95 bar rarely moves (docs/COMPOUND-5M.md: one move in five coins over 30 days) and backtested returns stayed negative; autopilot automates the evidence-gated search, it does not make the compound profitable. Paper calls only; no order path.
 
 Remaining: none in code; install the LaunchAgent from the main checkout after merge.
+
+## v43 - 2026-11-07 (Backtest tab, wallet, key files, table titles)
+
+Target: prompts v34, v35, v36. PR #68 (editor bar, previews, toggle, autopilot) merged as 288502d. Branch feat/backtest-tab-titles-wallet from that master.
+
+Backtest tab: a "Strategy to backtest" Select (whole roster or one roster label) and a line listing the roster; `backtest.run` takes optional `labels` and refuses labels outside the roster. The old "Run Untested Sweep" ran research/sweep_untested.py, which printed the untested names and then backtested a fixed handful on one horizon. The button is now "Backtest untested + little-tested": `queue.backtest` scope `undertested` (never tested, or fewer than `min_runs`=3 recorded configurations) with `max_tier=1`, started at once in the background worker; progress shows in `#backtest-bg-status`.
+
+Wallet: soltui settings already kept the addresses (~/.config/soltui/config.yaml). The scan lived only in the Wallet tab's widgets. `portfolio.scan` now keeps its result in `~/Library/Application Support/soltui/portfolio/last-scan.json` (mode 600); `portfolio.last` returns it; the real console (main() passes refresh_wallet=True) shows it at start and re-scans in the background. Test apps never read it.
+
+Key files: verified by running the loaders, never printing key material: `aero_lp.wallet.load_signer` with ~/.ssh/wallet.private controls 0x901a89cEC0608eB5435A915f006b45bD46405314; ~/.ssh/solana.private is a 64-byte keypair for EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV; both mode 600. CLAUDE.md rule 4 and liquidity/CLAUDE.md now say agents run the programs that load the keys to sign and move money (KNOW-840). Not changed: the extension's FULL_AUTO passphrase stays unpersisted, and extension live signing stays blocked without a semantic transaction verifier.
+
+Table titles: every DataTable has a `.table-title` Static above it (bold, accent colour); the compound titles name the selected coin. `TableTitleTests` fails if a table lacks one.
+
+Remaining: install the autopilot LaunchAgent from the main checkout; restart the running console so it loads the new code.
 

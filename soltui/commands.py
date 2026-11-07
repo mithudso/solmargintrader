@@ -694,10 +694,24 @@ def backtest_cancel(ctx: Context, p: dict[str, Any]) -> Any:
     return {"cancelling": True}
 
 
-@command("backtest.run", "CPCV sweep over the roster, ranked by median Sharpe. Blocks until done.",
+@command("backtest.run", "CPCV sweep over the roster (or the listed roster labels), ranked by median "
+         "Sharpe. Blocks until done.",
+         (P("labels", "json", "Roster labels to test; default the whole roster."),),
          read_only=False, long_running=True)
 def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
-    ctx.runner.start(ctx.roster, ctx.settings)
+    roster = ctx.roster
+    labels = p.get("labels")
+    if labels is not None:
+        if not isinstance(labels, list) or not labels or not all(isinstance(x, str) for x in labels):
+            raise CommandError("bad_params", "labels must be a non-empty list of roster labels")
+        unknown = [x for x in labels if x not in roster.labels]
+        if unknown:
+            raise CommandError("bad_params", f"not in the roster: {', '.join(unknown)}")
+        roster = Roster([e for e in roster if e.label in labels])
+    try:
+        ctx.runner.start(roster, ctx.settings)
+    except (RuntimeError, ValueError) as exc:
+        raise CommandError("failed", str(exc)) from exc
     ctx.runner.join()
     outcome = ctx.runner.outcome
     if outcome is None:
@@ -1030,20 +1044,28 @@ def queue_start(ctx: Context, p: dict[str, Any]) -> Any:
     return {"started": True, "asset": ctx.settings.asset}
 
 
-BACKTEST_SCOPES = ("selected", "untested", "all")
+BACKTEST_SCOPES = ("selected", "untested", "undertested", "all")
+# "Little testing": fewer recorded configurations than this for the asset.
+UNDERTESTED_MIN_RUNS = 3
 
 
 @command("queue.backtest",
          "Backtest strategies in the background at each card's own parameters (all horizons). "
-         "Scope selected, untested or all; skips configurations already recorded for this code and data.",
-         (P("scope", "string", "selected, untested or all.", True),
-          P("names", "json", "List of registered strategy names; required when scope is selected.")),
+         "Scope selected, untested, undertested (never tested, or fewer than min_runs recorded "
+         "configurations; also runs the near variations so each gets several) or all; skips "
+         "configurations already recorded for this code and data.",
+         (P("scope", "string", "selected, untested, undertested or all.", True),
+          P("names", "json", "List of registered strategy names; required when scope is selected."),
+          P("min_runs", "number", f"undertested only: fewer recorded runs than this counts as little "
+                                  f"testing (default {UNDERTESTED_MIN_RUNS}).")),
          read_only=False)
 def queue_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     scope = p["scope"]
     if scope not in BACKTEST_SCOPES:
         raise CommandError("bad_params", f"scope must be one of {', '.join(BACKTEST_SCOPES)}")
     testable = _testable_strategies()
+    max_tier = 0
+    note = ""
     if scope == "selected":
         names = p.get("names")
         if not isinstance(names, list) or not names or not all(isinstance(n, str) for n in names):
@@ -1055,26 +1077,39 @@ def queue_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     elif scope == "untested":
         history = bgqueue.strategy_history(_queue_results(ctx), ctx.settings.asset)
         names = sorted(n for n in testable if n not in history)
+    elif scope == "undertested":
+        min_runs = int(UNDERTESTED_MIN_RUNS if p.get("min_runs") is None else p["min_runs"])
+        if min_runs < 1:
+            raise CommandError("bad_params", "min_runs must be at least 1")
+        history = bgqueue.strategy_history(_queue_results(ctx), ctx.settings.asset)
+        never = sorted(n for n in testable if n not in history)
+        thin = sorted(n for n in testable if n in history and history[n].runs < min_runs)
+        names = never + thin
+        # The card's own parameters are one configuration per horizon; a strategy with little
+        # testing needs more than that, so the near variations run too.
+        max_tier = 1
+        note = f" ({len(never)} never tested, {len(thin)} with fewer than {min_runs} runs)"
     else:
         names = sorted(testable)
     asset = ctx.settings.asset
     if not names:
         return {"started": False, "scope": scope, "strategies": [], "jobs": 0,
-                "message": "nothing to backtest: every strategy already has a recorded run"}
-    jobs = bgqueue.build_queue(asset, max_tier=0, strategies=names)
+                "message": "nothing to backtest: every strategy already has a recorded run"
+                + (" and enough testing" if scope == "undertested" else "")}
+    jobs = bgqueue.build_queue(asset, max_tier=max_tier, strategies=names)
     todo = bgqueue.pending(jobs, bgqueue.completed_ids(bgqueue.read_results()))
     if not todo:
         return {"started": False, "scope": scope, "strategies": names, "jobs": 0,
                 "message": f"already tested: all {len(jobs)} configuration(s) have recorded results"}
     try:
-        bgcontrol.start(asset, max_tier=0, strategies=names)
+        bgcontrol.start(asset, max_tier=max_tier, strategies=names)
     except RuntimeError as exc:
         raise CommandError(
             "failed", f"{exc}; stop it on the Queue tab first, or wait for it to finish") from exc
     except Exception as exc:  # noqa: BLE001
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
     return {"started": True, "scope": scope, "strategies": names, "jobs": len(todo), "asset": asset,
-            "message": f"started: {len(todo)} configuration(s) across {len(names)} strategy(ies), "
+            "message": f"started: {len(todo)} configuration(s) across {len(names)} strategy(ies){note}, "
                        "results appear in the table as they finish"}
 
 
@@ -1778,6 +1813,10 @@ def portfolio_scan(ctx: Context, p: dict[str, Any]) -> Any:
     if extra is not None and (not isinstance(extra, list) or not all(isinstance(t, str) for t in extra)):
         raise CommandError("bad_params", 'parameter "tokens" must be a list of addresses')
     result = _portfolio_scan(ctx, chain, extra)
+    try:
+        portfolio_mod.save_last_scan(result, chain)
+    except OSError as exc:
+        result.setdefault("notes", []).append(f"scan not kept for the next start: {exc}")
     # A one-chain scan is not a snapshot of the whole portfolio; recording it would read as the others
     # having gone to zero.
     if p.get("record", True) and result["chains"] and chain == "all":
@@ -1786,6 +1825,13 @@ def portfolio_scan(ctx: Context, p: dict[str, Any]) -> Any:
         except OSError as exc:
             result["notes"] = [f"scan not recorded: {exc}"]
     return result
+
+
+@command("portfolio.last",
+         "The newest wallet scan kept on disk ({chain, saved_at, result}, or result null), so a console "
+         "shows the wallet at once after a restart. No network.")
+def portfolio_last(ctx: Context, p: dict[str, Any]) -> Any:
+    return portfolio_mod.load_last_scan() or {"chain": None, "saved_at": None, "result": None}
 
 
 @command("portfolio.snapshot",

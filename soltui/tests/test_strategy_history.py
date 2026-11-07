@@ -189,6 +189,27 @@ class TestCommands(unittest.TestCase):
         self.assertFalse(env["ok"])
         self.assertIn("Queue tab", env["error"]["message"])
 
+    def test_undertested_takes_the_never_tested_and_the_thinly_tested_with_variations(self) -> None:
+        # rsi: 3 runs (enough). macd: 1 run (little testing). dca: none.
+        for i, horizon in enumerate(("short", "medium", "long")):
+            q.append_result(row(f"r{i}", strategy="rsi", horizon=horizon), q.RESULTS_PATH)
+        q.append_result(row("m0", strategy="macd"), q.RESULTS_PATH)
+        with mock.patch.object(bgcontrol, "start") as start:
+            env = dispatch("queue.backtest", {"scope": "undertested"})
+        self.assertTrue(env["ok"], env)
+        self.assertTrue(env["result"]["started"])
+        names = start.call_args.kwargs["strategies"]
+        self.assertIn("dca", names)
+        self.assertIn("macd", names)
+        self.assertNotIn("rsi", names)
+        self.assertEqual(start.call_args.kwargs["max_tier"], 1)   # near variations too
+        self.assertIn("with fewer than 3 runs", env["result"]["message"])
+        with mock.patch.object(bgcontrol, "start") as start:
+            dispatch("queue.backtest", {"scope": "undertested", "min_runs": 4})
+        self.assertIn("rsi", start.call_args.kwargs["strategies"])
+        self.assertEqual(dispatch("queue.backtest", {"scope": "undertested", "min_runs": 0})["error"]["code"],
+                         "bad_params")
+
     def test_bad_requests_are_refused(self) -> None:
         self.assertEqual(dispatch("queue.backtest", {"scope": "everything"})["error"]["code"], "bad_params")
         self.assertEqual(dispatch("queue.backtest", {"scope": "selected"})["error"]["code"], "bad_params")
