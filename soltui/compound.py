@@ -626,6 +626,8 @@ def live_inputs(asset: str, cfg: Mapping[str, Any], events: Sequence[Mapping[str
     a, b = segs[-1]  # score the most recent contiguous run only: indicators restart at a gap
     bars = sc.Bars.from_mapping({k: v[a:b] for k, v in raw.items()})
     aux: dict[str, Any] = {"events": list(events), "live": {}}
+    if cbt.maintenance_fraction(asset) is not None:
+        aux["maintenance_fraction"] = cbt.maintenance_fraction(asset)
     if agg["adaptive"]:
         aux["adaptive_seed"] = ledger_seed(ledger, cfg, int(bars.ts[0]))
     notes: dict[str, Any] = {}
@@ -722,7 +724,8 @@ def wallet_balances(address: str | None, *, fetch: Fetcher | None = None,
     return out
 
 
-def size_call(wallet: Mapping[str, Any], bars: sc.Bars, cfg: Mapping[str, Any], call: str) -> dict[str, Any]:
+def size_call(wallet: Mapping[str, Any], bars: sc.Bars, cfg: Mapping[str, Any], call: str,
+              asset: str | None = None) -> dict[str, Any]:
     """Position size for this call at the wallet's usable collateral, or why there is none.
 
     The trade may lose `risk_pct` of usable collateral if price reaches the stop (`stop_atr` x ATR,
@@ -749,7 +752,7 @@ def size_call(wallet: Mapping[str, Any], bars: sc.Bars, cfg: Mapping[str, Any], 
     risk_notional = risk_usd / (stop_pct + cost_pct)
     notional = min(max_notional, risk_notional)
     collateral = notional / lev
-    costs = cbt.engine_config(cfg).costs
+    costs = cbt.engine_config(cfg, asset).costs
     liq = {}
     for side, name in ((Side.LONG, "long"), (Side.SHORT, "short")):
         info = perps.liquidation_price(price, side, collateral, notional, 0.0, costs)
@@ -768,7 +771,7 @@ def size_call(wallet: Mapping[str, Any], bars: sc.Bars, cfg: Mapping[str, Any], 
 
 
 def _wallet_and_size(address: str | None, cfg: Mapping[str, Any], bars: sc.Bars, call: str,
-                     wallet_fetch: Fetcher | None) -> tuple[dict[str, Any], dict[str, Any]]:
+                     wallet_fetch: Fetcher | None, asset: str | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     if not cfg["execution"]["use_wallet"]:
         off = {"available": False, "label": WALLET_LABEL, "reason": "use_wallet=0"}
         return off, {"available": False, "reason": "use_wallet=0"}
@@ -776,7 +779,7 @@ def _wallet_and_size(address: str | None, cfg: Mapping[str, Any], bars: sc.Bars,
         w = wallet_balances(address, fetch=wallet_fetch)
     except Exception as exc:  # noqa: BLE001 - a wallet read must never break the call itself
         w = {"available": False, "label": WALLET_LABEL, "reason": f"{type(exc).__name__}: {exc}"}
-    return w, size_call(w, bars, cfg, call)
+    return w, size_call(w, bars, cfg, call, asset)
 
 
 def signal(asset: str, *, now: float | None = None, wallet_address: str | None = None,
@@ -788,7 +791,7 @@ def signal(asset: str, *, now: float | None = None, wallet_address: str | None =
                                    ledger=read_ledger(asset), **fetchers)
     ev = sc.evaluate(bars, cfg, aux)
     out = sc.explain(ev, -1, catalogue=False)
-    wallet, sizing = _wallet_and_size(wallet_address, cfg, bars, out["call"], wallet_fetch)
+    wallet, sizing = _wallet_and_size(wallet_address, cfg, bars, out["call"], wallet_fetch, asset)
     out.update(asset=_asset(asset), config_hash=sc.config_hash(cfg), bars_used=len(bars),
                live=extra["ctx"], notes=extra["notes"], wallet=wallet, sizing=sizing)
     return out
@@ -862,7 +865,7 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
     new_call = call_id not in recorded
     sizing: dict[str, Any] = {"available": False}
     if new_call:
-        _, sizing = _wallet_and_size(wallet_address, cfg, bars, x["call"], wallet_fetch)
+        _, sizing = _wallet_and_size(wallet_address, cfg, bars, x["call"], wallet_fetch, asset)
         ungated = 0
         comp = x["composite"]
         if comp is not None and abs(comp) >= x["entry"]:

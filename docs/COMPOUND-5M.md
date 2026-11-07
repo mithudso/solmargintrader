@@ -108,7 +108,7 @@ from a screen of the top 50 coins by market cap, pegged tokens left out
 (`research/results/top50-nonpegged-2026-11-07.json`). The screen, with each coin's live turnover,
 perp leverage, Coinbase status, verdict and reason, is `research/results/top50-screen-2026-11-07.json`.
 
-A five-minute call pays only with leverage and a round trip near 16 bps, so the screen asked:
+A five-minute call pays only with leverage and a round trip near 13 bps, so the screen asked:
 
 | Test | Why it disqualifies |
 | --- | --- |
@@ -122,6 +122,23 @@ volume or exchange token), CC and SKY (perp capped at 3x, turnover near 0.3%). E
 caution: ZEC (60% incomplete bars), XMR, TRX, MNT, GRAM, WLFI, PUMP, ASTER. The screen did not
 check news after early 2026; check for a recent hack, migration or delisting before relying on a
 coin. Cached data for any other coin can still be backtested from the CLI with `--asset`.
+
+**Costs are Hyperliquid's.** The owner can trade on Hyperliquid (confirmed 2026-11-07), which
+lists perps for all ten coins and charges less than Jupiter Perps. The default execution is its
+base taker fee, 4.5 bps per side (Jupiter: 6 bps), plus 2 bps slippage per side: a **13 bps**
+round trip (16 on Jupiter). `research/results/hyperliquid-costs-2026-11-07.json` holds the live fee
+schedule and an order-book walk per coin. At $2k a market order cost at most 2.2 bps from mid on
+every coin, so 2 bps holds for small size. At $10k–$50k, LINK, SUI and AVAX reached 2–6 bps on one
+side. Raise `slippage_bps` for that coin before sizing up. A resting (maker) order pays 1.5 bps,
+but a 5m call that enters at the next bar's open is a taker order. Funding is not modelled
+separately: the engine's perp borrow charge stands in for it, and over a 5–30 minute hold either
+is a small fraction of one basis point. The 2026-11-07 findings below were measured at 16 bps.
+
+**Liquidation is Hyperliquid's too.** Hyperliquid's maintenance margin is half the initial margin
+at the coin's max leverage (`HYPERLIQUID_MAX_LEVERAGE` in `backtester/core/compound.py`): 1.25% of
+notional on BTC (40x), 2% on ETH (25x), 2.5% on SOL and XRP (20x), 5% on the 10x coins. Jupiter's is
+0.2%. At 5x a 10x-max coin is liquidated about 15% away, not about 19.7%. The engine, the
+liquidation price in each sized call and `gate_liquidation` all use the coin's margin.
 
 * **Data.** `research/full_suite.py` caches 1-minute candles back to each coin's earliest
   available minute: `python3 -m backtester.core.fetch_minutes --assets BTC,ETH,... --years 7`. That
@@ -332,7 +349,8 @@ default compound (regime weighting on) inherits that: its OOS hit rate was 44–
 
 **Read the reversion edge with three cautions.** (a) Part of it is probably bid-ask bounce:
 Coinbase closes alternate between bid and ask prints, which creates negative autocorrelation
-that cannot be traded. Jupiter fills at the oracle price, which has no bounce. (b) Calls on
+that cannot be traded. Jupiter fills at the oracle price, which has no bounce, and a taker order on
+Hyperliquid pays the far side of the spread, which is the bounce. (b) Calls on
 consecutive bars overlap, so the z-scores overstate independence. (c) 1,420 configurations were
 tried on one 30-day window; the best few are expected to look good by chance. Thirty days is
 one regime. Run the full suite (a year of 5m bars) before trusting any of this.

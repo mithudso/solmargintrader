@@ -8,7 +8,7 @@ Two different questions, answered separately because they disagree at 5m:
   * **Does the call predict the next bar?** `forecast_stats` scores every bar's call against
     sign(close[t+1] - close[t]). A hit rate above the base rate is necessary, not sufficient.
   * **Does trading it make money after costs?** The precomputed target path (with entry/exit
-    hysteresis) is fed to the existing engine (`engine.run_backtest`, perp mode, Jupiter fees,
+    hysteresis) is fed to the existing engine (`engine.run_backtest`, perp mode, Hyperliquid fees,
     borrow, liquidation at the bar's low/high), so there is one execution model, not two.
 
 The sample is split by time: the first `1 - oos_fraction` of bars is in-sample, the rest
@@ -180,10 +180,29 @@ class PrecomputedTargets:
         return float(self.targets[history.i])
 
 
-def engine_config(cfg: Mapping[str, Any]) -> EngineConfig:
+# Hyperliquid perp max leverage per coin (research/results/top50-screen-2026-11-07.json). Hyperliquid's
+# maintenance margin is half the initial margin at max leverage, so a 10x-max coin is liquidated
+# at 5% of notional, not the 0.2% the engine's Jupiter default (max_lev_constant 500) assumes. At 5x
+# that moves liquidation from about 19.7% away to about 15% away. A coin not listed here keeps the
+# Jupiter default. Hyperliquid changes these caps; re-pull the screen when it does.
+HYPERLIQUID_MAX_LEVERAGE: dict[str, float] = {
+    "BTC": 40, "ETH": 25, "SOL": 20, "XRP": 20, "HYPE": 10,
+    "DOGE": 10, "LINK": 10, "NEAR": 10, "SUI": 10, "AVAX": 10,
+}
+
+
+def maintenance_fraction(asset: str | None) -> float | None:
+    """Hyperliquid maintenance margin as a fraction of notional, or None (engine default)."""
+    max_lev = HYPERLIQUID_MAX_LEVERAGE.get((asset or "").upper())
+    return None if max_lev is None else 1.0 / (2.0 * max_lev)
+
+
+def engine_config(cfg: Mapping[str, Any], asset: str | None = None) -> EngineConfig:
     ex, agg = cfg["execution"], cfg["aggregate"]
+    maint = maintenance_fraction(asset)
+    extra = {} if maint is None else {"max_lev_constant": 1.0 / maint}
     costs = CostConfig(perp_base_fee_bps=ex["fee_bps"], slippage_bps=ex["slippage_bps"],
-                       fee_bps=ex["fee_bps"], liquidation_forfeits_collateral=True)
+                       fee_bps=ex["fee_bps"], liquidation_forfeits_collateral=True, **extra)
     return EngineConfig(mode=Mode.PERP, leverage=float(ex["leverage"]), interval="5m",
                         allow_short=bool(agg["allow_short"]), fill_delay=1, costs=costs)
 
@@ -199,10 +218,11 @@ class _Slice:
     exposure_bars: float
 
 
-def _run_slice(arrays: dict[str, np.ndarray], targets: np.ndarray, cfg: Mapping[str, Any]) -> _Slice | None:
+def _run_slice(arrays: dict[str, np.ndarray], targets: np.ndarray, cfg: Mapping[str, Any],
+               asset: str | None = None) -> _Slice | None:
     if arrays["close"].size < 3:
         return None
-    res = run_backtest(PrecomputedTargets(targets), arrays, engine_config(cfg))
+    res = run_backtest(PrecomputedTargets(targets), arrays, engine_config(cfg, asset))
     eq = res.equity
     rets = eq[1:] / eq[:-1] - 1.0
     m = res.metrics
@@ -293,6 +313,8 @@ def run_compound(asset: str, config: Mapping[str, Any] | None = None, *, label: 
     for a, b in segments:
         seg = {k: v[a:b] for k, v in arrays_all.items()}
         aux: dict[str, Any] = {"events": list(events or [])}
+        if maintenance_fraction(prep["asset"]) is not None:
+            aux["maintenance_fraction"] = maintenance_fraction(prep["asset"])
         if prep.get("funding") is not None:
             aux["funding"] = prep["funding"]
         if prep.get("btc") is not None:
@@ -303,9 +325,9 @@ def run_compound(asset: str, config: Mapping[str, Any] | None = None, *, label: 
         targets = sc.target_path(ev)
         cut = int(np.searchsorted(seg["ts"], split_ts, side="left"))
         if cut > 0:
-            is_slices.append(_run_slice({k: v[:cut] for k, v in seg.items()}, targets[:cut], cfg))
+            is_slices.append(_run_slice({k: v[:cut] for k, v in seg.items()}, targets[:cut], cfg, prep["asset"]))
         if cut < b - a:
-            oos_slices.append(_run_slice({k: v[cut:] for k, v in seg.items()}, targets[cut:], cfg))
+            oos_slices.append(_run_slice({k: v[cut:] for k, v in seg.items()}, targets[cut:], cfg, prep["asset"]))
     if not evals:
         raise CompoundDataError(f"{asset}: no contiguous run of {MIN_SEGMENT_BARS}+ bars")
     enabled = sorted(c for c, e in cfg["components"].items() if e["enabled"])

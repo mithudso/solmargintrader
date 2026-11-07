@@ -1,6 +1,6 @@
 ---
 name: five-minute-signal
-version: "1.5.0"
+version: "1.6.0"
 updated: "2026-11-07"
 description: >-
   Produce and explain an UP / DOWN / FLAT call for the next five-minute bar of a crypto asset
@@ -71,7 +71,7 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
 
    ```
    SOL next 5m (from HH:MM UTC): UP | DOWN | FLAT   composite +0.31, coverage 0.95, agreement 0.72
-   Regime: range · trend stage: mature · cycle phase: accumulation · round trip 16 bps
+   Regime: range · trend stage: mature · cycle phase: accumulation · round trip 13 bps
    For:     reversion family (rsi +0.75, zscore +0.92, bollinger +1.0), liquidity_sweep +1.0
    Against: trend family (ema_cross -0.76, htf_trend -0.59), breakout (donchian -1.0)
    Gates:   gate_cost BLOCKING (typical move < round trip)   [or: all pass]
@@ -79,17 +79,17 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
    Read:    <one or two sentences: what would have to be true for this call to pay>
    ```
 
-   Always state that a hit rate above 50% is not profit: at 5m the round trip (~16 bps on
-   Jupiter) usually exceeds the average move (6–9 bps on BTC/ETH/SOL), so only a call held
-   through several bars can pay.
+   Always state that a hit rate above 50% is not profit: at 5m the round trip (~13 bps on
+   Hyperliquid, ~16 on Jupiter) usually exceeds the average move (6–9 bps on BTC/ETH/SOL), so
+   only a call held through several bars can pay.
 
 ## Several coins
 
 The compound's coins are BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI and AVAX, chosen on
 2026-11-07 from a screen of the top 50 (`research/results/top50-screen-2026-11-07.json` in the repo
 says why each other coin is out). If asked about a coin outside the ten, say it was screened out and
-give the recorded reason before scoring it. Only SOL, ETH and BTC have perps on Jupiter; the other
-seven need Hyperliquid for leverage.
+give the recorded reason before scoring it. The owner trades them on Hyperliquid (all ten have
+perps there; Jupiter lists only SOL, ETH and BTC), and the default costs are Hyperliquid's taker fee.
 
 Every coin has its own settings, learned record and ledger: pass `--asset BTC` (etc.) to `signal`,
 `status` and `results`, and compare coins with `python3 -m soltui.compound sweep --assets BTC,ETH,SOL`
@@ -113,8 +113,8 @@ or the tab's overview. Never quote one coin's evidence for another.
 - No configuration was profitable out-of-sample beyond what luck explains.
 - Reversion metrics (RSI, z-score, Bollinger, Stochastic) beat 50% on every coin; trend metrics
   (EMA cross, higher-timeframe trend, ADX, 5m continuation) fell below 50% on nearly every coin.
-  Part of the reversion edge is likely Coinbase bid-ask bounce, which Jupiter's oracle fills do
-  not have.
+  Part of the reversion edge is likely Coinbase bid-ask bounce, which neither Jupiter's oracle
+  fills nor a Hyperliquid taker order can capture.
 - So the catalogue's "favour continuation in trends" is backwards at 5m; say this when a call
   rests on trend votes.
 - Trend and stretch metrics are mirror images at 5m (correlation -0.75 to -0.93); `relations`

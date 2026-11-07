@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 37
-Delta: v34 to v37; Backtest tab picker and untested button, wallet kept across restarts with key-file access, a title on every table (v34 is the ten-coin universe).
+Version: 38
+Delta: v37 to v38; compound costs switched to Hyperliquid (v35-v37 are the Backtest tab, wallet and table-title requests).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -261,3 +261,8 @@ There are all of these rows of tables, but none of the tables have any title or 
 
 The screenshot showed the Compound 5m tab: the coin overview, the backtest results and the forward-test table with no heading. Target: a title line above every table in soltui.
 
+## v38 - 2026-11-07 (Hyperliquid access)
+
+```text
+ Yes, I can use hyperliquid
+```

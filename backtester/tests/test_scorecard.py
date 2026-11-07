@@ -278,6 +278,18 @@ class AggregationTests(unittest.TestCase):
         self.assertGreaterEqual(high[50:].mean(), low[50:].mean())
         self.assertTrue(high[50:].all())
 
+    def test_liquidation_gate_counts_the_venue_maintenance_margin(self) -> None:
+        # At 5x a 5% maintenance margin leaves 15% of room, not 20%: a stop that fits inside half
+        # of 20% but not half of 15% must be blocked only when the margin is known.
+        g = sc.BY_ID["gate_liquidation"]
+        p = dict(g.defaults(), max_fraction=0.5)
+        stop = p["stop_atr"] * sc.atr(self.bars, p["atr"]) / self.bars.close
+        lev = float(np.nanmedian(0.5 / stop[50:]) * 0.85)  # the stop sits between 0.075 and 0.1 x lev
+        without = g.fn(self.bars, p, {"leverage": lev})
+        with_margin = g.fn(self.bars, p, {"leverage": lev, "maintenance_fraction": 0.05 / 5.0 * lev})
+        self.assertGreater(with_margin[50:].mean(), without[50:].mean())
+        self.assertTrue((with_margin[50:] >= without[50:]).all())
+
     def test_long_only_never_calls_down(self) -> None:
         cfg = only(ema_cross=1)
         cfg["aggregate"]["allow_short"] = 0
@@ -502,7 +514,10 @@ class ForecastStatsTests(unittest.TestCase):
         s = sc.forecast_stats([ev])
         self.assertEqual(s["hit_rate"], 1.0)
         r = np.diff(np.log(b.close)) * 1e4
-        self.assertAlmostEqual(s["oracle_net_bps"], round(float(np.abs(r).mean()) - 16.0, 3), places=3)
+        ex = sc.default_config()["execution"]
+        rt = sc.round_trip_bps(ex["fee_bps"], ex["slippage_bps"])
+        self.assertEqual(rt, 13.0)  # Hyperliquid base taker 4.5 bps + 2 bps slippage, per side
+        self.assertAlmostEqual(s["oracle_net_bps"], round(float(np.abs(r).mean()) - rt, 3), places=3)
         self.assertAlmostEqual(s["gross_bps_per_call"], round(float(np.abs(r).mean()), 3), places=3)
 
     def test_the_time_split_partitions_bars(self) -> None:
