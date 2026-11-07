@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 6
-Delta: added the SolTUI 'Run Untested Sweep' ModuleNotFoundError request.
+Version: 8
+Delta: added the leverage-tier and reliable-trigger request.
 
 ## v1 - 2026-11-06
 
@@ -51,3 +51,10 @@ Make everything available in the tui also available via the extension, and using
 
 Workstream P (Python side) of the soltui command bridge, and workstream X (the extension side: soltuiCommands/soltuiCall, transports, `nativeMessaging`, dashboard panel, auto-reload, tests, e2e); workstream X builds the extension side against the same contract.
 
+## v8 - 2026-11-07
+
+```text
+Add strategies for low, medium, and high margin trading, I want to backtest high margin perp trades. And I want to compile a list of very reliable signals, what I mean is not that I think that signal will work all the time with no context, but look for signals that are correct a vast majority of the time and to what degree. The idea being if we have what amount to triggers then we can wait for the reliable trigger to happen, place an order in the direction it is likely to go, and exit before the trigger context expires. For instance I could imagine something like "every time macd crosses while balance is strongly negative and there is a down sloped moving average the next 5 bars are always down"  (I'm making that up), or "When volume spikes to 10x normal, the next several bars will be negative followed by a sharp rise." things like that can be validated and backtested and used when they occur.
+```
+
+Delivered in two PRs: (1) leverage tiers, (2) the reliable-trigger miner.
