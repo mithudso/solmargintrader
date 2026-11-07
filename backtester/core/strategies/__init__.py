@@ -25,6 +25,7 @@ from .composite import COMBINE_MODES, Composite
 from .ma_crossover import MaCrossover
 from .rsi import RsiMeanReversion
 from .tiers import LevHigh, LevLow, LevMedium
+from .trigger import TriggerTrade
 from .signals import (
     BollingerBreakout,
     BollingerReversion,
@@ -74,6 +75,8 @@ REGISTRY: dict[str, Callable[..., Any]] = {
     "lev_low": LevLow,
     "lev_medium": LevMedium,
     "lev_high": LevHigh,
+    # Waits for a mined trigger (research/triggers.py), trades it to expiry.
+    "trigger_trade": TriggerTrade,
 }
 
 # Taxonomy family per registry key, used by the sweep to reason about
@@ -120,6 +123,7 @@ FAMILY: dict[str, str] = {
     "lev_low": "leverage-tier",
     "lev_medium": "leverage-tier",
     "lev_high": "leverage-tier",
+    "trigger_trade": "trigger",
 }
 
 DEFAULT_SET = ("buy_and_hold", "ma_crossover", "rsi", "breakout")

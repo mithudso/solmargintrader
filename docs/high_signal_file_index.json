@@ -244,7 +244,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "REGISTRY (25 strategies), FAMILY taxonomy, build()",
-      "lines": 158
+      "lines": 162
     },
     {
       "path": "backtester/core/strategies/signals.py",
@@ -356,14 +356,14 @@
       "component": "research",
       "kind": "markdown",
       "summary": "The strategy survey",
-      "lines": 792
+      "lines": 801
     },
     {
       "path": "research/RANKED_LISTS.md",
       "component": "research",
       "kind": "markdown",
       "summary": "Ranked results",
-      "lines": 1076
+      "lines": 1083
     },
     {
       "path": "research/TOP_COINS.md",
