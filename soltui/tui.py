@@ -175,6 +175,10 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#compound-adopt": "compound.save",
     "#compound-unattended-start": "compound.unattended_start",
     "#compound-unattended-stop": "compound.unattended_stop",
+    "#compound-scope": "compound.config",
+    "#compound-backtest-all": "compound.backtest",
+    "#compound-unattended-all": "compound.unattended_start",
+    "#compound-unattended-stop-all": "compound.unattended_stop",
 }
 
 class GlossaryTable(DataTable):
@@ -440,6 +444,8 @@ class SolTuiApp(App):
     #compound-table { height: 22; }
     #compound-results { height: 14; }
     #compound-forward { height: 12; }
+    #compound-overview { height: 11; }
+    #compound-coin { width: 16; }
     #compound-call { padding: 0 1; border: round $accent; }
     #compound-detail { color: $text-muted; padding: 0 1; }
     """
@@ -757,6 +763,11 @@ class SolTuiApp(App):
                 "edit its numbers below. Nothing here places an order.",
                 classes="hint",
             )
+            with Horizontal(classes="form-row"):
+                yield Label("Coin:")
+                yield Select([(c, c) for c in compound_mod.COINS], value=self._initial_coin(),
+                             allow_blank=False, id="compound-coin")
+                yield Button("Edits apply to: all coins", id="compound-scope")
             yield Static("Press Signal now for the live call.", id="compound-call")
             yield CompoundTable(id="compound-table")
             yield Static("", id="compound-detail")
@@ -781,6 +792,12 @@ class SolTuiApp(App):
                 yield Button("Start unattended training", variant="success", id="compound-unattended-start")
                 yield Button("Stop unattended", variant="error", id="compound-unattended-stop")
                 yield Static("", id="compound-unattended")
+            with Horizontal(classes="form-row"):
+                yield Button("Backtest all coins", variant="warning", id="compound-backtest-all")
+                yield Button("Start unattended: all coins", variant="success", id="compound-unattended-all")
+                yield Button("Stop unattended: all coins", variant="error", id="compound-unattended-stop-all")
+            yield Static("Every coin at a glance (each has its own numbers):", classes="hint")
+            yield GlossaryTable(id="compound-overview")
             yield Static("", id="compound-status")
             yield Static(
                 "Backtest, latest run: the compound and each enabled metric alone. OOS = the last 30% "
@@ -1277,7 +1294,13 @@ class SolTuiApp(App):
 
     _COMPOUND_IDS = tuple(c.id for c in sc.COMPONENTS)
 
+    def _initial_coin(self) -> str:
+        a = (self.settings.asset or "SOL").upper()
+        return a if a in compound_mod.COINS else "SOL"
+
     def _compound_setup(self) -> None:
+        self._compound_coin = self._initial_coin()
+        self._compound_scope = "all"
         self._compound_cfg: dict[str, Any] = sc.default_config()
         self._compound_live: dict[str, str] = {}
         self._compound_learned: dict[str, str] = {}
@@ -1300,7 +1323,11 @@ class SolTuiApp(App):
         fwd = self.query_one("#compound-forward", GlossaryTable)
         fwd.cursor_type = "row"
         fwd.add_columns("time", "call", "composite", "regime", "price", "next 5m bps", "hit", "blocked by")
-        env = self._call("compound.config", quiet=True)
+        ov = self.query_one("#compound-overview", GlossaryTable)
+        ov.cursor_type = "row"
+        ov.add_columns("coin", "own settings", "data", "backtest verdict", "bt hit", "fwd calls", "fwd hit",
+                       "paper $", "unattended")
+        env = self._call("compound.config", {"asset": self._compound_coin}, quiet=True)
         if env["ok"]:
             self._compound_cfg = env["result"]["config"]
         else:
@@ -1308,6 +1335,7 @@ class SolTuiApp(App):
         self._compound_render_table()
         self._compound_load_results()
         self._compound_show_unattended()
+        self._compound_load_overview()
         self.set_interval(20, self._compound_auto_tick)
 
     def _compound_selected(self) -> str:
@@ -1362,15 +1390,17 @@ class SolTuiApp(App):
                           + [f"{k}={v:g}" for k, v in entry["params"].items()])
         self.query_one("#compound-edit", Input).value = values
 
-    def _compound_save(self, patch: dict[str, Any], what: str) -> None:
-        env = self._call("compound.save", {"patch": patch})
+    def _compound_save(self, patch: dict[str, Any], what: str, scope: str | None = None) -> None:
+        env = self._call("compound.save", {"patch": patch, "asset": self._compound_coin,
+                                            "scope": scope or self._compound_scope})
         status = self.query_one("#compound-status", Static)
         if not env["ok"]:
             status.update(f"[red]{escape(self._msg(env))}[/]")
             return
         self._compound_cfg = env["result"]["config"]
         self._compound_render_table()
-        status.update(f"saved: {escape(what)} (config {env['result']['config_hash']})")
+        where = (f"{self._compound_coin} only" if (scope or self._compound_scope) == "coin" else "all coins")
+        status.update(f"saved for {where}: {escape(what)} (config {env['result']['config_hash']})")
 
     @on(CompoundTable.Toggle)
     def _compound_click_toggle(self, event: CompoundTable.Toggle) -> None:
@@ -1414,12 +1444,13 @@ class SolTuiApp(App):
         if not patch:
             status.update("nothing to adopt: run Signal now with tune=1; no metric has moved yet")
             return
-        self._compound_save({"components": patch}, f"tuned settings for {', '.join(sorted(patch))}")
+        # Tuned settings are this coin's own numbers: never pushed onto the other coins.
+        self._compound_save({"components": patch}, f"tuned settings for {', '.join(sorted(patch))}", scope="coin")
         self._compound_tuned.clear()
 
     @on(Button.Pressed, "#compound-reset")
     def _compound_reset(self) -> None:
-        env = self._call("compound.reset")
+        env = self._call("compound.reset", {"asset": self._compound_coin, "scope": self._compound_scope})
         if env["ok"]:
             self._compound_cfg = env["result"]["config"]
             self._compound_live.clear()
@@ -1446,8 +1477,9 @@ class SolTuiApp(App):
             status.update(f"live call scored from {r.get('bars_used', '?')} closed 5m bars")
         elif name == "compound.backtest":
             status.update(f"backtest {r['run_id']}: {r['configurations']} configurations on "
-                          f"{', '.join(r['assets']) or '-'}" + (f"; skipped {r['skipped']}" if r["skipped"] else ""))
+                          f"{', '.join(r['assets']) or '-'}" + (f"; skipped {', '.join(r['skipped'])}" if r["skipped"] else ""))
             self._compound_load_results()
+            self._compound_load_overview()
         elif name == "compound.forward_tick":
             self._compound_last_bar = int(r.get("bar_ts") or 0)
             status.update(f"forward: bar {r.get('bar_ts')} call {r['call']}"
@@ -1490,7 +1522,7 @@ class SolTuiApp(App):
         self._compound_render_table()
 
     def _compound_load_results(self) -> None:
-        env = self._call("compound.results", {"asset": self.settings.asset}, quiet=True)
+        env = self._call("compound.results", {"asset": self._compound_coin}, quiet=True)
         results = self.query_one("#compound-results", GlossaryTable)
         results.clear()
         self._compound_bt = {}
@@ -1512,7 +1544,7 @@ class SolTuiApp(App):
                     self._compound_bt[row["label"][5:]] = _pct(row["oos_hit"])
                 elif row["label"] == "compound":
                     self._compound_bt["_compound"] = _pct(row["oos_hit"])
-        fenv = self._call("compound.forward_status", {"asset": self.settings.asset}, quiet=True)
+        fenv = self._call("compound.forward_status", {"asset": self._compound_coin}, quiet=True)
         fwd = self.query_one("#compound-forward", GlossaryTable)
         fwd.clear()
         self._compound_fwd = {}
@@ -1543,16 +1575,16 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#compound-signal")
     def _compound_signal(self) -> None:
-        self._compound_job("compound.signal", {"asset": self.settings.asset}, "scoring the latest closed bar")
+        self._compound_job("compound.signal", {"asset": self._compound_coin}, "scoring the latest closed bar")
 
     @on(Button.Pressed, "#compound-backtest")
     def _compound_backtest(self) -> None:
-        self._compound_job("compound.backtest", {"asset": self.settings.asset},
+        self._compound_job("compound.backtest", {"asset": self._compound_coin},
                            "backtesting the compound and each enabled metric alone")
 
     @on(Button.Pressed, "#compound-forward")
     def _compound_forward(self) -> None:
-        self._compound_job("compound.forward_tick", {"asset": self.settings.asset}, "forward tick")
+        self._compound_job("compound.forward_tick", {"asset": self._compound_coin}, "forward tick")
 
     @on(Button.Pressed, "#compound-auto")
     def _compound_auto_toggle(self) -> None:
@@ -1574,7 +1606,7 @@ class SolTuiApp(App):
             self._compound_forward()
 
     def _compound_show_unattended(self) -> None:
-        env = self._call("compound.unattended_status", {"asset": self.settings.asset}, quiet=True)
+        env = self._call("compound.unattended_status", {"asset": self._compound_coin}, quiet=True)
         label = self.query_one("#compound-unattended", Static)
         if not env["ok"]:
             label.update(Text(f"unattended: {self._msg(env)}"))
@@ -1588,13 +1620,80 @@ class SolTuiApp(App):
             if time.time() - self._compound_last_refresh > 60:
                 self._compound_last_refresh = time.time()
                 self._compound_load_results()
+                self._compound_load_overview()
         else:
             label.update(Text(f"unattended training stopped for {s['asset']}"
                               + (f" · last: {s['last_line'][:120]}" if s.get("last_line") else "")))
 
+    def _compound_load_overview(self) -> None:
+        env = self._call("compound.overview", quiet=True)
+        table = self.query_one("#compound-overview", GlossaryTable)
+        table.clear()
+        if not env["ok"]:
+            return
+        for r in env["result"]["coins"]:
+            table.add_row(r["asset"], "yes" if r["own_settings"] else "-", r["data"] or "none",
+                          r["backtest_verdict"], _pct(r["backtest_hit"]), str(r["fwd_calls"]), _pct(r["fwd_hit"]),
+                          "-" if r["paper_usd"] is None else f"{r['paper_usd']:+,.2f}",
+                          "RUNNING" if r["unattended"] else "-", key=r["asset"])
+
+    @on(Select.Changed, "#compound-coin")
+    def _compound_coin_changed(self, event: Select.Changed) -> None:
+        if not isinstance(event.value, str) or event.value == getattr(self, "_compound_coin", None):
+            return
+        self._compound_coin = event.value
+        env = self._call("compound.config", {"asset": self._compound_coin}, quiet=True)
+        if env["ok"]:
+            self._compound_cfg = env["result"]["config"]
+        self._compound_live.clear()
+        self._compound_learned.clear()
+        self._compound_tuned.clear()
+        self._compound_render_table()
+        self._compound_load_results()
+        self._compound_show_unattended()
+        own = env["ok"] and env["result"]["own_settings"]
+        self.query_one("#compound-status", Static).update(
+            f"showing {self._compound_coin}" + (" (has its own settings)" if own else " (shared settings)"))
+
+    @on(Button.Pressed, "#compound-scope")
+    def _compound_scope_toggle(self) -> None:
+        self._compound_scope = "coin" if self._compound_scope == "all" else "all"
+        label = f"this coin ({self._compound_coin})" if self._compound_scope == "coin" else "all coins"
+        self.query_one("#compound-scope", Button).label = f"Edits apply to: {label}"
+        env = self._call("compound.config", {"asset": self._compound_coin}, quiet=True)
+        if env["ok"]:
+            self._compound_cfg = env["result"]["config"]
+            self._compound_render_table()
+
+    @on(Button.Pressed, "#compound-backtest-all")
+    def _compound_backtest_all(self) -> None:
+        self._compound_job("compound.backtest", {"all": True},
+                           "backtesting every coin in parallel, each with its own settings")
+
+    @on(Button.Pressed, "#compound-unattended-all")
+    def _compound_unattended_all(self) -> None:
+        env = self._call("compound.unattended_start", {"all": True})
+        status = self.query_one("#compound-status", Static)
+        if env["ok"]:
+            r = env["result"]
+            status.update(Text(f"unattended training started for {', '.join(r['started']) or 'no coin'}"
+                               + (f"; skipped {', '.join(r['skipped'])}" if r["skipped"] else "")))
+        else:
+            status.update(f"[red]{escape(self._msg(env))}[/]")
+        self._compound_show_unattended()
+        self._compound_load_overview()
+
+    @on(Button.Pressed, "#compound-unattended-stop-all")
+    def _compound_unattended_stop_all(self) -> None:
+        env = self._call("compound.unattended_stop", {"all": True})
+        status = self.query_one("#compound-status", Static)
+        status.update(Text(f"stop requested for {', '.join(env['result']['stopping']) or 'nothing running'}")
+                      if env["ok"] else f"[red]{escape(self._msg(env))}[/]")
+        self._compound_load_overview()
+
     @on(Button.Pressed, "#compound-unattended-start")
     def _compound_unattended_start(self) -> None:
-        env = self._call("compound.unattended_start", {"asset": self.settings.asset})
+        env = self._call("compound.unattended_start", {"asset": self._compound_coin})
         status = self.query_one("#compound-status", Static)
         if env["ok"]:
             status.update(Text(f"unattended training started for {env['result']['asset']} "
@@ -1605,7 +1704,7 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#compound-unattended-stop")
     def _compound_unattended_stop(self) -> None:
-        env = self._call("compound.unattended_stop", {"asset": self.settings.asset})
+        env = self._call("compound.unattended_stop", {"asset": self._compound_coin})
         status = self.query_one("#compound-status", Static)
         if env["ok"]:
             r = env["result"]

@@ -357,7 +357,7 @@
       "component": "research",
       "kind": "python",
       "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 206
+      "lines": 224
     },
     {
       "path": "research/geometry.py",
@@ -656,7 +656,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2959
+      "lines": 3058
     },
     {
       "path": "soltui/signals.py",
@@ -712,7 +712,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 1235
+      "lines": 1431
     },
     {
       "path": "soltui/liquidity.py",
@@ -1165,7 +1165,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 272
+      "lines": 293
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",

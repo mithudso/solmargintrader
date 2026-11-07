@@ -1122,41 +1122,63 @@ def compound_catalog(ctx: Context, p: dict[str, Any]) -> Any:
     return sc.catalog()
 
 
-@command("compound.config", "The saved compound configuration (switches, weights, parameters, "
-         "aggregate and execution settings), its hash, and the scheduled-event list.")
+@command("compound.config", "The compound configuration for a coin (the shared base with that coin's "
+         "own settings on top), its hash, the coin's own overrides, and the scheduled-event list.",
+         (P("asset", "string", "Coin; default the configured asset."),))
 def compound_config(ctx: Context, p: dict[str, Any]) -> Any:
     from backtester.core import scorecard as sc
-    state = _compound(compound_mod.load_state)
+    asset = _compound_asset(ctx, p)
+    state = _compound(compound_mod.load_state, asset)
     return {"config": state["config"], "config_hash": sc.config_hash(state["config"]),
-            "events": state["events"], "asset": ctx.settings.asset}
+            "events": state["events"], "asset": state["asset"],
+            "own_settings": state["overrides"].get(state["asset"], {}),
+            "coins_with_own_settings": sorted(state["overrides"])}
 
 
 @command("compound.save",
          "Update the compound configuration: a partial patch {components: {id: {enabled, weight, "
          "params}}, aggregate, execution, blocked_hours}, and/or replace the event list.",
          (P("patch", "json", "Partial configuration to merge."),
-          P("events", "json", "Scheduled events [{ts: epoch seconds, title}] (replaces the list).")),
+          P("events", "json", "Scheduled events [{ts: epoch seconds, title}] (replaces the list)."),
+          P("asset", "string", "With scope coin: the coin whose own settings change."),
+          P("scope", "string", "all (default: the shared base every coin starts from) or coin.")),
          read_only=False)
 def compound_save(ctx: Context, p: dict[str, Any]) -> Any:
     from backtester.core import scorecard as sc
     patch, events = p.get("patch"), p.get("events")
+    scope = p.get("scope") or "all"
+    if scope not in ("all", "coin"):
+        raise CommandError("bad_params", "scope must be all or coin")
     if patch is not None and not isinstance(patch, dict):
         raise CommandError("bad_params", "patch must be an object")
     if events is not None and not isinstance(events, list):
         raise CommandError("bad_params", "events must be a list")
     if patch is None and events is None:
         raise CommandError("bad_params", "give a patch, events, or both")
-    state = _compound(compound_mod.save_state, patch, events)
+    asset = _compound_asset(ctx, p) if scope == "coin" else None
+    state = _compound(compound_mod.save_state, patch, events, asset=asset)
+    if asset is None and p.get("asset"):
+        state = _compound(compound_mod.load_state, p["asset"])  # show the asked-for coin's view
     return {"config": state["config"], "config_hash": sc.config_hash(state["config"]),
-            "events": state["events"]}
+            "events": state["events"], "asset": state["asset"], "scope": scope}
 
 
-@command("compound.reset", "Restore every compound component, weight and setting to its default.",
+@command("compound.reset", "Restore defaults: scope coin clears one coin's own settings; scope all resets "
+         "the shared base; scope everything also clears every coin's own settings.",
+         (P("asset", "string", "With scope coin: the coin to clear."),
+          P("scope", "string", "all (default), coin or everything.")),
          read_only=False)
 def compound_reset(ctx: Context, p: dict[str, Any]) -> Any:
     from backtester.core import scorecard as sc
-    state = _compound(compound_mod.save_state, None, None, reset=True)
-    return {"config": state["config"], "config_hash": sc.config_hash(state["config"])}
+    scope = p.get("scope") or "all"
+    if scope not in ("all", "coin", "everything"):
+        raise CommandError("bad_params", "scope must be all, coin or everything")
+    asset = _compound_asset(ctx, p) if scope == "coin" else None
+    state = _compound(compound_mod.save_state, None, None, reset=True, asset=asset,
+                      reset_all=scope == "everything")
+    if asset is None and p.get("asset"):
+        state = _compound(compound_mod.load_state, p["asset"])
+    return {"config": state["config"], "config_hash": sc.config_hash(state["config"]), "scope": scope}
 
 
 @command("compound.signal",
@@ -1172,10 +1194,14 @@ def compound_signal(ctx: Context, p: dict[str, Any]) -> Any:
          "Backtest the saved compound and each enabled component alone on cached 5m data: next-bar hit "
          "rate and engine P&L net of fees, in-sample vs out-of-sample. Appends to the results file.",
          (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("all", "bool", "Every coin with cached data, in parallel processes, each with its own settings."),
           P("perturb", "bool", "Also run one-at-a-time parameter variations."),
           P("aggregate_grid", "bool", "Also run threshold, gate, regime and leverage variations.")),
          read_only=False, long_running=True)
 def compound_backtest(ctx: Context, p: dict[str, Any]) -> Any:
+    if p.get("all"):
+        return _compound(compound_mod.backtest_all, perturb=bool(p.get("perturb")),
+                         aggregate_grid=bool(p.get("aggregate_grid")))
     return _compound(compound_mod.backtest, _compound_asset(ctx, p), perturb=bool(p.get("perturb")),
                      aggregate_grid=bool(p.get("aggregate_grid")))
 
@@ -1201,18 +1227,30 @@ def compound_forward_tick(ctx: Context, p: dict[str, Any]) -> Any:
          "Start fully unattended forward training: a detached background process that records and "
          "resolves one call per closed 5m bar (learning from each) until stopped. Survives closing the "
          "console. Read-only market data; no orders.",
-         (P("asset", "string", "Asset symbol; default the configured asset."),),
+         (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("all", "bool", "Every coin: one process each, staggered a few seconds apart.")),
          read_only=False)
 def compound_unattended_start(ctx: Context, p: dict[str, Any]) -> Any:
+    if p.get("all"):
+        return _compound(compound_mod.start_unattended_all)
     return _compound(compound_mod.start_unattended, _compound_asset(ctx, p))
 
 
 @command("compound.unattended_stop", "Stop the unattended forward training for an asset (it finishes "
          "the current tick, then exits).",
-         (P("asset", "string", "Asset symbol; default the configured asset."),),
+         (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("all", "bool", "Stop every coin's unattended run.")),
          read_only=False)
 def compound_unattended_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    if p.get("all"):
+        return _compound(compound_mod.stop_unattended_all)
     return _compound(compound_mod.stop_unattended, _compound_asset(ctx, p))
+
+
+@command("compound.overview", "One row per coin: its own settings, cached data, latest backtest verdict, "
+         "forward-test calls and hit rate, paper dollars, and whether unattended training runs.")
+def compound_overview(ctx: Context, p: dict[str, Any]) -> Any:
+    return {"coins": _compound(compound_mod.overview)}
 
 
 @command("compound.unattended_status", "Whether unattended forward training is running for an asset, "

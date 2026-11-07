@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 37
-Delta: v35 to v37; triangular arbitrage card design and verification; preserved concurrent grid-holdout records.
+Version: 38
+Delta: v37 to v38; every coin in parallel with its own numbers; full 1m history.
 
 ## v1 - 2026-11-06
 
@@ -382,3 +382,11 @@ Delivery: commit and PR cover the card, these workflow records, and the three of
 Remaining design work: none. Before any measured arbitrage result, a later implementation must audit venue/pair availability, obtain sequence-valid independent cross-pair books and fee/latency metadata, and implement/test the offline replay. The card deliberately remains spec-only with data_available false; profitability is unmeasured.
 
 Integration: preserved the concurrent grid-holdout merge d991ec5 (PR #65), including its prompt v28 and memory v35. This task's records are now prompt v29 and memory v36/v37. Regenerated offline retrieval indexes after combining both histories; final checks run on the integrated tree.
+
+## v38 - 2026-11-07 (every coin in parallel, own numbers, full minute history)
+
+Target: user asked for data as detailed and as far back as possible, backtesting and forward testing on all coins at once in parallel, each coin with its own set of numbers. Stele TASK-825 (Stele MCP disconnected mid-session; writes queued in the outbox). Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-coins, branch feat/compound-all-coins (stacked on PR #64).
+
+Completed: 1m history fetch started for BTC ETH SOL DOGE ZEC XRP BNB HYPE (`fetch_minutes --all --years 7`, main checkout data/). compound state gains per-coin overrides (state["assets"]) stacked on the base; save/reset take asset and scope (all, coin, everything); adopt tuned saves to the coin. materialize_bars caches 5m bars per coin (.npz keyed by source mtimes); workers hold at most two coins. backtest_all and the sweep use each coin's own config. Candle cache per coin (closed bars only) so a tick costs one request; 429/5xx retried. start/stop_unattended_all (staggered 6 s per coin, --offset). overview(); tab coin picker, scope switch, Backtest all coins, Start/Stop all coins, overview table (52 buttons). full_suite fetches 1m history instead of 365 days of 5m.
+
+Remaining: run Backtest all coins once the minute download finishes and report per-coin results; open Jupiter Perps positions still unread.

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 29
-Delta: v28 to v29; triangular arbitrage card design and verification; preserved concurrent grid-holdout records.
+Version: 30
+Delta: v29 to v30; full 1m history, every coin in parallel with its own numbers (v29 is the triangular-arbitrage card).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -197,3 +197,10 @@ There is a type of multi-coin trade that can only happen every now and then usin
 ```
 
 Target: existing `backtester/strategy_cards/triangular_arbitrage.md`; Stele TASK-826. Design only; no live trading or fabricated backtest results.
+```
+
+## v30 - 2026-11-07 (full history, every coin in parallel)
+
+```text
+Can you download as detailed as possible numbers for as far back as you can go? We also need to test it on all of the coins, so make it do the back testing against all of the coins all at once in parallel, as well as the forward testing. Which means each of the coins will need its own set of numbers.
+```

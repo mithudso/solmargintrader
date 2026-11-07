@@ -12,15 +12,16 @@ Run it with the soltui interpreter (it has numpy/pandas/Textual):
 ## What "full" means here, and its size
 
 1. **Fetch** (the only network step, explicit as CLAUDE.md requires): daily and hourly candles
-   for the tradeable universe (`backtester.core.universe`), 5m candles for the last
-   `--days-5m` days per asset (`backtester.core.fetch`), and Hyperliquid hourly funding
-   (`backtester.core.funding`). Written to the main checkout's `data/` cache, never a worktree.
+   for the tradeable universe (`backtester.core.universe`), **1-minute candles back to each
+   coin's earliest available minute** (`backtester.core.fetch_minutes`, resumable, with a
+   coverage manifest), and Hyperliquid hourly funding (`backtester.core.funding`). Written to the main checkout's `data/` cache, never a worktree.
 2. **Registry sweep**: `soltui.bgworker` per asset -- every strategy card, every horizon,
    perturbation tiers 0-2 (about 1,060 CPCV jobs per asset). Results land in the file the
    Strategies and Queue tabs read.
-3. **Compound sweep**: `soltui.compound sweep --perturb --aggregate-grid` -- the saved
-   five-minute compound, each metric alone, one-at-a-time parameter variations and the
-   threshold/gate/regime/leverage grid (about 280 configurations per asset). Results land in
+3. **Compound sweep**: `soltui.compound sweep --perturb --aggregate-grid` -- every coin in
+   parallel, each with its own settings: the five-minute compound, each metric alone,
+   one-at-a-time parameter variations and the threshold/gate/regime/leverage grid (about 300
+   configurations per coin), on 5m bars built from the full 1-minute history. Results land in
    the file the Compound 5m tab reads.
 
 Every configuration count is printed. That count is the multiple-testing denominator: the best
@@ -51,6 +52,7 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from backtester.core.data import resolve_data_dir  # noqa: E402
+from backtester.core.fetch_minutes import MINUTE_ASSETS  # noqa: E402
 from backtester.core.universe import EXCLUDED, TOP10_NON_PEGGED  # noqa: E402
 
 DEFAULT_ASSETS = tuple(a for a in TOP10_NON_PEGGED if a not in EXCLUDED)
@@ -68,7 +70,18 @@ def fetch_steps(assets: list[str], data: Path, args: argparse.Namespace) -> list
         out.append((f"fetch {interval} candles", [
             py, "-m", "backtester.core.universe", "--assets", joined, "--interval", interval,
             "--start", start, "--out-dir", str(data), "--refetch", "--allow-partial", "--allow-gaps"]))
+    # The finest history Coinbase serves: 1-minute candles back to each coin's earliest minute
+    # (resumable; a re-run only fetches what is missing). The compound builds its 5m bars from
+    # these, and they are what the backtests run on when they are the longest series cached.
+    minute_assets = [a for a in assets if a in MINUTE_ASSETS]
+    if minute_assets and args.minutes_years > 0:
+        cmd = [py, "-m", "backtester.core.fetch_minutes", "--years", f"{args.minutes_years:g}", "--workers", "8"]
+        for a in minute_assets:
+            cmd += ["--asset", a]
+        out.append((f"fetch 1m candles for {', '.join(minute_assets)} (up to {args.minutes_years:g} years)", cmd))
     for a in assets:
+        if args.days_5m <= 0:
+            break
         out.append((f"fetch {a} 5m candles since {start_5m}", [
             py, "-m", "backtester.core.fetch", "--asset", a, "--interval", "5m", "--start", start_5m,
             "--allow-gaps", "--out", str(data / f"{a}_5m.csv")]))
@@ -138,7 +151,10 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--assets", default=",".join(DEFAULT_ASSETS),
                     help="comma list (default: the tradeable universe; unlisted ones are reported)")
-    ap.add_argument("--days-5m", type=int, default=365, help="days of 5m history per asset (default 365)")
+    ap.add_argument("--days-5m", type=int, default=0,
+                    help="also fetch N days of native 5m candles (default 0: the 1m history covers it)")
+    ap.add_argument("--minutes-years", type=float, default=7.0,
+                    help="years of 1-minute candles to fetch, capped by each coin's listing (default 7)")
     ap.add_argument("--start-1h", default="2023-01-01", help="first date of hourly candles")
     ap.add_argument("--max-tier", type=int, default=2, help="registry perturbation tiers (0-2)")
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) // 2),
@@ -171,7 +187,9 @@ def main(argv: list[str] | None = None) -> int:
         for i, (what, cmd) in enumerate(phase, 1):
             print(f"\n[{i}/{len(phase)}] {what}\n  {' '.join(cmd)}", flush=True)
             t0 = time.time()
-            code = subprocess.run(cmd, cwd=REPO, env=env).returncode  # noqa: S603 - fixed argv
+            # fetch_minutes writes data/ relative to its working directory: run it where data/ lives.
+            where = data.parent if "backtester.core.fetch_minutes" in cmd else REPO
+            code = subprocess.run(cmd, cwd=where, env=env).returncode  # noqa: S603 - fixed argv
             print(f"[{i}/{len(phase)}] exit {code} after {time.time() - t0:.0f}s", flush=True)
             if code != 0:
                 failures.append(f"{what} (exit {code})")

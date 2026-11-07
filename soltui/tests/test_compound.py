@@ -292,6 +292,83 @@ def fake_scan(status="ok", sol_usd=900.0, usdt_usd=None):
     return lambda address, fetch: Scan()
 
 
+class PerCoinTests(TempConfig):
+    def test_a_coin_stacks_its_own_settings_on_the_shared_base(self) -> None:
+        compound.save_state({"aggregate": {"entry": 0.3}})                                   # all coins
+        compound.save_state({"components": {"rsi": {"params": {"period": 9}}}}, asset="DOGE")  # DOGE only
+        doge, sol = compound.load_state("DOGE")["config"], compound.load_state("SOL")["config"]
+        self.assertEqual((doge["aggregate"]["entry"], sol["aggregate"]["entry"]), (0.3, 0.3))
+        self.assertEqual((doge["components"]["rsi"]["params"]["period"],
+                          sol["components"]["rsi"]["params"]["period"]), (9, 14))
+        self.assertNotEqual(sc.config_hash(doge), sc.config_hash(sol))
+        compound.save_state(reset=True, asset="DOGE")
+        self.assertEqual(compound.load_state("DOGE")["config"], compound.load_state("SOL")["config"])
+
+    def test_a_coin_override_is_validated_against_the_base(self) -> None:
+        compound.save_state({"components": {"ema_cross": {"params": {"slow": 30}}}})
+        with self.assertRaises(compound.CompoundError):
+            compound.save_state({"components": {"ema_cross": {"params": {"fast": 40}}}}, asset="SOL")
+
+    def test_reset_everything_clears_every_coins_settings(self) -> None:
+        compound.save_state({"components": {"rsi": {"weight": 2}}}, asset="BTC")
+        compound.save_state(reset=True, reset_all=True)
+        self.assertEqual(compound.load_state()["overrides"], {})
+
+    def test_sweep_uses_each_coins_own_settings(self) -> None:
+        from backtester.tests.test_compound_backtest import frame
+        compound.save_state({"components": {c: {"enabled": c == "rsi"} for c in sc.BY_ID}})
+        compound.save_state({"components": {"rsi": {"params": {"period": 7}}}}, asset="DOGE")
+        seen = {}
+
+        def fake_run(asset, cfg, **kw):
+            seen.setdefault(asset, cfg["components"]["rsi"]["params"]["period"])
+            raise RuntimeError("stop here")
+
+        prepared = compound.cbt.prepare("SOL", bars=frame(synthetic(600)), source="synthetic")
+        with mock.patch.object(compound.cbt, "run_compound", fake_run), \
+                mock.patch.object(compound, "_prepared", lambda a: prepared):
+            compound.sweep(["SOL", "DOGE"], standalone=False)
+        self.assertEqual(seen, {"SOL": 14, "DOGE": 7})
+
+
+class CandleCacheTests(TempConfig):
+    def test_second_tick_requests_only_new_bars(self) -> None:
+        venue = Venue(now=T0 + 300 * 19 + 10)
+        compound.fetch_closed_candles("SOL", now=venue.now, bars=600, get=venue.get)
+        first = len(venue.urls)
+        venue.now += 300
+        raw = compound.fetch_closed_candles("SOL", now=venue.now, bars=600, get=venue.get)
+        self.assertEqual(len(venue.urls) - first, 1)                 # one request for the new bar
+        self.assertEqual(int(raw["ts"][-1]), T0 + 300 * 19)
+        self.assertTrue(np.all(np.diff(raw["ts"]) == 300))
+
+    def test_rate_limit_is_retried(self) -> None:
+        calls = []
+
+        def flaky(url):
+            calls.append(url)
+            if len(calls) == 1:
+                raise urllib.error.HTTPError(url, 429, "Too Many Requests", {}, None)
+            return []
+
+        self.assertEqual(compound._get_with_retry(flaky, "u", sleep=lambda s: None), [])
+        self.assertEqual(len(calls), 2)
+
+    def test_all_coins_start_staggered_and_stop(self) -> None:
+        started = []
+        with mock.patch.object(compound, "start_unattended",
+                               lambda c, offset=0.0: started.append((c, offset)) or {"asset": c}):
+            out = compound.start_unattended_all(("BTC", "ETH", "SOL"))
+        self.assertEqual(out["started"], ["BTC", "ETH", "SOL"])
+        self.assertEqual([o for _, o in started], [0.0, 6.0, 12.0])
+
+    def test_overview_has_one_row_per_coin(self) -> None:
+        rows = compound.overview(("SOL", "BTC"))
+        self.assertEqual([r["asset"] for r in rows], ["SOL", "BTC"])
+        self.assertEqual(rows[0]["backtest_verdict"], "not tested")
+        self.assertFalse(rows[0]["unattended"])
+
+
 class WalletTests(TempConfig):
     def setUp(self) -> None:
         super().setUp()
@@ -582,8 +659,10 @@ class CompoundTab(unittest.IsolatedAsyncioTestCase):
                 await pilot.pause()
                 self.assertIn("period=11", self.cell(app, "rsi", "parameters"))
                 self.assertEqual(self.cell(app, "rsi", "tuned to"), "")
-        saved = json.loads(compound.config_path().read_text())["config"]
-        self.assertEqual(saved["components"]["rsi"]["params"]["period"], 11)
+        saved = json.loads(compound.config_path().read_text())
+        # Adopted tuning is the coin's own number; the shared base keeps the default.
+        self.assertEqual(saved["assets"]["SOL"]["components"]["rsi"]["params"]["period"], 11)
+        self.assertEqual(saved["config"]["components"]["rsi"]["params"]["period"], 14)
 
 
 class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
