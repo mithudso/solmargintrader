@@ -795,6 +795,22 @@ Settings · Strategies · Signals · Backtest · Execute · **Analyze** · **Cum
   published figure and `verify_numbers.py` assumes it changes through committed
   scripts, so a GUI editor would be an unlogged write path into that tree.
 
+### `soltui call` / `list` / `api` / `host-install` — the command bridge
+
+```bash
+soltui list                                        # the 40 registry commands and their parameters
+soltui call settings.get                           # one envelope on stdout; exit 0 when ok
+soltui call roster.add --param name=rsi --json '{"params": {"period": 9}}'
+soltui call liquidity.resume --param confirm=true  # requires_confirm: refused without it
+soltui api --port 8788                             # 127.0.0.1 only; token: ~/Library/Application Support/soltui/api-token
+curl -s -H "Authorization: Bearer $(cat ~/Library/Application\ Support/soltui/api-token)" \
+     -d '{}' http://127.0.0.1:8788/v1/roster.list
+soltui host-install install|uninstall|status       # Chrome native-messaging host com.mitchhudson.soltui
+```
+
+Same registry, same envelope, same call log (`~/Library/Logs/soltui/calls.jsonl`, parameter keys only)
+as the TUI and the extension. See `soltui/README.md` ("The command bridge").
+
 ### macOS menu bar and packaging
 
 ```bash

@@ -468,6 +468,11 @@ class TestLiquidityTab(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             self.assertTrue((self.home / "KILL").exists())
             self.assertIn("Kill switch ON", text_of(app, "#liq-banner"))
+            # Resume removes a safety stop (requires_confirm): the first press only arms it.
+            await pilot.click("#liq-resume")
+            await pilot.pause()
+            self.assertTrue((self.home / "KILL").exists())
+            self.assertIn("again", text_of(app, "#liq-status"))
             await pilot.click("#liq-resume")
             await pilot.pause()
             self.assertFalse((self.home / "KILL").exists())

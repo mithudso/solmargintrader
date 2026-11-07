@@ -161,6 +161,53 @@ that reason. The measured PBO for this strategy set is 0.43–0.46 against a 0.5
 pure-noise control — so treat *ordering* as weakly informative at best, and read
 the distribution.
 
+## The command bridge: one registry, four surfaces
+
+Every action in the console is a command in `soltui/commands.py` (`soltui list` prints them all).
+The TUI, the CLI, the HTTP API and the Chrome extension's native-messaging host all call
+`dispatch(name, params, surface)`, so one call returns one envelope, byte for byte, wherever it came from:
+
+```
+{"ok": true,  "command": "roster.list", "result": {...}, "error": null}
+{"ok": false, "command": "...", "result": null, "error": {"code": "bad_params|unknown_command|forbidden|failed|timeout", "message": "..."}}
+```
+
+```bash
+soltui list                                         # every command with its parameters
+soltui call roster.list
+soltui call roster.add --param name=rsi --json '{"params": {"period": 9}}'
+soltui call liquidity.resume --param confirm=true   # see the confirm gate below
+soltui api --port 8788                              # http://127.0.0.1:8788/v1/<command>
+soltui host-install install                         # register the Chrome native host
+```
+
+- **Confirm gate.** `liquidity.resume` deletes the aero-lp `KILL` file, which removes a safety stop on a
+  real-money daemon. It refuses with `forbidden` unless `confirm` is the boolean `true`, on every surface;
+  the TUI's Resume button asks you to press it twice within 10 seconds. `liquidity.kill` only adds the stop
+  and needs no confirm. No command moves funds: soltui has no keys, signer or venue client.
+- **API access.** Binds `127.0.0.1` only. Every route except `GET /v1/health` needs
+  `Authorization: Bearer <token>`; the token is in `~/Library/Application Support/soltui/api-token`
+  (mode 600, created on first run). A request with an `Origin` or `Sec-Fetch-Site` header is refused, since a
+  web page can post to localhost. `GET` runs read-only commands only; `POST` takes a JSON object of params.
+- **Native host** `com.mitchhudson.soltui` (`soltui/native_host.py`): Chrome's 4-byte little-endian framing,
+  ops `ping`, `list`, `call`, `buildHash`. `buildHash` hashes the extension's manifest and `src/` so the
+  extension can reload itself when its source changes. A reply over Chrome's 1 MB limit comes back as a
+  `failed` envelope that points at the CLI or API. `soltui host-install install|uninstall|status` writes the
+  wrapper script (`~/Library/Application Support/soltui/native-host/soltui-native-host`, running
+  `~/.venvs/soltui/bin/python -m soltui.native_host`) and a manifest in each installed Chromium browser,
+  allowing extension `pnokcppamfghgaimmmghoegjllhonhbh` plus any ids in `SOLTUI_EXTRA_EXTENSION_IDS`.
+  Chrome loads host manifests at launch, so restart it after the first install.
+- **Call log.** `dispatch` appends one line per call to `~/Library/Logs/soltui/calls.jsonl`:
+  `{ts, surface, command, ok, error_code, ms, params_keys}`. Parameter *keys* only, never values; rotated at
+  5 MB. The TUI's timer-driven refreshes are not logged, calls anyone asked for are.
+- **State.** Mutating commands persist (roster with its params, signal defaults, settings), so a roster built
+  through the API is the roster the TUI shows. The dry-run replay (`paper.*`) and the sweep live in the
+  running process: use them through the TUI, the API server or the native host, or give `paper.start` a
+  `bars` parameter for a one-shot CLI replay.
+
+`soltui/tests/test_bridge_parity.py` walks the registry and proves byte-identical envelopes across the four
+surfaces for every command; `test_bridge_buttons.py` fails when a TUI button is not a registry command.
+
 ## Safety
 
 `CLAUDE.md` for this repo states: dry-run is the default, the extension installs
@@ -213,6 +260,11 @@ soltui/
   bgcontrol.py spawn/stop the worker; the liveness lock
   liquidity.py pure: read/validate/format the liquidity daemon's state files; KILL toggle
   app.py       rumps menu-bar shell (wiring only, lazy rumps import)
+  commands.py  the command registry: dispatch, envelope, confirm gate, call log (every action lives here)
+  reference.py static Research/Signals tab content, served by research.get / signals.reference
+  cli.py       `soltui call` / `soltui list`
+  api.py       `soltui api`: loopback HTTP, bearer token, browser requests refused
+  native_host.py, native_host_install.py   Chrome native-messaging host and its installer
 ```
 
 Anything that makes a decision lives in the pure modules. `tui.py` and `app.py` are
