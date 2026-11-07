@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 25
-Delta: v24 to v25; grid evidence audited, full SolTUI help implemented and local acceptance passed.
+Version: 26
+Delta: v25 to v26; tradingstrategyresults.json coverage: five strategies, eight cards, soltui mappings and queue entries.
 
 ## v1 - 2026-11-06
 
@@ -266,3 +266,15 @@ Verification: focused10tests passed, final7newfunctionaltests passed, fullSolTUI
 Independent live-acceptance-verifier opened isolated textual-serve browser, confirmed visiblehint, actualfeebpshover example, F1gridsearch, PageDownscroll and Escapereturn. Frozen SHA256: tui a86e9636e34464138db113e0eb441cc1bfa2278abf13ca7ec2d0eb7d2cb92e75; help89868eae429c70eb39416f31ed5376a21a649fd5a485a6ac1720b0f53da8b2b6; help_screen82f1a1f4794b0afdd7f9e534478e55b93e9decb77f68bf330297a9e21015a8bb. Its server/browser areclosed; existing userTUI PID65485 waspreserved. Screenshots are outsideGit under /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/soltui-help-live-fk3gu963/screenshots/.
 
 Remaining: commit source/docs so check_docs can discover newly committed testfile; regenerate/check offlineindexes; finalPR/CI/merge and remotecontentverification. Then sync default checkout only if safe and open a fresh console to load new code, preserving any old console draft. No filter, recenter, execution or live-profitability improvement was implemented or claimed. TASK-801 tracks delivery.
+
+## v26 - 2026-11-07 (tradingstrategyresults.json coverage)
+
+Target: check every strategy, signal and indicator in tradingstrategyresults.json against the registry, cards and soltui; add cards and queue entries for gaps. Stele TASK-804. Worktree /Users/mitch/dev/solmargintrader-wt-strategy-coverage, branch feat/strategy-coverage-tsr.
+
+Found: 8 strategies and 13 indicators. Covered already: HODL (buy_and_hold), trend (ma_crossover), arbitrage (triangular_arbitrage and dex_cex_dislocation, spec-only), SMA, RSI, MACD, Bollinger, Stochastic, OBV, ATR, Ichimoku, VWAP. Missing: DCA, EMA and golden cross, PPO, Fibonacci retracement, swing trading, day trading, scalping, event-driven.
+
+Completed: backtester/core/strategies/textbook.py (dca, ema_crossover, ppo, fib_retracement, swing_confluence) with indicators.ppo and indicators.fib_level; five `implemented` cards (so the soltui queue picks them up through bgqueue) and three spec-only cards (day_trading, scalping, event_driven). soltui: SignalDefaults fields, STRATEGY_PARAM_MAP, SIGNAL_GROUPS, validation, reference rows and help text. research/decide.py got a PPO indicator row. Tests: backtester/tests/test_textbook_strategies.py (31) and soltui/tests/test_tradingstrategyresults_coverage.py (6, checks the map against the catalogue file when present).
+
+Verification: backtester 734 pass, soltui 682 pass, check_docs agrees, index check passes. Smoke numbers on SOL daily (single 70/30 split, default params) are in each card and are labelled as not sweep rows: all five lost money out of sample except swing_confluence (-7.5%, Sharpe 0.019). The queue will produce the evaluated numbers.
+
+Remaining: PR, CI, merge. tradingstrategyresults.json itself stays untracked (the owner's source file).

@@ -119,7 +119,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Trailing-window indicator functions, each returning a scalar for the current bar",
-      "lines": 441
+      "lines": 479
     },
     {
       "path": "backtester/core/metrics.py",
@@ -238,7 +238,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "REGISTRY (25 strategies), FAMILY taxonomy, build()",
-      "lines": 162
+      "lines": 180
     },
     {
       "path": "backtester/core/strategies/signals.py",
@@ -253,6 +253,13 @@
       "kind": "python",
       "summary": "The nine implemented from spec-only cards, incl. the Ichimoku displacement trap",
       "lines": 468
+    },
+    {
+      "path": "backtester/core/strategies/textbook.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "DCA, EMA crossover, PPO, Fibonacci retracement and swing-confluence: the mechanisms the cited trading guides name (tradingstrategyresults.json)",
+      "lines": 238
     },
     {
       "path": "backtester/core/strategies/breakout.py",
@@ -294,7 +301,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar",
-      "lines": 1287
+      "lines": 1297
     },
     {
       "path": "research/sweep.py",
@@ -628,14 +635,14 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2420
+      "lines": 2360
     },
     {
       "path": "soltui/signals.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Signal derivation for display",
-      "lines": 333
+      "lines": 368
     },
     {
       "path": "soltui/status.py",
@@ -733,7 +740,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 360
+      "lines": 376
     },
     {
       "path": "soltui/tests",

@@ -24,6 +24,13 @@ from .buy_and_hold import BuyAndHold
 from .composite import COMBINE_MODES, Composite
 from .ma_crossover import MaCrossover
 from .rsi import RsiMeanReversion
+from .textbook import (
+    DollarCostAveraging,
+    EmaCrossover,
+    FibRetracement,
+    PpoCross,
+    SwingConfluence,
+)
 from .tiers import LevHigh, LevLow, LevMedium
 from .trigger import TriggerTrade
 from .signals import (
@@ -71,6 +78,12 @@ REGISTRY: dict[str, Callable[..., Any]] = {
     "vol_regime": VolRegimeSwitch,
     "atr_sized": AtrSizedTrend,
     "garch_voltarget": GarchVolTarget,
+    # Named by the cited trading guides (tradingstrategyresults.json); OHLCV only.
+    "dca": DollarCostAveraging,
+    "ema_crossover": EmaCrossover,
+    "ppo": PpoCross,
+    "fib_retracement": FibRetracement,
+    "swing_confluence": SwingConfluence,
     # Leverage tiers: a base strategy run as a perp position (core/leverage.py).
     "lev_low": LevLow,
     "lev_medium": LevMedium,
@@ -124,6 +137,11 @@ FAMILY: dict[str, str] = {
     "lev_medium": "leverage-tier",
     "lev_high": "leverage-tier",
     "trigger_trade": "trigger",
+    "dca": "baseline",
+    "ema_crossover": "trend",
+    "ppo": "trend",
+    "fib_retracement": "mean-reversion",
+    "swing_confluence": "breakout",
 }
 
 DEFAULT_SET = ("buy_and_hold", "ma_crossover", "rsi", "breakout")

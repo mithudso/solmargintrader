@@ -70,6 +70,7 @@ root, so an abbreviated one fails the build.
 | `backtester/core/strategies/__init__.py` | `REGISTRY` (25 strategies), `FAMILY` taxonomy, `build()` |
 | `backtester/core/strategies/signals.py` | Indicator-driven strategies, one screen each |
 | `backtester/core/strategies/advanced.py` | The nine implemented from spec-only cards, incl. the Ichimoku displacement trap |
+| `backtester/core/strategies/textbook.py` | DCA, EMA crossover, PPO, Fibonacci retracement and swing-confluence: the mechanisms the cited trading guides name (`tradingstrategyresults.json`) |
 | `backtester/core/strategies/breakout.py` | Donchian channel breakout; the channel excludes the current bar |
 | `backtester/core/strategies/ma_crossover.py` | The only strategy that can emit a short, and only when asked |
 | `backtester/core/strategies/rsi.py` | RSI mean reversion |

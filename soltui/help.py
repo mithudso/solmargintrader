@@ -286,6 +286,14 @@ SIGNAL_HELP = {
     "atr_risk_per_trade": "Fraction of simulated equity budgeted for risk to the modelled ATR stop. 0.01 means 1%. Gaps and adverse execution can exceed a modelled stop, so it is not a guaranteed maximum loss.",
     "atr_stop_multiple": "Distance to the modelled stop in units of ATR. 2 means twice typical bar movement. A wider distance usually requires a smaller position for the same risk budget.",
     "ewma_lambda": "Decay factor for exponentially weighted volatility. 0.94 retains 94% of the previous estimate in the next update. A larger value forgets old observations more slowly; it is not leverage or a return.",
+    "dca_instalments": "Number of equal purchases that fill the budget. 10 means exposure rises 10% of the budget at a time. It is a deployment schedule: after the last instalment the result equals holding, and it is not a forecast.",
+    "dca_interval": "Bars between purchases. 7 on daily bars is weekly; on hourly bars 24 is daily. A longer interval keeps cash out of the market for longer, which lags a rising price and cushions a falling one.",
+    "ema_fast": "Span of the fast exponential moving average. 50 is the conventional golden-cross value on daily bars. It reacts sooner than a simple average of the same length and is not a price target.",
+    "ema_slow": "Span of the slow exponential moving average. 200 is the conventional value on daily bars. The rule is long while the fast average is above this one, so a larger value trades less often and confirms moves later.",
+    "fib_lookback": "Past bars used to find the swing high and swing low that the retracement levels are measured from. The swing must be an up-move (low before high). Longer values use larger swings and fewer signals.",
+    "fib_entry_ratio": "Retracement depth at or below which a pullback may be bought. 0.382 means price has given back 38.2% of the up-swing. It must be smaller than the invalid ratio. Fibonacci levels are a convention; this tool does not show that price respects them.",
+    "fib_invalid_ratio": "Retracement depth beyond which the up-swing is treated as failed and the position is closed. 0.786 means 78.6% of the swing is gone. It must be larger than the entry ratio and below 1.",
+    "swing_min_confirms": "How many of four checks must agree before a breakout is bought: close above its average, MACD histogram above zero, RSI above 50, and volume flow above its average. 1 is a plain breakout; 4 almost never fires. The checks read the same prices, so they are not independent evidence.",
 }
 
 CONTROL_HELP = {
@@ -399,6 +407,11 @@ for _name, _explanation in {
     "atr_sized": SIGNAL_HELP["atr_risk_per_trade"],
     "garch_voltarget": SIGNAL_HELP["ewma_lambda"] + " " + SIGNAL_HELP["vol_target"],
     "trigger_trade": TERMS["trigger"],
+    "dca": SIGNAL_HELP["dca_instalments"] + " " + SIGNAL_HELP["dca_interval"],
+    "ema_crossover": SIGNAL_HELP["ema_fast"] + " " + SIGNAL_HELP["ema_slow"],
+    "ppo": "Percentage price oscillator: the MACD gap between two exponential averages, divided by the slow one so it is comparable at any price. Long while it is above its signal line. It uses the MACD spans and is close to a rescaled MACD, not a separate bet.",
+    "fib_retracement": SIGNAL_HELP["fib_lookback"] + " " + SIGNAL_HELP["fib_entry_ratio"],
+    "swing_confluence": SIGNAL_HELP["swing_min_confirms"],
 }.items():
     TERMS[_name] = _explanation
 for _name, _leverage in (("lev_low", 2), ("lev_medium", 5), ("lev_high", 20)):

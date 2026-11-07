@@ -714,6 +714,14 @@ def _ind_macd(w: BarWindow, ppy: float) -> tuple[str, str, str]:
     return (BULLISH if line > signal else BEARISH), value, "line vs signal"
 
 
+def _ind_ppo(w: BarWindow, ppy: float) -> tuple[str, str, str]:
+    line, signal, hist = ind.ppo(w.closes, 12, 26, 9)
+    value = f"line {_fmt(line, 3)}% signal {_fmt(signal, 3)}% hist {_fmt(hist, 3)}"
+    if not np.isfinite(line) or not np.isfinite(signal):
+        return UNAVAILABLE, value, "insufficient history"
+    return (BULLISH if line > signal else BEARISH), value, "line vs signal, in percent of the slow EMA"
+
+
 def _ind_bollinger(w: BarWindow, ppy: float) -> tuple[str, str, str]:
     mid, upper, lower, bw = ind.bollinger(w.closes, 20, 2.0)
     return (
@@ -848,6 +856,7 @@ INDICATOR_ROWS: tuple[IndicatorRow, ...] = (
     IndicatorRow("moving_averages", ("sma", "ema"), _ind_price),
     IndicatorRow("rsi_14", ("rsi",), _ind_rsi),
     IndicatorRow("macd_12_26_9", ("macd",), _ind_macd),
+    IndicatorRow("ppo_12_26_9", ("ppo",), _ind_ppo),
     IndicatorRow("bollinger_20_2", ("bollinger",), _ind_bollinger),
     IndicatorRow("atr_14", ("atr",), _ind_atr),
     IndicatorRow("stochastic_14_3", ("stochastic",), _ind_stochastic),
@@ -873,6 +882,7 @@ INDICATOR_SKIP: dict[str, str] = {
     "ema_series": "returns a series; the scalar `ema` is reported instead",
     "wilder_smooth": "smoothing primitive used by atr/rsi/adx, not an indicator",
     "true_range": "per-bar series consumed by `atr`",
+    "fib_level": "needs a swing high and low chosen by the caller; used by the `fib_retracement` strategy",
     "rolling_realised_vol": "vectorised series form of `realised_vol`",
 }
 
