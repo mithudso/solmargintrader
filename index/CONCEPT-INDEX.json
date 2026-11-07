@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T19:39:19+00:00",
+  "generatedAt": "2026-11-07T20:19:29+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1468,12 +1468,12 @@
           "hits": 20
         },
         {
-          "path": "research/TOP5-RECOMMENDATION.md",
+          "path": "memory.md",
           "hits": 19
         },
         {
-          "path": "memory.md",
-          "hits": 18
+          "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 19
         },
         {
           "path": "research/coin-intelligence/btc-bitcoin.md",
@@ -1950,7 +1950,7 @@
       "files": [
         {
           "path": "soltui/tests/test_compound.py",
-          "hits": 84
+          "hits": 95
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -2013,12 +2013,12 @@
           "hits": 22
         },
         {
-          "path": "backtester/core/scorecard.py",
+          "path": "docs/COMPOUND-5M.md",
           "hits": 21
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 21
+          "path": "backtester/core/scorecard.py",
+          "hits": 20
         },
         {
           "path": "soltui/help.py",
@@ -2082,7 +2082,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 88,
+      "matchingFiles": 89,
       "shown": 30,
       "files": [
         {
@@ -2130,6 +2130,10 @@
           "hits": 13
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 11
+        },
+        {
           "path": "docs/CONCEPTS.md",
           "hits": 11
         },
@@ -2151,10 +2155,6 @@
         },
         {
           "path": "backtester/strategy_cards/zscore.md",
-          "hits": 9
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 9
         },
         {
@@ -2190,19 +2190,19 @@
           "hits": 7
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 7
+        },
+        {
           "path": "backtester/strategy_cards/pairs_cointegration.md",
           "hits": 6
         },
         {
-          "path": "docs/COMPOUND-5M.md",
+          "path": "backtester/tests/test_scorecard.py",
           "hits": 6
         },
         {
           "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 6
-        },
-        {
-          "path": "research/dso_audit.py",
           "hits": 6
         }
       ],
