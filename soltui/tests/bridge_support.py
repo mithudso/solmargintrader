@@ -32,6 +32,8 @@ HEAVY = {
     "analyze.run": {"headline": "stub", "truncated": False, "decisions": [], "actions": {}},
     "docs.write": {"path": "x", "bytes": 1, "file": "x"},
     # The P&L commands run the roster's backtests, which need a cached price series.
+    "portfolio.scan": {"label": "wallet (live)", "chains": {}, "total_usd": 0.0, "skipped": [],
+                       "partial": False, "counts": {}},
     "pnl.summary": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
     "pnl.series": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
     "pnl.breakdown": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
@@ -68,6 +70,7 @@ class World:
         env = {
             "SOLTUI_CONFIG_DIR": self.root / "config", "SOLTUI_LOG_DIR": self.root / "logs",
             "SOLTUI_SUPPORT_DIR": self.root / "support", "AERO_LP_HOME": self.root / "aero",
+            "SOLTUI_KEY_DIR": self.root / "keys",
         }
         self.stack.enter_context(mock.patch.dict(os.environ, {k: str(v) for k, v in env.items()}))
         for mod, attr, value in (

@@ -1,6 +1,6 @@
 # soltui — SOL strategy console
 
-A fourteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
+A fifteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 wiring shell.
 
@@ -17,7 +17,7 @@ uv venv ~/.venvs/soltui -p 3.13
 uv pip install -p ~/.venvs/soltui/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
 ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui    # once; ~/.local/bin must be on PATH
 
-soltui          # the fourteen-tab console, from any directory
+soltui          # the fifteen-tab console, from any directory
 soltui app      # the macOS menu-bar indicator (needs rumps)
 soltui serve    # the console in a browser window
 ```
@@ -80,7 +80,7 @@ indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_la
 
 | Tab | What it does |
 |---|---|
-| **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry. Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
+| **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry, and the two public wallet addresses (Solana, Base; pre-filled with the owner's, blank clears one). A read-only *signing key source* row shows whether `~/.ssh/wallet.private` and `~/.ssh/solana.private` exist and are mode 600, by `stat` alone. **There is no field that accepts a private key.** Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
 | **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. |
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
 | **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. |
@@ -88,7 +88,8 @@ indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_la
 | **Live Run** | Launches the extension's dry-run tool. A Top 5 preset list fills the strategy; the result shows `dry-run net %`. |
 | **Execute** | Dry-run replay. Step a simulation bar by bar and see the fills a strategy *would* have made. A Top 5 preset list selects a configuration (its composite replays on the series it was fitted on); every figure says `paper net %`. |
 | **Analyze** | What every strategy would decide for one coin at one moment. A Top 5 preset judges only that configuration with its parameters. The headline carries the asset's `backtest data price change`. |
-| **P&L** | Profit and loss over 24h, 7d, 30d, 90d, YTD, all or a custom start/end. One section per source (`backtest`, `paper`, `dry-run`, `dry-run LP`, `live LP`) with net and gross P&L, fees, slippage, borrow/funding, realized vs unrealized, win rate, expectancy, daily series with cumulative curve, max drawdown and recovery, best and worst day/week/month, and a by-strategy / by-asset attribution. See [The P&L tab](#the-pl-tab). |
+| **Wallet** | Read-only discovery of what the two Settings addresses hold: native SOL/ETH, SPL tokens (Token and Token-2022), stake accounts, ERC-20 balances, LP position NFTs, and the contract or account each holding lives in, with explorer links. Per-chain and total USD, every figure `wallet (live)`. Airdrop-looking tokens are flagged and excluded from totals. See [The Wallet tab](#the-wallet-tab). |
+| **P&L** | Profit and loss over 24h, 7d, 30d, 90d, YTD, all or a custom start/end. One section per source (`backtest`, `paper`, `dry-run`, `dry-run LP`, `live LP`, and the separate `wallet (live)` value-change section) with net and gross P&L, fees, slippage, borrow/funding, realized vs unrealized, win rate, expectancy, daily series with cumulative curve, max drawdown and recovery, best and worst day/week/month, and a by-strategy / by-asset attribution. See [The P&L tab](#the-pl-tab). |
 | **Queue** | Starts and reads the low-priority background sweep. Start/Stop/Refresh, a live status line, a ranked table and a below-the-floor table. |
 | **Liquidity** | Read-only view of the Aero (aero.xyz) liquidity daemon's state files (`$AERO_LP_HOME`, default `~/.aero-lp/`): mode badge (LIVE is red, dry-run is yellow), kill-switch banner ("Kill switch ON — bot paused"), idle vs deployed USD, totals; Positions, Scout (top pools by modelled net APR), Experiments (arms side by side, winner marked) and Recent actions (newest first, basescan tx links) tables. Refresh / Kill / Resume buttons (`F5` refresh, `F8` kill-resume toggle while the tab is open); re-reads every 15 s. |
 
@@ -124,6 +125,35 @@ series add up to the window's net P&L because the first day is measured against 
   percentage points of the section's net %; a section's rows sum to it exactly.
 * **A backtest has historical dates.** A `30d` window ending today finds no backtest data when the cached series
   ended earlier; the section says where its data is (`its data covers ... to ...`) instead of showing zeros.
+
+### The Wallet tab
+
+`portfolio.scan` (`chain`, `tokens`, `record`) reads the Settings addresses from public endpoints only; no API key
+is in the code or sent anywhere, and there is no key, signature or transaction. It never calls a contract
+function other than the standard views (`balanceOf`, `symbol`, `decimals`, `name`) and never visits a token's site.
+
+* **Solana.** `getBalance`; `getTokenAccountsByOwner` under both the Token and Token-2022 programs; stake accounts
+  via `getProgramAccounts` (as staker or withdrawer); names and USD prices from Jupiter's keyless token and price
+  APIs.
+* **Base.** `eth_getBalance`; `balanceOf` by `eth_call` on a built-in token list, the tokens the liquidity daemon
+  watches (`ledger.sqlite`, opened read-only) and any `tokens=[...]` you pass; Blockscout's token list when it
+  answers; prices from DefiLlama, then DexScreener; position NFTs in the Aero, Uniswap v3 and PancakeSwap v3
+  position managers; the Aero positions in the daemon's `status.json` (valued from that file, noted as not live
+  when the daemon is in dry-run).
+* **Honest limits.** Blockscout is behind a Cloudflare challenge and usually answers 403 to a script; the scan then
+  says so and checks only the known set, and adds that a token sent to the address that is in none of them cannot
+  be discovered without an indexer. A failing endpoint gives a *partial* result with its name and error, never an
+  exception or a quietly smaller total. Each host is paced, a 429 or 5xx is retried twice with a capped back-off,
+  and the whole scan stops asking after 60 s.
+* **Airdrops.** A token is flagged when its name or symbol reads like spam (a URL, "claim", "reward", an amount),
+  or when it is unknown, unverified and has no price or under $5,000 of liquidity. Flagged tokens are listed with
+  the reason and left out of every total.
+* **History.** Each scan appends one summary line to `~/.config/soltui/wallet-history.jsonl`. The P&L tab shows
+  these as a separate `wallet (live)` section: the *change in wallet value between scans*, which includes
+  deposits, withdrawals and price moves and is not a trading P&L (gross, realized and unrealized are blank for it).
+  It is never combined with a simulated figure.
+
+Tests use recorded replies (`soltui/tests/fixtures/wallet/`), never the network.
 
 ### The Liquidity tab — a window onto a daemon, not a controller
 

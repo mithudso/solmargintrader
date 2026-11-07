@@ -418,7 +418,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 561
+      "lines": 567
     },
     {
       "path": "extension/src/core/commands.js",
@@ -544,14 +544,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dashboard view",
-      "lines": 382
+      "lines": 385
     },
     {
       "path": "extension/src/ui/popup.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Popup view",
-      "lines": 125
+      "lines": 130
     },
     {
       "path": "extension/tools/cli.js",
@@ -628,7 +628,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2263
+      "lines": 2378
     },
     {
       "path": "soltui/signals.py",
@@ -705,7 +705,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Configuration",
-      "lines": 180
+      "lines": 192
     },
     {
       "path": "soltui/setup_app.py",
@@ -733,7 +733,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 309
+      "lines": 339
     },
     {
       "path": "soltui/tests",
@@ -865,7 +865,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity and doc/index drift jobs",
-      "lines": 265
+      "lines": 280
     },
     {
       "path": "CONTRIBUTING.md",

@@ -1,9 +1,7 @@
 # Work continuation
 
-Version: 17
-Delta: extension version 0.2.0, visible in popup and dashboard, plus a CI version-bump guard.
-
-Delta: added PR 1 of the leverage-tier and reliable-trigger work (tiers, intrabar liquidation).
+Version: 18
+Delta: soltui read-only wallet discovery (PR B): Settings addresses, key-source row, portfolio.scan, Wallet tab, wallet (live) P&L section.
 
 ## v1 - 2026-11-06
 
@@ -191,3 +189,15 @@ Target: the owner reloaded the unpacked extension from /Users/mitch/dev/solmargi
 Done: manifest.json and package.json are 0.2.0. The popup header and the dashboard title show the manifest version. The popup gains a "SolTUI console" button that opens dashboard.html#soltui. test/version.test.js keeps the two version fields equal and checks that both pages render the version. The CI extension job fails a pull request that changes extension/src or manifest.json without a version bump.
 
 Owner steps (Chrome Beta, where the extension is installed): quit and reopen Chrome Beta once so it reads the com.mitchhudson.soltui native host manifest, then reload SolMarginTrader in chrome://extensions. The popup should then read v0.2.0.
+
+## v18 - 2026-11-07
+
+Target: PR B of the read-only request (prompts.md v8): wallet discovery. Branch soltui-wallet, worktree /Users/mitch/dev/smt-wt-wallet. PR A (presets, net %, P&L tab) merged as d402b27.
+
+Completed: `soltui/wallet.py` (public reads only: Solana getBalance / getTokenAccountsByOwner under Token and Token-2022 / stake getProgramAccounts, Jupiter keyless token and price APIs; Base eth_getBalance / eth_call balanceOf / position-manager NFTs, DefiLlama then DexScreener prices); `portfolio.scan` and `wallet.key_sources` registry commands; Settings gets the two public addresses (pre-filled with the owner's) and a read-only signing-key row (stat only, mode 600 check, files never opened); Wallet tab; a separate `wallet (live)` section in the P&L tab built from `~/.config/soltui/wallet-history.jsonl` (one line per scan; value change between scans, not trading P&L).
+
+Findings: Blockscout answers 403 (Cloudflare challenge) to scripts, Routescan does not index Base, and public RPCs cannot enumerate tokens, so Base token discovery checks a built-in list, the daemon's ledger tokens and caller-supplied addresses, and says an uninvited token cannot be found without an indexer. Jupiter's keyless APIs return 429 when called back to back, so the transport paces each host and retries twice.
+
+Safety: no field accepts private-key text; no key file is opened, read, hashed or printed; the scan sends no transaction and calls only balanceOf, symbol, decimals, name and tokenOfOwnerByIndex. Airdrop-looking tokens are flagged and excluded from totals.
+
+Not built (later, separately gated): swaps, signing, the live-run button.

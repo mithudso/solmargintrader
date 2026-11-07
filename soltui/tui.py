@@ -121,6 +121,16 @@ HEADER_GLOSSARY = {
     "best backtest median net %": (
         "Net growth or decline (final / initial - 1) of the best rankable row, median across its CPCV "
         "paths, after costs. A simulation."),
+    "chain": "The blockchain the row was read from.",
+    "amount": "Units held, from the chain (`balanceOf`, `getTokenAccountsByOwner` or the native balance).",
+    "price $": "USD price from Jupiter, DefiLlama or DexScreener at the time of the scan.",
+    "value $ (wallet (live))": "Amount times price, read at scan time. A real balance, not a simulation.",
+    "status": "Whether the row is in the total, and why not when it is not (airdrop flag, no price).",
+    "holding": "The coin or position the contract belongs to.",
+    "kind": "What kind of account this is: token mint, token account, stake account, position NFT.",
+    "address": "The on-chain address of the contract or account.",
+    "program": "The program or standard that owns the account (Token, Token-2022, ERC-20, position manager).",
+    "explorer": "Link to the block explorer page for this address.",
     "source": "Where the figure comes from: backtest, paper, dry-run, dry-run LP or live LP.",
     "runs": "How many independent runs the row adds up (each on its own starting capital).",
     "net $": "Final minus initial equity inside the window, after fees, slippage and borrow.",
@@ -260,6 +270,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#liq-resume": "liquidity.resume",
     "#docs-save": "docs.write",
     "#pnl-run": "pnl.summary",
+    "#wallet-scan": "portfolio.scan",
 }
 
 class GlossaryTable(DataTable):
@@ -448,7 +459,7 @@ class VimTextArea(TextArea):
 
 
 class SolTuiApp(App):
-    """The console: fourteen tabs over the tested modules."""
+    """The console: fifteen tabs over the tested modules."""
 
     TITLE = "soltui — SOL strategy console"
     SUB_TITLE = "dry-run only · no live order path"
@@ -624,6 +635,8 @@ class SolTuiApp(App):
                 yield from self._liquidity_pane()
             with TabPane("P&L", id="tab-pnl"):
                 yield from self._pnl_pane()
+            with TabPane("Wallet", id="tab-wallet"):
+                yield from self._wallet_pane()
             with TabPane("Research", id="tab-research"):
                 yield from self._research_pane()
             with TabPane("Docs", id="tab-docs"):
@@ -658,6 +671,10 @@ class SolTuiApp(App):
                 "no live order path to select.",
                 classes="hint",
             )
+            # At the top so the button stays on screen however many fields the form grows.
+            with Horizontal(classes="form-row"):
+                yield Button("Save settings", variant="primary", id="btn-save")
+                yield Static("", id="settings-status")
             for field_name, label in (
                 ("asset", "Asset"),
                 ("start", "Start date"),
@@ -668,6 +685,8 @@ class SolTuiApp(App):
                 ("fill_delay", "Fill delay (bars)"),
                 ("cpcv_groups", "CPCV blocks"),
                 ("cpcv_k", "CPCV k (blocks/path)"),
+                ("solana_address", "Solana address (public)"),
+                ("base_address", "Base address (public)"),
             ):
                 with Horizontal(classes="form-row"):
                     yield Label(f"{label}:")
@@ -683,9 +702,9 @@ class SolTuiApp(App):
                     id="set-interval",
                     allow_blank=False,
                 )
-            with Horizontal(classes="form-row"):
-                yield Button("Save settings", variant="primary", id="btn-save")
-                yield Static("", id="settings-status")
+            yield Static("[b]Signing key source[/b] (read-only; stat only, the files are never opened)",
+                         classes="hint")
+            yield Static("", id="key-sources")
 
     def _strategies_pane(self) -> ComposeResult:
         """Add/remove strategies from the roster."""
@@ -843,6 +862,7 @@ class SolTuiApp(App):
         )
 
         self._refresh_exec_choices()
+        self._refresh_key_sources()
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self._refresh_liquidity(force=True)
@@ -934,7 +954,7 @@ class SolTuiApp(App):
         casts: dict[str, Any] = {
             "asset": str, "start": str, "end": str, "capital": float,
             "fee_bps": float, "slippage_bps": float, "fill_delay": int,
-            "cpcv_groups": int, "cpcv_k": int,
+            "cpcv_groups": int, "cpcv_k": int, "solana_address": str, "base_address": str,
         }
         out: dict[str, Any] = {}
         for name, cast in casts.items():
@@ -1429,6 +1449,101 @@ class SolTuiApp(App):
     def _top5_reload(self) -> None:
         self._refresh_top5()
 
+    # -- Settings: where the signing keys live (stat only) ------------------
+
+    def _refresh_key_sources(self) -> None:
+        env = self._call("wallet.key_sources", quiet=True)
+        box = self.query_one("#key-sources", Static)
+        if not env["ok"]:
+            box.update(f"[red]{escape(self._msg(env))}[/]")
+            return
+        lines = []
+        for k in env["result"]["keys"]:
+            if not k["exists"]:
+                state = "missing"
+            else:
+                state = f"present, mode {k['mode']}" + ("" if k["mode_600"] else "  [red]should be 0600[/]")
+            lines.append(f"  {k['chain']:<7} {escape(k['path'])}: {state}")
+        lines.append("  Signing lives in a separate gated component that loads keys itself. This console "
+                     "has no private-key field.")
+        box.update("\n".join(lines))
+
+    # -- Wallet: what the two addresses hold (read-only) ---------------------
+
+    def _wallet_pane(self) -> ComposeResult:
+        """Find the coins, token contracts, stake accounts and LP positions at the Settings addresses."""
+        with VerticalScroll():
+            yield Static(
+                "Reads the two public addresses from Settings with public endpoints only (no API key, no "
+                "private key, no transaction). Every figure is wallet (live): a read of real money at "
+                "the time of the scan. Airdrop-looking tokens are flagged and left out of the totals.",
+                classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Label("Chain")
+                yield Select([(c, c) for c in ("all", "solana", "base")], value="all", allow_blank=False,
+                             id="wallet-chain")
+                yield Button("Scan wallet", variant="primary", id="wallet-scan")
+                yield Static("", id="wallet-status")
+            yield Static("", id="wallet-summary")
+            yield Static("[b]Holdings[/b]", classes="hint")
+            holdings = GlossaryTable(id="wallet-holdings")
+            holdings.add_columns("chain", "asset", "amount", "price $", "value $ (wallet (live))", "status")
+            yield holdings
+            yield Static("[b]Contracts and accounts each holding lives in[/b]", classes="hint")
+            contracts = GlossaryTable(id="wallet-contracts")
+            contracts.add_columns("chain", "holding", "kind", "address", "program", "explorer")
+            yield contracts
+
+    @on(Button.Pressed, "#wallet-scan")
+    def _wallet_scan(self) -> None:
+        self.query_one("#wallet-status", Static).update("scanning… (public endpoints are rate limited)")
+        self._wallet_worker()
+
+    @work(thread=True, group="wallet", exclusive=True)
+    def _wallet_worker(self) -> None:
+        chain = self.query_one("#wallet-chain", Select).value
+        env = self._call("portfolio.scan", {"chain": chain if isinstance(chain, str) else "all"})
+        self.call_from_thread(self._render_wallet, env)
+
+    def _render_wallet(self, env: dict[str, Any]) -> None:
+        status = self.query_one("#wallet-status", Static)
+        if not env["ok"]:
+            status.update(f"[red]{escape(self._msg(env))}[/]")
+            return
+        r = env["result"]
+        status.update(f"scanned {r['scanned_at']}" + ("  [yellow]partial[/]" if r["partial"] else ""))
+        c = r["counts"]
+        lines = [f"[b]wallet (live) total ${r['total_usd']:,.2f}[/b] · {c['holdings']} holdings · "
+                 f"{c['stakes']} stake accounts · {c['positions']} LP positions · {c['contracts']} contracts · "
+                 f"{c['airdrop_flagged']} airdrop-flagged (excluded)"]
+        lines += [f"  skipped: {escape(s)}" for s in r["skipped"]]
+        for name, ch in r["chains"].items():
+            lines.append(f"  {name}: wallet (live) ${ch['total_usd']:,.2f} ({ch['status']})")
+            lines += [f"    error: {escape(e['source'])}: {escape(e['message'])}" for e in ch["errors"]]
+            lines += [f"    note: {escape(n)}" for n in ch["notes"]]
+        self.query_one("#wallet-summary", Static).update("\n".join(lines))
+        hold = self.query_one("#wallet-holdings", DataTable)
+        hold.clear()
+        cons = self.query_one("#wallet-contracts", DataTable)
+        cons.clear()
+
+        def usd(v: float | None) -> str:
+            return "-" if v is None else f"{v:,.2f}"
+
+        for name, ch in r["chains"].items():
+            rows = ([ch["native"]] if ch["native"] else []) + ch["holdings"] + ch["stakes"]
+            for h in rows:
+                flagged = h.get("airdrop")
+                state = ("airdrop-flagged, excluded: " + "; ".join(h.get("airdrop_reasons", []))) if flagged \
+                    else ("counted" if h.get("usd") is not None else "no price, not counted")
+                hold.add_row(name, h["symbol"] + (" (staked)" if h.get("kind") == "stake" else ""),
+                             f"{h['amount']:,.6f}", usd(h.get("price_usd")), usd(h.get("usd")), state)
+            for p in ch["positions"]:
+                hold.add_row(name, f"{p['protocol']} #{p['token_id']} {p.get('pair') or ''}".strip(), "1 NFT", "-",
+                             usd(p.get("value_usd")), f"{p['held_by']} · {p['value_source']}")
+            for k in ch["contracts"]:
+                cons.add_row(name, k["holding"], k["kind"], k["address"], k["program"], k["link"])
+
     # -- Top 5 presets: one click fills the tab ----------------------------
 
     @on(OptionList.OptionSelected)
@@ -1766,7 +1881,7 @@ class SolTuiApp(App):
             with Horizontal(classes="form-row"):
                 yield Label("Source")
                 yield Select([(w, w) for w in ("all", "backtest", "paper", "dry-run", "dry-run LP",
-                                               "live LP")],
+                                               "live LP", "wallet (live)")],
                              value="all", allow_blank=False, id="pnl-source")
                 yield Button("Compute P&L", variant="primary", id="pnl-run")
                 yield Static("", id="pnl-status")
