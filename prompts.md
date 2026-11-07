@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 11
-Delta: v10 to v11; added the wallet monitoring request after the Coinbase MCP setup.
+Version: 12
+Delta: v11 to v12; added the wallet monitoring request.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -77,7 +77,13 @@ The solmargintrader has not changed at all, the version number is the same, I lo
 ```text
 Set up coinbase.com/skill.md
 ```
-## v11 - 2026-11-07
+
+## v11 - 2026-11-07 (CDP CLI setup verification)
+
+```text
+docs.cdp.coinbase.com/cdp-cli/skill.md
+```
+## v12 - 2026-11-07
 
 Saved with the wallet identifiers replaced by `<redacted>`. The real values are in the owner's local soltui config only, never in this repository.
 
