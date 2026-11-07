@@ -161,7 +161,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Resumable minute-bar cache fetch with rate limiting and coverage",
-      "lines": 720
+      "lines": 745
+    },
+    {
+      "path": "backtester/core/fetch_minutes_alt.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Minute bars from OKX/KuCoin/Bitget/WhiteBIT for coins Coinbase does not list",
+      "lines": 327
     },
     {
       "path": "backtester/core/ticks.py",
@@ -245,7 +252,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 399
+      "lines": 408
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -357,7 +364,7 @@
       "component": "research",
       "kind": "python",
       "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 224
+      "lines": 248
     },
     {
       "path": "research/geometry.py",
@@ -656,7 +663,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3058
+      "lines": 3059
     },
     {
       "path": "soltui/signals.py",
@@ -712,7 +719,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 1448
+      "lines": 1520
     },
     {
       "path": "soltui/liquidity.py",
@@ -1165,7 +1172,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 309
+      "lines": 325
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
