@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 46
-Delta: v45 to v46; compound sizes calls from the owner's Hyperliquid account; ten-coin full-history backtest.
+Version: 47
+Delta: v46 to v47; VWAP metrics rescaled; forward ledger writes locked.
 
 ## v1 - 2026-11-06
 
@@ -479,3 +479,15 @@ Verification: new tests for an empty account, funded account, failed/malformed r
 Ten-coin full-history backtest done: run 20261107T192614Z, 300 configurations, Hyperliquid costs and margins. All 300 lost the stake out of sample at 5x. Reversion metrics beat a coin flip on every coin (RSI z 13-23) but earned at most 0.6 bps per call against 13 bps. A perfect one-bar call nets positive on 8 of 10 coins at 13 bps. NEAR/AVAX/HYPE/SUI/LINK have 11-38% incomplete bars. Results: research/results/compound-10coin-fullhistory-2026-11-07.json; docs/COMPOUND-5M.md findings section. Coverage: research/results/minute_coverage.json.
 
 Remaining: the owner must deposit USDC to Hyperliquid before any call can be sized. Untested ideas: multi-bar holds, maker entries, fewer stronger calls.
+
+## v47 - 2026-11-07 (SOL one-sided calls)
+
+Target: the owner saw only UP calls and composites of at least 0.5 in the SOL forward test. Stele TASK-850. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-vwap, branch fix/compound-vwap-saturation.
+
+Found: the composite arithmetic is right (recomputed 0.5009 = logged). vwap_reversion scaled the session-VWAP distance by one 5m ATR and sat at +1.00 on every SOL bar 17:25-20:05 UTC (57% of the last 60 days). Its family weight added about +0.35. Only reversion metrics had learned weight. Three stale unattended processes plus the TUI wrote some bars twice (no lock between the ledger read and the append).
+
+Completed: _vwap_distance divides by the RMS of the distance over spread_window (288) bars, floored at ATR, which leaves about 8% saturated. FORMULA_VERSIONS goes into component_sig, so the two VWAP metrics' learned records restart while other metrics keep their signatures. _append(unique=True) re-checks ids under a per-coin flock. ledger_seed counts one call per bar.
+
+Verification: replaying live SOL bars, vwap_rev saturation fell from 92% to about 0% over the last 4h; the last-4h calls went from 26 UP / 0 DOWN to 22 UP / 1 DOWN with more FLAT; all bars are balanced (616 UP / 544 DOWN).
+
+Remaining: after merge, restart the unattended trainers for the ten coins only (the stale ones still train ZEC, BNB, ADA and XLM on old code). The owner must restart the soltui console to load the fix.
