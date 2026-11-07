@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T12:18:14+00:00",
+  "generatedAt": "2026-11-07T12:40:34+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 295,
+      "matchingFiles": 299,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 247,
+      "matchingFiles": 255,
       "shown": 30,
       "files": [
         {
@@ -253,6 +253,10 @@
           "hits": 30
         },
         {
+          "path": "research/five-minute-perps-suite/run-state.json",
+          "hits": 28
+        },
+        {
           "path": "extension/src/venues/index.js",
           "hits": 27
         },
@@ -279,10 +283,6 @@
         {
           "path": "docs/code-deep-optimizer-2026-11-06.md",
           "hits": 21
-        },
-        {
-          "path": "backtester/core/engine.py",
-          "hits": 21
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 187,
+      "matchingFiles": 188,
       "shown": 30,
       "files": [
         {
@@ -565,6 +565,144 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
+      "id": "data-integrity",
+      "label": "Data integrity",
+      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
+      "terms": [
+        "validate_bars",
+        "strict_gaps",
+        "allow_gaps",
+        "datavalidationerror",
+        "monotone",
+        "gap"
+      ],
+      "matchingFiles": 180,
+      "shown": 30,
+      "files": [
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 34
+        },
+        {
+          "path": "backtester/core/data.py",
+          "hits": 33
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 32
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 24
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 23
+        },
+        {
+          "path": "research/candle_gap_audit.py",
+          "hits": 20
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 19
+        },
+        {
+          "path": "soltui/utxo_scan.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/tests/test_candle_gap_audit.py",
+          "hits": 16
+        },
+        {
+          "path": "pagesource",
+          "hits": 16
+        },
+        {
+          "path": "backtester/core/universe.py",
+          "hits": 11
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 11
+        },
+        {
+          "path": "research/tick_backfill.py",
+          "hits": 11
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 11
+        },
+        {
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/xrp-ripple.md",
+          "hits": 10
+        },
+        {
+          "path": "backtester/core/trigger_conditions.py",
+          "hits": 9
+        },
+        {
+          "path": "research/five-minute-perps-suite/run-state.json",
+          "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
+        },
+        {
+          "path": "research/five-minute-perps-suite/scored-concepts.json",
+          "hits": 8
+        },
+        {
+          "path": "research/results/minute_coverage.json",
+          "hits": 8
+        },
+        {
+          "path": "index/build.py",
+          "hits": 7
+        },
+        {
+          "path": "research/five-minute-perps-suite/coverage-resolution.json",
+          "hits": 7
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 6
+        },
+        {
+          "path": "liquidity/src/aero_lp/ledger.py",
+          "hits": 6
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 6
+        },
+        {
+          "path": "soltui/tests/test_utxo_scan.py",
+          "hits": 6
+        },
+        {
+          "path": "backtester/core/fetch.py",
+          "hits": 5
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 5
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "family:trend",
       "label": "Strategy family: trend",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -701,144 +839,6 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
-      "id": "data-integrity",
-      "label": "Data integrity",
-      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
-      "terms": [
-        "validate_bars",
-        "strict_gaps",
-        "allow_gaps",
-        "datavalidationerror",
-        "monotone",
-        "gap"
-      ],
-      "matchingFiles": 176,
-      "shown": 30,
-      "files": [
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 34
-        },
-        {
-          "path": "backtester/core/data.py",
-          "hits": 33
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 32
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "research/CANDLE-GAP-AUDIT.md",
-          "hits": 23
-        },
-        {
-          "path": "research/candle_gap_audit.py",
-          "hits": 20
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 19
-        },
-        {
-          "path": "soltui/utxo_scan.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/tests/test_candle_gap_audit.py",
-          "hits": 16
-        },
-        {
-          "path": "pagesource",
-          "hits": 16
-        },
-        {
-          "path": "backtester/core/universe.py",
-          "hits": 11
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 11
-        },
-        {
-          "path": "research/tick_backfill.py",
-          "hits": 11
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 11
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 11
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 10
-        },
-        {
-          "path": "research/coin-intelligence/xrp-ripple.md",
-          "hits": 10
-        },
-        {
-          "path": "backtester/core/trigger_conditions.py",
-          "hits": 9
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 8
-        },
-        {
-          "path": "research/results/minute_coverage.json",
-          "hits": 8
-        },
-        {
-          "path": "index/build.py",
-          "hits": 7
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 6
-        },
-        {
-          "path": "liquidity/src/aero_lp/ledger.py",
-          "hits": 6
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 6
-        },
-        {
-          "path": "soltui/tests/test_utxo_scan.py",
-          "hits": 6
-        },
-        {
-          "path": "backtester/core/fetch.py",
-          "hits": 5
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 5
-        },
-        {
-          "path": "liquidity/src/aero_lp/gates.py",
-          "hits": 5
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 5
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 5
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "costs",
       "label": "Cost model",
       "why": "Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.",
@@ -851,7 +851,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 173,
+      "matchingFiles": 174,
       "shown": 30,
       "files": [
         {
@@ -988,7 +988,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 165,
+      "matchingFiles": 171,
       "shown": 30,
       "files": [
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 128,
+      "matchingFiles": 135,
       "shown": 30,
       "files": [
         {
@@ -1426,6 +1426,10 @@
         {
           "path": "docs/SCRIPTS.md",
           "hits": 50
+        },
+        {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 47
         },
         {
           "path": "backtester/tests/test_cross_asset_cpcv.py",
@@ -1518,10 +1522,6 @@
         {
           "path": "soltui/top5.py",
           "hits": 9
-        },
-        {
-          "path": "backtester/core/fetch_minutes.py",
-          "hits": 9
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1538,7 +1538,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 122,
+      "matchingFiles": 125,
       "shown": 30,
       "files": [
         {
@@ -1810,7 +1810,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 104,
+      "matchingFiles": 108,
       "shown": 30,
       "files": [
         {
@@ -1922,16 +1922,16 @@
           "hits": 10
         },
         {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 10
+        },
+        {
           "path": "docs/dso-skill/SKILL.md",
           "hits": 9
         },
         {
           "path": "index/build.py",
           "hits": 9
-        },
-        {
-          "path": "research/RATIO-ROTATION.md",
-          "hits": 8
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2067,6 +2067,141 @@
         {
           "path": "backtester/core/strategies/__init__.py",
           "hits": 8
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
+      "id": "family:breakout",
+      "label": "Strategy family: breakout",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "breakout",
+        "bb_breakout",
+        "keltner"
+      ],
+      "matchingFiles": 84,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 70
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 47
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 45
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 32
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 23
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 23
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 20
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 20
+        },
+        {
+          "path": "research/results/cpcv_tables.md",
+          "hits": 18
+        },
+        {
+          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
+          "hits": 18
+        },
+        {
+          "path": "backtester/strategy_cards/bb_breakout.md",
+          "hits": 17
+        },
+        {
+          "path": "backtester/strategy_cards/swing_confluence.md",
+          "hits": 17
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 17
+        },
+        {
+          "path": "backtester/strategy_cards/keltner.md",
+          "hits": 16
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 16
+        },
+        {
+          "path": "backtester/strategy_cards/breakout.md",
+          "hits": 15
+        },
+        {
+          "path": "backtester/tests/test_decide.py",
+          "hits": 15
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 14
+        },
+        {
+          "path": "backtester/core/strategies/textbook.py",
+          "hits": 14
+        },
+        {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 12
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis.md",
+          "hits": 12
+        },
+        {
+          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
+          "hits": 10
+        },
+        {
+          "path": "research/results/cpcv_pbo.json",
+          "hits": 9
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 8
+        },
+        {
+          "path": "research/results/geometry_medium_k2.txt",
+          "hits": 8
+        },
+        {
+          "path": "backtester/core/strategies/breakout.py",
+          "hits": 7
+        },
+        {
+          "path": "backtester/tests/test_textbook_strategies.py",
+          "hits": 7
+        },
+        {
+          "path": "research/coin-intelligence/zec-zcash.md",
+          "hits": 7
+        },
+        {
+          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
+          "hits": 7
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2209,6 +2344,141 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
+      "id": "family:momentum",
+      "label": "Strategy family: momentum",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "momentum",
+        "ts_momentum",
+        "dual_momentum"
+      ],
+      "matchingFiles": 81,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 80
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 69
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 50
+        },
+        {
+          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
+          "hits": 41
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 32
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 26
+        },
+        {
+          "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",
+          "hits": 20
+        },
+        {
+          "path": "backtester/strategy_cards/ts_momentum.md",
+          "hits": 19
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
+          "hits": 19
+        },
+        {
+          "path": "backtester/tests/test_decide.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/strategy_cards/dual_momentum_12_1.md",
+          "hits": 17
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 17
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 17
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
+          "hits": 16
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 15
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis.md",
+          "hits": 14
+        },
+        {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 13
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 12
+        },
+        {
+          "path": "research/results/cpcv_tables.md",
+          "hits": 12
+        },
+        {
+          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
+          "hits": 12
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 12
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 10
+        },
+        {
+          "path": "backtester/strategy_cards/xs_momentum.md",
+          "hits": 9
+        },
+        {
+          "path": "backtester/tests/test_ratio_rotation.py",
+          "hits": 9
+        },
+        {
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
+        },
+        {
+          "path": "research/results/geometry_long_k2.txt",
+          "hits": 8
+        },
+        {
+          "path": "soltui/tests/test_presets_netpct.py",
+          "hits": 8
+        },
+        {
+          "path": "soltui/tests/test_top5.py",
+          "hits": 8
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 7
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
       "id": "robustness",
       "label": "Perturbation and robustness",
       "why": "Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.",
@@ -2344,276 +2614,6 @@
         }
       ],
       "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "family:breakout",
-      "label": "Strategy family: breakout",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "breakout",
-        "bb_breakout",
-        "keltner"
-      ],
-      "matchingFiles": 79,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 70
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 47
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 45
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 32
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 23
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 23
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 20
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 20
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 18
-        },
-        {
-          "path": "backtester/strategy_cards/bb_breakout.md",
-          "hits": 17
-        },
-        {
-          "path": "backtester/strategy_cards/swing_confluence.md",
-          "hits": 17
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 17
-        },
-        {
-          "path": "backtester/strategy_cards/keltner.md",
-          "hits": 16
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 16
-        },
-        {
-          "path": "backtester/strategy_cards/breakout.md",
-          "hits": 15
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 15
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 14
-        },
-        {
-          "path": "backtester/core/strategies/textbook.py",
-          "hits": 14
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis.md",
-          "hits": 12
-        },
-        {
-          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
-          "hits": 10
-        },
-        {
-          "path": "research/results/cpcv_pbo.json",
-          "hits": 9
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 8
-        },
-        {
-          "path": "research/results/geometry_medium_k2.txt",
-          "hits": 8
-        },
-        {
-          "path": "backtester/core/strategies/breakout.py",
-          "hits": 7
-        },
-        {
-          "path": "backtester/tests/test_textbook_strategies.py",
-          "hits": 7
-        },
-        {
-          "path": "research/coin-intelligence/zec-zcash.md",
-          "hits": 7
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 7
-        },
-        {
-          "path": "index/build.py",
-          "hits": 5
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "family:momentum",
-      "label": "Strategy family: momentum",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "momentum",
-        "ts_momentum",
-        "dual_momentum"
-      ],
-      "matchingFiles": 76,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 80
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 69
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 50
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 41
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 32
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 26
-        },
-        {
-          "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",
-          "hits": 20
-        },
-        {
-          "path": "backtester/strategy_cards/ts_momentum.md",
-          "hits": 19
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 19
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/strategy_cards/dual_momentum_12_1.md",
-          "hits": 17
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 17
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 15
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis.md",
-          "hits": 14
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 12
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 12
-        },
-        {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
-          "hits": 12
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 12
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 10
-        },
-        {
-          "path": "backtester/strategy_cards/xs_momentum.md",
-          "hits": 9
-        },
-        {
-          "path": "backtester/tests/test_ratio_rotation.py",
-          "hits": 9
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 9
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 8
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_presets_netpct.py",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_top5.py",
-          "hits": 8
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 7
-        },
-        {
-          "path": "index/build.py",
-          "hits": 6
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
       "id": "family:volume-flow",
