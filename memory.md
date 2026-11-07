@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 40
-Delta: v39 to v40; editor bar, compound row preview, double-click toggle, compound autopilot (v39 is compound data quality).
+Version: 41
+Delta: v40 to v41; editor bar, compound row preview, double-click toggle, compound autopilot (v40 is the top-50 1m history).
 
 ## v1 - 2026-11-06
 
@@ -401,12 +401,23 @@ Verification: minute history so far: BTC 2019-11.. 0.03% incomplete, ETH 0.50%, 
 
 Remaining: run Backtest all coins on the full history and report per-coin results.
 
-## v40 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+## v40 - 2026-11-07 (top 50 coins, 1m history)
 
-Target: prompt v31. Stele TASK-833; decisions KNOW-834 (autopilot) and KNOW-835 (double-click toggle). Worktree /Users/mitch/dev/solmargintrader-wt-splitpane, branch feat/soltui-split-preview-autotune.
+Target: 1-minute history for all 50 of the top 50 coins (pegged tokens left out), and the compound tester over every coin with data. PR #69 (data quality) merged 64cacbe. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-quality, branch feat/top50-minute-history.
+
+Completed: research/results/top50-nonpegged-2026-11-07.json (CoinGecko ranking; 36 on Coinbase USD, 14 not). backtester/core/fetch_minutes_alt.py fetches the 14 from OKX/KuCoin/Bitget/WhiteBIT against USDT, reorders KuCoin/WhiteBIT [t,o,c,h,l] rows, aborts on more than 1% impossible OHLC, writes a source.json sidecar the loader puts in the label. fetch_minutes takes --assets for any Coinbase USD product and merges the coverage manifest. soltui: coins() is every coin with data; non-Coinbase coins are backtest only; one unattended process ticks all live coins with per-coin locks and stop files. full_suite defaults to the top-50 record and sends only Coinbase coins to Coinbase steps.
+
+Verification: test_fetch_minutes_alt, test_full_suite, test_compound pass; all four venues parsed live with 0 rejected rows. Downloads running in the background from the main checkout's data/.
+
+Remaining: finish the downloads; deliver research/results/minute_coverage.json; run Backtest all coins on the full history and report per-coin results with data-quality caveats.
+
+## v41 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+
+Target: prompt v32. Autopilot keeps master's one-trainer design (#71): autopilot_ensure starts one process for every live-capable coin not running. Stele TASK-833; decisions KNOW-834 (autopilot) and KNOW-835 (double-click toggle). Worktree /Users/mitch/dev/solmargintrader-wt-splitpane, branch feat/soltui-split-preview-autotune.
 
 Completed: `EditorBar` replaces the editor's orange border-top: drag to resize (clamped 3..screen-12), double-click resets to 16, "x close" hides the editor, a click / drag up / ctrl+e shows it, ctrl+up/down resize; height and open state persist in ~/.config/soltui/tui.json (only main() passes the path; test apps keep layout in memory). Selecting a compound metric, coin, backtest row or forward call shows a read-only markdown preview in the shared editor (`compound.metric_preview`, `coin_preview`, `record_preview`); a preview never replaces unsaved edits and never fires from a background refresh while another tab is active. CompoundTable toggles on double-click (Click.chain == 2) or Space; a single click only selects. Autopilot: top-level `autopilot` flag in compound config.json (missing = on); on overlays aggregate.tune=1; forward_tick adopts tuned_params as the coin's own settings via `auto_adopt` with a per-metric tune_cooldown read from `adopt` ledger rows; save_state holds an flock (config.json.lock). `autopilot_ensure` starts any coin's unattended loop not running; registry `compound.autopilot` (set), `compound.autopilot_status`, `compound.autopilot_ensure`; CLI `python -m soltui.compound autopilot`; LaunchAgent `com.mitchhudson.soltui.compound-autopilot` via `python -m soltui.compound_agent install` (refuses a worktree). The console's main() also runs ensure once at start. 53 buttons.
 
 Honesty: tuning at the 0.95 bar rarely moves (docs/COMPOUND-5M.md: one move in five coins over 30 days) and backtested returns stayed negative; autopilot automates the evidence-gated search, it does not make the compound profitable. Paper calls only; no order path.
 
 Remaining: none in code; install the LaunchAgent from the main checkout after merge.
+

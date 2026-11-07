@@ -52,6 +52,7 @@ root, so an abbreviated one fails the build.
 | `backtester/core/data.py` | `CsvLoader`, `SyntheticLoader`, bar validation, checksums |
 | `backtester/core/fetch.py` | Explicit Coinbase OHLCV fetch into a local CSV cache; the engine stays offline |
 | `backtester/core/fetch_minutes.py` | Resumable minute-bar cache fetch with rate limiting and coverage |
+| `backtester/core/fetch_minutes_alt.py` | Minute bars from OKX/KuCoin/Bitget/WhiteBIT for coins Coinbase does not list |
 | `backtester/core/ticks.py` | Explicit Coinbase trade-tick fetch and bar aggregation |
 | `backtester/core/funding.py` | Signed Hyperliquid funding history, optional OKX cross-check |
 | `backtester/core/archive_price.py` | Jupiter spot-price snapshot (this is what `data/JLP_spot.csv` is) |

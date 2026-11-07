@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 31
-Delta: v30 to v31; soltui draggable/closable editor bar, compound row preview, double-click/Space toggle, compound autopilot.
+Version: 32
+Delta: v31 to v32; soltui draggable/closable editor bar, compound row preview, double-click/Space toggle, compound autopilot (v31 is the top-50 1m history).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -205,7 +205,13 @@ Target: existing `backtester/strategy_cards/triangular_arbitrage.md`; Stele TASK
 Can you download as detailed as possible numbers for as far back as you can go? We also need to test it on all of the coins, so make it do the back testing against all of the coins all at once in parallel, as well as the forward testing. Which means each of the coins will need its own set of numbers.
 ```
 
-## v31 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+## v31 - 2026-11-07 (top 50 coins, 1m history)
+
+```text
+Download 1 min data for all 50 of the top 50 coins
+```
+
+## v32 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
 
 ```text
 in the soltui there is an orange line which delineates the curser portion above from the editor below, make that orange line adjustable by dragging it with the mouse, and give me the option of closing that window altogether, also whenever I select something like a strategy in the compound tab, it should show a detailed preview of that in the editor window below. Right now it's stuck on one page and won't move. Also let me toggle on/off a strategy by double clicking on it or pressing the space bar with it selected. ALso have it automatically adopt tuned settings, I want this to be a fully automated completely independent hands off self-optimizing system that does not require my input.

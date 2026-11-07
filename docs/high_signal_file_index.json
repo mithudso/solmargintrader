@@ -164,6 +164,12 @@
       "lines": 720
     },
     {
+      "path": "backtester/core/fetch_minutes_alt.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Minute bars from OKX/KuCoin/Bitget/WhiteBIT for coins Coinbase does not list"
+    },
+    {
       "path": "backtester/core/ticks.py",
       "component": "backtester",
       "kind": "python",
@@ -245,7 +251,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 387
+      "lines": 399
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -712,7 +718,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 1695
+      "lines": 1712
     },
     {
       "path": "soltui/liquidity.py",
@@ -1165,7 +1171,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 326
+      "lines": 342
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T17:29:46+00:00",
+  "generatedAt": "2026-11-07T17:45:41+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 298,
+      "matchingFiles": 299,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 257,
+      "matchingFiles": 258,
       "shown": 30,
       "files": [
         {
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 185,
+      "matchingFiles": 186,
       "shown": 30,
       "files": [
         {
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 160,
+      "matchingFiles": 161,
       "shown": 30,
       "files": [
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 136,
+      "matchingFiles": 138,
       "shown": 30,
       "files": [
         {
@@ -1472,10 +1472,6 @@
           "hits": 18
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 18
-        },
-        {
           "path": "liquidity/tests/test_executor.py",
           "hits": 17
         },
@@ -1485,6 +1481,10 @@
         },
         {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 16
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
           "hits": 16
         },
         {
@@ -1520,7 +1520,7 @@
           "hits": 11
         },
         {
-          "path": "soltui/tests/test_utxo_scan.py",
+          "path": "backtester/core/fetch_minutes.py",
           "hits": 10
         }
       ],

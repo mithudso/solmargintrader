@@ -39,6 +39,7 @@ refuse instead.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import subprocess
@@ -56,6 +57,13 @@ from backtester.core.fetch_minutes import MINUTE_ASSETS  # noqa: E402
 from backtester.core.universe import EXCLUDED, TOP10_NON_PEGGED  # noqa: E402
 
 DEFAULT_ASSETS = tuple(a for a in TOP10_NON_PEGGED if a not in EXCLUDED)
+TOP50_RECORD = REPO / "research" / "results" / "top50-nonpegged-2026-11-07.json"
+
+
+def top50() -> tuple[list[str], list[str]]:
+    """(Coinbase-listed, other-venue) symbols from the dated top-50 record."""
+    rec = json.loads(TOP50_RECORD.read_text())
+    return list(rec["coinbase_listed"]), list(rec["not_on_coinbase"])
 
 
 def fetch_steps(assets: list[str], data: Path, args: argparse.Namespace) -> list[tuple[str, list[str]]]:
@@ -64,29 +72,38 @@ def fetch_steps(assets: list[str], data: Path, args: argparse.Namespace) -> list
         return []
     py = sys.executable
     start_5m = (datetime.now(timezone.utc).date() - timedelta(days=args.days_5m)).isoformat()
-    joined = ",".join(assets)
+    from backtester.core.fetch_minutes_alt import ASSET_VENUE
+
+    # Coinbase serves the 1d/1h/5m/1m candles for most coins; the rest come only as 1m candles
+    # from the venue ASSET_VENUE names. Funding is Hyperliquid's, which skips what it lacks.
+    minute_assets = [a for a in assets if a not in ASSET_VENUE]
+    alt_assets = [a for a in assets if a in ASSET_VENUE]
     out: list[tuple[str, list[str]]] = []
     for interval, start in (("1d", "2021-01-01"), ("1h", args.start_1h)):
+        if not minute_assets:
+            break
         out.append((f"fetch {interval} candles", [
-            py, "-m", "backtester.core.universe", "--assets", joined, "--interval", interval,
+            py, "-m", "backtester.core.universe", "--assets", ",".join(minute_assets), "--interval", interval,
             "--start", start, "--out-dir", str(data), "--refetch", "--allow-partial", "--allow-gaps"]))
     # The finest history Coinbase serves: 1-minute candles back to each coin's earliest minute
     # (resumable; a re-run only fetches what is missing). The compound builds its 5m bars from
     # these, and they are what the backtests run on when they are the longest series cached.
-    minute_assets = [a for a in assets if a in MINUTE_ASSETS]
     if minute_assets and args.minutes_years > 0:
-        cmd = [py, "-m", "backtester.core.fetch_minutes", "--years", f"{args.minutes_years:g}", "--workers", "8"]
-        for a in minute_assets:
-            cmd += ["--asset", a]
-        out.append((f"fetch 1m candles for {', '.join(minute_assets)} (up to {args.minutes_years:g} years)", cmd))
-    for a in assets:
+        cmd = [py, "-m", "backtester.core.fetch_minutes", "--years", f"{args.minutes_years:g}", "--workers", "8",
+               "--assets", ",".join(minute_assets)]
+        out.append((f"fetch 1m candles from Coinbase for {len(minute_assets)} coins (up to {args.minutes_years:g} years)", cmd))
+    if alt_assets and args.minutes_years > 0:
+        out.append((f"fetch 1m candles from OKX/KuCoin/Bitget/WhiteBIT for {', '.join(alt_assets)}", [
+            py, "-m", "backtester.core.fetch_minutes_alt", "--assets", ",".join(alt_assets),
+            "--years", f"{args.minutes_years:g}"]))
+    for a in minute_assets:
         if args.days_5m <= 0:
             break
         out.append((f"fetch {a} 5m candles since {start_5m}", [
             py, "-m", "backtester.core.fetch", "--asset", a, "--interval", "5m", "--start", start_5m,
             "--allow-gaps", "--out", str(data / f"{a}_5m.csv")]))
     out.append(("fetch Hyperliquid hourly funding", [
-        py, "-m", "backtester.core.funding", "--assets", joined, "--out-dir", str(data), "--refetch"]))
+        py, "-m", "backtester.core.funding", "--assets", ",".join(assets), "--out-dir", str(data), "--refetch"]))
     return out
 
 
@@ -149,8 +166,8 @@ def archive_registry_results(stamp: str) -> Path | None:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--assets", default=",".join(DEFAULT_ASSETS),
-                    help="comma list (default: the tradeable universe; unlisted ones are reported)")
+    ap.add_argument("--assets", default="",
+                    help="comma list (default: the top 50 non-pegged coins in the dated record)")
     ap.add_argument("--days-5m", type=int, default=0,
                     help="also fetch N days of native 5m candles (default 0: the 1m history covers it)")
     ap.add_argument("--minutes-years", type=float, default=7.0,
@@ -171,6 +188,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.skip_fetch and args.fetch_only:
         ap.error("--skip-fetch and --fetch-only contradict each other")
     assets = [a.strip().upper() for a in args.assets.split(",") if a.strip()]
+    if not assets:
+        listed, others = top50()
+        assets = listed + others
     data = resolve_data_dir()
     stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     if args.plan:
@@ -188,7 +208,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"\n[{i}/{len(phase)}] {what}\n  {' '.join(cmd)}", flush=True)
             t0 = time.time()
             # fetch_minutes writes data/ relative to its working directory: run it where data/ lives.
-            where = data.parent if "backtester.core.fetch_minutes" in cmd else REPO
+            where = data.parent if any(m in cmd for m in ("backtester.core.fetch_minutes",
+                                                          "backtester.core.fetch_minutes_alt")) else REPO
             code = subprocess.run(cmd, cwd=where, env=env).returncode  # noqa: S603 - fixed argv
             print(f"[{i}/{len(phase)}] exit {code} after {time.time() - t0:.0f}s", flush=True)
             if code != 0:
@@ -196,7 +217,10 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"full suite {stamp}; data cache {data}", flush=True)
     if not args.skip_fetch:
-        assets = listed_only(assets)
+        from backtester.core.fetch_minutes_alt import ASSET_VENUE
+
+        # Coins from other venues are fetched by fetch_minutes_alt; only the rest need Coinbase.
+        assets = listed_only([a for a in assets if a not in ASSET_VENUE]) + [a for a in assets if a in ASSET_VENUE]
         run(fetch_steps(assets, data, args))
         if failures and not args.continue_on_fetch_error:
             # Sweeping a partly refreshed cache mixes old and new data and would archive the
