@@ -880,10 +880,16 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
         rows.append({"type": "resolve", "id": r["id"], "next_close": nxt, "ret_bps": round(ret, 4),
                      "resolved_at": stamp})
         n_resolved += 1
+    # Record first: a failed adoption must never cost the bar its call.
+    _append(asset, rows)
     # The call above was made with the tuned settings already (tuning walks inside the evaluation);
     # adopting saves them so the next bar starts from them instead of re-deriving the walk.
-    adopted, adopt_rows = auto_adopt(asset, state, x["components"], ledger, stamp)
-    _append(asset, rows + adopt_rows)
+    try:
+        adopted, adopt_rows = auto_adopt(asset, state, x["components"], ledger, stamp)
+    except CompoundError as exc:
+        adopted, adopt_rows = {}, []
+        extra["notes"] = [*extra["notes"], f"autopilot could not adopt tuned settings: {exc}"]
+    _append(asset, adopt_rows)
     return {"asset": asset, "recorded": new_call, "call": x["call"], "composite": x["composite"],
             "bar_ts": x["bar_ts"], "regime": x["regime"], "blocked_by": x["blocked_by"],
             "resolved": n_resolved, "notes": extra["notes"], "adopted": adopted,
@@ -1487,7 +1493,11 @@ def stop_unattended(asset: str) -> dict[str, Any]:
         except ProcessLookupError:
             pass
     # Autopilot keeps every coin training; a stopped coin comes back at its next check.
-    return {"stopping": True, "asset": a, "pid": status["pid"], "autopilot_restarts": autopilot_enabled()}
+    try:
+        restarts = autopilot_enabled()
+    except CompoundError:
+        restarts = False  # an unreadable config must not stop the stop
+    return {"stopping": True, "asset": a, "pid": status["pid"], "autopilot_restarts": restarts}
 
 
 def set_autopilot(enabled: bool) -> dict[str, Any]:
@@ -1501,8 +1511,19 @@ def autopilot_status(coins: Sequence[str] = COINS) -> dict[str, Any]:
 
     adoptions = []
     for c in coins:
-        for r in read_ledger(c):
-            if r.get("type") == "adopt":
+        path = forward_path(c)
+        if not path.exists():
+            continue
+        # The console asks once a minute and ledgers grow ~900 lines a coin a day: parse only the
+        # rare adoption lines, not every call.
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if '"adopt"' not in line:
+                continue
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(r, dict) and r.get("type") == "adopt":
                 adoptions.append({k: r.get(k) for k in ("ts", "asset", "metric", "from", "to")})
     adoptions.sort(key=lambda r: r["ts"] or 0)
     return {"autopilot": autopilot_enabled(),
