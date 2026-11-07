@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import math
 import unittest
 from unittest import mock
@@ -96,6 +97,16 @@ class PrefixInvarianceTests(unittest.TestCase):
                 params = {**sc.BY_ID[cid].defaults(), **override}
                 self.assert_prefix_invariant(sc.BY_ID[cid].fn, params, cid)
 
+    def test_frontier_metrics_with_other_parameters_stay_prefix_invariant(self) -> None:
+        cases = {"mom_skip": {"lookback": 24, "skip": 0}, "vr_regime": {"q": 3, "window": 60},
+                 "ou_reversion": {"window": 20, "fit_window": 60, "max_half_life": 1000},
+                 "consec_run": {"min_run": 2, "span": 1}, "pairs_spread": {"window": 60},
+                 "keltner": {"span": 5, "mult": 0.5}}
+        for cid, override in cases.items():
+            with self.subTest(component=cid):
+                params = {**sc.BY_ID[cid].defaults(), **override}
+                self.assert_prefix_invariant(sc.BY_ID[cid].fn, params, cid)
+
     def test_the_checker_catches_a_one_bar_leak(self) -> None:
         def leaky(b, p, aux):
             nxt = np.full(len(b), np.nan)
@@ -119,6 +130,22 @@ class PrefixInvarianceTests(unittest.TestCase):
                 self.assertEqual(int(part.indication[-1]), int(full.indication[t]))
                 self.assertEqual(str(part.regime[-1]), str(full.regime[t]))
                 self.assertEqual(bool(part.blocked[-1]), bool(full.blocked[t]))
+                self.assertEqual(sc.target_path(part)[-1], full_target[t])
+
+    def test_frontier_metrics_hold_and_entry_quantile_are_prefix_invariant(self) -> None:
+        # The 2026-11-07 frontier: six new metrics, a minimum hold and a trailing-quantile entry.
+        cfg = sc.default_config()
+        for cid in ("keltner", "mom_skip", "vr_regime", "ou_reversion", "consec_run", "pairs_spread"):
+            cfg["components"][cid]["enabled"] = True
+        cfg["aggregate"].update(hold=12, entry_quantile=0.9, adaptive_window=200)
+        aux = {k: self.aux[k] for k in ("btc_close", "funding", "events")}
+        full = sc.evaluate(self.bars, cfg, aux)
+        full_target = sc.target_path(full)
+        for t in self.CHECKPOINTS:
+            part = sc.evaluate(self.bars.slice(t + 1), cfg, slice_aux(aux, t + 1))
+            with self.subTest(bar=t):
+                self.assertTrue(same(part.composite[-1], full.composite[t]))
+                self.assertEqual(int(part.indication[-1]), int(full.indication[t]))
                 self.assertEqual(sc.target_path(part)[-1], full_target[t])
 
     def test_adaptive_weights_are_prefix_invariant(self) -> None:
@@ -532,6 +559,46 @@ class ForecastStatsTests(unittest.TestCase):
         ts = np.array([0, 300, 600, 1500, 1800, 2400])
         self.assertEqual(sc.contiguous_segments(ts), [(0, 3), (3, 5), (5, 6)])
         self.assertEqual(sc.contiguous_segments(np.array([], dtype=int)), [])
+
+
+class FrontierControlTests(unittest.TestCase):
+    """hold and entry_quantile: fewer, longer trades. The point is to pay fewer round trips."""
+
+    def setUp(self) -> None:
+        self.bars = synthetic()
+        self.cfg = sc.standalone_config(sc.default_config(), "rsi")
+
+    @staticmethod
+    def trades(path: np.ndarray) -> int:
+        return int(np.count_nonzero(np.diff(np.concatenate(([0.0], path)))))
+
+    def test_hold_one_is_the_old_behaviour_and_longer_holds_trade_less(self) -> None:
+        base = sc.target_path(sc.evaluate(self.bars, self.cfg))
+        cfg = json.loads(json.dumps(self.cfg))
+        cfg["aggregate"]["hold"] = 24
+        held = sc.target_path(sc.evaluate(self.bars, cfg))
+        self.assertLess(self.trades(held), self.trades(base))
+        # Every entry is kept for at least min(hold, bars until a flip or the end).
+        starts = np.flatnonzero((held != 0) & (np.concatenate(([0.0], held[:-1])) != held))
+        for i in starts:
+            run = held[i:i + 24]
+            self.assertTrue(np.all(run == held[i]) or np.any(run == -held[i]), f"entry at {i} cut short")
+
+    def test_entry_quantile_only_takes_the_strongest_readings(self) -> None:
+        ev = sc.evaluate(self.bars, self.cfg)
+        cfg = json.loads(json.dumps(self.cfg))
+        cfg["aggregate"].update(entry_quantile=0.9, adaptive_window=200)
+        strict = sc.evaluate(self.bars, cfg)
+        self.assertLess(int(np.count_nonzero(strict.indication)), int(np.count_nonzero(ev.indication)))
+        self.assertTrue(np.all(np.abs(strict.composite[strict.indication != 0]) >= cfg["aggregate"]["entry"]))
+
+    def test_forecast_reports_move_against_cost_by_holding_period(self) -> None:
+        ev = sc.evaluate(self.bars, self.cfg)
+        stats = sc.forecast_stats([ev])
+        bars = [h["bars"] for h in stats["horizons"]]
+        self.assertEqual(bars, [h for h in sc.HORIZONS if h < len(self.bars) - 1])
+        h1 = stats["horizons"][0]
+        self.assertAlmostEqual(h1["net_bps"], h1["gross_bps"] - stats["round_trip_bps"], places=2)
 
 
 if __name__ == "__main__":

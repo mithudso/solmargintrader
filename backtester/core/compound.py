@@ -203,8 +203,12 @@ def engine_config(cfg: Mapping[str, Any], asset: str | None = None) -> EngineCon
     extra = {} if maint is None else {"max_lev_constant": 1.0 / maint}
     costs = CostConfig(perp_base_fee_bps=ex["fee_bps"], slippage_bps=ex["slippage_bps"],
                        fee_bps=ex["fee_bps"], liquidation_forfeits_collateral=True, **extra)
-    return EngineConfig(mode=Mode.PERP, leverage=float(ex["leverage"]), interval="5m",
-                        allow_short=bool(agg["allow_short"]), fill_delay=1, costs=costs)
+    lev = float(ex["leverage"])
+    # A perp position is held at a fixed size, not re-levered every 5m bar. With the engine's default
+    # threshold of 0 every bar's drift counted as a trade (only:rsi on SOL: 68,200 "trades", 13,561 real
+    # entries and exits). Re-lever only when exposure drifts 10% from target.
+    return EngineConfig(mode=Mode.PERP, leverage=lev, interval="5m", allow_short=bool(agg["allow_short"]),
+                        fill_delay=1, costs=costs, rebalance_threshold=0.1 * lev)
 
 
 @dataclass
@@ -344,6 +348,12 @@ def run_compound(asset: str, config: Mapping[str, Any] | None = None, *, label: 
         "is": {"forecast": sc.forecast_stats(evals, None, split_ts), "pnl": _stitch(is_slices)},
         "oos": {"forecast": sc.forecast_stats(evals, split_ts, None), "pnl": _stitch(oos_slices)},
     }
+    # Buying and holding the coin over the same window, unlevered: a long-biased call that only
+    # matches this has shown no skill, just the coin's drift.
+    close = arrays_all["close"]
+    cut_all = int(np.searchsorted(ts_all, split_ts, side="left"))
+    report["is"]["buy_hold_return"] = round(float(close[cut_all - 1] / close[0] - 1.0), 6) if cut_all > 1 else None
+    report["oos"]["buy_hold_return"] = round(float(close[-1] / close[cut_all] - 1.0), 6) if cut_all < close.size else None
     report["ranked"] = is_rankable(report)
     return report
 
@@ -355,8 +365,13 @@ def is_rankable(report: Mapping[str, Any]) -> bool:
             and int((oos.get("pnl") or {}).get("trades", 0)) >= MIN_OOS_TRADES)
 
 
+# The frontier sweep's holding periods (5m bars: 1 h, 4 h, 24 h) and its entry quantile (top 2%).
+FRONTIER_HOLDS = (12, 48, 288)
+FRONTIER_QUANTILE = 0.98
+
+
 def variants(cfg: Mapping[str, Any], *, standalone: bool = True, perturb: bool = False,
-             aggregate_grid: bool = False) -> list[tuple[str, dict[str, Any]]]:
+             aggregate_grid: bool = False, frontier: bool = False) -> list[tuple[str, dict[str, Any]]]:
     """(label, config) pairs: the compound itself, each enabled score component alone,
     one-at-a-time parameter perturbations, and aggregate-setting variations.
 
@@ -394,6 +409,20 @@ def variants(cfg: Mapping[str, Any], *, standalone: bool = True, perturb: bool =
                     c = sc.normalise_config(solo)
                     c["components"][cid]["params"][spec.name] = v
                     add(f"only:{cid} {spec.name}={v:g}", c)
+    if frontier:
+        # Every historical metric, enabled or not, alone: only its strongest 2% of readings (by its own
+        # trailing record), held 1 h / 4 h / 24 h. One round trip then has to beat a bigger move,
+        # which is the only way a 5m reading can pay a 13 bps toll (research/COMPOUND-FRONTIER.md).
+        for comp in sc.COMPONENTS:
+            if comp.kind != "score" or comp.forward_only:
+                continue
+            solo = sc.standalone_config(base, comp.id)
+            for hold in FRONTIER_HOLDS:
+                c = sc.normalise_config(solo)
+                c["aggregate"].update(hold=hold, entry_quantile=FRONTIER_QUANTILE)
+                # Unlevered: a 24 h hold at 5x is mostly volatility drag; 1x measures the edge itself.
+                c["execution"]["leverage"] = 1.0
+                add(f"frontier:{comp.id} hold={hold} top2% 1x", c)
     if aggregate_grid:
         gates = [c.id for c in sc.COMPONENTS if c.kind == "gate"]
         no_gates = sc.normalise_config(base)

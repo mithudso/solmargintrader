@@ -180,6 +180,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#compound-unattended-stop": "compound.unattended_stop",
     "#compound-scope": "compound.config",
     "#compound-backtest-all": "compound.backtest",
+    "#compound-backtest-frontier": "compound.backtest",
     "#compound-unattended-all": "compound.unattended_start",
     "#compound-unattended-stop-all": "compound.unattended_stop",
     "#compound-autopilot": "compound.autopilot",
@@ -547,6 +548,8 @@ class SolTuiApp(App):
     Tooltip { max-width: 76; height: auto; max-height: 18; }
     #help-hint { height: 1; color: $text-muted; padding: 0 1; }
     #compound-table { height: 22; }
+    #compound-sections { height: 1fr; }
+    #compound-tested { color: $text-muted; padding: 0 1; }
     #compound-results { height: 14; }
     #compound-forward { height: 12; }
     #compound-overview { height: 11; }
@@ -890,73 +893,83 @@ class SolTuiApp(App):
             yield GlossaryTable(id="families-table")
 
     def _compound_pane(self) -> ComposeResult:
-        """Compound five-minute call: toggle and tune each metric, backtest and forward test them.
+        """Compound five-minute call in four sections: the live call and its metrics, the backtest,
+        the forward test, and every coin. One long page was hard to read (owner, 2026-11-07).
 
         Every action is a `compound.*` registry command; this pane only renders.
         """
-        with VerticalScroll(id="compound-scroll"):
-            yield Static(
-                "Each metric scores the next 5m bar from -1 (down) to +1 (up). Families vote once, "
-                "the regime reweights trend vs reversion styles, and any enabled gate forces FLAT. "
-                "Double-click a metric (or select it and press Space) to switch it on or off; a single "
-                "click selects it, shows its full detail in the editor below and fills its numbers in. "
-                "Nothing here places an order.",
-                classes="hint",
-            )
+        with Vertical(id="compound-scroll"):
             with Horizontal(classes="form-row"):
                 yield Label("Coin:")
                 yield Select([(c, c) for c in compound_mod.coins()], value=self._initial_coin(),
                              allow_blank=False, id="compound-coin")
                 yield Button("Edits apply to: all coins", id="compound-scope")
-            with Horizontal(classes="form-row"):
                 yield Button("Autopilot: on", variant="success", id="compound-autopilot")
-                yield Static("", id="compound-autopilot-status")
-            yield Static("Press Signal now for the live call.", id="compound-call")
-            yield Static("", id="compound-table-title", classes="table-title")
-            yield CompoundTable(id="compound-table")
-            yield Static("", id="compound-detail")
-            with Horizontal(classes="form-row"):
-                yield Label("Selected (k=v):")
-                yield Input(placeholder="weight=1.5 period=9 enabled=1", id="compound-edit")
-            with Horizontal(classes="form-row"):
-                yield Label("Aggregate (k=v):")
-                yield Input(placeholder="entry=0.25 exit=0.1 leverage=5 fee_bps=6", id="compound-agg")
-            with Horizontal(classes="form-row"):
-                yield Button("Toggle on/off", id="compound-toggle")
-                yield Button("Apply edits", variant="primary", id="compound-apply")
-                yield Button("Reset defaults", id="compound-reset")
-                yield Button("Adopt tuned settings now", id="compound-adopt")
-            with Horizontal(classes="form-row"):
-                yield Button("Signal now", variant="success", id="compound-signal")
-                yield Button("Backtest selected", variant="warning", id="compound-backtest")
-                yield Button("Forward tick", id="compound-forward")
-                yield Button("Auto-forward: off", id="compound-auto")
-                yield Button("Refresh results", id="compound-refresh")
-            with Horizontal(classes="form-row"):
-                yield Button("Start unattended training", variant="success", id="compound-unattended-start")
-                yield Button("Stop unattended", variant="error", id="compound-unattended-stop")
-                yield Static("", id="compound-unattended")
-            with Horizontal(classes="form-row"):
-                yield Button("Backtest all coins", variant="warning", id="compound-backtest-all")
-                yield Button("Start unattended: all coins", variant="success", id="compound-unattended-all")
-                yield Button("Stop unattended: all coins", variant="error", id="compound-unattended-stop-all")
-            yield Static("[b]Every coin at a glance[/b]: its own settings, cached data, latest backtest verdict "
-                         "and hit rate, forward-test calls, hit rate and paper dollars, and whether its trainer "
-                         "runs. Select a coin to see it in full in the editor below.", classes="table-title")
-            yield GlossaryTable(id="compound-overview")
+            yield Static("", id="compound-autopilot-status")
             yield Static("", id="compound-status")
-            yield Static(
-                "Backtest, latest run: the compound and each enabled metric alone. OOS = the last 30% "
-                "of bars; hit = next-bar direction; return = engine P&L after fees at the set leverage.",
-                classes="hint",
-            )
-            yield Static("", id="compound-bt-status")
-            yield Static("", id="compound-relations")
-            yield Static("", id="compound-results-title", classes="table-title")
-            yield GlossaryTable(id="compound-results")
-            yield Static("", id="compound-forward-title", classes="table-title")
-            yield Static("", id="compound-fwd-summary")
-            yield GlossaryTable(id="compound-forward")
+            with TabbedContent(id="compound-sections", initial="cmp-call"):
+                with TabPane("Call & metrics", id="cmp-call"):
+                    with VerticalScroll():
+                        yield Static(
+                            "Each metric scores the next 5m bar from -1 (down) to +1 (up). Families vote "
+                            "once, the regime reweights trend vs reversion styles, and any enabled gate "
+                            "forces FLAT. Double-click a metric (or select it and press Space) to switch it; "
+                            "a single click shows its full detail in the editor below. No order is placed.",
+                            classes="hint")
+                        with Horizontal(classes="form-row"):
+                            yield Button("Signal now", variant="success", id="compound-signal")
+                            yield Button("Toggle on/off", id="compound-toggle")
+                            yield Button("Apply edits", variant="primary", id="compound-apply")
+                            yield Button("Reset defaults", id="compound-reset")
+                            yield Button("Adopt tuned settings now", id="compound-adopt")
+                        yield Static("Press Signal now for the live call.", id="compound-call")
+                        yield Static("", id="compound-table-title", classes="table-title")
+                        yield CompoundTable(id="compound-table")
+                        yield Static("", id="compound-detail")
+                        with Horizontal(classes="form-row"):
+                            yield Label("Selected (k=v):")
+                            yield Input(placeholder="weight=1.5 period=9 enabled=1", id="compound-edit")
+                        with Horizontal(classes="form-row"):
+                            yield Label("Aggregate (k=v):")
+                            yield Input(placeholder="entry=0.25 exit=0.1 leverage=5 fee_bps=6", id="compound-agg")
+                with TabPane("Backtest", id="cmp-backtest"):
+                    with VerticalScroll():
+                        with Horizontal(classes="form-row"):
+                            yield Button("Backtest this coin", variant="warning", id="compound-backtest")
+                            yield Button("Frontier: every metric, strongest 2%, held 1 h-24 h",
+                                         variant="warning", id="compound-backtest-frontier")
+                            yield Button("Backtest all coins", variant="warning", id="compound-backtest-all")
+                        yield Static("", id="compound-tested")
+                        yield Static("", id="compound-bt-status")
+                        yield Static("", id="compound-relations")
+                        yield Static("", id="compound-results-title", classes="table-title")
+                        yield GlossaryTable(id="compound-results")
+                with TabPane("Forward test", id="cmp-forward"):
+                    with VerticalScroll():
+                        with Horizontal(classes="form-row"):
+                            yield Button("Forward tick", id="compound-forward")
+                            yield Button("Auto-forward: off", id="compound-auto")
+                            yield Button("Refresh results", id="compound-refresh")
+                        with Horizontal(classes="form-row"):
+                            yield Button("Start unattended training", variant="success",
+                                         id="compound-unattended-start")
+                            yield Button("Stop unattended", variant="error", id="compound-unattended-stop")
+                            yield Static("", id="compound-unattended")
+                        yield Static("", id="compound-forward-title", classes="table-title")
+                        yield Static("", id="compound-fwd-summary")
+                        yield GlossaryTable(id="compound-forward")
+                with TabPane("All coins", id="cmp-coins"):
+                    with VerticalScroll():
+                        with Horizontal(classes="form-row"):
+                            yield Button("Start unattended: all coins", variant="success",
+                                         id="compound-unattended-all")
+                            yield Button("Stop unattended: all coins", variant="error",
+                                         id="compound-unattended-stop-all")
+                        yield Static("[b]Every coin at a glance[/b]: its own settings, cached data, latest "
+                                     "backtest verdict and hit rate, forward-test calls, hit rate and paper "
+                                     "dollars, and whether its trainer runs. Select a coin to see it in full "
+                                     "in the editor below.", classes="table-title")
+                        yield GlossaryTable(id="compound-overview")
 
     ROSTER_PICK = "__roster__"
 
@@ -1496,8 +1509,8 @@ class SolTuiApp(App):
             table.add_column(label, key=label)
         results = self.query_one("#compound-results", GlossaryTable)
         results.cursor_type = "row"
-        results.add_columns("configuration", "oos calls", "oos hit", "z", "base up", "gross bps",
-                            "oracle net bps", "oos return", "oos sharpe", "trades", "max dd", "fees %",
+        results.add_columns("configuration", "oos return", "buy & hold", "oos sharpe", "trades", "fees %",
+                            "net bps 1h", "net bps 24h", "oos calls", "oos hit", "z", "gross bps", "max dd",
                             "rankable")
         fwd = self.query_one("#compound-forward", GlossaryTable)
         fwd.cursor_type = "row"
@@ -1851,14 +1864,20 @@ class SolTuiApp(App):
         self.query_one("#compound-bt-status", Static).update(Text(
             compound_mod.run_summary(env["result"]["rows"], env["result"].get("configurations_on_this_oos_window"))
             if env["ok"] else self._msg(env)))
+        self.query_one("#compound-tested", Static).update(Text(
+            compound_mod.tested_line(self._compound_coin, env["result"]["rows"] if env["ok"] else [],
+                                     self._compound_cfg)))
         self._compound_result_rows = list(env["result"]["rows"]) if env["ok"] else []
         if env["ok"]:
             for row in env["result"]["rows"]:
+                horizons = {h["bars"]: h for h in row.get("oos_horizons") or []}
                 results.add_row(
-                    row["label"], str(row["oos_calls"]), _pct(row["oos_hit"]), _num(row["oos_z"]),
-                    _pct(row["oos_base_up"]), _num(row["oos_gross_bps"]), _num(row["oracle_net_bps"]),
-                    _pct(row["oos_return"]), _num(row["oos_sharpe"]), str(row["oos_trades"]),
-                    _pct(row["oos_max_dd"]), _num(row["oos_fees_pct"]), "yes" if row["ranked"] else "no")
+                    compound_mod.readable_label(row["label"]), _pct(row["oos_return"]),
+                    _pct(row.get("oos_buy_hold")), _num(row["oos_sharpe"]), str(row["oos_trades"]),
+                    _num(row["oos_fees_pct"]), _num((horizons.get(12) or {}).get("net_bps")),
+                    _num((horizons.get(288) or {}).get("net_bps")), str(row["oos_calls"]), _pct(row["oos_hit"]),
+                    _num(row["oos_z"]), _num(row["oos_gross_bps"]), _pct(row["oos_max_dd"]),
+                    "yes" if row["ranked"] else "no")
                 if row["label"].startswith("only:"):
                     self._compound_bt[row["label"][5:]] = _pct(row["oos_hit"])
                 elif row["label"] == "compound":
@@ -1999,6 +2018,12 @@ class SolTuiApp(App):
         if env["ok"]:
             self._compound_cfg = env["result"]["config"]
             self._compound_render_table()
+
+    @on(Button.Pressed, "#compound-backtest-frontier")
+    def _compound_backtest_frontier(self) -> None:
+        self._compound_job("compound.backtest", {"asset": self._compound_coin, "frontier": True},
+                           "frontier: every metric alone, its strongest 2% of readings, held 1 h, 4 h and 24 h, "
+                           "unlevered (about 130 configurations; a few minutes)")
 
     @on(Button.Pressed, "#compound-backtest-all")
     def _compound_backtest_all(self) -> None:
