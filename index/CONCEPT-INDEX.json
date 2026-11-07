@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T14:28:19+00:00",
+  "generatedAt": "2026-11-07T14:53:06+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 296,
+      "matchingFiles": 298,
       "shown": 30,
       "files": [
         {
@@ -46,11 +46,11 @@
           "hits": 51
         },
         {
-          "path": "soltui/commands.py",
-          "hits": 41
+          "path": "soltui/tui.py",
+          "hits": 43
         },
         {
-          "path": "soltui/tui.py",
+          "path": "soltui/commands.py",
           "hits": 41
         },
         {
@@ -75,7 +75,7 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 28
+          "hits": 29
         },
         {
           "path": "extension/README.md",
@@ -261,6 +261,10 @@
           "hits": 26
         },
         {
+          "path": "soltui/help.py",
+          "hits": 24
+        },
+        {
           "path": "backtester/tests/test_engine.py",
           "hits": 24
         },
@@ -279,10 +283,6 @@
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 22
-        },
-        {
-          "path": "docs/code-deep-optimizer-2026-11-06.md",
-          "hits": 21
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -724,12 +724,12 @@
           "hits": 114
         },
         {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 89
+          "path": "backtester/core/scorecard.py",
+          "hits": 95
         },
         {
-          "path": "backtester/core/scorecard.py",
-          "hits": 82
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 89
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
@@ -796,6 +796,10 @@
           "hits": 30
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 29
+        },
+        {
           "path": "docs/CONCEPTS.md",
           "hits": 24
         },
@@ -814,10 +818,6 @@
         {
           "path": "backtester/core/strategies/signals.py",
           "hits": 21
-        },
-        {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 20
         },
         {
           "path": "backtester/core/strategies/__init__.py",
@@ -851,7 +851,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 179,
+      "matchingFiles": 180,
       "shown": 30,
       "files": [
         {
@@ -1504,6 +1504,10 @@
           "hits": 14
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 13
+        },
+        {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 11
         },
@@ -1517,10 +1521,6 @@
         },
         {
           "path": "liquidity/src/aero_lp/executor.py",
-          "hits": 9
-        },
-        {
-          "path": "soltui/top5.py",
           "hits": 9
         }
       ],
@@ -1961,24 +1961,24 @@
           "hits": 52
         },
         {
-          "path": "research/results/tables.md",
-          "hits": 48
+          "path": "soltui/tests/test_compound.py",
+          "hits": 51
         },
         {
-          "path": "soltui/tests/test_compound.py",
-          "hits": 43
+          "path": "research/results/tables.md",
+          "hits": 48
         },
         {
           "path": "backtester/tests/test_sweep_pair_gate.py",
           "hits": 40
         },
         {
-          "path": "soltui/signals.py",
+          "path": "backtester/tests/test_scorecard.py",
           "hits": 28
         },
         {
-          "path": "backtester/tests/test_scorecard.py",
-          "hits": 27
+          "path": "soltui/signals.py",
+          "hits": 28
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
@@ -1997,16 +1997,16 @@
           "hits": 25
         },
         {
-          "path": "backtester/core/scorecard.py",
-          "hits": 24
-        },
-        {
           "path": "backtester/core/trigger_conditions.py",
           "hits": 23
         },
         {
           "path": "backtester/strategy_cards/rsi.md",
           "hits": 23
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 21
         },
         {
           "path": "soltui/help.py",
@@ -2061,12 +2061,12 @@
           "hits": 12
         },
         {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
+          "path": "docs/COMPOUND-5M.md",
           "hits": 11
         },
         {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 10
+          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
+          "hits": 11
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2327,6 +2327,10 @@
           "hits": 6
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 6
+        },
+        {
           "path": "research/coin-intelligence/btc-bitcoin.md",
           "hits": 6
         },
@@ -2336,10 +2340,6 @@
         },
         {
           "path": "research/results/geometry_long_k2.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/geometry_medium_k2.txt",
           "hits": 6
         }
       ],
@@ -2390,16 +2390,16 @@
           "hits": 20
         },
         {
+          "path": "backtester/core/scorecard.py",
+          "hits": 18
+        },
+        {
           "path": "research/results/cpcv_tables.md",
           "hits": 18
         },
         {
           "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
           "hits": 18
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 17
         },
         {
           "path": "backtester/strategy_cards/bb_breakout.md",
@@ -2489,7 +2489,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 78,
+      "matchingFiles": 79,
       "shown": 30,
       "files": [
         {
@@ -2549,16 +2549,16 @@
           "hits": 16
         },
         {
+          "path": "backtester/core/scorecard.py",
+          "hits": 15
+        },
+        {
           "path": "docs/CONCEPTS.md",
           "hits": 15
         },
         {
           "path": "skills/trading-and-investing/references/technical-analysis.md",
           "hits": 14
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 13
         },
         {
           "path": "soltui/help.py",
