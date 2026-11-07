@@ -217,7 +217,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Asset universe selection, with the survivorship-bias refusal",
-      "lines": 312
+      "lines": 319
     },
     {
       "path": "backtester/core/report.py",
@@ -245,14 +245,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 1800
+      "lines": 1804
     },
     {
       "path": "backtester/core/compound.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 408
+      "lines": 430
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -364,7 +364,7 @@
       "component": "research",
       "kind": "python",
       "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 248
+      "lines": 241
     },
     {
       "path": "research/geometry.py",
@@ -782,7 +782,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 1788
+      "lines": 1789
     },
     {
       "path": "soltui/liquidity.py",
@@ -1235,7 +1235,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 358
+      "lines": 386
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
