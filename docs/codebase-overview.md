@@ -279,6 +279,7 @@ place of them. In live mode it signs real transactions. Full detail: `liquidity/
 | `docs/code-optimizer-scope-2026-11-06.json` | Primary/dependency source scope and every remaining source path |
 | `docs/jupiter-trigger-contract.md` | Public API contract fixtures and blocked live-signing boundary |
 | `docs/COMPOUND-5M.md` | Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings |
+| `docs/COMPOUND-5M-PAPER.md` | Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity |
 
 ### Not source
 

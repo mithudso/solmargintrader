@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 33
-Delta: v32 to v33; compound wallet sizing, click toggle, unattended training, inversion default, new metrics, relations.
+Version: 34
+Delta: v33 to v34; compound wallet sizing, click toggle, unattended training, inversion default, new metrics, relations.
 
 ## v1 - 2026-11-06
 
@@ -333,7 +333,11 @@ Verification: backtester 817, soltui 745 pass. OOS hit rate of the default compo
 
 Remaining: user may shorten or lengthen adaptive_window after watching it; per-regime learned weights not built; a year of 5m data via research/full_suite.py before trusting any of it.
 
-## v33 - 2026-11-07 (compound: wallet, clicks, unattended training, inversion, new metrics)
+## v33 - 2026-11-07 (Compound 5m paper)
+
+Target: "Write a paper detailing the metrics, what they check, why they're included, what the tunable parameters are, and performance so far." Read as the compound five-minute scorecard. Stele TASK-823. Wrote docs/COMPOUND-5M-PAPER.md: scope, method, all 35 components (28 scores, 7 gates) with what each checks, why included, formula, works/fails and parameters, the four parameter layers, the evaluation protocol, and results recomputed from ~/.config/soltui/compound/backtests.jsonl run 20261107T130441Z-f7fea5b2368e (the file holds the same sweep twice). Headline: no configuration made money in a way that survives scrutiny (10 of 1,420 positive OOS, all within about 1.2 standard errors of a coin flip, 7 of 10 lost in-sample); default compound lost 17 to 63 percent OOS (mean -43 percent at 5x); oracle one-bar net is negative on all five coins; weak reversion pattern in rsi/zscore/bollinger/stochastic; no forward ledger exists and the year-long full suite has not completed. The paper's tables are generated from the catalog and saved rows by a scratch script (not committed); re-derive from the sweep file if the numbers must be refreshed.
+
+## v34 - 2026-11-07 (compound: wallet, clicks, unattended training, inversion, new metrics)
 
 Target: user asked (1) where wallet information should come from and to read it; (2) click a metric to toggle it; (3) a button for fully unattended forward training; (4) invert metrics that score badly; (5) a status bar for the backtest table; (6) add Volume, Balance of Power, ZigZag and EMA; (7) which signals are mutually exclusive. Stele TASK-824. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-wallet, branch feat/compound-wallet-sizing.
 
