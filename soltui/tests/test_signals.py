@@ -65,7 +65,12 @@ class TestMapping(unittest.TestCase):
 
     def test_every_registered_strategy_is_mapped(self) -> None:
         """An unmapped strategy would silently ignore the Signals tab."""
-        missing = set(REGISTRY) - set(STRATEGY_PARAM_MAP)
+        from backtester.core.strategies import FAMILY
+
+        # Tier and trigger strategies wrap or compose other signals; they have no
+        # Signals-tab fields of their own.
+        wrappers = {k for k in REGISTRY if FAMILY.get(k) in ("leverage-tier", "trigger")}
+        missing = set(REGISTRY) - wrappers - set(STRATEGY_PARAM_MAP)
         self.assertEqual(missing, set(), f"unmapped strategies: {missing}")
 
     def test_every_mapped_field_exists(self) -> None:
