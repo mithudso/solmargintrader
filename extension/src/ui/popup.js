@@ -1,9 +1,11 @@
 /**
- * Popup: status at a glance, plus arm / disarm / kill.
+ * Popup: holdings and alerts at a glance, shortcuts into the dashboard, and the
+ * grid's arm / disarm / kill controls (collapsed: the grid is experimental).
  *
  * All state comes from the service worker over messages. The popup holds no
  * strategy logic — it can be closed mid-tick without consequence, and it must
- * never be the thing that decides whether an order is placed.
+ * never be the thing that decides whether an order is placed. It paints from
+ * the stored scan (overview) so it opens instantly, without waiting on RPC.
  */
 
 import { attributionLine } from '../jupiter/attribution.js';
@@ -37,7 +39,7 @@ async function refresh() {
     banner.textContent = `LIVE (${config.mode}) — real orders, real funds.`;
     banner.className = 'banner warn';
   } else if (!runtime.armed) {
-    banner.textContent = 'Disarmed. Dry run only; nothing is being placed.';
+    banner.textContent = 'Disarmed. The grid is in dry run; nothing is being placed.';
     banner.className = 'banner';
   } else {
     banner.textContent = 'Dry run armed — simulating fills, placing nothing.';
@@ -121,10 +123,97 @@ $('kill').addEventListener('click', () => act({ type: 'kill' }));
 $('clearKill').addEventListener('click', () => act({ type: 'clearKill' }));
 $('tickNow').addEventListener('click', () => act({ type: 'tickNow' }));
 $('openDashboard').addEventListener('click', () => chrome.runtime.openOptionsPage());
+const openView = (view) => chrome.tabs.create({ url: chrome.runtime.getURL(`src/ui/dashboard.html#${view}`) });
+for (const tile of document.querySelectorAll('.tiles [data-view]')) {
+  tile.addEventListener('click', () => openView(tile.dataset.view));
+}
+$('openAlerts').addEventListener('click', () => openView('alerts'));
+$('openGrid').addEventListener('click', () => openView('grid'));
 // The SolTUI panel lives on the dashboard; the anchor scrolls straight to it.
 $('openSoltui').addEventListener('click', () =>
   chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/dashboard.html#soltui') }));
 // The version is the only visible sign that a reload picked up new code.
 $('version').textContent = `v${chrome.runtime.getManifest().version}`;
 
+/* ------------------------------------------------------- holdings + alerts -- */
+
+const ago = (ms) => {
+  if (!Number.isFinite(ms)) return '';
+  const m = Math.round((Date.now() - ms) / 60000);
+  return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} h ago`;
+};
+
+function paintHoldings(h) {
+  if (!h) return;
+  $('total').textContent = (h.complete ? '' : '≥ ') + usd(h.totalUsd);
+  const chain = (name) => h.chains?.find((c) => c.chain === name);
+  const line = (name, label) => {
+    const c = chain(name);
+    if (!c || c.status === 'skipped') return `${label} —`;
+    return c.status === 'failed' ? `${label} read failed` : `${label} ${usd(c.totalUsd)}`;
+  };
+  $('baseTotal').textContent = line('base', 'Base');
+  $('solTotal').textContent = line('solana', 'Solana');
+  $('scanAge').textContent = ago(h.atMs);
+}
+
+// Built with DOM calls only: alert titles carry pool and token names from
+// third-party feeds, and this page holds extension privileges.
+function paintAlerts(scan) {
+  const box = $('alerts');
+  const open = (scan?.alerts ?? []).filter((a) => !a.acked);
+  if (!open.length) {
+    const p = document.createElement('p');
+    p.className = 'note';
+    p.textContent = scan ? 'Nothing needs attention.' : 'No scan yet — press Scan.';
+    box.replaceChildren(p);
+    return;
+  }
+  box.replaceChildren(...open.slice(0, 3).map((a) => {
+    const row = document.createElement('div');
+    row.className = `alert ${a.severity}`;
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    const text = document.createElement('div');
+    const title = document.createElement('div');
+    title.className = 'title';
+    title.textContent = a.title;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = a.source === 'modelled' ? 'modelled (Aero scout)' : a.source === 'backtest' ? 'backtest' : 'quoted lead';
+    text.append(title, meta);
+    row.append(bar, text, document.createElement('div'));
+    return row;
+  }));
+}
+
+async function refreshOverview() {
+  const res = await send({ type: 'overview' });
+  if (!res?.ok) return;
+  paintHoldings(res.scan?.holdings);
+  paintAlerts(res.scan);
+  // A scan older than an hour is refreshed in the background; the popup has
+  // already painted the stored one.
+  if (!res.scan || Date.now() - res.scan.scannedAtMs > 60 * 60_000) scan();
+}
+
+async function scan() {
+  $('scanNow').disabled = true;
+  $('scanAge').textContent = 'scanning…';
+  try {
+    const res = await send({ type: 'scanAlerts' });
+    if (res?.ok) {
+      paintHoldings(res.scan?.holdings);
+      paintAlerts(res.scan);
+    } else {
+      $('scanAge').textContent = `scan failed: ${res?.error ?? 'no answer'}`;
+    }
+  } finally {
+    $('scanNow').disabled = false;
+  }
+}
+
+$('scanNow').addEventListener('click', scan);
+
 refresh().catch((err) => showError(String(err.message ?? err)));
+refreshOverview().catch(() => {});

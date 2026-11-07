@@ -7,52 +7,68 @@
   </head>
   <body class="popup">
     <header>
-      <strong>SolMarginTrader</strong>
-      <span id="version" class="muted" title="Extension version from manifest.json">v…</span>
-      <span id="mode" class="pill">…</span>
+      <div class="brand">
+        <img src="../../icons/icon-32.png" alt="" width="22" height="22" />
+        <strong>SolMarginTrader</strong>
+        <span id="version" class="muted" title="Extension version from manifest.json">v…</span>
+      </div>
+      <button id="scanNow" class="small" title="Re-read holdings, the Aero scout, Top 5 and pools">Scan</button>
     </header>
 
-    <div id="banner" class="banner hidden"></div>
-
-    <dl class="stats">
-      <dt>Price</dt>
-      <dd id="price">—</dd>
-      <dt>Net P&amp;L</dt>
-      <dd id="net">—</dd>
-      <dt>Realized</dt>
-      <dd id="realized">—</dd>
-      <dt>Unrealized</dt>
-      <dd id="unrealized">—</dd>
-      <dt>Fees</dt>
-      <dd id="fees">—</dd>
-      <dt>Round trips</dt>
-      <dd id="trips">—</dd>
-      <dt>Resting</dt>
-      <dd id="resting">—</dd>
-      <dt>Last tick</dt>
-      <dd id="lastTick">—</dd>
-    </dl>
-
-    <div class="row">
-      <button id="arm" class="primary">Arm</button>
-      <button id="disarm">Disarm</button>
-      <button id="tickNow">Tick now</button>
+    <div class="card">
+      <div class="muted">Total holdings</div>
+      <div class="total" id="total">—</div>
+      <div class="chains"><span id="baseTotal">Base —</span><span id="solTotal">Solana —</span><span id="scanAge"></span></div>
     </div>
 
-    <div id="confirmRow" class="row confirm hidden">
-      <label for="confirmText">Type <code>ARM</code> to trade live:</label>
-      <input id="confirmText" type="text" autocomplete="off" spellcheck="false" />
-      <button id="confirmArm" class="danger">Confirm</button>
-      <button id="cancelArm">Cancel</button>
+    <div class="card">
+      <div class="row" style="justify-content: space-between">
+        <strong>Alerts</strong>
+        <button id="openAlerts" class="link">All →</button>
+      </div>
+      <div id="alerts" class="alerts"></div>
     </div>
 
+    <div class="tiles">
+      <button data-view="holdings"><span>◎</span>Holdings</button>
+      <button data-view="pnl"><span>±</span>P&amp;L</button>
+      <button data-view="discover"><span>⌕</span>Pools</button>
+      <button data-view="strategies"><span>▤</span>Backtest</button>
+      <button data-view="swap"><span>⇄</span>Swap</button>
+      <button data-view="settings"><span>⚙</span>Settings</button>
+    </div>
+
+    <details class="card" id="gridDetails">
+      <summary>Grid <span class="chip plain">experimental</span> <span id="mode" class="pill" title="Grid mode">…</span></summary>
+      <div id="banner" class="banner hidden" style="margin-top: 8px"></div>
+      <dl class="stats">
+        <dt>Price</dt><dd id="price">—</dd>
+        <dt>Net P&amp;L</dt><dd id="net">—</dd>
+        <dt>Realized</dt><dd id="realized">—</dd>
+        <dt>Unrealized</dt><dd id="unrealized">—</dd>
+        <dt>Fees</dt><dd id="fees">—</dd>
+        <dt>Round trips</dt><dd id="trips">—</dd>
+        <dt>Resting</dt><dd id="resting">—</dd>
+        <dt>Last tick</dt><dd id="lastTick">—</dd>
+      </dl>
+      <div class="row">
+        <button id="arm" class="primary">Arm</button>
+        <button id="disarm">Disarm</button>
+        <button id="tickNow">Tick now</button>
+        <button id="openGrid" class="link">Grid tab →</button>
+      </div>
+      <div id="confirmRow" class="row confirm hidden">
+        <label for="confirmText">Type <code>ARM</code> to trade live:</label>
+        <input id="confirmText" type="text" autocomplete="off" spellcheck="false" />
+        <button id="confirmArm" class="danger">Confirm</button>
+        <button id="cancelArm">Cancel</button>
+      </div>
+    </details>
+
     <div class="row">
-      <button id="kill" class="danger">KILL SWITCH</button>
+      <button id="kill" class="danger" title="Latching hard stop for the grid: disarms and blocks every order">KILL SWITCH</button>
       <button id="clearKill" class="hidden">Clear kill</button>
-    </div>
-
-    <div class="row">
-      <button id="openDashboard" class="link">Dashboard &amp; settings →</button>
+      <button id="openDashboard" class="link">Dashboard →</button>
       <button id="openSoltui" class="link">SolTUI console →</button>
     </div>
 

@@ -575,17 +575,71 @@
       "lines": 72
     },
     {
+      "path": "extension/src/core/alerts.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Pure alert rules: only fresh, gated scout figures may say \"act\", backtest says \"review\", quoted APY is only a lead"
+    },
+    {
+      "path": "extension/src/market/holdings.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Read-only Base and Solana balances in USD; partial failures named, never zeroed"
+    },
+    {
+      "path": "extension/src/market/quote.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range"
+    },
+    {
+      "path": "extension/src/market/pools.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "DefiLlama yields, ranked by 30-day mean; every APY labelled quoted"
+    },
+    {
+      "path": "extension/src/market/net.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Read-only fetch and JSON-RPC; refuses any non-read method"
+    },
+    {
       "path": "extension/src/ui/dashboard.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Dashboard view",
+      "summary": "Dashboard shell and hash router; Overview first, Grid last",
       "lines": 389
+    },
+    {
+      "path": "extension/src/ui/view-overview.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Overview and Alerts views"
+    },
+    {
+      "path": "extension/src/ui/view-markets.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Holdings, Profit & loss and Discover views"
+    },
+    {
+      "path": "extension/src/ui/view-trade.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Backtest & strategies and Swap views"
+    },
+    {
+      "path": "extension/src/ui/view-grid.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "The experimental grid's forms, charts and journal"
     },
     {
       "path": "extension/src/ui/popup.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Popup view",
+      "summary": "Popup: holdings, alerts, shortcuts; grid controls collapsed",
       "lines": 130
     },
     {

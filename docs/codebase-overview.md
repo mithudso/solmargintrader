@@ -135,8 +135,17 @@ command registry. Zero runtime dependencies by design.
 | `extension/src/storage/store.js` | Storage interface |
 | `extension/src/storage/fileStore.js` | Mode-0600 file store for secret material |
 | `extension/src/storage/memoryStore.js` | In-memory store for tests |
-| `extension/src/ui/dashboard.js` | Dashboard view |
-| `extension/src/ui/popup.js` | Popup view |
+| `extension/src/core/alerts.js` | Pure alert rules: only fresh, gated scout figures may say "act", backtest says "review", quoted APY is only a lead |
+| `extension/src/market/holdings.js` | Read-only Base and Solana balances in USD; partial failures named, never zeroed |
+| `extension/src/market/quote.js` | Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range |
+| `extension/src/market/pools.js` | DefiLlama yields, ranked by 30-day mean; every APY labelled quoted |
+| `extension/src/market/net.js` | Read-only fetch and JSON-RPC; refuses any non-read method |
+| `extension/src/ui/dashboard.js` | Dashboard shell and hash router; Overview first, Grid last |
+| `extension/src/ui/view-overview.js` | Overview and Alerts views |
+| `extension/src/ui/view-markets.js` | Holdings, Profit & loss and Discover views |
+| `extension/src/ui/view-trade.js` | Backtest & strategies and Swap views |
+| `extension/src/ui/view-grid.js` | The experimental grid's forms, charts and journal |
+| `extension/src/ui/popup.js` | Popup: holdings, alerts, shortcuts; grid controls collapsed |
 | `extension/tools/cli.js` | CLI surface over the registry |
 | `extension/tools/api-server.js` | Local HTTP surface; reads `SMT_API_PORT`, `SMT_API_TOKEN`, `SMT_PASSPHRASE` |
 | `extension/tools/dryrun.js` | The headless integration gate — a round trip must close positive |

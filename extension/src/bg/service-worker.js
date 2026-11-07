@@ -31,12 +31,22 @@ const ALARM = 'solmargintrader-tick';
 // Asks the soltui host once a minute whether the code on disk changed.
 const BUILD_ALARM = 'solmargintrader-soltui-build';
 
+// Re-reads holdings, the Aero scout, Top 5 and pool leads, and notifies on a
+// better pool or strategy (src/core/alerts.js). Separate from the grid tick: it
+// places nothing and runs whether or not the grid is armed.
+const ALERT_ALARM = 'solmargintrader-alerts';
+
 // Chrome clamps alarm periods; 30s is the floor on current versions. The engine
 // records the ACTUAL wake delta so a clamp shows up in the UI instead of
 // silently changing strategy behaviour.
 const MIN_PERIOD_MINUTES = 0.5;
 
 const configStore = new ConfigStore();
+
+// One wrapper for the worker's lifetime: a bare `fetch` called off its global
+// throws "Illegal invocation", and a fresh closure per message would defeat the
+// pool cache, which keys on this function (src/market/pools.js).
+const platformFetch = (...a) => fetch(...a);
 const budget = new RequestBudget({ maxPerWindow: 30, windowMs: 60_000 });
 const nativeTransport = createNativeTransport();
 
@@ -53,6 +63,7 @@ async function chromeDeps({ passphrase, openStore = () => Store.open(), soltui =
     configStore,
     budget,
     soltui,
+    fetch: platformFetch,
     async buildVenue() {
       const config = await configStore.getConfig();
       const secrets = await configStore.get('secrets', {});
@@ -90,11 +101,26 @@ async function runTick(reason) {
   return result;
 }
 
+/** Alerts not yet acknowledged that are worth a look (modelled or backtest, not quoted leads). */
+async function openAlertCount() {
+  const [scan, acks] = await Promise.all([configStore.get('scan', null), configStore.get('alertAcks', [])]);
+  const acked = new Set(Array.isArray(acks) ? acks : []);
+  return (scan?.alerts ?? []).filter((a) => !acked.has(a.id) && a.severity !== 'info').length;
+}
+
 async function paintBadge(result) {
   if (result.errors?.length) return setBadge('!', '#b91c1c');
+  // Called after lifecycle commands and scans with no tick in hand: an armed
+  // grid's badge keeps showing the last tick's P&L, not a placeholder.
+  if (result.pnl === undefined) result = { ...result, pnl: (await configStore.get('lastTick', null))?.pnl };
   const runtime = await configStore.getRuntime();
   if (runtime.killSwitch) return setBadge('OFF', '#b91c1c');
-  if (!runtime.armed) return setBadge('—', '#6b7280');
+  if (!runtime.armed) {
+    // The grid is not the point of the extension any more; with it idle, the
+    // badge shows what needs the owner's attention instead.
+    const open = await openAlertCount().catch(() => 0);
+    return open ? setBadge(String(open), '#b45309') : setBadge('', '#6b7280');
+  }
   const net = result.pnl?.totalNetUsd;
   if (net == null) return setBadge('•', '#2563eb');
   return setBadge(net >= 0 ? `+${net.toFixed(0)}` : net.toFixed(0), net >= 0 ? '#15803d' : '#b91c1c');
@@ -115,6 +141,44 @@ async function rescheduleAlarm() {
   await chrome.alarms.clear(ALARM);
   await chrome.alarms.create(ALARM, { periodInMinutes });
   return periodInMinutes;
+}
+
+/** The alert scan follows prefs: its own interval, and no alarm at all when disabled. */
+async function scheduleAlertAlarm({ soon = false } = {}) {
+  const prefs = { alertsEnabled: true, alertIntervalMinutes: 60, ...(await configStore.get('prefs', {})) };
+  await chrome.alarms.clear(ALERT_ALARM);
+  if (prefs.alertsEnabled !== true) return null;
+  const periodInMinutes = Math.min(1440, Math.max(15, Number(prefs.alertIntervalMinutes) || 60));
+  await chrome.alarms.create(ALERT_ALARM, { periodInMinutes, delayInMinutes: soon ? 1 : periodInMinutes });
+  return periodInMinutes;
+}
+
+/**
+ * One alert scan. Notifies only for alerts that are new and unacknowledged, and
+ * only for modelled or backtest alerts unless the owner asked for quoted leads.
+ * The message is the alert's own title: it holds no address or balance detail
+ * beyond what the dashboard shows.
+ */
+export async function runAlertScan({ notify = (alert) => showNotification(alert) } = {}) {
+  const deps = await chromeDeps();
+  const out = await runCommand({ name: 'scanAlerts', args: {}, deps });
+  for (const alert of out.notify ?? []) {
+    try { await notify(alert); } catch (err) { console.warn('[smt] notification failed', String(err?.message ?? err)); }
+  }
+  await paintBadge({ errors: [] });
+  return out;
+}
+
+async function showNotification(alert) {
+  if (!chrome.notifications?.create) return;
+  await chrome.notifications.create(`smt-alert:${alert.id}`.slice(0, 500), {
+    type: 'basic',
+    iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
+    title: alert.severity === 'action' ? 'Better pool found' : alert.kind === 'strategy' ? 'Strategy alert' : 'Pool lead',
+    message: String(alert.title).slice(0, 250),
+    contextMessage: alert.source === 'modelled' ? 'Modelled by the Aero scout' : alert.source === 'backtest' ? 'Backtest evidence' : 'Quoted by DefiLlama',
+    priority: alert.severity === 'action' ? 2 : 0,
+  });
 }
 
 /** Creating an alarm with an existing name replaces it, so this is idempotent. */
@@ -184,6 +248,7 @@ export async function handleInstalled(details = {}, { store } = {}) {
   await configStore.set('limits', { ...DEFAULT_LIMITS, ...(await configStore.get('limits', {})) });
   await rescheduleAlarm();
   await scheduleBuildAlarm();
+  await scheduleAlertAlarm({ soon: true });
 
   const runtime = await configStore.getRuntime();
   const config = await configStore.getConfig();
@@ -212,11 +277,23 @@ chrome.runtime.onInstalled.addListener((details) => {
 chrome.runtime.onStartup.addListener(() => {
   rescheduleAlarm().catch((err) => console.error('[smt] reschedule threw', err));
   scheduleBuildAlarm().catch((err) => console.error('[smt] build alarm threw', err));
+  scheduleAlertAlarm({ soon: true }).catch((err) => console.error('[smt] alert alarm threw', err));
+});
+
+// A notification opens the dashboard on the Alerts tab.
+chrome.notifications?.onClicked?.addListener((id) => {
+  if (!String(id).startsWith('smt-alert:')) return;
+  chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/dashboard.html#alerts') }).catch(() => {});
+  chrome.notifications.clear(id).catch?.(() => {});
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === BUILD_ALARM) {
     runBuildCheck().catch((err) => console.error('[smt] build check threw', String(err?.message ?? err)));
+    return;
+  }
+  if (alarm.name === ALERT_ALARM) {
+    runAlertScan().catch((err) => console.error('[smt] alert scan threw', String(err?.message ?? err)));
     return;
   }
   if (alarm.name !== ALARM) return;
@@ -270,6 +347,15 @@ export async function handleMessage(msg, { openStore, soltui } = {}) {
     if (name === 'setConfig') await rescheduleAlarm();
     if (name === 'arm') await rescheduleAlarm();
     if (name === 'kill' || name === 'disarm') await paintBadge({ errors: [] });
+    if (name === 'setPrefs') await scheduleAlertAlarm();
+    if (name === 'scanAlerts') {
+      // A scan from the popup or dashboard stores its fresh alerts as seen, so
+      // the alarm scan would never notify them: deliver here as well.
+      for (const alert of result.notify ?? []) {
+        try { await showNotification(alert); } catch (err) { console.warn('[smt] notification failed', String(err?.message ?? err)); }
+      }
+    }
+    if (name === 'scanAlerts' || name === 'ackAlerts') await paintBadge({ errors: [] });
 
     // Spread for the UI's existing field access (res.config, res.runtime, ...)
     // and expose `result` for generic callers. A soltui envelope has its own

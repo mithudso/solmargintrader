@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 31
-Delta: v30 to v31; 1m history for all of the top 50 coins.
+Version: 32
+Delta: v31 to v32; complete redesign of the Chrome extension (holdings, P&L, pool discovery, backtests, swaps, alerts).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -210,3 +210,11 @@ Can you download as detailed as possible numbers for as far back as you can go? 
 ```text
 Download 1 min data for all 50 of the top 50 coins
 ```
+
+## v32 - 2026-11-07 (extension redesign)
+
+```text
+Do a complete redesign of the chrome extension in this repo. THe grid strategy doesn't work as of now so deprioritize that as the first screen. The things I want access to the most are holdings, profit and loss, new lease discovery, easy back testing and strategy changes, and coin exchanges, and alert me to more profitable strategies or pools. Use the coinbase and base skills and llms files to learn how to access and read the base network
+```
+
+Target: `extension/` (UI, registry commands, service worker) plus one read-only soltui command; Stele TASK-836. "New lease discovery" read as new liquidity-pool (LP) discovery.

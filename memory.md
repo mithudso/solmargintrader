@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 40
-Delta: v39 to v40; 1m history for the top 50 non-pegged coins (36 Coinbase, 14 other venues); one trainer process for all coins.
+Version: 41
+Delta: v40 to v41; extension redesign (TASK-836).
 
 ## v1 - 2026-11-06
 
@@ -410,3 +410,14 @@ Completed: research/results/top50-nonpegged-2026-11-07.json (CoinGecko ranking; 
 Verification: test_fetch_minutes_alt, test_full_suite, test_compound pass; all four venues parsed live with 0 rejected rows. Downloads running in the background from the main checkout's data/.
 
 Remaining: finish the downloads; deliver research/results/minute_coverage.json; run Backtest all coins on the full history and report per-coin results with data-quality caveats.
+
+## v41 - 2026-11-07 (extension redesign, TASK-836)
+
+Target: redesign `extension/` so holdings, P&L and alerts come first and the grid moves to its own last tab.
+Worktree: /Users/mitch/dev/solmargintrader-wt-extui. Branch: feat/extension-redesign from origin/master 2bb24f6.
+Decisions: swaps are quote-only with hand-off to the venue to sign (KNOW-837); pool alerts use measured scout APR, quoted DefiLlama APY is a labelled lead only (KNOW-838).
+Data sources: Base JSON-RPC (mainnet.base.org, base-rpc.publicnode.com; chain 8453; `latest` tag since Denim), Solana JSON-RPC, DefiLlama coins + yields, Jupiter lite-api price and quote, soltui bridge for pnl.*, portfolio.*, liquidity.*, strategies/backtest/roster/top5.
+Completed: tabbed dashboard (Overview first, Grid last) and new popup; registry commands holdings, pools, swapTokens, swapQuote, getPrefs, setPrefs, overview, scanAlerts, ackAlerts; src/market (read-only reads, Slipstream CL quote with range refusal, Jupiter Metis quote); src/core/alerts.js; alert alarm + notifications + badge; soltui liquidity.data; attribution names Metis (quotes) and Ultra (holdings); manifest 0.3.0 with notifications and read-only market hosts. Independent review fixed: scout gate (fresh, medium/high, unflagged, gauged, break-even), modelled label, scan/ack serialisation, lead baseline, hex validation, null APY, pool cache, manual-scan notifications, badge P&L, slippage refusal, stale quote panel, Solana mint validation.
+Verification: npm test 351 pass; dry run net +$0.3492; npm run e2e 21/21; verify-endpoints pass; check_docs agree; soltui 767 run with 1 pre-existing Textual timing flake (#compound-unattended NoMatches in test_kill_and_resume_buttons_write_only_the_kill_file), module re-run 50/50.
+Lessons: public Solana RPC 403s extension origins (KNOW for Jupiter holdings path).
+Remaining: commit, PR, CI, merge.

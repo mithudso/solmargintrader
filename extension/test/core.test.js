@@ -1304,15 +1304,29 @@ test('every Jupiter API the client calls is named in the attribution', () => {
   }
 });
 
-test('the label does not claim a swap router this extension never uses', () => {
-  // Clause 2.3 is written around "Jupiter Ultra" and "Metis". Claiming either
-  // would be the exact mischaracterisation it prohibits, since this client
-  // routes no swaps at all.
-  assert.equal(ROUTING_API, null);
+test('the label names Metis and Ultra for exactly what the extension uses them for', () => {
+  // Clause 2.3 is written around "Jupiter Ultra" and "Metis". Since 0.3.0 the
+  // swap tab shows Metis quotes and the holdings read uses Ultra's holdings
+  // endpoint; neither routes a swap from here. Saying less, or more, would be
+  // the mischaracterisation the clause prohibits.
+  assert.equal(ROUTING_API, 'Metis');
   const line = attributionLine();
-  assert.match(line, /no swap router/);
+  assert.match(line, /Metis for swap quotes only/);
+  assert.match(line, /signed on jup\.ag/);
+  assert.match(line, /Ultra for holdings reads/);
   assert.match(line, /Trigger V2/);
   assert.match(line, /Price v3/);
+  const declared = SURFACES.flatMap((s) => s.bases);
+  assert.ok(declared.includes('https://lite-api.jup.ag/swap/v1'), 'Metis quote base must be declared');
+  assert.ok(declared.includes('https://lite-api.jup.ag/ultra/v1/holdings'), 'Ultra holdings base must be declared');
+});
+
+test('every Jupiter URL the market reads call sits under a declared attribution base', async () => {
+  const { ENDPOINTS } = await import('../src/market/tokens.js');
+  const declared = SURFACES.flatMap((s) => s.bases);
+  for (const url of Object.values(ENDPOINTS).filter((u) => u.includes('jup.ag'))) {
+    assert.ok(declared.some((base) => url.startsWith(base)), `${url} is called but not named in the attribution`);
+  }
 });
 
 test('the attribution detail lists a base URL for every surface', () => {
