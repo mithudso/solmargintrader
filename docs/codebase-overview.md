@@ -62,6 +62,8 @@ root, so an abbreviated one fails the build.
 | `backtester/core/report.py` | Run reports, walk-forward splits and manifest-last artifact hashes |
 | `backtester/core/plotting.py` | Chart output |
 | `backtester/core/strategy_cards.py` | Parses the cards and is checked against the registry both ways |
+| `backtester/core/scorecard.py` | Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics |
+| `backtester/core/compound.py` | Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments |
 
 ### `backtester/core/strategies/` — the registry
 
@@ -91,6 +93,7 @@ The danger here is overstating a result, so the honesty machinery is the point.
 | `research/cross_asset_cpcv.py` | Whether a result on one coin transfers to another |
 | `research/turnover_table.py` | One turnover pull shared by all ten coin spokes |
 | `research/verify_numbers.py` | Re-derives every figure quoted in the research docs; exit 0 means they all check out |
+| `research/full_suite.py` | One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset |
 | `research/geometry.py` | Grid geometry helpers |
 | `research/perturb.py` | Parameter perturbation for robustness |
 | `research/STRATEGIES.md` | The strategy survey |
@@ -161,6 +164,7 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/runner.py` | The loop that refreshes state |
 | `soltui/bgcontrol.py` | Explicit worker/fetch processes, lock handoff and nonce-bound socket Stop |
 | `soltui/bgworker.py` | Detached offline sweep worker and per-process array cache |
+| `soltui/compound.py` | Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI `python3 -m soltui.compound` |
 | `soltui/liquidity.py` | Reads daemon state; creates/removes only the KILL flag |
 | `soltui/serve.py` | Optional loopback browser console |
 | `soltui/bin/soltui` | Shell launcher with interpreter override |
@@ -274,6 +278,7 @@ place of them. In live mode it signs real transactions. Full detail: `liquidity/
 | `docs/code-deep-optimizer-2026-11-06.md` | Bounded code audit, regressions, review dissent and verification limits |
 | `docs/code-optimizer-scope-2026-11-06.json` | Primary/dependency source scope and every remaining source path |
 | `docs/jupiter-trigger-contract.md` | Public API contract fixtures and blocked live-signing boundary |
+| `docs/COMPOUND-5M.md` | Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings |
 
 ### Not source
 

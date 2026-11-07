@@ -36,6 +36,11 @@ HEAVY = {
     "queue.fetch": {"fetching": [], "log": None},
     "analyze.run": {"headline": "stub", "truncated": False, "decisions": [], "actions": {}},
     "docs.write": {"path": "x", "bytes": 1, "file": "x"},
+    # Compound: live reads hit public market-data endpoints; backtests read the real 5m cache.
+    "compound.signal": {"call": "FLAT", "composite": None, "components": []},
+    "compound.forward_tick": {"asset": "SOL", "recorded": False, "call": "FLAT", "resolved": 0},
+    "compound.backtest": {"run_id": "stub", "configurations": 0, "assets": [], "skipped": {},
+                          "errors": [], "rows": []},
     # The P&L commands run the roster's backtests, which need a cached price series.
     "portfolio.scan": {"label": "wallet (live)", "chains": {}, "total_usd": 0.0, "skipped": [],
                        "partial": False, "counts": {}},

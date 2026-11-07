@@ -47,7 +47,10 @@ from textual.widgets import (
 
 from .help import HEADER_GLOSSARY, column_help, control_help, row_help, TAB_HELP
 from .help_screen import HelpScreen
+from backtester.core import scorecard as sc
+
 from . import bgcontrol
+from . import compound as compound_mod
 from . import cumulative as cumulative_mod
 from . import bgqueue
 from . import docs_browser
@@ -107,6 +110,15 @@ def sort_key(value: Any) -> tuple[int, float, str]:
         return (1, 0.0, text.casefold())
 
 
+def _pct(value: Any) -> str:
+    """0.5321 -> '53.2%'; None -> '-'. Shared by the Compound tables."""
+    return "-" if value is None else f"{100.0 * float(value):.1f}%"
+
+
+def _num(value: Any) -> str:
+    return "-" if value is None else f"{float(value):+.3g}"
+
+
 # Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.
 DOCS_TABLE_CAP = 1000
 
@@ -151,6 +163,14 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#wallet-scan": "portfolio.scan",
     "#docs-search-run": "docs.search",
     "#docs-search-free": "docs.search_unload",
+    "#compound-toggle": "compound.save",
+    "#compound-apply": "compound.save",
+    "#compound-reset": "compound.reset",
+    "#compound-signal": "compound.signal",
+    "#compound-backtest": "compound.backtest",
+    "#compound-forward": "compound.forward_tick",
+    "#compound-auto": "compound.forward_tick",
+    "#compound-refresh": "compound.forward_status",
 }
 
 class GlossaryTable(DataTable):
@@ -354,7 +374,7 @@ class VimTextArea(TextArea):
 
 
 class SolTuiApp(App):
-    """The console: fifteen tabs over the tested modules."""
+    """The console: sixteen tabs over the tested modules."""
 
     TITLE = "soltui — SOL strategy console"
     SUB_TITLE = "dry-run only · no live order path"
@@ -384,6 +404,11 @@ class SolTuiApp(App):
     #editor-panel TextArea { height: 1fr; }
     Tooltip { max-width: 76; height: auto; max-height: 18; }
     #help-hint { height: 1; color: $text-muted; padding: 0 1; }
+    #compound-table { height: 22; }
+    #compound-results { height: 14; }
+    #compound-forward { height: 12; }
+    #compound-call { padding: 0 1; border: round $accent; }
+    #compound-detail { color: $text-muted; padding: 0 1; }
     """
     BINDINGS = [
         Binding("f1", "show_help", "Help / glossary", priority=True),
@@ -521,6 +546,8 @@ class SolTuiApp(App):
                 yield from self._strategies_pane()
             with TabPane("Signals", id="tab-signals"):
                 yield from self._signals_pane()
+            with TabPane("Compound 5m", id="tab-compound"):
+                yield from self._compound_pane()
             with TabPane("Backtest", id="tab-backtest"):
                 yield from self._backtest_pane()
             with TabPane("Top 5", id="tab-top5"):
@@ -684,6 +711,47 @@ class SolTuiApp(App):
             yield Static("\nFamily behaviour — when each kind fails:", classes="hint")
             yield GlossaryTable(id="families-table")
 
+    def _compound_pane(self) -> ComposeResult:
+        """Compound five-minute call: toggle and tune each metric, backtest and forward test them.
+
+        Every action is a `compound.*` registry command; this pane only renders.
+        """
+        with VerticalScroll(id="compound-scroll"):
+            yield Static(
+                "Each metric scores the next 5m bar from -1 (down) to +1 (up). Families vote once, "
+                "the regime reweights trend vs reversion styles, and any enabled gate forces FLAT. "
+                "Select a row, then Toggle or edit its numbers. Nothing here places an order.",
+                classes="hint",
+            )
+            yield Static("Press Signal now for the live call.", id="compound-call")
+            yield GlossaryTable(id="compound-table")
+            yield Static("", id="compound-detail")
+            with Horizontal(classes="form-row"):
+                yield Label("Selected (k=v):")
+                yield Input(placeholder="weight=1.5 period=9 enabled=1", id="compound-edit")
+            with Horizontal(classes="form-row"):
+                yield Label("Aggregate (k=v):")
+                yield Input(placeholder="entry=0.25 exit=0.1 leverage=5 fee_bps=6", id="compound-agg")
+            with Horizontal(classes="form-row"):
+                yield Button("Toggle on/off", id="compound-toggle")
+                yield Button("Apply edits", variant="primary", id="compound-apply")
+                yield Button("Reset defaults", id="compound-reset")
+            with Horizontal(classes="form-row"):
+                yield Button("Signal now", variant="success", id="compound-signal")
+                yield Button("Backtest selected", variant="warning", id="compound-backtest")
+                yield Button("Forward tick", id="compound-forward")
+                yield Button("Auto-forward: off", id="compound-auto")
+                yield Button("Refresh results", id="compound-refresh")
+            yield Static("", id="compound-status")
+            yield Static(
+                "Backtest, latest run: the compound and each enabled metric alone. OOS = the last 30% "
+                "of bars; hit = next-bar direction; return = engine P&L after fees at the set leverage.",
+                classes="hint",
+            )
+            yield GlossaryTable(id="compound-results")
+            yield Static("", id="compound-fwd-summary")
+            yield GlossaryTable(id="compound-forward")
+
     def _backtest_pane(self) -> ComposeResult:
         """Run a CPCV sweep over the roster and show the distribution."""
         with Vertical():
@@ -792,6 +860,7 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self._refresh_liquidity(force=True)
+        self._compound_setup()
         self._install_help()
 
     def _install_help(self) -> None:
@@ -1162,6 +1231,253 @@ class SolTuiApp(App):
     def action_cancel(self) -> None:
         """Keyboard binding for cancelling."""
         self._call("backtest.cancel")
+
+    # -- Compound 5m -----------------------------------------------------------------------
+
+    _COMPOUND_IDS = tuple(c.id for c in sc.COMPONENTS)
+
+    def _compound_setup(self) -> None:
+        self._compound_cfg: dict[str, Any] = sc.default_config()
+        self._compound_live: dict[str, str] = {}
+        self._compound_bt: dict[str, str] = {}
+        self._compound_fwd: dict[str, str] = {}
+        self._compound_auto = False
+        self._compound_last_bar = 0
+        table = self.query_one("#compound-table", GlossaryTable)
+        table.cursor_type = "row"
+        for label in ("on", "component", "family", "style", "weight", "parameters", "live score",
+                      "bt oos hit", "fwd hit (n)"):
+            table.add_column(label, key=label)
+        results = self.query_one("#compound-results", GlossaryTable)
+        results.cursor_type = "row"
+        results.add_columns("configuration", "oos calls", "oos hit", "z", "base up", "gross bps",
+                            "oracle net bps", "oos return", "oos sharpe", "trades", "max dd", "fees %",
+                            "rankable")
+        fwd = self.query_one("#compound-forward", GlossaryTable)
+        fwd.cursor_type = "row"
+        fwd.add_columns("time", "call", "composite", "regime", "price", "next 5m bps", "hit", "blocked by")
+        env = self._call("compound.config", quiet=True)
+        if env["ok"]:
+            self._compound_cfg = env["result"]["config"]
+        else:
+            self.query_one("#compound-status", Static).update(f"[red]{escape(self._msg(env))}[/]")
+        self._compound_render_table()
+        self._compound_load_results()
+        self.set_interval(20, self._compound_auto_tick)
+
+    def _compound_selected(self) -> str:
+        table = self.query_one("#compound-table", GlossaryTable)
+        row = table.cursor_row if table.row_count else 0
+        return self._COMPOUND_IDS[max(0, min(row, len(self._COMPOUND_IDS) - 1))]
+
+    def _compound_render_table(self) -> None:
+        table = self.query_one("#compound-table", GlossaryTable)
+        keep = table.cursor_row
+        table.clear()
+        for comp in sc.COMPONENTS:
+            entry = self._compound_cfg["components"][comp.id]
+            params = " ".join(f"{k}={v:g}" for k, v in entry["params"].items())
+            name = comp.id + (" (live only)" if comp.forward_only else "")
+            table.add_row("on" if entry["enabled"] else "off", name, comp.family, comp.style,
+                          f"{entry['weight']:g}", params, self._compound_live.get(comp.id, ""),
+                          self._compound_bt.get(comp.id, ""), self._compound_fwd.get(comp.id, ""),
+                          key=comp.id)
+        if table.row_count:
+            table.move_cursor(row=min(max(keep, 0), table.row_count - 1))
+        agg = self._compound_cfg["aggregate"]
+        ex = self._compound_cfg["execution"]
+        self.query_one("#compound-agg", Input).placeholder = (
+            f"entry={agg['entry']:g} exit={agg['exit']:g} min_coverage={agg['min_coverage']:g} "
+            f"dedupe_families={agg['dedupe_families']} regime_weighting={agg['regime_weighting']} "
+            f"allow_short={agg['allow_short']} leverage={ex['leverage']:g} fee_bps={ex['fee_bps']:g} "
+            f"slippage_bps={ex['slippage_bps']:g}")
+
+    @on(DataTable.RowHighlighted, "#compound-table")
+    def _compound_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        cid = str(event.row_key.value) if event.row_key is not None else self._compound_selected()
+        comp = sc.BY_ID.get(cid)
+        if comp is None:
+            return
+        entry = self._compound_cfg["components"][cid]
+        specs = "; ".join(f"{p.name} {p.lo:g}..{p.hi:g}" + (f" ({p.describe})" if p.describe else "")
+                          for p in comp.params)
+        self.query_one("#compound-detail", Static).update(Text(
+            f"{comp.name} [{comp.kind}, {comp.family}/{comp.style}] source: {comp.source}\n"
+            f"formula: {comp.formula}\nworks: {comp.useful_when}\nfails: {comp.not_useful_when}\n"
+            f"ranges: {specs or 'none'}"))
+        values = " ".join([f"weight={entry['weight']:g}"]
+                          + [f"{k}={v:g}" for k, v in entry["params"].items()])
+        self.query_one("#compound-edit", Input).value = values
+
+    def _compound_save(self, patch: dict[str, Any], what: str) -> None:
+        env = self._call("compound.save", {"patch": patch})
+        status = self.query_one("#compound-status", Static)
+        if not env["ok"]:
+            status.update(f"[red]{escape(self._msg(env))}[/]")
+            return
+        self._compound_cfg = env["result"]["config"]
+        self._compound_render_table()
+        status.update(f"saved: {escape(what)} (config {env['result']['config_hash']})")
+
+    @on(Button.Pressed, "#compound-toggle")
+    def _compound_toggle(self) -> None:
+        cid = self._compound_selected()
+        enabled = not self._compound_cfg["components"][cid]["enabled"]
+        self._compound_save({"components": {cid: {"enabled": enabled}}},
+                            f"{cid} {'on' if enabled else 'off'}")
+
+    @on(Button.Pressed, "#compound-apply")
+    def _compound_apply(self) -> None:
+        cid = self._compound_selected()
+        status = self.query_one("#compound-status", Static)
+        try:
+            patch: dict[str, Any] = {}
+            edit = self.query_one("#compound-edit", Input).value.strip()
+            if edit:
+                patch.update(compound_mod.component_patch(cid, compound_mod.parse_kv(edit)))
+            agg = self.query_one("#compound-agg", Input).value.strip()
+            if agg:
+                patch.update(compound_mod.aggregate_patch(compound_mod.parse_kv(agg)))
+        except compound_mod.CompoundError as exc:
+            status.update(f"[red]{escape(str(exc))}[/]")
+            return
+        if not patch:
+            status.update("nothing to apply: type name=value pairs first")
+            return
+        self._compound_save(patch, f"{cid} and aggregate settings" if agg else cid)
+        self.query_one("#compound-agg", Input).value = ""
+
+    @on(Button.Pressed, "#compound-reset")
+    def _compound_reset(self) -> None:
+        env = self._call("compound.reset")
+        if env["ok"]:
+            self._compound_cfg = env["result"]["config"]
+            self._compound_live.clear()
+            self._compound_render_table()
+            self.query_one("#compound-status", Static).update("every component back to its default")
+        else:
+            self.query_one("#compound-status", Static).update(f"[red]{escape(self._msg(env))}[/]")
+
+    @work(thread=True, group="compound", exclusive=True)
+    def _compound_job(self, name: str, params: dict[str, Any], label: str) -> None:
+        self.call_from_thread(self.query_one("#compound-status", Static).update, f"{label}…")
+        env = self._call(name, params)
+        self.call_from_thread(self._compound_after, name, env)
+
+    def _compound_after(self, name: str, env: dict[str, Any]) -> None:
+        status = self.query_one("#compound-status", Static)
+        if not env["ok"]:
+            status.update(f"[red]{escape(self._msg(env))}[/]")
+            return
+        r = env["result"]
+        if name == "compound.signal":
+            self._compound_render_signal(r)
+            status.update(f"live call scored from {r.get('bars_used', '?')} closed 5m bars")
+        elif name == "compound.backtest":
+            status.update(f"backtest {r['run_id']}: {r['configurations']} configurations on "
+                          f"{', '.join(r['assets']) or '-'}" + (f"; skipped {r['skipped']}" if r["skipped"] else ""))
+            self._compound_load_results()
+        elif name == "compound.forward_tick":
+            self._compound_last_bar = int(r.get("bar_ts") or 0)
+            status.update(f"forward: bar {r.get('bar_ts')} call {r['call']}"
+                          f"{' recorded' if r['recorded'] else ' (already recorded)'}, "
+                          f"{r['resolved']} earlier call(s) resolved")
+            self._compound_load_results()
+
+    def _compound_render_signal(self, r: dict[str, Any]) -> None:
+        when = time.strftime("%H:%M UTC", time.gmtime(r["decided_at"]))
+        blocked = ", ".join(r["blocked_by"]) or "none"
+        self.query_one("#compound-call", Static).update(Text(
+            f"{r['asset']} next 5m from {when}: {r['call']}   composite {r['composite']}   "
+            f"coverage {r['coverage']}   agreement {r['agreement']}\n"
+            f"regime {r['regime']} · trend stage {r['trend_stage']} · cycle phase {r['cycle_phase']} · "
+            f"round trip {r['round_trip_bps']} bps · gates blocking: {blocked}"))
+        self._compound_live = {}
+        for row in r["components"]:
+            if row["status"] == "scored":
+                self._compound_live[row["id"]] = f"{row['score']:+.2f}"
+            elif row["kind"] == "gate" and row["enabled"]:
+                self._compound_live[row["id"]] = "BLOCK" if row.get("blocked") else "pass"
+            elif row["enabled"]:
+                self._compound_live[row["id"]] = row["status"]
+        self._compound_render_table()
+
+    def _compound_load_results(self) -> None:
+        env = self._call("compound.results", {"asset": self.settings.asset}, quiet=True)
+        results = self.query_one("#compound-results", GlossaryTable)
+        results.clear()
+        self._compound_bt = {}
+        if env["ok"]:
+            for row in env["result"]["rows"]:
+                results.add_row(
+                    row["label"], str(row["oos_calls"]), _pct(row["oos_hit"]), _num(row["oos_z"]),
+                    _pct(row["oos_base_up"]), _num(row["oos_gross_bps"]), _num(row["oracle_net_bps"]),
+                    _pct(row["oos_return"]), _num(row["oos_sharpe"]), str(row["oos_trades"]),
+                    _pct(row["oos_max_dd"]), _num(row["oos_fees_pct"]), "yes" if row["ranked"] else "no")
+                if row["label"].startswith("only:"):
+                    self._compound_bt[row["label"][5:]] = _pct(row["oos_hit"])
+                elif row["label"] == "compound":
+                    self._compound_bt["_compound"] = _pct(row["oos_hit"])
+        fenv = self._call("compound.forward_status", {"asset": self.settings.asset}, quiet=True)
+        fwd = self.query_one("#compound-forward", GlossaryTable)
+        fwd.clear()
+        self._compound_fwd = {}
+        summary = self.query_one("#compound-fwd-summary", Static)
+        if fenv["ok"]:
+            f = fenv["result"]
+            for cid, tally in f["components"].items():
+                if tally["decided"]:
+                    self._compound_fwd[cid] = f"{_pct(tally['hit_rate'])} ({tally['decided']})"
+            c, u = f["compound"], f["compound_ungated"]
+            summary.update(Text(
+                f"Forward test {f['asset']}: {f['calls_recorded']} bars recorded, {f['resolved']} resolved, "
+                f"{f['pending']} pending. Compound: {c['decided']} calls, hit {_pct(c['hit_rate'])}, "
+                f"z {_num(c['z_vs_coinflip'])}, net/call {_num(c['net_bps_per_call_if_one_bar'])} bps. "
+                f"Without gates: {u['decided']} calls, hit {_pct(u['hit_rate'])}."))
+            for row in reversed(f["recent"]):
+                fwd.add_row(time.strftime("%m-%d %H:%M", time.gmtime(row["bar_ts"] + 300)), row["call"],
+                            _num(row["composite"]), str(row["regime"]), f"{row['price']:.4g}",
+                            _num(row["ret_bps"]), {True: "yes", False: "no"}.get(row["hit"], "-"),
+                            ", ".join(row.get("blocked_by") or []) or "-")
+        else:
+            summary.update(f"[red]{escape(self._msg(fenv))}[/]")
+        self._compound_render_table()
+
+    @on(Button.Pressed, "#compound-signal")
+    def _compound_signal(self) -> None:
+        self._compound_job("compound.signal", {"asset": self.settings.asset}, "scoring the latest closed bar")
+
+    @on(Button.Pressed, "#compound-backtest")
+    def _compound_backtest(self) -> None:
+        self._compound_job("compound.backtest", {"asset": self.settings.asset},
+                           "backtesting the compound and each enabled metric alone")
+
+    @on(Button.Pressed, "#compound-forward")
+    def _compound_forward(self) -> None:
+        self._compound_job("compound.forward_tick", {"asset": self.settings.asset}, "forward tick")
+
+    @on(Button.Pressed, "#compound-auto")
+    def _compound_auto_toggle(self) -> None:
+        self._compound_auto = not self._compound_auto
+        self.query_one("#compound-auto", Button).label = (
+            f"Auto-forward: {'on' if self._compound_auto else 'off'}")
+        if self._compound_auto:
+            self._compound_forward()
+
+    def _compound_auto_tick(self) -> None:
+        """Every 20 s: if a new 5m bar has closed (plus 5 s for the venue), take a forward tick."""
+        if not getattr(self, "_compound_auto", False):
+            return
+        now = time.time()
+        latest_closed = (int(now) // 300) * 300 - 300
+        if latest_closed > self._compound_last_bar and now % 300 >= 5:
+            self._compound_last_bar = latest_closed
+            self._compound_forward()
+
+    @on(Button.Pressed, "#compound-refresh")
+    def _compound_refresh(self) -> None:
+        self._compound_load_results()
+        self.query_one("#compound-status", Static).update("results and forward test reloaded")
 
     @on(Button.Pressed, "#btn-cancel")
     def _cancel_pressed(self) -> None:

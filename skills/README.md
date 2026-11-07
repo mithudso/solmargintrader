@@ -26,3 +26,9 @@ dependency itself.
 `trading-and-investing/` — the foundation-and-hub skill for markets and active trading, plus its
 `references/` spokes. Educational material only, **not financial advice**; every reference carries
 its own disclaimer and its own cited primary sources (SEC, FINRA, CFTC, OCC, Cboe, CME, IRS, BIS).
+
+`five-minute-signal/` — the procedure an agent follows to produce and explain the compound
+five-minute UP / DOWN / FLAT call (`soltui/compound.py`, `backtester/core/scorecard.py`) and to
+put its backtest and forward-test evidence beside it. Unlike `trading-and-investing/`, this skill
+was written here; the live copy is `~/.claude/skills/five-minute-signal/`. Re-sync after editing
+either: `rsync -a ~/.claude/skills/five-minute-signal/ skills/five-minute-signal/`.
