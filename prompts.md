@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 30
-Delta: v29 to v30; full 1m history, every coin in parallel with its own numbers (v29 is the triangular-arbitrage card).
+Version: 31
+Delta: v30 to v31; 1m history for all of the top 50 coins.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -203,4 +203,10 @@ Target: existing `backtester/strategy_cards/triangular_arbitrage.md`; Stele TASK
 
 ```text
 Can you download as detailed as possible numbers for as far back as you can go? We also need to test it on all of the coins, so make it do the back testing against all of the coins all at once in parallel, as well as the forward testing. Which means each of the coins will need its own set of numbers.
+```
+
+## v31 - 2026-11-07 (top 50 coins, 1m history)
+
+```text
+Download 1 min data for all 50 of the top 50 coins
 ```

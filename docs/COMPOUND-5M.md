@@ -99,11 +99,25 @@ in every row**: a better hit rate does not beat a 16 bps round trip on a 6–9 b
 
 ## Every coin, in parallel, each with its own numbers
 
-The compound runs on every Coinbase-listed universe coin: BTC, ETH, SOL, DOGE, ZEC, XRP, BNB, HYPE.
+The compound runs on every coin with 1-minute candles in the cache. The default universe is the
+top 50 coins by market cap with pegged tokens left out, frozen in
+`research/results/top50-nonpegged-2026-11-07.json` (CoinGecko ranking, Coinbase listing check).
 
-* **Data.** `research/full_suite.py` (or `python3 -m backtester.core.fetch_minutes --all --years 7`)
-  caches 1-minute candles back to each coin's earliest available minute. That is the finest
-  history Coinbase serves; trade-by-trade ticks exist but a single month took days to backfill.
+* **Data.** `research/full_suite.py` caches 1-minute candles back to each coin's earliest
+  available minute. That is the finest history the venues serve; trade-by-trade ticks exist but a
+  single month took days to backfill.
+  * 36 coins come from Coinbase against USD: `python3 -m backtester.core.fetch_minutes --assets BTC,ETH,... --years 7`.
+  * 14 coins Coinbase does not list come from the venue that does, against **USDT**:
+    `python3 -m backtester.core.fetch_minutes_alt --years 7`. OKX: TRX, LEO, OKB, CC, GRAM.
+    KuCoin: XMR, JST, MNT, HTX, RAIN. Bitget: BGB, M, BTW. WhiteBIT: WBT.
+    Each file gets a `<COIN>_1m.source.json` sidecar naming the venue and pair, and the backtest
+    label shows it, for example `TRX_1m.csv (1m->5m, okx TRX-USDT)`. A USDT price is not a USD
+    price: the two differ by USDT's own drift, small but not zero.
+  * KuCoin and WhiteBIT return rows as `[time, open, close, high, low, ...]`, not OHLC order. The
+    fetcher reorders them, and it stops and writes nothing when more than 1% of a page has a high
+    below its open or close, which is what a wrong column order produces.
+  * These 14 coins are **backtest only**. Live candles for forward training come from Coinbase,
+    so their unattended trainer does not start and the overview says so.
   The backtest builds 5m bars from those minutes, saves them once per coin as a compact cache,
   and parallel workers read that cache instead of the multi-million-row minute file.
 * **Data quality, per coin.** Coinbase's 1m endpoint drops minutes that *did* trade (84% of
@@ -127,10 +141,12 @@ The compound runs on every Coinbase-listed universe coin: BTC, ETH, SOL, DOGE, Z
   **Edits apply to** switches between all coins (the shared base) and this coin. Adopt tuned
   settings always saves to the coin.
 * **Backtest all coins** runs every coin at once in parallel processes, each with its own settings.
-* **Start unattended: all coins** starts one forward-training process per coin, staggered six
-  seconds apart. Closed candles are cached per coin, so after the first tick each coin costs
-  one request per bar: eight coins stay well inside the venue's rate limit. A rate-limit reply
-  (429) is retried with back-off.
+* **Start unattended: all coins** starts one forward-training process for every live coin. Each
+  bar it ticks the coins one after another, so 36 coins cost one background process, not 36.
+  Each coin keeps its own lock, log and stop file, so **Stop unattended** on one coin releases
+  it from the shared loop and the rest keep running. Closed candles are cached per coin, so after
+  the first tick each coin costs one request per bar. A rate-limit reply (429) is retried with
+  back-off.
 * **Every coin at a glance**: own settings, cached data, latest backtest verdict and hit rate,
   forward calls and hit rate, paper dollars, and whether its trainer is running.
 

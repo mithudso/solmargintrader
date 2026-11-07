@@ -354,13 +354,60 @@ class CandleCacheTests(TempConfig):
         self.assertEqual(compound._get_with_retry(flaky, "u", sleep=lambda s: None), [])
         self.assertEqual(len(calls), 2)
 
-    def test_all_coins_start_staggered_and_stop(self) -> None:
-        started = []
-        with mock.patch.object(compound, "start_unattended",
-                               lambda c, offset=0.0: started.append((c, offset)) or {"asset": c}):
-            out = compound.start_unattended_all(("BTC", "ETH", "SOL"))
-        self.assertEqual(out["started"], ["BTC", "ETH", "SOL"])
-        self.assertEqual([o for _, o in started], [0.0, 6.0, 12.0])
+    def test_all_coins_share_one_process_and_skip_backtest_only_coins(self) -> None:
+        spawned = []
+
+        class FakeProc:
+            pid = 4242
+
+            def poll(self):
+                return None
+
+        def fake_popen(cmd, **kw):
+            spawned.append(cmd)
+            return FakeProc()
+
+        running = {"ETH"}
+        with mock.patch("subprocess.Popen", fake_popen), \
+                mock.patch.object(compound, "unattended_status",
+                                  lambda a: {"running": a in running or bool(spawned), "pid": 4242}):
+            out = compound.start_unattended_many(["BTC", "ETH", "SOL", "TRX"])
+        self.assertEqual(len(spawned), 1)                       # one process for every coin
+        self.assertIn("--assets", spawned[0])
+        self.assertEqual(spawned[0][spawned[0].index("--assets") + 1], "BTC,SOL")
+        self.assertEqual(out["started"], ["BTC", "SOL"])
+        self.assertIn("backtest only", out["skipped"]["TRX"])
+        self.assertEqual(out["skipped"]["ETH"], "already running")
+
+    def test_one_coin_can_leave_a_shared_loop(self) -> None:
+        seen = []
+
+        def tick(asset, wallet_address=None):
+            seen.append(asset)
+            if seen.count("BTC") == 1 and asset == "BTC":
+                compound.unattended_paths("BTC")["stop"].write_text("stop")
+            if seen.count("SOL") == 3:
+                compound.unattended_paths("SOL")["stop"].write_text("stop")
+            return {"call": "FLAT"}
+
+        clock = [1_800_000_000.0]
+        with redirect_stdout(io.StringIO()):
+            compound.run_unattended(["BTC", "SOL"], sleep=lambda s: clock.__setitem__(0, clock[0] + s),
+                                    clock=lambda: clock[0], tick=tick)
+        self.assertEqual(seen.count("BTC"), 1)                  # BTC left after its stop file
+        self.assertEqual(seen.count("SOL"), 3)                  # SOL kept going until its own
+        btc_log = compound.unattended_paths("BTC")["log"].read_text()
+        self.assertIn("stopped after", btc_log)
+        self.assertFalse(compound.unattended_status("BTC")["running"])
+        self.assertFalse(compound.unattended_status("SOL")["running"])
+
+    def test_coin_list_and_live_capability(self) -> None:
+        with mock.patch.object(compound.cbt, "available_assets", lambda: ["BTC", "TRX", "LINK"]):
+            got = compound.coins()
+        self.assertEqual(got[: len(compound.COINS)], compound.COINS)
+        self.assertEqual(got[len(compound.COINS):], ("LINK", "TRX"))
+        self.assertTrue(compound.live_capable("LINK"))
+        self.assertFalse(compound.live_capable("TRX"))
 
     def test_overview_has_one_row_per_coin(self) -> None:
         rows = compound.overview(("SOL", "BTC"))

@@ -601,8 +601,21 @@ def finalise(asset: str) -> pd.DataFrame:
 
 
 def write_manifest(covs: list[Coverage], path: Path = MANIFEST) -> Path:
-    """Record per-asset coverage next to the results the backtest will write."""
+    """Record per-asset coverage next to the results the backtest will write.
+
+    Entries for assets not in this run are KEPT: a run over three coins must not erase the
+    record of the other thirty.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
+    fresh = {c.asset: c.as_dict() for c in covs}
+    kept: list[dict] = []
+    if path.exists():
+        try:
+            kept = [a for a in json.loads(path.read_text()).get("assets", [])
+                    if isinstance(a, dict) and a.get("asset") not in fresh]
+        except (OSError, ValueError):
+            kept = []
+    rows = kept + list(fresh.values())
     path.write_text(json.dumps({
         "generated": str(pd.Timestamp.now(tz="UTC")),
         "interval": "1m",
@@ -611,7 +624,7 @@ def write_manifest(covs: list[Coverage], path: Path = MANIFEST) -> Path:
             "span_days is calendar covered; completeness is how much of that calendar's "
             "minute grid is present. A bar count cannot tell short history from holes."
         ),
-        "assets": [c.as_dict() for c in sorted(covs, key=lambda c: -c.span_days)],
+        "assets": sorted(rows, key=lambda a: -float(a.get("span_days") or 0)),
     }, indent=2) + "\n")
     return path
 
@@ -664,6 +677,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--asset", action="append", default=[],
                     help="asset symbol; repeatable")
     ap.add_argument("--all", action="store_true", help=f"fetch {', '.join(MINUTE_ASSETS)}")
+    ap.add_argument("--assets", default="",
+                    help="comma list of symbols; any coin Coinbase lists against USD is accepted")
     ap.add_argument("--years", type=float, default=5.0)
     ap.add_argument("--workers", type=int, default=6,
                     help="concurrent requests (default 6); the shared rate limit still "
@@ -685,16 +700,26 @@ def main(argv: list[str] | None = None) -> int:
         # opposite of piloting. Zero fetches nothing and still rewrote the manifest.
         ap.error("--max-windows must be at least 1")
 
-    assets = [a.upper() for a in args.asset] or (list(MINUTE_ASSETS) if args.all else [])
+    assets = [a.upper() for a in args.asset]
+    assets += [a.strip().upper() for a in args.assets.split(",") if a.strip()]
+    if args.all:
+        assets += list(MINUTE_ASSETS)
+    assets = list(dict.fromkeys(assets))
     if not assets:
-        ap.error("pass --asset SYM (repeatable) or --all")
+        ap.error("pass --asset SYM (repeatable), --assets A,B,C or --all")
     unknown = [a for a in assets if a not in MINUTE_ASSETS]
-    if unknown:
-        ap.error(
-            f"{', '.join(unknown)} not among the Coinbase-listed universe "
-            f"({', '.join(MINUTE_ASSETS)}). TRX and RAIN are not listed on the venue at "
-            "all -- see backtester/core/universe.py."
-        )
+    if unknown and not args.coverage_only:
+        # Beyond the core universe, accept whatever the venue actually lists against USD,
+        # checked against its live product list rather than a hand-kept table.
+        from .universe import list_coinbase_products
+
+        listed = {p.split("-")[0] for p in list_coinbase_products() if p.endswith("-USD")}
+        missing = [a for a in unknown if a not in listed]
+        if missing:
+            ap.error(
+                f"{', '.join(missing)} not listed against USD on Coinbase, so there are no candles "
+                "to fetch (TRX and RAIN, for example, are absent entirely -- backtester/core/universe.py)."
+            )
 
     # One limiter across every asset: the venue limits per IP, not per asset.
     limiter = RateLimiter(RATE_LIMIT_PER_SECOND)

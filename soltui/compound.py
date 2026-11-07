@@ -124,6 +124,24 @@ def _asset(asset: str) -> str:
 COINS = ("BTC", "ETH", "SOL", "DOGE", "ZEC", "XRP", "BNB", "HYPE")
 
 
+def coins() -> tuple[str, ...]:
+    """Every coin the compound can run on: the core eight plus any coin with cached minute or 5m
+    history (all 50 of the top 50 once research/full_suite.py or the minute fetchers have run)."""
+    try:
+        cached = set(cbt.available_assets())
+    except Exception:  # noqa: BLE001 - an unreadable cache dir must not hide the core coins
+        cached = set()
+    return tuple(COINS) + tuple(sorted(cached - set(COINS)))
+
+
+def live_capable(asset: str) -> bool:
+    """Live calls and forward tests read Coinbase candles; coins from other venues are
+    backtest-only until those venues get live adapters."""
+    from backtester.core.fetch_minutes_alt import ASSET_VENUE
+
+    return _asset(asset) not in ASSET_VENUE
+
+
 def _read_raw() -> dict[str, Any]:
     path = config_path()
     if not path.exists():
@@ -953,7 +971,7 @@ def backtest_all(*, standalone: bool = True, perturb: bool = False, aggregate_gr
                  workers: int | None = None, progress: Callable[[str], None] | None = None) -> dict[str, Any]:
     """Every coin with cached data, in parallel processes, each with its own settings."""
     workers = workers or max(1, min(8, (os.cpu_count() or 2) // 2))
-    return sweep(list(COINS), standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid,
+    return sweep(list(coins()), standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid,
                  workers=workers, progress=progress)
 
 
@@ -1043,13 +1061,13 @@ def verdict_word(rows: Sequence[Mapping[str, Any]]) -> str:
     return "signal, costs eat it" if strong else "no edge"
 
 
-def overview(coins: Sequence[str] = COINS) -> list[dict[str, Any]]:
+def overview(coin_list: Sequence[str] | None = None) -> list[dict[str, Any]]:
     """One row per coin: its own settings, data, latest backtest verdict, forward test, trainer."""
     raw = _read_raw()
     overrides = raw.get("assets") or {}
     results = [r for r in read_results() if "error" not in r and "oos" in r]
     out = []
-    for c in coins:
+    for c in (coin_list if coin_list is not None else coins()):
         a = _asset(c)
         mine = [r for r in results if r.get("asset") == a]
         latest = [summary_row(r) for r in mine if r.get("run_id") == mine[-1]["run_id"]] if mine else []
@@ -1070,6 +1088,7 @@ def overview(coins: Sequence[str] = COINS) -> list[dict[str, Any]]:
             "backtest_bars": None if comp is None else comp.get("bars"),
             "fwd_calls": fwd["compound"]["decided"], "fwd_hit": fwd["compound"]["hit_rate"],
             "paper_usd": fwd["paper"]["net_usd"], "unattended": unattended_status(a)["running"],
+            "live": live_capable(a),
         })
     return out
 
@@ -1235,54 +1254,70 @@ def unattended_status(asset: str) -> dict[str, Any]:
 
 
 def start_unattended(asset: str, offset: float = 0.0) -> dict[str, Any]:
-    """Spawn `forward --loop --unattended` detached, at background priority."""
+    """Spawn the unattended loop for one coin, detached, at background priority."""
+    out = start_unattended_many([asset])
+    if not out["started"]:
+        raise CompoundError(next(iter(out["skipped"].values()), "not started"))
+    return {"started": True, "asset": _asset(asset), "pid": out["pid"], "log": out["log"]}
+
+
+def start_unattended_many(coin_list: Sequence[str]) -> dict[str, Any]:
+    """ONE detached process that forward-tests every listed coin once per bar.
+
+    One process for all coins rather than one each: thirty-six Python processes would hold
+    about 3 GB to do what one does sequentially in well under a minute per bar. Each coin keeps
+    its own lock, pid file, log and stop file, so status and Stop still work per coin.
+    """
     import subprocess
 
     from . import bgcontrol
 
-    a = _asset(asset)
-    paths = unattended_paths(a)
-    if unattended_status(a)["running"]:
-        raise CompoundError(f"unattended forward training for {a} is already running; stop it first")
-    paths["stop"].unlink(missing_ok=True)
-    cmd = [sys.executable, "-m", "soltui.compound", "forward", "--asset", a, "--loop", "--unattended",
-           "--offset", f"{offset:g}"]
+    todo, skipped = [], {}
+    for c in coin_list:
+        a = _asset(c)
+        if not live_capable(a):
+            skipped[a] = "backtest only: live candles come from Coinbase, which does not list it"
+        elif unattended_status(a)["running"]:
+            skipped[a] = "already running"
+        else:
+            todo.append(a)
+    if not todo:
+        return {"started": [], "skipped": skipped, "pid": None, "log": None}
+    for a in todo:
+        unattended_paths(a)["stop"].unlink(missing_ok=True)
+    log_path = home() / "unattended" / ("run.log" if len(todo) > 1 else f"{todo[0]}.log")
+    cmd = [sys.executable, "-m", "soltui.compound", "forward", "--assets", ",".join(todo), "--loop",
+           "--unattended"]
     launcher = bgcontrol.taskpolicy_path()
     if launcher:
         cmd = [launcher, "-b", *cmd]
     env = {**os.environ, "PYTHONPATH": str(REPO) + os.pathsep + os.environ.get("PYTHONPATH", ""),
            "SOLTUI_CONFIG_DIR": str(config_mod.CONFIG_DIR)}
-    paths["log"].parent.mkdir(parents=True, exist_ok=True)
-    with paths["log"].open("ab") as log:
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with log_path.open("ab") as log:
         proc = subprocess.Popen(cmd, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT,  # noqa: S603
                                 stdin=subprocess.DEVNULL, start_new_session=True)
-    for _ in range(40):  # up to 4 s for the child to take its lock
+    for _ in range(60):  # up to 6 s for the child to take its locks
         time.sleep(0.1)
         if proc.poll() is not None:
-            raise CompoundError(f"unattended run exited at once (code {proc.returncode}); see {paths['log']}")
-        if unattended_status(a)["running"]:
+            raise CompoundError(f"unattended run exited at once (code {proc.returncode}); see {log_path}")
+        if all(unattended_status(a)["running"] for a in todo):
             break
-    return {"started": True, "asset": a, "pid": proc.pid, "log": str(paths["log"])}
+    return {"started": todo, "skipped": skipped, "pid": proc.pid, "log": str(log_path)}
 
 
-def start_unattended_all(coins: Sequence[str] = COINS) -> dict[str, Any]:
-    """One unattended process per coin, each waking a few seconds after the previous one so the
-    coins do not all hit the venue in the same second."""
-    started, skipped = [], {}
-    for i, c in enumerate(coins):
-        try:
-            started.append(start_unattended(c, offset=6.0 * i))
-        except CompoundError as exc:
-            skipped[_asset(c)] = str(exc)
-    return {"started": [s["asset"] for s in started], "skipped": skipped}
+def start_unattended_all(coin_list: Sequence[str] | None = None) -> dict[str, Any]:
+    return start_unattended_many(list(coin_list if coin_list is not None else coins()))
 
 
-def stop_unattended_all(coins: Sequence[str] = COINS) -> dict[str, Any]:
-    return {"stopping": [c for c in coins if stop_unattended(c)["stopping"]]}
+def stop_unattended_all(coin_list: Sequence[str] | None = None) -> dict[str, Any]:
+    return {"stopping": [c for c in (coin_list if coin_list is not None else coins())
+                         if stop_unattended(c)["stopping"]]}
 
 
 def stop_unattended(asset: str) -> dict[str, Any]:
-    """Ask the running loop to stop: a stop file it checks every second, plus SIGTERM."""
+    """Ask the loop to drop this coin (a stop file it checks every second). SIGTERM goes to the
+    process only when no other running coin shares it, so stopping one coin never stops the rest."""
     import signal as signal_mod
 
     a = _asset(asset)
@@ -1291,30 +1326,43 @@ def stop_unattended(asset: str) -> dict[str, Any]:
     if not status["running"]:
         return {"stopping": False, "asset": a, "message": "not running"}
     paths["stop"].write_text("stop\n")
-    if status["pid"]:
+    pid = status["pid"]
+    shared = pid and any(unattended_status(c)["pid"] == pid for c in coins() if _asset(c) != a)
+    if pid and not shared:
         try:
-            os.kill(status["pid"], signal_mod.SIGTERM)
+            os.kill(pid, signal_mod.SIGTERM)
         except ProcessLookupError:
             pass
-    return {"stopping": True, "asset": a, "pid": status["pid"]}
+    return {"stopping": True, "asset": a, "pid": pid}
 
 
-def run_unattended(asset: str, *, hold_lock: bool = True, max_ticks: int | None = None, offset: float = 0.0,
-                   sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.time,
+def run_unattended(assets: str | Sequence[str], *, hold_lock: bool = True, max_ticks: int | None = None,
+                   offset: float = 0.0, sleep: Callable[[float], None] = time.sleep,
+                   clock: Callable[[], float] = time.time,
                    tick: Callable[..., dict[str, Any]] | None = None) -> int:
-    """The loop the detached process runs. A failed tick is logged and skipped, never fatal:
-    unattended means a network blip at 03:05 must not end the run."""
+    """The loop the detached process runs: every active coin once per closed bar.
+
+    A failed tick is logged and skipped, never fatal: unattended means a network blip at 03:05
+    must not end the run. A coin whose stop file appears is dropped (its lock released) while
+    the others continue; SIGTERM ends the whole loop.
+    """
     import signal as signal_mod
 
-    a = _asset(asset)
-    paths = unattended_paths(a)
-    fd = None
-    if hold_lock:
-        fd = _try_lock(paths["lock"])
-        if fd is None:
-            print(f"another unattended run holds {paths['lock']}", flush=True)
-            return 1
-        paths["pid"].write_text(f"{os.getpid()}\n")
+    names = [_asset(a) for a in ([assets] if isinstance(assets, str) else assets)]
+    held: dict[str, int | None] = {}
+    for a in names:
+        paths = unattended_paths(a)
+        if hold_lock:
+            fd = _try_lock(paths["lock"])
+            if fd is None:
+                print(f"{a}: another unattended run holds {paths['lock']}; skipped", flush=True)
+                continue
+            paths["pid"].write_text(f"{os.getpid()}\n")
+            held[a] = fd
+        else:
+            held[a] = None
+    if not held:
+        return 1
     stopping = {"flag": False}
 
     def on_term(signum: int, frame: Any) -> None:
@@ -1324,30 +1372,52 @@ def run_unattended(asset: str, *, hold_lock: bool = True, max_ticks: int | None 
         signal_mod.signal(signal_mod.SIGTERM, on_term)
     tick = tick or forward_tick
     ticks = 0
-    print(f"{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(clock()))} unattended forward training {a} started "
-          f"(pid {os.getpid()})", flush=True)
-    try:
-        while not stopping["flag"] and not paths["stop"].exists():
-            try:
-                out = tick(a, wallet_address=_settings_address())
-                print(json.dumps({"at": int(clock()), **out}, default=_jsonable), flush=True)
-            except Exception as exc:  # noqa: BLE001 - keep running; the next bar will try again
-                print(json.dumps({"at": int(clock()), "error": f"{type(exc).__name__}: {exc}"}), flush=True)
-            ticks += 1
-            if max_ticks is not None and ticks >= max_ticks:
-                break
-            # Wake 5 s after the next 5m boundary, checking for a stop request every second.
-            wake = clock() + 300 - (clock() % 300) + 5 + offset
-            while clock() < wake and not stopping["flag"] and not paths["stop"].exists():
-                sleep(min(1.0, max(0.0, wake - clock())))
-    finally:
-        print(f"{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(clock()))} unattended forward training {a} "
-              f"stopped after {ticks} tick(s)", flush=True)
+
+    def stamp() -> str:
+        return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(clock()))
+
+    def say(a: str, line: str) -> None:
+        print(line, flush=True)
+        if len(held) > 1 or len(names) > 1:  # a shared run also keeps each coin's own log current
+            with unattended_paths(a)["log"].open("a", encoding="utf-8") as fh:
+                fh.write(line + "\n")
+
+    def release(a: str) -> None:
+        paths = unattended_paths(a)
+        say(a, f"{stamp()} unattended forward training {a} stopped after {ticks} tick(s)")
+        fd = held.pop(a)
         if hold_lock:
             paths["stop"].unlink(missing_ok=True)
             paths["pid"].unlink(missing_ok=True)
             if fd is not None:
                 os.close(fd)
+
+    for a in held:
+        say(a, f"{stamp()} unattended forward training {a} started (pid {os.getpid()})")
+    try:
+        while held and not stopping["flag"]:
+            for a in list(held):
+                if unattended_paths(a)["stop"].exists():
+                    release(a)
+                    continue
+                try:
+                    out = tick(a, wallet_address=_settings_address())
+                    say(a, json.dumps({"at": int(clock()), **out}, default=_jsonable))
+                except Exception as exc:  # noqa: BLE001 - keep running; the next bar will try again
+                    say(a, json.dumps({"at": int(clock()), "asset": a, "error": f"{type(exc).__name__}: {exc}"}))
+            ticks += 1
+            if max_ticks is not None and ticks >= max_ticks:
+                break
+            # Wake 5 s after the next 5m boundary, checking for stop requests every second.
+            wake = clock() + 300 - (clock() % 300) + 5 + offset
+            while clock() < wake and not stopping["flag"] and held:
+                for a in list(held):
+                    if unattended_paths(a)["stop"].exists():
+                        release(a)
+                sleep(min(1.0, max(0.0, wake - clock())))
+    finally:
+        for a in list(held):
+            release(a)
     return 0
 
 
@@ -1371,6 +1441,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                            help="hold the per-asset lock (what the tab's Start unattended button runs)")
             p.add_argument("--offset", type=float, default=0.0,
                            help="extra seconds after each 5m boundary (staggers coins)")
+            p.add_argument("--assets", default="", help="comma list: one loop over several coins")
         if name == "backtest":
             p.add_argument("--perturb", action="store_true")
             p.add_argument("--aggregate-grid", action="store_true")
@@ -1390,7 +1461,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(json.dumps(x, indent=2, default=_jsonable)) if args.json else _print_signal(x)
         elif args.verb == "forward":
             if args.loop:
-                return run_unattended(args.asset, hold_lock=args.unattended, offset=args.offset)
+                many = [a for a in args.assets.split(",") if a.strip()] or [args.asset]
+                return run_unattended(many, hold_lock=args.unattended, offset=args.offset)
             out = forward_tick(args.asset, wallet_address=_settings_address())
             print(json.dumps(out, default=_jsonable), flush=True)
         elif args.verb == "status":
