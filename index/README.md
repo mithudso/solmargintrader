@@ -102,6 +102,27 @@ import `index/`, so `backtester/tests/test_index.py` asserts the absence of that
 import edge in both directions, and asserts that only the embedding path can open a
 socket at all. `build.py all` is offline.
 
+## Ollama, idle indexing and the Docs tab
+
+Semantic and hybrid search need a local ollama and the `mxbai-embed-large:latest` model (the same
+embedding model every other semantic index here uses, ~670 MB). Three small helpers keep that out of
+your way:
+
+| Script | What it does |
+|---|---|
+| `index/ollama_ensure.py` | Reaches ollama on **localhost only**; if it is not running, starts the Ollama app (macOS) or `ollama serve`, waits for it, and checks the model is installed. It **never downloads the model** unless you pass `--pull`. |
+| `index/idle.py` | The idle index check. Every search calls it: if the semantic index is missing or out of date, the machine is idle (1-minute load below `INDEX_IDLE_THRESHOLD`, default 2.0), nothing else is rebuilding and the model is installed, it starts a `nice 19` background rebuild. `--status` reports, `--once` is for cron or launchd, `--force` rebuilds in the foreground. `INDEX_NO_AUTO=1` turns the automatic start off. |
+| `index/search.py` | `run_query()` is the library entry point (no printing, keyword / semantic / hybrid, falls back to keyword with a reason). The big structures load on first use; `unload()` frees them and asks ollama to release the model. |
+
+**The idle job writes only gitignored files** (`semantic-local.npz`, `semantic-local.json`, a lock, a state file
+and a log). Search prefers that pair over the committed manifest when both exist. The committed keyword index
+is deliberately not rebuilt on a timer: rewriting a 12 MB tracked file would leave every checkout permanently
+dirty, so it stays a `build.py all` step gated by `build.py --check` in CI. `search.py` reports when the
+keyword index is behind the tree.
+
+The soltui **Docs** tab has a search box with keyword / semantic / hybrid, an explicit Search button (no search
+per keystroke) and **Free search memory**. Nothing is loaded until the first search.
+
 ## Concepts are the repo's own vocabulary
 
 Not an invented taxonomy. They come from the `FAMILY` dict in

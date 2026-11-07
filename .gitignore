@@ -111,3 +111,11 @@ research/TOP_UNTESTED_RECOMMENDATION.json
 # Coinbase CDP credentials; must never be committed.
 /cdp_api_key.json
 /cdp_wallet_secret.txt
+
+# The idle job's private semantic pair and its state; never committed.
+index/semantic-local.npz
+index/semantic-local.json
+index/.idle-state.json
+index/.idle.lock
+index/.idle-index.log
+index/*.tmp*

@@ -110,3 +110,9 @@ Look at this file and determine if all of the strategies, signals, and indicator
 ```text
 In the strategies tab make it indicate whether or not that strategy has already been tested or not, how many times, when, and what the results were. Also add 3 buttons, 1) Backtest selected, 2) Backtest all untested and 3) Backtest all.
 ```
+
+## v16 - 2026-11-07
+
+```text
+Add keyword and symantic indexing to all of the files in the repo, use the mxbai-embed-large:latest model like all the other symantic indexes, and use the same mechanisms etc. Add to the helper script that if a symantic search is chosen to make sure the ollama server is reachable and if not then start it, and also add an idle index check so it can kick off its own indexing. Add the keyword, symantic, and hybrid searching to the docs tab. I would lazy load it though because it is almost 600MB to always have on.
+```
