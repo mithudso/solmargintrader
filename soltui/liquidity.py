@@ -30,6 +30,8 @@ from datetime import datetime, timezone, tzinfo
 from pathlib import Path
 from typing import Any, Mapping
 
+from .netpct import net_pct
+
 STATUS_SCHEMA = "aero-lp-status/1"
 SCOUT_SCHEMA = "aero-lp-scout/1"
 STATUS_FILE = "status.json"
@@ -200,6 +202,16 @@ def fmt_pct(value: Any, *, signed: bool = False, places: int = 2) -> str:
     return f"{sign}{v:.{places}f}%"
 
 
+def _plus(a: Any, b: Any) -> float | None:
+    x, y = num(a), num(b)
+    return None if x is None or y is None else x + y
+
+
+def fmt_fraction(value: float | None) -> str:
+    """A fraction as a signed percent (0.0125 -> "+1.25%"); a dash when there is no base."""
+    return DASH if value is None else f"{value * 100:+.2f}%"
+
+
 def fmt_price(value: Any) -> str:
     v = num(value)
     return DASH if v is None else f"{v:.6g}"
@@ -265,10 +277,18 @@ class Summary:
     deployed_usd: float | None
     total_pnl_usd: float | None
     total_vs_hodl_usd: float | None
+    total_deposited_usd: float | None
     n_positions: int
     age: float | None
     stale: bool
     word: str
+
+    @property
+    def net_pct(self) -> float | None:
+        """Total P&L over total deposited (final / initial - 1); None without a positive base."""
+        if self.total_pnl_usd is None or self.total_deposited_usd is None:
+            return None
+        return net_pct(self.total_deposited_usd + self.total_pnl_usd, self.total_deposited_usd)
 
     def line(self) -> str:
         """One plain-text line. Money only, each figure naming its source."""
@@ -278,6 +298,7 @@ class Summary:
             f"deployed {fmt_usd(self.deployed_usd)}",
             f"{w} LP P&L {fmt_usd(self.total_pnl_usd, signed=True)}",
             f"{w} LP P&L vs HODL {fmt_usd(self.total_vs_hodl_usd, signed=True)}",
+            f"{w} LP net % {fmt_fraction(self.net_pct)}",
             f"{self.n_positions} position{'s' if self.n_positions != 1 else ''}",
             f"daemon state {fmt_age(self.age)}",
         ]
@@ -315,6 +336,7 @@ def summarise(
         deployed_usd=num(wallet.get("deployed_usd")),
         total_pnl_usd=_sum(positions, "pnl_usd"),
         total_vs_hodl_usd=_sum(positions, "pnl_vs_hodl_usd"),
+        total_deposited_usd=_sum(positions, "deposited_usd"),
         n_positions=len(positions),
         age=age,
         stale=age is None or age > STALE_AFTER_SECONDS,
@@ -389,6 +411,7 @@ def positions_table(status: Mapping[str, Any]) -> Table:
         Column("deposited"),
         Column(f"{w} LP P&L $"),
         Column(f"{w} LP P&L vs HODL $"),
+        Column(f"{w} LP net %", pct=True),
         Column(f"{w} realized APR", pct=True),
         Column("decision: reason"),
     )
@@ -409,6 +432,7 @@ def positions_table(status: Mapping[str, Any]) -> Table:
             fmt_usd(p.get("deposited_usd")),
             fmt_usd(p.get("pnl_usd"), signed=True),
             fmt_usd(p.get("pnl_vs_hodl_usd"), signed=True),
+            fmt_fraction(net_pct(_plus(p.get("deposited_usd"), p.get("pnl_usd")), num(p.get("deposited_usd")))),
             fmt_pct(p.get("apr_realized"), signed=True, places=1),
             decision,
         ))

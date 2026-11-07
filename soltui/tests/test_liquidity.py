@@ -342,7 +342,11 @@ class TestLabellingRule(unittest.TestCase):
                 head = line[: m.start()].split(" | ")[-1]
                 self.assertTrue(any(w in head + "P&L" for w in liq.SOURCE_WORDS + ("reported",)),
                                 line)
-            self.assertNotRegex(line, r"%")
+            # A percentage is allowed only inside a part that names its source.
+            for part in line.split(" | "):
+                if "%" in part:
+                    self.assertTrue(any(w in part for w in liq.SOURCE_WORDS), part)
+                    self.assertIn("net %", part)
 
     def test_scout_percentages_are_marked_modelled(self) -> None:
         t = liq.scout_table(scout_doc())

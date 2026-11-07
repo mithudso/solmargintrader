@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 14
-Delta: added the executor component (workstream E1): verifier, rails, journal, CLI and API, and the live path validation.
+Version: 15
+Delta: added the executor component (workstream E1) after the soltui Top 5 presets and P&L tab (PR A): verifier, rails, journal, CLI and API, and the live path validation.
 
 ## v1 - 2026-11-06
 
@@ -148,7 +148,17 @@ Facts to keep: (1) The owner's unpacked load path for extension pnokcppamfghgaim
 
 Remaining: merge the origin/master Python side (done: PR 43), re-run the e2e against the production host, docs counts, CI, merge, fast-forward the live checkout.
 
-## v14 - 2026-11-07 (executor, workstream E1)
+## v14 - 2026-11-07
+
+Target: owner request (prompts.md v8), read-only part only. PR A: Top 5 presets, net % everywhere, P&L tab. PR B: read-only wallet discovery. Branch soltui-pnl, worktree /Users/mitch/dev/smt-wt-pnl.
+
+Completed (PR A): `soltui/presets.py` + `top5.presets` (Analyze, Live Run, Execute option lists; Execute and Analyze run the preset's composite with the SOL-tuned HORIZONS parameters; `paper.start` takes `top5:N`, `analyze.run` takes `preset`). `soltui/netpct.py`: net % = final / initial - 1, text always carries a source word. Net % added to Backtest, Top 5, Analyze, Cumulative, Execute, Live Run, Queue and Liquidity. `soltui/pnl.py` + `pnl.summary`, `pnl.series`, `pnl.breakdown` and the P&L tab: windows 24h/7d/30d/90d/ytd/all/custom, one section per source (backtest, paper, dry-run journal, dry-run/live LP), no total across simulated and real.
+
+Decisions: backtest and paper windows are cut from the data's own dates, so a "30d" window ending today has no backtest data when the cached series ends earlier; the section says where its data is. The liquidity `status.json` is cumulative since open, so that section is marked not windowed; `ledger.sqlite` snapshots give a windowed history when present. The extension journal has no capital base, so it shows net $ and no %.
+
+Not built (later, separately gated): swaps, signing, the live-run button, any private-key field.
+
+## v15 - 2026-11-07 (executor, workstream E1)
 
 Target: new component `executor/` for swaps between coins with best pricing; the foundation for a later "run this strategy live" button (E2 builds the runner and the button). Branch executor-e1, worktree /Users/mitch/dev/solmargintrader-wt-executor. Stele MCP was unreachable, so the facts below are in the outbox, not yet in the graph.
 
