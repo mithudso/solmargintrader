@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T12:47:51+00:00",
+  "generatedAt": "2026-11-07T13:17:27+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 292,
+      "matchingFiles": 295,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 246,
+      "matchingFiles": 254,
       "shown": 30,
       "files": [
         {
@@ -281,7 +281,7 @@
           "hits": 21
         },
         {
-          "path": "backtester/core/engine.py",
+          "path": "soltui/help.py",
           "hits": 21
         }
       ],
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 183,
+      "matchingFiles": 192,
       "shown": 30,
       "files": [
         {
@@ -438,7 +438,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 182,
+      "matchingFiles": 185,
       "shown": 30,
       "files": [
         {
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 177,
+      "matchingFiles": 182,
       "shown": 30,
       "files": [
         {
@@ -712,7 +712,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 175,
+      "matchingFiles": 182,
       "shown": 30,
       "files": [
         {
@@ -726,6 +726,10 @@
         {
           "path": "research/results/cpcv_combos_tables.md",
           "hits": 89
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 77
         },
         {
           "path": "soltui/signals.py",
@@ -748,15 +752,15 @@
           "hits": 44
         },
         {
+          "path": "soltui/help.py",
+          "hits": 44
+        },
+        {
           "path": "research/STRATEGIES.md",
           "hits": 41
         },
         {
           "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 41
-        },
-        {
-          "path": "soltui/help.py",
           "hits": 41
         },
         {
@@ -812,6 +816,10 @@
           "hits": 19
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 19
+        },
+        {
           "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
           "hits": 19
         },
@@ -826,14 +834,6 @@
         {
           "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
           "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
-          "hits": 17
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -851,7 +851,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 173,
+      "matchingFiles": 178,
       "shown": 30,
       "files": [
         {
@@ -895,12 +895,20 @@
           "hits": 28
         },
         {
+          "path": "soltui/help.py",
+          "hits": 25
+        },
+        {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
           "hits": 22
         },
         {
           "path": "backtester/core/perps.py",
           "hits": 22
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 21
         },
         {
           "path": "backtester/core/types.py",
@@ -931,15 +939,15 @@
           "hits": 19
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 18
+        },
+        {
           "path": "backtester/PROMPT.md",
           "hits": 18
         },
         {
           "path": "research/cross_asset_cpcv.py",
-          "hits": 17
-        },
-        {
-          "path": "soltui/help.py",
           "hits": 17
         },
         {
@@ -949,6 +957,10 @@
         {
           "path": "backtester/tests/test_ratio_rotation.py",
           "hits": 15
+        },
+        {
+          "path": "backtester/core/compound.py",
+          "hits": 14
         },
         {
           "path": "backtester/core/report.py",
@@ -961,18 +973,6 @@
         {
           "path": "docs/SCRIPTS.md",
           "hits": 13
-        },
-        {
-          "path": "research/results/grid_review_20261107.json",
-          "hits": 13
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 12
-        },
-        {
-          "path": "index/build.py",
-          "hits": 12
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -988,7 +988,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 165,
+      "matchingFiles": 178,
       "shown": 30,
       "files": [
         {
@@ -1028,6 +1028,10 @@
           "hits": 40
         },
         {
+          "path": "backtester/core/scorecard.py",
+          "hits": 35
+        },
+        {
           "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
           "hits": 34
         },
@@ -1052,6 +1056,10 @@
           "hits": 28
         },
         {
+          "path": "soltui/help.py",
+          "hits": 28
+        },
+        {
           "path": "backtester/strategy_cards/hurst_regime_test.md",
           "hits": 27
         },
@@ -1069,10 +1077,6 @@
         },
         {
           "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 22
-        },
-        {
-          "path": "soltui/help.py",
           "hits": 22
         },
         {
@@ -1106,10 +1110,6 @@
         {
           "path": "skills/trading-and-investing/SKILL.md",
           "hits": 16
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 15
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 153,
+      "matchingFiles": 158,
       "shown": 30,
       "files": [
         {
@@ -1175,7 +1175,7 @@
         },
         {
           "path": "soltui/tui.py",
-          "hits": 13
+          "hits": 14
         },
         {
           "path": "research/decide.py",
@@ -1234,6 +1234,10 @@
           "hits": 5
         },
         {
+          "path": "backtester/core/compound.py",
+          "hits": 5
+        },
+        {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 5
         },
@@ -1243,10 +1247,6 @@
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 4
-        },
-        {
-          "path": "backtester/tests/test_signal_redundancy.py",
           "hits": 4
         }
       ],
@@ -1261,7 +1261,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 137,
+      "matchingFiles": 138,
       "shown": 30,
       "files": [
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 128,
+      "matchingFiles": 133,
       "shown": 30,
       "files": [
         {
@@ -1538,7 +1538,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 120,
+      "matchingFiles": 121,
       "shown": 30,
       "files": [
         {
@@ -1672,7 +1672,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 117,
+      "matchingFiles": 118,
       "shown": 30,
       "files": [
         {
@@ -1780,6 +1780,10 @@
           "hits": 4
         },
         {
+          "path": "backtester/core/scorecard.py",
+          "hits": 4
+        },
+        {
           "path": "backtester/tests/test_gridsim.py",
           "hits": 4
         },
@@ -1789,10 +1793,6 @@
         },
         {
           "path": "research/results/perturb_long_all_dual_momentum_vol_regime.json",
-          "hits": 4
-        },
-        {
-          "path": "research/results/perturb_long_all_macd_vol_regime.json",
           "hits": 4
         }
       ],
@@ -1945,7 +1945,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 97,
+      "matchingFiles": 103,
       "shown": 30,
       "files": [
         {
@@ -1981,8 +1981,16 @@
           "hits": 26
         },
         {
+          "path": "soltui/tests/test_compound.py",
+          "hits": 26
+        },
+        {
           "path": "skills/trading-and-investing/references/technical-analysis.md",
           "hits": 25
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 24
         },
         {
           "path": "backtester/core/trigger_conditions.py",
@@ -2041,6 +2049,10 @@
           "hits": 14
         },
         {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 13
+        },
+        {
           "path": "soltui/tests/test_tradingstrategyresults_coverage.py",
           "hits": 12
         },
@@ -2055,21 +2067,146 @@
         {
           "path": "backtester/tests/test_decide.py",
           "hits": 9
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 9
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 9
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 8
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
+      "id": "robustness",
+      "label": "Perturbation and robustness",
+      "why": "Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.",
+      "terms": [
+        "perturb",
+        "perturbation",
+        "ratio_to_iqr",
+        "sign_flips",
+        "stability"
+      ],
+      "matchingFiles": 85,
+      "shown": 30,
+      "files": [
+        {
+          "path": "docs/FILES.md",
+          "hits": 96
+        },
+        {
+          "path": "research/perturb.py",
+          "hits": 54
+        },
+        {
+          "path": "research/verify_numbers.py",
+          "hits": 31
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 25
+        },
+        {
+          "path": "soltui/compound.py",
+          "hits": 13
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 11
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 10
+        },
+        {
+          "path": "research/triggers.py",
+          "hits": 10
+        },
+        {
+          "path": "research/results/perturb_all_singles_long.txt",
+          "hits": 9
+        },
+        {
+          "path": "research/results/perturb_all_singles_medium.txt",
+          "hits": 9
+        },
+        {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 9
+        },
+        {
+          "path": "research/results/perturb_all_singles_short.txt",
+          "hits": 8
+        },
+        {
+          "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 7
+        },
+        {
+          "path": "soltui/bgqueue.py",
+          "hits": 7
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 6
+        },
+        {
+          "path": "index/build.py",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_long.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_medium.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_short.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_all_macd_vol_regime.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_any_ou_reversion_obv_trend.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_obv_trend.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_vol_regime.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_medium_adx_trend.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/geometry.py",
+          "hits": 5
+        },
+        {
+          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.json",
+          "hits": 5
+        },
+        {
+          "path": "research/results/perturb_long_all_macd_vol_regime.json",
+          "hits": 5
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
     },
     {
       "id": "family:mean-reversion",
@@ -2082,7 +2219,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 81,
+      "matchingFiles": 85,
       "shown": 30,
       "files": [
         {
@@ -2209,143 +2346,6 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
-      "id": "robustness",
-      "label": "Perturbation and robustness",
-      "why": "Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.",
-      "terms": [
-        "perturb",
-        "perturbation",
-        "ratio_to_iqr",
-        "sign_flips",
-        "stability"
-      ],
-      "matchingFiles": 79,
-      "shown": 30,
-      "files": [
-        {
-          "path": "docs/FILES.md",
-          "hits": 96
-        },
-        {
-          "path": "research/perturb.py",
-          "hits": 54
-        },
-        {
-          "path": "research/verify_numbers.py",
-          "hits": 31
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 25
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 11
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 10
-        },
-        {
-          "path": "research/triggers.py",
-          "hits": 10
-        },
-        {
-          "path": "research/results/perturb_all_singles_long.txt",
-          "hits": 9
-        },
-        {
-          "path": "research/results/perturb_all_singles_medium.txt",
-          "hits": 9
-        },
-        {
-          "path": "soltui/tests/test_bgqueue.py",
-          "hits": 9
-        },
-        {
-          "path": "research/results/perturb_all_singles_short.txt",
-          "hits": 8
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 7
-        },
-        {
-          "path": "soltui/bgqueue.py",
-          "hits": 7
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 6
-        },
-        {
-          "path": "index/build.py",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_long.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_medium.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_short.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_all_macd_vol_regime.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_any_ou_reversion_obv_trend.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_obv_trend.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_vol_regime.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_medium_adx_trend.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/geometry.py",
-          "hits": 5
-        },
-        {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.json",
-          "hits": 5
-        },
-        {
-          "path": "research/results/perturb_long_all_macd_vol_regime.json",
-          "hits": 5
-        },
-        {
-          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.json",
-          "hits": 5
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "family:breakout",
       "label": "Strategy family: breakout",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -2354,7 +2354,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 79,
+      "matchingFiles": 82,
       "shown": 30,
       "files": [
         {
@@ -2398,6 +2398,10 @@
           "hits": 18
         },
         {
+          "path": "backtester/core/scorecard.py",
+          "hits": 17
+        },
+        {
           "path": "backtester/strategy_cards/bb_breakout.md",
           "hits": 17
         },
@@ -2410,11 +2414,11 @@
           "hits": 17
         },
         {
-          "path": "backtester/strategy_cards/keltner.md",
-          "hits": 16
+          "path": "soltui/help.py",
+          "hits": 17
         },
         {
-          "path": "soltui/help.py",
+          "path": "backtester/strategy_cards/keltner.md",
           "hits": 16
         },
         {
@@ -2472,10 +2476,6 @@
         {
           "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
           "hits": 7
-        },
-        {
-          "path": "index/build.py",
-          "hits": 5
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2489,7 +2489,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 75,
+      "matchingFiles": 77,
       "shown": 30,
       "files": [
         {
@@ -2557,6 +2557,14 @@
           "hits": 14
         },
         {
+          "path": "backtester/core/scorecard.py",
+          "hits": 13
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 13
+        },
+        {
           "path": "research/STRATEGIES.md",
           "hits": 12
         },
@@ -2566,10 +2574,6 @@
         },
         {
           "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
-          "hits": 12
-        },
-        {
-          "path": "soltui/help.py",
           "hits": 12
         },
         {
@@ -2607,10 +2611,6 @@
         {
           "path": "research/CROSS-ASSET-TRANSFER.md",
           "hits": 7
-        },
-        {
-          "path": "index/build.py",
-          "hits": 6
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2623,7 +2623,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 66,
+      "matchingFiles": 68,
       "shown": 30,
       "files": [
         {
@@ -2665,6 +2665,10 @@
         {
           "path": "backtester/core/trigger_conditions.py",
           "hits": 11
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 9
         },
         {
           "path": "soltui/tests/test_top5.py",
@@ -2740,10 +2744,6 @@
         },
         {
           "path": "research/results/cpcv_tables.md",
-          "hits": 3
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
           "hits": 3
         }
       ],
