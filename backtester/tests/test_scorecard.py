@@ -218,6 +218,7 @@ class ConfigTests(unittest.TestCase):
         solo = sc.standalone_config(sc.default_config(), "rsi")
         on = [c for c, e in solo["components"].items() if e["enabled"]]
         self.assertEqual(on, ["rsi"])
+        self.assertEqual((solo["aggregate"]["adaptive"], solo["aggregate"]["tune"]), (0, 0))
         with self.assertRaises(sc.ScorecardError):
             sc.standalone_config(sc.default_config(), "gate_cost")
 
@@ -448,6 +449,47 @@ class TuningTests(unittest.TestCase):
         moved = next(iter(ev.tuned))
         self.assertIn("tuned_params", rows[moved])
         self.assertIn("p_better_than_coinflip", rows["rsi"])
+
+
+class NewMetricTests(unittest.TestCase):
+    def test_zigzag_confirms_on_the_reversal_bar_and_never_moves_a_pivot(self) -> None:
+        close = np.array([100, 101, 102, 101.5, 100.9, 100.2, 100.5, 101.3, 99.0])
+        leg, pivot = sc.zigzag_state(close, 0.01)
+        # Up leg confirmed at bar 1 (1% above the low 100); the high 102 is confirmed as a pivot only
+        # when price is 1% below it (bar 4, 100.9 <= 100.98), not earlier.
+        self.assertEqual(list(leg[:4]), [0, 1, 1, 1])
+        self.assertEqual(leg[4], -1)
+        self.assertEqual(pivot[4], 102.0)
+        for t_ in range(len(close)):
+            l2, p2 = sc.zigzag_state(close[: t_ + 1], 0.01)
+            self.assertEqual(l2[-1], leg[t_])
+            self.assertTrue(same(p2[-1], pivot[t_]))
+
+    def test_volume_scores_only_unusual_bars_signed_by_the_candle(self) -> None:
+        b = synthetic(200)
+        b.volume[:] = 10.0
+        b.volume[150] = 30.0
+        b.close[150] = b.open[150] * 1.01
+        b.high[150] = max(b.high[150], b.close[150])
+        out = sc.BY_ID["volume"].fn(b, {"window": 48, "scale": 1.0}, {})
+        self.assertEqual(out[150], 1.0)
+        self.assertEqual(out[149], 0.0)
+
+    def test_bop_is_minus_one_to_plus_one_and_tracks_who_won(self) -> None:
+        b = synthetic(300)
+        out = sc.BY_ID["bop"].fn(b, {"window": 1, "scale": 1.0}, {})
+        rng = b.high - b.low
+        expect = np.where(rng > 0, (b.close - b.open) / rng, 0.0)
+        self.assertTrue(np.allclose(out, np.clip(expect, -1, 1)))
+
+    def test_relations_flag_mirrors_and_cross_family_duplicates(self) -> None:
+        b = synthetic(600)
+        cfg = only(vwap_side=1, vwap_reversion=1, rsi=1, zscore=1, cci=1, bollinger=1)
+        ev = sc.evaluate(b, cfg)
+        rel = sc.relations(ev, window=600, min_points=100)
+        self.assertIn(("vwap_side", "vwap_reversion"), {(r["a"], r["b"]) for r in rel["opposed"]})
+        self.assertTrue(all(not r["same_family"] for r in rel["duplicates"]))
+        self.assertIn("relations", sc.explain(ev))
 
 
 class ForecastStatsTests(unittest.TestCase):

@@ -62,7 +62,11 @@ import numpy as np  # noqa: E402
 from backtester.core import compound as cbt  # noqa: E402
 from backtester.core import scorecard as sc  # noqa: E402
 
+from backtester.core import perps  # noqa: E402
+from backtester.core.types import Side  # noqa: E402
+
 from . import config as config_mod  # noqa: E402
+from . import wallet as wallet_mod  # noqa: E402
 
 COINBASE_CANDLES = "https://api.exchange.coinbase.com/products/{product}/candles"
 HYPERLIQUID_INFO = "https://api.hyperliquid.xyz/info"
@@ -493,20 +497,137 @@ def live_inputs(asset: str, cfg: Mapping[str, Any], events: Sequence[Mapping[str
     return bars, aux, {"ctx": ctx, "notes": notes, "closes": closes_all}
 
 
-def signal(asset: str, *, now: float | None = None, **fetchers: Any) -> dict[str, Any]:
-    """Score the latest closed bar live and explain every component."""
+# -- the wallet: read from Settings, never from a key ------------------------------------------
+#
+# Wallet information has ONE home: the soltui Settings (`solana_address`, edited on the Settings
+# tab, stored in ~/.config/soltui/config.yaml at mode 600). Private keys stay in their key files; nothing
+# here reads them: sizing a call needs balances, which are public. Jupiter Perps accepts SOL, USDC
+# and USDT as collateral, so those are the "usable" balances. Stablecoins are matched by MINT, not
+# by symbol text, because anyone can mint a token called "USDC".
+
+COLLATERAL_MINTS = {
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "USDC",
+    "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCE8BenwNYB": "USDT",
+}
+WALLET_LABEL = "wallet (live)"
+WALLET_TTL_S = 240  # one scan per forward tick at most; balances do not need 5-second freshness
+_WALLET_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
+
+
+def wallet_balances(address: str | None, *, fetch: Fetcher | None = None,
+                    now: float | None = None) -> dict[str, Any]:
+    """Usable collateral at the Settings address, or why it is unavailable. Never a guess."""
+    if not address or not wallet_mod.valid_solana_address(address):
+        return {"available": False, "label": WALLET_LABEL,
+                "reason": "no valid solana_address in Settings (Settings tab)"}
+    now = time.time() if now is None else now
+    hit = _WALLET_CACHE.get(address)
+    if fetch is None and hit and now - hit[0] < WALLET_TTL_S:
+        return hit[1]
+    scan = wallet_mod.scan_solana(address, fetch or wallet_mod.HttpFetcher(budget_s=20)).to_dict()
+    parts: dict[str, float] = {}
+    unknown: list[str] = []
+    native = scan.get("native") or {}
+    if (native.get("amount") or 0) > 0:
+        if native.get("usd") is None:
+            unknown.append("SOL")
+        else:
+            parts["SOL"] = float(native["usd"])
+    for h in scan.get("holdings") or []:
+        sym = COLLATERAL_MINTS.get(h.get("mint", ""))
+        if not sym or not h.get("included", True):
+            continue
+        if h.get("usd") is None:
+            unknown.append(sym)
+        else:
+            parts[sym] = parts.get(sym, 0.0) + float(h["usd"])
+    if scan.get("status") == "error" and not parts:
+        out = {"available": False, "label": WALLET_LABEL,
+               "reason": "; ".join(e["message"] for e in scan.get("errors") or []) or "wallet scan failed"}
+    else:
+        out = {"available": True, "label": WALLET_LABEL, "address_tail": address[-4:],
+               "usable_usd": round(sum(parts.values()), 2), "parts": {k: round(v, 2) for k, v in parts.items()},
+               "unpriced": unknown, "complete": not unknown and scan.get("status") == "ok",
+               "errors": [e["message"] for e in scan.get("errors") or []]}
+    if fetch is None:
+        _WALLET_CACHE[address] = (now, out)
+    return out
+
+
+def size_call(wallet: Mapping[str, Any], bars: sc.Bars, cfg: Mapping[str, Any], call: str) -> dict[str, Any]:
+    """Position size for this call at the wallet's usable collateral, or why there is none.
+
+    The trade may lose `risk_pct` of usable collateral if price reaches the stop (`stop_atr` x ATR,
+    the same stop the liquidation gate checks) PLUS the round-trip cost, and may not exceed
+    collateral x leverage. The smaller of the two wins. Liquidation prices come from the engine's
+    venue formula (`backtester.core.perps.liquidation_price`), not from 1/leverage.
+    """
+    if not wallet.get("available"):
+        return {"available": False, "reason": wallet.get("reason", "wallet unavailable")}
+    usable = float(wallet["usable_usd"])
+    if usable <= 0:
+        return {"available": False, "reason": "no SOL, USDC or USDT at the Settings address"}
+    ex = cfg["execution"]
+    lev = float(ex["leverage"])
+    gate = cfg["components"]["gate_liquidation"]["params"]
+    price = float(bars.close[-1])
+    atr_now = float(sc.atr(bars, int(gate["atr"]))[-1])
+    if not math.isfinite(atr_now) or atr_now <= 0:
+        return {"available": False, "reason": "ATR not defined yet for the stop distance"}
+    stop_pct = float(gate["stop_atr"]) * atr_now / price
+    cost_pct = sc.round_trip_bps(ex["fee_bps"], ex["slippage_bps"]) / 1e4
+    risk_usd = usable * float(ex["risk_pct"]) / 100.0
+    max_notional = usable * lev
+    risk_notional = risk_usd / (stop_pct + cost_pct)
+    notional = min(max_notional, risk_notional)
+    collateral = notional / lev
+    costs = cbt.engine_config(cfg).costs
+    liq = {}
+    for side, name in ((Side.LONG, "long"), (Side.SHORT, "short")):
+        info = perps.liquidation_price(price, side, collateral, notional, 0.0, costs)
+        liq[name] = round(info.price, 4) if info.in_domain else None
+    return {
+        "available": True, "label": WALLET_LABEL, "usable_usd": round(usable, 2), "leverage": lev,
+        "risk_pct": float(ex["risk_pct"]), "stop_pct": round(100 * stop_pct, 4), "cost_pct": round(100 * cost_pct, 4),
+        "max_notional_usd": round(max_notional, 2), "risk_notional_usd": round(risk_notional, 2),
+        "notional_usd": round(notional, 2), "collateral_usd": round(collateral, 2),
+        "round_trip_cost_usd": round(notional * cost_pct, 2),
+        "loss_at_stop_usd": round(notional * (stop_pct + cost_pct), 2),
+        "bound_by": "risk" if risk_notional <= max_notional else "leverage",
+        "side": {"UP": "long", "DOWN": "short"}.get(call), "liquidation_price": liq,
+        "complete": bool(wallet.get("complete")),
+    }
+
+
+def _wallet_and_size(address: str | None, cfg: Mapping[str, Any], bars: sc.Bars, call: str,
+                     wallet_fetch: Fetcher | None) -> tuple[dict[str, Any], dict[str, Any]]:
+    if not cfg["execution"]["use_wallet"]:
+        off = {"available": False, "label": WALLET_LABEL, "reason": "use_wallet=0"}
+        return off, {"available": False, "reason": "use_wallet=0"}
+    try:
+        w = wallet_balances(address, fetch=wallet_fetch)
+    except Exception as exc:  # noqa: BLE001 - a wallet read must never break the call itself
+        w = {"available": False, "label": WALLET_LABEL, "reason": f"{type(exc).__name__}: {exc}"}
+    return w, size_call(w, bars, cfg, call)
+
+
+def signal(asset: str, *, now: float | None = None, wallet_address: str | None = None,
+           wallet_fetch: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
+    """Score the latest closed bar live, explain every component, and size it to the wallet."""
     state = load_state()
     cfg = state["config"]
     bars, aux, extra = live_inputs(asset, cfg, state["events"], now=now,
                                    ledger=read_ledger(asset), **fetchers)
     ev = sc.evaluate(bars, cfg, aux)
     out = sc.explain(ev, -1, catalogue=False)
+    wallet, sizing = _wallet_and_size(wallet_address, cfg, bars, out["call"], wallet_fetch)
     out.update(asset=_asset(asset), config_hash=sc.config_hash(cfg), bars_used=len(bars),
-               live=extra["ctx"], notes=extra["notes"])
+               live=extra["ctx"], notes=extra["notes"], wallet=wallet, sizing=sizing)
     return out
 
 
-def forward_tick(asset: str, *, now: float | None = None, **fetchers: Any) -> dict[str, Any]:
+def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | None = None,
+                 wallet_fetch: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
     """Record the call for the latest closed bar (once per config) and resolve older calls."""
     asset = _asset(asset)
     state = load_state()
@@ -525,7 +646,9 @@ def forward_tick(asset: str, *, now: float | None = None, **fetchers: Any) -> di
     call_id = f"{asset}:{x['bar_ts']}:{h}"
     recorded = {r.get("id") for r in ledger if r.get("type") == "call"}
     new_call = call_id not in recorded
+    sizing: dict[str, Any] = {"available": False}
     if new_call:
+        _, sizing = _wallet_and_size(wallet_address, cfg, bars, x["call"], wallet_fetch)
         ungated = 0
         comp = x["composite"]
         if comp is not None and abs(comp) >= x["entry"]:
@@ -542,6 +665,8 @@ def forward_tick(asset: str, *, now: float | None = None, **fetchers: Any) -> di
             "sigs": {r["id"]: component_sig(r["id"], r["params"]) for r in x["components"]
                      if r["kind"] == "score" and r["enabled"]},
             "adaptive": {r["id"]: r.get("adaptive_mult") for r in x["components"] if "adaptive_mult" in r},
+            # Paper size at the wallet's value when the call was made; None when unavailable.
+            "notional_usd": sizing.get("notional_usd") if sizing.get("available") else None,
         })
     # Resolve against every fetched bar, not only the newest contiguous run: a call made just
     # before a feed gap still has its next bar on the other side of an older gap.
@@ -560,7 +685,8 @@ def forward_tick(asset: str, *, now: float | None = None, **fetchers: Any) -> di
     _append(asset, rows)
     return {"asset": asset, "recorded": new_call, "call": x["call"], "composite": x["composite"],
             "bar_ts": x["bar_ts"], "regime": x["regime"], "blocked_by": x["blocked_by"],
-            "resolved": n_resolved, "notes": extra["notes"]}
+            "resolved": n_resolved, "notes": extra["notes"],
+            "notional_usd": sizing.get("notional_usd") if sizing.get("available") else None}
 
 
 def _tally(pairs: Sequence[tuple[int, float]], rt: float) -> dict[str, Any]:
@@ -609,7 +735,14 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
                      "ret_bps": None if r is None else r["ret_bps"],
                      "hit": None if r is None or c["call"] == "FLAT" or r["ret_bps"] == 0
                      else (r["ret_bps"] > 0) == (c["call"] == "UP")})
-    return {"asset": asset, "calls_recorded": len(calls), "resolved": len(done),
+    # Paper dollars at the wallet size recorded with each call: what trading every compound call
+    # for one bar would have made after costs. Calls made without a wallet reading are left out.
+    sized = [(dirs[c["call"]], float(r["ret_bps"]), float(c["notional_usd"])) for c, r in done
+             if c["call"] in dirs and c.get("notional_usd")]
+    paper = {"label": "paper $ at wallet size", "calls": len(sized),
+             "net_usd": round(sum(n * (d * ret - rt) / 1e4 for d, ret, n in sized), 2) if sized else None,
+             "costs_usd": round(sum(n * rt / 1e4 for _, _, n in sized), 2) if sized else None}
+    return {"asset": asset, "calls_recorded": len(calls), "resolved": len(done), "paper": paper,
             "pending": len(calls) - len(done), "round_trip_bps": rt,
             "compound": compound, "compound_ungated": ungated,
             "components": {cid: _tally(v, rt) for cid, v in sorted(per.items())},
@@ -748,8 +881,48 @@ def summary_row(r: Mapping[str, Any]) -> dict[str, Any]:
         "oos_trades": p_oos.get("trades"), "oos_max_dd": p_oos.get("max_drawdown"),
         "oos_fees_pct": p_oos.get("fees_pct"), "liquidations": p_oos.get("liquidations"),
         "leverage": r.get("leverage"), "bars": r.get("bars"), "source": r.get("source"),
-        "run_id": r.get("run_id"),
+        "run_id": r.get("run_id"), "oos_bars": f_oos.get("bars"), "split_ts": r.get("split_ts"),
+        "to_ts": r.get("to_ts"), "round_trip_bps": f_oos.get("round_trip_bps"),
     }
+
+
+def run_summary(rows: Sequence[Mapping[str, Any]], window_count: int | None = None) -> str:
+    """The backtest table in plain words: what was tested, the best direction, money, a verdict."""
+    if not rows:
+        return "No backtest yet: press Backtest selected (it uses the cached 5m history of the Settings asset)."
+    first = rows[0]
+    n = len(rows)
+    when = ""
+    if first.get("split_ts") and first.get("to_ts"):
+        days = (first["to_ts"] - first["split_ts"]) / 86400
+        when = (f"{time.strftime('%m-%d', time.gmtime(first['split_ts']))} to "
+                f"{time.strftime('%m-%d', time.gmtime(first['to_ts']))} ({days:.1f} days, "
+                f"{first.get('oos_bars') or 0:,} bars)")
+    head = (f"{first['asset']}: {n} configuration{'s' if n != 1 else ''} tested"
+            + (f" ({window_count} on this window across all runs)" if window_count else "")
+            + f". Scored on the held-out last 30% of the history{', ' + when if when else ''}; "
+            f"costs {first.get('round_trip_bps') or 16:g} bps per round trip.")
+    called = [r for r in rows if r.get("oos_hit") is not None and (r.get("oos_calls") or 0) > 0]
+    best_dir = max(called, key=lambda r: (r.get("oos_z") or -99), default=None)
+    compound = next((r for r in rows if r["label"] == "compound"), None)
+    direction = "Direction: no configuration made a call." if not best_dir else (
+        f"Direction: best is {best_dir['label']} at {100 * best_dir['oos_hit']:.1f}% right "
+        f"(z {best_dir['oos_z']:+.1f}; anything within about +-2 is a coin flip)"
+        + (f"; the compound {100 * compound['oos_hit']:.1f}%." if compound and compound.get("oos_hit") is not None else "."))
+    made = [r for r in rows if (r.get("oos_return") or -1) > 0]
+    best_ret = max(rows, key=lambda r: (r.get("oos_return") if r.get("oos_return") is not None else -9))
+    oracle = first.get("oracle_net_bps")
+    money = (f"Money: {len(made)} of {n} made money after costs; best {best_ret['label']} "
+             f"{100 * (best_ret.get('oos_return') or 0):+.1f}%."
+             + (f" Even a perfect next-bar call would net {oracle:+.1f} bps per trade here." if oracle is not None else ""))
+    strong = [r for r in rows if r.get("ranked") and (r.get("oos_z") or 0) >= 2]
+    if any((r.get("oos_return") or 0) > 0 for r in strong):
+        verdict = "Verdict: a possible edge. Confirm it in the forward test before trusting it."
+    elif strong:
+        verdict = "Verdict: some direction signal, but costs eat it."
+    else:
+        verdict = "Verdict: no measurable edge after costs."
+    return " ".join((head, direction, money, verdict))
 
 
 def latest_results(asset: str | None = None, top: int = 40) -> dict[str, Any]:
@@ -773,6 +946,26 @@ def latest_results(asset: str | None = None, top: int = 40) -> dict[str, Any]:
 # -- CLI -------------------------------------------------------------------------------------
 
 
+def wallet_line(wallet: Mapping[str, Any], sizing: Mapping[str, Any]) -> str:
+    """One line for the CLI and the tab."""
+    if not wallet.get("available"):
+        return f"wallet (live): unavailable -- {wallet.get('reason', 'not read')}"
+    parts = " · ".join(f"{k} ${v:,.2f}" for k, v in (wallet.get("parts") or {}).items())
+    head = f"wallet (live) ...{wallet.get('address_tail', '')}: ${wallet['usable_usd']:,.2f} usable ({parts or 'none'})"
+    if wallet.get("unpriced"):
+        head += f"; unpriced, not counted: {', '.join(wallet['unpriced'])}"
+    if not sizing.get("available"):
+        return head + f" -- no size: {sizing.get('reason', '')}"
+    liq = sizing["liquidation_price"]
+    side = sizing.get("side")
+    liq_text = (f"liq {side} ${liq[side]:,.4g}" if side and liq.get(side) else
+                f"liq long ${liq['long'] or 0:,.4g} / short ${liq['short'] or 0:,.4g}")
+    return (head + f" -> ${sizing['notional_usd']:,.0f} notional (${sizing['collateral_usd']:,.0f} collateral at "
+            f"{sizing['leverage']:g}x, bound by {sizing['bound_by']}); loses ${sizing['loss_at_stop_usd']:,.2f} "
+            f"({sizing['risk_pct']:g}%) at the {sizing['stop_pct']:.2f}% stop incl. ${sizing['round_trip_cost_usd']:,.2f} "
+            f"round trip; {liq_text}")
+
+
 def _print_signal(x: Mapping[str, Any]) -> None:
     when = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(x["decided_at"]))
     print(f"{x['asset']} next 5m from {when}: {x['call']}  composite={x['composite']}  "
@@ -790,6 +983,168 @@ def _print_signal(x: Mapping[str, Any]) -> None:
         print(f"  {r['id']:<20} {r['status']:<11} {tail!s:<36} w={r['weight']:<4} {r['family']}/{r['style']}")
     for k, v in (x.get("notes") or {}).items():
         print(f"  note {k}: {v}")
+    print(wallet_line(x.get("wallet") or {}, x.get("sizing") or {}))
+
+
+# -- unattended forward training -------------------------------------------------------------
+#
+# A detached process that takes one forward tick per closed 5m bar until stopped. Every tick
+# records the call, resolves earlier calls, and the next call learns from them (adaptive
+# weighting seeds from this ledger), so leaving it running IS the training. It is a separate
+# process, not a TUI timer, so it keeps going when the console closes. One per asset: the child
+# holds an flock on `forward-<ASSET>.lock` for its whole life, and "running?" is answered by
+# trying that lock -- a pid can be recycled, a lock cannot outlive its holder.
+
+
+def unattended_paths(asset: str) -> dict[str, Path]:
+    a = _asset(asset)
+    base = home() / "unattended"
+    return {"lock": base / f"{a}.lock", "pid": base / f"{a}.pid", "log": base / f"{a}.log",
+            "stop": base / f"{a}.stop"}
+
+
+def _try_lock(path: Path) -> int | None:
+    import fcntl
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        os.close(fd)
+        return None
+    return fd
+
+
+def unattended_status(asset: str) -> dict[str, Any]:
+    paths = unattended_paths(asset)
+    fd = _try_lock(paths["lock"])
+    running = fd is None
+    if fd is not None:
+        os.close(fd)
+    pid = None
+    try:
+        pid = int(paths["pid"].read_text().strip())
+    except (OSError, ValueError):
+        pass
+    tail = ""
+    try:
+        lines = paths["log"].read_text(encoding="utf-8", errors="replace").splitlines()
+        tail = lines[-1][:300] if lines else ""
+    except OSError:
+        pass
+    since = None
+    if running and paths["pid"].exists():
+        since = int(paths["pid"].stat().st_mtime)
+    return {"asset": _asset(asset), "running": running, "pid": pid if running else None, "since": since,
+            "log": str(paths["log"]), "last_line": tail}
+
+
+def start_unattended(asset: str) -> dict[str, Any]:
+    """Spawn `forward --loop --unattended` detached, at background priority."""
+    import subprocess
+
+    from . import bgcontrol
+
+    a = _asset(asset)
+    paths = unattended_paths(a)
+    if unattended_status(a)["running"]:
+        raise CompoundError(f"unattended forward training for {a} is already running; stop it first")
+    paths["stop"].unlink(missing_ok=True)
+    cmd = [sys.executable, "-m", "soltui.compound", "forward", "--asset", a, "--loop", "--unattended"]
+    launcher = bgcontrol.taskpolicy_path()
+    if launcher:
+        cmd = [launcher, "-b", *cmd]
+    env = {**os.environ, "PYTHONPATH": str(REPO) + os.pathsep + os.environ.get("PYTHONPATH", ""),
+           "SOLTUI_CONFIG_DIR": str(config_mod.CONFIG_DIR)}
+    paths["log"].parent.mkdir(parents=True, exist_ok=True)
+    with paths["log"].open("ab") as log:
+        proc = subprocess.Popen(cmd, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT,  # noqa: S603
+                                stdin=subprocess.DEVNULL, start_new_session=True)
+    for _ in range(40):  # up to 4 s for the child to take its lock
+        time.sleep(0.1)
+        if proc.poll() is not None:
+            raise CompoundError(f"unattended run exited at once (code {proc.returncode}); see {paths['log']}")
+        if unattended_status(a)["running"]:
+            break
+    return {"started": True, "asset": a, "pid": proc.pid, "log": str(paths["log"])}
+
+
+def stop_unattended(asset: str) -> dict[str, Any]:
+    """Ask the running loop to stop: a stop file it checks every second, plus SIGTERM."""
+    import signal as signal_mod
+
+    a = _asset(asset)
+    paths = unattended_paths(a)
+    status = unattended_status(a)
+    if not status["running"]:
+        return {"stopping": False, "asset": a, "message": "not running"}
+    paths["stop"].write_text("stop\n")
+    if status["pid"]:
+        try:
+            os.kill(status["pid"], signal_mod.SIGTERM)
+        except ProcessLookupError:
+            pass
+    return {"stopping": True, "asset": a, "pid": status["pid"]}
+
+
+def run_unattended(asset: str, *, hold_lock: bool = True, max_ticks: int | None = None,
+                   sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.time,
+                   tick: Callable[..., dict[str, Any]] | None = None) -> int:
+    """The loop the detached process runs. A failed tick is logged and skipped, never fatal:
+    unattended means a network blip at 03:05 must not end the run."""
+    import signal as signal_mod
+
+    a = _asset(asset)
+    paths = unattended_paths(a)
+    fd = None
+    if hold_lock:
+        fd = _try_lock(paths["lock"])
+        if fd is None:
+            print(f"another unattended run holds {paths['lock']}", flush=True)
+            return 1
+        paths["pid"].write_text(f"{os.getpid()}\n")
+    stopping = {"flag": False}
+
+    def on_term(signum: int, frame: Any) -> None:
+        stopping["flag"] = True
+
+    if hold_lock:
+        signal_mod.signal(signal_mod.SIGTERM, on_term)
+    tick = tick or forward_tick
+    ticks = 0
+    print(f"{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(clock()))} unattended forward training {a} started "
+          f"(pid {os.getpid()})", flush=True)
+    try:
+        while not stopping["flag"] and not paths["stop"].exists():
+            try:
+                out = tick(a, wallet_address=_settings_address())
+                print(json.dumps({"at": int(clock()), **out}, default=_jsonable), flush=True)
+            except Exception as exc:  # noqa: BLE001 - keep running; the next bar will try again
+                print(json.dumps({"at": int(clock()), "error": f"{type(exc).__name__}: {exc}"}), flush=True)
+            ticks += 1
+            if max_ticks is not None and ticks >= max_ticks:
+                break
+            # Wake 5 s after the next 5m boundary, checking for a stop request every second.
+            wake = clock() + 300 - (clock() % 300) + 5
+            while clock() < wake and not stopping["flag"] and not paths["stop"].exists():
+                sleep(min(1.0, max(0.0, wake - clock())))
+    finally:
+        print(f"{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(clock()))} unattended forward training {a} "
+              f"stopped after {ticks} tick(s)", flush=True)
+        if hold_lock:
+            paths["stop"].unlink(missing_ok=True)
+            paths["pid"].unlink(missing_ok=True)
+            if fd is not None:
+                os.close(fd)
+    return 0
+
+
+def _settings_address() -> str | None:
+    try:
+        return config_mod.load_settings().solana_address
+    except Exception:  # noqa: BLE001 - an unreadable settings file means "no wallet", not a crash
+        return None
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -801,6 +1156,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         p.add_argument("--json", action="store_true", help="print the raw result")
         if name == "forward":
             p.add_argument("--loop", action="store_true", help="tick once per closed 5m bar until killed")
+            p.add_argument("--unattended", action="store_true",
+                           help="hold the per-asset lock (what the tab's Start unattended button runs)")
         if name == "backtest":
             p.add_argument("--perturb", action="store_true")
             p.add_argument("--aggregate-grid", action="store_true")
@@ -816,16 +1173,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.verb == "catalog":
             print(json.dumps(sc.catalog(), indent=2))
         elif args.verb == "signal":
-            x = signal(args.asset)
+            x = signal(args.asset, wallet_address=_settings_address())
             print(json.dumps(x, indent=2, default=_jsonable)) if args.json else _print_signal(x)
         elif args.verb == "forward":
-            while True:
-                out = forward_tick(args.asset)
-                print(json.dumps(out, default=_jsonable), flush=True)
-                if not args.loop:
-                    break
-                # Wake 5 s after the next 5m boundary so the bar has closed on the venue.
-                time.sleep(300 - (time.time() % 300) + 5)
+            if args.loop:
+                return run_unattended(args.asset, hold_lock=args.unattended)
+            out = forward_tick(args.asset, wallet_address=_settings_address())
+            print(json.dumps(out, default=_jsonable), flush=True)
         elif args.verb == "status":
             print(json.dumps(forward_status(args.asset), indent=2))
         elif args.verb == "results":
@@ -836,6 +1190,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(f"no compound backtest recorded for {_asset(args.asset)}; run: "
                       f"python3 -m soltui.compound backtest --asset {_asset(args.asset)}")
             else:
+                print(run_summary(out["rows"], out.get("configurations_on_this_oos_window")))
                 _print_table({"run_id": out["run_id"], "configurations": len(out["rows"]),
                               "assets": [_asset(args.asset)], "skipped": {}, "rows": out["rows"]},
                              appended=False)

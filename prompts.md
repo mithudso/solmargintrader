@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 22
-Delta: v21 to v22; adaptive weights, Bayesian setting moves and a two-week record cap (v19 is the hourly index sweep).
+Version: 27
+Delta: v23 to v27; wallet source, click-to-toggle and unattended training, inverting wrong metrics, status bar and four indicators (v23 is the scorecard paper).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -157,4 +157,28 @@ And then every time a metric is wrong you could apply bayes theorem to it and re
 
 ```text
 Write a paper detailing the metrics, what they check, why they're included, what the tunable parameters are, and perforamnce so far.
+```
+
+## v24 - 2026-11-07 (wallet source for the compound tester)
+
+```text
+Make it so that it reads my wallet information from somewhere, where should that be?
+```
+
+## v25 - 2026-11-07 (compound tab clicks and unattended training)
+
+```text
+In the compound tab, make it so that I can click a sstrategy to turn it on or off. Right now nothing happens when I click. Also add a button to kick off a fully unattended forward moving training.
+```
+
+## v26 - 2026-11-07 (invert poorly scoring metrics)
+
+```text
+The metrics that score extremely poorly, can you just invert whatever decision makes and see if that works?
+```
+
+## v27 - 2026-11-07 (status bar, four indicators, exclusive signals)
+
+```text
+This backtesting table is difficult to understand what's going on. Add a status bar somewhere. But also Add just Volume, Balance of power, zig zag, and exponential moving average to the strategies. Are there any indicators or signals that are mutually exclusive or dont work together?
 ```

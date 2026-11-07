@@ -39,6 +39,8 @@ HEAVY = {
     # Compound: live reads hit public market-data endpoints; backtests read the real 5m cache.
     "compound.signal": {"call": "FLAT", "composite": None, "components": []},
     "compound.forward_tick": {"asset": "SOL", "recorded": False, "call": "FLAT", "resolved": 0},
+    "compound.unattended_start": {"started": True, "asset": "SOL", "pid": 1, "log": "x"},
+    "compound.unattended_stop": {"stopping": False, "asset": "SOL", "message": "not running"},
     "compound.backtest": {"run_id": "stub", "configurations": 0, "assets": [], "skipped": {},
                           "errors": [], "rows": []},
     # The P&L commands run the roster's backtests, which need a cached price series.

@@ -26,6 +26,7 @@ from rich.markup import escape
 from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.message import Message
 from textual.widget import Widget
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets.option_list import Option
@@ -172,6 +173,8 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#compound-auto": "compound.forward_tick",
     "#compound-refresh": "compound.forward_status",
     "#compound-adopt": "compound.save",
+    "#compound-unattended-start": "compound.unattended_start",
+    "#compound-unattended-stop": "compound.unattended_stop",
 }
 
 class GlossaryTable(DataTable):
@@ -372,6 +375,35 @@ class VimTextArea(TextArea):
         self.action_cursor_line_end()
         self.insert("\n", maintain_selection_offset=False)
         self.vim_mode = VimTextArea.Mode.INSERT
+
+
+class CompoundTable(GlossaryTable):
+    """The Compound metric table: a click on a row's on/off or name cell toggles that metric.
+
+    Textual's DataTable only reports a selection on a SECOND click of the same cell, so a single
+    click on a metric did nothing. This table reads the clicked column itself and posts `Toggle`;
+    clicks on the other columns only move the cursor (to edit the numbers). Space toggles the row
+    under the cursor from the keyboard.
+    """
+
+    TOGGLE_COLUMNS = (0, 1)
+    BINDINGS = [Binding("space", "toggle_row", "Toggle metric", show=False)]
+
+    class Toggle(Message):
+        def __init__(self, row: int) -> None:
+            super().__init__()
+            self.row = row
+
+    async def _on_click(self, event: events.Click) -> None:
+        meta = event.style.meta
+        await super()._on_click(event)
+        row, column = meta.get("row"), meta.get("column")
+        if isinstance(row, int) and row >= 0 and column in self.TOGGLE_COLUMNS:
+            self.post_message(self.Toggle(row))
+
+    def action_toggle_row(self) -> None:
+        if self.row_count:
+            self.post_message(self.Toggle(self.cursor_row))
 
 
 class SolTuiApp(App):
@@ -721,11 +753,12 @@ class SolTuiApp(App):
             yield Static(
                 "Each metric scores the next 5m bar from -1 (down) to +1 (up). Families vote once, "
                 "the regime reweights trend vs reversion styles, and any enabled gate forces FLAT. "
-                "Select a row, then Toggle or edit its numbers. Nothing here places an order.",
+                "Click a metric's on/off or name to switch it (or press Space); click any other cell to "
+                "edit its numbers below. Nothing here places an order.",
                 classes="hint",
             )
             yield Static("Press Signal now for the live call.", id="compound-call")
-            yield GlossaryTable(id="compound-table")
+            yield CompoundTable(id="compound-table")
             yield Static("", id="compound-detail")
             with Horizontal(classes="form-row"):
                 yield Label("Selected (k=v):")
@@ -744,12 +777,18 @@ class SolTuiApp(App):
                 yield Button("Forward tick", id="compound-forward")
                 yield Button("Auto-forward: off", id="compound-auto")
                 yield Button("Refresh results", id="compound-refresh")
+            with Horizontal(classes="form-row"):
+                yield Button("Start unattended training", variant="success", id="compound-unattended-start")
+                yield Button("Stop unattended", variant="error", id="compound-unattended-stop")
+                yield Static("", id="compound-unattended")
             yield Static("", id="compound-status")
             yield Static(
                 "Backtest, latest run: the compound and each enabled metric alone. OOS = the last 30% "
                 "of bars; hit = next-bar direction; return = engine P&L after fees at the set leverage.",
                 classes="hint",
             )
+            yield Static("", id="compound-bt-status")
+            yield Static("", id="compound-relations")
             yield GlossaryTable(id="compound-results")
             yield Static("", id="compound-fwd-summary")
             yield GlossaryTable(id="compound-forward")
@@ -1247,7 +1286,8 @@ class SolTuiApp(App):
         self._compound_fwd: dict[str, str] = {}
         self._compound_auto = False
         self._compound_last_bar = 0
-        table = self.query_one("#compound-table", GlossaryTable)
+        self._compound_last_refresh = 0.0
+        table = self.query_one("#compound-table", CompoundTable)
         table.cursor_type = "row"
         for label in ("on", "component", "family", "style", "weight", "parameters", "live score",
                       "learned hit (n)", "tuned to", "bt oos hit", "fwd hit (n)"):
@@ -1267,6 +1307,7 @@ class SolTuiApp(App):
             self.query_one("#compound-status", Static).update(f"[red]{escape(self._msg(env))}[/]")
         self._compound_render_table()
         self._compound_load_results()
+        self._compound_show_unattended()
         self.set_interval(20, self._compound_auto_tick)
 
     def _compound_selected(self) -> str:
@@ -1302,7 +1343,7 @@ class SolTuiApp(App):
             f"adaptive_flip={agg['adaptive_flip']} tune={agg['tune']} tune_confidence={agg['tune_confidence']:g} "
             f"tune_min_calls={agg['tune_min_calls']:g} tune_step={agg['tune_step']:g} "
             f"tune_cooldown={agg['tune_cooldown']} leverage={ex['leverage']:g} fee_bps={ex['fee_bps']:g} "
-            f"slippage_bps={ex['slippage_bps']:g}")
+            f"slippage_bps={ex['slippage_bps']:g} risk_pct={ex['risk_pct']:g} use_wallet={ex['use_wallet']:g}")
 
     @on(DataTable.RowHighlighted, "#compound-table")
     def _compound_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
@@ -1331,9 +1372,14 @@ class SolTuiApp(App):
         self._compound_render_table()
         status.update(f"saved: {escape(what)} (config {env['result']['config_hash']})")
 
+    @on(CompoundTable.Toggle)
+    def _compound_click_toggle(self, event: CompoundTable.Toggle) -> None:
+        if 0 <= event.row < len(self._COMPOUND_IDS):
+            self._compound_toggle(self._COMPOUND_IDS[event.row])
+
     @on(Button.Pressed, "#compound-toggle")
-    def _compound_toggle(self) -> None:
-        cid = self._compound_selected()
+    def _compound_toggle(self, cid: str | None = None) -> None:
+        cid = cid if isinstance(cid, str) else self._compound_selected()
         enabled = not self._compound_cfg["components"][cid]["enabled"]
         self._compound_save({"components": {cid: {"enabled": enabled}}},
                             f"{cid} {'on' if enabled else 'off'}")
@@ -1416,7 +1462,16 @@ class SolTuiApp(App):
             f"{r['asset']} next 5m from {when}: {r['call']}   composite {r['composite']}   "
             f"coverage {r['coverage']}   agreement {r['agreement']}\n"
             f"regime {r['regime']} · trend stage {r['trend_stage']} · cycle phase {r['cycle_phase']} · "
-            f"round trip {r['round_trip_bps']} bps · gates blocking: {blocked}"))
+            f"round trip {r['round_trip_bps']} bps · gates blocking: {blocked}\n"
+            + compound_mod.wallet_line(r.get("wallet") or {}, r.get("sizing") or {})))
+        rel = r.get("relations") or {}
+        bits = [f"{x['a']} vs {x['b']} ({x['corr']:+.2f})" for x in rel.get("opposed", [])[:4]]
+        dups = [f"{x['a']} ~ {x['b']} ({x['corr']:+.2f})" for x in rel.get("duplicates", [])[:4]]
+        self.query_one("#compound-relations", Static).update(Text(
+            ("Enabled metrics that FIGHT each other (they cancel; keep one side): " + "; ".join(bits) + ". "
+             if bits else "No enabled metrics oppose each other. ")
+            + ("Duplicates in different families (same evidence counted twice): " + "; ".join(dups) + "."
+               if dups else "")))
         self._compound_live = {}
         self._compound_learned = {}
         self._compound_tuned = {}
@@ -1443,6 +1498,9 @@ class SolTuiApp(App):
         if env["ok"] and env["result"]["run_id"]:
             window_note = (f"{env['result']['configurations_on_this_oos_window']} configurations scored on "
                            "this out-of-sample window so far (the multiple-testing denominator). ")
+        self.query_one("#compound-bt-status", Static).update(Text(
+            compound_mod.run_summary(env["result"]["rows"], env["result"].get("configurations_on_this_oos_window"))
+            if env["ok"] else self._msg(env)))
         if env["ok"]:
             for row in env["result"]["rows"]:
                 results.add_row(
@@ -1470,7 +1528,10 @@ class SolTuiApp(App):
                 f"Forward test {f['asset']}: {f['calls_recorded']} bars recorded, {f['resolved']} resolved, "
                 f"{f['pending']} pending. Compound: {c['decided']} calls, hit {_pct(c['hit_rate'])}, "
                 f"z {_num(c['z_vs_coinflip'])}, net/call {_num(c['net_bps_per_call_if_one_bar'])} bps. "
-                f"Without gates: {u['decided']} calls, hit {_pct(u['hit_rate'])}."))
+                f"Without gates: {u['decided']} calls, hit {_pct(u['hit_rate'])}. "
+                + (f"Paper $ at wallet size: {f['paper']['calls']} calls, net ${f['paper']['net_usd']:,.2f} "
+                   f"after ${f['paper']['costs_usd']:,.2f} costs." if f.get("paper", {}).get("calls") else
+                   "Paper $ at wallet size: no sized calls yet.")))
             for row in reversed(f["recent"]):
                 fwd.add_row(time.strftime("%m-%d %H:%M", time.gmtime(row["bar_ts"] + 300)), row["call"],
                             _num(row["composite"]), str(row["regime"]), f"{row['price']:.4g}",
@@ -1502,7 +1563,8 @@ class SolTuiApp(App):
             self._compound_forward()
 
     def _compound_auto_tick(self) -> None:
-        """Every 20 s: if a new 5m bar has closed (plus 5 s for the venue), take a forward tick."""
+        """Every 20 s: show the unattended run's state; take an in-app forward tick if Auto is on."""
+        self._compound_show_unattended()
         if not getattr(self, "_compound_auto", False):
             return
         now = time.time()
@@ -1510,6 +1572,47 @@ class SolTuiApp(App):
         if latest_closed > self._compound_last_bar and now % 300 >= 5:
             self._compound_last_bar = latest_closed
             self._compound_forward()
+
+    def _compound_show_unattended(self) -> None:
+        env = self._call("compound.unattended_status", {"asset": self.settings.asset}, quiet=True)
+        label = self.query_one("#compound-unattended", Static)
+        if not env["ok"]:
+            label.update(Text(f"unattended: {self._msg(env)}"))
+            return
+        s = env["result"]
+        if s["running"]:
+            since = time.strftime("%m-%d %H:%M UTC", time.gmtime(s["since"])) if s.get("since") else "?"
+            label.update(Text(f"unattended training RUNNING for {s['asset']} since {since} (pid {s['pid']}); "
+                              f"log {s['log']}"))
+            # Its calls land in the ledger from another process: reload them once a minute.
+            if time.time() - self._compound_last_refresh > 60:
+                self._compound_last_refresh = time.time()
+                self._compound_load_results()
+        else:
+            label.update(Text(f"unattended training stopped for {s['asset']}"
+                              + (f" · last: {s['last_line'][:120]}" if s.get("last_line") else "")))
+
+    @on(Button.Pressed, "#compound-unattended-start")
+    def _compound_unattended_start(self) -> None:
+        env = self._call("compound.unattended_start", {"asset": self.settings.asset})
+        status = self.query_one("#compound-status", Static)
+        if env["ok"]:
+            status.update(Text(f"unattended training started for {env['result']['asset']} "
+                               f"(pid {env['result']['pid']}); it keeps running after you close this console"))
+        else:
+            status.update(f"[red]{escape(self._msg(env))}[/]")
+        self._compound_show_unattended()
+
+    @on(Button.Pressed, "#compound-unattended-stop")
+    def _compound_unattended_stop(self) -> None:
+        env = self._call("compound.unattended_stop", {"asset": self.settings.asset})
+        status = self.query_one("#compound-status", Static)
+        if env["ok"]:
+            r = env["result"]
+            status.update("stop requested; it exits after the current tick" if r["stopping"] else r.get("message", ""))
+        else:
+            status.update(f"[red]{escape(self._msg(env))}[/]")
+        self._compound_show_unattended()
 
     @on(Button.Pressed, "#compound-refresh")
     def _compound_refresh(self) -> None:

@@ -2,6 +2,28 @@
 
 *solmargintrader, 2026-11-07. Research note, not financial advice. Nothing described here places an order. Every figure in the results sections is recomputed from the saved sweep rows (`~/.config/soltui/compound/backtests.jsonl`, run `20261107T130441Z-f7fea5b2368e`), not copied from earlier documents.*
 
+> **Update, later on 2026-11-07 (PR "wallet sizing, click-to-toggle, unattended training…").**
+> Several statements below describe the scorecard as it was when this paper was written. What
+> changed, with the current source of truth in `docs/COMPOUND-5M.md` and `backtester/core/scorecard.py`:
+>
+> * **Four new metrics** (39 components now: 32 that vote, 7 gates): `ema_trend` (price vs one EMA),
+>   `volume` (unusual volume signed by the candle), `bop` (balance of power) and `zigzag` (a
+>   non-repainting swing leg).
+> * **Families regrouped by measured correlation** on five coins: `rsi`, `stochastic`, `cci`,
+>   `bollinger` and `zscore` are one family, `stretch` (their scores correlate 0.80–0.98);
+>   `ichimoku` joins `ma-trend` (+0.83–0.87); `macd` moves to `momentum` with `roc` (+0.80). The
+>   family labels in section 3 are the old ones.
+> * **Inversion is on by default** (`adaptive_flip = 1`): a metric whose learned record is below 50%
+>   votes inverted. Inverted, each trend metric scored 50–55% on nearly every coin, and the
+>   compound's losses were smaller on all five coins than with muting.
+> * **Opposed and duplicate metrics** are measured and shown: the trend and stretch groups correlate
+>   −0.75 to −0.93 at 5m; `vwap_side` and `vwap_reversion` are mirror images (−0.99).
+> * **Wallet sizing**: live calls are sized to the public balance at the Settings Solana address.
+> * **Unattended forward training**: a detached per-asset loop that records and resolves calls.
+> * With all of this, the default compound's out-of-sample hit rate (static → learned + invert) was
+>   BTC 50.3 → 49.5%, DOGE 44.9 → 55.8%, ETH 45.6 → 52.6%, SOL 47.3 → 51.1%, ZEC 48.3 → 51.1%.
+>   **Returns stayed negative on every coin.**
+
 ## Abstract
 
 The compound scorecard asks one question: **will the next five-minute bar of a crypto perpetual close up or down?** It scores 28 metrics from -1 (down) to +1 (up), removes the double-counting between metrics that measure the same thing, reweights styles by market regime, and combines the scores into one call (UP, DOWN or FLAT) behind seven veto gates. This paper lists every metric, what it checks and why it was included, every tunable parameter with its default and range, and the evidence so far.

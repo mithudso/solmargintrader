@@ -1165,7 +1165,7 @@ def compound_reset(ctx: Context, p: dict[str, Any]) -> Any:
          (P("asset", "string", "Asset symbol; default the configured asset."),),
          long_running=True)
 def compound_signal(ctx: Context, p: dict[str, Any]) -> Any:
-    return _compound(compound_mod.signal, _compound_asset(ctx, p))
+    return _compound(compound_mod.signal, _compound_asset(ctx, p), wallet_address=ctx.settings.solana_address)
 
 
 @command("compound.backtest",
@@ -1193,7 +1193,33 @@ def compound_results(ctx: Context, p: dict[str, Any]) -> Any:
          (P("asset", "string", "Asset symbol; default the configured asset."),),
          read_only=False, long_running=True)
 def compound_forward_tick(ctx: Context, p: dict[str, Any]) -> Any:
-    return _compound(compound_mod.forward_tick, _compound_asset(ctx, p))
+    return _compound(compound_mod.forward_tick, _compound_asset(ctx, p),
+                     wallet_address=ctx.settings.solana_address)
+
+
+@command("compound.unattended_start",
+         "Start fully unattended forward training: a detached background process that records and "
+         "resolves one call per closed 5m bar (learning from each) until stopped. Survives closing the "
+         "console. Read-only market data; no orders.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),),
+         read_only=False)
+def compound_unattended_start(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.start_unattended, _compound_asset(ctx, p))
+
+
+@command("compound.unattended_stop", "Stop the unattended forward training for an asset (it finishes "
+         "the current tick, then exits).",
+         (P("asset", "string", "Asset symbol; default the configured asset."),),
+         read_only=False)
+def compound_unattended_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.stop_unattended, _compound_asset(ctx, p))
+
+
+@command("compound.unattended_status", "Whether unattended forward training is running for an asset, "
+         "since when, and its last log line.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),))
+def compound_unattended_status(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.unattended_status, _compound_asset(ctx, p))
 
 
 @command("compound.forward_status",
