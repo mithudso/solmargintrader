@@ -726,7 +726,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3432
+      "lines": 3550
     },
     {
       "path": "soltui/signals.py",
@@ -942,7 +942,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 172
+      "lines": 174
     },
     {
       "path": "AGENTS.md",
@@ -1060,7 +1060,7 @@
       "component": "liquidity",
       "kind": "markdown",
       "summary": "Owner's live-operation authorization and its limits",
-      "lines": 64
+      "lines": 65
     },
     {
       "path": "liquidity/STATE_FILES.md",

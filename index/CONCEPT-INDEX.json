@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T19:10:58+00:00",
+  "generatedAt": "2026-11-07T19:23:35+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -257,11 +257,11 @@
           "hits": 30
         },
         {
-          "path": "extension/src/venues/index.js",
-          "hits": 27
+          "path": "memory.md",
+          "hits": 28
         },
         {
-          "path": "memory.md",
+          "path": "extension/src/venues/index.js",
           "hits": 27
         },
         {
@@ -274,7 +274,7 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 24
+          "hits": 25
         },
         {
           "path": "backtester/tests/test_engine.py",
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 204,
+      "matchingFiles": 205,
       "shown": 30,
       "files": [
         {
@@ -1166,15 +1166,15 @@
           "hits": 17
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 16
+        },
+        {
           "path": "docs/CONCEPTS.md",
           "hits": 14
         },
         {
           "path": "index/make_concepts_doc.py",
-          "hits": 14
-        },
-        {
-          "path": "soltui/tui.py",
           "hits": 14
         },
         {
@@ -1736,6 +1736,10 @@
           "hits": 17
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 16
+        },
+        {
           "path": "research/coin-intelligence/btc-bitcoin.md",
           "hits": 15
         },
@@ -1745,10 +1749,6 @@
         },
         {
           "path": "index/build.py",
-          "hits": 14
-        },
-        {
-          "path": "soltui/tui.py",
           "hits": 14
         },
         {
@@ -2005,6 +2005,10 @@
           "hits": 23
         },
         {
+          "path": "soltui/tests/test_strategy_history.py",
+          "hits": 22
+        },
+        {
           "path": "backtester/core/scorecard.py",
           "hits": 21
         },
@@ -2018,10 +2022,6 @@
         },
         {
           "path": "soltui/tests/test_signals.py",
-          "hits": 18
-        },
-        {
-          "path": "soltui/tests/test_strategy_history.py",
           "hits": 18
         },
         {

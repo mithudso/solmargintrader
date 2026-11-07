@@ -1092,6 +1092,19 @@ class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
                 compound.autopilot_ensure.assert_called()
 
 
+class CompoundTimerTests(unittest.IsolatedAsyncioTestCase):
+    async def test_the_20s_timer_is_a_no_op_while_the_app_tears_down(self) -> None:
+        # CI 2026-11-07: the timer fired during teardown and query_one raised NoMatches.
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            with mock.patch.object(app, "_compound_show_unattended",
+                                   side_effect=__import__("textual.css.query", fromlist=["NoMatches"]).NoMatches("gone")):
+                app._compound_auto_tick()            # must not raise
+            with mock.patch.object(app, "query", return_value=[]):
+                app._compound_auto_tick()            # widget gone: returns before touching anything
+
+
 class EditorBarTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         tmp = TemporaryDirectory()
