@@ -28,6 +28,8 @@ HEAVY = {
     "live.spawn_dryrun": {"command": ["node"], "returncode": 0, "stdout": "stub"},
     "queue.start": {"started": True, "asset": "SOL"},
     "queue.stop": {"stopping": False},
+    "queue.backtest": {"started": True, "scope": "all", "strategies": [], "jobs": 0, "asset": "SOL",
+                       "message": "stub"},
     "queue.fetch": {"fetching": [], "log": None},
     "analyze.run": {"headline": "stub", "truncated": False, "decisions": [], "actions": {}},
     "docs.write": {"path": "x", "bytes": 1, "file": "x"},
@@ -59,6 +61,7 @@ def default_params() -> dict[str, dict]:
         "docs.read": {"path": "soltui/commands.py"},
         "docs.write": {"path": "scratch.txt", "text": "x"},
         "liquidity.resume": {"confirm": True},
+        "queue.backtest": {"scope": "all"},
     }
 
 

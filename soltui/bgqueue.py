@@ -56,6 +56,7 @@ import json
 import os
 import re
 import tempfile
+import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from types import MappingProxyType
@@ -202,6 +203,9 @@ class JobResult:
     evaluable: bool
     reason: str = ""
     seconds: float = 0.0
+    # Unix time the row was written. 0.0 means the row predates this field, so its date is unknown:
+    # the Strategies tab says so rather than inventing one.
+    finished_at: float = 0.0
 
     @property
     def label(self) -> str:
@@ -234,7 +238,8 @@ class JobResult:
         """
         known = {f for f in cls.__dataclass_fields__}  # noqa: SLF001 - dataclass API
         clean = {k: v for k, v in data.items() if k in known}
-        for name in ("median_sharpe", "iqr", "frac_positive", "median_return", "seconds"):
+        for name in ("median_sharpe", "iqr", "frac_positive", "median_return", "seconds",
+                     "finished_at"):
             if name in clean:
                 clean[name] = _as_float(clean[name])
         for name in ("trades", "tier"):
@@ -414,8 +419,11 @@ def build_queue(
     horizons: Sequence[str] = HORIZONS,
     cards: dict[str, StrategyCard] | None = None,
     max_tier: int = 2,
+    strategies: Sequence[str] | None = None,
 ) -> list[Job]:
     """The full job list, most promising first.
+
+    `strategies` restricts the list to those registry names (None means every buildable card).
 
     Only cards that this repo can actually build and has data for are included;
     a spec-only card would fail at `build()` time and turn every one of its jobs
@@ -423,9 +431,12 @@ def build_queue(
     """
     asset = validate_asset(asset)
     catalogue = load_all() if cards is None else cards
+    wanted = None if strategies is None else set(strategies)
     jobs: list[Job] = []
     for card in catalogue.values():
         if not card.buildable or not card.data_available:
+            continue
+        if wanted is not None and (card.registry_key or card.id) not in wanted:
             continue
         for horizon in horizons:
             jobs.extend(jobs_for_card(card, horizon, asset, max_tier=max_tier))
@@ -773,6 +784,87 @@ def leaderboard(
         key=lambda r: (r.strategy, r.horizon, r.variation),
     )
     return ranked, floor
+
+
+# Which horizon's card-preset row stands for a strategy in the one-line result. Medium is the
+# card's headline daily configuration; the others only stand in when it is absent.
+_PRESET_HORIZON_ORDER = ("medium", "long", "short")
+
+
+@dataclass(frozen=True)
+class StrategyHistory:
+    """What the background sweep has recorded for one strategy on one asset."""
+
+    name: str
+    runs: int = 0               # distinct configurations evaluated or attempted
+    evaluable: int = 0          # of those, how many produced a usable CPCV result
+    ranked: int = 0             # of those, how many cleared the trade floor
+    positive: int = 0           # of the ranked, how many had median Sharpe above zero
+    last_at: float = 0.0        # newest finished_at; 0.0 when no row carries a date
+    preset: JobResult | None = None  # the card's own configuration, the fairest single number
+
+    @property
+    def tested(self) -> bool:
+        """True once any configuration has been run for it."""
+        return self.runs > 0
+
+    @property
+    def result_text(self) -> str:
+        """One line a person can act on, or why there is no number."""
+        if not self.tested:
+            return "not tested"
+        row = self.preset
+        if row is None:
+            return f"{self.runs} run(s), none at the card's own parameters"
+        if not row.evaluable:
+            return f"preset not evaluable: {row.reason or 'no usable result'}"[:120]
+        thin = "" if row.trades >= MIN_TRADES else f" (under the {MIN_TRADES}-trade floor)"
+        spread = f" · {self.positive}/{self.ranked} ranked runs positive" if self.ranked > 1 else ""
+        return (f"{row.horizon}: Sharpe {row.median_sharpe:+.2f}, net {row.median_return:+.1%}, "
+                f"{row.trades} trades{thin}{spread}")
+
+
+def strategy_history(
+    results: Sequence[JobResult], asset: str | None = None
+) -> dict[str, StrategyHistory]:
+    """Per-strategy test history for one asset, from the results file.
+
+    Duplicates by `job_id` collapse to the newest row (a restarted sweep can write a job twice),
+    so "runs" counts configurations, not file lines. The headline `preset` is the card's own
+    parameters, never the best of many variations: choosing the best row would report the
+    selection, not the strategy.
+    """
+    latest: dict[str, JobResult] = {}
+    for row in for_asset(results, asset):
+        previous = latest.get(row.job_id)
+        if previous is None or row.finished_at >= previous.finished_at:
+            latest[row.job_id] = row
+    grouped: dict[str, list[JobResult]] = {}
+    for row in latest.values():
+        grouped.setdefault(row.strategy, []).append(row)
+    out: dict[str, StrategyHistory] = {}
+    for name, rows in grouped.items():
+        ranked = [r for r in rows if r.ranked_ok]
+        tier0 = [r for r in rows if r.tier == 0]
+        preset = None
+        for horizon in _PRESET_HORIZON_ORDER:
+            pick = [r for r in tier0 if r.horizon == horizon]
+            if pick:
+                preset = pick[0]
+                break
+        out[name] = StrategyHistory(
+            name=name, runs=len(rows), evaluable=sum(1 for r in rows if r.evaluable),
+            ranked=len(ranked), positive=sum(1 for r in ranked if r.median_sharpe > 0),
+            last_at=max((r.finished_at for r in rows), default=0.0), preset=preset,
+        )
+    return out
+
+
+def format_when(timestamp: float) -> str:
+    """Local date and time of a result, or why there is none."""
+    if timestamp <= 0:
+        return "date not recorded"
+    return time.strftime("%Y-%m-%d %H:%M", time.localtime(timestamp))
 
 
 def summarise(

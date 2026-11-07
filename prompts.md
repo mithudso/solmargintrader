@@ -104,3 +104,9 @@ Looking at the backtest data was the grid trading strategy ever profitable? Is i
 ```text
 Look at this file and determine if all of the strategies, signals, and indicators are represented and tested in the soltui, if not then create the strategy cartds and add the new ones to the queu /Users/mitch/dev/solmargintrader/tradingstrategyresults.jsone
 ```
+
+## v15 - 2026-11-07
+
+```text
+In the strategies tab make it indicate whether or not that strategy has already been tested or not, how many times, when, and what the results were. Also add 3 buttons, 1) Backtest selected, 2) Backtest all untested and 3) Backtest all.
+```

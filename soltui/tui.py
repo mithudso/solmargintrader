@@ -123,6 +123,9 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#btn-cancel": "backtest.cancel",
     "#btn-run": "backtest.run",
     "#btn-run-untested": "backtest.untested_sweep",
+    "#btn-bt-selected": "queue.backtest",
+    "#btn-bt-untested": "queue.backtest",
+    "#btn-bt-all": "queue.backtest",
     "#btn-paper-start": "paper.start",
     "#btn-step1": "paper.step",
     "#btn-step25": "paper.step",
@@ -367,6 +370,8 @@ class SolTuiApp(App):
     .hint { color: $text-muted; }
     .preset-list { height: 7; margin-bottom: 1; }
     DataTable { height: 1fr; }
+    #available-table { width: 3fr; }
+    #roster-table { width: 1fr; }
     TabbedContent { height: 1fr; }
     #editor-panel {
         height: 16;
@@ -633,6 +638,11 @@ class SolTuiApp(App):
                 yield Button("Add selected →", variant="success", id="btn-add")
                 yield Button("← Remove selected", variant="error", id="btn-remove")
                 yield Button("Reset to default", id="btn-reset-roster")
+            with Horizontal(classes="form-row"):
+                yield Button("Backtest selected", variant="warning", id="btn-bt-selected")
+                yield Button("Backtest all untested", variant="warning", id="btn-bt-untested")
+                yield Button("Backtest all", variant="warning", id="btn-bt-all")
+            yield Static("", id="history-status")
             yield Static("", id="roster-status")
 
     def _signals_pane(self) -> ComposeResult:
@@ -738,10 +748,12 @@ class SolTuiApp(App):
     def on_mount(self) -> None:
         """Populate tables and start the indicator refresh."""
         avail = self.query_one("#available-table", DataTable)
-        avail.add_columns("strategy", "family")
+        for label in ("strategy", "family", "tested", "times tested", "last tested", "card-preset result"):
+            avail.add_column(label, key=label)
         avail.cursor_type = "row"
         for row in self._call("strategies.list")["result"]:
-            avail.add_row(row["name"], row["family"], key=row["name"])
+            avail.add_row(row["name"], row["family"], "…", "", "", "", key=row["name"])
+        self._refresh_strategy_history()
 
         roster_t = self.query_one("#roster-table", DataTable)
         roster_t.add_columns("in roster", "family", "warm-up")
@@ -855,6 +867,7 @@ class SolTuiApp(App):
             return
         if _mtime(bgqueue.RESULTS_PATH) != self._queue_mtime:
             self._refresh_queue()
+            self._refresh_strategy_history()
             return
         # Deliberately NOT gated on the worker being alive: a crashed worker leaves state.json
         # reading "running", and skipping the render would freeze the pane on its last line.
@@ -924,6 +937,70 @@ class SolTuiApp(App):
         return out
 
     # -- roster ----------------------------------------------------------
+
+    def _refresh_strategy_history(self) -> None:
+        """Fill the Strategies table's test-history columns from `strategies.history`.
+
+        Cells are updated in place by row and column key, so the cursor, the sort order and the
+        highlighted row (which opens that strategy's source) all survive a refresh.
+        """
+        env = self._call("strategies.history", quiet=True)
+        table = self.query_one("#available-table", DataTable)
+        status = self.query_one("#history-status", Static)
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        r = env["result"]
+        for row in r["rows"]:
+            if not row["testable"] and not row["tested"]:
+                tested = "n/a"
+            else:
+                tested = "yes" if row["tested"] else "no"
+            for column, value in (("tested", tested), ("times tested", str(row["runs"] or "")),
+                                  ("last tested", row["last_tested"] if row["tested"] else ""),
+                                  ("card-preset result", row["result"])):
+                try:
+                    table.update_cell(row["name"], column, value)
+                except Exception:  # noqa: BLE001 - a row removed under us; the next refresh redraws
+                    pass
+        note = (f"{r['asset']}: {r['tested']} tested, {r['untested']} untested "
+                "(background sweep results; the Queue tab shows the full leaderboard)")
+        action = getattr(self, "_history_action", "")
+        status.update(f"{action}\n{note}" if action else note)
+
+    def _start_backtest(self, scope: str, names: list[str] | None = None) -> None:
+        """Run `queue.backtest` and say what happened where the user is looking."""
+        status = self.query_one("#history-status", Static)
+        params: dict[str, Any] = {"scope": scope}
+        if names is not None:
+            params["names"] = names
+        env = self._call("queue.backtest", params)
+        if not env["ok"]:
+            self._history_action = f"[red]{self._msg(env)}[/]"
+        else:
+            self._history_action = env["result"]["message"]
+        self._refresh_strategy_history()
+
+    @on(Button.Pressed, "#btn-bt-selected")
+    def _backtest_selected(self) -> None:
+        """Backtest the highlighted strategy (the `queue.backtest` command, scope selected)."""
+        table = self.query_one("#available-table", DataTable)
+        try:
+            name = str(table.get_row_at(table.cursor_row)[0])
+        except Exception:  # noqa: BLE001 - nothing highlighted
+            self.query_one("#history-status", Static).update("[red]highlight a strategy first[/]")
+            return
+        self._start_backtest("selected", [name])
+
+    @on(Button.Pressed, "#btn-bt-untested")
+    def _backtest_untested(self) -> None:
+        """Backtest every strategy with no recorded result."""
+        self._start_backtest("untested")
+
+    @on(Button.Pressed, "#btn-bt-all")
+    def _backtest_all(self) -> None:
+        """Backtest every testable strategy."""
+        self._start_backtest("all")
 
     def _refresh_roster_table(self) -> None:
         """Redraw the roster side."""

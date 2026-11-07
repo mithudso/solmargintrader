@@ -320,6 +320,7 @@ def evaluate(
         evaluable=not res.insufficient,
         reason=res.reason,
         seconds=round(time.monotonic() - started, 3),
+        finished_at=time.time(),
     )
 
 
@@ -348,6 +349,7 @@ def failed_result(job: Job, exc: BaseException) -> JobResult:
         trades=0,
         evaluable=False,
         reason=f"{type(exc).__name__}: {exc}"[:200],
+        finished_at=time.time(),
     )
 
 
@@ -357,6 +359,7 @@ def run(
     horizons: Sequence[str] = HORIZONS,
     max_tier: int = 2,
     limit: int | None = None,
+    strategies: Sequence[str] | None = None,
     settings: Settings | None = None,
     results_path: Path = RESULTS_PATH,
     state_path: Path = STATE_PATH,
@@ -374,7 +377,7 @@ def run(
     # Validated before it can reach a file path; `build_queue` also validates,
     # but the symbol is used below to label state, so normalise it here too.
     asset = validate_asset(asset)
-    jobs = build_queue(asset, horizons=horizons, max_tier=max_tier)
+    jobs = build_queue(asset, horizons=horizons, max_tier=max_tier, strategies=strategies)
     results = read_results(results_path)
     proof = verify_evaluation_proof(asset, settings, jobs, results, results_path)
     already = completed_ids(results)
@@ -473,6 +476,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="0 = card presets only, 1 = +near variations, 2 = +half/double",
     )
     p.add_argument("--limit", type=_limit_argument, default=None, help="stop after N jobs")
+    p.add_argument("--strategies", nargs="+", default=None, metavar="NAME",
+                   help="only these registry names (default: every buildable card)")
     p.add_argument("--results-path", type=Path, default=RESULTS_PATH,
                    help="append results here; choose a fresh file when evaluation proof differs")
     p.add_argument(
@@ -488,7 +493,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
     if args.plan:
-        jobs = build_queue(args.asset, horizons=args.horizons, max_tier=args.max_tier)
+        jobs = build_queue(args.asset, horizons=args.horizons, max_tier=args.max_tier,
+                           strategies=args.strategies)
         results = read_results(args.results_path)
         verify_evaluation_proof(validate_asset(args.asset), load_settings(), jobs, results,
                                 args.results_path, persist=False)
@@ -538,6 +544,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             horizons=args.horizons,
             max_tier=args.max_tier,
             limit=args.limit,
+            strategies=args.strategies,
             results_path=args.results_path,
             stop=stop,
         )
