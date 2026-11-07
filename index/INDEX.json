@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-07T16:55:57+00:00",
+  "generatedAt": "2026-11-07T17:02:21+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "2661510",
+  "commit": "d6102b2",
   "counts": {
     "files": 637,
-    "bytes": 10571655,
+    "bytes": 10572516,
     "byKind": {
       "code-python": 142,
       "doc": 130,
@@ -16242,9 +16242,9 @@
       "title": "With adaptive weighting on, the fetched bars give each metric its track record even before the",
       "summary": "Compound five-minute tester: saved configuration, live reads, forward ledger, sweeps. python3 -m soltui.compound signal --asset SOL # score now, explain every metric python3 -m soltui.compound forward --asset SOL --loop # record a call per closed 5m bar python3 -m soltui.compound status --asset SOL # forward-test hit rates python3 -m soltui.compound backtest --asset SOL # compound + each component",
       "summarySource": "docstring",
-      "bytes": 81347,
-      "lines": 1675,
-      "sha1": "3db3dd14db9075f386faa31c5144613f8f6ed816",
+      "bytes": 82208,
+      "lines": 1696,
+      "sha1": "721acc0857286810a16c5df9f7865cfae0ea4bf9",
       "symbols": [
         "REPO",
         "COINBASE_CANDLES",
