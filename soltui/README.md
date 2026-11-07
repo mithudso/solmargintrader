@@ -22,6 +22,26 @@ soltui app      # the macOS menu-bar indicator (needs rumps)
 soltui serve    # the console in a browser window
 ```
 
+### The menu-bar app bundle needs a framework Python
+
+`soltui app` runs the indicator from the console venv. The double-clickable
+`SolTUI.app` is different: it is a py2app alias bundle, and py2app's launcher can only
+load a **framework build** of Python. uv's standalone CPython (what `~/.venvs/soltui`
+uses) is not one, so build the bundle from a separate venv on Homebrew's python@3.13:
+
+```bash
+uv venv ~/.venvs/soltui-app -p /opt/homebrew/opt/python@3.13/bin/python3.13
+uv pip install -p ~/.venvs/soltui-app/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
+~/.venvs/soltui-app/bin/python soltui/soltui-service build
+```
+
+The bundle records that framework through the stable `/opt/homebrew/opt` symlink, so
+Homebrew patch upgrades do not break it. If the recorded framework disappears (the
+python.org 3.13 install it was first built from did), the app dies with "A Python
+runtime not could be located". `soltui-service build` now refuses a non-framework
+interpreter and fails when the built bundle names no existing runtime;
+`soltui-service status` reports the same check.
+
 `soltui` is [`soltui/bin/soltui`](bin/soltui). It finds the repo through the
 symlink, changes to the repo root and runs `python -m soltui.<module>` with
 `$SOLTUI_PYTHON`, else `~/.venvs/soltui/bin/python`, else `python3`. Without the

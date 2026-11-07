@@ -948,21 +948,21 @@
       "component": "liquidity",
       "kind": "markdown",
       "summary": "How pools are judged, quick start, the daemon loop, safety",
-      "lines": 154
+      "lines": 197
     },
     {
       "path": "liquidity/CLAUDE.md",
       "component": "liquidity",
       "kind": "markdown",
       "summary": "Owner's live-operation authorization and its limits",
-      "lines": 52
+      "lines": 64
     },
     {
       "path": "liquidity/STATE_FILES.md",
       "component": "liquidity",
       "kind": "markdown",
       "summary": "status.json / scout.json / KILL contract with soltui",
-      "lines": 143
+      "lines": 154
     },
     {
       "path": "liquidity/pyproject.toml",
@@ -1011,7 +1011,7 @@
       "component": "liquidity",
       "kind": "python",
       "summary": "TOML risk/custody/configuration boundary",
-      "lines": 188
+      "lines": 242
     },
     {
       "path": "liquidity/src/aero_lp/state.py",
@@ -1074,7 +1074,7 @@
       "component": "liquidity",
       "kind": "python",
       "summary": "The loop: manage, compound, scout, allocate, status",
-      "lines": 1343
+      "lines": 1349
     },
     {
       "path": "liquidity/src/aero_lp/executor.py",
@@ -1088,7 +1088,7 @@
       "component": "liquidity",
       "kind": "other",
       "summary": "launchd install / status / kill / resume",
-      "lines": 58
+      "lines": 60
     },
     {
       "path": ".claude/agents/aero-pool-scout.md",

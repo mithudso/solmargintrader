@@ -123,7 +123,7 @@ Run all of these before claiming a change works:
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 681 tests
-python3 -m unittest discover -s soltui/tests -t .       # 402 tests (~300s)
+python3 -m unittest discover -s soltui/tests -t .       # 408 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 242 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE
@@ -182,4 +182,5 @@ row ordering if you touch the fetch path.
 | `missing required column(s)` | You pointed a bar tool at `JLP_spot.csv` |
 | soltui not running after login | The flag file, not Quit. `python3 soltui/soltui-service status` |
 | soltui bundle broken after moving the repo | It is an **alias** py2app build that references this checkout. `soltui-service build` |
+| SolTUI.app: "A Python runtime not could be located" | The bundle's `PyRuntimeLocations` point at a Python framework that no longer exists, or it was built from a non-framework Python. Rebuild from `~/.venvs/soltui-app` (Homebrew python@3.13); `soltui-service status` shows the runtime check |
 | Dry run closes a round trip flat or negative | A real regression: the exit must rest one rung above the entry. See `expectedRoundTripUsd` |
