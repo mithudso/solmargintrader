@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 27
-Delta: v23 to v27; wallet source, click-to-toggle and unattended training, inverting wrong metrics, status bar and four indicators (v23 is the scorecard paper).
+Version: 28
+Delta: v27 to v28; triangular arbitrage feasibility and quote-replay card design.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -182,3 +182,12 @@ The metrics that score extremely poorly, can you just invert whatever decision m
 ```text
 This backtesting table is difficult to understand what's going on. Add a status bar somewhere. But also Add just Volume, Balance of power, zig zag, and exponential moving average to the strategies. Are there any indicators or signals that are mutually exclusive or dont work together?
 ```
+
+
+## v28 - 2026-11-07
+
+```text
+There is a type of multi-coin trade that can only happen every now and then using arbitrage percentages across multiple coins. So like if the eth/zec ratio was 1, and the zec/btc ratio was 1.1, and then the btc/eth ratio was .9 then looping in a circle would generate a profit. Explore the feasibility of that and if it could work design a card for this repo to do backtesting.
+```
+
+Target: existing `backtester/strategy_cards/triangular_arbitrage.md`; Stele TASK-826. Design only; no live trading or fabricated backtest results.

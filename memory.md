@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 34
-Delta: v33 to v34; compound wallet sizing, click toggle, unattended training, inversion default, new metrics, relations.
+Version: 36
+Delta: v35 to v36; triangular arbitrage card design completed and verified; delivery receipt tracked in TASK-829.
 
 ## v1 - 2026-11-06
 
@@ -346,3 +346,29 @@ Completed: wallet read from soltui Settings solana_address via wallet.scan_solan
 Verification: live wallet scan of the Settings address read $2.29 SOL and sized a call; live unattended start -> one recorded tick -> stop released the lock. Default compound OOS hit static vs learned+invert: BTC 50.3/49.5, DOGE 44.9/55.8, ETH 45.6/52.6, SOL 47.3/51.1, ZEC 48.3/51.1; returns still negative on all five.
 
 Remaining: open Jupiter Perps positions are not read (no documented endpoint); per-regime learned weights; a year of 5m data via research/full_suite.py.
+
+
+## v35 - 2026-11-07
+
+Target: extend the existing triangular_arbitrage card, not add a duplicate strategy. Stele TASK-826; steps TASK-827 (feasibility), TASK-828 (design), TASK-829 (verify/deliver).
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1b691; branch agent-01a1b691; base db3a3d9. Shared checkout has active sessions and unrelated untracked work; preserve it.
+
+Completed: instructions, data/engine/card contracts, prior KNOW-522, and source abstracts inspected. The example multiplies to 0.99; reciprocal rates are hypothetical until reverse bid/ask is available. Existing card is spec-only.
+
+Decisions: one venue, independent cross pairs, timestamped event replay; use bid for base sales and reciprocal ask for base purchases; include depth, latency, partial fills, dust and costs. KNOW-830 records this design; KNOW-831 records the data gap. Existing USD OHLCV cannot measure capture profitability. Scope is a card design, not a new runner.
+
+Evidence: original abstracts at https://arxiv.org/abs/2105.02784 and https://arxiv.org/abs/0812.0913; crypto study at https://doi.org/10.1016/j.frl.2024.106508 and University of Bamberg repository. Read via Parallel on 2026-11-07 (cached source acquisitions disclosed by provider). Stele search agent failed because gpt-5.4-mini is unsupported on this account; direct MCP reads used.
+
+Remaining: write card; verify arithmetic, card suite and docs/index freshness; regenerate offline retrieval artifacts as required; review/commit/push/PR/CI/merge; preserve other sessions. Missing historical books and a runner are future implementation requirements, not unfinished deliverables for this design request.
+
+
+## v36 - 2026-11-07
+
+Completed on /Users/mitch/dev/solmargintrader-wt-01a1b691: existing backtester/strategy_cards/triangular_arbitrage.md is design v2.0. It contains the corrected worked example, reciprocal-ask conversion, exact fee hurdle, independent-book requirements, delayed three-leg replay, partial-fill/unwind accounting, capital/depth reservations, holdout and stress protocol, acceptance gates, required future fixtures, and original source links. No runner, registry, or live execution changed. Prompt v28 preserves the verbatim request.
+
+Verification: 40 strategy-card tests pass. Full backtester suite: 829 tests pass. scripts/check_docs.py passes (829 backtester, 313 extension, 33 mongo, 756 soltui discovered; only the backtester suite was run locally for this documentation change). research/verify_numbers.py passes its 1,084 existing research-figure checks; it does not validate literature figures in this card. Card arithmetic independently checked with decimal arithmetic. The first full-suite run failed only because index hashes were stale; offline index/build.py all repaired them and the next full run passed. No semantic indexing, model startup, data collection or live trading ran.
+
+Delivery: commit and PR cover the card, these workflow records, and the three offline retrieval indexes. TASK-829 holds the final PR/check/merge receipt after remote delivery. The shared master checkout and unrelated branches/worktrees remain owned by their active sessions.
+
+Remaining design work: none. Before any measured arbitrage result, a later implementation must audit venue/pair availability, obtain sequence-valid independent cross-pair books and fee/latency metadata, and implement/test the offline replay. The card deliberately remains spec-only with data_available false; profitability is unmeasured.
