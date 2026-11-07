@@ -245,14 +245,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 1831
+      "lines": 1996
     },
     {
       "path": "backtester/core/compound.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 433
+      "lines": 462
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -726,7 +726,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3551
+      "lines": 3577
     },
     {
       "path": "soltui/signals.py",
@@ -782,7 +782,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 1905
+      "lines": 1961
     },
     {
       "path": "soltui/liquidity.py",
@@ -942,7 +942,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 174
+      "lines": 178
     },
     {
       "path": "AGENTS.md",
@@ -1235,7 +1235,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 445
+      "lines": 464
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
