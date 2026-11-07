@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 35
-Delta: v34 to v35; every coin in parallel with its own numbers; full 1m history.
+Version: 36
+Delta: v35 to v36; every coin in parallel with its own numbers; full 1m history.
 
 ## v1 - 2026-11-06
 
@@ -347,7 +347,15 @@ Verification: live wallet scan of the Settings address read $2.29 SOL and sized 
 
 Remaining: open Jupiter Perps positions are not read (no documented endpoint); per-regime learned weights; a year of 5m data via research/full_suite.py.
 
-## v35 - 2026-11-07 (every coin in parallel, own numbers, full minute history)
+## v35 - 2026-11-07 (grid holdout)
+
+Target: profitability review of the repo (prompts.md v28). Review verdict: strong safety/tests/docs, no measured edge, no realized profit, about $1 idle on the LP wallet; every tested strategy lost out of sample (PBO 0.70). Recommended: hurdle rule (beat jupSOL staking net of costs over 90 forward days), holdout rerun, forward shadow ledger, Trigger transaction verifier then one tiny live round trip, carry/yield backtest, regime-gated grid with a cancel path, monitoring (unified equity vs HODL, dead-man heartbeat, cache freshness, realized-vs-modelled costs).
+
+Completed: PR #55 gitignored the two CDP credential files (merged c01412a; never read). Holdout: fetched SOL 1d to the scratchpad (not the shared cache), added research/grid_holdout.py and research/results/grid_holdout_20261107.json, section in research/GRID-REVIEW.md. Predeclared ladder on 94 finished bars 2026-08-05..2026-11-06: +0.83% (about 3% a year) vs hold +21.6%; price above the ladder 80 of 94 bars; double costs +0.81%. Worktree /Users/mitch/dev/solmargintrader-wt-97230e9e, branch agent-97230e9e.
+
+Remaining: forward shadow ledger (dry-run against live prices, log modelled vs real fills); Trigger semantic verifier; carry/yield backtest; monitoring items above. grid_holdout.py has no unit test (thin glue over tested gridsim); add one with the counts update if it grows.
+
+## v36 - 2026-11-07 (every coin in parallel, own numbers, full minute history)
 
 Target: user asked for data as detailed and as far back as possible, backtesting and forward testing on all coins at once in parallel, each coin with its own set of numbers. Stele TASK-825 (Stele MCP disconnected mid-session; writes queued in the outbox). Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-coins, branch feat/compound-all-coins (stacked on PR #64).
 

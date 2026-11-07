@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 28
-Delta: v27 to v28; full 1m history, every coin in parallel with its own numbers.
+Version: 29
+Delta: v28 to v29; full 1m history, every coin in parallel with its own numbers (v28 is the profitability review).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -183,7 +183,13 @@ The metrics that score extremely poorly, can you just invert whatever decision m
 This backtesting table is difficult to understand what's going on. Add a status bar somewhere. But also Add just Volume, Balance of power, zig zag, and exponential moving average to the strategies. Are there any indicators or signals that are mutually exclusive or dont work together?
 ```
 
-## v28 - 2026-11-07 (full history, every coin in parallel)
+## v28 - 2026-11-07 (profitability review)
+
+```text
+look at this repo and identify how it can be improved, what features, tests, functionality, monitoring, etc would make this a truly profitable venture?
+```
+
+## v29 - 2026-11-07 (full history, every coin in parallel)
 
 ```text
 Can you download as detailed as possible numbers for as far back as you can go? We also need to test it on all of the coins, so make it do the back testing against all of the coins all at once in parallel, as well as the forward testing. Which means each of the coins will need its own set of numbers.
