@@ -4,7 +4,7 @@ name: Triangular Arbitrage
 kind: exposure-strategy
 status: spec-only
 family: arbitrage
-summary: Three-leg currency cycle priced off parity. Not backtestable on this project's data, for a structural reason rather than a resolution one.
+summary: Three-leg spot cycle with executable bid/ask rates. Event-replay design only; independent cross-pair books and a dedicated runner are missing.
 registry_key: null
 runner: null
 warmup_bars: null
@@ -20,153 +20,268 @@ presets: {}
 ---
 # Triangular Arbitrage
 
-## What it is
-Trade a three-leg cycle `A -> B -> C -> A`. If the product of the executable rates
-exceeds one after costs, the cycle returns more of asset A than it consumed.
+Design version: 2.0 (2026-11-07).
+Delta: replace categorical feasibility claims with a bounded evidence assessment;
+correct rate direction; specify an offline event-replay experiment.
 
-## Equation
+## Feasibility and current state
 
-Let `r_XY` be units of Y received per unit X. **State the convention or you will
-manufacture edges out of nothing** — mixing quote conventions across legs is the most
-common implementation bug in this strategy.
+**The mechanism works mathematically, and cyclic DEX trades have been observed.
+A profitable implementation here remains unproven.** A cycle needs independent
+markets whose executable rates briefly disagree enough to pay every cost. It does
+not need any coin to rise in USD. Competition, spread, depth and execution delay
+can remove the apparent profit before a participant completes the cycle.
 
-No-arbitrage condition:
+This is the existing card for this mechanism, not a new trial in the strategy
+count. It stays `spec-only`, `data_available: false`, `registry_key: null`, and
+`runner: null`. This revision designs a backtest; it neither implements nor runs
+one. The current USD OHLCV cache cannot support it. `success_likelihood: very-low`
+is a qualitative prior for this project's current data and infrastructure, not a
+measured probability or a proof that every venue is unprofitable.
 
+## Equation and the user's example
+
+Define `r_XY` as **units of Y received per unit of X sold**. Do not infer direction
+from an ambiguous pair label. With frictionless independent rates:
+
+```text
+M_gross = r_AB * r_BC * r_CA
+edge_bps = 10000 * (M_gross - 1)
 ```
-r_AB * r_BC * r_CA = 1
+
+If the example means ETH -> ZEC at 1, ZEC -> BTC at 1.1, BTC -> ETH at 0.9:
+
+```text
+1 ETH -> 1 ZEC -> 1.1 BTC -> 0.99 ETH
+M_gross = 0.99                      loss = 1% before fees
+M_reverse_ideal = 1 / 0.99           gain = about 1.0101% before fees
 ```
 
-Executable form, where `p_i` is the rate actually available (the **ask** when buying the
-base, the **bid** when selling it) and `f_i` the per-leg taker fee:
+The ideal reverse uses reciprocal frictionless rates; actual reverse trades use
+the opposite book sides, so that gain is not established by the example. For a
+positive forward illustration, replace the last rate by 0.92:
 
-```
-M = product over legs of  p_i * (1 - f_i)          profitable iff M > 1
-```
-
-Mid-price form — an approximation, and the one that lies:
-
-```
-product of r_mid,i  >  1 + sum(s_i / 2) + sum(f_i)      s_i = relative spread on leg i
+```text
+M_gross = 1 * 1.1 * 0.92 = 1.012
+M_net = 1.012 * (1 - 0.001)^3 = 1.008967034988
+net_edge_bps = 89.67034988
 ```
 
-**Spread is not an additive cost, it is which side of the book you take.** The additive
-form is a linearisation. A cycle can satisfy the mid-price inequality and fail the
-executable one at the same instant, and in the literature it usually does. That gap *is*
-the difference between a quoted triangle and an executable one, and it is the whole
-subject.
+That illustration assumes 10 bps on each leg, fees deducted from output, no
+additional impact or delay, and enough depth. It is arithmetic, not market data.
+Three such fee deductions require a gross multiplier above
+`1 / 0.999^3`, about 30.0601 bps above parity, even before execution deterioration.
 
-**Sizing the hurdle:** three legs at 10 bps taker is **30 bps of fee before any spread**.
-At major-venue half-spreads of 1-2 bps per leg the mid triangle must deviate roughly
-33-36 bps to break even. At the lowest fee tiers that hurdle collapses toward 5-10 bps —
-so fee tier is not a detail, it is most of the edge, which is precisely why the surviving
-participants are the ones with the lowest tier.
+For a market `BASE/QUOTE` quoted in QUOTE per BASE, use:
 
-On an AMM the rate is a function of size rather than a price, and for constant-product
-pools the three-leg cycle composes to a single CPMM-equivalent. Profit is concave in size,
-so there is a maximum profitable trade **and**, because on-chain cost is fixed per attempt,
-a minimum one. If that fixed cost is large enough the profitable interval is **empty**: the
-opportunity is real and unexploitable at any size.
+```text
+sell BASE for QUOTE:    rate = bid
+buy BASE using QUOTE:   rate = 1 / ask
+M_net = product(rate_i * (1 - fee_i))
+```
 
-## Why this card is `spec-only` and not "needs finer bars"
+This product is only the small-size, output-fee screening formula. An executable
+size must walk the book, round quantities and account for the actual fee currency.
+Do not subtract spread again after already using bid/ask. Do not model a fee-token
+payment as free; debit that balance and value its cost in the starting asset.
 
-The obvious reading is that 1d/1h bars are simply too coarse. True, but not the binding
-reason, and the binding reason is more specific:
+## Why the current cache cannot answer the question
 
-**BTC, ETH and SOL as held by this project are all quoted against USD, and three
-USD-quoted series do not form a triangle.** `USD -> BTC -> USD` is not a cycle. A genuine
-triangle needs a **cross pair** — `ETH/BTC`, `SOL/ETH`, `SOL/BTC`. Any "triangle" assembled
-from three USD-quoted closes is a **synthetic cross**, and its apparent deviation from
-parity is **a data artifact** — non-simultaneous bar closes, different last-trade times,
-possibly different venues — not an opportunity.
+For simultaneous USD prices `P_A`, `P_B`, `P_C`:
 
-A backtest built on that would produce a confident and entirely spurious equity curve, and
-it would look better the coarser the bars, because the artifact grows with timestamp
-misalignment. That is the failure this card exists to prevent someone rediscovering.
+```text
+(P_A / P_B) * (P_B / P_C) * (P_C / P_A) = 1
+```
 
-Four further reasons any bar-based evaluation fails, in ascending order:
+Any departure using those same values is numerical error. Mixing timestamps or
+venues can create a false deviation. Adding fees to this identity only loses
+money. An independently traded cross pair can disagree with the synthetic cross;
+that is the input this experiment needs. A valid triangle may include a real
+stablecoin market, for example ETH/BTC, BTC/USDT and ETH/USDT. Three non-USD pairs
+are not mandatory; three independent tradable edges are.
 
-1. **No bid/ask.** A close is a last or mid price, so only the mid-price inequality can be
-   computed — the version the literature shows is non-executable. The backtest would be
-   testing the known-false condition.
-2. **No depth**, so no optimal size, no minimum size, no maximum size. You can answer "did
-   a number exceed one" and not "was it worth anything".
-3. **No cross-pair simultaneity.** The arb requires three rates to hold at one instant; bar
-   closes are independent per-pair aggregates.
-4. **Timescale mismatch of orders of magnitude.** Opportunity lifetimes are sub-second. An
-   hourly bar averages thousands of appearances and disappearances into one number that
-   corresponds to no tradable moment.
+OHLCV also lacks spread, size, queue/depletion state and event ordering. Smaller
+bars do not fix those omissions. `research/ratio_rotation.py` studies relative
+asset selection over time; it is a different mechanism and cannot validate this
+card. The single-asset bar exposure engine must not simulate three instantaneous
+fills from a closing-price signal.
 
-## Data that would make it evaluable
+## Backtest design: one-venue CEX event replay
 
-- **CEX:** event-resolution L1 (`bid`, `ask`, and both sizes) plus L2 depth of 5-10 levels,
-  from **one venue** — a triangle spanning venues is not atomic and is a different, worse
-  strategy. Exchange and local receipt timestamps both. The real fee tier. A measured
-  latency distribution, not an assumed constant.
-- **Solana:** per-slot pool reserve state for every pool in the cycle, including in-range
-  liquidity or active bin for concentrated-liquidity venues (headline TVL is close to
-  meaningless for execution); priority-fee distribution scoped to the writable accounts the
-  transaction touches, not a cluster-wide figure; and landed / dropped / reverted outcomes
-  with fees paid, without which the landing probability cannot be estimated.
+This is the first experiment because it isolates the market-pricing hypothesis
+from blockchain execution. Venue and pair availability must be audited before
+collection. ETH/ZEC/BTC is a candidate, not a claim that all required markets are
+listed for this account or period. If an edge is absent, mark that triangle
+unavailable rather than reconstructing it from USD prices or another venue.
 
-## Works when
-Never, reliably, for a participant without co-location or the lowest fee tier. The
-mechanism is sound and the opportunities are real; capturing them is an infrastructure
-contest.
+### Required local data and manifest
 
-## Fails when
-Always, in the specific sense that matters: opportunities are numerous, small, short-lived
-and shrinking, and the gap between *counted* and *capturable* is the entire finding of
-every study below.
+| Input | Required fields and rules |
+|---|---|
+| Book events | venue, market, exact base/quote asset IDs, exchange timestamp, local receipt timestamp, sequence/update IDs, snapshot/delta type, bids and asks as price/BASE-size levels |
+| Market rules | point-in-time listing/delisting and halt status, price tick, quantity step, minimum quantity/notional, order support, balance and fee rounding rules |
+| Fees | point-in-time account taker tier per market, fee currency, discounts and eligibility; never use an unattained VIP tier as the baseline |
+| Timing | measured feed delay and decision/send/acknowledgment latency distributions; retain calibration provenance and measurement dates |
+| Run manifest | source URLs/provider, acquisition date, checksums, coverage/gaps, timestamp units/clock uncertainty, venue, asset IDs, starting inventory, config, seed, code revision and all trials |
 
-## On Solana, atomicity changes the risk rather than removing it
-All three legs in **one transaction** either execute or none do, so leg risk and inventory
-risk genuinely disappear — and this needs no bundle. (A Jito bundle buys *ordering relative
-to other transactions*, not atomicity; conflating the two is the standard error.)
+Store raw data locally through a separate explicit collector/importer. The replay
+must be offline. Record delisted periods and outages as coverage, not silent row
+deletion. At least L1 prices **and sizes** permit a capacity screen; sequence-valid
+L2 snapshots plus updates are required for the proposed size-aware replay. A fixed
+number of levels is not enough if a planned trade reaches beyond recorded depth.
+Missing fees, precision rules, clocks or latency calibration block a credible
+profit estimate. Assumed latency permits only a labeled sensitivity study.
 
-What replaces leg risk:
+### Replay and execution state machine
 
-- **Inclusion risk** — a dropped transaction never lands and costs nothing.
-- **Revert cost** — a landed-but-failed transaction pays the full fee, and at scale this
-  dominates.
-- **Auction competition** — the priority fee is a product of price and requested compute
-  units, ranked per-CU, so over-requesting costs money and priority simultaneously.
-- **Size ceiling** — 1,232 bytes and 1.4M CU per transaction. A three-hop split route may
-  simply not serialise; treat "the optimal route does not fit" as an expected case.
-- **Sandwich exposure is *lower* than for an ordinary swap**, for a precise reason: an arb
-  transaction that reverts unless profitable sets no slippage tolerance to squeeze. The
-  adversarial exposure is being outraced, not being sandwiched.
+1. Reconstruct each book from its snapshot and ordered deltas. Detect sequence
+   gaps, duplicates, corrupt/crossed books and clock problems. Pause eligibility
+   until a valid resnapshot; never forward-fill through an outage.
+2. At local decision time `t`, form the signal only from events received by `t`.
+   Use backward as-of joins with quote-age and inter-market skew caps. Exchange
+   timestamps diagnose alignment; future receipt events cannot inform a decision.
+3. Enumerate both directions for each eligible triangle. Canonicalize its cyclic
+   rotations so one opportunity does not become three independent observations.
+   Require funded starting inventory; no leverage or shorting in this experiment.
+4. Walk visible depth for the proposed size, apply exact venue rounding and fee
+   debits at each leg, and require estimated net return above `min_edge_bps`.
+   Starting-asset expected profit must also exceed any fixed execution costs.
+5. Schedule leg 1 after the configured decision/send delay. Fill against the
+   reconstructed exchange book at order arrival, not the book used for the
+   signal. Process equal timestamps by documented sequence/priority; if ordering
+   is unknowable, reject the event or take the adverse ordering. Never select
+   the first favorable quote *after* arrival as a fill.
+6. Use IOC semantics only where the market supports them. Leg 2 waits for the
+   acknowledgment and uses the actual net filled output of leg 1; leg 3 does
+   the same. Model each send/ack delay, new book state, fee and precision rule.
+   Three orders at one CEX are not an atomic transaction.
+7. On a partial fill, reject or halt, stop the intended cycle and unwind residual
+   assets through available books after the same delays and costs. If an unwind
+   cannot fill, carry and report the inventory; never erase the attempt. Mark it
+   conservatively at executable liquidation value and report unpriceable balances
+   as unresolved, which prevents promotion.
+8. Reserve balances and consumed depth. Serialize cycles for the first version.
+   A replay cannot repeatedly spend the same capital or count the same stale
+   book liquidity as fresh. Reconcile hypothetical consumption against later book
+   updates without minting liquidity; document the counterfactual limitation.
 
-## Evidence
+The replay cannot prove that historical displayed liquidity would have been
+available to our hypothetical orders. A depth haircut and adverse execution cases
+must bound this optimism. Observed book depth is an upper bound on capacity.
 
-| Finding | Source | Date |
-|---|---|---|
-| 292,606 cyclic arbitrages on Uniswap V2 over 11 months, >$138M revenue; most profitable *unexploited* opportunity persistently >1 ETH | Wang, Chen, Wu, Zhou, Deng & Wattenhofer, *Cyclic Arbitrage in Decentralized Exchanges*, arXiv:2105.02784 / WWW '22 | 2021-22 |
-| **4,879 triangular opportunities found on Binance (BTC/LTC/USD) and transaction costs plus limited order-book volume eliminate their profitability.** Concludes opportunity count is not a reliable indicator of inefficiency | Muck, Schmidl & Wolf, *Wish or reality? On the exploitability of triangular arbitrage in cryptocurrency markets*, Finance Research Letters 73 | 2025 |
-| FX triangular opportunities exist with short durations and a declining trend; a trader "would need to beat other market participants to an unfeasibly large proportion of arbitrage prices to profit" | Fenn, Howison, McDonald, Williams & Johnson, *The Mirage of Triangular Arbitrage in the Spot Foreign Exchange Market*, IJTAF 12(8) / arXiv:0812.0913 | 2008-09 |
+### Predeclared experiment settings
 
-Two independent literatures — FX in 2009, crypto CEX in 2025 — reached the same conclusion
-by the same route. The one setting where measured revenue is large and real is on-chain,
-and that is also the one requiring atomic execution and searcher infrastructure.
+The frontmatter's `min_edge_bps = 35` means **35 bps remaining after all modeled
+costs**, not a 35 bps gross signal with fees still to deduct. Its `taker_fee_bps =
+10` is a synthetic-fixture assumption; real evaluation requires the actual fee
+schedule. Neither is a tuned or measured optimum.
 
-Commonly cited 2026 Solana aggregates (arbitrage as a share of DEX volume, searcher profit
-totals, tip-as-share-of-profit) come from vendor and infrastructure blogs, are
-single-sourced and commercially interested, and are **deliberately not quoted here**.
+Before reading holdout outcomes, freeze the venue, triangle universe, starting
+asset/quantity, test dates, quote-age/skew caps, depth haircut, latency model,
+unwind policy and acceptable drawdown/inventory limit in the manifest. Starting
+quantity and freshness caps need feed/market calibration; no universal default
+is asserted here. Use training data for feasibility and those calibration choices.
+
+Use chronological 60% development, 20% validation and 20% untouched test periods,
+with calendar boundaries saved in the manifest. Purge attempts that cross a split
+boundary, and embargo the maximum allowed cycle/unwind horizon. If the feed cannot
+support three meaningful periods, report insufficient coverage instead of a
+positive result. Fit latency only on prior measurements, never on holdout fills.
+
+On the frozen configuration, report baseline plus these predeclared stresses:
+latency 2x and 10x; displayed depth 50%; fees 2x; and the combined 2x-latency,
+50%-depth, 2x-fee case. Zero latency is an optimistic diagnostic only. Record every
+triangle, size and threshold explored in the trial count, even discarded ones.
+Do not promote the best stress outcome as a new selected baseline.
+
+### Outputs and decision gates
+
+Emit a versioned manifest, per-attempt ledger and aggregate report. Each ledger
+row binds its signal books, arrival books, times, direction, input amount, fills,
+fee debits, residual inventory, unwind result and rejection/failure reason. Show:
+
+- Gross apparent opportunities -> fresh/deep/cost-qualified candidates -> attempted
+  cycles -> fully closed cycles -> positive net outcomes. Include the rejected
+  and failed attempts and their losses in total economics.
+- Net starting-asset gain versus holding the same starting inventory; USD equity
+  separately so coin appreciation cannot masquerade as arbitrage profit.
+- Total costs, executable capacity, fill/abort/unwind rates, quote ages, cycle
+  duration, inventory exposure, drawdown and concentration by day/triangle.
+- Returns on total funded capital over elapsed time, not only deployed notional
+  or successful cycles. Mark ending dust/residual balances conservatively.
+- Uncertainty clustered by day (preserve within-day dependence), including a 95%
+  interval for mean daily net gain. Do not treat every quote update as an
+  independent trade or annualize a handful of successes into a Sharpe claim.
+
+Move from `spec-only` to `implemented` only when an offline runner and its
+correctness fixtures exist. Use `measured` only when real-data results and their
+provenance exist, including negative results. A favorable feasibility verdict
+additionally requires positive untouched-test net gain after failed attempts,
+a lower confidence bound above zero, acceptable predeclared risk limits, and
+positive economics under the combined stress. If those fail or data are too thin,
+report rejection or inconclusive evidence. Even passing supports a subsequent
+forward paper test, not a claim of live capture or authorization to add live
+trading to the backtester.
+
+### Required correctness fixtures for a future runner
+
+- The user's 0.99 cycle loses; the 1.012 illustration matches the fee arithmetic.
+- Synthetic USD ratios cancel; reciprocal ask and bid differ; a mid-price-only
+  apparent edge can vanish at executable prices.
+- All fees, third-token debits, quantity rounding, minimums and dust reach P&L.
+- Depth exhaustion and adverse price changes during delay erase an apparent edge.
+- Leg 2 partial fill and leg 3 rejection produce unwind costs/residual inventory.
+- Outages, stale quotes and sequence gaps cannot generate trades or free marks.
+- Prefix invariance: changing future events cannot change past signals or fills.
+- Restart/replay determinism, finite balances and no reuse of consumed liquidity.
+
+## On-chain extension: separate execution model
+
+Independent pools can create a genuine cycle on one chain. A single atomic
+transaction can make all swaps succeed together and enforce a minimum final
+balance. That removes partial-leg exposure when correctly implemented. It does
+not guarantee inclusion or a profit after fees.
+
+Such a replay needs historical pool state, exact token identities/decimals,
+fee and curve rules, concentrated liquidity where applicable, state ordering,
+size-dependent impact, transaction limits, and paid costs of failed included
+attempts as well as successful ones. Model competition and inclusion using
+observations; a reserve-price screen is not a capture estimate. Native ETH, BTC
+and ZEC are not automatically three swappable assets on one chain. Wrapped or
+bridged versions introduce distinct assets and risks. Cross-chain transfers or
+cross-venue inventory strategies require another model and cannot inherit
+atomicity from this card.
 
 ## Likelihood of success: very-low
 
-*Basis: a-priori. `spec-only` cards cannot cite `measured-oos`, and nothing here was
-measured on this project's data — by design, since §"Why this card is spec-only" argues
-that measuring it on this data would produce a false number rather than a weak one.*
+Basis: a-priori. No capture test has run here. The data and execution requirements
+are missing, and historical CEX evidence gives reason for a conservative prior.
+A quote-replay study could revise that assessment; it cannot be inferred from
+USD-price ratios or historical DEX revenue.
 
-The mechanism is arithmetically sound, which is exactly why it is competed away. Every
-peer-reviewed source above finds the same shape: real opportunities, negligible net profit
-after costs for anyone without the lowest fee tier and the shortest path to the matching
-engine or the leader.
+## Evidence and limitations
 
-## Caveats and limitations
-- The single most important line on this card is that **three USD-quoted series cannot form
-  a triangle**. If a future contributor adds `ETH/BTC` or `SOL/ETH` data, this becomes
-  evaluable *in principle* and still not on bar data.
-- `min_edge_bps` and `taker_fee_bps` are documented so the break-even arithmetic is
-  reproducible. They are not tuned, because nothing was run.
-- Not registered, so there is nothing to run. That is the correct state.
+Sources checked through Parallel on 2026-11-07; these are historical studies,
+not current venue quotes or estimates of this project's expected return.
+
+- Wang et al., *Cyclic Arbitrage in Decentralized Exchanges* (2021/2022): the
+  abstract reports 292,606 cyclic trades and over USD 138 million in revenue over
+  eleven months on Uniswap V2. This establishes observed activity, not our net
+  profitability or transferable present-day capacity.
+  https://arxiv.org/abs/2105.02784
+- Muck, Schmidl and Wolf, *Wish or reality? On the exploitability of triangular
+  arbitrage in cryptocurrency markets* (2025): their BTC/LTC/USD Binance sample
+  contains 4,879 possible opportunities; their abstract says transaction costs
+  and limited book volume eliminate profitability. That finding is bounded to
+  their sample and assumptions, not a theorem about every triangle.
+  https://doi.org/10.1016/j.frl.2024.106508
+  https://fis.uni-bamberg.de/entities/publication/0c9ed181-871f-4860-bc5f-b882cc81743e
+- Fenn et al., *The Mirage of Triangular Arbitrage in the Spot Foreign Exchange
+  Market* (2008/2009): executable-price simulations find short, small opportunities
+  and a demanding capture-rate requirement. FX is supporting execution evidence,
+  not direct evidence about ETH/ZEC/BTC today.
+  https://arxiv.org/abs/0812.0913
+
+Recommendation: keep this card as the experiment contract. Audit/obtain independent
+book history before implementing its replay. No profitability, pair availability,
+current fee tier or latency has been measured here; no equity curve is warranted.

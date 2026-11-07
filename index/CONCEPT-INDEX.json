@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T15:33:26+00:00",
+  "generatedAt": "2026-11-07T15:25:18+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -70,12 +70,12 @@
           "hits": 31
         },
         {
-          "path": "soltui/help.py",
+          "path": "soltui/tests/test_liquidity.py",
           "hits": 30
         },
         {
-          "path": "soltui/tests/test_liquidity.py",
-          "hits": 30
+          "path": "soltui/help.py",
+          "hits": 29
         },
         {
           "path": "extension/README.md",
@@ -380,7 +380,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 22
+          "hits": 25
         },
         {
           "path": "soltui/signals.py",
@@ -403,10 +403,6 @@
           "hits": 18
         },
         {
-          "path": "soltui/compound.py",
-          "hits": 18
-        },
-        {
           "path": "soltui/help.py",
           "hits": 18
         },
@@ -420,6 +416,10 @@
         },
         {
           "path": ".remember/remember.md",
+          "hits": 16
+        },
+        {
+          "path": "docs/ARCHITECTURE.md",
           "hits": 16
         }
       ],
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 185,
+      "matchingFiles": 184,
       "shown": 30,
       "files": [
         {
@@ -712,7 +712,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 184,
+      "matchingFiles": 183,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 182,
+      "matchingFiles": 181,
       "shown": 30,
       "files": [
         {
@@ -1261,7 +1261,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 140,
+      "matchingFiles": 141,
       "shown": 30,
       "files": [
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 135,
+      "matchingFiles": 136,
       "shown": 30,
       "files": [
         {
@@ -1484,10 +1484,6 @@
           "hits": 16
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 16
-        },
-        {
           "path": "research/TOP_COINS.md",
           "hits": 16
         },
@@ -1508,7 +1504,7 @@
           "hits": 14
         },
         {
-          "path": "soltui/tests/test_compound.py",
+          "path": "docs/COMPOUND-5M.md",
           "hits": 13
         },
         {
@@ -1516,12 +1512,16 @@
           "hits": 11
         },
         {
-          "path": "memory.md",
+          "path": "soltui/tests/test_utxo_scan.py",
           "hits": 10
         },
         {
-          "path": "soltui/tests/test_utxo_scan.py",
-          "hits": 10
+          "path": "index/build.py",
+          "hits": 9
+        },
+        {
+          "path": "liquidity/src/aero_lp/executor.py",
+          "hits": 9
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1672,7 +1672,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 120,
+      "matchingFiles": 121,
       "shown": 30,
       "files": [
         {
@@ -1953,16 +1953,16 @@
           "hits": 72
         },
         {
-          "path": "soltui/tests/test_compound.py",
-          "hits": 59
-        },
-        {
           "path": "research/results/cpcv_combos_tables.md",
           "hits": 52
         },
         {
           "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
           "hits": 52
+        },
+        {
+          "path": "soltui/tests/test_compound.py",
+          "hits": 51
         },
         {
           "path": "research/results/tables.md",
@@ -2103,7 +2103,7 @@
         },
         {
           "path": "soltui/compound.py",
-          "hits": 16
+          "hits": 13
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",

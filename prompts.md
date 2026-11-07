@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 29
-Delta: v28 to v29; full 1m history, every coin in parallel with its own numbers (v28 is the profitability review).
+Version: 30
+Delta: v29 to v30; full 1m history, every coin in parallel with its own numbers (v29 is the triangular-arbitrage card).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -189,7 +189,17 @@ This backtesting table is difficult to understand what's going on. Add a status 
 look at this repo and identify how it can be improved, what features, tests, functionality, monitoring, etc would make this a truly profitable venture?
 ```
 
-## v29 - 2026-11-07 (full history, every coin in parallel)
+
+## v29 - 2026-11-07
+
+```text
+There is a type of multi-coin trade that can only happen every now and then using arbitrage percentages across multiple coins. So like if the eth/zec ratio was 1, and the zec/btc ratio was 1.1, and then the btc/eth ratio was .9 then looping in a circle would generate a profit. Explore the feasibility of that and if it could work design a card for this repo to do backtesting.
+```
+
+Target: existing `backtester/strategy_cards/triangular_arbitrage.md`; Stele TASK-826. Design only; no live trading or fabricated backtest results.
+```
+
+## v30 - 2026-11-07 (full history, every coin in parallel)
 
 ```text
 Can you download as detailed as possible numbers for as far back as you can go? We also need to test it on all of the coins, so make it do the back testing against all of the coins all at once in parallel, as well as the forward testing. Which means each of the coins will need its own set of numbers.
