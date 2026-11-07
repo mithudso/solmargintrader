@@ -16,9 +16,7 @@ path anywhere in this package.
 
 from __future__ import annotations
 
-import inspect
-import subprocess
-import sys
+import time
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable
@@ -41,103 +39,27 @@ from textual.widgets import (
     TextArea,
 )
 
-from backtester.core import indicators as ind
-from backtester.core.strategies import FAMILY, REGISTRY, build
-
-from . import analyze as analyze_mod
 from . import bgcontrol
-from . import bgqueue
 from . import cumulative as cumulative_mod
+from . import bgqueue
 from . import docs_browser
 from . import liquidity as liq
 from . import top5 as top5_mod
-from . import live_run
-from .config import INTERVALS, Settings, load_settings, save_settings
-from .paper import MODE_LABEL, PaperSession, start_session
-from .roster import Roster, RosterError, available_strategies
-from .signals import (
-    SIGNAL_GROUPS,
-    SignalDefaults,
-    SignalError,
-    coerce,
-    from_dict,
-    mapped_strategies,
-    merged_params,
+from .commands import (  # noqa: F401 - re-exported: tests and docs import them from here
+    UNTESTED_SWEEP_TIMEOUT_S,
+    Context,
+    Runtime,
+    dispatch,
+    failure_summary,
+    untested_sweep_command,
 )
-from .runner import SweepRunner, engine_config, load_arrays
-from .status import AppState, Phase, build_title, format_pct
+from .config import INTERVALS, Settings, load_settings
+from .paper import MODE_LABEL
+from .roster import RosterError
+from .signals import SIGNAL_GROUPS, SignalDefaults
+from .status import build_title, format_pct
 
-# The Research tab's content. Kept here as data rather than fetched or computed:
-# these are the questions each driver answers and what it actually established,
-# and both are stable facts about the study. Figures match docs/SCRIPTS.md and
-# research/CROSS-ASSET-TRANSFER.md; `python3 research/verify_numbers.py` is the
-# gate that keeps the underlying documents honest.
-RESEARCH_DRIVERS = [
-    ("research/cpcv_sweep.py", "Is a configuration any good?",
-     "PBO 0.700 at both daily horizons vs a 0.500 noise line"),
-    ("research/cross_asset_cpcv.py", "Does it transfer to another coin?",
-     "All 10 top-5 transfers to DOGE/ZEC degraded; none improved"),
-    ("research/perturb.py", "Was it fitted to noise?",
-     "Pairs are ~2.6x more parameter-sensitive than long-horizon singles"),
-    ("research/geometry.py", "Is the leaderboard an artifact of block count?",
-     "8->9 blocks moved the best pair -0.441, more than any parameter"),
-    ("research/decide.py", "What does each rule say right now?",
-     "Targets provably match what the engine would have acted on"),
-    ("research/dso_audit.py", "Which results are below the evidence floor?",
-     "BTC's rank-1 ou_reversion sits on 6 trades"),
-    ("research/sweep.py", "The single 70/30 split it all replaced",
-     "In-sample window ended on the highest close in the series"),
-    ("research/verify_numbers.py", "Do the docs match their CSVs?",
-     "950 figures checked; CI fails the build on drift"),
-    ("research/turnover_table.py", "One comparable turnover table",
-     "DOGE 3.44% leads SOL 3.32% on a single-timestamp pull"),
-]
-
-RESEARCH_FINDINGS = [
-    "In-sample rank is anti-informative: PBO 0.700, and Spearman rho(IS, OOS) is "
-    "-0.419 at the medium horizon.",
-    "The five recommended configurations do not transfer. Only #3 and #4 stayed "
-    "positive on all three assets; #2 is 100% positive on SOL and 0% on DOGE "
-    "across the same 15 paths.",
-    "Path counts are 15 or 21, never the nominal 28 — only buy_and_hold, which "
-    "needs no warm-up, reached 28.",
-    "The dataset explains more than the strategy: the same 25 strategies score "
-    "25/25 on BTC daily and 0/25 on SOL hourly.",
-    "Buy-and-hold medians +0.534 on SOL with zero parameters, 2nd of 25 — and on "
-    "ZEC it beat all five recommended configurations.",
-]
-
-# One-line description per signal family, for the Signals tab. Sourced from the
-# taxonomy in research/STRATEGIES.md so the two do not drift into disagreement.
-FAMILY_NOTES = {
-    "baseline": "The null hypothesis. Any strategy that cannot beat it is a cost-generating machine.",
-    "trend": "Bets that direction persists. Fails in chop, where every oscillation is a whipsaw pair.",
-    "momentum": "Sign of past return predicts the next period. Its risk is momentum crashes.",
-    "regime-filter": "Answers 'bull or bear'. Its value is avoiding drawdowns, not making returns.",
-    "breakout": "Bets on range expansion. ~30-35% win rate; a few large winners pay for the false starts.",
-    "oscillator-reversion": "Buys exhaustion. In a strong trend the reading stays pinned and it gets run over.",
-    "mean-reversion": "Buys distance from a mean. Fails when the mean itself shifts.",
-    "volume-flow": "Reads participation, not price. Price-blind, which is why it pairs well.",
-    "risk-overlay": "Changes position size, not direction. Reshapes the equity curve.",
-    "sma-gated": "One entry rule -- close above its SMA -- under four sizing schemes. "
-                 "Measured 0.92-1.00 correlated, so treat them as one bet, not four.",
-}
-
-# Indicator functions exposed on the Signals tab, with their equations.
-SIGNAL_REFERENCE = [
-    ("SMA(n)", "mean of last n closes", "trend"),
-    ("EMA(span)", "alpha=2/(span+1), recursive", "trend"),
-    ("RSI(p)", "100 - 100/(1+RS), RS=avgGain/avgLoss (Wilder)", "oscillator-reversion"),
-    ("MACD(f,s,sig)", "EMA(f)-EMA(s), signal=EMA(sig) of that line", "trend"),
-    ("Bollinger(n,k)", "mid +/- k*stdev(ddof=0); bandwidth=(u-l)/mid", "mean-reversion"),
-    ("ATR(p)", "Wilder smoothing of max(H-L,|H-pC|,|L-pC|)", "breakout"),
-    ("Stochastic(k,d)", "%K=(c-min)/(max-min)*100, %D=SMA(d) of %K", "oscillator-reversion"),
-    ("OBV", "cumulative sign(dC) * volume", "volume-flow"),
-    ("VWAP(n)", "sum(TP*V)/sum(V), TP=(H+L+C)/3", "mean-reversion"),
-    ("Z-score(n)", "(c - mean)/stdev(ddof=1)", "mean-reversion"),
-    ("ROC(n)", "c_t/c_{t-n} - 1", "momentum"),
-    ("RealisedVol(n)", "stdev(log returns)*sqrt(periods_per_year)", "risk-overlay"),
-]
+from .reference import FAMILY_NOTES, RESEARCH_DRIVERS, RESEARCH_FINDINGS, SIGNAL_REFERENCE  # noqa: F401
 
 
 def _mtime(path: Path) -> float:
@@ -271,25 +193,43 @@ HEADER_GLOSSARY = {
 
 
 # Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.
-# The research scripts import pandas and numpy, so they must run on the interpreter running
-# this console (its venv has them). A bare "python3" resolves through PATH and, after a
-# Homebrew upgrade made it 3.15 with no pandas, the button failed with "ModuleNotFoundError:
-# No module named 'pandas'" (2026-11-07; Stele KNOW-546).
-UNTESTED_SWEEP_TIMEOUT_S = 30 * 60
-
-
-def untested_sweep_command(repo: Path) -> list[str]:
-    """argv for research/sweep_untested.py on this console's own interpreter."""
-    return [sys.executable, str(repo / "research" / "sweep_untested.py")]
-
-
-def failure_summary(stderr: str, lines: int = 3) -> str:
-    """The end of a traceback, where the exception is; its start only names the entry file."""
-    tail = [line for line in (stderr or "").strip().splitlines() if line.strip()][-lines:]
-    return "\n".join(tail) or "no error output"
-
-
 DOCS_TABLE_CAP = 1000
+
+# Every Button.Pressed handler below maps to the registry command it runs. tests/test_bridge_buttons.py
+# parses this file and fails when a button is missing here or names a command that does not exist, so a
+# new button cannot skip the registry (the extension, CLI and API would silently lack its action).
+BUTTON_COMMANDS: dict[str, str] = {
+    "#btn-save": "settings.save",
+    "#btn-add": "roster.add",
+    "#btn-remove": "roster.remove",
+    "#btn-reset-roster": "roster.reset",
+    "#btn-save-signals": "signals.save",
+    "#btn-reset-signals": "signals.reset",
+    "#btn-cancel": "backtest.cancel",
+    "#btn-run": "backtest.run",
+    "#btn-run-untested": "backtest.untested_sweep",
+    "#btn-paper-start": "paper.start",
+    "#btn-step1": "paper.step",
+    "#btn-step25": "paper.step",
+    "#btn-step-end": "paper.seek_end",
+    "#btn-paper-reset": "paper.reset",
+    "#btn-refresh-live-run": "live.recommendation",
+    "#btn-spawn-dryrun": "live.spawn_dryrun",
+    "#top5-add-selected": "top5.add_to_roster",
+    "#top5-add-all": "top5.add_to_roster",
+    "#top5-run": "backtest.run",
+    "#top5-reload": "top5.list",
+    "#analyze-run": "analyze.run",
+    "#cumulative-reload": "cumulative.summary",
+    "#queue-start": "queue.start",
+    "#queue-stop": "queue.stop",
+    "#queue-refresh": "queue.status",
+    "#queue-fetch": "queue.fetch",
+    "#liq-refresh": "liquidity.status",
+    "#liq-kill": "liquidity.kill",
+    "#liq-resume": "liquidity.resume",
+    "#docs-save": "docs.write",
+}
 
 class GlossaryTable(DataTable):
     """`DataTable` that explains its column headers on hover.
@@ -514,51 +454,88 @@ class SolTuiApp(App):
 
     def __init__(self, settings: Settings | None = None) -> None:
         super().__init__()
-        self.settings = settings or load_settings()
-        self.roster = Roster.from_list(
-            [{"name": n} for n in self.settings.enabled_strategies]
-        ) or Roster.default()
-        if len(self.roster) == 0:
-            self.roster = Roster.default()
-        self.signals = from_dict(self.settings.signal_defaults)
-        self.state = AppState()
-        self.runner = SweepRunner(self.state)
-        self.session: PaperSession | None = None
-        # Populated when the Docs tab composes. Held on the app rather than
-        # re-read per keystroke: the catalogue is ~270 rows and filtering it in
-        # memory is what keeps the filter box responsive.
-        self._docs: list[docs_browser.DocEntry] = []
+        # One live Context for the app's life: the registry commands this console dispatches read and
+        # mutate these same objects, so in-memory state and command results cannot disagree.
+        self.ctx = Context.from_settings(settings or load_settings(), Runtime())
+        # Populated when the Docs tab composes.
+        self._docs_listing: dict[str, Any] = {}
         self._docs_loaded = False
-        # The catalogue path currently shown in the Docs viewer, and whether
-        # `read_document` actually returned real text for it (vs a
-        # placeholder for a binary/oversized file) -- the Save button trusts
+        # The catalogue path currently shown in the Docs viewer, and whether `docs.read` returned
+        # real text for it (vs a placeholder for a binary/oversized file) -- the Save button trusts
         # this, not the cheap per-row "editable" column, before writing.
         self._docs_current_path: str | None = None
         self._docs_current_editable = False
-        # The row the DataTable cursor is on, kept independently of what is
-        # actually loaded in the viewer -- the "o" binding opens this even if
-        # the click that highlighted it didn't also fire a load.
+        # The row the DataTable cursor is on, kept independently of what is actually loaded.
         self._docs_highlighted_path: str | None = None
-        # The text as it was on disk when _docs_current_path was loaded.
-        # Compared against the live TextArea to know whether there is an
-        # unsaved edit -- without this, navigating to a different file
-        # silently overwrote whatever was being edited, with no warning.
+        # The text as it was on disk when _docs_current_path was loaded, to detect unsaved edits.
         self._docs_loaded_text = ""
         self._cumulative_loaded = False
-        # Last results-file mtime the Queue tab rendered. The background worker
-        # is a separate process, so the only way to know it produced something is
-        # to look -- but re-parsing the file on every tick would burn the UI
-        # thread on a file that changes once every few seconds at most.
-        self._queue_results: list[bgqueue.JobResult] = []
-        # How far the results file has been consumed, and which file that was, so
-        # a refresh parses only what the worker appended since last time.
-        self._queue_cursor = bgqueue.ResultsCursor()
-        # Liquidity tab: (status mtime, scout mtime, KILL present) last rendered,
-        # so the 15 s tick rebuilds the tables only when a file actually changed
-        # (a rebuild resets the table cursors).
-        self._liq_signature: tuple | None = None
+        # Last results-file mtime the Queue tab rendered (the worker is a separate process).
+        self._queue_mtime = 0.0
+        # Liquidity tab: last rendered file signature, so the 15 s tick rebuilds the tables only
+        # when a file actually changed (a rebuild resets the table cursors).
+        self._liq_signature: list | None = None
+        # Resume removes a safety stop; the first press only arms it (see `_liq_resume_pressed`).
+        self._liq_resume_armed_at = 0.0
         self._top5_loaded = False
-        self._top5_configs: list[top5_mod.Top5Config] = []
+        self._top5_configs: list[dict[str, Any]] = []
+
+    # State lives on the Context; these keep the names the rest of the app (and tests) use.
+    @property
+    def settings(self) -> Settings:
+        return self.ctx.settings
+
+    @settings.setter
+    def settings(self, value: Settings) -> None:
+        self.ctx.settings = value
+
+    @property
+    def roster(self):
+        return self.ctx.roster
+
+    @roster.setter
+    def roster(self, value) -> None:
+        self.ctx.roster = value
+
+    @property
+    def signals(self) -> SignalDefaults:
+        return self.ctx.signals
+
+    @signals.setter
+    def signals(self, value: SignalDefaults) -> None:
+        self.ctx.signals = value
+
+    @property
+    def state(self):
+        return self.ctx.state
+
+    @property
+    def runner(self):
+        return self.ctx.runner
+
+    @property
+    def session(self):
+        return self.ctx.session
+
+    @property
+    def _docs(self) -> list[docs_browser.DocEntry]:
+        try:
+            return self.ctx.catalog()
+        except docs_browser.CatalogUnavailable:
+            return []
+
+    @_docs.setter
+    def _docs(self, value: list[docs_browser.DocEntry]) -> None:
+        self.ctx.catalog_override = value
+
+    def _call(self, name: str, params: dict[str, Any] | None = None, *,
+              quiet: bool = False) -> dict[str, Any]:
+        """Every action goes through the registry, exactly as the CLI, API and extension do."""
+        return dispatch(name, params or {}, surface="tui", ctx=self.ctx, quiet=quiet)
+
+    @staticmethod
+    def _msg(env: dict[str, Any]) -> str:
+        return env["error"]["message"]
 
     # -- layout ----------------------------------------------------------
 
@@ -775,23 +752,24 @@ class SolTuiApp(App):
         avail = self.query_one("#available-table", DataTable)
         avail.add_columns("strategy", "family")
         avail.cursor_type = "row"
-        for name, family in available_strategies():
-            avail.add_row(name, family, key=name)
+        for row in self._call("strategies.list")["result"]:
+            avail.add_row(row["name"], row["family"], key=row["name"])
 
         roster_t = self.query_one("#roster-table", DataTable)
         roster_t.add_columns("in roster", "family", "warm-up")
         roster_t.cursor_type = "row"
         self._refresh_roster_table()
 
+        reference = self._call("signals.reference")["result"]
         sig = self.query_one("#signals-table", DataTable)
         sig.add_columns("signal", "equation", "family")
-        for name, eq, fam in SIGNAL_REFERENCE:
-            sig.add_row(name, eq, fam)
+        for r in reference["signals"]:
+            sig.add_row(r["signal"], r["equation"], r["family"])
 
         fam_t = self.query_one("#families-table", DataTable)
         fam_t.add_columns("family", "what it is / when it fails")
-        for fam, note in sorted(FAMILY_NOTES.items()):
-            fam_t.add_row(fam, note)
+        for r in reference["families"]:
+            fam_t.add_row(r["family"], r["note"])
 
         res = self.query_one("#results-table", DataTable)
         res.add_columns(
@@ -836,27 +814,21 @@ class SolTuiApp(App):
     def _poll_queue(self) -> None:
         """Redraw the Queue tab only when the worker actually wrote something.
 
-        Stat, compare, and usually return: the worker is a separate process
-        whose results file changes at the pace of a CPCV evaluation, so parsing
-        it on every tick would be work the UI thread does for nothing. The mtime
-        check is what makes polling on the existing 2-second cadence cheap.
+        Stat, compare, and usually return: the worker is a separate process whose results file
+        changes at the pace of a CPCV evaluation, so a full `queue.status` on every tick would be
+        work for nothing. The cheap `queue.progress` keeps the status line live; polling is not
+        logged (only calls somebody asked for are).
         """
         if not self.query("#queue-status"):
             return
-        # Compared against the mtime of the file state the last read actually
-        # consumed, not one sampled afterwards -- a row appended DURING that read
-        # would otherwise be recorded as already-seen and never appear.
-        if _mtime(bgqueue.RESULTS_PATH) != self._queue_cursor.mtime:
+        if _mtime(bgqueue.RESULTS_PATH) != self._queue_mtime:
             self._refresh_queue()
             return
-        # Nothing new to rank, but the worker may have moved on to another job --
-        # or died. `state.json` is a few hundred bytes; the results file is every
-        # result ever computed, so only the former is cheap enough per tick.
-        #
-        # Deliberately NOT gated on the worker being alive: a crashed worker
-        # leaves state.json reading "running", and skipping the render there
-        # would freeze the pane on its last progress line forever.
-        self._render_queue_status(bgqueue.read_state())
+        # Deliberately NOT gated on the worker being alive: a crashed worker leaves state.json
+        # reading "running", and skipping the render would freeze the pane on its last line.
+        env = self._call("queue.progress", quiet=True)
+        if env["ok"]:
+            self.query("#queue-status").first(Static).update(env["result"]["summary"])
 
     @on(DataTable.HeaderSelected)
     def _sort_by_column(self, event: DataTable.HeaderSelected) -> None:
@@ -886,18 +858,19 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#btn-save")
     def _save(self) -> None:
-        """Read the form, validate, persist."""
+        """Read the form, then settings.save validates and persists."""
         status = self.query_one("#settings-status", Static)
         try:
-            new = Settings(**{**self.settings.to_dict(), **self._read_form()})
-            path = save_settings(new)
-            self.settings = new
-            status.update(f"saved → {path}")
-        except Exception as exc:  # noqa: BLE001 - surfaced to the user verbatim
+            params = self._read_form()
+        except ValueError as exc:
             status.update(f"[red]{type(exc).__name__}: {exc}[/]")
+            return
+        env = self._call("settings.save", params)
+        status.update(f"saved → {env['result']['path']}" if env["ok"]
+                      else f"[red]{self._msg(env)}[/]")
 
     def _read_form(self) -> dict[str, Any]:
-        """Coerce form inputs to their field types."""
+        """Coerce form inputs to their field types. A blank number keeps the saved value."""
         casts: dict[str, Any] = {
             "asset": str, "start": str, "end": str, "capital": float,
             "fee_bps": float, "slippage_bps": float, "fill_delay": int,
@@ -906,9 +879,9 @@ class SolTuiApp(App):
         out: dict[str, Any] = {}
         for name, cast in casts.items():
             raw = self.query_one(f"#set-{name}", Input).value.strip()
-            out[name] = cast(raw) if raw or cast is str else getattr(self.settings, name)
+            if raw or cast is str:
+                out[name] = cast(raw)
         out["interval"] = str(self.query_one("#set-interval", Select).value)
-        out["enabled_strategies"] = [e.name for e in self.roster]
         return out
 
     # -- roster ----------------------------------------------------------
@@ -917,13 +890,14 @@ class SolTuiApp(App):
         """Redraw the roster side."""
         t = self.query_one("#roster-table", DataTable)
         t.clear()
-        for e in self.roster:
-            t.add_row(e.label, e.family, str(e.warmup), key=e.label)
+        for e in self._call("roster.list")["result"]["entries"]:
+            t.add_row(e["label"], e["family"], str(e["warmup"]), key=e["label"])
 
     def _refresh_exec_choices(self) -> None:
         """Keep the Execute strategy picker in sync with the roster."""
         sel = self.query_one("#exec-strategy", Select)
-        sel.set_options([(e.label, e.label) for e in self.roster])
+        labels = [e["label"] for e in self._call("roster.list")["result"]["entries"]]
+        sel.set_options([(label, label) for label in labels])
 
     def _parse_params(self) -> dict[str, Any]:
         """Parse 'fast=20 slow=50' into typed kwargs."""
@@ -948,16 +922,19 @@ class SolTuiApp(App):
         status = self.query_one("#roster-status", Static)
         table = self.query_one("#available-table", DataTable)
         try:
-            row = table.get_row_at(table.cursor_row)
-            name = str(row[0])
-            entry = self.roster.add(
-                name, **merged_params(name, self.signals, self._parse_params())
-            )
-            self._refresh_roster_table()
-            self._refresh_exec_choices()
-            status.update(f"added {entry.label} (warm-up {entry.warmup} bars)")
+            name = str(table.get_row_at(table.cursor_row)[0])
+            explicit = self._parse_params()
         except Exception as exc:  # noqa: BLE001
             status.update(f"[red]{exc}[/]")
+            return
+        env = self._call("roster.add", {"name": name, "params": explicit})
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        added = env["result"]["added"]
+        self._refresh_roster_table()
+        self._refresh_exec_choices()
+        status.update(f"added {added['label']} (warm-up {added['warmup']} bars)")
 
     @on(Button.Pressed, "#btn-remove")
     def _remove(self) -> None:
@@ -965,45 +942,34 @@ class SolTuiApp(App):
         status = self.query_one("#roster-status", Static)
         table = self.query_one("#roster-table", DataTable)
         try:
-            row = table.get_row_at(table.cursor_row)
-            removed = self.roster.remove(str(row[0]))
-            self._refresh_roster_table()
-            self._refresh_exec_choices()
-            status.update(f"removed {removed.label}")
+            label = str(table.get_row_at(table.cursor_row)[0])
         except Exception as exc:  # noqa: BLE001
             status.update(f"[red]{exc}[/]")
+            return
+        env = self._call("roster.remove", {"label": label})
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        self._refresh_roster_table()
+        self._refresh_exec_choices()
+        status.update(f"removed {env['result']['removed']['label']}")
 
     @on(Button.Pressed, "#btn-reset-roster")
     def _reset_roster(self) -> None:
         """Restore the backtester's default comparison set."""
-        self.roster = Roster.default()
+        self._call("roster.reset")
         self._refresh_roster_table()
         self._refresh_exec_choices()
         self.query_one("#roster-status", Static).update("roster reset to default")
 
     def _strategy_source_path(self, name: str) -> str | None:
-        """Catalogue-relative path to the file that defines strategy `name`.
+        """Catalogue-relative path to the file that defines strategy `name`, or None.
 
-        `inspect.getfile` rather than a hand-maintained name-to-file table:
-        several strategies share one module (e.g. everything in
-        `advanced.py`), and a static mapping would drift the moment a
-        strategy moves files. Returns None -- rather than raising -- for
-        anything not resolvable or not present in the Docs catalogue, since
-        `docs_browser.resolve` treats the catalogue as an allowlist and a
-        strategy file missing from `index/INDEX.json` must fail closed, not
-        open an uncatalogued path.
+        `strategies.source` resolves it with `inspect.getfile` rather than a hand-kept table and
+        fails closed for a file missing from the Docs catalogue (the catalogue is an allowlist).
         """
-        func = REGISTRY.get(name)
-        if func is None:
-            return None
-        try:
-            rel = str(Path(inspect.getfile(func)).resolve()
-                      .relative_to(docs_browser.REPO))
-        except (TypeError, OSError, ValueError):
-            return None
-        if not any(e.path == rel for e in self._docs):
-            return None
-        return rel
+        env = self._call("strategies.source", {"name": name})
+        return env["result"]["path"] if env["ok"] else None
 
     def _open_strategy_file(self, name: str) -> None:
         """Open the source file for strategy `name` in the shared editor.
@@ -1045,38 +1011,25 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#btn-save-signals")
     def _save_signals(self) -> None:
-        """Read the signal form, validate, persist into settings."""
+        """Read the signal form; signals.save validates and persists."""
         status = self.query_one("#signals-status", Static)
-        try:
-            updated = SignalDefaults(**{
-                name: coerce(
-                    name, self.query_one(f"#sig-{name}", Input).value, self.signals
-                )
-                for _, names in SIGNAL_GROUPS
-                for name in names
-            })
-            self.signals = from_dict(updated.to_dict())
-            self.settings.signal_defaults = self.signals.to_dict()
-            path = save_settings(self.settings)
-            status.update(
-                f"saved → {path} · affects {len(mapped_strategies())} strategies"
-            )
-        except Exception as exc:  # noqa: BLE001 - shown verbatim to the user
-            # Deliberately broad: SignalError is the expected case, but a form
-            # can also yield ValueError/TypeError, and a UI must not die on
-            # bad input. (SignalError was previously listed alongside
-            # Exception, which was redundant and implied false specificity.)
-            status.update(f"[red]{exc}[/]")
+        values = {name: self.query_one(f"#sig-{name}", Input).value
+                  for _, names in SIGNAL_GROUPS for name in names}
+        env = self._call("signals.save", {"values": values})
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        r = env["result"]
+        status.update(f"saved → {r['path']} · affects {r['affects']} strategies")
 
     @on(Button.Pressed, "#btn-reset-signals")
     def _reset_signals(self) -> None:
         """Restore the backtester's shipped signal values."""
-        self.signals = SignalDefaults()
-        for _, names in SIGNAL_GROUPS:
-            for name in names:
-                self.query_one(f"#sig-{name}", Input).value = str(
-                    getattr(self.signals, name)
-                )
+        env = self._call("signals.reset")
+        for name, value in env["result"]["values"].items():
+            widgets = self.query(f"#sig-{name}")
+            if widgets:
+                widgets.first(Input).value = str(value)
         self.query_one("#signals-status", Static).update("reset to shipped defaults")
 
     # -- backtest --------------------------------------------------------
@@ -1087,95 +1040,63 @@ class SolTuiApp(App):
 
     def action_cancel(self) -> None:
         """Keyboard binding for cancelling."""
-        self.runner.cancel()
+        self._call("backtest.cancel")
 
     @on(Button.Pressed, "#btn-cancel")
     def _cancel_pressed(self) -> None:
         """Ask the worker to stop at the next configuration boundary."""
-        self.runner.cancel()
+        self._call("backtest.cancel")
         self.query_one("#backtest-status", Static).update("cancelling…")
 
     @on(Button.Pressed, "#btn-run")
     def _run(self) -> None:
-        """Start a CPCV sweep over the roster."""
-        status = self.query_one("#backtest-status", Static)
-        try:
-            self.runner.start(self.roster, self.settings, on_done=self._sweep_done)
-            status.update("running…")
-        except Exception as exc:  # noqa: BLE001
-            status.update(f"[red]{exc}[/]")
+        """Start a CPCV sweep over the roster (the work is the `backtest.run` command)."""
+        self.query_one("#backtest-status", Static).update("running…")
+        self._sweep_worker()
 
-    def _sweep_done(self, outcome: Any) -> None:
-        """Worker callback: hand results back to the UI thread."""
-        self.call_from_thread(self._render_results, outcome)
+    @work(thread=True, group="sweep")
+    def _sweep_worker(self) -> None:
+        """Thread only so the UI stays live; the sweep itself is the registry handler."""
+        env = self._call("backtest.run")
+        self.call_from_thread(self._render_results, env)
 
-    def _render_results(self, outcome: Any) -> None:
+    def _render_results(self, env: dict[str, Any]) -> None:
         """Fill the results table, best median Sharpe first."""
+        status = self.query_one("#backtest-status", Static)
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        r = env["result"]
         table = self.query_one("#results-table", DataTable)
         table.clear()
-        for r in outcome.ranked():
+        for row in r["rows"]:
             table.add_row(
-                r.label, r.family, f"{r.median_sharpe:+.3f}", f"{r.iqr:.3f}",
-                f"{r.frac_positive:.0%}", format_pct(r.median_return), str(r.trades),
+                row["label"], row["family"], f"{row['median_sharpe']:+.3f}", f"{row['iqr']:.3f}",
+                f"{row['frac_positive']:.0%}", format_pct(row["median_return"]), str(row["trades"]),
             )
-        skipped = [r for r in outcome.rows if not r.evaluable]
-        msg = f"done — {len(outcome.evaluable)} evaluable, {len(outcome.positive)} positive"
-        if outcome.cancelled:
-            msg = "cancelled — partial results shown"
-        if outcome.error:
-            msg = f"[red]{outcome.error.splitlines()[0]}[/]"
-        if skipped:
-            msg += f" · {len(skipped)} skipped (warm-up or trade floor)"
-        self.query_one("#backtest-status", Static).update(msg)
+        status.update(r["message"])
 
     @on(Button.Pressed, "#btn-run-untested")
     @work(thread=True)
     def _run_untested_sweep(self) -> None:
-        """Run the untested sweep script."""
+        """Run the untested sweep (the `backtest.untested_sweep` command) off the UI thread."""
         status = self.query_one("#backtest-status", Static)
         self.call_from_thread(status.update, "running untested sweep...")
-        try:
-            repo = Path(__file__).resolve().parent.parent
-            result = subprocess.run(
-                untested_sweep_command(repo), capture_output=True, text=True, cwd=str(repo),
-                timeout=UNTESTED_SWEEP_TIMEOUT_S,
-            )
-            if result.returncode == 0:
-                self.call_from_thread(status.update, f"untested sweep done.\n{result.stdout[-200:]}")
-            else:
-                self.call_from_thread(status.update, f"[red]error: {failure_summary(result.stderr)}[/]")
-        except subprocess.TimeoutExpired:
-            self.call_from_thread(
-                status.update, f"[red]untested sweep timed out after {UNTESTED_SWEEP_TIMEOUT_S // 60} min[/]")
-        except Exception as exc:
-            self.call_from_thread(status.update, f"[red]{exc}[/]")
+        env = self._call("backtest.untested_sweep")
+        if env["ok"]:
+            self.call_from_thread(status.update, f"untested sweep done.\n{env['result']['output']}")
+        else:
+            self.call_from_thread(status.update, f"[red]{self._msg(env)}[/]")
 
     # -- execute (dry run) -----------------------------------------------
 
     @on(Button.Pressed, "#btn-paper-start")
     @work(thread=True, exclusive=True)
     def _paper_start(self) -> None:
-        """Run one backtest and open a replay cursor over it."""
-        label = self.query_one("#exec-strategy", Select).value
-        summary = self.query_one("#exec-summary", Static)
-        if not label:
-            self.call_from_thread(summary.update, "[red]pick a strategy first[/]")
-            return
-        entry = next((e for e in self.roster if e.label == label), None)
-        if entry is None:
-            self.call_from_thread(summary.update, "[red]strategy left the roster[/]")
-            return
-        try:
-            arrays = load_arrays(self.settings)
-            session = start_session(
-                build(entry.name, **entry.params), arrays, engine_config(self.settings)
-            )
-        except Exception as exc:  # noqa: BLE001
-            self.call_from_thread(summary.update, f"[red]{type(exc).__name__}: {exc}[/]")
-            return
-        self.session = session
-        self.state.phase = Phase.PAPER
-        self.call_from_thread(self._refresh_paper)
+        """Run one backtest and open a replay cursor over it (`paper.start`)."""
+        value = self.query_one("#exec-strategy", Select).value
+        env = self._call("paper.start", {"label": value if isinstance(value, str) else ""})
+        self.call_from_thread(self._refresh_paper, env)
 
     @on(Button.Pressed, "#btn-step1")
     def _step1(self) -> None:
@@ -1190,48 +1111,32 @@ class SolTuiApp(App):
     @on(Button.Pressed, "#btn-step-end")
     def _step_end(self) -> None:
         """Jump to the final bar."""
-        if self.session:
-            self.session.seek_end()
-            self._refresh_paper()
+        self._refresh_paper(self._call("paper.seek_end"))
 
     @on(Button.Pressed, "#btn-paper-reset")
     def _paper_reset(self) -> None:
         """Rewind the replay."""
-        if self.session:
-            self.session.reset()
-            self._refresh_paper()
+        self._refresh_paper(self._call("paper.reset"))
 
     def _step(self, bars: int) -> None:
         """Advance the cursor and redraw."""
-        if self.session is None:
-            self.query_one("#exec-summary", Static).update(
-                "[red]start a dry run first[/]"
-            )
-            return
-        self.session.advance(bars)
-        self._refresh_paper()
+        self._refresh_paper(self._call("paper.step", {"bars": bars}))
 
-    def _refresh_paper(self) -> None:
-        """Redraw the replay summary and the intended-fills table."""
-        if self.session is None:
+    def _refresh_paper(self, env: dict[str, Any]) -> None:
+        """Redraw the replay summary and the intended-fills table from a paper.* result."""
+        summary = self.query_one("#exec-summary", Static)
+        if not env["ok"]:
+            summary.update(f"[red]{self._msg(env)}[/]")
             return
-        s = self.session.summary()
-        self.state.paper_return = self.session.pnl
-        self.state.paper_fills = self.session.fill_count
-        self.query_one("#exec-summary", Static).update(
-            f"bar {s['bar']}/{s['bars_total']}  {s['when']}   "
-            f"equity {s['equity']:,.2f}   P&L {format_pct(s['pnl'])}   "
-            f"exposure {s['exposure']:.2f}   fills {s['fills']}   "
-            f"live orders placed: {s['live_orders_placed']}"
-        )
+        r = env["result"]
+        summary.update(r["text"])
         table = self.query_one("#fills-table", DataTable)
         table.clear()
-        for f in self.session.intended_fills()[-200:]:
+        for f in r["fills"]:
             table.add_row(
-                str(f.bar_index), f.when, f.side, f.reason, f"{f.price:,.2f}",
-                f"{f.units:,.4f}", f"{f.cost:,.2f}", f"{f.equity_after:,.2f}",
+                str(f["bar"]), f["when"], f["side"], f["reason"], f"{f['price']:,.2f}",
+                f"{f['units']:,.4f}", f"{f['cost']:,.2f}", f"{f['equity']:,.2f}",
             )
-
 
     @on(TabbedContent.TabActivated)
     def _populate_on_first_view(self, event: TabbedContent.TabActivated) -> None:
@@ -1266,12 +1171,12 @@ class SolTuiApp(App):
     # -- Live Run --------------------------------------------------------
 
     def _refresh_live_run(self) -> None:
-        best = live_run.get_best_strategy()
+        best = self._call("live.recommendation")["result"]
         rec_static = self.query_one("#live-run-recommendation", Static)
         strat_input = self.query_one("#live-run-strategy", Input)
         rec_static.update(f"{best['strategy']} (from {best['source']}) — {best['details']}")
         strat_input.value = best["strategy"]
-        
+
     @on(Button.Pressed, "#btn-refresh-live-run")
     def _btn_refresh_live_run(self) -> None:
         self._refresh_live_run()
@@ -1283,22 +1188,18 @@ class SolTuiApp(App):
         strategy_name = self.query_one("#live-run-strategy", Input).value.strip()
         status = self.query_one("#live-run-status", Static)
         out_area = self.query_one("#live-run-output", TextArea)
-        
-        def _update(msg: str) -> None:
-            if "\n" in msg and "[green]" in msg or "[red]" in msg:
-                # We can update the TextArea for large output
-                # Just strip tags roughly for TextArea or use RichLog
-                import re
-                clean = re.sub(r'\[/?(red|green|b)\]', '', msg)
-                self.call_from_thread(lambda: setattr(out_area, "text", clean))
-            else:
-                self.call_from_thread(status.update, msg)
-                
         if not strategy_name:
             self.call_from_thread(status.update, "[red]Please enter a strategy name.[/red]")
             return
-            
-        live_run.spawn_dryrun(strategy_name, _update)
+        self.call_from_thread(status.update, f"running dry run for {strategy_name}...")
+        env = self._call("live.spawn_dryrun", {"strategy": strategy_name})
+        if env["ok"]:
+            text = "Dryrun finished successfully.\n" + env["result"]["stdout"]
+            self.call_from_thread(status.update, "dry run finished")
+        else:
+            text = self._msg(env)
+            self.call_from_thread(status.update, f"[red]{text.splitlines()[0]}[/]")
+        self.call_from_thread(lambda: setattr(out_area, "text", text))
 
     # -- Top 5: the recommended configurations and their evidence ---------
 
@@ -1366,12 +1267,13 @@ class SolTuiApp(App):
 
     def _refresh_top5(self) -> None:
         headline = self.query_one("#top5-headline", Static)
-        try:
-            self._top5_configs = top5_mod.load_top5()
-        except top5_mod.EvidenceUnavailable as exc:
+        env = self._call("top5.list")
+        if not env["ok"]:
             self._top5_configs = []
-            headline.update(f"[b]{exc}[/b]")
+            headline.update(f"[b]{self._msg(env)}[/b]")
             return
+        r = env["result"]
+        self._top5_configs = r["configs"]
 
         def fmt(v: float | None, spec: str) -> str:
             return "-" if v is None else format(v, spec)
@@ -1379,53 +1281,46 @@ class SolTuiApp(App):
         table = self.query_one("#top5-table", DataTable)
         table.clear()
         for cfg in self._top5_configs:
-            home = cfg.home
+            home = cfg["home"]
             if home is None:
                 continue
             table.add_row(
-                str(cfg.rank), cfg.label, cfg.horizon,
-                " + ".join(cfg.members) + (f" ({cfg.mode})"
-                                           if cfg.mode != "single" else ""),
-                f"{home.median_sharpe:+.3f}", fmt(home.iqr, ".3f"),
-                fmt(home.frac_positive, ".0%"),
-                "-" if home.median_return is None
-                else format_pct(home.median_return),
-                fmt(home.trades, "d"), fmt(home.n_paths, "d"),
-                key=str(cfg.rank),
+                str(cfg["rank"]), cfg["label"], cfg["horizon"],
+                " + ".join(cfg["members"]) + (f" ({cfg['mode']})" if cfg["mode"] != "single" else ""),
+                f"{home['median_sharpe']:+.3f}", fmt(home["iqr"], ".3f"),
+                fmt(home["frac_positive"], ".0%"),
+                "-" if home["median_return"] is None else format_pct(home["median_return"]),
+                fmt(home["trades"], "d"), fmt(home["n_paths"], "d"),
+                key=str(cfg["rank"]),
             )
         transfers = self.query_one("#top5-transfers", DataTable)
         transfers.clear()
         for cfg in self._top5_configs:
-            for t in cfg.transfers:
+            for t in cfg["transfers"]:
                 transfers.add_row(
-                    str(cfg.rank), cfg.label, t.asset,
-                    f"{t.median_sharpe:+.3f}", fmt(t.delta_vs_sol, "+.3f"),
-                    fmt(t.frac_positive, ".0%"),
-                    "-" if t.median_return is None
-                    else format_pct(t.median_return),
-                    fmt(t.trades, "d"), fmt(t.n_paths, "d"),
+                    str(cfg["rank"]), cfg["label"], t["asset"],
+                    f"{t['median_sharpe']:+.3f}", fmt(t["delta_vs_sol"], "+.3f"),
+                    fmt(t["frac_positive"], ".0%"),
+                    "-" if t["median_return"] is None else format_pct(t["median_return"]),
+                    fmt(t["trades"], "d"), fmt(t["n_paths"], "d"),
                 )
-        n = len(self._top5_configs)
         headline.update(
-            f"{n} configurations · fitted on {top5_mod.HOME_ASSET} · "
-            f"each transfer-tested on "
-            f"{', '.join(sorted({t.asset for c in self._top5_configs for t in c.transfers}))}")
+            f"{len(self._top5_configs)} configurations · fitted on {r['home_asset']} · "
+            f"each transfer-tested on {', '.join(r['transfer_assets'])}")
 
-    def _top5_add_members(self, configs: list) -> None:
+    def _top5_add_members(self, ranks: list[int] | None) -> None:
         """Add each distinct member signal to the roster, reporting per-name.
 
-        Uses the same path as the Strategies tab's Add button (signal
-        defaults via merged_params), so a name added here behaves identically
-        to one added there. Already-present names are counted, not errors —
-        clicking twice must not turn into a wall of red.
+        `top5.add_to_roster` uses the same path as the Strategies tab's Add button (signal defaults
+        via merged_params). Already-present names are counted, not errors -- clicking twice must not
+        turn into a wall of red.
         """
-        added, present = [], []
-        for name in top5_mod.roster_candidates(configs):
-            try:
-                self.roster.add(name, **merged_params(name, self.signals))
-                added.append(name)
-            except RosterError:
-                present.append(name)
+        status = self.query_one("#top5-status", Static)
+        env = self._call("top5.add_to_roster", {"ranks": ranks} if ranks is not None else {})
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        added, present = env["result"]["added"], env["result"]["present"]
         self._refresh_roster_table()
         self._refresh_exec_choices()
         parts = []
@@ -1433,9 +1328,8 @@ class SolTuiApp(App):
             parts.append(f"added {', '.join(added)}")
         if present:
             parts.append(f"already in roster: {', '.join(present)}")
-        self.query_one("#top5-status", Static).update(
-            (" · ".join(parts) or "nothing to add") +
-            " — sweep them from here or the Backtest tab")
+        status.update((" · ".join(parts) or "nothing to add") +
+                      " — sweep them from here or the Backtest tab")
 
     @on(Button.Pressed, "#top5-add-selected")
     def _top5_add_selected(self) -> None:
@@ -1446,29 +1340,23 @@ class SolTuiApp(App):
         except Exception:  # noqa: BLE001 - empty table, nothing selected
             status.update("select a configuration row first")
             return
-        cfg = next((c for c in self._top5_configs if c.rank == rank), None)
-        if cfg is None:
+        if not any(c["rank"] == rank for c in self._top5_configs):
             status.update("select a configuration row first")
             return
-        self._top5_add_members([cfg])
+        self._top5_add_members([rank])
 
     @on(Button.Pressed, "#top5-add-all")
     def _top5_add_all(self) -> None:
         if not self._top5_configs:
-            self.query_one("#top5-status", Static).update(
-                "no configurations loaded")
+            self.query_one("#top5-status", Static).update("no configurations loaded")
             return
-        self._top5_add_members(self._top5_configs)
+        self._top5_add_members(None)
 
     @on(Button.Pressed, "#top5-run")
     def _top5_run(self) -> None:
         """Start the same CPCV sweep the Backtest tab runs, from here."""
-        status = self.query_one("#top5-status", Static)
-        try:
-            self.runner.start(self.roster, self.settings, on_done=self._sweep_done)
-            status.update("running — results land on the Backtest tab")
-        except Exception as exc:  # noqa: BLE001 - surfaced to the user
-            status.update(f"[red]{exc}[/]")
+        self.query_one("#top5-status", Static).update("running — results land on the Backtest tab")
+        self._sweep_worker()
 
     @on(Button.Pressed, "#top5-reload")
     def _top5_reload(self) -> None:
@@ -1482,8 +1370,8 @@ class SolTuiApp(App):
         Distinct from the Signals tab, which reads the *latest* bar of the
         configured asset. Here the coin and the moment are both inputs.
         """
-        pairs = analyze_mod.available_assets()
-        options = [(f"{a} {i}", f"{a}|{i}") for a, i in pairs]
+        pairs = self._call("analyze.assets")["result"]
+        options = [(f"{p['asset']} {p['interval']}", f"{p['asset']}|{p['interval']}") for p in pairs]
         with VerticalScroll():
             yield Static(
                 "Every registered strategy replayed from the start of history up to "
@@ -1523,19 +1411,20 @@ class SolTuiApp(App):
         asset, _, interval = sel.partition("|")
         raw = self.query_one("#analyze-when", Input).value.strip()
         head = self.query_one("#analyze-headline", Static)
-        try:
-            when = analyze_mod.parse_as_of(raw) if raw else None
-            result = analyze_mod.analyse(asset, interval, as_of=when)
-        except (ValueError, FileNotFoundError, KeyError) as exc:
-            head.update(f"[b]could not analyse:[/b] {exc}")
+        params: dict[str, Any] = {"asset": asset, "interval": interval}
+        if raw:
+            params["as_of"] = raw
+        env = self._call("analyze.run", params)
+        if not env["ok"]:
+            head.update(f"[b]could not analyse:[/b] {self._msg(env)}")
             return
-        head.update(result.headline + ("" if result.truncated
-                                       else "   (latest bar)"))
+        r = env["result"]
+        head.update(r["headline"] + ("" if r["truncated"] else "   (latest bar)"))
         table = self.query_one("#analyze-table", DataTable)
         table.clear()
-        for d in result.decisions:
-            table.add_row(d.name, d.family, d.action, d.detail,
-                          str(d.warmup), str(d.bars))
+        for d in r["decisions"]:
+            table.add_row(d["name"], d["family"], d["action"], d["detail"],
+                          str(d["warmup"]), str(d["bars"]))
 
     # -- Cumulative: every committed result, floor applied ---------------
 
@@ -1570,26 +1459,28 @@ class SolTuiApp(App):
         self._refresh_cumulative()
 
     def _refresh_cumulative(self) -> None:
-        summaries = cumulative_mod.load_all()
-        self.query_one("#cumulative-headline", Static).update(
-            cumulative_mod.headline(summaries))
+        env = self._call("cumulative.summary")
+        if not env["ok"]:
+            self.query_one("#cumulative-headline", Static).update(f"[red]{self._msg(env)}[/]")
+            return
+        r = env["result"]
+        self.query_one("#cumulative-headline", Static).update(r["headline"])
         table = self.query_one("#cumulative-table", DataTable)
         table.clear()
-        for s in summaries:
-            best = s.best
-            med = s.median_sharpe
+        for s in r["files"]:
+            best, med = s["best"], s["median_sharpe"]
             table.add_row(
-                s.source, str(len(s.rankable)), str(len(s.below_floor)),
-                str(s.positive), str(s.made_money),
+                s["source"], str(s["rankable"]), str(s["below_floor"]),
+                str(s["positive"]), str(s["made_money"]),
                 "-" if med is None else f"{med:+.3f}",
-                s.path_range,
-                "-" if best is None else f"{best.label} {best.median_sharpe:+.3f}",
+                s["path_range"],
+                "-" if best is None else f"{best['label']} {best['median_sharpe']:+.3f}",
             )
         drop = self.query_one("#cumulative-dropped", DataTable)
         drop.clear()
-        for r in cumulative_mod.floor_casualties(summaries):
-            drop.add_row(r.source, r.label, f"{r.median_sharpe:+.3f}",
-                         str(r.trades or 0), str(r.n_paths or 0))
+        for c in r["casualties"]:
+            drop.add_row(c["source"], c["label"], f"{c['median_sharpe']:+.3f}",
+                         str(c["trades"]), str(c["n_paths"]))
 
     # -- Queue: the background sweep -------------------------------------
 
@@ -1643,10 +1534,9 @@ class SolTuiApp(App):
     def _queue_start(self) -> None:
         """Spawn the background worker for the configured asset."""
         status = self.query_one("#queue-status", Static)
-        try:
-            bgcontrol.start(self.settings.asset)
-        except Exception as exc:  # noqa: BLE001
-            status.update(f"[red]{type(exc).__name__}: {exc}[/]")
+        env = self._call("queue.start")
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
             return
         status.update("started — results appear as each job lands")
         self._refresh_queue()
@@ -1655,7 +1545,7 @@ class SolTuiApp(App):
     def _queue_stop(self) -> None:
         """Ask the worker to stop at the next job boundary."""
         status = self.query_one("#queue-status", Static)
-        if bgcontrol.stop():
+        if self._call("queue.stop")["result"]["stopping"]:
             status.update("stopping — the current job finishes first")
         else:
             status.update("no background sweep is running")
@@ -1666,122 +1556,67 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#queue-fetch")
     def _queue_fetch(self) -> None:
-        """Fetch the price series the sweep is missing.
+        """Fetch the price series the sweep is missing (`queue.fetch`).
 
-        The one network action in this package, and it stays the separate
-        explicit step `CLAUDE.md` requires: it runs `backtester.core.fetch` --
-        the same command shown above the button -- and starting a sweep is NOT a
-        side effect of it finishing. Nothing here reaches a venue or an account.
+        The one network action in this package, and it stays the separate explicit step
+        `CLAUDE.md` requires: starting a sweep is NOT a side effect of it finishing.
         """
         data = self.query_one("#queue-data", Static)
-        missing = self._missing_series()
-        if not missing:
+        env = self._call("queue.fetch")
+        if not env["ok"]:
+            data.update(f"[red]{self._msg(env)}[/]")
+            return
+        fetching = env["result"]["fetching"]
+        if not fetching:
             data.update("every series this sweep needs is already cached")
             return
-        try:
-            bgcontrol.start_fetch([(m.asset, m.interval) for m in missing])
-        except Exception as exc:  # noqa: BLE001
-            data.update(f"[red]{type(exc).__name__}: {exc}[/]")
-            return
-        names = ", ".join(f"{m.asset} {m.interval}" for m in missing)
-        data.update(
-            f"fetching {names} — press Refresh when it finishes "
-            f"(log: {bgqueue.BG_DIR / 'fetch.log'})"
-        )
+        names = ", ".join(f"{m['asset']} {m['interval']}" for m in fetching)
+        data.update(f"fetching {names} — press Refresh when it finishes "
+                    f"(log: {env['result']['log']})")
 
-    def _missing_series(self) -> list[bgqueue.MissingSeries]:
-        """Price files this asset's sweep needs and does not have."""
-        try:
-            return bgqueue.missing_series(
-                self.settings.asset, data_dir=self.settings.data_dir
-            )
-        except ValueError:
-            # An unusable asset symbol is the Settings tab's problem to report;
-            # here it just means there is nothing meaningful to check for.
-            return []
-
-    def _render_queue_data(self) -> None:
+    def _render_queue_data(self, missing: list[dict[str, Any]], fetch_log: str | None) -> None:
         """Say which series are missing, and name the command that fixes it.
 
-        Checked before the sweep rather than discovered during it. The queue
-        interleaves intervals by promise, so a missing 1h file would otherwise
-        surface minutes in, after the pane had already reported "running" -- and
-        the whole short horizon would be quietly absent from the results.
+        Checked before the sweep rather than discovered during it: the queue interleaves intervals
+        by promise, so a missing 1h file would otherwise surface minutes in.
         """
         line = self.query("#queue-data")
         if not line:
             return
-        missing = self._missing_series()
         if not missing:
             line.first(Static).update("")
             return
-        commands = "  ·  ".join(m.command_text for m in missing)
+        commands = "  ·  ".join(m["command"] for m in missing)
         text = (
             f"[yellow]missing price data — {len(missing)} series "
-            f"({', '.join(m.interval for m in missing)}) will be skipped:[/] {commands}"
+            f"({', '.join(m['interval'] for m in missing)}) will be skipped:[/] {commands}"
         )
-        # A fetch that already ran and left the series missing failed for a
-        # reason worth reading -- the 1h series is refused outright unless
-        # --allow-gaps is passed. Without this pointer the button looks like it
-        # simply did nothing.
-        log = bgqueue.BG_DIR / "fetch.log"
-        if log.exists():
-            text += f"  ·  a previous fetch left these missing; see {log}"
+        # A fetch that already ran and left the series missing failed for a reason worth reading.
+        if fetch_log:
+            text += f"  ·  a previous fetch left these missing; see {fetch_log}"
         line.first(Static).update(text)
 
-    def _render_queue_status(self, state: bgqueue.QueueState) -> None:
-        """Update just the status line, from the cached results.
-
-        Split out from `_refresh_queue` so the per-tick path can show live
-        progress without re-reading and re-ranking every result ever computed.
-        """
-        line = self.query("#queue-status")
-        if not line:
-            return
-        alive = bgcontrol.is_running()
-        live = " · worker alive" if alive else ""
-        detail = f" · now: {state.current}" if state.current and alive else ""
-        line.first(Static).update(
-            bgqueue.summarise(
-                state, self._queue_results, self.settings.asset, worker_alive=alive
-            )
-            + detail
-            + live
-        )
-
     def _refresh_queue(self) -> None:
-        """Re-read the worker's files and redraw both tables.
-
-        Reads only what was appended since the last refresh: a long sweep's
-        results file grows without bound, and re-parsing all of it on every new
-        row would make watching the sweep cost more than running it.
-        """
-        fresh, cursor, restarted = bgqueue.read_results_since(self._queue_cursor)
-        if restarted:
-            # The file was truncated or replaced, so what we are holding belongs
-            # to a sweep that no longer exists.
-            self._queue_results = []
-        self._queue_results.extend(fresh)
-        self._queue_cursor = cursor
-        results = self._queue_results
-        self._render_queue_data()
-        self._render_queue_status(bgqueue.read_state())
-
-        ranked, floor = bgqueue.leaderboard(results, self.settings.asset)
+        """Re-read the worker's files (`queue.status`) and redraw both tables."""
+        env = self._call("queue.status")
+        if not env["ok"]:
+            self.query_one("#queue-status", Static).update(f"[red]{self._msg(env)}[/]")
+            return
+        r = env["result"]
+        self._queue_mtime = _mtime(bgqueue.RESULTS_PATH)
+        self._render_queue_data(r["missing"], r["fetch_log"])
+        self.query_one("#queue-status", Static).update(r["summary"])
         table = self.query_one("#queue-table", DataTable)
         table.clear()
-        for r in ranked[:200]:
+        for x in r["ranked"]:
             table.add_row(
-                r.label, r.family, f"{r.median_sharpe:+.3f}", f"{r.iqr:.3f}",
-                f"{r.frac_positive:.0%}", format_pct(r.median_return), str(r.trades),
+                x["label"], x["family"], f"{x['median_sharpe']:+.3f}", f"{x['iqr']:.3f}",
+                f"{x['frac_positive']:.0%}", format_pct(x["median_return"]), str(x["trades"]),
             )
         floor_table = self.query_one("#queue-floor", DataTable)
         floor_table.clear()
-        for r in floor[:200]:
-            floor_table.add_row(
-                r.label, r.family, str(r.trades),
-                r.reason or f"under the {bgqueue.MIN_TRADES}-trade floor",
-            )
+        for x in r["floor"]:
+            floor_table.add_row(x["label"], x["family"], str(x["trades"]), x["why"])
 
     # -- Liquidity: the Aero LP daemon's state files ---------------------
 
@@ -1814,75 +1649,52 @@ class SolTuiApp(App):
     def _liq_tick(self) -> None:
         """Auto-refresh. A no-op until the pane exists (teardown-safe)."""
         if self.query("#liq-summary"):
-            self._refresh_liquidity()
+            self._refresh_liquidity(quiet=True)
 
-    def _liq_signature_now(self, home: Path) -> tuple:
-        def mt(name: str) -> int | None:
-            try:
-                return (home / name).stat().st_mtime_ns
-            except OSError:
-                return None
-        return (mt(liq.STATUS_FILE), mt(liq.SCOUT_FILE), mt(liq.KILL_FILE))
-
-    def _fill_table(self, table_id: str, table: liq.Table) -> None:
+    def _fill_table(self, table_id: str, table: dict[str, Any]) -> None:
         widget = self.query_one(table_id, DataTable)
         widget.clear(columns=True)
-        widget.add_columns(*table.headers)
+        widget.add_columns(*table["headers"])
         # Text() so a "[" in a daemon-supplied reason is never read as markup.
-        for row in table.rows:
+        for row in table["rows"]:
             widget.add_row(*(Text(cell) for cell in row))
 
-    def _refresh_liquidity(self, force: bool = False) -> None:
-        """Re-read the state files and redraw.
+    def _refresh_liquidity(self, force: bool = False, quiet: bool = False) -> None:
+        """Re-read the state files (`liquidity.status`) and redraw.
 
-        The summary and banner are cheap and redrawn every time (the "updated Ns
-        ago" text must keep moving, and a stale daemon must show). The tables are
-        rebuilt only when a file changed, or on `force`.
+        The summary and banner are redrawn every time (the "updated Ns ago" text must keep moving,
+        and a stale daemon must show). The tables are rebuilt only when a file changed, or on `force`.
         """
         if not self.query("#liq-summary"):
             return
-        home = liq.state_dir()
-        status = liq.load_status(home)
-        scout = liq.load_scout(home)
-        killed_file = liq.is_killed(home)
-
+        env = self._call("liquidity.status", quiet=quiet)
+        if not env["ok"]:
+            self.query_one("#liq-summary", Static).update(Text(self._msg(env)))
+            return
+        r = env["result"]
         banner = self.query_one("#liq-banner", Static)
         summary = self.query_one("#liq-summary", Static)
         wallet = self.query_one("#liq-wallet", Static)
-        if status.data is None:
-            summary.update(Text(f"Liquidity: no data. {status.reason}"))
+        if r["summary"] is None:
+            summary.update(Text(f"Liquidity: no data. {r['status_reason']}"))
             wallet.update("")
         else:
-            s = liq.summarise(status.data, kill_file_present=killed_file)
-            badge = Text(f" {liq.mode_badge_text(s.mode)} ",
-                         style="bold white on red" if s.live else "bold black on yellow")
-            line = Text.assemble(badge, "  ", s.line())
-            summary.update(line)
-            wallet.update(Text(liq.wallet_line(status.data)))
-        killed = killed_file or bool(status.data and status.data.get("killed"))
-        if killed:
+            badge = Text(f" {r['mode_badge']} ",
+                         style="bold white on red" if r["live"] else "bold black on yellow")
+            summary.update(Text.assemble(badge, "  ", r["summary"]))
+            wallet.update(Text(r["wallet"]))
+        if r["killed"]:
             banner.update(Text(
                 " Kill switch ON — bot paused. It sends no transactions and leaves "
                 "positions as they are. Press Resume (F8) to restart it. ",
                 style="bold white on red"))
         else:
             banner.update("")
-
-        sig = self._liq_signature_now(home)
-        if force or sig != self._liq_signature:
-            self._liq_signature = sig
-            empty_status = liq.Table((), ())
-            self._fill_table("#liq-positions",
-                             liq.positions_table(status.data) if status.data else empty_status)
-            self._fill_table("#liq-experiments",
-                             liq.experiments_table(status.data) if status.data else empty_status)
-            self._fill_table("#liq-actions",
-                             liq.actions_table(status.data) if status.data else empty_status)
-            self._fill_table("#liq-scout",
-                             liq.scout_table(scout.data) if scout.data else empty_status)
-            note = (liq.scout_line(scout.data) if scout.data
-                    else f"Scout: no data. {scout.reason}")
-            self.query_one("#liq-scout-note", Static).update(Text(note))
+        if force or r["signature"] != self._liq_signature:
+            self._liq_signature = r["signature"]
+            for name in ("positions", "experiments", "actions", "scout"):
+                self._fill_table(f"#liq-{name}", r["tables"][name])
+            self.query_one("#liq-scout-note", Static).update(Text(r["scout_note"]))
 
     @on(Button.Pressed, "#liq-refresh")
     def _liq_refresh_pressed(self) -> None:
@@ -1895,19 +1707,34 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#liq-resume")
     def _liq_resume_pressed(self) -> None:
+        """Resume deletes the KILL file, so it is confirmed: press twice within 10 s.
+
+        The registry refuses `liquidity.resume` without confirm=true on every surface; here the
+        first press arms it and the second one supplies the confirmation.
+        """
         self._liq_set_kill(False)
 
     def _liq_set_kill(self, on: bool) -> None:
-        """The pane's only write: create or delete the KILL file."""
+        """The pane's only write: create (`liquidity.kill`) or delete (`liquidity.resume`) KILL."""
         status = self.query_one("#liq-status", Static)
-        try:
-            liq.set_kill(on)
-        except OSError as exc:
-            status.update(Text(f"could not {'create' if on else 'delete'} KILL: {exc}"))
+        if on:
+            env = self._call("liquidity.kill")
+        else:
+            now = time.monotonic()
+            if now - self._liq_resume_armed_at > 10.0:
+                self._liq_resume_armed_at = now
+                status.update(Text("Resume removes the kill switch and lets the daemon act on real "
+                                   "money. Press Resume again within 10 s to confirm."))
+                return
+            self._liq_resume_armed_at = 0.0
+            env = self._call("liquidity.resume", {"confirm": True})
+        if not env["ok"]:
+            status.update(Text(self._msg(env)))
             return
+        home = env["result"]["home"]
         status.update(Text(
-            f"KILL file created in {liq.state_dir()}" if on
-            else f"KILL file removed from {liq.state_dir()}; the daemon may act again"))
+            f"KILL file created in {home}" if on
+            else f"KILL file removed from {home}; the daemon may act again"))
         self._refresh_liquidity(force=True)
 
     def _liq_tab_active(self) -> bool:
@@ -1919,7 +1746,8 @@ class SolTuiApp(App):
 
     def action_liq_toggle_kill(self) -> None:
         if self._liq_tab_active():
-            self._liq_set_kill(not liq.is_killed())
+            killed = self._call("liquidity.status", quiet=True)["result"]["kill_file"]
+            self._liq_set_kill(not killed)
 
     # -- Research: the drivers and what they established -----------------
 
@@ -1935,12 +1763,13 @@ class SolTuiApp(App):
             )
             table = GlossaryTable(id="research-table")
             table.add_columns("driver", "answers", "established")
-            for driver, answers, found in RESEARCH_DRIVERS:
-                table.add_row(driver, answers, found)
+            research = self._call("research.get")["result"]
+            for r in research["drivers"]:
+                table.add_row(r["driver"], r["answers"], r["established"])
             yield table
             yield Static("[b]Findings that constrain every figure above[/b]",
                          classes="hint")
-            for line in RESEARCH_FINDINGS:
+            for line in research["findings"]:
                 yield Static(f"• {line}")
 
     # -- Docs: read-only explorer over every tracked file ----------------
@@ -1953,16 +1782,16 @@ class SolTuiApp(App):
         read-write there with Save enabled; everything else (and all of
         `research/results/`) opens read-only.
         """
-        try:
-            self._docs = docs_browser.load_catalog()
-        except docs_browser.CatalogUnavailable as exc:
-            self._docs = []
+        env = self._call("docs.list", {"limit": 0})
+        if not env["ok"]:
+            self._docs_listing = {}
             with VerticalScroll():
-                yield Static(str(exc), id="docs-empty")
+                yield Static(self._msg(env), id="docs-empty")
             return
-        kinds = [("all kinds", "")] + [(k, k) for k in docs_browser.kinds_of(self._docs)]
+        self._docs_listing = env["result"]
+        kinds = [("all kinds", "")] + [(k, k) for k in self._docs_listing["kinds"]]
         with Vertical():
-            yield Static(docs_browser.summarise_catalog(self._docs), id="docs-headline")
+            yield Static(self._docs_listing["headline"], id="docs-headline")
             with Horizontal(classes="form-row"):
                 yield Input(placeholder="filter by path or summary…", id="docs-filter")
                 yield Select(kinds, value="", id="docs-kind")
@@ -1978,26 +1807,25 @@ class SolTuiApp(App):
                 yield listing
 
     def _refresh_docs(self) -> None:
-        if not getattr(self, "_docs", None):
+        if not self._docs_listing:
             return
         query = self.query_one("#docs-filter", Input).value
         kind = self.query_one("#docs-kind", Select).value
-        rows = docs_browser.filter_entries(
-            self._docs, query, kind if isinstance(kind, str) else "")
+        env = self._call("docs.list", {"query": query, "kind": kind if isinstance(kind, str) else ""})
+        if not env["ok"]:
+            self.query_one("#docs-headline", Static).update(f"[red]{self._msg(env)}[/]")
+            return
+        r = env["result"]
         table = self.query_one("#docs-table", DataTable)
         table.clear()
-        shown = rows[:DOCS_TABLE_CAP]
-        for e in shown:
-            editable = "yes" if docs_browser.is_editable(e) else ""
-            table.add_row(e.path, e.kind, editable, str(e.lines), e.summary[:90],
-                          key=e.path)
-        # The cap keeps the table responsive; say so when it bites instead of silently
-        # hiding files (a fixed 400-row cap once hid soltui/ entirely once the repo grew).
-        capped = (f" (first {len(shown)} listed; filter to narrow)"
-                  if len(rows) > len(shown) else "")
+        for e in r["entries"]:
+            table.add_row(e["path"], e["kind"], "yes" if e["editable"] else "", str(e["lines"]),
+                          e["summary"][:90], key=e["path"])
+        # The cap keeps the table responsive; say so when it bites instead of silently hiding files.
+        capped = (f" (first {r['shown']} listed; filter to narrow)"
+                  if r["matched"] > r["shown"] else "")
         self.query_one("#docs-headline", Static).update(
-            f"{len(rows)} of {len(self._docs)} match{capped} · "
-            f"{docs_browser.summarise_catalog(self._docs)}")
+            f"{r['matched']} of {r['total']} match{capped} · {r['headline']}")
 
     @on(Input.Changed, "#docs-filter")
     def _docs_filter_changed(self) -> None:
@@ -2081,9 +1909,12 @@ class SolTuiApp(App):
             )
             return
 
-        text, language, is_real_text = docs_browser.read_document(path, self._docs)
-        entry = next((e for e in self._docs if e.path == path), None)
-        editable = is_real_text and entry is not None and docs_browser.is_editable(entry)
+        env = self._call("docs.read", {"path": path})
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        text, language = env["result"]["text"], env["result"]["language"]
+        editable = env["result"]["editable"]
 
         # Set before `view.text =`, not after: assigning `.text` fires
         # `TextArea.Changed`, whose handler compares against this value to
@@ -2124,13 +1955,11 @@ class SolTuiApp(App):
         self._save_current_doc()
 
     def _save_current_doc(self) -> None:
-        """Write the viewer's current text back to disk.
+        """Write the viewer's current text back to disk (`docs.write`).
 
-        The keypress/click itself is the confirm-on-save step: there is no
-        separate dialog, and `write_document` re-checks editability against
-        the live catalogue rather than trusting `_docs_current_editable`, so
-        a stale binding from before a catalogue reload cannot write
-        somewhere the current rules would refuse.
+        The keypress/click itself is the confirm-on-save step. `docs.write` re-checks editability
+        against the live catalogue rather than trusting `_docs_current_editable`, so a stale
+        binding cannot write somewhere the current rules would refuse.
         """
         status = self.query_one("#docs-view-status", Static)
         if not self._docs_current_path or not self._docs_current_editable:
@@ -2138,14 +1967,12 @@ class SolTuiApp(App):
             return
         path = self._docs_current_path
         text = self.query_one("#docs-view", TextArea).text
-        try:
-            docs_browser.write_document(path, text, self._docs)
-        except (PermissionError, FileNotFoundError, OSError) as exc:
-            status.update(f"[red]save failed: {exc}[/]")
+        env = self._call("docs.write", {"path": path, "text": text})
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
             return
         self._docs_loaded_text = text
         status.update(f"{path} — saved")
-
 
 def main(argv: list[str] | None = None) -> int:
     """Entry point for `python3 -m soltui.tui`."""

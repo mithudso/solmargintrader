@@ -150,3 +150,11 @@ strategy — are documented in `backtester/README.md` and enforced by 681 tests.
 4. **Use existing retrieval tools.** `index/build.py` owns offline metadata/text/concept indexes;
    `scripts/build_doc_index.py` derives the short retrieval map from the overview. Semantic
    embeddings are optional and explicit, not a startup requirement.
+
+## soltui command bridge
+
+`soltui/commands.py` is the single registry for everything the console can do. The TUI, `soltui call`,
+`soltui api` and the Chrome native-messaging host (`soltui/native_host.py`, reached by the extension's
+`soltuiCall` command) all call `dispatch(name, params, surface)`. The extension shares no code with Python;
+the framed JSON protocol of the native host is the only coupling. soltui keeps its no-order-path guarantee:
+no command signs or moves funds, and `liquidity.resume` (deleting the aero-lp `KILL` file) needs `confirm`.

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 7
-Delta: added the owner's soltui command-bridge request (extension side, workstream X).
+Version: 6
+Delta: added the SolTUI 'Run Untested Sweep' ModuleNotFoundError request.
 
 ## v1 - 2026-11-06
 
@@ -43,10 +43,11 @@ In the soltui when I click on "run untested sweep" I get this error: [Image #2]
 
 The attached screenshot shows the Backtest tab status: "error: Traceback (most recent call last): File "/Users/mitch/dev/solmargintrader/research/sweep_untested.py", line 18, in <module> from research.sweep import HORIZONS, load_horizon, walk_forward, Row, fmt_table".
 
-## v7 - 2026-11-07 (soltui command bridge, extension side)
+## v7 - 2026-11-07
 
 ```text
 Make everything available in the tui also available via the extension, and using the same mechanisms and calls, which will require a helper script. The extension has ID: pnokcppamfghgaimmmghoegjllhonhbh make it auto reload on update. All calls should be available via the extension, TUI, CLI, and API with the same output response, testing, verification, logging, and access.
 ```
 
-Target: /Users/mitch/dev/solmargintrader. Scope of this record: the extension side (soltuiCommands and soltuiCall registry commands, transports, manifest permission, dashboard panel, auto-reload, tests, e2e). The Python registry, CLI, API, native host and installer are a parallel workstream.
+Workstream P (Python side) of the soltui command bridge, and workstream X (the extension side: soltuiCommands/soltuiCall, transports, `nativeMessaging`, dashboard panel, auto-reload, tests, e2e); workstream X builds the extension side against the same contract.
+

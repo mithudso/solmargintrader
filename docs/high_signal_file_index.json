@@ -628,7 +628,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2157
+      "lines": 1984
     },
     {
       "path": "soltui/signals.py",
@@ -663,7 +663,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The loop that refreshes state",
-      "lines": 280
+      "lines": 287
     },
     {
       "path": "soltui/bgcontrol.py",
@@ -698,14 +698,14 @@
       "component": "soltui",
       "kind": "other",
       "summary": "Shell launcher with interpreter override",
-      "lines": 38
+      "lines": 51
     },
     {
       "path": "soltui/config.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Configuration",
-      "lines": 174
+      "lines": 180
     },
     {
       "path": "soltui/setup_app.py",

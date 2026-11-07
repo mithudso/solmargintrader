@@ -1,6 +1,6 @@
 # Work continuation
 
-Version: 12
+Version: 13
 Delta: added the extension side of the soltui command bridge (workstream X) and the owner's load-path finding.
 
 ## v1 - 2026-11-06
@@ -130,10 +130,20 @@ Remaining: none. ~/.venvs/soltui (TUI) is unchanged.
 
 ## v12 - 2026-11-07
 
+Target: every TUI action available through the extension, CLI and API with one envelope, one access model and one call log (workstream P, branch feat/soltui-bridge).
+
+Completed: `soltui/commands.py` registry (40 commands, dispatch, envelope, confirm gate on `liquidity.resume`, key-only call log); TUI rewired to dispatch; `soltui/cli.py`, `api.py`, `native_host.py`, `native_host_install.py`; parity, access, framing, logging and button-map tests (suite 449+); research/TOP_UNTESTED_RECOMMENDATION.json ignored as generated output.
+
+Verification: full soltui suite, check_docs, live framed round trip and CLI-vs-API envelope equality on this Mac (see the PR).
+
+Remaining: extension side (workstream X); restart Chrome after the first host install so it loads the manifest.
+
+## v13 - 2026-11-07 (extension side)
+
 Target: soltui command bridge, extension side. Branch ext-soltui-bridge, worktree /Users/mitch/dev/smt-wt-ext. Stele MCP was unreachable, so facts below are not yet in the graph.
 
 Completed: `soltuiCommands` and `soltuiCall` in the registry (`extension/src/core/soltui.js`) over an injected `deps.soltui` transport; service-worker transport (`src/bg/soltui-transport.js`, `connectNative`, one short-lived port per request); node transport (`tools/soltui-transport.js`, same 4-byte framing); manifest `nativeMessaging` permission; dashboard SolTUI panel (`src/ui/soltui-panel.js`); 1-minute `solmargintrader-soltui-build` alarm and the reload gate (`src/core/autoreload.js`, `enginePending` in `engine.js`); fixtures `e2e/fixtures/`; tests `soltui-bridge`, `autoreload`, `soltui-parity`, `soltui-panel`; e2e extended (host manifest written into the Chrome for Testing profile's NativeMessagingHosts dir).
 
 Facts to keep: (1) The owner's unpacked load path for extension pnokcppamfghgaimmmghoegjllhonhbh is /Users/mitch/dev/solmargintrader/extension, in Chrome Beta (`Google/Chrome Beta/Default/Secure Preferences`, `extensions.settings.<id>.path`). Branded Chrome (stable) has no entry. The installed permissions there are alarms and storage, so the owner must reload the extension once for nativeMessaging. (2) `chrome.runtime.reload()` fires onInstalled with reason update, and `handleInstalled` forces `armed: false` on every update, so an auto-reload disarms the grid; the kill switch and mode are kept. (3) The reload runs inside the engine store lock and holds it until the worker dies. (4) The soltui response is returned as `result` (the CLI prints it, the API nests it under `result`), never spread over the message response. (5) `test/surfaces.test.js` scans src/ui/*.js for the literal `type: '<word>'` as a message name, so UI code must set element kinds by assignment. (6) Fixtures live in e2e/fixtures, not test/, because files under test/ run under `node --test`.
 
-Remaining: wait for the Python host (parallel workstream) on origin/master, run the e2e against the real host, docs counts, check_docs, PR, CI, merge, fast-forward the live checkout.
+Remaining: merge the origin/master Python side (done: PR 43), re-run the e2e against the production host, docs counts, CI, merge, fast-forward the live checkout.
