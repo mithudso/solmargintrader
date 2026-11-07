@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 28
-Delta: v27 to v28; repo index: ollama auto-start, idle semantic reindex, lazy keyword/semantic/hybrid search in the Docs tab.
+Version: 29
+Delta: v28 to v29; prediction_markets spec-only card added as an item to consider.
 
 ## v1 - 2026-11-06
 
@@ -302,3 +302,9 @@ Decision: the committed keyword index is not rebuilt by the idle job (a 12 MB tr
 Tests: test_index_search_tooling.py (32), test_docs_search.py (10). Verification: see PR.
 
 Remaining: PR, CI, merge; build the semantic index in the main checkout after merge.
+
+## v29 - 2026-11-07 (Prediction markets card)
+
+Target: "Add looking at the prediction markets as another item to consider." Read as an addition to the strategy catalogue. Stele TASK-817. Added backtester/strategy_cards/prediction_markets.md: spec-only, family event, very-low a-priori, two ideas kept apart (odds as a signal for SOL; the markets as a venue: cross-venue mispricing and calibration bias), data gap named (price history and resolution outcomes, including the resolution-time lookahead trap), legal and venue access flagged as open questions. No code, not queued. soltui coverage test lists it as an extra card.
+
+Also recorded: a side note that the five new strategy cards rest on one SOL daily 70/30 split, which RANKED_LISTS.md calls structurally hostile to long-only rules. The cards are implemented/very-low, not measured; use the soltui queue's sweep output, not the card numbers.

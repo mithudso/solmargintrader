@@ -116,3 +116,9 @@ In the strategies tab make it indicate whether or not that strategy has already 
 ```text
 Add keyword and symantic indexing to all of the files in the repo, use the mxbai-embed-large:latest model like all the other symantic indexes, and use the same mechanisms etc. Add to the helper script that if a symantic search is chosen to make sure the ollama server is reachable and if not then start it, and also add an idle index check so it can kick off its own indexing. Add the keyword, symantic, and hybrid searching to the docs tab. I would lazy load it though because it is almost 600MB to always have on.
 ```
+
+## v17 - 2026-11-07
+
+```text
+Add looking at the prediction markets as another item to consider.
+```
