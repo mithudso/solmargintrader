@@ -121,5 +121,10 @@ $('kill').addEventListener('click', () => act({ type: 'kill' }));
 $('clearKill').addEventListener('click', () => act({ type: 'clearKill' }));
 $('tickNow').addEventListener('click', () => act({ type: 'tickNow' }));
 $('openDashboard').addEventListener('click', () => chrome.runtime.openOptionsPage());
+// The SolTUI panel lives on the dashboard; the anchor scrolls straight to it.
+$('openSoltui').addEventListener('click', () =>
+  chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/dashboard.html#soltui') }));
+// The version is the only visible sign that a reload picked up new code.
+$('version').textContent = `v${chrome.runtime.getManifest().version}`;
 
 refresh().catch((err) => showError(String(err.message ?? err)));

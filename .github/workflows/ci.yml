@@ -35,6 +35,21 @@ jobs:
       - name: Unit and parity tests
         run: node --test
 
+      # A reload of an unpacked extension shows only the manifest version, so a
+      # change that keeps it reads as "nothing changed" (2026-11-07, 0.1.0).
+      - name: Version bumped when extension code changes
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          if git diff --quiet FETCH_HEAD HEAD -- src manifest.json; then exit 0; fi
+          base=$(git show FETCH_HEAD:extension/manifest.json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).version))')
+          head=$(node -p 'require("./manifest.json").version')
+          if [ "$base" = "$head" ]; then
+            echo "extension/src or manifest.json changed but the version is still $head."
+            echo "Bump the version in extension/manifest.json and extension/package.json."
+            exit 1
+          fi
+
       - name: Syntax check every module
         run: |
           find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check

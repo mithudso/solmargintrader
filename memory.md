@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 16
-Delta: added PR 2 of the leverage-tier and reliable-trigger work (trigger miner, trigger_trade).
+Version: 17
+Delta: extension version 0.2.0, visible in popup and dashboard, plus a CI version-bump guard.
 
 Delta: added PR 1 of the leverage-tier and reliable-trigger work (tiers, intrabar liquidation).
 
@@ -183,3 +183,11 @@ Result: no trigger qualified as reliable on SOL daily or hourly. Hourly cannot q
 Facts to keep: the CI e2e (extension real browser) is flaky once ("installed mode: expected dry-run, got undefined"); a rerun passed. soltui tests iterate REGISTRY, so wrapper families (leverage-tier, trigger) need a FAMILY_NOTES entry and are excluded from the Signals-tab map test.
 
 Remaining follow-ups: a soltui Triggers view over research/results/triggers_*.csv; live trigger alerts through the executor.
+
+## v17 - 2026-11-07
+
+Target: the owner reloaded the unpacked extension from /Users/mitch/dev/solmargintrader/extension and saw "no change": the version still read 0.1.0. The code on disk had changed (PR #42 added the nativeMessaging permission and a SolTUI panel), but nobody bumped the version, and the new panel is on the dashboard, not the popup.
+
+Done: manifest.json and package.json are 0.2.0. The popup header and the dashboard title show the manifest version. The popup gains a "SolTUI console" button that opens dashboard.html#soltui. test/version.test.js keeps the two version fields equal and checks that both pages render the version. The CI extension job fails a pull request that changes extension/src or manifest.json without a version bump.
+
+Owner steps (Chrome Beta, where the extension is installed): quit and reopen Chrome Beta once so it reads the com.mitchhudson.soltui native host manifest, then reload SolMarginTrader in chrome://extensions. The popup should then read v0.2.0.
