@@ -135,5 +135,41 @@ class StartLoadsTheAgent(ServiceTestCase):
         self.assertEqual(rc, 1)
 
 
+@unittest.skipUnless(HAVE_SUPERVISOR, SKIP_REASON)
+class BuildNeedsALoadablePython(ServiceTestCase):
+    """The bundle must name a Python runtime that exists (2026-11-07: "A Python runtime not could be located")."""
+
+    def bundle(self, locations: list[str]) -> Path:
+        bundle = self.tmp / "SolTUI.app"
+        (bundle / "Contents" / "MacOS").mkdir(parents=True)
+        with (bundle / "Contents" / "Info.plist").open("wb") as fh:
+            import plistlib
+            plistlib.dump({"PyRuntimeLocations": locations}, fh)
+        return bundle
+
+    def test_runtime_ok_when_any_location_exists(self) -> None:
+        real = self.tmp / "Python"
+        real.write_text("")
+        self.assertIsNone(self.svc.runtime_problem(self.bundle(["/nonexistent/Python", str(real)])))
+
+    def test_runtime_problem_when_every_location_dangles(self) -> None:
+        problem = self.svc.runtime_problem(self.bundle([
+            "@executable_path/../Frameworks/Python.framework/Versions/3.13/Python",
+            "/Library/Frameworks/Python.framework/Versions/3.13/Python-removed"]))
+        self.assertIn("runtime not could be located", problem)
+
+    def test_executable_path_is_resolved_inside_the_bundle(self) -> None:
+        bundle = self.bundle(["@executable_path/../Frameworks/Python"])
+        (bundle / "Contents" / "Frameworks").mkdir()
+        (bundle / "Contents" / "Frameworks" / "Python").write_text("")
+        self.assertIsNone(self.svc.runtime_problem(bundle))
+
+    def test_build_refuses_a_non_framework_interpreter(self) -> None:
+        with mock.patch.object(self.svc.sysconfig, "get_config_var", return_value=""), \
+             mock.patch.object(self.svc.subprocess, "run") as run:
+            self.assertEqual(self.svc.build(), 1)
+        run.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

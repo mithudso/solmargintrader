@@ -21,7 +21,7 @@ from textual.widgets import DataTable, Static
 
 from soltui import bgqueue
 from soltui.config import Settings
-from soltui.tui import FAMILY_NOTES, SIGNAL_REFERENCE, SolTuiApp
+from soltui.tui import FAMILY_NOTES, SIGNAL_REFERENCE, SolTuiApp, failure_summary, untested_sweep_command
 
 
 def _queue_row(job_id: str, sharpe: float, trades: int) -> bgqueue.JobResult:
@@ -1158,6 +1158,33 @@ class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
                 await pilot.pause()
                 self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
             self.assertEqual(ta.text, "abc")
+
+
+class UntestedSweepCommandTest(unittest.TestCase):
+    """The Backtest tab's "Run Untested Sweep" button (2026-11-07 regression)."""
+
+    def test_runs_on_this_consoles_interpreter_not_bare_python3(self):
+        # A bare "python3" resolved to a Homebrew 3.15 with no pandas, so the sweep died with
+        # "ModuleNotFoundError: No module named 'pandas'".
+        import sys
+        argv = untested_sweep_command(Path("/repo"))
+        self.assertEqual(argv[0], sys.executable)
+        self.assertNotEqual(argv[0], "python3")
+        self.assertEqual(argv[1], "/repo/research/sweep_untested.py")
+
+    def test_failure_summary_shows_the_exception_not_the_traceback_head(self):
+        stderr = (
+            "Traceback (most recent call last):\n"
+            '  File "research/sweep_untested.py", line 18, in <module>\n'
+            "    from research.sweep import HORIZONS\n"
+            '  File "research/sweep.py", line 34, in <module>\n'
+            "    import pandas as pd\n"
+            "ModuleNotFoundError: No module named 'pandas'\n\n"
+        )
+        summary = failure_summary(stderr)
+        self.assertTrue(summary.endswith("ModuleNotFoundError: No module named 'pandas'"))
+        self.assertNotIn("Traceback", summary)
+        self.assertEqual(failure_summary(""), "no error output")
 
 
 if __name__ == "__main__":

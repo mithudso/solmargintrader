@@ -83,11 +83,13 @@ approval rather than fail silently.
 This one installs a launchd agent that runs at login, so read `soltui/README.md` first.
 
 ```bash
-pip install -r soltui/requirements.txt
-python3 -m unittest discover -s soltui/tests -t .
-python3 soltui/soltui-service build                 # build the app bundle
-python3 soltui/soltui-service install               # install bundle + launchd agent
-python3 soltui/soltui-service status                # bundle / agent / flag / launchd state
+# The app bundle needs a framework build of Python (Homebrew python@3.13), not uv's standalone CPython
+uv venv ~/.venvs/soltui-app -p /opt/homebrew/opt/python@3.13/bin/python3.13
+uv pip install -p ~/.venvs/soltui-app/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
+~/.venvs/soltui-app/bin/python -m unittest discover -s soltui/tests -t .
+~/.venvs/soltui-app/bin/python soltui/soltui-service build    # build the app bundle
+~/.venvs/soltui-app/bin/python soltui/soltui-service install  # install bundle + launchd agent
+~/.venvs/soltui-app/bin/python soltui/soltui-service status   # bundle / runtime / agent / flag / launchd state
 ```
 
 Three things to know before you install it:

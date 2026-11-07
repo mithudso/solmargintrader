@@ -46,9 +46,11 @@ from __future__ import annotations
 
 import argparse
 import os
+import plistlib
 import shutil
 import subprocess
 import sys
+import sysconfig
 from pathlib import Path
 
 try:
@@ -88,8 +90,52 @@ def run(cmd: list[str], check: bool = False) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, check=check, capture_output=True, text=True)
 
 
+# py2app's launcher loads libpython from the paths in Info.plist PyRuntimeLocations, which it
+# copies from the build interpreter's framework. Two ways this broke the app with "A Python
+# runtime not could be located" (2026-11-07):
+#   - building from a non-framework interpreter (uv's standalone CPython, which ~/.venvs/soltui
+#     uses), which has no framework for the launcher to load;
+#   - the build framework being removed later (the python.org 3.13 install at
+#     /Library/Frameworks went away), so every recorded path dangled.
+# Build from a venv on Homebrew's python@3.13: it is a framework build, and its framework is
+# recorded through the stable /opt/homebrew/opt symlink, so patch upgrades do not break it.
+FRAMEWORK_VENV_HINT = (
+    "uv venv ~/.venvs/soltui-app -p /opt/homebrew/opt/python@3.13/bin/python3.13\n"
+    "    uv pip install -p ~/.venvs/soltui-app/bin/python -r backtester/requirements.txt -r soltui/requirements.txt\n"
+    "    ~/.venvs/soltui-app/bin/python soltui/soltui-service build"
+)
+
+
+def framework_problem() -> str | None:
+    """Why this interpreter cannot host a py2app bundle, or None when it can."""
+    if sysconfig.get_config_var("PYTHONFRAMEWORK"):
+        return None
+    return (f"{sys.executable} is not a framework build of Python, so py2app cannot make a bundle "
+            f"that launches. Build from a framework venv:\n    {FRAMEWORK_VENV_HINT}")
+
+
+def runtime_problem(bundle: Path) -> str | None:
+    """None when the bundle's PyRuntimeLocations names a Python that exists, else why not."""
+    info = bundle / "Contents" / "Info.plist"
+    try:
+        with info.open("rb") as fh:
+            locations = plistlib.load(fh).get("PyRuntimeLocations") or []
+    except (OSError, plistlib.InvalidFileException) as exc:
+        return f"cannot read PyRuntimeLocations from {info}: {exc}"
+    exe_dir = bundle / "Contents" / "MacOS"
+    for loc in locations:
+        if Path(str(loc).replace("@executable_path", str(exe_dir))).exists():
+            return None
+    return (f"no Python runtime in {info} exists ({', '.join(map(str, locations)) or 'none listed'}); "
+            f"the app will fail with 'A Python runtime not could be located'. Rebuild:\n    {FRAMEWORK_VENV_HINT}")
+
+
 def build() -> int:
     """py2app alias build into dist/."""
+    problem = framework_problem()
+    if problem:
+        print(problem, file=sys.stderr)
+        return 1
     print(f"Building {APP_NAME}.app (alias mode) …")
     proc = subprocess.run(
         [sys.executable, str(REPO / "soltui" / "setup_app.py"), "py2app", "-A"],
@@ -100,6 +146,10 @@ def build() -> int:
         return proc.returncode
     if not DIST_BUNDLE.exists():
         print(f"expected {DIST_BUNDLE} but it is absent", file=sys.stderr)
+        return 1
+    problem = runtime_problem(DIST_BUNDLE)
+    if problem:
+        print(problem, file=sys.stderr)
         return 1
     print(f"built → {DIST_BUNDLE}")
     return 0
@@ -304,6 +354,10 @@ def status() -> int:
     print(f"agent plist : {AGENT} {'✓' if AGENT.exists() else '✗'}")
     print(f"supervise   : {FLAG} {'✓ enabled' if FLAG.exists() else '✗ disabled'}")
     print(f"log         : {LOG} {'✓' if LOG.exists() else '(no output yet)'}")
+    for bundle in (BUNDLE, DIST_BUNDLE):
+        if bundle.exists():
+            problem = runtime_problem(bundle)
+            print(f"runtime     : {bundle.name} in {bundle.parent} {'✓' if not problem else '✗ ' + problem}")
     res = run(["launchctl", "print", f"gui/{uid()}/{LABEL}"])
     if res.returncode != 0:
         print("launchd     : not loaded")

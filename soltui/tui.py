@@ -17,6 +17,8 @@ path anywhere in this package.
 from __future__ import annotations
 
 import inspect
+import subprocess
+import sys
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable
@@ -269,6 +271,24 @@ HEADER_GLOSSARY = {
 
 
 # Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.
+# The research scripts import pandas and numpy, so they must run on the interpreter running
+# this console (its venv has them). A bare "python3" resolves through PATH and, after a
+# Homebrew upgrade made it 3.15 with no pandas, the button failed with "ModuleNotFoundError:
+# No module named 'pandas'" (2026-11-07; Stele KNOW-546).
+UNTESTED_SWEEP_TIMEOUT_S = 30 * 60
+
+
+def untested_sweep_command(repo: Path) -> list[str]:
+    """argv for research/sweep_untested.py on this console's own interpreter."""
+    return [sys.executable, str(repo / "research" / "sweep_untested.py")]
+
+
+def failure_summary(stderr: str, lines: int = 3) -> str:
+    """The end of a traceback, where the exception is; its start only names the entry file."""
+    tail = [line for line in (stderr or "").strip().splitlines() if line.strip()][-lines:]
+    return "\n".join(tail) or "no error output"
+
+
 DOCS_TABLE_CAP = 1000
 
 class GlossaryTable(DataTable):
@@ -1115,17 +1135,18 @@ class SolTuiApp(App):
         status = self.query_one("#backtest-status", Static)
         self.call_from_thread(status.update, "running untested sweep...")
         try:
-            import subprocess
-            from pathlib import Path
             repo = Path(__file__).resolve().parent.parent
-            script = repo / "research" / "sweep_untested.py"
             result = subprocess.run(
-                ["python3", str(script)], capture_output=True, text=True, cwd=str(repo)
+                untested_sweep_command(repo), capture_output=True, text=True, cwd=str(repo),
+                timeout=UNTESTED_SWEEP_TIMEOUT_S,
             )
             if result.returncode == 0:
                 self.call_from_thread(status.update, f"untested sweep done.\n{result.stdout[-200:]}")
             else:
-                self.call_from_thread(status.update, f"[red]error: {result.stderr}[/]")
+                self.call_from_thread(status.update, f"[red]error: {failure_summary(result.stderr)}[/]")
+        except subprocess.TimeoutExpired:
+            self.call_from_thread(
+                status.update, f"[red]untested sweep timed out after {UNTESTED_SWEEP_TIMEOUT_S // 60} min[/]")
         except Exception as exc:
             self.call_from_thread(status.update, f"[red]{exc}[/]")
 
