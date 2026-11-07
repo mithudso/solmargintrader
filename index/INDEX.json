@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-07T14:54:06+00:00",
+  "generatedAt": "2026-11-07T15:15:09+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "1f38292",
+  "commit": "db3a3d9",
   "counts": {
-    "files": 634,
-    "bytes": 10460669,
+    "files": 636,
+    "bytes": 10467777,
     "byKind": {
-      "code-python": 140,
+      "code-python": 141,
       "doc": 130,
       "test": 99,
-      "result": 79,
+      "result": 80,
       "code-js": 70,
       "strategy-card": 59,
       "other": 13,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 136,
-      "research": 126,
+      "research": 128,
       "soltui": 85,
       "extension": 68,
       "skills": 62,
@@ -41,7 +41,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 572
+    "withSummary": 574
   },
   "files": [
     {
@@ -10085,11 +10085,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 34 Delta: v33 to v34; compound wallet sizing, click toggle, unattended training, inversion default, new metrics, relations. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.",
+      "summary": "Version: 35 Delta: v34 to v35; grid holdout on post-2026-08-04 bars. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.",
       "summarySource": "opening-prose",
-      "bytes": 52085,
-      "lines": 349,
-      "sha1": "28932ad430e9445b5e45d9e37da380e199af220a",
+      "bytes": 53412,
+      "lines": 357,
+      "sha1": "239aaeeb1e3fa49e15f71f081890869c4f7e2ecf",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -10554,11 +10554,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 27 Delta: v23 to v27; wallet source, click-to-toggle and unattended training, inverting wrong metrics, status bar and four indicators (v23 is the scorecard paper). Delta: added the leverage-tier and reliable-trigger request.",
+      "summary": "Version: 28 Delta: v27 to v28; added the repo-improvement and profitability review request. Delta: added the leverage-tier and reliable-trigger request.",
       "summarySource": "opening-prose",
-      "bytes": 11190,
-      "lines": 185,
-      "sha1": "dec76df48b25bbeb59f456f6b742c5d77b941698",
+      "bytes": 11318,
+      "lines": 191,
+      "sha1": "fee9319acfa8ad91f68d57b4f012cec802776e48",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -10610,9 +10610,9 @@
       "title": "Did the grid make money?",
       "summary": "Reviewed 2026-11-07 using engine `ad6fe0830c661fa1437a0c5606118f076dd13888`. The strategy named `grid` in the roster increases exposure as price falls below a rolling average. It is an exposure staircase, not a set of resting buy and sell orders. Its archived single-split SOL results lost money out of sample (see `backtester/strategy_cards/grid.md`).",
       "summarySource": "opening-prose",
-      "bytes": 3586,
-      "lines": 38,
-      "sha1": "6695f45909f87617aa25672c59bce678735e8b2c",
+      "bytes": 4974,
+      "lines": 51,
+      "sha1": "9487060ff62ed609c142372dc53a94e94c2f6c9a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -11410,6 +11410,41 @@
       "internalImports": [
         "backtester",
         "research"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/grid_holdout.py",
+      "path": "research/grid_holdout.py",
+      "dir": "research",
+      "name": "grid_holdout.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "First bar after the review's cache ended (2026-08-04). Anything earlier is not holdout.",
+      "summary": "Run the predeclared ladder from research/results/grid_review_20261107.json on bars it never saw. The review used a cache that ended 2026-08-04. This script scores the same configuration (bounds 85%-115% of the first close, seven geometric rungs, $12 per rung, $144 account) on bars from 2026-08-05 onward, at the review's costs and at twice those costs. Nothing is fitted.",
+      "summarySource": "docstring",
+      "bytes": 3278,
+      "lines": 83,
+      "sha1": "d78788c8155d88ec329e9f5904868c2861d2da68",
+      "symbols": [
+        "HOLDOUT_START_TS",
+        "HOLDOUT_END_TS",
+        "ACCOUNT_USD",
+        "run()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "backtester",
+        "hashlib",
+        "json",
+        "pandas",
+        "pathlib",
+        "sys"
+      ],
+      "internalImports": [
+        "backtester"
       ],
       "frontmatter": {}
     },
@@ -12262,6 +12297,24 @@
       "bytes": 4369,
       "lines": 61,
       "sha1": "593090ad5a45d20821bf773e8e26108f848c2e97",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "research/results/grid_holdout_20261107.json",
+      "path": "research/results/grid_holdout_20261107.json",
+      "dir": "research/results",
+      "name": "grid_holdout_20261107.json",
+      "ext": ".json",
+      "kind": "result",
+      "title": "grid_holdout_20261107",
+      "summary": "Generated JSON object, 8 keys (bars, data_sha256, first_close, first_ts, last_close, last_ts...).",
+      "summarySource": "derived",
+      "bytes": 987,
+      "lines": 34,
+      "sha1": "740243df72de0107c3f6ccba5725a4112a3af937",
       "symbols": [],
       "imports": [],
       "internalImports": [],
