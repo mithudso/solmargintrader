@@ -2,7 +2,7 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 681 tests
-python3 -m unittest discover -s soltui/tests -t .       # 408 tests (~300s)
+python3 -m unittest discover -s soltui/tests -t .       # 449 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 303 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
@@ -137,7 +137,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 408 tests
+## soltui — 449 tests
 
 Slower than the others (~70s) because the TUI tests drive real render cycles. Three
 files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
