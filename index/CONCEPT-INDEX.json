@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T14:53:06+00:00",
+  "generatedAt": "2026-11-07T14:54:06+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -269,6 +269,10 @@
           "hits": 24
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 23
+        },
+        {
           "path": "skills/trading-and-investing/manifest.yaml",
           "hits": 23
         },
@@ -278,10 +282,6 @@
         },
         {
           "path": "backtester/README.md",
-          "hits": 22
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 22
         }
       ],
@@ -733,7 +733,7 @@
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 76
+          "hits": 82
         },
         {
           "path": "soltui/signals.py",
@@ -1476,6 +1476,10 @@
           "hits": 17
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 17
+        },
+        {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
           "hits": 16
         },
@@ -1489,10 +1493,6 @@
         },
         {
           "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 15
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 15
         },
         {
@@ -1973,16 +1973,16 @@
           "hits": 40
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 29
+        },
+        {
           "path": "backtester/tests/test_scorecard.py",
           "hits": 28
         },
         {
           "path": "soltui/signals.py",
           "hits": 28
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 27
         },
         {
           "path": "research/decide.py",
@@ -2287,6 +2287,10 @@
           "hits": 9
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 9
+        },
+        {
           "path": "backtester/core/strategies/__init__.py",
           "hits": 8
         },
@@ -2316,10 +2320,6 @@
         },
         {
           "path": "backtester/strategy_cards/discount_to_anchor.md",
-          "hits": 7
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 7
         },
         {
@@ -2589,12 +2589,12 @@
           "hits": 9
         },
         {
-          "path": "research/coin-intelligence/eth-ethereum.md",
+          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 9
         },
         {
-          "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 8
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 9
         },
         {
           "path": "research/ratio_rotation.py",

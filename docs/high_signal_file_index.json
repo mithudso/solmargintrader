@@ -1172,7 +1172,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity",
-      "lines": 533
+      "lines": 555
     }
   ]
 }
