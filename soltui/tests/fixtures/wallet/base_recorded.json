@@ -1,0 +1,54 @@
+{
+ "eth_getBalance": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x1fb9deb2d6ab1"
+ },
+ "balances": [
+  {
+   "jsonrpc": "2.0",
+   "id": 0,
+   "result": "0x00000000000000000000000000000000000000000000000000000000000f4240"
+  },
+  {
+   "jsonrpc": "2.0",
+   "id": 1,
+   "result": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ ],
+ "npm": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x0000000000000000000000000000000000000000000000000000000000000000"
+ },
+ "llama": {
+  "coins": {
+   "base:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": {
+    "decimals": 6,
+    "symbol": "USDC",
+    "price": 0.9997786432000001,
+    "timestamp": 1794038414,
+    "confidence": 0.999
+   },
+   "coingecko:ethereum": {
+    "price": 2243.2349792000005,
+    "symbol": "ETH",
+    "timestamp": 1794038414,
+    "confidence": 0.999
+   }
+  }
+ },
+ "dexscreener": [
+  {
+   "chainId": "base",
+   "baseToken": {
+    "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "symbol": "USDC"
+   },
+   "priceUsd": "1.00011",
+   "liquidity": {
+    "usd": 9000000
+   }
+  }
+ ]
+}

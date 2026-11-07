@@ -44,7 +44,7 @@ from typing import Any, Callable
 from . import analyze as analyze_mod
 from . import bgcontrol, bgqueue
 from . import cumulative as cumulative_mod
-from . import docs_browser, live_run, pnl as pnl_mod, presets as presets_mod
+from . import docs_browser, live_run, pnl as pnl_mod, presets as presets_mod, wallet as wallet_mod
 from . import liquidity as liq
 from . import top5 as top5_mod
 from .config import INTERVALS, Settings, load_settings, save_settings
@@ -484,6 +484,7 @@ def dispatch(name: str, params: dict[str, Any] | None = None, surface: str = "ap
 _SETTING_CASTS = {
     "asset": str, "start": str, "end": str, "interval": str, "capital": float,
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,
+    "solana_address": str, "base_address": str,
 }
 
 
@@ -1225,6 +1226,18 @@ def _lp_curves() -> list[tuple[str, list[pnl_mod.Curve], list[str]]]:
     return [(source, [curve] if curve else [], notes)]
 
 
+def _wallet_curves() -> tuple[list[pnl_mod.Curve], list[str]]:
+    """Wallet value at each recorded scan (`portfolio.scan` appends one line per scan)."""
+    rows = wallet_mod.load_history()
+    curve = pnl_mod.curve_from_wallet_history(rows)
+    if curve is None:
+        return [], ["no wallet scan recorded yet: run portfolio.scan (Wallet tab) to add a point"]
+    notes = [curve.note, f"{len(rows)} scan(s) recorded"]
+    if len(rows) == 1:
+        notes.append("history starts with the first scan; a second scan is needed to show a change")
+    return [curve], notes
+
+
 def _pnl_report(ctx: Context, p: dict[str, Any]) -> dict[str, Any]:
     try:
         window = pnl_mod.resolve_window(p.get("window"), p.get("start"), p.get("end"))
@@ -1242,6 +1255,9 @@ def _pnl_report(ctx: Context, p: dict[str, Any]) -> dict[str, Any]:
     if wanted("dry-run"):
         c, n = _journal_curves()
         inputs.append(("dry-run", c, n))
+    if wanted("wallet (live)"):
+        c, n = _wallet_curves()
+        inputs.append(("wallet (live)", c, n))
     if wanted("dry-run LP", "live LP", "reported LP"):
         for src, c, n in _lp_curves():
             if only is None or only == src or (only == "live LP" and src == "reported LP"):
@@ -1282,3 +1298,57 @@ def pnl_series(ctx: Context, p: dict[str, Any]) -> Any:
          PNL_PARAMS)
 def pnl_breakdown(ctx: Context, p: dict[str, Any]) -> Any:
     return _pnl_slice(_pnl_report(ctx, p), _BREAKDOWN_KEYS)
+
+
+# -- wallet (read-only) --------------------------------------------------------------------------
+
+
+def _daemon_context() -> dict[str, Any]:
+    """What the liquidity daemon's own files say about tokens and positions (read-only)."""
+    import sqlite3
+
+    home = liq.state_dir()
+    status = liq.load_status(home).data
+    tokens: list[str] = []
+    ledger = home / "ledger.sqlite"
+    if ledger.exists():
+        try:
+            conn = sqlite3.connect(f"file:{ledger}?mode=ro", uri=True, timeout=2)
+            try:
+                tokens = [r[0] for r in conn.execute("SELECT DISTINCT token FROM wallet_balances")]
+            finally:
+                conn.close()
+        except sqlite3.Error:
+            tokens = []
+    return wallet_mod.daemon_context(status, tokens)
+
+
+@command("wallet.key_sources",
+         "Whether the signing-key files exist and are mode 600, by stat only. Never opens them.")
+def wallet_key_sources(ctx: Context, p: dict[str, Any]) -> Any:
+    return wallet_mod.key_sources()
+
+
+@command("portfolio.scan",
+         "Find the coins, token contracts, stake accounts and LP positions at the two Settings "
+         "addresses, from public endpoints only. Appends one summary line to the local wallet history.",
+         (P("chain", "string", "all (default), solana or base."),
+          P("tokens", "json", "Extra Base token contract addresses to check, as a list."),
+          P("record", "bool", "Append this scan to the wallet history the P&L tab reads (default true).")),
+         read_only=False, long_running=True)
+def portfolio_scan(ctx: Context, p: dict[str, Any]) -> Any:
+    chain = (p.get("chain") or "all").strip().lower()
+    if chain not in ("all", "solana", "base"):
+        raise CommandError("bad_params", 'parameter "chain" must be all, solana or base')
+    extra = p.get("tokens")
+    if extra is not None and (not isinstance(extra, list) or not all(isinstance(t, str) for t in extra)):
+        raise CommandError("bad_params", 'parameter "tokens" must be a list of addresses')
+    result = wallet_mod.scan_wallet(
+        ctx.settings.solana_address, ctx.settings.base_address, wallet_mod.HttpFetcher(), chain=chain,
+        daemon=_daemon_context(), extra_tokens=extra)
+    if p.get("record", True) and result["chains"]:
+        try:
+            wallet_mod.record_scan(result)
+        except OSError as exc:
+            result["notes"] = [f"scan not recorded: {exc}"]
+    return result

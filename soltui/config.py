@@ -72,6 +72,10 @@ class Settings:
     # names, which loses pinned params across a restart; the command registry persists every roster
     # change here so a CLI/API/extension call and the TUI see the same roster. Empty = use the names.
     roster: list[dict[str, Any]] = field(default_factory=list)
+    # PUBLIC addresses the read-only wallet scan looks at. These are not secrets: they are the owner's
+    # two wallets as already written in CLAUDE.md. There is deliberately no field for a private key.
+    solana_address: str = "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+    base_address: str = "0x901a89cEC0608eB5435A915f006b45bD46405314"
 
     def to_dict(self) -> dict[str, Any]:
         """Plain dict for serialisation."""
@@ -106,6 +110,14 @@ def validate(settings: Settings) -> Settings:
         raise ConfigError("cpcv_k must be at least 1 and fewer than cpcv_groups")
     if settings.poll_interval_seconds <= 0:
         raise ConfigError("poll_interval_seconds must be positive")
+    # Wallet addresses may be blank (no scan for that chain) but not malformed: a typo would otherwise
+    # scan, or show an empty balance for, the wrong account.
+    from . import wallet
+
+    if settings.solana_address and not wallet.valid_solana_address(settings.solana_address):
+        raise ConfigError(f"solana_address {settings.solana_address!r} is not a Solana address")
+    if settings.base_address and not wallet.valid_evm_address(settings.base_address):
+        raise ConfigError(f"base_address {settings.base_address!r} is not a 0x address (40 hex digits)")
     # The arming gate. Both flags must be set together, and even then this build
     # has nothing to arm -- the check exists so a future live surface cannot
     # inherit an armed default from an old config file.

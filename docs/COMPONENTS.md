@@ -214,12 +214,13 @@ macOS menu-bar app plus a TUI. Read-only over the research side; places no order
 - `setup_app.py` is an **alias** build, so the bundle references this checkout and must be
   rebuilt if the repo moves. Never install a bundle built from a worktree — the worktree
   gets deleted and login startup breaks silently.
-- `commands.py` is the one registry of every console action (44 commands); `tui.py`, `cli.py`
+- `commands.py` is the one registry of every console action (46 commands); `tui.py`, `cli.py`
   (`soltui call|list`), `api.py` (`soltui api`, loopback + bearer token) and `native_host.py` (Chrome
   native messaging, installed by `native_host_install.py`) all call `dispatch()` and return the same
   envelope. `liquidity.resume` is `requires_confirm`; no command moves funds. `presets.py` turns the Top 5 into
   one-click presets (`top5.presets`), `netpct.py` is the one net % definition and `pnl.py` the pure P&L maths
-  behind `pnl.summary|series|breakdown`.
+  behind `pnl.summary|series|breakdown`; `wallet.py` is the read-only wallet
+  scan (`portfolio.scan`, `wallet.key_sources`): public endpoints only, no key, no signing.
 - `soltui-service` is the operational surface: `status`, `start`, `stop`, `build`,
   `install`.
 
