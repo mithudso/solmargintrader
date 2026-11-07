@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 11
-Delta: fixed the SolTUI.app launch failure and the Run Untested Sweep button (bare python3 without pandas).
+Version: 12
+Delta: soltui command bridge, Python side: one registry (40 commands), CLI, API, Chrome native host, installer, parity tests.
 
 ## v1 - 2026-11-06
 
@@ -127,3 +127,13 @@ Code: soltui-service build refuses a non-framework interpreter and fails when no
 Second fix, same branch: the Backtest tab's "Run Untested Sweep" button ran a bare `python3`, which now resolves to Homebrew 3.15 with no pandas, so `research/sweep.py` failed with "ModuleNotFoundError: No module named 'pandas'". The status line showed only the head of the traceback, which hid that line. soltui/tui.py now runs the sweep with `sys.executable` (untested_sweep_command), shows the end of stderr (failure_summary) and times out after 30 minutes. Running the script with ~/.venvs/soltui/bin/python completes (best untested strategy untested_macd, OOS Sharpe -0.027). The fetch hint in soltui/bgqueue.py still prints `python3 -m backtester.core.fetch`; it is only text to copy, and it is unchanged.
 
 Remaining: none. ~/.venvs/soltui (TUI) is unchanged.
+
+## v12 - 2026-11-07
+
+Target: every TUI action available through the extension, CLI and API with one envelope, one access model and one call log (workstream P, branch feat/soltui-bridge).
+
+Completed: `soltui/commands.py` registry (40 commands, dispatch, envelope, confirm gate on `liquidity.resume`, key-only call log); TUI rewired to dispatch; `soltui/cli.py`, `api.py`, `native_host.py`, `native_host_install.py`; parity, access, framing, logging and button-map tests (suite 449+); research/TOP_UNTESTED_RECOMMENDATION.json ignored as generated output.
+
+Verification: full soltui suite, check_docs, live framed round trip and CLI-vs-API envelope equality on this Mac (see the PR).
+
+Remaining: extension side (workstream X); restart Chrome after the first host install so it loads the manifest.

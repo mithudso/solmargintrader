@@ -10,8 +10,6 @@ import json
 import subprocess
 from pathlib import Path
 
-from textual.widgets import Static
-
 from backtester.core.strategies import REGISTRY
 from . import top5 as top5_mod
 
@@ -54,6 +52,23 @@ def get_best_strategy() -> dict[str, str]:
         "source": "Fallback",
         "details": "No recommendations found. Defaulting to baseline."
     }
+
+
+def run_dryrun(strategy_name: str) -> dict:
+    """Run the extension's dry-run tool for one strategy and return what it printed.
+
+    Raises FileNotFoundError when the tool is missing and RuntimeError when it exits non-zero, so a
+    registry command can report either as a `failed` envelope. Dry-run only: the tool simulates.
+    """
+    ext_dir = REPO / "extension"
+    dryrun_script = ext_dir / "tools" / "dryrun.js"
+    if not dryrun_script.exists():
+        raise FileNotFoundError("extension/tools/dryrun.js not found.")
+    cmd = ["node", str(dryrun_script), "--strategy", strategy_name, "--ticks", "8"]
+    result = subprocess.run(cmd, cwd=str(ext_dir), capture_output=True, text=True, check=False)
+    if result.returncode != 0:
+        raise RuntimeError(f"Dryrun failed (code {result.returncode}):\n{result.stderr}")
+    return {"command": cmd, "returncode": result.returncode, "stdout": result.stdout}
 
 
 def spawn_dryrun(strategy_name: str, update_status: callable) -> None:

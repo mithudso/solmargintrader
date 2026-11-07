@@ -42,3 +42,12 @@ In the soltui when I click on "run untested sweep" I get this error: [Image #2]
 ```
 
 The attached screenshot shows the Backtest tab status: "error: Traceback (most recent call last): File "/Users/mitch/dev/solmargintrader/research/sweep_untested.py", line 18, in <module> from research.sweep import HORIZONS, load_horizon, walk_forward, Row, fmt_table".
+
+## v7 - 2026-11-07
+
+```text
+Make everything available in the tui also available via the extension, and using the same mechanisms and calls, which will require a helper script. The extension has ID: pnokcppamfghgaimmmghoegjllhonhbh make it auto reload on update. All calls should be available via the extension, TUI, CLI, and API with the same output response, testing, verification, logging, and access.
+```
+
+Workstream P (Python side) of the soltui command bridge; workstream X builds the extension side against the same contract.
+
