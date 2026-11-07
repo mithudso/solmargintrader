@@ -1,0 +1,18 @@
+{
+ "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": {
+  "blockId": 466437545,
+  "createdAt": "2024-06-05T08:55:25.527Z",
+  "decimals": 6,
+  "liquidity": 386308753.1613669,
+  "priceChange24h": 0.026063877786289373,
+  "usdPrice": 0.9997407303797458
+ },
+ "So11111111111111111111111111111111111111112": {
+  "blockId": 466437546,
+  "createdAt": "2024-06-05T08:55:25.527Z",
+  "decimals": 9,
+  "liquidity": 889075753.3042315,
+  "priceChange24h": 0.7410510145489433,
+  "usdPrice": 90.13289840012767
+ }
+}

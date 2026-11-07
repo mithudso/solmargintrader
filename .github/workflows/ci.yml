@@ -263,3 +263,20 @@ jobs:
       - run: uv run ruff check src tests
       - run: uv run ruff format --check src tests
       - run: uv run pytest -q
+
+  # executor/ signs and sends real Jupiter swaps on Solana. It has its own pyproject + lock (solders lives only
+  # here), so it gets its own job, like liquidity. Network tests (-m network) are excluded by default: they
+  # read live Jupiter, LI.FI and Solana RPC state and are run by hand.
+  executor:
+    name: executor (python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: executor
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+      - run: uv sync --extra dev -p 3.13 --frozen
+      - run: uv run ruff check src tests
+      - run: uv run ruff format --check src tests
+      - run: uv run pytest -q

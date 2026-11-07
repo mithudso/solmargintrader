@@ -47,6 +47,12 @@
       "summary": "Python 3.13 + web3 (own venv) | Yes \u2014 live Aero LP daemon (owner-authorized)"
     },
     {
+      "path": "executor",
+      "component": "repo",
+      "kind": "directory",
+      "summary": "Python 3.13 + solders (own venv) | Yes \u2014 guarded Jupiter swaps (dry-run by default)"
+    },
+    {
       "path": "backtester/cli.py",
       "component": "backtester",
       "kind": "python",
@@ -864,7 +870,7 @@
       "path": ".github/workflows/ci.yml",
       "component": "repo",
       "kind": "yaml",
-      "summary": "Extension, backtester, soltui, mongo, liquidity and doc/index drift jobs",
+      "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
       "lines": 265
     },
     {
@@ -942,6 +948,126 @@
       "kind": "markdown",
       "summary": "Session handoff notes",
       "lines": 92
+    },
+    {
+      "path": "executor/README.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "What it does, install, CLI/API surface"
+    },
+    {
+      "path": "executor/CLAUDE.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Non-negotiables, authorization limits, gaps"
+    },
+    {
+      "path": "executor/pyproject.toml",
+      "component": "repo",
+      "kind": "other",
+      "summary": "Dependencies, CLI entry point, pytest and Ruff configuration"
+    },
+    {
+      "path": "executor/uv.lock",
+      "component": "repo",
+      "kind": "other",
+      "summary": "Locked dependencies"
+    },
+    {
+      "path": "executor/src/executor/config.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "~/.executor/config.toml (mode 600), rails and defaults, fail-closed validation"
+    },
+    {
+      "path": "executor/src/executor/tokens.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Token table, exact amount conversion; unknown tokens are refused"
+    },
+    {
+      "path": "executor/src/executor/jupiter.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Jupiter Swap v1 quote, swap build and Price API client"
+    },
+    {
+      "path": "executor/src/executor/quote.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Quote evaluation against the independent price reference"
+    },
+    {
+      "path": "executor/src/executor/lifi.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Cross-chain quote, quote only"
+    },
+    {
+      "path": "executor/src/executor/txverify.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Semantic transaction verifier: program allowlist, instruction decoding, balance deltas"
+    },
+    {
+      "path": "executor/src/executor/rails.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Every order rail, as code"
+    },
+    {
+      "path": "executor/src/executor/gates.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Dry-run soak and research gate, per strategy"
+    },
+    {
+      "path": "executor/src/executor/ledger.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Pure positions and realized P&L from the journal"
+    },
+    {
+      "path": "executor/src/executor/journal.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Append-only intent and result journal; unknown sends block"
+    },
+    {
+      "path": "executor/src/executor/signer.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Mode-600 key loading; the key is never printed"
+    },
+    {
+      "path": "executor/src/executor/rpc.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Solana JSON-RPC client; a send is never retried"
+    },
+    {
+      "path": "executor/src/executor/engine.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "The swap pipeline shared by dry-run and live, and reconcile"
+    },
+    {
+      "path": "executor/src/executor/registry.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Command registry, response envelope, call log"
+    },
+    {
+      "path": "executor/src/executor/cli.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "executor command line"
+    },
+    {
+      "path": "executor/src/executor/api.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Loopback HTTP API (bearer token, Origin refusal)"
     },
     {
       "path": "liquidity/README.md",

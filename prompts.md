@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 6
-Delta: added the SolTUI 'Run Untested Sweep' ModuleNotFoundError request.
+Version: 8
+Delta: added the executor request and the owner's three decisions (workstream E1).
 
 ## v1 - 2026-11-06
 
@@ -50,4 +50,16 @@ Make everything available in the tui also available via the extension, and using
 ```
 
 Workstream P (Python side) of the soltui command bridge, and workstream X (the extension side: soltuiCommands/soltuiCall, transports, `nativeMessaging`, dashboard panel, auto-reload, tests, e2e); workstream X builds the extension side against the same contract.
+
+## v8 - 2026-11-07
+
+```text
+add the ability to swap between coins and chains using the best pricing, and ultimately I want a "run this strategy live" button on the top 5 page that will make actual real money transactions using the signals and strategy that bacvktested well.
+```
+
+Owner decisions on the plan (verbatim): "1. Yes, make those variable but I like the defaults. 2. Yes, jupiter. 3. yes"
+
+Meaning: (1) per-strategy max position $25 and daily loss stop $10 are configurable defaults; (2) the first venue is Jupiter on Solana, spot only, long or flat, no shorts; (3) the research gate is mandatory, with an override only through an explicit, logged config flag.
+
+Workstream E1 (this PR): the `executor/` component only (quote, verifier, sign and send, rails, CLI and API, tests, live validation). E2 will build the live strategy runner and the soltui "Run live" button on top of its CLI and API; neither is part of E1.
 
