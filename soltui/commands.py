@@ -1192,6 +1192,77 @@ def docs_list(ctx: Context, p: dict[str, Any]) -> Any:
     }
 
 
+DOCS_SEARCH_MODES = ("keyword", "semantic", "hybrid")
+
+
+def _repo_search():
+    """The index/search.py module, imported on first use and never before.
+
+    The keyword postings (12 MB of JSON), the embedding matrix and the ~670 MB embedding model
+    are only worth holding while someone is searching, so nothing here runs at import time and
+    `docs.search_unload` can give it all back.
+    """
+    import importlib.util
+
+    module = sys.modules.get("repo_index_search")
+    if module is None:
+        path = REPO / "index" / "search.py"
+        spec = importlib.util.spec_from_file_location("repo_index_search", path)
+        if spec is None or spec.loader is None:
+            raise CommandError("failed", f"cannot load {path}")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules["repo_index_search"] = module
+        try:
+            spec.loader.exec_module(module)
+        except BaseException:
+            sys.modules.pop("repo_index_search", None)
+            raise
+    return module
+
+
+@command("docs.search",
+         "Search the repo index: keyword (BM25), semantic (mxbai-embed-large via local ollama, "
+         "started if needed) or hybrid. Loads the index on first use.",
+         (P("query", "string", "What to look for.", True),
+          P("mode", "string", "keyword, semantic or hybrid (default hybrid)."),
+          P("kind", "string", "Restrict to a file kind, e.g. code-python."),
+          P("limit", "number", "Max hits (default 30).")),
+         read_only=False, long_running=True)
+def docs_search(ctx: Context, p: dict[str, Any]) -> Any:
+    query = str(p["query"]).strip()
+    mode = p.get("mode") or "hybrid"
+    if not query:
+        raise CommandError("bad_params", "query must not be empty")
+    if mode not in DOCS_SEARCH_MODES:
+        raise CommandError("bad_params", f"mode must be one of {', '.join(DOCS_SEARCH_MODES)}")
+    try:
+        limit = max(1, min(int(p.get("limit", 30)), 200))
+    except (TypeError, ValueError) as exc:
+        raise CommandError("bad_params", 'parameter "limit" must be a number') from exc
+    search = _repo_search()
+    try:
+        result = search.run_query(query, mode, limit, p.get("kind") or None)
+    except SystemExit as exc:  # search.load() exits with the rebuild command when an index is missing
+        raise CommandError("failed", str(exc)) from exc
+    # The Docs tab only opens catalogued files, so only catalogued files are listed.
+    editable = {e.path: docs_browser.is_editable(e) for e in ctx.catalog()}
+    hits = [{"path": h.path, "kind": h.kind, "lines": h.lines, "summary": h.summary,
+             "score": round(h.score, 4), "editable": editable[h.path]}
+            for h in result.hits if h.path in editable]
+    return {"query": query, "mode": mode, "mode_used": result.mode_used, "hits": hits,
+            "notes": result.notes}
+
+
+@command("docs.search_unload",
+         "Free the search index from memory and ask ollama to unload the embedding model.",
+         read_only=False)
+def docs_search_unload(ctx: Context, p: dict[str, Any]) -> Any:
+    module = sys.modules.get("repo_index_search")
+    if module is None:
+        return {"message": "search was never loaded in this process; nothing to free"}
+    return {"message": module.unload()}
+
+
 @command("docs.read", "Read one catalogued file.", (P("path", "string", "Catalogue path.", True),))
 def docs_read(ctx: Context, p: dict[str, Any]) -> Any:
     entries = ctx.catalog()

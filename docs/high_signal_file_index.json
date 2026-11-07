@@ -635,7 +635,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2437
+      "lines": 2503
     },
     {
       "path": "soltui/signals.py",
@@ -740,7 +740,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 376
+      "lines": 392
     },
     {
       "path": "soltui/tests",

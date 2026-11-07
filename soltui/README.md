@@ -109,6 +109,22 @@ larger open losses; read total net account equity as well as realized P&L.
 | **Queue** | Starts and reads the low-priority background sweep. Start/Stop/Refresh, a live status line, a ranked table and a below-the-floor table. |
 | **Liquidity** | Read-only view of the Aero (aero.xyz) liquidity daemon's state files (`$AERO_LP_HOME`, default `~/.aero-lp/`): mode badge (LIVE is red, dry-run is yellow), kill-switch banner ("Kill switch ON — bot paused"), idle vs deployed USD, totals; Positions, Scout (top pools by modelled net APR), Experiments (arms side by side, winner marked) and Recent actions (newest first, basescan tx links) tables. Refresh / Kill / Resume buttons (`F5` refresh, `F8` kill-resume toggle while the tab is open); re-reads every 15 s. |
 
+### Searching the repo from the Docs tab
+
+The Docs tab lists every file in the committed index. Its search box queries that index three ways:
+**keyword** (BM25: exact terms, offline), **semantic** (meaning, using `mxbai-embed-large:latest` through the
+local Ollama) and **hybrid** (both, rank-fused). Press Enter or **Search**; it never searches per keystroke.
+An empty box and Search restores the file list.
+
+Nothing is loaded until the first search: the keyword postings, the embedding matrix and the ~670 MB model
+all stay out of memory until then. **Free search memory** drops them and asks Ollama to unload the model
+immediately. A semantic or hybrid search starts Ollama if it is not running, and if it cannot, falls back to
+keyword and says why. The model is never downloaded for you: `ollama pull mxbai-embed-large:latest`.
+
+Each search also runs the idle index check (`index/idle.py`), which rebuilds an out-of-date semantic index in the
+background when the machine is idle, writing only gitignored files. See `index/README.md`. The same search is
+the registry command `docs.search`, so the CLI, API and extension get it too.
+
 ### Top 5 presets and net %
 
 `top5.presets` (one registry command, so the TUI, CLI, API and extension see the same list) turns each Top 5 row

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 27
-Delta: v26 to v27; Strategies tab test history and Backtest selected/untested/all buttons.
+Version: 28
+Delta: v27 to v28; repo index: ollama auto-start, idle semantic reindex, lazy keyword/semantic/hybrid search in the Docs tab.
 
 ## v1 - 2026-11-06
 
@@ -288,3 +288,17 @@ Completed: JobResult.finished_at (0.0 = pre-field row, shown as "date not record
 Verification: backtester 734, soltui 712 pass. Caveat: the worker refuses rows whose evaluation proof (code, data, settings hash) differs, so after a code change old results need a fresh results path; history still lists them with their date.
 
 Remaining: PR, CI, merge. Next request (TASK-807): keyword/semantic/hybrid search over all repo files with mxbai-embed-large, ollama auto-start, idle indexing, lazy-loaded Docs-tab search.
+
+## v28 - 2026-11-07 (Repo index tooling and Docs-tab search)
+
+Target: keyword + semantic indexing of all repo files with mxbai-embed-large:latest, ollama reachable-or-started when semantic search is chosen, an idle index check that starts its own rebuild, and keyword/semantic/hybrid search in the Docs tab, lazy-loaded. Stele TASK-807, worktree /Users/mitch/dev/solmargintrader-wt-repo-search, branch feat/repo-search-lazy.
+
+Found: index/build.py already built BM25, concept and mxbai-embed-large semantic indexes over tracked files; the committed semantic manifest was stale (246 files vs about 620). Not covered before: .mjs, .sh, .toml, .example (now indexed); .csv bodies stay excluded by design (header only); untracked files are outside "the repo" by the existing definition (git ls-files).
+
+Completed: index/ollama_ensure.py (localhost only, starts the Ollama app or `ollama serve`, never pulls unless --pull); index/idle.py (rebuild only when stale AND idle AND unlocked AND model installed, nice 19, 10 minute throttle, writes only gitignored semantic-local.npz/json, INDEX_NO_AUTO=1 disables); search.py run_query() library API with lazy cache and unload(); build.py shared model constant, atomic writes, --local, --pull; registry commands docs.search and docs.search_unload; Docs-tab search box, mode select, Search and Free search memory buttons, nothing loaded until first search; CSS fix for the clipped Docs kind selector; removed four stray *.md-E files. A real local semantic build embedded 7,446 chunks in 187 s.
+
+Decision: the committed keyword index is not rebuilt by the idle job (a 12 MB tracked file on a timer would keep every checkout dirty); search reports when it is behind and `build.py all` plus CI `--check` remain its gate.
+
+Tests: test_index_search_tooling.py (32), test_docs_search.py (10). Verification: see PR.
+
+Remaining: PR, CI, merge; build the semantic index in the main checkout after merge.

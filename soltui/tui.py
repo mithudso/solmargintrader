@@ -149,6 +149,8 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#docs-save": "docs.write",
     "#pnl-run": "pnl.summary",
     "#wallet-scan": "portfolio.scan",
+    "#docs-search-run": "docs.search",
+    "#docs-search-free": "docs.search_unload",
 }
 
 class GlossaryTable(DataTable):
@@ -372,6 +374,8 @@ class SolTuiApp(App):
     DataTable { height: 1fr; }
     #available-table { width: 3fr; }
     #roster-table { width: 1fr; }
+    #docs-filter, #docs-search { width: 1fr; }
+    #docs-kind, #docs-search-mode { width: 24; }
     TabbedContent { height: 1fr; }
     #editor-panel {
         height: 16;
@@ -2248,6 +2252,17 @@ class SolTuiApp(App):
             with Horizontal(classes="form-row"):
                 yield Input(placeholder="filter by path or summary…", id="docs-filter")
                 yield Select(kinds, value="", id="docs-kind")
+            # Index search is explicit (Enter or the button), never per keystroke: the first
+            # search loads the index and a semantic one may start ollama and its ~670 MB model.
+            with Horizontal(classes="form-row"):
+                yield Input(placeholder="search the index (Enter): keyword, meaning or both…",
+                            id="docs-search")
+                yield Select([("hybrid", "hybrid"), ("keyword", "keyword"), ("semantic", "semantic")],
+                             value="hybrid", allow_blank=False, id="docs-search-mode")
+                yield Button("Search", variant="primary", id="docs-search-run")
+                yield Button("Free search memory", id="docs-search-free")
+            yield Static("Search is not loaded yet; the first search loads it.", id="docs-search-status",
+                         classes="hint")
             with Horizontal():
                 listing = GlossaryTable(id="docs-table")
                 listing.add_columns("path", "kind", "editable", "lines", "summary")
@@ -2279,6 +2294,57 @@ class SolTuiApp(App):
                   if r["matched"] > r["shown"] else "")
         self.query_one("#docs-headline", Static).update(
             f"{r['matched']} of {r['total']} match{capped} · {r['headline']}")
+
+    @on(Button.Pressed, "#docs-search-run")
+    def _docs_search_pressed(self) -> None:
+        """Search the repo index (the `docs.search` command); an empty box restores the file list."""
+        self._start_docs_search()
+
+    @on(Input.Submitted, "#docs-search")
+    def _docs_search_submitted(self) -> None:
+        self._start_docs_search()
+
+    def _start_docs_search(self) -> None:
+        query = self.query_one("#docs-search", Input).value.strip()
+        status = self.query_one("#docs-search-status", Static)
+        if not query:
+            status.update("Search box is empty: showing the file list.")
+            self._refresh_docs()
+            return
+        mode = self.query_one("#docs-search-mode", Select).value
+        status.update(f"searching ({mode})… the first search loads the index"
+                      + ("; semantic may start ollama" if mode != "keyword" else ""))
+        self._docs_search_worker(query, mode if isinstance(mode, str) else "hybrid")
+
+    @work(thread=True, exclusive=True, group="docs-search")
+    def _docs_search_worker(self, query: str, mode: str) -> None:
+        """Thread only so the UI stays live while the index loads or ollama starts."""
+        env = self._call("docs.search", {"query": query, "mode": mode})
+        self.call_from_thread(self._render_docs_search, env)
+
+    def _render_docs_search(self, env: dict[str, Any]) -> None:
+        status = self.query_one("#docs-search-status", Static)
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        r = env["result"]
+        table = self.query_one("#docs-table", DataTable)
+        table.clear()
+        for h in r["hits"]:
+            table.add_row(h["path"], h["kind"], "yes" if h["editable"] else "", str(h["lines"]),
+                          f"{h['score']:.3f}  {h['summary']}"[:90], key=h["path"])
+        used = r["mode_used"] if r["mode_used"] == r["mode"] else f"{r['mode_used']} (asked for {r['mode']})"
+        notes = " · ".join(n for n in r["notes"] if n)
+        status.update(f"{len(r['hits'])} hits, {used}" + (f" · {notes}" if notes else ""))
+        self.query_one("#docs-headline", Static).update(
+            f"search results for {r['query']!r}; clear the box and press Search to list files again")
+
+    @on(Button.Pressed, "#docs-search-free")
+    def _docs_search_free(self) -> None:
+        """Release the cached index and ask ollama to unload the embedding model."""
+        env = self._call("docs.search_unload")
+        self.query_one("#docs-search-status", Static).update(
+            self._msg(env) if not env["ok"] else env["result"]["message"])
 
     @on(Input.Changed, "#docs-filter")
     def _docs_filter_changed(self) -> None:
