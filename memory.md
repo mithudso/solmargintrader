@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 30
-Delta: v29 to v30; preserve five-minute perps recovery records and upstream continuation.
+Version: 31
+Delta: v30 to v31; pushed draft recovery PR and preserved private research limits.
 
 ## v1 - 2026-11-06
 
@@ -316,3 +316,13 @@ Verification: system Python lacked pandas; existing /Users/mitch/.venvs/soltui/b
 Completed: private source-bound reuse pack retains all 47 unchanged supported assertions. Keyword FTS5 has 47 rows and four nonzero query checks. Vocabulary and digest repairs pass their relevant checks; exact long assertion formatting still conflicts with facts lint and remains an explicit qualification limit. Semantic indexing and agent tests were not run. No source-derived new research draft is staged for the public repository.
 
 Current recovery task: integrate origin/master 3cc9b44 without losing the other session's continuation records, refresh three offline indexes, commit and push the task branch and open a draft PR. Parent TASK-808 remains unfinished. User archive decision remains pending. Do not run new /dr work or alter /Users/mitch/.research before the answer. Delivery receipt belongs in TASK-808; all research stages after preparation remain owed.
+
+## v31 - 2026-11-07 (Draft recovery delivery)
+
+Recovery PR: https://github.com/mithudso/solmargintrader/pull/58 (draft; unfinished research checkpoint). Branch agent-01a1b5ef, private worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef. The branch includes origin/master 3cc9b44. Rebase conflicts in prompts.md and memory.md were resolved by retaining the upstream session's records and appending this task with unique version numbers. The shared dirty checkout was preserved.
+
+Checks after integration: documentation drift passed with 734 backtester, 313 extension, 33 mongo and 712 soltui tests discovered. Offline source index check and whitespace checks passed. Independent private synthesis/math audit passed its stated scope. Canonical CVS checker passed all 30 rows. No product code changed. CI must be checked on the final pushed tip; its status is recorded in TASK-808 rather than presumed from a push.
+
+Private reuse compilation: vocabulary check passes, digest fits 1603 estimated tokens and 6443 bytes, and FTS5 has 47 rows with four successful queries. Two facts-format Medium findings remain (facts/full ratio and 44 long assertions). The exact inherited assertions were preserved; no CLEAN label or new full-suite completion is claimed. Semantic indexing, agent tests, new per-concept research, rollup, skill audits/install/sync, tree registration and saturation gates remain owed.
+
+Current blocker: archive decision for /Users/mitch/.research is still pending. Preserve its approximately 23 MB of older local-model work and do not run dependent /dr stages before the owner answers. The independently audited unpromoted report, calculations and audit receipt remain private under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-task808-unpromoted/. Canonical CFE checkpoint and the public run-state copy preserve the seven queued gaps. No session-owned agents, services or inference jobs remain running. Parent TASK-808 and research child TASK-811 stay unfinished.
