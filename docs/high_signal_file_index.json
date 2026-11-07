@@ -774,7 +774,7 @@
       "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 329
+      "lines": 331
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",

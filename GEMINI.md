@@ -37,7 +37,7 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 ## Before claiming a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 681 tests
+python3 -m unittest discover -s backtester/tests -t .   # 689 tests
 python3 -m unittest discover -s soltui/tests -t .       # 536 tests (~300s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 303 tests
