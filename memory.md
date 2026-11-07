@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 44
-Delta: v43 to v44; compound default costs are Hyperliquid's (13 bps round trip).
+Version: 45
+Delta: v44 to v45; compound sizes calls from the owner's Hyperliquid account.
 
 ## v1 - 2026-11-06
 
@@ -453,3 +453,13 @@ Also: Hyperliquid maintenance margin per coin (HYPERLIQUID_MAX_LEVERAGE in backt
 Verification: test_compound_backtest expects 13 bps; new tests cover the margin table against the screen, earlier liquidation, the gate and the sized liquidation price.
 
 Remaining: wallet sizing still reads the Solana wallet (Jupiter collateral); a Hyperliquid account balance read needs the owner's Hyperliquid address. Then the ten-coin full-history backtest (TASK-844).
+
+## v45 - 2026-11-07 (Hyperliquid account sizing)
+
+Target: the owner confirmed their Hyperliquid account is 0x901a89cEC0608eB5435A915f006b45bD46405314 (the Base address). Branch feat/compound-hyperliquid-wallet (on top of feat/compound-hyperliquid-costs, PR #75).
+
+Completed: Settings field hyperliquid_address (default the owner's address; EVM-validated; refuses private material; Settings tab, help, wallet.addresses). soltui.compound.hyperliquid_balances reads clearinghouseState and spotClearinghouseState read-only: usable = perp withdrawable, spot USDC shown not counted, positions listed, a failed read is unavailable. signal, forward_tick, unattended and the commands size from it when set; the Solana wallet is the fallback. Live read on 2026-11-07: account value $0, no positions, no spot balances.
+
+Verification: new tests for an empty account, funded account, failed/malformed read, and preference over the Solana wallet.
+
+Remaining: the owner must deposit USDC to Hyperliquid before any call can be sized. Then the ten-coin full-history backtest (TASK-844).

@@ -38,7 +38,8 @@ class ValidationTests(unittest.TestCase):
 
     def test_every_wallet_field_refuses_private_material_without_echoing_it(self) -> None:
         secrets = {"xprv": xprv(), "hex": "ab" * 32, "array": json.dumps(list(range(64)))}
-        for field in ("btc_xpub", "ltc_xpub", "doge_xpub", "eth_address", "solana_address", "base_address"):
+        for field in ("btc_xpub", "ltc_xpub", "doge_xpub", "eth_address", "solana_address", "base_address",
+                      "hyperliquid_address"):
             for kind, secret in secrets.items():
                 with self.subTest(field=field, kind=kind):
                     with self.assertRaises(config.ConfigError) as ctx:
@@ -121,7 +122,8 @@ class AddressesCommandTests(unittest.TestCase):
             self.assertEqual(r["solana_address"], SOL_ADDR)
             self.assertEqual(r["base_address"], BASE_ADDR)
             self.assertEqual(r["eth_address"], ETH)
-            self.assertEqual(set(r), {"solana_address", "base_address", "eth_address", "note"})
+            self.assertEqual(r["hyperliquid_address"], BASE_ADDR)  # the owner's Hyperliquid account is the Base address
+            self.assertEqual(set(r), {"solana_address", "base_address", "eth_address", "hyperliquid_address", "note"})
             text = json.dumps(env)
             self.assertNotIn(V2_M[4:], text)
             self.assertNotIn("xpub", text.replace("Extended public keys", ""))

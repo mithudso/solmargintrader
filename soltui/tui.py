@@ -779,6 +779,7 @@ class SolTuiApp(App):
                 ("solana_address", "Solana address (public)"),
                 ("base_address", "Base address (public)"),
                 ("eth_address", "Ethereum address (public)"),
+                ("hyperliquid_address", "Hyperliquid account (public)"),
                 ("btc_xpub", "Bitcoin xpub (public key)"),
                 ("ltc_xpub", "Litecoin xpub (public key)"),
                 ("doge_xpub", "Dogecoin xpub (public key)"),

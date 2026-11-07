@@ -724,6 +724,67 @@ def wallet_balances(address: str | None, *, fetch: Fetcher | None = None,
     return out
 
 
+HYPERLIQUID_LABEL = "Hyperliquid (live)"
+_HL_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
+
+
+def _num(value: Any) -> float:
+    """A Hyperliquid decimal string as a float; a missing or unparseable field is an error, not 0."""
+    out = float(value)
+    if not math.isfinite(out):
+        raise ValueError(f"non-finite number {value!r}")
+    return out
+
+
+def hyperliquid_balances(address: str | None, *, post: Fetcher = http_json,
+                         now: float | None = None, cache: bool = True) -> dict[str, Any]:
+    """Free perp margin and open positions on the owner's Hyperliquid account. Read-only.
+
+    Two public `info` calls; no key, no signature. Usable collateral is the perp account's
+    `withdrawable` (margin not tied up in positions). Spot USDC is reported but not counted: it
+    must be moved to the perp account before it can margin a trade.
+    """
+    from . import hdwallet
+
+    try:
+        hdwallet.validate_evm_address(address or "")
+    except hdwallet.ExtKeyError:
+        return {"available": False, "label": HYPERLIQUID_LABEL,
+                "reason": "no valid hyperliquid_address in Settings (Settings tab)"}
+    addr = (address or "").strip()
+    now = time.time() if now is None else now
+    hit = _HL_CACHE.get(addr.lower())
+    if cache and hit and now - hit[0] < WALLET_TTL_S:
+        return hit[1]
+    try:
+        perp = post(HYPERLIQUID_INFO, {"type": "clearinghouseState", "user": addr})
+        spot = post(HYPERLIQUID_INFO, {"type": "spotClearinghouseState", "user": addr})
+        withdrawable = _num(perp["withdrawable"])
+        account_value = _num(perp["marginSummary"]["accountValue"])
+        spot_usdc = sum(_num(b["total"]) - _num(b.get("hold", 0)) for b in spot.get("balances") or []
+                        if b.get("coin") == "USDC")
+        positions = []
+        for row in perp.get("assetPositions") or []:
+            pos = row.get("position") or {}
+            liq = pos.get("liquidationPx")
+            positions.append({"coin": pos.get("coin"), "size": _num(pos["szi"]), "entry": _num(pos["entryPx"]),
+                              "liquidation_price": None if liq in (None, "") else _num(liq),
+                              "unrealized_pnl_usd": round(_num(pos.get("unrealizedPnl", 0)), 2),
+                              "leverage": (pos.get("leverage") or {}).get("value")})
+    except Exception as exc:  # noqa: BLE001 - a failed read is reported, never turned into a balance
+        return {"available": False, "label": HYPERLIQUID_LABEL, "reason": f"Hyperliquid read failed: {exc}"}
+    out = {"available": True, "label": HYPERLIQUID_LABEL, "venue": "hyperliquid", "address_tail": addr[-4:],
+           "usable_usd": round(withdrawable, 2), "parts": {"perp free margin": round(withdrawable, 2)},
+           "account_value_usd": round(account_value, 2), "spot_usdc_not_counted": round(spot_usdc, 2),
+           "positions": positions, "unpriced": [], "complete": True, "errors": [],
+           "empty_reason": ("no free margin on the Hyperliquid perp account (account value "
+                            f"${account_value:,.2f}); deposit USDC to Hyperliquid"
+                            + (f", or move the ${spot_usdc:,.2f} spot USDC to perps" if spot_usdc > 0 else ""))}
+    if cache:
+        _HL_CACHE[addr.lower()] = (now, out)
+    return out
+
+
 def size_call(wallet: Mapping[str, Any], bars: sc.Bars, cfg: Mapping[str, Any], call: str,
               asset: str | None = None) -> dict[str, Any]:
     """Position size for this call at the wallet's usable collateral, or why there is none.
@@ -737,7 +798,8 @@ def size_call(wallet: Mapping[str, Any], bars: sc.Bars, cfg: Mapping[str, Any], 
         return {"available": False, "reason": wallet.get("reason", "wallet unavailable")}
     usable = float(wallet["usable_usd"])
     if usable <= 0:
-        return {"available": False, "reason": "no SOL, USDC or USDT at the Settings address"}
+        return {"available": False,
+                "reason": wallet.get("empty_reason") or "no SOL, USDC or USDT at the Settings address"}
     ex = cfg["execution"]
     lev = float(ex["leverage"])
     gate = cfg["components"]["gate_liquidation"]["params"]
@@ -771,19 +833,27 @@ def size_call(wallet: Mapping[str, Any], bars: sc.Bars, cfg: Mapping[str, Any], 
 
 
 def _wallet_and_size(address: str | None, cfg: Mapping[str, Any], bars: sc.Bars, call: str,
-                     wallet_fetch: Fetcher | None, asset: str | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
+                     wallet_fetch: Fetcher | None, asset: str | None = None,
+                     hyperliquid_address: str | None = None,
+                     hl_post: Fetcher | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The owner trades these coins on Hyperliquid, so its perp account sizes the call when Settings
+    has its address; the Solana wallet (Jupiter collateral) is the fallback."""
     if not cfg["execution"]["use_wallet"]:
         off = {"available": False, "label": WALLET_LABEL, "reason": "use_wallet=0"}
         return off, {"available": False, "reason": "use_wallet=0"}
     try:
-        w = wallet_balances(address, fetch=wallet_fetch)
+        if hyperliquid_address:
+            w = hyperliquid_balances(hyperliquid_address, post=hl_post or http_json, cache=hl_post is None)
+        else:
+            w = wallet_balances(address, fetch=wallet_fetch)
     except Exception as exc:  # noqa: BLE001 - a wallet read must never break the call itself
         w = {"available": False, "label": WALLET_LABEL, "reason": f"{type(exc).__name__}: {exc}"}
     return w, size_call(w, bars, cfg, call, asset)
 
 
 def signal(asset: str, *, now: float | None = None, wallet_address: str | None = None,
-           wallet_fetch: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
+           wallet_fetch: Fetcher | None = None, hyperliquid_address: str | None = None,
+           hl_post: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
     """Score the latest closed bar live, explain every component, and size it to the wallet."""
     state = load_state(asset)
     cfg = state["config"]
@@ -791,7 +861,8 @@ def signal(asset: str, *, now: float | None = None, wallet_address: str | None =
                                    ledger=read_ledger(asset), **fetchers)
     ev = sc.evaluate(bars, cfg, aux)
     out = sc.explain(ev, -1, catalogue=False)
-    wallet, sizing = _wallet_and_size(wallet_address, cfg, bars, out["call"], wallet_fetch, asset)
+    wallet, sizing = _wallet_and_size(wallet_address, cfg, bars, out["call"], wallet_fetch, asset,
+                                      hyperliquid_address, hl_post)
     out.update(asset=_asset(asset), config_hash=sc.config_hash(cfg), bars_used=len(bars),
                live=extra["ctx"], notes=extra["notes"], wallet=wallet, sizing=sizing)
     return out
@@ -844,7 +915,8 @@ def auto_adopt(asset: str, state: Mapping[str, Any], components: Sequence[Mappin
 
 
 def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | None = None,
-                 wallet_fetch: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
+                 wallet_fetch: Fetcher | None = None, hyperliquid_address: str | None = None,
+                 hl_post: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
     """Record the call for the latest closed bar (once per config) and resolve older calls."""
     asset = _asset(asset)
     state = load_state(asset)
@@ -865,7 +937,8 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
     new_call = call_id not in recorded
     sizing: dict[str, Any] = {"available": False}
     if new_call:
-        _, sizing = _wallet_and_size(wallet_address, cfg, bars, x["call"], wallet_fetch, asset)
+        _, sizing = _wallet_and_size(wallet_address, cfg, bars, x["call"], wallet_fetch, asset,
+                                     hyperliquid_address, hl_post)
         ungated = 0
         comp = x["composite"]
         if comp is not None and abs(comp) >= x["entry"]:
@@ -1274,9 +1347,12 @@ def latest_results(asset: str | None = None, top: int = 40) -> dict[str, Any]:
 def wallet_line(wallet: Mapping[str, Any], sizing: Mapping[str, Any]) -> str:
     """One line for the CLI and the tab."""
     if not wallet.get("available"):
-        return f"wallet (live): unavailable -- {wallet.get('reason', 'not read')}"
+        return f"{wallet.get('label', WALLET_LABEL)}: unavailable -- {wallet.get('reason', 'not read')}"
     parts = " · ".join(f"{k} ${v:,.2f}" for k, v in (wallet.get("parts") or {}).items())
-    head = f"wallet (live) ...{wallet.get('address_tail', '')}: ${wallet['usable_usd']:,.2f} usable ({parts or 'none'})"
+    label = wallet.get("label", WALLET_LABEL)
+    head = f"{label} ...{wallet.get('address_tail', '')}: ${wallet['usable_usd']:,.2f} usable ({parts or 'none'})"
+    if wallet.get("positions"):
+        head += "; open: " + ", ".join(f"{p['coin']} {p['size']:+g} @ {p['entry']:,.4g}" for p in wallet["positions"])
     if wallet.get("unpriced"):
         head += f"; unpriced, not counted: {', '.join(wallet['unpriced'])}"
     if not sizing.get("available"):
@@ -1665,7 +1741,7 @@ def run_unattended(assets: str | Sequence[str], *, hold_lock: bool = True, max_t
                     release(a)
                     continue
                 try:
-                    out = tick(a, wallet_address=_settings_address())
+                    out = tick(a, wallet_address=_settings_address(), hyperliquid_address=_settings_hyperliquid())
                     say(a, json.dumps({"at": int(clock()), **out}, default=_jsonable))
                 except Exception as exc:  # noqa: BLE001 - keep running; the next bar will try again
                     say(a, json.dumps({"at": int(clock()), "asset": a, "error": f"{type(exc).__name__}: {exc}"}))
@@ -1689,6 +1765,13 @@ def _settings_address() -> str | None:
     try:
         return config_mod.load_settings().solana_address
     except Exception:  # noqa: BLE001 - an unreadable settings file means "no wallet", not a crash
+        return None
+
+
+def _settings_hyperliquid() -> str | None:
+    try:
+        return config_mod.load_settings().hyperliquid_address or None
+    except Exception:  # noqa: BLE001 - an unreadable settings file means "no account", not a crash
         return None
 
 
@@ -1726,13 +1809,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             out = autopilot_ensure()
             print(json.dumps({"at": int(time.time()), **out}, default=_jsonable), flush=True)
         elif args.verb == "signal":
-            x = signal(args.asset, wallet_address=_settings_address())
+            x = signal(args.asset, wallet_address=_settings_address(), hyperliquid_address=_settings_hyperliquid())
             print(json.dumps(x, indent=2, default=_jsonable)) if args.json else _print_signal(x)
         elif args.verb == "forward":
             if args.loop:
                 many = [a for a in args.assets.split(",") if a.strip()] or [args.asset]
                 return run_unattended(many, hold_lock=args.unattended, offset=args.offset)
-            out = forward_tick(args.asset, wallet_address=_settings_address())
+            out = forward_tick(args.asset, wallet_address=_settings_address(),
+                               hyperliquid_address=_settings_hyperliquid())
             print(json.dumps(out, default=_jsonable), flush=True)
         elif args.verb == "status":
             print(json.dumps(forward_status(args.asset), indent=2))

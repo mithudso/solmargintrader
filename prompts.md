@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 35
-Delta: v34 to v35; compound costs switched to Hyperliquid.
+Version: 36
+Delta: v35 to v36; Hyperliquid account address for sizing.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -241,4 +241,10 @@ I like that, let's stick to BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVA
 
 ```text
  Yes, I can use hyperliquid
+```
+
+## v36 - 2026-11-07 (Hyperliquid account)
+
+```text
+Yes it is 0x901a89cEC0608eB5435A915f006b45bD46405314
 ```

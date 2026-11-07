@@ -220,16 +220,26 @@ the running loops as they are.
 
 ## Your wallet: where it is read from, and what it is used for
 
-Wallet information has one home: **soltui Settings** (`solana_address`, edited on the Settings
-tab, stored in `~/.config/soltui/config.yaml`, owner-only). The compound tester reads that public
-address and scans it read-only with the same scanner as the Wallet tab. It never reads a key:
-private keys stay in their key files, and sizing a call needs only public balances.
+Wallet information has one home: **soltui Settings** (edited on the Settings tab, stored in
+`~/.config/soltui/config.yaml`, owner-only). It never reads a key: private keys stay in their key
+files, and sizing a call needs only public balances.
 
-Jupiter Perps takes SOL, USDC and USDT as collateral, so those count as **usable**. USDC and USDT
+**Hyperliquid account first.** The owner trades the ten coins on Hyperliquid. When
+`hyperliquid_address` is set (default: the owner's `0x901a…5314`, the same address as Base), each
+call is sized from that account, labelled `Hyperliquid (live)`. Two public `info` calls
+(`clearinghouseState`, `spotClearinghouseState`) read it; no signature is involved.
+**Usable** is the perp account's `withdrawable`, the margin not tied up in positions. Spot USDC is
+shown but not counted, because it must move to the perp account before it can margin a trade.
+Open Hyperliquid positions are listed with size, entry and liquidation price. A failed or malformed
+read is reported as unavailable, never as $0. An empty account gives no size and says to deposit
+USDC. On 2026-11-07 the account held $0.
+
+**Solana wallet as the fallback.** With `hyperliquid_address` blank, the call is sized from
+`solana_address`, scanned read-only with the same scanner as the Wallet tab. Jupiter Perps takes SOL, USDC and USDT as collateral, so those count as **usable**. USDC and USDT
 are matched by mint address, so a look-alike token named "USDC" does not count. A balance with no
 price is listed as unknown and left out, never counted as zero.
 
-Every live call is then sized, labelled `wallet (live)`:
+Every live call is then sized:
 
 * **notional** = the smaller of usable × `leverage`, and the size at which reaching the stop
   (`stop_atr` × ATR, the stop the liquidation gate checks) plus the round-trip cost loses
@@ -241,9 +251,10 @@ Forward ticks record that notional with each call, so the forward test also repo
 wallet size**: what trading every compound call for one bar would have made after costs. Set
 `use_wallet=0` in the Aggregate box to stop reading the wallet.
 
-Not read yet: **open Jupiter Perps positions**. No documented read endpoint was found and the
-on-chain account layout is not verified here, so they are not guessed. Until then, the sizing
-assumes no position is open.
+Not read yet: **open Jupiter Perps positions** (Solana fallback only). No documented read endpoint
+was found and the on-chain account layout is not verified here, so they are not guessed. The
+sizing does not yet subtract an open position's exposure on either venue; it sizes against free
+margin, which already excludes margin those positions use.
 
 ## Which metrics fight each other, and which repeat each other
 
