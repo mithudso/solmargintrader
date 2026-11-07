@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 32
-Delta: v31 to v32; adaptive compound weights over a capped two-week record, and evidence-gated tuning.
+Version: 33
+Delta: v32 to v33; paper on the compound 5m scorecard.
 
 ## v1 - 2026-11-06
 
@@ -332,3 +332,7 @@ Completed: scorecard adaptive_counts (one-bar-lagged hit/call counts over a capp
 Verification: backtester 817, soltui 745 pass. OOS hit rate of the default compound, static vs learned (two-week window): BTC 48.5/46.5, DOGE 44.0/55.6, ETH 45.6/52.0, SOL 46.3/50.2, ZEC 48.9/51.6; the window and the earlier one-week fade agree within 0.6 points. Tuning at 0.95 moved once in five coins; looser bars add a little inside noise. All returns still negative (16 bps round trip vs 6-9 bps moves). Live SOL: only reversion metrics earn weight.
 
 Remaining: user may shorten or lengthen adaptive_window after watching it; per-regime learned weights not built; a year of 5m data via research/full_suite.py before trusting any of it.
+
+## v33 - 2026-11-07 (Compound 5m paper)
+
+Target: "Write a paper detailing the metrics, what they check, why they're included, what the tunable parameters are, and performance so far." Read as the compound five-minute scorecard. Stele TASK-823. Wrote docs/COMPOUND-5M-PAPER.md: scope, method, all 35 components (28 scores, 7 gates) with what each checks, why included, formula, works/fails and parameters, the four parameter layers, the evaluation protocol, and results recomputed from ~/.config/soltui/compound/backtests.jsonl run 20261107T130441Z-f7fea5b2368e (the file holds the same sweep twice). Headline: no configuration made money in a way that survives scrutiny (10 of 1,420 positive OOS, all within about 1.2 standard errors of a coin flip, 7 of 10 lost in-sample); default compound lost 17 to 63 percent OOS (mean -43 percent at 5x); oracle one-bar net is negative on all five coins; weak reversion pattern in rsi/zscore/bollinger/stochastic; no forward ledger exists and the year-long full suite has not completed. The paper's tables are generated from the catalog and saved rows by a scratch script (not committed); re-derive from the sweep file if the numbers must be refreshed.
