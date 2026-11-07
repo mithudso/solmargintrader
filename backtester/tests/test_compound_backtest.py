@@ -36,6 +36,9 @@ class DataTests(unittest.TestCase):
         first, second = out.iloc[0], out.iloc[1]
         self.assertEqual((first.open, first.high, first.low, first.close, first.volume), (1.0, 6.0, 0.5, 5.5, 5.0))
         self.assertEqual((second.open, second.high, second.close, second.volume), (6.0, 11.0, 10.5, 4.0))
+        self.assertEqual(list(out["minutes"]), [5, 4])
+        self.assertEqual(cbt.incomplete_pct(out), 50.0)
+        self.assertIsNone(cbt.incomplete_pct(out.drop(columns="minutes")))
 
     def test_loader_prefers_the_longest_series_and_names_its_source(self) -> None:
         frame(synthetic(400)).to_csv(self.dir / "SOL_5m_last30d.csv", index=False)
@@ -94,6 +97,16 @@ class RunTests(unittest.TestCase):
             self.assertEqual(r[part]["forecast"]["round_trip_bps"], 16.0)
         self.assertEqual(r["is"]["forecast"]["bars"] + r["oos"]["forecast"]["bars"], 2390 - 2)
         self.assertLess(r["oos"]["forecast"]["oracle_net_bps"], r["oos"]["forecast"]["mean_abs_move_bps"])
+
+    def test_the_report_carries_the_incomplete_bar_share(self) -> None:
+        native = cbt.run_compound("SOL", None, data_dir=self.dir)
+        self.assertIsNone(native["data_incomplete_pct"])            # native 5m: nothing to count
+        minutes = frame(synthetic(2400 * 5, seed=13))
+        minutes["timestamp"] = 1_780_000_200 + 60 * np.arange(len(minutes))
+        minutes = minutes.drop(index=range(0, len(minutes), 50)).reset_index(drop=True)  # 1 in 10 bars short
+        minutes.to_csv(self.dir / "ETH_1m.csv", index=False)
+        r = cbt.run_compound("ETH", None, data_dir=self.dir)
+        self.assertAlmostEqual(r["data_incomplete_pct"], 10.0, delta=0.1)
 
     def test_costs_are_in_the_pnl(self) -> None:
         cfg = sc.default_config()

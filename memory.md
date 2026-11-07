@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 38
-Delta: v37 to v38; every coin in parallel with its own numbers; full 1m history.
+Version: 39
+Delta: v38 to v39; per-coin data-quality share of incomplete 5m bars; corrected missing-minute claim.
 
 ## v1 - 2026-11-06
 
@@ -390,3 +390,13 @@ Target: user asked for data as detailed and as far back as possible, backtesting
 Completed: 1m history fetch started for BTC ETH SOL DOGE ZEC XRP BNB HYPE (`fetch_minutes --all --years 7`, main checkout data/). compound state gains per-coin overrides (state["assets"]) stacked on the base; save/reset take asset and scope (all, coin, everything); adopt tuned saves to the coin. materialize_bars caches 5m bars per coin (.npz keyed by source mtimes); workers hold at most two coins. backtest_all and the sweep use each coin's own config. Candle cache per coin (closed bars only) so a tick costs one request; 429/5xx retried. start/stop_unattended_all (staggered 6 s per coin, --offset). overview(); tab coin picker, scope switch, Backtest all coins, Start/Stop all coins, overview table (52 buttons). full_suite fetches 1m history instead of 365 days of 5m.
 
 Remaining: run Backtest all coins once the minute download finishes and report per-coin results; open Jupiter Perps positions still unread.
+
+## v39 - 2026-11-07 (compound data quality)
+
+Target: before backtesting every coin on the full minute history, act on KNOW-523 (research/CANDLE-GAP-AUDIT.md): Coinbase drops minutes that traded, so the earlier claim that a missing minute means no trade (resample_complete docstring, KNOW-819) was wrong. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-quality, branch feat/compound-data-quality. PR #66 (all coins) merged 2bb24f6.
+
+Completed: resample_complete counts minutes per 5m bar; incomplete_pct per coin in prepare and every report; run_summary warns above 1%; overview shows it; bar cache format v2. KNOW-819 corrected and linked to KNOW-523; KNOW-531 updated for soltui's compound network/process exceptions.
+
+Verification: minute history so far: BTC 2019-11.. 0.03% incomplete, ETH 0.50%, SOL 2021-06.. 1.04%, DOGE 4.49%, ZEC 60.3% (64% minute coverage). XRP, BNB, HYPE downloading.
+
+Remaining: run Backtest all coins on the full history and report per-coin results.
