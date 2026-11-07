@@ -171,9 +171,9 @@
     "docs/COMPONENTS.md": 1231,
     "docs/COMPOUND-5M-PAPER.md": 4836,
     "docs/COMPOUND-5M.md": 3153,
-    "docs/CONCEPTS.md": 1751,
+    "docs/CONCEPTS.md": 1745,
     "docs/DEVELOPMENT.md": 947,
-    "docs/FILES.md": 33045,
+    "docs/FILES.md": 33048,
     "docs/INSTALLATION.md": 812,
     "docs/MCP.md": 148,
     "docs/OPERATIONS.md": 502,
@@ -682,7 +682,7 @@
     "tools/land.sh": 425,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-07T22:20:05+00:00",
+  "generatedAt": "2026-11-07T22:21:52+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -9305,7 +9305,6 @@
       "backtester/tests/test_sweep_pair_gate.py": 3,
       "backtester/tests/test_textbook_strategies.py": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 37,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "liquidity/src/aero_lp/addresses.py": 2,
@@ -55331,7 +55330,7 @@
     "concepts": {
       "CLAUDE.md": 2,
       "backtester/tests/test_index.py": 5,
-      "docs/CONCEPTS.md": 9,
+      "docs/CONCEPTS.md": 10,
       "docs/FILES.md": 16,
       "docs/SCRIPTS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
@@ -81319,7 +81318,7 @@
       "docs/COMPONENTS.md": 4,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 1,
-      "docs/CONCEPTS.md": 18,
+      "docs/CONCEPTS.md": 19,
       "docs/DEVELOPMENT.md": 4,
       "docs/FILES.md": 93,
       "docs/INSTALLATION.md": 3,
@@ -104490,6 +104489,7 @@
       "mongo/tests/test_load_audit.py": 5
     },
     "fakeelement": {
+      "docs/FILES.md": 1,
       "extension/test/charts.test.js": 7
     },
     "fakeengine": {
@@ -104516,6 +104516,7 @@
       "extension/test/soltui-parity.test.js": 3
     },
     "fakelib": {
+      "docs/FILES.md": 1,
       "extension/test/charts.test.js": 5
     },
     "fakemarket": {
@@ -165393,7 +165394,6 @@
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 2,
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 82,
       "docs/SCRIPTS.md": 16,
       "docs/TRADINGVIEW-REFERENCE.md": 57,
@@ -209701,7 +209701,7 @@
       "backtester/tests/test_geometry.py": 2,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 1,
-      "docs/CONCEPTS.md": 4,
+      "docs/CONCEPTS.md": 3,
       "docs/FILES.md": 51,
       "docs/SCRIPTS.md": 4,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
@@ -209766,7 +209766,6 @@
       "research/perturb.py": 1
     },
     "perturb_all_singles_long": {
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 3,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/results/perturb_all_singles_long.csv": 1,
@@ -212720,7 +212719,7 @@
       "docs/COMPOUND-5M-PAPER.md": 5,
       "docs/COMPOUND-5M.md": 2,
       "docs/CONCEPTS.md": 1,
-      "docs/FILES.md": 90,
+      "docs/FILES.md": 91,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 16,
       "docs/codebase-overview.md": 1,
@@ -240579,7 +240578,7 @@
       "docs/COMPONENTS.md": 8,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 12,
-      "docs/CONCEPTS.md": 33,
+      "docs/CONCEPTS.md": 32,
       "docs/DEVELOPMENT.md": 16,
       "docs/FILES.md": 363,
       "docs/INSTALLATION.md": 2,
@@ -242859,7 +242858,7 @@
       "docs/ARCHITECTURE.md": 3,
       "docs/COMPOUND-5M-PAPER.md": 7,
       "docs/COMPOUND-5M.md": 8,
-      "docs/CONCEPTS.md": 3,
+      "docs/CONCEPTS.md": 2,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 188,
       "docs/INSTALLATION.md": 1,
@@ -264607,7 +264606,6 @@
       "backtester/strategy_cards/stochastic.md": 2,
       "backtester/tests/test_cross_asset_cpcv.py": 10,
       "backtester/tests/test_simulation_blind_audit.py": 2,
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 14,
       "docs/SCRIPTS.md": 9,
       "docs/strategy-optimization-concept-family.md": 5,
@@ -310522,7 +310520,7 @@
       "backtester/strategy_cards/README.md": 1,
       "backtester/strategy_cards/vol_regime_hmm.md": 1,
       "backtester/tests/test_decide.py": 1,
-      "docs/CONCEPTS.md": 7,
+      "docs/CONCEPTS.md": 6,
       "docs/DEVELOPMENT.md": 4,
       "docs/FILES.md": 28,
       "docs/INSTALLATION.md": 9,
@@ -335606,6 +335604,6 @@
     "documents": 681,
     "terms": 34518,
     "termsBeforePrune": 34522,
-    "totalTokens": 921756
+    "totalTokens": 921753
   }
 }
