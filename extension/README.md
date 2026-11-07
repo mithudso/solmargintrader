@@ -65,6 +65,12 @@ Then load it in Chrome:
 Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which landed in 137.
 Everything else works from Chrome 120.
 
+**Did a reload pick up the new code?** The popup header and the dashboard title show the
+manifest version (`v0.2.0`). Every change to `src/` or `manifest.json` bumps it, in
+`manifest.json` and `package.json` together; CI fails a pull request that changes either
+without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
+is on the dashboard (popup → **SolTUI console**), not in the popup itself.
+
 ---
 
 ## Modes, and what each one can actually do

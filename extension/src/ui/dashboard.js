@@ -17,6 +17,9 @@ import {
 import { attributionLine, attributionDetail } from '../jupiter/attribution.js';
 import { mountSoltuiPanel } from './soltui-panel.js';
 
+// The version is the only visible sign that a reload picked up new code.
+document.getElementById('version').textContent = `v${chrome.runtime.getManifest().version}`;
+
 const $ = (sel) => document.querySelector(sel);
 const send = (msg) => chrome.runtime.sendMessage(msg);
 const usd = (n) => (n == null ? '—' : `${n < 0 ? '−' : ''}$${Math.abs(n).toFixed(2)}`);
