@@ -100,3 +100,55 @@ Selectivity and longer holds made them lose more slowly, not win. The six new re
 (`keltner`, `mom_skip`, `vr_regime`, `ou_reversion`, `consec_run`, `pairs_spread`) are in the scorecard,
 off by default, and none earned a vote: `mom_skip` held 24 h had the best in-sample Sharpe (+0.52)
 and lost out-of-sample (-0.56), the textbook overfit.
+
+## 4. Tuning the promising rows, without peeking (the full suite on them)
+
+`research/frontier_tune.py` picked candidates by **in-sample** Sharpe only (positive on at least 5 of 10
+coins), tuned each on in-sample only (hold 2-48 h x entry quantile 0.90-0.995 x first parameter x0.5/1/2),
+then searched related strategies, and reported out-of-sample once. 1,227 configurations per coin in total
+(frontier plus tuning plus related): that is the multiple-testing denominator.
+
+| configuration | in-sample median Sharpe | OOS median Sharpe | OOS > 0 | beat buy & hold |
+| --- | --- | --- | --- | --- |
+| `htf_trend` top 2%, held 24 h (in-sample pick, untuned) | +0.11 | +0.49 | 6/10 | 5/10 |
+| `htf_trend` tuned on in-sample: top 0.5%, held 48 h | +0.44 | +0.31 | 6/10 | 6/10 |
+| `mom_skip` top 2%, held 24 h (best in-sample of all frontier rows) | +0.52 | -0.56 | 3/10 | 5/10 |
+| `mom_skip` tuned on in-sample: top 2%, held 12 h | +0.64 | -0.61 | 2/10 | 5/10 |
+| **`mom_skip` at htf_trend's tuned settings: top 0.5%, held 48 h** (best in-sample of the related set) | +0.60 | **+0.75** | **8/10** | 6/10 |
+| blend `mom_skip` + `htf_trend`, top 2%, held 30 h | -0.01 | -0.10 | 1/10 | 4/10 |
+
+**Tuning did not help.** The in-sample-best setting of `htf_trend` did worse out-of-sample (+0.31) than the
+untuned one (+0.49), and tuning `mom_skip` made it worse too. That is the expected signature of fitting noise.
+
+**The related search found one candidate worth watching**: momentum with a skip
+(`log(C[t-6] / C[t-48])` scaled by volatility), taking only its strongest 0.5% of readings and holding
+48 hours, unlevered. Out-of-sample per coin (return vs buy-and-hold, trades):
+
+| coin | return | buy & hold | trades | max drawdown |
+| --- | --- | --- | --- | --- |
+| ETH | +188% | -8% | 118 | -27% |
+| XRP | +81% | -46% | 84 | -22% |
+| SOL | +61% | -36% | 98 | -25% |
+| AVAX | +52% | -62% | 57 | -31% |
+| NEAR | +41% | +49% | 69 | -49% |
+| DOGE | +34% | -58% | 100 | -49% |
+| SUI | +23% | -59% | 61 | -30% |
+| BTC | +19% | +25% | 124 | -19% |
+| HYPE | -23% | +31% | 13 (too few to rank) | -25% |
+| LINK | -48% | -2% | 142 | -53% |
+
+Why not to fund it yet: it was the best of about forty related configurations chosen on in-sample data,
+after 1,227 configurations per coin; the out-of-sample years mostly fell, which favours a signal that can
+go short; drawdowns of 20-53% at 1x; and it beat buy-and-hold on 6 of 10, not all. The honest next step
+is a **forward paper test**: run it unattended on live closed bars and compare after a few hundred calls.
+
+## 5. What to do with this
+
+- Use the **Frontier** button (Compound 5m > Backtest) on any coin to repeat the sweep with fresh data.
+- Read **net bps 1h / 24h** and **buy & hold** before believing a hit rate.
+- Keep long holds unlevered; at 5x a 24 h hold loses to volatility drag what the signal earns.
+- Reversion metrics at 5m are not a strategy on these costs; the scorecard keeps them because the
+  learned weights can still use them as one vote among many, not because they pay alone.
+
+Reproduce: `python -m soltui.compound sweep --assets BTC,ETH,SOL,XRP,HYPE,DOGE,LINK,NEAR,SUI,AVAX --frontier
+--workers 8`, then `python research/frontier_tune.py --run-id <that run> --top 3 --min-coins 5`.

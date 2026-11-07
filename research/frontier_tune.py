@@ -186,11 +186,27 @@ def main(argv: list[str] | None = None) -> int:
     related: list[tuple[str, dict[str, Any]]] = []
     for c in chosen:
         comp = sc.BY_ID[c["metric"]]
-        for sib in sc.COMPONENTS:
-            if (sib.kind == "score" and not sib.forward_only and sib.id != comp.id
-                    and (sib.family == comp.family or sib.style == comp.style)):
-                related.append((f"related:{sib.id} like {c['metric']} hold={c['hold_tuned']} q={c['q_tuned']}",
-                                config_for(sib.id, c["hold_tuned"], c["q_tuned"])))
+        usable = [x for x in sc.COMPONENTS if x.kind == "score" and not x.forward_only and x.id != comp.id]
+        sibs = [x for x in usable if x.family == comp.family or x.style == comp.style]
+        if not sibs:  # a family of one (htf_trend is "context"): compare with the directional followers
+            sibs = [x for x in usable if x.style in ("trend", "momentum", "breakout")]
+        for sib in sibs:
+            related.append((f"related:{sib.id} like {c['metric']} hold={c['hold_tuned']} q={c['q_tuned']}",
+                            config_for(sib.id, c["hold_tuned"], c["q_tuned"])))
+        # The winner's own neighbours: every parameter halved and doubled, at the tuned hold and quantile.
+        for spec in comp.params:
+            for f in (0.5, 2.0):
+                cfg = config_for(c["metric"], c["hold_tuned"], c["q_tuned"])
+                v = cfg["components"][comp.id]["params"][spec.name] * f
+                v = int(round(v)) if spec.kind == "int" else round(v, 6)
+                if comp.id == "htf_trend" and spec.name == "tf_minutes":
+                    v = max(10, int(round(v / 5)) * 5)  # must stay a multiple of 5 above 5
+                cfg["components"][comp.id]["params"][spec.name] = min(max(v, spec.lo), spec.hi)
+                try:
+                    cfg = sc.normalise_config(cfg)
+                except sc.ScorecardError:
+                    continue
+                related.append((f"variant:{comp.id} {spec.name}={v:g} hold={c['hold_tuned']} q={c['q_tuned']}", cfg))
     if len(chosen) >= 2:
         ids = tuple(dict.fromkeys(c["metric"] for c in chosen))
         hold = int(statistics.median(c["hold_tuned"] for c in chosen))

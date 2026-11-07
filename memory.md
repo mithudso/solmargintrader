@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 47
-Delta: v46 to v47; VWAP metrics rescaled; forward ledger writes locked.
+Version: 48
+Delta: v47 to v48; research landed; Compound frontier (hold, entry quantile, six metrics, buy-and-hold); Base wallet via CDP.
 
 ## v1 - 2026-11-06
 
@@ -491,3 +491,18 @@ Completed: _vwap_distance divides by the RMS of the distance over spread_window 
 Verification: replaying live SOL bars, vwap_rev saturation fell from 92% to about 0% over the last 4h; the last-4h calls went from 26 UP / 0 DOWN to 22 UP / 1 DOWN with more FLAT; all bars are balanced (616 UP / 544 DOWN).
 
 Remaining: after merge, restart the unattended trainers for the ten coins only (the stale ones still train ZEC, BNB, ADA and XLM on old code). The owner must restart the soltui console to load the fix.
+
+## v48 - 2026-11-07 (research landed; frontier; fees; Base wallet via CDP)
+
+Target: prompts v41 and v42. Branch research/land-and-frontier, PR #78 (https://github.com/mithudso/solmargintrader/pull/78).
+
+Landed: the untracked research in the main checkout (research/*.json, *.md, docs/profitable-crypto-strategies-analysis.md, curated llms/ notes). Gitignored: auth/ (CDP API key and wallet secret, never committed), .codex/, llms/ doc mirrors. Other worktrees were all pushed; fix/compound-vwap-saturation belonged to a live session (merged as #77); PR #58 (draft research checkpoint) and #46 (executor, money-moving) were left for their owners.
+
+Built: scorecard `hold` and `entry_quantile` (both off by default), forecast `horizons` (net bps by holding period), six research metrics off by default (keltner, mom_skip, vr_regime, ou_reversion, consec_run, pairs_spread); compound frontier variants (every metric alone, top 2%, held 1/4/24 h, 1x), buy-and-hold per window, re-lever on 10% drift (trade counts had counted every bar's drift); Compound tab in four sections with a What-is-tested paragraph, readable row names, buy & hold and net bps 1h/24h, Frontier button; research/frontier_tune.py (in-sample-only tuning plus related search).
+
+Findings (research/COMPOUND-FRONTIER.md): reversion metrics' 52% hit is about 0 bps gross at every hold; only htf_trend survived the frontier (top 2%, 1-4 h, 1x: OOS positive 8/10, beat B&H 7/10, in-sample Sharpe about 0, OOS mostly falling); in-sample tuning made things worse out-of-sample; mom_skip at top 0.5% held 48 h, 1x: OOS +0.75 median Sharpe, positive 8/10, beat B&H 6/10, chosen after 1,227 configurations per coin — a forward-paper-test candidate, not a funded strategy. Leverage: SOL htf_trend same calls +20% at 1x, -53% at 5x.
+
+Base wallet: docs/BASE-WALLET-QUERIES.md (CDP MCP recipe); gtUSDCp (Gauntlet USDC Prime, about $86.64) added to KNOWN_BASE_TOKENS; KNOW-852; auto-memory base-wallet-cdp-queries.md.
+
+Remaining: forward paper test of mom_skip top 0.5% 48 h (not built); maker-fill modelling (no fill-rate data).
+
