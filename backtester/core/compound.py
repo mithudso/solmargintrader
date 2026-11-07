@@ -24,6 +24,7 @@ No network. Data comes from the gitignored cache written by the explicit fetch s
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
@@ -109,7 +110,15 @@ def load_bars_5m(asset: str, data_dir: Path | None = None) -> tuple[pd.DataFrame
         if how == "1m->5m":
             df = resample_complete(df)
         if best is None or len(df) > len(best[0]):
-            best = (df, f"{path.name} ({how})")
+            label = f"{path.name} ({how})"
+            sidecar = path.with_name(path.stem + ".source.json")
+            if sidecar.exists():  # a non-Coinbase venue: say which, and that it is a USDT pair
+                try:
+                    meta = json.loads(sidecar.read_text())
+                    label = f"{path.name} ({how}, {meta.get('venue')} {meta.get('pair')})"
+                except (OSError, ValueError):
+                    pass
+            best = (df, label)
     if best is None or len(best[0]) < MIN_SEGMENT_BARS:
         raise CompoundDataError(
             f"no usable 5m data for {asset.upper()} in {data_dir}. Fetch it:\n"

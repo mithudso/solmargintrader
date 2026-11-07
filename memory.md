@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 39
-Delta: v38 to v39; per-coin data-quality share of incomplete 5m bars; corrected missing-minute claim.
+Version: 40
+Delta: v39 to v40; 1m history for the top 50 non-pegged coins (36 Coinbase, 14 other venues); one trainer process for all coins.
 
 ## v1 - 2026-11-06
 
@@ -400,3 +400,13 @@ Completed: resample_complete counts minutes per 5m bar; incomplete_pct per coin 
 Verification: minute history so far: BTC 2019-11.. 0.03% incomplete, ETH 0.50%, SOL 2021-06.. 1.04%, DOGE 4.49%, ZEC 60.3% (64% minute coverage). XRP, BNB, HYPE downloading.
 
 Remaining: run Backtest all coins on the full history and report per-coin results.
+
+## v40 - 2026-11-07 (top 50 coins, 1m history)
+
+Target: 1-minute history for all 50 of the top 50 coins (pegged tokens left out), and the compound tester over every coin with data. PR #69 (data quality) merged 64cacbe. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-quality, branch feat/top50-minute-history.
+
+Completed: research/results/top50-nonpegged-2026-11-07.json (CoinGecko ranking; 36 on Coinbase USD, 14 not). backtester/core/fetch_minutes_alt.py fetches the 14 from OKX/KuCoin/Bitget/WhiteBIT against USDT, reorders KuCoin/WhiteBIT [t,o,c,h,l] rows, aborts on more than 1% impossible OHLC, writes a source.json sidecar the loader puts in the label. fetch_minutes takes --assets for any Coinbase USD product and merges the coverage manifest. soltui: coins() is every coin with data; non-Coinbase coins are backtest only; one unattended process ticks all live coins with per-coin locks and stop files. full_suite defaults to the top-50 record and sends only Coinbase coins to Coinbase steps.
+
+Verification: test_fetch_minutes_alt, test_full_suite, test_compound pass; all four venues parsed live with 0 rejected rows. Downloads running in the background from the main checkout's data/.
+
+Remaining: finish the downloads; deliver research/results/minute_coverage.json; run Backtest all coins on the full history and report per-coin results with data-quality caveats.

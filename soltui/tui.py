@@ -765,7 +765,7 @@ class SolTuiApp(App):
             )
             with Horizontal(classes="form-row"):
                 yield Label("Coin:")
-                yield Select([(c, c) for c in compound_mod.COINS], value=self._initial_coin(),
+                yield Select([(c, c) for c in compound_mod.coins()], value=self._initial_coin(),
                              allow_blank=False, id="compound-coin")
                 yield Button("Edits apply to: all coins", id="compound-scope")
             yield Static("Press Signal now for the live call.", id="compound-call")
@@ -1296,7 +1296,7 @@ class SolTuiApp(App):
 
     def _initial_coin(self) -> str:
         a = (self.settings.asset or "SOL").upper()
-        return a if a in compound_mod.COINS else "SOL"
+        return a if a in compound_mod.coins() else "SOL"
 
     def _compound_setup(self) -> None:
         self._compound_coin = self._initial_coin()
@@ -1635,7 +1635,8 @@ class SolTuiApp(App):
             table.add_row(r["asset"], "yes" if r["own_settings"] else "-", r["data"] or "none",
                           r["backtest_verdict"], _pct(r["backtest_hit"]), str(r["fwd_calls"]), _pct(r["fwd_hit"]),
                           "-" if r["paper_usd"] is None else f"{r['paper_usd']:+,.2f}",
-                          "RUNNING" if r["unattended"] else "-", key=r["asset"])
+                          "RUNNING" if r["unattended"] else ("-" if r.get("live", True) else "backtest only"),
+                          key=r["asset"])
 
     @on(Select.Changed, "#compound-coin")
     def _compound_coin_changed(self, event: Select.Changed) -> None:

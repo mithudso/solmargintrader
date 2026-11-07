@@ -1,0 +1,486 @@
+{
+  "as_of": "2026-11-07",
+  "source": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc",
+  "listing_source": "https://api.exchange.coinbase.com/products (online, trading enabled, quote USD)",
+  "rule": "top 50 by market cap after removing pegged or asset-backed tokens (stablecoins, tokenized funds and treasuries, gold tokens); same exclusion as backtester/core/universe.py TOP10_NON_PEGGED",
+  "excluded_pegged": [
+    "BFUSD",
+    "BUIDL",
+    "DAI",
+    "EURSAFO",
+    "FIGR_HELOC",
+    "OUSD",
+    "PAXG",
+    "PYUSD",
+    "RLUSD",
+    "U",
+    "USD1",
+    "USDC",
+    "USDD",
+    "USDE",
+    "USDF",
+    "USDG",
+    "USDGO",
+    "USDS",
+    "USDT",
+    "USDY",
+    "USYC",
+    "XAUT"
+  ],
+  "coins": [
+    {
+      "rank": 1,
+      "symbol": "BTC",
+      "coingecko_id": "bitcoin",
+      "name": "Bitcoin",
+      "market_cap_usd": 1522778114673,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 2,
+      "symbol": "ETH",
+      "coingecko_id": "ethereum",
+      "name": "Ethereum",
+      "market_cap_usd": 272856993073,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 4,
+      "symbol": "BNB",
+      "coingecko_id": "binancecoin",
+      "name": "BNB",
+      "market_cap_usd": 91238804521,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 5,
+      "symbol": "XRP",
+      "coingecko_id": "ripple",
+      "name": "XRP",
+      "market_cap_usd": 73660454577,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 7,
+      "symbol": "SOL",
+      "coingecko_id": "solana",
+      "name": "Solana",
+      "market_cap_usd": 52916659367,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 8,
+      "symbol": "TRX",
+      "coingecko_id": "tron",
+      "name": "TRON",
+      "market_cap_usd": 30385480064,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 10,
+      "symbol": "ZEC",
+      "coingecko_id": "zcash",
+      "name": "Zcash",
+      "market_cap_usd": 21479534274,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 11,
+      "symbol": "HYPE",
+      "coingecko_id": "hyperliquid",
+      "name": "Hyperliquid",
+      "market_cap_usd": 18502662433,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 12,
+      "symbol": "XMR",
+      "coingecko_id": "monero",
+      "name": "Monero",
+      "market_cap_usd": 11502444792,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 13,
+      "symbol": "DOGE",
+      "coingecko_id": "dogecoin",
+      "name": "Dogecoin",
+      "market_cap_usd": 11231620324,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 15,
+      "symbol": "WBT",
+      "coingecko_id": "whitebit",
+      "name": "WhiteBIT Coin",
+      "market_cap_usd": 8630560883,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 16,
+      "symbol": "LEO",
+      "coingecko_id": "leo-token",
+      "name": "LEO Token",
+      "market_cap_usd": 8591432687,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 17,
+      "symbol": "LINK",
+      "coingecko_id": "chainlink",
+      "name": "Chainlink",
+      "market_cap_usd": 8336990544,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 18,
+      "symbol": "ADA",
+      "coingecko_id": "cardano",
+      "name": "Cardano",
+      "market_cap_usd": 6840092741,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 19,
+      "symbol": "XLM",
+      "coingecko_id": "stellar",
+      "name": "Stellar",
+      "market_cap_usd": 5374342943,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 20,
+      "symbol": "BCH",
+      "coingecko_id": "bitcoin-cash",
+      "name": "Bitcoin Cash",
+      "market_cap_usd": 5175863110,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 21,
+      "symbol": "NEAR",
+      "coingecko_id": "near",
+      "name": "NEAR Protocol",
+      "market_cap_usd": 4779035764,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 24,
+      "symbol": "UNI",
+      "coingecko_id": "uniswap",
+      "name": "Uniswap",
+      "market_cap_usd": 4282561563,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 25,
+      "symbol": "LTC",
+      "coingecko_id": "litecoin",
+      "name": "Litecoin",
+      "market_cap_usd": 4057586534,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 26,
+      "symbol": "RAIN",
+      "coingecko_id": "rain",
+      "name": "Rain",
+      "market_cap_usd": 3995039121,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 27,
+      "symbol": "CC",
+      "coingecko_id": "canton-network",
+      "name": "Canton",
+      "market_cap_usd": 3803397021,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 28,
+      "symbol": "AVAX",
+      "coingecko_id": "avalanche-2",
+      "name": "Avalanche",
+      "market_cap_usd": 3638114256,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 29,
+      "symbol": "SUI",
+      "coingecko_id": "sui",
+      "name": "Sui",
+      "market_cap_usd": 3552535241,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 32,
+      "symbol": "GRAM",
+      "coingecko_id": "the-open-network",
+      "name": "Gram (prev. Toncoin)",
+      "market_cap_usd": 3083424909,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 33,
+      "symbol": "HBAR",
+      "coingecko_id": "hedera-hashgraph",
+      "name": "Hedera",
+      "market_cap_usd": 2974994818,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 34,
+      "symbol": "QNT",
+      "coingecko_id": "quant-network",
+      "name": "Quant",
+      "market_cap_usd": 2836697751,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 38,
+      "symbol": "SHIB",
+      "coingecko_id": "shiba-inu",
+      "name": "Shiba Inu",
+      "market_cap_usd": 2641548724,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 39,
+      "symbol": "TAO",
+      "coingecko_id": "bittensor",
+      "name": "Bittensor",
+      "market_cap_usd": 2603652799,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 40,
+      "symbol": "CRO",
+      "coingecko_id": "crypto-com-chain",
+      "name": "Cronos",
+      "market_cap_usd": 2480558344,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 42,
+      "symbol": "OKB",
+      "coingecko_id": "okb",
+      "name": "OKB",
+      "market_cap_usd": 2178221963,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 43,
+      "symbol": "ENA",
+      "coingecko_id": "ethena",
+      "name": "Ethena",
+      "market_cap_usd": 2134722323,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 45,
+      "symbol": "PEPE",
+      "coingecko_id": "pepe",
+      "name": "Pepe",
+      "market_cap_usd": 2047190683,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 46,
+      "symbol": "AAVE",
+      "coingecko_id": "aave",
+      "name": "Aave",
+      "market_cap_usd": 2028415521,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 48,
+      "symbol": "M",
+      "coingecko_id": "memecore",
+      "name": "MemeCore",
+      "market_cap_usd": 1899338081,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 52,
+      "symbol": "ONDO",
+      "coingecko_id": "ondo-finance",
+      "name": "Ondo",
+      "market_cap_usd": 1771739790,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 53,
+      "symbol": "ASTER",
+      "coingecko_id": "aster-2",
+      "name": "Aster",
+      "market_cap_usd": 1745127249,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 54,
+      "symbol": "BTW",
+      "coingecko_id": "bitway",
+      "name": "Bitway",
+      "market_cap_usd": 1726670684,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 55,
+      "symbol": "PUMP",
+      "coingecko_id": "pump-fun",
+      "name": "Pump.fun",
+      "market_cap_usd": 1662897175,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 57,
+      "symbol": "DOT",
+      "coingecko_id": "polkadot",
+      "name": "Polkadot",
+      "market_cap_usd": 1540576487,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 59,
+      "symbol": "SKY",
+      "coingecko_id": "sky",
+      "name": "Sky",
+      "market_cap_usd": 1497907268,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 60,
+      "symbol": "MNT",
+      "coingecko_id": "mantle",
+      "name": "Mantle",
+      "market_cap_usd": 1492388380,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 61,
+      "symbol": "WLFI",
+      "coingecko_id": "world-liberty-financial",
+      "name": "World Liberty Financial",
+      "market_cap_usd": 1480872008,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 62,
+      "symbol": "MORPHO",
+      "coingecko_id": "morpho",
+      "name": "Morpho",
+      "market_cap_usd": 1474661983,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 63,
+      "symbol": "HTX",
+      "coingecko_id": "htx-dao",
+      "name": "HTX DAO",
+      "market_cap_usd": 1377080424,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 64,
+      "symbol": "ICP",
+      "coingecko_id": "internet-computer",
+      "name": "Internet Computer",
+      "market_cap_usd": 1358071132,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 66,
+      "symbol": "WLD",
+      "coingecko_id": "worldcoin-wld",
+      "name": "Worldcoin",
+      "market_cap_usd": 1253762205,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 67,
+      "symbol": "BGB",
+      "coingecko_id": "bitget-token",
+      "name": "Bitget Token",
+      "market_cap_usd": 1219782853,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 68,
+      "symbol": "JST",
+      "coingecko_id": "just",
+      "name": "JUST",
+      "market_cap_usd": 1148449328,
+      "coinbase_usd_listed": false
+    },
+    {
+      "rank": 69,
+      "symbol": "ARB",
+      "coingecko_id": "arbitrum",
+      "name": "Arbitrum",
+      "market_cap_usd": 1148295161,
+      "coinbase_usd_listed": true
+    },
+    {
+      "rank": 71,
+      "symbol": "ETC",
+      "coingecko_id": "ethereum-classic",
+      "name": "Ethereum Classic",
+      "market_cap_usd": 1101568028,
+      "coinbase_usd_listed": true
+    }
+  ],
+  "coinbase_listed": [
+    "BTC",
+    "ETH",
+    "BNB",
+    "XRP",
+    "SOL",
+    "ZEC",
+    "HYPE",
+    "DOGE",
+    "LINK",
+    "ADA",
+    "XLM",
+    "BCH",
+    "NEAR",
+    "UNI",
+    "LTC",
+    "AVAX",
+    "SUI",
+    "HBAR",
+    "QNT",
+    "SHIB",
+    "TAO",
+    "CRO",
+    "ENA",
+    "PEPE",
+    "AAVE",
+    "ONDO",
+    "ASTER",
+    "PUMP",
+    "DOT",
+    "SKY",
+    "WLFI",
+    "MORPHO",
+    "ICP",
+    "WLD",
+    "ARB",
+    "ETC"
+  ],
+  "not_on_coinbase": [
+    "TRX",
+    "XMR",
+    "WBT",
+    "LEO",
+    "RAIN",
+    "CC",
+    "GRAM",
+    "OKB",
+    "M",
+    "BTW",
+    "MNT",
+    "HTX",
+    "BGB",
+    "JST"
+  ]
+}
