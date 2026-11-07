@@ -1,0 +1,42 @@
+{
+  "asset": "SOL",
+  "interval": "1h",
+  "bars": 8823,
+  "first_bar_utc": "2025-08-01 00:00:00",
+  "last_bar_utc": "2026-08-04 00:00:00",
+  "discovery_start": "2025-08-01 00:00:00",
+  "discovery_events_end": "2026-03-09 07:00:00",
+  "split_utc": "2026-03-09 18:00:00",
+  "validation_events_start": "2026-03-10 04:00:00",
+  "validation_end": "2026-08-04 00:00:00",
+  "conditions": 49,
+  "conjunctions_tested": 3072,
+  "hypotheses_tested": 30720,
+  "horizons": [
+    1,
+    2,
+    3,
+    5,
+    10
+  ],
+  "directions": 2,
+  "min_events": 30,
+  "fdr_q": 0.05,
+  "hlz_z": 3.0,
+  "bh_discovery_survivors": 0,
+  "near_miss_candidates": 300,
+  "depth_counts": {
+    "1": 44,
+    "2": 541,
+    "3": 2487
+  },
+  "reliable": 0,
+  "replication_assets": [],
+  "pruning": {
+    "singles": 44,
+    "duplicates_removed": 365,
+    "depth3_pruned_by_pairs": 7043,
+    "capped": false
+  },
+  "funding_available": true
+}

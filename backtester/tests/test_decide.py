@@ -745,7 +745,7 @@ class TestReport(unittest.TestCase):
     def test_all_registered_strategies_are_reported(self) -> None:
         """The readout follows the registry, so a new strategy appears for free."""
         keys = [s["key"] for s in self.report["strategies"]]
-        self.assertEqual(keys, [k for k in REGISTRY if not k.startswith("lev_")])  # tiers are wrappers, not signals
+        self.assertEqual(keys, [k for k in REGISTRY if not k.startswith(("lev_", "trigger_"))])  # tiers are wrappers, not signals
 
     def test_no_overall_verdict_or_vote_count(self) -> None:
         """A consensus tally would read as evidence from correlated rules."""
@@ -908,7 +908,7 @@ class TestCli(unittest.TestCase):
         )
         parsed = json.loads(json.dumps(report, sort_keys=True))
         self.assertEqual(parsed["asset"], "SOL")
-        self.assertEqual(len(parsed["strategies"]), sum(1 for k in REGISTRY if not k.startswith("lev_")))
+        self.assertEqual(len(parsed["strategies"]), sum(1 for k in REGISTRY if not k.startswith(("lev_", "trigger_"))))
 
     def test_default_path_follows_the_fetch_convention(self) -> None:
         """Where the readout looks matches where `core.fetch` writes."""

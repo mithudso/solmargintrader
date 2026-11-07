@@ -52,7 +52,7 @@ alone.
 | `bars` | 18,381 | **Time series.** `ts` + `series` meta `{asset, interval, source, frame_checksum}` |
 | `spot_prices` | 1 | **Time series.** The JLP snapshot — not OHLCV, see below |
 | `equity_points` | 7,500 | **Time series.** `ts` + `curve` meta `{run_id, strategy}` |
-| `strategies` | 48 | One per strategy card, with live registry facts embedded for the 28 registered |
+| `strategies` | 49 | One per strategy card, with live registry facts embedded for the 29 registered |
 | `signals` | 15 | The stateless one-bar rules from `research/decide.py` |
 | `indicators` | 20 | 16 reported rows + 4 explicitly skip-listed functions |
 | `decisions` | 6 | One per readout, exactly as `decide.build_report()` emits it |

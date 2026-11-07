@@ -334,7 +334,7 @@ def strategy_decisions(
     tolerance: float = DEFAULT_TOLERANCE,
 ) -> list[StrategyDecision]:
     """Decisions for every requested registry key, in registry order."""
-    wanted = [k for k in REGISTRY if FAMILY.get(k) != "leverage-tier"] if keys is None else list(keys)
+    wanted = [k for k in REGISTRY if FAMILY.get(k) not in ("leverage-tier", "trigger")] if keys is None else list(keys)
     unknown = [k for k in wanted if k not in REGISTRY]
     if unknown:
         raise KeyError(f"unknown strategies {unknown}; available: {sorted(REGISTRY)}")
@@ -1247,7 +1247,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
 
     arrays = frame_to_arrays(frame)
-    wanted = (sum(1 for k in REGISTRY if FAMILY.get(k) != "leverage-tier") if args.strategy is None else len(args.strategy))
+    wanted = (sum(1 for k in REGISTRY if FAMILY.get(k) not in ("leverage-tier", "trigger")) if args.strategy is None else len(args.strategy))
     # Every strategy is replayed over the whole series, so the cost is
     # bars x strategies -- ~18s for 25 strategies over 8,823 hourly bars. Say so
     # on stderr rather than looking hung; stdout stays exactly the report.
