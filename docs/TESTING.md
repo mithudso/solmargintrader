@@ -165,7 +165,7 @@ every collection.
 
 The rest guard the store's honesty: every document carries provenance, the server refuses
 one that does not (strict validation, proven by an insert that must raise), NaN never
-reaches the store, and the card counts track the registry — 45 cards with `registry_key`
+reaches the store, and the card counts track the registry — 48 cards with `registry_key`
 set on exactly 25, every key real.
 
 ## Adding tests
