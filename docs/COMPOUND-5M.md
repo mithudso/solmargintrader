@@ -27,6 +27,8 @@ forward test, metric by metric and combined. Nothing here places an order.
    trend and 0.5× in a range; reversion styles the reverse; breakouts 1.6× in a squeeze.
    This is the catalogue's own regime table, and the measurements below show it points the
    wrong way at 5m.
+3b. **Learn.** With `adaptive=1` (default) each metric's weight is also multiplied by its own
+   learned edge over a coin flip (see below).
 4. **Threshold.** |composite| ≥ `entry` (0.25) calls UP or DOWN. A held position stays on while
    the composite keeps its sign above `exit` (0.10): hysteresis, because every flip pays a
    round trip.
@@ -34,6 +36,58 @@ forward test, metric by metric and combined. Nothing here places an order.
    cannot be evaluated blocks (fails closed); a score that cannot be evaluated counts as
    undefined and lowers coverage. Cross-parameter mistakes (an EMA "fast" span not below "slow",
    a Fibonacci zone upside down) are refused when saved, not discovered at scoring time.
+
+## Learning from its own record (on by default)
+
+With `adaptive=1` every metric's weight is multiplied by **its edge over a coin flip, learned
+from its own calls**. A metric "calls" a bar when |score| ≥ `entry`; once the next bar closes,
+the call is right or wrong.
+
+* **Bayes, literally.** Each metric's hit probability has a Beta(`adaptive_prior`/2,
+  `adaptive_prior`/2) prior: 50 right and 50 wrong pseudo-calls by default. Every resolved call
+  updates it. The posterior mean is the "learned hit"; the tab and `signal` also show
+  P(better than a coin flip) from the posterior.
+* **Edge, not raw hit rate.** Multiplying by 55% vs 47% would barely separate a useful metric
+  from a harmful one and would still let the harmful one vote. The multiplier is
+  2 × hit − 1: zero at 50%, so a metric with no proven skill gets no say. A metric that is
+  reliably *wrong* is muted, or inverted with `adaptive_flip=1`.
+* **A capped record.** Only calls from the last `adaptive_window` bars count (4,032 = two
+  weeks), each equally. Without a cap, five months of history would make each new miss move a
+  weight by a meaningless amount; with it, a miss moves a metric's weight as much in month five
+  as in week two, and a metric that stops working loses its weight within two weeks. Shorten or
+  lengthen the window in the Aggregate box. `adaptive_halflife` > 0 also fades calls inside the
+  window (off by default). On the 30-day sample the two-week window and the earlier one-week
+  fade gave hit rates within 0.6 points of each other on every coin.
+* **No look-ahead.** A call made at bar t is only counted once bar t+1 has closed. The
+  prefix-invariance test runs with adaptive weighting on.
+* **Live and forward.** A live call fetches up to the window (two weeks of bars) and learns from
+  them, plus any older forward-ledger calls still inside the window, counted only when that
+  metric's settings were the same and never twice. Live-only metrics (premium, open interest, order book) learn only from the
+  ledger, so their weight grows as forward ticks accumulate.
+
+### Moving the settings, carefully (`tune=1`, off by default)
+
+Each metric also runs shadow copies at ×(1 − `tune_step`) and ×(1 + `tune_step`) of each of its
+numbers. It moves to a neighbour only when the posterior says that neighbour is more accurate
+with probability above `tune_confidence` (0.95) after `tune_min_calls` (300) calls. Then it
+re-centres on the new settings and waits `tune_cooldown` bars (two days). Moving after every
+single miss would chase noise, because at 5m about half of all outcomes are coin flips.
+**Adopt tuned settings** in the tab makes a move permanent.
+
+Measured on the same 30 days, out-of-sample hit rate of the default compound:
+
+| | BTC | DOGE | ETH | SOL | ZEC |
+| --- | --- | --- | --- | --- | --- |
+| static weights (`adaptive=0`) | 48.5% | 44.0% | 45.6% | 46.3% | 48.9% |
+| learned weights (`adaptive=1`, two-week record) | 46.5% | 55.6% | 52.0% | 50.2% | 51.6% |
+| + tuning at 0.65 / 50 calls | 47.4% | 56.2% | 53.4% | 52.1% | 51.4% |
+
+Learning fixes the direction problem on four of five coins: it mutes the trend metrics and
+leans on reversion, without anyone choosing. Tuning at the default 0.95 bar moved one metric
+once in five coins and thirty days. Neighbouring settings are nearly the same signal, so the
+data rarely proves one better. A looser bar moves the hit rate by about a point either way,
+inside the noise, and several bars were tried, which is itself selection. So tuning stays off by default. **Returns stayed negative
+in every row**: a better hit rate does not beat a 16 bps round trip on a 6–9 bps move.
 
 ## Metrics
 

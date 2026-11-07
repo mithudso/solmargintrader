@@ -121,6 +121,20 @@ class PrefixInvarianceTests(unittest.TestCase):
                 self.assertEqual(bool(part.blocked[-1]), bool(full.blocked[t]))
                 self.assertEqual(sc.target_path(part)[-1], full_target[t])
 
+    def test_adaptive_weights_are_prefix_invariant(self) -> None:
+        for flip in (0, 1):
+            cfg = sc.default_config()
+            cfg["aggregate"].update(adaptive=1, adaptive_flip=flip, adaptive_window=200, adaptive_halflife=50,
+                                    adaptive_prior=5)
+            aux = {k: self.aux[k] for k in ("btc_close", "funding", "events")}
+            full = sc.evaluate(self.bars, cfg, aux)
+            for t in self.CHECKPOINTS:
+                part = sc.evaluate(self.bars.slice(t + 1), cfg, slice_aux(aux, t + 1))
+                with self.subTest(flip=flip, bar=t):
+                    self.assertTrue(same(part.composite[-1], full.composite[t]))
+                    for cid, learned in full.adaptive.items():
+                        self.assertTrue(same(part.adaptive[cid]["multiplier"][-1], learned["multiplier"][t]), cid)
+
     def test_live_only_components_score_only_the_last_bar(self) -> None:
         aux = {"live": {"premium": 0.0004, "book_imbalance": -0.2,
                         "oi_history": [(1, 100.0), (1000, 101.0), (2000, 103.0)]}}
@@ -216,6 +230,7 @@ def only(**enabled: float) -> dict:
             entry["weight"] = enabled[cid]
     cfg["aggregate"]["regime_weighting"] = 0
     cfg["aggregate"]["min_coverage"] = 0.0
+    cfg["aggregate"]["adaptive"] = 0  # static weights; AdaptiveTests covers the learned ones
     return cfg
 
 
@@ -290,6 +305,149 @@ class AggregationTests(unittest.TestCase):
         self.assertIn(x["cycle_phase"], ("markup", "markdown", "accumulation", "distribution",
                                          "transition", "none"))
         self.assertEqual(x["decided_at"], x["bar_ts"] + 300)
+
+
+class AdaptiveTests(unittest.TestCase):
+    def test_a_call_is_counted_only_after_the_next_bar_closes(self) -> None:
+        close = np.array([10.0, 11.0, 10.0, 12.0, 13.0])
+        score = np.array([1.0, 1.0, 1.0, -1.0, 1.0])  # right, wrong, right, wrong, unresolved
+        hits, calls = sc.adaptive_counts(score, close, 0.25, window=1000)
+        self.assertEqual(list(np.round(calls, 6)), [0, 1, 2, 3, 4])
+        self.assertEqual(list(np.round(hits, 6)), [0, 1, 1, 2, 2])
+
+    def test_abstentions_and_flat_bars_are_not_counted(self) -> None:
+        close = np.array([10.0, 10.0, 11.0, 12.0])
+        score = np.array([1.0, 0.1, np.nan, 1.0])  # flat next bar, below entry, undefined
+        hits, calls = sc.adaptive_counts(score, close, 0.25, window=1000)
+        self.assertEqual(list(calls), [0.0, 0.0, 0.0, 0.0])
+
+    def test_the_record_is_capped_at_the_window(self) -> None:
+        close = 100 + np.cumsum(np.tile([1.0, -1.0], 50))   # every bar moves
+        score = np.ones(100)                                 # calls every bar
+        hits, calls = sc.adaptive_counts(score, close, 0.25, window=10)
+        self.assertEqual(calls[5], 5)
+        self.assertTrue(np.all(calls[10:] == 10), calls[10:15])  # never more than the window
+        # A miss moves a capped record as much at bar 90 as at bar 15.
+        self.assertTrue(np.all(np.abs(np.diff(hits[11:-1])) <= 1))
+
+    def test_ledger_calls_count_until_they_leave_the_window(self) -> None:
+        close = np.full(30, 100.0)                           # nothing new resolves in-window
+        score = np.zeros(30)
+        seed = [(-1, 1.0, 1.0), (-5, 0.0, 1.0), (-40, 1.0, 1.0)]  # the last is already too old
+        hits, calls = sc.adaptive_counts(score, close, 0.25, window=10, seed=seed)
+        self.assertEqual((hits[0], calls[0]), (1.0, 2.0))
+        self.assertEqual(calls[5], 2.0)                      # the call at -5 resolved at -4: 10 bars run to 5
+        self.assertEqual(calls[6], 1.0)                      # ... and it has left the window at 6
+        self.assertEqual(calls[9], 1.0)
+        self.assertEqual(calls[10], 0.0)                     # the call at -1 expires after 10 bars
+
+    def test_halflife_fades_inside_the_window(self) -> None:
+        close = np.array([10.0, 11.0] + [11.0] * 10)
+        score = np.array([1.0] + [0.0] * 11)
+        hits, calls = sc.adaptive_counts(score, close, 0.25, window=100, halflife=2)
+        self.assertAlmostEqual(calls[1], 1.0)
+        self.assertAlmostEqual(calls[3], 0.5)
+        self.assertAlmostEqual(calls[5], 0.25)
+
+    def test_multiplier_is_edge_over_a_coin_flip_shrunk_by_the_prior(self) -> None:
+        m = sc.adaptive_multiplier(np.array([55.0, 47.0, 0.0, 550.0]), np.array([100.0, 100.0, 0.0, 1000.0]),
+                                   prior=100, flip=False)
+        self.assertAlmostEqual(m[0], 2 * (105 / 200) - 1)          # 55% on 100 calls -> shrunk to 52.5%
+        self.assertEqual(m[1], 0.0)                                # worse than a coin flip: muted
+        self.assertEqual(m[2], 0.0)                                # no evidence: no say
+        self.assertAlmostEqual(m[3], 2 * (600 / 1100) - 1)
+        flipped = sc.adaptive_multiplier(np.array([47.0]), np.array([100.0]), prior=100, flip=True)
+        self.assertLess(flipped[0], 0)
+
+    def test_a_reliably_wrong_metric_loses_its_vote(self) -> None:
+        b = synthetic(600)
+        r = np.sign(np.diff(b.close))
+        cfg = only(rsi=1, ema_cross=1)
+        cfg["aggregate"].update(adaptive=1, adaptive_prior=10, adaptive_window=10_000)
+        ev = sc.evaluate(b, cfg)
+        # Make ema_cross always wrong and rsi always right about the next bar.
+        ev2_scores = {"rsi": np.append(r, 0.0), "ema_cross": np.append(-r, 0.0)}
+        h_r, c_r = sc.adaptive_counts(ev2_scores["rsi"], b.close, 0.25, 10_000)
+        h_e, c_e = sc.adaptive_counts(ev2_scores["ema_cross"], b.close, 0.25, 10_000)
+        self.assertGreater(sc.adaptive_multiplier(h_r, c_r, 10, False)[-1], 0.9)
+        self.assertEqual(sc.adaptive_multiplier(h_e, c_e, 10, False)[-1], 0.0)
+        row = next(x for x in sc.explain(ev)["components"] if x["id"] == "rsi")
+        self.assertIn("learned_hit", row)
+        self.assertIn("adaptive_mult", row)
+
+    def test_adaptive_off_reproduces_the_static_composite(self) -> None:
+        b = synthetic(500)
+        cfg = only(rsi=1, ema_cross=2)
+        cfg["aggregate"]["adaptive"] = 0
+        ev = sc.evaluate(b, cfg)
+        self.assertEqual(ev.adaptive, {})
+        i = 450
+        expect = (ev.scores["rsi"][i] + 2 * ev.scores["ema_cross"][i]) / 3
+        self.assertAlmostEqual(ev.composite[i], expect, places=9)
+
+
+class TuningTests(unittest.TestCase):
+    LOOSE = {"tune": 1, "tune_confidence": 0.55, "tune_min_calls": 10, "tune_cooldown": 20,
+             "adaptive_prior": 2, "adaptive_window": 200}
+
+    def test_neighbours_are_one_number_away_valid_and_distinct(self) -> None:
+        comp = sc.BY_ID["ema_cross"]
+        ns = sc.neighbours(comp, {"fast": 9, "slow": 10, "scale": 0.5, "atr": 14}, 0.25)
+        for n in ns:
+            self.assertLess(n["fast"], n["slow"])
+            changed = [k for k in n if n[k] != {"fast": 9, "slow": 10, "scale": 0.5, "atr": 14}[k]]
+            self.assertEqual(len(changed), 1)
+        self.assertNotIn({"fast": 11, "slow": 10, "scale": 0.5, "atr": 14}, ns)
+        self.assertFalse(any("mode" in n and n["mode"] != 0 for n in sc.neighbours(sc.BY_ID["rsi"],
+                                                                                sc.BY_ID["rsi"].defaults(), 0.25)))
+
+    def test_tuning_moves_and_stays_prefix_invariant(self) -> None:
+        b = synthetic(900, seed=21)
+        cfg = only(rsi=1, ema_cross=1, bollinger=1)
+        cfg["aggregate"].update(self.LOOSE)
+        full = sc.evaluate(b, cfg)
+        self.assertTrue(full.tuned, "loose thresholds should produce at least one move")
+        for t in (120, 333, 500, 777, 898):
+            part = sc.evaluate(b.slice(t + 1), cfg)
+            with self.subTest(bar=t):
+                self.assertTrue(same(part.composite[-1], full.composite[t]))
+                for cid in full.tuned:
+                    self.assertTrue(same(part.scores[cid][-1], full.scores[cid][t]), cid)
+                    before = [mv for mv in full.tuned[cid] if mv[0] <= t]
+                    self.assertEqual(part.tuned.get(cid, []), before)
+
+    def test_a_move_waits_for_the_cooldown(self) -> None:
+        b = synthetic(900, seed=21)
+        cfg = only(rsi=1, ema_cross=1, bollinger=1)
+        cfg["aggregate"].update(self.LOOSE)
+        for moves in sc.evaluate(b, cfg).tuned.values():
+            gaps = [b2 - a2 for (a2, _), (b2, _) in zip(moves, moves[1:], strict=False)]
+            self.assertTrue(all(g >= 20 for g in gaps), gaps)
+
+    def test_the_default_bar_does_not_move_on_noise(self) -> None:
+        cfg = only(rsi=1, ema_cross=1)
+        cfg["aggregate"]["tune"] = 1
+        self.assertEqual(sc.evaluate(synthetic(900), cfg).tuned, {})
+
+    def test_posterior_and_comparison(self) -> None:
+        mean, var = sc.beta_posterior(np.array([60.0]), np.array([100.0]), prior=100)
+        self.assertAlmostEqual(mean[0], 110 / 200)
+        m2, v2 = sc.beta_posterior(np.array([50.0]), np.array([100.0]), prior=100)
+        p = sc.p_better_than(mean, var, m2, v2)[0]
+        self.assertGreater(p, 0.5)
+        self.assertLess(p, 0.99)
+        self.assertAlmostEqual(float(sc._phi(np.array([1.96]))[0]), 0.975, places=3)
+
+    def test_explain_reports_tuned_settings_and_posterior(self) -> None:
+        b = synthetic(900, seed=21)
+        cfg = only(rsi=1, ema_cross=1, bollinger=1)
+        cfg["aggregate"].update(self.LOOSE)
+        cfg["aggregate"]["adaptive"] = 1
+        ev = sc.evaluate(b, cfg)
+        rows = {r["id"]: r for r in sc.explain(ev)["components"]}
+        moved = next(iter(ev.tuned))
+        self.assertIn("tuned_params", rows[moved])
+        self.assertIn("p_better_than_coinflip", rows["rsi"])
 
 
 class ForecastStatsTests(unittest.TestCase):

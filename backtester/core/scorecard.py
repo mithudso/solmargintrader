@@ -1021,6 +1021,21 @@ AGGREGATE_SPECS: tuple[ParamSpec, ...] = (
     P("squeeze_pct", 15, 1, 50, "float"),
     P("squeeze_lookback", 288, 20, 5000),
     P("allow_short", 1, 0, 1, "int", "0 = long or flat only"),
+    P("adaptive", 1, 0, 1, "int", "1 = weight each metric by its own learned edge over a coin flip"),
+    P("adaptive_prior", 100, 0, 100000, "float",
+      "pseudo-calls at 50% every metric starts with; larger = slower to trust a streak"),
+    P("adaptive_window", 4032, 12, 1000000, "int",
+      "only calls from the last N bars count, so the record is capped; 4032 = two weeks of 5m"),
+    P("adaptive_halflife", 0, 0, 1000000, "int",
+      "0 = every call in the window counts equally; N = calls also fade, counting half after N bars"),
+    P("adaptive_flip", 0, 0, 1, "int", "1 = invert a metric that is reliably WRONG instead of muting it"),
+    P("tune", 0, 0, 1, "int", "1 = each metric moves its numbers to a neighbouring setting once that "
+      "neighbour is proving more accurate"),
+    P("tune_confidence", 0.95, 0.5, 0.9999, "float",
+      "posterior probability a neighbour must beat the current settings by before a move"),
+    P("tune_min_calls", 300, 10, 1000000, "float", "decayed calls a neighbour needs before it can be adopted"),
+    P("tune_step", 0.25, 0.05, 1.0, "float", "neighbours sit at x(1 - step) and x(1 + step) of each number"),
+    P("tune_cooldown", 576, 1, 1000000, "int", "bars to wait after a move (576 = two days of 5m)"),
 )
 
 EXECUTION_SPECS: tuple[ParamSpec, ...] = (
@@ -1139,6 +1154,192 @@ def standalone_config(cfg: Mapping[str, Any], component_id: str) -> dict[str, An
 # -- evaluation --------------------------------------------------------------------------------
 
 
+def adaptive_counts(score: np.ndarray, close: np.ndarray, entry: float, window: int, halflife: float = 0,
+                    seed: Sequence[tuple[int, float, float]] = ()) -> tuple[np.ndarray, np.ndarray]:
+    """(hits, calls) a metric has on record when deciding at each bar.
+
+    A metric "calls" a bar when |score| >= entry; the call is right when the next bar moves the
+    called way (unchanged closes are not counted). The call made at bar k is only known to be
+    right or wrong once bar k+1 has CLOSED, so it enters the record used at bar k+1, never at k.
+    That one-bar lag keeps the learned weights free of look-ahead; the prefix-invariance test
+    checks it with adaptive weighting on.
+
+    The record is CAPPED: only calls resolved within the last `window` bars count. Without a
+    cap, five months of history would make each new miss move the hit rate by a meaningless
+    amount; with it, a miss today moves it as much as a miss did on day one. `halflife` > 0
+    additionally fades calls inside the window.
+
+    `seed` holds earlier resolved calls from the forward ledger as (k, hit, call) with k the
+    call's bar index relative to bar 0 (k < 0). They expire from the window like any other call.
+    """
+    n = close.size
+    w = int(window)
+    lam = 1.0 if not halflife else 0.5 ** (1.0 / float(halflife))
+    vote = np.where(np.isfinite(score) & (np.abs(np.nan_to_num(score)) >= entry), np.sign(np.nan_to_num(score)), 0.0)
+    move = np.zeros(n)
+    move[:-1] = np.sign(np.diff(close))
+    decided = (vote != 0) & (move != 0)
+    decided[-1:] = False  # the last bar's outcome has not happened yet
+    hit = decided & (vote == move)
+    # Extended timeline: w slots of pre-history (for ledger calls), then the n bars. Position
+    # w + j holds the outcomes that become known at bar j.
+    x_hit = np.zeros(w + n)
+    x_call = np.zeros(w + n)
+    x_hit[w + 1:] = hit[:-1]
+    x_call[w + 1:] = decided[:-1]
+    for k, h, c in seed:
+        pos = w + int(k) + 1
+        if 0 <= pos <= w:
+            x_hit[pos] += h
+            x_call[pos] += c
+
+    def windowed(x: np.ndarray) -> np.ndarray:
+        # S_inf[q] = lam * S_inf[q-1] + x[q]; dropping everything older than w bars leaves
+        # S[q] = S_inf[q] - lam**w * S_inf[q-w]. With lam == 1 this is a rolling sum.
+        if lam == 1.0:
+            s_inf = np.cumsum(x)
+        else:
+            s_inf = pd.Series(np.concatenate(([0.0], x))).ewm(alpha=1.0 - lam, adjust=False).mean().to_numpy()[1:]
+            s_inf = s_inf / (1.0 - lam)
+        old = np.zeros_like(s_inf)
+        old[w:] = s_inf[:-w] if w else s_inf
+        return (s_inf - (lam ** w) * old)[w:]
+
+    return windowed(x_hit), windowed(x_call)
+
+
+def adaptive_multiplier(hits: np.ndarray, calls: np.ndarray, prior: float, flip: bool) -> np.ndarray:
+    """Edge over a coin flip from a hit rate shrunk toward 50%.
+
+    p = (hits + prior/2) / (calls + prior); edge = 2p - 1. Multiplying weights by the raw hit
+    rate (0.55 vs 0.47) would barely separate a useful metric from a harmful one and would still
+    let a metric that is wrong more often than right vote. The edge is zero at 50%, so a metric
+    with no demonstrated skill gets no say; negative edges are muted, or inverted with `flip`.
+    """
+    den = calls + prior
+    p = np.where(den > 0, (hits + prior / 2.0) / np.where(den > 0, den, 1.0), 0.5)
+    edge = 2.0 * p - 1.0
+    return edge if flip else np.maximum(edge, 0.0)
+
+
+def _phi(z: np.ndarray) -> np.ndarray:
+    """Standard normal CDF (Abramowitz-Stegun 7.1.26 erf, |error| < 1.5e-7); numpy has no erf."""
+    x = np.abs(z) / math.sqrt(2.0)
+    tt = 1.0 / (1.0 + 0.3275911 * x)
+    y = 1.0 - (((((1.061405429 * tt - 1.453152027) * tt) + 1.421413741) * tt - 0.284496736) * tt
+               + 0.254829592) * tt * np.exp(-x * x)
+    return 0.5 * (1.0 + np.sign(z) * y)
+
+
+def beta_posterior(hits: np.ndarray, calls: np.ndarray, prior: float) -> tuple[np.ndarray, np.ndarray]:
+    """(mean, variance) of the hit probability under a Beta(prior/2, prior/2) prior.
+
+    This is Bayes' theorem for a right/wrong record: every resolved call adds one to the hits
+    or to the misses, and the posterior narrows as the count grows. Decayed counts make it a
+    posterior that also forgets.
+    """
+    a = hits + prior / 2.0
+    b = np.maximum(calls - hits, 0.0) + prior / 2.0
+    s = np.maximum(a + b, 1e-12)
+    return a / s, a * b / (s * s * (s + 1.0))
+
+
+def p_better_than(mean_a: np.ndarray, var_a: np.ndarray, mean_b: np.ndarray, var_b: np.ndarray) -> np.ndarray:
+    """P(true hit rate of a > that of b), normal approximation to two Beta posteriors.
+
+    It treats the two records as independent. They are scored on the same bars and positively
+    correlated, so the true variance of the difference is smaller: this errs toward NOT moving.
+    """
+    return _phi((mean_a - mean_b) / np.sqrt(np.maximum(var_a + var_b, 1e-18)))
+
+
+TUNE_SKIP = ("mode", "weekend")
+TUNE_MAX_MOVES = 50
+
+
+def neighbours(comp: Component, params: Mapping[str, Any], step: float) -> list[dict[str, Any]]:
+    """Settings one step away from `params`, one number at a time, valid and distinct."""
+    out: list[dict[str, Any]] = []
+    for spec in comp.params:
+        if spec.name in TUNE_SKIP or (spec.kind == "int" and spec.lo == 0 and spec.hi == 1):
+            continue
+        v = params[spec.name]
+        for factor in (1.0 - step, 1.0 + step):
+            nv: float | int = v * factor
+            if spec.kind == "int":
+                nv = int(round(nv))
+                if nv == v:
+                    nv = v + (1 if factor > 1 else -1)
+            nv = min(max(nv, spec.lo), spec.hi)
+            if nv == v:
+                continue
+            cand = {**params, spec.name: int(nv) if spec.kind == "int" else float(nv)}
+            if any(not cand[a] < cand[b] for a, b, _ in RELATIONS.get(comp.id, ())):
+                continue
+            if cand not in out:
+                out.append(cand)
+    return out
+
+
+def tune_component(comp: Component, bars: Bars, params: Mapping[str, Any], aux: Mapping[str, Any],
+                   agg: Mapping[str, Any]) -> tuple[np.ndarray, list[tuple[int, dict[str, Any]]]]:
+    """Score series that walks to better neighbouring settings as evidence arrives.
+
+    At every bar t the active settings are compared with their neighbours using each one's
+    record up to t-1 (`adaptive_counts`). A neighbour is adopted only when P(it is more accurate)
+    exceeds `tune_confidence` and it has `tune_min_calls` decayed calls; then the search
+    re-centres on it and waits `tune_cooldown` bars. Moving after every single miss would chase
+    noise: at 5m about half of all outcomes are coin flips. Every quantity used at t is known at
+    t, which the prefix-invariance test checks with tuning on.
+
+    Returns (score series, [(bar index, settings adopted there), ...]).
+    """
+    n = len(bars)
+    active = dict(params)
+    out = np.full(n, np.nan)
+    moves: list[tuple[int, dict[str, Any]]] = []
+    start, earliest = 0, 0
+    prior, entry = agg["adaptive_prior"], agg["entry"]
+    win, hl = agg["adaptive_window"], agg["adaptive_halflife"]
+    while True:
+        cands = [active] + neighbours(comp, active, agg["tune_step"])
+        series, stats = [], []
+        for c in cands:
+            try:
+                s = _clip(np.asarray(comp.fn(bars, dict(c), aux), dtype="float64"))
+            except ScorecardError:
+                if c is active:
+                    raise
+                continue
+            h, k = adaptive_counts(s, bars.close, entry, win, hl)
+            series.append((c, s, k))
+            stats.append(beta_posterior(h, k, prior))
+        cur_series = series[0][1]
+        switch_at, choice = None, None
+        if len(moves) < TUNE_MAX_MOVES and earliest < n:
+            m0, v0 = stats[0]
+            best_p = np.zeros(n)
+            best_j = np.full(n, -1)
+            for j in range(1, len(series)):
+                mj, vj = stats[j]
+                pj = np.where(series[j][2] >= agg["tune_min_calls"], p_better_than(mj, vj, m0, v0), 0.0)
+                better = pj > best_p
+                best_p = np.where(better, pj, best_p)
+                best_j = np.where(better, j, best_j)
+            ok = np.where(best_p[earliest:] > agg["tune_confidence"])[0]
+            if ok.size:
+                switch_at = int(earliest + ok[0])
+                choice = int(best_j[switch_at])
+        if switch_at is None:
+            out[start:] = cur_series[start:]
+            return out, moves
+        out[start:switch_at] = cur_series[start:switch_at]
+        active = dict(series[choice][0])
+        moves.append((switch_at, active))
+        start = switch_at
+        earliest = switch_at + int(agg["tune_cooldown"])
+
+
 @dataclass
 class Evaluation:
     """Everything the aggregator produced for one contiguous run of bars."""
@@ -1153,6 +1354,10 @@ class Evaluation:
     blocked: np.ndarray
     indication: np.ndarray  # -1, 0, +1
     errors: dict[str, str] = field(default_factory=dict)
+    # id -> {"hit_rate", "calls", "multiplier"} arrays, when adaptive weighting is on.
+    adaptive: dict[str, dict[str, np.ndarray]] = field(default_factory=dict)
+    # id -> [(bar index, settings adopted there)], when tuning is on.
+    tuned: dict[str, list[tuple[int, dict[str, Any]]]] = field(default_factory=dict)
 
 
 def classify_regime(b: Bars, agg: Mapping[str, Any]) -> np.ndarray:
@@ -1186,12 +1391,18 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     scores: dict[str, np.ndarray] = {}
     gates: dict[str, np.ndarray] = {}
     errors: dict[str, str] = {}
+    tuned: dict[str, list[tuple[int, dict[str, Any]]]] = {}
     for comp in COMPONENTS:
         entry = cfg["components"][comp.id]
         if not entry["enabled"]:
             continue
         try:
-            values = comp.fn(bars, dict(entry["params"]), aux_)
+            if agg["tune"] and comp.kind == "score" and not comp.forward_only and n:
+                values, moves = tune_component(comp, bars, entry["params"], aux_, agg)
+                if moves:
+                    tuned[comp.id] = moves
+            else:
+                values = comp.fn(bars, dict(entry["params"]), aux_)
         except ScorecardError as exc:
             # Never drop an enabled component silently: an errored gate BLOCKS (fails closed)
             # and an errored score counts as undefined, which lowers coverage.
@@ -1226,6 +1437,19 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
                 out = np.where(regime == name, table[style], out)
         return out
 
+    learned: dict[str, dict[str, np.ndarray]] = {}
+    if agg["adaptive"] and n:
+        seeds = aux_.get("adaptive_seed") or {}
+        for cid in scores:
+            h, c = adaptive_counts(scores[cid], bars.close, agg["entry"], agg["adaptive_window"],
+                                   agg["adaptive_halflife"], seeds.get(cid, ()))
+            prior = agg["adaptive_prior"]
+            learned[cid] = {
+                "hit_rate": np.where(c + prior > 0, (h + prior / 2.0) / np.maximum(c + prior, 1e-12), 0.5),
+                "calls": c,
+                "multiplier": adaptive_multiplier(h, c, prior, bool(agg["adaptive_flip"])),
+            }
+
     for family, members in by_family.items():
         fam_num = np.zeros(n)
         fam_den = np.zeros(n)
@@ -1233,6 +1457,10 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
         for cid in members:
             s = scores[cid]
             w = cfg["components"][cid]["weight"] * mult(BY_ID[cid].style)
+            if cid in learned:
+                m = learned[cid]["multiplier"]
+                s = s * np.sign(m)  # a flipped (reliably wrong) metric votes the other way
+                w = w * np.abs(m)
             ok = np.isfinite(s) & (w > 0)
             fam_num += np.where(ok, w * np.nan_to_num(s), 0.0)
             fam_den += np.where(ok, w, 0.0)
@@ -1257,7 +1485,7 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     if not agg["allow_short"]:
         call = np.where(call < 0, 0, call)
     return Evaluation(bars, cfg, scores, gates, regime, composite, coverage, blocked,
-                      call.astype("int8"), errors)
+                      call.astype("int8"), errors, learned, tuned)
 
 
 def target_path(ev: Evaluation) -> np.ndarray:
@@ -1311,9 +1539,26 @@ def explain(ev: Evaluation, i: int = -1, catalogue: bool = False) -> dict[str, A
                 m = 1.0
                 if agg["regime_weighting"]:
                     m = REGIME_MULTIPLIERS.get(regime, {}).get(comp.style, 1.0)
+                a = 1.0
+                if comp.id in ev.adaptive:
+                    lr = ev.adaptive[comp.id]
+                    a = float(lr["multiplier"][i])
+                    calls_i = float(lr["calls"][i])
+                    hits_i = (float(lr["hit_rate"][i]) * (calls_i + agg["adaptive_prior"])
+                              - agg["adaptive_prior"] / 2.0)
+                    mean, var = beta_posterior(np.array([hits_i]), np.array([calls_i]), agg["adaptive_prior"])
+                    row.update(learned_hit=round(float(lr["hit_rate"][i]), 4),
+                               learned_calls=round(calls_i, 1), adaptive_mult=round(a, 4),
+                               p_better_than_coinflip=round(float(_phi((mean - 0.5) / np.sqrt(np.maximum(var, 1e-18)))[0]), 4))
+                moves = [mv for mv in ev.tuned.get(comp.id, []) if mv[0] <= i]
+                if moves:
+                    row.update(tuned_params=dict(moves[-1][1]), tuned_moves=len(moves),
+                               tuned_since=int(ev.bars.ts[moves[-1][0]]))
+                vote = s * (1.0 if a >= 0 else -1.0)
                 row.update(status="scored", score=round(s, 4), regime_mult=m,
-                           effective_weight=round(entry["weight"] * m, 4),
-                           vote="up" if s > 0 else "down" if s < 0 else "none")
+                           effective_weight=round(entry["weight"] * m * abs(a), 4),
+                           vote="up" if vote > 0 else "down" if vote < 0 else "none",
+                           inverted=a < 0)
             else:
                 row["status"] = "unavailable" if (comp.needs or comp.forward_only) else "warming up"
         if catalogue:
@@ -1325,7 +1570,8 @@ def explain(ev: Evaluation, i: int = -1, catalogue: bool = False) -> dict[str, A
     call = int(ev.indication[i])
     lc = cfg["components"]["trend_lifecycle"]["params"]
     cp = cfg["components"]["cycle_phase"]["params"]
-    agree = sum(r["effective_weight"] for r in scored if math.isfinite(comp) and r["score"] * comp > 0)
+    agree = sum(r["effective_weight"] for r in scored
+                if math.isfinite(comp) and r["score"] * (-1 if r.get("inverted") else 1) * comp > 0)
     weight = sum(r["effective_weight"] for r in scored)
     return {
         "bar_ts": int(ev.bars.ts[i]),
@@ -1340,6 +1586,7 @@ def explain(ev: Evaluation, i: int = -1, catalogue: bool = False) -> dict[str, A
         "cycle_phase": str(cycle_phase(ev.bars, cp)[0][i]),
         "blocked_by": [g for g, v in ev.gates.items() if bool(v[i])],
         "entry": agg["entry"],
+        "adaptive": bool(agg["adaptive"]),
         "round_trip_bps": round_trip_bps(cfg["execution"]["fee_bps"], cfg["execution"]["slippage_bps"]),
         "components": rows,
     }

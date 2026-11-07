@@ -38,6 +38,7 @@ order path.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -68,6 +69,10 @@ HYPERLIQUID_INFO = "https://api.hyperliquid.xyz/info"
 NEWS_FEEDS = ("https://www.coindesk.com/arc/outboundfeeds/rss/", "https://cointelegraph.com/rss")
 USER_AGENT = "soltui-compound/1.0 (read-only research)"
 LIVE_BARS = 600
+# With adaptive weighting on, the fetched bars give each metric its track record even before the
+# forward ledger has any history. Fetch up to the whole record window (two weeks = 4,032 bars,
+# 14 Coinbase requests).
+ADAPTIVE_LIVE_BARS = 4032
 HTTP_TIMEOUT = 15
 
 # Names a headline must contain (case-insensitive, word-bounded) to count for an asset.
@@ -393,6 +398,44 @@ def _append(asset: str, rows: Sequence[Mapping[str, Any]]) -> None:
         fh.write("".join(json.dumps(r, sort_keys=True, allow_nan=False) + "\n" for r in rows))
 
 
+def component_sig(cid: str, params: Mapping[str, Any]) -> str:
+    """Short hash of one metric's parameters. A learned track record only carries over between
+    calls whose metric was computed the same way."""
+    text = json.dumps({"id": cid, "params": dict(params)}, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha1(text.encode()).hexdigest()[:10]
+
+
+def ledger_seed(ledger: Sequence[Mapping[str, Any]], cfg: Mapping[str, Any],
+                window_start: int) -> dict[str, list[tuple[int, float, float]]]:
+    """Resolved forward calls made BEFORE the scored bars, per metric, as (k, hit, call).
+
+    k is the call's bar index relative to the first scored bar (k < 0). Calls inside the scored
+    bars are counted again by `scorecard.adaptive_counts` from the bars themselves, so only
+    earlier ones are taken, and only when the metric's settings then match its settings now.
+    Calls older than the record window are left out; adaptive_counts expires the rest on time.
+    """
+    agg = cfg["aggregate"]
+    entry = float(agg["entry"])
+    window = int(agg["adaptive_window"])
+    outcome = {r["id"]: float(r["ret_bps"]) for r in ledger if r.get("type") == "resolve" and "ret_bps" in r}
+    sigs = {cid: component_sig(cid, e["params"]) for cid, e in cfg["components"].items()}
+    seed: dict[str, list[tuple[int, float, float]]] = {}
+    seen: set[str] = set()
+    for call in ledger:
+        if call.get("type") != "call" or call.get("id") in seen or call.get("id") not in outcome:
+            continue
+        seen.add(call["id"])
+        k = (int(call["bar_ts"]) - window_start) // 300
+        ret = outcome[call["id"]]
+        if k >= 0 or k + 1 < -window or ret == 0:
+            continue
+        for cid, s in (call.get("scores") or {}).items():
+            if s is None or abs(s) < entry or (call.get("sigs") or {}).get(cid) != sigs.get(cid):
+                continue
+            seed.setdefault(cid, []).append((k, 1.0 if (s > 0) == (ret > 0) else 0.0, 1.0))
+    return seed
+
+
 def _needs(cfg: Mapping[str, Any], *ids: str) -> bool:
     return any(cfg["components"][i]["enabled"] for i in ids)
 
@@ -403,16 +446,20 @@ def live_inputs(asset: str, cfg: Mapping[str, Any], events: Sequence[Mapping[str
                 ledger: Sequence[Mapping[str, Any]] = ()) -> tuple[sc.Bars, dict[str, Any], dict[str, Any]]:
     """(bars, aux, ctx snapshot) for scoring the latest closed bar."""
     asset = _asset(asset)
-    raw = fetch_closed_candles(asset, now=now, get=get)
+    agg = cfg["aggregate"]
+    n_bars = max(LIVE_BARS, min(ADAPTIVE_LIVE_BARS, int(agg["adaptive_window"]))) if agg["adaptive"] else LIVE_BARS
+    raw = fetch_closed_candles(asset, now=now, get=get, bars=n_bars)
     closes_all = dict(zip(raw["ts"].astype(int).tolist(), raw["close"].tolist(), strict=True))
     segs = sc.contiguous_segments(raw["ts"])
     a, b = segs[-1]  # score the most recent contiguous run only: indicators restart at a gap
     bars = sc.Bars.from_mapping({k: v[a:b] for k, v in raw.items()})
     aux: dict[str, Any] = {"events": list(events), "live": {}}
+    if agg["adaptive"]:
+        aux["adaptive_seed"] = ledger_seed(ledger, cfg, int(bars.ts[0]))
     notes: dict[str, Any] = {}
     if _needs(cfg, "btc_lead") and asset != "BTC":
         try:
-            ref = fetch_closed_candles("BTC", now=now, get=get)
+            ref = fetch_closed_candles("BTC", now=now, get=get, bars=n_bars)
             m = dict(zip(ref["ts"].tolist(), ref["close"].tolist(), strict=True))
             aux["btc_close"] = np.array([m.get(int(t), np.nan) for t in bars.ts])
         except CompoundError as exc:
@@ -492,6 +539,9 @@ def forward_tick(asset: str, *, now: float | None = None, **fetchers: Any) -> di
             "round_trip_bps": x["round_trip_bps"], "recorded_at": stamp,
             "scores": {r["id"]: r.get("score") for r in x["components"]
                        if r["kind"] == "score" and r["enabled"]},
+            "sigs": {r["id"]: component_sig(r["id"], r["params"]) for r in x["components"]
+                     if r["kind"] == "score" and r["enabled"]},
+            "adaptive": {r["id"]: r.get("adaptive_mult") for r in x["components"] if "adaptive_mult" in r},
         })
     # Resolve against every fetched bar, not only the newest contiguous run: a call made just
     # before a feed gap still has its next bar on the other side of an older gap.
@@ -733,9 +783,11 @@ def _print_signal(x: Mapping[str, Any]) -> None:
         if not r["enabled"]:
             continue
         tail = r.get("score", r.get("detail", ""))
+        if "learned_hit" in r:
+            tail = f"{tail} learned {r['learned_hit']:.1%}/{r['learned_calls']:.0f} x{r['adaptive_mult']:+.3f}"
         if r["kind"] == "gate":
             tail = "BLOCK" if r.get("blocked") else "pass"
-        print(f"  {r['id']:<20} {r['status']:<11} {tail!s:<8} w={r['weight']:<4} {r['family']}/{r['style']}")
+        print(f"  {r['id']:<20} {r['status']:<11} {tail!s:<36} w={r['weight']:<4} {r['family']}/{r['style']}")
     for k, v in (x.get("notes") or {}).items():
         print(f"  note {k}: {v}")
 

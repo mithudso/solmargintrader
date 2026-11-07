@@ -171,6 +171,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#compound-forward": "compound.forward_tick",
     "#compound-auto": "compound.forward_tick",
     "#compound-refresh": "compound.forward_status",
+    "#compound-adopt": "compound.save",
 }
 
 class GlossaryTable(DataTable):
@@ -736,6 +737,7 @@ class SolTuiApp(App):
                 yield Button("Toggle on/off", id="compound-toggle")
                 yield Button("Apply edits", variant="primary", id="compound-apply")
                 yield Button("Reset defaults", id="compound-reset")
+                yield Button("Adopt tuned settings", id="compound-adopt")
             with Horizontal(classes="form-row"):
                 yield Button("Signal now", variant="success", id="compound-signal")
                 yield Button("Backtest selected", variant="warning", id="compound-backtest")
@@ -1239,6 +1241,8 @@ class SolTuiApp(App):
     def _compound_setup(self) -> None:
         self._compound_cfg: dict[str, Any] = sc.default_config()
         self._compound_live: dict[str, str] = {}
+        self._compound_learned: dict[str, str] = {}
+        self._compound_tuned: dict[str, dict[str, Any]] = {}
         self._compound_bt: dict[str, str] = {}
         self._compound_fwd: dict[str, str] = {}
         self._compound_auto = False
@@ -1246,7 +1250,7 @@ class SolTuiApp(App):
         table = self.query_one("#compound-table", GlossaryTable)
         table.cursor_type = "row"
         for label in ("on", "component", "family", "style", "weight", "parameters", "live score",
-                      "bt oos hit", "fwd hit (n)"):
+                      "learned hit (n)", "tuned to", "bt oos hit", "fwd hit (n)"):
             table.add_column(label, key=label)
         results = self.query_one("#compound-results", GlossaryTable)
         results.cursor_type = "row"
@@ -1280,6 +1284,9 @@ class SolTuiApp(App):
             name = comp.id + (" (live only)" if comp.forward_only else "")
             table.add_row("on" if entry["enabled"] else "off", name, comp.family, comp.style,
                           f"{entry['weight']:g}", params, self._compound_live.get(comp.id, ""),
+                          self._compound_learned.get(comp.id, ""),
+                          " ".join(f"{k}={v:g}" for k, v in self._compound_tuned.get(comp.id, {}).items()
+                                   if entry["params"].get(k) != v),
                           self._compound_bt.get(comp.id, ""), self._compound_fwd.get(comp.id, ""),
                           key=comp.id)
         if table.row_count:
@@ -1289,7 +1296,12 @@ class SolTuiApp(App):
         self.query_one("#compound-agg", Input).placeholder = (
             f"entry={agg['entry']:g} exit={agg['exit']:g} min_coverage={agg['min_coverage']:g} "
             f"dedupe_families={agg['dedupe_families']} regime_weighting={agg['regime_weighting']} "
-            f"allow_short={agg['allow_short']} leverage={ex['leverage']:g} fee_bps={ex['fee_bps']:g} "
+            f"allow_short={agg['allow_short']} adaptive={agg['adaptive']} "
+            f"adaptive_window={agg['adaptive_window']} adaptive_prior={agg['adaptive_prior']:g} "
+            f"adaptive_halflife={agg['adaptive_halflife']} "
+            f"adaptive_flip={agg['adaptive_flip']} tune={agg['tune']} tune_confidence={agg['tune_confidence']:g} "
+            f"tune_min_calls={agg['tune_min_calls']:g} tune_step={agg['tune_step']:g} "
+            f"tune_cooldown={agg['tune_cooldown']} leverage={ex['leverage']:g} fee_bps={ex['fee_bps']:g} "
             f"slippage_bps={ex['slippage_bps']:g}")
 
     @on(DataTable.RowHighlighted, "#compound-table")
@@ -1347,6 +1359,18 @@ class SolTuiApp(App):
         self._compound_save(patch, f"{cid} and aggregate settings" if agg else cid)
         self.query_one("#compound-agg", Input).value = ""
 
+    @on(Button.Pressed, "#compound-adopt")
+    def _compound_adopt(self) -> None:
+        """Save the settings tuning moved to (from the last Signal now) as the new base settings."""
+        status = self.query_one("#compound-status", Static)
+        patch = {cid: {"params": p} for cid, p in self._compound_tuned.items()
+                 if p != self._compound_cfg["components"][cid]["params"]}
+        if not patch:
+            status.update("nothing to adopt: run Signal now with tune=1; no metric has moved yet")
+            return
+        self._compound_save({"components": patch}, f"tuned settings for {', '.join(sorted(patch))}")
+        self._compound_tuned.clear()
+
     @on(Button.Pressed, "#compound-reset")
     def _compound_reset(self) -> None:
         env = self._call("compound.reset")
@@ -1394,9 +1418,16 @@ class SolTuiApp(App):
             f"regime {r['regime']} · trend stage {r['trend_stage']} · cycle phase {r['cycle_phase']} · "
             f"round trip {r['round_trip_bps']} bps · gates blocking: {blocked}"))
         self._compound_live = {}
+        self._compound_learned = {}
+        self._compound_tuned = {}
         for row in r["components"]:
+            if "learned_hit" in row:
+                self._compound_learned[row["id"]] = (
+                    f"{row['learned_hit']:.1%} ({row['learned_calls']:.0f}) x{row['adaptive_mult']:+.2f}")
+            if row.get("tuned_params"):
+                self._compound_tuned[row["id"]] = row["tuned_params"]
             if row["status"] == "scored":
-                self._compound_live[row["id"]] = f"{row['score']:+.2f}"
+                self._compound_live[row["id"]] = f"{row['score']:+.2f}" + (" inv" if row.get("inverted") else "")
             elif row["kind"] == "gate" and row["enabled"]:
                 self._compound_live[row["id"]] = "BLOCK" if row.get("blocked") else "pass"
             elif row["enabled"]:

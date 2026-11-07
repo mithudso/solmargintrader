@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 18
-Delta: v17 to v18; compound five-minute scorecard, forward tester, skill and full-suite command.
+Version: 22
+Delta: v21 to v22; adaptive weights, Bayesian setting moves and a two-week record cap (v19 is the hourly index sweep).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -133,4 +133,22 @@ Read this file /Users/mitch/dev/solmargintrader/5minleveragestrategies.json and 
 
 ```text
 Set the idle indexer to do an index sweep once an hour even if not idle.
+```
+
+## v20 - 2026-11-07 (adaptive compound weights)
+
+```text
+What if we set each metric in the compound set and then multiplied it by the percent number of times it's right. And then every time it makes a prediction that percentage count is updated so over time it will naturally favor the metrics that are most often correct without a large number of manual steps.
+```
+
+## v21 - 2026-11-07 (Bayes and moving settings)
+
+```text
+And then every time a metric is wrong you could apply bayes theorem to it and reduce its priors if necessary, but also do a calculation to see what it would have to be to be correct and move the settings in that direction.
+```
+
+## v22 - 2026-11-07 (cap the counted record)
+
+```text
+ The number of counted responses will need to have a cap so that in 5 months a wrong  choice doesn't change its weights so small an amount it's meaningless. I'm not sure how long to make it though. Let's set it for 2 weeks and then we can dial it back
 ```
