@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 23
-Delta: v22 to v23; wallet monitoring from xpubs and addresses (Settings fields, UTXO/ETH scans, snapshots, hourly LaunchAgent, extension 0.2.1 button).
+Version: 25
+Delta: v24 to v25; grid evidence audited, full SolTUI help implemented and local acceptance passed.
 
 ## v1 - 2026-11-06
 
@@ -250,3 +250,19 @@ Completed: `soltui/hdwallet.py` (BIP32 public derivation, Base58Check, bech32, p
 Verification: soltui suite 669 tests, extension 313, check_docs agrees. Derivation checked on BIP32 vectors 1 and 2 and the BIP84 zpub vector. Live scan: Dogecoin read partial (BlockCypher 429); Base token discovery is partial (Blockscout blocked).
 
 Remaining: none for this request beyond the open partials above.
+
+## v24 - 2026-11-07 (Grid results and SolTUI help)
+
+Target: answer grid profitability from saved results, distinguish exposure grid from resting ladder, and expand hover help across all fifteen SolTUI tabs with plain definitions and examples. Tasks TASK-799/800/801. Private worktree /Users/mitch/dev/solmargintrader-wt-help-01a1b575, branch feat/soltui-help-01a1b575 at ad6fe08. Preserve shared dirty checkout, unrelated worktrees, wallet files and live daemon. Existing glossary only covers headers; Queue and Liquidity tables bypass it. Add cell hover, specific controls/settings help, and F1 scrollable/searchable definitions. Archived grid CSV/card is from August and predates November engine corrections; verify data before claiming current profitability. The stele-search agent failed because gpt-5.4-mini is unsupported with this account; read its installed instructions and fetched named nodes directly. Remaining: validate results, implement help, UI regression and live acceptance, documentation/index updates, commit/PR/CI/merge.
+
+## v25 - 2026-11-07 (Grid evidence and SolTUI help accepted locally)
+
+Completed: fresh resting-ladder runs on engine ad6fe083 and the existing 1,875 daily SOL bars (2021-06-17 to 2026-08-04). research/results/grid_review_20261107.json binds configuration, costs and data SHA256; research/GRID-REVIEW.md explains it. Static account return +32.10% on USD144 (net USD46.23) versus holding +88.10%. Eight independent reset/close periods: five positive, median full-account +7.67%, worst -34.92%. These are period returns, not annual/monthly or a continuous recenter strategy. Costs are 6 bps fee plus 2 bps slippage per fill, about16bps per roundtrip; zero unborrowed spot carry. USD72 is a nominal rung budget, not measured deployed equity. Independent research-contract-auditor reproduced all9runs and accepted the report. The archived August CSV predates accounting fixes; qualified its card and graph note KNOW-642, and recorded KNOW-803.
+
+Help: soltui/help.py centralizes plain-language terms, every displayed signal parameter, controls/settings and all15tabs. GlossaryTable now explains headers and actual cells, recognized strategy rows and context-specific kinds; Queue/Liquidity tables use it. soltui/help_screen.py supplies F1 searchable/scrollable help with focus return and plain-text rendering. Persistent hint tells users how to discover it. Existing dry-run, worker, editor, wallet and liquidity controls are unchanged.
+
+Verification: focused10tests passed, final7newfunctionaltests passed, fullSolTUI676tests passed with1skip in341.573seconds. Tests exercise everytab/control/column, realcellhover/leave, allsignalparams/LPcolumns, overloadedkind, F1frominput/table, searchnomatch, scroll at80x24 and focus/value preservation. Ruff on newmodules/tests and whitespace checks pass. research/verify_numbers.py verified1084archivedfigures (a transcription check, not a current-engine performance gate).
+
+Independent live-acceptance-verifier opened isolated textual-serve browser, confirmed visiblehint, actualfeebpshover example, F1gridsearch, PageDownscroll and Escapereturn. Frozen SHA256: tui a86e9636e34464138db113e0eb441cc1bfa2278abf13ca7ec2d0eb7d2cb92e75; help89868eae429c70eb39416f31ed5376a21a649fd5a485a6ac1720b0f53da8b2b6; help_screen82f1a1f4794b0afdd7f9e534478e55b93e9decb77f68bf330297a9e21015a8bb. Its server/browser areclosed; existing userTUI PID65485 waspreserved. Screenshots are outsideGit under /var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/soltui-help-live-fk3gu963/screenshots/.
+
+Remaining: commit source/docs so check_docs can discover newly committed testfile; regenerate/check offlineindexes; finalPR/CI/merge and remotecontentverification. Then sync default checkout only if safe and open a fresh console to load new code, preserving any old console draft. No filter, recenter, execution or live-profitability improvement was implemented or claimed. TASK-801 tracks delivery.

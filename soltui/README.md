@@ -78,6 +78,22 @@ indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_la
 
 ## The tabs
 
+Hover any field, button, table heading or table value for plain-language help.
+The definitions explain the unit, give an example and name the main limitation.
+This includes the Queue and Liquidity tables, signal parameters and public-wallet
+settings. Indicator and strategy rows also explain their trading hypothesis.
+
+Press **F1** anywhere, including inside an input or the source editor, to open
+the searchable glossary with help for the current control or selected column.
+Search for terms such as **grid**, **Sharpe**, **CPCV**, **bps**, **APR** or **LVR**.
+Use Tab to move to the help text, Page Up/Page Down or the mouse wheel to scroll,
+and Esc to close it and return to the same control. Long explanations remain
+available here even when a hover tooltip is clipped by a small terminal.
+
+The glossary distinguishes the registered `grid` exposure staircase from the
+extension's resting-order ladder. Closed winning grid cycles can coexist with
+larger open losses; read total net account equity as well as realized P&L.
+
 | Tab | What it does |
 |---|---|
 | **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry, and the wallets to watch: public Solana, Base and Ethereum addresses, and extended **public** keys (`btc_xpub`, `ltc_xpub`, `doge_xpub`) for Bitcoin, Litecoin and Dogecoin. Each is validated (Base58Check and version bytes for an xpub); an `xprv`, a WIF key, a raw 64-hex string or a Solana secret-key array is refused with a message that private keys do not belong in settings, and the message never repeats the value. An xpub is shown as a short prefix everywhere (`settings.get`, the TUI, the API) and the config file is mode 600. A read-only *signing key source* row shows whether `~/.ssh/wallet.private` (the EVM, Ethereum/Base, key) and `~/.ssh/solana.private` (the Solana key) exist and are mode 600, by `stat` alone. **There is no field that accepts a private key.** Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
