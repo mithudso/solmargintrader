@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import unittest
+from unittest import mock
 
 import numpy as np
 
@@ -169,13 +170,35 @@ class ConfigTests(unittest.TestCase):
         cfg = sc.normalise_config({"components": {"retired_metric": {"enabled": True}}})
         self.assertNotIn("retired_metric", cfg["components"])
 
-    def test_relationship_errors_surface_as_component_errors_not_crashes(self) -> None:
+    def test_cross_parameter_rules_are_refused_when_saved(self) -> None:
+        for cid, params in (("ema_cross", {"fast": 30, "slow": 20}), ("macd", {"fast": 26, "slow": 26}),
+                            ("trend_lifecycle", {"fast": 40}), ("fib_pullback", {"zone_lo": 0.7}),
+                            ("htf_trend", {"tf_minutes": 62})):
+            with self.subTest(component=cid), self.assertRaises(sc.ScorecardError) as cm:
+                sc.normalise_config({"components": {cid: {"params": params}}})
+            self.assertIn(cid, str(cm.exception))
+
+    def test_an_errored_score_lowers_coverage_and_an_errored_gate_blocks(self) -> None:
+        b = synthetic(400)
         cfg = sc.default_config()
-        cfg["components"]["ema_cross"]["params"].update(fast=30, slow=20)
-        ev = sc.evaluate(synthetic(400), cfg)
-        self.assertIn("ema_cross", ev.errors)
-        row = next(r for r in sc.explain(ev)["components"] if r["id"] == "ema_cross")
-        self.assertEqual(row["status"], "error")
+        for cid, entry in cfg["components"].items():
+            entry["enabled"] = cid in ("ema_cross", "btc_lead")
+        cfg["aggregate"]["min_coverage"] = 0.0
+        ev = sc.evaluate(b, cfg, {"btc_close": np.ones(10)})  # misaligned -> btc_lead errors
+        self.assertIn("btc_lead", ev.errors)
+        self.assertAlmostEqual(float(np.nanmax(ev.coverage)), 1.0 / 1.5)
+        broken = sc.Component("gate_broken", "broken", "gate", "gate", "gate", (),
+                              lambda bars, p, aux: (_ for _ in ()).throw(sc.ScorecardError("boom")),
+                              "", "", "")
+        with mock.patch.object(sc, "COMPONENTS", sc.COMPONENTS + (broken,)), \
+                mock.patch.dict(sc.BY_ID, {"gate_broken": broken}):
+            cfg2 = sc.default_config()
+            cfg2["components"]["gate_broken"] = {"enabled": True, "weight": 1.0, "params": {}}
+            with mock.patch.object(sc, "normalise_config", lambda c: c):
+                ev2 = sc.evaluate(b, cfg2)
+        self.assertTrue(ev2.blocked.all())
+        self.assertFalse(ev2.indication.any())
+        self.assertIn("gate_broken", sc.explain(ev2)["blocked_by"])
 
     def test_standalone_turns_off_every_other_component_and_gate(self) -> None:
         solo = sc.standalone_config(sc.default_config(), "rsi")

@@ -1408,6 +1408,10 @@ class SolTuiApp(App):
         results = self.query_one("#compound-results", GlossaryTable)
         results.clear()
         self._compound_bt = {}
+        window_note = ""
+        if env["ok"] and env["result"]["run_id"]:
+            window_note = (f"{env['result']['configurations_on_this_oos_window']} configurations scored on "
+                           "this out-of-sample window so far (the multiple-testing denominator). ")
         if env["ok"]:
             for row in env["result"]["rows"]:
                 results.add_row(
@@ -1431,6 +1435,7 @@ class SolTuiApp(App):
                     self._compound_fwd[cid] = f"{_pct(tally['hit_rate'])} ({tally['decided']})"
             c, u = f["compound"], f["compound_ungated"]
             summary.update(Text(
+                window_note +
                 f"Forward test {f['asset']}: {f['calls_recorded']} bars recorded, {f['resolved']} resolved, "
                 f"{f['pending']} pending. Compound: {c['decided']} calls, hit {_pct(c['hit_rate'])}, "
                 f"z {_num(c['z_vs_coinflip'])}, net/call {_num(c['net_bps_per_call_if_one_bar'])} bps. "

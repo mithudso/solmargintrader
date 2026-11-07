@@ -30,7 +30,10 @@ forward test, metric by metric and combined. Nothing here places an order.
 4. **Threshold.** |composite| ≥ `entry` (0.25) calls UP or DOWN. A held position stays on while
    the composite keeps its sign above `exit` (0.10): hysteresis, because every flip pays a
    round trip.
-5. **Gate.** Any enabled gate that blocks forces FLAT and is named in the call.
+5. **Gate.** Any enabled gate that blocks forces FLAT and is named in the call. A gate that
+   cannot be evaluated blocks (fails closed); a score that cannot be evaluated counts as
+   undefined and lowers coverage. Cross-parameter mistakes (an EMA "fast" span not below "slow",
+   a Fibonacci zone upside down) are refused when saved, not discovered at scoring time.
 
 ## Metrics
 
@@ -69,8 +72,8 @@ them.
   your events file), a shock detector for unscheduled news (`gate_shock`: range or volume far
   outside normal), and an optional live headline gate (`gate_news`, CoinDesk and Cointelegraph
   RSS, keyword match). Headline *sentiment* is not scored: there is no timestamped archive to
-  test it on, so it could only be a guess presented as a number. An enabled news gate whose
-  feeds are unreachable blocks the call (fails closed).
+  test it on, so it could only be a guess presented as a number. An enabled news gate blocks
+  the call when any of its feeds is unreachable (fails closed).
 * **Lifecycle stage.** Two kinds are scored. The *trend's* lifecycle (`trend_lifecycle`: bars
   since the EMAs crossed and extension in ATRs; exhausted trends get faded) and the *market
   cycle* phase (`cycle_phase`, a Wyckoff-style read of the last day). A *token's* lifecycle
@@ -122,6 +125,12 @@ that cannot be traded. Jupiter fills at the oracle price, which has no bounce. (
 consecutive bars overlap, so the z-scores overstate independence. (c) 1,420 configurations were
 tried on one 30-day window; the best few are expected to look good by chance. Thirty days is
 one regime. Run the full suite (a year of 5m bars) before trusting any of this.
+
+**Every sweep looks at the same out-of-sample slice.** Ranking on OOS keeps in-sample fitting
+out of the leaderboard, but each new run that is ranked on the same slice spends it again. So
+`compound.results` (and the tab, and `python3 -m soltui.compound results`) reports how many
+configurations have been scored on that exact OOS window across all runs. That number, not one
+run's count, is the multiple-testing denominator. A fresh fetch moves the window and resets it.
 
 ## Commands
 

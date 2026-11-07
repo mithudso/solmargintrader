@@ -1030,6 +1030,17 @@ EXECUTION_SPECS: tuple[ParamSpec, ...] = (
 )
 
 
+# Cross-parameter rules, checked when a config is saved, so a bad pair is refused at the form
+# instead of silently disabling a component at evaluation time.
+RELATIONS: dict[str, tuple[tuple[str, str, str], ...]] = {
+    "ema_cross": (("fast", "slow", "fast must be below slow"),),
+    "macd": (("fast", "slow", "fast must be below slow"),),
+    "trend_continuation": (("fast", "slow", "fast must be below slow"),),
+    "trend_lifecycle": (("fast", "slow", "fast must be below slow"),),
+    "fib_pullback": (("zone_lo", "zone_hi", "zone_lo must be below zone_hi"),),
+}
+
+
 def default_config() -> dict[str, Any]:
     """Every component with its default switch, weight and parameters."""
     return {
@@ -1085,6 +1096,13 @@ def normalise_config(raw: Mapping[str, Any] | None) -> dict[str, Any]:
             if name not in known:
                 raise ScorecardError(f"{section}: unknown setting {name!r}; known: {', '.join(known)}")
             cfg[section][name] = known[name].coerce(value)
+    for cid, rules in RELATIONS.items():
+        params = cfg["components"][cid]["params"]
+        for a, b, why in rules:
+            if not params[a] < params[b]:
+                raise ScorecardError(f"{cid}: {why} (got {a}={params[a]:g}, {b}={params[b]:g})")
+    if cfg["components"]["htf_trend"]["params"]["tf_minutes"] % 5:
+        raise ScorecardError("htf_trend: tf_minutes must be a multiple of 5")
     agg = cfg["aggregate"]
     if agg["exit"] > agg["entry"]:
         raise ScorecardError("aggregate: exit must not exceed entry")
@@ -1175,7 +1193,11 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
         try:
             values = comp.fn(bars, dict(entry["params"]), aux_)
         except ScorecardError as exc:
+            # Never drop an enabled component silently: an errored gate BLOCKS (fails closed)
+            # and an errored score counts as undefined, which lowers coverage.
             errors[comp.id] = str(exc)
+            if comp.kind == "gate":
+                gates[comp.id] = np.ones(n, dtype=bool)
             continue
         values = np.asarray(values)
         if values.shape != (n,):
@@ -1189,7 +1211,8 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     num = np.zeros(n)
     den = np.zeros(n)
     present = np.zeros(n)
-    total = sum(cfg["components"][c]["weight"] for c in scores) or 0.0
+    failed_scores = [c for c in errors if BY_ID[c].kind == "score"]
+    total = sum(cfg["components"][c]["weight"] for c in (*scores, *failed_scores)) or 0.0
     by_family: dict[str, list[str]] = {}
     for cid in scores:
         by_family.setdefault(BY_ID[cid].family, []).append(cid)
@@ -1275,6 +1298,8 @@ def explain(ev: Evaluation, i: int = -1, catalogue: bool = False) -> dict[str, A
                                "params": dict(entry["params"]), "forward_only": comp.forward_only}
         if comp.id in ev.errors:
             row["status"], row["detail"] = "error", ev.errors[comp.id]
+            if comp.kind == "gate":
+                row["blocked"] = True
         elif not entry["enabled"]:
             row["status"] = "off"
         elif comp.kind == "gate":
@@ -1313,7 +1338,7 @@ def explain(ev: Evaluation, i: int = -1, catalogue: bool = False) -> dict[str, A
         "regime": regime,
         "trend_stage": str(lifecycle_labels(ev.bars, lc)[i]),
         "cycle_phase": str(cycle_phase(ev.bars, cp)[0][i]),
-        "blocked_by": [r["id"] for r in rows if r.get("status") == "blocking"],
+        "blocked_by": [g for g, v in ev.gates.items() if bool(v[i])],
         "entry": agg["entry"],
         "round_trip_bps": round_trip_bps(cfg["execution"]["fee_bps"], cfg["execution"]["slippage_bps"]),
         "components": rows,

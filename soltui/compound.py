@@ -172,7 +172,10 @@ def merge_config(base: Mapping[str, Any], patch: Mapping[str, Any]) -> dict[str,
 
 def save_state(config_patch: Mapping[str, Any] | None = None,
                events: Sequence[Any] | None = None, reset: bool = False) -> dict[str, Any]:
-    state = {"config": sc.default_config(), "events": []} if reset else load_state()
+    state = load_state()
+    if reset:
+        # Reset restores metrics and settings; the scheduled-event list is data, kept.
+        state["config"] = sc.default_config()
     if config_patch:
         state["config"] = merge_config(state["config"], config_patch)
     if events is not None:
@@ -357,7 +360,8 @@ def headline_hits(asset: str, window_min: float, *, now: float | None = None,
                 continue
             if pattern.search(title):
                 hits.append({"ts": int(ts), "title": title[:200], "feed": url})
-    if failures and len(failures) == len(NEWS_FEEDS):
+    if failures:
+        # One dead feed must not read as "no headlines": the gate fails closed.
         raise CompoundError("; ".join(failures))
     return hits
 
@@ -400,6 +404,7 @@ def live_inputs(asset: str, cfg: Mapping[str, Any], events: Sequence[Mapping[str
     """(bars, aux, ctx snapshot) for scoring the latest closed bar."""
     asset = _asset(asset)
     raw = fetch_closed_candles(asset, now=now, get=get)
+    closes_all = dict(zip(raw["ts"].astype(int).tolist(), raw["close"].tolist(), strict=True))
     segs = sc.contiguous_segments(raw["ts"])
     a, b = segs[-1]  # score the most recent contiguous run only: indicators restart at a gap
     bars = sc.Bars.from_mapping({k: v[a:b] for k, v in raw.items()})
@@ -438,7 +443,7 @@ def live_inputs(asset: str, cfg: Mapping[str, Any], events: Sequence[Mapping[str
         except CompoundError as exc:
             aux["live"]["news_error"] = str(exc)
             notes["news_error"] = str(exc)
-    return bars, aux, {"ctx": ctx, "notes": notes}
+    return bars, aux, {"ctx": ctx, "notes": notes, "closes": closes_all}
 
 
 def signal(asset: str, *, now: float | None = None, **fetchers: Any) -> dict[str, Any]:
@@ -488,7 +493,9 @@ def forward_tick(asset: str, *, now: float | None = None, **fetchers: Any) -> di
             "scores": {r["id"]: r.get("score") for r in x["components"]
                        if r["kind"] == "score" and r["enabled"]},
         })
-    closes = dict(zip(bars.ts.astype(int).tolist(), bars.close.tolist(), strict=True))
+    # Resolve against every fetched bar, not only the newest contiguous run: a call made just
+    # before a feed gap still has its next bar on the other side of an older gap.
+    closes = extra["closes"]
     resolved = {r.get("id") for r in ledger if r.get("type") == "resolve"}
     pending = [r for r in ledger if r.get("type") == "call" and r.get("id") not in resolved]
     n_resolved = 0
@@ -588,8 +595,8 @@ def _run_one(asset: str, label: str, cfg: Mapping[str, Any], events: Sequence[Ma
              run_id: str) -> dict[str, Any]:
     try:
         row = cbt.run_compound(asset, cfg, label=label, events=events, prepared=_prepared(asset))
-    except (cbt.CompoundDataError, sc.ScorecardError, ValueError) as exc:
-        return {"asset": asset, "label": label, "error": str(exc), "run_id": run_id}
+    except Exception as exc:  # noqa: BLE001 - one bad configuration must not sink a sweep
+        return {"asset": asset, "label": label, "error": f"{type(exc).__name__}: {exc}", "run_id": run_id}
     row["run_id"] = run_id
     row["finished_at"] = int(time.time())
     row["config"] = cfg
@@ -650,19 +657,27 @@ def sweep(assets: Sequence[str], *, standalone: bool = True, perturb: bool = Fal
         for label, c in cbt.variants(cfg, standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid):
             jobs.append((a, label, c))
     rows: list[dict[str, Any]] = []
+
+    def keep(row: dict[str, Any], i: int) -> None:
+        # Written as each finishes: an interrupted multi-hour sweep keeps what it computed.
+        rows.append(row)
+        append_results([row])
+        if progress:
+            progress(f"{i}/{len(jobs)} {row['asset']} {row['label']}")
+
     if workers <= 1:
         for i, (a, label, c) in enumerate(jobs, 1):
-            rows.append(_run_one(a, label, c, events, run_id))
-            if progress:
-                progress(f"{i}/{len(jobs)} {a} {label}")
+            keep(_run_one(a, label, c, events, run_id), i)
     else:
         with ProcessPoolExecutor(max_workers=workers) as pool:
-            futs = [pool.submit(_run_one, a, label, c, events, run_id) for a, label, c in jobs]
+            futs = {pool.submit(_run_one, a, label, c, events, run_id): (a, label) for a, label, c in jobs}
             for i, f in enumerate(as_completed(futs), 1):
-                rows.append(f.result())
-                if progress:
-                    progress(f"{i}/{len(jobs)} {rows[-1]['asset']} {rows[-1]['label']}")
-    append_results(rows)
+                try:
+                    row = f.result()
+                except Exception as exc:  # noqa: BLE001 - a crashed worker process
+                    a, label = futs[f]
+                    row = {"asset": a, "label": label, "error": f"{type(exc).__name__}: {exc}", "run_id": run_id}
+                keep(row, i)
     good = [r for r in rows if "error" not in r]
     return {"run_id": run_id, "configurations": len(jobs), "assets": sorted({j[0] for j in jobs}),
             "skipped": skipped, "errors": [r for r in rows if "error" in r][:20],
@@ -695,9 +710,14 @@ def latest_results(asset: str | None = None, top: int = 40) -> dict[str, Any]:
         return {"run_id": None, "rows": [], "leaderboard": []}
     last = rows[-1]["run_id"]
     latest = [r for r in rows if r.get("run_id") == last]
+    # Every run that scored the same bars against the same OOS split has looked at that OOS
+    # slice. The honest multiple-testing denominator for the latest numbers is all of them,
+    # not just this run's count.
+    windows = {(r.get("asset"), r.get("data_hash"), r.get("split_ts")) for r in latest}
+    same_window = sum(1 for r in rows if (r.get("asset"), r.get("data_hash"), r.get("split_ts")) in windows)
     return {"run_id": last, "rows": [summary_row(r) for r in cbt.leaderboard(latest, top=len(latest))],
             "leaderboard": [summary_row(r) for r in cbt.leaderboard(rows, top=top)],
-            "configurations_ever": len(rows)}
+            "configurations_ever": len(rows), "configurations_on_this_oos_window": same_window}
 
 
 # -- CLI -------------------------------------------------------------------------------------
@@ -767,6 +787,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 _print_table({"run_id": out["run_id"], "configurations": len(out["rows"]),
                               "assets": [_asset(args.asset)], "skipped": {}, "rows": out["rows"]},
                              appended=False)
+                print(f"{out['configurations_on_this_oos_window']} configurations have been scored on this "
+                      "out-of-sample window across all runs; that is the multiple-testing denominator.")
         elif args.verb == "backtest":
             out = backtest(args.asset, perturb=args.perturb, aggregate_grid=args.aggregate_grid,
                            progress=lambda s: print(s, file=sys.stderr))

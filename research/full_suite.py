@@ -148,6 +148,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-registry", action="store_true", help="skip the registry sweep")
     ap.add_argument("--no-compound", action="store_true", help="skip the compound 5m sweep")
     ap.add_argument("--keep-results", action="store_true", help="do not archive registry results after a fetch")
+    ap.add_argument("--continue-on-fetch-error", action="store_true",
+                    help="run the sweeps even if a fetch step failed (default: stop before them)")
     ap.add_argument("--plan", action="store_true", help="print the steps and exit")
     args = ap.parse_args(argv)
     if args.skip_fetch and args.fetch_only:
@@ -178,6 +180,14 @@ def main(argv: list[str] | None = None) -> int:
     if not args.skip_fetch:
         assets = listed_only(assets)
         run(fetch_steps(assets, data, args))
+        if failures and not args.continue_on_fetch_error:
+            # Sweeping a partly refreshed cache mixes old and new data and would archive the
+            # previous registry results for nothing. Stop here instead.
+            print("\nA fetch step failed; stopping before the sweeps (nothing archived):")
+            for f in failures:
+                print(f"  - {f}")
+            print("Fix it and re-run, or pass --continue-on-fetch-error.")
+            return 1
     sweeps = sweep_steps(assets, data, args)
     if any(cmd[2] == "soltui.bgworker" for _, cmd in sweeps) and not args.skip_fetch and not args.keep_results:
         dest = archive_registry_results(stamp)

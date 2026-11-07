@@ -139,6 +139,21 @@ class LiveReadTests(TempConfig):
         hits = compound.headline_hits("SOL", 30, now=now, get_text=lambda url: rss)
         self.assertEqual([h["title"] for h in hits], ["Solana validators upgrade"] * len(compound.NEWS_FEEDS))
 
+    def test_one_dead_feed_is_enough_to_fail_closed(self) -> None:
+        def half(url: str) -> str:
+            if url == compound.NEWS_FEEDS[0]:
+                raise urllib.error.URLError("offline")
+            return "<rss><channel></channel></rss>"
+
+        with self.assertRaises(compound.CompoundError):
+            compound.headline_hits("SOL", 30, now=1_800_000_000, get_text=half)
+
+    def test_reset_keeps_the_event_list(self) -> None:
+        compound.save_state({"components": {"rsi": {"weight": 3}}}, events=[{"ts": 1_800_000_000, "title": "CPI"}])
+        state = compound.save_state(reset=True)
+        self.assertEqual(state["config"], sc.default_config())
+        self.assertEqual(state["events"], [{"ts": 1_800_000_000, "title": "CPI"}])
+
     def test_an_enabled_news_gate_fails_closed_when_feeds_are_down(self) -> None:
         compound.save_state({"components": {"gate_news": {"enabled": True}}})
         venue = Venue(now=T0 + 300 * 20 + 10)
@@ -200,6 +215,19 @@ class ForwardLedgerTests(TempConfig):
         self.assertEqual(s["components"]["rsi"]["hit_rate"], round(2 / 3, 4))
         self.assertEqual(s["compound"]["net_bps_per_call_if_one_bar"], round((5.0 - 3.0) / 2 - 16.0, 3))
 
+    def test_a_call_before_a_feed_gap_still_resolves(self) -> None:
+        venue = Venue(now=T0 + 300 * 15 + 10)
+        first = compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post)
+        # A gap two bars after the call puts the resolving bar in an OLDER contiguous run than
+        # the one being scored; resolution must still find it.
+        gap = first["bar_ts"] + 600
+        venue.series["SOL"] = [r for r in venue.series["SOL"] if r[0] != gap]
+        venue.now = T0 + 300 * 19 + 10
+        compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post)
+        ledger = compound.read_ledger("SOL")
+        self.assertTrue(any(r["type"] == "resolve" and r["id"].split(":")[1] == str(first["bar_ts"])
+                            for r in ledger))
+
     def test_a_call_appended_twice_counts_once(self) -> None:
         call = {"type": "call", "id": "SOL:1:h", "bar_ts": T0, "price": 90.0, "call": "UP", "ungated": 1,
                 "composite": 0.4, "config_hash": "h", "entry": 0.25, "round_trip_bps": 16.0, "scores": {}}
@@ -212,6 +240,30 @@ class ForwardLedgerTests(TempConfig):
         with compound.forward_path("SOL").open("a") as fh:
             fh.write('{"type": "resol')
         self.assertEqual(len(compound.read_ledger("SOL")), 1)
+
+
+class SweepTests(TempConfig):
+    def test_one_failing_configuration_does_not_sink_the_sweep(self) -> None:
+        real = compound.cbt.run_compound
+
+        def flaky(asset, cfg, **kw):
+            if kw.get("label") == "only:rsi":
+                raise RuntimeError("boom")
+            return real(asset, cfg, **kw)
+
+        frame = __import__("backtester.tests.test_compound_backtest", fromlist=["frame"]).frame
+        from backtester.tests.test_scorecard import synthetic
+        prepared = compound.cbt.prepare("SOL", bars=frame(synthetic(900)), source="synthetic")
+        with mock.patch.object(compound.cbt, "run_compound", flaky), \
+                mock.patch.object(compound, "_prepared", lambda a: prepared), \
+                mock.patch.object(compound.cbt, "load_bars_5m", lambda a: (prepared["bars"], "synthetic")):
+            out = compound.sweep(["SOL"])
+        self.assertEqual([e["label"] for e in out["errors"]], ["only:rsi"])
+        self.assertIn("RuntimeError: boom", out["errors"][0]["error"])
+        written = compound.read_results()
+        self.assertEqual(len(written), out["configurations"])
+        latest = compound.latest_results("SOL")
+        self.assertEqual(latest["configurations_on_this_oos_window"], out["configurations"] - 1)
 
 
 class CommandTests(TempConfig):
