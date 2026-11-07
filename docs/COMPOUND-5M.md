@@ -97,6 +97,27 @@ data rarely proves one better. A looser bar moves the hit rate by about a point 
 inside the noise, and several bars were tried, which is itself selection. So tuning stays off by default. **Returns stayed negative
 in every row**: a better hit rate does not beat a 16 bps round trip on a 6–9 bps move.
 
+## Every coin, in parallel, each with its own numbers
+
+The compound runs on every Coinbase-listed universe coin: BTC, ETH, SOL, DOGE, ZEC, XRP, BNB, HYPE.
+
+* **Data.** `research/full_suite.py` (or `python3 -m backtester.core.fetch_minutes --all --years 7`)
+  caches 1-minute candles back to each coin's earliest available minute. That is the finest
+  history Coinbase serves; trade-by-trade ticks exist but a single month took days to backfill.
+  The backtest builds 5m bars from those minutes, saves them once per coin as a compact cache,
+  and parallel workers read that cache instead of the multi-million-row minute file.
+* **Own numbers.** Each coin has its own learned record, backtests and forward ledger. It can also
+  have its own settings stacked on the shared ones. Pick the coin at the top of the tab.
+  **Edits apply to** switches between all coins (the shared base) and this coin. Adopt tuned
+  settings always saves to the coin.
+* **Backtest all coins** runs every coin at once in parallel processes, each with its own settings.
+* **Start unattended: all coins** starts one forward-training process per coin, staggered six
+  seconds apart. Closed candles are cached per coin, so after the first tick each coin costs
+  one request per bar: eight coins stay well inside the venue's rate limit. A rate-limit reply
+  (429) is retried with back-off.
+* **Every coin at a glance**: own settings, cached data, latest backtest verdict and hit rate,
+  forward calls and hit rate, paper dollars, and whether its trainer is running.
+
 ## Unattended forward training
 
 **Start unattended training** in the tab starts a separate background process at low priority.

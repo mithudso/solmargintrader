@@ -26,7 +26,8 @@ class FullSuiteTests(unittest.TestCase):
         self.assertEqual(code, 0)
         run.assert_not_called()
         text = out.getvalue()
-        self.assertLess(text.index("fetch SOL 5m"), text.index("registry sweep SOL"))
+        self.assertLess(text.index("fetch 1m candles for SOL, BTC"), text.index("registry sweep SOL"))
+        self.assertIn("backtester.core.fetch_minutes --years 7 --workers 8 --asset SOL --asset BTC", text)
         self.assertIn("soltui.compound sweep --assets SOL,BTC --perturb --aggregate-grid", text)
 
     def test_a_failed_fetch_stops_before_any_sweep_or_archive(self) -> None:
@@ -34,7 +35,7 @@ class FullSuiteTests(unittest.TestCase):
 
         def fake_run(cmd, **kw):
             calls.append(cmd)
-            return SimpleNamespace(returncode=1 if "backtester.core.fetch" in cmd else 0)
+            return SimpleNamespace(returncode=1 if "backtester.core.fetch_minutes" in cmd else 0)
 
         with mock.patch.object(full_suite.subprocess, "run", fake_run), \
                 mock.patch.object(full_suite, "listed_only", lambda a: a), \

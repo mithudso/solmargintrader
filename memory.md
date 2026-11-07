@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 34
-Delta: v33 to v34; compound wallet sizing, click toggle, unattended training, inversion default, new metrics, relations.
+Version: 35
+Delta: v34 to v35; every coin in parallel with its own numbers; full 1m history.
 
 ## v1 - 2026-11-06
 
@@ -346,3 +346,11 @@ Completed: wallet read from soltui Settings solana_address via wallet.scan_solan
 Verification: live wallet scan of the Settings address read $2.29 SOL and sized a call; live unattended start -> one recorded tick -> stop released the lock. Default compound OOS hit static vs learned+invert: BTC 50.3/49.5, DOGE 44.9/55.8, ETH 45.6/52.6, SOL 47.3/51.1, ZEC 48.3/51.1; returns still negative on all five.
 
 Remaining: open Jupiter Perps positions are not read (no documented endpoint); per-regime learned weights; a year of 5m data via research/full_suite.py.
+
+## v35 - 2026-11-07 (every coin in parallel, own numbers, full minute history)
+
+Target: user asked for data as detailed and as far back as possible, backtesting and forward testing on all coins at once in parallel, each coin with its own set of numbers. Stele TASK-825 (Stele MCP disconnected mid-session; writes queued in the outbox). Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-coins, branch feat/compound-all-coins (stacked on PR #64).
+
+Completed: 1m history fetch started for BTC ETH SOL DOGE ZEC XRP BNB HYPE (`fetch_minutes --all --years 7`, main checkout data/). compound state gains per-coin overrides (state["assets"]) stacked on the base; save/reset take asset and scope (all, coin, everything); adopt tuned saves to the coin. materialize_bars caches 5m bars per coin (.npz keyed by source mtimes); workers hold at most two coins. backtest_all and the sweep use each coin's own config. Candle cache per coin (closed bars only) so a tick costs one request; 429/5xx retried. start/stop_unattended_all (staggered 6 s per coin, --offset). overview(); tab coin picker, scope switch, Backtest all coins, Start/Stop all coins, overview table (52 buttons). full_suite fetches 1m history instead of 365 days of 5m.
+
+Remaining: run Backtest all coins once the minute download finishes and report per-coin results; open Jupiter Perps positions still unread.

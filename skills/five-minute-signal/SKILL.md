@@ -1,6 +1,6 @@
 ---
 name: five-minute-signal
-version: "1.3.0"
+version: "1.4.0"
 updated: "2026-11-07"
 description: >-
   Produce and explain an UP / DOWN / FLAT call for the next five-minute bar of a crypto asset
@@ -82,6 +82,12 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
    Always state that a hit rate above 50% is not profit: at 5m the round trip (~16 bps on
    Jupiter) usually exceeds the average move (6–9 bps on BTC/ETH/SOL), so only a call held
    through several bars can pay.
+
+## Several coins
+
+Every coin has its own settings, learned record and ledger: pass `--asset BTC` (etc.) to `signal`,
+`status` and `results`, and compare coins with `python3 -m soltui.compound sweep --assets BTC,ETH,SOL`
+or the tab's overview. Never quote one coin's evidence for another.
 
 ## Things to check that the score cannot
 

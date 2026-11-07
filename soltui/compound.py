@@ -120,20 +120,53 @@ def _asset(asset: str) -> str:
 # -- saved configuration ---------------------------------------------------------------------
 
 
-def load_state() -> dict[str, Any]:
-    """{"config": normalised scorecard config, "events": [...]}. Missing file = defaults."""
+# The coins the compound runs on: every universe coin Coinbase lists candles for.
+COINS = ("BTC", "ETH", "SOL", "DOGE", "ZEC", "XRP", "BNB", "HYPE")
+
+
+def _read_raw() -> dict[str, Any]:
     path = config_path()
-    raw: dict[str, Any] = {}
-    if path.exists():
-        try:
-            raw = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, ValueError) as exc:
-            raise CompoundError(f"unreadable {path}: {exc}") from exc
+    if not path.exists():
+        return {}
     try:
-        cfg = sc.normalise_config(raw.get("config"))
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise CompoundError(f"unreadable {path}: {exc}") from exc
+    return raw if isinstance(raw, dict) else {}
+
+
+def merge_patch(a: Mapping[str, Any], b: Mapping[str, Any]) -> dict[str, Any]:
+    """Deep-merge two partial configs (b wins). Used to stack a coin's own settings on the base."""
+    out = json.loads(json.dumps(a))
+    for k, v in b.items():
+        if isinstance(v, Mapping) and isinstance(out.get(k), Mapping):
+            out[k] = merge_patch(out[k], v)
+        else:
+            out[k] = json.loads(json.dumps(v))
+    return out
+
+
+def load_state(asset: str | None = None) -> dict[str, Any]:
+    """{"config", "base", "events", "overrides", "asset"}.
+
+    Every coin has its own set of numbers: `config` is the shared base with that coin's own
+    overrides stacked on top. Learned weights are per coin anyway (each coin has its own ledger
+    and its own backtest); the overrides are for settings a coin should not share, such as
+    adopted tuned parameters.
+    """
+    raw = _read_raw()
+    path = config_path()
+    try:
+        base = sc.normalise_config(raw.get("config"))
     except sc.ScorecardError as exc:
         raise CompoundError(f"{path}: {exc}") from exc
-    return {"config": cfg, "events": _events(raw.get("events") or [])}
+    overrides = {k: v for k, v in (raw.get("assets") or {}).items() if isinstance(v, Mapping)}
+    a = _asset(asset) if asset else None
+    cfg = base
+    if a and overrides.get(a):
+        cfg = merge_config(base, overrides[a])
+    return {"config": cfg, "base": base, "events": _events(raw.get("events") or []),
+            "overrides": overrides, "asset": a}
 
 
 def _events(raw: Sequence[Any]) -> list[dict[str, Any]]:
@@ -180,17 +213,32 @@ def merge_config(base: Mapping[str, Any], patch: Mapping[str, Any]) -> dict[str,
 
 
 def save_state(config_patch: Mapping[str, Any] | None = None,
-               events: Sequence[Any] | None = None, reset: bool = False) -> dict[str, Any]:
+               events: Sequence[Any] | None = None, reset: bool = False,
+               asset: str | None = None, reset_all: bool = False) -> dict[str, Any]:
+    """Save a partial update to the shared base, or to ONE coin's own settings when `asset` is
+    given. reset clears that coin's own settings (or, without a coin, the base); reset_all also
+    clears every coin's own settings. The event list is data and is never reset."""
+    raw = _read_raw()
     state = load_state()
-    if reset:
-        # Reset restores metrics and settings; the scheduled-event list is data, kept.
-        state["config"] = sc.default_config()
+    base, overrides = state["base"], dict(state["overrides"])
+    a = _asset(asset) if asset else None
+    if reset or reset_all:
+        if a and not reset_all:
+            overrides.pop(a, None)
+        else:
+            base = sc.default_config()
+            if reset_all:
+                overrides = {}
     if config_patch:
-        state["config"] = merge_config(state["config"], config_patch)
-    if events is not None:
-        state["events"] = _events(events)
-    _write_json(config_path(), state)
-    return state
+        if a:
+            merged = merge_patch(overrides.get(a, {}), config_patch)
+            merge_config(base, merged)  # validate the coin's stacked config before saving
+            overrides[a] = merged
+        else:
+            base = merge_config(base, config_patch)
+    ev = _events(events) if events is not None else _events(raw.get("events") or [])
+    _write_json(config_path(), {"config": base, "events": ev, "assets": overrides})
+    return load_state(a)
 
 
 def parse_kv(text: str) -> dict[str, float]:
@@ -258,36 +306,85 @@ def http_text(url: str) -> str:
         return resp.read().decode("utf-8", "replace")
 
 
+def candle_cache_path(asset: str) -> Path:
+    return home() / "candles" / f"{_asset(asset)}.npz"
+
+
+def _load_candle_cache(asset: str) -> dict[int, list[float]]:
+    path = candle_cache_path(asset)
+    if not path.exists():
+        return {}
+    try:
+        with np.load(path, allow_pickle=False) as z:
+            return {int(t): [float(v) for v in row] for t, row in zip(z["ts"], z["rows"], strict=True)}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
+def _save_candle_cache(asset: str, rows: Mapping[int, list[float]], keep: int) -> None:
+    ts = np.array(sorted(rows)[-keep:], dtype="int64")
+    path = candle_cache_path(asset)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.stem + ".tmp.npz")
+    np.savez(tmp, ts=ts, rows=np.array([rows[int(t)] for t in ts], dtype="float64").reshape(-1, 5))
+    os.replace(tmp, path)
+
+
+def _get_with_retry(get: Fetcher, url: str, sleep: Callable[[float], None] = time.sleep) -> Any:
+    """Retry a rate limit (429) or a server error a few times; with every coin ticking at once,
+    a 429 at the 5-minute boundary is expected, not exceptional."""
+    delay = 1.0
+    for attempt in range(4):
+        try:
+            return get(url)
+        except urllib.error.HTTPError as exc:
+            if attempt == 3 or not (exc.code == 429 or exc.code >= 500):
+                raise
+        sleep(delay)
+        delay *= 2
+    return get(url)
+
+
 def fetch_closed_candles(asset: str, *, now: float | None = None, bars: int = LIVE_BARS,
-                         get: Fetcher = http_json) -> dict[str, np.ndarray]:
-    """The last `bars` CLOSED 5m candles from Coinbase, oldest first, with gaps preserved."""
+                         get: Fetcher = http_json, cache: bool = True,
+                         sleep: Callable[[float], None] = time.sleep) -> dict[str, np.ndarray]:
+    """The last `bars` CLOSED 5m candles from Coinbase, oldest first, with gaps preserved.
+
+    Closed candles never change, so they are cached per coin and only the bars after the newest
+    cached one are requested: a tick then costs one request instead of fourteen, which is what
+    lets every coin forward-test at once inside the venue's rate limit.
+    """
     now = time.time() if now is None else now
     product = f"{_asset(asset)}-USD"
     last_closed_start = (int(now) // 300) * 300 - 300
+    need_from = last_closed_start - 300 * (bars - 1)
     rows: dict[int, list[float]] = {}
+    if cache:
+        rows = {t: r for t, r in _load_candle_cache(asset).items() if t >= need_from and t <= last_closed_start}
+    stop_at = max(rows) if rows else need_from - 300
     end = last_closed_start + 300
-    while len(rows) < bars:
-        start = end - 300 * 300
+    while end > stop_at:
+        start = max(end - 300 * 300, stop_at)
         url = (COINBASE_CANDLES.format(product=product)
                + f"?granularity=300&start={_iso(start)}&end={_iso(end)}")
         try:
-            payload = get(url)
+            payload = _get_with_retry(get, url, sleep)
         except (urllib.error.URLError, OSError, ValueError) as exc:
             raise CompoundError(f"coinbase candles for {product}: {exc}") from exc
         if not isinstance(payload, list):
             raise CompoundError(f"coinbase candles for {product}: unexpected reply {str(payload)[:120]}")
-        if not payload:
-            break
         for row in payload:
             # Coinbase row order is [time, low, high, open, close, volume] -- not OHLCV.
             t, lo, hi, op, cl, vol = (float(x) for x in row[:6])
-            if t + 300 <= now and t <= last_closed_start:
+            if t + 300 <= now and need_from <= t <= last_closed_start:
                 rows[int(t)] = [op, hi, lo, cl, vol]
-        end = start
-        if end < last_closed_start - 300 * bars * 2:
+        if not payload and not rows:
             break
+        end = start
     if len(rows) < 50:
         raise CompoundError(f"coinbase returned only {len(rows)} closed 5m bars for {product}")
+    if cache:
+        _save_candle_cache(asset, rows, max(bars, ADAPTIVE_LIVE_BARS))
     ts = np.array(sorted(rows)[-bars:], dtype="int64")
     vals = np.array([rows[t] for t in ts], dtype="float64")
     return {"ts": ts, "open": vals[:, 0], "high": vals[:, 1], "low": vals[:, 2],
@@ -614,7 +711,7 @@ def _wallet_and_size(address: str | None, cfg: Mapping[str, Any], bars: sc.Bars,
 def signal(asset: str, *, now: float | None = None, wallet_address: str | None = None,
            wallet_fetch: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
     """Score the latest closed bar live, explain every component, and size it to the wallet."""
-    state = load_state()
+    state = load_state(asset)
     cfg = state["config"]
     bars, aux, extra = live_inputs(asset, cfg, state["events"], now=now,
                                    ledger=read_ledger(asset), **fetchers)
@@ -630,7 +727,7 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
                  wallet_fetch: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
     """Record the call for the latest closed bar (once per config) and resolve older calls."""
     asset = _asset(asset)
-    state = load_state()
+    state = load_state(asset)
     cfg = state["config"]
     h = sc.config_hash(cfg)
     ledger = read_ledger(asset)
@@ -752,6 +849,7 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
 # -- backtests -------------------------------------------------------------------------------
 
 _PREPARED: dict[str, tuple[tuple[Any, ...], dict[str, Any]]] = {}
+_PREPARED_MAX = 2  # coins held per process: a year of 5m bars is ~30 MB, minute files are not
 
 
 def _data_signature(asset: str) -> tuple[Any, ...]:
@@ -764,13 +862,46 @@ def _data_signature(asset: str) -> tuple[Any, ...]:
     return tuple(p.stat().st_mtime_ns if p.exists() else None for p in paths)
 
 
+def bars_cache_path(asset: str) -> Path:
+    return home() / "bars" / f"{_asset(asset)}_5m.npz"
+
+
+def materialize_bars(asset: str) -> tuple[Any, str]:
+    """5m bars for `asset`, built once from the longest cached series (minute files included)
+    and saved as a compact .npz keyed by the source files' mtimes. Parallel workers read this
+    instead of each re-reading and re-aggregating a multi-million-row minute file."""
+    import pandas as pd
+
+    a = _asset(asset)
+    sig = list(_data_signature(a))
+    path = bars_cache_path(a)
+    if path.exists():
+        try:
+            with np.load(path, allow_pickle=False) as z:
+                if list(z["sig"]) == [str(s) for s in sig]:
+                    df = pd.DataFrame({k: z[k] for k in ("timestamp", "open", "high", "low", "close", "volume")})
+                    return df, str(z["source"])
+        except (OSError, ValueError, KeyError):
+            pass
+    df, source = cbt.load_bars_5m(a)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.stem + ".tmp.npz")
+    np.savez(tmp, sig=np.array([str(s) for s in sig]), source=np.array(source),
+             **{k: df[k].to_numpy() for k in ("timestamp", "open", "high", "low", "close", "volume")})
+    os.replace(tmp, path)
+    return df, source
+
+
 def _prepared(asset: str) -> dict[str, Any]:
     # The tab's process lives for days; without the signature it would keep backtesting the
     # data it first loaded after research/full_suite.py replaced the files.
     sig = _data_signature(asset)
     cached = _PREPARED.get(asset)
     if cached is None or cached[0] != sig:
-        _PREPARED[asset] = (sig, cbt.prepare(asset))
+        df, source = materialize_bars(asset)
+        while len(_PREPARED) >= _PREPARED_MAX:
+            _PREPARED.pop(next(iter(_PREPARED)))
+        _PREPARED[asset] = (sig, cbt.prepare(asset, bars=df, source=source))
     return _PREPARED[asset][1]
 
 
@@ -815,6 +946,14 @@ def read_results() -> list[dict[str, Any]]:
     return out
 
 
+def backtest_all(*, standalone: bool = True, perturb: bool = False, aggregate_grid: bool = False,
+                 workers: int | None = None, progress: Callable[[str], None] | None = None) -> dict[str, Any]:
+    """Every coin with cached data, in parallel processes, each with its own settings."""
+    workers = workers or max(1, min(8, (os.cpu_count() or 2) // 2))
+    return sweep(list(COINS), standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid,
+                 workers=workers, progress=progress)
+
+
 def backtest(asset: str, *, standalone: bool = True, perturb: bool = False, aggregate_grid: bool = False,
              workers: int = 1, progress: Callable[[str], None] | None = None) -> dict[str, Any]:
     """Run the saved config (and its variants) on one asset's cached 5m data; append results."""
@@ -825,18 +964,19 @@ def backtest(asset: str, *, standalone: bool = True, perturb: bool = False, aggr
 def sweep(assets: Sequence[str], *, standalone: bool = True, perturb: bool = False,
           aggregate_grid: bool = False, workers: int = 1,
           progress: Callable[[str], None] | None = None) -> dict[str, Any]:
-    state = load_state()
-    cfg, events = state["config"], state["events"]
-    run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + f"-{sc.config_hash(cfg)}"
+    events = load_state()["events"]
+    run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     jobs = []
     skipped = {}
     for a in assets:
         a = _asset(a)
         try:
-            _prepared(a) if workers <= 1 else cbt.load_bars_5m(a)
+            # Built once here, so the workers read a small cache instead of the minute file.
+            _prepared(a) if workers <= 1 else materialize_bars(a)
         except cbt.CompoundDataError as exc:
             skipped[a] = str(exc).splitlines()[0]
             continue
+        cfg = load_state(a)["config"]  # each coin with its own settings
         for label, c in cbt.variants(cfg, standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid):
             jobs.append((a, label, c))
     rows: list[dict[str, Any]] = []
@@ -884,6 +1024,43 @@ def summary_row(r: Mapping[str, Any]) -> dict[str, Any]:
         "run_id": r.get("run_id"), "oos_bars": f_oos.get("bars"), "split_ts": r.get("split_ts"),
         "to_ts": r.get("to_ts"), "round_trip_bps": f_oos.get("round_trip_bps"),
     }
+
+
+def verdict_word(rows: Sequence[Mapping[str, Any]]) -> str:
+    if not rows:
+        return "not tested"
+    strong = [r for r in rows if r.get("ranked") and (r.get("oos_z") or 0) >= 2]
+    if any((r.get("oos_return") or 0) > 0 for r in strong):
+        return "possible edge"
+    return "signal, costs eat it" if strong else "no edge"
+
+
+def overview(coins: Sequence[str] = COINS) -> list[dict[str, Any]]:
+    """One row per coin: its own settings, data, latest backtest verdict, forward test, trainer."""
+    raw = _read_raw()
+    overrides = raw.get("assets") or {}
+    results = [r for r in read_results() if "error" not in r and "oos" in r]
+    out = []
+    for c in coins:
+        a = _asset(c)
+        mine = [r for r in results if r.get("asset") == a]
+        latest = [summary_row(r) for r in mine if r.get("run_id") == mine[-1]["run_id"]] if mine else []
+        comp = next((r for r in latest if r["label"] == "compound"), None)
+        fwd = forward_status(a)
+        data_from = None
+        for path, _ in cbt.candidate_files(a, cbt.resolve_data_dir()):
+            if path.exists():
+                data_from = path.name
+                break
+        out.append({
+            "asset": a, "own_settings": bool(overrides.get(a)), "data": data_from,
+            "backtest_verdict": verdict_word(latest),
+            "backtest_hit": None if comp is None else comp.get("oos_hit"),
+            "backtest_bars": None if comp is None else comp.get("bars"),
+            "fwd_calls": fwd["compound"]["decided"], "fwd_hit": fwd["compound"]["hit_rate"],
+            "paper_usd": fwd["paper"]["net_usd"], "unattended": unattended_status(a)["running"],
+        })
+    return out
 
 
 def run_summary(rows: Sequence[Mapping[str, Any]], window_count: int | None = None) -> str:
@@ -1040,7 +1217,7 @@ def unattended_status(asset: str) -> dict[str, Any]:
             "log": str(paths["log"]), "last_line": tail}
 
 
-def start_unattended(asset: str) -> dict[str, Any]:
+def start_unattended(asset: str, offset: float = 0.0) -> dict[str, Any]:
     """Spawn `forward --loop --unattended` detached, at background priority."""
     import subprocess
 
@@ -1051,7 +1228,8 @@ def start_unattended(asset: str) -> dict[str, Any]:
     if unattended_status(a)["running"]:
         raise CompoundError(f"unattended forward training for {a} is already running; stop it first")
     paths["stop"].unlink(missing_ok=True)
-    cmd = [sys.executable, "-m", "soltui.compound", "forward", "--asset", a, "--loop", "--unattended"]
+    cmd = [sys.executable, "-m", "soltui.compound", "forward", "--asset", a, "--loop", "--unattended",
+           "--offset", f"{offset:g}"]
     launcher = bgcontrol.taskpolicy_path()
     if launcher:
         cmd = [launcher, "-b", *cmd]
@@ -1068,6 +1246,22 @@ def start_unattended(asset: str) -> dict[str, Any]:
         if unattended_status(a)["running"]:
             break
     return {"started": True, "asset": a, "pid": proc.pid, "log": str(paths["log"])}
+
+
+def start_unattended_all(coins: Sequence[str] = COINS) -> dict[str, Any]:
+    """One unattended process per coin, each waking a few seconds after the previous one so the
+    coins do not all hit the venue in the same second."""
+    started, skipped = [], {}
+    for i, c in enumerate(coins):
+        try:
+            started.append(start_unattended(c, offset=6.0 * i))
+        except CompoundError as exc:
+            skipped[_asset(c)] = str(exc)
+    return {"started": [s["asset"] for s in started], "skipped": skipped}
+
+
+def stop_unattended_all(coins: Sequence[str] = COINS) -> dict[str, Any]:
+    return {"stopping": [c for c in coins if stop_unattended(c)["stopping"]]}
 
 
 def stop_unattended(asset: str) -> dict[str, Any]:
@@ -1088,7 +1282,7 @@ def stop_unattended(asset: str) -> dict[str, Any]:
     return {"stopping": True, "asset": a, "pid": status["pid"]}
 
 
-def run_unattended(asset: str, *, hold_lock: bool = True, max_ticks: int | None = None,
+def run_unattended(asset: str, *, hold_lock: bool = True, max_ticks: int | None = None, offset: float = 0.0,
                    sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.time,
                    tick: Callable[..., dict[str, Any]] | None = None) -> int:
     """The loop the detached process runs. A failed tick is logged and skipped, never fatal:
@@ -1126,7 +1320,7 @@ def run_unattended(asset: str, *, hold_lock: bool = True, max_ticks: int | None 
             if max_ticks is not None and ticks >= max_ticks:
                 break
             # Wake 5 s after the next 5m boundary, checking for a stop request every second.
-            wake = clock() + 300 - (clock() % 300) + 5
+            wake = clock() + 300 - (clock() % 300) + 5 + offset
             while clock() < wake and not stopping["flag"] and not paths["stop"].exists():
                 sleep(min(1.0, max(0.0, wake - clock())))
     finally:
@@ -1158,6 +1352,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             p.add_argument("--loop", action="store_true", help="tick once per closed 5m bar until killed")
             p.add_argument("--unattended", action="store_true",
                            help="hold the per-asset lock (what the tab's Start unattended button runs)")
+            p.add_argument("--offset", type=float, default=0.0,
+                           help="extra seconds after each 5m boundary (staggers coins)")
         if name == "backtest":
             p.add_argument("--perturb", action="store_true")
             p.add_argument("--aggregate-grid", action="store_true")
@@ -1177,7 +1373,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(json.dumps(x, indent=2, default=_jsonable)) if args.json else _print_signal(x)
         elif args.verb == "forward":
             if args.loop:
-                return run_unattended(args.asset, hold_lock=args.unattended)
+                return run_unattended(args.asset, hold_lock=args.unattended, offset=args.offset)
             out = forward_tick(args.asset, wallet_address=_settings_address())
             print(json.dumps(out, default=_jsonable), flush=True)
         elif args.verb == "status":
