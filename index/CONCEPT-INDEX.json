@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T10:27:56+00:00",
+  "generatedAt": "2026-11-07T11:02:43+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 291,
+      "matchingFiles": 295,
       "shown": 30,
       "files": [
         {
@@ -46,11 +46,11 @@
           "hits": 51
         },
         {
-          "path": "soltui/tui.py",
-          "hits": 44
+          "path": "soltui/commands.py",
+          "hits": 41
         },
         {
-          "path": "soltui/commands.py",
+          "path": "soltui/tui.py",
           "hits": 41
         },
         {
@@ -72,6 +72,10 @@
         {
           "path": "soltui/tests/test_liquidity.py",
           "hits": 30
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 28
         },
         {
           "path": "extension/README.md",
@@ -140,10 +144,6 @@
         {
           "path": "skills/trading-and-investing/references/ai-and-ml-for-trading.md",
           "hits": 16
-        },
-        {
-          "path": "skills/trading-and-investing/references/forex-and-currency-trading.md",
-          "hits": 16
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 242,
+      "matchingFiles": 245,
       "shown": 30,
       "files": [
         {
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 177,
+      "matchingFiles": 184,
       "shown": 30,
       "files": [
         {
@@ -324,7 +324,7 @@
         },
         {
           "path": "backtester/strategy_cards/ladder_grid.md",
-          "hits": 56
+          "hits": 57
         },
         {
           "path": "extension/test/core.test.js",
@@ -391,6 +391,10 @@
           "hits": 18
         },
         {
+          "path": "research/GRID-REVIEW.md",
+          "hits": 18
+        },
+        {
           "path": "skills/trading-and-investing/SKILL.md",
           "hits": 18
         },
@@ -411,16 +415,12 @@
           "hits": 16
         },
         {
+          "path": "soltui/help.py",
+          "hits": 16
+        },
+        {
           "path": "docs/codebase-overview.md",
           "hits": 15
-        },
-        {
-          "path": "skills/trading-and-investing/references/asset-specific-vs-universal-parameters.md",
-          "hits": 14
-        },
-        {
-          "path": "backtester/core/strategy_cards.py",
-          "hits": 13
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -576,7 +576,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 172,
+      "matchingFiles": 173,
       "shown": 30,
       "files": [
         {
@@ -692,12 +692,151 @@
           "hits": 7
         },
         {
-          "path": "soltui/tui.py",
+          "path": "backtester/core/indicators.py",
           "hits": 7
         },
         {
-          "path": "backtester/core/indicators.py",
+          "path": "mongo/queries/02-strategies-and-cards.js",
           "hits": 7
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "costs",
+      "label": "Cost model",
+      "why": "Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.",
+      "terms": [
+        "fee_bps",
+        "slippage",
+        "slippage_bps",
+        "costconfig",
+        "break-even",
+        "borrow",
+        "financing"
+      ],
+      "matchingFiles": 171,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 89
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
+          "hits": 61
+        },
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 58
+        },
+        {
+          "path": "backtester/core/gridsim.py",
+          "hits": 55
+        },
+        {
+          "path": "backtester/core/engine.py",
+          "hits": 54
+        },
+        {
+          "path": "llms-full.txt",
+          "hits": 46
+        },
+        {
+          "path": "backtester/tests/test_engine_audit.py",
+          "hits": 34
+        },
+        {
+          "path": "research/minute_sweep.py",
+          "hits": 31
+        },
+        {
+          "path": "backtester/README.md",
+          "hits": 31
+        },
+        {
+          "path": "backtester/tests/test_gridsim.py",
+          "hits": 28
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
+          "hits": 22
+        },
+        {
+          "path": "backtester/core/perps.py",
+          "hits": 22
+        },
+        {
+          "path": "backtester/core/types.py",
+          "hits": 21
+        },
+        {
+          "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
+          "hits": 21
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
+          "hits": 21
+        },
+        {
+          "path": "soltui/pnl.py",
+          "hits": 21
+        },
+        {
+          "path": "backtester/cli.py",
+          "hits": 20
+        },
+        {
+          "path": "backtester/core/leverage.py",
+          "hits": 20
+        },
+        {
+          "path": "backtester/gridcli.py",
+          "hits": 19
+        },
+        {
+          "path": "backtester/PROMPT.md",
+          "hits": 18
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 17
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 16
+        },
+        {
+          "path": "skills/trading-and-investing/SKILL.md",
+          "hits": 16
+        },
+        {
+          "path": "backtester/tests/test_ratio_rotation.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/report.py",
+          "hits": 14
+        },
+        {
+          "path": "skills/trading-and-investing/references/stock-and-equity-trading.md",
+          "hits": 14
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 13
+        },
+        {
+          "path": "research/results/grid_review_20261107.json",
+          "hits": 13
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 12
+        },
+        {
+          "path": "index/build.py",
+          "hits": 12
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -776,6 +915,10 @@
           "hits": 37
         },
         {
+          "path": "soltui/help.py",
+          "hits": 37
+        },
+        {
           "path": "backtester/core/trigger_conditions.py",
           "hits": 31
         },
@@ -830,152 +973,9 @@
         {
           "path": "backtester/strategy_cards/garch_vol_forecast.md",
           "hits": 16
-        },
-        {
-          "path": "backtester/strategy_cards/voltarget.md",
-          "hits": 14
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "costs",
-      "label": "Cost model",
-      "why": "Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.",
-      "terms": [
-        "fee_bps",
-        "slippage",
-        "slippage_bps",
-        "costconfig",
-        "break-even",
-        "borrow",
-        "financing"
-      ],
-      "matchingFiles": 167,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 89
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
-          "hits": 61
-        },
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 58
-        },
-        {
-          "path": "backtester/core/gridsim.py",
-          "hits": 55
-        },
-        {
-          "path": "backtester/core/engine.py",
-          "hits": 54
-        },
-        {
-          "path": "llms-full.txt",
-          "hits": 46
-        },
-        {
-          "path": "backtester/tests/test_engine_audit.py",
-          "hits": 34
-        },
-        {
-          "path": "research/minute_sweep.py",
-          "hits": 31
-        },
-        {
-          "path": "backtester/README.md",
-          "hits": 31
-        },
-        {
-          "path": "backtester/tests/test_gridsim.py",
-          "hits": 28
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
-          "hits": 22
-        },
-        {
-          "path": "backtester/core/perps.py",
-          "hits": 22
-        },
-        {
-          "path": "backtester/core/types.py",
-          "hits": 21
-        },
-        {
-          "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
-          "hits": 21
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
-          "hits": 21
-        },
-        {
-          "path": "soltui/pnl.py",
-          "hits": 21
-        },
-        {
-          "path": "backtester/cli.py",
-          "hits": 20
-        },
-        {
-          "path": "backtester/core/leverage.py",
-          "hits": 20
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 20
-        },
-        {
-          "path": "backtester/gridcli.py",
-          "hits": 19
-        },
-        {
-          "path": "backtester/PROMPT.md",
-          "hits": 18
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 16
-        },
-        {
-          "path": "backtester/tests/test_ratio_rotation.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/report.py",
-          "hits": 14
-        },
-        {
-          "path": "skills/trading-and-investing/references/stock-and-equity-trading.md",
-          "hits": 14
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 13
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 12
-        },
-        {
-          "path": "index/build.py",
-          "hits": 12
-        },
-        {
-          "path": "skills/trading-and-investing/references/leverage-cost-arithmetic-and-the-viable-region.md",
-          "hits": 12
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
     },
     {
       "id": "family:regime-filter",
@@ -988,7 +988,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 157,
+      "matchingFiles": 159,
       "shown": 30,
       "files": [
         {
@@ -1072,6 +1072,10 @@
           "hits": 22
         },
         {
+          "path": "soltui/help.py",
+          "hits": 22
+        },
+        {
           "path": "research/TOP5-RECOMMENDATION.md",
           "hits": 19
         },
@@ -1106,10 +1110,6 @@
         {
           "path": "backtester/tests/test_decide.py",
           "hits": 15
-        },
-        {
-          "path": "soltui/tests/test_top5.py",
-          "hits": 15
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 143,
+      "matchingFiles": 144,
       "shown": 30,
       "files": [
         {
@@ -1158,10 +1158,6 @@
           "hits": 19
         },
         {
-          "path": "soltui/tui.py",
-          "hits": 19
-        },
-        {
           "path": "research/cpcv_sweep.py",
           "hits": 18
         },
@@ -1178,7 +1174,15 @@
           "hits": 14
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 13
+        },
+        {
           "path": "research/decide.py",
+          "hits": 12
+        },
+        {
+          "path": "soltui/help.py",
           "hits": 12
         },
         {
@@ -1244,10 +1248,6 @@
         {
           "path": "backtester/tests/test_signal_redundancy.py",
           "hits": 4
-        },
-        {
-          "path": "backtester/strategy_cards/ts_momentum.md",
-          "hits": 4
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1261,7 +1261,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 132,
+      "matchingFiles": 134,
       "shown": 30,
       "files": [
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 127,
+      "matchingFiles": 128,
       "shown": 30,
       "files": [
         {
@@ -1538,7 +1538,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 121,
+      "matchingFiles": 122,
       "shown": 30,
       "files": [
         {
@@ -1586,11 +1586,11 @@
           "hits": 23
         },
         {
-          "path": "soltui/tui.py",
-          "hits": 22
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 21
         },
         {
-          "path": "research/coin-intelligence/eth-ethereum.md",
+          "path": "soltui/help.py",
           "hits": 21
         },
         {
@@ -1611,6 +1611,10 @@
         },
         {
           "path": "index/build.py",
+          "hits": 14
+        },
+        {
+          "path": "soltui/tui.py",
           "hits": 14
         },
         {
@@ -1656,10 +1660,6 @@
         {
           "path": "backtester/strategy_cards/zscore.md",
           "hits": 9
-        },
-        {
-          "path": "mongo/tests/test_load.py",
-          "hits": 9
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1672,7 +1672,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 112,
+      "matchingFiles": 114,
       "shown": 30,
       "files": [
         {
@@ -1768,6 +1768,10 @@
           "hits": 4
         },
         {
+          "path": "soltui/help.py",
+          "hits": 4
+        },
+        {
           "path": "soltui/tests/test_status_roster.py",
           "hits": 4
         },
@@ -1790,10 +1794,6 @@
         {
           "path": "research/results/perturb_long_any_adx_trend_ou_reversion.json",
           "hits": 4
-        },
-        {
-          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.json",
-          "hits": 4
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1810,7 +1810,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 103,
+      "matchingFiles": 104,
       "shown": 30,
       "files": [
         {
@@ -1945,7 +1945,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 88,
+      "matchingFiles": 89,
       "shown": 30,
       "files": [
         {
@@ -1995,6 +1995,10 @@
         {
           "path": "research/STRATEGIES.md",
           "hits": 19
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 18
         },
         {
           "path": "soltui/tests/test_signals.py",
@@ -2063,10 +2067,6 @@
         {
           "path": "skills/trading-and-investing/SKILL.md",
           "hits": 8
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 7
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2082,7 +2082,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 79,
+      "matchingFiles": 80,
       "shown": 30,
       "files": [
         {
@@ -2158,6 +2158,10 @@
           "hits": 8
         },
         {
+          "path": "soltui/help.py",
+          "hits": 8
+        },
+        {
           "path": "research/TOP5-RECOMMENDATION.md",
           "hits": 8
         },
@@ -2200,10 +2204,6 @@
         {
           "path": "research/results/geometry_short_k2.txt",
           "hits": 6
-        },
-        {
-          "path": "research/signal_redundancy.py",
-          "hits": 6
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2219,7 +2219,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 78,
+      "matchingFiles": 79,
       "shown": 30,
       "files": [
         {
@@ -2434,6 +2434,10 @@
           "hits": 12
         },
         {
+          "path": "soltui/help.py",
+          "hits": 12
+        },
+        {
           "path": "backtester/core/strategies/__init__.py",
           "hits": 10
         },
@@ -2472,10 +2476,6 @@
         {
           "path": "index/build.py",
           "hits": 6
-        },
-        {
-          "path": "research/results/cpcv_pbo.json",
-          "hits": 6
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2489,7 +2489,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 74,
+      "matchingFiles": 75,
       "shown": 30,
       "files": [
         {
@@ -2557,6 +2557,10 @@
           "hits": 15
         },
         {
+          "path": "soltui/help.py",
+          "hits": 14
+        },
+        {
           "path": "backtester/core/strategies/__init__.py",
           "hits": 13
         },
@@ -2607,10 +2611,6 @@
         {
           "path": "backtester/core/strategies/signals.py",
           "hits": 4
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
-          "hits": 4
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2623,7 +2623,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 59,
+      "matchingFiles": 60,
       "shown": 30,
       "files": [
         {
@@ -2691,6 +2691,10 @@
           "hits": 6
         },
         {
+          "path": "soltui/help.py",
+          "hits": 6
+        },
+        {
           "path": "research/CROSS-ASSET-TRANSFER.md",
           "hits": 5
         },
@@ -2741,10 +2745,6 @@
         {
           "path": "research/results/perturb_long_obv_trend.json",
           "hits": 3
-        },
-        {
-          "path": "research/verify_numbers.py",
-          "hits": 3
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 36,
+      "matchingFiles": 37,
       "shown": 30,
       "files": [
         {
@@ -2863,6 +2863,10 @@
           "hits": 4
         },
         {
+          "path": "soltui/help.py",
+          "hits": 4
+        },
+        {
           "path": "backtester/strategy_cards/atr_position_sizing.md",
           "hits": 3
         },
@@ -2876,10 +2880,6 @@
         },
         {
           "path": "backtester/core/indicators.py",
-          "hits": 2
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
           "hits": 2
         }
       ],
