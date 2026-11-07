@@ -1,7 +1,8 @@
 # Work continuation
 
-Version: 17
-Delta: PR 1 and PR 2 of the leverage-tier and reliable-trigger work, and the executor component (workstream E1): verifier, rails, journal, CLI and API, and the live path validation.
+Version: 18
+Delta: extension 0.2.0 version display, leverage tiers and triggers, and the executor component (workstream E1): verifier, rails, journal, CLI and API, and the live path validation.
+
 
 ## v1 - 2026-11-06
 
@@ -182,7 +183,15 @@ Facts to keep: the CI e2e (extension real browser) is flaky once ("installed mod
 
 Remaining follow-ups: a soltui Triggers view over research/results/triggers_*.csv; live trigger alerts through the executor.
 
-## v17 - 2026-11-07 (executor, workstream E1)
+## v17 - 2026-11-07
+
+Target: the owner reloaded the unpacked extension from /Users/mitch/dev/solmargintrader/extension and saw "no change": the version still read 0.1.0. The code on disk had changed (PR #42 added the nativeMessaging permission and a SolTUI panel), but nobody bumped the version, and the new panel is on the dashboard, not the popup.
+
+Done: manifest.json and package.json are 0.2.0. The popup header and the dashboard title show the manifest version. The popup gains a "SolTUI console" button that opens dashboard.html#soltui. test/version.test.js keeps the two version fields equal and checks that both pages render the version. The CI extension job fails a pull request that changes extension/src or manifest.json without a version bump.
+
+Owner steps (Chrome Beta, where the extension is installed): quit and reopen Chrome Beta once so it reads the com.mitchhudson.soltui native host manifest, then reload SolMarginTrader in chrome://extensions. The popup should then read v0.2.0.
+
+## v18 - 2026-11-07 (executor, workstream E1)
 
 Target: new component `executor/` for swaps between coins with best pricing; the foundation for a later "run this strategy live" button (E2 builds the runner and the button). Branch executor-e1, worktree /Users/mitch/dev/solmargintrader-wt-executor. Stele MCP was unreachable, so the facts below are in the outbox, not yet in the graph.
 

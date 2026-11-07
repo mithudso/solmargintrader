@@ -1,7 +1,8 @@
 # Prompt history
 
-Version: 10
-Delta: added the leverage-tier and reliable-trigger request (v9) and the executor request with the owner's three decisions (v10, workstream E1).
+Version: 11
+Delta: added the extension-version report, the leverage-tier and reliable-trigger request, and the executor request with the owner's three decisions (v11, workstream E1).
+
 
 ## v1 - 2026-11-06
 
@@ -67,7 +68,13 @@ Add strategies for low, medium, and high margin trading, I want to backtest high
 
 Delivered in two PRs: (1) leverage tiers, (2) the reliable-trigger miner.
 
-## v10 - 2026-11-07
+## v9 - 2026-11-07
+
+```text
+The solmargintrader has not changed at all, the version number is the same, I loaded the extension from /Users/mitch/dev/solmargintrader/extension
+```
+
+## v11 - 2026-11-07
 
 ```text
 add the ability to swap between coins and chains using the best pricing, and ultimately I want a "run this strategy live" button on the top 5 page that will make actual real money transactions using the signals and strategy that bacvktested well.
