@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 38
-Delta: v37 to v38; every coin in parallel with its own numbers; full 1m history.
+Version: 39
+Delta: v38 to v39; editor bar, compound row preview, double-click toggle, compound autopilot.
 
 ## v1 - 2026-11-06
 
@@ -390,3 +390,14 @@ Target: user asked for data as detailed and as far back as possible, backtesting
 Completed: 1m history fetch started for BTC ETH SOL DOGE ZEC XRP BNB HYPE (`fetch_minutes --all --years 7`, main checkout data/). compound state gains per-coin overrides (state["assets"]) stacked on the base; save/reset take asset and scope (all, coin, everything); adopt tuned saves to the coin. materialize_bars caches 5m bars per coin (.npz keyed by source mtimes); workers hold at most two coins. backtest_all and the sweep use each coin's own config. Candle cache per coin (closed bars only) so a tick costs one request; 429/5xx retried. start/stop_unattended_all (staggered 6 s per coin, --offset). overview(); tab coin picker, scope switch, Backtest all coins, Start/Stop all coins, overview table (52 buttons). full_suite fetches 1m history instead of 365 days of 5m.
 
 Remaining: run Backtest all coins once the minute download finishes and report per-coin results; open Jupiter Perps positions still unread.
+
+## v39 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+
+Target: prompt v31. Stele TASK-833; decisions KNOW-834 (autopilot) and KNOW-835 (double-click toggle). Worktree /Users/mitch/dev/solmargintrader-wt-splitpane, branch feat/soltui-split-preview-autotune.
+
+Completed: `EditorBar` replaces the editor's orange border-top: drag to resize (clamped 3..screen-12), double-click resets to 16, "x close" hides the editor, a click / drag up / ctrl+e shows it, ctrl+up/down resize; height and open state persist in ~/.config/soltui/tui.json (only main() passes the path; test apps keep layout in memory). Selecting a compound metric, coin, backtest row or forward call shows a read-only markdown preview in the shared editor (`compound.metric_preview`, `coin_preview`, `record_preview`); a preview never replaces unsaved edits and never fires from a background refresh while another tab is active. CompoundTable toggles on double-click (Click.chain == 2) or Space; a single click only selects. Autopilot: top-level `autopilot` flag in compound config.json (missing = on); on overlays aggregate.tune=1; forward_tick adopts tuned_params as the coin's own settings via `auto_adopt` with a per-metric tune_cooldown read from `adopt` ledger rows; save_state holds an flock (config.json.lock). `autopilot_ensure` starts any coin's unattended loop not running; registry `compound.autopilot` (set), `compound.autopilot_status`, `compound.autopilot_ensure`; CLI `python -m soltui.compound autopilot`; LaunchAgent `com.mitchhudson.soltui.compound-autopilot` via `python -m soltui.compound_agent install` (refuses a worktree). The console's main() also runs ensure once at start. 53 buttons.
+
+Honesty: tuning at the 0.95 bar rarely moves (docs/COMPOUND-5M.md: one move in five coins over 30 days) and backtested returns stayed negative; autopilot automates the evidence-gated search, it does not make the compound profitable. Paper calls only; no order path.
+
+Remaining: none in code; install the LaunchAgent from the main checkout after merge.
+

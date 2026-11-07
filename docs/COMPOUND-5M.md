@@ -68,14 +68,15 @@ the call is right or wrong.
   metric's settings were the same and never twice. Live-only metrics (premium, open interest, order book) learn only from the
   ledger, so their weight grows as forward ticks accumulate.
 
-### Moving the settings, carefully (`tune=1`, off by default)
+### Moving the settings, carefully (`tune=1`; autopilot turns it on)
 
 Each metric also runs shadow copies at ×(1 − `tune_step`) and ×(1 + `tune_step`) of each of its
 numbers. It moves to a neighbour only when the posterior says that neighbour is more accurate
 with probability above `tune_confidence` (0.95) after `tune_min_calls` (300) calls. Then it
 re-centres on the new settings and waits `tune_cooldown` bars (two days). Moving after every
 single miss would chase noise, because at 5m about half of all outcomes are coin flips.
-**Adopt tuned settings** in the tab makes a move permanent.
+With autopilot on (the default) every forward tick makes a move permanent by itself;
+**Adopt tuned settings now** in the tab does it by hand.
 
 Measured on the same 30 days, out-of-sample hit rate of the default compound:
 
@@ -94,7 +95,9 @@ Learning fixes the direction problem on four of five coins: it mutes the trend m
 leans on reversion, without anyone choosing. Tuning at the default 0.95 bar moved one metric
 once in five coins and thirty days. Neighbouring settings are nearly the same signal, so the
 data rarely proves one better. A looser bar moves the hit rate by about a point either way,
-inside the noise, and several bars were tried, which is itself selection. So tuning stays off by default. **Returns stayed negative
+inside the noise, and several bars were tried, which is itself selection. So the scorecard's own
+default stays `tune=0`; autopilot turns the search on because adopting its rare, well-evidenced moves
+is what the owner asked for, not because tuning was shown to add return. **Returns stayed negative
 in every row**: a better hit rate does not beat a 16 bps round trip on a 6–9 bps move.
 
 ## Every coin, in parallel, each with its own numbers
@@ -120,11 +123,41 @@ The compound runs on every Coinbase-listed universe coin: BTC, ETH, SOL, DOGE, Z
 
 ## Unattended forward training
 
-**Start unattended training** in the tab starts a separate background process at low priority.
+**Start unattended training** in the tab starts a separate background process at low priority
+(autopilot does this for every coin by itself).
 After every closed 5m bar it records the call, resolves earlier calls, and lets the learned
 weights update from them. It keeps running after the console closes, logs and survives network
 errors, and runs one per asset (a lock file proves it). **Stop unattended** ends it after the
 current tick. From a shell: `python3 -m soltui.compound forward --asset SOL --loop`.
+
+## Autopilot: hands-off and self-optimizing (on by default)
+
+The owner asked for a trainer that runs and improves itself with no input. Autopilot is one switch,
+`autopilot` at the top of `~/.config/soltui/compound/config.json` (missing means on), shown as
+**Autopilot: on/off** in the tab. With it on:
+
+- **Tuning runs.** The effective config has `tune=1` whatever is saved, so the config hash says so.
+- **Tuned settings are adopted automatically.** Every forward tick (unattended or in the tab) saves
+  the settings tuning moved a metric to as that coin's own settings, and appends an `adopt` row
+  (`metric`, `from`, `to`, `ts`) to the coin's forward ledger. A metric adopts again only
+  `tune_cooldown` bars (two days) after its last adoption: each evaluation restarts the search from
+  the saved settings, so without that memory it could step once per bar. The call for the bar is
+  recorded under the settings in force when it was made.
+- **Every coin keeps training.** The console starts any coin's unattended loop that is not running
+  when it opens, and a LaunchAgent does the same every five minutes, so a reboot, a crash or a
+  closed console needs no one. Install it once from the main checkout (it refuses a worktree):
+  `python -m soltui.compound_agent install`; check it with `status`. The job runs
+  `python -m soltui.compound autopilot`. **Stop unattended** still stops a coin, but autopilot
+  restarts it within five minutes: turn autopilot off to keep it stopped.
+- **Learned weights** (on by default anyway) keep reweighting and inverting metrics from their record.
+
+Every coin's process writes the same `config.json`, so `save_state` holds an exclusive lock
+(`config.json.lock`) for its whole read-modify-write.
+
+What autopilot does not do: it does not make the compound profitable. At the 0.95 bar tuning
+rarely moves (above), and every backtested return was negative. It automates the evidence-gated
+search and the forward record; it places no order. Turning it off leaves the saved settings and
+the running loops as they are.
 
 ## Your wallet: where it is read from, and what it is used for
 

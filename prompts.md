@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 30
-Delta: v29 to v30; full 1m history, every coin in parallel with its own numbers (v29 is the triangular-arbitrage card).
+Version: 31
+Delta: v30 to v31; soltui draggable/closable editor bar, compound row preview, double-click/Space toggle, compound autopilot.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -204,3 +204,12 @@ Target: existing `backtester/strategy_cards/triangular_arbitrage.md`; Stele TASK
 ```text
 Can you download as detailed as possible numbers for as far back as you can go? We also need to test it on all of the coins, so make it do the back testing against all of the coins all at once in parallel, as well as the forward testing. Which means each of the coins will need its own set of numbers.
 ```
+
+## v31 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+
+```text
+in the soltui there is an orange line which delineates the curser portion above from the editor below, make that orange line adjustable by dragging it with the mouse, and give me the option of closing that window altogether, also whenever I select something like a strategy in the compound tab, it should show a detailed preview of that in the editor window below. Right now it's stuck on one page and won't move. Also let me toggle on/off a strategy by double clicking on it or pressing the space bar with it selected. ALso have it automatically adopt tuned settings, I want this to be a fully automated completely independent hands off self-optimizing system that does not require my input.
+```
+
+Target: soltui/tui.py, soltui/compound.py, soltui/commands.py, new soltui/compound_agent.py; Stele TASK-833.
+

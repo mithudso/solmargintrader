@@ -16,6 +16,7 @@ path anywhere in this package.
 
 from __future__ import annotations
 
+import json
 import time
 from enum import Enum
 from pathlib import Path
@@ -65,6 +66,7 @@ from .commands import (  # noqa: F401 - re-exported: tests and docs import them 
     failure_summary,
     untested_sweep_command,
 )
+from . import config as config_mod
 from .config import INTERVALS, XPUB_FIELDS, Settings, load_settings
 from .hdwallet import redact
 from .paper import MODE_LABEL
@@ -179,6 +181,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#compound-backtest-all": "compound.backtest",
     "#compound-unattended-all": "compound.unattended_start",
     "#compound-unattended-stop-all": "compound.unattended_stop",
+    "#compound-autopilot": "compound.autopilot",
 }
 
 class GlossaryTable(DataTable):
@@ -382,15 +385,13 @@ class VimTextArea(TextArea):
 
 
 class CompoundTable(GlossaryTable):
-    """The Compound metric table: a click on a row's on/off or name cell toggles that metric.
+    """The Compound metric table: a double-click anywhere on a row, or Space, toggles that metric.
 
-    Textual's DataTable only reports a selection on a SECOND click of the same cell, so a single
-    click on a metric did nothing. This table reads the clicked column itself and posts `Toggle`;
-    clicks on the other columns only move the cursor (to edit the numbers). Space toggles the row
-    under the cursor from the keyboard.
+    A single click only selects the row, which shows its full detail in the editor below. A single
+    click must NOT toggle: a double-click is two clicks, so a toggle on each would leave the metric
+    where it was. Textual counts the clicks of one gesture in `Click.chain`.
     """
 
-    TOGGLE_COLUMNS = (0, 1)
     BINDINGS = [Binding("space", "toggle_row", "Toggle metric", show=False)]
 
     class Toggle(Message):
@@ -401,13 +402,117 @@ class CompoundTable(GlossaryTable):
     async def _on_click(self, event: events.Click) -> None:
         meta = event.style.meta
         await super()._on_click(event)
-        row, column = meta.get("row"), meta.get("column")
-        if isinstance(row, int) and row >= 0 and column in self.TOGGLE_COLUMNS:
+        row = meta.get("row")
+        if event.chain == 2 and isinstance(row, int) and row >= 0:
             self.post_message(self.Toggle(row))
 
     def action_toggle_row(self) -> None:
         if self.row_count:
             self.post_message(self.Toggle(self.cursor_row))
+
+
+class EditorBar(Widget):
+    """The orange line between the tabs and the shared editor.
+
+    Drag it up or down to resize the editor; click "x close" at its right end to hide the editor
+    (the bar stays, so a click on it, a drag upward or ctrl+e brings the editor back). A
+    double-click restores the default height. The app owns the panel and persists the result;
+    the bar only reports what the mouse did.
+    """
+
+    DEFAULT_CSS = """
+    EditorBar { height: 1; width: 1fr; color: $accent; background: $surface; }
+    EditorBar:hover { background: $accent 15%; }
+    EditorBar.-dragging { background: $accent 30%; }
+    """
+    CLOSE = " x close "
+    MIN_HEIGHT = 3
+
+    class Resized(Message):
+        def __init__(self, height: int, final: bool) -> None:
+            super().__init__()
+            self.height = height
+            self.final = final
+
+    class Close(Message):
+        pass
+
+    class Open(Message):
+        pass
+
+    class Reset(Message):
+        pass
+
+    def __init__(self, *, id: str | None = None) -> None:  # noqa: A002 - Textual's own keyword
+        super().__init__(id=id)
+        self.panel_open = True
+        self._drag_from: tuple[int, int] | None = None  # (screen_y at press, panel height at press)
+        self._moved = False
+
+    def render(self) -> Text:
+        width = max(self.size.width, 1)
+        if self.panel_open:
+            label, right = " drag to resize the editor (double-click: default size) ", self.CLOSE
+        else:
+            label, right = " editor hidden: click, drag up or ctrl+e to show it ", ""
+        line = max(width - len(right), 0)
+        lead = max((line - len(label)) // 2, 0)
+        body = ("━" * lead + label)[:line]
+        body += "━" * (line - len(body))
+        return Text(body + right[: width - len(body)], style="bold")
+
+    def _over_close(self, x: int) -> bool:
+        return self.panel_open and x >= self.size.width - len(self.CLOSE)
+
+    def max_height(self) -> int:
+        # Keep the header, the tab strip and a few rows of the tab visible.
+        return max(self.MIN_HEIGHT, self.app.size.height - 12)
+
+    def _on_mouse_down(self, event: events.MouseDown) -> None:
+        self._moved = False  # a new gesture; a drag that ended without a Click must not eat this one
+        if self._over_close(event.x):
+            return
+        panel = self.app.query_one("#editor-panel")
+        height = panel.outer_size.height if panel.display else 0
+        self._drag_from = (event.screen_y, height)
+        self.capture_mouse()
+        self.add_class("-dragging")
+        event.stop()
+
+    def _on_mouse_move(self, event: events.MouseMove) -> None:
+        if self._drag_from is None:
+            return
+        start_y, start_h = self._drag_from
+        if event.screen_y == start_y and not self._moved:
+            return
+        self._moved = True
+        height = min(max(start_h + (start_y - event.screen_y), self.MIN_HEIGHT), self.max_height())
+        self.post_message(self.Resized(height, final=False))
+        event.stop()
+
+    def _on_mouse_up(self, event: events.MouseUp) -> None:
+        if self._drag_from is None:
+            return
+        start_y, start_h = self._drag_from
+        self._drag_from = None
+        self.release_mouse()
+        self.remove_class("-dragging")
+        if self._moved:
+            height = min(max(start_h + (start_y - event.screen_y), self.MIN_HEIGHT), self.max_height())
+            self.post_message(self.Resized(height, final=True))
+        event.stop()
+
+    async def _on_click(self, event: events.Click) -> None:
+        event.stop()
+        if self._moved:
+            self._moved = False
+            return
+        if self._over_close(event.x):
+            self.post_message(self.Close())
+        elif not self.panel_open:
+            self.post_message(self.Open())
+        elif event.chain == 2:
+            self.post_message(self.Reset())
 
 
 class SolTuiApp(App):
@@ -436,7 +541,6 @@ class SolTuiApp(App):
     TabbedContent { height: 1fr; }
     #editor-panel {
         height: 16;
-        border-top: solid $accent;
     }
     #editor-panel TextArea { height: 1fr; }
     Tooltip { max-width: 76; height: auto; max-height: 18; }
@@ -448,6 +552,7 @@ class SolTuiApp(App):
     #compound-coin { width: 16; }
     #compound-call { padding: 0 1; border: round $accent; }
     #compound-detail { color: $text-muted; padding: 0 1; }
+    #compound-autopilot-status { padding: 0 1; border: round $success; }
     """
     BINDINGS = [
         Binding("f1", "show_help", "Help / glossary", priority=True),
@@ -457,12 +562,27 @@ class SolTuiApp(App):
         ("o", "open_doc", "Open in editor"),
         ("ctrl+s", "save_doc", "Save"),
         ("ctrl+e", "toggle_editor", "Show/hide editor"),
+        Binding("ctrl+up", "grow_editor", "Editor taller", show=False),
+        Binding("ctrl+down", "shrink_editor", "Editor shorter", show=False),
         ("f5", "liq_refresh", "Liquidity: refresh"),
         ("f8", "liq_toggle_kill", "Liquidity: kill/resume"),
     ]
 
-    def __init__(self, settings: Settings | None = None) -> None:
+    EDITOR_HEIGHT = 16
+
+    def __init__(self, settings: Settings | None = None, *, ui_state_path: Path | None = None,
+                 ensure_autopilot: bool = False) -> None:
         super().__init__()
+        # Where the editor's height and open/closed state persist. None (every test) keeps them
+        # in memory, so no test reads or writes the owner's real layout.
+        self._ui_state_path = ui_state_path
+        # The real console starts any coin's training loop that autopilot wants running; a test
+        # app must never spawn background processes.
+        self._ensure_autopilot = ensure_autopilot
+        self._editor_height = self.EDITOR_HEIGHT
+        # The text of the preview the editor shows (None when a file or nothing is shown), so a
+        # periodic table refresh does not reload an identical preview and reset its scroll.
+        self._preview_text: str | None = None
         # One live Context for the app's life: the registry commands this console dispatches read and
         # mutate these same objects, so in-memory state and command results cannot disagree.
         self.ctx = Context.from_settings(settings or load_settings(), Runtime())
@@ -625,6 +745,7 @@ class SolTuiApp(App):
         existing `query_one("#docs-view", TextArea)` call elsewhere still
         matches it.
         """
+        yield EditorBar(id="editor-bar")
         with Vertical(id="editor-panel"):
             with Horizontal(classes="form-row"):
                 yield Static("select a file to open it here", id="docs-view-status")
@@ -759,8 +880,9 @@ class SolTuiApp(App):
             yield Static(
                 "Each metric scores the next 5m bar from -1 (down) to +1 (up). Families vote once, "
                 "the regime reweights trend vs reversion styles, and any enabled gate forces FLAT. "
-                "Click a metric's on/off or name to switch it (or press Space); click any other cell to "
-                "edit its numbers below. Nothing here places an order.",
+                "Double-click a metric (or select it and press Space) to switch it on or off; a single "
+                "click selects it, shows its full detail in the editor below and fills its numbers in. "
+                "Nothing here places an order.",
                 classes="hint",
             )
             with Horizontal(classes="form-row"):
@@ -768,6 +890,9 @@ class SolTuiApp(App):
                 yield Select([(c, c) for c in compound_mod.COINS], value=self._initial_coin(),
                              allow_blank=False, id="compound-coin")
                 yield Button("Edits apply to: all coins", id="compound-scope")
+            with Horizontal(classes="form-row"):
+                yield Button("Autopilot: on", variant="success", id="compound-autopilot")
+                yield Static("", id="compound-autopilot-status")
             yield Static("Press Signal now for the live call.", id="compound-call")
             yield CompoundTable(id="compound-table")
             yield Static("", id="compound-detail")
@@ -781,7 +906,7 @@ class SolTuiApp(App):
                 yield Button("Toggle on/off", id="compound-toggle")
                 yield Button("Apply edits", variant="primary", id="compound-apply")
                 yield Button("Reset defaults", id="compound-reset")
-                yield Button("Adopt tuned settings", id="compound-adopt")
+                yield Button("Adopt tuned settings now", id="compound-adopt")
             with Horizontal(classes="form-row"):
                 yield Button("Signal now", variant="success", id="compound-signal")
                 yield Button("Backtest selected", variant="warning", id="compound-backtest")
@@ -920,6 +1045,7 @@ class SolTuiApp(App):
         self._refresh_liquidity(force=True)
         self._compound_setup()
         self._install_help()
+        self._apply_ui_state()
 
     def _install_help(self) -> None:
         """Include every form and lazy tab without copying text into handlers."""
@@ -1310,6 +1436,12 @@ class SolTuiApp(App):
         self._compound_auto = False
         self._compound_last_bar = 0
         self._compound_last_refresh = 0.0
+        self._compound_autopilot = True
+        self._compound_adoptions: list[dict[str, Any]] = []
+        self._compound_overview_rows: dict[str, dict[str, Any]] = {}
+        self._compound_result_rows: list[dict[str, Any]] = []
+        self._compound_forward_rows: list[dict[str, Any]] = []
+        self._compound_own: dict[str, Any] = {}
         table = self.query_one("#compound-table", CompoundTable)
         table.cursor_type = "row"
         for label in ("on", "component", "family", "style", "weight", "parameters", "live score",
@@ -1330,13 +1462,79 @@ class SolTuiApp(App):
         env = self._call("compound.config", {"asset": self._compound_coin}, quiet=True)
         if env["ok"]:
             self._compound_cfg = env["result"]["config"]
+            self._compound_own = env["result"]["own_settings"]
         else:
             self.query_one("#compound-status", Static).update(f"[red]{escape(self._msg(env))}[/]")
+        self._compound_load_autopilot()
         self._compound_render_table()
         self._compound_load_results()
         self._compound_show_unattended()
         self._compound_load_overview()
         self.set_interval(20, self._compound_auto_tick)
+        if self._ensure_autopilot and self._compound_autopilot:
+            self._compound_ensure_autopilot()
+
+    @work(thread=True, group="compound-autopilot", exclusive=True)
+    def _compound_ensure_autopilot(self) -> None:
+        """Start any coin's training loop autopilot wants running (it waits for each child's lock,
+        so it runs off the UI thread)."""
+        env = self._call("compound.autopilot_ensure", quiet=True)
+        if env["ok"] and env["result"].get("started"):
+            self.call_from_thread(self.query_one("#compound-status", Static).update,
+                                  Text("autopilot started training for " + ", ".join(env["result"]["started"])))
+        self.call_from_thread(self._compound_load_autopilot)
+        self.call_from_thread(self._compound_load_overview)
+
+    def _compound_load_autopilot(self) -> None:
+        """The switch, which coins train, the LaunchAgent and the recent adoptions."""
+        env = self._call("compound.autopilot_status", quiet=True)
+        line = self.query_one("#compound-autopilot-status", Static)
+        button = self.query_one("#compound-autopilot", Button)
+        if not env["ok"]:
+            line.update(Text(f"autopilot: {self._msg(env)}"))
+            return
+        r = env["result"]
+        self._compound_autopilot = bool(r["autopilot"])
+        self._compound_adoptions = list(r.get("adoptions") or [])
+        button.label = f"Autopilot: {'on' if r['autopilot'] else 'off'}"
+        button.variant = "success" if r["autopilot"] else "default"
+        agent = r.get("agent") or {}
+        agent_text = ("LaunchAgent restarts stopped coins every 5 min" if agent.get("loaded")
+                      else "LaunchAgent not loaded: python -m soltui.compound_agent install")
+        last = self._compound_adoptions[-1] if self._compound_adoptions else None
+        last_text = (f"last adoption {time.strftime('%m-%d %H:%M', time.gmtime(int(last['ts'])))} "
+                     f"{last['asset']} {last['metric']}" if last else "no tuned settings adopted yet")
+        if r["autopilot"]:
+            line.update(Text(f"AUTOPILOT ON: tuning runs, every forward tick adopts evidence-gated tuned "
+                             f"settings per coin, {len(r['running'])}/{len(compound_mod.COINS)} coins training; "
+                             f"{agent_text}; {last_text}"))
+        else:
+            line.update(Text(f"autopilot off: settings change only when you change them; "
+                             f"{len(r['running'])}/{len(compound_mod.COINS)} coins training; {last_text}"))
+
+    @on(Button.Pressed, "#compound-autopilot")
+    def _compound_autopilot_toggle(self) -> None:
+        env = self._call("compound.autopilot", {"enabled": not self._compound_autopilot})
+        status = self.query_one("#compound-status", Static)
+        if not env["ok"]:
+            status.update(f"[red]{escape(self._msg(env))}[/]")
+            return
+        self._compound_reload_config()
+        self._compound_load_autopilot()
+        self._compound_load_overview()
+        status.update("autopilot on: tuning runs and tuned settings are adopted automatically; every coin "
+                      "keeps training" if self._compound_autopilot else
+                      "autopilot off: no automatic adoption and no automatic restarts (running loops keep going)")
+
+    def _compound_reload_config(self) -> None:
+        """Re-read this coin's settings from disk: autopilot saves adoptions from other processes."""
+        env = self._call("compound.config", {"asset": self._compound_coin}, quiet=True)
+        if env["ok"] and env["result"]["config"] != self._compound_cfg:
+            self._compound_cfg = env["result"]["config"]
+            self._compound_own = env["result"]["own_settings"]
+            self._compound_render_table()
+        elif env["ok"]:
+            self._compound_own = env["result"]["own_settings"]
 
     def _compound_selected(self) -> str:
         table = self.query_one("#compound-table", GlossaryTable)
@@ -1389,6 +1587,58 @@ class SolTuiApp(App):
         values = " ".join([f"weight={entry['weight']:g}"]
                           + [f"{k}={v:g}" for k, v in entry["params"].items()])
         self.query_one("#compound-edit", Input).value = values
+        self._compound_preview_metric(cid)
+
+    def _compound_preview_metric(self, cid: str) -> None:
+        if not self._on_compound_tab():
+            return  # a background refresh must not take the editor away from another tab
+        tuned = self._compound_tuned.get(cid, {})
+        columns = {"live score": self._compound_live.get(cid, ""),
+                   "learned hit (n) x weight multiplier": self._compound_learned.get(cid, ""),
+                   "tuning proposes (last Signal now)": " ".join(f"{k}={v:g}" for k, v in tuned.items()),
+                   "backtest out-of-sample hit (alone)": self._compound_bt.get(cid, ""),
+                   "forward hit (n)": self._compound_fwd.get(cid, "")}
+        self._show_preview(f"{self._compound_coin} {cid}", compound_mod.metric_preview(
+            cid, self._compound_cfg, asset=self._compound_coin, own=self._compound_own, columns=columns,
+            adoptions=self._compound_adoptions, autopilot=self._compound_autopilot))
+
+    @on(DataTable.RowHighlighted, "#compound-overview")
+    def _compound_overview_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if not self._on_compound_tab() or event.row_key is None:
+            return
+        coin = str(event.row_key.value)
+        row = self._compound_overview_rows.get(coin)
+        if row is None:
+            return
+        env = self._call("compound.config", {"asset": coin}, quiet=True)
+        own = env["result"]["own_settings"] if env["ok"] else {}
+        self._show_preview(f"{coin} overview", compound_mod.coin_preview(
+            row, own=own, adoptions=self._compound_adoptions, autopilot=self._compound_autopilot))
+
+    @on(DataTable.RowHighlighted, "#compound-results")
+    def _compound_result_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if not self._on_compound_tab() or not 0 <= event.cursor_row < len(self._compound_result_rows):
+            return
+        row = self._compound_result_rows[event.cursor_row]
+        self._show_preview(f"{self._compound_coin} backtest {row.get('label')}", compound_mod.record_preview(
+            f"{self._compound_coin} backtest: {row.get('label')}", row,
+            "OOS = the last 30% of bars. Hit = next-bar direction; return = engine P&L after fees at the "
+            "set leverage. A row is ranked only with enough out-of-sample calls."))
+
+    @on(DataTable.RowHighlighted, "#compound-forward")
+    def _compound_forward_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if not self._on_compound_tab() or not 0 <= event.cursor_row < len(self._compound_forward_rows):
+            return
+        row = self._compound_forward_rows[event.cursor_row]
+        when = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(int(row["bar_ts"]) + 300))
+        self._show_preview(f"{self._compound_coin} forward call {when}", compound_mod.record_preview(
+            f"{self._compound_coin} forward call decided at {when}", row,
+            "A paper call: recorded and resolved against the next closed 5m bar. No order was placed."))
+
+    @on(TabbedContent.TabActivated)
+    def _tab_activated(self, event: TabbedContent.TabActivated) -> None:
+        if event.pane is not None and event.pane.id == "tab-compound" and hasattr(self, "_compound_cfg"):
+            self._compound_preview_metric(self._compound_selected())
 
     def _compound_save(self, patch: dict[str, Any], what: str, scope: str | None = None) -> None:
         env = self._call("compound.save", {"patch": patch, "asset": self._compound_coin,
@@ -1482,9 +1732,14 @@ class SolTuiApp(App):
             self._compound_load_overview()
         elif name == "compound.forward_tick":
             self._compound_last_bar = int(r.get("bar_ts") or 0)
+            adopted = r.get("adopted") or {}
             status.update(f"forward: bar {r.get('bar_ts')} call {r['call']}"
                           f"{' recorded' if r['recorded'] else ' (already recorded)'}, "
-                          f"{r['resolved']} earlier call(s) resolved")
+                          f"{r['resolved']} earlier call(s) resolved"
+                          + (f"; autopilot adopted tuned settings for {', '.join(sorted(adopted))}" if adopted else ""))
+            if adopted:
+                self._compound_reload_config()
+                self._compound_load_autopilot()
             self._compound_load_results()
 
     def _compound_render_signal(self, r: dict[str, Any]) -> None:
@@ -1533,6 +1788,7 @@ class SolTuiApp(App):
         self.query_one("#compound-bt-status", Static).update(Text(
             compound_mod.run_summary(env["result"]["rows"], env["result"].get("configurations_on_this_oos_window"))
             if env["ok"] else self._msg(env)))
+        self._compound_result_rows = list(env["result"]["rows"]) if env["ok"] else []
         if env["ok"]:
             for row in env["result"]["rows"]:
                 results.add_row(
@@ -1548,6 +1804,7 @@ class SolTuiApp(App):
         fwd = self.query_one("#compound-forward", GlossaryTable)
         fwd.clear()
         self._compound_fwd = {}
+        self._compound_forward_rows = []
         summary = self.query_one("#compound-fwd-summary", Static)
         if fenv["ok"]:
             f = fenv["result"]
@@ -1564,6 +1821,7 @@ class SolTuiApp(App):
                 + (f"Paper $ at wallet size: {f['paper']['calls']} calls, net ${f['paper']['net_usd']:,.2f} "
                    f"after ${f['paper']['costs_usd']:,.2f} costs." if f.get("paper", {}).get("calls") else
                    "Paper $ at wallet size: no sized calls yet.")))
+            self._compound_forward_rows = list(reversed(f["recent"]))
             for row in reversed(f["recent"]):
                 fwd.add_row(time.strftime("%m-%d %H:%M", time.gmtime(row["bar_ts"] + 300)), row["call"],
                             _num(row["composite"]), str(row["regime"]), f"{row['price']:.4g}",
@@ -1616,9 +1874,11 @@ class SolTuiApp(App):
             since = time.strftime("%m-%d %H:%M UTC", time.gmtime(s["since"])) if s.get("since") else "?"
             label.update(Text(f"unattended training RUNNING for {s['asset']} since {since} (pid {s['pid']}); "
                               f"log {s['log']}"))
-            # Its calls land in the ledger from another process: reload them once a minute.
+            # Its calls (and autopilot's adoptions) land from another process: reload once a minute.
             if time.time() - self._compound_last_refresh > 60:
                 self._compound_last_refresh = time.time()
+                self._compound_reload_config()
+                self._compound_load_autopilot()
                 self._compound_load_results()
                 self._compound_load_overview()
         else:
@@ -1631,6 +1891,7 @@ class SolTuiApp(App):
         table.clear()
         if not env["ok"]:
             return
+        self._compound_overview_rows = {r["asset"]: r for r in env["result"]["coins"]}
         for r in env["result"]["coins"]:
             table.add_row(r["asset"], "yes" if r["own_settings"] else "-", r["data"] or "none",
                           r["backtest_verdict"], _pct(r["backtest_hit"]), str(r["fwd_calls"]), _pct(r["fwd_hit"]),
@@ -1645,6 +1906,7 @@ class SolTuiApp(App):
         env = self._call("compound.config", {"asset": self._compound_coin}, quiet=True)
         if env["ok"]:
             self._compound_cfg = env["result"]["config"]
+            self._compound_own = env["result"]["own_settings"]
         self._compound_live.clear()
         self._compound_learned.clear()
         self._compound_tuned.clear()
@@ -1687,7 +1949,9 @@ class SolTuiApp(App):
     def _compound_unattended_stop_all(self) -> None:
         env = self._call("compound.unattended_stop", {"all": True})
         status = self.query_one("#compound-status", Static)
-        status.update(Text(f"stop requested for {', '.join(env['result']['stopping']) or 'nothing running'}")
+        status.update(Text(f"stop requested for {', '.join(env['result']['stopping']) or 'nothing running'}"
+                           + ("; autopilot restarts them within five minutes (turn autopilot off to keep them "
+                              "stopped)" if self._compound_autopilot else ""))
                       if env["ok"] else f"[red]{escape(self._msg(env))}[/]")
         self._compound_load_overview()
 
@@ -1708,7 +1972,10 @@ class SolTuiApp(App):
         status = self.query_one("#compound-status", Static)
         if env["ok"]:
             r = env["result"]
-            status.update("stop requested; it exits after the current tick" if r["stopping"] else r.get("message", ""))
+            status.update(("stop requested; it exits after the current tick"
+                           + ("; autopilot restarts it within five minutes (turn autopilot off to keep it "
+                              "stopped)" if r.get("autopilot_restarts") else ""))
+                          if r["stopping"] else r.get("message", ""))
         else:
             status.update(f"[red]{escape(self._msg(env))}[/]")
         self._compound_show_unattended()
@@ -2955,8 +3222,113 @@ class SolTuiApp(App):
 
     def action_toggle_editor(self) -> None:
         """ctrl+e: hide/show the editor panel without losing its contents."""
+        self._set_editor_open(not self.query_one("#editor-panel").display)
+
+    # -- the editor's size and visibility (the orange bar above it) ---------------------------
+
+    def _set_editor_open(self, open_: bool, *, persist: bool = True) -> None:
         panel = self.query_one("#editor-panel")
-        panel.display = not panel.display
+        panel.display = open_
+        bar = self.query_one("#editor-bar", EditorBar)
+        bar.panel_open = open_
+        bar.refresh()
+        if persist:
+            self._save_ui_state()
+
+    def _set_editor_height(self, height: int, *, persist: bool = True) -> None:
+        bar = self.query_one("#editor-bar", EditorBar)
+        self._editor_height = min(max(int(height), EditorBar.MIN_HEIGHT), bar.max_height())
+        self.query_one("#editor-panel").styles.height = self._editor_height
+        if persist:
+            self._save_ui_state()
+
+    @on(EditorBar.Resized)
+    def _editor_resized(self, event: EditorBar.Resized) -> None:
+        if not self.query_one("#editor-panel").display:
+            self._set_editor_open(True, persist=False)
+        self._set_editor_height(event.height, persist=event.final)
+
+    @on(EditorBar.Close)
+    def _editor_close(self) -> None:
+        self._set_editor_open(False)
+
+    @on(EditorBar.Open)
+    def _editor_open(self) -> None:
+        self._set_editor_open(True)
+
+    @on(EditorBar.Reset)
+    def _editor_reset(self) -> None:
+        self._set_editor_height(self.EDITOR_HEIGHT)
+
+    def action_grow_editor(self) -> None:
+        self._set_editor_open(True, persist=False)
+        self._set_editor_height(self._editor_height + 2)
+
+    def action_shrink_editor(self) -> None:
+        self._set_editor_height(self._editor_height - 2)
+
+    def _apply_ui_state(self) -> None:
+        state: dict[str, Any] = {}
+        if self._ui_state_path is not None:
+            try:
+                loaded = json.loads(self._ui_state_path.read_text(encoding="utf-8"))
+                state = loaded if isinstance(loaded, dict) else {}
+            except (OSError, ValueError):
+                state = {}  # first run, or a torn file: the defaults are a fine layout
+        height = state.get("editor_height")
+        if isinstance(height, int) and not isinstance(height, bool):
+            self._set_editor_height(height, persist=False)
+        self._set_editor_open(state.get("editor_open", True) is not False, persist=False)
+
+    def _save_ui_state(self) -> None:
+        if self._ui_state_path is None:
+            return
+        data = {"editor_height": self._editor_height,
+                "editor_open": bool(self.query_one("#editor-panel").display)}
+        try:
+            self._ui_state_path.parent.mkdir(parents=True, exist_ok=True)
+            tmp = self._ui_state_path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(data) + "\n", encoding="utf-8")
+            tmp.replace(self._ui_state_path)
+        except OSError:
+            pass  # a layout preference that cannot be saved is not worth interrupting anyone for
+
+    # -- previews: a selected row explained in the shared editor ------------------------------
+
+    def _show_preview(self, title: str, text: str) -> None:
+        """Show generated, read-only text in the shared editor.
+
+        A preview never replaces unsaved edits: if a catalogued file is open with changes, the
+        status line says so and the edits stay. An identical preview is not reloaded, so the
+        periodic table refresh does not jump the editor back to the top.
+        """
+        view = self.query_one("#docs-view", TextArea)
+        status = self.query_one("#docs-view-status", Static)
+        if self._docs_current_path is not None and view.text != self._docs_loaded_text:
+            status.update(f"unsaved changes in {self._docs_current_path}: save (ctrl+s) to see the "
+                          f"{title} preview here")
+            return
+        if self._preview_text == text and self._docs_current_path is None:
+            return
+        self._docs_current_path = None
+        self._docs_current_editable = False
+        self._docs_loaded_text = text
+        self._preview_text = text
+        view.read_only = True
+        view.text = text
+        try:
+            view.language = "markdown"
+        except Exception:  # noqa: BLE001 - grammar unavailable in this build
+            view.language = None
+        view.scroll_home(animate=False)
+        status.update(f"preview: {title} (read-only)")
+        self.query_one("#docs-save", Button).disabled = True
+
+    def _on_compound_tab(self) -> bool:
+        try:
+            return self.query_one(TabbedContent).active == "tab-compound"
+        except Exception:  # noqa: BLE001 - during compose there is no tab set yet
+            return False
 
     def _open_doc(self, path: str, *, force: bool = False) -> None:
         """Load `path` into the shared editor panel.
@@ -3007,6 +3379,7 @@ class SolTuiApp(App):
 
         self._docs_current_path = path
         self._docs_current_editable = editable
+        self._preview_text = None
         note = " (discarded unsaved edit)" if moving_away else ""
         status.update(f"{path} — {'editable' if editable else 'read-only'}{note}")
         self.query_one("#docs-save", Button).disabled = not editable
@@ -3050,7 +3423,7 @@ class SolTuiApp(App):
 
 def main(argv: list[str] | None = None) -> int:
     """Entry point for `python3 -m soltui.tui`."""
-    SolTuiApp().run()
+    SolTuiApp(ui_state_path=config_mod.CONFIG_DIR / "tui.json", ensure_autopilot=True).run()
     return 0
 
 
