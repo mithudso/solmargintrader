@@ -726,7 +726,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3540
+      "lines": 3550
     },
     {
       "path": "soltui/signals.py",
