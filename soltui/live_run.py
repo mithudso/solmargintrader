@@ -7,6 +7,7 @@ and provides a UI to launch the Node.js extension in dry-run mode.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -69,6 +70,28 @@ def run_dryrun(strategy_name: str) -> dict:
     if result.returncode != 0:
         raise RuntimeError(f"Dryrun failed (code {result.returncode}):\n{result.stderr}")
     return {"command": cmd, "returncode": result.returncode, "stdout": result.stdout}
+
+
+_CAPITAL_RE = re.compile(r"capital needed:\s*\$([0-9][0-9,]*\.?[0-9]*)")
+_TICK_NET_RE = re.compile(r"^tick\s+\d+\s.*\bnet\s+\$(-?[0-9][0-9,]*\.?[0-9]*)", re.MULTILINE)
+
+
+def dryrun_net_pct(stdout: str) -> float | None:
+    """Net % of the extension's dry run: last tick's marked net USD over the capital it printed.
+
+    Both numbers come from the tool's own output (`capital needed:` and the final `tick N ... net`
+    line). None when either is absent, so a changed output format shows "no figure" and not 0.
+    """
+    cap = _CAPITAL_RE.search(stdout or "")
+    ticks = _TICK_NET_RE.findall(stdout or "")
+    if not cap or not ticks:
+        return None
+    try:
+        capital = float(cap.group(1).replace(",", ""))
+        net = float(ticks[-1].replace(",", ""))
+    except ValueError:
+        return None
+    return net / capital if capital > 0 else None
 
 
 def spawn_dryrun(strategy_name: str, update_status: callable) -> None:

@@ -44,10 +44,11 @@ from typing import Any, Callable
 from . import analyze as analyze_mod
 from . import bgcontrol, bgqueue
 from . import cumulative as cumulative_mod
-from . import docs_browser, live_run
+from . import docs_browser, live_run, pnl as pnl_mod, presets as presets_mod
 from . import liquidity as liq
 from . import top5 as top5_mod
 from .config import INTERVALS, Settings, load_settings, save_settings
+from .netpct import labelled, net_pct
 from .paper import MODE_LABEL, PaperSession, start_session
 from .reference import FAMILY_NOTES, RESEARCH_DRIVERS, RESEARCH_FINDINGS, SIGNAL_REFERENCE
 from .roster import Roster, RosterError, available_strategies
@@ -177,6 +178,10 @@ class Runtime:
         self.state = AppState()
         self.runner = SweepRunner(self.state)
         self.session: PaperSession | None = None
+        self.session_label = ""
+        self.session_asset = ""
+        # Backtest equity curves for the P&L tab, keyed by everything that changes them.
+        self.pnl_cache: dict[str, Any] = {}
         self.queue_results: list[bgqueue.JobResult] = []
         self.queue_cursor = bgqueue.ResultsCursor()
         self.lock = threading.RLock()
@@ -672,7 +677,9 @@ def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
     if skipped:
         message += f" · {len(skipped)} skipped (warm-up or trade floor)"
     return {
-        "rows": [dataclasses.asdict(r) for r in outcome.ranked()],
+        "rows": [{**dataclasses.asdict(r), "net_pct": r.median_return,
+                  "net_pct_text": labelled(r.median_return, "backtest", "median net")}
+                 for r in outcome.ranked()],
         "evaluable": len(outcome.evaluable), "positive": len(outcome.positive),
         "skipped": [{"label": r.label, "reason": r.reason} for r in skipped],
         "cancelled": outcome.cancelled, "message": message,
@@ -708,14 +715,16 @@ def _paper_view(ctx: Context) -> dict[str, Any]:
     fills = [{"bar": f.bar_index, "when": f.when, "side": f.side, "reason": f.reason,
               "price": f.price, "units": f.units, "cost": f.cost, "equity": f.equity_after}
              for f in session.intended_fills()[-200:]]
+    s["net_pct"] = s["pnl"]
+    s["net_pct_text"] = labelled(s["pnl"], "paper", "net")
     return {"summary": s, "text": (
         f"bar {s['bar']}/{s['bars_total']}  {s['when']}   equity {s['equity']:,.2f}   "
-        f"P&L {format_pct(s['pnl'])}   exposure {s['exposure']:.2f}   fills {s['fills']}   "
+        f"{s['net_pct_text']}   exposure {s['exposure']:.2f}   fills {s['fills']}   "
         f"live orders placed: {s['live_orders_placed']}"), "fills": fills, "mode": MODE_LABEL}
 
 
-@command("paper.start", "Backtest one roster strategy and open a bar-by-bar dry-run replay.",
-         (P("label", "string", "Roster label to replay.", True),
+@command("paper.start", "Backtest one roster strategy or Top 5 preset (top5:N) and open a bar-by-bar dry-run replay.",
+         (P("label", "string", "Roster label to replay, or top5:N for a Top 5 preset.", True),
           P("bars", "number", "Bars to advance right after starting (default 0).")),
          read_only=False, long_running=True)
 def paper_start(ctx: Context, p: dict[str, Any]) -> Any:
@@ -724,16 +733,26 @@ def paper_start(ctx: Context, p: dict[str, Any]) -> Any:
     label = p.get("label")
     if not label:
         raise CommandError("failed", "pick a strategy first")
-    entry = next((e for e in ctx.roster if e.label == label), None)
-    if entry is None:
+    rank = presets_mod.parse_value(label)
+    entry = None if rank is not None else next((e for e in ctx.roster if e.label == label), None)
+    if rank is None and entry is None:
         raise CommandError("failed", "strategy left the roster")
     try:
-        arrays = load_arrays(ctx.settings)
-        session = start_session(build(entry.name, **entry.params), arrays,
-                                engine_config(ctx.settings))
+        if rank is not None:
+            # A Top 5 preset replays on the series it was fitted on, not on the Settings asset.
+            preset = presets_mod.find_preset(rank)
+            arrays = presets_mod.load_preset_arrays(preset, ctx.settings.data_dir)
+            session = start_session(presets_mod.build_strategy(preset), arrays,
+                                    engine_config(ctx.settings, interval=preset["interval"]))
+        else:
+            arrays = load_arrays(ctx.settings)
+            session = start_session(build(entry.name, **entry.params), arrays,
+                                    engine_config(ctx.settings))
     except Exception as exc:  # noqa: BLE001 - the type is the most useful part of a load failure
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
     ctx.session = session
+    ctx.runtime.session_label = label
+    ctx.runtime.session_asset = (preset["asset"] if rank is not None else ctx.settings.asset)
     ctx.state.phase = Phase.PAPER
     if p.get("bars"):
         session.advance(int(p["bars"]))
@@ -782,14 +801,19 @@ def live_recommendation(ctx: Context, p: dict[str, Any]) -> Any:
          (P("strategy", "string", "Strategy name or Top 5 label.", True),),
          read_only=False, long_running=True)
 def live_spawn_dryrun(ctx: Context, p: dict[str, Any]) -> Any:
-    return live_run.run_dryrun(p["strategy"].strip())
+    out = live_run.run_dryrun(p["strategy"].strip())
+    net = live_run.dryrun_net_pct(out["stdout"])
+    out["net_pct"] = net
+    out["net_pct_text"] = labelled(net, "dry-run", "net")
+    return out
 
 
 # -- Top 5 ---------------------------------------------------------------------------------------
 
 
 def _asset_result(r) -> dict[str, Any]:
-    return dataclasses.asdict(r)
+    return {**dataclasses.asdict(r), "net_pct": r.median_return,
+            "net_pct_text": labelled(r.median_return, "backtest", "median net")}
 
 
 @command("top5.list", "The five recommended configurations with their evidence and transfer tests.")
@@ -806,6 +830,14 @@ def top5_list(ctx: Context, p: dict[str, Any]) -> Any:
         "transfer_assets": sorted({t.asset for c in configs for t in c.transfers}),
         "repro_command": top5_mod.REPRO_COMMAND,
     }
+
+
+@command("top5.presets",
+         "The five Top 5 configurations as one-click presets for Analyze, Live Run and Execute.")
+def top5_presets(ctx: Context, p: dict[str, Any]) -> Any:
+    return {"presets": presets_mod.build_presets(), "home_asset": top5_mod.HOME_ASSET,
+            "note": "Parameters are the SOL-tuned values of research/sweep.py HORIZONS; "
+                    "net % is the backtest median path return, not a live result."}
 
 
 @command("top5.add_to_roster",
@@ -845,13 +877,25 @@ def analyze_assets(ctx: Context, p: dict[str, Any]) -> Any:
 @command("analyze.run", "Replay every strategy up to a moment and report what each would decide.",
          (P("asset", "string", "Coin symbol, e.g. SOL.", True),
           P("interval", "string", "Bar interval (default 1d)."),
-          P("as_of", "string", "YYYY-MM-DD or YYYY-MM-DD HH:MM UTC; omit for the last bar.")))
+          P("as_of", "string", "YYYY-MM-DD or YYYY-MM-DD HH:MM UTC; omit for the last bar."),
+          P("preset", "string", "top5:N: judge only that Top 5 configuration, with its parameters.")))
 def analyze_run(ctx: Context, p: dict[str, Any]) -> Any:
     raw = (p.get("as_of") or "").strip()
     when = analyze_mod.parse_as_of(raw) if raw else None
-    result = analyze_mod.analyse(p["asset"], p.get("interval", "1d"), as_of=when)
+    rank = presets_mod.parse_value(p["preset"]) if p.get("preset") else None
+    if p.get("preset") and rank is None:
+        raise CommandError("bad_params", 'parameter "preset" must look like top5:1')
+    if rank is not None:
+        preset = presets_mod.find_preset(rank)
+        result = analyze_mod.analyse(
+            p["asset"], p.get("interval", preset["interval"]), as_of=when, keys=[],
+            extra=[(preset["label"], "top5", presets_mod.build_strategy(preset))])
+    else:
+        result = analyze_mod.analyse(p["asset"], p.get("interval", "1d"), as_of=when)
+    net = result.net_pct
     return {
         "headline": result.headline, "truncated": result.truncated,
+        "net_pct": net, "net_pct_text": labelled(net, "backtest", "data price change"),
         "decisions": [{"name": d.name, "family": d.family, "action": d.action, "detail": d.detail,
                        "warmup": d.warmup, "bars": d.bars} for d in result.decisions],
         "actions": result.actions,
@@ -868,7 +912,9 @@ def cumulative_summary(ctx: Context, p: dict[str, Any]) -> Any:
             "source": s.source, "rankable": len(s.rankable), "below_floor": len(s.below_floor),
             "positive": s.positive, "made_money": s.made_money, "median_sharpe": s.median_sharpe,
             "path_range": s.path_range,
-            "best": ({"label": s.best.label, "median_sharpe": s.best.median_sharpe}
+            "best": ({"label": s.best.label, "median_sharpe": s.best.median_sharpe,
+                      "net_pct": s.best.median_return,
+                      "net_pct_text": labelled(s.best.median_return, "backtest", "median net")}
                      if s.best else None),
         } for s in summaries],
         "casualties": [{"source": r.source, "label": r.label, "median_sharpe": r.median_sharpe,
@@ -922,7 +968,9 @@ def queue_status(ctx: Context, p: dict[str, Any]) -> Any:
         "missing": [{"asset": m.asset, "interval": m.interval, "command": m.command_text}
                     for m in missing],
         "fetch_log": str(fetch_log) if fetch_log.exists() else None,
-        "ranked": [{**dataclasses.asdict(r), "label": r.label} for r in ranked[:200]],
+        "ranked": [{**dataclasses.asdict(r), "label": r.label, "net_pct": r.median_return,
+                    "net_pct_text": labelled(r.median_return, "backtest", "median net")}
+                   for r in ranked[:200]],
         "floor": [{**dataclasses.asdict(r), "label": r.label,
                    "why": r.reason or f"under the {bgqueue.MIN_TRADES}-trade floor"}
                   for r in floor[:200]],
@@ -1073,3 +1121,164 @@ def docs_write(ctx: Context, p: dict[str, Any]) -> Any:
     except (PermissionError, FileNotFoundError, OSError) as exc:
         raise CommandError("failed", f"save failed: {exc}") from exc
     return {"path": p["path"], "bytes": len(p["text"].encode("utf-8")), "file": str(target)}
+
+
+# -- P&L -----------------------------------------------------------------------------------------
+
+JOURNAL_ENV = "SOLTUI_JOURNAL"
+DEFAULT_JOURNAL = Path.home() / ".solmargintrader" / "journal.json"
+
+PNL_PARAMS = (
+    P("window", "string", "24h, 7d, 30d (default), 90d, ytd or all. start/end override it."),
+    P("start", "string", "Custom window start, UTC: YYYY-MM-DD or YYYY-MM-DD HH:MM."),
+    P("end", "string", "Custom window end, UTC. A date alone includes that whole day."),
+    P("source", "string", "all (default), backtest, paper, dry-run, dry-run LP or live LP."),
+)
+
+
+def _backtest_curves(ctx: Context) -> tuple[list[pnl_mod.Curve], list[str]]:
+    """One full-history run per roster strategy, cached until settings, roster or data change."""
+    s = ctx.settings
+    path = Path(s.data_dir) / f"{s.asset.upper()}_{s.interval}.csv"
+    try:
+        stamp = (path.stat().st_mtime_ns, path.stat().st_size)
+    except OSError:
+        stamp = None
+    key = json.dumps([s.asset, s.interval, s.start, s.end, s.capital, s.fee_bps, s.slippage_bps,
+                      s.fill_delay, s.data_dir, ctx.roster.to_list(), stamp], sort_keys=True)
+    cached = ctx.runtime.pnl_cache.get("backtest")
+    if cached and cached[0] == key:
+        return cached[1], cached[2]
+    curves: list[pnl_mod.Curve] = []
+    notes: list[str] = []
+    try:
+        arrays = load_arrays(s)
+        cfg = engine_config(s)
+    except Exception as exc:  # noqa: BLE001 - say what is missing instead of failing the tab
+        notes.append(f"no backtest data: {type(exc).__name__}: {str(exc).splitlines()[0]}")
+        arrays = None
+    if arrays is not None:
+        from backtester.core.engine import run_backtest
+        from backtester.core.strategies import build
+
+        for e in ctx.roster:
+            try:
+                res = run_backtest(build(e.name, **e.params), arrays, cfg)
+            except Exception as exc:  # noqa: BLE001
+                notes.append(f"{e.label}: {type(exc).__name__}: {exc}")
+                continue
+            curves.append(pnl_mod.curves_from_backtest(res, "backtest", e.label, s.asset.upper(),
+                                                       s.capital))
+        notes.append(f"{len(curves)} roster strategies, {s.asset.upper()} {s.interval}, each on "
+                     f"${s.capital:,.0f}; sections add independent runs (equal-capital sleeves)")
+    ctx.runtime.pnl_cache["backtest"] = (key, curves, notes)
+    return curves, notes
+
+
+def _paper_curves(ctx: Context) -> tuple[list[pnl_mod.Curve], list[str]]:
+    if ctx.session is None:
+        return [], ["no paper session is open: start one on the Execute tab"]
+    rt = ctx.runtime
+    curve = pnl_mod.curve_from_paper(ctx.session, rt.session_label or "paper session",
+                                     rt.session_asset or ctx.settings.asset.upper())
+    return [curve], [f"replay up to bar {ctx.session.cursor}; bars after the cursor are not counted"]
+
+
+def _journal_curves() -> tuple[list[pnl_mod.Curve], list[str]]:
+    path = Path(os.environ.get(JOURNAL_ENV) or DEFAULT_JOURNAL)
+    try:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return [], [f"extension journal not found at {path}"]
+    except (OSError, ValueError) as exc:
+        return [], [f"extension journal unreadable: {exc}"]
+    curves = pnl_mod.curves_from_journal(doc)
+    return curves, ([] if curves else ["extension journal has no fills"])
+
+
+def _lp_curves() -> list[tuple[str, list[pnl_mod.Curve], list[str]]]:
+    """The liquidity daemon's files, read-only. History from the ledger when it has snapshots."""
+    import sqlite3
+
+    home = liq.state_dir()
+    status = liq.load_status(home)
+    if status.data is None:
+        return [("live LP", [], [f"liquidity state unavailable: {status.reason}"])]
+    mode = status.data.get("mode")
+    source = pnl_mod.lp_source(mode)
+    notes = [f"daemon mode: {mode if isinstance(mode, str) else 'unknown'}"]
+    curve = None
+    ledger = home / "ledger.sqlite"
+    if ledger.exists():
+        try:
+            conn = sqlite3.connect(f"file:{ledger}?mode=ro", uri=True, timeout=2)
+            try:
+                curve = pnl_mod.curve_from_lp_ledger(conn, mode)
+            finally:
+                conn.close()
+        except sqlite3.Error as exc:
+            notes.append(f"ledger.sqlite unreadable: {exc}")
+    if curve is None:
+        curve = pnl_mod.curve_from_lp_status(status.data)
+        if curve is not None:
+            notes.append("no ledger history: showing the status.json cumulative figure")
+    return [(source, [curve] if curve else [], notes)]
+
+
+def _pnl_report(ctx: Context, p: dict[str, Any]) -> dict[str, Any]:
+    try:
+        window = pnl_mod.resolve_window(p.get("window"), p.get("start"), p.get("end"))
+        only = pnl_mod.normalise_source(p.get("source"))
+    except pnl_mod.PnlError as exc:
+        raise CommandError("bad_params", str(exc)) from exc
+    inputs: list[tuple[str, list[pnl_mod.Curve], list[str]]] = []
+    wanted = lambda *names: only is None or only in names  # noqa: E731
+    if wanted("backtest"):
+        c, n = _backtest_curves(ctx)
+        inputs.append(("backtest", c, n))
+    if wanted("paper"):
+        c, n = _paper_curves(ctx)
+        inputs.append(("paper", c, n))
+    if wanted("dry-run"):
+        c, n = _journal_curves()
+        inputs.append(("dry-run", c, n))
+    if wanted("dry-run LP", "live LP", "reported LP"):
+        for src, c, n in _lp_curves():
+            if only is None or only == src or (only == "live LP" and src == "reported LP"):
+                inputs.append((src, c, n))
+    return pnl_mod.build_report(inputs, window)
+
+
+_SUMMARY_KEYS = ("source", "group", "label", "status", "message", "data_range", "runs", "windowed", "notes",
+                 "totals", "drawdown")
+_SERIES_KEYS = ("source", "group", "label", "status", "message", "data_range", "windowed", "notes", "days",
+                "drawdown", "best_worst")
+_BREAKDOWN_KEYS = ("source", "group", "label", "status", "message", "data_range", "windowed", "notes",
+                   "by_strategy", "by_asset", "best_worst")
+
+
+def _pnl_slice(report: dict[str, Any], keys: tuple[str, ...]) -> dict[str, Any]:
+    return {**{k: v for k, v in report.items() if k != "sections"},
+            "sections": [{k: s[k] for k in keys if k in s} for s in report["sections"]]}
+
+
+@command("pnl.summary",
+         "Net and gross P&L, fees, slippage, borrow, realized vs unrealized, win rate, expectancy and "
+         "drawdown for a window. One section per source; simulated and real are never summed.",
+         PNL_PARAMS)
+def pnl_summary(ctx: Context, p: dict[str, Any]) -> Any:
+    return _pnl_slice(_pnl_report(ctx, p), _SUMMARY_KEYS)
+
+
+@command("pnl.series",
+         "Daily P&L with the cumulative curve, drawdown, recovery and best/worst day, week and month.",
+         PNL_PARAMS)
+def pnl_series(ctx: Context, p: dict[str, Any]) -> Any:
+    return _pnl_slice(_pnl_report(ctx, p), _SERIES_KEYS)
+
+
+@command("pnl.breakdown",
+         "P&L by strategy and by asset, with each one's contribution to its section's net %.",
+         PNL_PARAMS)
+def pnl_breakdown(ctx: Context, p: dict[str, Any]) -> Any:
+    return _pnl_slice(_pnl_report(ctx, p), _BREAKDOWN_KEYS)

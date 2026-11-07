@@ -1,6 +1,8 @@
 # Prompt history
 
 Version: 8
+Delta: added the Top 5 presets, wallet discovery, net % and P&L page request.
+
 Delta: added the leverage-tier and reliable-trigger request.
 
 ## v1 - 2026-11-06
@@ -54,6 +56,11 @@ Workstream P (Python side) of the soltui command bridge, and workstream X (the e
 ## v8 - 2026-11-07
 
 ```text
+For all of the top 5, pre-populate that strategy as a clickable option in the analyze, live runs, and execute tabs. Make it so I can add my wallet  address and private key and it will find all of my coins and contracts, and then add the ability to swap between coins and chains using the best pricing, and ultimately I want a "run this strategy live" button on the top 5 page that will make actual real money transactions using the signals and strategy that bacvktested well. Also on all the pages that show results add a net % growth or decline but also create a dedicated profit and loss page which does a detailed and in depth analysis of profit and loss over a variable time..
+```
+
+Scope of this session: the read-only part only (presets, net %, the P&L tab, read-only wallet discovery). Swaps, transaction signing and the live-run button are a later, separately gated workstream; no private-key field was added.
+
 Add strategies for low, medium, and high margin trading, I want to backtest high margin perp trades. And I want to compile a list of very reliable signals, what I mean is not that I think that signal will work all the time with no context, but look for signals that are correct a vast majority of the time and to what degree. The idea being if we have what amount to triggers then we can wait for the reliable trigger to happen, place an order in the direction it is likely to go, and exit before the trigger context expires. For instance I could imagine something like "every time macd crosses while balance is strongly negative and there is a down sloped moving average the next 5 bars are always down"  (I'm making that up), or "When volume spikes to 10x normal, the next several bars will be negative followed by a sharp rise." things like that can be validated and backtested and used when they occur.
 ```
 

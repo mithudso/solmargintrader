@@ -31,6 +31,10 @@ HEAVY = {
     "queue.fetch": {"fetching": [], "log": None},
     "analyze.run": {"headline": "stub", "truncated": False, "decisions": [], "actions": {}},
     "docs.write": {"path": "x", "bytes": 1, "file": "x"},
+    # The P&L commands run the roster's backtests, which need a cached price series.
+    "pnl.summary": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
+    "pnl.series": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
+    "pnl.breakdown": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
 }
 
 

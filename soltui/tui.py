@@ -22,9 +22,11 @@ from pathlib import Path
 from typing import Any, Callable
 
 from textual import events, on, work
+from rich.markup import escape
 from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual.widgets.option_list import Option
 from textual.widgets import (
     Button,
     DataTable,
@@ -32,6 +34,7 @@ from textual.widgets import (
     Header,
     Input,
     Label,
+    OptionList,
     Select,
     Static,
     TabbedContent,
@@ -115,6 +118,33 @@ HEADER_GLOSSARY = {
     "% paths +": (
         "Fraction of CPCV paths (regime-mixed train/test splits) where the "
         "Sharpe was positive. 100% of 15 is still only 15 paths."),
+    "best backtest median net %": (
+        "Net growth or decline (final / initial - 1) of the best rankable row, median across its CPCV "
+        "paths, after costs. A simulation."),
+    "source": "Where the figure comes from: backtest, paper, dry-run, dry-run LP or live LP.",
+    "runs": "How many independent runs the row adds up (each on its own starting capital).",
+    "net $": "Final minus initial equity inside the window, after fees, slippage and borrow.",
+    "net % (source named)": (
+        "Net growth or decline, final / initial - 1, over the window. The cell names its source; "
+        "a bare percentage would read as real money."),
+    "gross $": "Net P&L plus the fees, slippage and borrow paid inside the window.",
+    "costs $": "Fees plus slippage plus borrow/funding paid inside the window.",
+    "realized $": "Net result of the fills that closed risk inside the window.",
+    "unrealized $": "Net P&L not yet realized: the mark on what is still open.",
+    "contribution (source named)": (
+        "Percentage points this row adds to its section's net %. The rows of a section sum to it."),
+    "period": "The kind of period: a UTC day, an ISO week (keyed by its Monday) or a calendar month.",
+    "best": "The period with the highest summed P&L, and that P&L.",
+    "worst": "The period with the lowest summed P&L, and that P&L.",
+    "date": "UTC calendar day.",
+    "p&l $": "Equity change over the UTC day, after costs.",
+    "cumulative $": "Equity change from the start of the window to the end of this day.",
+    "cumulative % (source named)": "Cumulative net growth or decline since the window start.",
+    "drawdown (source named)": "How far equity sits below its running peak (the opening value counts as a peak).",
+    "backtest median net %": (
+        "Net growth or decline of the backtest, final equity / initial equity - 1, taken as the "
+        "MEDIAN across CPCV paths, after fees and slippage. A simulation, not a result in a "
+        "real account."),
     "median ret": (
         "Median total return across CPCV paths over the tested window, "
         "after fees and slippage."),
@@ -229,6 +259,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#liq-kill": "liquidity.kill",
     "#liq-resume": "liquidity.resume",
     "#docs-save": "docs.write",
+    "#pnl-run": "pnl.summary",
 }
 
 class GlossaryTable(DataTable):
@@ -417,7 +448,7 @@ class VimTextArea(TextArea):
 
 
 class SolTuiApp(App):
-    """The console: thirteen tabs over the tested modules."""
+    """The console: fourteen tabs over the tested modules."""
 
     TITLE = "soltui — SOL strategy console"
     SUB_TITLE = "dry-run only · no live order path"
@@ -433,6 +464,7 @@ class SolTuiApp(App):
     .form-row { height: 3; }
     .form-row Label { width: 22; content-align: right middle; padding-right: 1; }
     .hint { color: $text-muted; }
+    .preset-list { height: 7; margin-bottom: 1; }
     DataTable { height: 1fr; }
     TabbedContent { height: 1fr; }
     #editor-panel {
@@ -479,6 +511,12 @@ class SolTuiApp(App):
         self._liq_resume_armed_at = 0.0
         self._top5_loaded = False
         self._top5_configs: list[dict[str, Any]] = []
+        # Top 5 presets from `top5.presets`, or the reason there are none. Filled before compose.
+        self._presets: list[dict[str, Any]] = []
+        self._presets_error = ""
+        self._analyze_preset = ""
+        self._analyze_values: set[str] = set()
+        self._pnl_loaded = False
 
     # State lives on the Context; these keep the names the rest of the app (and tests) use.
     @property
@@ -539,8 +577,26 @@ class SolTuiApp(App):
 
     # -- layout ----------------------------------------------------------
 
+    def _load_presets(self) -> None:
+        env = self._call("top5.presets", quiet=True)
+        if env["ok"]:
+            self._presets, self._presets_error = env["result"]["presets"], ""
+        else:
+            self._presets, self._presets_error = [], self._msg(env)
+
+    def _preset_list(self, tab: str) -> ComposeResult:
+        """The Top 5 as clickable options (`OptionList`); a click fills this tab's fields."""
+        yield Static("Top 5 presets — click one to fill this tab:", classes="hint")
+        if not self._presets:
+            yield Static(f"no presets: {self._presets_error or 'Top 5 evidence not loaded'}",
+                         classes="hint", id=f"preset-{tab}-empty")
+            return
+        yield OptionList(*[Option(f"{p['title']}   {p['net_pct_text']}", id=p["value"])
+                           for p in self._presets], id=f"preset-{tab}", classes="preset-list")
+
     def compose(self) -> ComposeResult:
         """Build the tab set."""
+        self._load_presets()
         yield Header()
         yield Static(build_title(self.state), id="indicator")
         with TabbedContent(initial="tab-backtest"):
@@ -566,6 +622,8 @@ class SolTuiApp(App):
                 yield from self._queue_pane()
             with TabPane("Liquidity", id="tab-liquidity"):
                 yield from self._liquidity_pane()
+            with TabPane("P&L", id="tab-pnl"):
+                yield from self._pnl_pane()
             with TabPane("Research", id="tab-research"):
                 yield from self._research_pane()
             with TabPane("Docs", id="tab-docs"):
@@ -712,6 +770,7 @@ class SolTuiApp(App):
                 "the Node.js extension's dry-run engine. The TUI itself places no orders.",
                 classes="hint",
             )
+            yield from self._preset_list("live")
             with Horizontal(classes="form-row"):
                 yield Label("Recommended:")
                 yield Static("Loading...", id="live-run-recommendation", classes="hint")
@@ -733,6 +792,7 @@ class SolTuiApp(App):
                 "no keys, no signing, no venue client.",
                 classes="hint",
             )
+            yield from self._preset_list("exec")
             with Horizontal(classes="form-row"):
                 yield Label("Strategy:")
                 yield Select([], id="exec-strategy", allow_blank=True)
@@ -774,7 +834,7 @@ class SolTuiApp(App):
         res = self.query_one("#results-table", DataTable)
         res.add_columns(
             "strategy", "family", "median Sharpe", "IQR", "% paths +",
-            "median ret", "trades",
+            "backtest median net %", "trades",
         )
 
         fills = self.query_one("#fills-table", DataTable)
@@ -897,7 +957,8 @@ class SolTuiApp(App):
         """Keep the Execute strategy picker in sync with the roster."""
         sel = self.query_one("#exec-strategy", Select)
         labels = [e["label"] for e in self._call("roster.list")["result"]["entries"]]
-        sel.set_options([(label, label) for label in labels])
+        sel.set_options([(label, label) for label in labels]
+                        + [(f"Top 5 {p['title']}", p["value"]) for p in self._presets])
 
     def _parse_params(self) -> dict[str, Any]:
         """Parse 'fast=20 slow=50' into typed kwargs."""
@@ -1074,7 +1135,9 @@ class SolTuiApp(App):
                 row["label"], row["family"], f"{row['median_sharpe']:+.3f}", f"{row['iqr']:.3f}",
                 f"{row['frac_positive']:.0%}", format_pct(row["median_return"]), str(row["trades"]),
             )
-        status.update(r["message"])
+        best = r["rows"][0] if r["rows"] else None
+        status.update(r["message"] + (f" · best Sharpe: {best['label']} {best['net_pct_text']}"
+                                      if best else ""))
 
     @on(Button.Pressed, "#btn-run-untested")
     @work(thread=True)
@@ -1167,6 +1230,9 @@ class SolTuiApp(App):
             self._refresh_top5()
         elif pane == "tab-liverun":
             self._refresh_live_run()
+        elif pane == "tab-pnl" and not self._pnl_loaded:
+            self._pnl_loaded = True
+            self._pnl_run()
 
     # -- Live Run --------------------------------------------------------
 
@@ -1195,7 +1261,8 @@ class SolTuiApp(App):
         env = self._call("live.spawn_dryrun", {"strategy": strategy_name})
         if env["ok"]:
             text = "Dryrun finished successfully.\n" + env["result"]["stdout"]
-            self.call_from_thread(status.update, "dry run finished")
+            self.call_from_thread(status.update,
+                                  f"dry run finished · {env['result']['net_pct_text']}")
         else:
             text = self._msg(env)
             self.call_from_thread(status.update, f"[red]{text.splitlines()[0]}[/]")
@@ -1225,7 +1292,7 @@ class SolTuiApp(App):
             configs = GlossaryTable(id="top5-table")
             configs.add_columns("#", "configuration", "horizon", "signals",
                                 "median Sharpe", "IQR", "% paths +",
-                                "median ret", "trades", "paths")
+                                "backtest median net %", "trades", "paths")
             configs.cursor_type = "row"
             yield configs
             yield Static(
@@ -1237,12 +1304,12 @@ class SolTuiApp(App):
             transfers = GlossaryTable(id="top5-transfers")
             transfers.add_columns("#", "configuration", "asset",
                                   "median Sharpe", "Δ vs SOL", "% paths +",
-                                  "median ret", "trades", "paths")
+                                  "backtest median net %", "trades", "paths")
             yield transfers
             yield Static(
                 "Benchmark that must stay in view: buy_and_hold, zero "
                 "parameters, medium/long median Sharpe +0.534, 68% of paths "
-                "positive, +9.4% median return — 2nd of 25 at the medium "
+                "positive, +9.4% backtest median net return — 2nd of 25 at the medium "
                 "horizon. A configuration that does not clearly beat it is "
                 "not worth its complexity.",
                 classes="hint",
@@ -1362,6 +1429,56 @@ class SolTuiApp(App):
     def _top5_reload(self) -> None:
         self._refresh_top5()
 
+    # -- Top 5 presets: one click fills the tab ----------------------------
+
+    @on(OptionList.OptionSelected)
+    def _preset_selected(self, event: OptionList.OptionSelected) -> None:
+        """Apply a Top 5 preset to the tab whose list it was picked from.
+
+        This only fills fields. Running anything still goes through that tab's own button, and so
+        through the registry; a preset click places nothing and starts nothing.
+        """
+        list_id = event.option_list.id or ""
+        if not list_id.startswith("preset-"):
+            return
+        preset = next((p for p in self._presets if p["value"] == event.option_id), None)
+        if preset is None:
+            return
+        tab = list_id.removeprefix("preset-")
+        if tab == "live":
+            self.query_one("#live-run-strategy", Input).value = preset["applies"]["live_run"]["strategy"]
+            self.query_one("#live-run-status", Static).update(
+                f"preset {preset['title']} · {preset['params_text']} · {preset['net_pct_text']}")
+        elif tab == "exec":
+            self.query_one("#exec-strategy", Select).value = preset["applies"]["execute"]["label"]
+            self.query_one("#exec-summary", Static).update(
+                f"preset {preset['title']} selected · {preset['params_text']} · press Start dry run")
+        elif tab == "analyze":
+            self._apply_analyze_preset(preset)
+
+    def _apply_analyze_preset(self, preset: dict[str, Any]) -> None:
+        note = self.query_one("#analyze-preset-note", Static)
+        select = self.query_one("#analyze-asset", Select)
+        want = f"{preset['asset']}|{preset['interval']}"
+        if want not in self._analyze_values:
+            self._analyze_preset = ""
+            note.update(f"[red]{preset['asset']} {preset['interval']} is not cached; fetch it first[/]")
+            return
+        select.value = want
+        self._analyze_preset = preset["value"]
+        note.update(f"Judging only {preset['title']}: {preset['params_text']}. "
+                    "Press Analyze. Choosing a different coin drops the preset.")
+
+    @on(Select.Changed, "#analyze-asset")
+    def _analyze_asset_changed(self, event: Select.Changed) -> None:
+        """A coin other than the preset's drops the preset: it was fitted on one series."""
+        if not self._analyze_preset:
+            return
+        preset = next((p for p in self._presets if p["value"] == self._analyze_preset), None)
+        if preset and event.value != f"{preset['asset']}|{preset['interval']}":
+            self._analyze_preset = ""
+            self.query_one("#analyze-preset-note", Static).update("preset dropped: all strategies")
+
     # -- Analyze: any coin, any moment -----------------------------------
 
     def _analyze_pane(self) -> ComposeResult:
@@ -1372,6 +1489,7 @@ class SolTuiApp(App):
         """
         pairs = self._call("analyze.assets")["result"]
         options = [(f"{p['asset']} {p['interval']}", f"{p['asset']}|{p['interval']}") for p in pairs]
+        self._analyze_values = {value for _, value in options}
         with VerticalScroll():
             yield Static(
                 "Every registered strategy replayed from the start of history up to "
@@ -1388,6 +1506,8 @@ class SolTuiApp(App):
                     id="analyze-empty",
                 )
                 return
+            yield from self._preset_list("analyze")
+            yield Static("", id="analyze-preset-note", classes="hint")
             with Horizontal(classes="form-row"):
                 yield Label("Coin / interval")
                 yield Select(options, value=options[0][1], id="analyze-asset")
@@ -1414,12 +1534,15 @@ class SolTuiApp(App):
         params: dict[str, Any] = {"asset": asset, "interval": interval}
         if raw:
             params["as_of"] = raw
+        if self._analyze_preset:
+            params["preset"] = self._analyze_preset
         env = self._call("analyze.run", params)
         if not env["ok"]:
             head.update(f"[b]could not analyse:[/b] {self._msg(env)}")
             return
         r = env["result"]
-        head.update(r["headline"] + ("" if r["truncated"] else "   (latest bar)"))
+        head.update(r["headline"] + ("" if r["truncated"] else "   (latest bar)")
+                    + f"   {r['net_pct_text']}")
         table = self.query_one("#analyze-table", DataTable)
         table.clear()
         for d in r["decisions"]:
@@ -1446,7 +1569,8 @@ class SolTuiApp(App):
             yield Static("", id="cumulative-headline")
             per_file = GlossaryTable(id="cumulative-table")
             per_file.add_columns("file", "rankable", "below floor", "positive",
-                                 "made money", "median Sharpe", "paths", "best (rankable)")
+                                 "made money", "median Sharpe", "paths", "best (rankable)",
+                                 "best backtest median net %")
             yield per_file
             yield Static("[b]Below the floor — what a naive aggregate would rank first[/b]",
                          classes="hint")
@@ -1475,6 +1599,7 @@ class SolTuiApp(App):
                 "-" if med is None else f"{med:+.3f}",
                 s["path_range"],
                 "-" if best is None else f"{best['label']} {best['median_sharpe']:+.3f}",
+                "-" if best is None or best["net_pct"] is None else format_pct(best["net_pct"]),
             )
         drop = self.query_one("#cumulative-dropped", DataTable)
         drop.clear()
@@ -1520,7 +1645,7 @@ class SolTuiApp(App):
             ranked = DataTable(id="queue-table")
             ranked.add_columns(
                 "configuration", "family", "median Sharpe", "IQR",
-                "% paths +", "median return", "trades",
+                "% paths +", "backtest median net %", "trades",
             )
             yield ranked
             yield Static(
@@ -1611,12 +1736,166 @@ class SolTuiApp(App):
         for x in r["ranked"]:
             table.add_row(
                 x["label"], x["family"], f"{x['median_sharpe']:+.3f}", f"{x['iqr']:.3f}",
-                f"{x['frac_positive']:.0%}", format_pct(x["median_return"]), str(x["trades"]),
+                f"{x['frac_positive']:.0%}", format_pct(x["net_pct"]), str(x["trades"]),
             )
         floor_table = self.query_one("#queue-floor", DataTable)
         floor_table.clear()
         for x in r["floor"]:
             floor_table.add_row(x["label"], x["family"], str(x["trades"]), x["why"])
+
+    # -- P&L: profit and loss over a window -------------------------------
+
+    def _pnl_pane(self) -> ComposeResult:
+        """Net/gross P&L, costs, drawdown, win rate and attribution over a chosen window.
+
+        One section per source. Simulated (backtest, paper, dry-run) and real (live LP) money are
+        shown in separate sections and never added: there is no total line on purpose.
+        """
+        with VerticalScroll():
+            yield Static(
+                "Profit and loss over a window. Every figure names its source. Simulated and real "
+                "money are never summed: each source is its own section.", classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Label("Window")
+                yield Select([(w, w) for w in ("24h", "7d", "30d", "90d", "ytd", "all")],
+                             value="30d", allow_blank=False, id="pnl-window")
+                yield Label("Custom start")
+                yield Input(placeholder="YYYY-MM-DD", id="pnl-start")
+                yield Label("end")
+                yield Input(placeholder="YYYY-MM-DD", id="pnl-end")
+            with Horizontal(classes="form-row"):
+                yield Label("Source")
+                yield Select([(w, w) for w in ("all", "backtest", "paper", "dry-run", "dry-run LP",
+                                               "live LP")],
+                             value="all", allow_blank=False, id="pnl-source")
+                yield Button("Compute P&L", variant="primary", id="pnl-run")
+                yield Static("", id="pnl-status")
+            yield Static("", id="pnl-summary")
+            yield Static("[b]By strategy[/b]", classes="hint")
+            by_strategy = GlossaryTable(id="pnl-strategies")
+            by_strategy.add_columns("source", "strategy", "asset", "net $", "net % (source named)",
+                                    "gross $", "costs $", "realized $", "unrealized $",
+                                    "contribution (source named)")
+            yield by_strategy
+            yield Static("[b]By asset[/b]", classes="hint")
+            by_asset = GlossaryTable(id="pnl-assets")
+            by_asset.add_columns("source", "asset", "runs", "net $", "net % (source named)",
+                                 "contribution (source named)")
+            yield by_asset
+            yield Static("[b]Best and worst periods[/b]", classes="hint")
+            periods = GlossaryTable(id="pnl-periods")
+            periods.add_columns("source", "period", "best", "worst")
+            yield periods
+            yield Static("[b]Daily P&L, cumulative and drawdown[/b]", classes="hint")
+            daily = GlossaryTable(id="pnl-daily")
+            daily.add_columns("source", "date", "P&L $", "cumulative $",
+                              "cumulative % (source named)", "drawdown (source named)")
+            yield daily
+
+    @on(Button.Pressed, "#pnl-run")
+    def _pnl_run(self) -> None:
+        self.query_one("#pnl-status", Static).update("computing…")
+        self._pnl_worker()
+
+    def _pnl_params(self) -> dict[str, Any]:
+        window = self.query_one("#pnl-window", Select).value
+        source = self.query_one("#pnl-source", Select).value
+        params: dict[str, Any] = {"window": window if isinstance(window, str) else "30d"}
+        if isinstance(source, str) and source != "all":
+            params["source"] = source
+        for key, wid in (("start", "#pnl-start"), ("end", "#pnl-end")):
+            text = self.query_one(wid, Input).value.strip()
+            if text:
+                params[key] = text
+        return params
+
+    @work(thread=True, group="pnl", exclusive=True)
+    def _pnl_worker(self) -> None:
+        """Three registry calls, off the UI thread: the first may run the roster backtests."""
+        params = self._pnl_params()
+        envs = {name: self._call(name, params) for name in ("pnl.summary", "pnl.series", "pnl.breakdown")}
+        self.call_from_thread(self._render_pnl, envs)
+
+    @staticmethod
+    def _usd(v: float | None) -> str:
+        if v is None:
+            return "-"
+        return f"{0.0 if abs(v) < 0.005 else v:+,.2f}"
+
+    @staticmethod
+    def _pts(v: float | None, word: str) -> str:
+        return "-" if v is None else f"{word} {v * 100:+.2f} pts"
+
+    def _render_pnl(self, envs: dict[str, dict[str, Any]]) -> None:
+        status = self.query_one("#pnl-status", Static)
+        bad = next((e for e in envs.values() if not e["ok"]), None)
+        if bad:
+            status.update(f"[red]{self._msg(bad)}[/]")
+            return
+        summary, series, breakdown = (envs[n]["result"] for n in ("pnl.summary", "pnl.series", "pnl.breakdown"))
+        win = summary["window"]
+        status.update(f"window {win['label']}: {win['start'] or 'start of data'} to {win['end'] or 'end of data'}")
+        lines = [escape(summary["notice"]), ""]
+        for sec in summary["sections"]:
+            lines.append(f"[b]{sec['label']}[/b]")
+            for note in sec["notes"]:
+                lines.append(f"  note: {escape(note)}")
+            if sec["status"] != "ok":
+                lines += [f"  {escape(sec['message'])}", ""]
+                continue
+            t, d = sec["totals"], sec["drawdown"] or {}
+            lines.append(f"  {t['net_pct_text']} · net {self._usd(t['net_usd'])} · gross {self._usd(t['gross_usd'])}"
+                         f" · fees {t['fees_usd']:,.2f} · slippage {t['slippage_usd']:,.2f}"
+                         f" · borrow/funding {t['borrow_funding_usd']:,.2f}")
+            lines.append(f"  realized {self._usd(t['realized_usd'])} · unrealized {self._usd(t['unrealized_usd'])}"
+                         + ("" if t["win_rate"] is None else
+                            f" · {sec['source']} win rate {t['win_rate']:.0%} of {t['closed_trades']} closed"
+                            f" · expectancy {self._usd(t['expectancy_usd'])} per close"))
+            if d.get("max_drawdown_usd"):
+                pct = d["max_drawdown_pct"]
+                rec = (f"recovered after {d['recovery_days']} d" if d["recovered"] else "not recovered")
+                lines.append(f"  max drawdown {self._usd(d['max_drawdown_usd'])}"
+                             + ("" if pct is None else f" ({sec['source']} {pct * 100:+.1f}% from peak)")
+                             + f" · peak {d['peak_date']} · trough {d['trough_date']} · {rec}")
+            lines.append("")
+        self.query_one("#pnl-summary", Static).update("\n".join(lines))
+
+        def refill(table_id: str, rows: list[tuple]) -> None:
+            table = self.query_one(table_id, DataTable)
+            table.clear()
+            for row in rows:
+                table.add_row(*row)
+
+        strat_rows, asset_rows, period_rows, day_rows = [], [], [], []
+        for sec in breakdown["sections"]:
+            if sec["status"] != "ok":
+                continue
+            w = sec["source"]
+            for r in sec["by_strategy"]:
+                strat_rows.append((w, r["strategy"], r["asset"], self._usd(r["net_usd"]), r["net_pct_text"],
+                                   self._usd(r["gross_usd"]), f"{r['costs_usd']:,.2f}",
+                                   self._usd(r["realized_usd"]), self._usd(r["unrealized_usd"]),
+                                   self._pts(r["contribution_pts"], w)))
+            for r in sec["by_asset"]:
+                asset_rows.append((w, r["name"], str(r["runs"]), self._usd(r["net_usd"]), r["net_pct_text"],
+                                   self._pts(r["contribution_pts"], w)))
+            for kind in ("day", "week", "month"):
+                bw = (sec["best_worst"] or {}).get(kind)
+                if bw:
+                    period_rows.append((w, kind, f"{bw['best']['period']} {self._usd(bw['best']['pnl'])}",
+                                        f"{bw['worst']['period']} {self._usd(bw['worst']['pnl'])}"))
+        for sec in series["sections"]:
+            if sec["status"] != "ok":
+                continue
+            w = sec["source"]
+            for day in sec["days"][-400:]:
+                day_rows.append((w, day["date"], self._usd(day["pnl"]), self._usd(day["cumulative"]),
+                                 "-" if day["cumulative_pct"] is None else f"{w} {day['cumulative_pct'] * 100:+.2f}%",
+                                 "-" if day["drawdown"] is None else f"{w} {day['drawdown'] * 100:.1f}%"))
+        refill("#pnl-strategies", strat_rows)
+        refill("#pnl-assets", asset_rows)
+        refill("#pnl-periods", period_rows)
+        refill("#pnl-daily", day_rows)
 
     # -- Liquidity: the Aero LP daemon's state files ---------------------
 
