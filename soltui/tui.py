@@ -1644,7 +1644,8 @@ class SolTuiApp(App):
             f"adaptive_halflife={agg['adaptive_halflife']} "
             f"adaptive_flip={agg['adaptive_flip']} tune={agg['tune']} tune_confidence={agg['tune_confidence']:g} "
             f"tune_min_calls={agg['tune_min_calls']:g} tune_step={agg['tune_step']:g} "
-            f"tune_cooldown={agg['tune_cooldown']} leverage={ex['leverage']:g} fee_bps={ex['fee_bps']:g} "
+            f"tune_cooldown={agg['tune_cooldown']} hold={agg['hold']} entry_quantile={agg['entry_quantile']:g} "
+            f"leverage={ex['leverage']:g} fee_bps={ex['fee_bps']:g} "
             f"slippage_bps={ex['slippage_bps']:g} risk_pct={ex['risk_pct']:g} use_wallet={ex['use_wallet']:g}")
 
     @on(DataTable.RowHighlighted, "#compound-table")
