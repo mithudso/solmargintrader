@@ -290,6 +290,20 @@ class AggregationTests(unittest.TestCase):
         self.assertGreater(with_margin[50:].mean(), without[50:].mean())
         self.assertTrue((with_margin[50:] >= without[50:]).all())
 
+    def test_vwap_metrics_fade_the_distance_without_pinning_at_one(self) -> None:
+        # Measured in 5m ATRs, the session-VWAP distance clipped to +/-1 on 57% of SOL bars and held
+        # the compound on one side for hours. Scaled by its typical size it must rarely saturate.
+        b = synthetic(3000)
+        v = sc.vwap(b, 0, 48)
+        for cid in ("vwap_reversion", "vwap_side"):
+            comp = sc.BY_ID[cid]
+            s = np.asarray(comp.fn(b, comp.defaults(), {}), float)
+            ok = np.isfinite(s) & (b.close != v)
+            self.assertGreater(ok.sum(), 2000)
+            self.assertLess(np.mean(np.abs(s[ok]) >= 0.99), 0.2, cid)
+            sign = -1 if cid == "vwap_reversion" else 1
+            self.assertTrue(np.all(np.sign(s[ok]) == sign * np.sign((b.close - v)[ok])), cid)
+
     def test_long_only_never_calls_down(self) -> None:
         cfg = only(ema_cross=1)
         cfg["aggregate"]["allow_short"] = 0

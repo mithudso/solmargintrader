@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 39
-Delta: v38 to v39; Hyperliquid account address for sizing.
+Version: 40
+Delta: v39 to v40; SOL forward test only calling UP.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -271,4 +271,10 @@ The screenshot showed the Compound 5m tab: the coin overview, the backtest resul
 
 ```text
 Yes it is 0x901a89cEC0608eB5435A915f006b45bD46405314
+```
+
+## v40 - 2026-11-07 (SOL forward test only UP)
+
+```text
+This doesn't seem right in the forward test for SOL the indicators are only choosing up, and there haasnt' been a number lower than .5, which tells me the calculations are wrong.
 ```

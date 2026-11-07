@@ -561,19 +561,42 @@ def read_ledger(asset: str) -> list[dict[str, Any]]:
     return out
 
 
-def _append(asset: str, rows: Sequence[Mapping[str, Any]]) -> None:
+def _append(asset: str, rows: Sequence[Mapping[str, Any]], *, unique: bool = False) -> list[Mapping[str, Any]]:
+    """Append rows to a coin's ledger under a lock; return the rows written.
+
+    unique: drop any call or resolve whose id the ledger already holds, checked inside the lock.
+    A forward tick reads the ledger, then spends seconds fetching candles before it writes, so two
+    writers (an unattended trainer and the console, say) both saw "not recorded" and both wrote
+    the same bar (SOL, 2026-11-07). The re-check under the lock is what makes "once" true.
+    """
     if not rows:
-        return
+        return []
+    import fcntl
+
     path = forward_path(asset)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as fh:
-        fh.write("".join(json.dumps(r, sort_keys=True, allow_nan=False) + "\n" for r in rows))
+    fd = os.open(path.with_suffix(".ledger.lock"), os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        if unique:
+            have = {(r.get("type"), r.get("id")) for r in read_ledger(asset) if r.get("type") in ("call", "resolve")}
+            rows = [r for r in rows if r.get("type") not in ("call", "resolve") or (r["type"], r.get("id")) not in have]
+        if rows:
+            with path.open("a", encoding="utf-8") as fh:
+                fh.write("".join(json.dumps(r, sort_keys=True, allow_nan=False) + "\n" for r in rows))
+    finally:
+        os.close(fd)
+    return list(rows)
 
 
 def component_sig(cid: str, params: Mapping[str, Any]) -> str:
     """Short hash of one metric's parameters. A learned track record only carries over between
     calls whose metric was computed the same way."""
-    text = json.dumps({"id": cid, "params": dict(params)}, sort_keys=True, separators=(",", ":"))
+    body: dict[str, Any] = {"id": cid, "params": dict(params)}
+    version = sc.FORMULA_VERSIONS.get(cid, 1)
+    if version != 1:  # unchanged metrics keep the signatures their records already carry
+        body["formula"] = version
+    text = json.dumps(body, sort_keys=True, separators=(",", ":"))
     return hashlib.sha1(text.encode()).hexdigest()[:10]
 
 
@@ -592,11 +615,17 @@ def ledger_seed(ledger: Sequence[Mapping[str, Any]], cfg: Mapping[str, Any],
     outcome = {r["id"]: float(r["ret_bps"]) for r in ledger if r.get("type") == "resolve" and "ret_bps" in r}
     sigs = {cid: component_sig(cid, e["params"]) for cid, e in cfg["components"].items()}
     seed: dict[str, list[tuple[int, float, float]]] = {}
+    # One call per bar: the same bar recorded under two settings (two writers, or a settings change
+    # between them) is one outcome, and counting it twice would double its weight in the record.
     seen: set[str] = set()
-    for call in ledger:
+    seen_bars: set[int] = set()
+    for call in reversed(ledger):  # the latest record of a bar wins
         if call.get("type") != "call" or call.get("id") in seen or call.get("id") not in outcome:
             continue
         seen.add(call["id"])
+        if int(call["bar_ts"]) in seen_bars:
+            continue
+        seen_bars.add(int(call["bar_ts"]))
         k = (int(call["bar_ts"]) - window_start) // 300
         ret = outcome[call["id"]]
         if k >= 0 or k + 1 < -window or ret == 0:
@@ -973,7 +1002,10 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
                      "resolved_at": stamp})
         n_resolved += 1
     # Record first: a failed adoption must never cost the bar its call.
-    _append(asset, rows)
+    written = _append(asset, rows, unique=True)
+    if new_call and not any(r.get("type") == "call" for r in written):
+        new_call = False  # another writer recorded this bar first
+    n_resolved = sum(1 for r in written if r.get("type") == "resolve")
     # The call above was made with the tuned settings already (tuning walks inside the evaluation);
     # adopting saves them so the next bar starts from them instead of re-deriving the walk.
     try:

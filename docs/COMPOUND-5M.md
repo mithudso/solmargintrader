@@ -261,6 +261,13 @@ margin, which already excludes margin those positions use.
 Measured on five coins (correlation of their 5m scores):
 
 * **Mutually exclusive:** `vwap_side` and `vwap_reversion` are mirror images (−0.99). Enable one.
+* **VWAP distance is measured against its typical size** (2026-11-07). Both VWAP metrics used to divide
+  the distance from the session VWAP by one 5m ATR. On SOL that clipped `vwap_reversion` to ±1 on 57%
+  of bars, and on 2026-11-07 it held every forward call UP for hours (the composite never fell below
+  0.5). They now divide by the RMS of the distance over `spread_window` bars (default 288, one day),
+  floored at one ATR: about 8% saturated on SOL, BTC and NEAR. Their learned records restart.
+  A run of UP calls can still happen: on 2026-11-07 SOL stayed below its session VWAP all
+  afternoon, and with only the reversion metrics weighted, the compound fades that stretch.
   The same holds for `rsi` with `mode=0` versus `mode=1`.
 * **Opposed:** the trend group (`ema_trend`, `ema_cross`, `ichimoku`, `roc`, `macd`) and the
   stretch group (`rsi`, `zscore`, `bollinger`, `cci`, `stochastic`) correlate −0.75 to −0.93.
