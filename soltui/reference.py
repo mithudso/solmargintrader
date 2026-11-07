@@ -60,6 +60,10 @@ FAMILY_NOTES = {
     "risk-overlay": "Changes position size, not direction. Reshapes the equity curve.",
     "sma-gated": "One entry rule -- close above its SMA -- under four sizing schemes. "
                  "Measured 0.92-1.00 correlated, so treat them as one bet, not four.",
+    "leverage-tier": "Not a signal: runs another strategy as a 2x/5x/20x perp. Leverage multiplies the "
+                     "result and adds carry; on SOL daily 20x is ruinous (research/LEVERAGE-TIERS.md).",
+    "trigger": "Waits for a mined condition conjunction, trades it to expiry. Exploratory unless it "
+               "passed every honesty gate (research/RELIABLE_SIGNALS.md).",
 }
 
 # Indicator functions exposed on the Signals tab, with their equations.

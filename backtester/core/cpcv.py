@@ -60,6 +60,7 @@ class BlockResult:
     trades: int
     usable: bool
     reason: str = ""
+    liquidations: int = 0
 
 
 @dataclass
@@ -170,9 +171,11 @@ def evaluate_block(
             usable=False, reason="fewer than 3 measurable bars after warm-up",
         )
     trades = sum(1 for t in res.trades if t.bar_index >= warm)
+    liqs = sum(1 for t in res.trades if t.reason == "liquidation" and t.bar_index >= warm)
     return BlockResult(
         index=-1, start=start, end=end,
         returns=simple_returns(equity), trades=trades, usable=True,
+        liquidations=liqs,
     )
 
 
