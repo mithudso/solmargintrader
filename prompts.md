@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 32
-Delta: v31 to v32; complete redesign of the Chrome extension (holdings, P&L, pool discovery, backtests, swaps, alerts).
+Version: 33
+Delta: v32 to v33; soltui draggable/closable editor bar, compound row preview, double-click/Space toggle, compound autopilot.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -218,3 +218,12 @@ Do a complete redesign of the chrome extension in this repo. THe grid strategy d
 ```
 
 Target: `extension/` (UI, registry commands, service worker) plus one read-only soltui command; Stele TASK-836. "New lease discovery" read as new liquidity-pool (LP) discovery.
+
+## v33 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+
+```text
+in the soltui there is an orange line which delineates the curser portion above from the editor below, make that orange line adjustable by dragging it with the mouse, and give me the option of closing that window altogether, also whenever I select something like a strategy in the compound tab, it should show a detailed preview of that in the editor window below. Right now it's stuck on one page and won't move. Also let me toggle on/off a strategy by double clicking on it or pressing the space bar with it selected. ALso have it automatically adopt tuned settings, I want this to be a fully automated completely independent hands off self-optimizing system that does not require my input.
+```
+
+Target: soltui/tui.py, soltui/compound.py, soltui/commands.py, new soltui/compound_agent.py; Stele TASK-833.
+

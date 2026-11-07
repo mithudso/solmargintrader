@@ -68,6 +68,12 @@ class Venue:
                            [{"px": "90.01", "sz": "100"}, {"px": "90.5", "sz": "999"}]]}
 
 
+def autopiloted(cfg: dict) -> dict:
+    out = json.loads(json.dumps(cfg))
+    out["aggregate"]["tune"] = 1
+    return sc.normalise_config(out)
+
+
 class TempConfig(unittest.TestCase):
     def setUp(self) -> None:
         tmp = TemporaryDirectory()
@@ -86,7 +92,10 @@ class ConfigTests(TempConfig):
         again = compound.load_state()
         self.assertEqual(again["config"]["components"]["rsi"]["params"]["period"], 9)
         self.assertEqual(again["config"]["aggregate"]["entry"], 0.4)
-        self.assertEqual(compound.save_state(reset=True)["config"], sc.default_config())
+        reset = compound.save_state(reset=True)
+        self.assertEqual(reset["base"], sc.default_config())
+        # Autopilot (on by default) runs the tuning search on top of whatever is saved.
+        self.assertEqual(reset["config"], autopiloted(sc.default_config()))
 
     def test_edit_box_parsing_and_errors(self) -> None:
         self.assertEqual(compound.parse_kv("weight=1.5, period=9"), {"weight": 1.5, "period": 9.0})
@@ -155,7 +164,7 @@ class LiveReadTests(TempConfig):
     def test_reset_keeps_the_event_list(self) -> None:
         compound.save_state({"components": {"rsi": {"weight": 3}}}, events=[{"ts": 1_800_000_000, "title": "CPI"}])
         state = compound.save_state(reset=True)
-        self.assertEqual(state["config"], sc.default_config())
+        self.assertEqual(state["base"], sc.default_config())
         self.assertEqual(state["events"], [{"ts": 1_800_000_000, "title": "CPI"}])
 
     def test_an_enabled_news_gate_fails_closed_when_feeds_are_down(self) -> None:
@@ -614,6 +623,181 @@ class CommandTests(TempConfig):
         self.assertEqual(env["result"]["rows"], [])
 
 
+class AutopilotTests(TempConfig):
+    def test_on_by_default_runs_tuning_and_the_switch_persists(self) -> None:
+        self.assertTrue(compound.autopilot_enabled())
+        self.assertEqual(compound.load_state("SOL")["config"]["aggregate"]["tune"], 1)
+        compound.set_autopilot(False)
+        self.assertFalse(compound.autopilot_enabled())
+        self.assertEqual(compound.load_state("SOL")["config"]["aggregate"]["tune"], 0)
+        # Saving settings or resetting them never flips the switch.
+        compound.save_state({"components": {"rsi": {"weight": 2}}})
+        compound.save_state(reset=True, reset_all=True)
+        self.assertFalse(compound.autopilot_enabled())
+        compound.set_autopilot(True)
+        self.assertTrue(json.loads(compound.config_path().read_text())["autopilot"])
+
+    def tuned_rows(self, period: int = 11) -> list[dict]:
+        return [{"id": "rsi", "kind": "score", "enabled": True,
+                 "tuned_params": {**sc.BY_ID["rsi"].defaults(), "period": period}, "tuned_since": T0},
+                {"id": "macd", "kind": "score", "enabled": True}]
+
+    def test_auto_adopt_saves_the_coin_own_settings_and_logs_it(self) -> None:
+        state = compound.load_state("SOL")
+        adopted, rows = compound.auto_adopt("SOL", state, self.tuned_rows(), [], T0)
+        self.assertEqual(adopted["rsi"]["to"]["period"], 11)
+        self.assertEqual(adopted["rsi"]["from"]["period"], 14)
+        self.assertEqual([r["type"] for r in rows], ["adopt"])
+        saved = json.loads(compound.config_path().read_text())
+        self.assertEqual(saved["assets"]["SOL"]["components"]["rsi"]["params"]["period"], 11)
+        self.assertEqual(saved["config"]["components"]["rsi"]["params"]["period"], 14)   # base untouched
+        self.assertNotIn("BTC", saved["assets"])
+
+    def test_a_metric_waits_its_cooldown_before_adopting_again(self) -> None:
+        state = compound.load_state("SOL")
+        _, rows = compound.auto_adopt("SOL", state, self.tuned_rows(11), [], T0)
+        cooldown = int(state["config"]["aggregate"]["tune_cooldown"]) * 300
+        state = compound.load_state("SOL")
+        again, _ = compound.auto_adopt("SOL", state, self.tuned_rows(9), rows, T0 + cooldown - 1)
+        self.assertEqual(again, {})
+        self.assertEqual(compound.load_state("SOL")["config"]["components"]["rsi"]["params"]["period"], 11)
+        later, _ = compound.auto_adopt("SOL", state, self.tuned_rows(9), rows, T0 + cooldown)
+        self.assertEqual(later["rsi"]["to"]["period"], 9)
+
+    def test_nothing_is_adopted_with_autopilot_off_or_without_a_move(self) -> None:
+        compound.set_autopilot(False)
+        self.assertEqual(compound.auto_adopt("SOL", compound.load_state("SOL"), self.tuned_rows(), [], T0),
+                         ({}, []))
+        compound.set_autopilot(True)
+        same = [{"id": "rsi", "tuned_params": sc.BY_ID["rsi"].defaults()}]
+        self.assertEqual(compound.auto_adopt("SOL", compound.load_state("SOL"), same, [], T0), ({}, []))
+
+    def test_forward_tick_adopts_and_records_the_adoption(self) -> None:
+        venue = Venue(now=T0 + 300 * 20 + 10)
+        real = sc.explain
+
+        def explain(ev, i, **kw):
+            out = real(ev, i, **kw)
+            for row in out["components"]:
+                if row["id"] == "rsi":
+                    row["tuned_params"] = {**row["params"], "period": 11}
+            return out
+
+        with mock.patch.object(compound.sc, "explain", side_effect=explain):
+            first = compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post)
+        self.assertEqual(first["adopted"]["rsi"]["to"]["period"], 11)
+        self.assertTrue(first["autopilot"])
+        ledger = compound.read_ledger("SOL")
+        self.assertEqual([r["metric"] for r in ledger if r["type"] == "adopt"], ["rsi"])
+        self.assertEqual(compound.load_state("SOL")["config"]["components"]["rsi"]["params"]["period"], 11)
+        # The call for that bar was recorded under the settings in force when it was made.
+        call = next(r for r in ledger if r["type"] == "call")
+        self.assertNotEqual(call["config_hash"], sc.config_hash(compound.load_state("SOL")["config"]))
+
+    def test_concurrent_coin_adoptions_are_all_kept(self) -> None:
+        import threading
+
+        coins = compound.COINS
+        barrier = threading.Barrier(len(coins))
+
+        def adopt(coin: str) -> None:
+            barrier.wait()
+            compound.save_state({"components": {"rsi": {"params": {"period": 10 + coins.index(coin)}}}}, asset=coin)
+
+        threads = [threading.Thread(target=adopt, args=(c,)) for c in coins]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        saved = json.loads(compound.config_path().read_text())["assets"]
+        self.assertEqual(sorted(saved), sorted(coins))
+
+    def test_ensure_starts_one_trainer_for_the_live_coins_not_running(self) -> None:
+        running = {"BTC", "SOL"}
+        with mock.patch.object(compound, "coins", return_value=("BTC", "ETH", "SOL", "AAVE")), \
+                mock.patch.object(compound, "live_capable", side_effect=lambda c: c != "AAVE"), \
+                mock.patch.object(compound, "unattended_status",
+                                  side_effect=lambda c: {"running": c in running}), \
+                mock.patch.object(compound, "start_unattended_many",
+                                  side_effect=lambda cs: {"started": list(cs), "skipped": {}}) as many:
+            out = compound.autopilot_ensure()
+            self.assertEqual(out["already_running"], ["BTC", "SOL"])
+            self.assertEqual(out["started"], ["ETH"])           # AAVE is backtest-only
+            many.assert_called_once_with(["ETH"])
+            compound.set_autopilot(False)
+            many.reset_mock()
+            self.assertEqual(compound.autopilot_ensure()["started"], [])
+            many.assert_not_called()
+
+    def test_stop_says_autopilot_will_restart_it(self) -> None:
+        compound.unattended_paths("SOL")["stop"].parent.mkdir(parents=True, exist_ok=True)
+        with mock.patch.object(compound, "unattended_status",
+                               return_value={"running": True, "pid": None}):
+            self.assertTrue(compound.stop_unattended("SOL")["autopilot_restarts"])
+
+    def test_cli_autopilot_verb_prints_what_it_did(self) -> None:
+        with mock.patch.object(compound, "autopilot_ensure",
+                               return_value={"autopilot": True, "started": ["ETH"]}):
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                self.assertEqual(compound.main(["autopilot"]), 0)
+        self.assertEqual(json.loads(buf.getvalue())["started"], ["ETH"])
+
+    def test_registry_commands(self) -> None:
+        with mock.patch.object(compound, "autopilot_ensure", return_value={"started": []}), \
+                mock.patch("soltui.compound_agent.status", return_value={"loaded": False}):
+            env = commands.dispatch("compound.autopilot", {"enabled": False}, surface="cli")
+            self.assertTrue(env["ok"], env)
+            self.assertFalse(env["result"]["autopilot"])
+            env = commands.dispatch("compound.autopilot_status", {}, surface="cli")
+            self.assertFalse(env["result"]["autopilot"])
+            self.assertEqual(env["result"]["adoptions"], [])
+            missing = commands.dispatch("compound.autopilot", {}, surface="cli")
+            self.assertFalse(missing["ok"])
+
+    def test_previews_explain_a_metric_and_a_coin(self) -> None:
+        cfg = compound.load_state("SOL")["config"]
+        adoptions = [{"ts": T0, "asset": "SOL", "metric": "rsi", "from": {"period": 14}, "to": {"period": 11}}]
+        text = compound.metric_preview("rsi", cfg, asset="SOL", columns={"live score": "+0.40"},
+                                       adoptions=adoptions, autopilot=True)
+        for part in ("# RSI (rsi) - SOL", "## Formula", "| period | 14 | 14 |", "live score: +0.40",
+                     "autopilot: ON", "period=14 -> period=11"):
+            self.assertIn(part, text)
+        self.assertNotIn("period=14 -> period=11",
+                         compound.metric_preview("rsi", cfg, asset="ETH", adoptions=adoptions))
+        coin = compound.coin_preview({"asset": "SOL", "data": "5m", "unattended": False},
+                                     own={"components": {"rsi": {"params": {"period": 11}}}},
+                                     adoptions=adoptions, autopilot=True)
+        self.assertIn("autopilot restarts it", coin)
+        self.assertIn("rsi: params=", coin)
+
+
+class CompoundAgentTests(unittest.TestCase):
+    def test_plist_runs_the_ensure_verb_every_five_minutes_and_lets_the_loops_live(self) -> None:
+        from soltui import compound_agent
+        d = compound_agent.plist_dict(Path("/venv/bin/python"), Path("/repo"))
+        self.assertEqual(d["ProgramArguments"], ["/venv/bin/python", "-m", "soltui.compound", "autopilot"])
+        self.assertEqual(d["StartInterval"], 300)
+        self.assertTrue(d["AbandonProcessGroup"])
+        self.assertTrue(d["RunAtLoad"])
+        self.assertEqual(d["WorkingDirectory"], "/repo")
+
+    def test_install_refuses_a_worktree(self) -> None:
+        from soltui import compound_agent
+        with TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / ".git").write_text("gitdir: /elsewhere\n")
+            py = repo / "python"
+            py.write_text("")
+            with mock.patch.dict(os.environ, {"SOLTUI_LAUNCHAGENTS_DIR": str(repo / "agents")}):
+                with self.assertRaises(SystemExit):
+                    compound_agent.install(py, repo, start=False)
+                (repo / ".git").unlink()
+                (repo / ".git").mkdir()
+                out = compound_agent.install(py, repo, start=False)
+            self.assertTrue(Path(out["plist"]).exists())
+
+
 class CompoundTab(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         tmp = TemporaryDirectory()
@@ -728,7 +912,7 @@ class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
         table = app.query_one("#compound-table", DataTable)
         return str(table.get_row_at(table.get_row_index(cid))[0])
 
-    async def test_clicking_on_or_name_toggles_and_space_toggles(self) -> None:
+    async def test_double_click_and_space_toggle_and_a_single_click_only_selects(self) -> None:
         from soltui.tui import CompoundTable
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
@@ -737,7 +921,7 @@ class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
             table = app.query_one("#compound-table", CompoundTable)
             row = table.get_row_index("rsi")
             self.assertEqual(self.on(app, "rsi"), "on")
-            table.post_message(CompoundTable.Toggle(row))          # what a click on "on"/name posts
+            table.post_message(CompoundTable.Toggle(row))          # what a double-click posts
             await pilot.pause()
             self.assertEqual(self.on(app, "rsi"), "off")
             table.focus()
@@ -746,16 +930,164 @@ class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
             await pilot.press("space")
             await pilot.pause()
             self.assertEqual(self.on(app, "rsi"), "on")
-            # A real mouse click on the first cell of the macd row.
             mrow = table.get_row_index("macd")
             table.scroll_to(y=0, animate=False)
             await pilot.pause()
+            # One click on any cell of the macd row selects it and toggles nothing.
             await pilot.click("#compound-table", offset=(2, mrow + 1))
+            await pilot.pause()
+            self.assertEqual(self.on(app, "macd"), "on")
+            self.assertEqual(table.cursor_row, mrow)
+            # A double-click on another column of the same row toggles it exactly once.
+            await pilot.click("#compound-table", offset=(30, mrow + 1), times=2)
             await pilot.pause()
             self.assertEqual(self.on(app, "macd"), "off")
         saved = json.loads(compound.config_path().read_text())["config"]
         self.assertTrue(saved["components"]["rsi"]["enabled"])
         self.assertFalse(saved["components"]["macd"]["enabled"])
+
+    async def test_selecting_a_metric_previews_it_in_the_editor(self) -> None:
+        from textual.widgets import TextArea
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-compound"
+            await pilot.pause()
+            table = app.query_one("#compound-table", DataTable)
+            view = app.query_one("#docs-view", TextArea)
+            table.move_cursor(row=table.get_row_index("macd"))
+            await pilot.pause()
+            self.assertIn("# MACD", view.text)
+            self.assertIn("## Formula", view.text)
+            self.assertIn("autopilot: ON", view.text)
+            self.assertTrue(view.read_only)
+            self.assertIn("preview: SOL macd", text_of(app, "#docs-view-status"))
+            table.move_cursor(row=table.get_row_index("rsi"))
+            await pilot.pause()
+            self.assertIn("(rsi) - SOL", view.text)            # it follows the selection
+            # Unsaved edits in an open file are never replaced by a preview.
+            app._docs_current_path = "README.md"
+            app._docs_loaded_text = "original"
+            view.read_only = False
+            view.text = "edited"
+            table.move_cursor(row=table.get_row_index("macd"))
+            await pilot.pause()
+            self.assertEqual(view.text, "edited")
+            self.assertIn("unsaved changes in README.md", text_of(app, "#docs-view-status"))
+
+    async def test_a_coin_row_previews_that_coin(self) -> None:
+        from textual.widgets import TextArea
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-compound"
+            await pilot.pause()
+            ov = app.query_one("#compound-overview", DataTable)
+            ov.move_cursor(row=ov.get_row_index("ETH"))
+            await pilot.pause()
+            text = app.query_one("#docs-view", TextArea).text
+            self.assertIn("# ETH - compound 5m", text)
+            self.assertIn("uses the shared settings", text)
+
+    async def test_a_background_refresh_does_not_take_the_editor_from_another_tab(self) -> None:
+        from textual.widgets import TextArea
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-settings"
+            await pilot.pause()
+            before = app.query_one("#docs-view", TextArea).text
+            app._compound_render_table()   # what the once-a-minute refresh does
+            await pilot.pause()
+            self.assertEqual(app.query_one("#docs-view", TextArea).text, before)
+
+    async def test_autopilot_button_turns_it_off_and_on(self) -> None:
+        app = SolTuiApp(make_settings())
+        with mock.patch.object(compound, "start_unattended", side_effect=AssertionError("must not spawn")), \
+                mock.patch.object(compound, "autopilot_ensure", return_value={"autopilot": True, "started": []}):
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                app.query_one(TabbedContent).active = "tab-compound"
+                await pilot.pause()
+                button = app.query_one("#compound-autopilot", Button)
+                self.assertEqual(str(button.label), "Autopilot: on")
+                self.assertIn("AUTOPILOT ON", text_of(app, "#compound-autopilot-status"))
+                button.press()
+                await pilot.pause()
+                self.assertEqual(str(button.label), "Autopilot: off")
+                self.assertFalse(compound.autopilot_enabled())
+                self.assertEqual(app._compound_cfg["aggregate"]["tune"], 0)
+                button.press()
+                await pilot.pause()
+                self.assertTrue(compound.autopilot_enabled())
+                self.assertEqual(app._compound_cfg["aggregate"]["tune"], 1)
+                compound.autopilot_ensure.assert_called()
+
+
+class EditorBarTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.dir = Path(tmp.name)
+        patcher = mock.patch.object(config_mod, "CONFIG_DIR", self.dir)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    async def test_drag_close_reopen_and_the_layout_persists(self) -> None:
+        from soltui.tui import EditorBar
+        state = self.dir / "tui.json"
+        app = SolTuiApp(make_settings(), ui_state_path=state)
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            panel = app.query_one("#editor-panel")
+            bar = app.query_one("#editor-bar", EditorBar)
+            self.assertEqual(panel.outer_size.height, 16)
+            self.assertIn("drag to resize", str(bar.render()))
+            # Drag the bar up by six rows: the editor grows by six.
+            # Screen coordinates: the bar itself moves while it is dragged.
+            y = bar.region.y
+            await pilot.mouse_down(None, offset=(5, y))
+            await pilot.hover(None, offset=(5, y - 6))
+            await pilot.mouse_up(None, offset=(5, y - 6))
+            await pilot.pause()
+            self.assertEqual(panel.outer_size.height, 22)
+            self.assertLess(bar.region.y, y)
+            self.assertEqual(json.loads(state.read_text()), {"editor_height": 22, "editor_open": True})
+            # x close at the right end hides the editor; the bar stays and offers it back.
+            await pilot.click("#editor-bar", offset=(bar.size.width - 3, 0))
+            await pilot.pause()
+            self.assertFalse(panel.display)
+            self.assertTrue(bar.display)
+            self.assertIn("editor hidden", str(bar.render()))
+            self.assertFalse(json.loads(state.read_text())["editor_open"])
+            await pilot.click("#editor-bar", offset=(5, 0))
+            await pilot.pause()
+            self.assertTrue(panel.display)
+            await pilot.press("ctrl+e")
+            await pilot.pause()
+            self.assertFalse(panel.display)
+        # A new console opens with the remembered layout.
+        again = SolTuiApp(make_settings(), ui_state_path=state)
+        async with again.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            self.assertFalse(again.query_one("#editor-panel").display)
+            again.action_toggle_editor()
+            await pilot.pause()
+            self.assertEqual(again.query_one("#editor-panel").outer_size.height, 22)
+
+    async def test_height_is_clamped_and_double_click_resets(self) -> None:
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            panel = app.query_one("#editor-panel")
+            app._set_editor_height(500)
+            await pilot.pause()
+            self.assertEqual(panel.outer_size.height, TEST_SIZE[1] - 12)
+            app._set_editor_height(0)
+            await pilot.pause()
+            self.assertEqual(panel.outer_size.height, 3)
+            await pilot.click("#editor-bar", offset=(5, 0), times=2)
+            await pilot.pause()
+            self.assertEqual(panel.outer_size.height, 16)
+            await pilot.press("ctrl+up")
+            await pilot.pause()
+            self.assertEqual(panel.outer_size.height, 18)
 
 
 if __name__ == "__main__":

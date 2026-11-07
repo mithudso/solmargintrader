@@ -1247,6 +1247,35 @@ def compound_unattended_stop(ctx: Context, p: dict[str, Any]) -> Any:
     return _compound(compound_mod.stop_unattended, _compound_asset(ctx, p))
 
 
+@command("compound.autopilot",
+         "Turn autopilot for the compound 5m trainer on or off. On: tuning runs, each forward tick "
+         "adopts evidence-gated tuned settings as the coin's own, and every coin's unattended loop is "
+         "kept running (any coin not running starts now). Off: no automatic adoption or restarts; "
+         "running loops keep going. Read-only market data; no orders.",
+         (P("enabled", "bool", "true turns autopilot on, false turns it off.", required=True),),
+         read_only=False)
+def compound_autopilot(ctx: Context, p: dict[str, Any]) -> Any:
+    on = bool(p["enabled"])
+    _compound(compound_mod.set_autopilot, on)
+    started = _compound(compound_mod.autopilot_ensure) if on else None
+    return {**_compound(compound_mod.autopilot_status), "ensure": started}
+
+
+@command("compound.autopilot_status",
+         "Autopilot for the compound 5m trainer: the switch, which coins train now, the LaunchAgent "
+         "that keeps them training, and the most recent automatic adoptions of tuned settings.")
+def compound_autopilot_status(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.autopilot_status)
+
+
+@command("compound.autopilot_ensure",
+         "With autopilot on, start every coin's unattended forward-training loop that is not running "
+         "(what the autopilot LaunchAgent runs every five minutes). Does nothing when autopilot is off.",
+         read_only=False)
+def compound_autopilot_ensure(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.autopilot_ensure)
+
+
 @command("compound.overview", "One row per coin: its own settings, cached data, latest backtest verdict, "
          "forward-test calls and hit rate, paper dollars, and whether unattended training runs.")
 def compound_overview(ctx: Context, p: dict[str, Any]) -> Any:

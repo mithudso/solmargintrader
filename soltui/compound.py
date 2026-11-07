@@ -38,6 +38,7 @@ order path.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import math
@@ -153,6 +154,44 @@ def _read_raw() -> dict[str, Any]:
     return raw if isinstance(raw, dict) else {}
 
 
+# Autopilot: the owner asked (2026-11-07) for a hands-off, self-optimizing forward trainer. It is a
+# top-level flag in config.json, outside the scorecard config, so the backtester's defaults and the
+# strategy cards stay what they are. Missing means on.
+AUTOPILOT_DEFAULT = True
+
+
+def autopilot_enabled(raw: Mapping[str, Any] | None = None) -> bool:
+    raw = _read_raw() if raw is None else raw
+    value = raw.get("autopilot")
+    return AUTOPILOT_DEFAULT if value is None else bool(value)
+
+
+def _autopilot_overlay(cfg: dict[str, Any]) -> dict[str, Any]:
+    """Tuning is the search that proposes better settings; autopilot adopts what it finds, so it
+    needs the search running. The overlay is part of the effective config, so its hash says so."""
+    if cfg["aggregate"]["tune"]:
+        return cfg
+    out = json.loads(json.dumps(cfg))
+    out["aggregate"]["tune"] = 1
+    return sc.normalise_config(out)
+
+
+@contextlib.contextmanager
+def _state_lock() -> Any:
+    """One writer at a time. Every coin's unattended process adopts tuned settings into the same
+    config.json; without the lock two read-modify-writes interleave and one coin's adoption is lost."""
+    import fcntl
+
+    path = home() / "config.json.lock"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        os.close(fd)
+
+
 def merge_patch(a: Mapping[str, Any], b: Mapping[str, Any]) -> dict[str, Any]:
     """Deep-merge two partial configs (b wins). Used to stack a coin's own settings on the base."""
     out = json.loads(json.dumps(a))
@@ -165,7 +204,7 @@ def merge_patch(a: Mapping[str, Any], b: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def load_state(asset: str | None = None) -> dict[str, Any]:
-    """{"config", "base", "events", "overrides", "asset"}.
+    """{"config", "base", "events", "overrides", "asset", "autopilot"}.
 
     Every coin has its own set of numbers: `config` is the shared base with that coin's own
     overrides stacked on top. Learned weights are per coin anyway (each coin has its own ledger
@@ -183,8 +222,11 @@ def load_state(asset: str | None = None) -> dict[str, Any]:
     cfg = base
     if a and overrides.get(a):
         cfg = merge_config(base, overrides[a])
+    pilot = autopilot_enabled(raw)
+    if pilot:
+        cfg = _autopilot_overlay(cfg)
     return {"config": cfg, "base": base, "events": _events(raw.get("events") or []),
-            "overrides": overrides, "asset": a}
+            "overrides": overrides, "asset": a, "autopilot": pilot}
 
 
 def _events(raw: Sequence[Any]) -> list[dict[str, Any]]:
@@ -232,10 +274,19 @@ def merge_config(base: Mapping[str, Any], patch: Mapping[str, Any]) -> dict[str,
 
 def save_state(config_patch: Mapping[str, Any] | None = None,
                events: Sequence[Any] | None = None, reset: bool = False,
-               asset: str | None = None, reset_all: bool = False) -> dict[str, Any]:
+               asset: str | None = None, reset_all: bool = False,
+               autopilot: bool | None = None) -> dict[str, Any]:
     """Save a partial update to the shared base, or to ONE coin's own settings when `asset` is
     given. reset clears that coin's own settings (or, without a coin, the base); reset_all also
-    clears every coin's own settings. The event list is data and is never reset."""
+    clears every coin's own settings. The event list is data and is never reset; neither is the
+    autopilot switch, which only `autopilot` changes."""
+    with _state_lock():
+        return _save_state_locked(config_patch, events, reset, asset, reset_all, autopilot)
+
+
+def _save_state_locked(config_patch: Mapping[str, Any] | None, events: Sequence[Any] | None,
+                       reset: bool, asset: str | None, reset_all: bool,
+                       autopilot: bool | None) -> dict[str, Any]:
     raw = _read_raw()
     state = load_state()
     base, overrides = state["base"], dict(state["overrides"])
@@ -255,7 +306,11 @@ def save_state(config_patch: Mapping[str, Any] | None = None,
         else:
             base = merge_config(base, config_patch)
     ev = _events(events) if events is not None else _events(raw.get("events") or [])
-    _write_json(config_path(), {"config": base, "events": ev, "assets": overrides})
+    out: dict[str, Any] = {"config": base, "events": ev, "assets": overrides}
+    pilot = raw.get("autopilot") if autopilot is None else bool(autopilot)
+    if pilot is not None:
+        out["autopilot"] = bool(pilot)
+    _write_json(config_path(), out)
     return load_state(a)
 
 
@@ -741,6 +796,52 @@ def signal(asset: str, *, now: float | None = None, wallet_address: str | None =
     return out
 
 
+def last_adoptions(ledger: Sequence[Mapping[str, Any]]) -> dict[str, int]:
+    """metric id -> time (epoch s) its tuned settings were last adopted for this coin."""
+    out: dict[str, int] = {}
+    for r in ledger:
+        if r.get("type") == "adopt" and r.get("metric"):
+            out[r["metric"]] = max(out.get(r["metric"], 0), int(r.get("ts") or 0))
+    return out
+
+
+def auto_adopt(asset: str, state: Mapping[str, Any], components: Sequence[Mapping[str, Any]],
+               ledger: Sequence[Mapping[str, Any]], stamp: int) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Save the settings tuning moved to as this coin's own numbers (autopilot only).
+
+    Tuning already gates every move: a neighbour must beat the current settings with posterior
+    probability `tune_confidence` on `tune_min_calls` decayed calls. What tuning cannot gate is the
+    next evaluation: it starts again from the adopted settings, so without a memory across ticks
+    the search could step once per bar. The `adopt` rows in the forward ledger are that memory: a
+    metric adopts again only `tune_cooldown` bars after its last adoption.
+
+    Returns ({metric: {"from", "to"}}, ledger rows). Writes nothing when autopilot is off.
+    """
+    if not state.get("autopilot"):
+        return {}, []
+    cfg = state["config"]
+    cooldown_s = int(cfg["aggregate"]["tune_cooldown"]) * 300
+    last = last_adoptions(ledger)
+    patch: dict[str, Any] = {}
+    adopted: dict[str, Any] = {}
+    rows: list[dict[str, Any]] = []
+    for row in components:
+        cid, tuned = row.get("id"), row.get("tuned_params")
+        if not tuned or cid not in cfg["components"]:
+            continue
+        current = cfg["components"][cid]["params"]
+        if dict(tuned) == dict(current) or (cid in last and stamp - last[cid] < cooldown_s):
+            continue
+        patch[cid] = {"params": dict(tuned)}
+        adopted[cid] = {"from": dict(current), "to": dict(tuned)}
+        rows.append({"type": "adopt", "ts": stamp, "asset": _asset(asset), "metric": cid,
+                     "from": dict(current), "to": dict(tuned), "tuned_since": row.get("tuned_since"),
+                     "config_hash_before": sc.config_hash(cfg)})
+    if patch:
+        save_state({"components": patch}, asset=asset)
+    return adopted, rows
+
+
 def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | None = None,
                  wallet_fetch: Fetcher | None = None, **fetchers: Any) -> dict[str, Any]:
     """Record the call for the latest closed bar (once per config) and resolve older calls."""
@@ -797,10 +898,20 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
         rows.append({"type": "resolve", "id": r["id"], "next_close": nxt, "ret_bps": round(ret, 4),
                      "resolved_at": stamp})
         n_resolved += 1
+    # Record first: a failed adoption must never cost the bar its call.
     _append(asset, rows)
+    # The call above was made with the tuned settings already (tuning walks inside the evaluation);
+    # adopting saves them so the next bar starts from them instead of re-deriving the walk.
+    try:
+        adopted, adopt_rows = auto_adopt(asset, state, x["components"], ledger, stamp)
+    except CompoundError as exc:
+        adopted, adopt_rows = {}, []
+        extra["notes"] = [*extra["notes"], f"autopilot could not adopt tuned settings: {exc}"]
+    _append(asset, adopt_rows)
     return {"asset": asset, "recorded": new_call, "call": x["call"], "composite": x["composite"],
             "bar_ts": x["bar_ts"], "regime": x["regime"], "blocked_by": x["blocked_by"],
-            "resolved": n_resolved, "notes": extra["notes"],
+            "resolved": n_resolved, "notes": extra["notes"], "adopted": adopted,
+            "autopilot": bool(state.get("autopilot")),
             "notional_usd": sizing.get("notional_usd") if sizing.get("available") else None}
 
 
@@ -1179,6 +1290,106 @@ def wallet_line(wallet: Mapping[str, Any], sizing: Mapping[str, Any]) -> str:
             f"round trip; {liq_text}")
 
 
+# -- previews for the console's shared editor ---------------------------------------------------
+# Plain markdown, built from the same data the tab's tables show, so the editor below the tab can
+# explain the selected row in full instead of one truncated table line.
+
+
+def _fmt(v: Any) -> str:
+    if isinstance(v, float):
+        return f"{v:g}"
+    if isinstance(v, Mapping):
+        return " ".join(f"{k}={_fmt(x)}" for k, x in v.items()) or "-"
+    return "-" if v in (None, "") else str(v)
+
+
+def _when(ts: Any) -> str:
+    try:
+        return time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(int(ts)))
+    except (TypeError, ValueError):
+        return "-"
+
+
+def metric_preview(cid: str, cfg: Mapping[str, Any], *, asset: str, own: Mapping[str, Any] | None = None,
+                   columns: Mapping[str, str] | None = None, adoptions: Sequence[Mapping[str, Any]] = (),
+                   autopilot: bool = False) -> str:
+    """Everything known about one metric or gate for one coin, as markdown."""
+    comp = sc.BY_ID[cid]
+    entry = cfg["components"][cid]
+    own_entry = (own or {}).get("components", {}).get(cid, {})
+    agg = cfg["aggregate"]
+    lines = [f"# {comp.name} ({cid}) - {_asset(asset)}", "",
+             f"- kind: {comp.kind}" + (" (forward only: needs live data, skipped in backtests)" if comp.forward_only else ""),
+             f"- family / style: {comp.family} / {comp.style}",
+             f"- source: {comp.source}",
+             f"- state: {'ON' if entry['enabled'] else 'off'} (double-click the row or press Space to switch)",
+             f"- weight: {entry['weight']:g}",
+             f"- settings: {_fmt(entry['params'])}"
+             + (f" (this coin's own: {_fmt(own_entry.get('params') or {})})" if own_entry.get("params") else ""),
+             "", "## Formula", "", comp.formula, "",
+             "## Works when", "", comp.useful_when, "",
+             "## Fails when", "", comp.not_useful_when, ""]
+    if comp.params:
+        lines += ["## Parameters", "", "| name | now | default | range | meaning |", "| --- | --- | --- | --- | --- |"]
+        for spec in comp.params:
+            lines.append(f"| {spec.name} | {_fmt(entry['params'].get(spec.name))} | {spec.default:g} | "
+                         f"{spec.lo:g}..{spec.hi:g} | {spec.describe or '-'} |")
+        lines.append("")
+    rel = sc.RELATIONS.get(cid, ())
+    if rel:
+        lines += ["Constraints: " + "; ".join(r[2] for r in rel), ""]
+    cols = {k: v for k, v in (columns or {}).items() if v}
+    if cols:
+        lines += ["## Evidence for this coin", ""] + [f"- {k}: {v}" for k, v in cols.items()] + [""]
+    lines += ["## Self-optimizing", "",
+              f"- autopilot: {'ON' if autopilot else 'off'}; tuning {'on' if agg['tune'] else 'off'} "
+              f"(neighbours at x(1 +/- {agg['tune_step']:g}); a move needs P(better) > {agg['tune_confidence']:g} "
+              f"on {agg['tune_min_calls']:g} decayed calls; then {agg['tune_cooldown']} bars of cooldown)",
+              f"- learned weighting {'on' if agg['adaptive'] else 'off'} over the last {agg['adaptive_window']} bars"
+              + (", inverting a metric that is reliably wrong" if agg["adaptive_flip"] else "")]
+    mine = [a for a in adoptions if a.get("metric") == cid and _asset(str(a.get("asset") or asset)) == _asset(asset)]
+    if mine:
+        lines += ["", "Adopted automatically:"]
+        lines += [f"- {_when(a.get('ts'))}: {_fmt(a.get('from') or {})} -> {_fmt(a.get('to') or {})}" for a in mine[-8:]]
+    else:
+        lines.append("- no tuned settings adopted yet for this coin")
+    return "\n".join(lines) + "\n"
+
+
+def coin_preview(row: Mapping[str, Any], *, own: Mapping[str, Any] | None = None,
+                 adoptions: Sequence[Mapping[str, Any]] = (), autopilot: bool = False) -> str:
+    """One overview row (a coin) in full."""
+    a = _asset(str(row.get("asset")))
+    lines = [f"# {a} - compound 5m", "",
+             f"- cached data: {row.get('data') or 'none'}",
+             f"- latest backtest verdict: {_fmt(row.get('backtest_verdict'))}; bt hit {_fmt(row.get('backtest_hit'))}",
+             f"- forward calls: {_fmt(row.get('fwd_calls'))}; fwd hit {_fmt(row.get('fwd_hit'))}",
+             f"- paper $ at wallet size: {_fmt(row.get('paper_usd'))} (no order was placed)",
+             f"- unattended training: {'RUNNING' if row.get('unattended') else 'stopped'}"
+             + (" (autopilot restarts it within five minutes)" if autopilot and not row.get("unattended") else ""),
+             "", "## This coin's own settings (on top of the shared ones)", ""]
+    comps = (own or {}).get("components") or {}
+    if comps:
+        lines += [f"- {cid}: {_fmt(e)}" for cid, e in sorted(comps.items())]
+    else:
+        lines.append("- none: it uses the shared settings")
+    for section in ("aggregate", "execution"):
+        if (own or {}).get(section):
+            lines.append(f"- {section}: {_fmt(own[section])}")
+    mine = [x for x in adoptions if _asset(str(x.get("asset") or "")) == a]
+    lines += ["", "## Tuned settings adopted automatically", ""]
+    lines += ([f"- {_when(x.get('ts'))} {x.get('metric')}: {_fmt(x.get('from') or {})} -> {_fmt(x.get('to') or {})}"
+               for x in mine[-12:]] or ["- none yet"])
+    return "\n".join(lines) + "\n"
+
+
+def record_preview(title: str, record: Mapping[str, Any], note: str = "") -> str:
+    """A results or forward-call row as a field list."""
+    lines = [f"# {title}", ""] + ([note, ""] if note else [])
+    lines += [f"- {k}: {_fmt(v)}" for k, v in record.items()]
+    return "\n".join(lines) + "\n"
+
+
 def _print_signal(x: Mapping[str, Any]) -> None:
     when = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(x["decided_at"]))
     print(f"{x['asset']} next 5m from {when}: {x['call']}  composite={x['composite']}  "
@@ -1333,7 +1544,59 @@ def stop_unattended(asset: str) -> dict[str, Any]:
             os.kill(pid, signal_mod.SIGTERM)
         except ProcessLookupError:
             pass
-    return {"stopping": True, "asset": a, "pid": pid}
+    # Autopilot keeps every coin training; a stopped coin comes back at its next check.
+    try:
+        restarts = autopilot_enabled()
+    except CompoundError:
+        restarts = False  # an unreadable config must not stop the stop
+    return {"stopping": True, "asset": a, "pid": pid, "autopilot_restarts": restarts}
+
+
+def set_autopilot(enabled: bool) -> dict[str, Any]:
+    state = save_state(autopilot=bool(enabled))
+    return {"autopilot": state["autopilot"]}
+
+
+def _live_coins(coin_list: Sequence[str] | None = None) -> list[str]:
+    return [_asset(c) for c in (coin_list if coin_list is not None else coins()) if live_capable(c)]
+
+
+def autopilot_status(coin_list: Sequence[str] | None = None) -> dict[str, Any]:
+    """The switch, which live coins train right now, the LaunchAgent and the latest adoptions."""
+    from . import compound_agent
+
+    live = _live_coins(coin_list)
+    adoptions = []
+    for c in live:
+        path = forward_path(c)
+        if not path.exists():
+            continue
+        # The console asks once a minute and ledgers grow ~900 lines a coin a day: parse only the
+        # rare adoption lines, not every call.
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if '"adopt"' not in line:
+                continue
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(r, dict) and r.get("type") == "adopt":
+                adoptions.append({k: r.get(k) for k in ("ts", "asset", "metric", "from", "to")})
+    adoptions.sort(key=lambda r: r["ts"] or 0)
+    return {"autopilot": autopilot_enabled(), "live_coins": live,
+            "running": [c for c in live if unattended_status(c)["running"]],
+            "agent": compound_agent.status(), "adoptions": adoptions[-20:]}
+
+
+def autopilot_ensure(coin_list: Sequence[str] | None = None) -> dict[str, Any]:
+    """What the autopilot LaunchAgent runs every five minutes: start one trainer for every live coin
+    whose loop is not running. Idempotent, because each coin's loop holds that coin's lock."""
+    if not autopilot_enabled():
+        return {"autopilot": False, "started": [], "already_running": [], "skipped": {}}
+    live = _live_coins(coin_list)
+    running = [c for c in live if unattended_status(c)["running"]]
+    out = start_unattended_many([c for c in live if c not in running])
+    return {"autopilot": True, "already_running": running, **out}
 
 
 def run_unattended(assets: str | Sequence[str], *, hold_lock: bool = True, max_ticks: int | None = None,
@@ -1452,10 +1715,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     sw.add_argument("--aggregate-grid", action="store_true", help="threshold/gate/leverage variations")
     sw.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) // 2))
     sub.add_parser("catalog")
+    sub.add_parser("autopilot", help="start every coin's unattended loop that is not running (the "
+                   "LaunchAgent runs this); nothing when autopilot is off")
     args = ap.parse_args(argv)
     try:
         if args.verb == "catalog":
             print(json.dumps(sc.catalog(), indent=2))
+        elif args.verb == "autopilot":
+            out = autopilot_ensure()
+            print(json.dumps({"at": int(time.time()), **out}, default=_jsonable), flush=True)
         elif args.verb == "signal":
             x = signal(args.asset, wallet_address=_settings_address())
             print(json.dumps(x, indent=2, default=_jsonable)) if args.json else _print_signal(x)
