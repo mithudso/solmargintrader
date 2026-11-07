@@ -140,6 +140,23 @@
       <p id="sessionKeyResult" class="note" role="status"></p>
     </section>
 
+    <section id="soltui">
+      <h2>SolTUI</h2>
+      <p class="note">
+        The same commands as the SolTUI app, <code>soltui call</code> and the soltui API, run through
+        the <code>com.mitchhudson.soltui</code> native host. Each returns soltui's own response
+        unchanged. A command that removes a safety stop asks for confirmation here and again in soltui.
+      </p>
+      <div class="row">
+        <select id="soltuiCommand" aria-label="soltui command"></select>
+        <button id="soltuiReload" type="button">Reload list</button>
+      </div>
+      <p id="soltuiStatus" class="note" role="status"></p>
+      <p id="soltuiDescribe" class="note"></p>
+      <form id="soltuiForm" class="grid-form" autocomplete="off"></form>
+      <pre id="soltuiResult" aria-live="polite"></pre>
+    </section>
+
     <section>
       <h2>Order journal</h2>
       <table id="intents">

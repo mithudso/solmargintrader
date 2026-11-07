@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 4
-Delta: added the DOC-754 requests for workstreams L (real-browser e2e) and M (liquidity safety).
+Version: 5
+Delta: added the owner's soltui command-bridge request (extension side, workstream X).
 
 ## v1 - 2026-11-06
 
@@ -26,3 +26,11 @@ Implement all of the recommendations.
 ```
 
 Target: /Users/mitch/dev/solmargintrader. Scope of this record: the real-browser end-to-end test for the extension (DOC-754 workstream L); other recommendations are separate workstreams.
+
+## v5 - 2026-11-07 (soltui command bridge, extension side)
+
+```text
+Make everything available in the tui also available via the extension, and using the same mechanisms and calls, which will require a helper script. The extension has ID: pnokcppamfghgaimmmghoegjllhonhbh make it auto reload on update. All calls should be available via the extension, TUI, CLI, and API with the same output response, testing, verification, logging, and access.
+```
+
+Target: /Users/mitch/dev/solmargintrader. Scope of this record: the extension side (soltuiCommands and soltuiCall registry commands, transports, manifest permission, dashboard panel, auto-reload, tests, e2e). The Python registry, CLI, API, native host and installer are a parallel workstream.

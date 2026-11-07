@@ -14,6 +14,7 @@ import { ConfigStore } from '../src/storage/store.js';
 import { buildVenue } from '../src/venues/index.js';
 import { makeSigner } from '../src/wallet/signer.js';
 import { RequestBudget } from '../src/jupiter/http.js';
+import { createNodeSoltuiTransport } from './soltui-transport.js';
 
 /**
  * @param {object} [opts]
@@ -22,6 +23,7 @@ import { RequestBudget } from '../src/jupiter/http.js';
  * @param {string} [opts.configPath]
  * @param {string} [opts.passphrase] unlocks a full-auto session key
  * @param {boolean} [opts.quiet]
+ * @param {object} [opts.soltui] transport override; default spawns the soltui native host
  */
 export async function createNodeDeps(opts = {}) {
   const {
@@ -30,6 +32,7 @@ export async function createNodeDeps(opts = {}) {
     configPath = DEFAULT_CONFIG_PATH,
     passphrase,
     quiet = false,
+    soltui,
   } = opts;
 
   const area = ephemeral ? null : createFileArea(configPath);
@@ -43,6 +46,7 @@ export async function createNodeDeps(opts = {}) {
     store,
     configStore,
     budget,
+    soltui: soltui ?? createNodeSoltuiTransport(),
     paths: ephemeral ? { store: '(memory)', config: '(memory)' } : { store: storePath, config: configPath },
 
     /**

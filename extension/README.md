@@ -272,7 +272,7 @@ gross $10.00, fees $1.05, **net $8.95**; with $2.00 carry, **realized $6.95**.
 
 ## Three surfaces, one registry
 
-Every action lives in `src/core/commands.js` (23 commands). The Chrome message handler, the CLI and
+Every action lives in `src/core/commands.js` (25 commands). The Chrome message handler, the CLI and
 the HTTP API are thin adapters over it, so anything you can do in the UI you can script — and
 `test/surfaces.test.js` fails the build if any surface drifts.
 
@@ -304,15 +304,65 @@ Full reference: [../docs/API.md](../docs/API.md).
 
 ---
 
+## SolTUI bridge and auto-reload
+
+Everything the SolTUI app can do is also a SolTUI registry command (`soltui/commands.py`), and the
+extension reaches that registry through a Chrome **native messaging** host, `com.mitchhudson.soltui`
+(`soltui/native_host.py`). Two registry commands forward to it: `soltuiCommands` (list) and
+`soltuiCall --command <name> --params '{...}'`. Both return **soltui's own envelope, unchanged**
+(`{ok, command, result, error}`): the extension message, `node tools/cli.js` and the API return
+exactly what `soltui call` prints. A missing, crashed or slow host is an ordinary `failed` or
+`timeout` envelope with an install hint, never an exception. The extension adds no access rules of its
+own: a command with `requires_confirm` needs `confirm: true` inside `params` on every surface, and soltui
+refuses without it.
+
+```bash
+node tools/cli.js soltuiCommands --json
+node tools/cli.js soltuiCall --command liquidity.status --json
+curl -s -X POST -H "Authorization: Bearer $SMT_API_TOKEN" -H 'content-type: application/json' \
+  -d '{"command":"liquidity.status","params":{}}' http://127.0.0.1:8787/v1/soltuiCall
+```
+
+- **Permission.** The manifest gains `nativeMessaging` and nothing else. Chrome only lets the origins in
+  the host manifest's `allowed_origins` talk to the host. Install the host with
+  `python -m soltui.native_host_install install`, then reload the extension once so the new permission
+  takes effect.
+- **Transports.** The service worker opens one short-lived `connectNative` port per request
+  (`src/bg/soltui-transport.js`); the CLI and API spawn the same host and speak the same 4-byte
+  length-prefixed framing (`tools/soltui-transport.js`). Both feed `src/core/soltui.js`, which keeps the
+  envelope untouched. A call gets 30 s, a `long_running` command 15 min; a timeout ends the host process.
+  `SOLTUI_NATIVE_HOST` (a wrapper path) or `SOLTUI_PYTHON` choose the host for the node surfaces.
+- **No engine lock.** `soltuiCall` does not take the engine's store lock, so a long backtest never stalls a tick.
+- **Dashboard.** The SolTUI panel (`src/ui/soltui-panel.js`) lists `soltuiCommands`, builds the form from
+  each command's param types, gates `requires_confirm` behind a checkbox, sends only listed names, and
+  renders results with `textContent` only.
+- **Auto-reload on update.** A 1-minute `chrome.alarms` job asks the host for `buildHash`, a SHA-256 over
+  `manifest.json` and everything under `src/` in the extension directory. When the hash differs from the
+  one stored in `chrome.storage.local` (`soltuiBuild`) it calls `chrome.runtime.reload()`, under these rules
+  (`src/core/autoreload.js`):
+  the first observation only stores the hash; an unreachable host never reloads and is logged once until it
+  recovers; a reload is **deferred, not forgotten,** while any tick, reconcile, submit or cancel is queued or
+  running (the engine's own store lock, `enginePending`); the final check and the reload happen inside that
+  lock, so a tick cannot start between "idle" and "reloaded". Each reload is one `auto-reload` event
+  (hash prefixes, `armed`, `killSwitch`; no secret) in the existing event log.
+  **A reload is an update, so it disarms**: `handleInstalled` forces `armed: false` on every update and keeps
+  the kill switch and mode. After an auto-reload the operator re-arms deliberately.
+  The hash covers the directory the host serves (`<repo>/extension`), which is the unpacked path Chrome Beta
+  loads for this extension id.
+
+---
+
 ## Layout
 
 ```
-manifest.json              MV3 manifest, minimal permissions (storage, alarms + 3 Jupiter hosts)
+manifest.json              MV3 manifest, minimal permissions (storage, alarms, nativeMessaging + 3 Jupiter hosts)
 src/core/grid.js           Pure grid engine — levels, side selection, planning, capital needs
 src/core/risk.js           Risk rails and batch admission
 src/core/pnl.js            FIFO matching, snapshots, equity curve, drawdown, CSV
 src/core/engine.js         The tick: reconcile -> ingest fills -> plan -> admit -> place
 src/core/commands.js       The command registry — every action, transport-agnostic
+src/core/soltui.js         soltui bridge: envelope passthrough, timeouts, clean errors (transport injected)
+src/core/autoreload.js     Auto-reload gate: first observation, idle check, host-down logging
 src/jupiter/http.js        Retry/backoff, Retry-After, request budget, per-attempt timeout
 src/jupiter/price.js       Price API, tolerant of both response shapes
 src/jupiter/trigger.js     Trigger V2: auth, vault, deposit craft, create, manage
@@ -322,13 +372,15 @@ src/wallet/solana.js       base58, shortvec, signature insertion (no web3.js dep
 src/wallet/signer.js       Null / pending-approval / session-key signers + encrypted vault
 src/storage/store.js       IndexedDB journal + chrome.storage config
 src/storage/fileStore.js   The same interfaces on JSON files, for the CLI and API
-src/bg/service-worker.js   Alarm scheduling, message plumbing, badge
+src/bg/service-worker.js   Alarm scheduling, message plumbing, badge, build-hash probe
+src/bg/soltui-transport.js connectNative transport to the soltui host
 src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe; dashboard has a "Create session key" section)
 tools/cli.js               CLI surface, generated from the registry
 tools/api-server.js        Local HTTP API surface, generated from the registry
+tools/soltui-transport.js  Node transport to the same soltui host (CLI and API)
 tools/dryrun.js            Headless end-to-end tick
 tools/e2e.mjs              Real-browser e2e (Chrome for Testing, DevTools pipe); helpers in e2e/
-test/                      242 tests, zero dependencies (node:test)
+test/                      303 tests, zero dependencies (node:test)
 ```
 
 No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
@@ -339,20 +391,28 @@ insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests
 
 ## Verification status
 
-**Current offline gate (2026-11-06):** 242 tests pass. The deterministic oscillating
+**Current offline gate (2026-11-07):** 303 tests pass. The deterministic oscillating
 dry run closes one round trip: gross $0.3738, fees $0.0246, net +$0.3492, with no
 unknown-fee fills. Public endpoint reachability passed; the keyed price check skipped.
 Live money movement remains blocked without the transaction-intent verifier described
 in `docs/jupiter-trigger-contract.md`. Unmatched sales, missing execution evidence and
 unknown accounting costs hold new planning. The planner allows at most 10,000 rungs.
 
-**Real-browser e2e (2026-11-06):** `npm run e2e` loads the unpacked extension into Chrome for
-Testing (156.0.8078.47) and passes 14 of 14 checks: the MV3 service worker starts, the extension
+**Real-browser e2e (2026-11-07):** `npm run e2e` loads the unpacked extension into Chrome for
+Testing (156.0.8078.47) and passes every check (20, or 21 with the production soltui host): the MV3 service worker starts, the extension
 installs disarmed in dry-run, the popup and dashboard render, a dry-run `plan` is priced by a stubbed
 read, a disarmed `tick` is skipped and journals nothing, the rails fail closed in the browser, a canary
 API key appears in no DOM, response or `chrome.storage.sync`, and Chrome-level interception saw no request
-other than the stubbed price read. This verifies loading and dry-run behaviour only. It never arms or
-signs, it does not exercise authenticated Jupiter responses, and **no live order has ever been placed**.
+other than the stubbed price read. It also drives the soltui bridge through the real extension and a real
+native messaging host: `soltuiCommands` and a read-only `soltuiCall` return the same envelope as the
+extension CLI and, with the production host, byte-identical to `soltui list` and `soltui call`; the
+dashboard panel renders the result as text; a missing host is a clean `failed` envelope. This verifies
+loading, dry-run behaviour and the read-only bridge only. It never arms or signs, it calls only commands
+soltui lists as `read_only` (`e2e/lib/guard.mjs`), it does not exercise authenticated Jupiter responses,
+and **no live order has ever been placed**. Not verified by any test: an actual `chrome.runtime.reload()`
+in Chrome (the gate is unit-tested with a fake `reload`, because a reload would end the test session), and
+the owner's own browser, which needs the one-time extension reload for the new `nativeMessaging`
+permission.
 
 **Historical development receipts (the figures below are not the current gate):**
 

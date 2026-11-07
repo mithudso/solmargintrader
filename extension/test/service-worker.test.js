@@ -2,6 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { MemoryStore } from '../src/storage/memoryStore.js';
+import { withStoreLock } from '../src/core/engine.js';
+import { SoltuiTransportError } from '../src/core/soltui.js';
+import { fakeHandle } from '../e2e/fixtures/fake-soltui-registry.js';
 
 /**
  * The service worker registers chrome listeners at import time and builds its
@@ -38,7 +41,7 @@ globalThis.chrome = {
   action: { async setBadgeText() {}, async setBadgeBackgroundColor() {} },
 };
 
-const { handleInstalled, handleMessage } = await import('../src/bg/service-worker.js');
+const { handleInstalled, handleMessage, runBuildCheck } = await import('../src/bg/service-worker.js');
 
 const reset = () => {
   area.clear();
@@ -90,8 +93,11 @@ test('an update still reschedules the alarm and records a lifecycle event', asyn
   const store = new MemoryStore();
   await handleInstalled({ reason: 'update', previousVersion: '0.0.9' }, { store });
 
-  assert.equal(alarms.created.length, 1, 'the alarm must be re-created after an update');
-  assert.equal(alarms.created[0].name, 'solmargintrader-tick');
+  const tickAlarms = alarms.created.filter((a) => a.name === 'solmargintrader-tick');
+  assert.equal(tickAlarms.length, 1, 'the alarm must be re-created after an update');
+  const buildAlarms = alarms.created.filter((a) => a.name === 'solmargintrader-soltui-build');
+  assert.equal(buildAlarms.length, 1, 'the soltui build probe alarm must be re-created after an update');
+  assert.equal(buildAlarms[0].info.periodInMinutes, 1);
   const [event] = await store.recentEvents(1);
   assert.equal(event.type, 'updated');
   assert.equal(event.previousVersion, '0.0.9');
@@ -158,4 +164,78 @@ test('a command that does not declare passphrase still receives no passphrase ar
   // reject it as an unknown argument.
   const res = await handleMessage({ type: 'status', passphrase: 'correct horse battery staple' }, { openStore: async () => new MemoryStore() });
   assert.equal(res.ok, true, `expected success, got ${JSON.stringify(res)}`);
+});
+
+// ------------------------------------------------------- soltui bridge -----
+
+const H1 = '1'.repeat(64);
+const H2 = '2'.repeat(64);
+const hostReporting = (hash) => ({ request: async (request) => fakeHandle(request, { hash }) });
+
+test('a soltuiCall message returns soltui\'s envelope as `result`, not spread over ok/error', async () => {
+  reset();
+  const soltui = hostReporting(H1);
+  const res = await handleMessage({ type: 'soltuiCall', command: 'demo.echo', params: { text: 'x' } }, { openStore: async () => new MemoryStore(), soltui });
+  assert.deepEqual(res, { ok: true, result: fakeHandle({ op: 'call', command: 'demo.echo', params: { text: 'x' } }) });
+});
+
+test('a soltui refusal inside the envelope does not turn the message response into an error', async () => {
+  reset();
+  const res = await handleMessage({ type: 'soltuiCall', command: 'demo.resume' }, { openStore: async () => new MemoryStore(), soltui: hostReporting(H1) });
+  assert.equal(res.ok, true);
+  assert.equal(res.result.ok, false);
+  assert.equal(res.result.error.code, 'forbidden');
+});
+
+test('a message with the host missing gets a clean failed envelope', async () => {
+  reset();
+  const soltui = { request: async () => { throw new SoltuiTransportError('failed', 'soltui native host "com.mitchhudson.soltui" is not available; install it'); } };
+  const res = await handleMessage({ type: 'soltuiCommands' }, { openStore: async () => new MemoryStore(), soltui });
+  assert.equal(res.ok, true);
+  assert.equal(res.result.ok, false);
+  assert.equal(res.result.error.code, 'failed');
+});
+
+test('runBuildCheck: first observation stores the hash, a change on an idle engine reloads', async () => {
+  reset();
+  const store = new MemoryStore();
+  const reloads = [];
+  const common = { store, reload: () => reloads.push(1), hold: async () => {} };
+  assert.equal(await runBuildCheck({ ...common, soltui: hostReporting(H1) }), 'first-observation');
+  assert.equal(await runBuildCheck({ ...common, soltui: hostReporting(H1) }), 'unchanged');
+  assert.equal(reloads.length, 0);
+  assert.equal(await runBuildCheck({ ...common, soltui: hostReporting(H2) }), 'reloaded');
+  assert.equal(reloads.length, 1);
+  assert.equal(area.get('soltuiBuild').hash, H2);
+  const events = await store.recentEvents(5);
+  const reload = events.find((e) => e.type === 'auto-reload');
+  assert.ok(reload, 'the reload is in the existing event log');
+  assert.equal(reload.armed, false);
+  assert.deepEqual(Object.keys(reload).sort(), ['armed', 'from', 'killSwitch', 'to', 'tsMs', 'type'].sort());
+});
+
+test('runBuildCheck: no reload while the real engine lock is busy, then reload once it is idle', async () => {
+  reset();
+  const store = new MemoryStore();
+  const reloads = [];
+  const common = { store, reload: () => reloads.push(1), hold: async () => {} };
+  await runBuildCheck({ ...common, soltui: hostReporting(H1) });
+  let finish;
+  const tick = withStoreLock(store, () => new Promise((resolve) => { finish = resolve; }));
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(await runBuildCheck({ ...common, soltui: hostReporting(H2) }), 'deferred-busy');
+  assert.equal(reloads.length, 0);
+  finish();
+  await tick;
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(await runBuildCheck({ ...common, soltui: hostReporting(H2) }), 'reloaded');
+  assert.equal(reloads.length, 1);
+});
+
+test('runBuildCheck: an unreachable host never reloads', async () => {
+  reset();
+  const reloads = [];
+  const down = { request: async () => { throw new SoltuiTransportError('failed', 'down'); } };
+  assert.equal(await runBuildCheck({ store: new MemoryStore(), reload: () => reloads.push(1), soltui: down }), 'host-unreachable');
+  assert.equal(reloads.length, 0);
 });

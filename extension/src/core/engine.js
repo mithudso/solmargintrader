@@ -23,16 +23,32 @@ const engineQueues = new Map();
 const storeIdentity = (store) => store.path ? `file:${store.path}` : store.db?.name ? `indexeddb:${store.db.name}` : store;
 const queueFor = (store) => {
   const key = storeIdentity(store);
-  if (!engineQueues.has(key)) engineQueues.set(key, { tail: Promise.resolve(), stopped: false, stopGeneration: 0 });
+  if (!engineQueues.has(key)) engineQueues.set(key, { tail: Promise.resolve(), stopped: false, stopGeneration: 0, pending: 0 });
   return engineQueues.get(key);
 };
 
 export function withStoreLock(store, operation) {
   const queue = queueFor(store);
+  // `pending` counts operations queued or running, so an outside observer can
+  // tell "nothing is mid-tick" without joining the queue.
+  queue.pending++;
   const result = queue.tail.then(operation);
   queue.tail = result.catch(() => {});
+  const settled = () => { queue.pending--; };
+  result.then(settled, settled);
   return result;
 }
+
+/**
+ * Count of locked operations (tick, reconcile, submit, cancel, lifecycle
+ * write) queued or running; 0 means idle. The auto-reload gate reads this: a reload that
+ * lands between an order submit and its reconcile is how a rung double-fires.
+ */
+export function enginePending(store) {
+  return queueFor(store).pending;
+}
+
+export const engineIdle = (store) => enginePending(store) === 0;
 
 // A stop request revokes the remainder of a running batch before the lifecycle
 // command waits its turn to persist. It cannot undo an already submitted order.

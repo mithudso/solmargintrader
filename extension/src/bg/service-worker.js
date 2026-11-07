@@ -18,11 +18,18 @@
 import { Store, ConfigStore } from '../storage/store.js';
 import { buildVenue, MODE, leverageFeasibility } from '../venues/index.js';
 import { runCommand, COMMANDS, CommandError } from '../core/commands.js';
+import { withStoreLock, enginePending } from '../core/engine.js';
+import { checkForUpdate } from '../core/autoreload.js';
+import { isEnvelope } from '../core/soltui.js';
+import { createNativeTransport } from './soltui-transport.js';
 import { DEFAULT_LIMITS } from '../core/risk.js';
 import { RequestBudget } from '../jupiter/http.js';
 import { makeSigner } from '../wallet/signer.js';
 
 const ALARM = 'solmargintrader-tick';
+
+// Asks the soltui host once a minute whether the code on disk changed.
+const BUILD_ALARM = 'solmargintrader-soltui-build';
 
 // Chrome clamps alarm periods; 30s is the floor on current versions. The engine
 // records the ACTUAL wake delta so a clamp shows up in the UI instead of
@@ -31,6 +38,7 @@ const MIN_PERIOD_MINUTES = 0.5;
 
 const configStore = new ConfigStore();
 const budget = new RequestBudget({ maxPerWindow: 30, windowMs: 60_000 });
+const nativeTransport = createNativeTransport();
 
 /**
  * Dependencies for the command registry, Chrome flavour.
@@ -38,12 +46,13 @@ const budget = new RequestBudget({ maxPerWindow: 30, windowMs: 60_000 });
  * `passphrase` is never persisted: a full-auto session key can only be unsealed
  * while the user is present to supply it, which is the point.
  */
-async function chromeDeps({ passphrase, openStore = () => Store.open() } = {}) {
+async function chromeDeps({ passphrase, openStore = () => Store.open(), soltui = nativeTransport } = {}) {
   const store = await openStore();
   return {
     store,
     configStore,
     budget,
+    soltui,
     async buildVenue() {
       const config = await configStore.getConfig();
       const secrets = await configStore.get('secrets', {});
@@ -108,6 +117,40 @@ async function rescheduleAlarm() {
   return periodInMinutes;
 }
 
+/** Creating an alarm with an existing name replaces it, so this is idempotent. */
+async function scheduleBuildAlarm() {
+  await chrome.alarms.create(BUILD_ALARM, { periodInMinutes: 1, delayInMinutes: 1 });
+}
+
+/**
+ * One pass of the auto-reload gate. See src/core/autoreload.js for the rules;
+ * this only wires them to Chrome: the engine lock, the event log and
+ * chrome.runtime.reload. Nothing in the log or the state is a secret: a hash
+ * prefix, the mode and the armed flag.
+ */
+export async function runBuildCheck({
+  soltui = nativeTransport, store, reload = () => chrome.runtime.reload(), hold,
+} = {}) {
+  const target = store ?? (await Store.open());
+  return checkForUpdate({
+    deps: { soltui },
+    state: configStore,
+    pending: () => enginePending(target),
+    withLock: (operation) => withStoreLock(target, operation),
+    reload,
+    ...(hold ? { hold } : {}),
+    logEvent: async (event) => {
+      try { await target.logEvent(event); } catch (err) {
+        console.warn('[smt] could not log', event.type, String(err?.message ?? err));
+      }
+    },
+    describe: async () => {
+      const runtime = await configStore.getRuntime();
+      return { armed: runtime.armed === true, killSwitch: runtime.killSwitch === true };
+    },
+  });
+}
+
 /* ----------------------------------------------------------------- lifecycle -- */
 
 /**
@@ -140,6 +183,7 @@ export async function handleInstalled(details = {}, { store } = {}) {
   }
   await configStore.set('limits', { ...DEFAULT_LIMITS, ...(await configStore.get('limits', {})) });
   await rescheduleAlarm();
+  await scheduleBuildAlarm();
 
   const runtime = await configStore.getRuntime();
   const config = await configStore.getConfig();
@@ -165,9 +209,16 @@ chrome.runtime.onInstalled.addListener((details) => {
   handleInstalled(details).catch((err) => console.error('[smt] onInstalled threw', err));
 });
 
-chrome.runtime.onStartup.addListener(rescheduleAlarm);
+chrome.runtime.onStartup.addListener(() => {
+  rescheduleAlarm().catch((err) => console.error('[smt] reschedule threw', err));
+  scheduleBuildAlarm().catch((err) => console.error('[smt] build alarm threw', err));
+});
 
 chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === BUILD_ALARM) {
+    runBuildCheck().catch((err) => console.error('[smt] build check threw', String(err?.message ?? err)));
+    return;
+  }
   if (alarm.name !== ALARM) return;
   // Errors are swallowed here on purpose: an unhandled rejection in an alarm
   // handler tears down the worker before the journal is flushed.
@@ -189,7 +240,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, respond) => {
   return true; // keep the channel open for the async reply
 });
 
-export async function handleMessage(msg, { openStore } = {}) {
+export async function handleMessage(msg, { openStore, soltui } = {}) {
   const requested = msg?.type;
   const name = ALIASES[requested] ?? requested;
 
@@ -209,7 +260,7 @@ export async function handleMessage(msg, { openStore } = {}) {
   if (passphrase !== undefined && COMMANDS[name].params.some((p) => p.name === 'passphrase')) {
     args.passphrase = passphrase;
   }
-  const deps = await chromeDeps({ passphrase, openStore });
+  const deps = await chromeDeps({ passphrase, openStore, ...(soltui ? { soltui } : {}) });
 
   try {
     const result = await runCommand({ name, args, deps });
@@ -221,8 +272,10 @@ export async function handleMessage(msg, { openStore } = {}) {
     if (name === 'kill' || name === 'disarm') await paintBadge({ errors: [] });
 
     // Spread for the UI's existing field access (res.config, res.runtime, ...)
-    // and expose `result` for generic callers.
-    return { ok: true, ...result, result };
+    // and expose `result` for generic callers. A soltui envelope has its own
+    // ok/error, which spreading would overwrite or leak into the top level, so
+    // it is returned only as `result`, byte-for-byte what the CLI and API give.
+    return { ok: true, ...(isEnvelope(result) ? {} : result), result };
   } catch (err) {
     if (err instanceof CommandError) return { ok: false, error: err.message, status: err.status };
     throw err;

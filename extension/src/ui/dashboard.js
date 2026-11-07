@@ -15,6 +15,7 @@ import {
   describeCreateResult,
 } from './session-key-form.js';
 import { attributionLine, attributionDetail } from '../jupiter/attribution.js';
+import { mountSoltuiPanel } from './soltui-panel.js';
 
 const $ = (sel) => document.querySelector(sel);
 const send = (msg) => chrome.runtime.sendMessage(msg);
@@ -367,6 +368,12 @@ $('#exportCsv').addEventListener('click', () => {
   a.download = `solmargintrader-fills-${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
+});
+
+// Independent of the grid data: a missing soltui host must not stop the rest of
+// the dashboard from loading.
+mountSoltuiPanel().catch((err) => {
+  $('#soltuiStatus').textContent = `SolTUI panel failed to load: ${err.message}`;
 });
 
 refresh().catch((err) => {
