@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T17:13:14+00:00",
+  "generatedAt": "2026-11-07T17:14:14+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -262,7 +262,7 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 24
+          "hits": 25
         },
         {
           "path": "backtester/tests/test_engine.py",
@@ -2005,6 +2005,10 @@
           "hits": 23
         },
         {
+          "path": "soltui/tests/test_strategy_history.py",
+          "hits": 22
+        },
+        {
           "path": "backtester/core/scorecard.py",
           "hits": 21
         },
@@ -2018,10 +2022,6 @@
         },
         {
           "path": "soltui/tests/test_signals.py",
-          "hits": 18
-        },
-        {
-          "path": "soltui/tests/test_strategy_history.py",
           "hits": 18
         },
         {
