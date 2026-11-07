@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import io
 import json
 import math
+import os
+from contextlib import redirect_stdout
 import unittest
 import urllib.error
 from pathlib import Path
@@ -14,6 +17,7 @@ import numpy as np
 from textual.widgets import Button, DataTable, Input, TabbedContent
 
 from backtester.core import scorecard as sc
+from backtester.tests.test_scorecard import synthetic
 from soltui import commands, compound
 from soltui import config as config_mod
 from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
@@ -269,6 +273,179 @@ class ForwardLedgerTests(TempConfig):
         self.assertEqual(len(compound.read_ledger("SOL")), 1)
 
 
+ADDR = "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+USDT = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCE8BenwNYB"
+
+
+def fake_scan(status="ok", sol_usd=900.0, usdt_usd=None):
+    class Scan:
+        def to_dict(self):
+            return {"status": status, "errors": [] if status == "ok" else [{"source": "rpc", "message": "down"}],
+                    "native": {"symbol": "SOL", "amount": 5.0, "usd": sol_usd},
+                    "holdings": [
+                        {"mint": USDC, "symbol": "USDC", "amount": 100.0, "usd": 100.0, "included": True},
+                        {"mint": "FakeMint1111111111111111111111111111111111", "symbol": "USDC", "amount": 1e6,
+                         "usd": 1e6, "included": True},
+                        {"mint": USDT, "symbol": "USDT", "amount": 50.0, "usd": usdt_usd, "included": True},
+                    ]}
+    return lambda address, fetch: Scan()
+
+
+class WalletTests(TempConfig):
+    def setUp(self) -> None:
+        super().setUp()
+        compound._WALLET_CACHE.clear()
+
+    def test_no_address_means_no_size_not_a_guess(self) -> None:
+        w = compound.wallet_balances("")
+        self.assertFalse(w["available"])
+        self.assertIn("Settings", w["reason"])
+        s = compound.size_call(w, synthetic(300), sc.default_config(), "UP")
+        self.assertFalse(s["available"])
+
+    def test_collateral_is_matched_by_mint_and_unpriced_is_unknown(self) -> None:
+        with mock.patch.object(compound.wallet_mod, "scan_solana", fake_scan()):
+            w = compound.wallet_balances(ADDR, fetch=lambda *a: None)
+        self.assertEqual(w["usable_usd"], 1000.0)               # SOL 900 + real USDC 100; fake USDC ignored
+        self.assertEqual(w["parts"], {"SOL": 900.0, "USDC": 100.0})
+        self.assertEqual(w["unpriced"], ["USDT"])
+        self.assertFalse(w["complete"])
+        self.assertEqual(w["label"], "wallet (live)")
+
+    def test_a_failed_scan_is_unavailable(self) -> None:
+        def broken(address, fetch):
+            class S:
+                def to_dict(self):
+                    return {"status": "error", "errors": [{"source": "rpc", "message": "connection refused"}],
+                            "native": None, "holdings": []}
+            return S()
+        with mock.patch.object(compound.wallet_mod, "scan_solana", broken):
+            w = compound.wallet_balances(ADDR, fetch=lambda *a: None)
+        self.assertFalse(w["available"])
+        self.assertIn("connection refused", w["reason"])
+
+    def test_size_is_the_smaller_of_risk_and_leverage_limits_with_venue_liquidation(self) -> None:
+        bars = synthetic(400)
+        cfg = sc.default_config()
+        cfg["execution"].update(leverage=5.0, risk_pct=1.0)
+        w = {"available": True, "usable_usd": 1000.0, "complete": True}
+        s = compound.size_call(w, bars, cfg, "UP")
+        atr = float(sc.atr(bars, 14)[-1])
+        stop = 1.5 * atr / bars.close[-1]
+        cost = 16.0 / 1e4
+        self.assertAlmostEqual(s["risk_notional_usd"], round(10.0 / (stop + cost), 2), places=1)
+        self.assertEqual(s["notional_usd"], round(min(5000.0, 10.0 / (stop + cost)), 2))
+        self.assertAlmostEqual(s["loss_at_stop_usd"], 10.0, places=1)
+        self.assertEqual(s["side"], "long")
+        self.assertLess(s["liquidation_price"]["long"], bars.close[-1])
+        self.assertGreater(s["liquidation_price"]["short"], bars.close[-1])
+        cfg["execution"]["risk_pct"] = 100.0
+        big = compound.size_call(w, bars, cfg, "DOWN")
+        self.assertEqual((big["bound_by"], big["notional_usd"], big["side"]), ("leverage", 5000.0, "short"))
+
+    def test_signal_and_forward_tick_carry_the_wallet_and_paper_dollars(self) -> None:
+        venue = Venue(now=T0 + 300 * 19 + 10)
+        with mock.patch.object(compound.wallet_mod, "scan_solana", fake_scan(usdt_usd=50.0)):
+            x = compound.signal("SOL", now=venue.now, get=venue.get, post=venue.post, wallet_address=ADDR,
+                                wallet_fetch=lambda *a: None)
+            self.assertTrue(x["wallet"]["available"])
+            self.assertEqual(x["wallet"]["usable_usd"], 1050.0)
+            self.assertTrue(x["sizing"]["available"])
+            self.assertIn("wallet (live)", compound.wallet_line(x["wallet"], x["sizing"]))
+            first = compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post,
+                                          wallet_address=ADDR, wallet_fetch=lambda *a: None)
+            self.assertGreater(first["notional_usd"], 0)
+
+    def test_paper_dollars_use_each_calls_recorded_size(self) -> None:
+        compound._append("SOL", [
+            {"type": "call", "id": "a", "bar_ts": T0, "price": 90.0, "call": "UP", "notional_usd": 1000.0,
+             "round_trip_bps": 16.0, "scores": {}},
+            {"type": "resolve", "id": "a", "ret_bps": 30.0},
+            {"type": "call", "id": "b", "bar_ts": T0 + 300, "price": 90.0, "call": "DOWN", "notional_usd": 2000.0,
+             "round_trip_bps": 16.0, "scores": {}},
+            {"type": "resolve", "id": "b", "ret_bps": 5.0},
+            {"type": "call", "id": "c", "bar_ts": T0 + 600, "price": 90.0, "call": "UP", "notional_usd": None,
+             "round_trip_bps": 16.0, "scores": {}},
+            {"type": "resolve", "id": "c", "ret_bps": 50.0}])
+        paper = compound.forward_status("SOL")["paper"]
+        self.assertEqual(paper["calls"], 2)
+        self.assertAlmostEqual(paper["net_usd"], round(1000 * (30 - 16) / 1e4 + 2000 * (-5 - 16) / 1e4, 2))
+
+    def test_the_compound_module_never_touches_key_files(self) -> None:
+        src = Path(compound.__file__).read_text()
+        for forbidden in (".private", "key_dir(", "key_sources(", "~/.ssh"):
+            self.assertNotIn(forbidden, src)
+
+
+class SummaryTests(unittest.TestCase):
+    def row(self, label, hit, z, ret, ranked=True):
+        return {"asset": "SOL", "label": label, "oos_hit": hit, "oos_z": z, "oos_calls": 300, "oos_return": ret,
+                "ranked": ranked, "oracle_net_bps": -7.5, "round_trip_bps": 16.0, "split_ts": T0,
+                "to_ts": T0 + 9 * 86400, "oos_bars": 2678}
+
+    def test_plain_language_verdicts(self) -> None:
+        self.assertIn("No backtest yet", compound.run_summary([]))
+        none = compound.run_summary([self.row("compound", 0.5, 0.1, -0.3), self.row("only:rsi", 0.51, 1.2, -0.2)], 30)
+        self.assertIn("no measurable edge", none)
+        self.assertIn("2 configurations tested (30 on this window", none)
+        self.assertIn("perfect next-bar call would net -7.5 bps", none)
+        eaten = compound.run_summary([self.row("only:rsi", 0.55, 2.5, -0.1)])
+        self.assertIn("costs eat it", eaten)
+        maybe = compound.run_summary([self.row("only:rsi", 0.55, 2.5, 0.04)])
+        self.assertIn("possible edge", maybe)
+
+
+class UnattendedTests(TempConfig):
+    def test_the_loop_ticks_survives_errors_and_stops_on_request(self) -> None:
+        calls = []
+
+        def tick(asset, wallet_address=None):
+            calls.append(asset)
+            if len(calls) == 2:
+                raise RuntimeError("network down")
+            if len(calls) == 3:
+                compound.unattended_paths(asset)["stop"].write_text("stop")
+            return {"call": "FLAT"}
+
+        clock = [1_800_000_000.0]
+
+        def sleep(s):
+            clock[0] += s
+
+        out = io.StringIO()
+        with redirect_stdout(out):
+            code = compound.run_unattended("SOL", sleep=sleep, clock=lambda: clock[0], tick=tick)
+        self.assertEqual(code, 0)
+        self.assertEqual(len(calls), 3)
+        self.assertIn('"error": "RuntimeError: network down"', out.getvalue())
+        self.assertIn("stopped after 3 tick(s)", out.getvalue())
+        paths = compound.unattended_paths("SOL")
+        self.assertFalse(paths["pid"].exists())
+        self.assertFalse(compound.unattended_status("SOL")["running"])   # lock released
+
+    def test_status_and_stop_use_the_lock_and_signal_the_pid(self) -> None:
+        import subprocess
+        paths = compound.unattended_paths("SOL")
+        fd = compound._try_lock(paths["lock"])                 # pretend a run holds the lock
+        sleeper = subprocess.Popen(["sleep", "30"])
+        try:
+            paths["pid"].write_text(str(sleeper.pid))
+            self.assertTrue(compound.unattended_status("SOL")["running"])
+            with self.assertRaises(compound.CompoundError):
+                compound.start_unattended("SOL")
+            out = compound.stop_unattended("SOL")
+            self.assertTrue(out["stopping"])
+            self.assertEqual(sleeper.wait(timeout=5), -15)       # SIGTERM delivered
+            self.assertTrue(paths["stop"].exists())
+        finally:
+            os.close(fd)
+            if sleeper.poll() is None:
+                sleeper.kill()
+        self.assertFalse(compound.unattended_status("SOL")["running"])
+        self.assertEqual(compound.stop_unattended("SOL")["message"], "not running")
+
+
 class SweepTests(TempConfig):
     def test_one_failing_configuration_does_not_sink_the_sweep(self) -> None:
         real = compound.cbt.run_compound
@@ -407,6 +584,48 @@ class CompoundTab(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(self.cell(app, "rsi", "tuned to"), "")
         saved = json.loads(compound.config_path().read_text())["config"]
         self.assertEqual(saved["components"]["rsi"]["params"]["period"], 11)
+
+
+class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        patcher = mock.patch.object(config_mod, "CONFIG_DIR", Path(tmp.name))
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def on(self, app, cid: str) -> str:
+        table = app.query_one("#compound-table", DataTable)
+        return str(table.get_row_at(table.get_row_index(cid))[0])
+
+    async def test_clicking_on_or_name_toggles_and_space_toggles(self) -> None:
+        from soltui.tui import CompoundTable
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-compound"
+            await pilot.pause()
+            table = app.query_one("#compound-table", CompoundTable)
+            row = table.get_row_index("rsi")
+            self.assertEqual(self.on(app, "rsi"), "on")
+            table.post_message(CompoundTable.Toggle(row))          # what a click on "on"/name posts
+            await pilot.pause()
+            self.assertEqual(self.on(app, "rsi"), "off")
+            table.focus()
+            table.move_cursor(row=row)
+            await pilot.pause()
+            await pilot.press("space")
+            await pilot.pause()
+            self.assertEqual(self.on(app, "rsi"), "on")
+            # A real mouse click on the first cell of the macd row.
+            mrow = table.get_row_index("macd")
+            table.scroll_to(y=0, animate=False)
+            await pilot.pause()
+            await pilot.click("#compound-table", offset=(2, mrow + 1))
+            await pilot.pause()
+            self.assertEqual(self.on(app, "macd"), "off")
+        saved = json.loads(compound.config_path().read_text())["config"]
+        self.assertTrue(saved["components"]["rsi"]["enabled"])
+        self.assertFalse(saved["components"]["macd"]["enabled"])
 
 
 if __name__ == "__main__":

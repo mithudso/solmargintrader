@@ -49,8 +49,11 @@ the call is right or wrong.
   P(better than a coin flip) from the posterior.
 * **Edge, not raw hit rate.** Multiplying by 55% vs 47% would barely separate a useful metric
   from a harmful one and would still let the harmful one vote. The multiplier is
-  2 × hit − 1: zero at 50%, so a metric with no proven skill gets no say. A metric that is
-  reliably *wrong* is muted, or inverted with `adaptive_flip=1`.
+  2 × hit − 1: zero at 50%, so a metric with no proven skill gets no say.
+* **Inverting the reliably wrong (on by default, `adaptive_flip=1`).** A metric whose record is
+  below 50% has its vote reversed, weighted by how far below. Each trend metric inverted scored
+  50–55% on nearly every coin. With inversion on, the compound's losses were smaller on all five
+  coins than with muting.
 * **A capped record.** Only calls from the last `adaptive_window` bars count (4,032 = two
   weeks), each equally. Without a cap, five months of history would make each new miss move a
   weight by a meaningless amount; with it, a miss moves a metric's weight as much in month five
@@ -82,6 +85,11 @@ Measured on the same 30 days, out-of-sample hit rate of the default compound:
 | learned weights (`adaptive=1`, two-week record) | 46.5% | 55.6% | 52.0% | 50.2% | 51.6% |
 | + tuning at 0.65 / 50 calls | 47.4% | 56.2% | 53.4% | 52.1% | 51.4% |
 
+After the four new metrics, the family regrouping and inversion by default, the default compound
+scored (static → learned + invert): BTC 50.3% → 49.5%, DOGE 44.9% → 55.8%, ETH 45.6% → 52.6%,
+SOL 47.3% → 51.1%, ZEC 48.3% → 51.1%. Returns: BTC −13% → −20%, DOGE −49% → −27%,
+ETH −43% → −40%, SOL −50% → −34%, ZEC −69% → −70%.
+
 Learning fixes the direction problem on four of five coins: it mutes the trend metrics and
 leans on reversion, without anyone choosing. Tuning at the default 0.95 bar moved one metric
 once in five coins and thirty days. Neighbouring settings are nearly the same signal, so the
@@ -89,16 +97,69 @@ data rarely proves one better. A looser bar moves the hit rate by about a point 
 inside the noise, and several bars were tried, which is itself selection. So tuning stays off by default. **Returns stayed negative
 in every row**: a better hit rate does not beat a 16 bps round trip on a 6–9 bps move.
 
+## Unattended forward training
+
+**Start unattended training** in the tab starts a separate background process at low priority.
+After every closed 5m bar it records the call, resolves earlier calls, and lets the learned
+weights update from them. It keeps running after the console closes, logs and survives network
+errors, and runs one per asset (a lock file proves it). **Stop unattended** ends it after the
+current tick. From a shell: `python3 -m soltui.compound forward --asset SOL --loop`.
+
+## Your wallet: where it is read from, and what it is used for
+
+Wallet information has one home: **soltui Settings** (`solana_address`, edited on the Settings
+tab, stored in `~/.config/soltui/config.yaml`, owner-only). The compound tester reads that public
+address and scans it read-only with the same scanner as the Wallet tab. It never reads a key:
+private keys stay in their key files, and sizing a call needs only public balances.
+
+Jupiter Perps takes SOL, USDC and USDT as collateral, so those count as **usable**. USDC and USDT
+are matched by mint address, so a look-alike token named "USDC" does not count. A balance with no
+price is listed as unknown and left out, never counted as zero.
+
+Every live call is then sized, labelled `wallet (live)`:
+
+* **notional** = the smaller of usable × `leverage`, and the size at which reaching the stop
+  (`stop_atr` × ATR, the stop the liquidation gate checks) plus the round-trip cost loses
+  `risk_pct` (1%) of usable collateral;
+* **collateral** = notional ÷ leverage; **loss at the stop** and **round-trip cost** in dollars;
+* **liquidation price** from the engine's venue formula (`backtester/core/perps.py`), not 1/leverage.
+
+Forward ticks record that notional with each call, so the forward test also reports **paper $ at
+wallet size**: what trading every compound call for one bar would have made after costs. Set
+`use_wallet=0` in the Aggregate box to stop reading the wallet.
+
+Not read yet: **open Jupiter Perps positions**. No documented read endpoint was found and the
+on-chain account layout is not verified here, so they are not guessed. Until then, the sizing
+assumes no position is open.
+
+## Which metrics fight each other, and which repeat each other
+
+Measured on five coins (correlation of their 5m scores):
+
+* **Mutually exclusive:** `vwap_side` and `vwap_reversion` are mirror images (−0.99). Enable one.
+  The same holds for `rsi` with `mode=0` versus `mode=1`.
+* **Opposed:** the trend group (`ema_trend`, `ema_cross`, `ichimoku`, `roc`, `macd`) and the
+  stretch group (`rsi`, `zscore`, `bollinger`, `cci`, `stochastic`) correlate −0.75 to −0.93.
+  At 5m they disagree on nearly every bar. With both on, the call rests on which side has more
+  weight. Learned weighting with inversion (below) settles it by flipping the side that is wrong.
+* **Duplicates:** `cci` ≈ `bollinger` (+0.98), `rsi` ≈ `zscore` (+0.94), `ema_trend` ≈
+  `ichimoku` (+0.87), `macd` ≈ `roc` (+0.80). These now share a family, so each group votes once.
+* **Gates that leave nothing:** the cost gate plus the liquidation gate at high leverage block
+  almost every 5m bar; the call is then FLAT by design.
+
+The tab shows a live warning line for any enabled pair that fights (correlation ≤ −0.6) or
+repeats across families (≥ 0.85) over the last two weeks (`scorecard.relations`).
+
 ## Metrics
 
 | Group | Metrics (id) | Source in the JSON |
 | --- | --- | --- |
-| Trend / direction | `ema_cross`, `macd`, `adx_dmi`, `vwap_side`, `htf_trend`, `ichimoku` | MA crossover, MACD, ADX, VWAP, execution step 3, Ichimoku |
-| Momentum / adaptive | `roc`, `persistence` (lag-1 autocorrelation × last move) | Breakout / momentum; added |
-| Oscillators (one family) | `rsi`, `stochastic`, `cci` | RSI, Stochastic; CCI added |
-| Mean reversion | `bollinger`, `zscore`, `vwap_reversion` | Bollinger, Mean reversion, VWAP |
+| Trend / direction | `ema_trend` (price vs one EMA), `ema_cross`, `adx_dmi`, `vwap_side`, `htf_trend`, `ichimoku`, `zigzag` (non-repainting swing leg) | EMA, MA crossover, ADX, VWAP, execution step 3, Ichimoku, ZigZag |
+| Momentum / adaptive | `roc`, `macd`, `persistence` (lag-1 autocorrelation × last move) | Breakout / momentum, MACD; added |
+| Stretch (one family) | `rsi`, `stochastic`, `cci`, `bollinger`, `zscore` | RSI, Stochastic, Bollinger, Mean reversion; CCI added |
+| Mean reversion | `vwap_reversion` | VWAP |
 | Breakout / structure | `donchian`, `squeeze`, `trend_continuation`, `liquidity_sweep`, `fib_pullback` | Breakout, Volatility squeeze, 5m continuation, Liquidity sweep, Fibonacci |
-| Volume / flow | `obv`, `money_flow` (candle proxy, not taker delta), `book_imbalance` (live) | OBV, Order-flow imbalance |
+| Volume / flow | `volume` (unusual volume signed by the candle), `obv`, `money_flow` (candle proxy, not taker delta), `bop` (balance of power), `book_imbalance` (live) | Volume, OBV, Balance of power, Order-flow imbalance |
 | Positioning | `funding`, `premium` (live), `oi_flow` (live) | Funding arbitrage input, cross-venue observation |
 | Cross-asset | `btc_lead` | added |
 | Lifecycle | `trend_lifecycle` (early / mature / exhausted), `cycle_phase` (markup / markdown / accumulation / distribution) | added |

@@ -20,8 +20,11 @@ bar t computed from the whole series. A one-bar leak (a `shift(-1)`, a centred w
 
 ## Why families are de-duplicated
 
-RSI, Stochastic and CCI are three views of one quantity (where the close sits in its recent
-range). MACD and an EMA cross are the same two EMAs. Averaging every enabled indicator lets
+RSI, Stochastic, CCI, Bollinger %B and the z-score are five views of one quantity (where the
+close sits in its recent range): measured on five coins their 5m scores correlate 0.80-0.98, so
+they form one family, "stretch". Price-vs-EMA, the EMA cross and Ichimoku correlate 0.83-0.89
+("ma-trend"); MACD and rate of change 0.80 ("momentum"). Families are claims about measurement,
+not about names: `relations()` reports pairs that move together or against each other. Averaging every enabled indicator lets
 the family with the most members outvote a family with one, which measures how many
 indicators someone wrote, not how much evidence there is. With `dedupe_families` on, each
 family contributes its weighted mean once, at the weight of its heaviest member.
@@ -573,6 +576,66 @@ def _c_cmf(b: Bars, p: Params, aux: Params) -> np.ndarray:
     return _clip(_safe_div(num, den) / p["scale"])
 
 
+def _c_volume(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    """An unusually heavy bar, signed by which way it closed. Average volume scores 0."""
+    rel = _safe_div(b.volume, prior(sma(b.volume, p["window"]), 1))
+    direction = np.sign(b.close - b.open)
+    return direction * np.clip((rel - 1.0) / p["scale"], 0.0, 1.0)
+
+
+def _c_bop(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    """Balance of power: (close - open) / (high - low), averaged; who won each bar."""
+    rng = b.high - b.low
+    bop = np.where(rng > 0, _safe_div(b.close - b.open, rng), 0.0)
+    return _clip(sma(bop, p["window"]) / p["scale"])
+
+
+def zigzag_state(close: np.ndarray, pct: float) -> tuple[np.ndarray, np.ndarray]:
+    """(leg direction, last confirmed pivot) per bar, WITHOUT repainting.
+
+    A charting ZigZag redraws: it moves the last pivot to a new extreme after the fact, so its
+    past legs use future prices. Here a pivot is confirmed only once price has reversed by `pct`
+    from the running extreme, on the bar that completes that reversal, and is never moved again.
+    """
+    n = close.size
+    leg = np.zeros(n)
+    pivot = np.full(n, np.nan)
+    trend, ext, piv = 0, close[0] if n else 0.0, np.nan
+    hi = lo = close[0] if n else 0.0
+    for i in range(n):
+        c = close[i]
+        if trend == 0:
+            hi, lo = max(hi, c), min(lo, c)
+            if c >= lo * (1 + pct):
+                trend, piv, ext = 1, lo, c
+            elif c <= hi * (1 - pct):
+                trend, piv, ext = -1, hi, c
+        elif trend == 1:
+            if c > ext:
+                ext = c
+            elif c <= ext * (1 - pct):
+                trend, piv, ext = -1, ext, c
+        else:
+            if c < ext:
+                ext = c
+            elif c >= ext * (1 + pct):
+                trend, piv, ext = 1, ext, c
+        leg[i] = trend
+        pivot[i] = piv
+    return leg, pivot
+
+
+def _c_zigzag(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    pct = p["pct"] / 100.0
+    leg, pivot = zigzag_state(b.close, pct)
+    progress = np.clip(np.abs(b.close - pivot) / pivot / (2.0 * pct), 0.0, 1.0)
+    return np.where(leg == 0, np.nan, leg * progress)
+
+
+def _c_ema(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    return np.tanh(_safe_div(b.close - ema(b.close, p["span"]), p["scale"] * atr(b, p["atr"])))
+
+
 def _aligned_last(series_ts: np.ndarray, values: np.ndarray, bar_ts: np.ndarray,
                   max_age: float = 2 * 3600) -> np.ndarray:
     """Most recent value whose timestamp is <= the bar's CLOSE time (bar_ts + 300).
@@ -792,7 +855,13 @@ COMPONENTS: tuple[Component, ...] = (
               "tanh((EMA_fast - EMA_slow) / (scale * ATR))",
               "Sustained trends; confirms direction.", "Chop; lag makes late entries and whipsaws.",
               "Trend following / moving-average crossover"),
-    Component("macd", "MACD histogram", "ma-trend", "momentum", "score",
+    Component("ema_trend", "Price vs EMA", "ma-trend", "trend", "score",
+              (P("span", 50, 2, 1000), P("scale", 1.0, 0.05, 10, "float", "ATRs from the EMA for a full score"),
+               _ATR), _c_ema,
+              "tanh((close - EMA_span) / (scale * ATR))",
+              "Trending tape where price holds one side of its average.", "Chop around the average.",
+              "added (user request: exponential moving average)"),
+    Component("macd", "MACD histogram", "momentum", "momentum", "score",
               (P("fast", 12, 2, 200), P("slow", 26, 3, 400), P("signal", 9, 2, 100),
                P("scale", 0.25, 0.01, 10, "float", "ATRs of histogram that saturate"), _ATR), _c_macd,
               "tanh((MACD - signal) / (scale * ATR)); MACD = EMA_fast - EMA_slow",
@@ -815,7 +884,7 @@ COMPONENTS: tuple[Component, ...] = (
               "tanh((HTF close - EMA(HTF closes)) / (scale * ATR * sqrt(tf/5))), completed HTF bars only",
               "Execution checklist step 3: a 15m/1h regime filter with a 5m trigger.",
               "Turning points, where the higher timeframe lags.", "added (execution_checklist step 3)"),
-    Component("ichimoku", "Ichimoku cloud", "ichimoku", "trend", "score",
+    Component("ichimoku", "Ichimoku cloud", "ma-trend", "trend", "score",
               (P("tenkan", 9, 2, 100), P("kijun", 26, 3, 200), P("senkou", 52, 4, 400)), _c_ichimoku,
               "+0.5 above the (displaced) cloud, +1 if also tenkan > kijun; mirrored below; 0 inside",
               "Multi-timeframe trend filter in orderly markets.", "Very short-term scalping; abrupt regime changes.",
@@ -831,26 +900,26 @@ COMPONENTS: tuple[Component, ...] = (
               "Tells continuation from reversal tape without choosing a regime by hand.",
               "Autocorrelation near zero (the usual case at 5m); then it scores near 0.", "added"),
     # oscillators (one family: they measure one thing)
-    Component("rsi", "RSI", "oscillator", "reversion", "score",
+    Component("rsi", "RSI", "stretch", "reversion", "score",
               (P("period", 14, 2, 200), P("oversold", 30, 1, 49, "float"), P("overbought", 70, 51, 99, "float"),
                P("mode", 0, 0, 1, "int", "0 = fade extremes, 1 = momentum (sign flipped)")), _c_rsi,
               "(50 - RSI) scaled to +-1 at the oversold/overbought levels",
               "Range trading, pullback timing.", "Strong trends: RSI stays overbought.",
               "Relative Strength Index (RSI)"),
-    Component("stochastic", "Stochastic %K/%D", "oscillator", "reversion", "score",
+    Component("stochastic", "Stochastic %K/%D", "stretch", "reversion", "score",
               (P("k", 14, 2, 200), P("d", 3, 1, 50), P("oversold", 20, 1, 49, "float")), _c_stochastic,
               "(50 - %K) scaled; full weight only while %K turns back through %D",
               "Pullback timing inside a trend.", "One-way trends: signals too early.", "Stochastic oscillator"),
-    Component("cci", "Commodity Channel Index", "oscillator", "reversion", "score",
+    Component("cci", "Commodity Channel Index", "stretch", "reversion", "score",
               (P("period", 20, 2, 200), P("extreme", 150, 50, 400, "float")), _c_cci,
               "clip(-CCI / extreme)", "Range extremes.", "Trends.", "added (oscillator family)",
               default_enabled=False),
     # mean reversion
-    Component("bollinger", "Bollinger %B fade", "bands", "reversion", "score",
+    Component("bollinger", "Bollinger %B fade", "stretch", "reversion", "score",
               (P("window", 20, 2, 500), P("k", 2.0, 0.5, 5, "float")), _c_bollinger,
               "clip(1 - 2 * %B): +1 at the lower band, -1 at the upper",
               "Mean reversion at extreme bands.", "A trend that walks the band.", "Bollinger Bands"),
-    Component("zscore", "Z-score fade", "bands", "reversion", "score",
+    Component("zscore", "Z-score fade", "stretch", "reversion", "score",
               (P("window", 48, 5, 2000), P("entry", 2.0, 0.5, 5, "float")), _c_zscore,
               "clip(-z / entry), z = (P - MA_n) / SD_n", "Ranges with a stable mean.",
               "Strong trends; losses compound without a stop.", "Mean reversion"),
@@ -884,6 +953,12 @@ COMPONENTS: tuple[Component, ...] = (
               "+1 when the low pierces the prior n-bar low and the close reclaims it; mirrored at highs",
               "Well-defined ranges with equal highs/lows.", "Genuine news or liquidation breakouts.",
               "Liquidity-sweep / failed-breakout reversal"),
+    Component("zigzag", "ZigZag leg (non-repainting)", "swing", "trend", "score",
+              (P("pct", 0.5, 0.05, 20, "float", "percent reversal that confirms a pivot"),), _c_zigzag,
+              "+/-1 for the current confirmed up/down leg, scaled by progress from the pivot (full at 2 x pct); "
+              "a pivot is confirmed only after the reversal, never moved later",
+              "Swing direction once a reversal is confirmed.", "Confirmation lags by pct; chop flips it often.",
+              "added (user request: zig zag)"),
     Component("fib_pullback", "Fibonacci pullback zone", "structure", "trend", "score",
               (P("swing", 48, 5, 2000), P("trend", 50, 5, 1000), P("zone_lo", 0.382, 0.1, 0.9, "float"),
                P("zone_hi", 0.618, 0.15, 0.95, "float")), _c_fib,
@@ -896,6 +971,17 @@ COMPONENTS: tuple[Component, ...] = (
               "tanh((OBV - SMA(OBV)) / (scale * SMA(volume) * sqrt(n)))",
               "Breakout confirmation, accumulation clues.", "Fragmented or anomalous volume.",
               "On-Balance Volume (OBV)"),
+    Component("volume", "Volume (relative, signed by the bar)", "volume-flow", "flow", "score",
+              (P("window", 48, 2, 2000, "int", "bars of average volume to compare against"),
+               P("scale", 1.0, 0.1, 20, "float", "multiples of average volume above 1x for a full score")),
+              _c_volume, "sign(close - open) * clip((volume / avg volume of prior bars - 1) / scale, 0, 1)",
+              "Breakout and capitulation bars carry unusual volume.", "Volume alone has no direction; a "
+              "heavy bar can be absorption.", "added (user request: volume)"),
+    Component("bop", "Balance of power", "candle-pressure", "flow", "score",
+              (P("window", 14, 1, 500), P("scale", 0.5, 0.05, 1, "float")), _c_bop,
+              "clip(SMA((close - open) / (high - low)) / scale)",
+              "Persistent one-sided bars.", "Doji-heavy chop; it is close to Chaikin money flow's CLV.",
+              "added (user request: balance of power)"),
     Component("money_flow", "Chaikin money flow (order-flow proxy)", "volume-flow", "flow", "score",
               (P("window", 20, 2, 500), P("scale", 0.25, 0.02, 1, "float")), _c_cmf,
               "clip(CMF / scale); CMF = sum(CLV * V) / sum(V). A candle-derived proxy, NOT taker delta",
@@ -1028,7 +1114,7 @@ AGGREGATE_SPECS: tuple[ParamSpec, ...] = (
       "only calls from the last N bars count, so the record is capped; 4032 = two weeks of 5m"),
     P("adaptive_halflife", 0, 0, 1000000, "int",
       "0 = every call in the window counts equally; N = calls also fade, counting half after N bars"),
-    P("adaptive_flip", 0, 0, 1, "int", "1 = invert a metric that is reliably WRONG instead of muting it"),
+    P("adaptive_flip", 1, 0, 1, "int", "1 = invert a metric that is reliably WRONG instead of muting it"),
     P("tune", 0, 0, 1, "int", "1 = each metric moves its numbers to a neighbouring setting once that "
       "neighbour is proving more accurate"),
     P("tune_confidence", 0.95, 0.5, 0.9999, "float",
@@ -1042,6 +1128,9 @@ EXECUTION_SPECS: tuple[ParamSpec, ...] = (
     P("leverage", 5.0, 1.0, 250.0, "float", "perp leverage for P&L and the liquidation gate"),
     P("fee_bps", 6.0, 0.0, 100.0, "float", "per side; Jupiter base fee 0.06%"),
     P("slippage_bps", 2.0, 0.0, 100.0, "float", "per side; Jupiter impact floor 1 bp + adverse execution"),
+    P("risk_pct", 1.0, 0.01, 100.0, "float",
+      "percent of the wallet's usable collateral a trade may lose at its stop, costs included"),
+    P("use_wallet", 1.0, 0.0, 1.0, "float", "1 = read the Settings Solana address and size calls to it"),
 )
 
 
@@ -1139,8 +1228,8 @@ def config_hash(cfg: Mapping[str, Any]) -> str:
 def standalone_config(cfg: Mapping[str, Any], component_id: str) -> dict[str, Any]:
     """`cfg` with only one score component enabled and every gate off.
 
-    A component's own track record must not borrow the compound's gates, or the
-    standalone row would measure the gates as much as the component.
+    A component's own track record must not borrow the compound's gates or its learned weights,
+    or the standalone row would measure those as much as the component.
     """
     if component_id not in BY_ID or BY_ID[component_id].kind != "score":
         raise ScorecardError(f"{component_id!r} is not a score component")
@@ -1148,6 +1237,10 @@ def standalone_config(cfg: Mapping[str, Any], component_id: str) -> dict[str, An
     for cid, entry in out["components"].items():
         entry["enabled"] = cid == component_id
     out["components"][component_id]["weight"] = 1.0
+    # A standalone row measures the metric itself. Learned weighting would mute a metric that is
+    # losing (its multiplier drops to 0) and the row would report no calls instead of the record.
+    out["aggregate"]["adaptive"] = 0
+    out["aggregate"]["tune"] = 0
     return out
 
 
@@ -1587,9 +1680,42 @@ def explain(ev: Evaluation, i: int = -1, catalogue: bool = False) -> dict[str, A
         "blocked_by": [g for g, v in ev.gates.items() if bool(v[i])],
         "entry": agg["entry"],
         "adaptive": bool(agg["adaptive"]),
+        "relations": relations(ev),
         "round_trip_bps": round_trip_bps(cfg["execution"]["fee_bps"], cfg["execution"]["slippage_bps"]),
         "components": rows,
     }
+
+
+# -- which metrics duplicate or fight each other ------------------------------------------------
+
+OPPOSED_CORR = -0.6
+DUPLICATE_CORR = 0.85
+
+
+def relations(ev: Evaluation, window: int = 2016, min_points: int = 200) -> dict[str, list[dict[str, Any]]]:
+    """Pairs of enabled metrics whose recent scores move against (opposed) or with (duplicate)
+    each other, measured on the last `window` bars of this evaluation.
+
+    Opposed pairs cancel in the composite: with both on, the call rests on whichever side has
+    more weight. Duplicates in different families count the same evidence twice.
+    """
+    ids = [c for c in ev.scores if np.isfinite(ev.scores[c][-window:]).sum() >= min_points]
+    opposed, duplicates = [], []
+    for i, a in enumerate(ids):
+        for b in ids[i + 1:]:
+            sa, sb = ev.scores[a][-window:], ev.scores[b][-window:]
+            m = np.isfinite(sa) & np.isfinite(sb)
+            if m.sum() < min_points or np.std(sa[m]) == 0 or np.std(sb[m]) == 0:
+                continue
+            r = float(np.corrcoef(sa[m], sb[m])[0, 1])
+            row = {"a": a, "b": b, "corr": round(r, 3), "same_family": BY_ID[a].family == BY_ID[b].family}
+            if r <= OPPOSED_CORR:
+                opposed.append(row)
+            elif r >= DUPLICATE_CORR and not row["same_family"]:
+                duplicates.append(row)
+    opposed.sort(key=lambda r: r["corr"])
+    duplicates.sort(key=lambda r: -r["corr"])
+    return {"opposed": opposed, "duplicates": duplicates}
 
 
 # -- forecast statistics -----------------------------------------------------------------------

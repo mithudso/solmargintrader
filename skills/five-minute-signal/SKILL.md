@@ -1,6 +1,6 @@
 ---
 name: five-minute-signal
-version: "1.1.0"
+version: "1.3.0"
 updated: "2026-11-07"
 description: >-
   Produce and explain an UP / DOWN / FLAT call for the next five-minute bar of a crypto asset
@@ -49,6 +49,11 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
    - gates: `pass` or `blocking`. Any blocking gate makes the call FLAT; name it.
    Group the votes by family (trend, oscillator, bands, breakout, flow, positioning,
    lifecycle) and say which families agree. One family with five members is one opinion.
+
+   - `wallet` and `sizing` (`wallet (live)`): usable SOL/USDC/USDT at the Settings Solana address
+     and the size that risks `risk_pct` to the stop; quote notional, collateral, loss at the stop
+     and the liquidation price. If `wallet.available` is false, say why (no address in Settings,
+     scan failed) and give no size. Never ask for or read a key.
 
 3. **Put the evidence beside the call.**
 
@@ -100,6 +105,10 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
   not have.
 - So the catalogue's "favour continuation in trends" is backwards at 5m; say this when a call
   rests on trend votes.
+- Trend and stretch metrics are mirror images at 5m (correlation -0.75 to -0.93); `relations`
+  in the signal lists any enabled pair that fights or repeats. Say so when a call rests on one
+  side of such a pair. Inverting the reliably wrong metrics (`adaptive_flip`, default on) is why a
+  trend metric can vote the "wrong" way: its record says it is wrong.
 - Adaptive weighting (default on) learns this by itself: on the same data it raised the
   compound's OOS hit rate on four of five coins (DOGE 44% -> 55%), and live it gives weight only
   to the reversion metrics. Returns stayed negative: fees, not direction, are the binding limit.

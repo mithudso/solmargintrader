@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 32
-Delta: v31 to v32; adaptive compound weights over a capped two-week record, and evidence-gated tuning.
+Version: 33
+Delta: v32 to v33; compound wallet sizing, click toggle, unattended training, inversion default, new metrics, relations.
 
 ## v1 - 2026-11-06
 
@@ -332,3 +332,13 @@ Completed: scorecard adaptive_counts (one-bar-lagged hit/call counts over a capp
 Verification: backtester 817, soltui 745 pass. OOS hit rate of the default compound, static vs learned (two-week window): BTC 48.5/46.5, DOGE 44.0/55.6, ETH 45.6/52.0, SOL 46.3/50.2, ZEC 48.9/51.6; the window and the earlier one-week fade agree within 0.6 points. Tuning at 0.95 moved once in five coins; looser bars add a little inside noise. All returns still negative (16 bps round trip vs 6-9 bps moves). Live SOL: only reversion metrics earn weight.
 
 Remaining: user may shorten or lengthen adaptive_window after watching it; per-regime learned weights not built; a year of 5m data via research/full_suite.py before trusting any of it.
+
+## v33 - 2026-11-07 (compound: wallet, clicks, unattended training, inversion, new metrics)
+
+Target: user asked (1) where wallet information should come from and to read it; (2) click a metric to toggle it; (3) a button for fully unattended forward training; (4) invert metrics that score badly; (5) a status bar for the backtest table; (6) add Volume, Balance of Power, ZigZag and EMA; (7) which signals are mutually exclusive. Stele TASK-824. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-wallet, branch feat/compound-wallet-sizing.
+
+Completed: wallet read from soltui Settings solana_address via wallet.scan_solana (public; SOL/USDC/USDT by mint; unpriced = unknown), size_call (min of usable x leverage and risk_pct to the stop incl. costs; engine liquidation formula), paper $ at wallet size in forward status, use_wallet/risk_pct execution settings. CompoundTable subclass: click on on/off or name cell toggles (Textual 8.2.8 only posts Selected on a second click), Space toggles. Unattended trainer: start/stop/status commands, detached `forward --loop --unattended` under taskpolicy -b, per-asset flock, stop file + SIGTERM, errors logged not fatal; tab buttons (48 total) and 60 s result refresh. adaptive_flip default 1. New metrics ema_trend, volume, bop, zigzag (non-repainting). Families regrouped by measured correlation: stretch (rsi, stochastic, cci, bollinger, zscore), ma-trend (+ichimoku), momentum (macd, roc). scorecard.relations + tab warning line. standalone_config now turns adaptive/tune off (bug: standalone rows were muted). run_summary status bar above the backtest table; CLI `results` prints it.
+
+Verification: live wallet scan of the Settings address read $2.29 SOL and sized a call; live unattended start -> one recorded tick -> stop released the lock. Default compound OOS hit static vs learned+invert: BTC 50.3/49.5, DOGE 44.9/55.8, ETH 45.6/52.6, SOL 47.3/51.1, ZEC 48.3/51.1; returns still negative on all five.
+
+Remaining: open Jupiter Perps positions are not read (no documented endpoint); per-regime learned weights; a year of 5m data via research/full_suite.py.
