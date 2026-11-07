@@ -4,14 +4,16 @@
  * loses to buy-and-hold walk-forward (Stele KNOW-605); the behaviour is
  * unchanged.
  *
- * Charts are hand-built SVG rather than a charting library, because the
- * extension CSP forbids remote script and bundling one for two charts is not
- * worth the weight. Both carry text alternatives so the numbers are reachable
- * without reading the picture.
+ * The equity curve is drawn with the vendored Lightweight Charts library
+ * (src/ui/charts.js; local file, because MV3 forbids remote code). The SVG
+ * below is its fallback when the library cannot load. The ladder stays
+ * hand-built SVG: it is a rung diagram, not a time series. Both carry text
+ * alternatives so the numbers are reachable without reading the picture.
  */
 
 import { snapshot, equityCurve, maxDrawdown, fillsToCsv } from '../core/pnl.js';
 import { gridLevels, capitalRequirement } from '../core/grid.js';
+import { renderEquityChart, disposeChart } from './charts.js';
 import {
   validateSessionKeyInputs,
   buildCreateSessionKeyMessage,
@@ -161,12 +163,14 @@ function renderBanner() {
 function renderPnl() {
   const { fills, carry, price } = cache;
   if (!fills.length) {
+    disposeChart($('#equityChart'));
     $('#equityChart').innerHTML = '<p class="note">No fills yet.</p>';
     return;
   }
   // Without a mark price, open inventory would be valued at zero and the page
   // would show a catastrophic fake unrealized loss. Say so instead.
   if (!(price > 0)) {
+    disposeChart($('#equityChart'));
     $('#equityChart').innerHTML =
       '<p class="note">Waiting for the first price tick — P&amp;L needs a mark to value open inventory.</p>';
     return;
@@ -184,7 +188,15 @@ function renderPnl() {
   $('#drawdown').textContent = `${usd(dd.drawdownUsd)} (${dd.drawdownPct.toFixed(1)}%)`;
   $('#inventory').textContent = `${pnl.openBaseQty.toFixed(4)} @ ${usd(pnl.avgEntryUsd)} avg`;
 
-  $('#equityChart').innerHTML = equitySvg(curve);
+  const last = curve.at(-1)?.equityUsd;
+  renderEquityChart($('#equityChart'), curve, {
+    label: `Equity curve, ${curve.length} points, ending at ${usd(last)}`,
+    fallbackHtml: () => equitySvg(curve),
+  }).catch(() => {
+    // A drawing error must not blank the P&L panel: show the SVG instead.
+    disposeChart($('#equityChart'));
+    $('#equityChart').innerHTML = equitySvg(curve);
+  });
 
   if (cache.config) {
     const levels = gridLevels(cache.config);

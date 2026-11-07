@@ -422,10 +422,12 @@ tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/soltui-transport.js  Node transport to the same soltui host (CLI and API)
 tools/dryrun.js            Headless end-to-end tick
 tools/e2e.mjs              Real-browser e2e (Chrome for Testing, DevTools pipe); helpers in e2e/
-test/                      351 tests, zero dependencies (node:test)
+test/                      361 tests, no npm dependencies (node:test)
 ```
 
-No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
+No build step and no npm dependencies. The one runtime library is Lightweight Charts 5.2.1, vendored
+and pinned in `vendor/lightweight-charts/` (see its README; loaded lazily by `src/ui/charts.js`).
+Plain ESM modules load directly as an unpacked extension —
 `@solana/web3.js` would have added a megabyte to a service worker for base58 and one signature
 insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests against real mints.
 

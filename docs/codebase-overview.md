@@ -111,7 +111,8 @@ The danger here is overstating a result, so the honesty machinery is the point.
 ## `extension/` — the part that can place real orders
 
 Chrome MV3 extension plus a CLI and a local HTTP API, all three thin adapters over one
-command registry. Zero runtime dependencies by design.
+command registry. No npm runtime dependencies by design; one vendored charting library
+(`extension/vendor/lightweight-charts/`).
 
 | Path | What it is |
 | --- | --- |

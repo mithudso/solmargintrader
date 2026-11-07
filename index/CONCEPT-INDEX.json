@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T21:09:26+00:00",
+  "generatedAt": "2026-11-07T22:23:25+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -38,12 +38,12 @@
           "hits": 67
         },
         {
-          "path": "skills/trading-and-investing/references/strategies-and-risk.md",
-          "hits": 54
+          "path": "docs/FILES.md",
+          "hits": 56
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 52
+          "path": "skills/trading-and-investing/references/strategies-and-risk.md",
+          "hits": 54
         },
         {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
@@ -182,7 +182,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 110
+          "hits": 112
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 210,
+      "matchingFiles": 211,
       "shown": 30,
       "files": [
         {
@@ -375,6 +375,10 @@
           "hits": 26
         },
         {
+          "path": "memory.md",
+          "hits": 26
+        },
+        {
           "path": "research/GRID-REVIEW.md",
           "hits": 26
         },
@@ -391,20 +395,16 @@
           "hits": 25
         },
         {
-          "path": "memory.md",
-          "hits": 25
+          "path": "extension/src/core/commands.js",
+          "hits": 22
         },
         {
-          "path": "extension/src/core/commands.js",
+          "path": "extension/src/ui/view-grid.js",
           "hits": 22
         },
         {
           "path": "soltui/signals.py",
           "hits": 22
-        },
-        {
-          "path": "extension/src/ui/view-grid.js",
-          "hits": 21
         },
         {
           "path": "backtester/core/strategies/signals.py",
@@ -701,6 +701,145 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
+      "id": "lookahead",
+      "label": "Lookahead and fill timing",
+      "why": "A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.",
+      "terms": [
+        "lookahead",
+        "fill_delay",
+        "warmup",
+        "warmup_bars",
+        "displacement",
+        "centred",
+        "shift"
+      ],
+      "matchingFiles": 189,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/decide.py",
+          "hits": 44
+        },
+        {
+          "path": "backtester/core/strategies/advanced.py",
+          "hits": 32
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 31
+        },
+        {
+          "path": "backtester/core/strategies/signals.py",
+          "hits": 26
+        },
+        {
+          "path": "backtester/core/engine.py",
+          "hits": 25
+        },
+        {
+          "path": "llms-full.txt",
+          "hits": 24
+        },
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 24
+        },
+        {
+          "path": "backtester/tests/test_engine_audit.py",
+          "hits": 17
+        },
+        {
+          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
+          "hits": 17
+        },
+        {
+          "path": "backtester/tests/test_decide.py",
+          "hits": 16
+        },
+        {
+          "path": "backtester/core/trigger_conditions.py",
+          "hits": 16
+        },
+        {
+          "path": "backtester/cli.py",
+          "hits": 15
+        },
+        {
+          "path": "research/signal_redundancy.py",
+          "hits": 15
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
+          "hits": 14
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 13
+        },
+        {
+          "path": "index/build.py",
+          "hits": 12
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 12
+        },
+        {
+          "path": "backtester/core/strategies/textbook.py",
+          "hits": 12
+        },
+        {
+          "path": "backtester/strategy_cards/README.md",
+          "hits": 12
+        },
+        {
+          "path": "backtester/tests/test_advanced_strategies.py",
+          "hits": 12
+        },
+        {
+          "path": "backtester/strategy_cards/ichimoku_cloud.md",
+          "hits": 11
+        },
+        {
+          "path": "backtester/tests/test_strategy_cards.py",
+          "hits": 11
+        },
+        {
+          "path": "backtester/tests/test_indicators.py",
+          "hits": 10
+        },
+        {
+          "path": "soltui/analyze.py",
+          "hits": 10
+        },
+        {
+          "path": "backtester/README.md",
+          "hits": 8
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 8
+        },
+        {
+          "path": "backtester/core/strategy_cards.py",
+          "hits": 8
+        },
+        {
+          "path": "mongo/load.py",
+          "hits": 8
+        },
+        {
+          "path": "docs/COMPONENTS.md",
+          "hits": 7
+        },
+        {
+          "path": "docs/dso-skill/SKILL.md",
+          "hits": 7
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "data-integrity",
       "label": "Data integrity",
       "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
@@ -839,145 +978,6 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
-      "id": "lookahead",
-      "label": "Lookahead and fill timing",
-      "why": "A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.",
-      "terms": [
-        "lookahead",
-        "fill_delay",
-        "warmup",
-        "warmup_bars",
-        "displacement",
-        "centred",
-        "shift"
-      ],
-      "matchingFiles": 188,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/decide.py",
-          "hits": 44
-        },
-        {
-          "path": "backtester/core/strategies/advanced.py",
-          "hits": 32
-        },
-        {
-          "path": "docs/TRADINGVIEW-REFERENCE.md",
-          "hits": 31
-        },
-        {
-          "path": "backtester/core/strategies/signals.py",
-          "hits": 26
-        },
-        {
-          "path": "backtester/core/engine.py",
-          "hits": 25
-        },
-        {
-          "path": "llms-full.txt",
-          "hits": 24
-        },
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 24
-        },
-        {
-          "path": "backtester/tests/test_engine_audit.py",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
-          "hits": 17
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 16
-        },
-        {
-          "path": "backtester/core/trigger_conditions.py",
-          "hits": 16
-        },
-        {
-          "path": "backtester/cli.py",
-          "hits": 15
-        },
-        {
-          "path": "research/signal_redundancy.py",
-          "hits": 15
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
-          "hits": 14
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 13
-        },
-        {
-          "path": "index/build.py",
-          "hits": 12
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 12
-        },
-        {
-          "path": "backtester/core/strategies/textbook.py",
-          "hits": 12
-        },
-        {
-          "path": "backtester/strategy_cards/README.md",
-          "hits": 12
-        },
-        {
-          "path": "backtester/tests/test_advanced_strategies.py",
-          "hits": 12
-        },
-        {
-          "path": "backtester/strategy_cards/ichimoku_cloud.md",
-          "hits": 11
-        },
-        {
-          "path": "backtester/tests/test_strategy_cards.py",
-          "hits": 11
-        },
-        {
-          "path": "backtester/tests/test_indicators.py",
-          "hits": 10
-        },
-        {
-          "path": "soltui/analyze.py",
-          "hits": 10
-        },
-        {
-          "path": "backtester/README.md",
-          "hits": 8
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/core/strategy_cards.py",
-          "hits": 8
-        },
-        {
-          "path": "mongo/load.py",
-          "hits": 8
-        },
-        {
-          "path": "docs/COMPONENTS.md",
-          "hits": 7
-        },
-        {
-          "path": "docs/dso-skill/SKILL.md",
-          "hits": 7
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "family:regime-filter",
       "label": "Strategy family: regime-filter",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -1008,12 +1008,12 @@
           "hits": 78
         },
         {
-          "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
+          "path": "docs/FILES.md",
           "hits": 63
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 62
+          "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
+          "hits": 63
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 162,
+      "matchingFiles": 163,
       "shown": 30,
       "files": [
         {
@@ -1265,7 +1265,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 149,
+      "matchingFiles": 150,
       "shown": 30,
       "files": [
         {
@@ -1365,10 +1365,6 @@
           "hits": 16
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 15
-        },
-        {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 15
         },
@@ -1379,6 +1375,10 @@
         {
           "path": "soltui/tests/test_compound.py",
           "hits": 15
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 14
         },
         {
           "path": "research/CANDLE-GAP-AUDIT.md",
@@ -1400,7 +1400,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 149,
+      "matchingFiles": 150,
       "shown": 30,
       "files": [
         {
@@ -1434,6 +1434,10 @@
         {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 12
+        },
+        {
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -1518,10 +1522,6 @@
         {
           "path": "skills/trading-and-investing/references/ai-and-ml-for-trading.md",
           "hits": 5
-        },
-        {
-          "path": "skills/trading-and-investing/references/market-microstructure-and-execution.md",
-          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1534,7 +1534,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 127,
+      "matchingFiles": 128,
       "shown": 30,
       "files": [
         {
@@ -1556,6 +1556,10 @@
         {
           "path": "backtester/core/report.py",
           "hits": 13
+        },
+        {
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
         },
         {
           "path": "docs/CONCEPTS.md",
@@ -1651,10 +1655,6 @@
         },
         {
           "path": "backtester/tests/test_gridsim.py",
-          "hits": 4
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 4
         }
       ],
@@ -2249,6 +2249,10 @@
           "hits": 10
         },
         {
+          "path": "docs/CONCEPTS.md",
+          "hits": 9
+        },
+        {
           "path": "research/results/perturb_all_singles_long.txt",
           "hits": 9
         },
@@ -2259,10 +2263,6 @@
         {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 9
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 8
         },
         {
           "path": "research/results/perturb_all_singles_short.txt",

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 43
-Delta: v41 to v43; land the research, frontier of strategies and fees; Base wallet via the CDP MCP (v41 is the TradingView distillation).
+Version: 44
+Delta: v43 to v44; Lightweight Charts chosen; deep prompt optimizer, then rebuild /dso as one pass per evaluation method.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -297,5 +297,11 @@ The screenshot showed the SOL compound backtest: RSI, Bollinger, CCI, z-score, l
 
 ```text
 Expand the wallet, for the base wallet, use the base mcp server to query my wallet address and also to give you exactly how you should queery for it in the futurte.
+```
+
+## v44 - 2026-11-07 (Lightweight Charts; evaluation methods and /dso)
+
+```text
+Use lightweight charts, run the deep prompt optimizer on the rest of this prompt and then run it:  What are all of the ways a strategy or indicator can be evaluated? List all of them and then create a deep strategy optimizer skill that evaluates, and optimizes the strategy in multiple passes one per method just like the other deep optimizers.
 ```
 

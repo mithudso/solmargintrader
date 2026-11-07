@@ -7,7 +7,7 @@ can each install a persistent macOS launchd service. Test commands below do not 
 | --- | --- | --- |
 | `backtester/` | `pip install -r backtester/requirements.txt` | No |
 | `research/` | Covered by the backtester's requirements | No |
-| `extension/` | Nothing — zero dependencies. Load unpacked in Chrome | Browser profile only |
+| `extension/` | Nothing — no npm dependencies (Lightweight Charts is vendored). Load unpacked in Chrome | Browser profile only |
 | `soltui/` | `pip install -r soltui/requirements.txt`, optionally install a launchd agent | Optional login service |
 | `mongo/` | `pip install -r mongo/requirements.txt`, plus backtester deps | Local MongoDB service managed separately |
 | `liquidity/` | `uv sync --extra dev -p 3.13` in its directory | Optional live daemon; separate from installation |
@@ -45,7 +45,8 @@ python3 -m backtester.core.fetch --asset SOL --interval 1d --start 2021-01-01
 
 ## Extension
 
-There is nothing to install: zero runtime and zero dev dependencies, by design.
+There is nothing to install: no npm runtime or dev dependencies, by design. The one runtime library,
+Lightweight Charts, is vendored in `extension/vendor/lightweight-charts/`.
 
 ```bash
 cd extension
