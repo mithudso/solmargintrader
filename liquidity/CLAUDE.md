@@ -14,8 +14,9 @@ The repo-wide standing authorization for live on-chain actions is in the root `C
 Still required:
 - Never raise a cap in `~/.aero-lp/config.toml` (`max_position_usd`, `max_total_deployed_usd`, `max_gas_usd`,
   `allowed_tokens`), and never lower `min_net_apr`, without the owner asking for it in that session.
-- Never read, print or copy the key file (`key_file`). The program reads it itself and refuses it unless
-  it is mode 600 and owned by the user.
+- The key file (`key_file`) is for programs to load (the owner asked on 2026-11-07 that agents be able to
+  move money with it): the program reads it itself and refuses it unless it is mode 600 and owned by the
+  user. Never print, paste or copy key material into chat, logs, commits or other files.
 - Code defaults stay dry-run. A fresh install must never sign.
 - To stop everything, use `scripts/aero-lp-service kill`. Do not edit the config. Kill only halts: positions stay open.
   To take the money out of the pools, use `scripts/aero-lp-service exit-to-safe` (dry run) and add `--live` to send.

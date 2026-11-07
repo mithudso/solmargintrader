@@ -156,6 +156,36 @@ class StorageAndNoticeTests(unittest.TestCase):
         self.assertEqual(portfolio.load_snapshots(), [])
 
 
+class LastScanTests(unittest.TestCase):
+    """The Wallet tab forgot the wallet on every restart: a scan lived only in the widgets."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        p = mock.patch.dict(os.environ, {"SOLTUI_SUPPORT_DIR": self.tmp.name})
+        p.start()
+        self.addCleanup(p.stop)
+
+    def test_round_trip_owner_only_and_a_torn_file_reads_as_none(self) -> None:
+        self.assertIsNone(portfolio.load_last_scan())
+        path = portfolio.save_last_scan({"total_usd": 12.5, "chains": {}}, "all")
+        self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o600)
+        last = portfolio.load_last_scan()
+        self.assertEqual((last["chain"], last["result"]["total_usd"]), ("all", 12.5))
+        path.write_text("{torn")
+        self.assertIsNone(portfolio.load_last_scan())
+
+    def test_a_scan_is_kept_and_portfolio_last_returns_it(self) -> None:
+        fake = {"scanned_at": "2026-11-07 12:00", "chains": {}, "partial": False, "total_usd": 1.0,
+                "skipped": [], "counts": {}}
+        with mock.patch.object(commands, "_portfolio_scan", return_value=fake):
+            env = commands.dispatch("portfolio.scan", {"chain": "solana"}, surface="cli")
+        self.assertTrue(env["ok"], env)
+        last = commands.dispatch("portfolio.last", {}, surface="cli")["result"]
+        self.assertEqual(last["chain"], "solana")
+        self.assertEqual(last["result"]["scanned_at"], "2026-11-07 12:00")
+
+
 class SnapshotCommandTests(unittest.TestCase):
     """portfolio.snapshot end to end with a fake network and xpubs from a public test vector."""
 
