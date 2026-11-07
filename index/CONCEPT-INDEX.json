@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T12:29:11+00:00",
+  "generatedAt": "2026-11-07T12:47:51+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -438,7 +438,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 180,
+      "matchingFiles": 182,
       "shown": 30,
       "files": [
         {
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 176,
+      "matchingFiles": 177,
       "shown": 30,
       "files": [
         {
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 152,
+      "matchingFiles": 153,
       "shown": 30,
       "files": [
         {
@@ -2902,6 +2902,7 @@
         "backtester/strategy_cards/mvrv_nupl_valuation.md",
         "backtester/strategy_cards/open_interest_divergence.md",
         "backtester/strategy_cards/order_book_imbalance.md",
+        "backtester/strategy_cards/prediction_markets.md",
         "backtester/strategy_cards/scalping.md",
         "backtester/strategy_cards/social_sentiment.md",
         "backtester/strategy_cards/staking_ratio_flow.md",
@@ -2975,7 +2976,8 @@
         "backtester/strategy_cards/staking_ratio_flow.md"
       ],
       "event": [
-        "backtester/strategy_cards/event_driven.md"
+        "backtester/strategy_cards/event_driven.md",
+        "backtester/strategy_cards/prediction_markets.md"
       ],
       "intraday": [
         "backtester/strategy_cards/day_trading.md"
@@ -3100,6 +3102,7 @@
         "backtester/strategy_cards/mvrv_nupl_valuation.md",
         "backtester/strategy_cards/open_interest_divergence.md",
         "backtester/strategy_cards/order_book_imbalance.md",
+        "backtester/strategy_cards/prediction_markets.md",
         "backtester/strategy_cards/scalping.md",
         "backtester/strategy_cards/social_sentiment.md",
         "backtester/strategy_cards/staking_ratio_flow.md",
@@ -3158,6 +3161,7 @@
         "backtester/strategy_cards/macd.md",
         "backtester/strategy_cards/mvrv_nupl_valuation.md",
         "backtester/strategy_cards/ppo.md",
+        "backtester/strategy_cards/prediction_markets.md",
         "backtester/strategy_cards/rsi.md",
         "backtester/strategy_cards/scalping.md",
         "backtester/strategy_cards/social_sentiment.md",
