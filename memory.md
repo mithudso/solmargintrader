@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 47
-Delta: v46 to v47; VWAP metrics rescaled; forward ledger writes locked.
+Version: 48
+Delta: v47 to v48; TradingView docs distilled into docs/TRADINGVIEW-REFERENCE.md; tradingview/ gitignored.
 
 ## v1 - 2026-11-06
 
@@ -491,3 +491,16 @@ Completed: _vwap_distance divides by the RMS of the distance over spread_window 
 Verification: replaying live SOL bars, vwap_rev saturation fell from 92% to about 0% over the last 4h; the last-4h calls went from 26 UP / 0 DOWN to 22 UP / 1 DOWN with more FLAT; all bars are balanced (616 UP / 544 DOWN).
 
 Remaining: after merge, restart the unattended trainers for the ten coins only (the stale ones still train ZEC, BNB, ADA and XLM on old code). The owner must restart the soltui console to load the fix.
+
+## v48 - 2026-11-07 (TradingView docs distillation)
+
+Target: the owner dropped `tradingview/` (TradingView Advanced Charts docs bundle, three `.d.ts` files, agentskills.io llms-full) and asked for every indicator, signal, script and equation distilled into one Markdown file. Stele TASK-853 (dev-y3seh, COMP-320); decision KNOW-854. Worktree /Users/mitch/dev/solmargintrader-wt-tradingview, branch docs/tradingview-reference.
+
+Completed: `docs/TRADINGVIEW-REFERENCE.md` (13 sections): indicator parity table (repo `indicators.py` vs TradingView built-in defaults), licensing limits, 114 built-in studies with inputs/defaults from `StudyOverrides`, 114 `PineJS.Std` entries and custom-indicator metainfo, datafeed/UDF/marks contracts with a zero-dependency datafeed sketch, chart/drawings API with on-chart recipes, 193 featuresets and widget options, Broker API concepts mapped to the extension's rails, release notes to v33.0.0, Agent Skills spec, repo findings. Seven parallel readers produced fragments; spot checks of `getBars`, `OrderStatus`, `Std.atr`/`Std.stdev` matched the `.d.ts`.
+
+Constraints found: Advanced Charts is free only for public, attributed deployments ("not for private use"); any part of the library is prohibited in public repos. The repo is public, so `tradingview/` is gitignored and nothing from the library is committed. Lightweight Charts is the only TradingView product that fits a private tool, and it conflicts with the extension's zero-dependency rule.
+
+Verification: `scripts/check_docs.py` (venv) passes; `index/build.py --check` passes after `build.py all`, `make_files_doc.py`, `make_concepts_doc.py`.
+
+Remaining: repo findings listed at the end of the reference (z-score ddof mismatch between card and Compound 5m; skills frontmatter violations; no ledger-to-chart exporter) are recorded, not fixed.
+

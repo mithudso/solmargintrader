@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 40
-Delta: v39 to v40; SOL forward test only calling UP.
+Version: 41
+Delta: v40 to v41; distill the tradingview/ docs folder into one Markdown reference.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -277,4 +277,10 @@ Yes it is 0x901a89cEC0608eB5435A915f006b45bD46405314
 
 ```text
 This doesn't seem right in the forward test for SOL the indicators are only choosing up, and there haasnt' been a number lower than .5, which tells me the calculations are wrong.
+```
+
+## v41 - 2026-11-07 (TradingView docs distillation)
+
+```text
+Look at all the files in this folder and extract all of the technicals, indicators, signals, scripts, equations, and anything else that would be helpful for this repo export the distilled useful data to a markdown file. /Users/mitch/dev/solmargintrader/tradingview
 ```
