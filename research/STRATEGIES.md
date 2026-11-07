@@ -775,6 +775,15 @@ Jupiter-Perps position with borrow carry, fees, maintenance margin and intrabar 
 wrappers, not signals; cards in `backtester/strategy_cards/lev_*.md`. SOL daily CPCV result: P(ruin)
 21% at 2x, 74% at 5x, 95% at 20x. See `research/LEVERAGE-TIERS.md`.
 
+## Reliable triggers (registered: `trigger_trade`)
+
+`research/triggers.py` mines conjunctions of up to three causal conditions (MACD, RSI zones, MA slope,
+Bollinger touches, z-scores, volume spikes, OBV/balance proxies, ATR expansion, consecutive candles, gaps,
+funding extremes, drawdown) for how often the next 1 to 10 bars go the predicted way, against the base rate,
+with a fixed later validation period, FDR control, stability and cross-asset gates. `trigger_trade` trades one
+(entry next open, exit at the horizon or a MAE-derived stop). Result on SOL: no trigger qualified as reliable
+out of sample. See `research/RELIABLE_SIGNALS.md`; card `backtester/strategy_cards/trigger_trade.md`.
+
 ## Reproducing everything
 
 ```bash

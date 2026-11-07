@@ -1,6 +1,6 @@
 # Work continuation
 
-Version: 16
+Version: 17
 Delta: soltui read-only wallet discovery (PR B): Settings addresses, key-source row, portfolio.scan, Wallet tab, wallet (live) P&L section.
 
 ## v1 - 2026-11-06
@@ -170,7 +170,19 @@ Facts to keep: the engine already checked bar low/high, so intrabar layers refin
 
 Remaining: PR 2 (research/triggers.py, RELIABLE_SIGNALS.md, trigger strategy); follow-ups: soltui Triggers view, live trigger alerts through the executor.
 
-## v16 - 2026-11-07
+## v16 - 2026-11-07 (reliable triggers, PR 2)
+
+Target: mine conjunctions of causal conditions for out-of-sample directional reliability, report honestly, and trade the best candidates through the PR 1 tiers. Simulation only. PR 1 merged as 6a1b2dc (#44).
+
+Completed: `backtester/core/trigger_conditions.py` (49 causal conditions, shared by miner and strategy); `research/triggers.py` (python3 -m research.triggers --asset SOL --interval 1d|1h; 13,510 daily and 30,720 hourly hypotheses, exact binomial vs base rate, BH FDR 5%, z>3, 30-event floor, purged/embargoed fixed split, stability, cross-asset replication); `research/trigger_backtest.py`; registered `trigger_trade` with card; `research/RELIABLE_SIGNALS.md` and results CSV/JSON; `backtester/tests/test_triggers.py`.
+
+Result: no trigger qualified as reliable on SOL daily or hourly. Hourly cannot qualify (no hourly history for other coins to replicate on). Near-miss backtests are exploratory and ranked by discovery p-value, not validation results.
+
+Facts to keep: the CI e2e (extension real browser) is flaky once ("installed mode: expected dry-run, got undefined"); a rerun passed. soltui tests iterate REGISTRY, so wrapper families (leverage-tier, trigger) need a FAMILY_NOTES entry and are excluded from the Signals-tab map test.
+
+Remaining follow-ups: a soltui Triggers view over research/results/triggers_*.csv; live trigger alerts through the executor.
+
+## v17 - 2026-11-07
 
 Target: PR B of the read-only request (prompts.md v8): wallet discovery. Branch soltui-wallet, worktree /Users/mitch/dev/smt-wt-wallet. PR A (presets, net %, P&L tab) merged as d402b27.
 
