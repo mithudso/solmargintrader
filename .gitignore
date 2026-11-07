@@ -119,3 +119,7 @@ index/.idle-state.json
 index/.idle.lock
 index/.idle-index.log
 index/*.tmp*
+
+# TradingView Advanced Charts docs bundle and library files (licensed by TradingView).
+# This repo is public; the distilled reference lives in docs/TRADINGVIEW-REFERENCE.md.
+tradingview/
