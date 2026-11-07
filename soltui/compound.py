@@ -984,13 +984,15 @@ def materialize_bars(asset: str) -> tuple[Any, str]:
     import pandas as pd
 
     a = _asset(asset)
-    sig = list(_data_signature(a))
+    # "v2": the cache now carries the per-bar minute count; older caches are rebuilt.
+    sig = ["v2", *_data_signature(a)]
     path = bars_cache_path(a)
     if path.exists():
         try:
             with np.load(path, allow_pickle=False) as z:
                 if list(z["sig"]) == [str(s) for s in sig]:
-                    df = pd.DataFrame({k: z[k] for k in ("timestamp", "open", "high", "low", "close", "volume")})
+                    cols = [k for k in ("timestamp", "open", "high", "low", "close", "volume", "minutes") if k in z]
+                    df = pd.DataFrame({k: z[k] for k in cols})
                     return df, str(z["source"])
         except (OSError, ValueError, KeyError):
             pass
@@ -998,7 +1000,8 @@ def materialize_bars(asset: str) -> tuple[Any, str]:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.stem + ".tmp.npz")
     np.savez(tmp, sig=np.array([str(s) for s in sig]), source=np.array(source),
-             **{k: df[k].to_numpy() for k in ("timestamp", "open", "high", "low", "close", "volume")})
+             **{k: df[k].to_numpy() for k in ("timestamp", "open", "high", "low", "close", "volume", "minutes")
+                if k in df})
     os.replace(tmp, path)
     return df, source
 
@@ -1134,7 +1137,12 @@ def summary_row(r: Mapping[str, Any]) -> dict[str, Any]:
         "leverage": r.get("leverage"), "bars": r.get("bars"), "source": r.get("source"),
         "run_id": r.get("run_id"), "oos_bars": f_oos.get("bars"), "split_ts": r.get("split_ts"),
         "to_ts": r.get("to_ts"), "round_trip_bps": f_oos.get("round_trip_bps"),
+        "data_incomplete_pct": r.get("data_incomplete_pct"),
     }
+
+
+# Above this share of 5m bars built from incomplete minutes, results carry a data warning.
+DATA_WARN_PCT = 1.0
 
 
 def verdict_word(rows: Sequence[Mapping[str, Any]]) -> str:
@@ -1163,6 +1171,9 @@ def overview(coins: Sequence[str] = COINS) -> list[dict[str, Any]]:
             if path.exists():
                 data_from = path.name
                 break
+        bad = None if comp is None else comp.get("data_incomplete_pct")
+        if data_from and bad is not None:
+            data_from = f"{data_from} ({bad:.1f}% bars incomplete)"
         out.append({
             "asset": a, "own_settings": bool(overrides.get(a)), "data": data_from,
             "backtest_verdict": verdict_word(latest),
@@ -1210,7 +1221,13 @@ def run_summary(rows: Sequence[Mapping[str, Any]], window_count: int | None = No
         verdict = "Verdict: some direction signal, but costs eat it."
     else:
         verdict = "Verdict: no measurable edge after costs."
-    return " ".join((head, direction, money, verdict))
+    bad = first.get("data_incomplete_pct")
+    data = ""
+    if bad is not None and bad >= DATA_WARN_PCT:
+        data = (f" Data: {bad:.1f}% of these 5m bars were built from incomplete minutes. Coinbase drops "
+                "minutes that traded (research/CANDLE-GAP-AUDIT.md), so closes, highs and lows there may be "
+                "wrong and liquidations understated.")
+    return " ".join((head, direction, money, verdict)) + data
 
 
 def latest_results(asset: str | None = None, top: int = 40) -> dict[str, Any]:

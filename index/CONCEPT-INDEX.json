@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T17:13:14+00:00",
+  "generatedAt": "2026-11-07T17:29:46+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 184,
+      "matchingFiles": 185,
       "shown": 30,
       "files": [
         {
@@ -1472,6 +1472,10 @@
           "hits": 18
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 18
+        },
+        {
           "path": "liquidity/tests/test_executor.py",
           "hits": 17
         },
@@ -1481,10 +1485,6 @@
         },
         {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/COMPOUND-5M.md",
           "hits": 16
         },
         {
@@ -1512,12 +1512,12 @@
           "hits": 13
         },
         {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 11
+          "path": "memory.md",
+          "hits": 12
         },
         {
-          "path": "memory.md",
-          "hits": 10
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
         },
         {
           "path": "soltui/tests/test_utxo_scan.py",

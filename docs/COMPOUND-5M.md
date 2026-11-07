@@ -109,6 +109,22 @@ The compound runs on every Coinbase-listed universe coin: BTC, ETH, SOL, DOGE, Z
   history Coinbase serves; trade-by-trade ticks exist but a single month took days to backfill.
   The backtest builds 5m bars from those minutes, saves them once per coin as a compact cache,
   and parallel workers read that cache instead of the multi-million-row minute file.
+* **Data quality, per coin.** Coinbase's 1m endpoint drops minutes that *did* trade (84% of
+  sampled gaps, `research/CANDLE-GAP-AUDIT.md`), so a 5m bar built from fewer than five minutes
+  can carry a wrong close and an understated high or low, which flatters liquidation checks.
+  Coinbase's own 5m candles carry the same damage. Every bar records how many minutes it came
+  from. Each backtest reports the share of incomplete bars, and the status bar warns above 1%.
+  Measured 2026-11-07 on the full history:
+
+  | Coin | History | 5m bars | Incomplete bars |
+  | --- | --- | --- | --- |
+  | BTC | 2019-11 to now | 735,480 | 0.03% |
+  | ETH | 2019-11 to now | 735,474 | 0.50% |
+  | SOL | 2021-06 to now | 566,776 | 1.04% |
+  | DOGE | 2021-06 to now | 570,808 | 4.49% |
+  | ZEC | 2020-12 to now | 575,919 | **60.3%** (64% minute coverage; read its results as unreliable) |
+
+  Only trades repair a bar (`research/tick_backfill.py`).
 * **Own numbers.** Each coin has its own learned record, backtests and forward ledger. It can also
   have its own settings stacked on the shared ones. Pick the coin at the top of the tab.
   **Edits apply to** switches between all coins (the shared base) and this coin. Adopt tuned

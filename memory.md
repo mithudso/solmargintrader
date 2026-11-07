@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 39
-Delta: v38 to v39; editor bar, compound row preview, double-click toggle, compound autopilot.
+Version: 40
+Delta: v39 to v40; editor bar, compound row preview, double-click toggle, compound autopilot (v39 is compound data quality).
 
 ## v1 - 2026-11-06
 
@@ -391,7 +391,17 @@ Completed: 1m history fetch started for BTC ETH SOL DOGE ZEC XRP BNB HYPE (`fetc
 
 Remaining: run Backtest all coins once the minute download finishes and report per-coin results; open Jupiter Perps positions still unread.
 
-## v39 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+## v39 - 2026-11-07 (compound data quality)
+
+Target: before backtesting every coin on the full minute history, act on KNOW-523 (research/CANDLE-GAP-AUDIT.md): Coinbase drops minutes that traded, so the earlier claim that a missing minute means no trade (resample_complete docstring, KNOW-819) was wrong. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-quality, branch feat/compound-data-quality. PR #66 (all coins) merged 2bb24f6.
+
+Completed: resample_complete counts minutes per 5m bar; incomplete_pct per coin in prepare and every report; run_summary warns above 1%; overview shows it; bar cache format v2. KNOW-819 corrected and linked to KNOW-523; KNOW-531 updated for soltui's compound network/process exceptions.
+
+Verification: minute history so far: BTC 2019-11.. 0.03% incomplete, ETH 0.50%, SOL 2021-06.. 1.04%, DOGE 4.49%, ZEC 60.3% (64% minute coverage). XRP, BNB, HYPE downloading.
+
+Remaining: run Backtest all coins on the full history and report per-coin results.
+
+## v40 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
 
 Target: prompt v31. Stele TASK-833; decisions KNOW-834 (autopilot) and KNOW-835 (double-click toggle). Worktree /Users/mitch/dev/solmargintrader-wt-splitpane, branch feat/soltui-split-preview-autotune.
 
@@ -400,4 +410,3 @@ Completed: `EditorBar` replaces the editor's orange border-top: drag to resize (
 Honesty: tuning at the 0.95 bar rarely moves (docs/COMPOUND-5M.md: one move in five coins over 30 days) and backtested returns stayed negative; autopilot automates the evidence-gated search, it does not make the compound profitable. Paper calls only; no order path.
 
 Remaining: none in code; install the LaunchAgent from the main checkout after merge.
-

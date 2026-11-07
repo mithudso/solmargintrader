@@ -480,6 +480,10 @@ class SummaryTests(unittest.TestCase):
         self.assertIn("costs eat it", eaten)
         maybe = compound.run_summary([self.row("only:rsi", 0.55, 2.5, 0.04)])
         self.assertIn("possible edge", maybe)
+        dirty = compound.run_summary([{**self.row("compound", 0.5, 0.1, -0.3), "data_incomplete_pct": 9.6}])
+        self.assertIn("9.6% of these 5m bars were built from incomplete minutes", dirty)
+        clean = compound.run_summary([{**self.row("compound", 0.5, 0.1, -0.3), "data_incomplete_pct": 0.2}])
+        self.assertNotIn("incomplete minutes", clean)
 
 
 class UnattendedTests(TempConfig):
