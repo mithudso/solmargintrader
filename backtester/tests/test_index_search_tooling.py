@@ -154,10 +154,11 @@ class IdleTests(unittest.TestCase):
         self.assertIn("rebuilding in the background", message)
 
     def test_a_busy_machine_does_not_start_anything(self):
+        idle._write_state({"last_build_at": 1500.0})   # rebuilt recently: the hourly sweep is not due
         with mock.patch.object(idle, "semantic_status", return_value=("missing", "none")), \
                 mock.patch.object(idle, "is_idle", return_value=False), \
                 mock.patch.object(oe, "ensure") as ensure, self.popen() as popen:
-            message = idle.maybe_start()
+            message = idle.maybe_start(now=2000.0)
         self.assertIn("busy", message)
         ensure.assert_not_called()
         popen.assert_not_called()
@@ -199,6 +200,70 @@ class IdleTests(unittest.TestCase):
         with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status:
             idle.maybe_start(now=1000.0 + idle.MIN_INTERVAL + 1)
         self.assertEqual(status.call_count, 1)
+
+    def test_busy_and_an_hour_since_the_last_rebuild_starts_the_hourly_sweep(self):
+        idle._write_state({"last_build_at": 1000.0})
+        with mock.patch.object(idle, "semantic_status", return_value=("stale", "3 changed")), \
+                mock.patch.object(idle, "is_idle", return_value=False), \
+                mock.patch.object(oe, "ensure", return_value=oe.Status(True, True, False, True, "ready")), \
+                self.popen() as popen:
+            message = idle.maybe_start(now=1000.0 + idle.FORCE_INTERVAL)
+        popen.assert_called_once()
+        self.assertIn("hourly sweep, machine busy", message)
+        self.assertEqual(idle._read_state()["last_build_at"], 1000.0 + idle.FORCE_INTERVAL)
+
+    def test_busy_inside_the_hour_does_not_start_anything(self):
+        idle._write_state({"last_build_at": 1000.0})
+        with mock.patch.object(idle, "semantic_status", return_value=("stale", "x")), \
+                mock.patch.object(idle, "is_idle", return_value=False), self.popen() as popen:
+            message = idle.maybe_start(now=1000.0 + idle.FORCE_INTERVAL - 1)
+        popen.assert_not_called()
+        self.assertIn("not due", message)
+
+    def test_a_busy_machine_that_has_never_rebuilt_gets_its_first_sweep(self):
+        with mock.patch.object(idle, "semantic_status", return_value=("missing", "none")), \
+                mock.patch.object(idle, "is_idle", return_value=False), \
+                mock.patch.object(oe, "ensure", return_value=oe.Status(True, True, False, True, "ready")), \
+                self.popen() as popen:
+            idle.maybe_start(now=5000.0)
+        popen.assert_called_once()
+
+    def test_a_fresh_index_is_not_rebuilt_just_because_an_hour_passed(self):
+        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")), \
+                self.popen() as popen:
+            idle.maybe_start(now=10 ** 9)
+        popen.assert_not_called()
+
+    def test_a_held_lock_still_blocks_the_hourly_sweep(self):
+        with mock.patch.object(idle, "semantic_status", return_value=("stale", "x")), \
+                mock.patch.object(idle, "is_idle", return_value=False), \
+                mock.patch.object(idle, "lock_free", return_value=False), self.popen() as popen:
+            message = idle.maybe_start(now=10 ** 9)
+        popen.assert_not_called()
+        self.assertIn("already running", message)
+
+    def test_the_hourly_sweep_can_be_turned_off_and_a_bad_value_falls_back(self):
+        with mock.patch.dict(idle.os.environ, {"INDEX_FORCE_INTERVAL": "0"}):
+            self.assertFalse(idle.sweep_due({}, 10 ** 9))
+        with mock.patch.dict(idle.os.environ, {"INDEX_FORCE_INTERVAL": "soon"}):
+            self.assertEqual(idle.force_interval(), idle.FORCE_INTERVAL)
+
+    def test_the_schedule_plist_runs_once_every_hour_niced_without_running_at_load(self):
+        plist = idle.plist_dict(Path("/venv/bin/python"), Path("/repo"))
+        self.assertEqual(plist["ProgramArguments"], ["/venv/bin/python", "/repo/index/idle.py", "--once"])
+        self.assertEqual(plist["StartInterval"], 3600)
+        self.assertFalse(plist["RunAtLoad"])
+        self.assertEqual(plist["Nice"], 19)
+
+    def test_install_and_uninstall_write_and_remove_the_plist_without_launchctl(self):
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.dict(idle.os.environ, {"INDEX_LAUNCHAGENTS_DIR": tmp}), \
+                mock.patch.object(idle, "_launchctl") as launchctl:
+            out = idle.install_schedule(Path(sys.executable), start=False)
+            self.assertTrue(Path(out["plist"]).exists())
+            launchctl.assert_not_called()
+            self.assertTrue(idle.uninstall_schedule()["removed"])
+            self.assertFalse(Path(out["plist"]).exists())
 
     def test_the_kill_switch_disables_automatic_starts_but_not_force(self):
         with mock.patch.dict(idle.os.environ, {"INDEX_NO_AUTO": "1"}), \
