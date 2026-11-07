@@ -1,6 +1,6 @@
 # soltui — SOL strategy console
 
-A thirteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
+A fourteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 wiring shell.
 
@@ -17,7 +17,7 @@ uv venv ~/.venvs/soltui -p 3.13
 uv pip install -p ~/.venvs/soltui/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
 ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui    # once; ~/.local/bin must be on PATH
 
-soltui          # the thirteen-tab console, from any directory
+soltui          # the fourteen-tab console, from any directory
 soltui app      # the macOS menu-bar indicator (needs rumps)
 soltui serve    # the console in a browser window
 ```
@@ -83,10 +83,47 @@ indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_la
 | **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry. Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
 | **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. |
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
-| **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, median return, trades. Cancellable. |
-| **Execute** | Dry-run replay. Step a simulation bar by bar and see the fills a strategy *would* have made. |
+| **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. |
+| **Top 5** | The five recommended configurations with their evidence and off-asset transfer tests. |
+| **Live Run** | Launches the extension's dry-run tool. A Top 5 preset list fills the strategy; the result shows `dry-run net %`. |
+| **Execute** | Dry-run replay. Step a simulation bar by bar and see the fills a strategy *would* have made. A Top 5 preset list selects a configuration (its composite replays on the series it was fitted on); every figure says `paper net %`. |
+| **Analyze** | What every strategy would decide for one coin at one moment. A Top 5 preset judges only that configuration with its parameters. The headline carries the asset's `backtest data price change`. |
+| **P&L** | Profit and loss over 24h, 7d, 30d, 90d, YTD, all or a custom start/end. One section per source (`backtest`, `paper`, `dry-run`, `dry-run LP`, `live LP`) with net and gross P&L, fees, slippage, borrow/funding, realized vs unrealized, win rate, expectancy, daily series with cumulative curve, max drawdown and recovery, best and worst day/week/month, and a by-strategy / by-asset attribution. See [The P&L tab](#the-pl-tab). |
 | **Queue** | Starts and reads the low-priority background sweep. Start/Stop/Refresh, a live status line, a ranked table and a below-the-floor table. |
 | **Liquidity** | Read-only view of the Aero (aero.xyz) liquidity daemon's state files (`$AERO_LP_HOME`, default `~/.aero-lp/`): mode badge (LIVE is red, dry-run is yellow), kill-switch banner ("Kill switch ON — bot paused"), idle vs deployed USD, totals; Positions, Scout (top pools by modelled net APR), Experiments (arms side by side, winner marked) and Recent actions (newest first, basescan tx links) tables. Refresh / Kill / Resume buttons (`F5` refresh, `F8` kill-resume toggle while the tab is open); re-reads every 15 s. |
+
+### Top 5 presets and net %
+
+`top5.presets` (one registry command, so the TUI, CLI, API and extension see the same list) turns each Top 5 row
+into a preset: label, member signals with the SOL-tuned parameters read from `research/sweep.py` `HORIZONS`
+(never copied), the series it was fitted on and its evidence. Clicking one in Analyze, Live Run or Execute only
+fills that tab's fields; running still goes through the tab's own button.
+
+Net % is `final / initial - 1` everywhere (`soltui/netpct.py`). Every text form names its source:
+`backtest median net +9.4%`, `paper net +2.1%`, `dry-run net +0.7%`, `live LP net +1.2%`. A figure with no base
+(no capital, no deposit) is a dash, never `0%`. `test_tui_presets_pnl.py` walks every table in the app and fails
+on a percentage with no source word.
+
+### The P&L tab
+
+`pnl.summary`, `pnl.series` and `pnl.breakdown` take `window` (24h, 7d, 30d default, 90d, ytd, all), `start` /
+`end` (custom, UTC; a date `end` includes that whole day) and `source`. Window edges are inclusive. The days of a
+series add up to the window's net P&L because the first day is measured against the equity before the window.
+
+* **Sources.** `backtest`: one full-history run per roster strategy, each on the Settings capital (a section adds
+  independent equal-capital runs, so its net % is total net over total capital). `paper`: the open Execute replay
+  up to its cursor. `dry-run`: the extension's journal (`~/.solmargintrader/journal.json`, override with
+  `SOLTUI_JOURNAL`), FIFO round trips net of fees and carry; it records no capital, so no %. `dry-run LP` /
+  `live LP`: the liquidity daemon's `ledger.sqlite` snapshots (opened read-only) when they exist, else the
+  cumulative `status.json` figure, which is marked *not windowed* because it cannot be cut by date.
+* **Simulated and real money are never summed.** Each source is its own section; the report has no total. The
+  daemon's own mode picks `live LP` (real) or `dry-run LP` (simulated); an unknown mode is `reported LP`, filed
+  under neither.
+* **Definitions.** Gross = net + fees + slippage + borrow paid in the window. Realized = net result of fills that
+  closed risk in the window; unrealized = the rest. Win rate and expectancy are over those closes. Contribution is
+  percentage points of the section's net %; a section's rows sum to it exactly.
+* **A backtest has historical dates.** A `30d` window ending today finds no backtest data when the cached series
+  ended earlier; the section says where its data is (`its data covers ... to ...`) instead of showing zeros.
 
 ### The Liquidity tab — a window onto a daemon, not a controller
 
