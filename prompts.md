@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 10
-Delta: v9 to v10; record Coinbase account MCP setup.
+Version: 11
+Delta: v10 to v11; verify existing CDP CLI configuration from official setup skill.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -76,4 +76,10 @@ The solmargintrader has not changed at all, the version number is the same, I lo
 
 ```text
 Set up coinbase.com/skill.md
+```
+
+## v11 - 2026-11-07 (CDP CLI setup verification)
+
+```text
+docs.cdp.coinbase.com/cdp-cli/skill.md
 ```
