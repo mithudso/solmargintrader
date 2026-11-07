@@ -17,9 +17,9 @@ from tempfile import TemporaryDirectory
 from unittest import mock
 
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Static
+from textual.widgets import Button, DataTable, Static, TabbedContent
 
-from soltui import bgqueue
+from soltui import bgqueue, commands
 from soltui.config import Settings
 from soltui.tui import FAMILY_NOTES, SIGNAL_REFERENCE, SolTuiApp, failure_summary, untested_sweep_command
 
@@ -1158,6 +1158,69 @@ class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
                 await pilot.pause()
                 self.assertIs(ta.vim_mode, VimTextArea.Mode.NORMAL)
             self.assertEqual(ta.text, "abc")
+
+
+class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
+    """What Run backtest tests is visible and choosable; the untested button starts real work."""
+
+    async def test_picker_lists_the_roster_and_runs_only_the_pick(self):
+        from textual.widgets import Select
+        app = SolTuiApp(make_settings())
+        seen = []
+        real = commands.COMMANDS["backtest.run"]
+
+        def handler(ctx, p):
+            seen.append(p.get("labels"))
+            return {"rows": [], "evaluable": 0, "positive": 0, "skipped": [], "cancelled": False,
+                    "message": "done"}
+
+        stub = commands.Command("backtest.run", real.describe, handler, real.params, real.read_only,
+                                real.long_running, real.requires_confirm)
+        with mock.patch.dict(commands.COMMANDS, {"backtest.run": stub}):
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                app.query_one(TabbedContent).active = "tab-backtest"
+                await pilot.pause()
+                labels = app.roster.labels
+                pick = app.query_one("#backtest-pick", Select)
+                self.assertIn(f"Whole roster ({len(labels)} strategies)", str(pick._options[0][0]))
+                self.assertIn(labels[0], text_of(app, "#backtest-roster"))
+                app.query_one("#btn-run", Button).press()
+                await pilot.pause(0.2)
+                await app.workers.wait_for_complete()
+                pick.value = labels[0]
+                await pilot.pause()
+                app.query_one("#btn-run", Button).press()
+                await pilot.pause(0.2)
+                await app.workers.wait_for_complete()
+        self.assertEqual(seen, [None, [labels[0]]])
+
+    async def test_untested_button_starts_the_background_worker_at_once(self):
+        app = SolTuiApp(make_settings())
+        calls = []
+        real = commands.COMMANDS["queue.backtest"]
+
+        def handler(ctx, p):
+            calls.append(dict(p))
+            return {"started": True, "scope": p["scope"], "strategies": ["dca", "macd"], "jobs": 9,
+                    "asset": "SOL", "message": "started: 9 configuration(s) across 2 strategy(ies)"}
+
+        stub = commands.Command("queue.backtest", real.describe, handler, real.params, real.read_only,
+                                real.long_running, real.requires_confirm)
+        with mock.patch.dict(commands.COMMANDS, {"queue.backtest": stub}):
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                app.query_one(TabbedContent).active = "tab-backtest"
+                await pilot.pause()
+                app.query_one("#btn-run-untested", Button).press()
+                await pilot.pause()
+                self.assertIn("started: 9 configuration(s)", text_of(app, "#backtest-status"))
+                self.assertIn("dca, macd", text_of(app, "#backtest-status"))
+                self.assertIn("Background backtests:", text_of(app, "#backtest-bg-status"))
+        self.assertEqual(calls, [{"scope": "undertested"}])
+
+    def test_backtest_run_rejects_labels_outside_the_roster(self):
+        env = commands.dispatch("backtest.run", {"labels": ["no_such_label"]}, surface="cli")
+        self.assertFalse(env["ok"])
+        self.assertIn("not in the roster", env["error"]["message"])
 
 
 class UntestedSweepCommandTest(unittest.TestCase):

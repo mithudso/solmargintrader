@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 31
-Delta: v30 to v31; soltui draggable/closable editor bar, compound row preview, double-click/Space toggle, compound autopilot.
+Version: 32
+Delta: v31 to v32; Backtest tab strategy picker and an untested button that starts real work.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -212,4 +212,12 @@ in the soltui there is an orange line which delineates the curser portion above 
 ```
 
 Target: soltui/tui.py, soltui/compound.py, soltui/commands.py, new soltui/compound_agent.py; Stele TASK-833.
+
+## v32 - 2026-11-07 (Backtest tab picker, untested button)
+
+```text
+It is not clear how to select a strategy that will be backtested in the backtest tab. Also after clicking run untested sweep it finds things that need testing and then proceeds to do nothing about it. If I click that button I want it to immediately start backtesting anything and everything not tested or with little testing. Also I still cannot reside that bvottom window,
+```
+
+Target: soltui/tui.py Backtest tab, soltui/commands.py queue.backtest/backtest.run. The resize request is prompt v31's editor bar, not yet merged when this arrived (the running console was older master).
 

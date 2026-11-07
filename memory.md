@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 39
-Delta: v38 to v39; editor bar, compound row preview, double-click toggle, compound autopilot.
+Version: 40
+Delta: v39 to v40; Backtest tab picker and undertested background button.
 
 ## v1 - 2026-11-06
 
@@ -400,4 +400,12 @@ Completed: `EditorBar` replaces the editor's orange border-top: drag to resize (
 Honesty: tuning at the 0.95 bar rarely moves (docs/COMPOUND-5M.md: one move in five coins over 30 days) and backtested returns stayed negative; autopilot automates the evidence-gated search, it does not make the compound profitable. Paper calls only; no order path.
 
 Remaining: none in code; install the LaunchAgent from the main checkout after merge.
+
+## v40 - 2026-11-07 (Backtest tab picker, untested button)
+
+Target: prompt v32. Branch feat/backtest-tab-undertested, stacked on PR #68 (https://github.com/mithudso/solmargintrader/pull/68).
+
+Completed: Backtest tab has a "Strategy to backtest" Select (whole roster or one roster label) and a line listing the roster; `backtest.run` takes optional `labels` and refuses labels not in the roster. The old "Run Untested Sweep" ran research/sweep_untested.py, which printed the untested names and then backtested a fixed handful on one horizon, so it looked like it found work and did none. The button is now "Backtest untested + little-tested": `queue.backtest` scope `undertested` (never tested, or fewer than `min_runs`=3 recorded configurations for the asset) with `max_tier=1` (card parameters plus near variations), started immediately in the background worker; progress mirrors into `#backtest-bg-status` each tick. `backtest.untested_sweep` stays registered for other surfaces. 53 buttons.
+
+Remaining: none in code.
 

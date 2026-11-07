@@ -137,7 +137,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#btn-reset-signals": "signals.reset",
     "#btn-cancel": "backtest.cancel",
     "#btn-run": "backtest.run",
-    "#btn-run-untested": "backtest.untested_sweep",
+    "#btn-run-untested": "queue.backtest",
     "#btn-bt-selected": "queue.backtest",
     "#btn-bt-untested": "queue.backtest",
     "#btn-bt-all": "queue.backtest",
@@ -553,6 +553,9 @@ class SolTuiApp(App):
     #compound-call { padding: 0 1; border: round $accent; }
     #compound-detail { color: $text-muted; padding: 0 1; }
     #compound-autopilot-status { padding: 0 1; border: round $success; }
+    #backtest-pick { width: 44; }
+    #backtest-roster { color: $text-muted; padding: 0 1; }
+    #backtest-bg-status { padding: 0 1; height: auto; }
     """
     BINDINGS = [
         Binding("f1", "show_help", "Help / glossary", priority=True),
@@ -935,20 +938,29 @@ class SolTuiApp(App):
             yield Static("", id="compound-fwd-summary")
             yield GlossaryTable(id="compound-forward")
 
+    ROSTER_PICK = "__roster__"
+
     def _backtest_pane(self) -> ComposeResult:
-        """Run a CPCV sweep over the roster and show the distribution."""
+        """Run a CPCV sweep over the roster (or one roster strategy) and show the distribution."""
         with Vertical():
             yield Static(
-                "CPCV: each strategy is evaluated across C(blocks,k) regime-mixed "
-                "paths, not one split. Read IQR and % paths positive, not just the "
-                "median.",
+                "Pick what Run backtest tests: the whole roster, or one strategy from it. The roster is "
+                "the right-hand list on the Strategies tab (Add selected / Remove selected change it). "
+                "CPCV evaluates each strategy across C(blocks,k) regime-mixed paths, not one split; read "
+                "IQR and % paths positive, not just the median.",
                 classes="hint",
             )
             with Horizontal(classes="form-row"):
+                yield Label("Strategy to backtest:")
+                yield Select([("Whole roster", self.ROSTER_PICK)], value=self.ROSTER_PICK,
+                             allow_blank=False, id="backtest-pick")
+                yield Static("", id="backtest-roster")
+            with Horizontal(classes="form-row"):
                 yield Button("Run backtest (r)", variant="primary", id="btn-run")
-                yield Button("Run Untested Sweep", variant="warning", id="btn-run-untested")
+                yield Button("Backtest untested + little-tested", variant="warning", id="btn-run-untested")
                 yield Button("Cancel (c)", variant="error", id="btn-cancel")
                 yield Static("", id="backtest-status")
+            yield Static("", id="backtest-bg-status")
             yield GlossaryTable(id="results-table")
 
     def _live_run_pane(self) -> ComposeResult:
@@ -1122,6 +1134,7 @@ class SolTuiApp(App):
         """
         if not self.query("#queue-status"):
             return
+        self._show_bg_progress()
         if _mtime(bgqueue.RESULTS_PATH) != self._queue_mtime:
             self._refresh_queue()
             self._refresh_strategy_history()
@@ -1267,9 +1280,17 @@ class SolTuiApp(App):
             t.add_row(e["label"], e["family"], str(e["warmup"]), key=e["label"])
 
     def _refresh_exec_choices(self) -> None:
-        """Keep the Execute strategy picker in sync with the roster."""
+        """Keep the Execute and Backtest strategy pickers in sync with the roster."""
         sel = self.query_one("#exec-strategy", Select)
         labels = [e["label"] for e in self._call("roster.list")["result"]["entries"]]
+        pick = self.query_one("#backtest-pick", Select)
+        keep = pick.value
+        pick.set_options([(f"Whole roster ({len(labels)} strategies)", self.ROSTER_PICK)]
+                         + [(label, label) for label in labels])
+        pick.value = keep if keep in labels else self.ROSTER_PICK
+        shown = ", ".join(labels[:8]) + (f" +{len(labels) - 8} more" if len(labels) > 8 else "")
+        self.query_one("#backtest-roster", Static).update(
+            Text(f"roster: {shown}" if labels else "roster is empty: add strategies on the Strategies tab"))
         sel.set_options([(label, label) for label in labels]
                         + [(f"Top 5 {p['title']}", p["value"]) for p in self._presets])
 
@@ -1993,14 +2014,17 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#btn-run")
     def _run(self) -> None:
-        """Start a CPCV sweep over the roster (the work is the `backtest.run` command)."""
-        self.query_one("#backtest-status", Static).update("running…")
-        self._sweep_worker()
+        """Start a CPCV sweep over the picked strategy or the whole roster (`backtest.run`)."""
+        pick = self.query_one("#backtest-pick", Select).value
+        labels = [pick] if isinstance(pick, str) and pick != self.ROSTER_PICK else None
+        self.query_one("#backtest-status", Static).update(
+            f"running {labels[0]}…" if labels else "running the whole roster…")
+        self._sweep_worker(labels)
 
     @work(thread=True, group="sweep")
-    def _sweep_worker(self) -> None:
+    def _sweep_worker(self, labels: list[str] | None = None) -> None:
         """Thread only so the UI stays live; the sweep itself is the registry handler."""
-        env = self._call("backtest.run")
+        env = self._call("backtest.run", {"labels": labels} if labels else {})
         self.call_from_thread(self._render_results, env)
 
     def _render_results(self, env: dict[str, Any]) -> None:
@@ -2022,16 +2046,33 @@ class SolTuiApp(App):
                                       if best else ""))
 
     @on(Button.Pressed, "#btn-run-untested")
-    @work(thread=True)
     def _run_untested_sweep(self) -> None:
-        """Run the untested sweep (the `backtest.untested_sweep` command) off the UI thread."""
+        """Start backtesting, at once and in the background, every strategy never tested or with
+        little testing (`queue.backtest`, scope undertested).
+
+        It used to run research/sweep_untested.py, which listed the untested strategies and then
+        backtested a fixed handful on one horizon, so the button seemed to find work and do none.
+        """
         status = self.query_one("#backtest-status", Static)
-        self.call_from_thread(status.update, "running untested sweep...")
-        env = self._call("backtest.untested_sweep")
+        env = self._call("queue.backtest", {"scope": "undertested"})
+        if not env["ok"]:
+            status.update(Text(self._msg(env), style="red"))
+            return
+        r = env["result"]
+        names = r.get("strategies") or []
+        shown = ", ".join(names[:12]) + (f" +{len(names) - 12} more" if len(names) > 12 else "")
+        status.update(Text(r["message"] + (f": {shown}" if shown and r["started"] else "")
+                           + (" · progress below and on the Queue tab" if r["started"] else "")))
+        self._show_bg_progress()
+        self._refresh_strategy_history()
+
+    def _show_bg_progress(self) -> None:
+        line = self.query("#backtest-bg-status")
+        if not line:
+            return
+        env = self._call("queue.progress", quiet=True)
         if env["ok"]:
-            self.call_from_thread(status.update, f"untested sweep done.\n{env['result']['output']}")
-        else:
-            self.call_from_thread(status.update, f"[red]{self._msg(env)}[/]")
+            line.first(Static).update(Text("Background backtests: " + env["result"]["summary"]))
 
     # -- execute (dry run) -----------------------------------------------
 
