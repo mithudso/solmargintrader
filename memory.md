@@ -476,4 +476,6 @@ Completed: Settings field hyperliquid_address (default the owner's address; EVM-
 
 Verification: new tests for an empty account, funded account, failed/malformed read, and preference over the Solana wallet.
 
-Remaining: the owner must deposit USDC to Hyperliquid before any call can be sized. Then the ten-coin full-history backtest (TASK-844).
+Ten-coin full-history backtest done: run 20261107T192614Z, 300 configurations, Hyperliquid costs and margins. All 300 lost the stake out of sample at 5x. Reversion metrics beat a coin flip on every coin (RSI z 13-23) but earned at most 0.6 bps per call against 13 bps. A perfect one-bar call nets positive on 8 of 10 coins at 13 bps. NEAR/AVAX/HYPE/SUI/LINK have 11-38% incomplete bars. Results: research/results/compound-10coin-fullhistory-2026-11-07.json; docs/COMPOUND-5M.md findings section. Coverage: research/results/minute_coverage.json.
+
+Remaining: the owner must deposit USDC to Hyperliquid before any call can be sized. Untested ideas: multi-bar holds, maker entries, fewer stronger calls.

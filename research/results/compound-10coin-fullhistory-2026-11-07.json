@@ -1,0 +1,422 @@
+{
+ "run_id": "20261107T192614Z",
+ "configurations": 300,
+ "round_trip_bps": 13.0,
+ "leverage": 5.0,
+ "coins": [
+  {
+   "coin": "BTC",
+   "from": "2019-11",
+   "bars": 735480,
+   "incomplete_pct": 0.025,
+   "oos_mean_abs_move_bps": 8.929,
+   "oos_oracle_net_bps": -4.071,
+   "compound": {
+    "hit": 0.5173,
+    "z": 9.22,
+    "gross_bps": -0.031,
+    "calls": 70924,
+    "return": -1.0,
+    "trades": 39426,
+    "liquidations": 0,
+    "max_dd": -1.0,
+    "fees_pct": 452.1226
+   },
+   "best_single_by_z": {
+    "metric": "rsi",
+    "hit": 0.5204,
+    "z": 15.55,
+    "gross_bps": 0.028
+   },
+   "best_single_by_gross": {
+    "metric": "liquidity_sweep",
+    "gross_bps": 0.125,
+    "hit": 0.5169
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "zscore",
+    "cci",
+    "vwap_reversion",
+    "liquidity_sweep",
+    "cycle_phase"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2024-10-01"
+  },
+  {
+   "coin": "ETH",
+   "from": "2019-11",
+   "bars": 735474,
+   "incomplete_pct": 0.504,
+   "oos_mean_abs_move_bps": 12.971,
+   "oos_oracle_net_bps": -0.029,
+   "compound": {
+    "hit": 0.5306,
+    "z": 16.93,
+    "gross_bps": -0.054,
+    "calls": 76570,
+    "return": -1.0,
+    "trades": 52211,
+    "liquidations": 0,
+    "max_dd": -1.0,
+    "fees_pct": 565.2469
+   },
+   "best_single_by_z": {
+    "metric": "rsi",
+    "hit": 0.5306,
+    "z": 23.11,
+    "gross_bps": -0.083
+   },
+   "best_single_by_gross": {
+    "metric": "btc_lead",
+    "gross_bps": 0.156,
+    "hit": 0.4856
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "cci",
+    "vwap_reversion",
+    "zscore",
+    "liquidity_sweep",
+    "cycle_phase"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2024-10-01"
+  },
+  {
+   "coin": "SOL",
+   "from": "2021-06",
+   "bars": 566776,
+   "incomplete_pct": 1.037,
+   "oos_mean_abs_move_bps": 14.51,
+   "oos_oracle_net_bps": 1.51,
+   "compound": {
+    "hit": 0.5221,
+    "z": 10.63,
+    "gross_bps": 0.031,
+    "calls": 59388,
+    "return": -1.0,
+    "trades": 39988,
+    "liquidations": 0,
+    "max_dd": -1.0,
+    "fees_pct": 377.5581
+   },
+   "best_single_by_z": {
+    "metric": "rsi",
+    "hit": 0.5245,
+    "z": 16.22,
+    "gross_bps": -0.007
+   },
+   "best_single_by_gross": {
+    "metric": "btc_lead",
+    "gross_bps": 0.201,
+    "hit": 0.489
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "zscore",
+    "cci",
+    "vwap_reversion",
+    "liquidity_sweep",
+    "cycle_phase"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2025-03-26"
+  },
+  {
+   "coin": "XRP",
+   "from": "2019-11",
+   "bars": 474857,
+   "incomplete_pct": 0.807,
+   "oos_mean_abs_move_bps": 13.345,
+   "oos_oracle_net_bps": 0.345,
+   "compound": {
+    "hit": 0.5175,
+    "z": 8.0,
+    "gross_bps": 0.083,
+    "calls": 53374,
+    "return": -1.0,
+    "trades": 37506,
+    "liquidations": 0,
+    "max_dd": -1.0,
+    "fees_pct": 349.5716
+   },
+   "best_single_by_z": {
+    "metric": "rsi",
+    "hit": 0.5247,
+    "z": 14.91,
+    "gross_bps": 0.118
+   },
+   "best_single_by_gross": {
+    "metric": "liquidity_sweep",
+    "gross_bps": 0.161,
+    "hit": 0.5195
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "zscore",
+    "cci",
+    "vwap_reversion",
+    "liquidity_sweep",
+    "cycle_phase"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2025-06-30"
+  },
+  {
+   "coin": "HYPE",
+   "from": "2026-02",
+   "bars": 78951,
+   "incomplete_pct": 28.481,
+   "oos_mean_abs_move_bps": 16.3,
+   "oos_oracle_net_bps": 3.3,
+   "compound": {
+    "hit": 0.5068,
+    "z": 1.11,
+    "gross_bps": 0.016,
+    "calls": 6786,
+    "return": -0.999999,
+    "trades": 5217,
+    "liquidations": 0,
+    "max_dd": -0.999999,
+    "fees_pct": 215.3607
+   },
+   "best_single_by_z": {
+    "metric": "bollinger",
+    "hit": 0.5171,
+    "z": 4.51,
+    "gross_bps": 0.447
+   },
+   "best_single_by_gross": {
+    "metric": "liquidity_sweep",
+    "gross_bps": 0.583,
+    "hit": 0.5211
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "cci"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2026-08-17"
+  },
+  {
+   "coin": "DOGE",
+   "from": "2021-06",
+   "bars": 570808,
+   "incomplete_pct": 4.487,
+   "oos_mean_abs_move_bps": 15.622,
+   "oos_oracle_net_bps": 2.622,
+   "compound": {
+    "hit": 0.5205,
+    "z": 9.57,
+    "gross_bps": 0.087,
+    "calls": 56092,
+    "return": -1.0,
+    "trades": 38520,
+    "liquidations": 0,
+    "max_dd": -1.0,
+    "fees_pct": 550.063
+   },
+   "best_single_by_z": {
+    "metric": "rsi",
+    "hit": 0.5263,
+    "z": 17.34,
+    "gross_bps": 0.047
+   },
+   "best_single_by_gross": {
+    "metric": "btc_lead",
+    "gross_bps": 0.36,
+    "hit": 0.4936
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "zscore",
+    "vwap_reversion",
+    "cci",
+    "liquidity_sweep",
+    "cycle_phase"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2025-03-22"
+  },
+  {
+   "coin": "LINK",
+   "from": "2019-11",
+   "bars": 735327,
+   "incomplete_pct": 10.993,
+   "oos_mean_abs_move_bps": 18.131,
+   "oos_oracle_net_bps": 5.131,
+   "compound": {
+    "hit": 0.5105,
+    "z": 5.76,
+    "gross_bps": 0.024,
+    "calls": 77298,
+    "return": -1.0,
+    "trades": 49657,
+    "liquidations": 1,
+    "max_dd": -1.0,
+    "fees_pct": 741.4571
+   },
+   "best_single_by_z": {
+    "metric": "rsi",
+    "hit": 0.5179,
+    "z": 13.49,
+    "gross_bps": 0.274
+   },
+   "best_single_by_gross": {
+    "metric": "rsi",
+    "gross_bps": 0.274,
+    "hit": 0.5179
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "cci",
+    "zscore",
+    "vwap_reversion",
+    "liquidity_sweep"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2024-10-02"
+  },
+  {
+   "coin": "NEAR",
+   "from": "2022-09",
+   "bars": 437763,
+   "incomplete_pct": 37.78,
+   "oos_mean_abs_move_bps": 22.945,
+   "oos_oracle_net_bps": 9.945,
+   "compound": {
+    "hit": 0.5041,
+    "z": 1.54,
+    "gross_bps": -0.093,
+    "calls": 38626,
+    "return": -1.0,
+    "trades": 26143,
+    "liquidations": 0,
+    "max_dd": -1.0,
+    "fees_pct": 1605.6936
+   },
+   "best_single_by_z": {
+    "metric": "stochastic",
+    "hit": 0.5176,
+    "z": 10.25,
+    "gross_bps": 0.472
+   },
+   "best_single_by_gross": {
+    "metric": "stochastic",
+    "gross_bps": 0.472,
+    "hit": 0.5176
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "zscore",
+    "cci",
+    "vwap_reversion"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2025-08-06"
+  },
+  {
+   "coin": "SUI",
+   "from": "2023-05",
+   "bars": 346456,
+   "incomplete_pct": 23.628,
+   "oos_mean_abs_move_bps": 17.58,
+   "oos_oracle_net_bps": 4.58,
+   "compound": {
+    "hit": 0.5227,
+    "z": 8.71,
+    "gross_bps": 0.201,
+    "calls": 37957,
+    "return": -1.0,
+    "trades": 25312,
+    "liquidations": 0,
+    "max_dd": -1.0,
+    "fees_pct": 653.6229
+   },
+   "best_single_by_z": {
+    "metric": "rsi",
+    "hit": 0.5298,
+    "z": 15.27,
+    "gross_bps": 0.267
+   },
+   "best_single_by_gross": {
+    "metric": "btc_lead",
+    "gross_bps": 0.278,
+    "hit": 0.4887
+   },
+   "singles_z_ge_3": [
+    "stochastic",
+    "rsi",
+    "bollinger",
+    "cci",
+    "zscore",
+    "vwap_reversion",
+    "liquidity_sweep",
+    "cycle_phase"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2025-11-11"
+  },
+  {
+   "coin": "AVAX",
+   "from": "2021-09",
+   "bars": 533946,
+   "incomplete_pct": 29.658,
+   "oos_mean_abs_move_bps": 17.114,
+   "oos_oracle_net_bps": 4.114,
+   "compound": {
+    "hit": 0.5045,
+    "z": 1.59,
+    "gross_bps": -0.02,
+    "calls": 35063,
+    "return": -1.0,
+    "trades": 22763,
+    "liquidations": 0,
+    "max_dd": -1.0,
+    "fees_pct": 1372.0656
+   },
+   "best_single_by_z": {
+    "metric": "bollinger",
+    "hit": 0.5173,
+    "z": 9.98,
+    "gross_bps": 0.109
+   },
+   "best_single_by_gross": {
+    "metric": "btc_lead",
+    "gross_bps": 0.518,
+    "hit": 0.497
+   },
+   "singles_z_ge_3": [
+    "rsi",
+    "stochastic",
+    "bollinger",
+    "zscore",
+    "cci",
+    "vwap_reversion"
+   ],
+   "configs_positive_oos_return": [],
+   "oos_split": "2025-04-24"
+  }
+ ],
+ "command": "python3 -m soltui.compound sweep --workers 6  (the saved config per coin plus every single-metric variant)",
+ "costs": "Hyperliquid base taker 4.5 bps + 2 bps slippage per side; maintenance margin per coin (HYPERLIQUID_MAX_LEVERAGE)",
+ "reading": "No configuration on any coin made money out of sample: all 300 lost the whole stake at 5x. Reversion metrics beat a coin flip on every coin (RSI z 13-23) but earned at most 0.5 bps per call against a 13 bps round trip. A perfect one-bar call would have netted a profit on 8 of 10 coins, so the limit is the size of the edge, not the cost alone."
+}
