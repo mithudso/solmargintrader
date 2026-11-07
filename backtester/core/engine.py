@@ -29,6 +29,7 @@ from .metrics import Metrics, compute_metrics
 from .types import (
     BarWindow,
     CostConfig,
+    IntrabarLayer,
     Mode,
     Position,
     Side,
@@ -72,6 +73,9 @@ class EngineConfig:
     costs: CostConfig = field(default_factory=CostConfig)
     allow_short: bool = False
     seed: int = 0
+    # Finer bars, finest first, used to look inside each held coarse bar for a
+    # liquidation (see IntrabarLayer). Empty means coarse low/high only.
+    intrabar: tuple = ()
 
     def __post_init__(self) -> None:
         """Validate settings that would otherwise fail deep in the loop."""
@@ -110,6 +114,12 @@ class EngineConfig:
         if not isinstance(self.costs, CostConfig):
             raise ValueError("costs must be a CostConfig")
         self.costs.validate()
+        self.intrabar = tuple(self.intrabar or ())
+        for layer in self.intrabar:
+            if not isinstance(layer, IntrabarLayer):
+                raise ValueError("intrabar must hold IntrabarLayer objects")
+            if layer.seconds >= INTERVAL_SECONDS[self.interval] or INTERVAL_SECONDS[self.interval] % layer.seconds:
+                raise ValueError("intrabar layers must be finer than, and divide, the bar interval")
 
 
 @dataclass
@@ -128,6 +138,11 @@ class BacktestResult:
     first_tradeable_index: int
     mode: str
     leverage: float
+    # Held perp bars that a finer layer covered completely / that fell back to
+    # the coarse range / whose coarse range exceeded the fine range.
+    bars_refined: int = 0
+    bars_unrefined: int = 0
+    bars_range_mismatch: int = 0
 
 
 class _Book:
@@ -189,7 +204,8 @@ class _Book:
         )
 
     def close(
-        self, price: float, ts: int, index: int, reason: str
+        self, price: float, ts: int, index: int, reason: str,
+        forfeit: bool = False,
     ) -> None:
         """Close the whole position at `price`, settling fees and borrow."""
         if not self.pos.is_open:
@@ -207,6 +223,8 @@ class _Book:
             # Isolated margin cannot debit the wallet's unposted free cash,
             # including when a gap overshoots the liquidation threshold.
             payout = max(0.0, collateral + price_pnl - borrow - fee - slip)
+            if forfeit:
+                payout = 0.0  # venue keeps the remaining collateral
             self.cash += payout
 
         realized = (price_pnl - borrow - fee - slip if self.cfg.mode is Mode.SPOT
@@ -462,50 +480,66 @@ def run_backtest(
     pending: dict[int, float] = {}
     first_tradeable = warmup
 
+    # Coverage of each coarse bar by each finer layer, computed once. A bar is
+    # refined by the FIRST (finest) layer that covers it completely.
+    layers = list(config.intrabar) if is_perp else []
+    layer_of = None
+    lo_idx: list[np.ndarray] = []
+    hi_idx: list[np.ndarray] = []
+    refined = unrefined = mismatched = 0
+    if layers:
+        span = INTERVAL_SECONDS[config.interval]
+        layer_of = np.full(n, -1, dtype="int64")
+        for k, lay in enumerate(layers):
+            a_ix = np.searchsorted(lay.ts, ts, side="left")
+            b_ix = np.searchsorted(lay.ts, ts + span, side="left")
+            lo_idx.append(a_ix)
+            hi_idx.append(b_ix)
+            full = (b_ix - a_ix) == span // lay.seconds
+            layer_of = np.where((layer_of < 0) & full, k, layer_of)
+
     for i in range(n):
         # -- 1. execute open-price fills before this bar starts accruing --
         if i in pending:
             _apply_target(book, pending.pop(i), op[i], ts[i], i, config)
 
-        # -- 2. accrue through this bar for the position held after OPEN --
+        # -- 2/3. accrue borrow fees and check liquidation ------------------
         # A close at OPEN owes no new interval; an entry at OPEN owes this one.
         # A fill_delay=0 entry happens later at CLOSE and starts accruing next bar.
         if is_perp and book.pos.is_open:
-            book.pos.accrued_borrow_fee += perps.accrue_borrow_fee(
-                config.costs, book.pos.side, book.pos.entry_notional, hpb,
-            )
-
-        # -- 3. liquidation check on this bar's range ----------------------
-        if is_perp and book.pos.is_open:
-            liq = perps.liquidation_price(
-                book.pos.entry_price,
-                book.pos.side,
-                book.pos.collateral,
-                book.pos.entry_notional,
-                book.pos.accrued_borrow_fee,
-                config.costs,
-            )
-            if perps.is_liquidated(book.pos.side, liq, lo[i], hi[i]):
-                # If the bar GAPPED through the level, the liquidation happens
-                # at roughly the open, not at a level that never traded. SOL has
-                # gapped >20% in a day; assuming the better price would flatter
-                # every leveraged result.
-                if not liq.in_domain:
-                    fill = cl[i]
-                elif book.pos.side is Side.LONG:
-                    fill = min(liq.price, op[i])
-                else:
-                    fill = max(liq.price, op[i])
-                book.close(fill, int(ts[i]), i, reason="liquidation")
-                book.liquidations += 1
-                # Re-entry semantics after a liquidation: the strategy is asked
-                # for a fresh target at step 4 of this same bar, so a strategy
-                # that still wants exposure re-enters on the next fill. That is
-                # deliberate -- a liquidation is not a signal, and suppressing
-                # re-entry would silently impose a cooldown the strategy never
-                # asked for. Model a cooldown inside the strategy if you want
-                # one. Any target queued by an EARLIER bar and not yet filled
-                # is left in place for the same reason.
+            layer_k = int(layer_of[i]) if layer_of is not None else -1
+            if layer_k >= 0:
+                lay = layers[layer_k]
+                a, b = int(lo_idx[layer_k][i]), int(hi_idx[layer_k][i])
+                liquidated, mismatch = _walk_fine_bar(
+                    book, config, lay, a, b, lo[i], hi[i], op[i], cl[i], i,
+                )
+                refined += 1
+                mismatched += int(mismatch)
+            else:
+                if layers:
+                    unrefined += 1
+                book.pos.accrued_borrow_fee += perps.accrue_borrow_fee(
+                    config.costs, book.pos.side, book.pos.entry_notional, hpb,
+                )
+                liq = perps.liquidation_price(
+                    book.pos.entry_price,
+                    book.pos.side,
+                    book.pos.collateral,
+                    book.pos.entry_notional,
+                    book.pos.accrued_borrow_fee,
+                    config.costs,
+                )
+                if perps.is_liquidated(book.pos.side, liq, lo[i], hi[i]):
+                    _liquidate(book, config, liq, op[i], cl[i], int(ts[i]), i)
+            # Re-entry semantics after a liquidation: the strategy is asked
+            # for a fresh target at step 4 of this same bar, so a strategy
+            # that still wants exposure re-enters on the next fill. That is
+            # deliberate -- a liquidation is not a signal, and suppressing
+            # re-entry would silently impose a cooldown the strategy never
+            # asked for. Model a cooldown inside the strategy if you want
+            # one. Any target queued by an EARLIER bar and not yet filled
+            # is left in place for the same reason.
 
         # -- 4. strategy decision, from data <= i only --------------------
         target: float | None = None
@@ -567,7 +601,94 @@ def run_backtest(
         first_tradeable_index=first_tradeable,
         mode=str(config.mode),
         leverage=config.leverage,
+        bars_refined=refined,
+        bars_unrefined=unrefined,
+        bars_range_mismatch=mismatched,
     )
+
+
+def _liquidate(book, config, liq, open_px, close_px, ts, index, *, fine_open=None, fine_close=None):
+    """Close the book at the liquidation fill, penalty applied adversely.
+
+    If the bar GAPPED through the level the fill is roughly the open, not a
+    level that never traded; SOL has gapped >20% in a day and assuming the
+    better price would flatter every leveraged result. A position already below
+    maintenance has no meaningful level, so it fills at the close.
+    """
+    o = open_px if fine_open is None else fine_open
+    c = close_px if fine_close is None else fine_close
+    side = book.pos.side
+    if not liq.in_domain:
+        fill = c
+    elif side is Side.LONG:
+        fill = min(liq.price, o)
+    else:
+        fill = max(liq.price, o)
+    pen = config.costs.liquidation_penalty_bps / 10_000.0
+    fill = fill * (1.0 - pen) if side is Side.LONG else fill * (1.0 + pen)
+    book.close(
+        fill, ts, index, reason="liquidation",
+        forfeit=config.costs.liquidation_forfeits_collateral,
+    )
+    book.liquidations += 1
+
+
+def _walk_fine_bar(book, config, lay, a, b, c_low, c_high, c_open, c_close, index):
+    """Accrue and check one coarse bar by walking its finer bars in order.
+
+    Returns (liquidated, range_mismatch). Fees accrue to the end of each fine
+    bar, so the liquidation price drifts toward spot exactly as time passes.
+    A cheap pre-screen skips the walk when even the END-of-bar liquidation
+    price (the most severe, since fees only accumulate) is not touched by the
+    widest of the coarse and fine ranges; it never changes the outcome.
+    """
+    costs = config.costs
+    pos = book.pos
+    side = pos.side
+    hours = lay.seconds / 3600.0
+    fine_low = float(lay.low[a:b].min())
+    fine_high = float(lay.high[a:b].max())
+    tol = 5e-4  # 5 bps: coarse and fine feeds round differently
+    mismatch = (c_low < fine_low * (1 - tol)) if side is Side.LONG else (c_high > fine_high * (1 + tol))
+    wide_low, wide_high = min(c_low, fine_low), max(c_high, fine_high)
+
+    n_fine = b - a
+    end_fee = pos.accrued_borrow_fee + perps.accrue_borrow_fee(
+        costs, side, pos.entry_notional, hours * n_fine,
+    )
+    liq_end = perps.liquidation_price(
+        pos.entry_price, side, pos.collateral, pos.entry_notional, end_fee, costs,
+    )
+    if not perps.is_liquidated(side, liq_end, wide_low, wide_high):
+        pos.accrued_borrow_fee = end_fee
+        return False, mismatch
+
+    for j in range(a, b):
+        pos.accrued_borrow_fee += perps.accrue_borrow_fee(
+            costs, side, pos.entry_notional, hours,
+        )
+        liq = perps.liquidation_price(
+            pos.entry_price, side, pos.collateral, pos.entry_notional,
+            pos.accrued_borrow_fee, costs,
+        )
+        if perps.is_liquidated(side, liq, float(lay.low[j]), float(lay.high[j])):
+            _liquidate(
+                book, config, liq, c_open, c_close, int(lay.ts[j]), index,
+                fine_open=float(lay.open[j]), fine_close=float(lay.close[j]),
+            )
+            return True, mismatch
+    # Fine path found nothing. If the coarse range reaches past the fine range,
+    # trust the more severe one: a daily low that no hourly bar shows is a data
+    # disagreement, and ignoring it would let the cleaner feed rescue the position.
+    if mismatch:
+        liq = perps.liquidation_price(
+            pos.entry_price, side, pos.collateral, pos.entry_notional,
+            pos.accrued_borrow_fee, costs,
+        )
+        if perps.is_liquidated(side, liq, c_low, c_high):
+            _liquidate(book, config, liq, c_open, c_close, int(lay.ts[b - 1]), index)
+            return True, mismatch
+    return False, mismatch
 
 
 def _apply_target(

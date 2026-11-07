@@ -24,6 +24,7 @@ from .buy_and_hold import BuyAndHold
 from .composite import COMBINE_MODES, Composite
 from .ma_crossover import MaCrossover
 from .rsi import RsiMeanReversion
+from .tiers import LevHigh, LevLow, LevMedium
 from .signals import (
     BollingerBreakout,
     BollingerReversion,
@@ -69,6 +70,10 @@ REGISTRY: dict[str, Callable[..., Any]] = {
     "vol_regime": VolRegimeSwitch,
     "atr_sized": AtrSizedTrend,
     "garch_voltarget": GarchVolTarget,
+    # Leverage tiers: a base strategy run as a perp position (core/leverage.py).
+    "lev_low": LevLow,
+    "lev_medium": LevMedium,
+    "lev_high": LevHigh,
 }
 
 # Taxonomy family per registry key, used by the sweep to reason about
@@ -112,6 +117,9 @@ FAMILY: dict[str, str] = {
     "garch_voltarget": "sma-gated",
     "obv_trend": "volume-flow",
     "voltarget": "sma-gated",
+    "lev_low": "leverage-tier",
+    "lev_medium": "leverage-tier",
+    "lev_high": "leverage-tier",
 }
 
 DEFAULT_SET = ("buy_and_hold", "ma_crossover", "rsi", "breakout")

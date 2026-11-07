@@ -323,6 +323,14 @@ class CostConfig:
     kink_slope_multiplier: float = 3.0
     # Protocol constant. Distinct from the user-facing leverage cap.
     max_lev_constant: float = 500.0
+    # Liquidation is a forced market close, not a fill at the quoted level. The
+    # fill price moves ADVERSELY by this many bps from the liquidation price
+    # (down for a long, up for a short). Default 0 keeps legacy runs unchanged;
+    # the leverage-tier presets set a nonzero value.
+    liquidation_penalty_bps: float = 0.0
+    # The venue forfeits all REMAINING collateral on liquidation (the maintenance
+    # margin is not returned). False keeps the legacy payout of whatever is left.
+    liquidation_forfeits_collateral: bool = False
 
     def __post_init__(self) -> None:
         self.validate()
@@ -331,12 +339,17 @@ class CostConfig:
         """Refuse unusable costs before they can subsidize or poison a run."""
         for name in ("fee_bps", "slippage_bps", "perp_base_fee_bps",
                      "max_hourly_rate_bps_long", "max_hourly_rate_bps_short",
-                     "min_hourly_rate_bps", "kink_slope_multiplier"):
+                     "min_hourly_rate_bps", "kink_slope_multiplier",
+                     "liquidation_penalty_bps"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value) or value < 0:
                 raise ValueError(f"{name} must be finite and nonnegative")
         if self.slippage_bps >= 10_000:
             raise ValueError("slippage_bps must be below 10000")
+        if self.liquidation_penalty_bps >= 10_000:
+            raise ValueError("liquidation_penalty_bps must be below 10000")
+        if not isinstance(self.liquidation_forfeits_collateral, bool):
+            raise ValueError("liquidation_forfeits_collateral must be boolean")
         if not isinstance(self.max_lev_constant, Real) or isinstance(self.max_lev_constant, bool) or not math.isfinite(self.max_lev_constant) or self.max_lev_constant <= 0:
             raise ValueError("max_lev_constant must be finite and positive")
         for name in ("utilization", "kink_utilization"):
@@ -350,6 +363,61 @@ class CostConfig:
     def maintenance_margin_fraction(self) -> float:
         """size / max_lev expressed as a fraction of notional (0.002)."""
         return 1.0 / self.max_lev_constant
+
+
+class IntrabarLayer:
+    """Finer bars used to check a coarse bar for a liquidation hidden inside it.
+
+    A daily bar's low and high say THAT the range was visited, not WHEN. Walking
+    the finer bars in order recovers the order of events, so borrow fees accrue
+    to the moment of the touch and the fill uses the finer bar's open when the
+    market gapped through the level. Layers may have gaps (SOL_1h has two);
+    a coarse bar is refined only when the layer covers it completely, and every
+    other bar falls back to the coarse range, which is never less severe.
+    """
+
+    __slots__ = ("interval", "ts", "open", "high", "low", "close")
+
+    def __init__(self, interval: str, arrays: Mapping[str, Any]) -> None:
+        if interval not in INTERVAL_SECONDS:
+            raise ValueError("unsupported intrabar interval")
+        cols: dict[str, np.ndarray] = {}
+        for name in ("ts", "open", "high", "low", "close"):
+            if name not in arrays:
+                raise ValueError(f"intrabar arrays missing {name}")
+            raw = np.asarray(arrays[name])
+            if raw.ndim != 1 or raw.dtype.kind not in "iuf":
+                raise ValueError(f"intrabar {name} must be a one-dimensional numeric series")
+            values = raw.astype("float64", copy=False)
+            if not np.all(np.isfinite(values)):
+                raise ValueError(f"intrabar {name} contains non-finite values")
+            cols[name] = values
+        n = cols["ts"].size
+        if any(v.size != n for v in cols.values()):
+            raise ValueError("intrabar series lengths disagree")
+        ts = cols["ts"]
+        if n > 1 and np.any(np.diff(ts) <= 0):
+            raise ValueError("intrabar timestamps must be strictly ascending")
+        if n and (np.any(np.abs(ts) > 10_000_000_000) or np.any(ts != np.floor(ts))):
+            raise ValueError("intrabar timestamps must be integral UTC epoch seconds")
+        for name in ("open", "high", "low", "close"):
+            if np.any(cols[name] <= 0):
+                raise ValueError(f"intrabar {name} must be positive")
+        if np.any(cols["high"] < cols["low"]) or np.any(
+            cols["high"] < np.maximum(cols["open"], cols["close"]) - 1e-9
+        ) or np.any(cols["low"] > np.minimum(cols["open"], cols["close"]) + 1e-9):
+            raise ValueError("intrabar high/low do not contain the open and close")
+        self.interval = interval
+        self.ts = ts.astype("int64")
+        self.open, self.high = cols["open"], cols["high"]
+        self.low, self.close = cols["low"], cols["close"]
+        for arr in (self.ts, self.open, self.high, self.low, self.close):
+            arr.setflags(write=False)
+
+    @property
+    def seconds(self) -> int:
+        """Length of one fine bar in seconds."""
+        return INTERVAL_SECONDS[self.interval]
 
 
 @dataclass

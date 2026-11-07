@@ -533,6 +533,14 @@ figure is transcribed by hand.
 
 ---
 
+## Leverage tiers
+
+Not a ranking of signals: the same 25 singles re-run at 2x, 5x and 20x on SOL daily CPCV. Out-of-sample
+median Sharpe -0.45 / -0.49 / -1.57 and P(ruin) 21% / 74% / 95%. Leverage does not rescue a losing
+signal; see `research/LEVERAGE-TIERS.md`.
+
+---
+
 # List 1b — the same singles under a single 70/30 split (retained as contrast)
 
 **Superseded by List 1.** Kept because the disagreement between the two methods is the lesson:

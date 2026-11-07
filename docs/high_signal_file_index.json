@@ -105,14 +105,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "The bar loop. Owns the per-bar ordering that makes lookahead impossible",
-      "lines": 628
+      "lines": 749
     },
     {
       "path": "backtester/core/types.py",
       "component": "backtester",
       "kind": "python",
       "summary": "BarWindow (the structural lookahead guard), CostConfig, RunManifest",
-      "lines": 384
+      "lines": 452
     },
     {
       "path": "backtester/core/indicators.py",
@@ -189,7 +189,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Combinatorial purged cross-validation",
-      "lines": 330
+      "lines": 333
     },
     {
       "path": "backtester/core/cointegration.py",
@@ -238,7 +238,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "REGISTRY (25 strategies), FAMILY taxonomy, build()",
-      "lines": 150
+      "lines": 158
     },
     {
       "path": "backtester/core/strategies/signals.py",
@@ -350,14 +350,14 @@
       "component": "research",
       "kind": "markdown",
       "summary": "The strategy survey",
-      "lines": 785
+      "lines": 792
     },
     {
       "path": "research/RANKED_LISTS.md",
       "component": "research",
       "kind": "markdown",
       "summary": "Ranked results",
-      "lines": 1068
+      "lines": 1076
     },
     {
       "path": "research/TOP_COINS.md",
@@ -774,7 +774,7 @@
       "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 329
+      "lines": 331
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",

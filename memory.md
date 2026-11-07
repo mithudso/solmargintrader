@@ -1,6 +1,6 @@
 # Work continuation
 
-Version: 15
+Version: 16
 Delta: soltui read-only wallet discovery (PR B): Settings addresses, key-source row, portfolio.scan, Wallet tab, wallet (live) P&L section.
 
 ## v1 - 2026-11-06
@@ -158,7 +158,19 @@ Decisions: backtest and paper windows are cut from the data's own dates, so a "3
 
 Not built (later, separately gated): swaps, signing, the live-run button, any private-key field.
 
-## v15 - 2026-11-07
+## v15 - 2026-11-07 (leverage tiers, PR 1)
+
+Target: low/medium/high margin tiers (2x/5x/20x) as Jupiter-Perps wrappers over the existing strategies, with intrabar liquidation; then the reliable-trigger miner (PR 2). Simulation only. Stele MCP was unreachable; facts below are not yet in the graph.
+
+Completed: `IntrabarLayer` and `EngineConfig.intrabar` (finer 1m/1h bars walked inside each held bar; daily low/high still checked, never less severe); `CostConfig.liquidation_penalty_bps` and `liquidation_forfeits_collateral`; `backtester/core/leverage.py`; registered `lev_low`, `lev_medium`, `lev_high` with cards; `BlockResult.liquidations`; `research/leverage_tiers.py` and `research/LEVERAGE-TIERS.md`; `backtester/tests/test_intrabar_liquidation.py` (8 tests).
+
+Result (SOL daily, CPCV, 514 paths): P(ruin) 1.2% / 21.0% / 73.7% / 95.3% at 1x / 2x / 5x / 20x; median OOS Sharpe -0.39 / -0.45 / -0.49 / -1.57. High leverage is ruinous.
+
+Facts to keep: the engine already checked bar low/high, so intrabar layers refine ordering and fee timing and catch daily/hourly feed disagreements; SOL_1h covers only 366 days and has gaps (engine refuses a gapped series, so tiers are daily-only); decide/signal_redundancy/sweep_untested skip family leverage-tier.
+
+Remaining: PR 2 (research/triggers.py, RELIABLE_SIGNALS.md, trigger strategy); follow-ups: soltui Triggers view, live trigger alerts through the executor.
+
+## v16 - 2026-11-07
 
 Target: PR B of the read-only request (prompts.md v8): wallet discovery. Branch soltui-wallet, worktree /Users/mitch/dev/smt-wt-wallet. PR A (presets, net %, P&L tab) merged as d402b27.
 

@@ -24,7 +24,7 @@ def main() -> int:
     tested_long = set(HORIZONS["long"]["params"].keys())
     
     all_tested = tested_short | tested_medium | tested_long
-    untested_names = [name for name in REGISTRY if name not in all_tested]
+    untested_names = [name for name in REGISTRY if name not in all_tested and not name.startswith("lev_")]
     
     print("Untested strategies identified:", untested_names)
     
