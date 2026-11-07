@@ -122,8 +122,8 @@ This component has its own dependencies and lockfile. Offline pytest excludes th
 Run all of these before claiming a change works:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 844 tests
-python3 -m unittest discover -s soltui/tests -t .       # 789 tests (~610s)
+python3 -m unittest discover -s backtester/tests -t .   # 840 tests
+python3 -m unittest discover -s soltui/tests -t .       # 798 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 351 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE

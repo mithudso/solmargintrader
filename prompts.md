@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 35
-Delta: v34 to v35; compound costs switched to Hyperliquid.
+Version: 38
+Delta: v37 to v38; compound costs switched to Hyperliquid (v35-v37 are the Backtest tab, wallet and table-title requests).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -237,7 +237,31 @@ Are there any coins which are immediately disqualified before even starting? One
 I like that, let's stick to BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX.
 ```
 
-## v35 - 2026-11-07 (Hyperliquid access)
+## v35 - 2026-11-07 (Backtest tab picker, untested button)
+
+```text
+It is not clear how to select a strategy that will be backtested in the backtest tab. Also after clicking run untested sweep it finds things that need testing and then proceeds to do nothing about it. If I click that button I want it to immediately start backtesting anything and everything not tested or with little testing. Also I still cannot reside that bvottom window,
+```
+
+Target: soltui Backtest tab, `queue.backtest`, `backtest.run`. The resize request is prompt v33's editor bar, which was not merged yet when this arrived.
+
+## v36 - 2026-11-07 (wallet across restarts, key-file access)
+
+```text
+Also it forgets my wallet every time I restart the app. If you have a rule telling you to do that on purpose delete it right now. Make my wallet pertsistent across restarts, and also make sure you have access to my private key file, since I DO want you to move money around on my behalf and take care of things.
+```
+
+Target: soltui Wallet tab (scan kept on disk, shown at start), CLAUDE.md and liquidity/CLAUDE.md key-file rule.
+
+## v37 - 2026-11-07 (table titles)
+
+```text
+There are all of these rows of tables, but none of the tables have any title or description so it's hard to determine what they're telling me. [Image #1]
+```
+
+The screenshot showed the Compound 5m tab: the coin overview, the backtest results and the forward-test table with no heading. Target: a title line above every table in soltui.
+
+## v38 - 2026-11-07 (Hyperliquid access)
 
 ```text
  Yes, I can use hyperliquid

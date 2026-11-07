@@ -217,7 +217,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Asset universe selection, with the survivorship-bias refusal",
-      "lines": 319
+      "lines": 312
     },
     {
       "path": "backtester/core/report.py",
@@ -245,14 +245,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 1804
+      "lines": 1800
     },
     {
       "path": "backtester/core/compound.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 430
+      "lines": 408
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -364,7 +364,7 @@
       "component": "research",
       "kind": "python",
       "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 241
+      "lines": 248
     },
     {
       "path": "research/geometry.py",
@@ -726,7 +726,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3432
+      "lines": 3550
     },
     {
       "path": "soltui/signals.py",
@@ -782,7 +782,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 1789
+      "lines": 1788
     },
     {
       "path": "soltui/liquidity.py",
@@ -942,7 +942,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 172
+      "lines": 174
     },
     {
       "path": "AGENTS.md",
@@ -1060,7 +1060,7 @@
       "component": "liquidity",
       "kind": "markdown",
       "summary": "Owner's live-operation authorization and its limits",
-      "lines": 64
+      "lines": 65
     },
     {
       "path": "liquidity/STATE_FILES.md",
@@ -1235,7 +1235,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 386
+      "lines": 358
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",

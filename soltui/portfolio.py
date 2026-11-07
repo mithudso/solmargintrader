@@ -47,6 +47,38 @@ def snapshots_path() -> Path:
     return portfolio_dir() / SNAPSHOT_FILE
 
 
+LAST_SCAN_FILE = "last-scan.json"
+
+
+def last_scan_path() -> Path:
+    return portfolio_dir() / LAST_SCAN_FILE
+
+
+def save_last_scan(result: dict[str, Any], chain: str) -> Path:
+    """Keep the newest scan, so the Wallet tab shows it the moment the console starts instead of an
+    empty table until someone presses Scan. Owner-only, created that way: it lists the holdings."""
+    target = last_scan_path()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp = target.with_suffix(".tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        json.dump({"chain": chain, "saved_at": time.time(), "result": result}, fh)
+    os.replace(tmp, target)
+    os.chmod(target, 0o600)
+    return target
+
+
+def load_last_scan() -> dict[str, Any] | None:
+    """{"chain", "saved_at", "result"} of the newest scan, or None (none yet, or a torn file)."""
+    try:
+        data = json.loads(last_scan_path().read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict) or not isinstance(data.get("result"), dict):
+        return None
+    return data
+
+
 def make_fetcher():
     # Looked up on the module (not imported by name) so a test can substitute the fetcher class.
     return wallet_mod.HttpFetcher(budget_s=FETCH_BUDGET_S)

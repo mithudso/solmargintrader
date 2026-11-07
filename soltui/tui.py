@@ -27,6 +27,7 @@ from rich.markup import escape
 from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.css.query import NoMatches
 from textual.message import Message
 from textual.widget import Widget
 from textual.containers import Horizontal, Vertical, VerticalScroll
@@ -137,7 +138,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#btn-reset-signals": "signals.reset",
     "#btn-cancel": "backtest.cancel",
     "#btn-run": "backtest.run",
-    "#btn-run-untested": "backtest.untested_sweep",
+    "#btn-run-untested": "queue.backtest",
     "#btn-bt-selected": "queue.backtest",
     "#btn-bt-untested": "queue.backtest",
     "#btn-bt-all": "queue.backtest",
@@ -553,6 +554,12 @@ class SolTuiApp(App):
     #compound-call { padding: 0 1; border: round $accent; }
     #compound-detail { color: $text-muted; padding: 0 1; }
     #compound-autopilot-status { padding: 0 1; border: round $success; }
+    #backtest-pick { width: 44; }
+    #backtest-roster { color: $text-muted; padding: 0 1; }
+    #backtest-bg-status { padding: 0 1; height: auto; }
+    /* Every table gets a title line: bold, in the accent colour, with a space above it so a page of
+       tables reads as sections rather than one long grid. */
+    .table-title { color: $accent; margin-top: 1; padding: 0 1; }
     """
     BINDINGS = [
         Binding("f1", "show_help", "Help / glossary", priority=True),
@@ -571,7 +578,7 @@ class SolTuiApp(App):
     EDITOR_HEIGHT = 16
 
     def __init__(self, settings: Settings | None = None, *, ui_state_path: Path | None = None,
-                 ensure_autopilot: bool = False) -> None:
+                 ensure_autopilot: bool = False, refresh_wallet: bool = False) -> None:
         super().__init__()
         # Where the editor's height and open/closed state persist. None (every test) keeps them
         # in memory, so no test reads or writes the owner's real layout.
@@ -579,6 +586,9 @@ class SolTuiApp(App):
         # The real console starts any coin's training loop that autopilot wants running; a test
         # app must never spawn background processes.
         self._ensure_autopilot = ensure_autopilot
+        # The real console shows the last kept wallet scan at start and re-scans in the background;
+        # a test app must neither read the owner's kept scan nor reach the network.
+        self._refresh_wallet = refresh_wallet
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
         # periodic table refresh does not reload an identical preview and reset its scroll.
@@ -819,6 +829,10 @@ class SolTuiApp(App):
                 "Backtest tab will sweep.",
                 classes="hint",
             )
+            yield Static("[b]Available strategies[/b] (left): every registered strategy, whether and when it "
+                         "was backtested, and its card-preset result. [b]Roster[/b] (right): what Run backtest "
+                         "on the Backtest tab tests. Select a row to see its source in the editor below.",
+                         classes="table-title")
             with Horizontal():
                 yield GlossaryTable(id="available-table")
                 yield GlossaryTable(id="roster-table")
@@ -867,8 +881,11 @@ class SolTuiApp(App):
                 "backtester/core/indicators.py:",
                 classes="hint",
             )
+            yield Static("[b]Signal reference[/b]: each signal's equation as implemented and its family.",
+                         classes="table-title")
             yield GlossaryTable(id="signals-table")
-            yield Static("\nFamily behaviour — when each kind fails:", classes="hint")
+            yield Static("[b]Family behaviour[/b]: what each kind of strategy is and when it fails.",
+                         classes="table-title")
             yield GlossaryTable(id="families-table")
 
     def _compound_pane(self) -> ComposeResult:
@@ -894,6 +911,7 @@ class SolTuiApp(App):
                 yield Button("Autopilot: on", variant="success", id="compound-autopilot")
                 yield Static("", id="compound-autopilot-status")
             yield Static("Press Signal now for the live call.", id="compound-call")
+            yield Static("", id="compound-table-title", classes="table-title")
             yield CompoundTable(id="compound-table")
             yield Static("", id="compound-detail")
             with Horizontal(classes="form-row"):
@@ -921,7 +939,9 @@ class SolTuiApp(App):
                 yield Button("Backtest all coins", variant="warning", id="compound-backtest-all")
                 yield Button("Start unattended: all coins", variant="success", id="compound-unattended-all")
                 yield Button("Stop unattended: all coins", variant="error", id="compound-unattended-stop-all")
-            yield Static("Every coin at a glance (each has its own numbers):", classes="hint")
+            yield Static("[b]Every coin at a glance[/b]: its own settings, cached data, latest backtest verdict "
+                         "and hit rate, forward-test calls, hit rate and paper dollars, and whether its trainer "
+                         "runs. Select a coin to see it in full in the editor below.", classes="table-title")
             yield GlossaryTable(id="compound-overview")
             yield Static("", id="compound-status")
             yield Static(
@@ -931,24 +951,38 @@ class SolTuiApp(App):
             )
             yield Static("", id="compound-bt-status")
             yield Static("", id="compound-relations")
+            yield Static("", id="compound-results-title", classes="table-title")
             yield GlossaryTable(id="compound-results")
+            yield Static("", id="compound-forward-title", classes="table-title")
             yield Static("", id="compound-fwd-summary")
             yield GlossaryTable(id="compound-forward")
 
+    ROSTER_PICK = "__roster__"
+
     def _backtest_pane(self) -> ComposeResult:
-        """Run a CPCV sweep over the roster and show the distribution."""
+        """Run a CPCV sweep over the roster (or one roster strategy) and show the distribution."""
         with Vertical():
             yield Static(
-                "CPCV: each strategy is evaluated across C(blocks,k) regime-mixed "
-                "paths, not one split. Read IQR and % paths positive, not just the "
-                "median.",
+                "Pick what Run backtest tests: the whole roster, or one strategy from it. The roster is "
+                "the right-hand list on the Strategies tab (Add selected / Remove selected change it). "
+                "CPCV evaluates each strategy across C(blocks,k) regime-mixed paths, not one split; read "
+                "IQR and % paths positive, not just the median.",
                 classes="hint",
             )
             with Horizontal(classes="form-row"):
+                yield Label("Strategy to backtest:")
+                yield Select([("Whole roster", self.ROSTER_PICK)], value=self.ROSTER_PICK,
+                             allow_blank=False, id="backtest-pick")
+                yield Static("", id="backtest-roster")
+            with Horizontal(classes="form-row"):
                 yield Button("Run backtest (r)", variant="primary", id="btn-run")
-                yield Button("Run Untested Sweep", variant="warning", id="btn-run-untested")
+                yield Button("Backtest untested + little-tested", variant="warning", id="btn-run-untested")
                 yield Button("Cancel (c)", variant="error", id="btn-cancel")
                 yield Static("", id="backtest-status")
+            yield Static("", id="backtest-bg-status")
+            yield Static("[b]CPCV results[/b], latest Run backtest: one row per strategy, best median Sharpe "
+                         "first. Sharpe, net return and trades are medians across the held-out paths; IQR is "
+                         "their spread and % paths + the share that made money.", classes="table-title")
             yield GlossaryTable(id="results-table")
 
     def _live_run_pane(self) -> ComposeResult:
@@ -996,6 +1030,8 @@ class SolTuiApp(App):
                 yield Button("To end", id="btn-step-end")
                 yield Button("Reset", id="btn-paper-reset")
             yield Static("No dry run started.", id="exec-summary")
+            yield Static("[b]Dry-run fills[/b]: every simulated fill so far, newest last: bar, time, side, "
+                         "reason, price, units, cost and equity after. Nothing here was sent to a venue.", classes="table-title")
             yield GlossaryTable(id="fills-table")
 
     # -- lifecycle -------------------------------------------------------
@@ -1040,6 +1076,7 @@ class SolTuiApp(App):
         self._refresh_exec_choices()
         self._refresh_key_sources()
         self._refresh_portfolio_notice(toast=True)
+        self._wallet_restore()
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self._refresh_liquidity(force=True)
@@ -1122,6 +1159,7 @@ class SolTuiApp(App):
         """
         if not self.query("#queue-status"):
             return
+        self._show_bg_progress()
         if _mtime(bgqueue.RESULTS_PATH) != self._queue_mtime:
             self._refresh_queue()
             self._refresh_strategy_history()
@@ -1267,9 +1305,17 @@ class SolTuiApp(App):
             t.add_row(e["label"], e["family"], str(e["warmup"]), key=e["label"])
 
     def _refresh_exec_choices(self) -> None:
-        """Keep the Execute strategy picker in sync with the roster."""
+        """Keep the Execute and Backtest strategy pickers in sync with the roster."""
         sel = self.query_one("#exec-strategy", Select)
         labels = [e["label"] for e in self._call("roster.list")["result"]["entries"]]
+        pick = self.query_one("#backtest-pick", Select)
+        keep = pick.value
+        pick.set_options([(f"Whole roster ({len(labels)} strategies)", self.ROSTER_PICK)]
+                         + [(label, label) for label in labels])
+        pick.value = keep if keep in labels else self.ROSTER_PICK
+        shown = ", ".join(labels[:8]) + (f" +{len(labels) - 8} more" if len(labels) > 8 else "")
+        self.query_one("#backtest-roster", Static).update(
+            Text(f"roster: {shown}" if labels else "roster is empty: add strategies on the Strategies tab"))
         sel.set_options([(label, label) for label in labels]
                         + [(f"Top 5 {p['title']}", p["value"]) for p in self._presets])
 
@@ -1541,7 +1587,23 @@ class SolTuiApp(App):
         row = table.cursor_row if table.row_count else 0
         return self._COMPOUND_IDS[max(0, min(row, len(self._COMPOUND_IDS) - 1))]
 
+    def _compound_titles(self) -> None:
+        coin = self._compound_coin
+        self.query_one("#compound-table-title", Static).update(
+            f"[b]Metrics and gates for {coin}[/b]: on/off, family, weight and parameters; the live score "
+            "from the last Signal now; the learned hit rate and weight; where tuning would move it; its "
+            "backtest and forward hit rate. Double-click a row or press Space to switch it.")
+        self.query_one("#compound-results-title", Static).update(
+            f"[b]Backtest results for {coin}[/b], latest run: the compound and each enabled metric alone, "
+            "scored on the held-out last 30% of bars (OOS). Hit = next-bar direction; return and Sharpe are "
+            "the engine's P&L after fees at the set leverage.")
+        self.query_one("#compound-forward-title", Static).update(
+            f"[b]Forward test for {coin}[/b], most recent paper calls: one row per closed 5m bar with the "
+            "call, composite score, regime, price, the next bar's move in bps, whether it hit, and any gate "
+            "that forced FLAT. No order was placed.")
+
     def _compound_render_table(self) -> None:
+        self._compound_titles()
         table = self.query_one("#compound-table", GlossaryTable)
         keep = table.cursor_row
         table.clear()
@@ -1853,8 +1915,17 @@ class SolTuiApp(App):
             self._compound_forward()
 
     def _compound_auto_tick(self) -> None:
-        """Every 20 s: show the unattended run's state; take an in-app forward tick if Auto is on."""
-        self._compound_show_unattended()
+        """Every 20 s: show the unattended run's state; take an in-app forward tick if Auto is on.
+
+        Defensive like `_tick`: the timer can fire while the app is tearing down, when `query_one`
+        raises NoMatches (a slow CI runner hit exactly that).
+        """
+        if not self.query("#compound-unattended"):
+            return
+        try:
+            self._compound_show_unattended()
+        except NoMatches:
+            return
         if not getattr(self, "_compound_auto", False):
             return
         now = time.time()
@@ -1994,14 +2065,17 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#btn-run")
     def _run(self) -> None:
-        """Start a CPCV sweep over the roster (the work is the `backtest.run` command)."""
-        self.query_one("#backtest-status", Static).update("running…")
-        self._sweep_worker()
+        """Start a CPCV sweep over the picked strategy or the whole roster (`backtest.run`)."""
+        pick = self.query_one("#backtest-pick", Select).value
+        labels = [pick] if isinstance(pick, str) and pick != self.ROSTER_PICK else None
+        self.query_one("#backtest-status", Static).update(
+            f"running {labels[0]}…" if labels else "running the whole roster…")
+        self._sweep_worker(labels)
 
     @work(thread=True, group="sweep")
-    def _sweep_worker(self) -> None:
+    def _sweep_worker(self, labels: list[str] | None = None) -> None:
         """Thread only so the UI stays live; the sweep itself is the registry handler."""
-        env = self._call("backtest.run")
+        env = self._call("backtest.run", {"labels": labels} if labels else {})
         self.call_from_thread(self._render_results, env)
 
     def _render_results(self, env: dict[str, Any]) -> None:
@@ -2023,16 +2097,33 @@ class SolTuiApp(App):
                                       if best else ""))
 
     @on(Button.Pressed, "#btn-run-untested")
-    @work(thread=True)
     def _run_untested_sweep(self) -> None:
-        """Run the untested sweep (the `backtest.untested_sweep` command) off the UI thread."""
+        """Start backtesting, at once and in the background, every strategy never tested or with
+        little testing (`queue.backtest`, scope undertested).
+
+        It used to run research/sweep_untested.py, which listed the untested strategies and then
+        backtested a fixed handful on one horizon, so the button seemed to find work and do none.
+        """
         status = self.query_one("#backtest-status", Static)
-        self.call_from_thread(status.update, "running untested sweep...")
-        env = self._call("backtest.untested_sweep")
+        env = self._call("queue.backtest", {"scope": "undertested"})
+        if not env["ok"]:
+            status.update(Text(self._msg(env), style="red"))
+            return
+        r = env["result"]
+        names = r.get("strategies") or []
+        shown = ", ".join(names[:12]) + (f" +{len(names) - 12} more" if len(names) > 12 else "")
+        status.update(Text(r["message"] + (f": {shown}" if shown and r["started"] else "")
+                           + (" · progress below and on the Queue tab" if r["started"] else "")))
+        self._show_bg_progress()
+        self._refresh_strategy_history()
+
+    def _show_bg_progress(self) -> None:
+        line = self.query("#backtest-bg-status")
+        if not line:
+            return
+        env = self._call("queue.progress", quiet=True)
         if env["ok"]:
-            self.call_from_thread(status.update, f"untested sweep done.\n{env['result']['output']}")
-        else:
-            self.call_from_thread(status.update, f"[red]{self._msg(env)}[/]")
+            line.first(Static).update(Text("Background backtests: " + env["result"]["summary"]))
 
     # -- execute (dry run) -----------------------------------------------
 
@@ -2179,6 +2270,8 @@ class SolTuiApp(App):
                 classes="hint",
             )
             yield Static("", id="top5-headline")
+            yield Static("[b]Top 5 configurations on SOL[/b]: each one's CPCV median Sharpe, spread, share "
+                         "of paths positive, median net return, trades and path count.", classes="table-title")
             configs = GlossaryTable(id="top5-table")
             configs.add_columns("#", "configuration", "horizon", "signals",
                                 "median Sharpe", "IQR", "% paths +",
@@ -2189,7 +2282,7 @@ class SolTuiApp(App):
                 "[b]Transfer test — the same configurations off SOL[/b]  "
                 "(fitted on SOL; a recommendation that only works there is "
                 "an overfit, and two of the five go negative off-asset)",
-                classes="hint",
+                classes="table-title",
             )
             transfers = GlossaryTable(id="top5-transfers")
             transfers.add_columns("#", "configuration", "asset",
@@ -2365,14 +2458,32 @@ class SolTuiApp(App):
                 yield Static("", id="wallet-status")
             yield Static("", id="portfolio-notice")
             yield Static("", id="wallet-summary")
-            yield Static("[b]Holdings[/b]", classes="hint")
+            yield Static("[b]Holdings[/b]", classes="table-title")
             holdings = GlossaryTable(id="wallet-holdings")
             holdings.add_columns("chain", "asset", "amount", "price $", "value $ (wallet (live))", "status")
             yield holdings
-            yield Static("[b]Contracts and accounts each holding lives in[/b]", classes="hint")
+            yield Static("[b]Contracts and accounts each holding lives in[/b]", classes="table-title")
             contracts = GlossaryTable(id="wallet-contracts")
             contracts.add_columns("chain", "holding", "kind", "address", "program", "explorer")
             yield contracts
+
+    def _wallet_restore(self) -> None:
+        """Real console only: show the newest kept scan at once, then refresh it in the background."""
+        if not self._refresh_wallet:
+            return
+        env = self._call("portfolio.last", quiet=True)
+        last = env["result"] if env["ok"] else {}
+        if last.get("result"):
+            chain = last.get("chain") or "all"
+            select = self.query_one("#wallet-chain", Select)
+            if chain in [value for _, value in select._options]:
+                select.value = chain
+            self._render_wallet({"ok": True, "result": last["result"]})
+            self.query_one("#wallet-status", Static).update(
+                f"last scan {last['result'].get('scanned_at', '?')} (kept from before the restart)"
+                + "; refreshing…")
+        if self.settings.solana_address or self.settings.base_address:
+            self._wallet_worker()
 
     @on(Button.Pressed, "#wallet-scan")
     def _wallet_scan(self) -> None:
@@ -2519,6 +2630,8 @@ class SolTuiApp(App):
             with Horizontal(classes="form-row"):
                 yield Button("Analyze", id="analyze-run", variant="primary")
             yield Static("", id="analyze-headline")
+            yield Static("[b]What each strategy would do now[/b]: its action at the chosen bar, what it holds "
+                         "versus wants, and its warm-up against the bars available.", classes="table-title")
             table = GlossaryTable(id="analyze-table")
             table.add_columns("strategy", "family", "action", "holding -> wants",
                               "warmup", "bars")
@@ -2568,13 +2681,14 @@ class SolTuiApp(App):
             with Horizontal(classes="form-row"):
                 yield Button("Reload", id="cumulative-reload", variant="primary")
             yield Static("", id="cumulative-headline")
+            yield Static("[b]Per results file[/b]: how many configurations are rankable, below the floor, "
+                         "positive and made money, with the median Sharpe and the best rankable row.", classes="table-title")
             per_file = GlossaryTable(id="cumulative-table")
             per_file.add_columns("file", "rankable", "below floor", "positive",
                                  "made money", "median Sharpe", "paths", "best (rankable)",
                                  "best backtest median net %")
             yield per_file
-            yield Static("[b]Below the floor — what a naive aggregate would rank first[/b]",
-                         classes="hint")
+            yield Static("[b]Below the floor — what a naive aggregate would rank first[/b]", classes="table-title")
             dropped = GlossaryTable(id="cumulative-dropped")
             dropped.add_columns("file", "configuration", "claims Sharpe", "trades", "paths")
             yield dropped
@@ -2642,7 +2756,7 @@ class SolTuiApp(App):
                 yield Button("Fetch missing data", id="queue-fetch")
             yield Static("", id="queue-data")
             yield Static("", id="queue-status")
-            yield Static("[b]Ranked — cleared the evidence floor[/b]", classes="hint")
+            yield Static("[b]Ranked — cleared the evidence floor[/b]", classes="table-title")
             ranked = GlossaryTable(id="queue-table")
             ranked.add_columns(
                 "configuration", "family", "median Sharpe", "IQR",
@@ -2650,7 +2764,7 @@ class SolTuiApp(App):
             )
             yield ranked
             yield Static(
-                "[b]Below the floor — listed, never ranked[/b]", classes="hint"
+                "[b]Below the floor — listed, never ranked[/b]", classes="table-title"
             )
             floor = GlossaryTable(id="queue-floor")
             floor.add_columns("configuration", "family", "trades", "why")
@@ -2772,22 +2886,22 @@ class SolTuiApp(App):
                 yield Button("Compute P&L", variant="primary", id="pnl-run")
                 yield Static("", id="pnl-status")
             yield Static("", id="pnl-summary")
-            yield Static("[b]By strategy[/b]", classes="hint")
+            yield Static("[b]By strategy[/b]", classes="table-title")
             by_strategy = GlossaryTable(id="pnl-strategies")
             by_strategy.add_columns("source", "strategy", "asset", "net $", "net % (source named)",
                                     "gross $", "costs $", "realized $", "unrealized $",
                                     "contribution (source named)")
             yield by_strategy
-            yield Static("[b]By asset[/b]", classes="hint")
+            yield Static("[b]By asset[/b]", classes="table-title")
             by_asset = GlossaryTable(id="pnl-assets")
             by_asset.add_columns("source", "asset", "runs", "net $", "net % (source named)",
                                  "contribution (source named)")
             yield by_asset
-            yield Static("[b]Best and worst periods[/b]", classes="hint")
+            yield Static("[b]Best and worst periods[/b]", classes="table-title")
             periods = GlossaryTable(id="pnl-periods")
             periods.add_columns("source", "period", "best", "worst")
             yield periods
-            yield Static("[b]Daily P&L, cumulative and drawdown[/b]", classes="hint")
+            yield Static("[b]Daily P&L, cumulative and drawdown[/b]", classes="table-title")
             daily = GlossaryTable(id="pnl-daily")
             daily.add_columns("source", "date", "P&L $", "cumulative $",
                               "cumulative % (source named)", "drawdown (source named)")
@@ -2916,14 +3030,14 @@ class SolTuiApp(App):
                 yield Button("Kill", variant="error", id="liq-kill")
                 yield Button("Resume", variant="success", id="liq-resume")
             yield Static("", id="liq-status", classes="hint")
-            yield Static("[b]Positions[/b]", classes="hint")
+            yield Static("[b]Positions[/b]", classes="table-title")
             yield GlossaryTable(id="liq-positions")
-            yield Static("[b]Scout[/b] — top pools by modelled net APR", classes="hint")
+            yield Static("[b]Scout[/b] — top pools by modelled net APR", classes="table-title")
             yield Static("", id="liq-scout-note", classes="hint")
             yield GlossaryTable(id="liq-scout")
-            yield Static("[b]Experiments[/b] — arms side by side", classes="hint")
+            yield Static("[b]Experiments[/b] — arms side by side", classes="table-title")
             yield GlossaryTable(id="liq-experiments")
-            yield Static("[b]Recent actions[/b] — newest first", classes="hint")
+            yield Static("[b]Recent actions[/b] — newest first", classes="table-title")
             yield GlossaryTable(id="liq-actions")
 
     def _liq_tick(self) -> None:
@@ -3041,14 +3155,15 @@ class SolTuiApp(App):
                 "console. docs/SCRIPTS.md carries the full options.",
                 classes="hint",
             )
+            yield Static("[b]Research drivers[/b]: the script, the question it answers and what it "
+                         "established.", classes="table-title")
             table = GlossaryTable(id="research-table")
             table.add_columns("driver", "answers", "established")
             research = self._call("research.get")["result"]
             for r in research["drivers"]:
                 table.add_row(r["driver"], r["answers"], r["established"])
             yield table
-            yield Static("[b]Findings that constrain every figure above[/b]",
-                         classes="hint")
+            yield Static("[b]Findings that constrain every figure above[/b]", classes="table-title")
             for line in research["findings"]:
                 yield Static(f"• {line}")
 
@@ -3086,6 +3201,8 @@ class SolTuiApp(App):
                 yield Button("Free search memory", id="docs-search-free")
             yield Static("Search is not loaded yet; the first search loads it.", id="docs-search-status",
                          classes="hint")
+            yield Static("[b]Repository files[/b]: path, kind, whether this console may edit it, length and "
+                         "a one-line summary. Select one to open it in the editor below.", classes="table-title")
             with Horizontal():
                 listing = GlossaryTable(id="docs-table")
                 listing.add_columns("path", "kind", "editable", "lines", "summary")
@@ -3424,7 +3541,8 @@ class SolTuiApp(App):
 
 def main(argv: list[str] | None = None) -> int:
     """Entry point for `python3 -m soltui.tui`."""
-    SolTuiApp(ui_state_path=config_mod.CONFIG_DIR / "tui.json", ensure_autopilot=True).run()
+    SolTuiApp(ui_state_path=config_mod.CONFIG_DIR / "tui.json", ensure_autopilot=True,
+              refresh_wallet=True).run()
     return 0
 
 
