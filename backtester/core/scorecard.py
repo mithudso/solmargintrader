@@ -737,6 +737,86 @@ def _c_btc_lead(b: Bars, p: Params, aux: Params) -> np.ndarray:
     return np.tanh(_safe_div(lr, p["scale"] * sigma))
 
 
+# -- frontier metrics (2026-11-07): named in research/STRATEGIES.md, RELIABLE_SIGNALS.md and the
+# research digest of that day. Off by default: they are candidates to test, not proven inputs.
+
+
+def _rolling(x: np.ndarray, window: int) -> pd.core.window.rolling.Rolling:
+    return pd.Series(x).rolling(window, min_periods=window)
+
+
+def _c_keltner(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    mid = ema(b.close, p["span"])
+    return _clip(_safe_div(b.close - mid, p["mult"] * atr(b, p["atr"])))
+
+
+def _c_mom_skip(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    n, k = int(p["lookback"]), int(p["skip"])
+    if k >= n:
+        raise ScorecardError("mom_skip: skip must be below lookback")
+    lc = np.log(b.close)
+    r = prior(lc, k) - prior(lc, n)
+    sigma = rstd(log_returns(b.close), p["vol_window"])
+    return np.tanh(_safe_div(r, p["scale"] * sigma * math.sqrt(n - k)))
+
+
+def _c_vr_regime(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    q, w = int(p["q"]), int(p["window"])
+    lc = np.log(b.close)
+    r1 = log_returns(b.close)
+    rq = lc - prior(lc, q)
+    vr = _safe_div(_rolling(rq, w).var().to_numpy(), q * _rolling(r1, w).var().to_numpy())
+    # VR < 1: moves have been undoing themselves (fade the last q bars); VR > 1: they have been
+    # extending (follow them). The same metric votes trend or reversion as the data says.
+    return _clip(np.sign(rq) * p["gain"] * (vr - 1.0))
+
+
+def _c_ou_reversion(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    n, w = int(p["window"]), int(p["fit_window"])
+    dev = b.close - sma(b.close, n)
+    z = _safe_div(dev, rstd(b.close, n))
+    lag = prior(dev, 1)
+    cov = pd.Series(dev).rolling(w, min_periods=w).cov(pd.Series(lag)).to_numpy()
+    var = _rolling(lag, w).var().to_numpy()
+    beta = _safe_div(cov, var)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        half_life = np.where((beta > 0) & (beta < 1), np.log(2.0) / -np.log(beta), np.inf)
+    out = _clip(-z / p["entry"])
+    # Fade only while the spread is measurably mean-reverting fast enough to pay within a hold.
+    out = np.where(np.isfinite(beta) & np.isfinite(z), np.where(half_life <= p["max_half_life"], out, 0.0), np.nan)
+    return out
+
+
+def _c_consec_run(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    sign = np.sign(np.diff(b.close, prepend=np.nan))
+    sign = np.nan_to_num(sign)
+    run = np.zeros(sign.size)
+    for i in range(1, sign.size):
+        s_ = sign[i]
+        run[i] = (run[i - 1] + s_ if s_ != 0 and np.sign(run[i - 1]) == s_ else s_)
+    length = np.abs(run)
+    out = np.where(length >= p["min_run"], -np.sign(run) * np.minimum(1.0, (length - p["min_run"] + 1) / p["span"]), 0.0)
+    out[0] = np.nan
+    return out
+
+
+def _c_pairs_spread(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    ref = aux.get("btc_close")
+    if ref is None:
+        return np.full(len(b), np.nan)
+    ref = np.asarray(ref, dtype="float64")
+    if ref.size != len(b):
+        raise ScorecardError("btc_close must be aligned bar-for-bar with the asset")
+    w = int(p["window"])
+    la, lb = np.log(b.close), np.log(ref)
+    ra, rb = log_returns(b.close), log_returns(ref)
+    beta = _safe_div(pd.Series(ra).rolling(w, min_periods=w).cov(pd.Series(rb)).to_numpy(),
+                     _rolling(rb, w).var().to_numpy())
+    spread = la - beta * lb
+    z = _safe_div(spread - sma(spread, w), rstd(spread, w))
+    return _clip(-z / p["entry"])
+
+
 def trend_stage(b: Bars, p: Mapping[str, Any]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """(direction, age_bars, extension_atr) of the fast/slow EMA trend."""
     ef, es = ema(b.close, p["fast"]), ema(b.close, p["slow"])
@@ -1060,6 +1140,43 @@ COMPONENTS: tuple[Component, ...] = (
               "Context for which side to favour at 5m.", "Phase labels are descriptive, slow to turn.",
               "added (lifecycle stage)", default_weight=0.5),
     # gates
+    # frontier: candidates from the 2026-11-07 research digest; off until a test earns them a vote
+    Component("keltner", "Keltner channel position", "volatility", "breakout", "score",
+              (P("span", 20, 2, 500), P("atr", 14, 2, 200), P("mult", 2.0, 0.2, 10, "float")), _c_keltner,
+              "clip((close - EMA(span)) / (mult * ATR(atr)))",
+              "Volatility-scaled breakouts that keep going.", "Ranges: a band touch reverses.",
+              "research/STRATEGIES.md (keltner); 1h CPCV median Sharpe -0.961", default_enabled=False),
+    Component("mom_skip", "Momentum with a skip (n, k)", "momentum", "momentum", "score",
+              (P("lookback", 48, 3, 5000), P("skip", 6, 0, 1000), P("vol_window", 288, 10, 5000),
+               P("scale", 1.0, 0.1, 20, "float")), _c_mom_skip,
+              "tanh(log(C[t-skip] / C[t-lookback]) / (scale * sigma1 * sqrt(lookback - skip)))",
+              "Persistent drifts; skipping the last bars removes their short-term reversal.",
+              "Choppy markets; turning points.", "research/STRATEGIES.md (dual momentum)", default_enabled=False),
+    Component("vr_regime", "Variance-ratio regime switch", "regime-switch", "adaptive", "score",
+              (P("q", 6, 2, 500), P("window", 288, 30, 10000), P("gain", 2.0, 0.1, 20, "float")), _c_vr_regime,
+              "clip(sign(r_q) * gain * (VR - 1)), VR = Var(q-bar returns) / (q * Var(1-bar returns)) over window",
+              "Follows moves while they extend (VR > 1) and fades them while they undo (VR < 1).",
+              "VR is noisy over short windows; regime changes lag.",
+              "research/STRATEGIES.md (\"highest-value unimplemented item\"); daily hurst_switch DSR 0.416",
+              default_enabled=False),
+    Component("ou_reversion", "Ornstein-Uhlenbeck fade", "stretch", "reversion", "score",
+              (P("window", 48, 5, 5000), P("fit_window", 288, 30, 10000), P("entry", 2.5, 0.2, 10, "float"),
+               P("max_half_life", 24, 1, 5000, "float", "bars; fade only when the fitted half-life is shorter")),
+              _c_ou_reversion,
+              "clip(-z / entry) while the AR(1) half-life of (close - SMA) over fit_window <= max_half_life, else 0",
+              "Stretches that are measurably snapping back.", "Trends: the half-life grows and it goes quiet.",
+              "research/STRATEGIES.md (OU); indicators.ou_half_life; daily +0.412 Sharpe", default_enabled=False),
+    Component("consec_run", "Consecutive-close exhaustion", "structure", "reversion", "score",
+              (P("min_run", 3, 2, 50), P("span", 3, 1, 50)), _c_consec_run,
+              "-sign(run) * min(1, (|run| - min_run + 1) / span) for runs of min_run+ same-sign closes",
+              "Short bursts that overshoot.", "Strong trends print long runs.",
+              "research/RELIABLE_SIGNALS.md (consec_dn3, near-miss: failed FDR and replication)",
+              default_enabled=False),
+    Component("pairs_spread", "Spread vs BTC (relative value)", "relative-value", "reversion", "score",
+              (P("window", 288, 30, 10000), P("entry", 2.0, 0.2, 10, "float")), _c_pairs_spread,
+              "clip(-z / entry), z of log C - beta * log C_BTC over window, beta from rolling return regression",
+              "Coins that drift away from BTC and come back.", "Regime breaks and coin-specific news.",
+              "research/STRATEGIES.md (pairs / stat-arb)", needs=("btc",), default_enabled=False),
     Component("gate_cost", "Cost hurdle", "gate", "gate", "gate",
               (P("window", 48, 5, 2000), P("hold_bars", 3, 1, 100, "int", "bars a position is expected to last"),
                P("multiple", 1.0, 0.1, 10, "float", "required move as a multiple of round-trip cost")), _g_cost,
@@ -1151,6 +1268,12 @@ AGGREGATE_SPECS: tuple[ParamSpec, ...] = (
     P("tune_min_calls", 300, 10, 1000000, "float", "decayed calls a neighbour needs before it can be adopted"),
     P("tune_step", 0.25, 0.05, 1.0, "float", "neighbours sit at x(1 - step) and x(1 + step) of each number"),
     P("tune_cooldown", 576, 1, 1000000, "int", "bars to wait after a move (576 = two days of 5m)"),
+    P("hold", 1, 1, 10000, "int",
+      "bars a position is kept after entry before it may exit (1 = exit as soon as the composite fades); "
+      "longer holds pay one round trip for a bigger move"),
+    P("entry_quantile", 0.0, 0.0, 0.999, "float",
+      "0 = off; q = also require |composite| in the top (1 - q) of its own trailing adaptive_window bars: "
+      "fewer, stronger calls"),
 )
 
 EXECUTION_SPECS: tuple[ParamSpec, ...] = (
@@ -1604,7 +1727,14 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     blocked = np.zeros(n, dtype=bool)
     for g in gates.values():
         blocked |= g
-    call = np.where(composite >= agg["entry"], 1, np.where(composite <= -agg["entry"], -1, 0))
+    threshold = np.full(n, float(agg["entry"]))
+    if agg["entry_quantile"] > 0 and n:
+        # Trailing quantile of |composite| through bar t: known at t, so the call stays causal.
+        window = int(agg["adaptive_window"])
+        q = pd.Series(np.abs(composite)).rolling(window, min_periods=max(20, window // 4)).quantile(
+            agg["entry_quantile"]).to_numpy()
+        threshold = np.where(np.isfinite(q), np.maximum(threshold, q), np.inf)
+    call = np.where(composite >= threshold, 1, np.where(composite <= -threshold, -1, 0))
     call = np.where(np.isnan(composite) | blocked, 0, call)
     if not agg["allow_short"]:
         call = np.where(call < 0, 0, call)
@@ -1620,15 +1750,27 @@ def target_path(ev: Evaluation) -> np.ndarray:
     the main defence against paying a 16 bps round trip on every 5m wiggle.
     """
     agg = ev.config["aggregate"]
+    hold = int(agg.get("hold", 1))
     out = np.zeros(len(ev.bars))
     pos = 0.0
+    held = 0
     for i in range(out.size):
         c, comp = int(ev.indication[i]), ev.composite[i]
         if c != 0:
+            held = held + 1 if float(c) == pos else 1
             pos = float(c)
         elif pos != 0.0:
-            keep = (not ev.blocked[i]) and np.isfinite(comp) and comp * pos >= agg["exit"]
-            pos = pos if keep else 0.0
+            held += 1
+            # Within `hold` bars only a blocking gate ends the trade: one round trip buys the
+            # whole hold. After it, the usual hysteresis decides.
+            if ev.blocked[i]:
+                keep = False
+            elif held <= hold:
+                keep = True
+            else:
+                keep = np.isfinite(comp) and comp * pos >= agg["exit"]
+            if not keep:
+                pos, held = 0.0, 0
         out[i] = pos
     return out
 
@@ -1755,6 +1897,10 @@ def relations(ev: Evaluation, window: int = 2016, min_points: int = 200) -> dict
 CALIBRATION_EDGES = (-1.0001, -0.5, -0.25, -0.1, 0.1, 0.25, 0.5, 1.0001)
 
 
+# Holding periods the forecast table reports (5m bars): 5 min, 30 min, 1 h, 4 h, 24 h.
+HORIZONS = (1, 6, 12, 48, 288)
+
+
 def forecast_stats(evals: Sequence[Evaluation], ts_from: float | None = None,
                    ts_to: float | None = None) -> dict[str, Any]:
     """Direction accuracy of the per-bar call over the NEXT bar, within [ts_from, ts_to).
@@ -1764,6 +1910,7 @@ def forecast_stats(evals: Sequence[Evaluation], ts_from: float | None = None,
     round trip after costs -- the ceiling, which at 5m is usually negative.
     """
     rows = []
+    horizon_acc: dict[int, list[float]] = {}
     for ev in evals:
         b = ev.bars
         if len(b) < 2:
@@ -1775,6 +1922,18 @@ def forecast_stats(evals: Sequence[Evaluation], ts_from: float | None = None,
             sel &= b.ts[:-1] < ts_to
         r = np.diff(np.log(b.close))[sel] * 1e4
         rows.append((ev.indication[:-1][sel], r, ev.composite[:-1][sel]))
+        for h in HORIZONS:
+            if len(b) <= h + 1:
+                continue
+            k = len(b) - h - 1
+            hsel = sel[:k]
+            call_h = ev.indication[:k][hsel].astype(float)
+            # What a next-open fill earns over h bars: open[t+1] -> close[t+h].
+            rh = 1e4 * np.log(b.close[h:h + k] / b.open[1:1 + k])[hsel]
+            agg_h = horizon_acc.setdefault(h, [0.0, 0])
+            act_h = call_h != 0
+            agg_h[0] += float((call_h * rh)[act_h].sum())
+            agg_h[1] += int(act_h.sum())
     if not rows:
         return {"bars": 0, "calls": 0}
     call = np.concatenate([x[0] for x in rows]).astype(float)
@@ -1817,6 +1976,12 @@ def forecast_stats(evals: Sequence[Evaluation], ts_from: float | None = None,
         out["net_bps_per_call_if_one_bar"] = round(float(signed.mean()) - rt, 3)
     if rt is not None and ret.size:
         out["oracle_net_bps"] = round(float(np.abs(ret).mean()) - rt, 3)
+    # Move against cost by holding period: what each call earns from the next bar's open over h bars,
+    # paying one round trip. This is how a call can beat costs a one-bar hold cannot (COMPOUND-5M.md).
+    out["horizons"] = [
+        {"bars": h, "calls": int(n), "gross_bps": round(tot / n, 3),
+         "net_bps": None if rt is None else round(tot / n - rt, 3)}
+        for h, (tot, n) in sorted(horizon_acc.items()) if n]
     return out
 
 

@@ -38,6 +38,10 @@ For the owner's own wallets, agents may act live without a further confirmation:
 - Base `0x901a89cEC0608eB5435A915f006b45bD46405314` (key file `~/.ssh/wallet.private`);
 - Solana `EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV` (key file `~/.ssh/solana.private`).
 
+To read the Base wallet (balances, the tokens the owner really uses, history), use the CDP MCP exactly as
+`docs/BASE-WALLET-QUERIES.md` says: paginated token balances, time-bounded SQL, spam filtered by the owner's
+own transactions.
+
 Agents may:
 - send live blockchain requests (reads, simulations and transactions) when the result gives useful information;
 - buy, sell, swap, deposit and withdraw tokens when there is a clear and provable reason.
@@ -106,8 +110,8 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 ## Before you claim a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 845 tests
-python3 -m unittest discover -s soltui/tests -t .       # 806 tests (~610s)
+python3 -m unittest discover -s backtester/tests -t .   # 853 tests
+python3 -m unittest discover -s soltui/tests -t .       # 808 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 351 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive

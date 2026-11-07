@@ -83,6 +83,10 @@ KNOWN_BASE_TOKENS = (
     ("0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452", "wstETH", 18),
     ("0x60a3E35Cc302bFA44Cb288Bc5a4F316Fdb1adb42", "EURC", 6),
     ("0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2", "USDT", 6),
+    # Gauntlet USDC Prime: a Morpho vault share (ERC-4626) the owner deposited into on 2026-11-06. The
+    # CDP Data API found it (docs/BASE-WALLET-QUERIES.md); Blockscout is often Cloudflare-blocked, and
+    # without an indexer this ~$87 position was invisible. DefiLlama prices the share directly.
+    ("0xeE8F4eC5672F09119b96Ab6fB59C27E1b7e44b61", "gtUSDCp", 18),
 )
 ERC20_BALANCE_OF = "0x70a08231"
 ERC20_SYMBOL = "0x95d89b41"

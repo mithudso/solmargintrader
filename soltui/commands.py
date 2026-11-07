@@ -1232,14 +1232,16 @@ def compound_signal(ctx: Context, p: dict[str, Any]) -> Any:
          (P("asset", "string", "Asset symbol; default the configured asset."),
           P("all", "bool", "Every coin with cached data, in parallel processes, each with its own settings."),
           P("perturb", "bool", "Also run one-at-a-time parameter variations."),
-          P("aggregate_grid", "bool", "Also run threshold, gate, regime and leverage variations.")),
+          P("aggregate_grid", "bool", "Also run threshold, gate, regime and leverage variations."),
+          P("frontier", "bool", "Also run every metric alone (on or off): its strongest 2% of readings, "
+                                "held 1 h, 4 h and 24 h.")),
          read_only=False, long_running=True)
 def compound_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     if p.get("all"):
         return _compound(compound_mod.backtest_all, perturb=bool(p.get("perturb")),
-                         aggregate_grid=bool(p.get("aggregate_grid")))
+                         aggregate_grid=bool(p.get("aggregate_grid")), frontier=bool(p.get("frontier")))
     return _compound(compound_mod.backtest, _compound_asset(ctx, p), perturb=bool(p.get("perturb")),
-                     aggregate_grid=bool(p.get("aggregate_grid")))
+                     aggregate_grid=bool(p.get("aggregate_grid")), frontier=bool(p.get("frontier")))
 
 
 @command("compound.results", "The latest compound backtest run and the all-time OOS leaderboard "

@@ -326,6 +326,25 @@ them.
   (listing age, unlock schedule, supply concentration) moves on a scale of weeks, not five
   minutes; it belongs in coin selection (`research/coin-intelligence/`), not in this call.
 
+## Beating the fees: fewer, stronger, longer calls (2026-11-07)
+
+Full write-up: `research/COMPOUND-FRONTIER.md`. In short:
+
+- The reversion metrics' 52% next-bar hit carried about **0 bps** of gross edge per call: wins smaller
+  than losses, at every holding period from 5 minutes to 4 hours. No fee trick fixes zero gross.
+- Two settings let a call pay its toll: `entry_quantile` (call only when |composite| is in the top
+  (1 - q) of its own trailing `adaptive_window` bars) and `hold` (keep a position N bars after entry;
+  only a blocking gate ends it early). Both default to off (0 and 1), so existing configurations are unchanged.
+- The **Frontier** button (Backtest section) runs every metric alone, on or off, at its strongest 2% of
+  readings, held 1 h, 4 h and 24 h, unlevered. Every row now shows **buy & hold** over the same
+  out-of-sample window and **net bps 1h / 24h** (what each call earned held that long after one round trip).
+- Ten coins, 1,250 configurations: only `htf_trend` survived (top 2%, held 1-4 h, 1x: positive
+  out-of-sample on 8/10 coins, beat buy-and-hold on 7/10), with in-sample Sharpe near zero and an
+  out-of-sample window that mostly fell. Every reversion metric lost at every hold. Leverage destroys
+  long holds: the same `htf_trend` calls on SOL made +20% at 1x and -53% at 5x.
+- The engine now re-levers a position only when exposure drifts 10% from target. Before, every 5m bar's
+  drift counted as a trade (RSI alone on SOL: 68,200 "trades", 13,561 real entries and exits); fees barely moved.
+
 ## Findings: ten coins, full history, Hyperliquid costs (2026-11-07)
 
 Run `20261107T192614Z`: `python3 -m soltui.compound sweep --workers 6`, the saved configuration plus

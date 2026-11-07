@@ -1185,22 +1185,26 @@ def read_results() -> list[dict[str, Any]]:
 
 
 def backtest_all(*, standalone: bool = True, perturb: bool = False, aggregate_grid: bool = False,
-                 workers: int | None = None, progress: Callable[[str], None] | None = None) -> dict[str, Any]:
+                 frontier: bool = False, workers: int | None = None,
+                 progress: Callable[[str], None] | None = None) -> dict[str, Any]:
     """Every coin with cached data, in parallel processes, each with its own settings."""
     workers = workers or max(1, min(8, (os.cpu_count() or 2) // 2))
     return sweep(list(coins()), standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid,
-                 workers=workers, progress=progress)
+                 frontier=frontier, workers=workers, progress=progress)
 
 
 def backtest(asset: str, *, standalone: bool = True, perturb: bool = False, aggregate_grid: bool = False,
-             workers: int = 1, progress: Callable[[str], None] | None = None) -> dict[str, Any]:
+             frontier: bool = False, workers: int = 1,
+             progress: Callable[[str], None] | None = None) -> dict[str, Any]:
     """Run the saved config (and its variants) on one asset's cached 5m data; append results."""
+    if frontier and workers <= 1:
+        workers = max(1, min(8, (os.cpu_count() or 2) // 2))  # ~100 configurations: use the cores
     return sweep([asset], standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid,
-                 workers=workers, progress=progress)
+                 frontier=frontier, workers=workers, progress=progress)
 
 
 def sweep(assets: Sequence[str], *, standalone: bool = True, perturb: bool = False,
-          aggregate_grid: bool = False, workers: int = 1,
+          aggregate_grid: bool = False, frontier: bool = False, workers: int = 1,
           progress: Callable[[str], None] | None = None) -> dict[str, Any]:
     events = load_state()["events"]
     run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
@@ -1215,7 +1219,8 @@ def sweep(assets: Sequence[str], *, standalone: bool = True, perturb: bool = Fal
             skipped[a] = str(exc).splitlines()[0]
             continue
         cfg = load_state(a)["config"]  # each coin with its own settings
-        for label, c in cbt.variants(cfg, standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid):
+        for label, c in cbt.variants(cfg, standalone=standalone, perturb=perturb, aggregate_grid=aggregate_grid,
+                                     frontier=frontier):
             jobs.append((a, label, c))
     rows: list[dict[str, Any]] = []
 
@@ -1258,6 +1263,8 @@ def summary_row(r: Mapping[str, Any]) -> dict[str, Any]:
         "oos_return": p_oos.get("total_return"), "oos_sharpe": p_oos.get("sharpe"),
         "oos_trades": p_oos.get("trades"), "oos_max_dd": p_oos.get("max_drawdown"),
         "oos_fees_pct": p_oos.get("fees_pct"), "liquidations": p_oos.get("liquidations"),
+        "oos_buy_hold": r["oos"].get("buy_hold_return"),
+        "oos_horizons": f_oos.get("horizons") or [],
         "leverage": r.get("leverage"), "bars": r.get("bars"), "source": r.get("source"),
         "run_id": r.get("run_id"), "oos_bars": f_oos.get("bars"), "split_ts": r.get("split_ts"),
         "to_ts": r.get("to_ts"), "round_trip_bps": f_oos.get("round_trip_bps"),
@@ -1308,6 +1315,51 @@ def overview(coin_list: Sequence[str] | None = None) -> list[dict[str, Any]]:
             "live": live_capable(a),
         })
     return out
+
+
+def readable_label(label: str) -> str:
+    """`only:rsi` -> "RSI alone"; `frontier:htf_trend hold=288 top2% 1x` -> "HTF trend: top 2%, held 24 h, 1x".
+    The raw label stays in the results file; this is what a person reads in the tab."""
+    def name(cid: str) -> str:
+        comp = sc.BY_ID.get(cid)
+        return comp.name if comp else cid
+
+    def hours(bars: str) -> str:
+        minutes = int(bars) * 5
+        return f"{minutes // 60} h" if minutes % 60 == 0 else f"{minutes} min"
+
+    if label == "compound":
+        return "Compound (every enabled metric voting)"
+    if label.startswith("only:"):
+        rest = label[5:].split(" ", 1)
+        return f"{name(rest[0])} alone" + (f" ({rest[1]})" if len(rest) > 1 else "")
+    if label.startswith("frontier:"):
+        parts = label[9:].split()
+        hold = next((p[5:] for p in parts if p.startswith("hold=")), None)
+        lev = next((p for p in parts if p.endswith("x")), "")
+        return f"{name(parts[0])}: top 2%, held {hours(hold) if hold else '?'}" + (f", {lev}" if lev else "")
+    if label.startswith("compound "):
+        return "Compound, " + label[9:]
+    return label
+
+
+def tested_line(asset: str, rows: Sequence[Mapping[str, Any]], cfg: Mapping[str, Any]) -> str:
+    """One paragraph: what the Backtest table tested, on what data and at what cost."""
+    ex = cfg["execution"]
+    rt = sc.round_trip_bps(ex["fee_bps"], ex["slippage_bps"])
+    head = rows[0] if rows else {}
+    when = ""
+    if head.get("split_ts"):
+        when = f"; out-of-sample from {time.strftime('%Y-%m-%d', time.gmtime(int(head['split_ts'])))}"
+    data = (f"{head.get('bars'):,} 5m bars from {head.get('source') or '?'}{when}" if head.get("bars")
+            else "no backtest yet: press Backtest this coin")
+    return (f"What is tested ({_asset(asset)}): {data}. Every row fills at the next bar's open and pays "
+            f"{ex['fee_bps']:g} bps fee + {ex['slippage_bps']:g} bps slippage per side ({rt:g} bps a round trip), "
+            f"at {ex['leverage']:g}x unless the row says 1x. Compound = every enabled metric voting; "
+            "'X alone' = one metric, no gates; 'top 2%, held N h' = only that metric's strongest 2% of "
+            "readings (by its own trailing record), kept N hours. Buy & hold is the coin itself over the "
+            "same out-of-sample window: a row that only matches it shows drift, not skill. Net bps 1h / 24h "
+            "is what a call earns held that long, after one round trip.")
 
 
 def run_summary(rows: Sequence[Mapping[str, Any]], window_count: int | None = None) -> str:
@@ -1824,11 +1876,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         if name == "backtest":
             p.add_argument("--perturb", action="store_true")
             p.add_argument("--aggregate-grid", action="store_true")
+            p.add_argument("--frontier", action="store_true",
+                           help="every metric alone, top 2%% of readings, held 1 h / 4 h / 24 h")
     sw = sub.add_parser("sweep", help="every asset with cached 5m data, every variant")
     sw.add_argument("--assets", default="", help="comma list; default: every cached asset")
     sw.add_argument("--all-assets", action="store_true")
     sw.add_argument("--perturb", action="store_true", help="one-at-a-time parameter variations")
     sw.add_argument("--aggregate-grid", action="store_true", help="threshold/gate/leverage variations")
+    sw.add_argument("--frontier", action="store_true",
+                    help="every metric alone, top 2%% of readings, held 1 h / 4 h / 24 h")
     sw.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) // 2))
     sub.add_parser("catalog")
     sub.add_parser("autopilot", help="start every coin's unattended loop that is not running (the "
@@ -1868,11 +1924,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                       "out-of-sample window across all runs; that is the multiple-testing denominator.")
         elif args.verb == "backtest":
             out = backtest(args.asset, perturb=args.perturb, aggregate_grid=args.aggregate_grid,
-                           progress=lambda s: print(s, file=sys.stderr))
+                           frontier=args.frontier, progress=lambda s: print(s, file=sys.stderr))
             _print_table(out)
         else:
             assets = [a for a in args.assets.split(",") if a.strip()] or list(coins())
-            out = sweep(assets, perturb=args.perturb, aggregate_grid=args.aggregate_grid,
+            out = sweep(assets, perturb=args.perturb, aggregate_grid=args.aggregate_grid, frontier=args.frontier,
                         workers=args.workers, progress=lambda s: print(s, file=sys.stderr, flush=True))
             _print_table(out)
     except (CompoundError, cbt.CompoundDataError, sc.ScorecardError) as exc:

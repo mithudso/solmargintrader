@@ -876,6 +876,23 @@ class AutopilotTests(TempConfig):
         self.assertIn("rsi: params=", coin)
 
 
+class ReadableResultsTests(unittest.TestCase):
+    def test_labels_read_as_words(self) -> None:
+        self.assertEqual(compound.readable_label("only:rsi"), "RSI alone")
+        self.assertEqual(compound.readable_label("frontier:htf_trend hold=288 top2% 1x"),
+                         "Higher-timeframe trend: top 2%, held 24 h, 1x")
+        self.assertEqual(compound.readable_label("frontier:rsi hold=12 top2% 1x"), "RSI: top 2%, held 1 h, 1x")
+        self.assertTrue(compound.readable_label("compound").startswith("Compound"))
+        self.assertEqual(compound.readable_label("something else"), "something else")
+
+    def test_tested_line_names_data_costs_and_leverage(self) -> None:
+        cfg = sc.default_config()
+        line = compound.tested_line("SOL", [{"bars": 1000, "source": "SOL_1m.csv", "split_ts": T0}], cfg)
+        for part in ("1,000 5m bars", "SOL_1m.csv", "out-of-sample from", "13 bps a round trip", "5x", "Buy & hold"):
+            self.assertIn(part, line)
+        self.assertIn("press Backtest this coin", compound.tested_line("SOL", [], cfg))
+
+
 class CompoundAgentTests(unittest.TestCase):
     def test_plist_runs_the_ensure_verb_every_five_minutes_and_lets_the_loops_live(self) -> None:
         from soltui import compound_agent

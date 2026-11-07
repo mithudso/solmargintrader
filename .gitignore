@@ -123,3 +123,17 @@ index/*.tmp*
 # TradingView Advanced Charts docs bundle and library files (licensed by TradingView).
 # This repo is public; the distilled reference lives in docs/TRADINGVIEW-REFERENCE.md.
 tradingview/
+
+# Coinbase CDP credentials (auth/cdp_api_key.json, auth/cdp_wallet_secret.txt). Never commit;
+# keep them mode 600.
+auth/
+cdp_api_key*.json
+*wallet_secret*.txt
+
+# Local Codex CLI settings.
+.codex/
+
+# Vendor documentation mirrors under llms/ (public docs, 0.3 to 11 MB each; refetchable, and the
+# global AI hub keeps them as docsets). The small curated llms files and notes there are tracked.
+llms/*llms-full*
+llms/*.yaml

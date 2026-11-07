@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 41
-Delta: v40 to v41; distill the tradingview/ docs folder into one Markdown reference.
+Version: 43
+Delta: v41 to v43; land the research, frontier of strategies and fees; Base wallet via the CDP MCP (v41 is the TradingView distillation).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -284,3 +284,18 @@ This doesn't seem right in the forward test for SOL the indicators are only choo
 ```text
 Look at all the files in this folder and extract all of the technicals, indicators, signals, scripts, equations, and anything else that would be helpful for this repo export the distilled useful data to a markdown file. /Users/mitch/dev/solmargintrader/tradingview
 ```
+
+## v42 - 2026-11-07 (land research; frontier; fees; full suite on the promising)
+
+```text
+There was just an absolute ton of research done for this repo, 1) make sure that everything is commited merged and permanent, 2) Use all this new research and information to improve the backtest and forwardtest setup. Right now the compound tab is very busy and it's difficult to tell what's being tested and by what, but there are also far more technicals and indicators than is what's represented here. [Image #2] these are doing ok in testing, expand the frontier of the strategies, also it says that my profit is eaten up by fees, well how do I get around that? For the strategies that show promise run a full-suite skill on them and see if we can either learn more about how to tune it better, or else find a related and more successful strategy.
+```
+
+The screenshot showed the SOL compound backtest: RSI, Bollinger, CCI, z-score, liquidity sweep, stochastic and VWAP reversion alone at 51.3-52.4% out-of-sample hit, about 0 gross bps, -100% return and 300-380% fees.
+
+## v43 - 2026-11-07 (Base wallet via the CDP MCP)
+
+```text
+Expand the wallet, for the base wallet, use the base mcp server to query my wallet address and also to give you exactly how you should queery for it in the futurte.
+```
+

@@ -168,6 +168,32 @@ class RunTests(unittest.TestCase):
         forward_only = {c.id for c in sc.COMPONENTS if c.forward_only}
         self.assertFalse(any(label == f"only:{f}" for f in forward_only for label in labels))
 
+    def test_frontier_covers_every_historical_metric_unlevered(self) -> None:
+        vs = dict(cbt.variants(sc.default_config(), standalone=False, frontier=True))
+        historical = [c.id for c in sc.COMPONENTS if c.kind == "score" and not c.forward_only]
+        for cid in historical:                       # including metrics that are switched off
+            for hold in cbt.FRONTIER_HOLDS:
+                label = f"frontier:{cid} hold={hold} top2% 1x"
+                self.assertIn(label, vs)
+                agg, ex = vs[label]["aggregate"], vs[label]["execution"]
+                self.assertEqual((agg["hold"], agg["entry_quantile"], ex["leverage"]),
+                                 (hold, cbt.FRONTIER_QUANTILE, 1.0))
+                self.assertEqual([k for k, e in vs[label]["components"].items() if e["enabled"]], [cid])
+
+    def test_report_has_buy_and_hold_and_move_by_holding_period(self) -> None:
+        r = cbt.run_compound("SOL", None, data_dir=self.dir)
+        df = pd.read_csv(self.dir / "SOL_5m.csv")
+        ts, close = df["timestamp"].to_numpy(), df["close"].to_numpy()
+        cut = int(np.searchsorted(ts, r["split_ts"]))
+        self.assertAlmostEqual(r["oos"]["buy_hold_return"], close[-1] / close[cut] - 1, places=5)
+        self.assertAlmostEqual(r["is"]["buy_hold_return"], close[cut - 1] / close[0] - 1, places=5)
+        self.assertEqual([h["bars"] for h in r["oos"]["forecast"]["horizons"]],
+                         [h for h in sc.HORIZONS if h < 1000])
+
+    def test_positions_are_not_relevered_every_bar(self) -> None:
+        cfg = sc.default_config()
+        self.assertEqual(cbt.engine_config(cfg).rebalance_threshold, 0.1 * cfg["execution"]["leverage"])
+
     def test_leaderboard_never_ranks_thin_rows_above_ranked_ones(self) -> None:
         rows = [{"label": "thin", "ranked": False, "oos": {"pnl": {"sharpe": 9.0}}},
                 {"label": "a", "ranked": True, "oos": {"pnl": {"sharpe": -1.0}}},

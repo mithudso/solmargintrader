@@ -1,0 +1,197 @@
+{
+  "scope": "A practical, source-backed catalog of the core crypto strategies, signals, and indicators explicitly covered by the cited guides. It is not literally every proprietary or newly invented method in existence.",
+  "as_of": "2026-11-07",
+  "strategies": [
+    {
+      "name": "HODLing",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "No fixed trading formula; buy and hold the asset for the long term.",
+      "description": "Passive long-term exposure rather than frequent trading.",
+      "useful_when": "You have a long horizon and want to avoid short-term timing decisions.",
+      "not_useful_when": "You need short-term income, cannot tolerate large drawdowns, or the asset thesis has failed.",
+      "source_url_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Dollar-cost averaging (DCA)",
+      "source_url": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "formula": "Amount per purchase = total budget / number of scheduled purchases.",
+      "description": "Invest a fixed amount at regular intervals regardless of price.",
+      "useful_when": "You want disciplined exposure, have regular income, and do not want to time the market.",
+      "not_useful_when": "The asset trends down for a prolonged period, fees are high, or you need to exploit short-term opportunities.",
+      "source_url_citation": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123"
+    },
+    {
+      "name": "Day trading",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "Net P&L = position size × (exit price − entry price) − fees − funding/slippage.",
+      "description": "Open and close positions within the same trading day using chart-based entries and exits.",
+      "useful_when": "You can monitor markets actively and have liquid markets, tight execution, and a tested rule set.",
+      "not_useful_when": "You cannot monitor positions, liquidity is poor, or fees and slippage consume the expected edge.",
+      "source_url_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Swing trading",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "Typical signal = breakout above resistance + confirmation from SMA, Fibonacci, volume, MACD, or RSI; exit on invalidation or weakening structure.",
+      "description": "Hold trades for multi-day or multi-week price swings.",
+      "useful_when": "You prefer fewer decisions and can hold through normal short-term volatility.",
+      "not_useful_when": "Markets are highly news-driven, range-bound without clean swings, or you cannot manage overnight risk.",
+      "source_url_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Trend trading",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "Entry follows a confirmed directional trend; exit when lower highs, MACD reversal, or fading volume indicate weakening momentum.",
+      "description": "Stay in a position while the market continues making trend-consistent structure.",
+      "useful_when": "A persistent bull or bear trend exists and you can tolerate pullbacks.",
+      "not_useful_when": "The market is choppy or mean-reverting, where repeated trend signals whipsaw.",
+      "source_url_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Scalping",
+      "source_url": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "formula": "Net P&L per trade = (exit price − entry price) × quantity − trading fees − spread − slippage.",
+      "description": "Take many very short-duration trades, often lasting seconds or minutes, for small price changes.",
+      "useful_when": "Execution is fast, spreads and fees are low, liquidity is deep, and you can monitor continuously.",
+      "not_useful_when": "Execution is slow, spreads are wide, fees are high, or discipline breaks down under rapid decision-making.",
+      "source_url_citation": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123"
+    },
+    {
+      "name": "Arbitrage",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "Net arbitrage edge = sell price − buy price − exchange fees − transfer costs − spread − slippage.",
+      "description": "Buy an asset where it is cheaper and sell it where it is more expensive.",
+      "useful_when": "Price differences persist long enough, transfers or hedges are fast, and all-in costs are below the gap.",
+      "not_useful_when": "Transfers are delayed, withdrawals are restricted, liquidity is thin, or fees eliminate the gap.",
+      "source_url_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Event-driven trading",
+      "source_url": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "formula": "Trade trigger = predefined event plus directional confirmation; expected value = probability-weighted gain − probability-weighted loss − costs.",
+      "description": "Trade around scheduled or unexpected events that can move crypto prices.",
+      "useful_when": "The event is material, its timing and likely transmission are understood, and risk is capped.",
+      "not_useful_when": "The event is already priced in, outcomes are binary and gap risk is large, or liquidity disappears.",
+      "source_url_citation": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123"
+    }
+  ],
+  "indicators_and_signals": [
+    {
+      "name": "Simple moving average (SMA)",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "SMA(n) = (C1 + C2 + ... + Cn) / n.",
+      "description": "The mean closing price over a chosen lookback period.",
+      "useful_when": "You need a simple trend filter, support/resistance reference, or crossover signal.",
+      "not_useful_when": "A fast reversal is underway; it is lagging and can signal after much of the move has occurred.",
+      "source_url_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Exponential moving average (EMA)",
+      "source_url": "https://www.quantifiedstrategies.com/trading-indicators/",
+      "formula": "EMA_t = alpha × Price_t + (1 − alpha) × EMA_(t−1), where alpha = 2/(n+1).",
+      "description": "A moving average that weights recent observations more heavily than older ones.",
+      "useful_when": "You want a more responsive trend or crossover signal than an SMA.",
+      "not_useful_when": "The market is noisy or range-bound, producing frequent false crossovers.",
+      "source_url_citation": "https://www.quantifiedstrategies.com/trading-indicators/"
+    },
+    {
+      "name": "Moving-average crossover / golden cross",
+      "source_url": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "formula": "Bullish signal when short-period MA crosses above long-period MA; bearish signal when it crosses below.",
+      "description": "A trend-following signal built from two moving averages.",
+      "useful_when": "A sustained trend is developing and delayed confirmation is acceptable.",
+      "not_useful_when": "The market is ranging or reverses quickly, because crossovers lag and whipsaw.",
+      "source_url_citation": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123"
+    },
+    {
+      "name": "Relative Strength Index (RSI)",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "RSI = 100 − 100/(1 + RS), where RS = average gain / average loss over n periods.",
+      "description": "A 0–100 momentum oscillator; Kraken identifies below 30 as oversold and above 70 as overbought.",
+      "useful_when": "You are testing momentum exhaustion, divergences, or pullback entries with price-action confirmation.",
+      "not_useful_when": "A strong trend keeps RSI overbought or oversold; standalone reversal trades can fail.",
+      "source_url_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Moving Average Convergence Divergence (MACD)",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "MACD = EMA(12) − EMA(26); signal line = EMA(9) of MACD; histogram = MACD − signal line.",
+      "description": "Momentum and trend indicator composed of a MACD line, signal line, and histogram.",
+      "useful_when": "You want crossover, zero-line, histogram, or divergence confirmation of momentum shifts.",
+      "not_useful_when": "The market is sideways or moves too quickly; lag and repeated crossovers can create false signals.",
+      "source_url_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Bollinger Bands",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "Middle = SMA(n); upper = middle + kσ; lower = middle − kσ (Kraken describes k=2 as the standard example).",
+      "description": "A middle moving average with upper and lower standard-deviation bands.",
+      "useful_when": "You are assessing volatility contraction, breakout setups, or short-term mean reversion with confirmation.",
+      "not_useful_when": "Price trends strongly along a band or a low-volume/wash-traded market makes band touches unreliable.",
+      "source_url_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Stochastic oscillator",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "%K = 100 × (Close − Lowest Low_n)/(Highest High_n − Lowest Low_n); %D = moving average of %K.",
+      "description": "Compares the close with its recent high-low range and oscillates from 0 to 100.",
+      "useful_when": "You are timing pullbacks in a trend or looking for overbought/oversold crossovers and divergence.",
+      "not_useful_when": "A strong trend keeps the oscillator extreme or the market is too noisy for clean crosses.",
+      "source_url_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "On-Balance Volume (OBV)",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "OBV_t = OBV_(t−1) + volume_t if Close_t > Close_(t−1); OBV_(t−1) − volume_t if Close_t < Close_(t−1); unchanged if equal.",
+      "description": "A cumulative directional-volume measure used to compare volume flow with price action.",
+      "useful_when": "You want volume confirmation or early divergence between price and buying/selling pressure.",
+      "not_useful_when": "Reported volume is distorted by wash trading, fragmented venues, or illiquid markets.",
+      "source_url_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Fibonacci retracement",
+      "source_url": "https://www.quantifiedstrategies.com/trading-indicators/",
+      "formula": "Retracement level = swing high − (swing high − swing low) × r, where r is commonly 0.236, 0.382, 0.50, or 0.618.",
+      "description": "Maps common percentage retracements between a selected swing high and swing low to estimate support/resistance.",
+      "useful_when": "A clear swing exists and you need pullback zones or confluence with structure.",
+      "not_useful_when": "Swing anchors are subjective, price is news-driven, or levels are treated as certainty rather than zones.",
+      "source_url_citation": "https://www.quantifiedstrategies.com/trading-indicators/"
+    },
+    {
+      "name": "Average True Range (ATR)",
+      "source_url": "https://www.quantifiedstrategies.com/trading-indicators/",
+      "formula": "TR_t = max(high−low, |high−previous close|, |low−previous close|); ATR(n) = average of TR over n periods.",
+      "description": "A volatility measure based on true ranges.",
+      "useful_when": "Setting volatility-scaled stops, targets, or position sizes.",
+      "not_useful_when": "Used as a direction predictor; ATR measures movement magnitude, not whether price rises or falls.",
+      "source_url_citation": "https://www.quantifiedstrategies.com/trading-indicators/"
+    },
+    {
+      "name": "Percentage Price Oscillator (PPO)",
+      "source_url": "https://www.quantifiedstrategies.com/trading-indicators/",
+      "formula": "PPO = 100 × (EMA_fast − EMA_slow) / EMA_slow.",
+      "description": "A MACD-like oscillator that expresses the difference between two EMAs as a percentage.",
+      "useful_when": "Comparing momentum across assets with different price scales or confirming trend shifts.",
+      "not_useful_when": "The market is choppy or the chosen EMAs are poorly matched to the trading horizon.",
+      "source_url_citation": "https://www.quantifiedstrategies.com/trading-indicators/"
+    },
+    {
+      "name": "Ichimoku Cloud",
+      "source_url": "https://www.quantifiedstrategies.com/trading-indicators/",
+      "formula": "Tenkan = (9-period high + 9-period low)/2; Kijun = (26-period high + 26-period low)/2; Senkou A = (Tenkan + Kijun)/2 shifted forward; Senkou B = (52-period high + 52-period low)/2 shifted forward.",
+      "description": "A multi-line system for trend direction, momentum, and dynamic support/resistance; price above the cloud is described as bullish and below it as bearish.",
+      "useful_when": "You want a multi-timeframe trend and level framework in a sustained market.",
+      "not_useful_when": "The market is flat or highly volatile around the cloud, where signals overlap and whipsaw.",
+      "source_url_citation": "https://www.quantifiedstrategies.com/trading-indicators/"
+    },
+    {
+      "name": "VWAP",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "VWAP = Σ(price × volume) / Σ(volume) over the chosen session or window.",
+      "description": "Volume-weighted average price used by scalpers to identify short-term price/volume imbalance.",
+      "useful_when": "Intraday liquidity is adequate and you need an execution benchmark or mean-reversion reference.",
+      "not_useful_when": "The chosen session is arbitrary, volume is unreliable, or the market is making a strong one-way move.",
+      "source_url_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    }
+  ]
+}
