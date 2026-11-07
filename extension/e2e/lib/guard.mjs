@@ -21,6 +21,14 @@ export const ALLOWED_MESSAGES = Object.freeze([
   'data',
   'exportCsv',
   'venueInfo',
+  // Market reads: read-only, and the harness blocks their network, so they
+  // can only fail cleanly. overview and getPrefs read storage.
+  'getPrefs',
+  'holdings',
+  'pools',
+  'swapTokens',
+  'swapQuote',
+  'overview',
   // A tick on a disarmed extension returns `not-armed` and places nothing.
   'tick',
   // Stores a canary string so the secrets checks can prove it never leaks.
@@ -42,6 +50,10 @@ export const FORBIDDEN_MESSAGES = Object.freeze([
   'cancelOrder',
   'resolveIntent',
   'reset',
+  // Write extension storage (preferences, the stored scan, acknowledgements).
+  'setPrefs',
+  'scanAlerts',
+  'ackAlerts',
 ]);
 
 /** Throws unless `type` is an allowlisted message name. */

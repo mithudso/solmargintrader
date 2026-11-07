@@ -6,7 +6,7 @@ SOL trading research and execution tooling, in six parts:
 | --- | --- | --- |
 | [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
 | [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
-| [`extension/`](extension/README.md) | Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **This is the part that can place real orders.** | JavaScript (ESM, no deps) |
+| [`extension/`](extension/README.md) | Holdings, P&L, pool discovery, backtests and strategy changes, swap quotes and alerts for Base and Solana, plus an experimental grid on Jupiter (Solana) with hard risk rails — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **The grid is the part that can place real orders.** | JavaScript (ESM, no deps) |
 | [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI that surfaces signals and paper positions, supervised by launchd. Read-only over the research side. | Python 3.13 |
 | [`mongo/`](mongo/README.md) | Local MongoDB copy of everything measured — bars, strategies, readouts, backtests, CPCV results — plus a runnable query reference. Derived; the files stay the source of truth. | Python 3.13 + pymongo |
 | [`liquidity/`](liquidity/README.md) | **Liquidity instead of trading strategies.** It manages Aero (aero.xyz) Slipstream LP positions on Base: per-pool profitability measures, a pool scout, auto-rebalancing, auto-compounding, deployment of idle coins, and side-by-side experiments with P&L tracking. It moves real money in live mode; soltui's Liquidity tab shows it. | Python 3.13 + web3 (own venv) |
@@ -32,7 +32,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 313 tests
+npm test                                               # 351 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -44,9 +44,9 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 838 tests
-python3 -m unittest discover -s soltui/tests -t .       # 785 tests (~610s)
+python3 -m unittest discover -s soltui/tests -t .       # 788 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 313 tests
+cd extension && npm test                                # 351 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than

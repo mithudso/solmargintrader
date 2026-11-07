@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 32
-Delta: v31 to v32; soltui draggable/closable editor bar, compound row preview, double-click/Space toggle, compound autopilot (v31 is the top-50 1m history).
+Version: 33
+Delta: v32 to v33; soltui draggable/closable editor bar, compound row preview, double-click/Space toggle, compound autopilot.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -211,7 +211,15 @@ Can you download as detailed as possible numbers for as far back as you can go? 
 Download 1 min data for all 50 of the top 50 coins
 ```
 
-## v32 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+## v32 - 2026-11-07 (extension redesign)
+
+```text
+Do a complete redesign of the chrome extension in this repo. THe grid strategy doesn't work as of now so deprioritize that as the first screen. The things I want access to the most are holdings, profit and loss, new lease discovery, easy back testing and strategy changes, and coin exchanges, and alert me to more profitable strategies or pools. Use the coinbase and base skills and llms files to learn how to access and read the base network
+```
+
+Target: `extension/` (UI, registry commands, service worker) plus one read-only soltui command; Stele TASK-836. "New lease discovery" read as new liquidity-pool (LP) discovery.
+
+## v33 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
 
 ```text
 in the soltui there is an orange line which delineates the curser portion above from the editor below, make that orange line adjustable by dragging it with the mouse, and give me the option of closing that window altogether, also whenever I select something like a strategy in the compound tab, it should show a detailed preview of that in the editor window below. Right now it's stuck on one page and won't move. Also let me toggle on/off a strategy by double clicking on it or pressing the space bar with it selected. ALso have it automatically adopt tuned settings, I want this to be a fully automated completely independent hands off self-optimizing system that does not require my input.

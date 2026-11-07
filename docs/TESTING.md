@@ -2,20 +2,20 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 838 tests
-python3 -m unittest discover -s soltui/tests -t .       # 785 tests (~610s)
+python3 -m unittest discover -s soltui/tests -t .       # 788 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 313 tests
+cd extension && npm test                                # 351 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1969 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2010 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 313 tests cover
+## Extension — what the 351 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -30,9 +30,11 @@ nothing caught it.
 | Crypto | Sealed-seed round trip; wrong passphrase fails closed; fresh salt and IV per seal; Ed25519 signing |
 | **Surface parity** | Every command routable over the API; `GET` restricted to read-only; CLI help lists all commands and every argument; UI messages all map to real commands |
 | **soltui bridge** | `soltuiCall` returns the identical envelope through the extension message, the CLI and the API; a refusal, an unknown command and a missing host are the same clean envelope everywhere; the confirm flag is forwarded untouched; a running soltui command does not hold the engine lock; transports (port and child process) time out, ignore other ids and reject junk frames |
+| **Market reads** | ABI decoding against the live `tickSpacings()` answer; non-read RPC methods refused; endpoint fallback; wrong-chain endpoint refused; low-confidence prices unused; unpriced unknown mints listed but not counted; Jupiter holdings first, RPC fallback; exact CL output inside the active range and refusal past it; Jupiter replies that do not match the request refused |
+| **Alerts** | Only fresh, backtest-positive, medium/high-confidence, unflagged, gauged scout pools above break-even may say "act"; a stale or undated scout cannot; an active strategy with no Top 5 record has no baseline; today's all-negative scout raises nothing; idle capital counts Base stablecoins only; quoted leads are info and do not notify by default; first scan records leads silently, and an empty read still counts as the baseline; acks survive re-scans; scans and acks run one at a time |
 | **Auto-reload gate** | First observation only stores the hash; no reload while a tick is queued or running (the change is retried, not forgotten); the reload runs inside the engine lock and holds it; an unreachable host never reloads and is logged once; a failed `reload()` restores the old hash |
 
-The parity suite probes all 25 commands with a deliberately invalid argument, which proves the route
+The parity suite probes all 34 commands with a deliberately invalid argument, which proves the route
 resolved **without executing the handler** — no side effects, no network calls.
 
 ## What is NOT covered
@@ -148,7 +150,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 785 tests
+## soltui — 788 tests
 
 Slower than the others (~70s) because the TUI tests drive real render cycles. Three
 files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster

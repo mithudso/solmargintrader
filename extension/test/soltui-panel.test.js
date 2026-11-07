@@ -57,18 +57,26 @@ test('the dashboard loads the panel and has its mount points', async () => {
   assert.match(dashboard, /mountSoltuiPanel/);
 });
 
-test('the manifest adds nativeMessaging and widens nothing else', async () => {
+test('the manifest asks for exactly the permissions and hosts it uses, and widens nothing else', async () => {
   const manifest = JSON.parse(await readFile(join(ROOT, 'manifest.json'), 'utf8'));
-  assert.deepEqual(manifest.permissions, ['storage', 'alarms', 'nativeMessaging']);
-  assert.deepEqual(manifest.host_permissions, ['https://api.jup.ag/*', 'https://lite-api.jup.ag/*', 'https://tx.jup.ag/*']);
+  // notifications: the alert scan (src/bg/service-worker.js runAlertScan).
+  assert.deepEqual(manifest.permissions, ['storage', 'alarms', 'nativeMessaging', 'notifications']);
+  assert.deepEqual(manifest.host_permissions, [
+    'https://api.jup.ag/*', 'https://lite-api.jup.ag/*', 'https://tx.jup.ag/*',
+    // Read-only market data (src/market): Base and Solana JSON-RPC, DefiLlama prices and yields.
+    'https://mainnet.base.org/*', 'https://base-rpc.publicnode.com/*', 'https://api.mainnet-beta.solana.com/*',
+    'https://coins.llama.fi/*', 'https://yields.llama.fi/*',
+  ]);
   assert.equal(manifest.content_security_policy.extension_pages, "script-src 'self'; object-src 'self'; base-uri 'none'");
   assert.equal(manifest.externally_connectable, undefined, 'no other page or extension may message this one');
   assert.equal(manifest.background.service_worker, 'src/bg/service-worker.js');
 });
 
 test('src/core stays free of chrome.* and node:* even with the soltui bridge', async () => {
-  for (const file of ['soltui.js', 'autoreload.js', 'commands.js', 'engine.js']) {
-    const source = await readFile(join(ROOT, 'src', 'core', file), 'utf8');
+  const files = ['soltui.js', 'autoreload.js', 'commands.js', 'engine.js', 'alerts.js'].map((f) => join('core', f))
+    .concat(['net.js', 'evm.js', 'tokens.js', 'holdings.js', 'pools.js', 'quote.js'].map((f) => join('market', f)));
+  for (const file of files) {
+    const source = await readFile(join(ROOT, 'src', file), 'utf8');
     assert.ok(!/\bchrome\./.test(source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')), `${file} reaches chrome.*`);
     assert.ok(!/from 'node:/.test(source), `${file} imports node:*`);
   }

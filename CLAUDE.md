@@ -75,6 +75,10 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
    fail, and correctly so.
 7. **The exit is one rung above the entry.** A sell placed at the level it was bought at captures
    zero and pays two fees. `expectedRoundTripUsd` and its test exist because this bug shipped once.
+8. **Market reads stay reads, and swaps stay quotes.** `src/market/net.js` refuses any JSON-RPC
+   method that is not a read; `src/market/quote.js` returns a quote and a hand-off URL, never a
+   transaction. A quoted APY (DefiLlama) may raise only an "info" lead; only the Aero scout's modelled figures (fresh, backtest-positive,
+   medium or high confidence, unflagged) may raise an "act" alert (`src/core/alerts.js`, Stele KNOW-837, KNOW-838).
 
 ## Non-negotiables — backtester
 
@@ -101,9 +105,9 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 838 tests
-python3 -m unittest discover -s soltui/tests -t .       # 785 tests (~610s)
+python3 -m unittest discover -s soltui/tests -t .       # 788 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 313 tests
+cd extension && npm test                                # 351 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability

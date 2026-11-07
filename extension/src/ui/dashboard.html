@@ -2,196 +2,517 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>SolMarginTrader — Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SolMarginTrader</title>
     <link rel="stylesheet" href="ui.css" />
   </head>
   <body class="dashboard">
-    <h1>SolMarginTrader <small id="version" class="muted" title="Extension version from manifest.json"></small></h1>
-    <p class="disclaimer">
-      Educational tool, not financial advice. Grid trading loses money in a trending market, and any
-      leveraged position can be liquidated. Dry-run mode is the default for a reason.
-    </p>
-
-    <div id="banner" class="banner"></div>
-
-    <section>
-      <h2>P&amp;L</h2>
-      <dl class="stats wide">
-        <dt>Net</dt><dd id="net">—</dd>
-        <dt>Realized</dt><dd id="realized">—</dd>
-        <dt>Unrealized</dt><dd id="unrealized">—</dd>
-        <dt>Fees + carry</dt><dd id="fees">—</dd>
-        <dt>Round trips</dt><dd id="trips">—</dd>
-        <dt>Win rate</dt><dd id="winRate">—</dd>
-        <dt>Max drawdown</dt><dd id="drawdown">—</dd>
-        <dt>Open inventory</dt><dd id="inventory">—</dd>
-      </dl>
-      <figure>
-        <figcaption>Equity curve (closed round trips, net of fees and carry)</figcaption>
-        <div id="equityChart" role="img" aria-label="Equity curve"></div>
-      </figure>
-      <figure>
-        <figcaption>Grid ladder — resting orders and fills by rung</figcaption>
-        <div id="ladderChart" role="img" aria-label="Grid ladder"></div>
-      </figure>
-      <button id="exportCsv">Export fills as CSV</button>
-    </section>
-
-    <section>
-      <h2>Grid configuration</h2>
-      <form id="configForm" class="grid-form">
-        <label>Mode
-          <select name="mode">
-            <option value="dry-run">dry-run — simulate, place nothing</option>
-            <option value="semi-auto">semi-auto — real orders, approve each signature</option>
-            <option value="full-auto">full-auto — real orders, session key signs</option>
-          </select>
-        </label>
-        <label>Venue
-          <select name="venue">
-            <option value="trigger">Jupiter Trigger V2 (spot, live-capable)</option>
-            <option value="perps">Jupiter Perps (read-only — no write API)</option>
-          </select>
-        </label>
-        <label>Wallet pubkey <input name="userPubkey" type="text" spellcheck="false" /></label>
-        <div class="row">
-          <button id="useSoltuiAddress" type="button">Use soltui Solana address</button>
-          <span id="useSoltuiStatus" class="note" role="status"></span>
-        </div>
-        <label>Base mint <input name="baseMint" type="text" spellcheck="false" /></label>
-        <label>Quote mint <input name="quoteMint" type="text" spellcheck="false" /></label>
-        <label>Lower bound (USD) <input name="lower" type="number" step="any" min="0" /></label>
-        <label>Upper bound (USD) <input name="upper" type="number" step="any" min="0" /></label>
-        <label>Rungs <input name="rungs" type="number" min="2" step="1" /></label>
-        <label>Spacing
-          <select name="spacing">
-            <option value="geom">geometric — equal %</option>
-            <option value="arith">arithmetic — equal $</option>
-          </select>
-        </label>
-        <label>Notional per rung (USD) <input name="notionalPerRungUsd" type="number" step="any" min="10" /></label>
-        <label>Direction
-          <select name="direction">
-            <option value="neutral">neutral</option>
-            <option value="long">long</option>
-            <option value="short">short</option>
-          </select>
-        </label>
-        <label>Deadband (bps) <input name="deadbandBps" type="number" min="0" step="1" /></label>
-        <label>Slippage (bps) <input name="slippageBps" type="number" min="0" max="10000" step="1" /></label>
-        <label>Leverage <input name="leverage" type="number" min="1" step="any" /></label>
-        <label>Margin source
-          <select name="marginSource">
-            <option value="none">none (spot)</option>
-            <option value="jup-lend">Jupiter Lend borrow (not implemented)</option>
-          </select>
-        </label>
-        <label>Tick seconds <input name="tickSeconds" type="number" min="30" step="1" /></label>
-        <button type="submit" class="primary">Save configuration</button>
-      </form>
-      <p id="capital" class="note"></p>
-    </section>
-
-    <section>
-      <h2>Risk rails</h2>
-      <form id="limitsForm" class="grid-form">
-        <label>Max total notional (USD) <input name="maxTotalNotionalUsd" type="number" step="any" /></label>
-        <label>Max per-order notional (USD) <input name="maxNotionalPerOrderUsd" type="number" step="any" /></label>
-        <label>Max concurrent orders <input name="maxConcurrentOrders" type="number" step="1" /></label>
-        <label>Max leverage <input name="maxLeverage" type="number" step="any" /></label>
-        <label>Daily loss limit (USD) <input name="dailyLossLimitUsd" type="number" step="any" /></label>
-        <label>Max slippage (bps) <input name="maxSlippageBps" type="number" step="1" /></label>
-        <label>Min liquidation distance (%) <input name="minLiquidationDistancePct" type="number" step="any" /></label>
-        <label>Max orders per tick <input name="maxOrdersPerTick" type="number" step="1" /></label>
-        <button type="submit" class="primary">Save rails</button>
-      </form>
-    </section>
-
-    <section>
-      <h2>Jupiter API key</h2>
-      <p class="note">
-        Stored in <code>chrome.storage.local</code> only — never <code>.sync</code>, which would
-        upload it. Trigger V2 requires a key for every call.
-        Get one at <code>developers.jup.ag/portal</code>.
-      </p>
-      <form id="keyForm" class="row">
-        <input name="apiKey" type="password" placeholder="x-api-key" autocomplete="off" />
-        <button type="submit">Save key</button>
-      </form>
-    </section>
-
-    <section>
-      <h2>Session key</h2>
-      <p class="note">
-        Creates a dedicated signing key for <code>full-auto</code> mode, encrypted under your
-        passphrase in <code>chrome.storage.local</code>. The passphrase is never stored: if you lose
-        it, the key cannot be reopened. Fund the address shown with grid working capital only.
-      </p>
-      <form id="sessionKeyForm" class="grid-form" autocomplete="off">
-        <label>Passphrase (12+ characters)
-          <input name="passphrase" type="password" autocomplete="new-password" />
-        </label>
-        <label>Confirm passphrase
-          <input name="confirmPassphrase" type="password" autocomplete="new-password" />
-        </label>
-        <label>
-          <input name="acknowledged" type="checkbox" />
-          I understand this replaces any existing session key; funds left in the old one stay
-          unreachable unless I have backed it up.
-        </label>
-        <button type="submit" class="primary">Create session key</button>
-      </form>
-      <p id="sessionKeyResult" class="note" role="status"></p>
-    </section>
-
-    <section id="soltui">
-      <h2>SolTUI</h2>
-      <p class="note">
-        The same commands as the SolTUI app, <code>soltui call</code> and the soltui API, run through
-        the <code>com.mitchhudson.soltui</code> native host. Each returns soltui's own response
-        unchanged. A command that removes a safety stop asks for confirmation here and again in soltui.
-      </p>
-      <div class="row">
-        <select id="soltuiCommand" aria-label="soltui command"></select>
-        <button id="soltuiReload" type="button">Reload list</button>
+    <nav class="sidebar" aria-label="Sections">
+      <div class="brand">
+        <img src="../../icons/icon-48.png" alt="" />
+        <div><strong>SolMarginTrader</strong><small id="version" title="Extension version from manifest.json"></small></div>
       </div>
-      <p id="soltuiStatus" class="note" role="status"></p>
-      <p id="soltuiDescribe" class="note"></p>
-      <form id="soltuiForm" class="grid-form" autocomplete="off"></form>
-      <pre id="soltuiResult" aria-live="polite"></pre>
-    </section>
+      <a class="nav-link" href="#overview">Overview</a>
+      <a class="nav-link" href="#holdings">Holdings</a>
+      <a class="nav-link" href="#pnl">Profit &amp; loss</a>
+      <a class="nav-link" href="#discover">Discover pools</a>
+      <a class="nav-link" href="#strategies">Backtest &amp; strategies</a>
+      <a class="nav-link" href="#swap">Swap</a>
+      <a class="nav-link" href="#alerts">Alerts <span id="navAlertCount" class="count" hidden></span></a>
+      <div class="nav-sep"></div>
+      <a class="nav-link" href="#settings">Settings</a>
+      <a class="nav-link" href="#grid">Grid <span class="chip plain">experimental</span></a>
+      <p class="nav-note">The grid loses to buy-and-hold walk-forward; it stays dry-run by default.</p>
+    </nav>
 
-    <section>
-      <h2>Order journal</h2>
-      <table id="intents">
-        <thead>
-          <tr><th>Rung</th><th>Side</th><th>Level</th><th>Status</th><th>Venue order</th><th>Note</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+    <main>
+      <div class="topbar">
+        <div class="meta">
+          <span id="scanInfo">No scan yet</span>
+          <span class="pill" title="Grid mode">grid <span id="gridModePill">…</span></span>
+        </div>
+        <div class="row">
+          <button id="scanNow" type="button" class="primary">Scan now</button>
+        </div>
+      </div>
 
-    <section>
-      <h2>Fills</h2>
-      <table id="fills">
-        <thead>
-          <tr><th>Time</th><th>Side</th><th>Qty</th><th>Price</th><th>Fee</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+      <!-- ================================================================ Overview -->
+      <section id="view-overview" class="view" data-view="overview">
+        <div class="view-head">
+          <div>
+            <h1>Overview</h1>
+            <p>Live balances, recent profit and loss, and anything worth acting on.</p>
+          </div>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><div class="label">Total holdings</div><div class="value" id="kpiTotal">—</div><div class="sub" id="kpiTotalSub"></div></div>
+          <div class="kpi"><div class="label">Base</div><div class="value" id="kpiBase">—</div><div class="sub" id="kpiBaseSub"></div></div>
+          <div class="kpi"><div class="label">Solana</div><div class="value" id="kpiSolana">—</div><div class="sub" id="kpiSolanaSub"></div></div>
+          <div class="kpi"><div class="label">Idle stablecoins on Base</div><div class="value" id="kpiIdle">—</div><div class="sub">could be earning in a pool</div></div>
+          <div class="kpi"><div class="label">Wallet P&amp;L, 30 days</div><div class="value" id="kpiPnl">—</div><div class="sub" id="kpiPnlSub">from soltui wallet snapshots</div></div>
+          <div class="kpi"><div class="label">LP daemon</div><div class="value" id="kpiLp">—</div><div class="sub" id="kpiLpSub"></div></div>
+        </div>
 
-    <section>
-      <h2>Recent events</h2>
-      <pre id="events"></pre>
-    </section>
+        <div class="card">
+          <div class="card-head"><h2>Needs attention</h2><a href="#alerts">All alerts →</a></div>
+          <div id="overviewAlerts" class="alerts"></div>
+        </div>
 
-    <!-- Licence display obligations (SDK & API License Agreement 8.4 and 2.3). -->
-    <section>
-      <h2>Attribution</h2>
-      <p id="attribution" class="disclaimer">Powered by Jupiter</p>
-      <pre id="attributionDetail"></pre>
-    </section>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h2>Best scouted pools <span class="chip modelled">modelled</span></h2><a href="#discover">Discover →</a></div>
+            <div id="overviewScout" class="table-wrap"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Strategy</h2><a href="#strategies">Backtest →</a></div>
+            <div id="overviewStrategy"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ Holdings -->
+      <section id="view-holdings" class="view" data-view="holdings" hidden>
+        <div class="view-head">
+          <div>
+            <h1>Holdings</h1>
+            <p>Base from public JSON-RPC, Solana from Jupiter's holdings read (RPC as fallback); prices from DefiLlama and Jupiter. Read-only.</p>
+          </div>
+          <div class="row">
+            <button id="holdingsRefresh" type="button" class="primary">Refresh</button>
+            <button id="holdingsDeep" type="button" title="soltui portfolio.scan: stakes, LP NFTs, every token an indexer knows, BTC/LTC/DOGE">Deep scan (soltui)</button>
+          </div>
+        </div>
+        <div class="kpis" id="holdingsKpis"></div>
+        <div id="holdingsChains" class="grid-2"></div>
+        <div class="card">
+          <div class="card-head"><h2>LP positions (aero-lp daemon)</h2><span id="lpStatus" class="chip plain"></span></div>
+          <div id="lpPositions" class="table-wrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Changes since the last snapshot</h2><button id="holdingsChanges" type="button" class="small">Load</button></div>
+          <pre id="holdingsChangesOut">Snapshots are taken hourly by soltui (portfolio.snapshot).</pre>
+        </div>
+        <div class="card" id="deepScanCard" hidden>
+          <div class="card-head"><h2>Deep scan</h2></div>
+          <div id="deepScanOut"></div>
+        </div>
+      </section>
+
+      <!-- ================================================================ P&L -->
+      <section id="view-pnl" class="view" data-view="pnl" hidden>
+        <div class="view-head">
+          <div>
+            <h1>Profit &amp; loss</h1>
+            <p>One section per source. Simulated and real money are never summed.</p>
+          </div>
+          <div class="filters">
+            <label>Window
+              <select id="pnlWindow">
+                <option value="24h">24 hours</option>
+                <option value="7d">7 days</option>
+                <option value="30d" selected>30 days</option>
+                <option value="90d">90 days</option>
+                <option value="ytd">Year to date</option>
+                <option value="all">All</option>
+              </select>
+            </label>
+            <label>Source
+              <select id="pnlSource">
+                <option value="all">All sources</option>
+                <option value="wallet (live)">Wallet (live)</option>
+                <option value="live LP">Live LP</option>
+                <option value="dry-run LP">Dry-run LP</option>
+                <option value="paper">Paper</option>
+                <option value="backtest">Backtest</option>
+                <option value="dry-run">Dry-run journal</option>
+              </select>
+            </label>
+            <button id="pnlRefresh" type="button" class="primary">Load</button>
+          </div>
+        </div>
+        <p id="pnlNotice" class="note"></p>
+        <div id="pnlSections" class="grid-2"></div>
+      </section>
+
+      <!-- ================================================================ Discover -->
+      <section id="view-discover" class="view" data-view="discover" hidden>
+        <div class="view-head">
+          <div>
+            <h1>Discover pools</h1>
+            <p>Modelled Aero figures first; DefiLlama's quoted APYs below are leads to check, not income.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h2>Aero scout <span class="chip modelled">modelled</span></h2>
+            <span id="scoutMeta" class="muted"></span>
+          </div>
+          <div id="scoutTable" class="table-wrap"></div>
+          <p class="note">Modelled estimates, not results: measured fee growth plus AERO share minus loss-versus-rebalancing at the best width, for the scout's deposit size. The daemon deploys only inside its caps.</p>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h2>All Base and Solana pools <span class="chip quoted">quoted</span></h2>
+            <span id="poolsMeta" class="muted"></span>
+          </div>
+          <form id="poolFilters" class="filters" autocomplete="off">
+            <label>Chain
+              <select name="chain"><option value="all">All</option><option value="base">Base</option><option value="solana">Solana</option></select>
+            </label>
+            <label>Min TVL ($)<input name="minTvlUsd" type="number" min="0" step="any" value="250000" /></label>
+            <label>Sort
+              <select name="sort">
+                <option value="apyMean30d">30-day mean APY</option>
+                <option value="apy">APY now</option>
+                <option value="apyBase">Base APY (fees)</option>
+                <option value="tvlUsd">TVL</option>
+              </select>
+            </label>
+            <label>Search<input name="search" type="search" placeholder="usdc, aerodrome, kamino…" /></label>
+            <label class="check"><input name="stableOnly" type="checkbox" /> Stablecoins only</label>
+            <label class="check"><input name="singleOnly" type="checkbox" /> Single asset</label>
+            <button type="submit" class="primary">Apply</button>
+          </form>
+          <div id="poolsTable" class="table-wrap"></div>
+        </div>
+      </section>
+
+      <!-- ================================================================ Strategies -->
+      <section id="view-strategies" class="view" data-view="strategies" hidden>
+        <div class="view-head">
+          <div>
+            <h1>Backtest &amp; strategies</h1>
+            <p>Every figure here is a backtest (CPCV, out-of-sample paths), not a live return.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Top 5 configurations <span class="chip backtest">backtest</span></h2><span id="activeStrategy" class="muted"></span></div>
+          <div id="top5Table" class="table-wrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h2>Run a backtest</h2>
+            <div class="row">
+              <button id="backtestRun" type="button" class="primary">Run roster backtest</button>
+              <button id="backtestCancel" type="button" disabled>Cancel</button>
+            </div>
+          </div>
+          <div class="progress" aria-hidden="true"><div id="backtestBar"></div></div>
+          <p id="backtestStatus" class="note" role="status"></p>
+          <div id="backtestResults" class="table-wrap"></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h2>Roster</h2><button id="rosterReset" type="button" class="small">Reset to defaults</button></div>
+            <div id="rosterTable" class="table-wrap"></div>
+            <form id="rosterAdd" class="form" autocomplete="off">
+              <label>Strategy<select name="name"></select></label>
+              <label>Params (JSON, optional)<input name="params" type="text" placeholder='{"fast": 10}' spellcheck="false" /></label>
+              <button type="submit">Add to roster</button>
+            </form>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Recommendation</h2></div>
+            <div id="recommendation"></div>
+            <h3 style="margin-top:14px">Strategy history</h3>
+            <div id="historyTable" class="table-wrap"></div>
+          </div>
+        </div>
+        <div class="card">
+          <details id="signalsDetails">
+            <summary>Signal defaults (indicator parameters)</summary>
+            <form id="signalsForm" class="form" autocomplete="off"></form>
+            <p id="signalsStatus" class="note" role="status"></p>
+          </details>
+        </div>
+      </section>
+
+      <!-- ================================================================ Swap -->
+      <section id="view-swap" class="view" data-view="swap" hidden>
+        <div class="view-head">
+          <div>
+            <h1>Swap</h1>
+            <p>Quotes here; you review and sign on the venue's page in your own wallet. This extension signs nothing.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <form id="swapForm" class="card swap" autocomplete="off">
+            <div class="segmented" role="group" aria-label="Chain">
+              <button type="button" data-chain="base" aria-pressed="true">Base</button>
+              <button type="button" data-chain="solana" aria-pressed="false">Solana</button>
+            </div>
+            <div class="leg">
+              <span class="muted">You pay</span>
+              <div class="row">
+                <input name="amount" inputmode="decimal" placeholder="0.0" aria-label="Amount to pay" />
+                <select name="from" aria-label="Token to pay"></select>
+              </div>
+              <span id="swapBalance" class="muted"></span>
+            </div>
+            <button id="swapFlip" type="button" class="flip" aria-label="Swap direction">⇅</button>
+            <div class="leg">
+              <span class="muted">You receive</span>
+              <div class="row">
+                <input name="out" readonly placeholder="—" aria-label="Amount to receive" />
+                <select name="to" aria-label="Token to receive"></select>
+              </div>
+            </div>
+            <label class="muted">Slippage tolerance (bps)
+              <input name="slippageBps" type="number" min="1" max="1000" step="1" value="50" />
+            </label>
+            <button type="submit" class="primary">Get quote</button>
+            <p id="swapError" class="err" role="alert"></p>
+          </form>
+          <div class="card quote" id="swapQuote" hidden>
+            <div class="card-head"><h2>Quote</h2><span id="swapVenue" class="chip plain"></span></div>
+            <dl id="swapDetails"></dl>
+            <ul id="swapCaveats" class="note"></ul>
+            <a id="swapHandoff" class="button primary" target="_blank" rel="noopener noreferrer">Review and sign on the venue ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ Alerts -->
+      <section id="view-alerts" class="view" data-view="alerts" hidden>
+        <div class="view-head">
+          <div>
+            <h1>Alerts</h1>
+            <p><span class="chip modelled">modelled</span> may justify moving money · <span class="chip backtest">backtest</span> worth reviewing · <span class="chip quoted">quoted</span> a lead to check</p>
+          </div>
+          <div class="row"><button id="ackAll" type="button">Acknowledge all</button></div>
+        </div>
+        <div id="alertList" class="alerts"></div>
+        <p id="scanNotes" class="note"></p>
+        <div class="card">
+          <div class="card-head"><h2>Alert settings</h2></div>
+          <form id="alertPrefs" class="form" autocomplete="off">
+            <label class="check"><input name="alertsEnabled" type="checkbox" /> Scan in the background and notify me</label>
+            <label>Scan every (minutes)<input name="alertIntervalMinutes" type="number" min="15" max="1440" step="1" /></label>
+            <label>Pool must beat my position by (APR points)<input name="minAprGainPct" type="number" min="0" step="any" /></label>
+            <label>Idle stablecoins worth an alert ($)<input name="minIdleUsd" type="number" min="0" step="any" /></label>
+            <label>Modelled net APR worth moving idle money (%)<input name="minNetAprPct" type="number" min="0" step="any" /></label>
+            <label>Ignore a scout older than (hours)<input name="maxScoutAgeHours" type="number" min="0" step="any" /></label>
+            <label>Quoted lead: minimum TVL ($)<input name="leadMinTvlUsd" type="number" min="0" step="any" /></label>
+            <label>Quoted lead: minimum 30-day APY (%)<input name="leadMinApyPct" type="number" min="0" step="any" /></label>
+            <label>Strategy Sharpe margin<input name="minSharpeGain" type="number" min="0" step="any" /></label>
+            <label class="check"><input name="notifyLeads" type="checkbox" /> Also notify for quoted leads</label>
+            <button type="submit" class="primary">Save alert settings</button>
+          </form>
+          <p id="alertPrefsStatus" class="note" role="status"></p>
+        </div>
+      </section>
+
+      <!-- ================================================================ Settings -->
+      <section id="view-settings" class="view" data-view="settings" hidden>
+        <div class="view-head"><div><h1>Settings</h1></div></div>
+        <div class="card">
+          <div class="card-head"><h2>Wallet addresses</h2></div>
+          <p class="note">Public addresses only. Holdings and alerts read these; no key is ever stored or asked for here.</p>
+          <form id="walletForm" class="form" autocomplete="off">
+            <label class="full">Base (EVM) address<input name="baseAddress" type="text" spellcheck="false" placeholder="0x…" /></label>
+            <label class="full">Solana address<input name="solanaAddress" type="text" spellcheck="false" /></label>
+            <div class="row full">
+              <button type="submit" class="primary">Save addresses</button>
+              <button id="walletFromSoltui" type="button">Fill from soltui</button>
+              <span id="walletStatus" class="note" role="status"></span>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Jupiter API key</h2></div>
+          <p class="note">
+            Stored in <code>chrome.storage.local</code> only — never <code>.sync</code>, which would
+            upload it. The grid's Trigger V2 orders require a key; quotes and prices use the keyless tier.
+          </p>
+          <form id="keyForm" class="row">
+            <input name="apiKey" type="password" placeholder="x-api-key" autocomplete="off" />
+            <button type="submit">Save key</button>
+          </form>
+        </div>
+        <div class="card" id="soltui">
+          <div class="card-head"><h2>SolTUI console</h2></div>
+          <p class="note">
+            The same commands as the SolTUI app, <code>soltui call</code> and the soltui API, run through
+            the <code>com.mitchhudson.soltui</code> native host. Each returns soltui's own response
+            unchanged. A command that removes a safety stop asks for confirmation here and again in soltui.
+          </p>
+          <div class="row">
+            <select id="soltuiCommand" aria-label="soltui command"></select>
+            <button id="soltuiReload" type="button">Reload list</button>
+          </div>
+          <p id="soltuiStatus" class="note" role="status"></p>
+          <p id="soltuiDescribe" class="note"></p>
+          <form id="soltuiForm" class="form" autocomplete="off"></form>
+          <pre id="soltuiResult" aria-live="polite"></pre>
+        </div>
+        <!-- Licence display obligations (SDK & API License Agreement 8.4 and 2.3). -->
+        <div class="card">
+          <div class="card-head"><h2>Attribution</h2></div>
+          <p id="attribution" class="note">Powered by Jupiter</p>
+          <pre id="attributionDetail"></pre>
+        </div>
+      </section>
+
+      <!-- ================================================================ Grid -->
+      <section id="view-grid" class="view" data-view="grid" hidden>
+        <div class="view-head">
+          <div>
+            <h1>Grid <span class="chip warn">experimental</span></h1>
+            <p>The Jupiter ladder grid. It lost to buy-and-hold walk-forward on 9 of 9 coins; it stays here for research and dry runs.</p>
+          </div>
+        </div>
+        <div id="banner" class="banner"></div>
+        <p class="disclaimer">
+          Educational tool, not financial advice. Grid trading loses money in a trending market, and any
+          leveraged position can be liquidated. Dry-run mode is the default for a reason.
+        </p>
+
+        <div class="card">
+          <div class="card-head"><h2>Grid P&amp;L</h2><button id="exportCsv" type="button" class="small">Export fills as CSV</button></div>
+          <dl class="stats" style="grid-template-columns: repeat(4, auto 1fr)">
+            <dt>Net</dt><dd id="net">—</dd>
+            <dt>Realized</dt><dd id="realized">—</dd>
+            <dt>Unrealized</dt><dd id="unrealized">—</dd>
+            <dt>Fees + carry</dt><dd id="fees">—</dd>
+            <dt>Round trips</dt><dd id="trips">—</dd>
+            <dt>Win rate</dt><dd id="winRate">—</dd>
+            <dt>Max drawdown</dt><dd id="drawdown">—</dd>
+            <dt>Open inventory</dt><dd id="inventory">—</dd>
+          </dl>
+          <div class="grid-2">
+            <figure class="chart">
+              <figcaption>Equity curve (closed round trips, net of fees and carry)</figcaption>
+              <div id="equityChart" role="img" aria-label="Equity curve"></div>
+            </figure>
+            <figure class="chart">
+              <figcaption>Ladder — resting orders and fills by rung</figcaption>
+              <div id="ladderChart" role="img" aria-label="Grid ladder"></div>
+            </figure>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Grid configuration</h2></div>
+          <form id="configForm" class="form">
+            <label>Mode
+              <select name="mode">
+                <option value="dry-run">dry-run — simulate, place nothing</option>
+                <option value="semi-auto">semi-auto — real orders, approve each signature</option>
+                <option value="full-auto">full-auto — real orders, session key signs</option>
+              </select>
+            </label>
+            <label>Venue
+              <select name="venue">
+                <option value="trigger">Jupiter Trigger V2 (spot, live-capable)</option>
+                <option value="perps">Jupiter Perps (read-only — no write API)</option>
+              </select>
+            </label>
+            <label class="full">Wallet pubkey <input name="userPubkey" type="text" spellcheck="false" /></label>
+            <div class="row full">
+              <button id="useSoltuiAddress" type="button">Use soltui Solana address</button>
+              <span id="useSoltuiStatus" class="note" role="status"></span>
+            </div>
+            <label>Base mint <input name="baseMint" type="text" spellcheck="false" /></label>
+            <label>Quote mint <input name="quoteMint" type="text" spellcheck="false" /></label>
+            <label>Lower bound (USD) <input name="lower" type="number" step="any" min="0" /></label>
+            <label>Upper bound (USD) <input name="upper" type="number" step="any" min="0" /></label>
+            <label>Rungs <input name="rungs" type="number" min="2" step="1" /></label>
+            <label>Spacing
+              <select name="spacing">
+                <option value="geom">geometric — equal %</option>
+                <option value="arith">arithmetic — equal $</option>
+              </select>
+            </label>
+            <label>Notional per rung (USD) <input name="notionalPerRungUsd" type="number" step="any" min="10" /></label>
+            <label>Direction
+              <select name="direction">
+                <option value="neutral">neutral</option>
+                <option value="long">long</option>
+                <option value="short">short</option>
+              </select>
+            </label>
+            <label>Deadband (bps) <input name="deadbandBps" type="number" min="0" step="1" /></label>
+            <label>Slippage (bps) <input name="slippageBps" type="number" min="0" max="10000" step="1" /></label>
+            <label>Leverage <input name="leverage" type="number" min="1" step="any" /></label>
+            <label>Margin source
+              <select name="marginSource">
+                <option value="none">none (spot)</option>
+                <option value="jup-lend">Jupiter Lend borrow (not implemented)</option>
+              </select>
+            </label>
+            <label>Tick seconds <input name="tickSeconds" type="number" min="30" step="1" /></label>
+            <button type="submit" class="primary">Save configuration</button>
+          </form>
+          <p id="capital" class="note"></p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Risk rails</h2></div>
+          <form id="limitsForm" class="form">
+            <label>Max total notional (USD) <input name="maxTotalNotionalUsd" type="number" step="any" /></label>
+            <label>Max per-order notional (USD) <input name="maxNotionalPerOrderUsd" type="number" step="any" /></label>
+            <label>Max concurrent orders <input name="maxConcurrentOrders" type="number" step="1" /></label>
+            <label>Max leverage <input name="maxLeverage" type="number" step="any" /></label>
+            <label>Daily loss limit (USD) <input name="dailyLossLimitUsd" type="number" step="any" /></label>
+            <label>Max slippage (bps) <input name="maxSlippageBps" type="number" step="1" /></label>
+            <label>Min liquidation distance (%) <input name="minLiquidationDistancePct" type="number" step="any" /></label>
+            <label>Max orders per tick <input name="maxOrdersPerTick" type="number" step="1" /></label>
+            <button type="submit" class="primary">Save rails</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Session key</h2></div>
+          <p class="note">
+            Creates a dedicated signing key for <code>full-auto</code> mode, encrypted under your
+            passphrase in <code>chrome.storage.local</code>. The passphrase is never stored: if you lose
+            it, the key cannot be reopened. Fund the address shown with grid working capital only.
+          </p>
+          <form id="sessionKeyForm" class="form" autocomplete="off">
+            <label>Passphrase (12+ characters)
+              <input name="passphrase" type="password" autocomplete="new-password" />
+            </label>
+            <label>Confirm passphrase
+              <input name="confirmPassphrase" type="password" autocomplete="new-password" />
+            </label>
+            <label class="check full">
+              <input name="acknowledged" type="checkbox" />
+              I understand this replaces any existing session key; funds left in the old one stay
+              unreachable unless I have backed it up.
+            </label>
+            <button type="submit" class="primary">Create session key</button>
+          </form>
+          <p id="sessionKeyResult" class="note" role="status"></p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Order journal</h2></div>
+          <div class="table-wrap">
+            <table id="intents">
+              <thead><tr><th>Rung</th><th>Side</th><th>Level</th><th>Status</th><th>Venue order</th><th>Note</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Fills</h2></div>
+          <div class="table-wrap">
+            <table id="fills">
+              <thead><tr><th>Time</th><th>Side</th><th>Qty</th><th>Price</th><th>Fee</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Recent events</h2></div>
+          <pre id="events"></pre>
+        </div>
+      </section>
+      <p class="disclaimer">
+        Educational tool, not financial advice. Pool APRs move, liquidity positions can lose to holding,
+        and a backtest is not a live result. Every figure says where it came from.
+      </p>
+    </main>
 
     <script type="module" src="dashboard.js"></script>
   </body>

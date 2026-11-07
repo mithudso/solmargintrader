@@ -537,3 +537,44 @@ class WalletWordingTests(unittest.TestCase):
         self.assertIn("held, not idle yet", line)
         self.assertIn("(idle)", line)
         self.assertNotIn("in positions", line)
+
+
+class LiquidityDataCommandTests(unittest.TestCase):
+    """`liquidity.data` hands the extension raw numbers, not display strings."""
+
+    def test_raw_scout_positions_and_wallet(self) -> None:
+        from soltui import commands
+
+        with TemporaryDirectory() as tmp, mock.patch.dict(os.environ, {"AERO_LP_HOME": tmp}):
+            home = Path(tmp)
+            write(home, liq.STATUS_FILE, status_doc())
+            write(home, liq.SCOUT_FILE, scout_doc())
+            env = commands.dispatch("liquidity.data", {"top": 2}, "api", quiet=True)
+        self.assertTrue(env["ok"], env)
+        out = env["result"]
+        self.assertTrue(out["status_ok"] and out["scout_ok"])
+        self.assertTrue(out["scout"]["measured"])
+        self.assertEqual([p["pair"] for p in out["scout"]["pools"]], ["LOW/POOL", "TOP/POOL"])
+        self.assertEqual(out["scout"]["pools"][1]["expected_net_apr"], 18.2)
+        self.assertNotIn("fee_apr_ref", out["scout"]["pools"][0])
+        self.assertEqual(out["positions"][0]["apr_realized"], -12.3)
+        self.assertNotIn("reason", out["positions"][0])
+        self.assertEqual(out["wallet"]["idle_usd"], 45.6)
+        self.assertEqual(out["mode"], "live")
+
+    def test_missing_files_are_reported_not_raised(self) -> None:
+        from soltui import commands
+
+        with TemporaryDirectory() as tmp, mock.patch.dict(os.environ, {"AERO_LP_HOME": tmp}):
+            env = commands.dispatch("liquidity.data", {}, "api", quiet=True)
+        self.assertTrue(env["ok"], env)
+        self.assertFalse(env["result"]["scout_ok"])
+        self.assertEqual(env["result"]["scout"]["pools"], [])
+        self.assertEqual(env["result"]["positions"], [])
+
+    def test_top_must_be_positive(self) -> None:
+        from soltui import commands
+
+        env = commands.dispatch("liquidity.data", {"top": 0}, "api", quiet=True)
+        self.assertFalse(env["ok"])
+        self.assertEqual(env["error"]["code"], "bad_params")

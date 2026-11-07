@@ -1350,6 +1350,51 @@ def liquidity_status(ctx: Context, p: dict[str, Any]) -> Any:
     return out
 
 
+_SCOUT_FIELDS = ("pool", "pair", "token0", "token1", "tick_spacing", "fee_pct", "tvl_usd", "volume_24h_usd",
+                 "expected_net_apr", "backtest_net_apr", "backtest_days", "best_mode", "best_half_width_pct",
+                 "confidence", "flags", "gauge_active", "history_days", "break_even_deposit_usd")
+# Every APR here is in percent: apr_realized (STATE_FILES.md) and the scout's *_net_apr (scout.format_report).
+_POSITION_FIELDS = ("slot", "token_id", "pool", "pair", "tick_spacing", "in_range", "value_usd", "deposited_usd",
+                    "pnl_usd", "pnl_vs_hodl_usd", "apr_realized", "opened_at", "decision")
+_WALLET_TOKEN_FIELDS = ("symbol", "address", "amount", "usd", "idle")
+
+
+def _pick(row: Any, fields: tuple[str, ...]) -> dict[str, Any]:
+    return {k: row[k] for k in fields if isinstance(row, dict) and k in row}
+
+
+@command("liquidity.data",
+         "Machine-readable aero-lp state for the extension's alerts: the scout's measured pools (expected and "
+         "backtest net APR, in percent), the daemon's positions and its idle wallet balances. Read-only.",
+         (P("top", "number", "Scout pools to return, best first (default 25, at most 100)."),))
+def liquidity_data(ctx: Context, p: dict[str, Any]) -> Any:
+    top = p.get("top", 25)
+    if not math.isfinite(float(top)) or int(top) < 1:
+        raise CommandError("bad_params", 'parameter "top" must be a positive number')
+    home = liq.state_dir()
+    status = liq.load_status(home)
+    scout = liq.load_scout(home)
+    sdoc = scout.data or {}
+    st = status.data or {}
+    wallet = st.get("wallet") if isinstance(st.get("wallet"), dict) else {}
+    return {
+        "status_ok": status.data is not None, "status_reason": status.reason,
+        "scout_ok": scout.data is not None, "scout_reason": scout.reason,
+        "killed": liq.is_killed(home) or bool(st.get("killed")),
+        "mode": st.get("mode"),
+        "scout": {
+            "generated_at": sdoc.get("generated_at"), "deposit_usd": sdoc.get("deposit_usd"),
+            "pools": [_pick(r, _SCOUT_FIELDS) for r in (sdoc.get("pools") or [])[:min(100, int(top))]
+                      if isinstance(r, dict)],
+            "measured": True,
+        },
+        "positions": [_pick(r, _POSITION_FIELDS) for r in liq.positions_of(st)],
+        "wallet": {"idle_usd": wallet.get("idle_usd"), "deployed_usd": wallet.get("deployed_usd"),
+                   "tokens": [_pick(t, _WALLET_TOKEN_FIELDS) for t in (wallet.get("tokens") or [])
+                              if isinstance(t, dict)]},
+    }
+
+
 def _liq_write(on: bool) -> dict[str, Any]:
     try:
         liq.set_kill(on)
