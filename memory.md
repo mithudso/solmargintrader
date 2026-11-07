@@ -1,6 +1,6 @@
 # Work continuation
 
-Version: 17
+Version: 18
 Delta: soltui read-only wallet discovery (PR B): Settings addresses, key-source row, portfolio.scan, Wallet tab, wallet (live) P&L section.
 
 ## v1 - 2026-11-06
@@ -183,6 +183,14 @@ Facts to keep: the CI e2e (extension real browser) is flaky once ("installed mod
 Remaining follow-ups: a soltui Triggers view over research/results/triggers_*.csv; live trigger alerts through the executor.
 
 ## v17 - 2026-11-07
+
+Target: the owner reloaded the unpacked extension from /Users/mitch/dev/solmargintrader/extension and saw "no change": the version still read 0.1.0. The code on disk had changed (PR #42 added the nativeMessaging permission and a SolTUI panel), but nobody bumped the version, and the new panel is on the dashboard, not the popup.
+
+Done: manifest.json and package.json are 0.2.0. The popup header and the dashboard title show the manifest version. The popup gains a "SolTUI console" button that opens dashboard.html#soltui. test/version.test.js keeps the two version fields equal and checks that both pages render the version. The CI extension job fails a pull request that changes extension/src or manifest.json without a version bump.
+
+Owner steps (Chrome Beta, where the extension is installed): quit and reopen Chrome Beta once so it reads the com.mitchhudson.soltui native host manifest, then reload SolMarginTrader in chrome://extensions. The popup should then read v0.2.0.
+
+## v18 - 2026-11-07
 
 Target: PR B of the read-only request (prompts.md v8): wallet discovery. Branch soltui-wallet, worktree /Users/mitch/dev/smt-wt-wallet. PR A (presets, net %, P&L tab) merged as d402b27.
 

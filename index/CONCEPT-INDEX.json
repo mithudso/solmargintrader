@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T08:44:06+00:00",
+  "generatedAt": "2026-11-07T08:35:06+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 234,
+      "matchingFiles": 229,
       "shown": 30,
       "files": [
         {
@@ -229,10 +229,6 @@
           "hits": 53
         },
         {
-          "path": "soltui/wallet.py",
-          "hits": 45
-        },
-        {
           "path": "extension/README.md",
           "hits": 41
         },
@@ -243,10 +239,6 @@
         {
           "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
           "hits": 35
-        },
-        {
-          "path": "soltui/tests/test_wallet.py",
-          "hits": 31
         },
         {
           "path": "docs/CONCEPTS.md",
@@ -283,6 +275,14 @@
         {
           "path": "backtester/core/engine.py",
           "hits": 21
+        },
+        {
+          "path": "skills/trading-and-investing/references/liquidation-as-an-absorbing-barrier.md",
+          "hits": 18
+        },
+        {
+          "path": "skills/trading-and-investing/SCHEDULED-RESEARCH.md",
+          "hits": 17
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 170,
+      "matchingFiles": 169,
       "shown": 30,
       "files": [
         {
@@ -692,11 +692,11 @@
           "hits": 5
         },
         {
-          "path": "soltui/wallet.py",
-          "hits": 5
+          "path": "backtester/core/ticks.py",
+          "hits": 4
         },
         {
-          "path": "backtester/core/ticks.py",
+          "path": "backtester/tests/test_decide.py",
           "hits": 4
         }
       ],

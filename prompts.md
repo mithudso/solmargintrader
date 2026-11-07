@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 8
-Delta: added the Top 5 presets, wallet discovery, net % and P&L page request.
+Version: 9
+Delta: added the owner's report that the extension looked unchanged after reload (version still 0.1.0).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -65,3 +65,9 @@ Add strategies for low, medium, and high margin trading, I want to backtest high
 ```
 
 Delivered in two PRs: (1) leverage tiers, (2) the reliable-trigger miner.
+
+## v9 - 2026-11-07
+
+```text
+The solmargintrader has not changed at all, the version number is the same, I loaded the extension from /Users/mitch/dev/solmargintrader/extension
+```
