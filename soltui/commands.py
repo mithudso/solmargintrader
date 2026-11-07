@@ -538,6 +538,34 @@ def strategies_list(ctx: Context, p: dict[str, Any]) -> Any:
     return [{"name": n, "family": f} for n, f in available_strategies()]
 
 
+def _testable_strategies() -> set[str]:
+    """Registry names the background sweep can run: a buildable card with its data on hand."""
+    from backtester.core.strategy_cards import load_all
+
+    return {c.registry_key or c.id for c in load_all().values() if c.buildable and c.data_available}
+
+
+@command("strategies.history",
+         "Per registered strategy: tested or not, how many runs, when last, and the card-preset result.")
+def strategies_history(ctx: Context, p: dict[str, Any]) -> Any:
+    history = bgqueue.strategy_history(_queue_results(ctx), ctx.settings.asset)
+    testable = _testable_strategies()
+    rows = []
+    for name, family in available_strategies():
+        h = history.get(name, bgqueue.StrategyHistory(name))
+        rows.append({
+            "name": name, "family": family, "testable": name in testable, "tested": h.tested,
+            "runs": h.runs, "evaluable": h.evaluable, "ranked": h.ranked, "positive": h.positive,
+            "last_at": h.last_at,
+            "last_tested": bgqueue.format_when(h.last_at) if h.tested else "never",
+            "result": h.result_text if (h.tested or name in testable) else "no card or data to test it",
+            "preset": dataclasses.asdict(h.preset) if h.preset else None,
+        })
+    return {"asset": ctx.settings.asset, "rows": rows,
+            "tested": sum(1 for r in rows if r["tested"]),
+            "untested": sum(1 for r in rows if not r["tested"] and r["testable"])}
+
+
 @command("strategies.source", "Catalogue path of the file that defines a strategy, or null.",
          (P("name", "string", "Registered strategy name.", True),))
 def strategies_source(ctx: Context, p: dict[str, Any]) -> Any:
@@ -949,6 +977,22 @@ def _queue_progress(ctx: Context, state: bgqueue.QueueState) -> dict[str, Any]:
             "percent": state.percent, "remaining": state.remaining}
 
 
+def _queue_results(ctx: Context) -> list[bgqueue.JobResult]:
+    """Every result so far, reading only what the worker appended since the last call.
+
+    The results file grows without bound, so re-reading it whole on each poll would make watching
+    a sweep quadratic in its length.
+    """
+    rt = ctx.runtime
+    with rt.lock:
+        fresh, cursor, restarted = bgqueue.read_results_since(rt.queue_cursor)
+        if restarted:
+            rt.queue_results = []  # truncated or replaced: what we hold belongs to a dead sweep
+        rt.queue_results.extend(fresh)
+        rt.queue_cursor = cursor
+        return list(rt.queue_results)
+
+
 @command("queue.progress", "Background sweep progress line (cheap; no results re-read).")
 def queue_progress(ctx: Context, p: dict[str, Any]) -> Any:
     return _queue_progress(ctx, bgqueue.read_state())
@@ -956,15 +1000,7 @@ def queue_progress(ctx: Context, p: dict[str, Any]) -> Any:
 
 @command("queue.status", "Background sweep: progress, missing price data and the ranked leaderboard.")
 def queue_status(ctx: Context, p: dict[str, Any]) -> Any:
-    rt = ctx.runtime
-    with rt.lock:
-        # Only what the worker appended since last time: the results file grows without bound.
-        fresh, cursor, restarted = bgqueue.read_results_since(rt.queue_cursor)
-        if restarted:
-            rt.queue_results = []  # truncated or replaced: what we hold belongs to a dead sweep
-        rt.queue_results.extend(fresh)
-        rt.queue_cursor = cursor
-        results = list(rt.queue_results)
+    results = _queue_results(ctx)
     ranked, floor = bgqueue.leaderboard(results, ctx.settings.asset)
     missing = _missing_series(ctx)
     fetch_log = bgqueue.BG_DIR / "fetch.log"
@@ -991,6 +1027,54 @@ def queue_start(ctx: Context, p: dict[str, Any]) -> Any:
     except Exception as exc:  # noqa: BLE001
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
     return {"started": True, "asset": ctx.settings.asset}
+
+
+BACKTEST_SCOPES = ("selected", "untested", "all")
+
+
+@command("queue.backtest",
+         "Backtest strategies in the background at each card's own parameters (all horizons). "
+         "Scope selected, untested or all; skips configurations already recorded for this code and data.",
+         (P("scope", "string", "selected, untested or all.", True),
+          P("names", "json", "List of registered strategy names; required when scope is selected.")),
+         read_only=False)
+def queue_backtest(ctx: Context, p: dict[str, Any]) -> Any:
+    scope = p["scope"]
+    if scope not in BACKTEST_SCOPES:
+        raise CommandError("bad_params", f"scope must be one of {', '.join(BACKTEST_SCOPES)}")
+    testable = _testable_strategies()
+    if scope == "selected":
+        names = p.get("names")
+        if not isinstance(names, list) or not names or not all(isinstance(n, str) for n in names):
+            raise CommandError("bad_params", 'scope "selected" needs "names" as a non-empty list')
+        untestable = [n for n in names if n not in testable]
+        if untestable:
+            raise CommandError(
+                "failed", f"cannot backtest {', '.join(untestable)}: no buildable card with data")
+    elif scope == "untested":
+        history = bgqueue.strategy_history(_queue_results(ctx), ctx.settings.asset)
+        names = sorted(n for n in testable if n not in history)
+    else:
+        names = sorted(testable)
+    asset = ctx.settings.asset
+    if not names:
+        return {"started": False, "scope": scope, "strategies": [], "jobs": 0,
+                "message": "nothing to backtest: every strategy already has a recorded run"}
+    jobs = bgqueue.build_queue(asset, max_tier=0, strategies=names)
+    todo = bgqueue.pending(jobs, bgqueue.completed_ids(bgqueue.read_results()))
+    if not todo:
+        return {"started": False, "scope": scope, "strategies": names, "jobs": 0,
+                "message": f"already tested: all {len(jobs)} configuration(s) have recorded results"}
+    try:
+        bgcontrol.start(asset, max_tier=0, strategies=names)
+    except RuntimeError as exc:
+        raise CommandError(
+            "failed", f"{exc}; stop it on the Queue tab first, or wait for it to finish") from exc
+    except Exception as exc:  # noqa: BLE001
+        raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
+    return {"started": True, "scope": scope, "strategies": names, "jobs": len(todo), "asset": asset,
+            "message": f"started: {len(todo)} configuration(s) across {len(names)} strategy(ies), "
+                       "results appear in the table as they finish"}
 
 
 @command("queue.stop", "Ask the background sweep to stop at the next job boundary.", read_only=False)
