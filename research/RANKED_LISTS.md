@@ -533,6 +533,13 @@ figure is transcribed by hand.
 
 ---
 
+## Reliable triggers
+
+Not a signal ranking either: conjunctions of conditions scored by out-of-sample directional hit rate against
+the base rate. 13,510 daily hypotheses tested on SOL, 0 qualified as reliable; see `research/RELIABLE_SIGNALS.md`.
+
+---
+
 ## Leverage tiers
 
 Not a ranking of signals: the same 25 singles re-run at 2x, 5x and 20x on SOL daily CPCV. Out-of-sample
