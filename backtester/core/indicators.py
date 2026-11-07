@@ -146,6 +146,44 @@ def macd(
     return (line, float(sig), line - float(sig))
 
 
+def ppo(
+    closes: np.ndarray, fast: int = 12, slow: int = 26, signal: int = 9
+) -> tuple[float, float, float]:
+    """(ppo_line, signal_line, histogram) for the latest bar, in percent.
+
+    PPO = 100 * (EMA_fast - EMA_slow) / EMA_slow. It is MACD divided by the slow
+    EMA, so its readings are comparable across price levels and across years --
+    a MACD of 5 means something different at $20 than at $200, a PPO of 2.5 does
+    not. The signal line is an EMA of the PPO line, rebuilt from the trailing
+    window exactly as `macd` does.
+    """
+    if len(closes) < slow + signal:
+        return (float("nan"), float("nan"), float("nan"))
+    n_hist = min(len(closes) - slow, signal * EMA_CAP_MULTIPLE)
+    fast_hist = ema_series(closes, fast, n_hist)
+    slow_hist = ema_series(closes, slow, n_hist)
+    if fast_hist.size != n_hist or slow_hist.size != n_hist:
+        return (float("nan"), float("nan"), float("nan"))
+    if np.any(slow_hist <= 1e-15):
+        return (float("nan"), float("nan"), float("nan"))
+    line_hist = 100.0 * (fast_hist - slow_hist) / slow_hist
+    line = float(line_hist[-1])
+    sig = ema(line_hist, signal)
+    if not np.isfinite(sig):
+        sig = float(np.mean(line_hist))
+    return (line, float(sig), line - float(sig))
+
+
+def fib_level(swing_high: float, swing_low: float, ratio: float) -> float:
+    """Price at retracement `ratio` of an up-swing: high - (high - low) * ratio.
+
+    ratio 0 is the swing high, 1 is the swing low; 0.382 / 0.5 / 0.618 / 0.786 are
+    the conventional levels. Defined for an UP swing only (low came first), so the
+    caller must establish the order of the two extremes.
+    """
+    return float(swing_high - (swing_high - swing_low) * ratio)
+
+
 def bollinger(
     closes: np.ndarray, window: int = 20, num_std: float = 2.0
 ) -> tuple[float, float, float, float]:

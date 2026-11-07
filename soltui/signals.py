@@ -96,6 +96,17 @@ class SignalDefaults:
     atr_risk_per_trade: float = 0.01
     atr_stop_multiple: float = 2.0
     ewma_lambda: float = 0.94
+    # Named by the cited trading guides (core/strategies/textbook.py). PPO reuses the
+    # macd_* spans and swing_confluence reuses donchian_entry/exit and sma_slow: the
+    # meaning is the same, so one editor field drives both rather than two near-duplicates.
+    dca_instalments: int = 10
+    dca_interval: int = 7
+    ema_fast: int = 50
+    ema_slow: int = 200
+    fib_lookback: int = 60
+    fib_entry_ratio: float = 0.382
+    fib_invalid_ratio: float = 0.786
+    swing_min_confirms: int = 2
 
     def to_dict(self) -> dict[str, Any]:
         """Serialisable form."""
@@ -164,6 +175,17 @@ STRATEGY_PARAM_MAP: dict[str, dict[str, str]] = {
     "garch_voltarget": {
         "lam": "ewma_lambda", "target_vol": "vol_target", "trend_window": "trend_window",
     },
+    "dca": {"instalments": "dca_instalments", "interval": "dca_interval"},
+    "ema_crossover": {"fast": "ema_fast", "slow": "ema_slow"},
+    "ppo": {"fast": "macd_fast", "slow": "macd_slow", "signal": "macd_signal"},
+    "fib_retracement": {
+        "lookback": "fib_lookback", "entry_ratio": "fib_entry_ratio",
+        "invalid_ratio": "fib_invalid_ratio",
+    },
+    "swing_confluence": {
+        "breakout": "donchian_entry", "exit_lookback": "donchian_exit",
+        "ma_window": "sma_slow", "min_confirms": "swing_min_confirms",
+    },
 }
 
 # Human-facing grouping and units for the Signals tab, so the form reads as a
@@ -195,6 +217,10 @@ SIGNAL_GROUPS: list[tuple[str, list[str]]] = [
     ("Volatility regime", ["volregime_lookback", "volregime_calm_quantile"]),
     ("ATR sizing", ["atr_risk_per_trade", "atr_stop_multiple"]),
     ("EWMA / GARCH", ["ewma_lambda"]),
+    ("Dollar-cost averaging", ["dca_instalments", "dca_interval"]),
+    ("EMA crossover", ["ema_fast", "ema_slow"]),
+    ("Fibonacci retracement", ["fib_lookback", "fib_entry_ratio", "fib_invalid_ratio"]),
+    ("Swing confluence", ["swing_min_confirms"]),
 ]
 
 
@@ -216,6 +242,7 @@ def validate(defaults: SignalDefaults) -> SignalDefaults:
         "ichimoku_tenkan", "ichimoku_kijun", "ichimoku_senkou_b",
         "ichimoku_displacement", "ou_fit_window", "ou_max_half_life",
         "hurst_window", "volregime_lookback",
+        "dca_instalments", "dca_interval", "ema_fast", "ema_slow", "fib_lookback",
     ]
     for name in positive_ints:
         if int(getattr(d, name)) < 1:
@@ -260,6 +287,14 @@ def validate(defaults: SignalDefaults) -> SignalDefaults:
         raise SignalError("atr_stop_multiple must be positive")
     if not 0 < d.ewma_lambda < 1:
         raise SignalError("ewma_lambda must be strictly between 0 and 1")
+    if d.ema_fast >= d.ema_slow:
+        raise SignalError("ema_fast must be shorter than ema_slow")
+    if d.fib_lookback < 5:
+        raise SignalError("fib_lookback must be at least 5")
+    if not 0 < d.fib_entry_ratio < d.fib_invalid_ratio < 1:
+        raise SignalError("require 0 < fib_entry_ratio < fib_invalid_ratio < 1")
+    if not 1 <= d.swing_min_confirms <= 4:
+        raise SignalError("swing_min_confirms must be between 1 and 4")
 
     if d.zscore_entry >= 0:
         raise SignalError(

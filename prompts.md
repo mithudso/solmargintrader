@@ -98,3 +98,9 @@ Scope: soltui wallet settings with validation (private keys refused), xpub UTXO 
 ```text
 Looking at the backtest data was the grid trading strategy ever profitable? Is it feasible to make it profitable? Expand the tooltip scrollover help text across the whole soltui I'm still feeling confused by many terms.
 ```
+
+## v14 - 2026-11-07
+
+```text
+Look at this file and determine if all of the strategies, signals, and indicators are represented and tested in the soltui, if not then create the strategy cartds and add the new ones to the queu /Users/mitch/dev/solmargintrader/tradingstrategyresults.jsone
+```
