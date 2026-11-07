@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SolMarginTrader — Jupiter Grid",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking. Dry-run by default.",
   "minimum_chrome_version": "120",
   "background": {

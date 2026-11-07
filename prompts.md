@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 9
-Delta: added the owner's report that the extension looked unchanged after reload (version still 0.1.0).
+Version: 10
+Delta: added the wallet monitoring request (xpubs and addresses in Settings, redacted).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -71,3 +71,13 @@ Delivered in two PRs: (1) leverage tiers, (2) the reliable-trigger miner.
 ```text
 The solmargintrader has not changed at all, the version number is the same, I loaded the extension from /Users/mitch/dev/solmargintrader/extension
 ```
+
+## v10 - 2026-11-07
+
+Saved with the wallet identifiers replaced by `<redacted>`. The real values are in the owner's local soltui config only, never in this repository.
+
+```text
+In the settings, it asks for my wallet pubkey, but I have these addresses I'd like you to store in the settings and keep monitored: BTC: <redacted> DOGE: <redacted> ETH: <redacted> LTC: <redacted> SOL: <redacted>. And the private keys are in ~/.ssh/solana.private and ~/.ssh/wallet.private
+```
+
+Scope: soltui wallet settings with validation (private keys refused), xpub UTXO scanning, hourly monitoring, and the extension's "Use soltui Solana address" button.

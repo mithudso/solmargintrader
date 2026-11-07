@@ -220,7 +220,10 @@ macOS menu-bar app plus a TUI. Read-only over the research side; places no order
   envelope. `liquidity.resume` is `requires_confirm`; no command moves funds. `presets.py` turns the Top 5 into
   one-click presets (`top5.presets`), `netpct.py` is the one net % definition and `pnl.py` the pure P&L maths
   behind `pnl.summary|series|breakdown`; `wallet.py` is the read-only wallet
-  scan (`portfolio.scan`, `wallet.key_sources`): public endpoints only, no key, no signing.
+  scan (`portfolio.scan`, `wallet.key_sources`): public endpoints only, no key, no signing; `hdwallet.py` (BIP32
+  public derivation, address encoders, private-key refusal), `utxo_scan.py` (xpub scans of BTC, LTC, DOGE),
+  `eth_scan.py` (Ethereum mainnet), `spot_prices.py` and `portfolio.py` (snapshots, `portfolio.changes`, the
+  notice line) extend it; `portfolio_agent.py` installs the hourly `com.mitchhudson.soltui.portfolio` LaunchAgent.
 - `soltui-service` is the operational surface: `status`, `start`, `stop`, `build`,
   `install`.
 

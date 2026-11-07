@@ -198,6 +198,8 @@ class ChainScan:
     contracts: list[dict[str, Any]] = field(default_factory=list)
     errors: list[dict[str, str]] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
+    # Chain-specific detail merged into the result (an xpub scan's script types and derived counts).
+    extra: dict[str, Any] = field(default_factory=dict)
 
     def error(self, source: str, exc: Exception) -> None:
         self.errors.append({"source": source, "message": str(exc)})
@@ -212,10 +214,14 @@ class ChainScan:
 
     def to_dict(self) -> dict[str, Any]:
         total = sum(r.get("usd") or r.get("value_usd") or 0.0 for r in self.counted())
+        # A balance with no price is unknown, not zero: it stays out of the total and is named here, so a
+        # reader cannot take the total for the whole value.
+        unpriced = [r["symbol"] for r in ([self.native] if self.native else []) + [h for h in self.holdings if h["included"]]
+                    + self.stakes if r.get("usd") is None and (r.get("amount") or 0) > 0]
         flagged = [h for h in self.holdings if h["airdrop"]]
         got_any = bool(self.native or self.holdings or self.stakes or self.positions)
         status = "ok" if not self.errors else ("partial" if got_any else "error")
-        return {
+        return {**self.extra, "unpriced": unpriced, "total_complete": not unpriced,
             "chain": self.chain, "label": LABEL, "address": self.address, "status": status,
             "total_usd": total, "native": self.native,
             "holdings": self.holdings, "stakes": self.stakes, "positions": self.positions,
@@ -696,13 +702,32 @@ def _checksumless(addr: str) -> str:
 # -- whole scan, key sources, history -----------------------------------------------------------------
 
 
+CHAIN_ALIASES = {"btc": "bitcoin", "ltc": "litecoin", "doge": "dogecoin", "eth": "ethereum", "sol": "solana"}
+CHAINS = ("solana", "base", "ethereum", "bitcoin", "litecoin", "dogecoin")
+
+
+def normalise_chain(text: str) -> str | None:
+    """A chain name (or alias) as one of `CHAINS`, `all`, or None when unknown."""
+    t = (text or "all").strip().lower()
+    t = CHAIN_ALIASES.get(t, t)
+    return t if t == "all" or t in CHAINS else None
+
+
 def scan_wallet(solana_address: str, base_address: str, fetch: Fetch, *, chain: str = "all",
                 daemon: dict[str, Any] | None = None, extra_tokens: list[str] | None = None,
-                now: float | None = None) -> dict[str, Any]:
-    """Both chains (or one), as one JSON-ready dict. Never raises for a network failure."""
+                now: float | None = None, eth_address: str = "",
+                xpubs: dict[str, str] | None = None) -> dict[str, Any]:
+    """Every configured wallet (or one chain), as one JSON-ready dict. Never raises for a network failure.
+
+    `xpubs` maps "btc"/"ltc"/"doge" to an extended public key. A chain with nothing configured is listed
+    under `skipped` only when it was asked for by name; under `all` it is simply not configured.
+    """
     now = time.time() if now is None else now
+    chain = normalise_chain(chain) or "all"
+    xpubs = {k: v for k, v in (xpubs or {}).items() if v}
     chains: dict[str, Any] = {}
     skipped: list[str] = []
+    explicit = chain != "all"
     if chain in ("all", "solana"):
         if valid_solana_address(solana_address):
             chains["solana"] = scan_solana(solana_address, fetch).to_dict()
@@ -714,12 +739,31 @@ def scan_wallet(solana_address: str, base_address: str, fetch: Fetch, *, chain: 
                                        extra_tokens=extra_tokens).to_dict()
         else:
             skipped.append("base: no valid address in Settings")
+    if chain in ("all", "ethereum"):
+        if valid_evm_address(eth_address):
+            from .eth_scan import scan_ethereum  # noqa: PLC0415 - these modules import this one
+
+            chains["ethereum"] = scan_ethereum(eth_address, fetch).to_dict()
+        elif explicit:
+            skipped.append("ethereum: no valid eth_address in Settings")
+    from .utxo_scan import CHAIN_NAMES, scan_utxo_wallets  # noqa: PLC0415
+
+    utxo_wanted = [c for c in CHAIN_NAMES if chain == "all" or chain == CHAIN_NAMES[c]]
+    if utxo_wanted:
+        scans, _ = scan_utxo_wallets({c: xpubs[c] for c in utxo_wanted if c in xpubs}, fetch,
+                                     only=None if chain == "all" else chain)
+        for name, scan in scans.items():
+            chains[name] = scan.to_dict()
+        for c in utxo_wanted:
+            if c not in xpubs and explicit:
+                skipped.append(f"{CHAIN_NAMES[c]}: no {c}_xpub in Settings")
     total = sum(c["total_usd"] for c in chains.values())
     statuses = {c["status"] for c in chains.values()}
     return {
         "label": LABEL, "scanned_at": datetime.fromtimestamp(now, timezone.utc).isoformat(timespec="seconds"),
         "ts": now, "chains": chains, "total_usd": total, "skipped": skipped,
         "partial": bool(statuses - {"ok"}) or bool(skipped),
+        "total_complete": all(c.get("total_complete", True) for c in chains.values()),
         "counts": {
             "holdings": sum(c["counts"]["holdings"] for c in chains.values()),
             "airdrop_flagged": sum(c["counts"]["airdrop_flagged"] for c in chains.values()),
@@ -731,7 +775,7 @@ def scan_wallet(solana_address: str, base_address: str, fetch: Fetch, *, chain: 
     }
 
 
-KEY_FILES = (("base", "wallet.private"), ("solana", "solana.private"))
+KEY_FILES = (("base", "wallet.private", "EVM (Ethereum/Base) key"), ("solana", "solana.private", "Solana key"))
 
 
 def key_dir() -> Path:
@@ -745,20 +789,20 @@ def key_sources() -> dict[str, Any]:
     that loads keys itself; this console only reports that the files are present and private.
     """
     rows = []
-    for chain, name in KEY_FILES:
+    for chain, name, label in KEY_FILES:
         path = key_dir() / name
         try:
             st = os.stat(path)
         except FileNotFoundError:
-            rows.append({"chain": chain, "path": str(path), "exists": False, "mode": None, "mode_600": False,
-                         "problem": None})
+            rows.append({"chain": chain, "label": label, "path": str(path), "exists": False, "mode": None,
+                         "mode_600": False, "problem": None})
             continue
         except OSError as exc:
-            rows.append({"chain": chain, "path": str(path), "exists": False, "mode": None, "mode_600": False,
-                         "problem": f"stat failed: {exc}"})
+            rows.append({"chain": chain, "label": label, "path": str(path), "exists": False, "mode": None,
+                         "mode_600": False, "problem": f"stat failed: {exc}"})
             continue
         mode = stat_mod.S_IMODE(st.st_mode)
-        rows.append({"chain": chain, "path": str(path), "exists": True, "mode": format(mode, "04o"),
+        rows.append({"chain": chain, "label": label, "path": str(path), "exists": True, "mode": format(mode, "04o"),
                      "mode_600": mode == 0o600, "problem": None if mode == 0o600 else
                      f"mode is {mode:04o}; it should be 0600"})
     return {"keys": rows,

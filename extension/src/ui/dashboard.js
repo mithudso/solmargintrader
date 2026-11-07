@@ -16,6 +16,7 @@ import {
 } from './session-key-form.js';
 import { attributionLine, attributionDetail } from '../jupiter/attribution.js';
 import { mountSoltuiPanel } from './soltui-panel.js';
+import { mountWalletPubkeyButton } from './wallet-pubkey.js';
 
 // The version is the only visible sign that a reload picked up new code.
 document.getElementById('version').textContent = `v${chrome.runtime.getManifest().version}`;
@@ -372,6 +373,9 @@ $('#exportCsv').addEventListener('click', () => {
   a.click();
   URL.revokeObjectURL(url);
 });
+
+// Fills the Wallet pubkey field from soltui; the owner still clicks Save.
+mountWalletPubkeyButton(document, send);
 
 // Independent of the grid data: a missing soltui host must not stop the rest of
 // the dashboard from loading.

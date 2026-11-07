@@ -80,7 +80,7 @@ indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_la
 
 | Tab | What it does |
 |---|---|
-| **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry, and the two public wallet addresses (Solana, Base; pre-filled with the owner's, blank clears one). A read-only *signing key source* row shows whether `~/.ssh/wallet.private` and `~/.ssh/solana.private` exist and are mode 600, by `stat` alone. **There is no field that accepts a private key.** Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
+| **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry, and the wallets to watch: public Solana, Base and Ethereum addresses, and extended **public** keys (`btc_xpub`, `ltc_xpub`, `doge_xpub`) for Bitcoin, Litecoin and Dogecoin. Each is validated (Base58Check and version bytes for an xpub); an `xprv`, a WIF key, a raw 64-hex string or a Solana secret-key array is refused with a message that private keys do not belong in settings, and the message never repeats the value. An xpub is shown as a short prefix everywhere (`settings.get`, the TUI, the API) and the config file is mode 600. A read-only *signing key source* row shows whether `~/.ssh/wallet.private` (the EVM, Ethereum/Base, key) and `~/.ssh/solana.private` (the Solana key) exist and are mode 600, by `stat` alone. **There is no field that accepts a private key.** Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
 | **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. |
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
 | **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. |
@@ -144,14 +144,35 @@ function other than the standard views (`balanceOf`, `symbol`, `decimals`, `name
   says so and checks only the known set, and adds that a token sent to the address that is in none of them cannot
   be discovered without an indexer. A failing endpoint gives a *partial* result with its name and error, never an
   exception or a quietly smaller total. Each host is paced, a 429 or 5xx is retried twice with a capped back-off,
-  and the whole scan stops asking after 60 s.
+  and the whole scan stops asking after 60 s (420 s for the all-chain scan, which makes many small requests).
 * **Airdrops.** A token is flagged when its name or symbol reads like spam (a URL, "claim", "reward", an amount),
   or when it is unknown, unverified and has no price or under $5,000 of liquidity. Flagged tokens are listed with
   the reason and left out of every total.
-* **History.** Each scan appends one summary line to `~/.config/soltui/wallet-history.jsonl`. The P&L tab shows
-  these as a separate `wallet (live)` section: the *change in wallet value between scans*, which includes
+* **Ethereum.** `eth_address` is read on mainnet: `eth_getBalance` plus `balanceOf` for 12 well-known tokens
+  (no indexer, so a token outside the list is not found; the scan says so). Prices come from Coinbase's public
+  spot endpoint.
+* **Bitcoin, Litecoin, Dogecoin from an xpub** (`soltui/hdwallet.py`, `soltui/utxo_scan.py`). Addresses are derived
+  on this machine by BIP32 public derivation (stdlib only; chain 0 receive and chain 1 change, gap limit 20) and
+  only addresses are sent to the explorers: mempool.space then blockstream.info for Bitcoin, litecoinspace.org for
+  Litecoin, BlockCypher for Dogecoin (20 addresses a request). A plain `xpub` does not say which address style the
+  wallet used, so Bitcoin and Litecoin try P2PKH, P2SH-P2WPKH and P2WPKH and keep each style that has history; a
+  `ypub`/`zpub` tries only its own; Dogecoin is P2PKH. Results carry per-chain balances, the script types found
+  and the number of addresses derived, never the addresses. A failed explorer call stops that branch and the
+  result is `partial` (the balance is then a lower bound). A balance with no USD price is unknown, not zero: it
+  stays out of the total and `unpriced` names it.
+* **History and monitoring.** `portfolio.snapshot` (and an all-chain `portfolio.scan`) appends one timestamped
+  per-chain snapshot to `~/Library/Application Support/soltui/portfolio/snapshots.jsonl` (mode 600; balances by
+  symbol, prices and USD, no addresses or xpubs). `portfolio.changes` reports balance changes between snapshots (a
+  chain that read partially or failed in either one is skipped, because a failed read looks like a balance falling
+  to zero). The hourly LaunchAgent `com.mitchhudson.soltui.portfolio` runs `portfolio.snapshot`
+  (`python -m soltui.portfolio_agent install|uninstall|status`; the plist lives in `~/Library/LaunchAgents`, where
+  the automation watchdog finds it). The TUI and the menu bar show one line when a balance changed since the
+  wallet was last viewed (`portfolio.notice`). The P&L tab shows the snapshots as a separate `wallet (live)`
+  section: the *change in wallet value between complete snapshots of the same set of wallets*, which includes
   deposits, withdrawals and price moves and is not a trading P&L (gross, realized and unrealized are blank for it).
   It is never combined with a simulated figure.
+* **Extension.** `wallet.addresses` returns the public Solana and EVM addresses only; the extension dashboard's
+  "Use soltui Solana address" button fills the Wallet pubkey field from it and the owner still clicks Save.
 
 Tests use recorded replies (`soltui/tests/fixtures/wallet/`), never the network.
 

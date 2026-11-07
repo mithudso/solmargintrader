@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import time
 import webbrowser
 from pathlib import Path
 
@@ -108,6 +109,9 @@ def build_app(settings: Settings | None = None):
             # and leaving orphaned servers behind.
             self.serve_proc: subprocess.Popen | None = None
             self.serve_port: int | None = None
+            # One-line "a balance changed" notice from the portfolio snapshots, re-read at most once a minute.
+            self.portfolio_line: str | None = None
+            self._portfolio_checked = 0.0
             self.menu = [
                 "Open console",
                 "Open console in Terminal",
@@ -130,6 +134,9 @@ def build_app(settings: Settings | None = None):
             """Refresh the title and the status submenu from live state."""
             self.title = build_title(self.state)
             summary = build_menu_summary(self.state)
+            self._refresh_portfolio_line()
+            if self.portfolio_line:
+                summary = [self.portfolio_line, *summary]
             item = self.menu.get("Status")
             if item is not None:
                 item.title = summary[0] if summary else "Status"
@@ -228,13 +235,36 @@ def build_app(settings: Settings | None = None):
                     "soltui", "", "No results yet — run a backtest first."
                 )
 
+        def _refresh_portfolio_line(self, force: bool = False) -> None:
+            if not force and time.monotonic() - self._portfolio_checked < 60:
+                return
+            self._portfolio_checked = time.monotonic()
+            try:
+                # Imported here, not at the top: the registry pulls in pandas, and a bundle without it
+                # must still show its menu. The notice is an extra, never a reason for the app not to start.
+                from . import commands  # noqa: PLC0415
+
+                env = commands.dispatch("portfolio.notice", {}, surface="menubar", quiet=True)
+                self.portfolio_line = env["result"]["line"] if env["ok"] else None
+            except Exception:  # noqa: BLE001
+                self.portfolio_line = None
+
         @rumps.clicked("Status")
         def show_status(self, _sender) -> None:
             """Full status detail, including the no-live-account notice."""
-            rumps.alert(
-                title="soltui status",
-                message="\n".join(build_menu_summary(self.state)),
-            )
+            self._refresh_portfolio_line(force=True)
+            lines = build_menu_summary(self.state)
+            if self.portfolio_line:
+                lines = [self.portfolio_line, *lines]
+            rumps.alert(title="soltui status", message="\n".join(lines))
+            # Opening the detail counts as having looked at the wallet.
+            try:
+                from . import commands  # noqa: PLC0415
+
+                commands.dispatch("portfolio.notice", {"mark_seen": True}, surface="menubar", quiet=True)
+            except Exception:  # noqa: BLE001
+                pass
+            self.portfolio_line = None
 
     return SolMenuBarApp()
 
