@@ -94,7 +94,7 @@ class RunTests(unittest.TestCase):
         for part in ("is", "oos"):
             self.assertIn("hit_rate", r[part]["forecast"])
             self.assertIn("total_return", r[part]["pnl"])
-            self.assertEqual(r[part]["forecast"]["round_trip_bps"], 16.0)
+            self.assertEqual(r[part]["forecast"]["round_trip_bps"], 13.0)
         self.assertEqual(r["is"]["forecast"]["bars"] + r["oos"]["forecast"]["bars"], 2390 - 2)
         self.assertLess(r["oos"]["forecast"]["oracle_net_bps"], r["oos"]["forecast"]["mean_abs_move_bps"])
 

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 34
-Delta: v33 to v34; top-50 coin screen and the owner's ten-coin compound universe.
+Version: 35
+Delta: v34 to v35; compound costs switched to Hyperliquid.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -235,4 +235,10 @@ Are there any coins which are immediately disqualified before even starting? One
 
 ```text
 I like that, let's stick to BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX.
+```
+
+## v35 - 2026-11-07 (Hyperliquid access)
+
+```text
+ Yes, I can use hyperliquid
 ```

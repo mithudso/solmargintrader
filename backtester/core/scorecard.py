@@ -1126,8 +1126,10 @@ AGGREGATE_SPECS: tuple[ParamSpec, ...] = (
 
 EXECUTION_SPECS: tuple[ParamSpec, ...] = (
     P("leverage", 5.0, 1.0, 250.0, "float", "perp leverage for P&L and the liquidation gate"),
-    P("fee_bps", 6.0, 0.0, 100.0, "float", "per side; Jupiter base fee 0.06%"),
-    P("slippage_bps", 2.0, 0.0, 100.0, "float", "per side; Jupiter impact floor 1 bp + adverse execution"),
+    P("fee_bps", 4.5, 0.0, 100.0, "float",
+      "per side; Hyperliquid base taker 0.045% (Jupiter Perps 0.06%; research/results/hyperliquid-costs-2026-11-07.json)"),
+    P("slippage_bps", 2.0, 0.0, 100.0, "float",
+      "per side; Hyperliquid book cost at $2k was at most 2.2 bps on all ten coins; raise it per coin for large size"),
     P("risk_pct", 1.0, 0.01, 100.0, "float",
       "percent of the wallet's usable collateral a trade may lose at its stop, costs included"),
     P("use_wallet", 1.0, 0.0, 1.0, "float", "1 = read the Settings Solana address and size calls to it"),

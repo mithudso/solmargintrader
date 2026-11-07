@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 43
-Delta: v42 to v43; compound universe narrowed to the owner's ten coins after a top-50 screen.
+Version: 44
+Delta: v43 to v44; compound default costs are Hyperliquid's (13 bps round trip).
 
 ## v1 - 2026-11-06
 
@@ -441,3 +441,13 @@ Completed: research/results/top50-screen-2026-11-07.json (live CoinGecko turnove
 Verification: test_universe (screen matches code), test_full_suite, test_compound pass.
 
 Remaining: finish the 10-coin download (NEAR, SUI, AVAX are new); deliver minute_coverage.json; Backtest all coins on the full history; report per-coin results.
+
+## v44 - 2026-11-07 (Hyperliquid costs)
+
+Target: the owner confirmed Hyperliquid access, so all ten coins are live candidates and their backtests should pay Hyperliquid's costs. Branch feat/compound-hyperliquid-costs. Stele TASK-844.
+
+Completed: research/results/hyperliquid-costs-2026-11-07.json (live userFees base schedule: taker 0.045%, maker 0.015%; one l2Book walk per coin at $2k/$10k/$50k). scorecard EXECUTION_SPECS fee_bps default 6.0 -> 4.5, so the default round trip is 13 bps (16 on Jupiter). Docs and the five-minute-signal skill (1.6.0) updated. The owner's saved shared config still holds fee_bps 6.0; set it to 4.5 after merge with soltui.compound.save_state.
+
+Verification: test_compound_backtest expects 13 bps.
+
+Remaining: wallet sizing still reads the Solana wallet (Jupiter collateral); a Hyperliquid account balance read needs the owner's Hyperliquid address. Then the ten-coin full-history backtest (TASK-844).

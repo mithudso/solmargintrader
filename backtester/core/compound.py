@@ -8,7 +8,7 @@ Two different questions, answered separately because they disagree at 5m:
   * **Does the call predict the next bar?** `forecast_stats` scores every bar's call against
     sign(close[t+1] - close[t]). A hit rate above the base rate is necessary, not sufficient.
   * **Does trading it make money after costs?** The precomputed target path (with entry/exit
-    hysteresis) is fed to the existing engine (`engine.run_backtest`, perp mode, Jupiter fees,
+    hysteresis) is fed to the existing engine (`engine.run_backtest`, perp mode, Hyperliquid fees,
     borrow, liquidation at the bar's low/high), so there is one execution model, not two.
 
 The sample is split by time: the first `1 - oos_fraction` of bars is in-sample, the rest

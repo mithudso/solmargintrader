@@ -502,7 +502,10 @@ class ForecastStatsTests(unittest.TestCase):
         s = sc.forecast_stats([ev])
         self.assertEqual(s["hit_rate"], 1.0)
         r = np.diff(np.log(b.close)) * 1e4
-        self.assertAlmostEqual(s["oracle_net_bps"], round(float(np.abs(r).mean()) - 16.0, 3), places=3)
+        ex = sc.default_config()["execution"]
+        rt = sc.round_trip_bps(ex["fee_bps"], ex["slippage_bps"])
+        self.assertEqual(rt, 13.0)  # Hyperliquid base taker 4.5 bps + 2 bps slippage, per side
+        self.assertAlmostEqual(s["oracle_net_bps"], round(float(np.abs(r).mean()) - rt, 3), places=3)
         self.assertAlmostEqual(s["gross_bps_per_call"], round(float(np.abs(r).mean()), 3), places=3)
 
     def test_the_time_split_partitions_bars(self) -> None:
