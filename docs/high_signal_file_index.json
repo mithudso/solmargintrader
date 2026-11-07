@@ -245,7 +245,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 1800
+      "lines": 1802
     },
     {
       "path": "backtester/core/compound.py",
@@ -1235,7 +1235,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 368
+      "lines": 380
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",

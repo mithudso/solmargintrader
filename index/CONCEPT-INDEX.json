@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T18:34:07+00:00",
+  "generatedAt": "2026-11-07T18:53:50+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 273,
+      "matchingFiles": 274,
       "shown": 30,
       "files": [
         {
@@ -265,6 +265,14 @@
           "hits": 26
         },
         {
+          "path": "memory.md",
+          "hits": 26
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 24
+        },
+        {
           "path": "soltui/help.py",
           "hits": 24
         },
@@ -274,14 +282,6 @@
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 23
-        },
-        {
-          "path": "extension/src/core/commands.js",
-          "hits": 23
-        },
-        {
-          "path": "memory.md",
           "hits": 23
         }
       ],
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 203,
+      "matchingFiles": 204,
       "shown": 30,
       "files": [
         {
@@ -715,7 +715,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 184,
+      "matchingFiles": 185,
       "shown": 30,
       "files": [
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 140,
+      "matchingFiles": 141,
       "shown": 30,
       "files": [
         {
@@ -1460,10 +1460,6 @@
           "hits": 21
         },
         {
-          "path": "memory.md",
-          "hits": 20
-        },
-        {
           "path": "backtester/core/funding.py",
           "hits": 20
         },
@@ -1474,6 +1470,10 @@
         {
           "path": "docs/COMPOUND-5M.md",
           "hits": 19
+        },
+        {
+          "path": "memory.md",
+          "hits": 18
         },
         {
           "path": "research/coin-intelligence/btc-bitcoin.md",
