@@ -525,7 +525,14 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
     asset = _asset(asset)
     ledger = read_ledger(asset)
     res = {r["id"]: r for r in ledger if r.get("type") == "resolve"}
-    calls = [r for r in ledger if r.get("type") == "call" and (config_hash is None or r.get("config_hash") == config_hash)]
+    calls, seen = [], set()
+    for r in ledger:
+        # Two tickers (the tab's auto-forward and a `forward --loop`) can append the same call;
+        # count each bar/config once.
+        if r.get("type") == "call" and r.get("id") not in seen and (
+                config_hash is None or r.get("config_hash") == config_hash):
+            seen.add(r.get("id"))
+            calls.append(r)
     done = [(c, res[c["id"]]) for c in calls if c["id"] in res]
     rt = float(done[0][0].get("round_trip_bps", 16.0)) if done else 16.0
     dirs = {"UP": 1, "DOWN": -1}
@@ -554,13 +561,27 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
 
 # -- backtests -------------------------------------------------------------------------------
 
-_PREPARED: dict[str, Any] = {}
+_PREPARED: dict[str, tuple[tuple[Any, ...], dict[str, Any]]] = {}
+
+
+def _data_signature(asset: str) -> tuple[Any, ...]:
+    """mtimes of every file `prepare` may read, so a re-fetch invalidates the cache."""
+    from backtester.core.data import resolve_data_dir
+
+    data = resolve_data_dir()
+    paths = [p for p, _ in cbt.candidate_files(asset, data)] + [p for p, _ in cbt.candidate_files("BTC", data)]
+    paths.append(data / f"{asset}_funding_1h.csv")
+    return tuple(p.stat().st_mtime_ns if p.exists() else None for p in paths)
 
 
 def _prepared(asset: str) -> dict[str, Any]:
-    if asset not in _PREPARED:
-        _PREPARED[asset] = cbt.prepare(asset)
-    return _PREPARED[asset]
+    # The tab's process lives for days; without the signature it would keep backtesting the
+    # data it first loaded after research/full_suite.py replaced the files.
+    sig = _data_signature(asset)
+    cached = _PREPARED.get(asset)
+    if cached is None or cached[0] != sig:
+        _PREPARED[asset] = (sig, cbt.prepare(asset))
+    return _PREPARED[asset][1]
 
 
 def _run_one(asset: str, label: str, cfg: Mapping[str, Any], events: Sequence[Mapping[str, Any]],

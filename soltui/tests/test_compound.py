@@ -200,6 +200,13 @@ class ForwardLedgerTests(TempConfig):
         self.assertEqual(s["components"]["rsi"]["hit_rate"], round(2 / 3, 4))
         self.assertEqual(s["compound"]["net_bps_per_call_if_one_bar"], round((5.0 - 3.0) / 2 - 16.0, 3))
 
+    def test_a_call_appended_twice_counts_once(self) -> None:
+        call = {"type": "call", "id": "SOL:1:h", "bar_ts": T0, "price": 90.0, "call": "UP", "ungated": 1,
+                "composite": 0.4, "config_hash": "h", "entry": 0.25, "round_trip_bps": 16.0, "scores": {}}
+        compound._append("SOL", [call, call, {"type": "resolve", "id": "SOL:1:h", "ret_bps": 4.0}])
+        s = compound.forward_status("SOL")
+        self.assertEqual((s["calls_recorded"], s["compound"]["decided"]), (1, 1))
+
     def test_a_torn_last_line_is_skipped(self) -> None:
         compound._append("SOL", [{"type": "call", "id": "x"}])
         with compound.forward_path("SOL").open("a") as fh:

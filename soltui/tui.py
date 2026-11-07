@@ -1358,7 +1358,8 @@ class SolTuiApp(App):
         else:
             self.query_one("#compound-status", Static).update(f"[red]{escape(self._msg(env))}[/]")
 
-    @work(thread=True, group="compound", exclusive=True)
+    # Not exclusive: an auto-forward tick must not cancel a backtest that is still running.
+    @work(thread=True, group="compound")
     def _compound_job(self, name: str, params: dict[str, Any], label: str) -> None:
         self.call_from_thread(self.query_one("#compound-status", Static).update, f"{label}…")
         env = self._call(name, params)
