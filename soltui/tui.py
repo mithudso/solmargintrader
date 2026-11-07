@@ -27,6 +27,7 @@ from rich.markup import escape
 from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.css.query import NoMatches
 from textual.message import Message
 from textual.widget import Widget
 from textual.containers import Horizontal, Vertical, VerticalScroll
@@ -1914,8 +1915,17 @@ class SolTuiApp(App):
             self._compound_forward()
 
     def _compound_auto_tick(self) -> None:
-        """Every 20 s: show the unattended run's state; take an in-app forward tick if Auto is on."""
-        self._compound_show_unattended()
+        """Every 20 s: show the unattended run's state; take an in-app forward tick if Auto is on.
+
+        Defensive like `_tick`: the timer can fire while the app is tearing down, when `query_one`
+        raises NoMatches (a slow CI runner hit exactly that).
+        """
+        if not self.query("#compound-unattended"):
+            return
+        try:
+            self._compound_show_unattended()
+        except NoMatches:
+            return
         if not getattr(self, "_compound_auto", False):
             return
         now = time.time()

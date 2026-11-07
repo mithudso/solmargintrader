@@ -107,7 +107,7 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 838 tests
-python3 -m unittest discover -s soltui/tests -t .       # 797 tests (~610s)
+python3 -m unittest discover -s soltui/tests -t .       # 798 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 351 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
