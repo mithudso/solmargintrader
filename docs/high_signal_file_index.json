@@ -634,7 +634,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 1984
+      "lines": 2263
     },
     {
       "path": "soltui/signals.py",
@@ -690,7 +690,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Reads daemon state; creates/removes only the KILL flag",
-      "lines": 576
+      "lines": 600
     },
     {
       "path": "soltui/serve.py",
@@ -739,7 +739,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 272
+      "lines": 309
     },
     {
       "path": "soltui/tests",

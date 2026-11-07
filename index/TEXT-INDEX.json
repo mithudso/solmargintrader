@@ -160,7 +160,7 @@
     "docs/dso-skill/SKILL.md": 2025,
     "docs/dso-skill/references/passes.md": 782,
     "docs/external-calls.md": 1569,
-    "docs/high_signal_file_index.json": 2899,
+    "docs/high_signal_file_index.json": 2919,
     "docs/integrations-and-assumptions.md": 706,
     "docs/jupiter-trigger-contract.md": 422,
     "docs/known-issues.md": 719,
@@ -599,7 +599,7 @@
     "tools/land.sh": 417,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-07T08:19:14+00:00",
+  "generatedAt": "2026-11-07T08:19:57+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -132694,7 +132694,7 @@
       "docs/code-deep-optimizer-2026-11-06.md": 34,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/SKILL.md": 1,
-      "docs/high_signal_file_index.json": 150,
+      "docs/high_signal_file_index.json": 170,
       "executor/src/executor/api.py": 1,
       "executor/src/executor/journal.py": 4,
       "executor/src/executor/rails.py": 1,
@@ -278832,6 +278832,6 @@
     "documents": 598,
     "terms": 27715,
     "termsBeforePrune": 27717,
-    "totalTokens": 717004
+    "totalTokens": 717024
   }
 }
