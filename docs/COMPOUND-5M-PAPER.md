@@ -6,7 +6,7 @@
 
 The compound scorecard asks one question: **will the next five-minute bar of a crypto perpetual close up or down?** It scores 28 metrics from -1 (down) to +1 (up), removes the double-counting between metrics that measure the same thing, reweights styles by market regime, and combines the scores into one call (UP, DOWN or FLAT) behind seven veto gates. This paper lists every metric, what it checks and why it was included, every tunable parameter with its default and range, and the evidence so far.
 
-The evidence is negative. Across 1,420 configurations on five coins (30 days of 5-minute bars, last 30% held out), **none made money after costs in a way that survives scrutiny**: 10 of 1,420 had a positive out-of-sample return, and each of those 10 had a hit rate statistically indistinguishable from a coin flip. The default compound lost between 17% and 63% of capital out-of-sample at 5x leverage on every coin (mean -43%). Even a call that is *always right* loses money per one-bar trade on all five coins (about -7 to -10 bps on four, -0.4 on ZEC), because the average 5-minute move is smaller than the 16 bps round-trip cost. The one weak positive signal is a **reversion** effect in the oscillators (RSI, z-score, Stochastic, Bollinger: out-of-sample hit rates 50 to 57% across the five coins), which is the opposite direction from the catalogue's regime advice, may be partly a measurement artefact, and has not been forward tested. **No forward-test record exists yet, and the planned year-long run has not completed.** These results are weak evidence about one 30-day regime, and say nothing about profitability.
+The evidence is negative. Across 1,420 configurations on five coins (30 days of 5-minute bars, last 30% held out), **none made money after costs in a way that survives scrutiny**: 10 of 1,420 had a positive out-of-sample return, and each of those 10 had a hit rate statistically indistinguishable from a coin flip. The compound with static weights (the configuration the saved sweep ran) lost between 17% and 63% of capital out-of-sample at 5x leverage on every coin (mean -43%). Even a call that is *always right* loses money per one-bar trade on all five coins (about -7 to -10 bps on four, -0.4 on ZEC), because the average 5-minute move is smaller than the 16 bps round-trip cost. The one weak positive signal is a **reversion** effect in the oscillators (RSI, z-score, Stochastic, Bollinger: out-of-sample hit rates 50 to 57% across the five coins), which is the opposite direction from the catalogue's regime advice, may be partly a measurement artefact, and has not been forward tested. A later addition, **learned weights** (each metric weighted by its own capped, Bayesian-updated record), reaches this reversion tilt without anyone choosing it and lifts the compound's out-of-sample hit rate to 46.5 to 55.6%, but returns stayed negative in every row. **No forward-test record exists yet, and the planned year-long run has not completed.** These results are weak evidence about one 30-day regime, and say nothing about profitability.
 
 ## 1. Scope and question
 
@@ -21,6 +21,7 @@ The evidence is negative. Across 1,420 configurations on five coins (30 days of 
 1. **Score.** Each enabled metric returns a score in [-1, 1] for the latest *closed* bar, or *undefined* (still warming up, or a live input is missing). Undefined is never treated as zero: zero means "no opinion", undefined means "cannot say".
 2. **De-duplicate families.** RSI, Stochastic and CCI measure one quantity (where the close sits in its recent range); MACD and the EMA cross share two EMAs. Averaging every enabled metric would let the family with the most members outvote a family with one, which measures how many indicators someone wrote, not how much evidence exists. With `dedupe_families = 1`, each family contributes its weighted mean once, at the weight of its heaviest member.
 3. **Weight by regime.** Each bar is classified *trend* (ADX at least 25), *range* (ADX at most 18), *squeeze* (Bollinger bandwidth in its lowest 15% over a day) or *neutral*. Each metric's weight is multiplied by its style's multiplier for that regime (table in section 4.2).
+3b. **Learn (on by default since the adaptive-weights change).** With `adaptive = 1`, each metric's weight is also multiplied by its own learned edge over a coin flip (section 4.5). The saved sweep in section 6 predates this and ran with static weights.
 4. **Threshold with hysteresis.** A composite with absolute value at least `entry` (0.25) calls UP or DOWN. A held call stays on while the composite keeps its sign above `exit` (0.10). Hysteresis exists because every flip pays a round trip.
 5. **Gate.** Any enabled gate that blocks forces FLAT and is named in the call. A gate that cannot be evaluated blocks (fails closed). If less than `min_coverage` (0.5) of the enabled weight is defined, the call is FLAT.
 
@@ -68,7 +69,7 @@ Thirty-five components: 28 that vote and 7 gates that veto. The tables give, for
 *Formula:* `+0.5 above the (displaced) cloud, +1 if also tenkan > kijun; mirrored below; 0 inside`  
 *Works when:* Multi-timeframe trend filter in orderly markets. *Fails when:* Very short-term scalping; abrupt regime changes.
 
-### 3.2 Momentum and adaptive
+### 3.2 Momentum and persistence
 
 **`roc`** — Rate of change (vol-scaled) (family `momentum`, style `momentum`; default on)  
 *Checks:* Rate of change over `window` bars, divided by what a move that size would normally be (volatility-scaled).  
@@ -278,6 +279,16 @@ There are four layers, from the call as a whole down to one metric. Every parame
 | `squeeze_pct` | 15 | 1–50 | Bollinger bandwidth percentile that counts as a squeeze |
 | `squeeze_lookback` | 288 | 20–5000 | bars over which that percentile is taken (288 = one day) |
 | `allow_short` | 1 | 0–1 | 0 = long or flat only |
+| `adaptive` | 1 | 0–1 | 1 = weight each metric by its own learned edge over a coin flip |
+| `adaptive_prior` | 100 | 0–100000 | pseudo-calls at 50% every metric starts with; larger = slower to trust a streak |
+| `adaptive_window` | 4032 | 12–1000000 | only calls from the last N bars count, so the record is capped; 4032 = two weeks of 5m |
+| `adaptive_halflife` | 0 | 0–1000000 | 0 = every call in the window counts equally; N = calls also fade, counting half after N bars |
+| `adaptive_flip` | 0 | 0–1 | 1 = invert a metric that is reliably WRONG instead of muting it |
+| `tune` | 0 | 0–1 | 1 = each metric moves its numbers to a neighbouring setting once that neighbour is proving more accurate |
+| `tune_confidence` | 0.95 | 0.5–0.9999 | posterior probability a neighbour must beat the current settings by before a move |
+| `tune_min_calls` | 300 | 10–1000000 | decayed calls a neighbour needs before it can be adopted |
+| `tune_step` | 0.25 | 0.05–1.0 | neighbours sit at x(1 - step) and x(1 + step) of each number |
+| `tune_cooldown` | 576 | 1–1000000 | bars to wait after a move (576 = two days of 5m) |
 
 Practical notes. `entry` and `exit` set how often the card trades: lowering `entry` to 0.15 roughly doubled the number of calls in the sweep and made results worse on every coin (section 6.3), because more calls means more round trips. `min_coverage` matters when live-only metrics are enabled: with them missing, a card that reads 40% of its weight is FLAT rather than a confident call from a minority of the evidence.
 
@@ -314,6 +325,16 @@ Each metric has its own parameters (Appendix A), an `enabled` flag and a `weight
 * **Do not tune on the held-out slice.** The sweep reports how many configurations have been scored on that exact out-of-sample window across all runs (the multiple-testing denominator). Every additional run on the same window spends it again.
 * **Disabling a metric is a stronger move than re-tuning it.** Family de-duplication already stops redundant metrics from stacking; enabling more oscillators adds votes, not information.
 
+### 4.5 Learned weights and evidence-gated tuning
+
+With `adaptive = 1` a metric "calls" a bar when its absolute score reaches `entry`; once the next bar closes, the call is right or wrong. Each metric's hit probability has a Beta prior of `adaptive_prior / 2` right and `adaptive_prior / 2` wrong pseudo-calls (50 and 50 by default) and is updated by every resolved call. The weight multiplier is **2 x hit - 1**: zero at 50%, so a metric with no demonstrated skill gets no say, rather than a metric at 55% and one at 47% differing only slightly. A metric that is reliably wrong is muted, or inverted with `adaptive_flip = 1`.
+
+* **Why a cap.** Only calls inside the last `adaptive_window` bars count (4,032, two weeks of 5m). Without a cap, five months of history would make each new miss move a weight by a meaningless amount; with it, a miss moves a weight as much in month five as in week two, and a metric that stops working loses its weight within two weeks. `adaptive_halflife` optionally fades calls inside the window (off by default).
+* **No look-ahead.** A call at bar *t* is counted only after bar *t+1* has closed; the prefix-invariance test runs with adaptive weighting on.
+* **Tuning (`tune = 1`, off by default).** Each metric also runs shadow copies at x(1 - `tune_step`) and x(1 + `tune_step`) of each number, and moves to a neighbour only when the posterior says it is more accurate with probability above `tune_confidence` (0.95) after `tune_min_calls` (300) calls, then waits `tune_cooldown` bars (576, two days). Moving after every miss would chase noise, because about half of all 5m outcomes are coin flips.
+
+The tunable parameters are in section 4.1: `adaptive`, `adaptive_prior`, `adaptive_window`, `adaptive_halflife`, `adaptive_flip`, `tune`, `tune_confidence`, `tune_min_calls`, `tune_step`, `tune_cooldown`.
+
 ## 5. Evaluation protocol
 
 * **Data.** 30 days of 5-minute bars, 2026-07-06 00:00 to 2026-08-06 00:00 UTC (8,927 to 8,929 bars per coin). SOL is native 5m; BTC, ETH, DOGE and ZEC are aggregated from 1-minute bars. All are Coinbase series.
@@ -321,6 +342,7 @@ Each metric has its own parameters (Appendix A), an `enabled` flag and a `weight
 * **Costs.** 6 bps fee plus 2 bps slippage per side, 16 bps per round trip, applied to every fill.
 * **Forecast statistics** (per configuration, per split): hit rate among calls, a z-score against a coin flip (standard errors from 50%), gross and net basis points per call if held one bar, calibration (up-rate by composite bucket), and the **oracle**: the net result per one-bar trade of a call that is always right.
 * **Engine statistics:** total return, drawdown, trades, time in market, fees, borrow and liquidations, from the repository's backtest engine with the leveraged perp cost model.
+* **Weights in the saved sweep.** Static (`adaptive` absent, equivalent to 0): the sweep predates learned weights. Section 6.7 reports the learned-weight comparison, taken from `docs/COMPOUND-5M.md` and not recomputed here.
 * **Configurations.** 284 labels per coin (each metric alone at its defaults, then one-parameter perturbations, then the compound and eight variants of it), 1,420 rows in total.
 
 ## 6. Results so far
@@ -369,12 +391,12 @@ Out-of-sample hit rate of each metric alone at its defaults, with its z-score in
 
 ### 6.3 The compound and its variants
 
-Out-of-sample, mean across the five coins (the "best coin" column is the highest single return; every value is negative).
+Static weights, out-of-sample, mean across the five coins (the "best coin" column is the highest single return; every value is negative).
 
 
 | Configuration | Mean hit rate | Calls per coin | Trades per coin | Mean OOS return | Best coin |
 |---|---|---|---|---|---|
-| compound (defaults) | 46.6% | 328 | 165 | -43.5% | -16.8% |
+| compound (static weights, other defaults) | 46.6% | 328 | 165 | -43.5% | -16.8% |
 | compound, regime_weighting=0 | 44.3% | 172 | 142 | -40.3% | -18.8% |
 | compound, dedupe_families=0 | 46.2% | 274 | 154 | -38.6% | -11.3% |
 | compound, entry=0.15 | 47.3% | 544 | 231 | -57.7% | -27.7% |
@@ -407,9 +429,21 @@ Calibration asks whether a stronger composite means a higher chance of an up bar
 
 The share of up bars is between 47% and 51% in every bucket except the last, and is **lowest (40%) in the strongest-positive bucket** (70 bars, too few to read). A well-calibrated scorecard would show up-rate rising with the composite; this one does not.
 
-### 6.6 Forward testing and the full suite
+### 6.6 Learned weights
 
-The forward tester exists (one call per closed 5-minute bar, resolved when the next bar closes, written to `~/.config/soltui/compound/forward/<ASSET>.jsonl`). **No forward ledger has been recorded on this machine**, so there is no live out-of-sample evidence at all. The full suite (`research/full_suite.py`: a year of 5-minute data for the universe, then every registry and compound backtest) has not been run to completion. Both are required before any of section 6 is more than a 30-day observation.
+From `docs/COMPOUND-5M.md`, measured on the same 30 days and not recomputed here: out-of-sample hit rate of the default compound.
+
+| | BTC | DOGE | ETH | SOL | ZEC |
+|---|---|---|---|---|---|
+| static weights (`adaptive = 0`) | 48.5% | 44.0% | 45.6% | 46.3% | 48.9% |
+| learned weights (`adaptive = 1`, two-week record) | 46.5% | 55.6% | 52.0% | 50.2% | 51.6% |
+| learned plus tuning at 0.65 confidence / 50 calls | 47.4% | 56.2% | 53.4% | 52.1% | 51.4% |
+
+Learning fixes the direction problem on four of five coins: it mutes the trend metrics and leans on reversion without anyone choosing. Tuning at the default 0.95 bar moved one metric once across five coins and 30 days: neighbouring settings are nearly the same signal, so the data rarely proves one better. A looser bar moves the hit rate by about a point either way, inside the noise, and several bars were tried, which is itself selection; tuning therefore stays off by default. **Returns stayed negative in every row.** A better hit rate does not beat a 16 bps round trip on a 6 to 9 bps move. Note the caveat that applies to every learned row: the weights were learned from the same 30 days they are measured on (each call uses only the record before it), so this is a within-sample adaptation test, not a held-out one.
+
+### 6.7 Forward testing and the full suite
+
+The forward tester exists (one call per closed 5-minute bar, resolved when the next bar closes, written to `~/.config/soltui/compound/forward/<ASSET>.jsonl`). **No forward ledger has been recorded on this machine**, so there is no live out-of-sample evidence at all. The full suite (`research/full_suite.py`: a year of 5-minute data for the universe, then every registry and compound backtest) has not been run to completion. Both are required before any of section 6 is more than a 30-day observation. Live SOL calls now show learned weights, and they currently give weight only to the reversion metrics (from the project's progress notes; not re-verified for this paper).
 
 ## 7. Threats to validity
 
@@ -424,7 +458,7 @@ The forward tester exists (one call per closed 5-minute bar, resolved when the n
 
 ## 8. Conclusions and next steps
 
-What has been established: the machinery is causal (prefix-invariance tested), the costs are explicit, the gates measurably reduce losses, and the catalogue's regime guidance does not hold in this sample. What has **not** been established is any profitable configuration. The honest status is "no evidence of edge; weak evidence of short-horizon mean reversion in oscillators on one 30-day window".
+What has been established: the machinery is causal (prefix-invariance tested), the costs are explicit, the gates measurably reduce losses, and the catalogue's regime guidance does not hold in this sample. Learned weights recover the reversion tilt automatically, which supports building the next step on the metrics' own track records rather than on the catalogue's regime table. What has **not** been established is any profitable configuration. The honest status is "no evidence of edge; weak evidence of short-horizon mean reversion in oscillators on one 30-day window".
 
 In order of value:
 
@@ -480,7 +514,9 @@ Defaults and bounds are as shipped. Ranges are inclusive. A parameter's range is
 ## Appendix B. Reproducing this
 
 ```bash
-# the sweep behind section 6 (about 1,420 configurations; needs the cached 30-day bars)
+# the sweep behind section 6 (about 1,420 configurations; needs the cached 30-day bars).
+# The saved rows used static weights; since adaptive weights became the default, add the
+# aggregate setting adaptive=0 to reproduce them.
 /Users/mitch/.venvs/soltui/bin/python -m soltui.compound sweep --perturb --aggregate-grid
 
 # one live call with every metric explained (public data, no keys, no orders)

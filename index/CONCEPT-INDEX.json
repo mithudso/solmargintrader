@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T14:14:32+00:00",
+  "generatedAt": "2026-11-07T14:28:19+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 295,
+      "matchingFiles": 296,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 254,
+      "matchingFiles": 255,
       "shown": 30,
       "files": [
         {
@@ -277,11 +277,11 @@
           "hits": 22
         },
         {
-          "path": "docs/code-deep-optimizer-2026-11-06.md",
-          "hits": 21
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 22
         },
         {
-          "path": "soltui/help.py",
+          "path": "docs/code-deep-optimizer-2026-11-06.md",
           "hits": 21
         }
       ],
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 193,
+      "matchingFiles": 194,
       "shown": 30,
       "files": [
         {
@@ -438,7 +438,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 185,
+      "matchingFiles": 186,
       "shown": 30,
       "files": [
         {
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 183,
+      "matchingFiles": 184,
       "shown": 30,
       "files": [
         {
@@ -712,7 +712,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 183,
+      "matchingFiles": 184,
       "shown": 30,
       "files": [
         {
@@ -730,6 +730,10 @@
         {
           "path": "backtester/core/scorecard.py",
           "hits": 82
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 76
         },
         {
           "path": "soltui/signals.py",
@@ -830,10 +834,6 @@
         {
           "path": "backtester/strategy_cards/ppo.md",
           "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 18
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -851,7 +851,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 178,
+      "matchingFiles": 179,
       "shown": 30,
       "files": [
         {
@@ -988,7 +988,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 178,
+      "matchingFiles": 179,
       "shown": 30,
       "files": [
         {
@@ -1034,6 +1034,10 @@
         {
           "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
           "hits": 34
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 32
         },
         {
           "path": "soltui/signals.py",
@@ -1106,10 +1110,6 @@
         {
           "path": "research/results/cpcv_tables.md",
           "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 16
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 159,
+      "matchingFiles": 160,
       "shown": 30,
       "files": [
         {
@@ -1261,7 +1261,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 138,
+      "matchingFiles": 139,
       "shown": 30,
       "files": [
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 134,
+      "matchingFiles": 135,
       "shown": 30,
       "files": [
         {
@@ -1492,6 +1492,10 @@
           "hits": 15
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 15
+        },
+        {
           "path": "research/ratio_rotation.py",
           "hits": 15
         },
@@ -1518,10 +1522,6 @@
         {
           "path": "soltui/top5.py",
           "hits": 9
-        },
-        {
-          "path": "backtester/core/fetch_minutes.py",
-          "hits": 9
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1538,7 +1538,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 121,
+      "matchingFiles": 122,
       "shown": 30,
       "files": [
         {
@@ -1672,7 +1672,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 118,
+      "matchingFiles": 119,
       "shown": 30,
       "files": [
         {
@@ -1788,11 +1788,11 @@
           "hits": 4
         },
         {
-          "path": "docs/dso-skill/SKILL.md",
+          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 4
         },
         {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.json",
+          "path": "docs/dso-skill/SKILL.md",
           "hits": 4
         }
       ],
@@ -1810,7 +1810,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 104,
+      "matchingFiles": 105,
       "shown": 30,
       "files": [
         {
@@ -1945,7 +1945,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 103,
+      "matchingFiles": 104,
       "shown": 30,
       "files": [
         {
@@ -1978,6 +1978,10 @@
         },
         {
           "path": "backtester/tests/test_scorecard.py",
+          "hits": 27
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 27
         },
         {
@@ -2063,10 +2067,6 @@
         {
           "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
           "hits": 10
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 9
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2082,7 +2082,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 86,
+      "matchingFiles": 87,
       "shown": 30,
       "files": [
         {
@@ -2219,7 +2219,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 85,
+      "matchingFiles": 87,
       "shown": 30,
       "files": [
         {
@@ -2319,6 +2319,10 @@
           "hits": 7
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 7
+        },
+        {
           "path": "backtester/strategy_cards/pairs_cointegration.md",
           "hits": 6
         },
@@ -2337,10 +2341,6 @@
         {
           "path": "research/results/geometry_medium_k2.txt",
           "hits": 6
-        },
-        {
-          "path": "research/results/geometry_short_k2.txt",
-          "hits": 6
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2354,7 +2354,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 82,
+      "matchingFiles": 83,
       "shown": 30,
       "files": [
         {
@@ -2442,6 +2442,10 @@
           "hits": 14
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 13
+        },
+        {
           "path": "skills/trading-and-investing/references/technical-analysis.md",
           "hits": 12
         },
@@ -2472,10 +2476,6 @@
         {
           "path": "research/coin-intelligence/zec-zcash.md",
           "hits": 7
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 7
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2489,7 +2489,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 77,
+      "matchingFiles": 78,
       "shown": 30,
       "files": [
         {
@@ -2593,6 +2593,10 @@
           "hits": 9
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 8
+        },
+        {
           "path": "research/ratio_rotation.py",
           "hits": 8
         },
@@ -2607,10 +2611,6 @@
         {
           "path": "soltui/tests/test_top5.py",
           "hits": 8
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 7
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2623,7 +2623,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 68,
+      "matchingFiles": 69,
       "shown": 30,
       "files": [
         {
@@ -2683,6 +2683,10 @@
           "hits": 8
         },
         {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 6
+        },
+        {
           "path": "research/results/perturb_long_any_ou_reversion_obv_trend.txt",
           "hits": 6
         },
@@ -2740,10 +2744,6 @@
         },
         {
           "path": "research/results/cpcv_pbo.json",
-          "hits": 3
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
           "hits": 3
         }
       ],
