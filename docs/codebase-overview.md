@@ -3,7 +3,7 @@
 A file map for orientation, grouped by directory. Every path here is checked by
 `scripts/check_docs.py`, so a rename that is not reflected below fails the build.
 
-Six components, in ascending order of how much damage a bug can do:
+Seven components, in ascending order of how much damage a bug can do:
 
 | Component | Language | Can it move money? |
 | --- | --- | --- |
@@ -13,6 +13,7 @@ Six components, in ascending order of how much damage a bug can do:
 | `backtester/` | Python 3.13 | No — simulation only, by design |
 | `extension/` | JavaScript (ESM, no deps) | **Yes** |
 | `liquidity/` | Python 3.13 + web3 (own venv) | **Yes** — live Aero LP daemon (owner-authorized) |
+| `executor/` | Python 3.13 + solders (own venv) | **Yes** — guarded Jupiter swaps (dry-run by default) |
 
 Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 component.
@@ -219,7 +220,7 @@ Three things about the shape, because they will come up:
 | `AGENTS.md` | Points at `CLAUDE.md` |
 | `GEMINI.md` | Gemini CLI equivalent |
 | `.github/copilot-instructions.md` | Copilot CLI equivalent |
-| `.github/workflows/ci.yml` | Extension, backtester, soltui, mongo, liquidity and doc/index drift jobs |
+| `.github/workflows/ci.yml` | Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs |
 | `CONTRIBUTING.md` | Contribution boundaries and validation workflow |
 | `CODE_OF_CONDUCT.md` | Contributor conduct and reporting boundary |
 | `docs/requirements.md` | Existing functional/runtime/safety requirements |
@@ -233,6 +234,34 @@ Three things about the shape, because they will come up:
 | `data/` | Regenerable OHLCV cache — gitignored. Refetch with `backtester.core.fetch` |
 | `results/` | Generated backtest output — not source |
 | `.remember/remember.md` | Session handoff notes |
+
+## `executor/` — guarded Solana swaps
+
+Signs and sends real Jupiter swaps from the owner's Solana wallet behind a semantic verifier, rails, gates and a
+journal. Dry-run by default. Agent rules: `executor/CLAUDE.md`.
+
+| File | Role |
+| --- | --- |
+| `executor/README.md` | What it does, install, CLI/API surface |
+| `executor/CLAUDE.md` | Non-negotiables, authorization limits, gaps |
+| `executor/pyproject.toml` | Dependencies, CLI entry point, pytest and Ruff configuration |
+| `executor/uv.lock` | Locked dependencies |
+| `executor/src/executor/config.py` | `~/.executor/config.toml` (mode 600), rails and defaults, fail-closed validation |
+| `executor/src/executor/tokens.py` | Token table, exact amount conversion; unknown tokens are refused |
+| `executor/src/executor/jupiter.py` | Jupiter Swap v1 quote, swap build and Price API client |
+| `executor/src/executor/quote.py` | Quote evaluation against the independent price reference |
+| `executor/src/executor/lifi.py` | Cross-chain quote, quote only |
+| `executor/src/executor/txverify.py` | Semantic transaction verifier: program allowlist, instruction decoding, balance deltas |
+| `executor/src/executor/rails.py` | Every order rail, as code |
+| `executor/src/executor/gates.py` | Dry-run soak and research gate, per strategy |
+| `executor/src/executor/ledger.py` | Pure positions and realized P&L from the journal |
+| `executor/src/executor/journal.py` | Append-only intent and result journal; unknown sends block |
+| `executor/src/executor/signer.py` | Mode-600 key loading; the key is never printed |
+| `executor/src/executor/rpc.py` | Solana JSON-RPC client; a send is never retried |
+| `executor/src/executor/engine.py` | The swap pipeline shared by dry-run and live, and reconcile |
+| `executor/src/executor/registry.py` | Command registry, response envelope, call log |
+| `executor/src/executor/cli.py` | `executor` command line |
+| `executor/src/executor/api.py` | Loopback HTTP API (bearer token, Origin refusal) |
 
 ## `liquidity/` — Aero Slipstream LP manager
 

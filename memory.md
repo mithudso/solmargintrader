@@ -1,9 +1,8 @@
 # Work continuation
 
-Version: 17
-Delta: extension version 0.2.0, visible in popup and dashboard, plus a CI version-bump guard.
+Version: 18
+Delta: extension 0.2.0 version display, leverage tiers and triggers, and the executor component (workstream E1): verifier, rails, journal, CLI and API, and the live path validation.
 
-Delta: added PR 1 of the leverage-tier and reliable-trigger work (tiers, intrabar liquidation).
 
 ## v1 - 2026-11-06
 
@@ -191,3 +190,16 @@ Target: the owner reloaded the unpacked extension from /Users/mitch/dev/solmargi
 Done: manifest.json and package.json are 0.2.0. The popup header and the dashboard title show the manifest version. The popup gains a "SolTUI console" button that opens dashboard.html#soltui. test/version.test.js keeps the two version fields equal and checks that both pages render the version. The CI extension job fails a pull request that changes extension/src or manifest.json without a version bump.
 
 Owner steps (Chrome Beta, where the extension is installed): quit and reopen Chrome Beta once so it reads the com.mitchhudson.soltui native host manifest, then reload SolMarginTrader in chrome://extensions. The popup should then read v0.2.0.
+
+## v18 - 2026-11-07 (executor, workstream E1)
+
+Target: new component `executor/` for swaps between coins with best pricing; the foundation for a later "run this strategy live" button (E2 builds the runner and the button). Branch executor-e1, worktree /Users/mitch/dev/solmargintrader-wt-executor. Stele MCP was unreachable, so the facts below are in the outbox, not yet in the graph.
+
+Completed: Python 3.13 package with uv lock, ruff and pytest (202 offline tests, 5 `-m network`); Jupiter Swap v1 quote/swap/price with an independent price reference; quote-only LI.FI cross-chain price; semantic transaction verifier (`txverify.py`, two layers, plus a re-simulation of the exact signed bytes); rails, per-strategy dry-run soak, mandatory research gate with a logged override; append-only journal with `unknown` handling and `reconcile`; CLI and loopback HTTP API over one registry with one envelope; `executor` CI job; root CLAUDE.md and docs now say seven components.
+
+Facts to keep: (1) Jupiter now marks Swap API v1 "no longer actively maintained, superseded by Swap V2"; the owner chose v1. `lite-api.jup.ag` works keyless but returns 429 on a second call inside about a second, so the client spaces calls. (2) `priceImpactPct` is a fraction ("0.001078" at 20,000 SOL = 0.108%). (3) A simulated post-state includes the fee; `simulateTransaction` with `accounts` returns the post-state of every writable account, which is what the verifier compares. (4) The wallet held no USDC, so the live round trip ran sell first (SOL to USDC, then back). (5) Config comment lines contain the text `mode = "live"`: edit the config with a line-anchored replace, not a string replace.
+
+Live validation (root CLAUDE.md conditions): reserved strategy `path-validation`, enabled only for the run, then switched off. Leg 1 SOL to USDC 0.011 SOL: 44MrREewJMLguLRw3pfMs5V3K1wFXRyxuD6pGDa5Kp1TWUWSd9TGiu9wTJ4ACYLFbqSe8WHMaLyBRDu8GvhHaYSS. Leg 2 USDC to SOL 0.99 USDC: 5veG62YXWFjX1XYeAzadLpaZ1MwaWd89dcwGt8Sjv6oS7uk1yscZKd1ggqBDFfugzP19yXc7EWB8DCao8FnpUSFH. Net cost of the round trip 51,110 lamports (about $0.005) and 47 raw USDC of dust; both post-trade checks passed.
+
+Remaining: E2 (runner, soltui button); cross-chain execution; Swap V2 decision; owner to review the `path-validation` reserved strategy.
+

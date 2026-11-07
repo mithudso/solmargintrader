@@ -9,6 +9,7 @@ SOL trading research and execution tooling, in six parts:
 | [`extension/`](extension/README.md) | Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **This is the part that can place real orders.** | JavaScript (ESM, no deps) |
 | [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI that surfaces signals and paper positions, supervised by launchd. Read-only over the research side. | Python 3.13 |
 | [`mongo/`](mongo/README.md) | Local MongoDB copy of everything measured — bars, strategies, readouts, backtests, CPCV results — plus a runnable query reference. Derived; the files stay the source of truth. | Python 3.13 + pymongo |
+| [`executor/`](executor/README.md) | **Guarded live swaps.** Jupiter spot swaps on Solana behind a semantic transaction verifier, hard rails, a research gate, a dry-run soak and an append-only journal. CLI and loopback API share one JSON envelope. Dry-run by default. | Python 3.13 (own venv) |
 | [`liquidity/`](liquidity/README.md) | **Liquidity instead of trading strategies.** It manages Aero (aero.xyz) Slipstream LP positions on Base: per-pool profitability measures, a pool scout, auto-rebalancing, auto-compounding, deployment of idle coins, and side-by-side experiments with P&L tracking. It moves real money in live mode; soltui's Liquidity tab shows it. | Python 3.13 + web3 (own venv) |
 
 > Research and educational tooling, not financial advice. Simulated past performance does not
@@ -93,7 +94,7 @@ ships.
 **Start here**
 
 - [docs/onboarding.md](docs/onboarding.md) — a first hour that ends with every component run
-- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all six components
+- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all seven components
 - [docs/COMPONENTS.md](docs/COMPONENTS.md) — what each module does and depends on
 
 **Working in it**

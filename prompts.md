@@ -1,9 +1,8 @@
 # Prompt history
 
-Version: 9
-Delta: added the owner's report that the extension looked unchanged after reload (version still 0.1.0).
+Version: 11
+Delta: added the extension-version report, the leverage-tier and reliable-trigger request, and the executor request with the owner's three decisions (v11, workstream E1).
 
-Delta: added the leverage-tier and reliable-trigger request.
 
 ## v1 - 2026-11-06
 
@@ -61,6 +60,9 @@ For all of the top 5, pre-populate that strategy as a clickable option in the an
 
 Scope of this session: the read-only part only (presets, net %, the P&L tab, read-only wallet discovery). Swaps, transaction signing and the live-run button are a later, separately gated workstream; no private-key field was added.
 
+## v9 - 2026-11-07
+
+```text
 Add strategies for low, medium, and high margin trading, I want to backtest high margin perp trades. And I want to compile a list of very reliable signals, what I mean is not that I think that signal will work all the time with no context, but look for signals that are correct a vast majority of the time and to what degree. The idea being if we have what amount to triggers then we can wait for the reliable trigger to happen, place an order in the direction it is likely to go, and exit before the trigger context expires. For instance I could imagine something like "every time macd crosses while balance is strongly negative and there is a down sloped moving average the next 5 bars are always down"  (I'm making that up), or "When volume spikes to 10x normal, the next several bars will be negative followed by a sharp rise." things like that can be validated and backtested and used when they occur.
 ```
 
@@ -71,3 +73,16 @@ Delivered in two PRs: (1) leverage tiers, (2) the reliable-trigger miner.
 ```text
 The solmargintrader has not changed at all, the version number is the same, I loaded the extension from /Users/mitch/dev/solmargintrader/extension
 ```
+
+## v11 - 2026-11-07
+
+```text
+add the ability to swap between coins and chains using the best pricing, and ultimately I want a "run this strategy live" button on the top 5 page that will make actual real money transactions using the signals and strategy that bacvktested well.
+```
+
+Owner decisions on the plan (verbatim): "1. Yes, make those variable but I like the defaults. 2. Yes, jupiter. 3. yes"
+
+Meaning: (1) per-strategy max position $25 and daily loss stop $10 are configurable defaults; (2) the first venue is Jupiter on Solana, spot only, long or flat, no shorts; (3) the research gate is mandatory, with an override only through an explicit, logged config flag.
+
+Workstream E1 (this PR): the `executor/` component only (quote, verifier, sign and send, rails, CLI and API, tests, live validation). E2 will build the live strategy runner and the soltui "Run live" button on top of its CLI and API; neither is part of E1.
+

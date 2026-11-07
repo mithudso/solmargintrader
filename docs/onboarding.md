@@ -5,7 +5,7 @@ components that can move money before running any live command.
 
 ## The one thing to know first
 
-Six components with different failure modes:
+Seven components with different failure modes:
 
 | Component | Worst case if you break it |
 | --- | --- |
@@ -15,6 +15,7 @@ Six components with different failure modes:
 | `extension/` | **A real order for real money** |
 | `mongo/` | Wrong derived research records; selected collections are dropped on load |
 | `liquidity/` | **A real Base transaction or LP position change** |
+| `executor/` | **A real Solana swap for real money** |
 
 Read `CLAUDE.md` before touching anything. It carries the non-negotiables per component and
 they are not stylistic — each one is there because the failure it prevents already
