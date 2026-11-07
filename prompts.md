@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 13
-Delta: v12 to v13; grid profitability review and whole-app SolTUI help.
+Version: 16
+Delta: v15 to v16; five-minute leveraged-perps full-suite request.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -109,4 +109,10 @@ Look at this file and determine if all of the strategies, signals, and indicator
 
 ```text
 In the strategies tab make it indicate whether or not that strategy has already been tested or not, how many times, when, and what the results were. Also add 3 buttons, 1) Backtest selected, 2) Backtest all untested and 3) Backtest all.
+```
+
+## v16 - 2026-11-07 (Five-minute leveraged perps full-suite)
+
+```text
+Run the full-suite skill on high margin leveraged perps trading strategies like exists here https://jup.ag/perps/long/SOL-SOL. Effectively betting on how the price will move in the next 5 minutes. What signals, indicators, and technicals best predict an extremely short timeframe, but that also cannot withstand a big swing in the wrong direction.
 ```

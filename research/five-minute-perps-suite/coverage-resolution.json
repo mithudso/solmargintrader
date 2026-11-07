@@ -1,0 +1,362 @@
+[
+  {
+    "concept": "Jupiter dynamic-fee-aware short-horizon feasibility",
+    "coverage": "GAP",
+    "coverage_slug": "jupiter-dynamic-fee-short-horizon-feasibility",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": null,
+    "aliases_checked": [
+      "Jupiter dynamic-fee-aware short-horizon feasibility",
+      "Jupiter dynamic-fee-aware short-horizon feasibility"
+    ]
+  },
+  {
+    "concept": "SOL cross-venue lead-lag after executable latency",
+    "coverage": "GAP",
+    "coverage_slug": "sol-executable-cross-venue-lead-lag",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": null,
+    "aliases_checked": [
+      "SOL cross-venue lead-lag after executable latency",
+      "Solana cross-venue lead-lag after executable latency"
+    ]
+  },
+  {
+    "concept": "Five-minute selective prediction and probability calibration",
+    "coverage": "GAP",
+    "coverage_slug": "five-minute-selective-calibrated-signals",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": null,
+    "aliases_checked": [
+      "Five-minute selective prediction and probability calibration",
+      "Five-minute selective prediction and probability calibration"
+    ]
+  },
+  {
+    "concept": "Five-minute first-passage labels with liquidation and costs",
+    "coverage": "GAP",
+    "coverage_slug": "five-minute-first-passage-labels",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": null,
+    "aliases_checked": [
+      "Five-minute first-passage labels with liquidation and costs",
+      "Five-minute first-passage labels with liquidation and costs"
+    ]
+  },
+  {
+    "concept": "Five-minute volatility-regime-conditioned signal selection",
+    "coverage": "GAP",
+    "coverage_slug": "five-minute-regime-conditioned-signals",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": null,
+    "aliases_checked": [
+      "Five-minute volatility-regime-conditioned signal selection",
+      "Five-minute volatility-regime-conditioned signal selection"
+    ]
+  },
+  {
+    "concept": "Cross-asset hierarchical transfer at five-minute horizon",
+    "coverage": "GAP",
+    "coverage_slug": "cross-asset-five-minute-transfer",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": null,
+    "aliases_checked": [
+      "Cross-asset hierarchical transfer at 5-minute horizon",
+      "Cross-asset hierarchical transfer at five-minute horizon"
+    ]
+  },
+  {
+    "concept": "Uncertainty-aware nonlinear crypto lead-lag",
+    "coverage": "GAP",
+    "coverage_slug": "uncertainty-aware-nonlinear-crypto-lead-lag",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": null,
+    "aliases_checked": [
+      "Uncertainty-aware nonlinear crypto lead-lag",
+      "Uncertainty-aware nonlinear crypto lead-lag"
+    ]
+  },
+  {
+    "concept": "Statistical learning and overfitting in trading",
+    "coverage": "HAVE",
+    "coverage_slug": "honest-signal-evaluation-out-of-sample-costs-and-multiple-testing",
+    "canonical_node": "Honest signal evaluation out of sample costs and multiple testing",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Statistical learning and overfitting in trading",
+      "Statistical learning and overfitting in trading"
+    ]
+  },
+  {
+    "concept": "Order-flow imbalance and CVD signals",
+    "coverage": "HAVE",
+    "coverage_slug": "order-flow-signals-cvd-and-order-book-imbalance",
+    "canonical_node": "Order flow signals CVD and order book imbalance",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Order-flow imbalance and CVD signals",
+      "Order-flow imbalance and CVD signals"
+    ]
+  },
+  {
+    "concept": "Market microstructure and execution",
+    "coverage": "HAVE",
+    "coverage_slug": "market-microstructure-and-execution",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": "/Users/mitch/.agents/skills/trading-and-investing/references/market-microstructure-and-execution.md",
+    "aliases_checked": [
+      "Market microstructure and execution",
+      "Market microstructure and execution"
+    ]
+  },
+  {
+    "concept": "Perpetual futures margin and liquidation",
+    "coverage": "HAVE",
+    "coverage_slug": "sol-perp-margin-and-liquidation",
+    "canonical_node": "Perpetual futures and margin on Solana: Drift/Velocity, Jupiter Perps, Zeta, Flash, with Hyperliquid and CEX comparison",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Perpetual futures margin and liquidation",
+      "Perpetual futures margin and liquidation"
+    ]
+  },
+  {
+    "concept": "Risk of ruin and position sizing",
+    "coverage": "HAVE",
+    "coverage_slug": "high-leverage-shorting",
+    "canonical_node": "High-leverage short trading and risk of ruin",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Risk of ruin and position sizing",
+      "Risk of ruin and position sizing"
+    ]
+  },
+  {
+    "concept": "Momentum breakout and mean reversion",
+    "coverage": "HAVE",
+    "coverage_slug": "short-horizon-momentum-breakout-and-mean-reversion",
+    "canonical_node": "Short horizon momentum breakout and mean reversion",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Momentum breakout and mean reversion",
+      "Momentum breakout and mean reversion"
+    ]
+  },
+  {
+    "concept": "Exchange timestamps and receive-time feed integrity",
+    "coverage": "HAVE",
+    "coverage_slug": "oracle-and-data-latency-and-signal-half-life",
+    "canonical_node": "Oracle and data latency and signal half-life",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Exchange timestamps and receive-time feed integrity",
+      "Exchange timestamps and receive-time feed integrity"
+    ]
+  },
+  {
+    "concept": "Purged chronological validation and trial ledgers",
+    "coverage": "HAVE",
+    "coverage_slug": "honest-signal-evaluation-out-of-sample-costs-and-multiple-testing",
+    "canonical_node": "Honest signal evaluation out of sample costs and multiple testing",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Purged chronological validation and trial ledgers",
+      "Purged chronological validation and trial ledgers"
+    ]
+  },
+  {
+    "concept": "Solana execution costs and landing",
+    "coverage": "HAVE",
+    "coverage_slug": "sol-fees-and-execution-costs",
+    "canonical_node": "Solana fees and execution costs",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Solana execution costs and landing",
+      "Solana execution costs and landing"
+    ]
+  },
+  {
+    "concept": "Replay fill-model limits and paper/live acceptance",
+    "coverage": "HAVE",
+    "coverage_slug": "honest-signal-evaluation-out-of-sample-costs-and-multiple-testing",
+    "canonical_node": "Honest signal evaluation out of sample costs and multiple testing",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Replay fill-model limits and paper/live acceptance",
+      "Replay fill-model limits and paper/live acceptance"
+    ]
+  },
+  {
+    "concept": "Causal interpretation of contemporaneous OFI",
+    "coverage": "HAVE",
+    "coverage_slug": "order-flow-signals-cvd-and-order-book-imbalance",
+    "canonical_node": "Order flow signals CVD and order book imbalance",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Causal interpretation of contemporaneous OFI",
+      "Causal interpretation of contemporaneous OFI"
+    ]
+  },
+  {
+    "concept": "Oracle latency versus signal half-life",
+    "coverage": "HAVE",
+    "coverage_slug": "oracle-and-data-latency-and-signal-half-life",
+    "canonical_node": "Oracle and data latency and signal half-life",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Oracle latency versus signal half-life",
+      "Oracle latency versus signal half-life"
+    ]
+  },
+  {
+    "concept": "Stop placement versus liquidation buffer",
+    "coverage": "HAVE",
+    "coverage_slug": "stop-placement-vs-liquidation-buffer",
+    "canonical_node": "Stop placement vs liquidation buffer",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Stop placement versus liquidation buffer",
+      "Stop placement versus liquidation buffer"
+    ]
+  },
+  {
+    "concept": "Deep order-book models and short forecast decay",
+    "coverage": "HAVE",
+    "coverage_slug": "order-flow-signals-cvd-and-order-book-imbalance",
+    "canonical_node": "Order flow signals CVD and order book imbalance",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Deep order-book models and short forecast decay",
+      "Deep order-book models and short forecast decay"
+    ]
+  },
+  {
+    "concept": "ATR realized volatility VWAP and EMA context",
+    "coverage": "HAVE",
+    "coverage_slug": "technical-analysis",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": "/Users/mitch/.agents/skills/trading-and-investing/references/technical-analysis.md",
+    "aliases_checked": [
+      "ATR realized volatility VWAP and EMA context",
+      "ATR realized volatility VWAP and EMA context"
+    ]
+  },
+  {
+    "concept": "Crypto price discovery",
+    "coverage": "HAVE",
+    "coverage_slug": "fast-trading-signals-v4",
+    "canonical_node": "Fast crypto trading signals: order flow, funding and open interest, liquidations, latency and data APIs",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Crypto price discovery",
+      "Crypto price discovery"
+    ]
+  },
+  {
+    "concept": "Time-series market regimes",
+    "coverage": "HAVE",
+    "coverage_slug": "regime-detection-and-classification",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": "/Users/mitch/.agents/skills/trading-and-investing/references/regime-detection-and-classification.md",
+    "aliases_checked": [
+      "Time-series market regimes",
+      "Time-series market regimes"
+    ]
+  },
+  {
+    "concept": "Liquidation heatmaps and cascades",
+    "coverage": "HAVE",
+    "coverage_slug": "liquidation-heatmaps-and-cascades",
+    "canonical_node": "Liquidation heatmaps and cascades",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Liquidation heatmaps and cascades",
+      "Liquidation heatmaps and cascades"
+    ]
+  },
+  {
+    "concept": "Bar aggregation and event-time sampling",
+    "coverage": "HAVE",
+    "coverage_slug": "sampling-frequency-and-bar-aggregation",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": "/Users/mitch/.agents/skills/trading-and-investing/references/sampling-frequency-and-bar-aggregation.md",
+    "aliases_checked": [
+      "Bar aggregation and event-time sampling",
+      "Bar aggregation and event-time sampling"
+    ]
+  },
+  {
+    "concept": "Liquidation-map estimation and adversarial trading flows",
+    "coverage": "HAVE",
+    "coverage_slug": "liquidation-heatmaps-and-cascades",
+    "canonical_node": "Liquidation heatmaps and cascades",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Liquidation-map estimation and adversarial trading flows",
+      "Liquidation-map estimation and adversarial trading flows"
+    ]
+  },
+  {
+    "concept": "Funding open interest and basis signals",
+    "coverage": "HAVE",
+    "coverage_slug": "funding-and-open-interest-divergence-and-basis",
+    "canonical_node": "Funding and open interest divergence and basis",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "Funding open interest and basis signals",
+      "Funding open interest and basis signals"
+    ]
+  },
+  {
+    "concept": "On-chain wallet and smart-money flows",
+    "coverage": "HAVE",
+    "coverage_slug": "on-chain-flows-and-smart-money-tracking",
+    "canonical_node": "On-chain flows and smart money tracking",
+    "node_researchedAt": "2026-11-06",
+    "installed_reference": null,
+    "aliases_checked": [
+      "On-chain wallet and smart-money flows",
+      "On-chain wallet and smart-money flows"
+    ]
+  },
+  {
+    "concept": "Passive market making and spread capture",
+    "coverage": "HAVE",
+    "coverage_slug": "market-microstructure-and-execution",
+    "canonical_node": null,
+    "node_researchedAt": null,
+    "installed_reference": "/Users/mitch/.agents/skills/trading-and-investing/references/market-microstructure-and-execution.md",
+    "aliases_checked": [
+      "Passive market making and spread capture",
+      "Passive market making and spread capture"
+    ]
+  }
+]
