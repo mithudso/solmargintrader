@@ -268,6 +268,7 @@ SETTING_HELP = {
     "interval": "Duration summarized by one price bar: 1h means hourly, 1d daily. A 20-bar indicator spans 20 hours or 20 days respectively. Shorter bars usually mean more potential trading and more accumulated costs.",
     "solana_address": "Public Solana wallet address used for read-only balances. An address cannot authorize spending. Never enter a seed phrase or private key.",
     "base_address": "Public EVM address scanned on Base. The same address may exist on other networks with different balances; this field selects its Base holdings.",
+    "hyperliquid_address": "Public EVM address of the Hyperliquid account. The Compound 5m tab reads its free perp margin and open positions (read-only) and sizes calls from them. Blank = size from the Solana wallet instead.",
     "eth_address": "Public EVM address scanned on Ethereum mainnet. Ethereum and Base are separate networks even when the address text is identical.",
 }
 for _chain in ("btc", "ltc", "doge"):

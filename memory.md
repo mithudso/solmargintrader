@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 45
-Delta: v44 to v45; compound default costs and liquidation are Hyperliquid's (v44 is the Backtest tab, wallet and table titles).
+Version: 46
+Delta: v45 to v46; compound sizes calls from the owner's Hyperliquid account; ten-coin full-history backtest.
 
 ## v1 - 2026-11-06
 
@@ -467,3 +467,15 @@ Also: Hyperliquid maintenance margin per coin (HYPERLIQUID_MAX_LEVERAGE in backt
 Verification: test_compound_backtest expects 13 bps; new tests cover the margin table against the screen, earlier liquidation, the gate and the sized liquidation price.
 
 Remaining: wallet sizing still reads the Solana wallet (Jupiter collateral); a Hyperliquid account balance read needs the owner's Hyperliquid address. Then the ten-coin full-history backtest (TASK-844).
+
+## v46 - 2026-11-07 (Hyperliquid account sizing, ten-coin backtest)
+
+Target: the owner confirmed their Hyperliquid account is 0x901a89cEC0608eB5435A915f006b45bD46405314 (the Base address). Branch feat/compound-hyperliquid-wallet (on top of feat/compound-hyperliquid-costs, PR #75).
+
+Completed: Settings field hyperliquid_address (default the owner's address; EVM-validated; refuses private material; Settings tab, help, wallet.addresses). soltui.compound.hyperliquid_balances reads clearinghouseState and spotClearinghouseState read-only: usable = perp withdrawable, spot USDC shown not counted, positions listed, a failed read is unavailable. signal, forward_tick, unattended and the commands size from it when set; the Solana wallet is the fallback. Live read on 2026-11-07: account value $0, no positions, no spot balances.
+
+Verification: new tests for an empty account, funded account, failed/malformed read, and preference over the Solana wallet.
+
+Ten-coin full-history backtest done: run 20261107T192614Z, 300 configurations, Hyperliquid costs and margins. All 300 lost the stake out of sample at 5x. Reversion metrics beat a coin flip on every coin (RSI z 13-23) but earned at most 0.6 bps per call against 13 bps. A perfect one-bar call nets positive on 8 of 10 coins at 13 bps. NEAR/AVAX/HYPE/SUI/LINK have 11-38% incomplete bars. Results: research/results/compound-10coin-fullhistory-2026-11-07.json; docs/COMPOUND-5M.md findings section. Coverage: research/results/minute_coverage.json.
+
+Remaining: the owner must deposit USDC to Hyperliquid before any call can be sized. Untested ideas: multi-bar holds, maker entries, fewer stronger calls.

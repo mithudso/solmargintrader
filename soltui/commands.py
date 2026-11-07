@@ -486,7 +486,7 @@ def dispatch(name: str, params: dict[str, Any] | None = None, surface: str = "ap
 _SETTING_CASTS = {
     "asset": str, "start": str, "end": str, "interval": str, "capital": float,
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,
-    "solana_address": str, "base_address": str, "eth_address": str,
+    "solana_address": str, "base_address": str, "eth_address": str, "hyperliquid_address": str,
     "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
 }
 
@@ -1222,7 +1222,8 @@ def compound_reset(ctx: Context, p: dict[str, Any]) -> Any:
          (P("asset", "string", "Asset symbol; default the configured asset."),),
          long_running=True)
 def compound_signal(ctx: Context, p: dict[str, Any]) -> Any:
-    return _compound(compound_mod.signal, _compound_asset(ctx, p), wallet_address=ctx.settings.solana_address)
+    return _compound(compound_mod.signal, _compound_asset(ctx, p), wallet_address=ctx.settings.solana_address,
+                     hyperliquid_address=ctx.settings.hyperliquid_address)
 
 
 @command("compound.backtest",
@@ -1255,7 +1256,8 @@ def compound_results(ctx: Context, p: dict[str, Any]) -> Any:
          read_only=False, long_running=True)
 def compound_forward_tick(ctx: Context, p: dict[str, Any]) -> Any:
     return _compound(compound_mod.forward_tick, _compound_asset(ctx, p),
-                     wallet_address=ctx.settings.solana_address)
+                     wallet_address=ctx.settings.solana_address,
+                     hyperliquid_address=ctx.settings.hyperliquid_address)
 
 
 @command("compound.unattended_start",
@@ -1785,6 +1787,7 @@ def wallet_key_sources(ctx: Context, p: dict[str, Any]) -> Any:
 def wallet_addresses(ctx: Context, p: dict[str, Any]) -> Any:
     st = ctx.settings
     return {"solana_address": st.solana_address, "base_address": st.base_address, "eth_address": st.eth_address,
+            "hyperliquid_address": st.hyperliquid_address,
             "note": "Public addresses only. Signing keys live in separate files this console never opens."}
 
 

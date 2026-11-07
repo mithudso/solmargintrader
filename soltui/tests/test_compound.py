@@ -391,7 +391,7 @@ class CandleCacheTests(TempConfig):
     def test_one_coin_can_leave_a_shared_loop(self) -> None:
         seen = []
 
-        def tick(asset, wallet_address=None):
+        def tick(asset, wallet_address=None, **_):
             seen.append(asset)
             if seen.count("BTC") == 1 and asset == "BTC":
                 compound.unattended_paths("BTC")["stop"].write_text("stop")
@@ -457,6 +457,69 @@ class WalletTests(TempConfig):
             w = compound.wallet_balances(ADDR, fetch=lambda *a: None)
         self.assertFalse(w["available"])
         self.assertIn("connection refused", w["reason"])
+
+    HL = "0x901a89cEC0608eB5435A915f006b45bD46405314"
+
+    def _hl_post(self, perp, spot):
+        calls = []
+
+        def post(url, body):
+            calls.append(body["type"])
+            return perp if body["type"] == "clearinghouseState" else spot
+        return post, calls
+
+    def test_an_empty_hyperliquid_account_gives_no_size_and_says_why(self) -> None:
+        perp = {"marginSummary": {"accountValue": "0.0"}, "withdrawable": "0.0", "assetPositions": []}
+        post, calls = self._hl_post(perp, {"balances": []})
+        w = compound.hyperliquid_balances(self.HL, post=post, cache=False)
+        self.assertEqual(calls, ["clearinghouseState", "spotClearinghouseState"])
+        self.assertTrue(w["available"])
+        self.assertEqual(w["usable_usd"], 0.0)
+        s = compound.size_call(w, synthetic(300), sc.default_config(), "UP", "SOL")
+        self.assertFalse(s["available"])
+        self.assertIn("deposit USDC to Hyperliquid", s["reason"])
+
+    def test_free_perp_margin_sizes_the_call_and_spot_usdc_is_not_counted(self) -> None:
+        perp = {"marginSummary": {"accountValue": "1250.5"}, "withdrawable": "1000.0",
+                "assetPositions": [{"position": {"coin": "ETH", "szi": "-0.5", "entryPx": "2240.1",
+                                                 "liquidationPx": "2600.0", "unrealizedPnl": "3.2",
+                                                 "leverage": {"type": "cross", "value": 5}}}]}
+        spot = {"balances": [{"coin": "USDC", "total": "300.0", "hold": "50.0"}, {"coin": "HYPE", "total": "2"}]}
+        post, _ = self._hl_post(perp, spot)
+        w = compound.hyperliquid_balances(self.HL, post=post, cache=False)
+        self.assertEqual(w["usable_usd"], 1000.0)
+        self.assertEqual(w["spot_usdc_not_counted"], 250.0)
+        self.assertEqual(w["positions"][0]["coin"], "ETH")
+        self.assertEqual(w["positions"][0]["size"], -0.5)
+        s = compound.size_call(w, synthetic(300), sc.default_config(), "UP", "SOL")
+        self.assertTrue(s["available"])
+        self.assertLessEqual(s["notional_usd"], 1000.0 * s["leverage"])
+        line = compound.wallet_line(w, s)
+        self.assertTrue(line.startswith("Hyperliquid (live) ...5314: $1,000.00 usable"))
+        self.assertIn("open: ETH -0.5 @ 2,240", line)
+
+    def test_a_failed_or_malformed_read_is_unavailable_never_zero(self) -> None:
+        def down(url, body):
+            raise OSError("connection refused")
+        w = compound.hyperliquid_balances(self.HL, post=down, cache=False)
+        self.assertFalse(w["available"])
+        self.assertIn("connection refused", w["reason"])
+        post, _ = self._hl_post({"marginSummary": {}, "withdrawable": "1.0"}, {"balances": []})
+        self.assertFalse(compound.hyperliquid_balances(self.HL, post=post, cache=False)["available"])
+        bad = compound.hyperliquid_balances("not-an-address", post=down, cache=False)
+        self.assertIn("hyperliquid_address", bad["reason"])
+
+    def test_the_hyperliquid_account_is_preferred_over_the_solana_wallet(self) -> None:
+        perp = {"marginSummary": {"accountValue": "500"}, "withdrawable": "500", "assetPositions": []}
+        post, _ = self._hl_post(perp, {"balances": []})
+
+        def solana_must_not_be_read(*a, **k):
+            raise AssertionError("Solana wallet read although a Hyperliquid account is set")
+        with mock.patch.object(compound, "wallet_balances", solana_must_not_be_read):
+            w, s = compound._wallet_and_size(ADDR, sc.default_config(), synthetic(300), "UP", None, "SOL",
+                                             self.HL, post)
+        self.assertEqual(w["label"], "Hyperliquid (live)")
+        self.assertTrue(s["available"])
 
     def test_liquidation_price_uses_the_coins_hyperliquid_maintenance_margin(self) -> None:
         bars = synthetic(400)
@@ -546,7 +609,7 @@ class UnattendedTests(TempConfig):
     def test_the_loop_ticks_survives_errors_and_stops_on_request(self) -> None:
         calls = []
 
-        def tick(asset, wallet_address=None):
+        def tick(asset, wallet_address=None, **_):
             calls.append(asset)
             if len(calls) == 2:
                 raise RuntimeError("network down")

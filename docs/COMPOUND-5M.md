@@ -220,16 +220,26 @@ the running loops as they are.
 
 ## Your wallet: where it is read from, and what it is used for
 
-Wallet information has one home: **soltui Settings** (`solana_address`, edited on the Settings
-tab, stored in `~/.config/soltui/config.yaml`, owner-only). The compound tester reads that public
-address and scans it read-only with the same scanner as the Wallet tab. It never reads a key:
-private keys stay in their key files, and sizing a call needs only public balances.
+Wallet information has one home: **soltui Settings** (edited on the Settings tab, stored in
+`~/.config/soltui/config.yaml`, owner-only). It never reads a key: private keys stay in their key
+files, and sizing a call needs only public balances.
 
-Jupiter Perps takes SOL, USDC and USDT as collateral, so those count as **usable**. USDC and USDT
+**Hyperliquid account first.** The owner trades the ten coins on Hyperliquid. When
+`hyperliquid_address` is set (default: the owner's `0x901a…5314`, the same address as Base), each
+call is sized from that account, labelled `Hyperliquid (live)`. Two public `info` calls
+(`clearinghouseState`, `spotClearinghouseState`) read it; no signature is involved.
+**Usable** is the perp account's `withdrawable`, the margin not tied up in positions. Spot USDC is
+shown but not counted, because it must move to the perp account before it can margin a trade.
+Open Hyperliquid positions are listed with size, entry and liquidation price. A failed or malformed
+read is reported as unavailable, never as $0. An empty account gives no size and says to deposit
+USDC. On 2026-11-07 the account held $0.
+
+**Solana wallet as the fallback.** With `hyperliquid_address` blank, the call is sized from
+`solana_address`, scanned read-only with the same scanner as the Wallet tab. Jupiter Perps takes SOL, USDC and USDT as collateral, so those count as **usable**. USDC and USDT
 are matched by mint address, so a look-alike token named "USDC" does not count. A balance with no
 price is listed as unknown and left out, never counted as zero.
 
-Every live call is then sized, labelled `wallet (live)`:
+Every live call is then sized:
 
 * **notional** = the smaller of usable × `leverage`, and the size at which reaching the stop
   (`stop_atr` × ATR, the stop the liquidation gate checks) plus the round-trip cost loses
@@ -241,9 +251,10 @@ Forward ticks record that notional with each call, so the forward test also repo
 wallet size**: what trading every compound call for one bar would have made after costs. Set
 `use_wallet=0` in the Aggregate box to stop reading the wallet.
 
-Not read yet: **open Jupiter Perps positions**. No documented read endpoint was found and the
-on-chain account layout is not verified here, so they are not guessed. Until then, the sizing
-assumes no position is open.
+Not read yet: **open Jupiter Perps positions** (Solana fallback only). No documented read endpoint
+was found and the on-chain account layout is not verified here, so they are not guessed. The
+sizing does not yet subtract an open position's exposure on either venue; it sizes against free
+margin, which already excludes margin those positions use.
 
 ## Which metrics fight each other, and which repeat each other
 
@@ -307,6 +318,47 @@ them.
   cycle* phase (`cycle_phase`, a Wyckoff-style read of the last day). A *token's* lifecycle
   (listing age, unlock schedule, supply concentration) moves on a scale of weeks, not five
   minutes; it belongs in coin selection (`research/coin-intelligence/`), not in this call.
+
+## Findings: ten coins, full history, Hyperliquid costs (2026-11-07)
+
+Run `20261107T192614Z`: `python3 -m soltui.compound sweep --workers 6`, the saved configuration plus
+every single-metric variant on each of the ten coins, 300 configurations. Each coin's whole 1m
+history was built into 5m bars. Out of sample is the last 30% of each coin's bars. Costs are
+Hyperliquid's (13 bps round trip) at 5x, with each coin's maintenance margin.
+`research/results/compound-10coin-fullhistory-2026-11-07.json` holds the table.
+
+| Coin | 5m bars from | Bars | Incomplete bars | OOS mean move | Perfect call, net | Compound OOS hit (z) | Best single metric, OOS hit (z) | Best gross per call |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| BTC | 2019-11 | 735,480 | 0.0% | 8.9 bps | −4.1 bps | 51.7% (9.2) | RSI 52.0% (15.6) | 0.12 bps |
+| ETH | 2019-11 | 735,474 | 0.5% | 13.0 | −0.0 | 53.1% (16.9) | RSI 53.1% (23.1) | 0.16 |
+| SOL | 2021-06 | 566,776 | 1.0% | 14.5 | +1.5 | 52.2% (10.6) | RSI 52.4% (16.2) | 0.20 |
+| XRP | 2019-11 | 474,857 | 0.8% | 13.3 | +0.3 | 51.7% (8.0) | RSI 52.5% (14.9) | 0.16 |
+| HYPE | 2026-02 | 78,951 | **28.5%** | 16.3 | +3.3 | 50.7% (1.1) | Bollinger 51.7% (4.5) | 0.58 |
+| DOGE | 2021-06 | 570,808 | 4.5% | 15.6 | +2.6 | 52.0% (9.6) | RSI 52.6% (17.3) | 0.36 |
+| LINK | 2019-11 | 735,327 | **11.0%** | 18.1 | +5.1 | 51.0% (5.8) | RSI 51.8% (13.5) | 0.27 |
+| NEAR | 2022-09 | 437,763 | **37.8%** | 22.9 | +10.0 | 50.4% (1.5) | Stochastic 51.8% (10.2) | 0.47 |
+| SUI | 2023-05 | 346,456 | **23.6%** | 17.6 | +4.6 | 52.3% (8.7) | RSI 53.0% (15.3) | 0.28 |
+| AVAX | 2021-09 | 533,946 | **29.7%** | 17.1 | +4.1 | 50.4% (1.6) | Bollinger 51.7% (10.0) | 0.52 |
+
+**1. Nothing made money.** All 300 configurations lost the whole stake out of sample at 5x.
+
+**2. The direction edge is real and tiny.** Reversion metrics (RSI, z-score, Bollinger, Stochastic)
+beat a coin flip on every coin, with z up to 23 over hundreds of thousands of calls. That is far
+beyond the 300-configuration selection burden. But the best metric earned at most 0.6 bps per call,
+against a 13 bps round trip. The edge is about one fiftieth of the cost. Part of it is probably
+Coinbase bid-ask bounce, which a taker order cannot capture.
+
+**3. Hyperliquid's lower cost moves the ceiling, not the result.** A perfect one-bar call would now
+net a profit on 8 of 10 coins (NEAR +10 bps, LINK +5, SUI +4.6, AVAX +4.1). At Jupiter's 16 bps it
+lost on four of five coins. The ceiling is not the limit; the metrics' accuracy is.
+
+**4. Five coins have unreliable bars.** NEAR, AVAX, HYPE, SUI and LINK have 11–38% of 5m bars built
+from incomplete minutes (Coinbase drops traded minutes). Their highs, lows and closes can be wrong,
+so their hit rates and their positive ceilings deserve less trust than BTC, ETH, SOL, XRP and DOGE.
+
+**What would have to change:** a call held for several bars (one cost per many moves), maker
+entries (1.5 bps per side instead of 6.5 with slippage), or far fewer, stronger calls. None of these
+was tested here.
 
 ## Findings: 1,420 configurations, five coins, 30 days of 5m bars
 

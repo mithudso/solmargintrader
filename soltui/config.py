@@ -79,6 +79,9 @@ class Settings:
     base_address: str = "0x901a89cEC0608eB5435A915f006b45bD46405314"
     # Ethereum mainnet. The same EVM key as `base_address`, seen on L1.
     eth_address: str = ""
+    # The Hyperliquid account the compound 5m tab sizes calls from (read-only `info` calls). The owner
+    # confirmed on 2026-11-07 that it is the same EVM address as `base_address`.
+    hyperliquid_address: str = "0x901a89cEC0608eB5435A915f006b45bD46405314"
     # EXTENDED PUBLIC keys for the UTXO chains. They derive every address of a wallet but cannot spend,
     # yet they expose its whole history, so the surfaces redact them (`public_dict`) and the file is 0600.
     btc_xpub: str = ""
@@ -134,7 +137,7 @@ def validate(settings: Settings) -> Settings:
     from . import hdwallet
 
     checks = [("solana_address", hdwallet.validate_solana_address), ("base_address", hdwallet.validate_evm_address),
-              ("eth_address", hdwallet.validate_evm_address)]
+              ("eth_address", hdwallet.validate_evm_address), ("hyperliquid_address", hdwallet.validate_evm_address)]
     for name, check in checks:
         value = getattr(settings, name)
         if value:

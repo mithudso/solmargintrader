@@ -1,6 +1,6 @@
 ---
 name: five-minute-signal
-version: "1.6.0"
+version: "1.7.0"
 updated: "2026-11-07"
 description: >-
   Produce and explain an UP / DOWN / FLAT call for the next five-minute bar of a crypto asset
@@ -50,10 +50,12 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
    Group the votes by family (trend, oscillator, bands, breakout, flow, positioning,
    lifecycle) and say which families agree. One family with five members is one opinion.
 
-   - `wallet` and `sizing` (`wallet (live)`): usable SOL/USDC/USDT at the Settings Solana address
-     and the size that risks `risk_pct` to the stop; quote notional, collateral, loss at the stop
-     and the liquidation price. If `wallet.available` is false, say why (no address in Settings,
-     scan failed) and give no size. Never ask for or read a key.
+   - `wallet` and `sizing`: labelled `Hyperliquid (live)` when Settings has `hyperliquid_address`
+     (free perp margin; spot USDC shown but not counted; open positions listed), else `wallet (live)`
+     (SOL/USDC/USDT at the Settings Solana address). Quote the size that risks `risk_pct` to the
+     stop: notional, collateral, loss at the stop and the liquidation price. If there is no size,
+     give the reason it states (no address, read failed, or an empty account that needs a USDC
+     deposit). Mention any open position in the same coin. Never ask for or read a key.
 
 3. **Put the evidence beside the call.**
 

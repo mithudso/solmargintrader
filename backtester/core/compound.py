@@ -224,7 +224,10 @@ def _run_slice(arrays: dict[str, np.ndarray], targets: np.ndarray, cfg: Mapping[
         return None
     res = run_backtest(PrecomputedTargets(targets), arrays, engine_config(cfg, asset))
     eq = res.equity
-    rets = eq[1:] / eq[:-1] - 1.0
+    # After a wipeout equity stays at 0 and the next returns are 0/0. _stitch drops those NaNs and
+    # its cumulative product stays at 0, so a ruined run still reports -100%; only the warning goes.
+    with np.errstate(divide="ignore", invalid="ignore"):
+        rets = eq[1:] / eq[:-1] - 1.0
     m = res.metrics
     start = res.equity[0] if res.equity.size else 1.0
     return _Slice(rets, int(m.trade_count), float(m.win_rate or 0.0) * int(m.trade_count),
