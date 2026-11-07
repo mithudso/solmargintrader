@@ -66,7 +66,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.2.0`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.2.1`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is on the dashboard (popup → **SolTUI console**), not in the popup itself.
@@ -342,6 +342,11 @@ curl -s -X POST -H "Authorization: Bearer $SMT_API_TOKEN" -H 'content-type: appl
 - **Dashboard.** The SolTUI panel (`src/ui/soltui-panel.js`) lists `soltuiCommands`, builds the form from
   each command's param types, gates `requires_confirm` behind a checkbox, sends only listed names, and
   renders results with `textContent` only.
+- **Wallet pubkey button.** Next to the dashboard's Wallet pubkey field, **Use soltui Solana address**
+  (`src/ui/wallet-pubkey.js`) sends `soltuiCall` for the read-only soltui command `wallet.addresses`, which returns the
+  public Solana and EVM addresses saved in soltui Settings and never an xpub or key material. The page checks the
+  reply is a Solana public key (32 bytes of Base58), fills the field and says so; the owner still clicks Save. The
+  page writes no `chrome.storage` itself.
 - **Auto-reload on update.** A 1-minute `chrome.alarms` job asks the host for `buildHash`, a SHA-256 over
   `manifest.json` and everything under `src/` in the extension directory. When the hash differs from the
   one stored in `chrome.storage.local` (`soltuiBuild`) it calls `chrome.runtime.reload()`, under these rules

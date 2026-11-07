@@ -16,7 +16,7 @@ from unittest import mock
 
 from textual.widgets import DataTable, Input, Select, Static, TabbedContent
 
-from soltui import commands, config, pnl, wallet
+from soltui import commands, config, pnl, portfolio, wallet
 from soltui.tests.bridge_support import World
 from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
 from soltui.tests.test_wallet import BASE_ADDR, SOL_ADDR, Fake
@@ -62,7 +62,7 @@ class SettingsTests(Env):
         for field, bad in (("solana_address", "nope"), ("base_address", "0x123")):
             env = self.call("settings.save", {field: bad})
             self.assertFalse(env["ok"])
-            self.assertIn("is not", env["error"]["message"])
+            self.assertIn("not a", env["error"]["message"])
         self.assertTrue(self.call("settings.save", {"base_address": ""})["ok"])
         self.assertEqual(config.load_settings().base_address, "")
 
@@ -90,19 +90,24 @@ class ScanCommandTests(Env):
         r = env["result"]
         self.assertEqual(r["label"], "wallet (live)")
         self.assertEqual(set(r["chains"]), {"solana", "base"})
-        self.assertEqual(len(wallet.load_history()), 1)
-        self.assertAlmostEqual(wallet.load_history()[0]["total_usd"], r["total_usd"])
+        snaps = portfolio.load_snapshots()
+        self.assertEqual(len(snaps), 1)
+        self.assertAlmostEqual(snaps[0]["total_usd"], r["total_usd"])
 
     def test_record_false_leaves_no_history(self) -> None:
         self.assertTrue(self.call("portfolio.scan", {"record": False})["ok"])
-        self.assertEqual(wallet.load_history(), [])
+        self.assertEqual(portfolio.load_snapshots(), [])
+
+    def test_a_one_chain_scan_is_not_recorded_as_the_whole_portfolio(self) -> None:
+        self.assertTrue(self.call("portfolio.scan", {"chain": "solana"})["ok"])
+        self.assertEqual(portfolio.load_snapshots(), [])
 
     def test_one_chain(self) -> None:
         r = self.call("portfolio.scan", {"chain": "solana", "record": False})["result"]
         self.assertEqual(list(r["chains"]), ["solana"])
 
     def test_bad_params(self) -> None:
-        for params in ({"chain": "ethereum"}, {"tokens": "0xabc"}, {"tokens": [1]}):
+        for params in ({"chain": "nowhere"}, {"tokens": "0xabc"}, {"tokens": [1]}):
             env = self.call("portfolio.scan", params)
             self.assertEqual((env["ok"], env["error"]["code"]), (False, "bad_params"), params)
 
@@ -118,7 +123,7 @@ class ScanCommandTests(Env):
         r = self.call("portfolio.scan")["result"]
         self.assertEqual(r["chains"], {})
         self.assertEqual(len(r["skipped"]), 2)
-        self.assertEqual(wallet.load_history(), [])        # nothing scanned, nothing recorded
+        self.assertEqual(portfolio.load_snapshots(), [])   # nothing scanned, nothing recorded
 
     def test_daemon_context_feeds_the_scan_read_only(self) -> None:
         home = Path(os.environ["AERO_LP_HOME"])
@@ -141,7 +146,7 @@ class PnlWalletSectionTests(Env):
         r = self.call("pnl.summary", {"window": "all", "source": "wallet"})["result"]
         (sec,) = r["sections"]
         self.assertEqual((sec["source"], sec["group"], sec["status"]), ("wallet (live)", "real", "no_data"))
-        self.assertTrue(any("portfolio.scan" in n for n in sec["notes"]))
+        self.assertTrue(any("portfolio.snapshot" in n for n in sec["notes"]))
 
     def test_value_change_between_scans_is_a_separate_real_section(self) -> None:
         self.scan_at(pnl.parse_moment("2026-11-01"), 100.0)
@@ -161,7 +166,7 @@ class PnlWalletSectionTests(Env):
         self.scan_at(pnl.parse_moment("2026-11-01"), 100.0)
         (sec,) = self.call("pnl.summary", {"window": "all", "source": "wallet"})["result"]["sections"]
         self.assertEqual(sec["totals"]["net_usd"], 0.0)
-        self.assertTrue(any("second scan" in n for n in sec["notes"]))
+        self.assertTrue(any("second snapshot" in n for n in sec["notes"]))
 
     def test_window_applies_to_the_history(self) -> None:
         self.scan_at(pnl.parse_moment("2026-11-01"), 100.0)
@@ -197,7 +202,8 @@ class WalletTabTests(unittest.IsolatedAsyncioTestCase):
         (self.tmp / "keys" / "wallet.private").chmod(0o600)
         self.fake = Fake()
         env = {"SOLTUI_KEY_DIR": str(self.tmp / "keys"), "SOLTUI_CONFIG_DIR": str(self.tmp / "config"),
-               "SOLTUI_LOG_DIR": str(self.tmp / "logs"), "AERO_LP_HOME": str(self.tmp / "aero")}
+               "SOLTUI_LOG_DIR": str(self.tmp / "logs"), "AERO_LP_HOME": str(self.tmp / "aero"),
+               "SOLTUI_SUPPORT_DIR": str(self.tmp / "support")}
         for p in (mock.patch.dict(os.environ, env),
                   mock.patch.object(wallet, "HttpFetcher", lambda *a, **k: self.fake)):
             p.start()
@@ -238,7 +244,8 @@ class WalletTabTests(unittest.IsolatedAsyncioTestCase):
             links = [str(contracts.get_row_at(i)[5]) for i in range(contracts.row_count)]
             self.assertTrue(any(l.startswith("https://solscan.io/token/") for l in links))
             self.assertTrue(any(l.startswith("https://basescan.org/") for l in links))
-            self.assertEqual(len(wallet.load_history()), 1)
+            await app.workers.wait_for_complete()
+            self.assertEqual(len(portfolio.load_snapshots()), 1)
 
     async def test_flagged_airdrop_is_shown_as_excluded(self) -> None:
         from soltui.tests.test_wallet import SPAM_MINT
@@ -256,6 +263,7 @@ class WalletTabTests(unittest.IsolatedAsyncioTestCase):
             states = [str(holdings.get_row_at(i)[5]) for i in range(holdings.row_count)]
             self.assertTrue(any(s.startswith("airdrop-flagged, excluded") for s in states), states)
             self.assertIn("1 airdrop-flagged (excluded)", text_of(app, "#wallet-summary"))
+            await app.workers.wait_for_complete()
 
     async def test_wallet_section_appears_in_the_pnl_tab_after_scans(self) -> None:
         wallet.record_scan({"ts": pnl.parse_moment("2026-11-01"), "total_usd": 50.0,

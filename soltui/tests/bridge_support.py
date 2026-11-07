@@ -34,6 +34,9 @@ HEAVY = {
     # The P&L commands run the roster's backtests, which need a cached price series.
     "portfolio.scan": {"label": "wallet (live)", "chains": {}, "total_usd": 0.0, "skipped": [],
                        "partial": False, "counts": {}},
+    "portfolio.snapshot": {"label": "wallet (live)", "at": "2026-11-07T00:00:00+00:00", "partial": False,
+                           "total_usd": 0.0, "total_complete": True, "skipped": [], "chains": {},
+                           "snapshot_file": "stub"},
     "pnl.summary": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
     "pnl.series": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
     "pnl.breakdown": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},

@@ -1,6 +1,6 @@
 {
   "name": "solmargintrader",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "Chrome MV3 extension: grid trading on Jupiter (Solana) with risk rails and P&L tracking. Dry-run by default.",

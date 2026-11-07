@@ -56,7 +56,8 @@ from .commands import (  # noqa: F401 - re-exported: tests and docs import them 
     failure_summary,
     untested_sweep_command,
 )
-from .config import INTERVALS, Settings, load_settings
+from .config import INTERVALS, XPUB_FIELDS, Settings, load_settings
+from .hdwallet import redact
 from .paper import MODE_LABEL
 from .roster import RosterError
 from .signals import SIGNAL_GROUPS, SignalDefaults
@@ -687,13 +688,27 @@ class SolTuiApp(App):
                 ("cpcv_k", "CPCV k (blocks/path)"),
                 ("solana_address", "Solana address (public)"),
                 ("base_address", "Base address (public)"),
+                ("eth_address", "Ethereum address (public)"),
+                ("btc_xpub", "Bitcoin xpub (public key)"),
+                ("ltc_xpub", "Litecoin xpub (public key)"),
+                ("doge_xpub", "Dogecoin xpub (public key)"),
             ):
                 with Horizontal(classes="form-row"):
                     yield Label(f"{label}:")
-                    yield Input(
-                        value=str(getattr(self.settings, field_name)),
-                        id=f"set-{field_name}",
-                    )
+                    if field_name in XPUB_FIELDS:
+                        # An xpub exposes the wallet's whole history, so it is never shown back in full.
+                        # Blank keeps the saved key; 'clear' removes it.
+                        current = getattr(self.settings, field_name)
+                        yield Input(value="", id=f"set-{field_name}", placeholder=(
+                            f"set ({redact(current)}) - paste a new key to replace, 'clear' to remove"
+                            if current else "not set - paste an extended PUBLIC key (xpub)"))
+                    else:
+                        yield Input(
+                            value=str(getattr(self.settings, field_name)),
+                            id=f"set-{field_name}",
+                        )
+            yield Static("Wallet fields take public addresses and extended public keys only. A private key "
+                         "(xprv, a 64-hex key, a Solana secret-key array) is refused.", classes="hint")
             with Horizontal(classes="form-row"):
                 yield Label("Interval:")
                 yield Select(
@@ -863,6 +878,7 @@ class SolTuiApp(App):
 
         self._refresh_exec_choices()
         self._refresh_key_sources()
+        self._refresh_portfolio_notice(toast=True)
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self._refresh_liquidity(force=True)
@@ -955,10 +971,17 @@ class SolTuiApp(App):
             "asset": str, "start": str, "end": str, "capital": float,
             "fee_bps": float, "slippage_bps": float, "fill_delay": int,
             "cpcv_groups": int, "cpcv_k": int, "solana_address": str, "base_address": str,
+            "eth_address": str, "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
         }
         out: dict[str, Any] = {}
         for name, cast in casts.items():
             raw = self.query_one(f"#set-{name}", Input).value.strip()
+            if name in XPUB_FIELDS:
+                if raw.lower() == "clear":
+                    out[name] = ""
+                elif raw:
+                    out[name] = raw
+                continue
             if raw or cast is str:
                 out[name] = cast(raw)
         out["interval"] = str(self.query_one("#set-interval", Select).value)
@@ -1243,6 +1266,9 @@ class SolTuiApp(App):
             # is being written by another process right now, so re-reading on
             # every activation is the correct behaviour rather than waste.
             self._refresh_queue()
+        elif pane == "tab-wallet":
+            self._refresh_portfolio_notice()
+            self._call("portfolio.notice", {"mark_seen": True}, quiet=True)
         elif pane == "tab-liquidity":
             self._refresh_liquidity(force=True)
         elif pane == "tab-top5" and not self._top5_loaded:
@@ -1463,12 +1489,20 @@ class SolTuiApp(App):
                 state = "missing"
             else:
                 state = f"present, mode {k['mode']}" + ("" if k["mode_600"] else "  [red]should be 0600[/]")
-            lines.append(f"  {k['chain']:<7} {escape(k['path'])}: {state}")
+            lines.append(f"  {escape(k['label'])}: {escape(k['path'])}: {state}")
         lines.append("  Signing lives in a separate gated component that loads keys itself. This console "
                      "has no private-key field.")
         box.update("\n".join(lines))
 
-    # -- Wallet: what the two addresses hold (read-only) ---------------------
+    # -- Wallet: what the configured wallets hold (read-only) ----------------
+
+    def _refresh_portfolio_notice(self, toast: bool = False) -> None:
+        """Show the one-line 'a balance changed since you last looked' notice, if there is one."""
+        env = self._call("portfolio.notice", quiet=True)
+        line = env["result"]["line"] if env["ok"] else None
+        self.query_one("#portfolio-notice", Static).update(f"[b]{escape(line)}[/b]" if line else "")
+        if line and toast:
+            self.notify(line, timeout=12)
 
     def _wallet_pane(self) -> ComposeResult:
         """Find the coins, token contracts, stake accounts and LP positions at the Settings addresses."""
@@ -1480,10 +1514,12 @@ class SolTuiApp(App):
                 classes="hint")
             with Horizontal(classes="form-row"):
                 yield Label("Chain")
-                yield Select([(c, c) for c in ("all", "solana", "base")], value="all", allow_blank=False,
+                yield Select([(c, c) for c in ("all", "solana", "base", "ethereum", "bitcoin", "litecoin",
+                                                "dogecoin")], value="all", allow_blank=False,
                              id="wallet-chain")
                 yield Button("Scan wallet", variant="primary", id="wallet-scan")
                 yield Static("", id="wallet-status")
+            yield Static("", id="portfolio-notice")
             yield Static("", id="wallet-summary")
             yield Static("[b]Holdings[/b]", classes="hint")
             holdings = GlossaryTable(id="wallet-holdings")
@@ -1518,7 +1554,13 @@ class SolTuiApp(App):
                  f"{c['airdrop_flagged']} airdrop-flagged (excluded)"]
         lines += [f"  skipped: {escape(s)}" for s in r["skipped"]]
         for name, ch in r["chains"].items():
-            lines.append(f"  {name}: wallet (live) ${ch['total_usd']:,.2f} ({ch['status']})")
+            unpriced = f"  [yellow]no USD price for {', '.join(ch['unpriced'])}: value unknown, not counted[/]" \
+                if ch.get("unpriced") else ""
+            lines.append(f"  {name}: wallet (live) ${ch['total_usd']:,.2f} ({ch['status']}){unpriced}")
+            if "script_types" in ch:
+                found = ", ".join(f"{t['type']} {t['balance']:g}" for t in ch["script_types"]) or "no history"
+                lines.append(f"    script types with history: {escape(found)}; "
+                             f"{ch['derived_addresses']} addresses derived (not listed)")
             lines += [f"    error: {escape(e['source'])}: {escape(e['message'])}" for e in ch["errors"]]
             lines += [f"    note: {escape(n)}" for n in ch["notes"]]
         self.query_one("#wallet-summary", Static).update("\n".join(lines))

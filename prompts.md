@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 11
-Delta: v10 to v11; verify existing CDP CLI configuration from official setup skill.
+Version: 12
+Delta: v11 to v12; added the wallet monitoring request.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -83,3 +83,12 @@ Set up coinbase.com/skill.md
 ```text
 docs.cdp.coinbase.com/cdp-cli/skill.md
 ```
+## v12 - 2026-11-07
+
+Saved with the wallet identifiers replaced by `<redacted>`. The real values are in the owner's local soltui config only, never in this repository.
+
+```text
+In the settings, it asks for my wallet pubkey, but I have these addresses I'd like you to store in the settings and keep monitored: BTC: <redacted> DOGE: <redacted> ETH: <redacted> LTC: <redacted> SOL: <redacted>. And the private keys are in ~/.ssh/solana.private and ~/.ssh/wallet.private
+```
+
+Scope: soltui wallet settings with validation (private keys refused), xpub UTXO scanning, hourly monitoring, and the extension's "Use soltui Solana address" button.

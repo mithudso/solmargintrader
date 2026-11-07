@@ -45,6 +45,7 @@ from . import analyze as analyze_mod
 from . import bgcontrol, bgqueue
 from . import cumulative as cumulative_mod
 from . import docs_browser, live_run, pnl as pnl_mod, presets as presets_mod, wallet as wallet_mod
+from . import portfolio as portfolio_mod
 from . import liquidity as liq
 from . import top5 as top5_mod
 from .config import INTERVALS, Settings, load_settings, save_settings
@@ -484,18 +485,21 @@ def dispatch(name: str, params: dict[str, Any] | None = None, surface: str = "ap
 _SETTING_CASTS = {
     "asset": str, "start": str, "end": str, "interval": str, "capital": float,
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,
-    "solana_address": str, "base_address": str,
+    "solana_address": str, "base_address": str, "eth_address": str,
+    "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
 }
 
 
-@command("settings.get", "The saved settings (asset, interval, dates, costs, CPCV geometry).")
+@command("settings.get", "The saved settings (asset, interval, dates, costs, CPCV geometry, public wallet "
+         "addresses). Extended public keys are shown as a short prefix and a *_set flag, never in full.")
 def settings_get(ctx: Context, p: dict[str, Any]) -> Any:
-    return {"settings": ctx.settings.to_dict(), "intervals": list(INTERVALS)}
+    return {"settings": ctx.settings.public_dict(), "intervals": list(INTERVALS)}
 
 
 @command(
     "settings.save",
-    "Validate and save settings. Only the parameters you pass change.",
+    "Validate and save settings. Only the parameters you pass change. An empty string clears a wallet "
+    "field. Private keys are refused: settings take public addresses and extended public keys only.",
     tuple(P(n, "number" if c in (int, float) else "string", f"Setting {n}.")
           for n, c in _SETTING_CASTS.items()),
     read_only=False,
@@ -518,7 +522,7 @@ def settings_save(ctx: Context, p: dict[str, Any]) -> Any:
                       "roster": ctx.roster.to_list()})
     path = save_settings(new)
     ctx.settings = new
-    return {"path": str(path), "settings": new.to_dict()}
+    return {"path": str(path), "settings": new.public_dict()}
 
 
 # -- strategies and roster -----------------------------------------------------------------------
@@ -1227,14 +1231,20 @@ def _lp_curves() -> list[tuple[str, list[pnl_mod.Curve], list[str]]]:
 
 
 def _wallet_curves() -> tuple[list[pnl_mod.Curve], list[str]]:
-    """Wallet value at each recorded scan (`portfolio.scan` appends one line per scan)."""
-    rows = wallet_mod.load_history()
+    """Wallet value at each complete portfolio snapshot (the hourly job and portfolio.scan append them)."""
+    snaps = portfolio_mod.load_snapshots()
+    rows, left_out = portfolio_mod.value_rows(snaps)
+    if not snaps:  # snapshots began after the single-scan history; use that only when there are none
+        rows = [r for r in wallet_mod.load_history() if not r.get("partial")]
     curve = pnl_mod.curve_from_wallet_history(rows)
     if curve is None:
-        return [], ["no wallet scan recorded yet: run portfolio.scan (Wallet tab) to add a point"]
-    notes = [curve.note, f"{len(rows)} scan(s) recorded"]
+        return [], ["no wallet snapshot recorded yet: run portfolio.snapshot (the hourly job does) to add a point"]
+    notes = [curve.note, f"{len(rows)} snapshot(s) used"]
+    if left_out:
+        notes.append(f"{left_out} snapshot(s) left out: a chain read partially, had no USD price, or the set of "
+                     "wallets was different")
     if len(rows) == 1:
-        notes.append("history starts with the first scan; a second scan is needed to show a change")
+        notes.append("history starts with the first snapshot; a second snapshot is needed to show a change")
     return [curve], notes
 
 
@@ -1329,26 +1339,89 @@ def wallet_key_sources(ctx: Context, p: dict[str, Any]) -> Any:
     return wallet_mod.key_sources()
 
 
+@command("wallet.addresses",
+         "The public Solana and EVM addresses saved in Settings, and nothing else. Extended public keys "
+         "and any key material are never returned. The extension's Wallet pubkey button reads this.")
+def wallet_addresses(ctx: Context, p: dict[str, Any]) -> Any:
+    st = ctx.settings
+    return {"solana_address": st.solana_address, "base_address": st.base_address, "eth_address": st.eth_address,
+            "note": "Public addresses only. Signing keys live in separate files this console never opens."}
+
+
+def _portfolio_scan(ctx: Context, chain: str, extra: list[str] | None = None) -> dict[str, Any]:
+    st = ctx.settings
+    return wallet_mod.scan_wallet(
+        st.solana_address, st.base_address, portfolio_mod.make_fetcher(), chain=chain,
+        daemon=_daemon_context(), extra_tokens=extra, eth_address=st.eth_address,
+        xpubs={"btc": st.btc_xpub, "ltc": st.ltc_xpub, "doge": st.doge_xpub})
+
+
 @command("portfolio.scan",
-         "Find the coins, token contracts, stake accounts and LP positions at the two Settings "
-         "addresses, from public endpoints only. Appends one summary line to the local wallet history.",
-         (P("chain", "string", "all (default), solana or base."),
+         "Find the coins, token contracts, stake accounts, LP positions and UTXO balances at the wallets in "
+         "Settings (Solana, Base, Ethereum, and Bitcoin, Litecoin and Dogecoin from their extended public "
+         "keys), from public endpoints only. Appends a snapshot the P&L tab and portfolio.changes read. "
+         "Derived addresses are counted, never listed.",
+         (P("chain", "string", "all (default), solana, base, ethereum, bitcoin, litecoin or dogecoin."),
           P("tokens", "json", "Extra Base token contract addresses to check, as a list."),
-          P("record", "bool", "Append this scan to the wallet history the P&L tab reads (default true).")),
+          P("record", "bool", "Append this scan as a snapshot (default true; only an all-chain scan is kept).")),
          read_only=False, long_running=True)
 def portfolio_scan(ctx: Context, p: dict[str, Any]) -> Any:
-    chain = (p.get("chain") or "all").strip().lower()
-    if chain not in ("all", "solana", "base"):
-        raise CommandError("bad_params", 'parameter "chain" must be all, solana or base')
+    chain = wallet_mod.normalise_chain(p.get("chain") or "all")
+    if chain is None:
+        raise CommandError("bad_params", f'parameter "chain" must be all or one of {", ".join(wallet_mod.CHAINS)}')
     extra = p.get("tokens")
     if extra is not None and (not isinstance(extra, list) or not all(isinstance(t, str) for t in extra)):
         raise CommandError("bad_params", 'parameter "tokens" must be a list of addresses')
-    result = wallet_mod.scan_wallet(
-        ctx.settings.solana_address, ctx.settings.base_address, wallet_mod.HttpFetcher(), chain=chain,
-        daemon=_daemon_context(), extra_tokens=extra)
-    if p.get("record", True) and result["chains"]:
+    result = _portfolio_scan(ctx, chain, extra)
+    # A one-chain scan is not a snapshot of the whole portfolio; recording it would read as the others
+    # having gone to zero.
+    if p.get("record", True) and result["chains"] and chain == "all":
         try:
-            wallet_mod.record_scan(result)
+            portfolio_mod.append_snapshot(portfolio_mod.build_snapshot(result))
         except OSError as exc:
             result["notes"] = [f"scan not recorded: {exc}"]
     return result
+
+
+@command("portfolio.snapshot",
+         "Scan every configured wallet and append one timestamped snapshot to the portfolio history "
+         "(mode 600). Returns counts and USD totals per chain: no addresses. The hourly LaunchAgent runs this.",
+         read_only=False, long_running=True)
+def portfolio_snapshot(ctx: Context, p: dict[str, Any]) -> Any:
+    result = _portfolio_scan(ctx, "all")
+    snap = portfolio_mod.build_snapshot(result)
+    if not snap["chains"]:
+        raise CommandError("failed", "nothing to snapshot: no wallet address or extended public key in Settings")
+    path = portfolio_mod.append_snapshot(snap)
+    chains = {}
+    for name, ch in snap["chains"].items():
+        full = result["chains"][name]
+        chains[name] = {"status": ch["status"], "total_usd": ch["usd"], "usd_complete": ch["usd_complete"],
+                        "unpriced": ch["unpriced"], "holdings": full["counts"]["holdings"],
+                        "balances": ch["balances"],
+                        **({"script_types": ch["script_types"], "derived_addresses": ch["derived_addresses"]}
+                           if "script_types" in ch else {}),
+                        "errors": [f"{e['source']}: {e['message']}" for e in full["errors"]]}
+    return {"label": snap["label"], "at": snap["at"], "partial": result["partial"],
+            "total_usd": snap["total_usd"], "total_complete": snap["total_complete"],
+            "skipped": result["skipped"], "chains": chains, "snapshot_file": str(path)}
+
+
+@command("portfolio.changes",
+         "Balance changes between the latest portfolio snapshot and the previous one (or the newest one at "
+         "least `hours` older). A chain that was partial or failed in either snapshot is skipped, not "
+         "reported as a change.",
+         (P("hours", "number", "Compare against the newest snapshot at least this many hours older."),))
+def portfolio_changes(ctx: Context, p: dict[str, Any]) -> Any:
+    hours = p.get("hours")
+    if hours is not None and (not math.isfinite(float(hours)) or float(hours) <= 0):
+        raise CommandError("bad_params", 'parameter "hours" must be a positive number')
+    return portfolio_mod.changes_report(portfolio_mod.load_snapshots(), None if hours is None else float(hours))
+
+
+@command("portfolio.notice",
+         "One line saying a balance changed since the wallet was last viewed, or null. With mark_seen the "
+         "last-view marker moves to the latest snapshot. The TUI and menu bar show this line.",
+         (P("mark_seen", "bool", "Record that the changes were seen (default false)."),), read_only=False)
+def portfolio_notice(ctx: Context, p: dict[str, Any]) -> Any:
+    return portfolio_mod.notice(mark_seen=bool(p.get("mark_seen", False)))
