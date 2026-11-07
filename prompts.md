@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 36
-Delta: v33 to v36; Backtest tab picker and untested button, wallet kept across restarts with key-file access, a title on every table.
+Version: 37
+Delta: v34 to v37; Backtest tab picker and untested button, wallet kept across restarts with key-file access, a title on every table (v34 is the ten-coin universe).
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -227,7 +227,17 @@ in the soltui there is an orange line which delineates the curser portion above 
 
 Target: soltui/tui.py, soltui/compound.py, soltui/commands.py, new soltui/compound_agent.py; Stele TASK-833.
 
-## v34 - 2026-11-07 (Backtest tab picker, untested button)
+## v34 - 2026-11-07 (coin screen, ten-coin compound universe)
+
+```text
+Are there any coins which are immediately disqualified before even starting? Ones changing or shutting down soon, have had major incidence, have high fees or inaccessible chain, something like that
+```
+
+```text
+I like that, let's stick to BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX.
+```
+
+## v35 - 2026-11-07 (Backtest tab picker, untested button)
 
 ```text
 It is not clear how to select a strategy that will be backtested in the backtest tab. Also after clicking run untested sweep it finds things that need testing and then proceeds to do nothing about it. If I click that button I want it to immediately start backtesting anything and everything not tested or with little testing. Also I still cannot reside that bvottom window,
@@ -235,7 +245,7 @@ It is not clear how to select a strategy that will be backtested in the backtest
 
 Target: soltui Backtest tab, `queue.backtest`, `backtest.run`. The resize request is prompt v33's editor bar, which was not merged yet when this arrived.
 
-## v35 - 2026-11-07 (wallet across restarts, key-file access)
+## v36 - 2026-11-07 (wallet across restarts, key-file access)
 
 ```text
 Also it forgets my wallet every time I restart the app. If you have a rule telling you to do that on purpose delete it right now. Make my wallet pertsistent across restarts, and also make sure you have access to my private key file, since I DO want you to move money around on my behalf and take care of things.
@@ -243,7 +253,7 @@ Also it forgets my wallet every time I restart the app. If you have a rule telli
 
 Target: soltui Wallet tab (scan kept on disk, shown at start), CLAUDE.md and liquidity/CLAUDE.md key-file rule.
 
-## v36 - 2026-11-07 (table titles)
+## v37 - 2026-11-07 (table titles)
 
 ```text
 There are all of these rows of tables, but none of the tables have any title or description so it's hard to determine what they're telling me. [Image #1]

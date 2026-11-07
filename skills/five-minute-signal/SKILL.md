@@ -1,6 +1,6 @@
 ---
 name: five-minute-signal
-version: "1.4.0"
+version: "1.5.0"
 updated: "2026-11-07"
 description: >-
   Produce and explain an UP / DOWN / FLAT call for the next five-minute bar of a crypto asset
@@ -84,6 +84,12 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
    through several bars can pay.
 
 ## Several coins
+
+The compound's coins are BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI and AVAX, chosen on
+2026-11-07 from a screen of the top 50 (`research/results/top50-screen-2026-11-07.json` in the repo
+says why each other coin is out). If asked about a coin outside the ten, say it was screened out and
+give the recorded reason before scoring it. Only SOL, ETH and BTC have perps on Jupiter; the other
+seven need Hyperliquid for leverage.
 
 Every coin has its own settings, learned record and ledger: pass `--asset BTC` (etc.) to `signal`,
 `status` and `results`, and compare coins with `python3 -m soltui.compound sweep --assets BTC,ETH,SOL`

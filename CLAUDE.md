@@ -106,7 +106,7 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 ## Before you claim a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 838 tests
+python3 -m unittest discover -s backtester/tests -t .   # 840 tests
 python3 -m unittest discover -s soltui/tests -t .       # 798 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 351 tests
