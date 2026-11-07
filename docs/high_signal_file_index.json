@@ -252,7 +252,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 430
+      "lines": 433
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -726,7 +726,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3550
+      "lines": 3551
     },
     {
       "path": "soltui/signals.py",
@@ -782,7 +782,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 1789
+      "lines": 1873
     },
     {
       "path": "soltui/liquidity.py",
@@ -810,7 +810,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Configuration",
-      "lines": 229
+      "lines": 232
     },
     {
       "path": "soltui/setup_app.py",
@@ -1235,7 +1235,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 386
+      "lines": 438
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
