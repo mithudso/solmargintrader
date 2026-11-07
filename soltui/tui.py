@@ -25,6 +25,8 @@ from textual import events, on, work
 from rich.markup import escape
 from rich.text import Text
 from textual.app import App, ComposeResult
+from textual.binding import Binding
+from textual.widget import Widget
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets.option_list import Option
 from textual.widgets import (
@@ -38,10 +40,13 @@ from textual.widgets import (
     Select,
     Static,
     TabbedContent,
+    Tab,
     TabPane,
     TextArea,
 )
 
+from .help import HEADER_GLOSSARY, column_help, control_help, row_help, TAB_HELP
+from .help_screen import HelpScreen
 from . import bgcontrol
 from . import cumulative as cumulative_mod
 from . import bgqueue
@@ -102,137 +107,6 @@ def sort_key(value: Any) -> tuple[int, float, str]:
         return (1, 0.0, text.casefold())
 
 
-# Column-header glossary, keyed by the exact header label (case-insensitive).
-# One dict for every table on purpose: "median Sharpe" must mean the same
-# thing on the Backtest, Top 5 and Cumulative tabs, and a single lookup makes
-# a divergence impossible. A label with no entry shows no tooltip -- better
-# than a generic sentence pretending to explain it.
-HEADER_GLOSSARY = {
-    "median sharpe": (
-        "Sharpe ratio = mean return / volatility of returns (annualised): "
-        "risk-adjusted performance, >0 means paid for the risk taken. This is "
-        "the MEDIAN across all CPCV paths, not one backtest's number."),
-    "iqr": (
-        "Interquartile range: the spread between the 25th and 75th percentile "
-        "of per-path Sharpe. Large IQR = the result depends heavily on which "
-        "slice of history you test — less trustworthy."),
-    "% paths +": (
-        "Fraction of CPCV paths (regime-mixed train/test splits) where the "
-        "Sharpe was positive. 100% of 15 is still only 15 paths."),
-    "best backtest median net %": (
-        "Net growth or decline (final / initial - 1) of the best rankable row, median across its CPCV "
-        "paths, after costs. A simulation."),
-    "chain": "The blockchain the row was read from.",
-    "amount": "Units held, from the chain (`balanceOf`, `getTokenAccountsByOwner` or the native balance).",
-    "price $": "USD price from Jupiter, DefiLlama or DexScreener at the time of the scan.",
-    "value $ (wallet (live))": "Amount times price, read at scan time. A real balance, not a simulation.",
-    "status": "Whether the row is in the total, and why not when it is not (airdrop flag, no price).",
-    "holding": "The coin or position the contract belongs to.",
-    "kind": "What kind of account this is: token mint, token account, stake account, position NFT.",
-    "address": "The on-chain address of the contract or account.",
-    "program": "The program or standard that owns the account (Token, Token-2022, ERC-20, position manager).",
-    "explorer": "Link to the block explorer page for this address.",
-    "source": "Where the figure comes from: backtest, paper, dry-run, dry-run LP or live LP.",
-    "runs": "How many independent runs the row adds up (each on its own starting capital).",
-    "net $": "Final minus initial equity inside the window, after fees, slippage and borrow.",
-    "net % (source named)": (
-        "Net growth or decline, final / initial - 1, over the window. The cell names its source; "
-        "a bare percentage would read as real money."),
-    "gross $": "Net P&L plus the fees, slippage and borrow paid inside the window.",
-    "costs $": "Fees plus slippage plus borrow/funding paid inside the window.",
-    "realized $": "Net result of the fills that closed risk inside the window.",
-    "unrealized $": "Net P&L not yet realized: the mark on what is still open.",
-    "contribution (source named)": (
-        "Percentage points this row adds to its section's net %. The rows of a section sum to it."),
-    "period": "The kind of period: a UTC day, an ISO week (keyed by its Monday) or a calendar month.",
-    "best": "The period with the highest summed P&L, and that P&L.",
-    "worst": "The period with the lowest summed P&L, and that P&L.",
-    "date": "UTC calendar day.",
-    "p&l $": "Equity change over the UTC day, after costs.",
-    "cumulative $": "Equity change from the start of the window to the end of this day.",
-    "cumulative % (source named)": "Cumulative net growth or decline since the window start.",
-    "drawdown (source named)": "How far equity sits below its running peak (the opening value counts as a peak).",
-    "backtest median net %": (
-        "Net growth or decline of the backtest, final equity / initial equity - 1, taken as the "
-        "MEDIAN across CPCV paths, after fees and slippage. A simulation, not a result in a "
-        "real account."),
-    "median ret": (
-        "Median total return across CPCV paths over the tested window, "
-        "after fees and slippage."),
-    "median return": (
-        "Median total return across CPCV paths over the tested window, "
-        "after fees and slippage."),
-    "trades": (
-        "Total trades executed. Below 10 the engine refuses to rank the row "
-        "(the evidence floor) — a great Sharpe on 6 trades is noise."),
-    "paths": (
-        "Number of CPCV paths evaluated. Nominal is C(blocks, k), but slow "
-        "strategies lose warm-up blocks; fewer paths = weaker estimate."),
-    "rankable": (
-        "Rows with at least 1 path AND ≥10 trades — enough evidence to "
-        "appear in a ranking at all."),
-    "below floor": (
-        "Rows the engine evaluated but refused: fewer than 10 trades. "
-        "Counted separately, never mixed into rankings."),
-    "positive": "Rankable rows whose median Sharpe is above zero.",
-    "made money": "Rankable rows whose median return is above zero.",
-    "best (rankable)": (
-        "Highest median Sharpe among rankable rows only — below-floor rows "
-        "are excluded no matter what they claim."),
-    "claims sharpe": (
-        "The Sharpe this below-floor row reports. Shown to make the point: "
-        "on this few trades it would often top a naive ranking."),
-    # NB: str.casefold() lowercases Δ to δ, so the key must be δ.
-    "δ vs sol": (
-        "Change in median Sharpe versus the SOL result the configuration was "
-        "selected on. Large negative delta = does not transfer off-asset."),
-    "horizon": (
-        "Bar-interval class from research/sweep.py: short/medium/long map to "
-        "different intervals and parameter scalings."),
-    "signals": (
-        "The member indicator strategies. (all) = every member must agree "
-        "before a position; (any) = one agreeing member is enough."),
-    "configuration": "Strategy (or composite) plus its parameter values.",
-    "strategy": "The registered strategy name.",
-    "in roster": "Strategy label with parameters, as the sweep will run it.",
-    "family": (
-        "Behavioural family (trend, momentum, mean-reversion, ...) — see the "
-        "Signals tab for when each kind fails."),
-    "warm-up": (
-        "Bars of history the strategy needs before its first signal. Warm-up "
-        "eats CPCV blocks, which is why slow strategies have fewer paths."),
-    "file": "Source CSV in research/results/ — results are never pooled across files.",
-    "equation": "The indicator's formula as implemented in backtester/core/indicators.py.",
-    "kind": "Coarse file classification from the repo index (code, doc, result, test...).",
-    "editable": "Whether the Docs editor may write this file. research/results/ never is.",
-    "lines": "Line count at index build time.",
-    "summary": "One-line summary extracted when the repo index was built.",
-    "path": "File path relative to the repository root.",
-    "bar": "Bar index within the replayed series.",
-    "side": "buy or sell.",
-    "reason": "Which rule produced the intended fill.",
-    "units": "Position size in units of the asset.",
-    "cost": "Cash spent or received including fees.",
-    "equity": "Account value after the fill, marked at that bar's close.",
-    "driver": "The research script that produces this artifact.",
-    "answers": "The question the driver was built to answer.",
-    "established": "What the run actually established, quoted from the docs.",
-    "action": "What the rule would decide at the chosen bar: buy, sell or hold.",
-    "holding -> wants": "Position it would be holding, versus what it wants now.",
-    "warmup": "Bars of history the strategy needs before its first signal.",
-    "bars": "Bars of the truncated series available to the replay.",
-    "#": "Rank in research/TOP5-RECOMMENDATION.md — by robustness checks cleared, not by Sharpe.",
-    "asset": "The coin the configuration was evaluated on for this row.",
-    "when": "Timestamp of the bar (UTC).",
-    "price": "Fill price used by the simulation for that bar.",
-    "signal": "The indicator this row defines parameters for.",
-    "what it is / when it fails": (
-        "The family's bet in one line, and the market condition that "
-        "reliably breaks it."),
-}
-
-
-
 # Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.
 DOCS_TABLE_CAP = 1000
 
@@ -275,31 +149,46 @@ BUTTON_COMMANDS: dict[str, str] = {
 }
 
 class GlossaryTable(DataTable):
-    """`DataTable` that explains its column headers on hover.
+    """Explain headers and values using their actual column and table context.
 
     Textual tooltips are per-widget, not per-cell, so a static tooltip could
     only describe the whole table. Header cells carry their position in the
-    segment style meta (`row == -1` marks the header row — the same meta the
-    widget's own hover cursor uses), so the tooltip is swapped on every
-    mouse move: over a known header it becomes that column's glossary entry,
-    anywhere else it clears rather than lingering half-screen away from what
-    it describes.
+    segment style meta (`row == -1` marks the header row). The same definition
+    follows values in that column; recognised signal rows add their mechanism.
+    Leaving the table or moving outside a real cell clears the old explanation.
     """
 
     def header_tooltip(self, column_index: int) -> str | None:
         """The glossary entry for one column, or None when there isn't one."""
+        if column_index < 0:
+            return None
         try:
             label = str(self.ordered_columns[column_index].label)
         except IndexError:
             return None
-        return HEADER_GLOSSARY.get(label.strip().casefold())
+        return column_help(label, self.id)
+
+    def cell_tooltip(self, column_index: int, row_index: int = -1) -> str | None:
+        """Use the same definition on a value as on its header."""
+        explanation = self.header_tooltip(column_index)
+        if 0 <= row_index < self.row_count and self.id in {
+            "available-table", "roster-table", "signals-table", "families-table",
+            "results-table", "analyze-table", "queue-table", "queue-floor",
+        }:
+            try:
+                specific = row_help(str(self.get_row_at(row_index)[0]))
+            except (IndexError, KeyError):
+                specific = None
+            if specific:
+                explanation = f"{specific}\n\n{explanation}" if explanation else specific
+        return explanation
 
     def _on_mouse_move(self, event: events.MouseMove) -> None:
         super()._on_mouse_move(event)
         meta = event.style.meta
         tooltip = None
-        if meta and meta.get("row") == -1 and meta.get("column", -1) >= 0:
-            tooltip = self.header_tooltip(meta["column"])
+        if meta and not meta.get("out_of_bounds") and meta.get("column", -1) >= 0:
+            tooltip = self.cell_tooltip(meta["column"], meta.get("row", -1))
         if self.tooltip != tooltip:
             self.tooltip = tooltip
 
@@ -484,8 +373,11 @@ class SolTuiApp(App):
         border-top: solid $accent;
     }
     #editor-panel TextArea { height: 1fr; }
+    Tooltip { max-width: 76; height: auto; max-height: 18; }
+    #help-hint { height: 1; color: $text-muted; padding: 0 1; }
     """
     BINDINGS = [
+        Binding("f1", "show_help", "Help / glossary", priority=True),
         ("q", "quit", "Quit"),
         ("r", "run_backtest", "Run backtest"),
         ("c", "cancel", "Cancel sweep"),
@@ -611,6 +503,8 @@ class SolTuiApp(App):
         self._load_presets()
         yield Header()
         yield Static(build_title(self.state), id="indicator")
+        yield Static("Hover a control, table header or value for help · F1: searchable glossary",
+                     id="help-hint", markup=False)
         with TabbedContent(initial="tab-backtest"):
             with TabPane("Settings", id="tab-settings"):
                 yield from self._settings_pane()
@@ -882,6 +776,48 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self._refresh_liquidity(force=True)
+        self._install_help()
+
+    def _install_help(self) -> None:
+        """Include every form and lazy tab without copying text into handlers."""
+        for widget in self.query(Widget):
+            text = control_help(widget.id)
+            if isinstance(widget, Tab) and widget.id:
+                text = TAB_HELP.get(widget.id.removeprefix("--content-tab-"), text)
+            if text:
+                widget.tooltip = text
+            elif isinstance(widget, (Static, DataTable, OptionList, TextArea)):
+                pane = next((p for p in widget.ancestors if isinstance(p, TabPane)), None)
+                if pane is not None:
+                    widget.tooltip = TAB_HELP.get(pane.id)
+            if isinstance(widget, Label) and widget.parent is not None:
+                for sibling in widget.parent.children:
+                    if isinstance(sibling, (Input, Select)):
+                        widget.tooltip = control_help(sibling.id)
+                        break
+
+    def action_show_help(self) -> None:
+        """F1 explains keyboard focus too; hover must not be the only path."""
+        if isinstance(self.screen, HelpScreen):
+            self.screen.dismiss()
+            return
+        widget = self.focused
+        text = ""
+        if isinstance(widget, GlossaryTable):
+            text = widget.cell_tooltip(widget.cursor_column, widget.cursor_row) or ""
+            # Row cursors do not select a column, so offer all of its definitions.
+            if widget.cursor_type == "row":
+                definitions = "\n\n".join(
+                    f"{column.label}: {widget.header_tooltip(i)}"
+                    for i, column in enumerate(widget.ordered_columns)
+                    if widget.header_tooltip(i)
+                )
+                text = text + "\n\n" + definitions
+        elif widget is not None:
+            text = control_help(widget.id) or str(widget.tooltip or "")
+        if not text:
+            text = TAB_HELP.get(self.query_one(TabbedContent).active, "")
+        self.push_screen(HelpScreen(text))
 
     def _tick(self) -> None:
         """Refresh the in-app indicator line. Mirrors the menu-bar title exactly.
@@ -1243,6 +1179,10 @@ class SolTuiApp(App):
                 str(f["bar"]), f["when"], f["side"], f["reason"], f"{f['price']:,.2f}",
                 f"{f['units']:,.4f}", f"{f['cost']:,.2f}", f"{f['equity']:,.2f}",
             )
+
+    @on(TabbedContent.TabActivated)
+    def _help_tab_active(self) -> None:
+        self.call_after_refresh(self._install_help)
 
     @on(TabbedContent.TabActivated)
     def _populate_on_first_view(self, event: TabbedContent.TabActivated) -> None:
@@ -1799,7 +1739,7 @@ class SolTuiApp(App):
             yield Static("", id="queue-data")
             yield Static("", id="queue-status")
             yield Static("[b]Ranked — cleared the evidence floor[/b]", classes="hint")
-            ranked = DataTable(id="queue-table")
+            ranked = GlossaryTable(id="queue-table")
             ranked.add_columns(
                 "configuration", "family", "median Sharpe", "IQR",
                 "% paths +", "backtest median net %", "trades",
@@ -1808,7 +1748,7 @@ class SolTuiApp(App):
             yield Static(
                 "[b]Below the floor — listed, never ranked[/b]", classes="hint"
             )
-            floor = DataTable(id="queue-floor")
+            floor = GlossaryTable(id="queue-floor")
             floor.add_columns("configuration", "family", "trades", "why")
             yield floor
 
@@ -2073,14 +2013,14 @@ class SolTuiApp(App):
                 yield Button("Resume", variant="success", id="liq-resume")
             yield Static("", id="liq-status", classes="hint")
             yield Static("[b]Positions[/b]", classes="hint")
-            yield DataTable(id="liq-positions")
+            yield GlossaryTable(id="liq-positions")
             yield Static("[b]Scout[/b] — top pools by modelled net APR", classes="hint")
             yield Static("", id="liq-scout-note", classes="hint")
-            yield DataTable(id="liq-scout")
+            yield GlossaryTable(id="liq-scout")
             yield Static("[b]Experiments[/b] — arms side by side", classes="hint")
-            yield DataTable(id="liq-experiments")
+            yield GlossaryTable(id="liq-experiments")
             yield Static("[b]Recent actions[/b] — newest first", classes="hint")
-            yield DataTable(id="liq-actions")
+            yield GlossaryTable(id="liq-actions")
 
     def _liq_tick(self) -> None:
         """Auto-refresh. A no-op until the pane exists (teardown-safe)."""

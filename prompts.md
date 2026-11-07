@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 12
-Delta: v11 to v12; added the wallet monitoring request.
+Version: 13
+Delta: v12 to v13; grid profitability review and whole-app SolTUI help.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -92,3 +92,9 @@ In the settings, it asks for my wallet pubkey, but I have these addresses I'd li
 ```
 
 Scope: soltui wallet settings with validation (private keys refused), xpub UTXO scanning, hourly monitoring, and the extension's "Use soltui Solana address" button.
+
+## v13 - 2026-11-07 (Grid results and SolTUI help)
+
+```text
+Looking at the backtest data was the grid trading strategy ever profitable? Is it feasible to make it profitable? Expand the tooltip scrollover help text across the whole soltui I'm still feeling confused by many terms.
+```

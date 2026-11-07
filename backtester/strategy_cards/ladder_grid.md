@@ -111,6 +111,13 @@ A regime filter, which vetoes precisely the condition that ruins it. Untested.
 
 ## Measured on real SOL
 
+The tables in this section preserve the August experiment and predate the
+November accounting audit. They are historical results, not current-engine
+validation. A fresh daily rerun with the recorded engine revision, data hash,
+costs and full-account return denominator is in
+`research/results/grid_review_20261107.json`. Independent block resets in either
+experiment do not validate the extension's continuous recentering policy.
+
 Previously this card said "not evaluated on real SOL history yet". It has now been run on
 both real series — `research/results/ladder_grid_sol.csv`.
 
