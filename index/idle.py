@@ -3,6 +3,8 @@
     python3 index/idle.py --status      # fresh / stale / missing, and why
     python3 index/idle.py --once        # check; start a background rebuild if warranted
     python3 index/idle.py --force       # rebuild now, ignoring load and throttle (foreground)
+    python3 index/idle.py --install-schedule    # hourly launchd agent (macOS): runs --once
+    python3 index/idle.py --uninstall-schedule
 
 `search.py` and the soltui Docs tab call `maybe_start()` themselves, so the index keeps
 itself current without a daemon. For a schedule, run `--once` from cron or launchd.
@@ -11,7 +13,10 @@ A background rebuild starts only when ALL of these hold:
 
 1. the semantic index is missing or out of date for the files it covers;
 2. the machine is idle (1-minute load average below `INDEX_IDLE_THRESHOLD`, default 2.0,
-   the same rule as the hub's idle indexer);
+   the same rule as the hub's idle indexer) **or an hour has passed** since the last rebuild
+   started (`FORCE_INTERVAL`, override with `INDEX_FORCE_INTERVAL` seconds, 0 turns the hourly
+   sweep off). A busy Mac never goes idle, so without the hourly sweep it would never reindex;
+   the rebuild is `nice 19` and lock-guarded, so running it under load is safe;
 3. no other rebuild holds `index/.idle.lock`;
 4. a local ollama answers (it is started if needed) and `mxbai-embed-large:latest` is
    installed. The model is **never downloaded** by this job: ~670 MB is a decision.
@@ -33,6 +38,7 @@ import argparse
 import fcntl
 import json
 import os
+import plistlib
 import subprocess
 import sys
 import time
@@ -51,6 +57,10 @@ LOCK_FILE = OUT / ".idle.lock"
 LOG_FILE = OUT / ".idle-index.log"
 MIN_INTERVAL = 600.0
 DEFAULT_THRESHOLD = 2.0
+FORCE_INTERVAL = 3600.0
+
+LABEL = "com.mitchhudson.solmargintrader.index"
+DEFAULT_PYTHON = Path.home() / ".venvs" / "soltui" / "bin" / "python"
 
 
 def active_manifest() -> tuple[Path, Path] | None:
@@ -101,6 +111,20 @@ def is_idle(threshold: float | None = None) -> bool:
         return True
 
 
+def force_interval() -> float:
+    """Seconds after which a rebuild is due even on a busy machine; 0 means never."""
+    try:
+        return max(0.0, float(os.environ.get("INDEX_FORCE_INTERVAL", FORCE_INTERVAL)))
+    except ValueError:
+        return FORCE_INTERVAL
+
+
+def sweep_due(state: dict, now: float) -> bool:
+    """True when the hourly sweep applies: enabled, and an hour since a rebuild last started."""
+    interval = force_interval()
+    return interval > 0 and now - float(state.get("last_build_at", 0)) >= interval
+
+
 def _read_state() -> dict:
     try:
         return json.loads(STATE_FILE.read_text())
@@ -139,15 +163,19 @@ def maybe_start(*, force: bool = False, now: float | None = None) -> str:
         return state.get("last", "checked recently")
     status, why = semantic_status()
     if status == "fresh":
-        _write_state({"checked_at": clock, "last": f"semantic index is fresh ({why})"})
+        _write_state({**state, "checked_at": clock, "last": f"semantic index is fresh ({why})"})
         return f"semantic index is fresh ({why})"
+    busy_sweep = False
     if not force and not is_idle():
-        return f"semantic index is {status} ({why}); machine is busy, not starting a rebuild"
+        if not sweep_due(state, clock):
+            return f"semantic index is {status} ({why}); machine is busy, next sweep is not due yet"
+        busy_sweep = True
     if not lock_free():
         return f"semantic index is {status}; a rebuild is already running"
     ready = ollama_ensure.ensure(ollama_ensure.EMBED_MODEL)
     if not ready.ok:
-        _write_state({"checked_at": clock, "last": f"semantic index is {status}; {ready.message}"})
+        _write_state({**state, "checked_at": clock,
+                      "last": f"semantic index is {status}; {ready.message}"})
         return f"semantic index is {status}; not rebuilding: {ready.message}"
     OUT.mkdir(exist_ok=True)
     log = LOG_FILE.open("ab")
@@ -156,8 +184,11 @@ def maybe_start(*, force: bool = False, now: float | None = None) -> str:
         stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True,
     )
     log.close()
-    _write_state({"checked_at": clock, "last": "rebuild started in the background"})
-    return f"semantic index is {status} ({why}); rebuilding in the background (log: {LOG_FILE.name})"
+    _write_state({**state, "checked_at": clock, "last_build_at": clock,
+                  "last": "rebuild started in the background"})
+    reason = "hourly sweep, machine busy" if busy_sweep else "machine idle"
+    return (f"semantic index is {status} ({why}); rebuilding in the background "
+            f"({reason}; log: {LOG_FILE.name})")
 
 
 def run_build() -> int:
@@ -180,13 +211,83 @@ def run_build() -> int:
         os.close(fd)
 
 
+# -- the hourly schedule ---------------------------------------------------------------------------
+# A search triggers the check, but a quiet console triggers nothing; a launchd agent runs `--once`
+# every hour so the sweep happens on its own.
+
+
+def agents_dir() -> Path:
+    return Path(os.environ.get("INDEX_LAUNCHAGENTS_DIR") or Path.home() / "Library" / "LaunchAgents")
+
+
+def plist_path() -> Path:
+    return agents_dir() / f"{LABEL}.plist"
+
+
+def plist_dict(python: Path = DEFAULT_PYTHON, repo: Path = build.REPO) -> dict:
+    log = Path.home() / "Library" / "Logs" / "solmargintrader" / "index.log"
+    return {
+        "Label": LABEL,
+        "ProgramArguments": [str(python), str(repo / "index" / "idle.py"), "--once"],
+        "WorkingDirectory": str(repo),
+        "StartInterval": int(FORCE_INTERVAL),
+        "RunAtLoad": False,
+        "ProcessType": "Background",
+        "Nice": 19,
+        "StandardOutPath": str(log),
+        "StandardErrorPath": str(log),
+        "EnvironmentVariables": {"PYTHONUTF8": "1", "LANG": "en_US.UTF-8"},
+    }
+
+
+def _launchctl(*args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["launchctl", *args], capture_output=True, text=True, timeout=30)
+
+
+def install_schedule(python: Path = DEFAULT_PYTHON, start: bool = True) -> dict:
+    if not python.exists():
+        python = Path(sys.executable)
+    path = plist_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    (Path.home() / "Library" / "Logs" / "solmargintrader").mkdir(parents=True, exist_ok=True)
+    path.write_bytes(plistlib.dumps(plist_dict(python)))
+    path.chmod(0o644)
+    out: dict = {"plist": str(path), "label": LABEL, "interval_s": int(FORCE_INTERVAL)}
+    if start:
+        domain = f"gui/{os.getuid()}"
+        _launchctl("bootout", f"{domain}/{LABEL}")   # reload cleanly when already loaded
+        boot = _launchctl("bootstrap", domain, str(path))
+        out["bootstrap"] = boot.returncode
+        if boot.returncode:
+            out["bootstrap_error"] = boot.stderr.strip()[:200]
+    return out
+
+
+def uninstall_schedule() -> dict:
+    _launchctl("bootout", f"gui/{os.getuid()}/{LABEL}")
+    path = plist_path()
+    existed = path.exists()
+    if existed:
+        path.unlink()
+    return {"plist": str(path), "removed": existed}
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--status", action="store_true")
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--force", action="store_true", help="rebuild now in the foreground")
+    ap.add_argument("--install-schedule", action="store_true",
+                    help="install an hourly launchd agent that runs --once")
+    ap.add_argument("--uninstall-schedule", action="store_true")
     ap.add_argument("--run-build", action="store_true", help=argparse.SUPPRESS)
     args = ap.parse_args(argv)
+    if args.install_schedule:
+        print(json.dumps(install_schedule(), indent=2))
+        return 0
+    if args.uninstall_schedule:
+        print(json.dumps(uninstall_schedule(), indent=2))
+        return 0
     if args.run_build:
         return run_build()
     if args.force:
