@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T15:15:09+00:00",
+  "generatedAt": "2026-11-07T15:33:26+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -70,12 +70,12 @@
           "hits": 31
         },
         {
-          "path": "soltui/tests/test_liquidity.py",
+          "path": "soltui/help.py",
           "hits": 30
         },
         {
-          "path": "soltui/help.py",
-          "hits": 29
+          "path": "soltui/tests/test_liquidity.py",
+          "hits": 30
         },
         {
           "path": "extension/README.md",
@@ -380,7 +380,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 24
+          "hits": 22
         },
         {
           "path": "soltui/signals.py",
@@ -403,6 +403,10 @@
           "hits": 18
         },
         {
+          "path": "soltui/compound.py",
+          "hits": 18
+        },
+        {
           "path": "soltui/help.py",
           "hits": 18
         },
@@ -416,10 +420,6 @@
         },
         {
           "path": ".remember/remember.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/ARCHITECTURE.md",
           "hits": 16
         }
       ],
@@ -1484,6 +1484,10 @@
           "hits": 16
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 16
+        },
+        {
           "path": "research/TOP_COINS.md",
           "hits": 16
         },
@@ -1504,7 +1508,7 @@
           "hits": 14
         },
         {
-          "path": "docs/COMPOUND-5M.md",
+          "path": "soltui/tests/test_compound.py",
           "hits": 13
         },
         {
@@ -1512,16 +1516,12 @@
           "hits": 11
         },
         {
-          "path": "soltui/tests/test_utxo_scan.py",
+          "path": "memory.md",
           "hits": 10
         },
         {
-          "path": "index/build.py",
-          "hits": 9
-        },
-        {
-          "path": "liquidity/src/aero_lp/executor.py",
-          "hits": 9
+          "path": "soltui/tests/test_utxo_scan.py",
+          "hits": 10
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1953,16 +1953,16 @@
           "hits": 72
         },
         {
+          "path": "soltui/tests/test_compound.py",
+          "hits": 59
+        },
+        {
           "path": "research/results/cpcv_combos_tables.md",
           "hits": 52
         },
         {
           "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
           "hits": 52
-        },
-        {
-          "path": "soltui/tests/test_compound.py",
-          "hits": 51
         },
         {
           "path": "research/results/tables.md",
@@ -2103,7 +2103,7 @@
         },
         {
           "path": "soltui/compound.py",
-          "hits": 13
+          "hits": 16
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
