@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 33
-Delta: v32 to v33; soltui draggable/closable editor bar, compound row preview, double-click/Space toggle, compound autopilot.
+Version: 34
+Delta: v33 to v34; top-50 coin screen and the owner's ten-coin compound universe.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -227,3 +227,12 @@ in the soltui there is an orange line which delineates the curser portion above 
 
 Target: soltui/tui.py, soltui/compound.py, soltui/commands.py, new soltui/compound_agent.py; Stele TASK-833.
 
+## v34 - 2026-11-07 (coin screen, ten-coin compound universe)
+
+```text
+Are there any coins which are immediately disqualified before even starting? Ones changing or shutting down soon, have had major incidence, have high fees or inaccessible chain, something like that
+```
+
+```text
+I like that, let's stick to BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX.
+```

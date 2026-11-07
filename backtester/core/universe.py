@@ -105,6 +105,13 @@ USD_ONLY: dict[str, str] = {
 # an eleventh to restore a round number would be choosing the number over the evidence.
 TRADEABLE_UNIVERSE = tuple(a for a in TOP10_NON_PEGGED if a not in EXCLUDED)
 
+# The five-minute compound's coins, chosen by the owner on 2026-11-07 from a screen of the top
+# 50 non-pegged coins (research/results/top50-screen-2026-11-07.json). A 5m call pays only with
+# leverage and a round trip near 16 bps, so each coin here has a Hyperliquid perp (10x or more),
+# turnover well above 0.5% of its cap, and Coinbase USD candles for live forward calls. The screen
+# records why each of the other 40 is out. Jupiter Perps lists only SOL, ETH and BTC.
+COMPOUND_5M_UNIVERSE = ("BTC", "ETH", "SOL", "XRP", "HYPE", "DOGE", "LINK", "NEAR", "SUI", "AVAX")
+
 
 @dataclass(frozen=True)
 class FetchPlan:

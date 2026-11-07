@@ -62,6 +62,7 @@ import numpy as np  # noqa: E402
 
 from backtester.core import compound as cbt  # noqa: E402
 from backtester.core import scorecard as sc  # noqa: E402
+from backtester.core import universe as cu  # noqa: E402
 
 from backtester.core import perps  # noqa: E402
 from backtester.core.types import Side  # noqa: E402
@@ -121,18 +122,15 @@ def _asset(asset: str) -> str:
 # -- saved configuration ---------------------------------------------------------------------
 
 
-# The coins the compound runs on: every universe coin Coinbase lists candles for.
-COINS = ("BTC", "ETH", "SOL", "DOGE", "ZEC", "XRP", "BNB", "HYPE")
+# The coins the compound runs on: the owner's ten, screened from the top 50
+# (backtester/core/universe.py COMPOUND_5M_UNIVERSE). A coin outside it with cached data can still
+# be backtested from the CLI with --asset; the tab, Backtest all and unattended training stay on these.
+COINS = cu.COMPOUND_5M_UNIVERSE
 
 
 def coins() -> tuple[str, ...]:
-    """Every coin the compound can run on: the core eight plus any coin with cached minute or 5m
-    history (all 50 of the top 50 once research/full_suite.py or the minute fetchers have run)."""
-    try:
-        cached = set(cbt.available_assets())
-    except Exception:  # noqa: BLE001 - an unreadable cache dir must not hide the core coins
-        cached = set()
-    return tuple(COINS) + tuple(sorted(cached - set(COINS)))
+    """The coins the tab, Backtest all coins and unattended training run on."""
+    return tuple(COINS)
 
 
 def live_capable(asset: str) -> bool:
@@ -1754,7 +1752,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                            progress=lambda s: print(s, file=sys.stderr))
             _print_table(out)
         else:
-            assets = [a for a in args.assets.split(",") if a.strip()] or cbt.available_assets()
+            assets = [a for a in args.assets.split(",") if a.strip()] or list(coins())
             out = sweep(assets, perturb=args.perturb, aggregate_grid=args.aggregate_grid,
                         workers=args.workers, progress=lambda s: print(s, file=sys.stderr, flush=True))
             _print_table(out)
