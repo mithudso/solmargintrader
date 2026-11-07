@@ -210,15 +210,17 @@ class TestLoadedStore(unittest.TestCase):
             self.db.signals.insert_one({"_id": "not-a-real-signal", "rule": "x"})
 
     def test_strategy_cards_keep_their_own_vocabulary(self) -> None:
-        """45 cards, exactly 25 with a registry key, every key real.
+        """One document per card, exactly one per registry key, every key real.
 
         No invented `registered` flag: the 20 without a key are not simply
         unregistered -- the ladder grid is `implemented` and has no key because it is
         not a `Strategy` at all.
         """
+        from backtester.core import strategy_cards
         from backtester.core.strategies import REGISTRY
 
-        self.assertEqual(self.db.strategies.count_documents({}), 45)
+        total = len(strategy_cards.load_all())
+        self.assertEqual(self.db.strategies.count_documents({}), total)
         keyed = list(self.db.strategies.find({"registry_key": {"$type": "string"}}))
         self.assertEqual(len(keyed), len(REGISTRY))
         for doc in keyed:
@@ -226,7 +228,7 @@ class TestLoadedStore(unittest.TestCase):
             self.assertIsNotNone(doc["registry"], doc["_id"])
         self.assertEqual(
             self.db.strategies.count_documents({"registry_key": None}),
-            45 - len(REGISTRY),
+            total - len(REGISTRY),
         )
 
     def test_signal_and_indicator_counts_track_decide_py(self) -> None:

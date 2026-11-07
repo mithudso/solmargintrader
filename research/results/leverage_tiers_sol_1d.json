@@ -1,0 +1,78 @@
+{
+  "coverage": {
+    "bars": 1875,
+    "layers": [
+      {
+        "interval": "1m",
+        "bars_fully_covered": 26,
+        "daily_low_below_fine_low_by_5bps": 0
+      },
+      {
+        "interval": "1h",
+        "bars_fully_covered": 366,
+        "daily_low_below_fine_low_by_5bps": 0
+      }
+    ]
+  },
+  "summary": [
+    {
+      "tier": "1x",
+      "leverage": 1.0,
+      "strategies": 25,
+      "paths": 514,
+      "oos_median_sharpe": -0.3903230792852974,
+      "pct_paths_positive": 36.57587548638132,
+      "median_path_return_pct": -27.535950658547705,
+      "liquidations_per_path": 0.013618677042801557,
+      "pct_paths_with_liquidation": 1.3618677042801557,
+      "median_max_dd_pct": 54.19836282333623,
+      "worst_max_dd_pct": 96.65952377489437,
+      "p_ruin_pct": 1.1673151750972763
+    },
+    {
+      "tier": "low",
+      "leverage": 2.0,
+      "strategies": 25,
+      "paths": 514,
+      "oos_median_sharpe": -0.4454850693179964,
+      "pct_paths_positive": 35.797665369649806,
+      "median_path_return_pct": -62.13167984437247,
+      "liquidations_per_path": 0.35019455252918286,
+      "pct_paths_with_liquidation": 21.98443579766537,
+      "median_max_dd_pct": 81.33773503394428,
+      "worst_max_dd_pct": 100.0,
+      "p_ruin_pct": 21.011673151750973
+    },
+    {
+      "tier": "medium",
+      "leverage": 5.0,
+      "strategies": 25,
+      "paths": 514,
+      "oos_median_sharpe": -0.486855071853824,
+      "pct_paths_positive": 31.906614785992215,
+      "median_path_return_pct": -98.30891900475727,
+      "liquidations_per_path": 2.3365758754863815,
+      "pct_paths_with_liquidation": 71.78988326848248,
+      "median_max_dd_pct": 99.49532913393726,
+      "worst_max_dd_pct": 100.0,
+      "p_ruin_pct": 73.73540856031128
+    },
+    {
+      "tier": "high",
+      "leverage": 20.0,
+      "strategies": 25,
+      "paths": 514,
+      "oos_median_sharpe": -1.570923555643077,
+      "pct_paths_positive": 8.949416342412452,
+      "median_path_return_pct": -100.0,
+      "liquidations_per_path": 7.114785992217898,
+      "pct_paths_with_liquidation": 99.41634241245137,
+      "median_max_dd_pct": 100.0,
+      "worst_max_dd_pct": 100.0,
+      "p_ruin_pct": 95.3307392996109
+    }
+  ],
+  "ruin_level": 0.1,
+  "groups": 8,
+  "k": 2
+}

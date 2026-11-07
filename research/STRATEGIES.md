@@ -768,6 +768,13 @@ Distilled from the corpus's pitfall taxonomy, in the order these actually bite:
    window length. Seventeen of twenty-five long-horizon singles failed the floor — that is a
    statement about the data, not the strategies.
 
+## Leverage tiers (registered wrappers)
+
+`lev_low` (2x), `lev_medium` (5x) and `lev_high` (20x) run any registered long/flat strategy as a
+Jupiter-Perps position with borrow carry, fees, maintenance margin and intrabar liquidation. They are
+wrappers, not signals; cards in `backtester/strategy_cards/lev_*.md`. SOL daily CPCV result: P(ruin)
+21% at 2x, 74% at 5x, 95% at 20x. See `research/LEVERAGE-TIERS.md`.
+
 ## Reproducing everything
 
 ```bash

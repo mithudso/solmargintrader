@@ -1,7 +1,9 @@
 # Work continuation
 
-Version: 14
-Delta: soltui Top 5 presets, net % on every results view and the P&L tab (PR A); wallet discovery follows (PR B).
+Version: 15
+Delta: added PR 1 of the leverage-tier and reliable-trigger work (tiers, intrabar liquidation).
+
+Delta: added PR 1 of the leverage-tier and reliable-trigger work (tiers, intrabar liquidation).
 
 ## v1 - 2026-11-06
 
@@ -157,3 +159,15 @@ Completed (PR A): `soltui/presets.py` + `top5.presets` (Analyze, Live Run, Execu
 Decisions: backtest and paper windows are cut from the data's own dates, so a "30d" window ending today has no backtest data when the cached series ends earlier; the section says where its data is. The liquidity `status.json` is cumulative since open, so that section is marked not windowed; `ledger.sqlite` snapshots give a windowed history when present. The extension journal has no capital base, so it shows net $ and no %.
 
 Not built (later, separately gated): swaps, signing, the live-run button, any private-key field.
+
+## v15 - 2026-11-07 (leverage tiers, PR 1)
+
+Target: low/medium/high margin tiers (2x/5x/20x) as Jupiter-Perps wrappers over the existing strategies, with intrabar liquidation; then the reliable-trigger miner (PR 2). Simulation only. Stele MCP was unreachable; facts below are not yet in the graph.
+
+Completed: `IntrabarLayer` and `EngineConfig.intrabar` (finer 1m/1h bars walked inside each held bar; daily low/high still checked, never less severe); `CostConfig.liquidation_penalty_bps` and `liquidation_forfeits_collateral`; `backtester/core/leverage.py`; registered `lev_low`, `lev_medium`, `lev_high` with cards; `BlockResult.liquidations`; `research/leverage_tiers.py` and `research/LEVERAGE-TIERS.md`; `backtester/tests/test_intrabar_liquidation.py` (8 tests).
+
+Result (SOL daily, CPCV, 514 paths): P(ruin) 1.2% / 21.0% / 73.7% / 95.3% at 1x / 2x / 5x / 20x; median OOS Sharpe -0.39 / -0.45 / -0.49 / -1.57. High leverage is ruinous.
+
+Facts to keep: the engine already checked bar low/high, so intrabar layers refine ordering and fee timing and catch daily/hourly feed disagreements; SOL_1h covers only 366 days and has gaps (engine refuses a gapped series, so tiers are daily-only); decide/signal_redundancy/sweep_untested skip family leverage-tier.
+
+Remaining: PR 2 (research/triggers.py, RELIABLE_SIGNALS.md, trigger strategy); follow-ups: soltui Triggers view, live trigger alerts through the executor.

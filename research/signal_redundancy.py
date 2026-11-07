@@ -103,7 +103,7 @@ VARIANCE_TARGET = 0.90
 
 # The registry's benchmark is a constant exposure of 1.0. It is not a signal,
 # and including it would only exercise the constant-column path.
-SKIP_FAMILIES = ("baseline",)
+SKIP_FAMILIES = ("baseline", "leverage-tier")
 
 
 def exposure_matrix(
