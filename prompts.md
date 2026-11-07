@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 9
-Delta: added the owner's report that the extension looked unchanged after reload (version still 0.1.0).
+Version: 10
+Delta: v9 to v10; record Coinbase account MCP setup.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -70,4 +70,10 @@ Delivered in two PRs: (1) leverage tiers, (2) the reliable-trigger miner.
 
 ```text
 The solmargintrader has not changed at all, the version number is the same, I loaded the extension from /Users/mitch/dev/solmargintrader/extension
+```
+
+## v10 - 2026-11-07 (Coinbase account MCP setup)
+
+```text
+Set up coinbase.com/skill.md
 ```
