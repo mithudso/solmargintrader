@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 27
-Delta: v26 to v27; Strategies tab test history and Backtest selected/untested/all buttons.
+Version: 30
+Delta: v29 to v30; preserve five-minute perps recovery records and upstream continuation.
 
 ## v1 - 2026-11-06
 
@@ -288,3 +288,31 @@ Completed: JobResult.finished_at (0.0 = pre-field row, shown as "date not record
 Verification: backtester 734, soltui 712 pass. Caveat: the worker refuses rows whose evaluation proof (code, data, settings hash) differs, so after a code change old results need a fresh results path; history still lists them with their date.
 
 Remaining: PR, CI, merge. Next request (TASK-807): keyword/semantic/hybrid search over all repo files with mxbai-embed-large, ollama auto-start, idle indexing, lazy-loaded Docs-tab search.
+
+## v28 - 2026-11-07 (Five-minute leveraged perps full-suite)
+
+Target: research five-minute SOL Jupiter Perps directional signals and adverse-path survival. Task TASK-808. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef, branch agent-01a1b5ef at c01412a. Preserve all shared checkout and other worktree changes.
+
+Completed: read project instructions and routing index; full-suite is folded under llms-txt-tooling/references/full-suite.md. Fetched KNOW-656 (dated cost mechanics) and KNOW-657 (data/execution gap); created decision KNOW-809 separating terminal direction, barrier survival and net expectancy. The stele-search agent failed because its fixed gpt-5.4-mini model is unsupported; direct named-node reads are the fallback.
+
+Constraints: research only, no trading or execution/config changes. No keys, signing, daemon restart, inference or indexing services. Full-suite saturation and gate receipts must be earned, never inferred from artifacts.
+
+Remaining: map coverage and scored gaps; research current venue and short-horizon predictive evidence; compile source packs and rollup; independent audit; offline indexes/docs checks; commit/PR/CI/merge and remote verification.
+
+## v29 - 2026-11-07 (Full-suite preparation and audited private draft)
+
+Completed: full canonical-tree inventory, 30 scored candidates across five neighborhoods, 23 HAVE and seven distinct above-threshold gaps. Canonical CVS checker passed all 30 rows. Verified 47 prior canonical SUPPORTED claims against 114 bound snapshot spans with zero missing/hash/offset failures. Seven preliminary scouts preserve leads, not evidence. TASK-810 complete; research TASK-811 and parent TASK-808 remain unfinished.
+
+Current sources: refreshed four official Jupiter JLP pages and one exact-five-minute Binance empirical paper into private source library. KNOW-813 records current minimum linear-impact fee, jump-rate borrow curve, rolling flow imbalance and dual execution paths; KNOW-656 now carries a current-source caveat and contradicts edge. Do not treat the August fee-only model as current execution pricing.
+
+Private draft: /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-task808-unpromoted/FIVE-MINUTE-PERPS.md (SHA256 ceef7f86d2aa505eff5a484f66eb7a2caae3f8650fad0374e19cf2245bf977b3) and calculated-scenarios.json (SHA256 c8fae31cce7f1edc7eaefdde6bbbfb6a609515f07597d7c785636109a720ecd4). Independent research-contract-auditor found no material source/math/scope errors; verified five snapshot hashes, 15 leverage scenario values, five symmetric probabilities and one asymmetric probability. This is a scoped synthesis, not a completed full-suite or v4 publication receipt. No profitable five-minute SOL strategy is claimed.
+
+Blocker: python3 /Users/mitch/.global-ai-hub/scripts/dr_run.py check exits 1: retired research sink still present: /Users/mitch/.research. Installed /Users/mitch/.claude/commands/dr.md says to stop and report this condition. Directory contains about 23 MB of unrelated older local-model research. User async approval is pending for intact archive to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808. Preserve it until answered. No new /dr init/research/gate/render/finish/tree write or service startup.
+
+Verification: system Python lacked pandas; existing /Users/mitch/.venvs/soltui/bin/python ran research/verify_numbers.py successfully (1084 archived figures; not a new performance test). scripts/check_docs.py passed with counts 734/313/33/682. No product code changed; new scenario invariants and independent recomputation passed. Private reuse-only pack: /Users/mitch/.global-ai-hub/llms-concepts/five-minute-perps-inherited-v4.llms/. It retains 47 exact inherited supported assertions and 47 FTS5 rows. It is a private draft, not a new researched family: semantic/agent tests are absent, and facts-format lint conflicts with exact-proof reuse. The run-state receipt records all limitations. Remaining: on approved archive, run adapter research/gates on seven gaps, quality audits, final packs/rollup/index/tree steps and saturation gates. Preserve inventory and successful source reads. Repository recovery delivery is tracked in TASK-808; verify its PR status rather than assuming merge.
+
+## v30 - 2026-11-07 (Private reuse pack and recovery checkpoint)
+
+Completed: private source-bound reuse pack retains all 47 unchanged supported assertions. Keyword FTS5 has 47 rows and four nonzero query checks. Vocabulary and digest repairs pass their relevant checks; exact long assertion formatting still conflicts with facts lint and remains an explicit qualification limit. Semantic indexing and agent tests were not run. No source-derived new research draft is staged for the public repository.
+
+Current recovery task: integrate origin/master 3cc9b44 without losing the other session's continuation records, refresh three offline indexes, commit and push the task branch and open a draft PR. Parent TASK-808 remains unfinished. User archive decision remains pending. Do not run new /dr work or alter /Users/mitch/.research before the answer. Delivery receipt belongs in TASK-808; all research stages after preparation remain owed.
