@@ -3,12 +3,12 @@
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 900 tests
 python3 -m unittest discover -s soltui/tests -t .       # 860 tests (~610s)
-python3 -m unittest discover -s mongo/tests -t .        # 33 tests
+python3 -m unittest discover -s mongo/tests -t .        # 34 tests
 cd extension && npm test                                # 361 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-2154 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2155 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -168,7 +168,7 @@ lookup, the module choice and argument pass-through without starting Textual. Th
 packaging paths — the py2app alias bundle and the launchd agent — are **not** covered by
 any test; see `soltui/README.md` for the manual checks that stand in for them.
 
-## mongo — 33 tests
+## mongo — 34 tests
 
 Split between pure helpers that need nothing and integration tests that **skip cleanly
 when no mongod is listening**, so a checkout without a database runs the suite green

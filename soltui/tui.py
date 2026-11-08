@@ -1186,18 +1186,28 @@ class SolTuiApp(App):
             with TabbedContent(id="bots-sections", initial="bots-sec-backtest"):
                 with TabPane("Backtest", id="bots-sec-backtest"):
                     with VerticalScroll():
-                        yield Static("", id="bots-bt-title", classes="table-title")
+                        yield Static("No backtest yet for this bot: press Backtest.", id="bots-bt-title")
+                        yield Static("[b]What it set[/b] at its start, from the price at that moment",
+                                     classes="table-title")
                         yield GlossaryTable(id="bots-set")
+                        yield Static("[b]What it made[/b]: the bot beside buy-and-hold of the same capital, "
+                                     "after fees and slippage", classes="table-title")
                         yield GlossaryTable(id="bots-bt-table")
                 with TabPane("Forward test", id="bots-sec-forward"):
                     with VerticalScroll():
                         yield Static("No forward test yet.", id="bots-fwd-summary")
+                        yield Static("[b]Forward test so far[/b]: the recorded stream since it started, "
+                                     "replayed through the bot in dry-run", classes="table-title")
                         yield GlossaryTable(id="bots-fwd-table")
                 with TabPane("Auto-optimize", id="bots-sec-optimize"):
                     with VerticalScroll():
                         yield Static("Auto-optimize has not run for this bot.", id="bots-opt-verdict")
+                        yield Static("[b]Every configuration searched[/b], best train rank first; the test "
+                                     "columns are out of sample", classes="table-title")
                         yield GlossaryTable(id="bots-opt-table")
                 with TabPane("Live prices", id="bots-sec-prices"):
+                    yield Static("[b]Streamed Coinbase markets[/b]: newest best bid and ask from the "
+                                 "recorder", classes="table-title")
                     yield GlossaryTable(id="bots-prices")
 
     # -- Bots tab ------------------------------------------------------------
