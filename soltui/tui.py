@@ -4005,7 +4005,10 @@ class SolTuiApp(App):
                 continue
             table.add_row(str(row.get("portfolio_name", "")), str(row.get("currency", "")),
                           str(avail.get("value", "")), str(hold.get("value", "")))
-        status.update("Saved Coinbase snapshot · " + str(r.get("note", r.get("message", ""))))
+        from datetime import datetime, timezone
+        timestamp = r.get("fetched_at")
+        stamp = datetime.fromtimestamp(timestamp, timezone.utc).strftime("%Y-%m-%d %H:%M UTC") if isinstance(timestamp, (int, float)) else "unknown time"
+        status.update("Saved Coinbase snapshot " + stamp + " · " + str(r.get("note", r.get("message", ""))))
 
     def _wallet_restore(self) -> None:
         """Real console only: show the newest kept scan at once, then refresh it in the background."""
