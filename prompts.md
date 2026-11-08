@@ -1,5 +1,9 @@
 # Prompt history
 
+Version: 60
+Delta: v59 to v60; start EPIC-980 research tracks.
+Version: 66
+Delta: v65 to v66; stop repeating full CI at the owner's instruction.
 Version: 74
 Delta: v73 to v74; preserve activation and concurrent delivery records.
 
@@ -453,6 +457,13 @@ Keep complete indicator specifications too (Recommended)
 I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
 ```
 
+## v60 - 2026-11-08 (EPIC-980 research request)
+
+```text
+Run the /dr skill on all of the frontier children concepts of https://llmsx.org/tree/nonlinear-lead-lag-inference-conditional-information-transfer-finite-sample-uncertainty-lag-selection-multiplicity-and-directed-graph-preservation/ and run the full-suite skill on crypto trading bots: trend-following, mean-reversion, signal-based, arbitrage, loop, combo, TWAP, geographic, statistical, dip-buying, martingale, rebalancing, moon  https://www.tradingview.com/chart/GOLD/CvDZ1ttE-The-5-Types-of-Trading-Bots-Every-Trader-Should-Know/
+```
+
+Scope: all 18 run-start nonlinear frontier labels plus the full crypto trading-bot family. Preserve accepted TASK-905 research and other active work.
 ## v60 - 2026-11-08 (SolTUI card visibility)
 
 ```text
@@ -507,6 +518,13 @@ Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
 So you don't have to run this, you've already passed the CI 3 times.
 ```
 
+## v67 - 2026-11-08 (Firecrawl usage check)
+
+```text
+Are you using the firecrawl skills and mcp server?
+```
+
+Confirmed Firecrawl skills, MCP and worker CLI collection are active. Existing two-track request continues.
 ## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
 
 ```text

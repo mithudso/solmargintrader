@@ -1,5 +1,9 @@
 # Work continuation
 
+Version: 106
+Delta: v105 to v106; start EPIC-980 research tracks.
+Version: 128
+Delta: v127 to v128; finish delivery without repeating full CI, as instructed.
 Version: 142
 Delta: v141 to v142; preserve activation and concurrent delivery records.
 
@@ -1069,6 +1073,15 @@ Integrated origin/master 0b46a88 after concurrent PR94 landed while this task op
 
 The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.
 
+## v106 - 2026-11-08 (EPIC-980 research start)
+
+Version: 106. Delta: v105 to v106; preserve the new two-track research request and exact run-start frontier.
+
+Active: TASK-981 frontier research and TASK-982 full-suite bots under EPIC-980. The parent has18 unresearched child labels; four broader children already accepted by TASK-905 remain frozen. /dr standard depth applies; full-suite uses CFE maxRounds3, threshold3.2 and no default concept-count cap. Ample Firecrawl is authorized. Source-sharing cohorts, exact source spans and research-gate/v4 are required.
+
+Canonical private continuation: /Users/mitch/.global-ai-hub/research/trading-research-epic980/memory.md and frontier-inventory.json. Bot track owns its private namespace. Root worktree: /Users/mitch/dev/worktrees/solmargintrader-trading-research-epic980. No trading, backtest or risk-configuration change is requested.
+
+Remaining: source-backed child research and bot family exploration; claim gates, skills/packs/rollup, optimization/indexes and registration; serial Git/publication delivery and final live acceptance.
 ## v106 - 2026-11-08 (SolTUI card visibility)
 
 Target: make retained strategy/indicator cards visible on Strategies. Diagnosis at8ed41ad: actual canonical launcher and fresh mounted app load correctly, but strategies.list/history enumerate REGISTRY34 and omit all292 new retained specs from351 active cards. Implement a unified filterable card table with explicit status; stable row keys preserve registry actions and readable names; nonregistered specs open their card and cannot be added/backtested. Keep791 incomplete cards excluded and all registry/trading defaults unchanged. TASK-971 owns implementation; verification/delivery use their tracked tasks. Worktree /Users/mitch/dev/solmargintrader-wt-card-ui, branch feat/soltui-card-catalog. Preserve337 unrelated canonical paths and other active UI/research branches. Use INDEX_NO_AUTO=1 for searches/acceptance. Save exact tested source revisions before safe canonical installation; do not restart existing consoles. Remaining: implement, behavioral tests, fresh UI acceptance, docs/index checks, commit/push/CI/merge, safe canonical sync and cleanup.
@@ -1261,6 +1274,17 @@ Evidence remains precise: Claude's original full CI passed. Codex started three 
 
 Commit this fully resolved integration with CI skipped, then verify final 969-case discovery/docs counts, offline index freshness and whitespace before pushing. Update PR93 with the exact verification scope and owner instruction, merge normally, verify the actual remote files, safely activate the canonical launcher under fresh preservation checks, and remove only the private recovery worktree. TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json hold the final live receipts. Preserve the locked original Claude worktree and all unrelated active work.
 
+## v129 - 2026-11-08 (EPIC-980 review checkpoint)
+
+Version:129. Delta:v128 to v129; first cohort accepted and research runtime repair delivered.
+
+TASK-981:18run-start frontier labels across4cohorts. Conditional3concepts/61structured+11auxiliary assertions passed72/72review; all original-group ledgers and exact-spans verified. Graph4concepts/96claims audited; one numeric quote repair preserves claim text, fresh gate running. Uncertainty4concepts/74claims drafted and under independent audit. Multiplicity7concepts researching.
+
+TASK-982:14new concepts plus reused accepted grid coverage; all13user labels retained. First7bot concepts drafted154claims, authority/literal repairs underway; remaining7product/execution concepts researching. Full CFE re-expansion, canonical-bound private LCA/LDO packs, rollup and keyword indexing remain substantive work. Semantic embeddings stay paused.
+
+Necessary parser repair TASK-994 delivered by llms-explorer PR310, merge97eb8e9e4bc978f822c2cf55a24d5af8c9773290. Both installed modules match merged bytes and reparse retained completed outputs; malformed tails still fail. Original divergent checkout and unrelated helpers preserved. Website staging now research/trading-publish-epic980.
+
+Canonical private continuation v1.4.0: /Users/mitch/.global-ai-hub/research/trading-research-epic980/memory.md. No serial finish/publication yet; root owns combinedhub quality and all Git delivery. Remaining: complete audits/gates, guides/hub quality, substantive bot full-suite, serial publication, CI/merges and live acceptance. Do not duplicate active coordinator PID47913 or mutate shared original checkouts.
 ## v70 - 2026-11-08 (Forwardtest coins, auto-optimize, background runner)
 
 Target: prompts.md Forwardtest coins entry. Branch feat/forwardtest-coins-optimize in /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd.
