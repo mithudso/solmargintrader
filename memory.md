@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 193
-Delta: v192 to v193; record focused repairs for full-suite UI failures.
+Version: 198
+Delta: v197 to v198; record passing full SolTUI suite and delivered sort fix.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1773,3 +1773,23 @@ The optional 1082-test SolTUI suite on the Coinbase branch finished with eight f
 ## v193 - 2026-11-08
 
 The three full-suite UI failures now pass their focused tests after adding missing help, glossary entries, and four table titles. The relocated catalogue coverage tests also pass, with one unrelated skip. A complete suite rerun is still required. The F5 backend is being implemented separately as TASK-1046; it must not treat research-only guides as executable strategies.
+
+## v194 - 2026-11-08
+
+PR 125 merged at d945ac626d85d17f34b9391c21b4fc4df57a62b1 after required CI passed. The installed launcher returns the retained 928-pair Coinbase spot catalog; four headless interface tests passed with mocked orders. The already-open console predates the merge. The catalog task completion is queued as outbox a51dc1f8. Jupiter execution, F5 and live experiments remain unfinished.
+
+## v195 - 2026-11-08
+
+The owner requested optional manual entry for every Bots tab variable while retaining automatic defaults. They specifically want geometric versus arithmetic grid-order spacing available for comparison. Do not assume geometric spacing is more profitable; evaluate it on matching data and costs. Stele task creation is queued as outbox f2b957fa. Inspect each bot's configuration, backtest, forward and optimizer path so manual values are honored consistently.
+
+## v196 - 2026-11-08
+
+The owner requests independent bot optimization and configuration for every coin instead of choosing one shared configuration for all coins. Preserve separate evidence, saved settings and forward behavior per coin; do not overwrite unrelated coin settings. Stele task creation is queued as outbox ae3e15a1. The existing optimizer and configuration storage need investigation.
+
+## v197 - 2026-11-08
+
+The owner wants frequent, incremental per-coin auto-optimization and reports that any failed evaluation can block progress. Isolate unrelated failed candidate evaluations from the actual candidate comparison; keep negative valid results and require matched evidence for the candidate being adopted. Do not confuse a failed execution with a losing valid result. Retain the owner's ability to choose manual mode. Stele task creation is queued as outbox 5897ce13.
+
+## v198 - 2026-11-08
+
+PR 126 merged as 14c04d0f07e383bf4aeea2e8e77a3190dc4dfcf2 after required CI passed. It preserves Forward Test sorting, adds F8 strategy handoff, and documents Jupiter spot/perpetual cost differences. The complete SolTUI suite passed 1085 tests with two skips after the catalogue, help, glossary and table-title fixes. Two additional F8 Forward Test interaction tests also passed. The per-coin bot controls and optimizer remain under active implementation in this worktree.

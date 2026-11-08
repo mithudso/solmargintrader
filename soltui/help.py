@@ -140,6 +140,7 @@ HEADER_GLOSSARY = {
 # Define the unit and an example before the statistical qualification. A green
 # closed trade, a high ranking and a wallet deposit are three different facts.
 HEADER_GLOSSARY.update({
+    "coin verdict": "The independently tested coin's adoption decision and saved setting changes, or the reason no setting was saved.",
     "saved default": "yes when this trial's active setting is the one saved as its default: auto-optimize adopted it after it tested superior, and the next forward test of this coin, strategy and horizon starts from it.",
     "candidate": "Index of a configuration in this auto-optimize run; 0 is your current settings, the rest are what the run tries against them.",
     "from": "First bar of this coin's backtest: the bar whose close the bot set itself up from.",
@@ -401,7 +402,8 @@ CONTROL_HELP = {
     "bots-coins": "Coins the grid and DCA bots backtest on: click to tick one, several or all of them (every coin with cached bars is listed). A backtest runs once per ticked coin and lists each in the per-coin table. A forward test runs on the first ticked coin and needs its Coinbase USD market in the price stream. The triangle bot watches every triangle at once, so this is disabled for it.",
     "bots-start": "UTC date (or epoch seconds) at which the backtest starts the bot. The bot sets itself up from the price at that bar's close, as it would have then. Empty means the beginning of the data: the oldest cached hour (1m history resampled where it reaches further back than the 1h file), or the first hour after the last gap longer than 48 hours. For the triangle bot, the start of the recording.",
     "bots-days": "How many days the backtest runs from its start. Empty runs to the end of the data. Gaps of up to 48 missing hours are bridged with flat bars and reported; a longer gap ends the run there.",
-    "bots-config": "Settings for the selected bot in name=value form; the placeholder shows the current values. Grid: range_pct (ladder half-width around the start price), rungs, capital_usd, spacing (geom or arith), deadband_bps. DCA: base_order_usd, safety_order_usd, max_safety_orders, price_deviation_pct, step_scale, volume_scale, take_profit_pct, stop_loss_pct (0 = none), cooldown_bars. Triangle: min_edge_bps (net of three fees), taker_fee_bps, latency_s, notional_usd, max_quote_age_s, cooldown_s, use_displayed_size. Apply saves them.",
+    "bots-config": "Optional settings in name=value form. Use Edit all settings for labeled fields and per-coin settings; Apply saves values typed here to the global settings.",
+    "bots-edit": "Open all editable settings for this bot. Choose a coin or global settings, edit fields, then Apply. Existing forward tests keep their original settings.",
     "bots-apply": "Save the settings typed in the field to the selected bot. Unknown names and values the simulator cannot build are refused with the reason. A running forward test keeps the settings it started with; restart it to use the new ones.",
     "bots-reset": "Restore the selected bot's default settings.",
     "bots-backtest": "Start the selected bot at the chosen start and simulate it forward: grid and DCA on cached hourly bars with fees and adverse slippage; the triangle bot on recorded bid/ask quotes, or on a labelled one-minute candle proxy fetched from Coinbase when nothing is recorded for that time. Saved to the bot's results.",

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 108
-Delta: v107 to v108; retain the forward-test sorting request.
+Version: 111
+Delta: v110 to v111; retain incremental optimizer improvement request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -898,4 +898,22 @@ Also for the experiments I think you've been using coinbase's fee schedule. If I
 
 ```text
 In the forward test tab when I sort one of the columns it re-draws and resorts it back in the next minute, make it stop doing that.
+```
+
+## v109 - 2026-11-08
+
+```text
+In the Bots tab, let me set all of the variables manually if I choose to but make the default automatic. For instance I believe gemoetric spacing is more profitable than arithmetic spacing for grid orders.
+```
+
+## v110 - 2026-11-08
+
+```text
+When doing the auto-optimize for the bots, it's trying to apply the same configs to all coins, but the different coins may need different variables. Make it optimize each coin separately.
+```
+
+## v111 - 2026-11-08
+
+```text
+And with the auto-optimizer I think you've been denying any new configuration if it has ANY failed evaluation so unless it's not perfect it won't get any better. I'm looking for incremental improvements and for the auto optimizer to be run frequently as it tunes to optimal configurations for each coin. I want better I'll get to best eventually.
 ```

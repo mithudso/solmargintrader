@@ -2310,11 +2310,12 @@ def bots_overview(ctx: Context, p: dict[str, Any]) -> Any:
 
 
 @command("bots.config", "One bot's configuration, its defaults and the grid auto-optimize searches.",
-         (BOT_PARAM,))
+         (BOT_PARAM, P("asset", "string", "Optional coin; omit for the global default.")))
 def bots_config(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
     bot = _bot_param(p)
-    return {"bot": bot, "config": _bots(bots_mod.get_config, bot), "defaults": bots_mod.DEFAULTS[bot],
+    return {"bot": bot, "asset": p.get("asset"), "mode": _bots(bots_mod.config_mode, bot, p.get("asset")),
+            "config": _bots(bots_mod.get_config, bot, p.get("asset")), "defaults": bots_mod.DEFAULTS[bot],
             "space": bots_mod.SPACE[bot], "about": bots_mod.ABOUT[bot]}
 
 
@@ -2322,20 +2323,24 @@ def bots_config(ctx: Context, p: dict[str, Any]) -> Any:
          "reset restores the defaults. Unknown names and unbuildable values are refused.",
          (BOT_PARAM, P("values", "json", "Settings to change, e.g. {\"range_pct\": 10}."),
           P("text", "string", "Settings as name=value pairs, e.g. range_pct=10 rungs=9."),
+          P("asset", "string", "Optional coin; omit for the global default."),
+          P("mode", "string", "auto or manual; manual prevents automatic adoption."),
           P("reset", "bool", "Restore the defaults instead.")), read_only=False)
 def bots_save(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
     bot = _bot_param(p)
     if p.get("reset"):
-        return {"bot": bot, "config": _bots(bots_mod.reset_config, bot)}
+        result = _bots(bots_mod.reset_config, bot, p.get("asset"))
+        return {"bot": bot, "asset": p.get("asset"), "mode": _bots(bots_mod.config_mode, bot, p.get("asset")), "config": result}
     values = p.get("values") or {}
     if not isinstance(values, dict):
         raise CommandError("bad_params", 'parameter "values" must be a JSON object')
     if p.get("text"):
         values = {**values, **_bots(bots_mod.parse_kv, p["text"])}
-    if not values:
+    if not values and p.get("mode") is None:
         raise CommandError("bad_params", "nothing to save: pass values, text or reset")
-    return {"bot": bot, "config": _bots(bots_mod.save_config, bot, values)}
+    result = _bots(bots_mod.save_config, bot, values, coin=p.get("asset"), mode=p.get("mode"))
+    return {"bot": bot, "asset": p.get("asset"), "mode": _bots(bots_mod.config_mode, bot, p.get("asset")), "config": result}
 
 
 @command("bots.backtest", "Start a bot at a past moment (what it would have set from the price then) and "
@@ -2544,9 +2549,12 @@ def bots_optimize(ctx: Context, p: dict[str, Any]) -> Any:
     coins = p.get("coins")
     if coins is not None and (not isinstance(coins, list) or not all(isinstance(c, str) for c in coins)):
         raise CommandError("bad_params", 'parameter "coins" must be a list of coin symbols')
-    return _bots(bots_mod.optimize, _bot_param(p), ctx.settings, coins=coins,
-                 windows=int(p.get("windows") or bots_mod.OPTIMIZE_WINDOWS),
-                 window_days=int(p.get("window_days") or bots_mod.OPTIMIZE_WINDOW_DAYS),
+    bot = _bot_param(p)
+    default_windows = bots_mod.OPTIMIZE_WINDOWS if bot == "triangle" else bots_mod.PER_COIN_OPTIMIZE_WINDOWS
+    default_days = bots_mod.OPTIMIZE_WINDOW_DAYS if bot == "triangle" else bots_mod.PER_COIN_OPTIMIZE_WINDOW_DAYS
+    return _bots(bots_mod.optimize, bot, ctx.settings, coins=coins,
+                 windows=int(p.get("windows") or default_windows),
+                 window_days=int(p.get("window_days") or default_days),
                  adopt=bool(p.get("adopt", True)))
 
 
