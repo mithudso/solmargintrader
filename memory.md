@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 71
-Delta: v70 to v71; record reproduced plaintext SessionStart adapter failure and repair scope.
+Version: 72
+Delta: v71 to v72; record installed hook repairs, regression results and delivery checkpoints.
 
 ## v1 - 2026-11-06
 
@@ -736,3 +736,13 @@ Stop diagnosis: /Users/mitch/.claude/hooks/ship-it-stop.py attributes inherited 
 Implementation worktrees: /Users/mitch/dev/codex-local-ai-setup-wt-hook-json-20261108 (adapter) and /Users/mitch/dev/claude-wt-hook-json-20261108 (Stop hook). The specialist owns those source changes. A separate verifier captured actual loaded registry and reproduced the offending output.
 
 Remaining: focused regression checks, install both canonical repairs, verify exact launcher and disposable ownership scenarios, deliver all task-owned changes through passing PRs, and complete TASK-893/TASK-895.
+
+## v72 - 2026-11-08 (both hook repairs installed)
+
+Installed: adapter v1.1.0 from canonical commit 757e2f7; Stop hook v1.1.0 from canonical commit 88d6933. Adapter wraps plain SessionStart context and preserves valid JSON. Stop preserves the original session baseline, excludes inherited ahead commits from a real SessionStart baseline, adopts unknown dirty paths without claiming them, and suppresses identical pending-work signatures across turns. New paths, changed files, and new commits still block.
+
+Validation: 70 setup tests pass (including 8 new adapter cases); 65 hook-enforcement tests and installer checks pass. Guarded install with preimage backups/readback preserved config.toml, hooks.json and settings.json bytes; no daemon restart. Receipt: /Users/mitch/.codex/claude-migration/hook-repairs/session-json-20261108T090919255187Z/receipt.json. Installed adapter SHA256 5559368361c3fb3ad29d8dbb94db664d4f46f97786fc3d24ae7f7e0e054da5ff; installed Stop SHA256 af401be680327064ea4ef93573ba5c63526f3e1c2b30af7c5c220277123b4c40.
+
+Delivery: Stop https://github.com/mithudso/claude-config/pull/33; adapter https://github.com/mithudso/codex-local-ai-setup/pull/11; repository workflow records https://github.com/mithudso/solmargintrader/pull/88. This repository changes only prompts, continuation records, and their offline retrieval indexes. Its documentation drift check passes; the offline index was rebuilt without inference/embeddings.
+
+At checkpoint: independent installed acceptance and final CI/merges are in progress. TASK-895 tracks final receipts and completion; check its current state before resuming. Preserve unrelated staged herdr/context7 changes in /Users/mitch/.claude and all original solmargintrader work.
