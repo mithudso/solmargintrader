@@ -1,5 +1,7 @@
 # Work continuation
 
+Version: 145
+Delta: v144 to v145; retain CI changes and editor work.
 Version: 144
 Delta: v143 to v144; preserve PR 100 records and resolve PR 104.
 
@@ -1442,3 +1444,11 @@ PR 100 advanced master to 98b92c1 after PR 104 final checks passed. Preserve its
 ## v145 - 2026-11-08: PR 104 and PR 101 integration
 
 PR 101 advanced master to 69140b8. Preserve guide separation and both continuation histories. Regenerate the indexes, verify and merge PR 104. TASK-1001 remains active.
+
+## v139 - 2026-11-08
+
+Active: Stele TASK-1006. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb5b, branch agent-01a1bb5b, base origin/master 078c895. The original checkout is dirty and other sessions are editing SolTUI; preserve their work. Goal: show selected strategy card and coin details in shared editor and stream backtest logs there. Backtest lifecycle specialist is examining separate job sources. Remaining: implement selection and logs, test, integrate current remote, deliver and verify live installation.
+
+## v140 - 2026-11-08
+
+TASK-1006: registered and roster strategy selection opens the full card; selected coin previews its overview; queue backtests follow a bounded worker log; CPCV progress and Compound/Bots engine callbacks populate the editor. Unsaved file edits are protected and later navigation is not stolen by log updates. Focused tests: 29 passed in test_tui backtest/strategy cases, test_backtest_log, test_bgworker, and test_editor_backtest. Broader relevant regressions running. Remaining: integrate latest origin/master, verify checks and remote delivery, and verify actual loaded app without disrupting concurrent sessions. The original checkout is dirty and shared; never reset or switch it.

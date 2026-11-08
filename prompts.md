@@ -1,6 +1,8 @@
 # Prompt history
 
 Version: 76
+Delta: v75 to v76; retain CI changes and editor request.
+Version: 76
 Delta: v75 to v76; preserve PR 100 records and resolve PR 104.
 
 ## v1 - 2026-11-06
@@ -612,4 +614,10 @@ So now what's up? Haven't you moved literally everything you created?
 
 ```text
 no 104 hasd conflicts, resolve them
+```
+
+## v73 - 2026-11-08
+
+```text
+I'm in the soltui, as far as I can tell the Editor does nothing but display one file forever without changing. Whenever I click on a stratgy I want it to show me the strategy card and all the details about that strategy in the edit window, also true of coins, and if I click a backtest button I want the editor to show me the logs of it running,
 ```

@@ -422,6 +422,7 @@ def run(
         state.interval = job.interval
         state.updated_at = time.time()
         write_state(state, state_path)
+        print(f"[{index}/{len(todo)}] backtesting {job.label} ({job.interval})", flush=True)
         try:
             if job.interval not in checked_intervals:
                 _check_price_input(proof, job, settings)
@@ -438,9 +439,13 @@ def run(
             # writing one identical failure row per job.
             missing[job.interval] = str(exc)
             state.error = "; ".join(sorted(missing.values()))
+            print(f"  skipped {job.interval}: price data unavailable", flush=True)
             continue
         except Exception as exc:  # noqa: BLE001 - one bad config must not end the sweep
             result = failed_result(job, exc)
+            print(f"  failed: {type(exc).__name__}", flush=True)
+        else:
+            print("  finished", flush=True)
         append_result(result, results_path)
         evaluated += 1
     else:
