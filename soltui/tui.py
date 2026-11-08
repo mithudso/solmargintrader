@@ -215,6 +215,8 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#docs-save": "docs.write",
     "#pnl-run": "pnl.summary",
     "#wallet-scan": "portfolio.scan",
+    "#coinbase-sync": "coinbase.sync",
+    "#coinbase-markets": "coinbase.markets",
     "#docs-search-run": "docs.search",
     "#docs-search-free": "docs.search_unload",
     "#compound-toggle": "compound.save",
@@ -3864,6 +3866,7 @@ class SolTuiApp(App):
             self._refresh_queue()
         elif pane == "tab-wallet":
             self._refresh_portfolio_notice()
+            self._coinbase_show(self._call("coinbase.account", quiet=True))
             self._call("portfolio.notice", {"mark_seen": True}, quiet=True)
         elif pane == "tab-liquidity":
             self._refresh_liquidity(force=True)
@@ -4140,6 +4143,18 @@ class SolTuiApp(App):
                 yield Static("", id="wallet-status")
             yield Static("", id="portfolio-notice")
             yield Static("", id="wallet-summary")
+            yield Static("[b]Coinbase account[/b] — trading balances and separate portfolio positions.", classes="table-title")
+            with Horizontal(classes="form-row"):
+                yield Button("Sync Coinbase", id="coinbase-sync")
+                yield Button("Download Coinbase markets", id="coinbase-markets")
+                yield Static("", id="coinbase-status")
+            cbhold = GlossaryTable(id="coinbase-holdings")
+            cbhold.add_columns("portfolio", "asset", "available", "hold")
+            yield cbhold
+            yield Static("[b]Coinbase positions[/b] — totals are approximate; staking is shown separately.", classes="table-title")
+            cbpositions = GlossaryTable(id="coinbase-positions")
+            cbpositions.add_columns("portfolio", "asset", "account type", "quantity", "value $")
+            yield cbpositions
             yield Static("[b]Holdings[/b]", classes="table-title")
             holdings = GlossaryTable(id="wallet-holdings")
             holdings.add_columns("chain", "asset", "amount", "price $", "value $ (wallet (live))", "status")
@@ -4148,6 +4163,58 @@ class SolTuiApp(App):
             contracts = GlossaryTable(id="wallet-contracts")
             contracts.add_columns("chain", "holding", "kind", "address", "program", "explorer")
             yield contracts
+
+    @on(Button.Pressed, "#coinbase-sync")
+    def _coinbase_sync_button(self) -> None:
+        self.query_one("#coinbase-status", Static).update("Syncing Coinbase…")
+        self._coinbase_worker("coinbase.sync")
+
+    @on(Button.Pressed, "#coinbase-markets")
+    def _coinbase_markets_button(self) -> None:
+        self.query_one("#coinbase-status", Static).update("Downloading Coinbase markets…")
+        self._coinbase_worker("coinbase.markets")
+
+    @work(thread=True, group="coinbase", exclusive=True)
+    def _coinbase_worker(self, operation: str) -> None:
+        env = self._call(operation)
+        self.call_from_thread(self._coinbase_show if operation == "coinbase.sync" else self._coinbase_market_done, env)
+
+    def _coinbase_market_done(self, env: dict[str, Any]) -> None:
+        status = self.query_one("#coinbase-status", Static)
+        if not env["ok"]:
+            status.update(escape(self._msg(env)))
+            return
+        r = env["result"]
+        incomplete = [name for name, scope in r["scopes"].items() if not scope["complete"]]
+        status.update(f"Markets: {r['count']} products, {r['global_count']} global instruments; "
+                      + ("incomplete: " + ", ".join(incomplete) if incomplete else "all scopes complete"))
+
+    def _coinbase_show(self, env: dict[str, Any]) -> None:
+        status = self.query_one("#coinbase-status", Static)
+        if not env["ok"]:
+            status.update(escape(self._msg(env)))
+            return
+        r = env["result"]
+        table = self.query_one("#coinbase-holdings", DataTable)
+        table.clear()
+        positions = self.query_one("#coinbase-positions", DataTable)
+        positions.clear()
+        for breakdown in r.get("breakdowns", []):
+            name = (breakdown.get("portfolio") or {}).get("name", "")
+            for row in breakdown.get("spot_positions", []):
+                positions.add_row(str(name), str(row.get("asset", "")), str(row.get("account_type", "unknown")),
+                                  str(row.get("total_balance_crypto", "unknown")), str(row.get("total_balance_fiat", "unknown")))
+        for row in r.get("accounts", []):
+            avail = row.get("available_balance") or {}
+            hold = row.get("hold") or {}
+            if str(avail.get("value", "0")) in ("0", "0.0", "0.00") and str(hold.get("value", "0")) in ("0", "0.0", "0.00"):
+                continue
+            table.add_row(str(row.get("portfolio_name", "")), str(row.get("currency", "")),
+                          str(avail.get("value", "")), str(hold.get("value", "")))
+        from datetime import datetime, timezone
+        timestamp = r.get("fetched_at")
+        stamp = datetime.fromtimestamp(timestamp, timezone.utc).strftime("%Y-%m-%d %H:%M UTC") if isinstance(timestamp, (int, float)) else "unknown time"
+        status.update("Saved Coinbase snapshot " + stamp + " · " + str(r.get("note", r.get("message", ""))))
 
     def _wallet_restore(self) -> None:
         """Real console only: show the newest kept scan at once, then refresh it in the background."""

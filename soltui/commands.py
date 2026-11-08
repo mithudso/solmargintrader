@@ -2069,6 +2069,26 @@ def pnl_breakdown(ctx: Context, p: dict[str, Any]) -> Any:
 # -- wallet (read-only) --------------------------------------------------------------------------
 
 
+@command("coinbase.account", "Read the last saved Coinbase account snapshot without affecting other wallets.")
+def coinbase_account(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_account as cb
+    return cb.last_account()
+
+
+@command("coinbase.sync", "Refresh Coinbase balances using the separately authenticated Coinbase CLI.",
+         read_only=False, long_running=True)
+def coinbase_sync(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_account as cb
+    return cb.sync_account()
+
+
+@command("coinbase.markets", "Download the public Coinbase market catalog, reporting incomplete scopes.",
+         read_only=False, long_running=True)
+def coinbase_markets(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_account as cb
+    return cb.download_markets()
+
+
 def _daemon_context() -> dict[str, Any]:
     """What the liquidity daemon's own files say about tokens and positions (read-only)."""
     import sqlite3

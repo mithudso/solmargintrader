@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 177
-Delta: v176 to v177; record the cross-interface command fix.
+Version: 181
+Delta: v180 to v181; record Coinbase command mutation metadata.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1705,4 +1705,20 @@ Started prospective paper experiment 7f7057972ebb32c82fcadf75 from /Users/mitch/
 
 ## v177 - 2026-11-08
 
-PR 120 macOS CI exposed two bridge parity failures: the paper_experiment namespace violated the alphanumeric namespace convention, and required calls lacked fixtures. Renamed the commands to paperexperiment and added isolated, non-spawning fixtures for all four operations. The full bridge parity, paper runner and button registry suite passes locally. The running paper worker code and its experiment fingerprint are unchanged. Rebuild offline indexes and wait for final CI before merging.
+Coinbase connector work in /Users/mitch/dev/solmargintrader-wt-coinbase-01a1bc24, branch agent-coinbase-01a1bc24. Stele task creation queued as outbox 2af4599e because transport closed. The user supplied /Users/mitch/dev/solmargintrader/llms/docs.cdp.coinbase.com.llms-full, asked to sync Coinbase alongside existing wallets, download markets, and ultimately test a real SOL/USDC buy. The intended live test was initially $0.03, but Coinbase reports a 1 USDC minimum. The owner then requested transferring around $5 of native SOL from another wallet to Coinbase. Coinbase UI explicitly showed a Solana-network native SOL receive address and 0.001 SOL minimum. The saved Solana wallet has only 0.025544731 SOL, roughly $2.27 at the observed quote, plus JUPSOL; it cannot supply $5 of native SOL while reserving fees. No transfer or order was submitted. Await source wallet/permission to convert JUPSOL; never guess or reuse an ambiguous submission. The $1000 is only simulated experiment starting capital. The connected Coinbase MCP has read access to the default portfolio but does not by itself provide reusable app authentication; determine a secure supported app-level connector without copying OAuth tokens. Market public API supports cursor pagination. Preserve existing wallets, no secret output, and no surprise funding trades.
+
+## v178 - 2026-11-08
+
+The owner authorized converting JUPSOL to SOL. The Jupiter UI has a 0.03 JUPSOL to SOL quote prepared and awaits the owner's wallet approval; no swap, transfer or order has been confirmed. Verify the resulting chain transaction before continuing. The connected Coinbase MCP provided a complete 38-account read snapshot, saved separately in mode 600 under the user's SolTUI config; future refresh requires separate app authentication. Public Coinbase market retrieval produced 929 spot, 100 future, 1,873 equity and 5,665 global derivative entries. Equity pagination stalled, so the catalog is explicitly incomplete and saved separately from the prior snapshot. Staked Coinbase holdings may be excluded. The requested 0.03 SOL/USDC buy is below the reported 1 USDC minimum; do not increase the order without authorization. The received SOL is not USDC.
+
+## v179 - 2026-11-08
+
+The Coinbase snapshot now includes the authorized portfolio breakdown, including separately identified staked spot positions, in addition to trading balances. The app refresh uses the official CLI and requires a separate read-enabled API key. The current connected MCP authorization does not provide app credentials. Focused connector and button-registry tests pass. Code is a checkpoint in draft PR 119; integrate concurrent UI work, add installed acceptance and finish delivery after CI.
+
+## v180 - 2026-11-08
+
+PR 120's macOS CI exposed an invalid paper_experiment command namespace and missing parity fixtures. The integrated Coinbase branch includes the paperexperiment rename and safe fixtures for both paper and Coinbase commands. PR 119's unchanged extension browser smoke also failed two startup checks once, while the same checks passed on PR 118 and PR 120; rerun on the final head and investigate any repeat. Rebuild offline indexes and wait for final CI before merging.
+
+## v181 - 2026-11-08
+
+Coinbase sync and market download write local snapshots, so their registry entries set read_only=False. The last-snapshot command remains read-only. This prevents read-only command surfaces from treating downloads or refreshes as passive actions. The registry metadata has a focused regression test.

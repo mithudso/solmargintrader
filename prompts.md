@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 95
-Delta: v94 to v95; record dry-run usability report.
+Version: 98
+Delta: v97 to v98; retain the Signal Backtest question.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -778,4 +778,54 @@ For every tab that has a test on it make a status button which opens up the cons
 
 ```text
 I can't tell what the dry run tab is supposed to be doing, there's no start button, it onlyh takes the top 5, but recommends an unproven unprofitable untested macd strategy that's not in the list and can't be chosen, there's no log, activitiy, it says "click one to fill this tab" which clicking on anything doesn't appear to do anything other than change the text in the Strategy text box.
+```
+
+## v96 - 2026-11-08
+
+```text
+Look at this file, and determine how to connect to my coinbase account and implement a coinbase connector, and sync the asset and wallet information to be in addition to the wallets already saved. download a list of all of the markets, and make a real live test order with actual literal money.
+```
+
+```text
+/Users/mitch/dev/solmargintrader/llms/docs.cdp.coinbase.com.llms-full
+```
+
+```text
+For the live test order allow me to choose the trading pair, and use 1000
+```
+
+```text
+Use $1000 USD
+```
+
+```text
+The chosen pair is sol/usdc
+```
+
+```text
+The test order just needs to make sure it can make orders, buy $0.03 of SOL, just make sure it works. THe $1000 was a response to the live test work you were doing which pretends it's real, give it $1000 to start with and make it run live.
+```
+
+```text
+You get the connector working and I'll add a dollar to the account
+```
+
+```text
+Better yet, transfer the money from my other wallet to that account.
+```
+
+```text
+Transfer like $5 of solana
+```
+
+## v97 - 2026-11-08
+
+```text
+COnvertt from Jupsol to sol
+```
+
+## v98 - 2026-11-08
+
+```text
+In the Signal Backtest, why does it talk about frontier metrics, top 2%, and holding prices for 1 or 24 hours, none of those things make sense.
 ```
