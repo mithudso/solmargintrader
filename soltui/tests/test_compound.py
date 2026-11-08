@@ -208,6 +208,9 @@ class ForwardLedgerTests(TempConfig):
         nxt = next(r[4] for r in venue.series["SOL"] if r[0] == first["bar_ts"] + 300)
         self.assertAlmostEqual(res["ret_bps"], round(1e4 * math.log(nxt / call["price"]), 4))
         self.assertIn("rsi", call["scores"])
+        horizons = [r for r in ledger if r["type"] == "horizon_call" and r["source_id"] == call["id"]]
+        self.assertEqual({r["minutes"] for r in horizons}, {1, 5, 30})
+        self.assertTrue(all(r["start"] > r["issued_at"] for r in horizons))
         self.assertTrue(any(r["type"] == "ctx" and r["oi"] == 5_000_000 for r in ledger))
 
     def test_status_tallies_compound_ungated_and_each_component(self) -> None:
@@ -1249,3 +1252,55 @@ class EditorBarTests(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HorizonForwardTests(TempConfig):
+    def test_horizons_resolve_separately_on_future_complete_minutes(self) -> None:
+        stamp = T0 + 10
+        call = {"id": "SOL:example", "asset": "SOL", "call": "UP", "config_hash": "a"}
+        compound._record_horizon_calls("SOL", call, stamp, clock=lambda: stamp)
+        rows = compound.read_ledger("SOL")
+        self.assertEqual({r["minutes"] for r in rows}, {1, 5, 30})
+        compound._record_horizon_calls("SOL", call, stamp + 60, clock=lambda: stamp + 60)
+        self.assertEqual([r["minutes"] for r in compound.read_ledger("SOL")].count(1), 2)
+        self.assertEqual([r["minutes"] for r in compound.read_ledger("SOL")].count(5), 1)
+        self.assertEqual([r["minutes"] for r in compound.read_ledger("SOL")].count(30), 1)
+        start = rows[0]["start"]
+        self.assertGreater(start, stamp)
+        raw = {"ts": np.arange(start, start + 30 * 60, 60),
+               "open": np.full(30, 100.0), "close": np.full(30, 101.0)}
+        with mock.patch.object(compound, "fetch_closed_candles", return_value=raw):
+            self.assertEqual(compound._resolve_horizons("SOL", start + 60), 1)
+            self.assertEqual(compound._resolve_horizons("SOL", start + 5 * 60), 2)
+            self.assertEqual(compound._resolve_horizons("SOL", start + 30 * 60), 1)
+            self.assertEqual(compound._resolve_horizons("SOL", start + 30 * 60), 0)
+        status = compound.horizon_status(compound.read_ledger("SOL"))
+        for h in (1, 5, 30):
+            self.assertEqual(status["horizons"][h]["resolved"], 2 if h == 1 else 1)
+            self.assertEqual(status["horizons"][h]["hit_rate"], 1.0)
+
+    def test_gap_stays_pending_and_late_forecast_is_not_recorded(self) -> None:
+        stamp = T0 + 10
+        call = {"id": "SOL:example", "call": "DOWN", "config_hash": "a"}
+        compound._record_horizon_calls("SOL", call, stamp, clock=lambda: stamp + 200)
+        self.assertEqual(compound.read_ledger("SOL"), [])
+        compound._record_horizon_calls("SOL", call, stamp, clock=lambda: stamp)
+        start = compound.read_ledger("SOL")[0]["start"]
+        raw = {"ts": np.array([start]), "open": np.array([100.0]), "close": np.array([99.0])}
+        with mock.patch.object(compound, "fetch_closed_candles", return_value=raw):
+            self.assertEqual(compound._resolve_horizons("SOL", start + 30 * 60), 1)
+        status = compound.horizon_status(compound.read_ledger("SOL"))
+        self.assertEqual(status["horizons"][1]["resolved"], 1)
+        self.assertEqual(status["horizons"][5]["pending"], 1)
+        self.assertEqual(status["horizons"][30]["pending"], 1)
+        btc = {"type": "call", "id": "BTC:source", "call": "UP", "config_hash": "b",
+               "bar_ts": T0 - 300, "recorded_at": stamp}
+        compound._append("BTC", [btc])
+        with mock.patch.object(compound, "_resolve_horizons", return_value=0):
+            self.assertTrue(compound._horizon_tick("BTC", now=stamp)["horizon_recorded"])
+            self.assertTrue(compound._horizon_tick("BTC", now=stamp + 60)["horizon_recorded"])
+            self.assertTrue(compound._horizon_tick("BTC", now=stamp + 300)["stale_signal"])
+        btc_calls = [r for r in compound.read_ledger("BTC") if r["type"] == "horizon_call"]
+        self.assertEqual([r["minutes"] for r in btc_calls].count(1), 2)
+        self.assertEqual([r["minutes"] for r in btc_calls].count(5), 1)
+        self.assertEqual([r["minutes"] for r in btc_calls].count(30), 1)

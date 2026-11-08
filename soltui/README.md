@@ -10,6 +10,13 @@ wiring shell.
 > historical simulation, a replay of one, or (Liquidity tab only) a figure read
 > from the liquidity daemon's state files. See [Safety](#safety).
 
+The Signal forward test records the same five-minute signal separately for 1-, 5- and 30-minute
+outcomes. Each measurement begins at a future one-minute candle open after the forecast is recorded.
+A missing minute leaves that outcome pending. The selected coin's forward page shows its results;
+the All coins page shows which unattended trainers are running. Existing five-minute records remain
+separate. The trainer records each horizon at its own cadence; it reuses the latest closed-five-minute
+signal rather than training separate models, and skips a forecast if that signal is stale.
+
 ## Install and run
 
 ```bash

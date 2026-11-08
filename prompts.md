@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 91
-Delta: v90 to v91; record archived LP home-page alert report.
+Version: 92
+Delta: v91 to v92; record Signal forward horizon and coin coverage request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -752,4 +752,10 @@ It's 6 hours and this is just a proof of concept, make up the data.
 ```text
 I had asked for the Aero LP, liquidity tasks, and errors about the LP daemon be archived. On the front page I see" ▊ ▲ LP daemon is killed   → 6 Archive › Aero LP                                                                   ▎│ 1 chains · 2h ago         ││ LIVE · killed             ││ ━━━━━━━━━━━━              ││ z +1.36 · ▼ -15.5         │
 ▊   the KILL file is present: the daemon will not act until Resume"
+```
+
+## v92 - 2026-11-08
+
+```text
+In the forward test, I had asked that to be done at 1, 5, and 30 min intervals each result and prediction recorded and tracked separately.  I see only the 5 min. Do all 3, and I can't tell if all coins are being tested or just one.
 ```

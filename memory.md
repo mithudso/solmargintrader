@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 161
-Delta: v160 to v161; guard a delayed Queue refresh and rerun the shell suite.
+Version: 163
+Delta: v162 to v163; implement and test separate causal horizon records.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1642,3 +1642,11 @@ TASK-1024: removed archived LP from home needs, health, tiles, and recurring hom
 ## v161 - 2026-11-08
 
 TASK-1024: a delayed Queue activation during palette teardown raised NoMatches for #queue-status. The activation now checks that the widget exists. All 17 isolated v2 shell tests pass, including the formerly failing palette test. The independent mounted check verified archived LP suppression and other alerts. Remaining: rebuild indexes, final CI, merge and normal-launch acceptance.
+
+## v162 - 2026-11-08
+
+Active: Stele TASK-1027; branch agent-01a1bc24, worktree /Users/mitch/dev/solmargintrader-wt-01a1bc24. Owner requests separate 1, 5 and 30 minute forward predictions and results, and clear coin coverage. The Compound Signal forward test currently records only five-minute calls; it uses a distinct pipeline from the separate Forwardtest tab, which is being changed by another session under TASK-890. Preserve historical records and avoid presenting a five-minute candle as a one-minute result. Need causal minute data, separate horizon evidence and honest running-coin status, tests, live verification, and delivery.
+
+## v163 - 2026-11-08
+
+In /Users/mitch/dev/solmargintrader-wt-01a1bc24, added separate forward records and settlement for 1, 5 and 30 minute horizons using future one-minute opens and closes. All three evaluate the same five-minute Signal forecast; the code does not generate new forecasts every minute or train separate horizon-specific models. Missing candle data stays pending, old five-minute records remain intact. The Signal screen shows horizon counts, calls, outcomes and coin coverage. At inspection process 74947 in /Users/mitch/dev/solmargintrader held trainer locks for BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI and AVAX; their logs showed recent checks. That old process does not load the new code. Focused forward tests: 12 pass; full soltui.tests.test_compound: 77 pass; scripts/check_docs.py passes after count updates. Remaining: review exact diff, deliver with CI, preserve other active worktrees and existing trainer, then verify the loaded app and running trainer on the delivered revision.
