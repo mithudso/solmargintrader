@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T19:48:17+00:00",
+  "generatedAt": "2026-11-08T20:09:46+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -91,7 +91,7 @@
         },
         {
           "path": "soltui/tui.py",
-          "hits": 48
+          "hits": 46
         },
         {
           "path": "soltui/commands.py",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1326,
+      "matchingFiles": 1327,
       "shown": 30,
       "files": [
         {
@@ -512,7 +512,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 28
+          "hits": 29
         },
         {
           "path": "research/cross_asset_cpcv.py",
@@ -802,7 +802,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 37
+          "hits": 38
         },
         {
           "path": "soltui/tests/test_bots.py",
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 392,
+      "matchingFiles": 393,
       "shown": 30,
       "files": [
         {
@@ -1161,16 +1161,16 @@
           "hits": 98
         },
         {
+          "path": "memory.md",
+          "hits": 82
+        },
+        {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
           "hits": 80
         },
         {
           "path": "docs/trading-signals-concept-family.md",
           "hits": 79
-        },
-        {
-          "path": "memory.md",
-          "hits": 77
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",

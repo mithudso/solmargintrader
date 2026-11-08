@@ -87,7 +87,7 @@ from .config import INTERVALS, XPUB_FIELDS, Settings, load_settings
 from .hdwallet import redact
 from .paper import MODE_LABEL
 from .roster import RosterError, available_strategies
-from .signals import SIGNAL_GROUPS, SignalDefaults
+from .signals import SIGNAL_GROUPS, SignalDefaults, merged_params
 from .status import build_title, format_pct
 
 from .reference import FAMILY_NOTES, RESEARCH_DRIVERS, RESEARCH_FINDINGS, SIGNAL_REFERENCE  # noqa: F401
@@ -722,7 +722,7 @@ class SolTuiApp(App):
         Binding("ctrl+up", "grow_editor", "Editor taller", show=False),
         Binding("ctrl+down", "shrink_editor", "Editor shorter", show=False),
         ("f5", "liq_refresh", "Liquidity: refresh"),
-        ("f8", "liq_toggle_kill", "Liquidity: kill/resume"),
+        Binding("f8", "experiment_selected", "Experiment with selected strategy", priority=True),
         # v2 navigation. Inputs and editors consume printable keys first, so typing a 1 or a ? into a
         # field never jumps away; these fire only when a table, list or button has focus.
         Binding("1", "v2_goto('now')", "Now", show=False),
@@ -1141,12 +1141,15 @@ class SolTuiApp(App):
                 yield Button("Stop selected", id="paper-exp-stop")
                 yield Button("Refresh", id="paper-exp-refresh")
                 yield Button("Status / activity", id="paper-exp-activity")
+            yield Static("", id="paper-exp-transfer", markup=False)
             yield Static("No paper experiments yet.", id="paper-exp-status", markup=False)
+            yield Static("Paper experiments — prospective simulated runs", classes="table-title")
             table = GlossaryTable(id="paper-exp-table")
             table.cursor_type = "row"
             table.add_columns("strategy", "coin", "horizon", "state", "calls", "resolved", "trades", "paper $", "P&L $", "message")
             yield table
             yield Static("Select a run to inspect its recent predictions and results.", id="paper-exp-detail", markup=False)
+            yield Static("Selected experiment — predictions and outcomes", classes="table-title")
             events = GlossaryTable(id="paper-exp-events")
             events.add_columns("issued UTC", "starts UTC", "prediction", "outcome", "move bps", "paper P&L")
             yield events
@@ -1435,6 +1438,9 @@ class SolTuiApp(App):
     def _forward_render(self, rows: list[dict[str, Any]]) -> None:
         table = self.query_one("#forward-table", DataTable)
         cursor = table.cursor_row
+        selected = self._strategy_table_key(table) if table.row_count else None
+        sort_state = getattr(table, "_sorted_by", None)
+        self._forward_rows = {str(row["id"]): row for row in rows}
         table.clear()
         directions = {-1: "DOWN", 0: "FLAT", 1: "UP"}
         for r in rows:
@@ -1449,6 +1455,13 @@ class SolTuiApp(App):
                           directions.get(r["last_call"], "-"), directions.get(r["last_outcome"], "-"), issued,
                           f"{r['cost_bps']:g}", r["note"] or settings, key=r["id"])
         if rows:
+            if sort_state:
+                column, reverse = sort_state
+                table.sort(column, key=sort_key, reverse=reverse)
+            try:
+                cursor = table.get_row_index(selected) if selected is not None else cursor
+            except Exception:  # noqa: BLE001 - the selected trial may no longer be in the refreshed results
+                pass
             table.move_cursor(row=min(cursor, len(rows) - 1))
 
     async def on_unmount(self) -> None:
@@ -1574,6 +1587,7 @@ class SolTuiApp(App):
                         yield Static("", id="compound-fwd-summary")
                         yield Static("", id="compound-horizon-summary", markup=False)
                         yield GlossaryTable(id="compound-horizons")
+                        yield Static("Signal forward calls and outcomes", classes="table-title")
                         yield GlossaryTable(id="compound-forward")
                 with TabPane("All coins", id="cmp-coins"):
                     with VerticalScroll():
@@ -4201,6 +4215,7 @@ class SolTuiApp(App):
                 yield Button("Check order", id="coinbase-order-check")
                 yield Button("Refresh order safety", id="coinbase-order-state")
             yield Static("No order submitted in this session.", id="coinbase-order-receipt", markup=False)
+            yield Static("Coinbase holdings — available and held balances", classes="table-title")
             cbhold = GlossaryTable(id="coinbase-holdings")
             cbhold.add_columns("portfolio", "asset", "available", "hold")
             yield cbhold
@@ -4947,10 +4962,12 @@ class SolTuiApp(App):
         self.query_one("#queue-status", Static).update(r["summary"])
         table = self.query_one("#queue-table", DataTable)
         table.clear()
-        for x in r["ranked"]:
+        self._queue_ranked_rows = r["ranked"]
+        for index, x in enumerate(r["ranked"]):
             table.add_row(
                 x["label"], x["family"], f"{x['median_sharpe']:+.3f}", f"{x['iqr']:.3f}",
                 f"{x['frac_positive']:.0%}", format_pct(x["net_pct"]), str(x["trades"]),
+                key=str(index),
             )
         floor_table = self.query_one("#queue-floor", DataTable)
         floor_table.clear()
@@ -4958,6 +4975,63 @@ class SolTuiApp(App):
             floor_table.add_row(x["label"], x["family"], str(x["trades"]), x["why"])
 
     # -- P&L: profit and loss over a window -------------------------------
+
+    def action_experiment_selected(self) -> None:
+        tabs = self.query_one("#main-tabs", TabbedContent)
+        try:
+            horizon_note = ""
+            horizon = None
+            if tabs.active == "tab-queue":
+                table = self.query_one("#queue-table", DataTable)
+                if not table.row_count:
+                    raise ValueError("Select a ranked Queue result first.")
+                row = self._queue_ranked_rows[int(self._strategy_table_key(table))]
+                name, params, asset = row["strategy"], row["params"], row["asset"]
+            elif tabs.active == "tab-strategies":
+                table = self.query_one("#available-table", DataTable)
+                if not table.row_count:
+                    raise ValueError("Select a registered strategy first.")
+                name = self._strategy_table_key(table)
+                if not self._registered_card_selected(name):
+                    return
+                params = merged_params(name, self.signals)
+                params.update(self._parse_params())
+                asset = self.settings.asset
+            elif tabs.active == "tab-forwardtest":
+                table = self.query_one("#forward-table", DataTable)
+                if not table.row_count:
+                    raise ValueError("Select a Forward Test trial first.")
+                row = self._forward_rows[self._strategy_table_key(table)]
+                members = row.get("settings")
+                if not isinstance(members, list) or not members:
+                    raise ValueError("The selected Forward Test trial has no available strategy settings.")
+                if len(members) != 1:
+                    raise ValueError("This Forward Test trial is an ensemble; it cannot be copied as one strategy. Select a single-strategy trial.")
+                member = members[0]
+                if not isinstance(member, dict):
+                    raise ValueError("The selected Forward Test trial has invalid strategy settings.")
+                name, params, asset = member["name"], member["params"], row["asset"]
+                if row.get("minutes") in (1, 5, 30):
+                    horizon = row["minutes"]
+                else:
+                    horizon_note = (f" The selected {row.get('minutes')}-minute horizon is unavailable in "
+                                    "Experiments; choose an available horizon before starting.")
+            else:
+                raise ValueError("Select a Forward Test trial, ranked Queue result or registered strategy first.")
+            if name not in {key for key, _ in available_strategies()} or not isinstance(params, dict):
+                raise ValueError("This result does not name an available paper strategy with valid parameters.")
+            self.query_one("#paper-exp-strategy", Select).value = name
+            self.query_one("#paper-exp-asset", Input).value = str(asset)
+            self.query_one("#paper-exp-params", Input).value = json.dumps(params, sort_keys=True)
+            if horizon is not None:
+                self.query_one("#paper-exp-horizon", Select).value = horizon
+            self.set_focus(None)
+            tabs.active = "tab-paper-experiments"
+            self.query_one("#paper-exp-transfer", Static).update(
+                "Strategy and parameters copied. Edit them, then press Start experiment. Nothing has started yet."
+                + horizon_note)
+        except (ValueError, KeyError, IndexError, AttributeError, RosterError) as exc:
+            self._start_log("Experiment selection", str(exc) or "Select a strategy first.")
 
     def _pnl_pane(self) -> ComposeResult:
         """Net/gross P&L, costs, drawdown, win rate and attribution over a chosen window.
@@ -5967,7 +6041,7 @@ class SolTuiApp(App):
             line = Text()
             line.append(" ◆ LIVE MONEY ", f"bold {shell.TOK['bg']} on {shell.TOK['live']}")
             line.append("  Real balances and positions. These views read; the only write is the Aero LP "
-                        "Kill / Resume (F8), and Resume asks twice.", shell.TOK["live"])
+                        "Kill / Resume buttons, and Resume asks twice.", shell.TOK["live"])
             banner.update(line)
 
     def on_resize(self) -> None:

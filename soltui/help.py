@@ -580,6 +580,27 @@ for _name, _leverage in (("lev_low", 2), ("lev_medium", 5), ("lev_high", 20)):
     TERMS[_name] = f"Runs an underlying rule with {_leverage}x exposure and the model's borrowing and liquidation rules. " + TERMS["leverage and liquidation"]
 
 
+HEADER_GLOSSARY.update({
+    "forecast utc": "UTC time at which the forecast was recorded.",
+    "starts utc": "UTC time at which the prediction's measurement period begins.",
+    "prediction": "The recorded direction predicted for this forecast.",
+    "return bps": "Realized price movement during the forecast, in basis points.",
+    "state": "Current status of this paper experiment.",
+    "calls": "Number of predictions recorded by the experiment.",
+    "message": "Latest recorded activity or explanation for the experiment.",
+    "outcome": "Observed direction after the prediction period; pending until settled.",
+    "move bps": "Observed price movement over the prediction period, in basis points.",
+    "paper p&l": "Simulated profit or loss for this settled paper call after modeled costs.",
+    "coinbase spot pair — select to use": "A saved Coinbase spot market pair. Select it to fill the order form; selection does not place an order.",
+    "portfolio": "Coinbase portfolio associated with this balance or position.",
+    "available": "Amount Coinbase reports available to use.",
+    "hold": "Amount Coinbase reports held or reserved.",
+    "account type": "Coinbase account category associated with this position.",
+    "quantity": "Number of units reported for this position.",
+    "value $": "Approximate reported position value in dollars.",
+})
+
+
 def column_help(label: str, table_id: str | None = None) -> str | None:
     """Resolve overloaded labels using the actual table, not a global guess."""
     key = label.strip().casefold()
@@ -612,6 +633,45 @@ def column_help(label: str, table_id: str | None = None) -> str | None:
             return "Type of action recorded by the liquidity daemon, such as rebalance or compound. Check its detail and receipt; an action label alone does not establish successful execution."
         return "Repository file classification, such as code, document, saved result or test. It describes how to browse the file, not whether its contents prove a profitable strategy."
     return HEADER_GLOSSARY.get(key)
+
+
+TAB_HELP["tab-paper-experiments"] = (
+    "Run prospective paper experiments using selected strategy settings and virtual capital. "
+    "Predictions and outcomes are recorded; no real order is placed."
+)
+
+CONTROL_HELP.update({
+    **{key: "Open the console with this operation's current status and activity."
+       for key in ("status-strategies", "status-compound-backtest", "status-compound-forward",
+                   "status-forwardtest", "status-bots", "status-backtest", "status-top5",
+                   "status-live", "status-paper", "status-queue")},
+    "queue-start-fresh": "Start a separate sweep and preserve previous results; does not stop a running sweep.",
+    "paper-exp-strategy": "Choose the registered strategy for a prospective paper experiment.",
+    "paper-exp-asset": "Coin whose market data the paper experiment watches.",
+    "paper-exp-horizon": "Prediction horizon in minutes; each run tracks its own horizon.",
+    "paper-exp-capital": "Initial simulated dollar balance for this paper experiment.",
+    "paper-exp-params": "Editable JSON object of strategy parameter overrides.",
+    "paper-exp-start": "Start the configured prospective paper experiment. It does not place real orders.",
+    "paper-exp-resume": "Resume the selected stopped paper experiment.",
+    "paper-exp-stop": "Stop recording new predictions for the selected paper experiment.",
+    "paper-exp-refresh": "Reload the saved paper experiments and their results.",
+    "paper-exp-activity": "Open the selected paper experiment's status and activity in the console.",
+    "coinbase-sync": "Read Coinbase account balances and positions and update the saved account view.",
+    "coinbase-markets": "Download the available Coinbase market catalog, including the spot-pair list.",
+    "coinbase-pairs-query": "Filter the saved Coinbase spot-pair catalog by pair text.",
+    "coinbase-pairs-filter": "Show saved spot pairs matching the filter; selecting a row fills the order pair.",
+    "coinbase-order-product": "Coinbase market pair for this live spot order, such as SOL-USDC.",
+    "coinbase-order-side": "BUY spends quote currency; SELL sells the base asset.",
+    "coinbase-order-size": "For BUY, enter the quote amount to spend; for SELL, enter the base units to sell.",
+    "coinbase-order-armed": "Arm or disarm live Coinbase orders for this session.",
+    "coinbase-order-skip-review": "Skip the separate review step for this session. Armed live orders can execute immediately.",
+    "coinbase-order-preview": "Request a Coinbase estimate for the entered order without placing it.",
+    "coinbase-order-submit": "Submit the armed, reviewed live order once.",
+    "coinbase-order-quick": "Submit one armed live order immediately in session quick mode.",
+    "coinbase-order-id": "Coinbase order ID to check without submitting an order.",
+    "coinbase-order-check": "Read the status of the entered Coinbase order.",
+    "coinbase-order-state": "Refresh unresolved-order safety state and disarm live submission.",
+})
 
 
 def control_help(widget_id: str | None) -> str | None:
