@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `882458d` (2026-11-07T22:23:25+00:00). 681 tracked files, 12.1 MB.
+**Generated** from `index/INDEX.json` at commit `1f90856` (2026-11-08T07:54:07+00:00). 681 tracked files, 12.1 MB.
 
 Regenerate with:
 
@@ -183,9 +183,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 531 lines · 77,734 B · description: **extracted**
+`doc` · 546 lines · 79,166 B · description: **extracted**
 
-**Purpose.** Version: 50 Delta: v49 to v50; equity chart on vendored Lightweight Charts; /dso v2.0.0 shipped in the skills repo. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 51 Delta: v50 to v51; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -199,9 +199,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 308 lines · 18,315 B · description: **extracted**
+`doc` · 315 lines · 19,423 B · description: **extracted**
 
-**Purpose.** Version: 44 Delta: v43 to v44; Lightweight Charts chosen; deep prompt optimizer, then rebuild /dso as one pass per evaluation method. Delta: added the leverage-tier and reliable-trigger request.
+**Purpose.** Version: 45 Delta: v44 to v45; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder. Delta: added the leverage-tier and reliable-trigger request.
 
 **Use.** Read it.
 
@@ -263,7 +263,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,302 B · description: **extracted**
+`doc` · 316 lines · 15,273 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -367,7 +367,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/codebase-overview.md`
 
-`doc` · 301 lines · 19,899 B · description: **extracted**
+`doc` · 306 lines · 20,740 B · description: **extracted**
 
 **Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Six components, in ascending order of how much damage a bug can do: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 
@@ -625,7 +625,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/README.md`
 
-`doc` · 472 lines · 23,601 B · description: **extracted**
+`doc` · 474 lines · 24,109 B · description: **extracted**
 
 **Purpose.** An offline, event-driven backtesting harness for crypto trading strategies, built around SOL. Supports unlevered **spot** and **Jupiter-Perps-style leveraged perpetuals** with a correctly-modelled borrow fee.
 
@@ -889,7 +889,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/strategy_cards.py`
 
-`code-python` · 653 lines · 26,520 B · description: **extracted**
+`code-python` · 664 lines · 27,167 B · description: **extracted**
 
 **Purpose.** Strategy cards: one self-contained file per strategy or signal. A card is a Markdown file with YAML-subset frontmatter under `backtester/strategy_cards/`.
 
@@ -1053,7 +1053,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/README.md`
 
-`strategy-card` · 233 lines · 11,558 B · description: **extracted**
+`strategy-card` · 233 lines · 11,657 B · description: **extracted**
 
 **Purpose.** One file per strategy or signal. Each card is self-contained: the equations, the code pointer, the reasoning, the failure modes, the caveats, the measured results, and the or an agent to run without reading anything else.
 
@@ -1551,13 +1551,13 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/triangular_arbitrage.md`
 
-`strategy-card` · 288 lines · 16,003 B · description: **extracted**
+`strategy-card` · 318 lines · 18,431 B · description: **extracted**
 
-**Purpose.** Three-leg spot cycle with executable bid/ask rates. Event-replay design only; independent cross-pair books and a dedicated runner are missing.
+**Purpose.** Three-leg spot cycle at executable bid/ask. An L1 screening replay over quotes recorded from the live Coinbase ticker stream exists (core/trianglesim.py); the size-aware L2 replay and a measured result do not.
 
-**Contents.** Frontmatter: `status`=spec-only, `family`=arbitrage, `evaluation`=None, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
+**Contents.** Frontmatter: `status`=implemented, `family`=arbitrage, `evaluation`=null, `success_likelihood`=very-low, `data_available`=false, `registry_key`=null.
 
-**Use.** Specification only — read it; there is no runner. Status: spec-only.
+**Use.** Specification only — read it; there is no runner. Status: implemented.
 
 #### `backtester/strategy_cards/trigger_trade.md`
 
@@ -1911,11 +1911,11 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_strategy_cards.py`
 
-`test` · 627 lines · 26,487 B · description: **extracted**
+`test` · 658 lines · 27,887 B · description: **extracted**
 
 **Purpose.** Tests for strategy cards. These are the tests that make a card a contract rather than a claim. Prose in a card can be wrong and no test will catch it; a *number* in a card is checked against the code that would use it.
 
-**Contents.** Defines `REPO_ROOT`, `constructor_defaults()`, `synthetic_bars()`, `class TestFrontmatterParser`, `class TestCardValidation`, `class TestCardsLoad`, `class TestSuccessRatings`, `class TestRegistryDrift`, `class TestLadderDrift`, `class TestSweepDrift` and 2 more. Depends on `backtester`.
+**Contents.** Defines `REPO_ROOT`, `constructor_defaults()`, `synthetic_bars()`, `class TestFrontmatterParser`, `class TestCardValidation`, `class TestCardsLoad`, `class TestSuccessRatings`, `class TestRegistryDrift`, `class TestLadderDrift`, `class TestBotCards` and 3 more. Depends on `backtester`.
 
 **Use.** `python3 -m pytest backtester/tests/test_strategy_cards.py -q`
 
@@ -4167,7 +4167,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/README.md`
 
-`doc` · 400 lines · 31,218 B · description: **extracted**
+`doc` · 449 lines · 35,972 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -4261,7 +4261,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 1884 lines · 88,024 B · description: **extracted**
+`code-python` · 2044 lines · 96,112 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -4341,7 +4341,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 537 lines · 78,507 B · description: **extracted**
+`code-python` · 568 lines · 85,647 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -4587,7 +4587,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 3578 lines · 178,628 B · description: **extracted**
+`code-python` · 3981 lines · 200,074 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -4639,7 +4639,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 216 lines · 10,018 B · description: **extracted**
+`test` · 231 lines · 11,022 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
@@ -4699,7 +4699,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bridge_buttons.py`
 
-`test` · 54 lines · 2,154 B · description: **extracted**
+`test` · 54 lines · 2,155 B · description: **extracted**
 
 **Purpose.** Every TUI button is a registry command: a new button cannot skip the registry.
 

@@ -64,7 +64,8 @@
       "path": "backtester/botcli.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes"
+      "summary": "Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes",
+      "lines": 161
     },
     {
       "path": "backtester/paircli.py",
@@ -85,7 +86,7 @@
       "component": "backtester",
       "kind": "markdown",
       "summary": "Scope, correctness priorities, usage",
-      "lines": 471
+      "lines": 473
     },
     {
       "path": "backtester/PROMPT.md",
@@ -152,13 +153,15 @@
       "path": "backtester/core/dcasim.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism"
+      "summary": "DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism",
+      "lines": 484
     },
     {
       "path": "backtester/core/trianglesim.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes latency_s later; reads recorded snapshot files"
+      "summary": "Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes latency_s later; reads recorded snapshot files",
+      "lines": 408
     },
     {
       "path": "backtester/core/data.py",
@@ -256,7 +259,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Parses the cards and is checked against the registry both ways",
-      "lines": 652
+      "lines": 663
     },
     {
       "path": "backtester/core/scorecard.py",
@@ -744,7 +747,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3577
+      "lines": 3980
     },
     {
       "path": "soltui/signals.py",
@@ -813,13 +816,15 @@
       "path": "soltui/bots.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test"
+      "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test",
+      "lines": 1122
     },
     {
       "path": "soltui/pricefeed.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process"
+      "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process",
+      "lines": 708
     },
     {
       "path": "soltui/serve.py",
@@ -868,7 +873,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 399
+      "lines": 448
     },
     {
       "path": "soltui/tests",
