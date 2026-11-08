@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T20:34:59+00:00",
+  "generatedAt": "2026-11-08T20:39:43+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "2919aa1",
+  "commit": "37fc212",
   "counts": {
     "files": 2637,
-    "bytes": 43715442,
+    "bytes": 43715821,
     "byKind": {
       "strategy-card": 1478,
       "doc": 547,
@@ -78945,9 +78945,9 @@
       "title": "experiment_screens",
       "summary": "Presentation for the optimization workbench; every operation uses the registry.",
       "summarySource": "docstring",
-      "bytes": 44401,
-      "lines": 782,
-      "sha1": "843cecf7d5f7e8499ef3e78fcdec2fa57ae24136",
+      "bytes": 44472,
+      "lines": 784,
+      "sha1": "8e7b86c5c6640f0c0a763bc850a44a43bb800782",
       "symbols": [
         "_number()",
         "_config()",
@@ -81265,9 +81265,9 @@
       "title": "test_experiment_interface",
       "summary": "The workbench's lifecycle and presentation, isolated from personal evidence.",
       "summarySource": "docstring",
-      "bytes": 17995,
-      "lines": 332,
-      "sha1": "8feed316499239786aabac150a4d08846d039358",
+      "bytes": 18303,
+      "lines": 336,
+      "sha1": "77c5adc87da037cea2e68dc76de560719af2cd6e",
       "symbols": [
         "class Isolated",
         "class JobLifecycle",

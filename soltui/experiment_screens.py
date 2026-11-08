@@ -220,6 +220,8 @@ class ExperimentScreen(ModalScreen[None]):
             self.query_one(f"#{wid}", DataTable).add_columns(*cols)
         self._command("experiments.schema", {"bot": self.bot}, self._schema)
         self.refresh_runs()
+        if len(self.coins) == 1:
+            self.refresh_live_price()
         self._timer = self.set_interval(1.0, self._poll)
 
     def _command(self, name: str, params: dict[str, Any], callback: Callable[[Any], None] | None = None,

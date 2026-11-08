@@ -280,6 +280,9 @@ class Screen(unittest.IsolatedAsyncioTestCase):
         from soltui.experiment_screens import ExperimentScreen
 
         def call(name, params):
+            if name == "prices.status":
+                return {"ok": True, "result": {"live": True, "snapshot_age_s": 1,
+                        "prices": {"SOL-USD": {"bid": 99., "ask": 101., "quote_age_s": 2}}}}
             if name == "experiments.schema":
                 return {"ok": True, "result": {"baseline": {"range_pct": 10., "rungs": 10, "spacing": "geom", "stop_loss_pct": 0.},
                         "domains": {"range_pct": ("float", 2., 60., "log"), "rungs": ("int", 3, 40, "log"),
@@ -295,6 +298,7 @@ class Screen(unittest.IsolatedAsyncioTestCase):
             await pilot.app.workers.wait_for_complete()
             await pilot.pause()
             screen = pilot.app.screen
+            self.assertIn("$100", str(screen.query_one("#exp-live-price", Static).render()))
             self.assertIn("percent points", str(screen.query_one("#exp-units", Static).render()))
             self.assertEqual(float(screen.query_one("#exp-start", Input).value), 9.)
             live = {"live": True, "snapshot_age_s": 1, "prices": {"SOL-USD": {"bid": 99., "ask": 101., "quote_age_s": 2}}}
