@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 97
-Delta: v95 to v97; retain Coinbase and JUPSOL conversion requests.
+Version: 98
+Delta: v97 to v98; retain the Signal Backtest question.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -822,4 +822,10 @@ Transfer like $5 of solana
 
 ```text
 COnvertt from Jupsol to sol
+```
+
+## v98 - 2026-11-08
+
+```text
+In the Signal Backtest, why does it talk about frontier metrics, top 2%, and holding prices for 1 or 24 hours, none of those things make sense.
 ```
