@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5086244` (2026-11-08T12:19:02+00:00). 1872 tracked files, 30.9 MB.
+**Generated** from `index/INDEX.json` at commit `2b26fe1` (2026-11-08T12:26:47+00:00). 1872 tracked files, 30.9 MB.
 
 Regenerate with:
 
@@ -185,9 +185,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1091 lines · 165,805 B · description: **extracted**
+`doc` · 1097 lines · 167,022 B · description: **extracted**
 
-**Purpose.** Version: 108 Delta: v107 to v108; verify actual launcher card visibility. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 109 Delta: v108 to v109; correct full-suite catalog integration checks. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -281,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18327 lines · 911,842 B · description: **extracted**
+`doc` · 18327 lines · 911,838 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -15743,7 +15743,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 4371 lines · 221,313 B · description: **extracted**
+`code-python` · 4372 lines · 221,364 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -15865,7 +15865,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bridge_buttons.py`
 
-`test` · 54 lines · 2,153 B · description: **extracted**
+`test` · 54 lines · 2,164 B · description: **extracted**
 
 **Purpose.** Every TUI button is a registry command: a new button cannot skip the registry.
 
@@ -16125,7 +16125,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tui_presets_pnl.py`
 
-`test` · 202 lines · 9,889 B · description: **extracted**
+`test` · 210 lines · 10,466 B · description: **extracted**
 
 **Purpose.** The Top 5 presets in three tabs, the P&L tab, and the "every percentage names its source" rule across every table in the app. Driven through Textual's headless harness.
 
