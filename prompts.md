@@ -2,6 +2,9 @@
 
 Version: 47
 Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder.
+Version: 45
+Delta: v44 to v45; resume the Compound 5m full-suite run.
+Delta: v44 to v45; trend filter for the compound.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -305,6 +308,10 @@ Expand the wallet, for the base wallet, use the base mcp server to query my wall
 Use lightweight charts, run the deep prompt optimizer on the rest of this prompt and then run it:  What are all of the ways a strategy or indicator can be evaluated? List all of them and then create a deep strategy optimizer skill that evaluates, and optimizes the strategy in multiple passes one per method just like the other deep optimizers.
 ```
 
+## v45 - 2026-11-08 (resume Compound 5m)
+
+```text
+resume
 ## v45 - 2026-11-08 (trend filter)
 
 ```text

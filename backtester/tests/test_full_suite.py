@@ -28,7 +28,8 @@ class FullSuiteTests(unittest.TestCase):
         text = out.getvalue()
         self.assertLess(text.index("fetch 1m candles from Coinbase for 2 coins"), text.index("registry sweep SOL"))
         self.assertIn("backtester.core.fetch_minutes --years 7 --workers 8 --assets SOL,BTC", text)
-        self.assertIn("soltui.compound sweep --assets SOL,BTC --perturb --aggregate-grid", text)
+        self.assertIn("soltui.bgworker --asset SOL --max-tier 2 --data-dir /nonexistent/data", text)
+        self.assertIn("soltui.compound sweep --assets SOL,BTC --perturb --aggregate-grid --frontier", text)
 
     def test_default_universe_is_the_ten_coin_compound_universe(self) -> None:
         out = io.StringIO()
