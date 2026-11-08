@@ -1,6 +1,39 @@
 # SolTUI v2: a layout-blind redesign
 
-Status: proposal plus a clickable mockup. No production code changed. Stele TASK-877, decision KNOW-878.
+Status: **implemented** in `soltui/` (Stele TASK-904). The clickable mockup below remains the
+reference. Proposal: TASK-877, decision KNOW-878. The classic console is preserved as the git tag
+`soltui-ui-v1` (branch `backup/soltui-ui-v1`), and `soltui --classic` shows its tab bar.
+
+## 0. What shipped, and where it differs from the mockup
+
+- **Shell** (`soltui/shell.py`, wired in `soltui/tui.py`):
+  - the five destinations plus Settings (`,`), with sub-view rows and `[` `]` cycling;
+  - the top bar with the live SOL price from the recorder;
+  - the health strip (a 5 s registry read);
+  - the LIVE MONEY band on Money;
+  - `?` Explain on an overlay layer;
+  - the `ctrl+p` registry palette;
+  - the soltui-night theme.
+- **Every classic pane is kept.** The classic tab bar is hidden and its single TabbedContent drives
+  the panes, so every pane, id, button and test is unchanged. `test_v2_shell` asserts that every
+  pane is reachable, and a pane added later is filed under Research automatically.
+- **Now is new.** It shows:
+  - Needs you, built from the registry status reads;
+  - every coin (`compound.overview`);
+  - the wallet, LP, sweep and SOL-forward tiles;
+  - activity: adoptions, sweep results and wallet scans;
+  - the research headline;
+  - live prices.
+- **Signal** gains a hero above Call & metrics: the call badge, the composite bar, gates and context.
+- **Differences from the mockup:**
+  - `r` keeps its classic meaning (run backtest), not refresh.
+  - Research has eleven sub-views, because Bots, Replay (Execute), Dry run (Live Run) and
+    Indicators (Signals) are classic tabs too.
+  - Explain shows the existing F1 help text.
+  - The pane interiors are the classic ones under the new theme. The mockup's IQR strips on the
+    leaderboard and diverging vote bars in the metric table are not built yet.
+- **The palette never runs a write.** Only read-only commands with no required parameters run from
+  it; every other command opens and focuses the button that owns it.
 
 This is the owner's read-only research console (`soltui/`) redesigned from its functions, not from
 its screens. The designer never looked at the current layout. A read-only subagent listed what the

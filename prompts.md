@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 51
+Version: 52
+Delta: v51 to v52; implement the SolTUI v2 interface after backing up the classic UI.
 Delta: v50 to v51; SolTUI redesign mockup request.
 Delta: v49 to v50; integrate PR 58 against landed PR 46 and retain both workflow histories.
 
@@ -378,3 +379,11 @@ Create a list of the primary functions of the TUI in this repo and without looki
 ```
 
 Context: Stele TASK-877. Output under docs/design/soltui-v2/.
+
+## v52 - 2026-11-08 (implement SolTUI v2)
+
+```text
+I like that interface a lot, make a backup of the current UI, then implement this new one, make sure all of the functionality of the current setup is represented.
+```
+
+Context: Stele TASK-904. Backup: tag soltui-ui-v1 and branch backup/soltui-ui-v1 at 4d0f027. Branch feat/soltui-v2-ui.

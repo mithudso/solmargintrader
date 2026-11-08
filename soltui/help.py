@@ -264,6 +264,7 @@ for _source in ("live", "dry-run", "reported"):
     HEADER_GLOSSARY[f"{_source} realized apr"] = "Annualized simple rate inferred from observed earnings over the elapsed time. A short observation can imply a very high APR that will not persist. It is not the account's total net return or a guaranteed future yield."
 
 TAB_HELP = {
+    "tab-now": "Now answers one question: does anything need you? Needs you lists everything stale, failed or unseen, worst first, and Enter opens the view that fixes it. The coin table is the latest backtest verdict and forward-test record per coin, the tiles are single facts (wallet value, LP state, sweep progress, forward hit rate after costs), and nothing simulated is summed with real money. The strip above every screen shows each background process.",
     "tab-bots": "Three trading bots, all simulated: the grid bot (the resting ladder the extension trades), the triangle arbitrage bot (three-leg USD cycles through Coinbase cross pairs) and the DCA bot (base order, deeper safety orders, one take-profit). Backtest starts a bot at a past moment and shows what it set and what it made; Forward test runs it in dry-run on the live recorded price stream from now on; Auto-optimize tests a fixed grid of settings on every coin and adopts a new one only if it reliably beats the current one out of sample. No order is ever placed.",
     "bots-sec-backtest": "The latest backtest of the selected bot: what it set at its start (the ladder, the safety orders, or the watched triangles) and the result, beside buy-and-hold of the same capital. One backtest is one path through history, not evidence that the bot is profitable.",
     "bots-sec-forward": "The selected bot's dry-run forward test: everything the price recorder captured since it started, replayed through the bot as it arrives, with the same fill rules and costs as the backtest. A recorder gap longer than two minutes ends the coverage there, because what the market did unseen is unknown.",
@@ -377,6 +378,7 @@ SIGNAL_HELP = {
 }
 
 CONTROL_HELP = {
+    "now-needs": "Everything that is stale, failed or unseen, worst first: a stopped sweep or trainer, a killed or silent LP daemon, a stopped price recorder, a partial wallet scan, a wallet change you have not looked at. Select an item and press Enter to open the view that fixes it. All clear means nothing needs you.",
     "bots-bot": "Which bot the tab shows and the buttons act on: Grid bot, Triangle arbitrage bot or DCA bot. Each keeps its own settings, backtests, forward test and optimize report.",
     "bots-coin": "Coin the grid and DCA bots trade in a backtest or forward test. Every coin with cached bars is listed; a forward test also needs the coin's Coinbase USD market in the price stream. The triangle bot watches every triangle at once, so this is disabled for it.",
     "bots-start": "UTC date (or epoch seconds) at which the backtest starts the bot. The bot sets itself up from the price at that bar's close, as it would have then. Empty means 90 days before the end of the data; for the triangle bot, the start of the recording.",

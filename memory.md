@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 69
+Version: 70
+Delta: v69 to v70; SolTUI v2 interface implemented, classic UI backed up.
 Delta: v68 to v69; SolTUI v2 layout-blind redesign and Textual mockup.
 Delta: v67 to v68; integrate PR 58 against landed PR 46 and retain both workflow histories.
 
@@ -733,3 +734,15 @@ Completed: a read-only subagent inventoried soltui's functions and data surfaces
 Verification: headless render of all 7 screens at 160x48; pilot smoke run (5 destinations, rail selection, explain toggle, palette navigation); up/down palette passed the dataviz validator; scripts/check_docs.py passed; index/build.py all rebuilt the offline index and --check passed. No production code changed, so the 610 s soltui suite was not run locally; CI runs it.
 
 Remaining: merge PR 85 (the background-job harness forbids this session from merging). Migration steps are listed in DESIGN.md section 11 and are not started.
+
+## v70 - 2026-11-08 (SolTUI v2 implemented)
+
+Target: prompts v52, Stele TASK-904, KNOW-916 (architecture), KNOW-918 (focus lesson). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch feat/soltui-v2-ui.
+
+Backup: annotated tag soltui-ui-v1 and branch backup/soltui-ui-v1 at master 4d0f027 (classic 18-tab console), both pushed. `soltui --classic` shows the original tab bar in the new build.
+
+Completed: soltui/shell.py (destinations, health strip, Needs-you, tiles, activity, signal hero, palette provider, Explain text, soltui-night theme) wired into soltui/tui.py. The classic #main-tabs TabbedContent keeps all 18 panes and ids; v2 hides its bar and drives it. New Now pane (tab-now). Keys 1-5, comma, [ ], ?, ctrl+p. main() opens on Now; SolTuiApp's default start stays tab-backtest for the suite. Unknown panes are filed under Research (with_extra_views). Help entries for tab-now and now-needs.
+
+Verification: soltui/tests/test_v2_shell.py (14 tests: every pane reachable, extra pane filed, builders, keys, Explain, palette never runs a write, classic mode, --classic). Full soltui suite: 874 tests OK (2 skipped) in 766 s. Headless smoke against real state rendered Now with live data.
+
+Remaining: deeper per-view interiors from the mockup (IQR strip in the Backtest leaderboard, diverging vote bars in the compound metric table) are not built. Open PR 87 (Bots v2) and tasks TASK-890 / TASK-873 also edit soltui/tui.py; expect merge conflicts in the CSS block and compose().
