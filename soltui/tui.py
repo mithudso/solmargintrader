@@ -2916,6 +2916,7 @@ class SolTuiApp(App):
         self._compound_fwd: dict[str, str] = {}
         self._compound_auto = False
         self._compound_last_bar = 0
+        self._compound_last_minute = 0
         self._compound_last_refresh = 0.0
         self._compound_autopilot = True
         self._compound_adoptions: list[dict[str, Any]] = []
@@ -3386,7 +3387,7 @@ class SolTuiApp(App):
             self._compound_forward()
 
     def _compound_auto_tick(self) -> None:
-        """Every 20 s: show the unattended run's state; take an in-app forward tick if Auto is on.
+        """Every 20 s: show the unattended state; sample each minute if Auto is on.
 
         Defensive like `_tick`: the timer can fire while the app is tearing down, when `query_one`
         raises NoMatches (a slow CI runner hit exactly that).
@@ -3400,9 +3401,9 @@ class SolTuiApp(App):
         if not getattr(self, "_compound_auto", False):
             return
         now = time.time()
-        latest_closed = (int(now) // 300) * 300 - 300
-        if latest_closed > self._compound_last_bar and now % 300 >= 5:
-            self._compound_last_bar = latest_closed
+        latest_minute = int(now) // 60
+        if latest_minute > self._compound_last_minute and now % 60 >= 5:
+            self._compound_last_minute = latest_minute
             self._compound_forward()
 
     def _compound_show_unattended(self) -> None:

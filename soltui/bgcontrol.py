@@ -350,6 +350,33 @@ def worker_command(
     return [launcher, "-b", *cmd] if launcher else cmd
 
 
+def select_fresh_results(*, recovered_from: Path | None = None, source_note: str = "") -> Path:
+    """Reserve and atomically select a new sweep while the caller holds the worker lock."""
+    results_path = bgqueue.RESULTS_PATH.parent / f"results-{secrets.token_hex(16)}.jsonl"
+    fd = os.open(results_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    os.close(fd)
+    if recovered_from is not None:
+        metadata = results_path.with_name(results_path.name + ".recovery.json")
+        with metadata.open("x", encoding="utf-8") as out:
+            json.dump({"recovered_from": str(recovered_from), "source_note": source_note}, out)
+            out.flush()
+            os.fsync(out.fileno())
+    pointer = bgqueue.RESULTS_PATH.parent / "active-results"
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=pointer.parent,
+                                         delete=False) as out:
+            temporary = out.name
+            out.write(results_path.name + "\n")
+            out.flush()
+            os.fsync(out.fileno())
+        os.replace(temporary, pointer)
+    finally:
+        if temporary is not None:
+            Path(temporary).unlink(missing_ok=True)
+    return results_path
+
+
 def start(
     asset: str,
     *,
@@ -397,24 +424,8 @@ def start(
     try:
         results_path = bgqueue.active_results_path()
         if fresh:
-            # Reserve an unused file and publish its name atomically while holding
-            # the worker lock. Existing files and proofs remain untouched.
-            results_path = bgqueue.RESULTS_PATH.parent / f"results-{secrets.token_hex(16)}.jsonl"
-            fd = os.open(results_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-            os.close(fd)
-            pointer = bgqueue.RESULTS_PATH.parent / "active-results"
-            temporary = None
-            try:
-                with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=pointer.parent,
-                                                 delete=False) as out:
-                    temporary = out.name
-                    out.write(results_path.name + "\n")
-                    out.flush()
-                    os.fsync(out.fileno())
-                os.replace(temporary, pointer)
-            finally:
-                if temporary is not None:
-                    Path(temporary).unlink(missing_ok=True)
+            # The worker lock protects selection and the old results remain untouched.
+            results_path = select_fresh_results()
         control = create_control(lock_fd)
         proc = subprocess.Popen(  # noqa: S603 - argv list, no shell
             worker_command(asset, horizons=horizons, max_tier=max_tier, limit=limit,

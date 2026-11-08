@@ -58,7 +58,7 @@ from backtester.core.engine import EngineConfig  # noqa: E402
 from backtester.core.strategies import build  # noqa: E402
 from backtester.core.strategy_cards import HORIZONS  # noqa: E402
 
-from . import bgcontrol  # noqa: E402
+from . import bgcontrol, bgqueue  # noqa: E402
 from .bgqueue import (  # noqa: E402
     PID_PATH,
     RESULTS_PATH,
@@ -86,12 +86,12 @@ NICE_LEVEL = 19
 
 def evaluation_code_fingerprint() -> dict[str, str]:
     """Hash local execution sources without importing or running them."""
-    return {
-        str(path.relative_to(REPO)): _file_hash(path)
-        for component in ("backtester", "research", "soltui")
-        for path in sorted((REPO / component).rglob("*.py"))
-        if "tests" not in path.relative_to(REPO).parts
-    }
+    sources = [path for component in ("backtester", "research", "soltui")
+               for path in (REPO / component).rglob("*.py")
+               if "tests" not in path.relative_to(REPO).parts]
+    # These cards supply the queue's presets and therefore form part of its inputs.
+    sources.extend((REPO / "backtester" / "strategy_cards").glob("*.md"))
+    return {str(path.relative_to(REPO)): _file_hash(path) for path in sorted(sources)}
 
 
 def _file_hash(path: Path) -> str:
@@ -122,6 +122,10 @@ def evaluation_proof(settings: Settings, jobs: Sequence[Job]) -> dict[str, Any]:
     }
 
 
+class EvaluationProofMismatch(ValueError):
+    """A historical result cannot be combined with this evaluation context."""
+
+
 def verify_evaluation_proof(
     asset: str, settings: Settings, jobs: Sequence[Job], results: Sequence[JobResult],
     results_path: Path, *, persist: bool = True,
@@ -143,12 +147,12 @@ def verify_evaluation_proof(
     except FileNotFoundError:
         pass
     except (ValueError, OSError) as exc:
-        raise ValueError(f"unreadable evaluation proof at {path}; use --results-path for a fresh file") from exc
+        raise EvaluationProofMismatch(f"unreadable evaluation proof at {path}; use --results-path for a fresh file") from exc
     if not isinstance(manifest, dict) or manifest.get("version") != 1 or not isinstance(manifest.get("assets"), dict):
-        raise ValueError(f"invalid evaluation proof at {path}; use --results-path for a fresh file")
+        raise EvaluationProofMismatch(f"invalid evaluation proof at {path}; use --results-path for a fresh file")
     expected = {"evaluation_id": evaluation_id, "proof": proof}
     if any(row.asset == asset for row in results) and manifest["assets"].get(asset) != expected:
-        raise ValueError(
+        raise EvaluationProofMismatch(
             f"evaluation proof is missing or differs for {asset} at {results_path}; "
             "preserve this history and use --results-path for a fresh file"
         )
@@ -365,6 +369,8 @@ def run(
     results_path: Path = RESULTS_PATH,
     state_path: Path = STATE_PATH,
     stop: _Stop | None = None,
+    recovered_from: str = "",
+    recovery_note: str = "",
 ) -> QueueState:
     """Work the queue until it is empty, the limit is hit, or a stop is asked.
 
@@ -389,6 +395,8 @@ def run(
     state = QueueState(
         phase="running",
         results_path=str(results_path),
+        recovered_from=recovered_from,
+        recovery_note=recovery_note,
         done=0,
         total=len(todo),
         asset=asset,
@@ -496,6 +504,17 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+def _prior_input_note(path: Path, asset: str) -> str:
+    """Describe labeled synthetic inputs without inferring which results used them."""
+    try:
+        proof = json.loads(path.with_name(path.name + ".proof.json").read_text(encoding="utf-8"))
+        inputs = proof["assets"][validate_asset(asset)]["proof"]["data"]
+        labeled = [name for name in inputs if "synthetic" in name.lower()]
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return ""
+    return ("Previous proof includes an input path labeled synthetic: " + ", ".join(labeled)) if labeled else ""
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Entry point."""
     args = build_parser().parse_args(argv)
@@ -551,21 +570,40 @@ def main(argv: Sequence[str] | None = None) -> int:
         PID_PATH.write_text(str(os.getpid()), encoding="utf-8")
         pid_written = True
         print(f"soltui background sweep — pid {os.getpid()}, priority {level}", flush=True)
-        state = run(
-            args.asset,
-            horizons=args.horizons,
-            max_tier=args.max_tier,
-            limit=args.limit,
-            strategies=args.strategies,
-            results_path=args.results_path,
-            settings=settings,
-            stop=stop,
-        )
+        # Recover only the selected UI sweep. Explicit CLI paths keep their fail-closed contract.
+        selected = not owned_lock and args.results_path == bgqueue.active_results_path()
+        recovered_from = ""
+        recovery_note = ""
+        marker = args.results_path.with_name(args.results_path.name + ".recovery.json")
+        try:
+            recovery = json.loads(marker.read_text(encoding="utf-8"))
+            recovered_from = str(recovery.get("recovered_from", ""))
+            recovery_note = str(recovery.get("source_note", ""))
+        except (OSError, ValueError, AttributeError):
+            pass
+        options = dict(horizons=args.horizons, max_tier=args.max_tier, limit=args.limit,
+                       strategies=args.strategies, settings=settings, stop=stop)
+        try:
+            state = run(args.asset, results_path=args.results_path, recovered_from=recovered_from,
+                        recovery_note=recovery_note, **options)
+        except EvaluationProofMismatch:
+            if not selected:
+                raise
+            old_path = args.results_path
+            recovery_note = _prior_input_note(old_path, args.asset)
+            args.results_path = bgcontrol.select_fresh_results(recovered_from=old_path, source_note=recovery_note)
+            recovered_from = str(old_path)
+            print(f"Evaluation proof changed. Preserved {old_path}; continuing separately at {args.results_path}",
+                  flush=True)
+            state = run(args.asset, results_path=args.results_path, recovered_from=str(old_path),
+                        recovery_note=recovery_note, **options)
     except Exception as exc:  # noqa: BLE001 - report, never a bare traceback to a log
         write_state(
             QueueState(
                 phase="error",
                 results_path=str(args.results_path),
+                recovered_from=locals().get("recovered_from", ""),
+                recovery_note=locals().get("recovery_note", ""),
                 error=f"{type(exc).__name__}: {exc}",
                 pid=os.getpid(),
                 updated_at=time.time(),
