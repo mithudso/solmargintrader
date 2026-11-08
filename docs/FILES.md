@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `fff7725` (2026-11-08T08:12:09+00:00). 694 tracked files, 12.4 MB.
+**Generated** from `index/INDEX.json` at commit `3d2f4d4` (2026-11-08T08:16:33+00:00). 694 tracked files, 12.4 MB.
 
 Regenerate with:
 
@@ -183,7 +183,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 560 lines · 81,215 B · description: **extracted**
+`doc` · 538 lines · 78,821 B · description: **extracted**
 
 **Purpose.** Version: 53 Delta: v52 to v53; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
@@ -199,9 +199,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 333 lines · 20,727 B · description: **extracted**
+`doc` · 340 lines · 20,904 B · description: **extracted**
 
-**Purpose.** Version: 47 Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder. Delta: added the leverage-tier and reliable-trigger request.
+**Purpose.** Version: 47 Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder. Version: 45
 
 **Use.** Read it.
 
@@ -255,7 +255,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPOUND-5M.md`
 
-`doc` · 484 lines · 34,426 B · description: **extracted**
+`doc` · 487 lines · 34,609 B · description: **extracted**
 
 **Purpose.** A tester for one question: **will the next 5-minute bar close up or down?** Every metric in (up). The scores are combined into one call (UP, DOWN or FLAT), which you can backtest and forward test, metric by metric and combined. Nothing here places an order.
 
@@ -279,7 +279,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 6641 lines · 332,498 B · description: **extracted**
+`doc` · 6641 lines · 332,449 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1831,7 +1831,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_full_suite.py`
 
-`test` · 77 lines · 3,523 B · description: **extracted**
+`test` · 78 lines · 3,635 B · description: **extracted**
 
 **Purpose.** research/full_suite.py: the plan, and stopping before the sweeps when a fetch fails.
 
@@ -2275,7 +2275,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/full_suite.py`
 
-`code-python` · 242 lines · 13,053 B · description: **extracted**
+`code-python` · 245 lines · 13,374 B · description: **extracted**
 
 **Purpose.** Pull fresh data, then run every backtest: all coins, all strategies, all configurations. python3 research/full_suite.py --plan # print every step; touches nothing python3 research/full_suite.py # fetch, then both sweeps (hours) python3 research/full_suite.py --skip-fetch # re-run the sweeps on the cache you have python3 research/full_suite.py --fetch-only # refresh the cache and stop Run it with t
 
@@ -4311,7 +4311,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/bgworker.py`
 
-`code-python` · 579 lines · 21,839 B · description: **extracted**
+`code-python` · 586 lines · 22,131 B · description: **extracted**
 
 **Purpose.** The background backtest worker: a separate, low-priority process. python3 -m soltui.bgworker --asset SOL python3 -m soltui.bgworker --asset SOL --horizons medium --max-tier 1 --limit 50 Run directly it is a normal foreground script; the TUI launches it through `bgcontrol.start()`, which is what applies the background scheduling policy.
 
@@ -5221,7 +5221,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 281 lines · 11,944 B · description: **curated**
+`ci` · 281 lines · 11,949 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -5391,7 +5391,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `liquidity/uv.lock`
 
-`other` · 0 lines · 393,181 B · description: **none**
+`other` · 0 lines · 392,323 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -5953,7 +5953,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `mongo/requirements.txt`
 
-`data` · 6 lines · 287 B · description: **derived**
+`data` · 6 lines · 290 B · description: **derived**
 
 **Purpose.** Generated report. Opens: # Deliberately separate from backtester/requirements.txt. The backtester is / # stdlib-first and its dependency list is short on purpose; a driver needed only
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T08:25:59+00:00",
+  "generatedAt": "2026-11-08T08:37:20+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 317,
+      "matchingFiles": 334,
       "shown": 30,
       "files": [
         {
@@ -66,6 +66,14 @@
           "hits": 38
         },
         {
+          "path": "executor/src/executor/registry.py",
+          "hits": 34
+        },
+        {
+          "path": "executor/src/executor/engine.py",
+          "hits": 31
+        },
+        {
           "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
           "hits": 31
         },
@@ -84,6 +92,18 @@
         {
           "path": "extension/README.md",
           "hits": 25
+        },
+        {
+          "path": "executor/tests/test_rails.py",
+          "hits": 25
+        },
+        {
+          "path": "executor/src/executor/config.py",
+          "hits": 24
+        },
+        {
+          "path": "executor/tests/test_surfaces.py",
+          "hits": 23
         },
         {
           "path": "soltui/live_run.py",
@@ -118,32 +138,12 @@
           "hits": 20
         },
         {
+          "path": "memory.md",
+          "hits": 19
+        },
+        {
           "path": "docs/code-deep-optimizer-2026-11-06.md",
           "hits": 19
-        },
-        {
-          "path": "extension/tools/e2e.mjs",
-          "hits": 19
-        },
-        {
-          "path": "skills/trading-and-investing/references/the-greeks.md",
-          "hits": 19
-        },
-        {
-          "path": "memory.md",
-          "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 18
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 17
-        },
-        {
-          "path": "soltui/tests/test_bridge_surfaces.py",
-          "hits": 17
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 305,
+      "matchingFiles": 328,
       "shown": 30,
       "files": [
         {
@@ -242,7 +242,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 50
+          "hits": 52
         },
         {
           "path": "soltui/wallet.py",
@@ -277,12 +277,12 @@
           "hits": 29
         },
         {
-          "path": "soltui/compound.py",
-          "hits": 28
+          "path": "executor/src/executor/txverify.py",
+          "hits": 29
         },
         {
-          "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 27
+          "path": "soltui/compound.py",
+          "hits": 28
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -438,7 +438,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 204,
+      "matchingFiles": 213,
       "shown": 30,
       "files": [
         {
@@ -534,6 +534,10 @@
           "hits": 20
         },
         {
+          "path": "executor/src/executor/quote.py",
+          "hits": 20
+        },
+        {
           "path": "backtester/gridcli.py",
           "hits": 19
         },
@@ -556,10 +560,6 @@
         {
           "path": "research/cross_asset_cpcv.py",
           "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 16
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -576,7 +576,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 201,
+      "matchingFiles": 207,
       "shown": 30,
       "files": [
         {
@@ -676,6 +676,10 @@
           "hits": 8
         },
         {
+          "path": "executor/src/executor/jupiter.py",
+          "hits": 8
+        },
+        {
           "path": "research/five-minute-perps-suite/scored-concepts.json",
           "hits": 8
         },
@@ -693,10 +697,6 @@
         },
         {
           "path": "memory.md",
-          "hits": 7
-        },
-        {
-          "path": "research/five-minute-perps-suite/coverage-resolution.json",
           "hits": 7
         }
       ],
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 168,
+      "matchingFiles": 171,
       "shown": 30,
       "files": [
         {
@@ -1265,7 +1265,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 160,
+      "matchingFiles": 164,
       "shown": 30,
       "files": [
         {
