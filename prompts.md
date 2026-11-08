@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 59
-Delta: v58 to v59; apply requested canonical card moves immediately.
+Version: 60
+Delta: v59 to v60; coin suitability skill, CLI, quick/audit backtests and Bots ranking.
 
 ## v1 - 2026-11-06
 
@@ -451,4 +451,14 @@ Keep complete indicator specifications too (Recommended)
 
 ```text
 I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
+```
+
+## v60 - Coin suitability and Bots ranking
+
+```text
+Create a skill that applies the template to a coin and determines if it's a good fit or not, and then explains its reasoning. Also have a bulk mode where it applies the template to a group of coins and outputs a table. And then write a script that does the same thing
+```
+
+```text
+Add a heuristic backtesting mechanism to quickly test it, and a more detailed audit backtest. And then incorporate this into the soltui in the bots tab, so that I can click a button and it will ranksort the most suitable coins and do a backtest to show it.
 ```

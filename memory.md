@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 105
-Delta: v104 to v105; apply requested canonical card moves immediately.
+Version: 107
+Delta: v106 to v107; shared backend, skill/CLI and responsive Bots views implemented.
 
 ## v1 - 2026-11-06
 
@@ -1068,3 +1068,23 @@ Integrated origin/master 0b46a88 after concurrent PR94 landed while this task op
 ## v105 - 2026-11-08 (canonical incomplete directory correction)
 
 The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.
+
+## v106 - Coin suitability implementation
+
+The user requested a reusable skill/CLI for one or many coins, then added quick heuristic and detailed audit backtests plus a Bots-tab rank/sort button. Canonical implementation belongs here so all surfaces reuse the existing grid/DCA economics. The earlier independent stdlib prototype in the research worktree is archived, not installed or advertised as production code.
+
+Worktree: /Users/mitch/dev/solmargintrader-coin-fit-20261108, branch feat/bot-coin-fit, base8ed41ad. Preserve the maintained checkout's unrelated minute_coverage edit and untracked web application files. No signing, order, executor or live configuration changes. Backtest code remains offline.
+
+Reuse backtester.core.gridsim and dcasim for next-bar, pessimistic, fee-aware simulation. Quick ranking uses an older development window and reserves the newest holdout. Audit runs the fixed configuration over chronological windows, a continuous full-capital path, and stressed fees/slippage; it does not auto-adopt a configuration or claim independent profitability from a ranked winner. Current-cache membership is not a historical universe. Missing live depth, fundamentals and portfolio stress remain explicit in the22-field template.
+
+Parent owns soltui/coin_fit.py, backtest computations, CLI/skill, tests/docs/workflow/Git. Textual lifecycle specialist owns tui.py, commands.py, help.py, optional bots_screens.py and dedicated UI tests. Backend interface: rank_coins(bot,coins,settings,mode,start,days,progress,cancelled). Frozen input/config, bounded windows, cooperative cancellation, deterministic rows including errors. The small Stele reader model was unavailable; direct recall found KNOW-871 (train-rank caution), KNOW-531 (no orders/keys), TASK-870 (superseded Bots implementation). No unrelated project binding is created.
+
+Remaining: backend+CLI/skill, UI, synthetic invariants/no-lookahead tests, audit and live cached-data smoke, installed UI acceptance, full required checks and merged delivery.
+
+## v107 - Verification checkpoint
+
+Implemented the shared offline coin-fit backend, direct/skill script entrypoints,22-field evidence output, deterministic single/bulk ranking, quick development-only scoring and10audit scenarios. Existing grid/DCA economics remain unchanged. Scheduled accumulation uses a separate explicit prefunded next-open schedule. The TUI freezes config, capital, policy, dates, costs and input hash; its selected audit preserves the quick order. Threaded jobs support cancellation, stale/context guards and teardown. No live order or config adoption exists.
+
+Independent forward review hand-reconciled60grid/DCA scenarios and a scheduled-account example. It found and rechecked fixes for explicit-cache fallback, inaccurate audit as-of, minute alignment, malformed context, missing context identity, hidden failed UI checks and incomplete cost/inventory/ledger display. No residual findings from that review.25new economic/screener tests plus13new UI tests pass; focused registry/help/bridge checks pass. Full backtester run909cases has only expected lexical-index staleness while uncommitted; full SolTUI run is active. No archived study is represented as a current profitability proof.
+
+Next: commit tracked source so deterministic index/test counts can refresh; run full checks and CI, then merge. Install the skill by symlink to the maintained checkout after delivery. Verify actual installed TUI entrypoint and click flow. Keep the maintained checkout's dirty files untouched. Context recall small-model agent could not run; direct MCP recall was read-only and no project binding was created.

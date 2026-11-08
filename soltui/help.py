@@ -282,6 +282,7 @@ for _source in ("live", "dry-run", "reported"):
 TAB_HELP = {
     "tab-bots": "Prices record automatically (a LaunchAgent keeps the recorder on). Three trading bots, all simulated: the grid bot (the resting ladder the extension trades), the triangle arbitrage bot (three-leg USD cycles through Coinbase cross pairs) and the DCA bot (base order, deeper safety orders, one take-profit). Backtest starts a bot at a past moment and shows what it set and what it made; Forward test runs it in dry-run on the live recorded price stream from now on; Auto-optimize tests a fixed grid of settings on every coin and adopts a new one only if it reliably beats the current one out of sample. No order is ever placed.",
     "bots-sec-backtest": "The latest backtest of the selected bot: what it set at its start (the ladder, the safety orders, or the watched triangles) and the result, beside buy-and-hold of the same capital. One backtest is one path through history, not evidence that the bot is profitable.",
+    "bots-sec-fit": "Coin suitability uses the selected grid or DCA bot's saved settings and the cached universe. Quick ranking is a provisional heuristic screen, not a profitability forecast. Select a row for its reasons and full-account equity, then audit that coin across chronological windows and stressed costs. Error and insufficient-data rows remain visible. No settings are adopted and no orders are placed.",
     "bots-sec-forward": "The selected bot's dry-run forward test: everything the price recorder captured since it started, replayed through the bot as it arrives, with the same fill rules and costs as the backtest. A recorder gap longer than two minutes ends the coverage there, because what the market did unseen is unknown.",
     "bots-sec-optimize": "The latest auto-optimize report. Each row is one configuration of the searched grid: its mean rank across the older (train) windows, and its median return in the train and newer (test) windows. The bot adopts the train winner only when it beats the current settings in significantly more test cells than it loses (sign test, p < 0.05) with a positive median gain.",
     "bots-sec-prices": "The newest bid and ask of every streamed Coinbase market, from the recorder's level-2 books (ticker quotes for any market without a synced book). Quote age is seconds since that quote was last confirmed; a stale leg cannot be used by the triangle bot.",
@@ -401,6 +402,9 @@ CONTROL_HELP = {
     "bots-apply": "Save the settings typed in the field to the selected bot. Unknown names and values the simulator cannot build are refused with the reason. A running forward test keeps the settings it started with; restart it to use the new ones.",
     "bots-reset": "Restore the selected bot's default settings.",
     "bots-backtest": "Start the selected bot at the chosen start and simulate it forward: grid and DCA on cached hourly bars with fees and adverse slippage; the triangle bot on recorded bid/ask quotes, or on a labelled one-minute candle proxy fetched from Coinbase when nothing is recorded for that time. Saved to the bot's results.",
+    "bots-fit-rank": "Rank every coin with cached bars for the selected grid or averaging-down DCA bot. Uses one explicit comparison window, current saved settings and configured costs; missing/error rows are retained. Quick ranks are provisional. Triangle arbitrage has no per-coin suitability screen.",
+    "bots-fit-audit": "Audit the selected suitability row across chronological windows and stressed costs. Shows net account return, drawdown, remaining inventory and equity alongside matched buy-and-hold. It does not save or adopt bot settings.",
+    "bots-fit-cancel": "Request cancellation of the current ranking or audit. The active bounded simulation window drains first; completed rows remain visible and the status stays cancelling until the backend has stopped.",
     "bots-forward-start": "Start (or restart) the selected bot's forward test now, on its current settings. It is a dry run on the future: the bot replays the live price stream as the recorder captures it. Starts the recorder if it is not running. No order is placed.",
     "bots-forward-stop": "Stop the selected bot's forward test. Its results freeze at the stop time and stay visible.",
     "bots-forward-refresh": "Replay what the recorder captured since the last refresh through the forward test now (the tab also does this when you switch bots).",
@@ -569,6 +573,21 @@ for _name, _leverage in (("lev_low", 2), ("lev_medium", 5), ("lev_high", 20)):
 def column_help(label: str, table_id: str | None = None) -> str | None:
     """Resolve overloaded labels using the actual table, not a global guess."""
     key = label.strip().casefold()
+    if table_id in ("bots-fit-table", "bots-fit-windows"):
+        fit_help = {
+            "fit": "The configured historical screen verdict. Quick results are provisional; insufficient data and errors are not profitable candidates.",
+            "audit": "The selected coin's detailed audit outcome. This does not replace its quick score or mix audited scores into the quick ranking order.",
+            "suitability score": "The backend's disclosed heuristic ranking score under this run's fixed configuration. It is not a probability of profit or a calibrated investment rating.",
+            "sim net": "Full-account simulated net return after configured costs, including remaining inventory or the simulator's declared terminal exit.",
+            "max dd": "Worst full-account peak-to-trough drawdown in the simulated period. Closed winners alone do not determine it.",
+            "cycles / deals": "Completed grid round trips or DCA deals under the simulator's fill rules. A candle touch alone is not a completed executable trade.",
+            "window": "Explicit historical period or chronological audit fold. Audit reuses the selected quick ranking's endpoint, configuration, costs and data fingerprint.",
+            "cost stress": "Whether the audit window uses its base costs or the declared stressed fee/slippage assumptions.",
+            "costs $": "Fees and adverse slippage charged by this simulation, in the account reporting currency.",
+            "reason": "The measured reasons for the verdict and missing evidence. Select the row to read the untruncated detail.",
+        }
+        if key in fit_help:
+            return fit_help[key]
     if key == "kind":
         if table_id == "wallet-contracts":
             return "Type of on-chain account: a token mint defines an asset; a token account holds units; a stake account delegates SOL; a position NFT identifies an LP position. This is not a file classification."

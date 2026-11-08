@@ -35,6 +35,7 @@ import subprocess
 import sys
 import threading
 import time
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -190,6 +191,12 @@ class Runtime:
         self.forward_plan: dict[str, Any] | None = None
         self.forward_stop = threading.Event()
         self.forward_busy = False
+        # Suitability scans share the command registry across UI/API/CLI. The event is
+        # cooperative: declaring a Textual worker cancelled cannot stop its Python thread.
+        self.coin_fit_stop = threading.Event()
+        self.coin_fit_job: dict[str, Any] | None = None
+        self.coin_fit_cancelled_requests: set[str] = set()
+        self.coin_fit_interrupted_requests: set[str] = set()
         self._catalog: list[docs_browser.DocEntry] | None = None
         self._catalog_key: tuple | None = None
 
@@ -2096,6 +2103,145 @@ def bots_backtest(ctx: Context, p: dict[str, Any]) -> Any:
         coins = [str(p.get("asset") or ctx.settings.asset)]
     return _bots(bots_mod.backtest_many, _bot_param(p), coins, ctx.settings, start=p.get("start"),
                  days=p.get("days"))
+
+
+def _coin_fit_run(ctx: Context, p: dict[str, Any], mode: str) -> Any:
+    from . import coin_fit
+
+    bot = _bot_param(p)
+    if bot == "triangle":
+        raise CommandError("bad_params", "coin suitability supports grid and dca, not triangle arbitrage")
+    coins = p.get("coins", "ALL") if mode == "quick" else [p.get("asset")]
+    if isinstance(coins, str):
+        if coins.upper() != "ALL":
+            raise CommandError("bad_params", 'coins must be a list of symbols or "all"')
+        coins = "ALL"
+    elif not isinstance(coins, list) or not coins or not all(isinstance(c, str) and c.strip() for c in coins):
+        raise CommandError("bad_params", "coins must be a nonempty list of symbols")
+    days = p.get("days")
+    if days is not None and (not math.isfinite(float(days)) or float(days) <= 0):
+        raise CommandError("bad_params", "days must be finite and positive")
+    for key in ("reference_end", "fee_bps", "slippage_bps", "capital"):
+        value = p.get(key)
+        if value is not None and (not math.isfinite(float(value)) or float(value) < 0):
+            raise CommandError("bad_params", f"{key} must be finite and nonnegative")
+    if p.get("capital") == 0:
+        raise CommandError("bad_params", "capital must be positive")
+    for key in ("config", "policy"):
+        if p.get(key) is not None and not isinstance(p[key], dict):
+            raise CommandError("bad_params", f"{key} must be a JSON object")
+    if p.get("expected_data_sha256") is not None:
+        value = p["expected_data_sha256"]
+        if len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+            raise CommandError("bad_params", "expected_data_sha256 must be a lowercase SHA256 digest")
+    request_id = p.get("request_id") or uuid.uuid4().hex
+    with ctx.runtime.lock:
+        active = ctx.runtime.coin_fit_job
+        if active and active.get("status") in ("running", "cancelling"):
+            raise CommandError("failed", "a coin suitability job is still running; cancel it and wait for it to stop")
+        cancelled_before_start = request_id in ctx.runtime.coin_fit_cancelled_requests
+        interrupted = request_id in ctx.runtime.coin_fit_interrupted_requests
+        ctx.runtime.coin_fit_cancelled_requests.discard(request_id)
+        ctx.runtime.coin_fit_interrupted_requests.discard(request_id)
+        if cancelled_before_start:
+            ctx.runtime.coin_fit_stop.set()
+        else:
+            ctx.runtime.coin_fit_stop.clear()
+        job: dict[str, Any] = {"request_id": request_id, "bot": bot, "mode": mode, "status": "running", "fraction": 0.0,
+                              "message": "starting suitability backtests", "error": None,
+                              "interrupt_requested": interrupted}
+        ctx.runtime.coin_fit_job = job
+
+    def progress(fraction: float, message: str) -> None:
+        with ctx.runtime.lock:
+            if ctx.runtime.coin_fit_job is job:
+                job.update(fraction=max(0.0, min(1.0, float(fraction))), message=str(message))
+
+    try:
+        if cancelled_before_start:
+            result = {"bot": bot, "mode": mode, "rows": [], "errors": {}, "cancelled": True,
+                      "notes": ["Cancelled before simulation started."]}
+        else:
+            frozen = {key: p[key] for key in ("reference_end", "config", "fee_bps", "slippage_bps",
+                      "selection_id", "expected_data_sha256", "policy", "capital") if key in p}
+            result = coin_fit.rank_coins(bot, coins, ctx.settings, mode=mode,
+                                        start=p.get("start"), days=days, progress=progress,
+                                        cancelled=ctx.runtime.coin_fit_stop.is_set, **frozen)
+        if not isinstance(result, dict):
+            raise TypeError("coin suitability engine returned a non-object report")
+    except Exception as exc:
+        with ctx.runtime.lock:
+            job.update(status="failed", error=f"{type(exc).__name__}: {exc}", message=str(exc))
+        raise
+    with ctx.runtime.lock:
+        was_cancelled = bool(result.get("cancelled") or ctx.runtime.coin_fit_stop.is_set())
+        result["cancelled"] = was_cancelled
+        interrupted = bool(was_cancelled and job.get("interrupt_requested"))
+        result["interrupted"] = interrupted
+        terminal = "interrupted" if interrupted else "cancelled" if was_cancelled else "completed"
+        job.update(status=terminal, fraction=1.0,
+                   message=f"{terminal}; completed rows retained" if was_cancelled else "completed")
+    return result
+
+
+_COIN_FIT_PARAMS = (BOT_PARAM, P("start", "string", "UTC start; the same comparison window is used for every coin."),
+                   P("days", "number", "Window length in days; must be finite and positive."),
+                   P("reference_end", "number", "Freeze the exclusive UTC endpoint from quick ranking."),
+                   P("config", "json", "Frozen bot settings from the quick ranking; does not save them."),
+                   P("fee_bps", "number", "Frozen per-side fee assumption from quick ranking."),
+                   P("slippage_bps", "number", "Frozen per-side slippage assumption from quick ranking."),
+                   P("policy", "json", "Frozen heuristic policy/score weights from the quick ranking."),
+                   P("capital", "number", "Frozen full funded account capital from the quick ranking."),
+                   P("selection_id", "string", "Identity of the quick ranking this audit follows."),
+                   P("expected_data_sha256", "string", "Selected quick row's data fingerprint; audit refuses changed history."),
+                   P("request_id", "string", "Caller request identity, used for race-safe cancellation."))
+
+
+@command("bots.rank_coins", "Quick, provisional coin suitability ranking on the selected bot's current "
+         "settings and cached data. Returns costs, full-equity backtests, reasons and retained error rows; "
+         "never adopts settings or places an order.",
+         (*_COIN_FIT_PARAMS, P("coins", "json", 'Symbols or "all"; default every cached coin.')),
+         long_running=True)
+def bots_rank_coins(ctx: Context, p: dict[str, Any]) -> Any:
+    return _coin_fit_run(ctx, p, "quick")
+
+
+@command("bots.audit_coin", "Audit one coin with chronological windows and stressed costs. Shows "
+         "equity, drawdown and unresolved inventory; does not adopt settings or promise future returns.",
+         (*_COIN_FIT_PARAMS, P("asset", "string", "One coin symbol to audit.", required=True)),
+         long_running=True)
+def bots_audit_coin(ctx: Context, p: dict[str, Any]) -> Any:
+    return _coin_fit_run(ctx, p, "audit")
+
+
+@command("bots.fit_status", "State and progress of this process's latest coin suitability job.")
+def bots_fit_status(ctx: Context, p: dict[str, Any]) -> Any:
+    with ctx.runtime.lock:
+        return dict(ctx.runtime.coin_fit_job) if ctx.runtime.coin_fit_job is not None else None
+
+
+@command("bots.fit_cancel", "Request cooperative cancellation of the current suitability job. "
+         "It remains cancelling until the active simulation window finishes.",
+         (P("request_id", "string", "Cancel this caller request, including one not started yet."),
+          P("interrupted", "bool", "Mark cancellation as interrupted by application shutdown or context change.")),
+         read_only=False)
+def bots_fit_cancel(ctx: Context, p: dict[str, Any]) -> Any:
+    with ctx.runtime.lock:
+        job = ctx.runtime.coin_fit_job
+        request_id = p.get("request_id")
+        if request_id and (job is None or job.get("request_id") != request_id):
+            if len(ctx.runtime.coin_fit_cancelled_requests) >= 128:
+                raise CommandError("failed", "too many unmatched cancellation requests")
+            ctx.runtime.coin_fit_cancelled_requests.add(request_id)
+            if p.get("interrupted"):
+                ctx.runtime.coin_fit_interrupted_requests.add(request_id)
+        if job and job.get("status") in ("running", "cancelling") and (
+                request_id is None or job.get("request_id") == request_id):
+            ctx.runtime.coin_fit_stop.set()
+            if p.get("interrupted"):
+                job["interrupt_requested"] = True
+            job.update(status="cancelling", message="cancelling after the current bounded simulation window")
+        return dict(job) if job is not None else None
 
 
 @command("bots.results", "Saved bot backtests, newest first.",

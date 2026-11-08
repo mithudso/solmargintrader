@@ -1,0 +1,6 @@
+interface:
+  display_name: "Coin Strategy Fit"
+  short_description: "Screen and backtest coins for grid or DCA"
+  default_prompt: "Use $coin-strategy-fit to screen these coins, rank them for my bot, and explain the quick and audit backtest evidence."
+policy:
+  allow_implicit_invocation: true

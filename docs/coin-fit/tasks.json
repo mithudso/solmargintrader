@@ -1,0 +1,31 @@
+{
+  "version": "1.1.0",
+  "delta": "Backend, skill/CLI and Bots controls complete; full verification in progress.",
+  "steps": [
+    {
+      "id": 1,
+      "title": "Implement shared quick and audit coin screening backend",
+      "status": "completed"
+    },
+    {
+      "id": 2,
+      "title": "Add reusable skill and single/bulk CLI",
+      "status": "completed"
+    },
+    {
+      "id": 3,
+      "title": "Wire responsive Bots ranking and audit views",
+      "status": "completed"
+    },
+    {
+      "id": 4,
+      "title": "Verify financial invariants and installed UI behavior",
+      "status": "in_progress"
+    },
+    {
+      "id": 5,
+      "title": "Merge verified delivery and preserve unrelated WIP",
+      "status": "pending"
+    }
+  ]
+}
