@@ -104,6 +104,10 @@ class ManualOrderTests(unittest.TestCase):
                 with self.assertRaises(ValueError): cm.preview('SOL-USDC',side,size,unit,self.venue)
         self.assertFalse(any(c[:2] == ['orders','create'] for c in self.venue.calls))
 
+    def test_single_character_coin_symbol_reaches_market_validation(self):
+        with self.assertRaisesRegex(ValueError, 'did not confirm an online spot market'):
+            cm.preview('O-USD', 'BUY', '2', 'quote', lambda args: {})
+
     def test_increased_fee_requires_new_review(self):
         p = self.preview(); self.venue.fee = '0.03'
         with self.assertRaisesRegex(ValueError,'fee increased'):

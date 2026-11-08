@@ -94,7 +94,7 @@ def _details(product_id: str, side: str, size: str, size_currency: str,
              call: Callable[[list[str]], dict[str, Any]]) -> dict[str, Any]:
     product_id = product_id.strip().upper()
     side = side.strip().upper()
-    if not re.fullmatch(r'[A-Z0-9]{2,15}-[A-Z0-9]{2,15}', product_id):
+    if not re.fullmatch(r'[A-Z0-9]{1,15}-[A-Z0-9]{1,15}', product_id):
         raise ValueError('Enter a spot pair such as SOL-USDC')
     if (side, size_currency) not in (('BUY', 'quote'), ('SELL', 'base')):
         raise ValueError('Market buys use quote currency; market sells use base-coin quantity')

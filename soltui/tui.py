@@ -4490,8 +4490,11 @@ class SolTuiApp(App):
             if operation in ("coinbase.order_submit", "coinbase.order_quick"):
                 if operation != "coinbase.order_quick" or status.upper() != "FILLED" or not order_id:
                     self.query_one("#coinbase-order-armed", Checkbox).value = False
-                msg.update("Order submitted. Check its status at Coinbase before another order." if order_id
-                           else "Order outcome unknown. Do not resubmit; reconcile at Coinbase.")
+                if operation == "coinbase.order_quick" and status.upper() == "FILLED" and order_id:
+                    msg.update("Order filled. Quick mode remains armed for the next order.")
+                else:
+                    msg.update("Order submitted. Check its status at Coinbase before another order." if order_id
+                               else "Order outcome unknown. Do not resubmit; reconcile at Coinbase.")
             else:
                 msg.update("Coinbase order status: " + status)
         self._coinbase_order_controls()
