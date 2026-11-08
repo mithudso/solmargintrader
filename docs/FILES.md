@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `dd9f2a1` (2026-11-08T10:15:57+00:00). 1837 tracked files, 29.5 MB.
+**Generated** from `index/INDEX.json` at commit `b9979d2` (2026-11-08T10:35:36+00:00). 1863 tracked files, 29.6 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (1617 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 271/285 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (119 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (1642 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 271/285 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (120 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -53,6 +53,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`scripts`](#scripts) — 5 files
 - [`skills`](#skills) — 62 files
 - [`tools`](#tools) — 3 files
+- [`tradingview`](#tradingview) — 26 files
 
 ---
 
@@ -264,7 +265,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 320 lines · 18,660 B · description: **extracted**
+`doc` · 320 lines · 18,593 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -280,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18028 lines · 886,977 B · description: **extracted**
+`doc` · 18297 lines · 900,298 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -18023,5 +18024,225 @@ Session handoff notes, newest first. Prose, not machine-read.
 `code-shell` · 92 lines · 3,982 B · description: **none**
 
 **Purpose.** _No description available._
+
+**Use.** Read it.
+
+---
+
+## tradingview
+
+26 files.
+
+### `tradingview/tradingviewinputoptimizer_v2-7/`
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/AGENTS.md`
+
+`doc` · 6 lines · 441 B · description: **extracted**
+
+**Purpose.** Read [CLAUDE.md](CLAUDE.md) and the parent guidance before changing this component. Save the prompt in `prompts.md`, and version the completion, evidence and remaining steps in `memory.md`. There are no component-local agent definitions. The parent repository's `aero-pool-scout` belongs to liquidity research and does not operate this optimizer.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md`
+
+`doc` · 32 lines · 2,557 B · description: **extracted**
+
+**Purpose.** Read the parent `../../CLAUDE.md` and `../../AGENTS.md` first. This component is distinct from the order-placing extension under `../../extension/`. Save each user request verbatim in `prompts.md` before implementation. Keep `memory.md` current with scope, evidence, verification, delivery and remaining steps. Increment the record version and delta on each update.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/CONTRIBUTING.md`
+
+`doc` · 6 lines · 593 B · description: **extracted**
+
+**Purpose.** Read [CLAUDE.md](CLAUDE.md), [development](docs/DEVELOPMENT.md) and [testing](docs/TESTING.md). Base behavior claims on the manifest, HTML wiring and visible source symbols. Label inference and distinguish static checks from real browser acceptance. Keep changes scoped. Preserve upstream licensing and vendor assets. Record prompts and continuation notes with version/delta increments.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/GEMINI.md`
+
+`doc` · 4 lines · 200 B · description: **extracted**
+
+**Purpose.** Read [CLAUDE.md](CLAUDE.md). The same component boundaries, verification limits and versioned prompt/memory workflow apply. No Gemini-only tool mappings are defined here.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/README.md`
+
+`doc` · 21 lines · 2,207 B · description: **extracted**
+
+**Purpose.** This Chrome Manifest V3 extension automates strategy and indicator input searches on TradingView and stores result tables locally. The directory is named `tradingviewinputoptimizer_v2-7`, but `manifest.json` and the popup identify version **2.3.11**.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/memory.md`
+
+`doc` · 36 lines · 4,205 B · description: **extracted**
+
+**Purpose.** Version: 3 Delta: v2 to v3; completed full-text and real embedding verification, prepared final delivery. Active: source dossier, docs-only bootstrap and whole-directory keyword/semantic indexing. Stele TASK-924.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/prompts.md`
+
+`doc` · 13 lines · 407 B · description: **extracted**
+
+**Purpose.** Version: 1 Delta: initial documentation and indexing request. run the repo to llms skill on this directory, then run the repo-bootstrapper skill on this directory but only do the documentation parts, and then create keyword and semantic indexes for this whole directory.
+
+**Use.** Read it.
+
+### `tradingview/tradingviewinputoptimizer_v2-7/docs/`
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md`
+
+`doc` · 34 lines · 2,132 B · description: **extracted**
+
+**Purpose.** The user runs a Chrome extension over a TradingView chart. Content scripts manipulate chart inputs and collect strategy/indicator results. The background worker routes messages across extension contexts. An offscreen page hosts the database worker, and a report tab displays stored results. Registration uses a separate TradingTools service.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md`
+
+`doc` · 22 lines · 1,897 B · description: **extracted**
+
+**Purpose.** These are static source roles. Shared globals and obfuscated calls are not a complete typed API. Follow manifest/HTML ordering before changing a dependency.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md`
+
+`doc` · 20 lines · 1,735 B · description: **extracted**
+
+**Purpose.** Use the supplied local bundle. There is no root `package.json`, dependency install step or first-party compilation command. The `lib/` package manifests describe vendored upstream development and publication tasks, not this component's workflow. Do not install dependencies merely to read or index the bundle. Read the parent rules and component `CLAUDE.md`.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md`
+
+`doc` · 20 lines · 1,675 B · description: **extracted**
+
+**Purpose.** Keep the full local extension bundle and its vendored assets. Use Chrome with extension developer mode and a TradingView page/account appropriate to the intended workflow. Registration/license requirements are implemented by the supplied code and service; this pass neither contacted that service nor tested entitlement.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md`
+
+`doc` · 6 lines · 547 B · description: **extracted**
+
+**Purpose.** This component defines no MCP server, tool registry or local MCP configuration. The machine's global AI hub and Stele connectors are external agent services. Their presence does not add an optimizer runtime interface. The parent hub file search may exclude vendor/generated artifacts and the ignored bundle. Use the scoped retrieval store described in `RETRIEVAL.md` for complete-directory coverage.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md`
+
+`doc` · 23 lines · 2,558 B · description: **extracted**
+
+**Purpose.** The complete-directory corpus includes first-party source, documentation, all vendored text, source maps, styles, types, metadata and SVG text. PNG/WASM/non-UTF-8 files receive metadata/hash records; their binary payload is not semantically searchable. Private `.remember` records, OS metadata and Git internals are excluded. The source snapshot and exclusion reasons are recorded per path.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md`
+
+`doc` · 22 lines · 1,900 B · description: **extracted**
+
+**Purpose.** The extension sees chart content and can change chart inputs. It stores preferences and registration identity in Chrome local storage and optimization results in browser storage/SQLite OPFS. The background license POST contains `license_key`, `email` and `machine_code`. Never put real values in documentation, query examples, Git or exported verification receipts.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md`
+
+`doc` · 20 lines · 1,890 B · description: **extracted**
+
+**Purpose.** No first-party automated test runner, test script or coverage gate is declared in this bundle. `js/classes/test.js` is a browser experiment with a second Scanner; `test.html` references missing relative demo scripts. Vendor tests and vendor package scripts do not prove optimizer behavior.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md`
+
+`doc` · 8 lines · 921 B · description: **extracted**
+
+**Purpose.** Chrome local storage holds popup preferences and identity/license-related fields (`js/content/popup_script.js`, `background.js`). The database worker contains SQLite and OPFS persistence plus explicit create/remove/import/export actions. Neither is an incidental cache that a documentation task may clear. The scanner exposes delays, timeout/retry/refresh controls.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md`
+
+`doc` · 41 lines · 3,838 B · description: **extracted**
+
+**Purpose.** Source bundle paths below are relative to this component; they resolve only where the ignored original bundle exists. This is a curated static map, not a runtime acceptance record. The external dossier inventories every upstream file. Vendor dependencies live under `lib/`; styles/icons under `css/` and `assets/`.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md`
+
+`doc` · 18 lines · 2,151 B · description: **extracted**
+
+**Purpose.** This is a static inventory of first-party call families. Obfuscated dispatch prevents a verified exhaustive branch/call-site ledger. Do not interpret the rows as full operations compliance. Vendor code can contain additional transport paths and examples; the retrieval index includes that text but this inventory does not certify it.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json`
+
+`config` · 169 lines · 6,855 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (version, delta, source_root, coverage, files).
+
+**Use.** Configuration; nothing to run.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md`
+
+`doc` · 13 lines · 1,273 B · description: **extracted**
+
+**Purpose.** No external service was contacted for application verification. No cloud service, deployment target, wallet integration or order execution is established by this bundle documentation. Vendored metadata is retained as supplied.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md`
+
+`doc` · 13 lines · 1,259 B · description: **extracted**
+
+**Purpose.** Observed by static inspection on 2026-11-08: Unverified: actual extension load, license-service behavior, page UI compatibility, scanner correctness, data round-trip integrity, cancellation and result/statistical validity. The docs-only pass records these limits and does not change runtime behavior.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md`
+
+`doc` · 8 lines · 997 B · description: **extracted**
+
+**Purpose.** Visible application code uses browser `console.log`, `warn` and `error` across the background, popup, scanner, report and database worker. Several files contain obfuscation wrappers that also replace/bind console methods. No centralized structured error store, stable event schema, retention policy or automated log assertion suite is established here.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md`
+
+`doc` · 8 lines · 849 B · description: **extracted**
+
+**Purpose.** Read the README, component/parent agent rules, architecture and known issues. Confirm the original ignored bundle is present before following source links. Read the manifest and popup/report HTML first, then follow the background → content-script/scanner → offscreen → database message paths. Use `docs/codebase-overview.md` for high-signal files.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md`
+
+`doc` · 33 lines · 2,655 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: initial component documentation baseline after source dossier. Target: TradingView Input Optimizer's ignored local bundle, not all of solmargintrader. Source snapshot: 1,556 files / 54,380,046 bytes; manifest version 2.3.11. The external dossier statically inspects 32 first-party files and gives 1,524 remaining assets shallow cards. Obfuscation limits behavioral claims.
+
+**Use.** Read it.
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md`
+
+`doc` · 14 lines · 1,078 B · description: **extracted**
+
+**Purpose.** The manifest/HTML/source expose browser loading, popup preference/registration controls, input-search dialogs, scanner iterations and pause/stop states, result collection, SQLite/OPFS persistence, report tables, JSON/CSV controls and heatmap controls. These are visible implementation surfaces, not runtime acceptance claims.
+
+**Use.** Read it.
+
+### `tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/`
+
+#### `tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md`
+
+`doc` · 11 lines · 1,182 B · description: **extracted**
+
+**Purpose.** Precondition: the original local bundle and documentation exist. Inspect `memory.md` and the existing external index manifest. Preserve other sessions and paused services. 1. Run `python3 /Users/mitch/.global-ai-hub/indexes/tradingviewinputoptimizer_v2-7/retrieval.py check` to compare current source hashes with the recorded corpus. 2.
 
 **Use.** Read it.

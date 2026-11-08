@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 56
-Delta: v55 to v56; preserve broad card coverage and add strategy understanding request.
+Version: 57
+Delta: v56 to v57; expand understanding to all trading scripts including indicators.
 
 ## v1 - 2026-11-06
 
@@ -431,3 +431,11 @@ For all of the strategies in the script directory, extract and understand the id
 
 Source: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com/www.tradingview.com/script.
 Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63.
+
+## v57 - 2026-11-08 (expanded script scope)
+
+```text
+All trading scripts, including indicators
+```
+
+This answers the scope question for the request to extract each script's idea and objective and create strategy cards. Preserve the21 accepted strategy-labelled cards and expand to the remaining721 saved publications.

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 96
-Delta: v95 to v96; verify the integrated1142-card catalog and final source-card receipts.
+Version: 97
+Delta: v96 to v97; expand understanding to all trading scripts including indicators.
 
 ## v1 - 2026-11-06
 
@@ -987,3 +987,13 @@ PR91 is merged as188d329. Both coverage gates now pass together: the legacy cata
 Checks on the integrated tree:43 card tests pass; both offline source/card checkers pass; the new checker verifies all742 original HTML files and every cited source offset with --source-root. Ruff lint/format passes for the new checker; docs drift and exhaustive offline index freshness pass. No unresolved merge markers remain after regeneration. Both CI evidence gates are retained. Independent semantic audit remains accepted for the exact21-card set.
 
 Remaining: commit this integrated checkpoint, push a PR, wait for final-head checks, merge and verify remote content, refresh the stable portable collection and its audit/continuation receipts, then remove only this task's clean worktree and branch. Shared checkout and other active sessions remain untouched.
+
+## v97 - 2026-11-08 (all trading scripts, including indicators; TASK-929)
+
+The user answered the optional scope question: All trading scripts, including indicators. The previous21-publication scope is now a completed subset, not the full goal. Review all742 saved publications, including666 studies and55 libraries, and create source-specific semantic cards or exact existing-card mappings for every trading-related item. Review non-trading exclusions from complete descriptions too. Preserve the accepted21-card set and its1d40b13a manifest hash.
+
+PR96 currently checkpoints the21-card subset at e9931f4 and must not be called complete for the expanded goal. A merge of optimizer documentation a70d62f is in progress; only three generated indexes conflict. Finish that merge after staging source/record updates, regenerate indexes and keep the PR draft while expansion is active.
+
+Use p2.1.0 orchestration for bounded, disjoint semantic-authoring batches and independent source audits. The user's standing commit/ship and exact prompt/memory-record requirements override the skill's generic no-git and output-format defaults. No external research, inference or indexing runtime is needed; source gaps remain gaps. Native Anthropic model labels are unavailable here; use the runtime Codex workhorse tier for synthesis and record the mapping. Keep raw readings in a gitignored task cache under the private worktree, with resumable per-publication checkpoints. Root owns helper/manifest/index integration; workers own their assigned semantic JSONL outputs and must not revert others.
+
+Remaining: extract complete source descriptions for remaining721 pages; balance authoring batches; create and review per-script explanations; expand manifests/cards and coverage; verify all source/card mappings; deliver only after the complete expanded goal is covered.
