@@ -35,6 +35,7 @@ import subprocess
 import sys
 import threading
 import time
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
@@ -190,6 +191,17 @@ class Runtime:
         self.forward_plan: dict[str, Any] | None = None
         self.forward_stop = threading.Event()
         self.forward_busy = False
+        # Suitability scans share the command registry across UI/API/CLI. The event is
+        # cooperative: declaring a Textual worker cancelled cannot stop its Python thread.
+        self.coin_fit_stop = threading.Event()
+        self.coin_fit_job: dict[str, Any] | None = None
+        self.coin_fit_cancelled_requests: set[str] = set()
+        self.coin_fit_interrupted_requests: set[str] = set()
+        # The Forwardtest runner: a thread of this process, so a test keeps checking prices whatever
+        # tab (or none) the console shows. One summary per coin from its latest check.
+        self.forward_thread: threading.Thread | None = None
+        self.forward_last: dict[str, dict[str, Any]] = {}
+        self.forward_started_at: float | None = None
         self._catalog: list[docs_browser.DocEntry] | None = None
         self._catalog_key: tuple | None = None
 
@@ -674,11 +686,74 @@ def roster_add_all(ctx: Context, p: dict[str, Any]) -> Any:
     return {"added": added, "count": len(roster)}
 
 
-@command("forwardtest.start", "Prepare an in-session adaptive paper forward test.",
+FORWARD_GRACE_S = 4  # Coinbase publishes a closed minute a moment after it closes
+
+
+def forward_coins() -> list[str]:
+    """Coins a Forwardtest can watch: every Coinbase USD market of the cached coins."""
+    from . import pricefeed
+
+    try:
+        products = pricefeed.stream_products()
+    except Exception:  # noqa: BLE001 - the offline fallback list covers every failure
+        products = list(pricefeed.FALLBACK_PRODUCTS)
+    return sorted({p.split("-")[0] for p in products if p.endswith("-USD")})
+
+
+def _forward_check_all(rt: "Runtime", plan: dict[str, Any]) -> dict[str, Any]:
+    """One check of every planned coin, each settled and forecast on its own."""
+    out: dict[str, Any] = {}
+    for asset in plan["assets"]:
+        if rt.forward_stop.is_set():
+            break
+        try:
+            r = forwardtest.tick(asset, plan["trials"], plan["horizons"], plan["cost"], stop=rt.forward_stop,
+                                 code=plan["code"], tune=plan["tune"])
+            out[asset] = {"at": time.time(), "bar": r["bar"], "recorded": r["recorded"], "message": r["message"]}
+        except Exception as exc:  # noqa: BLE001 - one coin's failure must not stop the others
+            out[asset] = {"at": time.time(), "error": f"{type(exc).__name__}: {exc}"[:300]}
+        with rt.lock:
+            rt.forward_last[asset] = out[asset]
+    return out
+
+
+def _forward_runner(rt: "Runtime") -> None:
+    """Check every planned coin once per closed minute until stopped. Runs on its own thread."""
+    checked_minute = -1
+    try:
+        while not rt.forward_stop.is_set():
+            with rt.lock:
+                plan = rt.forward_plan
+            if plan is None:
+                break
+            now = time.time()
+            minute = int(now // 60)
+            if minute != checked_minute and now % 60 >= FORWARD_GRACE_S:
+                checked_minute = minute
+                with rt.lock:
+                    rt.forward_busy = True
+                try:
+                    _forward_check_all(rt, plan)
+                finally:
+                    with rt.lock:
+                        rt.forward_busy = False
+            rt.forward_stop.wait(1.0)
+    finally:
+        with rt.lock:
+            rt.forward_thread = None
+            rt.forward_busy = False
+
+
+@command("forwardtest.start", "Prepare an adaptive paper forward test (forwardtest.run starts checking).",
          (P("scope", "string", "all, roster, or combinations."),
           P("horizons", "json", "Subset of 1, 5, 10 and 30 minutes. Default: all four."),
           P("combinations", "json", "Lists of strategy names or roster labels."),
-          P("mode", "string", "Combination rule: all, any, vote or mean.")), read_only=False)
+          P("mode", "string", "Combination rule: all, any, vote or mean."),
+          P("coins", "json", "Coins to test: a list, or \"all\" for every Coinbase USD market; default the "
+                             "Settings asset."),
+          P("optimize", "bool", "Auto-optimize (default true): after a miss, move to a neighbouring setting "
+                                "that tested superior on paired calls and save it as that trial's default.")),
+         read_only=False)
 def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
     from backtester.core.strategies import COMBINE_MODES
 
@@ -722,16 +797,59 @@ def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
                        "mode": mode, "members": [spec(e) for e in members]})
     if not trials:
         raise CommandError("bad_params", "Add a strategy or enter a combination first")
-    asset = bgqueue.validate_asset(ctx.settings.asset)
+    coins = p.get("coins")
+    if coins in (None, [], ""):
+        assets = [bgqueue.validate_asset(ctx.settings.asset)]
+    elif coins == "all":
+        assets = forward_coins()
+    elif isinstance(coins, list) and all(isinstance(c, str) for c in coins):
+        assets = list(dict.fromkeys(bgqueue.validate_asset(c) for c in coins))
+    else:
+        raise CommandError("bad_params", 'parameter "coins" must be a list of coins or "all"')
+    if not assets:
+        raise CommandError("bad_params", "no coin to test")
+    tune = bool(p.get("optimize", True))
     cost = 2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps)
     rt = ctx.runtime
     with rt.lock:
-        if rt.forward_plan or rt.forward_busy:
+        if rt.forward_plan or rt.forward_busy or rt.forward_thread is not None:
             raise CommandError("failed", "A forward test is running or stopping")
         rt.forward_stop.clear()
-        rt.forward_plan = {"asset": asset, "trials": trials, "horizons": tuple(sorted(set(horizons))),
-                           "cost": cost, "code": forwardtest.revision()}
-    return {"asset": asset, "trials": len(trials), "horizons": sorted(set(horizons)), "cost_bps": cost}
+        rt.forward_last = {}
+        rt.forward_plan = {"asset": assets[0], "assets": assets, "trials": trials,
+                           "horizons": tuple(sorted(set(horizons))), "cost": cost, "code": forwardtest.revision(),
+                           "tune": tune}
+    return {"asset": assets[0], "assets": assets, "trials": len(trials), "horizons": sorted(set(horizons)),
+            "cost_bps": cost, "optimize": tune}
+
+
+@command("forwardtest.run", "Start checking the prepared forward test in the background: every planned coin "
+         "once per closed minute, on its own thread, whatever tab the console shows, until stopped.",
+         read_only=False)
+def forwardtest_run(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        if rt.forward_plan is None:
+            raise CommandError("failed", "Prepare a forward test first (forwardtest.start)")
+        if rt.forward_thread is None:
+            rt.forward_started_at = time.time()
+            rt.forward_thread = threading.Thread(target=_forward_runner, args=(rt,), name="forwardtest",
+                                                 daemon=True)
+            rt.forward_thread.start()
+        return {"running": True, "assets": rt.forward_plan["assets"], "since": rt.forward_started_at}
+
+
+@command("forwardtest.state", "Whether the background forward test runs, what it watches, and each coin's "
+         "latest check.")
+def forwardtest_state(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        plan = rt.forward_plan
+        return {"running": plan is not None and rt.forward_thread is not None, "prepared": plan is not None,
+                "busy": rt.forward_busy, "assets": list(plan["assets"]) if plan else [],
+                "optimize": bool(plan["tune"]) if plan else None, "since": rt.forward_started_at,
+                "last": {k: dict(v) for k, v in rt.forward_last.items()},
+                "defaults_saved": len(forwardtest.load_defaults())}
 
 
 @command("forwardtest.stop", "Stop issuing forward predictions in this session.", read_only=False)
@@ -753,16 +871,33 @@ def forwardtest_tick(ctx: Context, p: dict[str, Any]) -> Any:
             raise CommandError("failed", "Forwardtest is stopped or already checking prices")
         rt.forward_busy = True
     try:
-        return {"asset": plan["asset"], **forwardtest.tick(**plan, stop=rt.forward_stop)}
+        checks = _forward_check_all(rt, plan)
+        rows = [r for a in plan["assets"] for r in forwardtest.status(a)]
+        first = checks.get(plan["assets"][0], {})
+        return {"asset": plan["asset"], "assets": plan["assets"], "checks": checks, "bar": first.get("bar"),
+                "recorded": sum(c.get("recorded", 0) for c in checks.values()),
+                "message": first.get("message") or first.get("error") or "", "rows": rows}
     finally:
         with rt.lock:
             rt.forward_busy = False
 
 
-@command("forwardtest.status", "Read saved forward results, separately for each forecast horizon.")
+@command("forwardtest.status", "Read saved forward results, separately for each coin and forecast horizon.",
+         (P("coins", "json", "Coins to read: a list or \"all\"; default the running test's coins, else the "
+                             "Settings asset."),))
 def forwardtest_status(ctx: Context, p: dict[str, Any]) -> Any:
-    asset = bgqueue.validate_asset(ctx.settings.asset)
-    return {"asset": asset, "rows": forwardtest.status(asset)}
+    coins = p.get("coins")
+    with ctx.runtime.lock:
+        plan = ctx.runtime.forward_plan
+    if coins == "all":
+        assets = forward_coins()
+    elif isinstance(coins, list) and coins:
+        assets = [bgqueue.validate_asset(c) for c in coins]
+    elif plan is not None:
+        assets = list(plan["assets"])
+    else:
+        assets = [bgqueue.validate_asset(ctx.settings.asset)]
+    return {"asset": assets[0], "assets": assets, "rows": [r for a in assets for r in forwardtest.status(a)]}
 
 
 @command("roster.reset", "Restore the backtester's default comparison set.", read_only=False)
@@ -2123,6 +2258,145 @@ def bots_backtest(ctx: Context, p: dict[str, Any]) -> Any:
                  days=p.get("days"))
 
 
+def _coin_fit_run(ctx: Context, p: dict[str, Any], mode: str) -> Any:
+    from . import coin_fit
+
+    bot = _bot_param(p)
+    if bot == "triangle":
+        raise CommandError("bad_params", "coin suitability supports grid and dca, not triangle arbitrage")
+    coins = p.get("coins", "ALL") if mode == "quick" else [p.get("asset")]
+    if isinstance(coins, str):
+        if coins.upper() != "ALL":
+            raise CommandError("bad_params", 'coins must be a list of symbols or "all"')
+        coins = "ALL"
+    elif not isinstance(coins, list) or not coins or not all(isinstance(c, str) and c.strip() for c in coins):
+        raise CommandError("bad_params", "coins must be a nonempty list of symbols")
+    days = p.get("days")
+    if days is not None and (not math.isfinite(float(days)) or float(days) <= 0):
+        raise CommandError("bad_params", "days must be finite and positive")
+    for key in ("reference_end", "fee_bps", "slippage_bps", "capital"):
+        value = p.get(key)
+        if value is not None and (not math.isfinite(float(value)) or float(value) < 0):
+            raise CommandError("bad_params", f"{key} must be finite and nonnegative")
+    if p.get("capital") == 0:
+        raise CommandError("bad_params", "capital must be positive")
+    for key in ("config", "policy"):
+        if p.get(key) is not None and not isinstance(p[key], dict):
+            raise CommandError("bad_params", f"{key} must be a JSON object")
+    if p.get("expected_data_sha256") is not None:
+        value = p["expected_data_sha256"]
+        if len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+            raise CommandError("bad_params", "expected_data_sha256 must be a lowercase SHA256 digest")
+    request_id = p.get("request_id") or uuid.uuid4().hex
+    with ctx.runtime.lock:
+        active = ctx.runtime.coin_fit_job
+        if active and active.get("status") in ("running", "cancelling"):
+            raise CommandError("failed", "a coin suitability job is still running; cancel it and wait for it to stop")
+        cancelled_before_start = request_id in ctx.runtime.coin_fit_cancelled_requests
+        interrupted = request_id in ctx.runtime.coin_fit_interrupted_requests
+        ctx.runtime.coin_fit_cancelled_requests.discard(request_id)
+        ctx.runtime.coin_fit_interrupted_requests.discard(request_id)
+        if cancelled_before_start:
+            ctx.runtime.coin_fit_stop.set()
+        else:
+            ctx.runtime.coin_fit_stop.clear()
+        job: dict[str, Any] = {"request_id": request_id, "bot": bot, "mode": mode, "status": "running", "fraction": 0.0,
+                              "message": "starting suitability backtests", "error": None,
+                              "interrupt_requested": interrupted}
+        ctx.runtime.coin_fit_job = job
+
+    def progress(fraction: float, message: str) -> None:
+        with ctx.runtime.lock:
+            if ctx.runtime.coin_fit_job is job:
+                job.update(fraction=max(0.0, min(1.0, float(fraction))), message=str(message))
+
+    try:
+        if cancelled_before_start:
+            result = {"bot": bot, "mode": mode, "rows": [], "errors": {}, "cancelled": True,
+                      "notes": ["Cancelled before simulation started."]}
+        else:
+            frozen = {key: p[key] for key in ("reference_end", "config", "fee_bps", "slippage_bps",
+                      "selection_id", "expected_data_sha256", "policy", "capital") if key in p}
+            result = coin_fit.rank_coins(bot, coins, ctx.settings, mode=mode,
+                                        start=p.get("start"), days=days, progress=progress,
+                                        cancelled=ctx.runtime.coin_fit_stop.is_set, **frozen)
+        if not isinstance(result, dict):
+            raise TypeError("coin suitability engine returned a non-object report")
+    except Exception as exc:
+        with ctx.runtime.lock:
+            job.update(status="failed", error=f"{type(exc).__name__}: {exc}", message=str(exc))
+        raise
+    with ctx.runtime.lock:
+        was_cancelled = bool(result.get("cancelled") or ctx.runtime.coin_fit_stop.is_set())
+        result["cancelled"] = was_cancelled
+        interrupted = bool(was_cancelled and job.get("interrupt_requested"))
+        result["interrupted"] = interrupted
+        terminal = "interrupted" if interrupted else "cancelled" if was_cancelled else "completed"
+        job.update(status=terminal, fraction=1.0,
+                   message=f"{terminal}; completed rows retained" if was_cancelled else "completed")
+    return result
+
+
+_COIN_FIT_PARAMS = (BOT_PARAM, P("start", "string", "UTC start; the same comparison window is used for every coin."),
+                   P("days", "number", "Window length in days; must be finite and positive."),
+                   P("reference_end", "number", "Freeze the exclusive UTC endpoint from quick ranking."),
+                   P("config", "json", "Frozen bot settings from the quick ranking; does not save them."),
+                   P("fee_bps", "number", "Frozen per-side fee assumption from quick ranking."),
+                   P("slippage_bps", "number", "Frozen per-side slippage assumption from quick ranking."),
+                   P("policy", "json", "Frozen heuristic policy/score weights from the quick ranking."),
+                   P("capital", "number", "Frozen full funded account capital from the quick ranking."),
+                   P("selection_id", "string", "Identity of the quick ranking this audit follows."),
+                   P("expected_data_sha256", "string", "Selected quick row's data fingerprint; audit refuses changed history."),
+                   P("request_id", "string", "Caller request identity, used for race-safe cancellation."))
+
+
+@command("bots.rank_coins", "Quick, provisional coin suitability ranking on the selected bot's current "
+         "settings and cached data. Returns costs, full-equity backtests, reasons and retained error rows; "
+         "never adopts settings or places an order.",
+         (*_COIN_FIT_PARAMS, P("coins", "json", 'Symbols or "all"; default every cached coin.')),
+         long_running=True)
+def bots_rank_coins(ctx: Context, p: dict[str, Any]) -> Any:
+    return _coin_fit_run(ctx, p, "quick")
+
+
+@command("bots.audit_coin", "Audit one coin with chronological windows and stressed costs. Shows "
+         "equity, drawdown and unresolved inventory; does not adopt settings or promise future returns.",
+         (*_COIN_FIT_PARAMS, P("asset", "string", "One coin symbol to audit.", required=True)),
+         long_running=True)
+def bots_audit_coin(ctx: Context, p: dict[str, Any]) -> Any:
+    return _coin_fit_run(ctx, p, "audit")
+
+
+@command("bots.fit_status", "State and progress of this process's latest coin suitability job.")
+def bots_fit_status(ctx: Context, p: dict[str, Any]) -> Any:
+    with ctx.runtime.lock:
+        return dict(ctx.runtime.coin_fit_job) if ctx.runtime.coin_fit_job is not None else None
+
+
+@command("bots.fit_cancel", "Request cooperative cancellation of the current suitability job. "
+         "It remains cancelling until the active simulation window finishes.",
+         (P("request_id", "string", "Cancel this caller request, including one not started yet."),
+          P("interrupted", "bool", "Mark cancellation as interrupted by application shutdown or context change.")),
+         read_only=False)
+def bots_fit_cancel(ctx: Context, p: dict[str, Any]) -> Any:
+    with ctx.runtime.lock:
+        job = ctx.runtime.coin_fit_job
+        request_id = p.get("request_id")
+        if request_id and (job is None or job.get("request_id") != request_id):
+            if len(ctx.runtime.coin_fit_cancelled_requests) >= 128:
+                raise CommandError("failed", "too many unmatched cancellation requests")
+            ctx.runtime.coin_fit_cancelled_requests.add(request_id)
+            if p.get("interrupted"):
+                ctx.runtime.coin_fit_interrupted_requests.add(request_id)
+        if job and job.get("status") in ("running", "cancelling") and (
+                request_id is None or job.get("request_id") == request_id):
+            ctx.runtime.coin_fit_stop.set()
+            if p.get("interrupted"):
+                job["interrupt_requested"] = True
+            job.update(status="cancelling", message="cancelling after the current bounded simulation window")
+        return dict(job) if job is not None else None
+
+
 @command("bots.results", "Saved bot backtests, newest first.",
          (P("bot", "string", "Limit to one bot."), P("limit", "number", "How many (default 10).")))
 def bots_results(ctx: Context, p: dict[str, Any]) -> Any:
@@ -2180,6 +2454,187 @@ def bots_optimize(ctx: Context, p: dict[str, Any]) -> Any:
 def bots_optimize_result(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
     return _bots(bots_mod.latest_optimize, _bot_param(p))
+
+
+# -- durable optimization experiments ------------------------------------------------------------
+
+EXPERIMENT_ID = P("run_id", "string", "Saved experiment identifier.", required=True)
+EXPERIMENT_SPACE = (
+    BOT_PARAM,
+    P("space", "json", "Typed parameter specifications (fixed, enum, linear/log range)."),
+    P("coins", "json", "Coin symbols; defaults to every cached coin."),
+    P("windows", "number", "Chronological windows per coin, including untouched final holdout."),
+    P("window_days", "number", "Days per bar window."),
+    P("max_candidates", "number", "Hard valid-configuration budget (at most 97)."),
+    P("max_evaluations", "number", "Hard candidate × coin × window evaluation budget."),
+)
+
+
+def _experiment(fn: Callable, *args: Any, **kwargs: Any) -> Any:
+    from .experiments import ExperimentError
+    try:
+        return fn(*args, **kwargs)
+    except (ExperimentError, ValueError, OSError) as exc:
+        raise CommandError("experiment_refused", str(exc)) from None
+
+
+def _experiment_options(p: dict[str, Any]) -> dict[str, Any]:
+    out = {}
+    for name in ("space", "coins", "windows", "window_days", "max_candidates", "max_evaluations"):
+        if name not in p:
+            continue
+        value = p[name]
+        if name == "space" and not isinstance(value, dict):
+            raise CommandError("bad_params", "space must be an object of typed parameter specifications")
+        if name == "coins" and (not isinstance(value, list) or not value or
+                                not all(isinstance(c, str) and c for c in value)):
+            raise CommandError("bad_params", "coins must be a nonempty list of symbols")
+        if name not in {"space", "coins"} and (isinstance(value, bool) or not math.isfinite(value)
+                                                or int(value) != value):
+            raise CommandError("bad_params", f"{name} must be an integer")
+        out[name] = value if name in {"space", "coins"} else int(value)
+    return out
+
+
+@command("experiments.schema", "Current bot configuration and typed search parameter domains.", (BOT_PARAM,))
+def experiments_schema(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots
+    bot = _bot_param(p)
+    return _experiment(lambda: {"bot": bot, "baseline": bots.get_config(bot), "domains": bots.DOMAINS[bot]})
+
+
+@command("experiments.preview", "Validate a bounded search and preview actual cached-data workload; no evaluations.",
+         EXPERIMENT_SPACE, long_running=True)
+def experiments_preview(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_runner import preview_experiment
+    return _experiment(preview_experiment, _bot_param(p), ctx.settings, **_experiment_options(p))
+
+
+@command("experiments.create", "Freeze a native experiment specification without starting its worker.",
+         EXPERIMENT_SPACE, read_only=False, long_running=True)
+def experiments_create(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_runner import prepare_experiment
+    return _experiment(prepare_experiment, _bot_param(p), ctx.settings, **_experiment_options(p))
+
+
+@command("experiments.list", "Saved native and imported experiments, newest first.",
+         (P("bot", "string", "Filter by bot."), P("source", "string", "native or tradingview."),
+          P("limit", "number", "Maximum rows, 1 to 200 (default 100).")))
+def experiments_list(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore
+    limit = p.get("limit", 100)
+    if isinstance(limit, bool) or not 1 <= limit <= 200 or int(limit) != limit:
+        raise CommandError("bad_params", "limit must be an integer in [1, 200]")
+    return _experiment(lambda: ExperimentStore().list_runs(bot=p.get("bot"), source=p.get("source"), limit=int(limit)))
+
+
+@command("experiments.get", "Experiment specification, decision, progress, worker state and diagnostic log tail.",
+         (EXPERIMENT_ID,))
+def experiments_get(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import status
+    from .experiments import ExperimentStore
+    return _experiment(lambda: status(ExperimentStore(), p["run_id"]))
+
+
+@command("experiments.start", "Start or resume the saved experiment; completed evidence is reused only after verification.",
+         (EXPERIMENT_ID,), read_only=False)
+def experiments_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import launch
+    from .experiments import ExperimentStore
+    return _experiment(lambda: launch(ExperimentStore(), p["run_id"], ctx.settings))
+
+
+@command("experiments.pause", "Request pause after the current evaluation cell commits.",
+         (EXPERIMENT_ID,), read_only=False)
+def experiments_pause(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import request
+    from .experiments import ExperimentStore
+    return _experiment(lambda: request(ExperimentStore(), p["run_id"], "pause"))
+
+
+@command("experiments.cancel", "Request cancellation at the next durable evaluation boundary; keep completed evidence.",
+         (EXPERIMENT_ID,), read_only=False)
+def experiments_cancel(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import request
+    from .experiments import ExperimentStore
+    return _experiment(lambda: request(ExperimentStore(), p["run_id"], "cancel"))
+
+
+@command("experiments.finalize", "Freeze the training-selected candidate and validate on fresh reserved final holdout dates.",
+         (EXPERIMENT_ID, P("adopt", "bool", "Save native settings only if all existing evidence gates pass (default false).")),
+         read_only=False)
+def experiments_finalize(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import launch
+    from .experiments import ExperimentStore
+    return _experiment(lambda: launch(ExperimentStore(), p["run_id"], ctx.settings, final=True,
+                                      adopt=p.get("adopt", False)))
+
+
+@command("experiments.candidates", "Full configurations, observed train/validation metrics, coverage and failures.",
+         (EXPERIMENT_ID,))
+def experiments_candidates(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore, candidate_summary
+    return _experiment(lambda: candidate_summary(ExperimentStore(), p["run_id"]))
+
+
+@command("experiments.cells", "Individual coin/window evaluation metrics and failures; final evidence stays sealed until finalization.",
+         (EXPERIMENT_ID, P("coin", "string", "Coin filter."), P("split", "string", "train, validation or holdout."),
+          P("candidate_id", "string", "Candidate filter.")))
+def experiments_cells(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore
+    def read() -> Any:
+        store = ExperimentStore()
+        run = store.get_run(p["run_id"])
+        return store.cells(p["run_id"], coin=p.get("coin") or None, split=p.get("split") or None,
+                           candidate_id=p.get("candidate_id") or None,
+                           include_holdout=run["status"] == "completed")
+    return _experiment(read)
+
+
+@command("experiments.heatmap", "Observed two-parameter return/risk map and stability; missing points remain missing.",
+         (EXPERIMENT_ID, P("x", "string", "First parameter.", True), P("y", "string", "Second parameter.", True),
+          P("metric", "string", "Metric (default total_return)."), P("fixed", "json", "Values of all other varied parameters."),
+          P("coin", "string", "Coin filter."), P("split", "string", "train or validation only.")))
+def experiments_heatmap(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore, sparse_heatmap
+    if p.get("fixed") is not None and not isinstance(p["fixed"], dict):
+        raise CommandError("bad_params", "fixed must be an object")
+    return _experiment(lambda: sparse_heatmap(ExperimentStore(), p["run_id"], p["x"], p["y"],
+                        metric=p.get("metric") or "total_return", fixed=p.get("fixed"),
+                        coin=p.get("coin") or None, split=p.get("split") or None))
+
+
+@command("experiments.import", "Import read-only TradingView CSV evidence with explicit units and provenance; never adopts.",
+         (P("csv", "string", "CSV text (use this or path)."), P("path", "string", "Local CSV file, at most 10 MB."),
+          P("metadata", "json", "Explicit bot, coin, dates, units, costs, fill timing and script provenance.")),
+         read_only=False, long_running=True)
+def experiments_import(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore, import_tradingview
+    if bool(p.get("csv")) == bool(p.get("path")):
+        raise CommandError("bad_params", "supply exactly one of csv or path")
+    if p.get("metadata") is not None and not isinstance(p["metadata"], dict):
+        raise CommandError("bad_params", "metadata must be an object")
+    def read() -> Any:
+        if p.get("path"):
+            path = Path(p["path"]).expanduser()
+            with path.open("rb") as fh:
+                raw = fh.read(10_000_001)
+            if len(raw) > 10_000_000:
+                raise ValueError("CSV exceeds 10 MB import budget")
+            content = raw.decode("utf-8-sig")
+        else:
+            content = p["csv"]
+            if len(content.encode("utf-8")) > 10_000_000:
+                raise ValueError("CSV exceeds 10 MB import budget")
+        return import_tradingview(ExperimentStore(), content, p.get("metadata"))
+    return _experiment(read)
+
+
+@command("experiments.compare", "Compare experiment provenance and metrics only when units, dates and evaluation assumptions match.",
+         (P("left", "string", "First experiment ID.", True), P("right", "string", "Second experiment ID.", True)))
+def experiments_compare(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore, compare_runs
+    return _experiment(lambda: compare_runs(ExperimentStore(), p["left"], p["right"]))
 
 
 @command("prices.status", "The streaming price recorder: running or not, what it has recorded, and the "

@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "incoming": "3e5a9f39e5f06f284a68aca55a2048c9af591094",
+  "preimages": "/tmp/coin-fit-merge-99",
+  "files": {
+    "memory.md": {
+      "preimage_sha256": "247f1ac9406909e77ae25ce0f996c457d1d77c07dd671840cfc718f581c2af8b",
+      "resolved_sha256": "130f9badab66d9e06091a8f8470b6f4ae4ce723a32ff1f41a7ea1802cf5f3e37"
+    },
+    "prompts.md": {
+      "preimage_sha256": "1ed7076aba023bb926a944a4bec36eb936b5532354f6c47a012bc473d19eae7e",
+      "resolved_sha256": "5a7fa989ff45dbd5eabcf12a628fccad7858fc09ec24567d857c95b5ece2353f"
+    },
+    "soltui/commands.py": {
+      "preimage_sha256": "d37e2357b7c94b97b5cf9a6faa037c991e53d30406d1aa693384bcd7e3572af4",
+      "resolved_sha256": "3c268eb8666249c8c44946f8873988d8e9a2e0bbf16fe0aec8732518a3762375"
+    },
+    "soltui/help.py": {
+      "preimage_sha256": "b696d206ed48df78e58910db1d09fb5952cb2738276d257c443477ed73ae61ee",
+      "resolved_sha256": "e3c71b4217abd72d2d4ae8cdb719d652c279250de4d9e53786cba51a4e296c9e"
+    },
+    "soltui/tests/test_bridge_buttons.py": {
+      "preimage_sha256": "2ca728bc96b83f976d383d24f91b00825d302673d3f7754a789882434740a0fc",
+      "resolved_sha256": "c8f11536e81621af6eed02840114b651daf708c7cd292ce794166dfcee0bd90e"
+    }
+  },
+  "resolution": "Preserved both behavior/logs; explicit70button count; no unrelated source removals"
+}

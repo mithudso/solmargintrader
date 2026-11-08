@@ -1,14 +1,20 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 900 tests
-python3 -m unittest discover -s soltui/tests -t .       # 884 tests (~610s)
+python3 -m unittest discover -s backtester/tests -t .   # 909 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1010 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 34 tests
 cd extension && npm test                                # 361 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-2179 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+The full SolTUI suite is optional and is skipped by normal PR/push CI. Run it
+locally with the command above, or manually dispatch CI with the boolean
+`run_soltui_suite` enabled. The other CI jobs and test-discovery count check stay
+enabled. This delivery skips the full suite at the owner's explicit request;
+focused UI, accounting and installed acceptance checks are recorded separately.
+
+2314 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -99,7 +105,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 900 tests
+## Backtester — 909 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -151,11 +157,10 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 884 tests
+## soltui — 1010 tests
 
-Slower than the others (~70s) because the TUI tests drive real render cycles. Three
-files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
-state) and `test_tui.py` (rendering). Run them with
+The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
+Run all tests with
 `python3 -m unittest discover -s soltui/tests -t .`.
 
 soltui is read-only over the research side and places no orders, so its tests are about
@@ -167,6 +172,13 @@ and an enabled news gate blocks when its feeds are unreachable. `test_launcher.p
 lookup, the module choice and argument pass-through without starting Textual. The
 packaging paths — the py2app alias bundle and the launchd agent — are **not** covered by
 any test; see `soltui/README.md` for the manual checks that stand in for them.
+
+The optimization workbench has dedicated foundation, native runner and interface suites:
+`test_experiments.py`, `test_experiment_runner.py` and `test_experiment_interface.py`.
+They cover immutable cells, typed budgets, observed sparse maps, CSV units/provenance,
+spent/explored temporal reservations, legacy fences, historical mutation, cooperative controls,
+process termination/recovery, baseline comparison, adoption crash receipts and the headless UI.
+Fixtures isolate configuration/data; no live order path or real service starts are required.
 
 ## mongo — 34 tests
 

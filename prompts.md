@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 60
-Delta: v59 to v60; expose retained cards in SolTUI Strategies.
+Version: 72
+Delta: v70 to v72; preserve incoming history and explicit coin-fit optional-suite instruction.
 
 ## v1 - 2026-11-06
 
@@ -459,32 +459,121 @@ I told you to move the incomplete cards to the incomplete directory, you never d
 When I launch the soltui I don't see any of the new strategies.
 ```
 
-## v61 - 2026-11-08 (separate guides and non-testable cards)
+## v61 - 2026-11-08
+
+```text
+turn all of your suggestions into an implementation plan and execute it
+```
+
+Scope: all six recommendations from the TradingView comparison: experiment explorer, sparse stability heatmaps, typed search spaces, resumable Bots runs, read-only TradingView import/comparison, and untouched final holdout safeguards.
+
+## v62 - 2026-11-08 (SolTUI redesign mockup)
+
+```text
+Create a list of the primary functions of the TUI in this repo and without looking at its current layout use the design, ui, data viewing, and frontend skills to design an ideal UI interface that provides the same rich data it does now but in an easily accessible, intuitive, and scannable format. Do a simple mockup of it in TUI format using the best TUI tools you can find.
+```
+
+Context: Stele TASK-877. Output under docs/design/soltui-v2/.
+
+## v63 - 2026-11-08 (implement SolTUI v2)
+
+```text
+I like that interface a lot, make a backup of the current UI, then implement this new one, make sure all of the functionality of the current setup is represented.
+```
+
+Context: Stele TASK-904. Backup: tag soltui-ui-v1 and branch backup/soltui-ui-v1 at 4d0f027. Branch feat/soltui-v2-ui.
+
+## v64 - 2026-11-08 (resume SolTUI redesign)
+
+Version: 64. Delta: v63 to v64; preserve the recovery request.
+
+```text
+claude ran out of tokens redesigning the UI for the TUI, see if you can resume where it left off.
+```
+
+## v65 - 2026-11-08 (CI status question)
+
+Version: 65. Delta: v64 to v65; preserve the owner's status question during delivery.
+
+```text
+Is the CI run optional? Is this the first one you've run? What are you doing that's left?
+```
+
+## v66 - 2026-11-08 (stop repeating full CI)
+
+Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
+
+```text
+So you don't have to run this, you've already passed the CI 3 times.
+
+## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
+
+```text
+For the forwardtest tab, add a dropdown to choose which coins are tested, including all coins, and also add an "auto-optimize" option which dynamically changes the strategies' settings when they get an answer wrong. If a new setting tests superior than an old setting then save it as the default. Also make the forwardtest keep running in the background if I change tabs.
+```
+
+Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd, branch feat/forwardtest-coins-optimize, stacked on PR #87).
+
+## v61 - 2026-11-08
+
+```text
+› REsolve the merge conflicts on https://github.com/mithudso/solmargintrader/pull/89 and merge commit pr
+```
+
+## v62 - 2026-11-08
+
+```text
+Look at the CI tests, and determine which tests are causing the hour long delays in testing and make it so only the tests that affect what you doing are necessary, and do whatever else you need to to actually do this.
+```
+
+## v71 - Coin suitability and Bots ranking
+
+```text
+Create a skill that applies the template to a coin and determines if it's a good fit or not, and then explains its reasoning. Also have a bulk mode where it applies the template to a group of coins and outputs a table. And then write a script that does the same thing
+```
+
+```text
+Add a heuristic backtesting mechanism to quickly test it, and a more detailed audit backtest. And then incorporate this into the soltui in the bots tab, so that I can click a button and it will ranksort the most suitable coins and do a backtest to show it.
+```
+
+## v72 - Optional full SolTUI suite
+
+```text
+make the 999-case SolTUI suite optional, then skip it and push the code
+```
+
+## v73 - 2026-11-08 (separate guides and non-testable cards)
 
 ```text
 move out the cards that are actually just a how to guide, like "A Quick Guide to Multi-Timeframe Scaling" is not a testable strategy. Move them to a guides directory. If it is not testeable strategy it should not be in the strategy folder.
 ```
 
-## v62 - 2026-11-08 (move cards immediately)
+## v74 - 2026-11-08 (move cards immediately)
 
 ```text
 I literally told you to move them. Why did you not move them?
 ```
 
-## v63 - 2026-11-08 (update SolTUI list)
+## v75 - 2026-11-08 (update SolTUI list)
 
 ```text
 Make sure the soltui's list is updated
 ```
 
-## v64 - 2026-11-08 (exclude pair and bot templates)
+## v76 - 2026-11-08 (exclude pair and bot templates)
 
 ```text
 The rest of these are also guides, like jlp_vs_sol_relative_value.md is literally just a stub article saying to look at a coin pair.  same with BTC or ETH, the Resting-ladder grid is a grid bot template, not a strategy.
 ```
 
-## v65 - 2026-11-08 (correction)
+## v77 - 2026-11-08 (correction)
 
 ```text
 You have now spenot 136M tokens to be wrong every time you have said you came to a conclusion with zero productive work as a result.
+```
+
+## v78 - 2026-11-08 (status check)
+
+```text
+So now what's up? Haven't you moved literally everything you created?
 ```

@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "delta": "Preserve published forwardtest controls and timed shards, keeping full SolTUI coverage opt-in.",
+  "incoming_commit": "fedde2a70a7ea09c4e74b6befc6a40d5657e93e4",
+  "incoming_pr": "https://github.com/mithudso/solmargintrader/pull/89",
+  "conflict_backups": "/tmp/coin-fit-merge-89",
+  "conflicted_files": [
+    ".github/copilot-instructions.md",
+    ".github/workflows/ci.yml",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "README.md",
+    "docs/DEVELOPMENT.md",
+    "docs/FILES.md",
+    "docs/TESTING.md",
+    "index/CONCEPT-INDEX.json",
+    "index/INDEX.json",
+    "index/TEXT-INDEX.json",
+    "memory.md",
+    "prompts.md"
+  ],
+  "resolution": "Retain both command/worker interfaces, incoming logs and sharding scripts. Latest explicit user instruction requires manual opt-in for full SolTUI suite; no full suite rerun."
+}
