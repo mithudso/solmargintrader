@@ -277,6 +277,25 @@ Measured on five coins (correlation of their 5m scores):
   `ichimoku` (+0.87), `macd` ≈ `roc` (+0.80). These now share a family, so each group votes once.
 * **Gates that leave nothing:** the cost gate plus the liquidation gate at high leverage block
   almost every 5m bar; the call is then FLAT by design.
+* **Trend filter (`gate_trend`, on by default since 2026-11-07, owner request).** The compound is
+  a fade: with learned weights only the reversion metrics count, and inverted trend metrics vote
+  against the trend too, so in a steady decline every weighted vote says UP. `gate_trend` reads
+  the 1h trend (`htf_trend`'s formula) and blocks an UP call when it is at or below −`threshold`,
+  and a DOWN call when it is at or above +`threshold`. Calls with the trend pass. An unknown trend
+  (the first 20 hours of a series) blocks every call, failing closed. Measured on the last 120
+  days of each coin, out of sample, with each coin's saved settings:
+
+  | Threshold | Calls kept | Hit rate vs no gate |
+  | --- | --- | --- |
+  | 0.3 | 35–45% | lower on 7 of 10 coins (BTC 52.4% → 50.3%) |
+  | **0.5 (default)** | 45–50% | about equal on SOL, ETH, XRP; about 1 point lower on BTC, DOGE |
+  | 0.7 | 55–60% | equal or higher on SOL, ETH, XRP |
+
+  0.5 was chosen on that same window from four tried, so it is a judgement, not a fitted optimum.
+  On the 2026-11-07 SOL slide, the 1h trend sat at −0.5 to −0.9, so 0.5 blocks most of the UP calls
+  the owner reported and 0.7 would not. The filter costs accuracy because the fade is where the
+  small edge is; what it buys is not betting against a clear trend. Every configuration still
+  loses after costs either way.
 
 The tab shows a live warning line for any enabled pair that fights (correlation ≤ −0.6) or
 repeats across families (≥ 0.85) over the last two weeks (`scorecard.relations`).
@@ -294,7 +313,7 @@ repeats across families (≥ 0.85) over the last two weeks (`scorecard.relations
 | Positioning | `funding`, `premium` (live), `oi_flow` (live) | Funding arbitrage input, cross-venue observation |
 | Cross-asset | `btc_lead` | added |
 | Lifecycle | `trend_lifecycle` (early / mature / exhausted), `cycle_phase` (markup / markdown / accumulation / distribution) | added |
-| Gates | `gate_cost`, `gate_liquidation`, `gate_shock`, `gate_volume`, `gate_events`, `gate_session`, `gate_news` (live) | Execution checklist 1-2, regime table "no-trade" |
+| Gates | `gate_cost`, `gate_liquidation`, `gate_trend` (blocks calls against the 1h trend), `gate_shock`, `gate_volume`, `gate_events`, `gate_session`, `gate_news` (live) | Execution checklist 1-2, regime table "no-trade" |
 
 Every metric's formula, parameter ranges, "works when" and "fails when" are in the tab (select a
 row) and in `python3 -m soltui.compound catalog`. Eight catalogue entries are not five-minute

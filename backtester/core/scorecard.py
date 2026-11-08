@@ -343,6 +343,9 @@ class Component:
     forward_only: bool = False
     default_enabled: bool = True
     default_weight: float = 1.0
+    # A directional gate returns a direction per bar (+1, -1, 0, NaN) instead of a block flag. It
+    # blocks only a call against that direction; NaN (unknown) blocks every call, failing closed.
+    directional: bool = False
 
     def defaults(self) -> dict[str, Any]:
         return {p.name: (int(p.default) if p.kind == "int" else float(p.default)) for p in self.params}
@@ -899,6 +902,18 @@ def _g_liquidation(b: Bars, p: Params, aux: Params) -> np.ndarray:
     return np.where(np.isnan(stop_pct), True, blocked)
 
 
+def _g_trend(b: Bars, p: Params, aux: Params) -> np.ndarray:
+    """Higher-timeframe trend direction: +1 up, -1 down, 0 flat, NaN not yet known.
+
+    The compound is a fade by construction: with learned weights only the reversion metrics count,
+    and inverted trend metrics vote against the trend too. In a steady decline every weighted vote
+    then says UP for hours (SOL, 2026-11-07). This gate refuses a call against a clear 1h trend.
+    """
+    s = _c_htf_trend(b, p, aux)
+    thr = p["threshold"]
+    return np.where(np.isfinite(s), np.where(s <= -thr, -1.0, np.where(s >= thr, 1.0, 0.0)), np.nan)
+
+
 def _g_shock(b: Bars, p: Params, aux: Params) -> np.ndarray:
     prev_atr = prior(atr(b, p["atr"]), 1)
     rng = b.high - b.low
@@ -1189,6 +1204,15 @@ COMPONENTS: tuple[Component, ...] = (
               "block when stop_atr * ATR / price > max_fraction / leverage",
               "Every leveraged trade.", "Gaps jump through stops before execution.",
               "Risk-first leveraged scalp / liquidation-distance gating"),
+    Component("gate_trend", "Trend filter", "gate", "gate", "gate",
+              (P("tf_minutes", 60, 10, 1440, "int", "multiple of 5"), P("span", 20, 2, 200),
+               P("scale", 1.0, 0.05, 10, "float"), _ATR,
+               P("threshold", 0.5, 0.0, 1.0, "float", "|htf_trend| at or above this counts as a trend")),
+              _g_trend,
+              "block UP when htf_trend <= -threshold, block DOWN when htf_trend >= threshold",
+              "Stops the compound fading a steady higher-timeframe move bar after bar.",
+              "Turning points: the 1h trend lags, so the first bounce of a reversal is skipped.",
+              "added 2026-11-07 (owner request)", directional=True),
     Component("gate_shock", "Shock / unstable bar", "gate", "gate", "gate",
               (P("range_mult", 3.0, 1, 20, "float"), P("vol_z", 4.0, 1, 20, "float"),
                P("vol_window", 96, 10, 2000), P("cooldown", 3, 0, 100), _ATR), _g_shock,
@@ -1639,6 +1663,7 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     gates: dict[str, np.ndarray] = {}
     errors: dict[str, str] = {}
     tuned: dict[str, list[tuple[int, dict[str, Any]]]] = {}
+    directions: dict[str, np.ndarray] = {}
     for comp in COMPONENTS:
         entry = cfg["components"][comp.id]
         if not entry["enabled"]:
@@ -1660,7 +1685,9 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
         values = np.asarray(values)
         if values.shape != (n,):
             raise ScorecardError(f"{comp.id} returned shape {values.shape}, expected ({n},)")
-        if comp.kind == "gate":
+        if comp.kind == "gate" and comp.directional:
+            directions[comp.id] = values.astype("float64")
+        elif comp.kind == "gate":
             gates[comp.id] = values.astype(bool)
         else:
             scores[comp.id] = _clip(values.astype("float64"))
@@ -1724,9 +1751,6 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     composite = np.where(den > 0, _safe_div(num, den), np.nan)
     coverage = present / total if total > 0 else np.zeros(n)
     composite = np.where(coverage >= agg["min_coverage"], composite, np.nan)
-    blocked = np.zeros(n, dtype=bool)
-    for g in gates.values():
-        blocked |= g
     threshold = np.full(n, float(agg["entry"]))
     if agg["entry_quantile"] > 0 and n:
         # Trailing quantile of |composite| through bar t: known at t, so the call stays causal.
@@ -1735,6 +1759,13 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
             agg["entry_quantile"]).to_numpy()
         threshold = np.where(np.isfinite(q), np.maximum(threshold, q), np.inf)
     call = np.where(composite >= threshold, 1, np.where(composite <= -threshold, -1, 0))
+    # A directional gate blocks the bar only when this bar's call goes against its direction, so it
+    # is resolved after the call; an unknown direction blocks every call (fails closed).
+    for gid, d in directions.items():
+        gates[gid] = ~np.isfinite(d) | (call * np.nan_to_num(d) < 0)
+    blocked = np.zeros(n, dtype=bool)
+    for g in gates.values():
+        blocked |= g
     call = np.where(np.isnan(composite) | blocked, 0, call)
     if not agg["allow_short"]:
         call = np.where(call < 0, 0, call)

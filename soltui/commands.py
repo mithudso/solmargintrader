@@ -43,7 +43,7 @@ from typing import Any, Callable
 
 from . import analyze as analyze_mod
 from . import compound as compound_mod
-from . import bgcontrol, bgqueue
+from . import bgcontrol, bgqueue, forwardtest
 from . import cumulative as cumulative_mod
 from . import docs_browser, live_run, pnl as pnl_mod, presets as presets_mod, wallet as wallet_mod
 from . import portfolio as portfolio_mod
@@ -53,7 +53,7 @@ from .config import INTERVALS, Settings, load_settings, save_settings
 from .netpct import labelled, net_pct
 from .paper import MODE_LABEL, PaperSession, start_session
 from .reference import FAMILY_NOTES, RESEARCH_DRIVERS, RESEARCH_FINDINGS, SIGNAL_REFERENCE
-from .roster import Roster, RosterError, available_strategies
+from .roster import Roster, RosterEntry, RosterError, available_strategies
 from .runner import SweepRunner, engine_config, load_arrays
 from .signals import (
     SIGNAL_GROUPS,
@@ -187,6 +187,9 @@ class Runtime:
         self.queue_results: list[bgqueue.JobResult] = []
         self.queue_cursor = bgqueue.ResultsCursor()
         self.lock = threading.RLock()
+        self.forward_plan: dict[str, Any] | None = None
+        self.forward_stop = threading.Event()
+        self.forward_busy = False
         self._catalog: list[docs_browser.DocEntry] | None = None
         self._catalog_key: tuple | None = None
 
@@ -237,7 +240,7 @@ class Context:
     @classmethod
     def from_settings(cls, settings: Settings, runtime: Runtime | None = None) -> "Context":
         roster = Roster.from_list(settings.roster or [{"name": n} for n in settings.enabled_strategies])
-        if len(roster) == 0:
+        if len(roster) == 0 and settings.enabled_strategies:
             roster = Roster.default()
         return cls(settings, roster, from_dict(settings.signal_defaults), runtime)
 
@@ -609,6 +612,132 @@ def roster_remove(ctx: Context, p: dict[str, Any]) -> Any:
     removed = ctx.roster.remove(p["label"])
     ctx.persist_roster()
     return {"removed": _entry(removed), "count": len(ctx.roster)}
+
+
+@command("roster.toggle", "Toggle the highlighted strategy configuration in the roster.",
+         (P("name", "string", "Registered strategy name.", True),
+          P("params", "json", "Explicit parameters (optional).")), read_only=False)
+def roster_toggle(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core.strategies import build
+
+    name, params = p["name"], p.get("params") or {}
+    if not isinstance(params, dict):
+        raise CommandError("bad_params", "params must be an object")
+    matching = [e for e in ctx.roster if e.name == name]
+    if not params and len(matching) == 1:
+        return roster_remove(ctx, {"label": matching[0].label})
+    merged = merged_params(name, ctx.signals, params)
+    if name not in dict(available_strategies()):
+        raise CommandError("bad_params", f"Unknown strategy {name!r}")
+    label = build(name, **merged).name
+    if any(e.label == label for e in matching):
+        return roster_remove(ctx, {"label": label})
+    if matching and not params:
+        raise CommandError("bad_params", "Several versions are in the roster; highlight one on the right to remove it")
+    return roster_add(ctx, {"name": name, "params": params})
+
+
+@command("roster.add_all", "Add every missing registered strategy using the signal defaults.", read_only=False)
+def roster_add_all(ctx: Context, p: dict[str, Any]) -> Any:
+    present = {e.name for e in ctx.roster}
+    # Validate all additions before replacing the roster or saving anything.
+    roster = Roster(ctx.roster.entries)
+    added = [_entry(roster.add(name, **merged_params(name, ctx.signals)))
+             for name, _ in available_strategies() if name not in present]
+    ctx.roster = roster
+    ctx.persist_roster()
+    return {"added": added, "count": len(roster)}
+
+
+@command("forwardtest.start", "Prepare an in-session adaptive paper forward test.",
+         (P("scope", "string", "all, roster, or combinations."),
+          P("horizons", "json", "Subset of 1, 5, 10 and 30 minutes. Default: all four."),
+          P("combinations", "json", "Lists of strategy names or roster labels."),
+          P("mode", "string", "Combination rule: all, any, vote or mean.")), read_only=False)
+def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core.strategies import COMBINE_MODES
+
+    scope = p.get("scope", "all")
+    horizons = p.get("horizons", list(forwardtest.HORIZONS))
+    combos = p.get("combinations", [])
+    mode = p.get("mode", "all")
+    if scope not in ("all", "roster", "combinations") or mode not in COMBINE_MODES:
+        raise CommandError("bad_params", "Choose a valid trial scope and combination rule")
+    if (not isinstance(horizons, list) or not horizons
+            or any(type(h) is not int or h not in forwardtest.HORIZONS for h in horizons)):
+        raise CommandError("bad_params", "Horizons must be chosen from 1, 5, 10 and 30")
+    if (not isinstance(combos, list) or len(combos) > 8
+            or any(not isinstance(c, list) or not 2 <= len(c) <= 8
+                   or any(not isinstance(v, str) for v in c) or len(set(c)) != len(c) for c in combos)):
+        raise CommandError("bad_params", "Enter up to 8 combinations of 2–8 distinct names or roster labels")
+
+    roster = {e.label: e for e in ctx.roster}
+    entries = list(roster.values())
+    if scope != "roster":
+        present = {e.name for e in entries}
+        entries.extend(RosterEntry(n, merged_params(n, ctx.signals))
+                       for n, _ in available_strategies() if n not in present)
+    labels = {e.label: e for e in entries}
+    for e in entries:
+        labels.setdefault(e.name, e)
+
+    def spec(e: RosterEntry) -> dict:
+        return forwardtest.member(e.name, e.params)
+
+    trials = [{"label": e.label, "mode": "all", "members": [spec(e)]}
+              for e in entries] if scope != "combinations" else []
+    for combo in combos:
+        unknown = next((name for name in combo if name not in labels), None)
+        if unknown is not None:
+            raise CommandError("bad_params", f"Unknown combination member: {unknown}")
+        members = sorted((labels[n] for n in combo), key=lambda e: e.label)
+        if len({e.label for e in members}) != len(members):
+            raise CommandError("bad_params", "A combination cannot include the same configuration twice")
+        trials.append({"label": f"{mode}({', '.join(e.label for e in members)})",
+                       "mode": mode, "members": [spec(e) for e in members]})
+    if not trials:
+        raise CommandError("bad_params", "Add a strategy or enter a combination first")
+    asset = bgqueue.validate_asset(ctx.settings.asset)
+    cost = 2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps)
+    rt = ctx.runtime
+    with rt.lock:
+        if rt.forward_plan or rt.forward_busy:
+            raise CommandError("failed", "A forward test is running or stopping")
+        rt.forward_stop.clear()
+        rt.forward_plan = {"asset": asset, "trials": trials, "horizons": tuple(sorted(set(horizons))),
+                           "cost": cost, "code": forwardtest.revision()}
+    return {"asset": asset, "trials": len(trials), "horizons": sorted(set(horizons)), "cost_bps": cost}
+
+
+@command("forwardtest.stop", "Stop issuing forward predictions in this session.", read_only=False)
+def forwardtest_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        rt.forward_stop.set()
+        rt.forward_plan = None
+        return {"stopping": rt.forward_busy}
+
+
+@command("forwardtest.tick", "Settle due predictions and record the next paper calls.",
+         read_only=False, long_running=True)
+def forwardtest_tick(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        plan = rt.forward_plan
+        if plan is None or rt.forward_busy:
+            raise CommandError("failed", "Forwardtest is stopped or already checking prices")
+        rt.forward_busy = True
+    try:
+        return {"asset": plan["asset"], **forwardtest.tick(**plan, stop=rt.forward_stop)}
+    finally:
+        with rt.lock:
+            rt.forward_busy = False
+
+
+@command("forwardtest.status", "Read saved forward results, separately for each forecast horizon.")
+def forwardtest_status(ctx: Context, p: dict[str, Any]) -> Any:
+    asset = bgqueue.validate_asset(ctx.settings.asset)
+    return {"asset": asset, "rows": forwardtest.status(asset)}
 
 
 @command("roster.reset", "Restore the backtester's default comparison set.", read_only=False)

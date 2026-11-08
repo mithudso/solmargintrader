@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-07T22:23:25+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T07:18:40+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -97,7 +97,7 @@ Full list: `python3 index/search.py --concept costs -n 193`
 
 ### Lookahead and fill timing
 
-`lookahead` · **189 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **190 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -112,11 +112,11 @@ Strongest files:
 - `backtester/tests/test_engine.py` (24 hits)
 - `backtester/tests/test_engine_audit.py` (17 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 189`
+Full list: `python3 index/search.py --concept lookahead -n 190`
 
 ### Data integrity
 
-`data-integrity` · **189 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **190 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -131,7 +131,7 @@ Strongest files:
 - `research/CANDLE-GAP-AUDIT.md` (23 hits)
 - `research/candle_gap_audit.py` (20 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 189`
+Full list: `python3 index/search.py --concept data-integrity -n 190`
 
 ### Evidence floor
 
@@ -152,6 +152,25 @@ Strongest files:
 
 Full list: `python3 index/search.py --concept evidence-floor -n 163`
 
+### Buy-and-hold benchmark
+
+`benchmark` · **151 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+
+Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
+
+Strongest files:
+
+- `docs/FILES.md` (32 hits)
+- `research/perturb.py` (29 hits)
+- `research/RANKED_LISTS.md` (25 hits)
+- `backtester/core/deflated_sharpe.py` (21 hits)
+- `docs/CONCEPTS.md` (14 hits)
+- `backtester/core/gridsim.py` (14 hits)
+- `backtester/core/report.py` (13 hits)
+- `research/coin-intelligence/eth-ethereum.md` (12 hits)
+
+Full list: `python3 index/search.py --concept benchmark -n 151`
+
 ### Cross-asset and cross-timeframe transfer
 
 `transfer` · **150 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
@@ -170,25 +189,6 @@ Strongest files:
 - `backtester/tests/test_cross_asset_cpcv.py` (46 hits)
 
 Full list: `python3 index/search.py --concept transfer -n 150`
-
-### Buy-and-hold benchmark
-
-`benchmark` · **150 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
-
-Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
-
-Strongest files:
-
-- `docs/FILES.md` (32 hits)
-- `research/perturb.py` (29 hits)
-- `research/RANKED_LISTS.md` (25 hits)
-- `backtester/core/deflated_sharpe.py` (21 hits)
-- `docs/CONCEPTS.md` (14 hits)
-- `backtester/core/gridsim.py` (14 hits)
-- `backtester/core/report.py` (13 hits)
-- `research/coin-intelligence/eth-ethereum.md` (12 hits)
-
-Full list: `python3 index/search.py --concept benchmark -n 150`
 
 ### Combinatorial purged cross-validation
 
@@ -243,7 +243,7 @@ Strongest files:
 - `soltui/compound.py` (16 hits)
 - `research/coin-intelligence/sol-solana.md` (11 hits)
 - `research/triggers.py` (10 hits)
-- `docs/CONCEPTS.md` (9 hits)
+- `research/results/perturb_all_singles_long.txt` (9 hits)
 
 Full list: `python3 index/search.py --concept robustness -n 92`
 
@@ -257,14 +257,14 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 190 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `regime-filter` | 182 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
-| `baseline` | 128 | `buy_and_hold`, `baseline` |
-| `oscillator-reversion` | 112 | `rsi`, `stochastic`, `oscillator` |
-| `breakout` | 93 | `breakout`, `bb_breakout`, `keltner` |
+| `trend` | 191 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `regime-filter` | 183 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
+| `baseline` | 129 | `buy_and_hold`, `baseline` |
+| `oscillator-reversion` | 113 | `rsi`, `stochastic`, `oscillator` |
+| `breakout` | 95 | `breakout`, `bb_breakout`, `keltner` |
 | `mean-reversion` | 91 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
 | `momentum` | 84 | `momentum`, `ts_momentum`, `dual_momentum` |
-| `volume-flow` | 72 | `obv`, `volume-flow` |
+| `volume-flow` | 74 | `obv`, `volume-flow` |
 | `risk-overlay` | 38 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
 
 ---

@@ -25,8 +25,8 @@ def pressed_selectors() -> list[str]:
 
 
 class ButtonRegistryTests(unittest.TestCase):
-    def test_there_are_fifty_four_button_handlers(self) -> None:
-        self.assertEqual(len(pressed_selectors()), 54)
+    def test_there_are_fifty_eight_button_handlers(self) -> None:
+        self.assertEqual(len(pressed_selectors()), 58)
 
     def test_every_button_handler_maps_to_a_registered_command(self) -> None:
         for selector in pressed_selectors():

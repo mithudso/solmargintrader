@@ -1,7 +1,7 @@
 ---
 name: five-minute-signal
-version: "1.7.0"
-updated: "2026-11-07"
+version: "1.8.0"
+updated: "2026-11-08"
 description: >-
   Produce and explain an UP / DOWN / FLAT call for the next five-minute bar of a crypto asset
   (SOL by default) from the solmargintrader compound scorecard: every metric scored -1..+1,
@@ -46,7 +46,9 @@ Repo: `/Users/mitch/dev/solmargintrader`. Interpreter with the dependencies:
      multiplier it earned. A multiplier of 0 means
      it has not beaten a coin flip and did not count, however strong its score.
    - `tuned_params` (tune=1): settings the metric moved to on evidence; say so if present.
-   - gates: `pass` or `blocking`. Any blocking gate makes the call FLAT; name it.
+   - gates: `pass` or `blocking`. Any blocking gate makes the call FLAT; name it. `gate_trend`
+     blocks only a call against the 1h trend; when it blocks, say the compound wanted to fade a
+     clear trend and was stopped.
    Group the votes by family (trend, oscillator, bands, breakout, flow, positioning,
    lifecycle) and say which families agree. One family with five members is one opinion.
 

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 51
-Delta: v50 to v51; resume the Compound 5m full-suite run.
+Version: 52
+Delta: v51 to v52; adaptive strategy Forwardtest and roster shortcuts.
 
 ## v1 - 2026-11-06
 
