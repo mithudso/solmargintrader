@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `4a4f677` (2026-11-08T09:59:05+00:00). 1837 tracked files, 29.5 MB.
+**Generated** from `index/INDEX.json` at commit `ca16701` (2026-11-08T10:02:27+00:00). 1837 tracked files, 29.5 MB.
 
 Regenerate with:
 
@@ -184,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 902 lines · 134,912 B · description: **extracted**
+`doc` · 913 lines · 136,172 B · description: **extracted**
 
-**Purpose.** Version: 86 Delta: v85 to v86; preserve converter and card histories with final delivery context. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 87 Delta: v86 to v87; use the verified mirror-capable CI installer for executor. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -16208,7 +16208,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 304 lines · 12,938 B · description: **curated**
+`ci` · 304 lines · 12,943 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 

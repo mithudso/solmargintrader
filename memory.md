@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 86
-Delta: v85 to v86; preserve converter and card histories with final delivery context.
+Version: 87
+Delta: v86 to v87; use the verified mirror-capable CI installer for executor.
 
 ## v1 - 2026-11-06
 
@@ -899,3 +899,14 @@ Version: 86. Delta: v85 to v86; integrate origin/master eea27e2 from PR 90 witho
 Preserved all converter source, documentation, tests and history. The docs CI job retains both Offline HTML converter behavior and TradingView source-to-card coverage checks. Card content remains unchanged at ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
 
 The five capped-catalog Docs editor fixture corrections pass all 9 TestDocsTab cases locally. Other preceding CI checks passed; the executor artifact download receives a new attempt with the final integrated head. Delivery is still through https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. If that PR is already merged, verify its receipt rather than replaying extraction or test fixes. No card implementation or new source extraction is pending.
+
+
+## v87 - 2026-11-08 (executor CI tool-download repair)
+
+Version: 87. Delta: v86 to v87; repair the repeated external installer failure using an existing repository convention.
+
+Executor CI failed in runs 42467823348 and 42469464071 before tests. setup-uv v5 tried https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-unknown-linux-gnu.tar.gz and received three HTTP 504 responses in each run. In the same workflow, liquidity setup-uv v10.3.3 installed the same uv 0.13.7 in under one second from releases.astral.sh. Context7 official setup-uv documentation confirms the mirror-first download path with GitHub fallback.
+
+Changed the executor setup-uv action to the exact v10.3.3 SHA already pinned for liquidity (68559e99cc807c1eb7e9238fd43a15bba460eec2). No executor code, uv.lock, frozen sync flag, test selection, runtime default or trading configuration changed. This is a necessary CI bootstrap repair, not a relaxed gate. The original 59 cards and all new card content remain unchanged.
+
+Delivery: https://github.com/mithudso/solmargintrader/pull/91 ; TASK-888. Finish the final-head checks and merge if the PR is still open. If already merged, verify its receipts and preserve other sessions. No card source extraction or implementation remains.
