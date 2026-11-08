@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 170
-Delta: v169 to v170; record actual cached-data dry-run validation.
+Version: 171
+Delta: v170 to v171; record offline index CI remediation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1678,3 +1678,7 @@ Implemented 10 test-status buttons with independent in-session operation logs, b
 ## v170 - 2026-11-08
 
 Actual cached-data smoke on the status branch initially failed because SOL_1h.csv has gaps. The Dry Run now selects only the latest contiguous real candle segment and reports its exact dates and excluded bar count. A historical RSI run on /Users/mitch/dev/solmargintrader/data/SOL_1h.csv completed using 4,410 of 24,999 bars, excluded 20,589, and recorded 78 simulated fills. No prices were fabricated and no orders were placed. This is a historical smoke, not proof of live behavior or profitable future performance. Focused gap regression passes; draft PR 118 awaits integrated tests and coordinated delivery.
+
+## v171 - 2026-11-08
+
+PR 118 CI at head 26d4ec5 reported the backtester and docs checks failed because the committed offline retrieval indexes were stale after source, test and documentation changes. Rebuilt the three tracked offline indexes with index/build.py all. The builder does not run embeddings or contact the network. The exact failing backtester index staleness test and scripts/check_docs.py passed locally. Head 89b12f0 pushed those indexes; this continuation update requires one more offline rebuild before the next push. Remaining: verify CI on the final head, coordinate integration and verify the installed app. Preserve the active trainer and sweep.
