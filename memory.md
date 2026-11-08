@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 87
-Delta: v86 to v87; use the verified mirror-capable CI installer for executor.
+Version: 92
+Delta: v91 to v92; preserve concurrent wallet and TradingView card histories.
 
 ## v1 - 2026-11-06
 
@@ -798,10 +798,43 @@ PR 90: https://github.com/mithudso/solmargintrader/pull/90. Concurrent PR 88 mer
 
 Remaining: pass checks on the updated final head, merge PR 90, verify remote contents and clean only the converter worktree/branch.
 
+## v79 - 2026-11-08: Base wallet discovery (TASK-911)
 
-## v79 - 2026-11-08 (TradingView card coverage, inventory)
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba75; branch agent-01a1ba75; base afaa03a. Preserve the shared checkout and all other worktrees.
 
-Version: 79. Delta: v78 to v79; start TASK-886, TASK-887, TASK-888.
+Verified Base llms-full live: ETH uses eth_getBalance(address, latest), ERC-20 uses eth_call balanceOf(address); RPC alone does not enumerate tokens. Context7 cached pending/Flashblocks guidance is stale; current live docs explicitly prefer latest. Live baseline discovers ETH, USDC and gtUSDCp but Blockscout returns HTTP 403 and no other tokens can be discovered. The configured cdp CLI returns paginated balances successfully (100 rows on first page). KNOW-852 describes that existing indexed source.
+
+Decision: use the configured cdp CLI for indexed balances, bounded pages/timeouts and sanitized failures, with public Blockscout/trusted RPC fallback. SolTUI must never load private keys or call unknown unsolicited token contracts. Preserve price confidence and airdrop exclusions.
+
+Remaining: implement, focused regression tests, live acceptance and suite/docs/index gates, commit/push/PR/green CI/merge, verify remote content.
+
+## v80 - 2026-11-08: Base wallet verification
+
+Implemented in soltui/wallet.py, commands.py and tui.py: bounded configured CDP CLI balance pages, paginated Blockscout fallback, trusted/requested RPC balance checks, indexed provenance, safe malformed responses, conservative unknown-token exclusions and batched price URLs. No private keys or credential files loaded. CLI stderr is sanitized. Corrected AERO wallet-list address to the canonical address already recorded in docs/BASE-WALLET-QUERIES.md; liquidity configuration stays unchanged.
+
+Verification: 12 new regression tests. 90 wallet/settings/integration tests pass; 73 wallet/Ethereum/UTXO tests pass. Independent live-acceptance verifier exercised the production _portfolio_scan handler with saved Settings: status ok, partial false; ETH 0.000558130650770097, USDC 1.0, gtUSDCp 77.44216571536937; 387 unrecognized rows excluded. Wallet compose/render shows those assets and indexed/exclusion labels. Full SolTUI suite running in /tmp/soltui-base-suite-01a1ba75.log.
+
+Installation limit: /Users/mitch/.local/bin/soltui delegates to shared /Users/mitch/dev/solmargintrader at a75f5b6. Two running consoles have already imported old code. The shared checkout is held by other live sessions and has unrelated dirty work; do not change it or kill/restart their processes. Deliver the merged source; fast-forward the shared checkout and reopen consoles only after those owners release it. Avoid import overlays or silently retargeting the launcher.
+
+Remaining: full suite/docs/index checks, final diff, commit/push/PR/passing CI/merge, verify remote content. Installed-console parity is not yet established.
+
+## v81 - 2026-11-08: frozen Base wallet delivery checkpoint
+
+Source delivery: https://github.com/mithudso/solmargintrader/pull/92 (agent-01a1ba75). Final CI and merge receipts live in Stele TASK-915 and the PR; query them before repeating delivery. The concurrent hook-repair records from PR 88 were preserved. The offline index was regenerated after resolving Git stages; duplicate-path check passes. KNOW-919 records the transient DuplicateKey failure from rebuilding before stages were resolved. No application bug remained from that generated-index issue.
+
+Frozen independent acceptance: production _portfolio_scan with actual saved Settings and production Wallet renderer both passed in 9.35 seconds. ETH 0.000558130650770097; USDC 1.0; gtUSDCp 77.44216571536937; 387 excluded; 390 rendered rows; status ok, partial false, discovery complete, total complete, no errors. wallet.py SHA256 190d5046bd15c46c7d8dacc5e8ea4217170af536e9f373cc4aea89b73bf3afd5; tui.py SHA256 609b0a860c6c08f1c52dca36a9f06e587165517b52ae2225a9af1f6586bf6999. No files or services were changed by acceptance.
+
+Local verification: 90 wallet/settings/integration tests and 73 wallet/Ethereum/UTXO tests pass; all 900 backtester tests pass; compileall, docs drift and index hash gates pass. Full-suite receipts are in /tmp/soltui-base-suite-final-01a1ba75.log and the PR's final-head CI. Use the final receipts rather than the terminated earlier run that observed a transient merge index.
+
+Remaining product step: installed synchronization and fresh-console acceptance after shared-session ownership is released. KNOW-921 records the launcher/check-out mismatch. The source change is ready for remote delivery; preserve all unrelated original checkout changes and running consoles. Do not retarget launchers or use wallet-only import overlays. The live source behavior is verified; installed parity is a separate unresolved gate.
+
+## v82 - 2026-11-08: final concurrent integration
+
+Preserved PR 90's converter records and workflow history after origin/master advanced to eea27e2. Wallet, commands and TUI source hashes did not change in this merge. The final local full suite passed all 884 SolTUI tests (2 optional skips) in 709.185 seconds, and all 900 backtester tests passed. Stage resolved records before rebuilding indexes, as KNOW-919 requires. Source delivery remains PR 92; query its final-head checks and Stele TASK-915 for the merge receipt. Installed synchronization remains gated by other sessions releasing shared-checkout ownership (TASK-922).
+
+## v83 - 2026-11-08 (TradingView card coverage, inventory)
+
+Version: 83. Delta: v82 to v83; start TASK-886, TASK-887, TASK-888.
 
 Target: reconcile all 114 built-in studies and local TradingView script/idea sources against existing cards and code. Create missing cards as spec-only, with source provenance and explicit rule gaps. Do not change executable registry or invent performance.
 
@@ -812,9 +845,9 @@ Learned: prior PR 79 cataloged built-ins only. Local web mirror contains 742 scr
 Remaining: source inventory, semantic/exact existence reconciliation, new cards and coverage validation, owning tests and indexes, commit/push/PR/checks/merge, final receipts.
 
 
-## v80 - 2026-11-08 (TradingView cards, source review)
+## v84 - 2026-11-08 (TradingView cards, source review)
 
-Version: 80. Delta: v79 to v80; author specifications and complete expanded inventory.
+Version: 84. Delta: v83 to v84; author specifications and complete expanded inventory.
 
 Inventory includes 114 built-in studies and 4,770 canonical source records: 747 script publications, 1,610 chart/idea publications, 2,323 help solutions, and 90 other exports. The help review selects 313 financial definitions. Explicit existence matches preserve 59 original cards and all 34 registry entries. Created 1,082 spec-only cards: 84 built-in signals, 600 custom script descriptions, 70 source-specific chart methods, 202 support definitions, 64 reusable methods, 47 library-function/group specifications, 12 named custom MACD/PPO variants, and 3 named-but-undisclosed strategies. No execution or measured status was invented.
 
@@ -829,9 +862,9 @@ Continuation tooling is /tmp/solmargintrader-tv-cards: inventory.py, definitions
 Remaining: complete full raw-source verification and independent review, run owning/integration tests, regenerate offline retrieval indexes, commit/push/PR/CI/merge, synchronize safely and record receipts. Preserve original checkout dirty files and other live sessions.
 
 
-## v81 - 2026-11-08 (TradingView cards, final content)
+## v85 - 2026-11-08 (TradingView cards, final content)
 
-Version: 81. Delta: v80 to v81; close expanded inventory and finalize 1,083 new cards (1,142 total).
+Version: 85. Delta: v84 to v85; close expanded inventory and finalize 1,083 new cards (1,142 total).
 
 All 114 built-ins have a card/code/alias disposition. 4,770 canonical sources and 4,890 physical source files are bound to source hashes and selected excerpt offsets. Added the independently found short-strangle method and corrected 29 non-OHLCV input requirements. Eight detailed chart strategies now retain their disclosed entry, filter, stop and management rules with additional bound source passages. Fifty-four new built-in cards also include official help clarifications. Named-only methods remain explicit source-limited specifications.
 
@@ -842,9 +875,9 @@ The new offline validator refuses duplicate new-card ownership, missing built-in
 Remaining: final independent audit of the corrected content; refreshed offline retrieval artifacts; passing backtester and focused SolTUI integration; commit/push/PR/final CI/merge; safe default-checkout synchronization and final receipts. Original dirty paths remain untouched.
 
 
-## v82 - 2026-11-08 (TradingView cards, verified)
+## v86 - 2026-11-08 (TradingView cards, verified)
 
-Version: 82. Delta: v81 to v82; record final local checks and targeted review.
+Version: 86. Delta: v85 to v86; record final local checks and targeted review.
 
 Completed content: 1,083 new spec-only cards; 1,142 total cards; all 114 built-in study dispositions; all original 59 cards and 34 registry entries preserved. Complete source inventory has 4,770 canonical records and 4,890 verified physical sources including the reference and excluded captures. docs/TRADINGVIEW-CARD-FILES.md lists every changed canonical checkout path.
 
@@ -857,9 +890,9 @@ Operational incident: index/search.py --text slippage also calls idle.maybe_star
 Remaining delivery work only: commit/push current branch, open PR, record its URL, wait final CI, merge, verify remote content, and synchronize the default checkout only if unrelated active files remain intact. TASK-886 inventory and TASK-887 cards are done; TASK-888 owns delivery.
 
 
-## v83 - 2026-11-08 (TradingView card delivery checkpoint)
+## v87 - 2026-11-08 (TradingView card delivery checkpoint)
 
-Version: 83. Delta: v82 to v83; integrate concurrent upstream work and preserve both histories.
+Version: 87. Delta: v86 to v87; integrate concurrent upstream work and preserve both histories.
 
 PR: https://github.com/mithudso/solmargintrader/pull/91 ; branch feat/tradingview-card-coverage. Initial catalog commit 776aedb. Integrated upstream d355b69, including Bots tab v2 from PR 87 and hook-repair records from PR 88. Their code and history are preserved; only derived indexes are regenerated. This task owns the card catalog and related validation/docs, not those other sessions' live services or hook installations.
 
@@ -868,9 +901,9 @@ Final card content is 1,083 new specs, 1,142 total cards, 114 built-ins and 4,77
 No further card implementation is required for this request. For delivery/resume, inspect PR 91: if it is still open, finish final-head CI and merge; if merged, use its merge receipt and complete TASK-888 if needed. TASK-888 holds the authoritative final delivery receipt. Recheck conditional remaining actions rather than replaying completed inventory or card extraction. Source-limited definitions are documented product limitations, not a pending permission request.
 
 
-## v84 - 2026-11-08 (TradingView final integration checks)
+## v88 - 2026-11-08 (TradingView final integration checks)
 
-Version: 84. Delta: v83 to v84; confirm merged-tree checks without changing card content.
+Version: 88. Delta: v87 to v88; confirm merged-tree checks without changing card content.
 
 Integrated upstream d355b69 in merge commit 67b2e5d. All 59 pre-existing cards match origin/master byte for byte. The task diff contains no SolTUI runtime, backtester/core, backtester/tests, liquidity, executor, extension or Mongo changes. The catalog source ledger remains SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
 
@@ -881,9 +914,9 @@ Documentation discovery now agrees with the concurrent Bots changes: backtester 
 Delivery continuation is conditional on https://github.com/mithudso/solmargintrader/pull/91 : if open, wait for final-head required checks and merge; if merged, verify its default-branch files and use the merge receipt in TASK-888. No more card implementation is required. Preserve the original checkout's unrelated changes and all other active PRs/worktrees.
 
 
-## v85 - 2026-11-08 (large-catalog CI test setup)
+## v89 - 2026-11-08 (large-catalog CI test setup)
 
-Version: 85. Delta: v84 to v85; fix the five Docs editor test assumptions exposed by the expanded card catalog.
+Version: 89. Delta: v88 to v89; fix the five Docs editor test assumptions exposed by the expanded card catalog.
 
 CI run 42467823348 on c09ecc9 passed backtester, docs, extension units/browser, liquidity and Mongo. Executor setup failed before tests after three HTTP 504 responses downloading uv 0.13.7. The macOS suite ran 872 cases in 747.928 seconds and had five StopIteration errors: Docs editor tests assumed soltui/config.py or research/results files would occur in the unfiltered first 1,000 alphabetically sorted rows. New strategy cards legitimately fill that first page.
 
@@ -892,21 +925,29 @@ Changed only those five test setups in soltui/tests/test_tui.py to use the real 
 Final delivery stays conditional on https://github.com/mithudso/solmargintrader/pull/91 ; push this test/index correction and wait for a passing final-head CI run. The new run also retries the transient executor tool download. Preserve all other sessions and their active PRs. TASK-888 owns the final merge receipt and cleanup; no new strategy implementation is required.
 
 
-## v86 - 2026-11-08 (card delivery: concurrent converter integration)
+## v90 - 2026-11-08 (card delivery: concurrent converter integration)
 
-Version: 86. Delta: v85 to v86; integrate origin/master eea27e2 from PR 90 without losing either task.
+Version: 90. Delta: v89 to v90; integrate origin/master eea27e2 from PR 90 without losing either task.
 
 Preserved all converter source, documentation, tests and history. The docs CI job retains both Offline HTML converter behavior and TradingView source-to-card coverage checks. Card content remains unchanged at ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
 
 The five capped-catalog Docs editor fixture corrections pass all 9 TestDocsTab cases locally. Other preceding CI checks passed; the executor artifact download receives a new attempt with the final integrated head. Delivery is still through https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. If that PR is already merged, verify its receipt rather than replaying extraction or test fixes. No card implementation or new source extraction is pending.
 
 
-## v87 - 2026-11-08 (executor CI tool-download repair)
+## v91 - 2026-11-08 (executor CI tool-download repair)
 
-Version: 87. Delta: v86 to v87; repair the repeated external installer failure using an existing repository convention.
+Version: 91. Delta: v90 to v91; repair the repeated external installer failure using an existing repository convention.
 
 Executor CI failed in runs 42467823348 and 42469464071 before tests. setup-uv v5 tried https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-unknown-linux-gnu.tar.gz and received three HTTP 504 responses in each run. In the same workflow, liquidity setup-uv v10.3.3 installed the same uv 0.13.7 in under one second from releases.astral.sh. Context7 official setup-uv documentation confirms the mirror-first download path with GitHub fallback.
 
 Changed the executor setup-uv action to the exact v10.3.3 SHA already pinned for liquidity (68559e99cc807c1eb7e9238fd43a15bba460eec2). No executor code, uv.lock, frozen sync flag, test selection, runtime default or trading configuration changed. This is a necessary CI bootstrap repair, not a relaxed gate. The original 59 cards and all new card content remain unchanged.
 
 Delivery: https://github.com/mithudso/solmargintrader/pull/91 ; TASK-888. Finish the final-head checks and merge if the PR is still open. If already merged, verify its receipts and preserve other sessions. No card source extraction or implementation remains.
+
+## v92 - 2026-11-08 (TradingView cards: wallet integration)
+
+Version: 92. Delta: v91 to v92; preserve concurrent Base wallet PR 92.
+
+Integrated origin/master d596856 after PR 92 landed during final CI. Preserve all wallet code, tests and its installed-console limitations. Only shared histories and generated indexes require conflict resolution. The catalog remains 1083 new spec-only cards, 1142 total, with unchanged source ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
+
+Delivery remains conditional on https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. Complete final integrated-head checks before merge. Existing running consoles are owned by other sessions; do not restart them or retarget launchers. Preserve unrelated checkout changes and verify any safe synchronization independently.
