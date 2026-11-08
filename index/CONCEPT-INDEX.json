@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T13:22:10+00:00",
+  "generatedAt": "2026-11-08T13:28:05+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -21,12 +21,16 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1311,
+      "matchingFiles": 1318,
       "shown": 30,
       "files": [
         {
           "path": "research/ratio_rotation.py",
           "hits": 89
+        },
+        {
+          "path": "soltui/coin_fit.py",
+          "hits": 73
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
@@ -57,8 +61,24 @@
           "hits": 37
         },
         {
+          "path": "backtester/tests/test_coinfit.py",
+          "hits": 34
+        },
+        {
           "path": "backtester/tests/test_engine_audit.py",
           "hits": 34
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 33
+        },
+        {
+          "path": "backtester/core/coinfit.py",
+          "hits": 32
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 32
         },
         {
           "path": "research/minute_sweep.py",
@@ -66,10 +86,6 @@
         },
         {
           "path": "soltui/bots.py",
-          "hits": 31
-        },
-        {
-          "path": "soltui/help.py",
           "hits": 31
         },
         {
@@ -83,6 +99,10 @@
         {
           "path": "docs/FILES.md",
           "hits": 26
+        },
+        {
+          "path": "soltui/commands.py",
+          "hits": 22
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -123,26 +143,6 @@
         {
           "path": "executor/src/executor/quote.py",
           "hits": 20
-        },
-        {
-          "path": "backtester/gridcli.py",
-          "hits": 19
-        },
-        {
-          "path": "backtester/tests/test_dcasim.py",
-          "hits": 19
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 19
-        },
-        {
-          "path": "backtester/PROMPT.md",
-          "hits": 18
-        },
-        {
-          "path": "research/5minleveragestrategies.json",
-          "hits": 18
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 481,
+      "matchingFiles": 485,
       "shown": 30,
       "files": [
         {
@@ -435,7 +435,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 380,
+      "matchingFiles": 389,
       "shown": 30,
       "files": [
         {
@@ -455,11 +455,11 @@
           "hits": 128
         },
         {
-          "path": "backtester/core/gridsim.py",
-          "hits": 102
+          "path": "docs/FILES.md",
+          "hits": 104
         },
         {
-          "path": "docs/FILES.md",
+          "path": "backtester/core/gridsim.py",
           "hits": 102
         },
         {
@@ -507,8 +507,16 @@
           "hits": 36
         },
         {
+          "path": "soltui/help.py",
+          "hits": 32
+        },
+        {
           "path": "backtester/README.md",
-          "hits": 30
+          "hits": 31
+        },
+        {
+          "path": "memory.md",
+          "hits": 31
         },
         {
           "path": "backtester/tests/test_gridcli.py",
@@ -519,15 +527,7 @@
           "hits": 30
         },
         {
-          "path": "soltui/help.py",
-          "hits": 29
-        },
-        {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
-          "hits": 27
-        },
-        {
-          "path": "memory.md",
           "hits": 27
         },
         {
@@ -574,7 +574,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 355,
+      "matchingFiles": 362,
       "shown": 30,
       "files": [
         {
@@ -651,7 +651,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 56
+          "hits": 57
         },
         {
           "path": "docs/short-horizon-leverage-concept-family.md",
@@ -679,7 +679,7 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 32
+          "hits": 34
         },
         {
           "path": "soltui/tests/test_wallet.py",
@@ -694,8 +694,8 @@
           "hits": 29
         },
         {
-          "path": "soltui/compound.py",
-          "hits": 28
+          "path": "soltui/coin_fit.py",
+          "hits": 29
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -847,7 +847,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 264,
+      "matchingFiles": 267,
       "shown": 30,
       "files": [
         {
@@ -986,7 +986,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 234,
+      "matchingFiles": 235,
       "shown": 30,
       "files": [
         {
@@ -1059,7 +1059,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 19
+          "hits": 20
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -1393,7 +1393,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 190,
+      "matchingFiles": 195,
       "shown": 30,
       "files": [
         {
@@ -1531,7 +1531,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 188,
+      "matchingFiles": 192,
       "shown": 30,
       "files": [
         {
@@ -1571,12 +1571,12 @@
           "hits": 18
         },
         {
-          "path": "research/RANKED_LISTS.md",
+          "path": "soltui/tui.py",
           "hits": 17
         },
         {
-          "path": "soltui/tui.py",
-          "hits": 16
+          "path": "research/RANKED_LISTS.md",
+          "hits": 17
         },
         {
           "path": "docs/CONCEPTS.md",
@@ -1587,12 +1587,12 @@
           "hits": 14
         },
         {
-          "path": "research/decide.py",
-          "hits": 13
+          "path": "soltui/help.py",
+          "hits": 14
         },
         {
-          "path": "soltui/help.py",
-          "hits": 12
+          "path": "research/decide.py",
+          "hits": 13
         },
         {
           "path": "docs/SCRIPTS.md",
@@ -1665,7 +1665,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 162,
+      "matchingFiles": 166,
       "shown": 30,
       "files": [
         {
@@ -2204,6 +2204,143 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
+      "id": "robustness",
+      "label": "Perturbation and robustness",
+      "why": "Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.",
+      "terms": [
+        "perturb",
+        "perturbation",
+        "ratio_to_iqr",
+        "sign_flips",
+        "stability"
+      ],
+      "matchingFiles": 114,
+      "shown": 30,
+      "files": [
+        {
+          "path": "docs/FILES.md",
+          "hits": 98
+        },
+        {
+          "path": "research/perturb.py",
+          "hits": 54
+        },
+        {
+          "path": "research/verify_numbers.py",
+          "hits": 31
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 25
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 23
+        },
+        {
+          "path": "soltui/compound.py",
+          "hits": 16
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 11
+        },
+        {
+          "path": "research/triggers.py",
+          "hits": 10
+        },
+        {
+          "path": "research/results/perturb_all_singles_long.txt",
+          "hits": 9
+        },
+        {
+          "path": "research/results/perturb_all_singles_medium.txt",
+          "hits": 9
+        },
+        {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 9
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 8
+        },
+        {
+          "path": "research/results/perturb_all_singles_short.txt",
+          "hits": 8
+        },
+        {
+          "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 7
+        },
+        {
+          "path": "soltui/bgqueue.py",
+          "hits": 7
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 6
+        },
+        {
+          "path": "index/build.py",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_long.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_medium.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_short.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_all_macd_vol_regime.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_any_ou_reversion_obv_trend.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_obv_trend.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_vol_regime.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_medium_adx_trend.txt",
+          "hits": 6
+        },
+        {
+          "path": "soltui/commands.py",
+          "hits": 6
+        },
+        {
+          "path": "research/geometry.py",
+          "hits": 5
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "overfitting-pbo",
       "label": "Overfitting and PBO",
       "why": "PBO measured 0.700 at daily horizons against a 0.500 noise line, so in-sample rank is anti-informative. This is the finding that governs how every other number here may be read.",
@@ -2337,143 +2474,6 @@
         {
           "path": "index/build.py",
           "hits": 9
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "robustness",
-      "label": "Perturbation and robustness",
-      "why": "Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.",
-      "terms": [
-        "perturb",
-        "perturbation",
-        "ratio_to_iqr",
-        "sign_flips",
-        "stability"
-      ],
-      "matchingFiles": 113,
-      "shown": 30,
-      "files": [
-        {
-          "path": "docs/FILES.md",
-          "hits": 98
-        },
-        {
-          "path": "research/perturb.py",
-          "hits": 54
-        },
-        {
-          "path": "research/verify_numbers.py",
-          "hits": 31
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 25
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 23
-        },
-        {
-          "path": "soltui/compound.py",
-          "hits": 16
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 11
-        },
-        {
-          "path": "research/triggers.py",
-          "hits": 10
-        },
-        {
-          "path": "research/results/perturb_all_singles_long.txt",
-          "hits": 9
-        },
-        {
-          "path": "research/results/perturb_all_singles_medium.txt",
-          "hits": 9
-        },
-        {
-          "path": "soltui/tests/test_bgqueue.py",
-          "hits": 9
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 8
-        },
-        {
-          "path": "research/results/perturb_all_singles_short.txt",
-          "hits": 8
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 7
-        },
-        {
-          "path": "soltui/bgqueue.py",
-          "hits": 7
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 6
-        },
-        {
-          "path": "index/build.py",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_long.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_medium.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_short.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_all_macd_vol_regime.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_any_ou_reversion_obv_trend.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_obv_trend.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_vol_regime.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_medium_adx_trend.txt",
-          "hits": 6
-        },
-        {
-          "path": "soltui/commands.py",
-          "hits": 6
-        },
-        {
-          "path": "research/geometry.py",
-          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"

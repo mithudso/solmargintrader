@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 70
-Delta: preserve concurrent histories and integrate PR 89 CI changes.
+Version: 72
+Delta: v70 to v72; preserve incoming history and explicit coin-fit optional-suite instruction.
 
 ## v1 - 2026-11-06
 
@@ -524,4 +524,20 @@ Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintra
 
 ```text
 Look at the CI tests, and determine which tests are causing the hour long delays in testing and make it so only the tests that affect what you doing are necessary, and do whatever else you need to to actually do this.
+```
+
+## v71 - Coin suitability and Bots ranking
+
+```text
+Create a skill that applies the template to a coin and determines if it's a good fit or not, and then explains its reasoning. Also have a bulk mode where it applies the template to a group of coins and outputs a table. And then write a script that does the same thing
+```
+
+```text
+Add a heuristic backtesting mechanism to quickly test it, and a more detailed audit backtest. And then incorporate this into the soltui in the bots tab, so that I can click a button and it will ranksort the most suitable coins and do a backtest to show it.
+```
+
+## v72 - Optional full SolTUI suite
+
+```text
+make the 999-case SolTUI suite optional, then skip it and push the code
 ```

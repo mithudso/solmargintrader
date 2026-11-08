@@ -471,3 +471,7 @@ formula) and the backtesting-statistics citations trace to the
 `trading-and-investing` skill references, verified as of 2026-08-03. **Volatile
 protocol values change — verify against the live on-chain custody account
 before relying on them.**
+
+## Coin-fit quick and audit screens
+
+`backtester/core/coinfit.py` reuses the spot grid and DCA engines for the shared skill, CLI and SolTUI ranking feature. It adds matched next-open, costed buy-and-hold comparison and a separate prefunded scheduled-accumulation helper. Ranking stays outside the offline core. Full-capital accounting, terminal liquidation, missing-data and heuristic limitations are documented in [coin-fit method](../skills/coin-strategy-fit/references/method.md).

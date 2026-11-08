@@ -1,0 +1,32 @@
+{
+  "version": "1.3.0",
+  "delta": "Owner made the full SolTUI suite optional and requested skipping it; faster checks and installed acceptance remain.",
+  "steps": [
+    {
+      "id": 1,
+      "title": "Implement shared quick and audit coin screening backend",
+      "status": "completed"
+    },
+    {
+      "id": 2,
+      "title": "Add reusable skill and single/bulk CLI",
+      "status": "completed"
+    },
+    {
+      "id": 3,
+      "title": "Wire responsive Bots ranking and audit views",
+      "status": "completed"
+    },
+    {
+      "id": 4,
+      "title": "Verify financial invariants and installed UI behavior",
+      "status": "in_progress"
+    },
+    {
+      "id": 5,
+      "title": "Merge verified delivery and preserve unrelated WIP",
+      "status": "pending"
+    }
+  ],
+  "final_receipt": "/Users/mitch/dev/crypto-grid-dca-research/evidence/coin-fit-final-delivery.json"
+}

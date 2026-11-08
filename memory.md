@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 129
-Delta: preserve concurrent histories and integrate PR 89 CI changes.
+Version: 138
+Delta: v129 to v138; retain forwardtest delivery and make full SolTUI coverage explicitly opt-in.
 
 ## v1 - 2026-11-06
 
@@ -1282,3 +1282,57 @@ TASK-1001: PR 89 final CI at 0d2ba8d passed; SolTUI took 15m35s, all other jobs 
 ## v129 - 2026-11-08: CI latency and PR 89 integration
 
 PR 89 SolTUI CI ran 895 tests in 893.969 seconds and logged 165 app mounts. Other jobs took at most 73 seconds. Added conservative test-only module selection, four timed shards and nightly full coverage. Merged master through 9bd7067; combined discovery is 980 tests. Remaining: run focused integration, regenerate indexes, push and verify final CI, then merge PR 89. Stele outbox 03002488.
+
+## v130 - Coin suitability implementation
+
+The user requested a reusable skill/CLI for one or many coins, then added quick heuristic and detailed audit backtests plus a Bots-tab rank/sort button. Canonical implementation belongs here so all surfaces reuse the existing grid/DCA economics. The earlier independent stdlib prototype in the research worktree is archived, not installed or advertised as production code.
+
+Worktree: /Users/mitch/dev/solmargintrader-coin-fit-20261108, branch feat/bot-coin-fit, base8ed41ad. Preserve the maintained checkout's unrelated minute_coverage edit and untracked web application files. No signing, order, executor or live configuration changes. Backtest code remains offline.
+
+Reuse backtester.core.gridsim and dcasim for next-bar, pessimistic, fee-aware simulation. Quick ranking uses an older development window and reserves the newest holdout. Audit runs the fixed configuration over chronological windows, a continuous full-capital path, and stressed fees/slippage; it does not auto-adopt a configuration or claim independent profitability from a ranked winner. Current-cache membership is not a historical universe. Missing live depth, fundamentals and portfolio stress remain explicit in the22-field template.
+
+Parent owns soltui/coin_fit.py, backtest computations, CLI/skill, tests/docs/workflow/Git. Textual lifecycle specialist owns tui.py, commands.py, help.py, optional bots_screens.py and dedicated UI tests. Backend interface: rank_coins(bot,coins,settings,mode,start,days,progress,cancelled). Frozen input/config, bounded windows, cooperative cancellation, deterministic rows including errors. The small Stele reader model was unavailable; direct recall found KNOW-871 (train-rank caution), KNOW-531 (no orders/keys), TASK-870 (superseded Bots implementation). No unrelated project binding is created.
+
+Remaining: backend+CLI/skill, UI, synthetic invariants/no-lookahead tests, audit and live cached-data smoke, installed UI acceptance, full required checks and merged delivery.
+
+## v131 - Verification checkpoint
+
+Implemented the shared offline coin-fit backend, direct/skill script entrypoints,22-field evidence output, deterministic single/bulk ranking, quick development-only scoring and10audit scenarios. Existing grid/DCA economics remain unchanged. Scheduled accumulation uses a separate explicit prefunded next-open schedule. The TUI freezes config, capital, policy, dates, costs and input hash; its selected audit preserves the quick order. Threaded jobs support cancellation, stale/context guards and teardown. No live order or config adoption exists.
+
+Independent forward review hand-reconciled60grid/DCA scenarios and a scheduled-account example. It found and rechecked fixes for explicit-cache fallback, inaccurate audit as-of, minute alignment, malformed context, missing context identity, hidden failed UI checks and incomplete cost/inventory/ledger display. No residual findings from that review.25new economic/screener tests plus13new UI tests pass; focused registry/help/bridge checks pass. Full backtester run909cases has only expected lexical-index staleness while uncommitted; full SolTUI run is active. No archived study is represented as a current profitability proof.
+
+Next: commit tracked source so deterministic index/test counts can refresh; run full checks and CI, then merge. Install the skill by symlink to the maintained checkout after delivery. Verify actual installed TUI entrypoint and click flow. Keep the maintained checkout's dirty files untouched. Context recall small-model agent could not run; direct MCP recall was read-only and no project binding was created.
+
+## v132 - Concurrent catalog integration
+
+Merged source master3e5a9f3(PR99) with the coin-fit feature. Both Strategies catalog behavior and Bots ranking survive. Preserved incoming logs verbatim; own unpublished sections now111/112 and prompt61. Help tables combine both contexts; button registry has70handlers(67incoming plus3coin-fit). Rebuild only offline retrieval indexes after final tracked source changes.
+
+## v133 - Reviewed feature and verification gates
+
+The independent review rechecked all findings and reports no residual issues. Economic tests hand-check next-open, full-capital and terminal-cost accounting. Quick scoring ignores the reserved newest window; audit refuses changed data and preserves frozen config/costs/capital/policy. All22 template fields distinguish simulation evidence from unknown current depth and eligibility. Scheduled accumulation needs a supplied ownership thesis for a positive screen. Source and methodology documentation are complete; skill validation passes.
+
+Thirty-eight focused economic/screener/UI tests pass, plus registry/help/bridge coverage. The first909-case backtester run found only expected offline-index staleness before metadata refresh. Full SolTUI validation and final CI are required on the integrated head. Only offline metadata/text/concept indexes are regenerated; no embeddings, service restarts or live operations are part of this feature. Actual installed-entrypoint acceptance will distinguish a fresh guarded session from the owner's older Terminal TUI PID.
+
+Candidate branchfeat/bot-coin-fit remains recoverable; finish final-head gates, merge, safe canonical fast-forward, installed skill symlink and actual installed click flow. Preserve unrelated source and current consoles. Final Git/install/cleanup identities will be stored in a private receipt outside tracked source to avoid a post-merge bookkeeping commit loop.
+
+## v134 - coin-fit final local verification
+
+Backtester909 tests pass after the offline index refresh. Full SolTUI913 ran with one failure: test_every_table_has_a_title_above_it reported bots-fit-table. An explicit table title fixes that failure; the affected title and coin-fit UI suites pass14 tests. Final CI must verify the complete integrated head. Two new test import-order findings were fixed; scoped Ruff passes. No existing unrelated UI lint is claimed clean.
+
+Cached23-coin quick smoke retained11 complete and12 insufficient-data rows without bridging missing candles. A separate SOL/BTC/ETH audit exercised all three supported bot types and ten scenarios each. These are operation checks, not an investment recommendation or calibrated edge. PR: https://github.com/mithudso/solmargintrader/pull/102 . Final merge/install acceptance remains pending; the final private receipt will be /Users/mitch/dev/crypto-grid-dca-research/evidence/coin-fit-final-delivery.json . Existing native consoles, WIP and paused services must remain preserved.
+
+## v135 - Workbench integration
+
+Merged published optimization workbench PR98 at bc5c701 into the coin-fit branch. Preserve its experiment lifecycle, sealed holdout safeguards and Strategies browser. Both new and existing Bots controls remain. Combined suite discovery is expected to be982SolTUI and909backtester; final checks verify actual counts. No live configuration, service or order changes.
+
+## v136 - v2 shell integration
+
+Concurrent PR93 published the v2 shell at9bd7067. Preserve Research→Bots and the classic Bots tab. Production source auto-merged; a regression exercises actual Rank/Audit clicks in both full shells. Recompute combined discovery and offline metadata. Final CI and installed acceptance remain the delivery gate for this feature; prior research and other owners' verification outcomes are historical scope, not proof of this combined revision.
+
+## v137 - Optional full SolTUI suite
+
+The owner explicitly requested: make the999-case SolTUI suite optional, skip it and push the code. Cancelled the running full-suite job. CI now runs it only for workflow_dispatch with run_soltui_suite=true; normal PR/push jobs skip it. Keep the existing check name stable. Other fast CI checks remain enabled. No full999-case pass is claimed. Local909backtester checks, focused36-case combined v2/classic UI checks and independent accounting/source preflight passed; installed-primary acceptance remains after merge.
+
+## v138 - Forwardtest and optional CI integration
+
+Concurrent PR89 published forwardtest control changes and conservative timed CI shards atfedde2a. Preserve those functions and scripts. The owner's newer explicit optional-suite instruction controls the full SolTUI job: only workflow_dispatch with run_soltui_suite=true enables all four shards. PR, push and scheduled workflows skip this job; other jobs stay enabled. Combined discovery is1010cases after incoming11additional tests and this feature30tests. No full suite is run or claimed passed.

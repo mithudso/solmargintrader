@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "delta": "Integrate published workbench while preserving both Bots workflows.",
+  "incoming_commit": "bc5c701c9a0e53c74ceda4e058f8c51141809e57",
+  "incoming_pr": "https://github.com/mithudso/solmargintrader/pull/98",
+  "conflict_backups": "/tmp/coin-fit-merge-98",
+  "conflicted_files": [
+    ".github/copilot-instructions.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "README.md",
+    "docs/CONCEPTS.md",
+    "docs/DEVELOPMENT.md",
+    "docs/FILES.md",
+    "docs/TESTING.md",
+    "index/CONCEPT-INDEX.json",
+    "index/INDEX.json",
+    "index/TEXT-INDEX.json",
+    "memory.md",
+    "prompts.md",
+    "soltui/tests/bridge_support.py",
+    "soltui/tests/test_bridge_buttons.py",
+    "soltui/tui.py"
+  ],
+  "resolution": "Retain both source behaviors, incoming log histories, renumber coin-fit continuation, recompute exact counts and offline indexes."
+}

@@ -230,6 +230,8 @@ before the recording it falls back to a **candle proxy** (Coinbase 1m closes wit
 half-spread, labelled `candle-proxy`, executed a minute later), which bounds noise rather than
 measuring an opportunity.
 
+**Coin suitability ranking.** **Rank all coins (quick)** screens every cached coin on the current grid or DCA settings, reserves the newest period, and shows a sorted table with full-account returns, drawdown, costs and reasons. Select a row and press **Audit selected coin** to inspect three chronological folds, the reserved holdout, a continuous account and doubled-cost scenarios. All ten windows expose equity and inventory; auditing one coin does not change its provisional quick score or table order. Jobs are cancellable and never adopt settings. The triangle bot is excluded from this per-coin screen. Details and the matching skill/CLI: [coin-fit method](../docs/coin-fit/README.md).
+
 **Forward test = the same bot on the future, in dry-run.** It starts now on the current
 settings and, on every refresh, replays what the recorder captured since (incrementally: only
 new gzip members are read). Grid and DCA run on one-minute mid-price bars built from the
