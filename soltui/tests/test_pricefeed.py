@@ -296,10 +296,97 @@ class Status(unittest.TestCase):
                 os.close(fd)
             self.assertEqual(pf.stop_recorder(root)["stopping"], False)
 
+    def test_record_main_waits_for_the_lock_in_agent_mode(self) -> None:
+        import os
+        import threading
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fd = pf._try_lock(pf.paths(root)["lock"])
+            threading.Timer(0.3, os.close, args=(fd,)).start()  # the other recorder exits shortly
+            with mock.patch.object(pf, "stream_products", return_value=["ETH-USD"]), \
+                    mock.patch.object(pf.Recorder, "run", return_value=0) as run:
+                self.assertEqual(pf.record_main(root, max_seconds=0, wait_lock=True), 0)
+            run.assert_called_once()
+            self.assertFalse(pf.paths(root)["pid"].exists(), "the pid file is removed on exit")
+
     def test_the_module_never_touches_key_files(self) -> None:
         src = Path(pf.__file__).read_text()
         for needle in ("wallet.private", "solana.private", ".ssh", "load_signer"):
             self.assertNotIn(needle, src)
+
+
+
+class Agent(unittest.TestCase):
+    """The always-on LaunchAgent; launchctl is never really called."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        env = mock.patch.dict("os.environ", {"SOLTUI_LAUNCHAGENTS_DIR": str(self.root / "agents")})
+        env.start()
+        self.addCleanup(env.stop)
+        self.calls: list[tuple] = []
+
+        def fake_launchctl(*args):
+            self.calls.append(args)
+            return mock.Mock(returncode=0, stderr="", stdout="")
+
+        lc = mock.patch.object(pf, "_launchctl", side_effect=fake_launchctl)
+        lc.start()
+        self.addCleanup(lc.stop)
+
+    def repo(self, worktree: bool) -> Path:
+        repo = self.root / ("wt" if worktree else "main")
+        repo.mkdir()
+        if worktree:
+            (repo / ".git").write_text("gitdir: /elsewhere\n")
+        else:
+            (repo / ".git").mkdir()
+        return repo
+
+    def test_plist_keeps_the_recorder_alive_and_waits_for_the_lock(self) -> None:
+        d = pf.agent_plist(Path("/py"), Path("/repo"))
+        self.assertEqual(d["ProgramArguments"], ["/py", "-m", "soltui.pricefeed", "record", "--wait-lock"])
+        self.assertIs(d["KeepAlive"], True)
+        self.assertIs(d["RunAtLoad"], True)
+        self.assertEqual(d["WorkingDirectory"], "/repo")
+        self.assertIn("SOLTUI_CONFIG_DIR", d["EnvironmentVariables"])
+        self.assertEqual(d["EnvironmentVariables"]["PYTHONPATH"], "/repo")
+
+    def test_install_writes_and_bootstraps_but_refuses_a_worktree(self) -> None:
+        import plistlib
+        import sys
+
+        out = pf.install_agent(Path(sys.executable), self.repo(worktree=False))
+        self.assertEqual(out["bootstrap"], 0)
+        plist = plistlib.loads(pf.agent_plist_path().read_bytes())
+        self.assertEqual(plist["Label"], pf.AGENT_LABEL)
+        self.assertIn(("bootstrap", pf._domain(), str(pf.agent_plist_path())), self.calls)
+        with self.assertRaisesRegex(pf.PriceFeedError, "worktree"):
+            pf.install_agent(Path(sys.executable), self.repo(worktree=True))
+        self.assertTrue(pf.uninstall_agent()["removed"])
+
+    def test_ensure_does_nothing_when_a_recorder_and_the_agent_run(self) -> None:
+        with mock.patch.object(pf, "recorder_running", return_value=True), \
+                mock.patch.object(pf, "agent_status", return_value={"installed": True, "loaded": True}), \
+                mock.patch.object(pf, "install_agent") as install, mock.patch.object(pf, "start_recorder") as start:
+            self.assertTrue(pf.ensure_recorder()["running"])
+        install.assert_not_called()
+        start.assert_not_called()
+
+    def test_ensure_falls_back_to_a_detached_recorder_when_the_agent_cannot_install(self) -> None:
+        state = {"running": False}
+        with mock.patch.object(pf, "recorder_running", side_effect=lambda root=None: state["running"]), \
+                mock.patch.object(pf, "agent_status", return_value={"installed": False, "loaded": False}), \
+                mock.patch.object(pf, "install_agent", side_effect=pf.PriceFeedError("is a git worktree")), \
+                mock.patch.object(pf, "start_recorder", side_effect=lambda root=None: state.update(running=True) or
+                                  {"started": True}):
+            out = pf.ensure_recorder(repo=self.repo(worktree=True))
+        self.assertTrue(out["running"])
+        self.assertIn("worktree", out["agent_error"])
+        self.assertEqual(out["started"], {"started": True})
 
 
 if __name__ == "__main__":
