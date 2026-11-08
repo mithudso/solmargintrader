@@ -348,15 +348,56 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             self.assertGreater(table.row_count, 0)
 
     async def test_available_table_lists_every_registered_strategy(self) -> None:
-        """The picker must not hide options."""
+        """All active cards are visible, while only implemented strategies can run."""
+        from unittest.mock import patch
+
         from backtester.core.strategies import REGISTRY
+        from backtester.core.strategy_cards import load_all
+        from textual.widgets import Button, Input, Select, TabbedContent, TextArea
 
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-strategies"
             await pilot.pause()
-            self.assertEqual(
-                app.query_one("#available-table", DataTable).row_count, len(REGISTRY)
-            )
+            table = app.query_one("#available-table", DataTable)
+            cards = load_all()
+            self.assertEqual(table.row_count, len(cards))
+            self.assertTrue(set(REGISTRY) <= {key.value for key in table.rows})
+            self.assertIn("tv_builtin_average_price", {key.value for key in table.rows})
+            self.assertNotIn("tv_builtin_supertrend", {key.value for key in table.rows})
+
+            app.query_one("#strategy-card-filter", Input).value = "tv_builtin_average_price"
+            await pilot.pause()
+            self.assertEqual(table.row_count, 1)
+            self.assertEqual(str(table.get_row_at(0)[0]), "Average Price")
+            self.assertEqual(app._docs_current_path,
+                             "backtester/strategy_cards/tv_builtin_average_price.md")
+            self.assertIn("AveragePrice = (O+H+L+C)/4", app.query_one("#docs-view", TextArea).text)
+            self.assertTrue(app.query_one("#btn-add", Button).disabled)
+            self.assertTrue(app.query_one("#btn-bt-selected", Button).disabled)
+            before = app.roster.to_list()
+            app._add()  # Programmatic calls must obey the same boundary as disabled buttons.
+            self.assertEqual(app.roster.to_list(), before)
+            with patch.object(app, "_start_backtest") as start:
+                app._backtest_selected()
+                start.assert_not_called()
+            table.focus()
+            await pilot.press("space")
+            self.assertEqual(app.roster.to_list(), before)
+
+            separate = next(card for card in cards.values()
+                            if card.status != "spec-only" and card.registry_key is None)
+            app.query_one("#strategy-card-filter", Input).value = separate.id
+            await pilot.pause()
+            app._add()
+            self.assertIn("separate runner", text_of(app, "#roster-status"))
+            self.assertEqual(app.roster.to_list(), before)
+
+            app.query_one("#strategy-card-filter", Input).value = ""
+            app.query_one("#strategy-card-scope", Select).value = "registered"
+            await pilot.pause()
+            self.assertEqual(table.row_count, len(REGISTRY))
+            self.assertFalse(app.query_one("#btn-add", Button).disabled)
 
     async def test_reset_restores_the_default_roster(self) -> None:
         """Reset is a recovery path from a mangled roster."""
@@ -375,9 +416,10 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
         """An invalid param string must not crash the app."""
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            from textual.widgets import Input, TabbedContent
+            from textual.widgets import Input, Select, TabbedContent
 
             app.query_one(TabbedContent).active = "tab-strategies"
+            app.query_one("#strategy-card-scope", Select).value = "registered"
             await pilot.pause()
             app.query_one("#strategy-params", Input).value = "notakeyvalue"
             await pilot.click("#btn-add")
@@ -554,7 +596,6 @@ class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
 
     async def test_added_strategy_picks_up_edited_signal_defaults(self) -> None:
         """The whole point: editing a signal changes the strategy that uses it."""
-        from textual.widgets import TabbedContent
 
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:

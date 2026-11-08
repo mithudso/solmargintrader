@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 105
-Delta: v104 to v105; apply requested canonical card moves immediately.
+Version: 110
+Delta: v109 to v110; clarify final verification counts.
 
 ## v1 - 2026-11-06
 
@@ -1068,3 +1068,33 @@ Integrated origin/master 0b46a88 after concurrent PR94 landed while this task op
 ## v105 - 2026-11-08 (canonical incomplete directory correction)
 
 The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.
+
+## v106 - 2026-11-08 (SolTUI card visibility)
+
+Target: make retained strategy/indicator cards visible on Strategies. Diagnosis at8ed41ad: actual canonical launcher and fresh mounted app load correctly, but strategies.list/history enumerate REGISTRY34 and omit all292 new retained specs from351 active cards. Implement a unified filterable card table with explicit status; stable row keys preserve registry actions and readable names; nonregistered specs open their card and cannot be added/backtested. Keep791 incomplete cards excluded and all registry/trading defaults unchanged. TASK-971 owns implementation; verification/delivery use their tracked tasks. Worktree /Users/mitch/dev/solmargintrader-wt-card-ui, branch feat/soltui-card-catalog. Preserve337 unrelated canonical paths and other active UI/research branches. Use INDEX_NO_AUTO=1 for searches/acceptance. Save exact tested source revisions before safe canonical installation; do not restart existing consoles. Remaining: implement, behavioral tests, fresh UI acceptance, docs/index checks, commit/push/CI/merge, safe canonical sync and cleanup.
+
+## v107 - 2026-11-08 (visible card catalog implementation)
+
+Implemented strategies.cards as a read-only active-card catalog; existing strategies.list/history remain registry-only. Strategies now defaults to all351 active cards including292 retained TradingView specifications, with text/scope filters, status/data labels and card opening. Stable row keys preserve existing registry IDs and source opening. Specifications have disabled Add/Backtest selected controls plus keyboard/programmatic refusal. All/untested sweeps still use executable APIs. No card contents, registry entries or trading behavior changed.
+
+Seven Strategies widget tests pass in40.144s,33 command/history/help cases pass in26.900s,13 mounted history/roster/bridge cases pass in57.671s. Additional Docs/glossary and full884-test SolTUI runs are in progress. Targeted lint/whitespace pass. Preserve HEADER_GLOSSARY public re-export for existing tests/importers. No test count changed; expanded actual UI tests verify catalog visibility, filter/card opening, incomplete exclusion and blocked execution.
+
+Remaining: finish behavioral gates and independent fresh widget acceptance, safely install ONLY tested source files into canonical launcher checkout under fresh hashes (preserve all337 unrelated paths), record exact installed/source identities, regenerate offline indexes, push/PR/final CI/merge, safely reconcile pre-applied task files and clean own worktree. A later canonical install is authorized by the visibility fix; existing consoles must not be restarted. TASK-973 owns verification and TASK-974 delivery.
+
+## v108 - 2026-11-08 (canonical catalog acceptance)
+
+Independent private and canonical fresh mounted acceptance passed on source2442369: defaultAll351active rows including292TradingView cards, excluded791incomplete IDs, AveragePrice card/equation opens, specification controls disabled and keyboard/directUI/directcommand guards attempt zero queue or settings writes. Registered scope34; RSI source opening, fixture Add and selectedBacktest route preserved. strategies.cards351 while strategies.list/history34. Actual /Users/mitch/.local/bin/soltui wrapper resolves to canonical tracked launcher and venvPython. CanonicalHEAD remains8ed41ad until delivery; installed3sourcefile hashes bind loaded behavior to2442369.
+
+Preservation/installation receipts: /tmp/solmargin-card-ui/shared-baseline.json (337unrelated paths), canonical-install.json (commands.py/help.py/tui.py exact before/installed hashes). Only these3task-owned canonical sourcefiles were pre-applied atomically after proving unchanged old bytes. Existing consoles/services were not restarted. Final source revision must retain the tested separate-runner wording correction, which has its own focused8.220s widget pass. All65earlier focused cases pass; full884 suite remains running. Test counts unchanged; lint/whitespace/docs/index gates pass before final metadata refresh.
+
+Delivery is through branch feat/soltui-card-catalog and TASK-974. If the PR is open, finish final-head CI/merge. If merged, verify its actual receipt rather than replaying implementation. Update the canonical install receipt for the final3source hashes, preserve all337unrelated bytes/status, stage ONLY those pre-applied task paths before safe final fast-forward, repeat fresh canonical widget acceptance and clean only this task's worktree/branch. Do not overwrite concurrent UI/research work or restart live consoles.
+
+## v109 - 2026-11-08 (full-suite catalog corrections)
+
+The local full884-case suite completed in682.972s with878passes,4failures and2optional skips. Three failures were the new Refreshcards button missing BUTTON_COMMANDS and the old66-handler assertion; registered it as strategies.cards and updated the exactcount67. The fourth treated indicator titles such as1YearActiveSupply% as unlabelled return values. The safety check now binds only the strategy-title column to actual card labels; every result column retains its source-label checks. Six targeted bridge/percentage cases pass in5.021s. No trading/result-label protection was removed.
+
+PR99: https://github.com/mithudso/solmargintrader/pull/99 ; final delivery TASK-974. Push these corrections and await final-head CI; prior24c063 CI must not be treated as final. The actual canonical UI already renders351/292 via the three verifiedpre-applied sourcefiles. Update only canonicaltui.py under its recorded hash to carry the routing-map correction, update canonical-install.json to final source identity, and preserve337 unrelated paths. No new runtime feature remains. If PR99 is already merged, verify its receipt instead of repeating implementation.
+
+## v110 - 2026-11-08 (final visibility delivery checkpoint)
+
+The local full-suite arithmetic is884cases:878passed,4failed,2skipped. The four integration assertions are corrected and all6targeted reruns pass. Final requiredCI will run the complete884cases. Product source is final; only this verification-count correction changes the next branch tip. PR99/TASK-974 hold final delivery receipts. Canonical3sourcefiles are bound by /tmp/solmargin-card-ui/canonical-install.json; preserve all337unrelated paths when reconciling them with the merged tree.

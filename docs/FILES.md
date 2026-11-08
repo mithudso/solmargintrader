@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `b95f0b3` (2026-11-08T11:31:27+00:00). 1872 tracked files, 30.9 MB.
+**Generated** from `index/INDEX.json` at commit `ecd6487` (2026-11-08T12:28:07+00:00). 1872 tracked files, 30.9 MB.
 
 Regenerate with:
 
@@ -185,9 +185,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1071 lines · 161,255 B · description: **extracted**
+`doc` · 1101 lines · 167,562 B · description: **extracted**
 
-**Purpose.** Version: 105 Delta: v104 to v105; apply requested canonical card moves immediately. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 110 Delta: v109 to v110; clarify final verification counts. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -201,9 +201,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 455 lines · 27,090 B · description: **extracted**
+`doc` · 461 lines · 27,207 B · description: **extracted**
 
-**Purpose.** Version: 59 Delta: v58 to v59; apply requested canonical card moves immediately. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 60 Delta: v59 to v60; expose retained cards in SolTUI Strategies. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -281,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18327 lines · 911,836 B · description: **extracted**
+`doc` · 18327 lines · 911,846 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -15283,7 +15283,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/README.md`
 
-`doc` · 508 lines · 40,956 B · description: **extracted**
+`doc` · 508 lines · 40,922 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -15397,7 +15397,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 2181 lines · 103,478 B · description: **extracted**
+`code-python` · 2204 lines · 104,605 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -15487,7 +15487,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 603 lines · 90,208 B · description: **extracted**
+`code-python` · 613 lines · 91,487 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -15743,7 +15743,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 4281 lines · 216,540 B · description: **extracted**
+`code-python` · 4372 lines · 221,364 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -15865,7 +15865,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bridge_buttons.py`
 
-`test` · 54 lines · 2,153 B · description: **extracted**
+`test` · 54 lines · 2,164 B · description: **extracted**
 
 **Purpose.** Every TUI button is a registry command: a new button cannot skip the registry.
 
@@ -16085,11 +16085,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_strategy_history.py`
 
-`test` · 223 lines · 11,401 B · description: **extracted**
+`test` · 233 lines · 12,054 B · description: **extracted**
 
 **Purpose.** The Strategies tab's test history and its three Backtest buttons. History is derived from the background sweep's results file, so what it can get wrong is counting and choosing: a duplicate line counted as a second test, a best-of-many row shown as "the" result, an untestable strategy shown as merely untested, a button that starts a sweep that has nothing to do. Each test targets one of those.
 
-**Contents.** Defines `row()`, `class TestHistory`, `class TestQueueFilter`, `class TestCommands`. Depends on `soltui`.
+**Contents.** Defines `row()`, `class TestHistory`, `class TestQueueFilter`, `class TestCommands`. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_strategy_history.py -q`
 
@@ -16115,7 +16115,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tui.py`
 
-`test` · 1343 lines · 60,117 B · description: **extracted**
+`test` · 1384 lines · 62,567 B · description: **extracted**
 
 **Purpose.** Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.
 
@@ -16125,7 +16125,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tui_presets_pnl.py`
 
-`test` · 202 lines · 9,889 B · description: **extracted**
+`test` · 210 lines · 10,466 B · description: **extracted**
 
 **Purpose.** The Top 5 presets in three tabs, the P&L tab, and the "every percentage names its source" rule across every table in the app. Driven through Textual's headless harness.
 

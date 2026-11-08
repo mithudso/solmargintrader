@@ -409,6 +409,9 @@ CONTROL_HELP = {
     "help-hint": "Move the pointer over a control, table header or value to read its definition. Press F1 for the full searchable help; use Tab and Page Up/Down to read it, then Esc to return without changing the current input.",
     "btn-save": "Save the edited Settings and apply them to later actions. This persists configuration; it does not start a backtest, background sweep or live trading.",
     "strategy-params": "Explicit strategy parameters in name=value form, for example fast=20 slow=50. These override signal defaults for the added roster entry. An empty field uses the saved defaults.",
+    "strategy-card-filter": "Search active card titles, IDs, families and descriptions. Incomplete research cards remain in their separate directory and are excluded from this list.",
+    "strategy-card-scope": "Show all active cards, only registered strategies, specification cards, or retained TradingView cards. A specification documents rules but has no runnable repository implementation.",
+    "strategy-cards-refresh": "Reload the active card files and registered-strategy history. This does not start a backtest or add a card to the roster.",
     "btn-roster-all": "Add every registered strategy missing from the roster. Existing custom versions stay as they are.",
     "forward-start": "Start prospective paper tests for the Settings asset. The scope, horizons, cost threshold and initial parameters are fixed until you stop and start again.",
     "forward-stop": "Stop scheduling predictions. The current market read may take a moment to drain. Saved predictions and settings remain available for the next run.",
@@ -569,6 +572,13 @@ for _name, _leverage in (("lev_low", 2), ("lev_medium", 5), ("lev_high", 20)):
 def column_help(label: str, table_id: str | None = None) -> str | None:
     """Resolve overloaded labels using the actual table, not a global guess."""
     key = label.strip().casefold()
+    if table_id == "available-table":
+        if key == "strategy":
+            return "An active strategy or indicator card. Registered rows keep their executable ID; other rows show the card title. Select a specification to read its equations, inputs and limitations below."
+        if key == "status":
+            return "Specification means documented mechanics without a runnable repository implementation. Implemented means code exists; measured means results are recorded. Only registered strategies can enter this roster."
+        if key == "in roster":
+            return "Yes means the registered strategy is selected for backtesting. Specification cards cannot be added; they remain available to read and implement."
     if key == "kind":
         if table_id == "wallet-contracts":
             return "Type of on-chain account: a token mint defines an asset; a token account holds units; a stake account delegates SOL; a position NFT identifies an LP position. This is not a file classification."
