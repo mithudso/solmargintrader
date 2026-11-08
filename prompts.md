@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 55
-Delta: v54 to v55; add per-publication strategy understanding request.
+Version: 56
+Delta: v55 to v56; preserve broad card coverage and add strategy understanding request.
 
 ## v1 - 2026-11-06
 
@@ -415,7 +415,15 @@ Implementation: /Users/mitch/dev/solmargintrader-wt-01a1ba63/scripts/html_to_mar
 Look at https://docs.base.org/llms-full.txt and determine how to check the coins in a wallet, and then implement that in this repo, the soltui cannot check my base chain accounts.
 ```
 
-## v55 - 2026-11-08 (script strategy understanding)
+## v55 - 2026-11-08 (TradingView card coverage)
+
+Version: 55. Delta: v54 to v55; preserve card-coverage request.
+
+```text
+For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.
+```
+
+## v56 - 2026-11-08 (script strategy understanding)
 
 ```text
 For all of the strategies in the script directory, extract and understand the idea and what it's trying to accomplish, and create strategy cards for each one.

@@ -158,7 +158,7 @@ absent from the vocabulary. It also asserts that only a `measured` card may cite
 more than a tenth of cards may be rated moderate** — a directory where most cards
 looked promising would be the tell that the ratings had drifted into marketing.
 
-Current distribution: **21 very-low, 24 low, and no card rated moderate.**
+The current card CLI reports the distribution; the historical counts below predate the TradingView specification expansion.
 
 Since then `triangular_arbitrage` and `discount_to_anchor` were added at `very-low` and `dex_cex_dislocation`
 was lowered `low` → `very-low` — it had been rated on the claim that it is a genuine
@@ -236,3 +236,15 @@ live strategy.
 4. If it is not, set `status: spec-only`, leave `registry_key` and `runner` null, and name
    the data gap in `data_required` with `data_available: false`.
 5. Run `python3 -m unittest backtester.tests.test_strategy_cards`.
+
+
+## TradingView source coverage
+
+Version: 1.0.0 (2026-11-08). Delta: document the source-reconciled expansion.
+
+The source inventory and existence-check decisions live in `research/tradingview-card-coverage.json`.
+See `docs/TRADINGVIEW-CARD-COVERAGE.md` for the built-in study matches, new card list,
+source limitations and validation commands. New `tv_` cards are specifications;
+missing equations or source definitions remain explicit. They do not enter the
+SolTUI executable strategy roster merely because a card exists. The Docs tab can
+find them through the regenerated repository index.
