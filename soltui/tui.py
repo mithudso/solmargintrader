@@ -1142,11 +1142,13 @@ class SolTuiApp(App):
                 yield Button("Refresh", id="paper-exp-refresh")
                 yield Button("Status / activity", id="paper-exp-activity")
             yield Static("No paper experiments yet.", id="paper-exp-status", markup=False)
+            yield Static("Paper experiments — prospective simulated runs", classes="table-title")
             table = GlossaryTable(id="paper-exp-table")
             table.cursor_type = "row"
             table.add_columns("strategy", "coin", "horizon", "state", "calls", "resolved", "trades", "paper $", "P&L $", "message")
             yield table
             yield Static("Select a run to inspect its recent predictions and results.", id="paper-exp-detail", markup=False)
+            yield Static("Selected experiment — predictions and outcomes", classes="table-title")
             events = GlossaryTable(id="paper-exp-events")
             events.add_columns("issued UTC", "starts UTC", "prediction", "outcome", "move bps", "paper P&L")
             yield events
@@ -1583,6 +1585,7 @@ class SolTuiApp(App):
                         yield Static("", id="compound-fwd-summary")
                         yield Static("", id="compound-horizon-summary", markup=False)
                         yield GlossaryTable(id="compound-horizons")
+                        yield Static("Signal forward calls and outcomes", classes="table-title")
                         yield GlossaryTable(id="compound-forward")
                 with TabPane("All coins", id="cmp-coins"):
                     with VerticalScroll():
@@ -4210,6 +4213,7 @@ class SolTuiApp(App):
                 yield Button("Check order", id="coinbase-order-check")
                 yield Button("Refresh order safety", id="coinbase-order-state")
             yield Static("No order submitted in this session.", id="coinbase-order-receipt", markup=False)
+            yield Static("Coinbase holdings — available and held balances", classes="table-title")
             cbhold = GlossaryTable(id="coinbase-holdings")
             cbhold.add_columns("portfolio", "asset", "available", "hold")
             yield cbhold

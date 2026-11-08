@@ -24,7 +24,7 @@ import unittest
 from pathlib import Path
 
 from backtester.core.strategies import REGISTRY, build
-from backtester.core.strategy_cards import load_all
+from backtester.core.strategy_cards import load_all, load_card
 from soltui import bgqueue, reference, signals
 
 REPO = Path(__file__).resolve().parent.parent.parent
@@ -87,6 +87,16 @@ class TestCatalogueCoverage(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.cards = load_all()
+        # Non-executable research and bot guides were moved out of the strategy
+        # queue in PR 101. They still document catalogue entries, but must not
+        # be presented as buildable queue strategies.
+        for cid, folder in {
+            "day_trading": "strategy_research", "scalping": "strategy_research",
+            "dex_cex_dislocation": "strategy_research", "event_driven": "strategy_research",
+            "prediction_markets": "strategy_research",
+            "triangular_arbitrage": "guides",
+        }.items():
+            cls.cards[cid] = load_card(REPO / "backtester" / folder / f"{cid}.md")
         cls.queued = {j.strategy for j in bgqueue.build_queue("SOL", max_tier=0)}
 
     def test_every_catalogue_name_has_a_card(self) -> None:

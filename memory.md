@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 191
-Delta: v190 to v191; record Forward Test sort persistence.
+Version: 193
+Delta: v192 to v193; record focused repairs for full-suite UI failures.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1765,3 +1765,11 @@ The sourced Jupiter spot versus perpetual cost distinction is queued in outbox a
 ## v191 - 2026-11-08
 
 The owner reports that the Forward Test table reverts the chosen column sort when the minute refresh redraws it. Preserve the chosen column and direction when new rows arrive. Stele task creation is queued in outbox b552278a because the transport closed. Implement in the active shortcuts worktree without interrupting forward workers.
+
+## v192 - 2026-11-08
+
+The optional 1082-test SolTUI suite on the Coinbase branch finished with eight failures and two errors. The strategy catalogue failures were stale expectations after PR 101 moved research and bot guides out of the executable cards directory. The catalogue test now verifies the relocated files without adding them to the queue. Stele lesson is queued as outbox bd3fb46a. UI help, title and glossary failures remain under investigation. The Coinbase feature passed its focused checks and required CI and merged in PR 125.
+
+## v193 - 2026-11-08
+
+The three full-suite UI failures now pass their focused tests after adding missing help, glossary entries, and four table titles. The relocated catalogue coverage tests also pass, with one unrelated skip. A complete suite rerun is still required. The F5 backend is being implemented separately as TASK-1046; it must not treat research-only guides as executable strategies.
