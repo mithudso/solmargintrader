@@ -108,11 +108,13 @@ from a screen of the top 50 coins by market cap, pegged tokens left out
 (`research/results/top50-nonpegged-2026-11-07.json`). The screen, with each coin's live turnover,
 perp leverage, Coinbase status, verdict and reason, is `research/results/top50-screen-2026-11-07.json`.
 
-A five-minute call pays only with leverage and a round trip near 13 bps, so the screen asked:
+The screen applied the owner's minimum-leverage requirement and an assumed 13 bps
+round-trip cost. Leverage scales price exposure and proportional costs together; it does
+not reduce the underlying price move needed to break even. The screen asked:
 
 | Test | Why it disqualifies |
 | --- | --- |
-| A perpetual market with 10x or more (Hyperliquid) | Without leverage a 5m move cannot beat the fees. Jupiter Perps lists only SOL, ETH and BTC. |
+| A perpetual market with 10x or more (Hyperliquid) | Owner's minimum-leverage screen. It changes collateral exposure, not the proportional fee hurdle. Jupiter's JLP markets cover SOL, ETH and BTC. |
 | 24h volume above 0.5% of market cap | Below that, a 5m position is the visible order book and the 2 bps slippage model is wrong. |
 | Coinbase USD candles | Live calls and forward training read Coinbase. |
 | No exchange-token, rename or privacy-delisting distortion; enough history | Exchange tokens trade on their exchange's buybacks; a renamed token's history is another token. |
@@ -385,6 +387,16 @@ Hyperliquid's (13 bps round trip) at 5x, with each coin's maintenance margin.
 | SUI | 2023-05 | 346,456 | **23.6%** | 17.6 | +4.6 | 52.3% (8.7) | RSI 53.0% (15.3) | 0.28 |
 | AVAX | 2021-09 | 533,946 | **29.7%** | 17.1 | +4.1 | 50.4% (1.6) | Bollinger 51.7% (10.0) | 0.52 |
 
+**Scope of “Perfect call, net.”** `forecast_stats.oracle_net_bps` averages absolute
+close-to-close log returns over all transitions selected by time, then subtracts a fixed
+round-trip cost. It includes FLAT/no-call periods and ties. It does not condition on the
+strategy's selected events, model next-open fills, or check the intrabar liquidation path.
+A negative average cannot rule out every selective five-minute strategy; a positive one
+does not establish an executable strategy. The saved engine results below describe the
+configurations actually tested. See `research/five-minute-perps-suite/benchmark-scope-review.json`
+for the code review and a synthetic counterexample. Historical cost assumptions are not
+live venue quotes.
+
 **1. Nothing made money.** All 300 configurations lost the whole stake out of sample at 5x.
 
 **2. The direction edge is real and tiny.** Reversion metrics (RSI, z-score, Bollinger, Stochastic)
@@ -393,13 +405,15 @@ beyond the 300-configuration selection burden. But the best metric earned at mos
 against a 13 bps round trip. The edge is about one fiftieth of the cost. Part of it is probably
 Coinbase bid-ask bounce, which a taker order cannot capture.
 
-**3. Hyperliquid's lower cost moves the ceiling, not the result.** A perfect one-bar call would now
-net a profit on 8 of 10 coins (NEAR +10 bps, LINK +5, SUI +4.6, AVAX +4.1). At Jupiter's 16 bps it
-lost on four of five coins. The ceiling is not the limit; the metrics' accuracy is.
+**3. Lower configured costs improve the all-transitions diagnostic.** At the configured
+13 bps round trip, this diagnostic is positive on 8 of 10 coins (NEAR +10 bps, LINK +5,
+SUI +4.6, AVAX +4.1). The earlier five-coin sample was negative on all five at 16 bps.
+These samples and costs differ; neither diagnostic establishes executable strategy returns.
 
 **4. Five coins have unreliable bars.** NEAR, AVAX, HYPE, SUI and LINK have 11–38% of 5m bars built
 from incomplete minutes (Coinbase drops traded minutes). Their highs, lows and closes can be wrong,
-so their hit rates and their positive ceilings deserve less trust than BTC, ETH, SOL, XRP and DOGE.
+so their hit rates and positive all-transitions diagnostics deserve less trust than those
+for BTC, ETH, SOL, XRP and DOGE.
 
 **What would have to change:** a call held for several bars (one cost per many moves), maker
 entries (1.5 bps per side instead of 6.5 with slippage), or far fewer, stronger calls. None of these
@@ -410,23 +424,25 @@ was tested here.
 Run `20261107T130441Z-f7fea5b2368e`: `python3 -m soltui.compound sweep --perturb --aggregate-grid`
 over the cached 2026-07-06 to 2026-08-06 bars (8,927–8,929 per coin) (SOL native 5m; BTC, ETH, DOGE, ZEC aggregated from
 1m). In-sample = first 70%, out-of-sample (OOS) = last 30% (about 2,680 bars per coin). Costs:
-6 bps fee + 2 bps slippage per side, a 16 bps round trip (Jupiter base fee plus its 1 bp impact
-floor and adverse execution).
+6 bps fee + 2 bps slippage per side, a configured 16 bps round-trip friction proxy.
+This assumption is not a current executable Jupiter quote.
 
 **1. No configuration made money after costs.** 10 of 1,420 had a positive OOS return; every one
 of them had an OOS hit rate within 1.2 standard errors of a coin flip, and 7 of the 10 lost in-sample.
 That is the shape of luck, not edge.
 
-**2. Even perfect foresight loses on four of five coins.** The `oracle net bps` column is what a
-call that is *always right* earns per one-bar round trip after costs:
+**2. The all-transitions diagnostic is negative on all five coins.** The `oracle net bps`
+column averages absolute close-to-close log returns across every time-selected transition
+and subtracts the configured round-trip cost, regardless of whether the strategy calls a trade:
 
 | | BTC | DOGE | ETH | SOL | ZEC |
 | --- | --- | --- | --- | --- | --- |
 | mean \|5m move\| (bps) | 6.2 | 8.7 | 8.6 | 8.5 | 15.6 |
 | oracle net per one-bar trade (bps) | -9.8 | -7.3 | -7.4 | -7.5 | -0.4 |
 
-A 5m direction call can only pay by holding through several bars in one round trip, which is
-what the hysteresis and the cost gate (`hold_bars`) are for.
+This unconditional average does not evaluate a selective one-bar policy. Fewer, stronger
+calls or longer holding periods are hypotheses to test. Either needs positive conditional
+expectancy after execution costs and an intrabar path that survives its stop and liquidation limits.
 
 **3. Direction is weakly predictable, in the reversion direction.** Out-of-sample hit rates of
 each metric alone (z = standard errors from 50%):

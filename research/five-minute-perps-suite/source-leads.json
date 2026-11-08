@@ -1,0 +1,155 @@
+{
+  "schema": "full-suite-scout-leads/v1",
+  "as_of": "2026-11-07",
+  "concepts_scouted": 7,
+  "fast_path_concepts": 2,
+  "url_library_seeds_written": 0,
+  "mirrors_written": 0,
+  "qualification": "Scout discovery is not an evidence gate. Reacquire/read every cited source and bind exact claims before promotion. Raw third-party bodies stay private.",
+  "scouts": [
+    {
+      "concept": "Five-minute first-passage labels with liquidation and costs",
+      "agent": "scout_path_survival",
+      "fast_path": false,
+      "access": [
+        "arxiv.org llms endpoints returned HTTP 404. Provisional negatives.",
+        "mlfinlab.com redirected to unrelated lottery HTML. Rejected.",
+        "hudsonthames.org llms endpoints returned HTTP 406. Provisional negatives."
+      ],
+      "leads": [
+        "https://hudsonthames.org/does-meta-labeling-add-to-signal-efficacy-triple-barrier-method/",
+        "https://arxiv.org/abs/1107.1174",
+        "https://arxiv.org/abs/2011.02870",
+        "https://www.wiley.com/en-us/maximum-adverse-excursion-analyzing-price-fluctuations-for-trading-management-p-9780471141525",
+        "https://link.springer.com/article/10.1186/s40537-025-01267-7"
+      ],
+      "status": "Preliminary leads only. No research claims were verified.",
+      "model": "Inherited model fallback. The requested Haiku tier was unavailable."
+    },
+    {
+      "concept": "SOL cross-venue lead-lag after executable latency",
+      "agent": "scout_cross_venue",
+      "fast_path": false,
+      "access": [
+        "arxiv.org llms endpoints returned HTTP 404. Provisional negatives.",
+        "ScienceDirect apex and www endpoints returned HTTP 404. Redirect chains were unavailable."
+      ],
+      "leads": [
+        "https://repository.lib.fsu.edu/islandora/object/fsu:1057157/datastream/PDF/view",
+        "https://doi.org/10.7717/peerj-cs.3810",
+        "https://arxiv.org/html/2108.09750v1",
+        "https://centaur.reading.ac.uk/81745/3/2.R%26R.Manuscript.pdf",
+        "https://arxiv.org/abs/2506.08718",
+        "https://www.sciencedirect.com/science/article/abs/pii/S016517652600220X",
+        "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4080253"
+      ],
+      "status": "Preliminary leads only. No research claims were verified.",
+      "model": "Inherited model fallback. The requested Haiku tier was unavailable."
+    },
+    {
+      "concept": "Jupiter dynamic-fee-aware short-horizon feasibility",
+      "agent": "scout_fee_policy",
+      "fast_path": true,
+      "access": [
+        "docs.jup.ag llms.txt and llms-full.txt returned HTTP 200 text/plain through Firecrawl after direct HTTP 403.",
+        "jup.ag llms.txt returned HTTP 200 text/plain through Firecrawl, focused on Predict.",
+        "jup.ag llms-full.txt returned HTTP 404 HTML. Provisional negative."
+      ],
+      "leads": [
+        "https://docs.jup.ag/llms.txt",
+        "https://docs.jup.ag/llms-full.txt",
+        "https://docs.jup.ag/user-docs/trade/perps/fees",
+        "https://docs.jup.ag/user-docs/trade/perps/faq",
+        "https://docs.jup.ag/user-docs/trade/perps/technical-reference.md",
+        "https://docs.jup.ag/user-docs/trade/perps/positions-and-collateral.md",
+        "https://docs.jup.ag/user-docs/trade/perps/beta-markets"
+      ],
+      "status": "Preliminary leads only. No research claims were verified.",
+      "model": "Inherited model fallback. The requested Haiku tier was unavailable."
+    },
+    {
+      "concept": "Five-minute selective prediction and probability calibration",
+      "agent": "scout_calibrated_abstention",
+      "fast_path": false,
+      "access": [
+        "Reused the sibling scout's provisional arxiv.org HTTP 404 observation. No duplicate retrieval."
+      ],
+      "leads": [
+        "https://proceedings.neurips.cc/paper_files/paper/2021/hash/0d441de75945e5acbc865406fc9a2559-Abstract.html",
+        "https://jmlr.org/papers/v25/22-1218.html",
+        "https://proceedings.iclr.cc/paper_files/paper/2024/hash/de04896f011beff76c91e094f72727f4-Abstract-Conference.html",
+        "https://proceedings.mlr.press/v202/xu23r/xu23r.pdf",
+        "https://www.jmlr.org/papers/v26/24-0452.html",
+        "https://livrepository.liverpool.ac.uk/3142465/",
+        "https://pubsonline.informs.org/doi/10.1287/ijds.2024.0038",
+        "https://proceedings.mlr.press/v266/retzlaff25a.html"
+      ],
+      "status": "Preliminary leads only. No research claims were verified.",
+      "model": "Inherited model fallback. The requested Haiku tier was unavailable."
+    },
+    {
+      "concept": "Five-minute volatility-regime-conditioned signal selection",
+      "agent": "scout_regime_conditioning",
+      "fast_path": false,
+      "access": [
+        "Reused the sibling scout's provisional arxiv.org and ScienceDirect HTTP 404 observations. No duplicate retrieval."
+      ],
+      "leads": [
+        "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6932998",
+        "https://www.frontiersin.org/journals/applied-mathematics-and-statistics/articles/10.3389/fams.2026.1888767/full",
+        "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4401552",
+        "https://doi.org/10.1016/j.iref.2024.05.003",
+        "https://centaur.reading.ac.uk/97607/1/Bitcoin_Functional_Accepted.pdf"
+      ],
+      "status": "Preliminary leads only. No research claims were verified.",
+      "model": "Inherited model fallback. The requested Haiku tier was unavailable."
+    },
+    {
+      "concept": "Cross-asset hierarchical transfer at five-minute horizon",
+      "agent": "scout_cross_asset_transfer",
+      "fast_path": true,
+      "access": [
+        "frontiersin.org llms.txt redirected to www and returned HTTP 200 text/plain, 5255 bytes. This is publisher routing, not a corpus.",
+        "Frontiers apex and www llms-full.txt endpoints returned HTTP 404. Provisional negatives."
+      ],
+      "leads": [
+        "https://www.frontiersin.org/llms.txt",
+        "https://www.frontiersin.org/journals/blockchain/articles/10.3389/fbloc.2026.1811716/full",
+        "https://doi.org/10.1134/s1995080224600705",
+        "https://codewithpapers.app/paper/probabilistic-deep-learning-and-transfer"
+      ],
+      "scope_warnings": [
+        "The Manevich paper predicts one-day realized volatility computed from five-minute samples. It does not predict five-minute direction.",
+        "CodeWithPapers is a secondary source only. SOL is absent from its snippet."
+      ],
+      "status": "Preliminary leads only. No research claims were verified.",
+      "model": "Inherited model fallback. The requested Haiku tier was unavailable."
+    },
+    {
+      "concept": "Uncertainty-aware nonlinear crypto lead-lag",
+      "agent": "scout_uncertainty_leadlag",
+      "fast_path": false,
+      "access": [
+        "repository.lib.fsu.edu llms endpoints returned HTTP 404.",
+        "fsu.edu endpoints redirected to www and returned HTTP 404.",
+        "The direct thesis landing page returned HTTP 202 without usable parsed metadata."
+      ],
+      "leads": [
+        "https://repository.lib.fsu.edu/islandora/object/fsu:1057157/datastream/PDF/view",
+        "https://repository.lib.fsu.edu/islandora/object/fsu:1057157",
+        "https://purl.lib.fsu.edu/diginole/honors_thesis_submission-c5e3c327-cb04-4e7f-89f5-ed8b01ac5b12",
+        "https://arxiv.org/pdf/2201.02040",
+        "https://ink.library.smu.edu.sg/cgi/viewcontent.cgi?article=7900&context=lkcsb_research",
+        "https://jmlr.org/papers/v25/22-1218.html",
+        "https://businessperspectives.org/journals/investment-management-and-financial-innovations/issue-421/a-tick-by-tick-level-measurement-of-the-lead-lag-duration-between-cryptocurrencies-the-case-of-bitcoin-versus-cardano"
+      ],
+      "scope_warnings": [
+        "Search metadata identifies Guillermo Marr, a bachelor thesis issued 2025-12-03. This is unverified and not a peer-reviewed paper.",
+        "A targeted search found no thesis data or code repository. This does not establish absence.",
+        "The Gibbs-Candes NeurIPS 2021 and JMLR 2024 papers share author lineage. Do not count them as independent research groups."
+      ],
+      "status": "Preliminary leads only. No research claims were verified.",
+      "model": "Inherited model fallback. The requested Haiku tier was unavailable."
+    }
+  ]
+}

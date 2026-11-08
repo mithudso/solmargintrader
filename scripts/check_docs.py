@@ -311,7 +311,7 @@ def check_components_covered() -> list[str]:
     text = path.read_text(encoding="utf-8").lower()
     return [
         f"{OVERVIEW_MD}: no section for component {name}/"
-        for name in ("backtester", "research", "extension", "soltui", "mongo", "liquidity")
+        for name in ("backtester", "research", "extension", "soltui", "mongo", "liquidity", "executor")
         if f"{name}/" not in text
     ]
 

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 54
-Delta: v53 to v54; Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder).
+Version: 69
+Delta: v68 to v69; Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder).
 
 ## v1 - 2026-11-06
 
@@ -189,6 +189,18 @@ Target: the owner reloaded the unpacked extension from /Users/mitch/dev/solmargi
 Done: manifest.json and package.json are 0.2.0. The popup header and the dashboard title show the manifest version. The popup gains a "SolTUI console" button that opens dashboard.html#soltui. test/version.test.js keeps the two version fields equal and checks that both pages render the version. The CI extension job fails a pull request that changes extension/src or manifest.json without a version bump.
 
 Owner steps (Chrome Beta, where the extension is installed): quit and reopen Chrome Beta once so it reads the com.mitchhudson.soltui native host manifest, then reload SolMarginTrader in chrome://extensions. The popup should then read v0.2.0.
+
+## v18 - 2026-11-07 (executor, workstream E1)
+
+Target: new component `executor/` for swaps between coins with best pricing; the foundation for a later "run this strategy live" button (E2 builds the runner and the button). Branch executor-e1, worktree /Users/mitch/dev/solmargintrader-wt-executor. Stele MCP was unreachable, so the facts below are in the outbox, not yet in the graph.
+
+Completed: Python 3.13 package with uv lock, ruff and pytest (202 offline tests, 5 `-m network`); Jupiter Swap v1 quote/swap/price with an independent price reference; quote-only LI.FI cross-chain price; semantic transaction verifier (`txverify.py`, two layers, plus a re-simulation of the exact signed bytes); rails, per-strategy dry-run soak, mandatory research gate with a logged override; append-only journal with `unknown` handling and `reconcile`; CLI and loopback HTTP API over one registry with one envelope; `executor` CI job; root CLAUDE.md and docs now say seven components.
+
+Facts to keep: (1) Jupiter now marks Swap API v1 "no longer actively maintained, superseded by Swap V2"; the owner chose v1. `lite-api.jup.ag` works keyless but returns 429 on a second call inside about a second, so the client spaces calls. (2) `priceImpactPct` is a fraction ("0.001078" at 20,000 SOL = 0.108%). (3) A simulated post-state includes the fee; `simulateTransaction` with `accounts` returns the post-state of every writable account, which is what the verifier compares. (4) The wallet held no USDC, so the live round trip ran sell first (SOL to USDC, then back). (5) Config comment lines contain the text `mode = "live"`: edit the config with a line-anchored replace, not a string replace.
+
+Live validation (root CLAUDE.md conditions): reserved strategy `path-validation`, enabled only for the run, then switched off. Leg 1 SOL to USDC 0.011 SOL: 44MrREewJMLguLRw3pfMs5V3K1wFXRyxuD6pGDa5Kp1TWUWSd9TGiu9wTJ4ACYLFbqSe8WHMaLyBRDu8GvhHaYSS. Leg 2 USDC to SOL 0.99 USDC: 5veG62YXWFjX1XYeAzadLpaZ1MwaWd89dcwGt8Sjv6oS7uk1yscZKd1ggqBDFfugzP19yXc7EWB8DCao8FnpUSFH. Net cost of the round trip 51,110 lamports (about $0.005) and 47 raw USDC of dust; both post-trade checks passed.
+
+Remaining: E2 (runner, soltui button); cross-chain execution; Swap V2 decision; owner to review the `path-validation` reserved strategy.
 
 ## v18 - 2026-11-07
 
@@ -536,9 +548,168 @@ Checkpoint: started the data refresh from the isolated agent-01a1b61a worktree; 
 
 Verified: 60 focused tests and check_docs pass. Remaining: verify per-asset fetch coverage, completed registry and compound rows, skips and errors before interpreting the new run. Keep the worktree while the continuation uses it.
 
-## v54 - 2026-11-08 (Bots tab v2)
+## v52 - 2026-11-08 (trend filter)
 
-Target: prompts.md v48. Stele TASK-884. Branch feat/bots-tab-v2 in /Users/mitch/dev/solmargintrader-wt-39e8bf11.
+Target: the owner asked for a filter that stops the compound fading a clear trend. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-trend, branch feat/compound-trend-gate.
+
+Completed: Component.directional; gate_trend (htf_trend formula; threshold 0.5; default on). A directional gate returns a direction per bar, and evaluate blocks only a call against it (NaN blocks all, failing closed), so blocked_by and target_path work unchanged. Docs and the five-minute-signal skill updated.
+
+Verification: tests cover blocking UP in a decline, keeping DOWN, explain blocked_by, warm-up failing closed, and prefix invariance. Last 120 days OOS: threshold 0.3 keeps 35-45% of calls and lowers the hit rate on 7 of 10 coins; 0.5 is about equal on SOL/ETH/XRP and about 1 point lower on BTC/DOGE; 0.7 is equal or higher on SOL/ETH/XRP. Live SOL, last 6h: 26 UP / 8 DOWN became 0 UP / 8 DOWN.
+
+Remaining: after merge, restart the unattended trainer so it runs gate_trend; the owner restarts soltui.
+
+## v53 - 2026-11-08 (Adaptive Forwardtest)
+
+Target: prompts v46, Stele TASK-863 and KNOW-864. Worktree /Users/mitch/dev/solmargintrader-wt-forwardtest. Reuse compound tuning gates on prospective shadow predictions. Isolate each trial and each of four horizons. Implemented Space toggle and bulk roster add. Added a console-owned paper Forwardtest worker, closed 1m Coinbase feed, SQLite prediction history, separate 1/5/10/30-minute trials and shadow learning gated by paired resolved observations. Nine focused tests passed for separate outcomes, pre-window timing, missing data, adoption, roster and worker stop. The 853 backtester tests and documentation checks passed. An isolated SOL tick recorded all 140 calls for 34 standalone strategies and one combination across four horizons. Full local suite caught missing shared glossary entries and the Forwardtest table title; corrected both. Remaining: confirm full CI and merge PR 83 (https://github.com/mithudso/solmargintrader/pull/83).
+
+## v54 - 2026-11-07 (Five-minute leveraged perps full-suite)
+
+Target: research five-minute SOL Jupiter Perps directional signals and adverse-path survival. Task TASK-808. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef, branch agent-01a1b5ef at c01412a. Preserve all shared checkout and other worktree changes.
+
+Completed: read project instructions and routing index; full-suite is folded under llms-txt-tooling/references/full-suite.md. Fetched KNOW-656 (dated cost mechanics) and KNOW-657 (data/execution gap); created decision KNOW-809 separating terminal direction, barrier survival and net expectancy. The stele-search agent failed because its fixed gpt-5.4-mini model is unsupported; direct named-node reads are the fallback.
+
+Constraints: research only, no trading or execution/config changes. No keys, signing, daemon restart, inference or indexing services. Full-suite saturation and gate receipts must be earned, never inferred from artifacts.
+
+Remaining: map coverage and scored gaps; research current venue and short-horizon predictive evidence; compile source packs and rollup; independent audit; offline indexes/docs checks; commit/PR/CI/merge and remote verification.
+
+## v55 - 2026-11-07 (Full-suite preparation and audited private draft)
+
+Completed: full canonical-tree inventory, 30 scored candidates across five neighborhoods, 23 HAVE and seven distinct above-threshold gaps. Canonical CVS checker passed all 30 rows. Verified 47 prior canonical SUPPORTED claims against 114 bound snapshot spans with zero missing/hash/offset failures. Seven preliminary scouts preserve leads, not evidence. TASK-810 complete; research TASK-811 and parent TASK-808 remain unfinished.
+
+Current sources: refreshed four official Jupiter JLP pages and one exact-five-minute Binance empirical paper into private source library. KNOW-813 records current minimum linear-impact fee, jump-rate borrow curve, rolling flow imbalance and dual execution paths; KNOW-656 now carries a current-source caveat and contradicts edge. Do not treat the August fee-only model as current execution pricing.
+
+Private draft: /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-task808-unpromoted/FIVE-MINUTE-PERPS.md (SHA256 ceef7f86d2aa505eff5a484f66eb7a2caae3f8650fad0374e19cf2245bf977b3) and calculated-scenarios.json (SHA256 c8fae31cce7f1edc7eaefdde6bbbfb6a609515f07597d7c785636109a720ecd4). Independent research-contract-auditor found no material source/math/scope errors; verified five snapshot hashes, 15 leverage scenario values, five symmetric probabilities and one asymmetric probability. This is a scoped synthesis, not a completed full-suite or v4 publication receipt. No profitable five-minute SOL strategy is claimed.
+
+Blocker: python3 /Users/mitch/.global-ai-hub/scripts/dr_run.py check exits 1: retired research sink still present: /Users/mitch/.research. Installed /Users/mitch/.claude/commands/dr.md says to stop and report this condition. Directory contains about 23 MB of unrelated older local-model research. User async approval is pending for intact archive to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808. Preserve it until answered. No new /dr init/research/gate/render/finish/tree write or service startup.
+
+Verification: system Python lacked pandas; existing /Users/mitch/.venvs/soltui/bin/python ran research/verify_numbers.py successfully (1084 archived figures; not a new performance test). scripts/check_docs.py passed with counts 734/313/33/682. No product code changed; new scenario invariants and independent recomputation passed. Private reuse-only pack: /Users/mitch/.global-ai-hub/llms-concepts/five-minute-perps-inherited-v4.llms/. It retains 47 exact inherited supported assertions and 47 FTS5 rows. It is a private draft, not a new researched family: semantic/agent tests are absent, and facts-format lint conflicts with exact-proof reuse. The run-state receipt records all limitations. Remaining: on approved archive, run adapter research/gates on seven gaps, quality audits, final packs/rollup/index/tree steps and saturation gates. Preserve inventory and successful source reads. Repository recovery delivery is tracked in TASK-808; verify its PR status rather than assuming merge.
+
+## v56 - 2026-11-07 (Private reuse pack and recovery checkpoint)
+
+Completed: private source-bound reuse pack retains all 47 unchanged supported assertions. Keyword FTS5 has 47 rows and four nonzero query checks. Vocabulary and digest repairs pass their relevant checks; exact long assertion formatting still conflicts with facts lint and remains an explicit qualification limit. Semantic indexing and agent tests were not run. No source-derived new research draft is staged for the public repository.
+
+Current recovery task: integrate origin/master 3cc9b44 without losing the other session's continuation records, refresh three offline indexes, commit and push the task branch and open a draft PR. Parent TASK-808 remains unfinished. User archive decision remains pending. Do not run new /dr work or alter /Users/mitch/.research before the answer. Delivery receipt belongs in TASK-808; all research stages after preparation remain owed.
+
+## v57 - 2026-11-07 (Draft recovery delivery)
+
+Recovery PR: https://github.com/mithudso/solmargintrader/pull/58 (draft; unfinished research checkpoint). Branch agent-01a1b5ef, private worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef. The branch includes origin/master 3cc9b44. Rebase conflicts in prompts.md and memory.md were resolved by retaining the upstream session's records and appending this task with unique version numbers. The shared dirty checkout was preserved.
+
+Checks after integration: documentation drift passed with 734 backtester, 313 extension, 33 mongo and 712 soltui tests discovered. Offline source index check and whitespace checks passed. Independent private synthesis/math audit passed its stated scope. Canonical CVS checker passed all 30 rows. No product code changed. CI must be checked on the final pushed tip; its status is recorded in TASK-808 rather than presumed from a push.
+
+Private reuse compilation: vocabulary check passes, digest fits 1603 estimated tokens and 6443 bytes, and FTS5 has 47 rows with four successful queries. Two facts-format Medium findings remain (facts/full ratio and 44 long assertions). The exact inherited assertions were preserved; no CLEAN label or new full-suite completion is claimed. Semantic indexing, agent tests, new per-concept research, rollup, skill audits/install/sync, tree registration and saturation gates remain owed.
+
+Current blocker: archive decision for /Users/mitch/.research is still pending. Preserve its approximately 23 MB of older local-model work and do not run dependent /dr stages before the owner answers. The independently audited unpromoted report, calculations and audit receipt remain private under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-task808-unpromoted/. Canonical CFE checkpoint and the public run-state copy preserve the seven queued gaps. No session-owned agents, services or inference jobs remain running. Parent TASK-808 and research child TASK-811 stay unfinished.
+## v58 - 2026-11-08 (Approved archival and full-suite continuation)
+
+Target: user approved intact archival and continuation of TASK-808. Refreshed instructions, current master, PR58 and accepted checkpoints. Reclaimed own stale TASK-808/TASK-811 records. Original source and requested target are absent. TASK-832 records the earlier user archive /Users/mitch/.research-archived-2026-11-07, which exists. Record complete before/after relative-path, type, permission and file-content inventories while relocating that preserved archive to the approved exact destination. No pre-November-7 manifest exists, so only this move can be verified.
+
+Current /dr preflight passes. All seven queued gaps retain missing five-minute/executable/survival/calibration deltas. New Jupiter and microstructure packs provide source leads but their heuristic/legacy sampled receipts do not establish v4 verification. Preserve 47 previously supported assertions and successful reads. Root owns workflow records, archive, synthesis and Git delivery; coordinator owns actual seven-gap research, gates and compilation. Worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef; branch agent-01a1b5ef.
+
+Remaining: archive verification; reconcile resolved blocker; actual adapter research/gates, quality audits, private packs and rollup, authorized index/tree placement, independent review and final repository delivery. No trading, signing, wallet changes or service startup belongs to this task.
+
+## v59 - 2026-11-08 (Approved archive verified)
+
+Completed: relocated the user-preserved archive /Users/mitch/.research-archived-2026-11-07 to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808. Exact before/after inventories match for 1802 files, 34 directories, no symlinks and 18822683 bytes. Hash 4e70f32dc2cd59f308c74c485fb76ca2e1fc1d49239ab6105fdedac36a165d2d binds paths, file types, modes, owners, modification times and file SHA256 hashes. Private full manifest is adjacent to the archive; public summary in research/five-minute-perps-suite/archive-receipt.json. This verifies this relocation only, not the earlier user move for which no per-file baseline exists.
+
+/dr preflight passes; KNOW-814 archived as resolved and KNOW-861 updated. TASK-808/TASK-811 are claimed by the current continuation. Merged current master 1f90856 into task branch as 5cf5918, preserving all upstream source and continuation records. Upstream has preexisting duplicate memory version28 and Markdown hard-break whitespace; preserved both rather than rewriting unrelated history. Task-only whitespace checks should use origin/master...HEAD.
+
+Coordinator authorized to execute the actual standard-depth seven-gap adapter cohort with max parallel3, native scout/library support and default model/effort. Retain old47SUPPORTED proofs and successful source reads. Broad new packs have heuristic or legacy sampled proof; do not mark gaps HAVE from them. Independent code inquiry checks whether the repository's negative average all-bars perfect-direction ceiling was overgeneralized to selective five-minute signals. No backtest sweeps, wallet operations or live-service changes are authorized by this research-only task.
+
+Remaining: actual research/gates and per-concept artifacts, quality/rollup/index/tree stages, evidence-based frontier and final audit; scoped docs/index checks, final PR58 update/CI/merge and remote verification. Root owns prompt/memory, archive receipt, synthesis and delivery; coordinator owns research metadata and task-specific private research outputs.
+
+
+## v60 - 2026-11-08 (Full-coverage gate and benchmark scope)
+
+Completed: independent archive audit rehashed every recorded file and metadata field with zero mismatches. Added research/five-minute-perps-suite/benchmark-scope-review.json and corrected docs/COMPOUND-5M.md plus docs/COMPOUND-5M-PAPER.md. forecast_stats.oracle_net_bps uses all time-selected close-to-close log returns, including ties and no-call periods; it does not condition on calls or model next-open execution and liquidation paths. A synthetic actual-function check gives the same negative all-bars diagnostic with a positive selected-call result. This is a logical counterexample, not market performance. Leverage multiplies proportional price returns and fees together; it does not lower their underlying break-even. KNOW-818 now records this correction. Historical numbers remain unchanged.
+
+Research: all seven commissioned native returns completed, with 110 structured claims and 55 auxiliary assertions. Ten initial integrity pairs received one bounded repair. Actual research-gate/v4 packet 23848f133a76fd55d8eaac94a05fcd2dda5149c15cdd3a22baa0d5491a3555df selects all 165 assertions and has zero structural failures; independent semantic review is running. Draft completion is not evidence acceptance. Preserve source origins, successful exact reads and prior47SUPPORTED claims.
+
+Delivery isolation: skills branch research/perps-task808 in /Users/mitch/dev/worktrees/skills-perps-task808; website branch research/perps-task808 in /Users/mitch/dev/worktrees/llms-explorer-perps-task808. Prompts and continuation records were saved before downstream writes. Supported render --out targets the private skills tree. Deliver and activate the qualified reference first, then rerender to its stable recognized path before canonical finish; otherwise the tree skill ID can be null and the manifest can point to a deleted worktree. Preserve unrelated dirty canonical skills and website checkout contents. Scoped parity registration includes only the new reference, hub routing, companion version/date and portable indexes, with baseline validation findings disclosed.
+
+Semantic scope: later November7 explicit user authorization supersedes the historical blanket pause for this task's on-demand local indexing only. Use existing local Ollama mxbai-embed-large:latest; no model download, service start, LAN/eGPU window or background queue resume. Actual full-suite stages, final independent publication audit and all Git deliveries remain owed. Unit verification is running on this private integrated branch; archived numerical verification passed1084 checks and documentation drift passed.
+
+
+## v61 - 2026-11-08 (Accepted v4 research and install qualification)
+
+Accepted: final research-gate/v4 packet53f1e45fae9cc0570ca7ba4085ad120785c3928beef135a4809ed0261191023c reviewed165/165 assertions. It has125SUPPORTED factual assertions and40non-assertions; three conflicts have explicit attribution. The validator reused159 exact judgments and reviewed only6 changed rows. Public metadata-only receipt: research/five-minute-perps-suite/accepted-gate-receipt.json. Private final attempt: gate/attempts/20261108T071503.072906Z-fe9b6245 under the task's canonical run directory. Failed attempts and successful evidence remain preserved; no sampled or invalid response was promoted.
+
+Root authored research/FIVE-MINUTE-PERPS.md from accepted venue mechanisms and prior supported microstructure evidence. Signal priority is explicitly a proposed test order, not an empirical winner. The 14bp round-trip floor and collateral percentages are labeled calculations from documented fee components; the binary80% example is arithmetic, not observed accuracy. No new market backtest, trading change or live trade. Independent final synthesis review is underway.
+
+Skill installation: reference rendered in the isolated skills worktree. A banner before YAML caused meta-validation High 'no parseable --- frontmatter block' and empty index metadata. Coordinator normalized formatting only, preserving claim prose and evidence; KNOW-869 records the trigger and required stable-rerender normalization. Owning-hub offline audit found an existing hard body ceiling violation; the exact long routing descriptions were moved losslessly to trading-and-investing/routing-detail-catalogue.md. Every68table row/67unique route remains, including the preexisting duplicate. Hot card audit now0High0Medium; parity agent regenerates and validates final routing/index metadata. Preserve .agents model/omissions and its own version lineage during additive activation; do not replace the whole loaded hub. KNOW-867 records the stable-path hold.
+
+Verification: extension361 passed; real browser dry-run22/22 passed; offline roundtrip net+0.3492; mongo33 ran,17skipped without local server. Backtester853 ran with only the expected stale-index guard failing while metadata is changing; rebuild after final freeze and recheck. SolTUI808 still running. Docs drift passed853/361/33/808,2055total. Site dependency Python manifests match existing venv; private symlink reuses it. Installed private site lock with scripts disabled because original site's dependency versions differ. Site typecheck has0errors/0warnings,19hints. Prebuild site tests273pass20skip and35missing-dist failures require actual build after finish; this is not a code failure or final acceptance.
+
+Remaining: final qualified skills delivery and guarded activation, supported stable rerender, canonical finish/private/public boundary audit, actual per-concept/rollup compile/index/registration/frontier gates, final site build/tests, root/site PRs and CI/merge/content verification. ParentTASK808 remains unfinished.
+
+## v62 - 2026-11-08 (Integrated delivery and qualified research skill)
+
+Merged origin/master55c1dd4 (other-session gate_trend PR82). Preserved upstream prompt45/memory51, then appended this task's records as prompt46-47 and memory52-59 without changing request text or accepted source facts. Preexisting duplicate memory28 remains upstream-owned. Original forecast_stats AST is identical at current upstream and reviewed5cf5918 (SHAe00005b65a01e0bf9c70e85893c0b31e74afe65fe5eca1ecee024f0f0d6598ca); currentline1935, oldline1904. This task changes no strategy or execution code.
+
+Root synthesis research/FIVE-MINUTE-PERPS.md passed independent factual/math/proposal review atSHA23cb83fbecd903c5b9f1fbc6a5fa07e73726def4a76cdd1c650ce7b854d90431; receipt in research/five-minute-perps-suite/synthesis-audit-receipt.json. SolTUI808tests passed with2skips before upstreamintegration. Remaining indexstaleness is expected until final research metadata freezes.
+
+Skills delivery complete: https://github.com/mithudso/skills/pull/91 merged5765c8d755322292b6076d116a7b8e3a4526567b after finaltipf986579772de0d41f761cd1df4b208a3113d1b33 and passingoffline-safetyCI. Exact scopedcontent matchesorigin/main. Finalparent7116bytes plus7nestedguides preserves110exactclaims/7overviews/158bullets/68citationdefinitions; independentauditor accepted both length/privacy repairs. Guarded writer activates with freshhashes/backups, preserving dirty originals and distinct .agentsrouting/model. Canonicalportableindexes differ from deliverybase and need scoped repair, neverwholecorpusreplacement. Stablemanifest path repair must repeat deterministic partition after supportedrender.
+
+Current privateLCA work has7single-filev3packs from110uniqueacceptedunits with15earnedterms perconcept; localvector/FTS indexes initially110rows eachaggregate. The fixed usability bank found missing contextualcost/validation answers in onepack; coordinator repairs only relevantacceptedcohortcontext and keeps original questions. Do not call usabilitypassed or full-suitesaturated until actualreceipts. Canonicalfinish/sitepublication remain held untilactivation/discovery/privacy preconditionspass. RootPR58 staysdraft until finalresearch/pack/quality/frontier/site/deliverywork completes.
+
+
+## v63 - 2026-11-08 (Full-suite qualified; final delivery)
+
+Completed conceptualCFE SATURATED after2of3defaultemptyexpansionrounds andfreshblindaudit;57scoredrecords,7researchedconcepts, no newabove-thresholdgap. Actualv4cohort165/165reviewed,125SUPPORTED/40non-assertions,110uniquestructuredclaims. Source65/70affirmativequestionanswers and70/70correctresponses (5genuineabsence disclosures), coverage35full/30partial/5absent; these do not establishcompleteknowledgeorprofit. Privatecurrentv3packs retain110uniqueclaims/164derivedrows with164vectors+164FTSrows and7memberrollup. Categoricalnavigation5/5, sourcebound118excerpts, fixedsemanticretrieval≥8/10all7. Exactlimitsandprivateproofhashesareinfull-suite-receipt.json andrun-report.md.
+
+CanonicalfinishCOMPLETED/n warnings; artifactSHA1254521eda688b644884b05e9bb69be9922b7de9759a38c1cc82b0ea9e48c349. Sourceauditverified365spans/63snapshots,8publicprojections/16private-publicpacks,8readerpages and344internal links;328site tests and2849pagebuildpass. Combinedoperatorprivacyscan18611files/0findings. Baseline3historicalnotematchesredacted; unrelatedgeneratedallowlistexceptionsremoved. FinalCFEscore/placement applykept2866/2709nodes andbaseline308/312structuralissues, no newissues/queue; partiallegacyhookfailurewasrecoveredwithdocumentedprocess-localdisableandprojectvenv, explicitboundedregeneration. Rootroutinginstallerpreservesexistingbroaderfamilypointer.
+
+Skills PR91merged5765c8d755322292b6076d116a7b8e3a4526567b andactualdiscoveryaccepted. WebsitePR https://github.com/mithudso/llms-explorer/pull/305 atd8f6fab2 containsqualifiedcohort;CIpending. RootPR58willcarryfinalmetadata,synthesis,benchmarkscopecorrection,instructionroutingandofflineindexes. Alltasksourcechangesshipthroughprivatebranches; sharedoriginaldirtyworkpreserved. Remaining: incorporatelatestmasterwithoutlosingrecords, finalrootchecks/indexfreshness, pushPR58/CI; mergefinaltips,verifyremotes/livepublication,cleanupowntaskbranches/worktreesandcompleteSteleTASK808/811/812. No live trade orstrategy-codechangewasmadebythisresearchtask.
+
+## v64 - 2026-11-08 (Final integration checkpoint)
+
+Integrated currentmasterc9359c4, including upstreamadaptive-rosterPR83 anddependency/CIupdates. Allupstreamrecordsretained; this task's originalrequests nowprompt47-48, continuation53-62. Rootowns onlyresearch/docs/routing/provenance/indexchanges. Sourcecodesharedfromupstreamisnotpartofthetrading-researchimplementation. Finalmergedunit/doc/indexchecksandremoteCIstillrequired; sourcebenchmarkreviewrechecksunchangedforecast_statsASTagainstits originalpinnedrevision. FinaldeliveryreceiptsliveinTASK808andcanonicalruncheckpointssofuturebookkeepingdoesnotcreateanunmergedpost-mergecommit.
+
+## v65 - 2026-11-08 (Concurrent delivery integration)
+
+Integrated mastera75f5b6 after concurrentfrontierPR81 andbotsPR84 landed. Preservebothupstreamfeaturesandallresearchrecords. EarliermanualCIond0ecd6awas canceledas superseded; finalCI mustrunafterthismerge. WebsitePR305merged96db35f08778ae752bd84e65554de9710e695b62 afterallchecks; actualproductionacceptanceunderway. No new researchorsemanticgate was rerun. Finaltasksource/instruction/indexverificationisnext; privatebackupsanddeliveryreceiptsarepreservedoutside sharedcheckout.
+
+## v66 - 2026-11-08 (Continuation preservation verified)
+
+Latestupstreammemoryhadreplacedearliertrend-filterandadaptive-rosterentrieswithitsnewfrontierentry. Restored both earlier acceptedrecordsfromd0ecd6a withoutchangingtheirbodytext; latestupstreamfrontierandbotspromptrecordsremainintact. Task-ownedrecordsfollowthepreservedhistorywithuniqueversions. Upstreampromptversion45duplicatesandmemoryversion28duplicatespreexistandremainuntouched. Finalcurrentdiscoverycounts900backtester,361extension,34mongo,860SolTUI; docsandindexfreshnesspassed. Sourceforecast_statsASTandengine/next-openfilesremainidenticaltothepinnedscopeaudit. Final900testlocalrunandremoteCImustpassonthefinalpushedtip.
+
+
+## v67 - 2026-11-08 (Live publication and final local acceptance)
+
+Currentintegratedbacktester900/900 passed; docsdiscovery900/361/34/860matchesinstructions,and sourceindexfreshnesspasses. EarlierCLI/browsersafetychecksandindependentall-assertionevidencebindingsremainaccepted. WebsitePR305merged96db35f08778ae752bd84e65554de9710e695b62; live-acceptance-verifier confirmedall24productionpage/JSON/Markdowndownloadendpointsandall110canonicalclaimsagainstthatexactdeployedrevision. Proof: canonicalruncheckpoints/website-live-acceptance.json. FullsuiteconceptualexitSATURATED-FRONTIERdoesnotmeanprofitabletradingorcompleteknowledge. RootPR58finalCI/mergeandownbranch/worktreecleanupremain; no furtherresearchworkerorserviceisrunning.
+
+## v54 - 2026-11-08 (PR 46 and PR 58 integration)
+
+Target: resolve and merge the two requested PRs. Stele tasks TASK-879, TASK-880, TASK-881.
+
+Workspace: /Users/mitch/dev/solmargintrader-wt-01a1ba3b; private branch agent-01a1ba3b. Shared checkout and original PR worktrees belong to other sessions and remain untouched.
+
+Completed: inspected PR heads and merge guidance; merged origin/master into PR 46; retained both workflow histories and automatically merged source and CI changes. Conflicts were limited to generated indexes and workflow records. Executor source remains unchanged from PR 46.
+
+Verification: executor source exactly matches original PR head 00be663; 202 offline tests pass (5 network tests excluded); Ruff lint and formatting pass. Hash-index check passes. Docs counts currently read the pre-merge HEAD; rerun after the merge commit before interpreting count drift. All final-head GitHub CI checks remain required.
+
+Remaining: regenerate indexes after staging resolutions, commit and push to executor-e1, wait for CI and merge PR 46; repeat against updated master for PR 58; verify both merge receipts and clean this private worktree. No trading or service restart is part of this task.
+
+## v55 - 2026-11-08 (resumed integration)
+
+Completed: PR 46 resolution was pushed at 6c1fc4b. Executor 202 offline tests, Ruff lint and format, docs counts, index freshness and unique paths passed. Seven CI jobs passed; SolTUI was running when concurrent PR 86 updated master to ea2d288 and caused new index conflicts.
+
+Current: merge ea2d288 into this private branch. Only generated index files conflict. Resolve and stage before regeneration. PR 58 advanced to b899458; use that or a newer remote head.
+
+Remaining: commit regenerated artifacts, push executor-e1, wait for all final-head CI and merge PR 46. Then integrate latest PR 58 against the landed master, verify all CI and merge. Preserve other sessions and their worktrees.
+
+## v68 - 2026-11-08 (PR 58 conflict resolution)
+
+Target: complete the original two-PR merge request and resume instruction. Stele TASK-879, TASK-880, TASK-881.
+
+Completed: PR 46 merged by a concurrent session as 06a1f95347a835cdb2951bf2f043457104d74866. Its merged tree exactly matches our pushed 016a040. Seven final-head jobs pass; SolTUI is still running and must be verified. Executor source remains unchanged from original PR 46.
+
+Current: merged origin/master 06a1f95 into latest PR 58 head b899458 in private worktree /Users/mitch/dev/solmargintrader-wt-01a1ba3b on agent-01a1ba3b-pr58. Conflicts affect generated indexes and workflow records only. Both histories are retained. No source or research receipt is rewritten.
+
+Remaining: regenerate derived indexes after staging resolutions, verify docs and index checks, commit and push HEAD to agent-01a1b5ef without force. Wait for all final-head CI jobs, merge PR 58, verify both merge receipts and source/receipt preservation, then remove only our clean private branches and worktree. Shared checkout and original PR worktrees remain untouched.
+
+## v69 - 2026-11-08 (Bots tab v2)
+
+Target: prompts.md Bots tab v2 entry. Stele TASK-884. Branch feat/bots-tab-v2 in /Users/mitch/dev/solmargintrader-wt-39e8bf11.
 Delivered before this: PR #84 (merged by another session while CI was red) and follow-up PR #86 (index regeneration), both on master.
 
 Completed: `soltui/bots_screens.py` (coin picker, auto-optimize window with the SAVED / NOT SAVED popup and per-coin table); optimize run numbering with growing, non-repeating candidate lists (`candidates(bot, current, run, tried)`, history in `bots/optimize-history-<bot>.json`); per-coin stats; `hourly()` splices 1m-resampled history before the 1h file; `bridged()` fills gaps of up to 48 h; default backtest start is the start of usable data; `backtest_many`; `pricefeed.ensure_recorder` + LaunchAgent `com.mitchhudson.soltui.pricefeed` (KeepAlive, `record --wait-lock`); `prices.start`/`prices.stop` replaced by `prices.ensure`; one-row top fields.

@@ -1,0 +1,545 @@
+{
+  "threshold": 3.2,
+  "rows": [
+    {
+      "concept": "Jupiter dynamic-fee-aware short-horizon feasibility",
+      "neighborhood": "children",
+      "coverage": "GAP",
+      "coverage_slug": "jupiter-dynamic-fee-short-horizon-feasibility",
+      "rel": 5,
+      "use": 5,
+      "nov": 3,
+      "int": 4,
+      "via": 5,
+      "cvs": 4.45,
+      "decision": "RESEARCH",
+      "why": "Child delta: October2026 linear/additive fee changes invalidate old12-bps-only illustrations.",
+      "aliases": [
+        "Jupiter dynamic-fee-aware short-horizon feasibility",
+        "Jupiter dynamic-fee-aware short-horizon feasibility"
+      ]
+    },
+    {
+      "concept": "SOL cross-venue lead-lag after executable latency",
+      "neighborhood": "children",
+      "coverage": "GAP",
+      "coverage_slug": "sol-executable-cross-venue-lead-lag",
+      "rel": 5,
+      "use": 5,
+      "nov": 3,
+      "int": 5,
+      "via": 4,
+      "cvs": 4.45,
+      "decision": "RESEARCH",
+      "why": "Child delta: SOL-specificfive-minute outcomes after own-host decision and keeper delay.",
+      "aliases": [
+        "SOL cross-venue lead-lag after executable latency",
+        "Solana cross-venue lead-lag after executable latency"
+      ]
+    },
+    {
+      "concept": "Five-minute selective prediction and probability calibration",
+      "neighborhood": "children",
+      "coverage": "GAP",
+      "coverage_slug": "five-minute-selective-calibrated-signals",
+      "rel": 5,
+      "use": 5,
+      "nov": 3,
+      "int": 5,
+      "via": 4,
+      "cvs": 4.45,
+      "decision": "RESEARCH",
+      "why": "Child delta: probability of executable barrier outcome, coverage and abstention under drift.",
+      "aliases": [
+        "Five-minute selective prediction and probability calibration",
+        "Five-minute selective prediction and probability calibration"
+      ]
+    },
+    {
+      "concept": "Five-minute first-passage labels with liquidation and costs",
+      "neighborhood": "children",
+      "coverage": "GAP",
+      "coverage_slug": "five-minute-first-passage-labels",
+      "rel": 5,
+      "use": 5,
+      "nov": 3,
+      "int": 4,
+      "via": 4,
+      "cvs": 4.3,
+      "decision": "RESEARCH",
+      "why": "Child delta: distinguish target-before-stop-before-liquidation from terminal close direction.",
+      "aliases": [
+        "Five-minute first-passage labels with liquidation and costs",
+        "Five-minute first-passage labels with liquidation and costs"
+      ]
+    },
+    {
+      "concept": "Five-minute volatility-regime-conditioned signal selection",
+      "neighborhood": "children",
+      "coverage": "GAP",
+      "coverage_slug": "five-minute-regime-conditioned-signals",
+      "rel": 5,
+      "use": 5,
+      "nov": 3,
+      "int": 4,
+      "via": 4,
+      "cvs": 4.3,
+      "decision": "RESEARCH",
+      "why": "Child delta: exact horizon and asset; broad regime studies do not supply calibrated performance.",
+      "aliases": [
+        "Five-minute volatility-regime-conditioned signal selection",
+        "Five-minute volatility-regime-conditioned signal selection"
+      ]
+    },
+    {
+      "concept": "Cross-asset hierarchical transfer at five-minute horizon",
+      "neighborhood": "frontier",
+      "coverage": "GAP",
+      "coverage_slug": "cross-asset-five-minute-transfer",
+      "rel": 5,
+      "use": 4,
+      "nov": 3,
+      "int": 5,
+      "via": 4,
+      "cvs": 4.2,
+      "decision": "RESEARCH",
+      "why": "New primary paper lead June2026 includes SOL andfive-minute; full read needed.",
+      "aliases": [
+        "Cross-asset hierarchical transfer at 5-minute horizon",
+        "Cross-asset hierarchical transfer at five-minute horizon"
+      ]
+    },
+    {
+      "concept": "Uncertainty-aware nonlinear crypto lead-lag",
+      "neighborhood": "frontier",
+      "coverage": "GAP",
+      "coverage_slug": "uncertainty-aware-nonlinear-crypto-lead-lag",
+      "rel": 5,
+      "use": 4,
+      "nov": 3,
+      "int": 5,
+      "via": 3,
+      "cvs": 4.05,
+      "decision": "RESEARCH",
+      "why": "New thesis lead with5-, 10- and 30-minute SOL; public source access/applicability unverified.",
+      "aliases": [
+        "Uncertainty-aware nonlinear crypto lead-lag",
+        "Uncertainty-aware nonlinear crypto lead-lag"
+      ]
+    },
+    {
+      "concept": "Statistical learning and overfitting in trading",
+      "neighborhood": "parent",
+      "coverage": "HAVE",
+      "coverage_slug": "honest-signal-evaluation-out-of-sample-costs-and-multiple-testing",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 5,
+      "via": 5,
+      "cvs": 4.0,
+      "decision": "SKIP",
+      "why": "Fresh November 6 canonical claims cover costs, overfitting and trials.",
+      "aliases": [
+        "Statistical learning and overfitting in trading",
+        "Statistical learning and overfitting in trading"
+      ]
+    },
+    {
+      "concept": "Order-flow imbalance and CVD signals",
+      "neighborhood": "siblings",
+      "coverage": "HAVE",
+      "coverage_slug": "order-flow-signals-cvd-and-order-book-imbalance",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 5,
+      "via": 5,
+      "cvs": 4.0,
+      "decision": "SKIP",
+      "why": "Fresh exact concept tree hit; eight accepted canonical claims.",
+      "aliases": [
+        "Order-flow imbalance and CVD signals",
+        "Order-flow imbalance and CVD signals"
+      ]
+    },
+    {
+      "concept": "Market microstructure and execution",
+      "neighborhood": "parent",
+      "coverage": "HAVE",
+      "coverage_slug": "market-microstructure-and-execution",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Installed trading hub reference owns market microstructure.",
+      "aliases": [
+        "Market microstructure and execution",
+        "Market microstructure and execution"
+      ]
+    },
+    {
+      "concept": "Perpetual futures margin and liquidation",
+      "neighborhood": "parent",
+      "coverage": "HAVE",
+      "coverage_slug": "sol-perp-margin-and-liquidation",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Fresh November 6 broad family; volatile venue rules require refresh.",
+      "aliases": [
+        "Perpetual futures margin and liquidation",
+        "Perpetual futures margin and liquidation"
+      ]
+    },
+    {
+      "concept": "Risk of ruin and position sizing",
+      "neighborhood": "parent",
+      "coverage": "HAVE",
+      "coverage_slug": "high-leverage-shorting",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Fresh November 6 family owns leverage and ruin.",
+      "aliases": [
+        "Risk of ruin and position sizing",
+        "Risk of ruin and position sizing"
+      ]
+    },
+    {
+      "concept": "Momentum breakout and mean reversion",
+      "neighborhood": "siblings",
+      "coverage": "HAVE",
+      "coverage_slug": "short-horizon-momentum-breakout-and-mean-reversion",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Fresh exact concept tree hit; BTC/daily/1five-minute evidence has scoped horizons.",
+      "aliases": [
+        "Momentum breakout and mean reversion",
+        "Momentum breakout and mean reversion"
+      ]
+    },
+    {
+      "concept": "Exchange timestamps and receive-time feed integrity",
+      "neighborhood": "adjacent",
+      "coverage": "HAVE",
+      "coverage_slug": "oracle-and-data-latency-and-signal-half-life",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Fresh canonical latency and feed-sign claims.",
+      "aliases": [
+        "Exchange timestamps and receive-time feed integrity",
+        "Exchange timestamps and receive-time feed integrity"
+      ]
+    },
+    {
+      "concept": "Purged chronological validation and trial ledgers",
+      "neighborhood": "adjacent",
+      "coverage": "HAVE",
+      "coverage_slug": "honest-signal-evaluation-out-of-sample-costs-and-multiple-testing",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Fresh exact concept and canonical claims.",
+      "aliases": [
+        "Purged chronological validation and trial ledgers",
+        "Purged chronological validation and trial ledgers"
+      ]
+    },
+    {
+      "concept": "Solana execution costs and landing",
+      "neighborhood": "adjacent",
+      "coverage": "HAVE",
+      "coverage_slug": "sol-fees-and-execution-costs",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Fresh source family; dynamic Jupiter fees refreshed separately.",
+      "aliases": [
+        "Solana execution costs and landing",
+        "Solana execution costs and landing"
+      ]
+    },
+    {
+      "concept": "Replay fill-model limits and paper/live acceptance",
+      "neighborhood": "adjacent",
+      "coverage": "HAVE",
+      "coverage_slug": "honest-signal-evaluation-out-of-sample-costs-and-multiple-testing",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Existing canonical claims identify replay assumptions and missing executed proof.",
+      "aliases": [
+        "Replay fill-model limits and paper/live acceptance",
+        "Replay fill-model limits and paper/live acceptance"
+      ]
+    },
+    {
+      "concept": "Causal interpretation of contemporaneous OFI",
+      "neighborhood": "frontier",
+      "coverage": "HAVE",
+      "coverage_slug": "order-flow-signals-cvd-and-order-book-imbalance",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Existing accepted claim explicitly separates contemporaneous OFI fit from forecasting.",
+      "aliases": [
+        "Causal interpretation of contemporaneous OFI",
+        "Causal interpretation of contemporaneous OFI"
+      ]
+    },
+    {
+      "concept": "Oracle latency versus signal half-life",
+      "neighborhood": "frontier",
+      "coverage": "HAVE",
+      "coverage_slug": "oracle-and-data-latency-and-signal-half-life",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.85,
+      "decision": "SKIP",
+      "why": "Fresh exact concept; own-host end-to-end delay still an empirical gap.",
+      "aliases": [
+        "Oracle latency versus signal half-life",
+        "Oracle latency versus signal half-life"
+      ]
+    },
+    {
+      "concept": "Stop placement versus liquidation buffer",
+      "neighborhood": "adjacent",
+      "coverage": "HAVE",
+      "coverage_slug": "stop-placement-vs-liquidation-buffer",
+      "rel": 5,
+      "use": 5,
+      "nov": 0,
+      "int": 3,
+      "via": 5,
+      "cvs": 3.7,
+      "decision": "SKIP",
+      "why": "Fresh exact concept; stop execution cannot be assumed.",
+      "aliases": [
+        "Stop placement versus liquidation buffer",
+        "Stop placement versus liquidation buffer"
+      ]
+    },
+    {
+      "concept": "Deep order-book models and short forecast decay",
+      "neighborhood": "frontier",
+      "coverage": "HAVE",
+      "coverage_slug": "order-flow-signals-cvd-and-order-book-imbalance",
+      "rel": 4,
+      "use": 4,
+      "nov": 0,
+      "int": 5,
+      "via": 5,
+      "cvs": 3.5,
+      "decision": "SKIP",
+      "why": "Fresh coverage includes Kolm and2026 microstructure papers; endpoints are notfive-minute alpha proof.",
+      "aliases": [
+        "Deep order-book models and short forecast decay",
+        "Deep order-book models and short forecast decay"
+      ]
+    },
+    {
+      "concept": "ATR realized volatility VWAP and EMA context",
+      "neighborhood": "children",
+      "coverage": "HAVE",
+      "coverage_slug": "technical-analysis",
+      "rel": 5,
+      "use": 4,
+      "nov": 0,
+      "int": 3,
+      "via": 5,
+      "cvs": 3.45,
+      "decision": "SKIP",
+      "why": "Existing indicator references; predictive superiority not established by definitions.",
+      "aliases": [
+        "ATR realized volatility VWAP and EMA context",
+        "ATR realized volatility VWAP and EMA context"
+      ]
+    },
+    {
+      "concept": "Crypto price discovery",
+      "neighborhood": "parent",
+      "coverage": "HAVE",
+      "coverage_slug": "fast-trading-signals-v4",
+      "rel": 4,
+      "use": 4,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.35,
+      "decision": "SKIP",
+      "why": "Existing flow and latency evidence is broader than executablefive-minute SOL.",
+      "aliases": [
+        "Crypto price discovery",
+        "Crypto price discovery"
+      ]
+    },
+    {
+      "concept": "Time-series market regimes",
+      "neighborhood": "parent",
+      "coverage": "HAVE",
+      "coverage_slug": "regime-detection-and-classification",
+      "rel": 4,
+      "use": 4,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.35,
+      "decision": "SKIP",
+      "why": "Existing trading hub regime reference; nofive-minute SOL result inferred.",
+      "aliases": [
+        "Time-series market regimes",
+        "Time-series market regimes"
+      ]
+    },
+    {
+      "concept": "Liquidation heatmaps and cascades",
+      "neighborhood": "siblings",
+      "coverage": "HAVE",
+      "coverage_slug": "liquidation-heatmaps-and-cascades",
+      "rel": 4,
+      "use": 4,
+      "nov": 0,
+      "int": 4,
+      "via": 5,
+      "cvs": 3.35,
+      "decision": "SKIP",
+      "why": "Existing fresh concept cautions maps do not establish timing.",
+      "aliases": [
+        "Liquidation heatmaps and cascades",
+        "Liquidation heatmaps and cascades"
+      ]
+    },
+    {
+      "concept": "Bar aggregation and event-time sampling",
+      "neighborhood": "adjacent",
+      "coverage": "HAVE",
+      "coverage_slug": "sampling-frequency-and-bar-aggregation",
+      "rel": 4,
+      "use": 4,
+      "nov": 0,
+      "int": 3,
+      "via": 5,
+      "cvs": 3.2,
+      "decision": "SKIP",
+      "why": "Installed trading reference plus fresh fast-signals evidence; no relabeling of minutes as ticks.",
+      "aliases": [
+        "Bar aggregation and event-time sampling",
+        "Bar aggregation and event-time sampling"
+      ]
+    },
+    {
+      "concept": "Liquidation-map estimation and adversarial trading flows",
+      "neighborhood": "frontier",
+      "coverage": "HAVE",
+      "coverage_slug": "liquidation-heatmaps-and-cascades",
+      "rel": 4,
+      "use": 4,
+      "nov": 0,
+      "int": 4,
+      "via": 4,
+      "cvs": 3.2,
+      "decision": "SKIP",
+      "why": "Existing exact coverage; vendor pictures are not proven predictive signals.",
+      "aliases": [
+        "Liquidation-map estimation and adversarial trading flows",
+        "Liquidation-map estimation and adversarial trading flows"
+      ]
+    },
+    {
+      "concept": "Funding open interest and basis signals",
+      "neighborhood": "siblings",
+      "coverage": "HAVE",
+      "coverage_slug": "funding-and-open-interest-divergence-and-basis",
+      "rel": 3,
+      "use": 3,
+      "nov": 0,
+      "int": 3,
+      "via": 5,
+      "cvs": 2.7,
+      "decision": "SKIP",
+      "why": "Existing fresh concept; not Jupiter funding income.",
+      "aliases": [
+        "Funding open interest and basis signals",
+        "Funding open interest and basis signals"
+      ]
+    },
+    {
+      "concept": "On-chain wallet and smart-money flows",
+      "neighborhood": "siblings",
+      "coverage": "HAVE",
+      "coverage_slug": "on-chain-flows-and-smart-money-tracking",
+      "rel": 3,
+      "use": 3,
+      "nov": 0,
+      "int": 3,
+      "via": 4,
+      "cvs": 2.55,
+      "decision": "SKIP",
+      "why": "Existing fresh concept; no reliable five-minuteSOL trigger established.",
+      "aliases": [
+        "On-chain wallet and smart-money flows",
+        "On-chain wallet and smart-money flows"
+      ]
+    },
+    {
+      "concept": "Passive market making and spread capture",
+      "neighborhood": "siblings",
+      "coverage": "HAVE",
+      "coverage_slug": "market-microstructure-and-execution",
+      "rel": 2,
+      "use": 2,
+      "nov": 0,
+      "int": 3,
+      "via": 5,
+      "cvs": 2.2,
+      "decision": "SKIP",
+      "why": "Existing microstructure owner; Jupiter peer-to-pool mechanism is distinct.",
+      "aliases": [
+        "Passive market making and spread capture",
+        "Passive market making and spread capture"
+      ]
+    }
+  ]
+}
