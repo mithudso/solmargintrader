@@ -27,12 +27,12 @@ def pressed_selectors() -> list[str]:
 
 class ButtonRegistryTests(unittest.TestCase):
     def test_button_handler_count(self) -> None:
-        self.assertEqual(len(pressed_selectors()), 107)
+        self.assertEqual(len(pressed_selectors()), 114)
 
     def test_every_button_handler_maps_to_a_registered_command(self) -> None:
         for selector in pressed_selectors():
             if selector in UI_ONLY:
-                continue  # These only edit or dismiss an unsaved local form.
+                continue
             with self.subTest(button=selector):
                 self.assertIn(selector, tui.BUTTON_COMMANDS, "add it to tui.BUTTON_COMMANDS")
                 self.assertIn(tui.BUTTON_COMMANDS[selector], commands.COMMANDS)

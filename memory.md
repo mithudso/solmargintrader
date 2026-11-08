@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 204
-Delta: v203 to v204; preserve recurring optimizer scheduler handoff.
+Version: 205
+Delta: v203 to v205; retain the advanced ticket, venue references and scheduler delivery.
+
+## v205 - 2026-11-08
+
+Recurring bot optimizer PR 128 merged as d7010e63ba04b20fe77bfcb77dc1a7282f8250ed with passing required CI. The owner requested frequent per-coin tuning. A daily detached scheduler and dedicated launchd recovery watchdog have been started; verify their current status before reporting a run. The scheduler only adopts grid and DCA settings if the per-coin capability is present; triangle remains evidence-only. Stele transport was closed; leveraged-order verifier gap is queued as outbox 68fc7f6f.
+
+## v204 - 2026-11-08
+
+The user requested the advanced Money ticket and leveraged buys and sells. The user supplied /Users/mitch/dev/solmargintrader/jup.ag/coinbase_trading_reference.md. Its spot, regulated futures, and global derivatives describe distinct venues and eligibility. Use venue previews and verified account terms rather than static assumed fees or eligibility. The advanced ticket includes Coinbase market, limit, stop-limit and sell brackets, percentage sizing, a session price graph and forward-test forecasts. The venue preview estimates fees; final maker/taker fees depend on fills. The $100 per-order cap, balance reconciliation and single-submit journal apply. No live order was submitted in this work. Jupiter spot, leveraged longs/shorts and Coinbase derivatives remain unavailable until their venue-specific transaction verification, eligibility and reconciliation paths exist. Stele task creation is queued in outbox 5697c8bd.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1813,7 +1821,3 @@ The owner provided /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_referenc
 ## v203 - 2026-11-08
 
 Experiment range PR 130 merged as 514edb0651c5ba2c0c25e10f4dc44f6971c085ad after required CI. It shows selected parameter units, baseline defaults and relative percentage controls, with a separate fresh recorder quote when available. The owner confirmed parameter-relative adjustments. Headless installed-entrypoint acceptance passed; the existing console predates delivery. Stele decision queued as outbox 609e92e4.
-
-## v204 - 2026-11-08
-
-TASK-1049 adds a daily recurring bot optimizer, a detached worker and dedicated launchd recovery watchdog. Stop disables recovery and completes the current optimizer call without killing other workers. The scheduler only enables per-coin adoption when the integrated backend declares its safe capability; triangle remains evidence-only. Status exposes last and next runs, partial results and errors. Tests used mocked service calls; the production scheduler has not been started. Integrate with the per-coin backend and verify launchd before claiming it is running.
