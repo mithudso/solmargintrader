@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 100
-Delta: v99 to v100; retain the Jupiter signer availability request.
+Version: 101
+Delta: v100 to v101; retain the Coinbase trade authorization.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -844,4 +844,10 @@ The variable is in ~/.env
 
 ```text
 You can try the jup cli again I added my key to it.
+```
+
+## v101 - 2026-11-08
+
+```text
+Wait I don't care what the coinpairt is on coinbase, you said you transfered $5 there, just make any transaction
 ```
