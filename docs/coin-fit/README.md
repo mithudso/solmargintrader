@@ -1,5 +1,7 @@
 # Coin suitability and backtest audit
 
+In the default v2 shell, open **Research → Bots**. Classic mode retains the Bots tab.
+
 The Bots tab has **Rank all coins (quick)** and **Audit selected coin** controls
 for the grid and averaging-down DCA bots. Ranking uses every coin in the local
 cache, retains missing/error rows, and sorts candidates by historical fit and the

@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from textual.widgets import Button, DataTable, Select, Sparkline, Static
+from textual.widgets import Button, DataTable, Select, Sparkline, Static, TabbedContent
 
 import soltui
 from soltui import bots, commands
@@ -158,6 +158,36 @@ class UITests(BackendFixture, unittest.IsolatedAsyncioTestCase):
         await pilot.pause(0.05)
         await self.app.workers.wait_for_complete()
         await pilot.pause()
+
+    async def test_full_v2_research_and_classic_bots_navigation_can_rank_and_audit(self):
+        def fake(bot, coins, settings, **kwargs):
+            return report(bot, kwargs["mode"], [row(fit="GOOD_FIT" if kwargs["mode"] == "audit"
+                                                    else "PROVISIONAL_FIT")])
+        self.patch_backend(fake)
+        for classic in (False, True):
+            with self.subTest(classic=classic):
+                self.app = SolTuiApp(self.app.settings, start="tab-now" if not classic else "tab-backtest",
+                                     classic=classic)
+                async with self.app.run_test(size=(180, 60)) as pilot:
+                    tabs = self.app.query_one("#main-tabs", TabbedContent)
+                    if classic:
+                        tabs.active = "tab-bots"
+                    else:
+                        await pilot.press("3")
+                        research = self.app._v2_destination("research")
+                        bots_index = next(i for i, view in enumerate(research.views) if view.tab == "tab-bots")
+                        for _ in range(bots_index):
+                            await pilot.press("right_square_bracket")
+                    await pilot.pause()
+                    self.assertEqual(tabs.active, "tab-bots")
+                    self.assertEqual(self.app.query_one("#main-tabs > ContentTabs").display, classic)
+                    self.assertTrue(await pilot.click("#bots-fit-rank"))
+                    await self.wait_done(pilot)
+                    self.assertEqual(self.app.query_one("#bots-sections", TabbedContent).active, "bots-sec-fit")
+                    self.assertEqual(self.app.query_one("#bots-fit-table", DataTable).row_count, 1)
+                    self.assertTrue(await pilot.click("#bots-fit-audit"))
+                    await self.wait_done(pilot)
+                    self.assertIn("GOOD_FIT", visible(self.app, "#bots-fit-detail"))
 
     async def test_rank_selection_audit_binding_and_equity_render(self):
         seen = []
