@@ -121,7 +121,7 @@ larger open losses; read total net account equity as well as realized P&L.
 
 On **Strategies**, focus a row in the left table and press **Space** to add it or remove its
 matching roster configuration. With multiple custom versions, use the right table and press
-**Space** on the version to remove. **Add all strategies to the roster** fills in missing
+**Space** on the version to remove. **Add all to roster** fills in missing
 strategies with the Signal defaults and keeps custom entries.
 
 On **Forwardtest**, choose **All strategies**, **Roster only**, or **Combinations only**. Enter
@@ -129,7 +129,8 @@ a combination such as `rsi,macd; breakout,obv_trend` and select its rule. Each g
 by a semicolon is a separate trial. Use exact roster labels to distinguish custom versions.
 **All four** forecasts 1, 5, 10 and 30 minutes; choose a single duration to issue only that
 forecast. Start uses the asset and round-trip fee/slippage threshold from Settings. Edits take
-effect after stopping and starting again.
+effect after stopping and starting again. Press Ctrl+E to make more room for the results
+when the shared editor is open.
 
 Each trial reads closed Coinbase one-minute candles and records UP, DOWN or FLAT before
 the next unopened minute. It scores that window from its first open to its last close,

@@ -860,7 +860,7 @@ class SolTuiApp(App):
                 yield Input(placeholder="fast=20 slow=50", id="strategy-params")
             with Horizontal(classes="form-row"):
                 yield Button("Add selected →", variant="success", id="btn-add")
-                yield Button("Add all strategies to the roster", id="btn-roster-all")
+                yield Button("Add all to roster", id="btn-roster-all")
                 yield Button("← Remove selected", variant="error", id="btn-remove")
                 yield Button("Reset to default", id="btn-reset-roster")
             with Horizontal(classes="form-row"):
