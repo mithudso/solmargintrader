@@ -182,6 +182,10 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/compound.py` | Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI `python3 -m soltui.compound` |
 | `soltui/liquidity.py` | Reads daemon state; creates/removes only the KILL flag |
 | `soltui/bots.py` | Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test |
+| `soltui/experiments.py` | Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison |
+| `soltui/experiment_runner.py` | Frozen native bar/recorded-triangle evaluation, per-cell checkpoints, exploration exposure and fresh final holdout guards |
+| `soltui/experiment_jobs.py` | Explicit background experiment processes, inherited leases, pause/cancel requests and interrupted-worker recovery |
+| `soltui/experiment_screens.py` | Experiment workbench: typed search editor, explorer, observed maps, worker controls and CSV comparison |
 | `soltui/pricefeed.py` | Streaming price recorder: stdlib WebSocket to Coinbase `level2_batch` + `ticker`, one-second gzip JSONL snapshots, detached process |
 | `soltui/serve.py` | Optional loopback browser console |
 | `soltui/bin/soltui` | Shell launcher with interpreter override |
@@ -191,6 +195,9 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/soltui-service` | `status` / `start` / `stop` / `build` / `install` for the launchd agent |
 | `soltui/README.md` | Packaging traps already paid for — read before rebuilding |
 | `soltui/tests/` | Unittest suites for models, rendering, workers, launchers and local controls |
+| `soltui/tests/test_experiments.py` | Experiment store, search-space, sparse-map and external evidence regression tests |
+| `soltui/tests/test_experiment_runner.py` | Frozen native evidence, holdout freshness, pause/cancel/resume and promotion recovery tests |
+| `soltui/tests/test_experiment_interface.py` | Process leases/control races, registry refusals and live headless workbench interactions |
 
 ---
 
@@ -321,6 +328,8 @@ place of them. In live mode it signs real transactions. Full detail: `liquidity/
 | --- | --- |
 | `docs/repo-bootstrap-audit-2026-11-06.md` | Standards audit, changes and explicit remaining infrastructure gaps |
 | `docs/code-deep-optimizer-2026-11-06.md` | Bounded code audit, regressions, review dissent and verification limits |
+| `docs/optimization-workbench.md` | Use the optimization workbench, understand provenance and final holdout limitations |
+| `docs/optimization-workbench-plan.md` | Six-feature implementation plan, interfaces, ownership and acceptance criteria |
 | `docs/code-optimizer-scope-2026-11-06.json` | Primary/dependency source scope and every remaining source path |
 | `docs/jupiter-trigger-contract.md` | Public API contract fixtures and blocked live-signing boundary |
 | `docs/COMPOUND-5M.md` | Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings |

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 60
-Delta: v59 to v60; expose retained cards in SolTUI Strategies.
+Version: 61
+Delta: preserve incoming strategy-card history and append workbench continuation through v61.
 
 ## v1 - 2026-11-06
 
@@ -458,3 +458,11 @@ I told you to move the incomplete cards to the incomplete directory, you never d
 ```text
 When I launch the soltui I don't see any of the new strategies.
 ```
+
+## v61 - 2026-11-08
+
+```text
+turn all of your suggestions into an implementation plan and execute it
+```
+
+Scope: all six recommendations from the TradingView comparison: experiment explorer, sparse stability heatmaps, typed search spaces, resumable Bots runs, read-only TradingView import/comparison, and untouched final holdout safeguards.

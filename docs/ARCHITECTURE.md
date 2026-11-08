@@ -158,3 +158,20 @@ strategy — are documented in `backtester/README.md` and enforced by 900 tests.
 `soltuiCall` command) all call `dispatch(name, params, surface)`. The extension shares no code with Python;
 the framed JSON protocol of the native host is the only coupling. soltui keeps its no-order-path guarantee:
 no command signs or moves funds, and `liquidity.resume` (deleting the aero-lp `KILL` file) needs `confirm`.
+
+## Optimization experiment evidence
+
+The Bots experiment workbench uses a local SQLite store for immutable full specifications and
+per-candidate/coin/window results. The native runner binds code, data, costs and temporal windows
+before evaluation, then commits each cell. The job controller launches explicit subprocesses with
+inherited file leases, durable pause/cancel controls and interrupted-state recovery. The shared
+command registry serves the TUI, CLI and API.
+
+Exploration exposes train/validation only. Final validation freezes one training-selected candidate
+and reserves unused temporal intervals before evaluating it against the baseline. Both exploration
+exposure and final reservations survive search-context changes. Sealed final history can enter later
+exploration, while remaining spent for other final tests; active unsealed reservations stay protected.
+Legacy evidence is fenced
+conservatively. Freshness covers recorded local optimization history, not unknown external use.
+Imported TradingView evidence preserves units and provenance, receives compatibility diagnostics,
+and has no native promotion path. See [the guide](optimization-workbench.md).
