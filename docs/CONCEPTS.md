@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:35:17+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:35:36+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -53,7 +53,7 @@ Strongest files:
 - `llms-full.txt` (62 hits)
 - `skills/trading-and-investing/references/strategies-and-risk.md` (54 hits)
 - `skills/trading-and-investing/SKILL.md` (51 hits)
-- `docs/CONCEPTS.md` (40 hits)
+- `soltui/tui.py` (39 hits)
 
 Full list: `python3 index/search.py --concept risk-rails -n 468`
 
@@ -147,8 +147,8 @@ Strongest files:
 - `backtester/tests/test_cross_asset_cpcv.py` (33 hits)
 - `research/tradingview-card-coverage.json` (33 hits)
 - `research/ratio_rotation.py` (22 hits)
-- `docs/CONCEPTS.md` (21 hits)
 - `docs/FILES.md` (19 hits)
+- `index/build.py` (19 hits)
 
 Full list: `python3 index/search.py --concept evidence-floor -n 180`
 
@@ -164,10 +164,10 @@ Strongest files:
 - `docs/FILES.md` (35 hits)
 - `research/perturb.py` (29 hits)
 - `research/RANKED_LISTS.md` (25 hits)
-- `docs/CONCEPTS.md` (24 hits)
 - `backtester/core/deflated_sharpe.py` (21 hits)
 - `memory.md` (16 hits)
 - `backtester/core/dcasim.py` (15 hits)
+- `docs/CONCEPTS.md` (14 hits)
 
 Full list: `python3 index/search.py --concept benchmark -n 177`
 
@@ -201,11 +201,11 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (63 hits)
 - `docs/TRADINGVIEW-REFERENCE.md` (31 hits)
 - `research/decide.py` (21 hits)
-- `docs/CONCEPTS.md` (17 hits)
 - `backtester/tests/test_engine.py` (17 hits)
 - `skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md` (17 hits)
 - `backtester/core/trigger_conditions.py` (16 hits)
 - `backtester/core/strategies/advanced.py` (14 hits)
+- `skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md` (14 hits)
 
 Full list: `python3 index/search.py --concept lookahead -n 124`
 

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `828cbd4` (2026-11-08T10:35:17+00:00). 1869 tracked files, 31.5 MB.
+**Generated** from `index/INDEX.json` at commit `b9979d2` (2026-11-08T10:35:36+00:00). 1863 tracked files, 29.6 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (1646 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 271/285 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (119 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (1642 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 271/285 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (120 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 18 files
-- [`docs`](#docs) — 47 files
+- [`docs`](#docs) — 41 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1228 files
 - [`research`](#research) — 156 files
@@ -213,7 +213,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-47 files.
+41 files.
 
 #### `docs/API.md`
 
@@ -265,25 +265,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 506 lines · 25,939 B · description: **extracted**
+`doc` · 320 lines · 18,593 B · description: **extracted**
 
-**Purpose.** <<<<<<< HEAD ======= python3 index/build.py all # refresh
-
-**Use.** Read it.
-
-#### `docs/CONCEPTS.md`
-
-`doc` · 506 lines · 25,939 B · description: **extracted**
-
-**Purpose.** <<<<<<< HEAD ======= python3 index/build.py all # refresh
-
-**Use.** Read it.
-
-#### `docs/CONCEPTS.md`
-
-`doc` · 506 lines · 25,939 B · description: **extracted**
-
-**Purpose.** <<<<<<< HEAD ======= python3 index/build.py all # refresh
+**Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
 **Use.** Read it.
 
@@ -297,25 +281,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18265 lines · 900,273 B · description: **extracted**
+`doc` · 18297 lines · 900,298 B · description: **extracted**
 
-**Purpose.** <<<<<<< HEAD ======= Regenerate with:
-
-**Use.** Read it.
-
-#### `docs/FILES.md`
-
-`doc` · 18265 lines · 900,273 B · description: **extracted**
-
-**Purpose.** <<<<<<< HEAD ======= Regenerate with:
-
-**Use.** Read it.
-
-#### `docs/FILES.md`
-
-`doc` · 18265 lines · 900,273 B · description: **extracted**
-
-**Purpose.** <<<<<<< HEAD ======= Regenerate with:
+**Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
 **Use.** Read it.
 
@@ -433,25 +401,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1441 lines · 42,748 B · description: **none**
+`doc` · 1437 lines · 42,686 B · description: **derived**
 
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `docs/high_signal_file_index.json`
-
-`doc` · 1441 lines · 42,748 B · description: **none**
-
-**Purpose.** _No description available._
-
-**Use.** Read it.
-
-#### `docs/high_signal_file_index.json`
-
-`doc` · 1441 lines · 42,748 B · description: **none**
-
-**Purpose.** _No description available._
+**Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
 **Use.** Read it.
 
