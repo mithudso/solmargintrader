@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T08:17:47+00:00",
+  "generatedAt": "2026-11-08T08:55:23+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 313,
+      "matchingFiles": 314,
       "shown": 30,
       "files": [
         {
@@ -254,7 +254,7 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 31
+          "hits": 32
         },
         {
           "path": "soltui/tests/test_wallet.py",
@@ -320,7 +320,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 76
+          "hits": 75
         },
         {
           "path": "extension/src/core/grid.js",
@@ -343,12 +343,16 @@
           "hits": 53
         },
         {
+          "path": "soltui/bots.py",
+          "hits": 52
+        },
+        {
           "path": "backtester/gridcli.py",
           "hits": 43
         },
         {
-          "path": "soltui/bots.py",
-          "hits": 39
+          "path": "soltui/tests/test_bots.py",
+          "hits": 37
         },
         {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
@@ -368,11 +372,11 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 30
+          "hits": 29
         },
         {
-          "path": "soltui/tests/test_bots.py",
-          "hits": 29
+          "path": "memory.md",
+          "hits": 27
         },
         {
           "path": "backtester/strategy_cards/grid.md",
@@ -384,10 +388,6 @@
         },
         {
           "path": "extension/src/ui/dashboard.html",
-          "hits": 26
-        },
-        {
-          "path": "memory.md",
           "hits": 26
         },
         {
@@ -482,12 +482,12 @@
           "hits": 31
         },
         {
-          "path": "backtester/README.md",
+          "path": "soltui/help.py",
           "hits": 31
         },
         {
-          "path": "soltui/help.py",
-          "hits": 30
+          "path": "backtester/README.md",
+          "hits": 31
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -576,15 +576,15 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 196,
+      "matchingFiles": 195,
       "shown": 30,
       "files": [
         {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 34
+          "path": "soltui/bots.py",
+          "hits": 39
         },
         {
-          "path": "soltui/bots.py",
+          "path": "backtester/tests/test_engine.py",
           "hits": 34
         },
         {
@@ -628,6 +628,10 @@
           "hits": 16
         },
         {
+          "path": "soltui/tests/test_bots.py",
+          "hits": 15
+        },
+        {
           "path": "research/results/minute_coverage.json",
           "hits": 12
         },
@@ -645,6 +649,10 @@
         },
         {
           "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
+        },
+        {
+          "path": "soltui/tui.py",
           "hits": 11
         },
         {
@@ -669,14 +677,6 @@
         },
         {
           "path": "research/ratio_rotation.py",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_bots.py",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tui.py",
           "hits": 8
         },
         {
@@ -1400,7 +1400,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 153,
+      "matchingFiles": 154,
       "shown": 30,
       "files": [
         {

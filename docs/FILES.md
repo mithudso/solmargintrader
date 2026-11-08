@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `3d2f4d4` (2026-11-08T08:16:33+00:00). 694 tracked files, 12.4 MB.
+**Generated** from `index/INDEX.json` at commit `253ca31` (2026-11-08T08:55:17+00:00). 695 tracked files, 12.4 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (499 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 242/253 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (500 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 243/254 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (101 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -39,7 +39,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`backtester`](#backtester) — 145 files
 - [`research`](#research) — 140 files
 - [`extension`](#extension) — 92 files
-- [`soltui`](#soltui) — 92 files
+- [`soltui`](#soltui) — 93 files
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
@@ -183,9 +183,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 538 lines · 78,821 B · description: **extracted**
+`doc` · 549 lines · 80,104 B · description: **extracted**
 
-**Purpose.** Version: 53 Delta: v52 to v53; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 54 Delta: v53 to v54; Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder). Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -199,9 +199,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 340 lines · 20,904 B · description: **extracted**
+`doc` · 348 lines · 22,060 B · description: **extracted**
 
-**Purpose.** Version: 47 Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder. Version: 45
+**Purpose.** Version: 48 Delta: v47 to v48; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields. Version: 45
 
 **Use.** Read it.
 
@@ -279,7 +279,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 6641 lines · 332,449 B · description: **extracted**
+`doc` · 6651 lines · 333,132 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -329,7 +329,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 216 lines · 16,924 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 860 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 872 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
 **Use.** Read it.
 
@@ -4233,11 +4233,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
 
-92 files.
+93 files.
 
 #### `soltui/README.md`
 
-`doc` · 483 lines · 38,397 B · description: **extracted**
+`doc` · 504 lines · 40,629 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -4321,13 +4321,23 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/bots.py`
 
-`code-python` · 1123 lines · 50,364 B · description: **extracted**
+`code-python` · 1394 lines · 64,544 B · description: **extracted**
 
 **Purpose.** The Bots tab: grid, triangular-arbitrage and DCA bots. Backtest, forward test, auto-optimize. Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to a venue's trading API; the only network reads are public market data (the recorded Coinbase stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).
 
-**Contents.** Defines `BOTS`, `LABELS`, `ABOUT`, `BACKTEST_INTERVAL`, `BAR_SECONDS`, `DEFAULT_BACKTEST_DAYS`, `MIN_BACKTEST_BARS`, `MIN_HOUR_MINUTES`, `MAX_FORWARD_GAP_MIN`, `OPTIMIZE_WINDOWS` and 30 more. Depends on `backtester`.
+**Contents.** Defines `BOTS`, `LABELS`, `ABOUT`, `BACKTEST_INTERVAL`, `BAR_SECONDS`, `MAX_BRIDGE_BARS`, `MAX_BRIDGED_FRACTION`, `MIN_BACKTEST_BARS`, `MIN_HOUR_MINUTES`, `MAX_FORWARD_GAP_MIN` and 30 more. Depends on `backtester`.
 
 **Use.** `import soltui.bots`
+
+#### `soltui/bots_screens.py`
+
+`code-python` · 201 lines · 9,764 B · description: **extracted**
+
+**Purpose.** The Bots tab's two pop-up windows: the coin picker and the auto-optimize window. Presentation only, like `help_screen.py`. Neither window runs a command itself: the coin picker returns the chosen coins to the tab, and the auto-optimize window shows what the tab's worker reports (`bots.progress` while it runs, the `bots.optimize` result when it ends).
+
+**Contents.** Defines `_pct()`, `_changes_text()`, `class CoinPickerScreen`, `class OptimizeScreen`.
+
+**Use.** `import soltui.bots_screens`
 
 #### `soltui/cli.py`
 
@@ -4341,7 +4351,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 2173 lines · 102,702 B · description: **extracted**
+`code-python` · 2181 lines · 103,441 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -4431,7 +4441,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 589 lines · 88,238 B · description: **extracted**
+`code-python` · 603 lines · 90,208 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -4571,11 +4581,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/pricefeed.py`
 
-`code-python` · 709 lines · 29,181 B · description: **extracted**
+`code-python` · 857 lines · 35,431 B · description: **extracted**
 
 **Purpose.** Streaming coin prices: the public Coinbase Exchange `ticker` channel, recorded to disk. python -m soltui.pricefeed record # the recorder loop (the console starts it detached) python -m soltui.pricefeed status # what is recorded, and the latest prices Before this module the console polled prices (Coinbase REST spot, closed 5m candles) and kept nothing between bars.
 
-**Contents.** Defines `WS_URL`, `PRODUCTS_URL`, `WS_GUID`, `REPO`, `FALLBACK_PRODUCTS`, `SNAPSHOT_SECONDS`, `FLUSH_SECONDS`, `RECV_TIMEOUT_S`, `MAX_FRAME_BYTES`, `class PriceFeedError` and 27 more. Depends on `backtester`.
+**Contents.** Defines `WS_URL`, `PRODUCTS_URL`, `WS_GUID`, `REPO`, `FALLBACK_PRODUCTS`, `SNAPSHOT_SECONDS`, `FLUSH_SECONDS`, `RECV_TIMEOUT_S`, `MAX_FRAME_BYTES`, `class PriceFeedError` and 30 more. Depends on `backtester`.
 
 **Use.** `python3 soltui/pricefeed.py --help`
 
@@ -4687,7 +4697,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 4187 lines · 210,611 B · description: **extracted**
+`code-python` · 4279 lines · 216,413 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -4739,7 +4749,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 234 lines · 11,221 B · description: **extracted**
+`test` · 236 lines · 11,358 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
@@ -4799,17 +4809,17 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bots.py`
 
-`test` · 419 lines · 21,123 B · description: **extracted**
+`test` · 567 lines · 29,543 B · description: **extracted**
 
 **Purpose.** The Bots tab's engine: configs, data, backtests, forward tests and the auto-optimize gate. No network and no real price data: bars come from `SyntheticLoader` written to a temporary data directory, and recorded snapshots are written to a temporary prices directory.
 
-**Contents.** Defines `DAY`, `write_hourly()`, `write_snapshots()`, `tri_quotes()`, `class Isolated`, `class Configs`, `class Data`, `class Backtests`, `class Forward`, `class Optimize` and 2 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `DAY`, `write_hourly()`, `write_snapshots()`, `tri_quotes()`, `class Isolated`, `class Configs`, `class Data`, `class Backtests`, `class Forward`, `class Optimize` and 3 more. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_bots.py -q`
 
 #### `soltui/tests/test_bridge_buttons.py`
 
-`test` · 54 lines · 2,155 B · description: **extracted**
+`test` · 54 lines · 2,153 B · description: **extracted**
 
 **Purpose.** Every TUI button is a registry command: a new button cannot skip the registry.
 
@@ -4969,11 +4979,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_pricefeed.py`
 
-`test` · 307 lines · 13,628 B · description: **extracted**
+`test` · 394 lines · 17,945 B · description: **extracted**
 
 **Purpose.** The streaming price recorder: RFC 6455 framing, the handshake, books, snapshots and files. No network: every socket here is a fake, and every file lives in a temporary directory.
 
-**Contents.** Defines `class FakeSock`, `server_frame()`, `connected()`, `class Framing`, `class Client`, `class Products`, `class Books`, `class Recording`, `class Status`. Depends on `backtester`, `soltui`.
+**Contents.** Defines `class FakeSock`, `server_frame()`, `connected()`, `class Framing`, `class Client`, `class Products`, `class Books`, `class Recording`, `class Status`, `class Agent`. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_pricefeed.py -q`
 
