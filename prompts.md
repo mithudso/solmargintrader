@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 95
-Delta: v94 to v95; record the JUPSOL conversion request.
+Version: 97
+Delta: v95 to v97; retain Coinbase and JUPSOL conversion requests.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -771,6 +771,18 @@ previous sweep stopped: its evaluation proof is missing or differs; press Start 
 ## v94 - 2026-11-08
 
 ```text
+For every tab that has a test on it make a status button which opens up the console in the editor and shows the current status of the running operation. If I click off the run button I can't get back to see where it is or what's going onn.
+```
+
+## v95 - 2026-11-08
+
+```text
+I can't tell what the dry run tab is supposed to be doing, there's no start button, it onlyh takes the top 5, but recommends an unproven unprofitable untested macd strategy that's not in the list and can't be chosen, there's no log, activitiy, it says "click one to fill this tab" which clicking on anything doesn't appear to do anything other than change the text in the Strategy text box.
+```
+
+## v96 - 2026-11-08
+
+```text
 Look at this file, and determine how to connect to my coinbase account and implement a coinbase connector, and sync the asset and wallet information to be in addition to the wallets already saved. download a list of all of the markets, and make a real live test order with actual literal money.
 ```
 
@@ -806,7 +818,7 @@ Better yet, transfer the money from my other wallet to that account.
 Transfer like $5 of solana
 ```
 
-## v95 - 2026-11-08
+## v97 - 2026-11-08
 
 ```text
 COnvertt from Jupsol to sol
