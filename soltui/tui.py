@@ -159,6 +159,16 @@ DOCS_TABLE_CAP = 1000
 # parses this file and fails when a button is missing here or names a command that does not exist, so a
 # new button cannot skip the registry (the extension, CLI and API would silently lack its action).
 BUTTON_COMMANDS: dict[str, str] = {
+    "#status-strategies": "queue.progress",
+    "#status-forwardtest": "forwardtest.state",
+    "#status-compound-backtest": "compound.results",
+    "#status-compound-forward": "compound.unattended_status",
+    "#status-bots": "bots.progress",
+    "#status-backtest": "backtest.status",
+    "#status-top5": "backtest.status",
+    "#status-queue": "queue.progress",
+    "#status-live": "live.recommendation",
+    "#status-paper": "paper.summary",
     "#strategy-cards-refresh": "strategies.cards",
     "#btn-save": "settings.save",
     "#btn-add": "roster.add",
@@ -1082,6 +1092,7 @@ class SolTuiApp(App):
                 yield Button("← Remove selected", variant="error", id="btn-remove")
                 yield Button("Reset to default", id="btn-reset-roster")
             with Horizontal(classes="form-row"):
+                yield Button("Test status", id="status-strategies")
                 yield Button("Backtest selected", variant="warning", id="btn-bt-selected")
                 yield Button("Backtest all untested", variant="warning", id="btn-bt-untested")
                 yield Button("Backtest all", variant="warning", id="btn-bt-all")
@@ -1247,6 +1258,7 @@ class SolTuiApp(App):
                 "beyond the cost threshold; FLAT predicts neither. Once started it runs in the background "
                 "until Stop, whatever tab is open.", classes="hint")
             with Horizontal(classes="form-row"):
+                yield Button("Test status", id="status-forwardtest")
                 yield Select([("All strategies", "all"), ("Roster only", "roster"),
                               ("Combinations only", "combinations")],
                              id="forward-scope", value="all", allow_blank=False)
@@ -1515,6 +1527,7 @@ class SolTuiApp(App):
                 with TabPane("Backtest", id="cmp-backtest"):
                     with VerticalScroll():
                         with Horizontal(classes="form-row"):
+                            yield Button("Test status", id="status-compound-backtest")
                             yield Button("Backtest this coin", variant="warning", id="compound-backtest")
                             yield Button("Frontier: every metric, strongest 2%, held 1 h-24 h",
                                          variant="warning", id="compound-backtest-frontier")
@@ -1527,6 +1540,7 @@ class SolTuiApp(App):
                 with TabPane("Forward test", id="cmp-forward"):
                     with VerticalScroll():
                         with Horizontal(classes="form-row"):
+                            yield Button("Test status", id="status-compound-forward")
                             yield Button("Forward tick", id="compound-forward")
                             yield Button("Auto-forward: off", id="compound-auto")
                             yield Button("Refresh results", id="compound-refresh")
@@ -1576,6 +1590,7 @@ class SolTuiApp(App):
                 yield Button("Defaults", id="bots-reset")
             yield Static("", id="bots-about")
             with Horizontal(classes="form-row"):
+                yield Button("Test status", id="status-bots")
                 yield Button("Backtest", variant="warning", id="bots-backtest")
                 yield Button("Start forward test", variant="success", id="bots-forward-start")
                 yield Button("Stop forward test", variant="error", id="bots-forward-stop")
@@ -1864,19 +1879,21 @@ class SolTuiApp(App):
 
     # Not exclusive: a forward refresh must not cancel a running optimize.
     @work(thread=True, group="bots")
-    def _bots_job(self, name: str, params: dict[str, Any], label: str) -> None:
+    def _bots_job(self, name: str, params: dict[str, Any], label: str, log_key: str = "") -> None:
         if self.query("#bots-status"):
             self.call_from_thread(self._bots_status, f"{label}…")
-        env = self._call_with_progress(name, params, "Bot backtest") if name == "bots.backtest" else self._call(name, params)
-        self.call_from_thread(self._bots_after, name, env)
+        env = self._call_with_progress(name, params, log_key or "Bot backtest") if name == "bots.backtest" else self._call(name, params)
+        self.call_from_thread(self._bots_after, name, env, log_key)
 
-    def _bots_after(self, name: str, env: dict[str, Any]) -> None:
+    def _bots_after(self, name: str, env: dict[str, Any], log_key: str = "") -> None:
         if not self.query("#bots-status"):
             return
         if name == "bots.backtest":
             result = env.get("result") or {}
-            self._append_log("Bot backtest", self._msg(env) if not env["ok"] else
+            self._append_log(log_key or "Bot backtest", self._msg(env) if not env["ok"] else
                              f"Finished: {result.get('ran', 0)} coin(s); errors: {result.get('errors') or 'none'}")
+        elif name == "bots.optimize":
+            self._append_log(log_key or "Bot optimize", self._msg(env) if not env["ok"] else "Optimization finished; see the results tab.")
         if not env["ok"]:
             self._bots_status(f"{name}: {self._msg(env)}")
             if name == "bots.optimize" and self._bots_opt_screen is not None and self._bots_opt_screen.is_attached:
@@ -1994,8 +2011,8 @@ class SolTuiApp(App):
                 return
         n = len(params["coins"])
         label = f"backtesting on {n} coin(s) from " + (params.get("start") or "the beginning of the data")
-        self._start_log("Bot backtest", label)
-        self._bots_job("bots.backtest", params, label)
+        log_key = self._start_log("Bot backtest", label)
+        self._bots_job("bots.backtest", params, label, log_key)
 
     @on(Button.Pressed, "#bots-forward-start")
     def _bots_forward_start(self) -> None:
@@ -2028,8 +2045,9 @@ class SolTuiApp(App):
         bots_mod.runtime().progress.pop(bot, None)
         self._bots_opt_screen = OptimizeScreen(bots_mod.LABELS[bot], poll, GlossaryTable)
         self.push_screen(self._bots_opt_screen)
+        log_key = self._start_log("Bot optimize", f"Starting {bot} optimization")
         self._bots_job("bots.optimize", {"bot": bot},
-                       "auto-optimizing on every coin (train windows pick, test windows decide)")
+                       "auto-optimizing on every coin (train windows pick, test windows decide)", log_key)
 
     @on(Button.Pressed, "#bots-coins")
     def _bots_pick_coins(self) -> None:
@@ -2398,6 +2416,7 @@ class SolTuiApp(App):
                              allow_blank=False, id="backtest-pick")
                 yield Static("", id="backtest-roster")
             with Horizontal(classes="form-row"):
+                yield Button("Test status", id="status-backtest")
                 yield Button("Run backtest (r)", variant="primary", id="btn-run")
                 yield Button("Backtest untested + little-tested", variant="warning", id="btn-run-untested")
                 yield Button("Cancel (c)", variant="error", id="btn-cancel")
@@ -2409,27 +2428,25 @@ class SolTuiApp(App):
             yield GlossaryTable(id="results-table")
 
     def _live_run_pane(self) -> ComposeResult:
-        """Launcher for the Node.js extension in dry-run mode."""
+        """Choose a real registered strategy for a historical, no-order simulation."""
         with Vertical():
-            # A distinct id: `#execute-banner` is the dry-run safety banner the
-            # Execute tab owns, and two widgets sharing it made `query_one` return
-            # this one instead — silently reading the safety rail off the wrong widget.
-            yield Static("LIVE RUN LAUNCHER (DRY-RUN OPTION)", id="live-run-banner")
-            yield Static(
-                "This tab populates the most profitable/tested configuration and spawns "
-                "the Node.js extension's dry-run engine. The TUI itself places no orders.",
-                classes="hint",
-            )
+            yield Static("DRY RUN — HISTORICAL SIMULATION; NO ORDERS", id="live-run-banner")
+            yield Static("Choose any registered strategy or a Top 5 preset, then press Start dry run. "
+                         "The simulation uses cached candles and Settings costs; it is not live paper trading "
+                         "or evidence that a strategy will be profitable.", classes="hint")
             yield from self._preset_list("live")
             with Horizontal(classes="form-row"):
-                yield Label("Recommended:")
-                yield Static("Loading...", id="live-run-recommendation", classes="hint")
+                yield Button("Test status", id="status-live")
+                yield Label("Registered strategy:")
+                yield Select([(name, name) for name, _ in available_strategies()], value="buy_and_hold",
+                             allow_blank=False, id="live-run-choice")
+                yield Button("Start dry run", variant="success", id="btn-spawn-dryrun")
             with Horizontal(classes="form-row"):
-                yield Label("Strategy:")
-                yield Input(value="", id="live-run-strategy")
-                yield Button("Spawn Node Dryrun", variant="success", id="btn-spawn-dryrun")
+                yield Label("Selected:")
+                yield Input(value="buy_and_hold", id="live-run-strategy")
                 yield Button("Refresh", id="btn-refresh-live-run")
-            yield Static("", id="live-run-status")
+            yield Static("Choose a strategy and press Start dry run.", id="live-run-recommendation")
+            yield Static("No dry run started.", id="live-run-status")
             yield TextArea(read_only=True, id="live-run-output")
 
     def _execute_pane(self) -> ComposeResult:
@@ -2444,6 +2461,7 @@ class SolTuiApp(App):
             )
             yield from self._preset_list("exec")
             with Horizontal(classes="form-row"):
+                yield Button("Test status", id="status-paper")
                 yield Label("Strategy:")
                 yield Select([], id="exec-strategy", allow_blank=True)
                 yield Button("Start dry run", variant="primary", id="btn-paper-start")
@@ -2782,6 +2800,7 @@ class SolTuiApp(App):
         params: dict[str, Any] = {"scope": scope}
         if names is not None:
             params["names"] = names
+        self._close_finished_worker_logs()
         tail = BacktestLog(bgqueue.BG_DIR / "worker.log")
         env = self._call("queue.backtest", params)
         self._start_log("Strategy backtest", self._msg(env) if not env["ok"] else env["result"]["message"],
@@ -3359,16 +3378,16 @@ class SolTuiApp(App):
 
     # Not exclusive: an auto-forward tick must not cancel a backtest that is still running.
     @work(thread=True, group="compound")
-    def _compound_job(self, name: str, params: dict[str, Any], label: str) -> None:
+    def _compound_job(self, name: str, params: dict[str, Any], label: str, log_key: str = "") -> None:
         self.call_from_thread(self.query_one("#compound-status", Static).update, f"{label}…")
-        env = self._call_with_progress(name, params, "Compound backtest") if name == "compound.backtest" else self._call(name, params)
-        self.call_from_thread(self._compound_after, name, env)
+        env = self._call_with_progress(name, params, log_key or "Compound backtest") if name == "compound.backtest" else self._call(name, params)
+        self.call_from_thread(self._compound_after, name, env, log_key)
 
-    def _compound_after(self, name: str, env: dict[str, Any]) -> None:
+    def _compound_after(self, name: str, env: dict[str, Any], log_key: str = "") -> None:
         status = self.query_one("#compound-status", Static)
         if name == "compound.backtest":
             result = env.get("result") or {}
-            self._append_log("Compound backtest", self._msg(env) if not env["ok"] else
+            self._append_log(log_key or "Compound backtest", self._msg(env) if not env["ok"] else
                              f"Finished: {result.get('configurations', 0)} configurations on {result.get('assets', [])}; skipped {result.get('skipped', [])}")
         if not env["ok"]:
             status.update(f"[red]{escape(self._msg(env))}[/]")
@@ -3511,9 +3530,9 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#compound-backtest")
     def _compound_backtest(self) -> None:
-        self._start_log("Compound backtest", "Starting " + self._compound_coin)
+        log_key = self._start_log("Compound backtest", "Starting " + self._compound_coin)
         self._compound_job("compound.backtest", {"asset": self._compound_coin},
-                           "backtesting the compound and each enabled metric alone")
+                           "backtesting the compound and each enabled metric alone", log_key)
 
     @on(Button.Pressed, "#compound-forward")
     def _compound_forward(self) -> None:
@@ -3617,16 +3636,16 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#compound-backtest-frontier")
     def _compound_backtest_frontier(self) -> None:
-        self._start_log("Compound backtest", "Starting " + self._compound_coin)
+        log_key = self._start_log("Compound backtest", "Starting " + self._compound_coin)
         self._compound_job("compound.backtest", {"asset": self._compound_coin, "frontier": True},
                            "frontier: every metric alone, its strongest 2% of readings, held 1 h, 4 h and 24 h, "
-                           "unlevered (about 130 configurations; a few minutes)")
+                           "unlevered (about 130 configurations; a few minutes)", log_key)
 
     @on(Button.Pressed, "#compound-backtest-all")
     def _compound_backtest_all(self) -> None:
-        self._start_log("Compound backtest", "Starting " + "all coins")
+        log_key = self._start_log("Compound backtest", "Starting " + "all coins")
         self._compound_job("compound.backtest", {"all": True},
-                           "backtesting every coin in parallel, each with its own settings")
+                           "backtesting every coin in parallel, each with its own settings", log_key)
 
     @on(Button.Pressed, "#compound-unattended-all")
     def _compound_unattended_all(self) -> None:
@@ -3694,19 +3713,21 @@ class SolTuiApp(App):
         labels = [pick] if isinstance(pick, str) and pick != self.ROSTER_PICK else None
         self.query_one("#backtest-status", Static).update(
             f"running {labels[0]}…" if labels else "running the whole roster…")
-        self._start_log("CPCV backtest", f"Starting {labels[0] if labels else 'the whole roster'}")
-        self._sweep_worker(labels)
+        log_key = self._start_log("CPCV backtest", f"Starting {labels[0] if labels else 'the whole roster'}")
+        if not self.runner.running:
+            self._cpcv_active_log = log_key
+        self._sweep_worker(labels, log_key)
 
     @work(thread=True, group="sweep")
-    def _sweep_worker(self, labels: list[str] | None = None) -> None:
+    def _sweep_worker(self, labels: list[str] | None = None, log_key: str = "") -> None:
         """Thread only so the UI stays live; the sweep itself is the registry handler."""
         env = self._call("backtest.run", {"labels": labels} if labels else {})
-        self.call_from_thread(self._render_results, env)
+        self.call_from_thread(self._render_results, env, log_key)
 
-    def _render_results(self, env: dict[str, Any]) -> None:
+    def _render_results(self, env: dict[str, Any], log_key: str = "") -> None:
         """Fill the results table, best median Sharpe first."""
         status = self.query_one("#backtest-status", Static)
-        self._append_log("CPCV backtest", self._msg(env) if not env["ok"] else env["result"]["message"])
+        self._append_log(log_key or "CPCV backtest", self._msg(env) if not env["ok"] else env["result"]["message"])
         if not env["ok"]:
             status.update(f"[red]{self._msg(env)}[/]")
             return
@@ -3731,6 +3752,7 @@ class SolTuiApp(App):
         backtested a fixed handful on one horizon, so the button seemed to find work and do none.
         """
         status = self.query_one("#backtest-status", Static)
+        self._close_finished_worker_logs()
         tail = BacktestLog(bgqueue.BG_DIR / "worker.log")
         env = self._call("queue.backtest", {"scope": "undertested"})
         self._start_log("Strategy backtest", self._msg(env) if not env["ok"] else env["result"]["message"],
@@ -3757,11 +3779,17 @@ class SolTuiApp(App):
     # -- execute (dry run) -----------------------------------------------
 
     @on(Button.Pressed, "#btn-paper-start")
-    @work(thread=True, exclusive=True)
     def _paper_start(self) -> None:
         """Run one backtest and open a replay cursor over it (`paper.start`)."""
         value = self.query_one("#exec-strategy", Select).value
-        env = self._call("paper.start", {"label": value if isinstance(value, str) else ""})
+        label = value if isinstance(value, str) else ""
+        key = self._start_log("Replay", f"Starting historical replay for {label or 'no selection'}")
+        self._paper_start_job(label, key)
+
+    @work(thread=True, exclusive=True)
+    def _paper_start_job(self, label: str, key: str) -> None:
+        env = self._call("paper.start", {"label": label})
+        self.call_from_thread(self._append_log, key, env["result"]["text"] if env["ok"] else self._msg(env))
         self.call_from_thread(self._refresh_paper, env)
 
     @on(Button.Pressed, "#btn-step1")
@@ -3856,36 +3884,48 @@ class SolTuiApp(App):
     # -- Live Run --------------------------------------------------------
 
     def _refresh_live_run(self) -> None:
-        best = self._call("live.recommendation")["result"]
-        rec_static = self.query_one("#live-run-recommendation", Static)
-        strat_input = self.query_one("#live-run-strategy", Input)
-        rec_static.update(f"{best['strategy']} (from {best['source']}) — {best['details']}")
-        strat_input.value = best["strategy"]
+        self.query_one("#live-run-recommendation", Static).update(
+            "Historical simulation only. No choice here is a profitability recommendation.")
 
     @on(Button.Pressed, "#btn-refresh-live-run")
     def _btn_refresh_live_run(self) -> None:
         self._refresh_live_run()
-        self.query_one("#live-run-status", Static).update("refreshed recommendation")
-        
+
+    @on(Select.Changed, "#live-run-choice")
+    def _live_run_choice(self, event: Select.Changed) -> None:
+        if isinstance(event.value, str):
+            self.query_one("#live-run-strategy", Input).value = event.value
+            self._live_run_preset = None
+
     @on(Button.Pressed, "#btn-spawn-dryrun")
-    @work(thread=True)
     def _btn_spawn_dryrun(self) -> None:
-        strategy_name = self.query_one("#live-run-strategy", Input).value.strip()
+        shown = self.query_one("#live-run-strategy", Input).value.strip()
+        preset = getattr(self, "_live_run_preset", None)
+        strategy_name = preset[1] if preset and preset[0] == shown else shown
         status = self.query_one("#live-run-status", Static)
-        out_area = self.query_one("#live-run-output", TextArea)
         if not strategy_name:
-            self.call_from_thread(status.update, "[red]Please enter a strategy name.[/red]")
+            status.update("Choose a strategy first.")
             return
-        self.call_from_thread(status.update, f"running dry run for {strategy_name}...")
-        env = self._call("live.spawn_dryrun", {"strategy": strategy_name})
+        status.update(f"Running historical simulation for {shown}…")
+        self.query_one("#live-run-output", TextArea).text = ""
+        key = self._start_log("Dry run", f"Starting {shown}; no orders")
+        self._run_selected_dryrun(shown, strategy_name, key)
+
+    @work(thread=True)
+    def _run_selected_dryrun(self, shown: str, strategy_name: str, key: str) -> None:
+        env = self._call_with_progress("live.spawn_dryrun", {"strategy": strategy_name}, key)
         if env["ok"]:
-            text = "Dryrun finished successfully.\n" + env["result"]["stdout"]
-            self.call_from_thread(status.update,
-                                  f"dry run finished · {env['result']['net_pct_text']}")
+            text = env["result"]["stdout"]
+            status = f"Finished {shown} · {env['result']['net_pct_text']}"
         else:
             text = self._msg(env)
-            self.call_from_thread(status.update, f"[red]{text.splitlines()[0]}[/]")
-        self.call_from_thread(lambda: setattr(out_area, "text", text))
+            status = f"Dry run failed: {text}"
+        self.call_from_thread(self._finish_selected_dryrun, key, status, text)
+
+    def _finish_selected_dryrun(self, key: str, status: str, text: str) -> None:
+        self._append_log(key, text)
+        self.query_one("#live-run-status", Static).update(status)
+        self.query_one("#live-run-output", TextArea).text = text
 
     # -- Top 5: the recommended configurations and their evidence ---------
 
@@ -3936,6 +3976,7 @@ class SolTuiApp(App):
                 classes="hint",
             )
             with Horizontal(classes="form-row"):
+                yield Button("Test status", id="status-top5")
                 yield Button("Add selected row's signals to roster",
                              id="top5-add-selected")
                 yield Button("Add all top-5 signals to roster",
@@ -4044,7 +4085,10 @@ class SolTuiApp(App):
     def _top5_run(self) -> None:
         """Start the same CPCV sweep the Backtest tab runs, from here."""
         self.query_one("#top5-status", Static).update("running — results land on the Backtest tab")
-        self._sweep_worker()
+        log_key = self._start_log("CPCV backtest", "Starting the whole roster")
+        if not self.runner.running:
+            self._cpcv_active_log = log_key
+        self._sweep_worker(None, log_key)
 
     @on(Button.Pressed, "#top5-reload")
     def _top5_reload(self) -> None:
@@ -4198,9 +4242,11 @@ class SolTuiApp(App):
             return
         tab = list_id.removeprefix("preset-")
         if tab == "live":
-            self.query_one("#live-run-strategy", Input).value = preset["applies"]["live_run"]["strategy"]
+            chosen = preset["applies"]["live_run"]["strategy"]
+            self.query_one("#live-run-strategy", Input).value = chosen
+            self._live_run_preset = (chosen, preset["value"])
             self.query_one("#live-run-status", Static).update(
-                f"preset {preset['title']} · {preset['params_text']} · {preset['net_pct_text']}")
+                f"preset {preset['title']} selected · {preset['params_text']} · {preset['net_pct_text']} · press Start dry run")
         elif tab == "exec":
             self.query_one("#exec-strategy", Select).value = preset["applies"]["execute"]["label"]
             self.query_one("#exec-summary", Static).update(
@@ -4390,6 +4436,7 @@ class SolTuiApp(App):
                 classes="hint",
             )
             with Horizontal(classes="form-row"):
+                yield Button("Test status", id="status-queue")
                 yield Button("Start", variant="primary", id="queue-start")
                 yield Button("Start fresh", id="queue-start-fresh")
                 yield Button("Stop", variant="error", id="queue-stop")
@@ -4415,6 +4462,7 @@ class SolTuiApp(App):
     def _queue_start(self) -> None:
         """Spawn the background worker for the configured asset."""
         status = self.query_one("#queue-status", Static)
+        self._close_finished_worker_logs()
         env = self._call("queue.start")
         if not env["ok"]:
             status.update(f"[red]{self._msg(env)}[/]")
@@ -4435,6 +4483,7 @@ class SolTuiApp(App):
     def _queue_start_fresh(self) -> None:
         """Start a separate sweep without altering historical results."""
         status = self.query_one("#queue-status", Static)
+        self._close_finished_worker_logs()
         env = self._call("queue.start_fresh")
         if not env["ok"]:
             status.update(f"[red]{self._msg(env)}[/]")
@@ -5082,34 +5131,183 @@ class SolTuiApp(App):
         ctx.progress = progress
         return dispatch(name, params, surface="tui", ctx=ctx)
 
-    def _start_log(self, title: str, line: str, tail: BacktestLog | None = None) -> None:
+    def _start_log(self, title: str, line: str, tail: BacktestLog | None = None) -> str:
+        logs = getattr(self, "_test_logs", None)
+        if logs is None:
+            self._test_logs = logs = {}
+        self._test_log_seq = getattr(self, "_test_log_seq", 0) + 1
+        key = f"{title} #{self._test_log_seq}"
+        logs[key] = {"title": title, "text": f"# {title}\n\n{line}\n", "tail": tail}
         self._backtest_log_title = title
-        self._backtest_log_text = f"# {title}\n\n{line}\n"
+        self._backtest_log_text = logs[key]["text"]
         self._backtest_log_tail = tail
         self._backtest_log_progress = None
         self._set_editor_open(True, persist=False)
         self._show_preview(title, self._backtest_log_text)
+        return key
 
     def _append_log(self, title: str, line: str, *, raw: bool = False) -> None:
-        if getattr(self, "_backtest_log_title", None) != title:
+        logs = getattr(self, "_test_logs", {})
+        key = title if title in logs else next((k for k in reversed(logs) if logs[k]["title"] == title), None)
+        if key is None:
             return
-        old = self._backtest_log_text
-        self._backtest_log_text = (old + (line if raw else line.rstrip() + "\n"))[-100000:]
+        entry = logs[key]
+        old = entry["text"]
+        entry["text"] = (old + (line if raw else line.rstrip() + "\n"))[-100000:]
+        if key == next(reversed(logs)):
+            self._backtest_log_text = entry["text"]
         if self._preview_text == old:
-            self._show_preview(title, self._backtest_log_text)
+            self._show_preview(entry["title"], entry["text"])
             self.query_one("#docs-view", TextArea).scroll_end(animate=False)
 
+    def _close_finished_worker_logs(self) -> None:
+        """Detach old log readers before a new worker appends to the shared log."""
+        if bgcontrol.is_running():
+            return
+        for key, entry in list(getattr(self, "_test_logs", {}).items()):
+            tail = entry.get("tail")
+            if tail is None:
+                continue
+            for _ in range(2):
+                chunk = tail.poll()
+                if not chunk:
+                    break
+                self._append_log(key, chunk, raw=True)
+            entry["tail"] = None
+
     def _poll_backtest_log(self) -> None:
-        tail = getattr(self, "_backtest_log_tail", None)
-        if tail is not None:
-            chunk = tail.poll()
-            if chunk:
-                self._append_log("Strategy backtest", chunk, raw=True)
-        if getattr(self, "_backtest_log_title", None) == "CPCV backtest" and self.runner.running:
+        for key, entry in list(getattr(self, "_test_logs", {}).items()):
+            tail = entry["tail"]
+            if tail is not None:
+                chunk = tail.poll()
+                if chunk:
+                    self._append_log(key, chunk, raw=True)
+        if self.runner.running:
             progress = (self.state.done, self.state.total)
-            if progress != self._backtest_log_progress:
+            if progress != getattr(self, "_backtest_log_progress", None):
                 self._backtest_log_progress = progress
-                self._append_log("CPCV backtest", f"Progress: {progress[0]}/{progress[1]} configurations")
+                self._append_log(getattr(self, "_cpcv_active_log", "CPCV backtest"),
+                                 f"Progress: {progress[0]}/{progress[1]} configurations")
+        self._refresh_open_test_status()
+
+    # A status view follows existing operations; it never launches or cancels them.
+    _TEST_STATUS = {
+        "status-strategies": ("Strategy tests", ("history-status",), ("Strategy backtest",), "queue"),
+        "status-forwardtest": ("Forward tests", ("forward-status",), (), "forward"),
+        "status-compound-backtest": ("Signal backtests", ("compound-status", "compound-bt-status"),
+                                     ("Compound backtest",), ""),
+        "status-compound-forward": ("Signal forward tests", ("compound-unattended", "compound-fwd-summary"), (), "compound"),
+        "status-bots": ("Bot tests", ("bots-status", "bots-fit-status", "bots-fwd-summary"), ("Bot backtest", "Bot optimize"), ""),
+        "status-backtest": ("Backtests", ("backtest-status", "backtest-bg-status"),
+                            ("CPCV backtest", "Strategy backtest"), "queue"),
+        "status-top5": ("Roster backtests", ("top5-status", "backtest-status"), ("CPCV backtest",), ""),
+        "status-queue": ("Background sweep", ("queue-status",), ("Strategy backtest",), "queue"),
+        "status-live": ("Dry run", ("live-run-status",), ("Dry run",), "live"),
+        "status-paper": ("Dry-run replay", ("exec-summary",), ("Replay",), ""),
+    }
+
+    def _test_status_text(self, button_id: str) -> str:
+        title, widgets, titles, source = self._TEST_STATUS[button_id]
+        lines = [f"# {title}", "", "Current status (read-only):"]
+        found = False
+        for widget_id in widgets:
+            matches = self.query(f"#{widget_id}")
+            if matches:
+                value = matches.first(Static).content
+                value = value.plain if isinstance(value, Text) else str(value or "")
+                if value.strip():
+                    lines.append(value)
+                    found = True
+        if source == "queue":
+            env = self._call("queue.progress", quiet=True)
+            lines.append(env["result"]["summary"] if env["ok"] else f"Sweep status unavailable: {self._msg(env)}")
+            path = bgqueue.BG_DIR / "worker.log"
+            try:
+                with path.open("rb") as stream:
+                    stream.seek(0, 2)
+                    stream.seek(max(0, stream.tell() - 16384))
+                    recent = stream.read().decode("utf-8", errors="replace")
+                lines.extend(["", f"Recent worker log ({path}; may include older runs):", recent or "Log is empty."])
+            except OSError as exc:
+                lines.extend(["", f"Worker log unavailable: {exc}"])
+            found = True
+        elif source == "forward":
+            env = self._call("forwardtest.state", quiet=True)
+            if env["ok"]:
+                state = env["result"]
+                assets = ", ".join(state.get("assets") or []) or "none"
+                lines.append(f"Forward test: {'running' if state.get('running') else 'stopped'}; coins: {assets}.")
+                for coin, latest in (state.get("last") or {}).items():
+                    checked = latest.get("at")
+                    when = time.strftime("%m-%d %H:%M:%S UTC", time.gmtime(checked)) if checked else "unknown time"
+                    detail = latest.get("error") or latest.get("message") or f"{latest.get('recorded', 0)} predictions recorded"
+                    lines.append(f"{coin}: {when} — {detail}")
+            else:
+                lines.append(f"Forward status unavailable: {self._msg(env)}")
+            found = True
+        elif source == "compound":
+            env = self._call("compound.unattended_status", {"asset": self._compound_coin}, quiet=True)
+            if env["ok"]:
+                state = env["result"]
+                lines.append(f"{state['asset']} trainer: {'running' if state.get('running') else 'stopped'}.")
+                last = state.get("last_line") or "No recent trainer activity available."
+                try:
+                    item = json.loads(last)
+                except (TypeError, ValueError):
+                    lines.append(last)
+                else:
+                    if item.get("error"):
+                        lines.append(f"Last error: {item['error']}")
+                    else:
+                        lines.append(f"Last call: {item.get('call', 'unknown')}; "
+                                     f"recorded: {'yes' if item.get('recorded') else 'no'}; "
+                                     f"earlier calls resolved: {item.get('resolved', 0)}.")
+                lines.append(f"Log: {state.get('log') or 'unavailable'}")
+            else:
+                lines.append(f"Trainer status unavailable: {self._msg(env)}")
+            found = True
+        elif source == "live":
+            matches = self.query("#live-run-output")
+            if matches and matches.first(TextArea).text:
+                lines.extend(["", matches.first(TextArea).text])
+                found = True
+        for key, log in getattr(self, "_test_logs", {}).items():
+            if log["title"] in titles:
+                lines.extend(["", f"## {key}", log["text"]])
+                found = True
+        if not found:
+            lines.append("No test status or log is available in this session.")
+        return "\n".join(lines)[-100000:]
+
+    @on(Button.Pressed, "#status-strategies")
+    @on(Button.Pressed, "#status-forwardtest")
+    @on(Button.Pressed, "#status-compound-backtest")
+    @on(Button.Pressed, "#status-compound-forward")
+    @on(Button.Pressed, "#status-bots")
+    @on(Button.Pressed, "#status-backtest")
+    @on(Button.Pressed, "#status-top5")
+    @on(Button.Pressed, "#status-queue")
+    @on(Button.Pressed, "#status-live")
+    @on(Button.Pressed, "#status-paper")
+    def _open_test_status(self, event: Button.Pressed) -> None:
+        button_id = event.button.id or ""
+        if button_id not in self._TEST_STATUS:
+            return
+        self._set_editor_open(True, persist=False)
+        text = self._test_status_text(button_id)
+        self._show_preview(self._TEST_STATUS[button_id][0], text)
+        self._test_status_button = button_id
+        self._test_status_preview = text if self._preview_text == text else None
+
+    def _refresh_open_test_status(self) -> None:
+        button_id = getattr(self, "_test_status_button", None)
+        previous = getattr(self, "_test_status_preview", None)
+        if not button_id or previous is None or self._preview_text != previous:
+            return
+        text = self._test_status_text(button_id)
+        if text != previous:
+            self._show_preview(self._TEST_STATUS[button_id][0], text)
+            self._test_status_preview = text if self._preview_text == text else None
 
     def _show_preview(self, title: str, text: str) -> None:
         """Show generated, read-only text in the shared editor.

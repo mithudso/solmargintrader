@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 168
-Delta: v167 to v168; record dry-run usability investigation.
+Version: 174
+Delta: v171 to v174; preserve and integrate paper experiment continuation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1665,12 +1665,32 @@ The SOL sweep resumed in a new proof-isolated results segment /Users/mitch/.conf
 
 ## v167 - 2026-11-08
 
-Active TASK-1033: user requests an Experiments tab for prospective paper trading of any strategy, with live-time predictions, simulated actions and outcomes. This is distinct from the existing optimization experiment workbench. Preserve current sweep and trainer and all simulated-only boundaries. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments, branch agent-01a1bc24-experiments; base PR 117 head 8f4cdbb. The textual-job-lifecycle-specialist owns the separate status-button task in a different worktree. Stele knowledge create for the prospective/paper-only decision is queued as outbox 30def738 after transport closed. Remaining: inspect current prospective forwardtest and paper execution engines; design and implement durable experiments, accessible UI/status, causal and cost tests; integrate concurrent work, delivery, live acceptance.
+Active: Stele TASK-1034. Worktree /Users/mitch/dev/solmargintrader-wt-status-1034, branch agent-status-1034 based on origin/master 4c4a4e7. Request: status button on every test tab, reopen the correct operation in the editor after navigation, show existing operation state and logs without starting or interrupting jobs. Stele decision write queued in outbox 2012e44c. Inventory test surfaces and their status/log sources, implement independent per-operation logs and reconnection, test missing logs, navigation and concurrent jobs; deliver after coordination with parent session. Parent owns separate paper experiment feature and active sweep worktree.
 
 ## v168 - 2026-11-08
 
-Owner also reports the Dry run tab lacks an understandable start control and activity, appears limited to top five presets, and recommends an unproven MACD strategy that cannot be selected. The textual-job-lifecycle-specialist owns Dry Run UI and status in its isolated worktree; preserve live trading defaults and avoid claiming backtest success without evidence. Integrate its work with TASK-1033 prospective paper experiments and the pending sweep recovery PR.
+The v2 Dry Run tab was passing a strategy string to extension/tools/dryrun.js, but that script ignores it and always simulates the grid. Removing the false strategy association, /Users/mitch/dev/solmargintrader-wt-status-1034 now routes registered strategies and selected Top 5 configurations to independent historical simulations using the existing backtest engine and cached candles. It labels the run as historical, not prospective, and keeps no order path. Adds a neutral baseline and strategy picker, Start dry run, progress logs, and test-status buttons. Test status retains separate simultaneous logs and reopens editor previews. Stele new task create queued in outbox 03b25b07. Remaining: full focused UI tests, resolve any failures, run documentation gate, commit and coordinate integration with parent; do not disturb active jobs.
 
 ## v169 - 2026-11-08
+
+Implemented 10 test-status buttons with independent in-session operation logs, bounded detached-worker log retrieval, responsive status refresh, and unsaved-editor protection. Dry Run now runs the exact selected registry strategy or Top 5 composite on cached historical bars with the shared simulation engine. It does not run Node grid code, claim a profitable recommendation, use live prices, or place orders. Verified 36 bridge parity/surface tests, 39 preset/editor/handler tests, the 25-test initial UI subset, and targeted tests for narrow layout, actual selected strategy and detached log boundaries. Two additional focused UI tests passed after the thread-safe callback refactor. Stele TASK-1034 remains in progress; new Dry Run task and decision are queued in outbox IDs 03b25b07 and 2012e44c. Remaining: commit, update suite counts, push draft, coordinate parent integration and verify loaded app; preserve active trainer and sweep.
+
+## v170 - 2026-11-08
+
+Actual cached-data smoke on the status branch initially failed because SOL_1h.csv has gaps. The Dry Run now selects only the latest contiguous real candle segment and reports its exact dates and excluded bar count. A historical RSI run on /Users/mitch/dev/solmargintrader/data/SOL_1h.csv completed using 4,410 of 24,999 bars, excluded 20,589, and recorded 78 simulated fills. No prices were fabricated and no orders were placed. This is a historical smoke, not proof of live behavior or profitable future performance. Focused gap regression passes; draft PR 118 awaits integrated tests and coordinated delivery.
+
+## v171 - 2026-11-08
+
+PR 118 CI at head 26d4ec5 reported the backtester and docs checks failed because the committed offline retrieval indexes were stale after source, test and documentation changes. Rebuilt the three tracked offline indexes with index/build.py all. The builder does not run embeddings or contact the network. The exact failing backtester index staleness test and scripts/check_docs.py passed locally. Head 89b12f0 pushed those indexes; this continuation update requires one more offline rebuild before the next push. Remaining: verify CI on the final head, coordinate integration and verify the installed app. Preserve the active trainer and sweep.
+
+## v172 - 2026-11-08
+
+Active TASK-1033: user requests an Experiments tab for prospective paper trading of any strategy, with live-time predictions, simulated actions and outcomes. This is distinct from the existing optimization experiment workbench. Preserve current sweep and trainer and all simulated-only boundaries. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments, branch agent-01a1bc24-experiments; base PR 117 head 8f4cdbb. The textual-job-lifecycle-specialist owns the separate status-button task in a different worktree. Stele knowledge create for the prospective/paper-only decision is queued as outbox 30def738 after transport closed. Remaining: inspect current prospective forwardtest and paper execution engines; design and implement durable experiments, accessible UI/status, causal and cost tests; integrate concurrent work, delivery, live acceptance.
+
+## v173 - 2026-11-08
+
+Owner also reports the Dry run tab lacks an understandable start control and activity, appears limited to top five presets, and recommends an unproven MACD strategy that cannot be selected. The textual-job-lifecycle-specialist owns Dry Run UI and status in its isolated worktree; preserve live trading defaults and avoid claiming backtest success without evidence. Integrate its work with TASK-1033 prospective paper experiments and the pending sweep recovery PR.
+
+## v174 - 2026-11-08
 
 The prospective Experiments tab and detached paper runner are implemented in /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments. The runner records causal 1, 5 or 30 minute calls under a unique experiment and frozen code fingerprint; it simulates non-overlapping 1x positions with configured round-trip costs and $1000 default paper capital. It never sends orders. An isolated real-feed smoke run recorded three calls and one resolved result, then stopped cleanly. Eleven targeted tests pass. No user-selected strategy has been specified, so no persistent user experiment has been started. Remaining: integrate PR 118, update indexes and documentation counts, rerun checks, deliver and verify the installed console.

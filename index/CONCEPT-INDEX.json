@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T17:38:33+00:00",
+  "generatedAt": "2026-11-08T18:07:24+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1587,
+      "matchingFiles": 1588,
       "shown": 30,
       "files": [
         {
@@ -91,23 +91,23 @@
         },
         {
           "path": "soltui/tui.py",
-          "hits": 44
+          "hits": 46
         },
         {
           "path": "soltui/commands.py",
-          "hits": 42
+          "hits": 40
         },
         {
           "path": "skills/trading-and-investing/references/options-trading-and-strategies.md",
           "hits": 38
         },
         {
-          "path": "executor/src/executor/registry.py",
+          "path": "memory.md",
           "hits": 34
         },
         {
-          "path": "memory.md",
-          "hits": 33
+          "path": "executor/src/executor/registry.py",
+          "hits": 34
         },
         {
           "path": "executor/src/executor/engine.py",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 557,
+      "matchingFiles": 558,
       "shown": 30,
       "files": [
         {
@@ -801,16 +801,16 @@
           "hits": 43
         },
         {
+          "path": "memory.md",
+          "hits": 37
+        },
+        {
           "path": "soltui/tests/test_bots.py",
           "hits": 37
         },
         {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
           "hits": 36
-        },
-        {
-          "path": "memory.md",
-          "hits": 35
         },
         {
           "path": "soltui/help.py",
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 524,
+      "matchingFiles": 525,
       "shown": 30,
       "files": [
         {
@@ -986,7 +986,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 436,
+      "matchingFiles": 437,
       "shown": 30,
       "files": [
         {
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 256,
+      "matchingFiles": 257,
       "shown": 30,
       "files": [
         {
@@ -1568,12 +1568,12 @@
           "hits": 25
         },
         {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "path": "memory.md",
           "hits": 23
         },
         {
-          "path": "memory.md",
-          "hits": 22
+          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "hits": 23
         },
         {
           "path": "backtester/core/deflated_sharpe.py",
@@ -1939,7 +1939,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 207,
+      "matchingFiles": 208,
       "shown": 30,
       "files": [
         {
@@ -1972,7 +1972,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 19
+          "hits": 20
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -2113,6 +2113,10 @@
           "hits": 31
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 25
+        },
+        {
           "path": "backtester/tests/test_cpcv.py",
           "hits": 24
         },
@@ -2134,10 +2138,6 @@
         },
         {
           "path": "docs/design/soltui-v2/mockup.py",
-          "hits": 20
-        },
-        {
-          "path": "soltui/tui.py",
           "hits": 20
         },
         {
