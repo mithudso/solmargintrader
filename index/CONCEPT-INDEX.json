@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T14:49:18+00:00",
+  "generatedAt": "2026-11-08T15:31:00+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -122,16 +122,16 @@
           "hits": 31
         },
         {
+          "path": "memory.md",
+          "hits": 30
+        },
+        {
           "path": "soltui/help.py",
           "hits": 30
         },
         {
           "path": "soltui/tests/test_liquidity.py",
           "hits": 30
-        },
-        {
-          "path": "memory.md",
-          "hits": 29
         },
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md",
