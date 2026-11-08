@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 70
-Delta: v69 to v70; Forwardtest coin dropdown, auto-optimize with saved defaults, background runner.
+Version: 111
+Delta: v110 to v111; integrate PR 89 with master and verify delivery.
 
 ## v1 - 2026-11-06
 
@@ -718,6 +718,387 @@ Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backt
 
 Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.
 
+## v70 - 2026-11-08 (SessionStart hook JSON repair)
+
+Target: identify and repair the Codex error "hook returned invalid session start JSON output". Stele TASK-892 (diagnosis), TASK-893 (repair), TASK-895 (verification and delivery).
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba64; branch agent-01a1ba64; base origin/master 4d0f027. Original checkout has live concurrent sessions and unrelated dirty files. Preserve them.
+
+Completed: read project instructions and prior hook failure records; isolate workflow records. The prior TASK-127 exit 126 issue is a different failure and does not establish the current cause. The hook specialist owns canonical implementation/config and test edits outside this repository. This repository changes only its required workflow records.
+
+Constraints: reproduce actual registered SessionStart stdout; preserve enabled hooks and trust metadata; avoid restarting the shared daemon. Do not touch trading runtime, signing, services, research jobs, or unrelated work.
+
+Remaining: finish diagnosis, repair canonical producer, install and verify output, run relevant checks, commit and merge task-owned changes, record delivery evidence.
+
+## v71 - 2026-11-08 (Stop hook ownership repair)
+
+Target: extend the hook repair to the recurring Stop block counting 336 shared-checkout paths. TASK-893 now includes both fixes. Keep legitimate checks on this session's own unshipped work. Preserve unrelated dirty files and active sessions. The canonical-hook specialist owns both implementation fixes; a separate read-only verifier inspects loaded daemon evidence.
+
+Verification: workflow-only diff passes git diff --check and scripts/check_docs.py (2,155 discovered tests). index/build.py --check correctly detects changed workflow records; rebuild the offline index after finalizing these records. No trading code changed.
+
+Remaining: diagnose/repair both hooks, verify installed behavior, deliver canonical source and these workflow records through passing PRs.
+
+## v72 - 2026-11-08 (hook diagnosis confirmed)
+
+Root cause: actual Codex 0.167.0 daemon registry enables adapter74c6161da6b220bd for memory-central-session-brief.py. That adapter exits 0 with 1,671 bytes of plaintext beginning "[memory-central] STALE:". Parsing stdout as JSON fails at line 1 column 2. The installed adapter /Users/mitch/.codex/hooks/claude_hook_adapter.py passes a single command output through without normalization. Canonical source is /Users/mitch/dev/codex-local-ai-setup/scripts/claude_hook_adapter.py. Preserve valid JSON and wrap plaintext SessionStart output in hookSpecificOutput.additionalContext with hookEventName SessionStart. Lesson KNOW-903 records this trigger.
+
+Stop diagnosis: /Users/mitch/.claude/hooks/ship-it-stop.py attributes inherited dirty paths when a snapshot is absent, overwrites baseline on resume, and repeats identical blocks across turns. Lesson KNOW-902 anchors the concrete symbols. The current parent baseline already matches 337 paths, so preserve it; no blanket sweep or counter reset.
+
+Implementation worktrees: /Users/mitch/dev/codex-local-ai-setup-wt-hook-json-20261108 (adapter) and /Users/mitch/dev/claude-wt-hook-json-20261108 (Stop hook). The specialist owns those source changes. A separate verifier captured actual loaded registry and reproduced the offending output.
+
+Remaining: focused regression checks, install both canonical repairs, verify exact launcher and disposable ownership scenarios, deliver all task-owned changes through passing PRs, and complete TASK-893/TASK-895.
+
+## v73 - 2026-11-08 (both hook repairs installed)
+
+Installed: adapter v1.1.0 from canonical commit 757e2f7; Stop hook v1.1.0 from canonical commit 88d6933. Adapter wraps plain SessionStart context and preserves valid JSON. Stop preserves the original session baseline, excludes inherited ahead commits from a real SessionStart baseline, adopts unknown dirty paths without claiming them, and suppresses identical pending-work signatures across turns. New paths, changed files, and new commits still block.
+
+Validation: 70 setup tests pass (including 8 new adapter cases); 65 hook-enforcement tests and installer checks pass. Guarded install with preimage backups/readback preserved config.toml, hooks.json and settings.json bytes; no daemon restart. Receipt: /Users/mitch/.codex/claude-migration/hook-repairs/session-json-20261108T090919255187Z/receipt.json. Installed adapter SHA256 5559368361c3fb3ad29d8dbb94db664d4f46f97786fc3d24ae7f7e0e054da5ff; installed Stop SHA256 af401be680327064ea4ef93573ba5c63526f3e1c2b30af7c5c220277123b4c40.
+
+Delivery: Stop https://github.com/mithudso/claude-config/pull/33; adapter https://github.com/mithudso/codex-local-ai-setup/pull/11; repository workflow records https://github.com/mithudso/solmargintrader/pull/88. This repository changes only prompts, continuation records, and their offline retrieval indexes. Its documentation drift check passes; the offline index was rebuilt without inference/embeddings.
+
+At checkpoint: independent installed acceptance and final CI/merges are in progress. TASK-895 tracks final receipts and completion; check its current state before resuming. Preserve unrelated staged herdr/context7 changes in /Users/mitch/.claude and all original solmargintrader work.
+
+## v74 - 2026-11-08 (installed acceptance passed)
+
+Independent acceptance: exact enabled memory-central launcher exits 0 and emits 1,814 bytes of valid SessionStart JSON with original context. Installed Stop subprocesses in disposable repositories allow inherited dirt/ahead commits, preserve snapshots on resume, block a new own edit, allow an unchanged repeat, block a later distinct edit, and block a new own commit while excluding inherited commits. A late baseline still checks ahead commits. Installed hashes match the guarded receipt.
+
+Actual Codex 0.167.0 daemon retains enabled/trusted adapter and both Stop/snapshot registrations with no warnings/errors. config.toml, hooks.json, settings.json, parent baseline and parent hook counters remain unchanged. A subsequent ordinary UI turn has not been observed; exact installed command/runtime checks passed. No restart is needed.
+
+Remaining at delivery checkpoint: merge the three linked PRs after final-head CI, confirm remote default-branch content, remove only clean task worktrees/branches, and complete TASK-895 with final merge receipts. The installed behavior is verified. No user decision is pending.
+
+## v75 - 2026-11-08 (concurrent workflow-record integration)
+
+Merged origin/master afaa03a after another active session delivered Bots tab v2 in PR 87. Preserved its prompt and continuation entry verbatim and retained every hook-repair record. Renumbered these hook entries after the incoming history. Rebuilt only offline retrieval indexes for the combined tree. No Bots or trading source was edited by this hook repair.
+
+Canonical repairs are merged: Stop PR 33 as 79bc183c99a171d7221813724bbc10d6a85df7cd; adapter PR 11 as 4d385318438647bcddad9f368da927b5e9c9ada9. Installed acceptance already passed. Remaining: wait for final PR 88 checks, merge, verify remote content, clean only this task's worktree/branch, and complete TASK-895.
+
+## v76 - 2026-11-08 (HTML mirror conversion; TASK-894)
+
+Target: recursively convert HTML/HTM below /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com to text-only Markdown. Inventory: 31,880 HTML files, 9,371,462,657 bytes. Keep original HTML and generated mirror artifacts out of Git. Use Python stdlib and no network. Preserve headings, lists, code and table text. Remove scripts, styles, images and hidden markup; link labels remain text. Default output is a sibling tree; skip existing Markdown unless overwrite is requested. This extracts saved HTML, not content that requires JavaScript execution.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63. Shared checkout has other sessions and unowned changes. Base updated from a75f5b6 to origin/master 4d0f027 in the private worktree only.
+
+Remaining: implement converter and documentation; verify regression fixtures and representative local mirror files; refresh offline indexes; commit/push PR, pass checks, merge and verify remote default branch. Do not change the shared checkout or other worktrees.
+
+## v77 - 2026-11-08 (HTML mirror converter verification; TASK-894)
+
+Completed: scripts/html_to_markdown.py uses Python stdlib, preserves subfolders and textual Markdown structure, filters hidden/embedded payloads, detects encoding, preflights name collisions, publishes atomically, and supports skip/overwrite/dry-run. scripts/test_html_to_markdown.py has 11 passing behavior checks on Python 3.13 and system Python 3.15. Ruff lint/format, scripts/check_docs.py and offline index checks pass. CI runs the converter suite in its docs job. docs/SCRIPTS.md documents the command. Incoming Bots tab history from origin/master afaa03a is retained; no Bots code was changed by this task.
+
+Execution: converted 31,880 files into /Users/mitch/dev/tradingview-markdown with zero errors; 11 outputs are empty (10 meta-refresh redirect stubs and the JavaScript-only chart page). A rerun skipped all 31,880 outputs. /Users/mitch/dev/tradingview-markdown/conversion-manifest.json lists every source/output, output hash, empty source and the final rerun summary. /Users/mitch/.local/bin/tradingview-html-to-markdown.py is an executable copy matching the repository script. Source HTML and the shared dirty checkout remain untouched.
+
+Stele transport closed after initial lifecycle writes. Queued outbox operation IDs: 5c1ebafe, 8c704dd2, 9462ad7b, 56faab7b, 976096d2.
+
+Remaining: finish merge/index commit, push task branch, create PR, pass final-head CI, merge and verify remote contents, record delivery receipt and remove only this task's clean worktree/branch. No source-conversion work remains.
+
+## v78 - 2026-11-08 (HTML converter acceptance and concurrent delivery)
+
+Independent live-acceptance-verifier confirmed all 31,880 output hashes, sizes, path mappings and UTF-8 decodes. The installed executable matches committed source SHA-256 c814d3e40f17a69d3c7f3a780a532b924f503b43774532ae6bab120a90a3e074. Actual --help and --dry-run succeed. The receipt is /Users/mitch/dev/tradingview-markdown/acceptance-receipt.json. Stele transport recovered; all five queued operation IDs in v77 were replayed.
+
+PR 90: https://github.com/mithudso/solmargintrader/pull/90. Concurrent PR 88 merged as d355b694f3d56d7ab4ee0456691bf51c54352298 while CI ran. Retain all hook records, renumber converter entries after them, and rebuild offline indexes. Converter code and installed script stay unchanged. Current delivery checkpoint is /Users/mitch/dev/tradingview-markdown/conversion-memory.json.
+
+Remaining: pass checks on the updated final head, merge PR 90, verify remote contents and clean only the converter worktree/branch.
+
+## v79 - 2026-11-08: Base wallet discovery (TASK-911)
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba75; branch agent-01a1ba75; base afaa03a. Preserve the shared checkout and all other worktrees.
+
+Verified Base llms-full live: ETH uses eth_getBalance(address, latest), ERC-20 uses eth_call balanceOf(address); RPC alone does not enumerate tokens. Context7 cached pending/Flashblocks guidance is stale; current live docs explicitly prefer latest. Live baseline discovers ETH, USDC and gtUSDCp but Blockscout returns HTTP 403 and no other tokens can be discovered. The configured cdp CLI returns paginated balances successfully (100 rows on first page). KNOW-852 describes that existing indexed source.
+
+Decision: use the configured cdp CLI for indexed balances, bounded pages/timeouts and sanitized failures, with public Blockscout/trusted RPC fallback. SolTUI must never load private keys or call unknown unsolicited token contracts. Preserve price confidence and airdrop exclusions.
+
+Remaining: implement, focused regression tests, live acceptance and suite/docs/index gates, commit/push/PR/green CI/merge, verify remote content.
+
+## v80 - 2026-11-08: Base wallet verification
+
+Implemented in soltui/wallet.py, commands.py and tui.py: bounded configured CDP CLI balance pages, paginated Blockscout fallback, trusted/requested RPC balance checks, indexed provenance, safe malformed responses, conservative unknown-token exclusions and batched price URLs. No private keys or credential files loaded. CLI stderr is sanitized. Corrected AERO wallet-list address to the canonical address already recorded in docs/BASE-WALLET-QUERIES.md; liquidity configuration stays unchanged.
+
+Verification: 12 new regression tests. 90 wallet/settings/integration tests pass; 73 wallet/Ethereum/UTXO tests pass. Independent live-acceptance verifier exercised the production _portfolio_scan handler with saved Settings: status ok, partial false; ETH 0.000558130650770097, USDC 1.0, gtUSDCp 77.44216571536937; 387 unrecognized rows excluded. Wallet compose/render shows those assets and indexed/exclusion labels. Full SolTUI suite running in /tmp/soltui-base-suite-01a1ba75.log.
+
+Installation limit: /Users/mitch/.local/bin/soltui delegates to shared /Users/mitch/dev/solmargintrader at a75f5b6. Two running consoles have already imported old code. The shared checkout is held by other live sessions and has unrelated dirty work; do not change it or kill/restart their processes. Deliver the merged source; fast-forward the shared checkout and reopen consoles only after those owners release it. Avoid import overlays or silently retargeting the launcher.
+
+Remaining: full suite/docs/index checks, final diff, commit/push/PR/passing CI/merge, verify remote content. Installed-console parity is not yet established.
+
+## v81 - 2026-11-08: frozen Base wallet delivery checkpoint
+
+Source delivery: https://github.com/mithudso/solmargintrader/pull/92 (agent-01a1ba75). Final CI and merge receipts live in Stele TASK-915 and the PR; query them before repeating delivery. The concurrent hook-repair records from PR 88 were preserved. The offline index was regenerated after resolving Git stages; duplicate-path check passes. KNOW-919 records the transient DuplicateKey failure from rebuilding before stages were resolved. No application bug remained from that generated-index issue.
+
+Frozen independent acceptance: production _portfolio_scan with actual saved Settings and production Wallet renderer both passed in 9.35 seconds. ETH 0.000558130650770097; USDC 1.0; gtUSDCp 77.44216571536937; 387 excluded; 390 rendered rows; status ok, partial false, discovery complete, total complete, no errors. wallet.py SHA256 190d5046bd15c46c7d8dacc5e8ea4217170af536e9f373cc4aea89b73bf3afd5; tui.py SHA256 609b0a860c6c08f1c52dca36a9f06e587165517b52ae2225a9af1f6586bf6999. No files or services were changed by acceptance.
+
+Local verification: 90 wallet/settings/integration tests and 73 wallet/Ethereum/UTXO tests pass; all 900 backtester tests pass; compileall, docs drift and index hash gates pass. Full-suite receipts are in /tmp/soltui-base-suite-final-01a1ba75.log and the PR's final-head CI. Use the final receipts rather than the terminated earlier run that observed a transient merge index.
+
+Remaining product step: installed synchronization and fresh-console acceptance after shared-session ownership is released. KNOW-921 records the launcher/check-out mismatch. The source change is ready for remote delivery; preserve all unrelated original checkout changes and running consoles. Do not retarget launchers or use wallet-only import overlays. The live source behavior is verified; installed parity is a separate unresolved gate.
+
+## v82 - 2026-11-08: final concurrent integration
+
+Preserved PR 90's converter records and workflow history after origin/master advanced to eea27e2. Wallet, commands and TUI source hashes did not change in this merge. The final local full suite passed all 884 SolTUI tests (2 optional skips) in 709.185 seconds, and all 900 backtester tests passed. Stage resolved records before rebuilding indexes, as KNOW-919 requires. Source delivery remains PR 92; query its final-head checks and Stele TASK-915 for the merge receipt. Installed synchronization remains gated by other sessions releasing shared-checkout ownership (TASK-922).
+
+## v83 - 2026-11-08 (TradingView card coverage, inventory)
+
+Version: 83. Delta: v82 to v83; start TASK-886, TASK-887, TASK-888.
+
+Target: reconcile all 114 built-in studies and local TradingView script/idea sources against existing cards and code. Create missing cards as spec-only, with source provenance and explicit rule gaps. Do not change executable registry or invent performance.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-tv-cards; branch feat/tradingview-card-coverage; base origin/master 4d0f027. Original checkout has live sessions and unrelated dirty work and remains untouched.
+
+Learned: prior PR 79 cataloged built-ins only. Local web mirror contains 742 script HTML pages and 1,609 chart HTML pages, plus 200 Markdown pages. Need canonical-URL deduplication and separation of actual indicator/method publications from market commentary/navigation. Stele KNOW-889 records scope and status constraints.
+
+Remaining: source inventory, semantic/exact existence reconciliation, new cards and coverage validation, owning tests and indexes, commit/push/PR/checks/merge, final receipts.
+
+
+## v84 - 2026-11-08 (TradingView cards, source review)
+
+Version: 84. Delta: v83 to v84; author specifications and complete expanded inventory.
+
+Inventory includes 114 built-in studies and 4,770 canonical source records: 747 script publications, 1,610 chart/idea publications, 2,323 help solutions, and 90 other exports. The help review selects 313 financial definitions. Explicit existence matches preserve 59 original cards and all 34 registry entries. Created 1,082 spec-only cards: 84 built-in signals, 600 custom script descriptions, 70 source-specific chart methods, 202 support definitions, 64 reusable methods, 47 library-function/group specifications, 12 named custom MACD/PPO variants, and 3 named-but-undisclosed strategies. No execution or measured status was invented.
+
+Files: research/tradingview-card-coverage.json records hashes/excerpts/match reasons; docs/TRADINGVIEW-CARD-COVERAGE.md lists the cards and scope. scripts/check_tradingview_cards.py validates all references and optionally physical sources; CI runs its offline mode. Normalizer tv-description-v2 retains comparison operators and separates HTML block text. Raw dumps remain ignored. Source-limited cards explicitly retain missing formulas, parameters or future-post gaps.
+
+Independent audit: research-contract-auditor reviewed 401 candidate chart titles and targeted full descriptions, 72 library definitions and 313 support definitions. It corrected holiday-art/platform false cards, undisclosed strategies, incomplete-source wording and hidden strategy omissions. KNOW-898 records concrete failures. It does not independently certify semantic completeness of every commentary page.
+
+Verification so far: 1,141 cards parse, 1,082 new cards match ledger, all 114 built-ins covered; source re-binding and final independent audit in progress.
+
+Continuation tooling is /tmp/solmargintrader-tv-cards: inventory.py, definitions.py, methods.py, generate.py, original publication extract and read-only audit artifacts. The committed ledger/cards are the durable products; generator scripts are session working material.
+
+Remaining: complete full raw-source verification and independent review, run owning/integration tests, regenerate offline retrieval indexes, commit/push/PR/CI/merge, synchronize safely and record receipts. Preserve original checkout dirty files and other live sessions.
+
+
+## v85 - 2026-11-08 (TradingView cards, final content)
+
+Version: 85. Delta: v84 to v85; close expanded inventory and finalize 1,083 new cards (1,142 total).
+
+All 114 built-ins have a card/code/alias disposition. 4,770 canonical sources and 4,890 physical source files are bound to source hashes and selected excerpt offsets. Added the independently found short-strangle method and corrected 29 non-OHLCV input requirements. Eight detailed chart strategies now retain their disclosed entry, filter, stop and management rules with additional bound source passages. Fifty-four new built-in cards also include official help clarifications. Named-only methods remain explicit source-limited specifications.
+
+Initial local checks: backtester 900 tests had one search-fallback failure; focused SolTUI integration 97 tests had the same failure. Cause: repeating fees/slippage/carry in over 1,000 cards made slippage exceed the keyword index 60-percent document-frequency pruning cutoff, so that single-word fallback returned no hits. Reworded the shared cost instruction without altering the research risk requirement or search implementation. Rebuild the text index, then rerun both suites. No semantic embedding or inference runtime was started.
+
+The new offline validator refuses duplicate new-card ownership, missing built-ins, stale implementation pointers, unrecorded cards and dishonest reviewed data availability. All four injected negative cases were refused. The full raw-source verification passed before final content enrichment and is running again. scripts/check_docs.py passed all 2,155 discovered test counts.
+
+Remaining: final independent audit of the corrected content; refreshed offline retrieval artifacts; passing backtester and focused SolTUI integration; commit/push/PR/final CI/merge; safe default-checkout synchronization and final receipts. Original dirty paths remain untouched.
+
+
+## v86 - 2026-11-08 (TradingView cards, verified)
+
+Version: 86. Delta: v85 to v86; record final local checks and targeted review.
+
+Completed content: 1,083 new spec-only cards; 1,142 total cards; all 114 built-in study dispositions; all original 59 cards and 34 registry entries preserved. Complete source inventory has 4,770 canonical records and 4,890 verified physical sources including the reference and excluded captures. docs/TRADINGVIEW-CARD-FILES.md lists every changed canonical checkout path.
+
+Verification: backtester 900/900 pass (42.359 seconds); focused SolTUI background queue, Docs browser and Docs search integration 97/97 pass (33.896 seconds); scripts/check_docs.py passes 2,155 discovered tests; card CLI prints all 1,142 cards; all four negative validator injections are refused. Independent research-contract-auditor final targeted re-audit passed: 8 strategy summaries, 62 added source passages, 29 data metadata anchors, corrected exclusions/aliases and non-runnable status. Scope remains complete deterministic inventory plus targeted semantic review, not an independent semantic reading of every chart page.
+
+Formatting gate found trailing spaces at bounded excerpt cutoffs. Card lines/EOF were normalized, corresponding excerpt end offsets were shortened, and full raw-source verification is repeated on the final artifact. No formula, source text, input requirement or status changed.
+
+Operational incident: index/search.py --text slippage also calls idle.maybe_start and spawned this task worktree index/idle.py --run-build worker PID 88605. Stopped that exact task-owned process with SIGTERM after matching its full command. Pre-existing Ollama servers were untouched. Use INDEX_NO_AUTO=1 on all remaining checks/commits. The query correctly returns 173 keyword hits after shared boilerplate rewording. No search implementation changed.
+
+Remaining delivery work only: commit/push current branch, open PR, record its URL, wait final CI, merge, verify remote content, and synchronize the default checkout only if unrelated active files remain intact. TASK-886 inventory and TASK-887 cards are done; TASK-888 owns delivery.
+
+
+## v87 - 2026-11-08 (TradingView card delivery checkpoint)
+
+Version: 87. Delta: v86 to v87; integrate concurrent upstream work and preserve both histories.
+
+PR: https://github.com/mithudso/solmargintrader/pull/91 ; branch feat/tradingview-card-coverage. Initial catalog commit 776aedb. Integrated upstream d355b69, including Bots tab v2 from PR 87 and hook-repair records from PR 88. Their code and history are preserved; only derived indexes are regenerated. This task owns the card catalog and related validation/docs, not those other sessions' live services or hook installations.
+
+Final card content is 1,083 new specs, 1,142 total cards, 114 built-ins and 4,770 canonical sources. The final raw-source checker verified 4,890 physical sources. Independent targeted audit passed and its formatting follow-up confirmed all corrected source spans. Ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca. No executable trading entry changed.
+
+No further card implementation is required for this request. For delivery/resume, inspect PR 91: if it is still open, finish final-head CI and merge; if merged, use its merge receipt and complete TASK-888 if needed. TASK-888 holds the authoritative final delivery receipt. Recheck conditional remaining actions rather than replaying completed inventory or card extraction. Source-limited definitions are documented product limitations, not a pending permission request.
+
+
+## v88 - 2026-11-08 (TradingView final integration checks)
+
+Version: 88. Delta: v87 to v88; confirm merged-tree checks without changing card content.
+
+Integrated upstream d355b69 in merge commit 67b2e5d. All 59 pre-existing cards match origin/master byte for byte. The task diff contains no SolTUI runtime, backtester/core, backtester/tests, liquidity, executor, extension or Mongo changes. The catalog source ledger remains SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
+
+Integrated checks: 97 SolTUI queue/Docs integration tests pass (29.510 seconds). The 900-test backtester run under INDEX_NO_AUTO=1 had 8 failures and 2 errors, all in the 20 mocked IdleTests whose purpose is to test enabled auto-indexing. The other 880 tests passed. Reran all 20 IdleTests with INDEX_NO_AUTO unset; all passed in 0.023 seconds, with process launch/network methods mocked and temporary paths. No background index process started. This is a test-environment interaction, not a product failure. The earlier complete 900-test run also passed before upstream integration. CI runs the full suite under its normal mocked-test environment.
+
+Documentation discovery now agrees with the concurrent Bots changes: backtester 900, extension 361, Mongo 34, SolTUI 872; total 2,167. Default card integrity checker and full raw-source binding checker pass; source inventory is 4,770 canonical records over 4,890 verified physical files. All four negative integrity probes are refused.
+
+Delivery continuation is conditional on https://github.com/mithudso/solmargintrader/pull/91 : if open, wait for final-head required checks and merge; if merged, verify its default-branch files and use the merge receipt in TASK-888. No more card implementation is required. Preserve the original checkout's unrelated changes and all other active PRs/worktrees.
+
+
+## v89 - 2026-11-08 (large-catalog CI test setup)
+
+Version: 89. Delta: v88 to v89; fix the five Docs editor test assumptions exposed by the expanded card catalog.
+
+CI run 42467823348 on c09ecc9 passed backtester, docs, extension units/browser, liquidity and Mongo. Executor setup failed before tests after three HTTP 504 responses downloading uv 0.13.7. The macOS suite ran 872 cases in 747.928 seconds and had five StopIteration errors: Docs editor tests assumed soltui/config.py or research/results files would occur in the unfiltered first 1,000 alphabetically sorted rows. New strategy cards legitimately fill that first page.
+
+Changed only those five test setups in soltui/tests/test_tui.py to use the real #docs-filter input before selecting late-sorted target files. Existing cursor/open/read-only/unsaved-editor assertions remain intact. The production table cap, filtering and editor behavior did not change. Full TestDocsTab now passes all 9 cases locally in 78.133 seconds. KNOW-923 records the literal failure and the reason. No card content or ledger provenance changed.
+
+Final delivery stays conditional on https://github.com/mithudso/solmargintrader/pull/91 ; push this test/index correction and wait for a passing final-head CI run. The new run also retries the transient executor tool download. Preserve all other sessions and their active PRs. TASK-888 owns the final merge receipt and cleanup; no new strategy implementation is required.
+
+
+## v90 - 2026-11-08 (card delivery: concurrent converter integration)
+
+Version: 90. Delta: v89 to v90; integrate origin/master eea27e2 from PR 90 without losing either task.
+
+Preserved all converter source, documentation, tests and history. The docs CI job retains both Offline HTML converter behavior and TradingView source-to-card coverage checks. Card content remains unchanged at ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
+
+The five capped-catalog Docs editor fixture corrections pass all 9 TestDocsTab cases locally. Other preceding CI checks passed; the executor artifact download receives a new attempt with the final integrated head. Delivery is still through https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. If that PR is already merged, verify its receipt rather than replaying extraction or test fixes. No card implementation or new source extraction is pending.
+
+
+## v91 - 2026-11-08 (executor CI tool-download repair)
+
+Version: 91. Delta: v90 to v91; repair the repeated external installer failure using an existing repository convention.
+
+Executor CI failed in runs 42467823348 and 42469464071 before tests. setup-uv v5 tried https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-unknown-linux-gnu.tar.gz and received three HTTP 504 responses in each run. In the same workflow, liquidity setup-uv v10.3.3 installed the same uv 0.13.7 in under one second from releases.astral.sh. Context7 official setup-uv documentation confirms the mirror-first download path with GitHub fallback.
+
+Changed the executor setup-uv action to the exact v10.3.3 SHA already pinned for liquidity (68559e99cc807c1eb7e9238fd43a15bba460eec2). No executor code, uv.lock, frozen sync flag, test selection, runtime default or trading configuration changed. This is a necessary CI bootstrap repair, not a relaxed gate. The original 59 cards and all new card content remain unchanged.
+
+Delivery: https://github.com/mithudso/solmargintrader/pull/91 ; TASK-888. Finish the final-head checks and merge if the PR is still open. If already merged, verify its receipts and preserve other sessions. No card source extraction or implementation remains.
+
+## v92 - 2026-11-08 (TradingView cards: wallet integration)
+
+Version: 92. Delta: v91 to v92; preserve concurrent Base wallet PR 92.
+
+Integrated origin/master d596856 after PR 92 landed during final CI. Preserve all wallet code, tests and its installed-console limitations. Only shared histories and generated indexes require conflict resolution. The catalog remains 1083 new spec-only cards, 1142 total, with unchanged source ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
+
+Delivery remains conditional on https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. Complete final integrated-head checks before merge. Existing running consoles are owned by other sessions; do not restart them or retarget launchers. Preserve unrelated checkout changes and verify any safe synchronization independently.
+
+## v93 - 2026-11-08 (Four-child /dr start)
+
+Active: TASK-905; research stage TASK-907, install stage TASK-908, publication/delivery stage TASK-909.
+Workspace: isolated task checkout; branch agent-01a1b5ef; base afaa03a.
+Scope: standard-depth /dr on Conditional nonlinear information transfer; Finite-sample dependency uncertainty; Lag-selection multiplicity; Directed graph preservation. Parent: Uncertainty-aware nonlinear crypto lead-lag. Prior TASK-808 is complete; reuse exact parent evidence without claiming this explicit child depth was already done.
+Constraints: research only; no trades, keys, services, broad source rewrites or shared-checkout edits. Three independent source origins per concept; negative searches; exact readable source spans; deterministic and semantic research-gate/v4 checks for all assertions; preserve paid supported judgments. Do not infer executable SOL profitability from dependence, significance or graph stability.
+Completed: read routing and /dr instructions; semantic hub lookup found parent claims and reference; verified shared checkout contains unrelated work; created isolated worktree from fresh origin/master. Research worker owns only canonical new run and its evidence; root owns project records, installation, audit and Git delivery.
+Remaining: actual research/gate; qualified installed skill; finish tree/site projections; independent audit; tests, exact owned commits, PRs, CI, final merges and owned cleanup.
+
+## v94 - 2026-11-08 (Four-child evidence accepted)
+
+Completed: actual standard-depth native adapter adaptive research on all four named children. Forty-nine structured claim records (13 conditional, 13 finite-sample, 7 lag-selection, 16 graph) and 24 auxiliary assertions passed the final research-gate/v4: 56 SUPPORTED and 17 nonassertions. Packet SHA: 80027ebbee91025d1506d54460828fdc6d1a6e22d079d8ad735a12055803d8db. Validation SHA: 3edae8b09ac3f75c47e8ffaed95d898bb817db75ee8bf3f3e0b95c81f845c30c.
+
+Independent source review: three original research groups per child, negative searches, 81 structured evidence spans and 32 bound snapshots. One bounded combined repair fixed seven first-review failures and six context gaps, with overlap between them; 60 judgments reused and only 13 changed pairs reviewed. Scientific statements and sources remain scoped to their actual studies. No measured five-minute SOL strategy is established.
+
+Root report reproduces ten exact accepted assertions and labels the experiment proposal. Its identifiers were rebound to the final packet after two source-span repairs changed canonical IDs. Public-safe selected claim index and gate receipt are in research/nonlinear-lead-lag-children/. Raw sources and judge transcripts remain private in run nonlinear-lead-lag-four-children-task905.
+
+Checks: 872 SolTUI tests ran (870 passed, 2 skipped); 34 Mongo tests ran (17 passed, 17 server/driver skips); 361 extension tests passed; offline oscillating dry run closed one positive round trip. Archived figure check passed 1084 transcription/recomputation checks, not a new market experiment. Initial 900-test backtester run had only the expected index-staleness failure from changed workflow records; regenerate the offline index and rerun after final documentation.
+
+Stele transport closed after stage creation. Exact lifecycle writes queued: claim TASK-907 in 5e16424f; complete TASK-907 in 5532828f; claim TASK-908 in 509bdd0d. These identifiers are recovery receipts, not confirmed graph closure.
+
+Remaining: finish supported skill render/metadata qualification and delivery; exact stable runtime activation; adapter finish and four child projections; independent publication audit; final root records/index checks, PRs/CI/merges and owned cleanup. Preserve original dirty checkouts, shared index differences and paused services.
+
+## v95 - 2026-11-08 (Four-child delivery checkpoint)
+
+Research and implementation work complete: all four concepts passed the accepted v4 gate and independent source/root-synthesis audit. The supported canonical finish returned COMPLETED with no warnings, 39 calculated minutes, artifact SHA a5f5ac0e6ea2cad3a7f562cccf5e0b370cca0849b1647b944236df520f5dea27. Five new nodes per target are four children plus their aggregate. Private tree 2866 to 2871; repository tree 2709 to 2714. The aggregate sits under Uncertainty-aware nonlinear crypto lead-lag. Four child aliases resolve to their own concepts.
+
+Skills PR 92 merged as b5085dfc3ca6979079e34eae9972e2cd242ae5cd. Exact guarded source/loaded activation and stable supported rerender reproduce reference SHA 960ca20a8a07dfe87b34305b8469a9533906491849baece0504a933ab9c6c11f. Source hub 1.7.2 and loaded hub 1.6.2 retain their intentional route/model/SKIP differences. Three fresh skills/list samples passed. The scoped registry added exactly two descriptions, preserving all 1822 prior rows, and the new spoke ranked first. One failed route query used a venv without NumPy; a bounded retry used the existing global hub venv. No installation was needed. Ordinary task-scoped loading of the installed mxbai model on an already-running endpoint preserved Qwen; no server/pool/default/download/forced-unload change occurred.
+
+Canonical completion emitted five packs per target and fresh reader/tree/context/facts data. Existing public search-index.bin bytes are unchanged; semantic metadata retains 1018 existing rows and adds no embeddings. Site typecheck and 2854-page build/publication policy passed. Website tests/privacy review and remote delivery continue independently; inspect actual receipts before claiming them complete.
+
+Concurrent hook and HTML converter changes from origin/master eea27e2 are integrated. All incoming prompt/memory bodies and the prior baseline remain intact. This task's records were renumbered to prompt 54 and memory 79/80; preservation proof is in checkpoints/root-concurrent-record-preservation.json. The incoming duplicate prompt53 headings remain historical; no broad history rewrite was performed.
+
+Required source-library reconciliation completed without errors. The stock helper maintained 8315 pending library-wide text-index rows, 22748 total. This was not a cohort-only row count or a semantic refresh. Raw source proofs remain unchanged.
+
+Tracker fallback: additional exact writes queued in 6892023a (complete TASK-908) and 21e256d6 (claim TASK-909), alongside the earlier IDs. Graph closure is not inferred from queued writes.
+
+At this source checkpoint, remaining actions are local final offline-index/document checks, root PR/CI/merge, website independent publication review/PR/CI/merge, production acceptance and cleanup of this task's clean merged worktrees. No further research or code implementation is planned. The authoritative final status and exact next action live in private run nonlinear-lead-lag-four-children-task905, checkpoint final-delivery (JSON). Read that receipt before resuming a stage; completed gates and source discovery must not be rerun.
+
+## v96 - 2026-11-08 (Final root checks and delivery)
+
+Final local checks passed: 900 backtester tests; 872 SolTUI tests ran with 2 skips; 34 Mongo tests ran with 17 server/driver skips; 361 extension tests; 11 converter tests inherited from the concurrent merge; positive offline oscillating round trip; 1084 archived figure checks; documentation drift and offline retrieval-index freshness. No new market experiment or live execution was performed. The final record-only change is followed by offline index regeneration and its targeted index tests; final-head CI remains the delivery gate.
+
+The root report and selected claim index remain source-audited. The root run report adds only verified skill activation and supported canonical-completion metadata, and separates remote publication status. Final delivery receipt remains authoritative for downstream checks, exact remote commit pins and cleanup. Remaining: push final root branch/open PR, pass final-head CI, complete website delivery and live verification, merge the final pushed root tip, remove owned clean merged worktrees, then write final private receipts and tracker closure.
+
+## v97 - 2026-11-08 (Public metadata privacy correction)
+
+Independent final-delta review found operator-specific paths in this task's new public continuation metadata. Replaced only task-owned auto-authored paths with a neutral run slug, checkpoint identifier or isolated-branch reference. The exact user request, all incoming history and all scientific assertion text remain unchanged. Private pre-redaction snapshots and exact metadata-change receipts remain in the private run. Offline retrieval indexes are regenerated after this correction. Website workflow records receive the same scoped correction before the final merge.
+
+The original root CI executor job failed before tests because setup-uv's release-binary download returned HTTP 504. GitHub could not rerun that job while the run was active. The required metadata correction creates a legitimate fresh final tip; all required checks must pass on that tip. No trading or research source behavior changes for this correction.
+
+## v98 - 2026-11-08 (Wallet integration and CI bootstrap repair)
+
+Incoming Base-wallet discovery fix PR 92 landed as d596856 while this task's CI ran. Integrated its code, tests, documentation and complete workflow history without changing its behavior. This task's sanitized record headings were renumbered after the incoming history. Earlier local SolTUI results qualify the earlier source tree; final merged-tree CI is required for the new wallet tests.
+
+The executor CI job failed before tests with setup-uv v5: its GitHub release-asset URL returned HTTP 504. The liquidity job in the same workflow passed using the already-pinned setup-uv v10.3.3, which downloaded the identical uv 0.13.7 from Astral's official mirror. Local HEAD probes returned 504 for the old URL and 200 for the mirror. KNOW-935 records this concrete failure and the narrow repair. Align only the executor installer with that existing pinned action; retain frozen dependency synchronization, Python 3.13, both Ruff steps and pytest. No trading behavior or dependency lock changes are part of this repair.
+
+Remaining: final index/config checks, final push and complete merged-tree CI; website managed CodeQL bundle downloads must recover before its final CI/merge. All scientific assertions and both metadata privacy corrections remain accepted. Read the private run's final-delivery checkpoint before resuming completed research or publication checks.
+
+## v99 - 2026-11-08 (Catalogue integration before final delivery)
+
+The complete root CI run 42471525856 passed on source 8265776, including the current 884-test SolTUI suite. Before merge, concurrent TradingView catalogue PR 91 landed as 188d329 and overlapped the common records and derived indexes. Integrated all incoming catalogue files, tests, coverage checks and exact workflow history. This task changes no incoming component implementation.
+
+PR 91 independently landed the same mirror-capable executor installer already validated on this branch. Retain its workflow byte for byte, including the new card coverage check; this research PR now has no CI workflow behavior delta. The earlier installer investigation remains historical evidence in KNOW-935. Regenerate only offline retrieval artifacts for the combined source and run the catalogue coverage check, documentation check and targeted index/UI tests. Final pushed combined-tree CI remains required.
+
+Website PR 307 merged as 26ed830f8255428a9406e6270be82be55194ae97 after its final checks passed. Production acceptance is separate and continues against that actual merge. All accepted scientific statements, canonical IDs, source bindings, installed reference bytes and public metadata privacy corrections remain unchanged. Resume only remaining delivery actions from the private run's final-delivery checkpoint.
+
+## v100 - 2026-11-08 (incomplete card separation)
+
+Version: 100. Delta: v99 to v100; start TASK-939 review, TASK-940 relocation, TASK-941 delivery.
+
+Target: review the1083 cards added in PR91, keep substantive implementable specifications, and relocate cards with undisclosed/vague mechanics under backtester/strategy_cards/incomplete. Preserve all59 older cards, registry34, source evidence and unrelated dirty work. No new trading implementation is authorized by this sorting request.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-card-triage; branch feat/tradingview-card-triage. Shared master is188d329 with337 unrelated dirty/untracked files. Concurrent PR96 enriches13 canonical cards and adds8 companion tools; integrate that delivered work without discarding its improvements.
+
+Classification must inspect actual equations, code and mechanism text, not just spec-only status or numeric inputs. Asked whether complete indicator formulas without order rules should remain; default is to keep complete computable signals while flagging their absent runner. Classification decisions and unknowns must be explicit.
+
+Remaining: classify every new card, independent review, move incomplete cards without loss, update catalog/ledger validation and references, relevant tests and source gates, commit/push/CI/merge, safe canonical sync and own-worktree cleanup. Use INDEX_NO_AUTO=1 on searches to preserve paused indexing.
+
+## v101 - 2026-11-08 (card readiness clarification)
+
+Confirmed user clarification: keep complete indicator specifications even without buy/sell rules. Retain a reproducible calculation with declared inputs; move names, generic descriptions, ambiguous predicates and undisclosed algorithms. Three research-contract reviewers each own361 cards, with exact evidence/gaps per decision under /tmp/solmargin-card-triage. Coverage validation will include both directories; the existing flat runtime loader naturally excludes incomplete/. Seven behavior checks pass for loss, duplicate, stale review, location and quote binding. Source/card bodies will not be rewritten during relocation. Remaining: assess all review results, reconcile concurrent PR96 enriched cards, relocate, final verification and delivery.
+
+
+## v102 - 2026-11-08 (reviewed card relocation)
+
+Version: 102. Delta: v101 to v102; complete TASK-939 and apply TASK-940.
+
+Reviewed all 1083 PR91 cards in three361-card source-text batches. Cross-review covered188 initial keeps and120 math-bearing incomplete candidates. Parent accepted6 downgrades and10 upgrades. Final:292 new usable specifications remain active;791 incomplete cards move under backtester/strategy_cards/incomplete. All59 original cards remain active; active catalog351 and total1142. Every card byte is unchanged from the188d329 baseline. Registry34 is unchanged.
+
+research/tradingview-card-readiness.json records each disposition, exact card quotes, narrow functional scope, SHA256, path and gaps. The owner confirmed complete indicator specifications should stay without buy/sell rules. Independent principal outputs/explicit selectable branches can qualify despite incomplete sibling features; hidden intermediate equations do not qualify. Runtime status stays spec-only.
+
+Coverage checker now audits both directories and validates the readiness bindings. Existing flat runtime loading excludes incomplete/. Seven behavior checks pass for loss, duplicate location, stale review, wrong location and unbound evidence. Docs and the old extraction-file receipt preserve source coverage and relocated paths.
+
+Remaining: finish full raw-source and relevant suite checks, update offline indexes, preserve incoming PR95/PR96 histories and any enriched canonical cards, commit/push/PR/final CI/merge, canonical read-back and own-worktree cleanup. TASK-941 owns final delivery. Do not rerun /tmp/solmargin-card-triage/apply.py after relocation; its one-time assertions intentionally refuse a second move. Existing and new card hashes are in /tmp/solmargin-card-triage/card-baseline.json. Shared checkout preservation snapshot contains337 unrelated paths.
+
+
+## v103 - 2026-11-08 (incomplete cards, verified checkpoint)
+
+Version: 103. Delta: v102 to v103; finish local gates and preserve incoming PR95.
+
+Completed:791 byte-preserving relocations;292 new usable specifications plus59 original cards remain active (351 active,1142 total). Original card/registry contracts remain intact. All4890 raw-source bindings pass. Seven separation-integrity cases pass. Backtester880 guarded cases pass in28.177s; all20 mocked IdleTests pass separately in0.016s with INDEX_NO_AUTO unset, for900/900. SolTUI queue/Docs/coverage/editor selection100 cases pass in93.868s (one optional skip). Documentation counts agree on2179 tests. Targeted Python lint and both working/staged whitespace gates pass. Only offline keyword indexes were regenerated; no inference/runtime/index worker was started.
+
+Integrated origin/master a70d62f from PR95 without modifying its optimizer source-context files. Shared histories and all other active PRs/worktrees are preserved. Concurrent PR96 remains its owner's unfinished branch; do not merge or rewrite it. If it lands during this delivery, preserve its card improvements, re-review affected content and update location/hash bindings before finishing.
+
+Final delivery is tracked by TASK-941 and branch feat/tradingview-card-triage. If its PR is open, finish final-head CI and merge. If already merged, verify the remote receipt and complete TASK-941 if needed. Do not repeat extraction or the one-time move script. After actual merge, safely synchronize canonical master only when incoming paths do not overlap unrelated changes, verify all337 preserved path bytes, repeat focused fresh-process catalog/Docs acceptance and remove only this task's clean worktree/branch.
+
+## v104 - 2026-11-08 (readiness concurrent research integration)
+
+Version: 104. Delta: v103 to v104; preserve PR94 research work.
+
+Integrated origin/master 0b46a88 after concurrent PR94 landed while this task opened PR97. Preserve all research artifacts and histories; regenerate only shared indexes after resolving Git stages. Card contents and the292/791 readiness decisions are unchanged. PR97 and TASK-941 own final CI, merge receipt and cleanup. If already merged, verify that receipt instead of replaying review/moves.
+
+## v105 - 2026-11-08 (canonical incomplete directory correction)
+
+The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.
+
+## v106 - 2026-11-08 (SolTUI card visibility)
+
+Target: make retained strategy/indicator cards visible on Strategies. Diagnosis at8ed41ad: actual canonical launcher and fresh mounted app load correctly, but strategies.list/history enumerate REGISTRY34 and omit all292 new retained specs from351 active cards. Implement a unified filterable card table with explicit status; stable row keys preserve registry actions and readable names; nonregistered specs open their card and cannot be added/backtested. Keep791 incomplete cards excluded and all registry/trading defaults unchanged. TASK-971 owns implementation; verification/delivery use their tracked tasks. Worktree /Users/mitch/dev/solmargintrader-wt-card-ui, branch feat/soltui-card-catalog. Preserve337 unrelated canonical paths and other active UI/research branches. Use INDEX_NO_AUTO=1 for searches/acceptance. Save exact tested source revisions before safe canonical installation; do not restart existing consoles. Remaining: implement, behavioral tests, fresh UI acceptance, docs/index checks, commit/push/CI/merge, safe canonical sync and cleanup.
+
+## v107 - 2026-11-08 (visible card catalog implementation)
+
+Implemented strategies.cards as a read-only active-card catalog; existing strategies.list/history remain registry-only. Strategies now defaults to all351 active cards including292 retained TradingView specifications, with text/scope filters, status/data labels and card opening. Stable row keys preserve existing registry IDs and source opening. Specifications have disabled Add/Backtest selected controls plus keyboard/programmatic refusal. All/untested sweeps still use executable APIs. No card contents, registry entries or trading behavior changed.
+
+Seven Strategies widget tests pass in40.144s,33 command/history/help cases pass in26.900s,13 mounted history/roster/bridge cases pass in57.671s. Additional Docs/glossary and full884-test SolTUI runs are in progress. Targeted lint/whitespace pass. Preserve HEADER_GLOSSARY public re-export for existing tests/importers. No test count changed; expanded actual UI tests verify catalog visibility, filter/card opening, incomplete exclusion and blocked execution.
+
+Remaining: finish behavioral gates and independent fresh widget acceptance, safely install ONLY tested source files into canonical launcher checkout under fresh hashes (preserve all337 unrelated paths), record exact installed/source identities, regenerate offline indexes, push/PR/final CI/merge, safely reconcile pre-applied task files and clean own worktree. A later canonical install is authorized by the visibility fix; existing consoles must not be restarted. TASK-973 owns verification and TASK-974 delivery.
+
+## v108 - 2026-11-08 (canonical catalog acceptance)
+
+Independent private and canonical fresh mounted acceptance passed on source2442369: defaultAll351active rows including292TradingView cards, excluded791incomplete IDs, AveragePrice card/equation opens, specification controls disabled and keyboard/directUI/directcommand guards attempt zero queue or settings writes. Registered scope34; RSI source opening, fixture Add and selectedBacktest route preserved. strategies.cards351 while strategies.list/history34. Actual /Users/mitch/.local/bin/soltui wrapper resolves to canonical tracked launcher and venvPython. CanonicalHEAD remains8ed41ad until delivery; installed3sourcefile hashes bind loaded behavior to2442369.
+
+Preservation/installation receipts: /tmp/solmargin-card-ui/shared-baseline.json (337unrelated paths), canonical-install.json (commands.py/help.py/tui.py exact before/installed hashes). Only these3task-owned canonical sourcefiles were pre-applied atomically after proving unchanged old bytes. Existing consoles/services were not restarted. Final source revision must retain the tested separate-runner wording correction, which has its own focused8.220s widget pass. All65earlier focused cases pass; full884 suite remains running. Test counts unchanged; lint/whitespace/docs/index gates pass before final metadata refresh.
+
+Delivery is through branch feat/soltui-card-catalog and TASK-974. If the PR is open, finish final-head CI/merge. If merged, verify its actual receipt rather than replaying implementation. Update the canonical install receipt for the final3source hashes, preserve all337unrelated bytes/status, stage ONLY those pre-applied task paths before safe final fast-forward, repeat fresh canonical widget acceptance and clean only this task's worktree/branch. Do not overwrite concurrent UI/research work or restart live consoles.
+
+## v109 - 2026-11-08 (full-suite catalog corrections)
+
+The local full884-case suite completed in682.972s with878passes,4failures and2optional skips. Three failures were the new Refreshcards button missing BUTTON_COMMANDS and the old66-handler assertion; registered it as strategies.cards and updated the exactcount67. The fourth treated indicator titles such as1YearActiveSupply% as unlabelled return values. The safety check now binds only the strategy-title column to actual card labels; every result column retains its source-label checks. Six targeted bridge/percentage cases pass in5.021s. No trading/result-label protection was removed.
+
+PR99: https://github.com/mithudso/solmargintrader/pull/99 ; final delivery TASK-974. Push these corrections and await final-head CI; prior24c063 CI must not be treated as final. The actual canonical UI already renders351/292 via the three verifiedpre-applied sourcefiles. Update only canonicaltui.py under its recorded hash to carry the routing-map correction, update canonical-install.json to final source identity, and preserve337 unrelated paths. No new runtime feature remains. If PR99 is already merged, verify its receipt instead of repeating implementation.
+
+## v110 - 2026-11-08 (final visibility delivery checkpoint)
+
+The local full-suite arithmetic is884cases:878passed,4failed,2skipped. The four integration assertions are corrected and all6targeted reruns pass. Final requiredCI will run the complete884cases. Product source is final; only this verification-count correction changes the next branch tip. PR99/TASK-974 hold final delivery receipts. Canonical3sourcefiles are bound by /tmp/solmargin-card-ui/canonical-install.json; preserve all337unrelated paths when reconciling them with the merged tree.
+
 ## v70 - 2026-11-08 (Forwardtest coins, auto-optimize, background runner)
 
 Target: prompts.md Forwardtest coins entry. Branch feat/forwardtest-coins-optimize in /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd.
@@ -727,3 +1108,7 @@ Completed: coin dropdown (one coin or All coins = every Coinbase USD market from
 Measured: one check is 1.5 s per coin with 34 strategies x 4 horizons; a live two-coin run recorded 136 calls per coin and the thread exited on Stop.
 
 Not reproduced: in-process, the old timer already kept ticking after a tab switch (pilot, 2026-11-08); the runner thread removes the UI from the loop either way.
+
+## v111 - 2026-11-08
+
+Target: PR 89, forwardtest coin selection and optimization. Stele TASK-998. Private worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb38. Merging current origin/master into eecade5; preserve both workflow histories and regenerate indexes after conflicts are staged. Remaining: test, push, await final CI, merge and verify remote.

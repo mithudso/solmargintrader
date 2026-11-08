@@ -373,6 +373,158 @@ class BaseTests(unittest.TestCase):
         self.assertTrue(any(e["source"] == "base eth_getBalance" for e in scan["errors"]))
 
 
+class BaseDiscoveryTests(unittest.TestCase):
+    OTHER = "0x2222222222222222222222222222222222222222"
+
+    def setUp(self):
+        self.fake = Fake()
+
+    def row(self, address=OTHER, amount="2000000000000000000", decimals=18, symbol="OTHER"):
+        return {"amount": {"amount": amount, "decimals": decimals},
+                "token": {"contractAddress": address, "network": "base", "symbol": symbol, "name": symbol}}
+
+    def scan(self):
+        return wallet.scan_base(BASE_ADDR, self.fake).to_dict()
+
+    def test_cdp_follows_all_pages_and_never_calls_unknown_contracts(self):
+        self.fake.base_token_balances = mock.Mock(side_effect=[
+            {"balances": [self.row(USDC_BASE, "2500000", 6, "USDC")], "nextPageToken": "page2"},
+            {"balances": [self.row()]}])
+        self.fake.llama_extra[f"base:{self.OTHER}"] = {"price": 2.0, "confidence": 0.99}
+        scan = self.scan()
+        by = {h["address"].lower(): h for h in scan["holdings"]}
+        self.assertEqual(by[USDC_BASE.lower()]["amount"], 1.0)  # latest RPC wins for trusted tokens
+        self.assertEqual(by[self.OTHER]["amount"], 2.0)
+        self.assertEqual(by[self.OTHER]["discovered_via"], "cdp")
+        self.assertFalse(by[self.OTHER]["verified_onchain"])
+        self.assertEqual(scan["status"], "ok")
+        self.fake.base_token_balances.assert_has_calls([mock.call(BASE_ADDR, None), mock.call(BASE_ADDR, "page2")])
+        self.assertFalse(any("blockscout" in url for url, _ in self.fake.calls))
+        for _, body in self.fake.calls:
+            for req in body if isinstance(body, list) else []:
+                self.assertNotEqual(req["params"][0]["to"].lower(), self.OTHER)
+
+    def test_cdp_native_is_not_an_erc20_and_recovers_an_rpc_outage(self):
+        self.fake.base_token_balances = mock.Mock(return_value={"balances": [
+            self.row(wallet.NATIVE_EVM, "1000000000000000", 18, "ETH")]})
+        self.fake.errors["eth_getBalance"] = WalletHttpError(0, "offline")
+        scan = self.scan()
+        self.assertEqual(scan["native"]["amount"], 0.001)
+        self.assertFalse(scan["native"]["verified_onchain"])
+        self.assertFalse(any(h["address"].lower() == wallet.NATIVE_EVM for h in scan["holdings"]))
+        self.assertEqual(scan["status"], "partial")
+        self.assertFalse(scan["total_complete"])
+
+    def test_page_failure_retains_previous_balances_and_reports_incomplete(self):
+        self.fake.base_token_balances = mock.Mock(side_effect=[
+            {"balances": [self.row()], "nextPageToken": "page2"}, WalletHttpError(0, "offline")])
+        scan = self.scan()
+        self.assertIn(self.OTHER, [h["address"] for h in scan["holdings"]])
+        self.assertTrue(any(e["source"] == "cdp token list" for e in scan["errors"]))
+        self.assertFalse(scan["total_complete"])
+
+    def test_malformed_cdp_data_cannot_become_a_balance(self):
+        bad_rows = [self.row(amount="NaN"), self.row(amount="-1"), self.row(decimals=256),
+                    self.row(decimals=True), self.row(decimals=1.5), {"amount": [], "token": {}},
+                    self.row(address="0x123"), self.row() | {"token": {"network": "ethereum"}}]
+        for row in bad_rows:
+            with self.subTest(row=row):
+                self.fake.base_token_balances = mock.Mock(return_value={"balances": [row]})
+                scan = self.scan()
+                self.assertTrue(any(e["source"] == "cdp token list" for e in scan["errors"]))
+                self.assertNotIn(self.OTHER, [h["address"] for h in scan["holdings"]])
+
+    def test_cdp_repeated_cursor_and_page_cap_stop(self):
+        for limit in (1, 25):
+            with self.subTest(limit=limit), mock.patch.object(wallet, "MAX_TOKEN_PAGES", limit):
+                self.fake.base_token_balances = mock.Mock(return_value={"balances": [], "nextPageToken": "same"})
+                scan = self.scan()
+                self.assertLessEqual(self.fake.base_token_balances.call_count, 2)
+                self.assertTrue(any(e["source"] == "cdp token list" for e in scan["errors"]))
+
+    def test_unknown_spam_is_excluded_without_metadata_calls(self):
+        self.fake.base_token_balances = mock.Mock(return_value={"balances": [
+            self.row(symbol="FREE-USDC.com")]})
+        scan = self.scan()
+        row = next(h for h in scan["holdings"] if h["address"] == self.OTHER)
+        self.assertTrue(row["airdrop"])
+        self.assertFalse(row["included"])
+        self.assertFalse(row["verified_onchain"])
+
+    def test_failed_trusted_rpc_retains_indexed_balance_with_error(self):
+        self.fake.base_token_balances = mock.Mock(return_value={"balances": [
+            self.row(USDC_BASE, "1000000", 6, "USDC")]})
+        original = self.fake._base
+        self.fake._base = lambda body: [{"id": r["id"], "error": {"code": -1}} for r in body] \
+            if isinstance(body, list) else original(body)
+        scan = self.scan()
+        row = next(h for h in scan["holdings"] if h["symbol"] == "USDC")
+        self.assertEqual(row["amount"], 1)
+        self.assertFalse(row["verified_onchain"])
+        self.assertTrue(any(e["source"] == "base balanceOf" for e in scan["errors"]))
+
+    def test_blockscout_follows_next_page_params(self):
+        original = self.fake.__call__
+        def fetch(url, body=None):
+            if "blockscout" in url:
+                if "items_count=50" in url:
+                    return {"items": [{"token": {"address_hash": self.OTHER, "symbol": "OTHER",
+                                                  "decimals": "18"}, "value": str(2 * 10**18)}]}
+                return {"items": [], "next_page_params": {"items_count": 50, "value": "123"}}
+            return original(url, body)
+        scan = wallet.scan_base(BASE_ADDR, fetch).to_dict()
+        self.assertIn(self.OTHER, [h["address"] for h in scan["holdings"]])
+        self.assertEqual(scan["status"], "ok")
+
+    def test_invalid_native_reply_is_unknown_not_zero(self):
+        for raw in ("not hex", "0x", "0x-1", None, True):
+            with self.subTest(raw=raw):
+                self.fake.base["eth_getBalance"]["result"] = raw
+                scan = self.scan()
+                self.assertIsNone(scan["native"])
+                self.assertTrue(any(e["source"] == "base eth_getBalance" for e in scan["errors"]))
+
+    def test_price_requests_are_bounded_for_large_wallets(self):
+        rows = [self.row(address=f"0x{i:040x}") for i in range(1, 105)]
+        self.fake.base_token_balances = mock.Mock(return_value={"balances": rows})
+        self.scan()
+        urls = [u for u, _ in self.fake.calls if u.startswith(wallet.LLAMA_PRICES)]
+        self.assertGreater(len(urls), 1)
+        self.assertTrue(all(len(u.removeprefix(wallet.LLAMA_PRICES).split(",")) <= 40 for u in urls))
+
+    def test_cli_uses_fixed_read_argv_and_does_not_expose_stderr(self):
+        fetch = wallet.HttpFetcher()
+        with mock.patch.object(wallet.shutil, "which", return_value="/opt/homebrew/bin/cdp"), \
+                mock.patch.object(wallet.subprocess, "run") as run:
+            run.return_value = mock.Mock(returncode=0, stdout='{"balances": []}')
+            self.assertEqual(fetch.base_token_balances(BASE_ADDR, "a;echo secret"), {"balances": []})
+            args, kwargs = run.call_args
+            self.assertEqual(args[0][1:6], ["data", "evm", "token-balances", "base", BASE_ADDR])
+            self.assertEqual(args[0][-1], "pageToken==a;echo secret")
+            self.assertNotIn("shell", kwargs)
+            self.assertEqual(kwargs["stdin"], wallet.subprocess.DEVNULL)
+            run.return_value = mock.Mock(returncode=1, stderr="PRIVATE_CREDENTIAL")
+            with self.assertRaises(WalletHttpError) as ctx:
+                fetch.base_token_balances(BASE_ADDR)
+            self.assertNotIn("PRIVATE_CREDENTIAL", str(ctx.exception))
+
+    def test_cli_missing_timeout_and_bad_json_are_sanitized(self):
+        fetch = wallet.HttpFetcher()
+        with mock.patch.object(wallet.shutil, "which", return_value=None), \
+                mock.patch.object(wallet.os.path, "isfile", return_value=False):
+            with self.assertRaisesRegex(WalletHttpError, "unavailable"):
+                fetch.base_token_balances(BASE_ADDR)
+        with mock.patch.object(wallet.shutil, "which", return_value="cdp"), \
+                mock.patch.object(wallet.subprocess, "run") as run:
+            run.side_effect = wallet.subprocess.TimeoutExpired("cdp", 1, stderr="SECRET")
+            with self.assertRaisesRegex(WalletHttpError, "could not finish"):
+                fetch.base_token_balances(BASE_ADDR)
+            run.side_effect = None
+            run.return_value = mock.Mock(returncode=0, stdout="oops")
+            with self.assertRaisesRegex(WalletHttpError, "not JSON"):
+                fetch.base_token_balances(BASE_ADDR)
+
+
 class AirdropRuleTests(unittest.TestCase):
     def test_spam_wording_flags_even_a_priced_token(self) -> None:
         r = wallet.airdrop_reasons("USDC.xyz", "Claim", price=1.0, liquidity=1e9, verified=True, known=True)

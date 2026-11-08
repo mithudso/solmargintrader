@@ -103,7 +103,7 @@ larger open losses; read total net account equity as well as realized P&L.
 | Tab | What it does |
 |---|---|
 | **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry, and the wallets to watch: public Solana, Base and Ethereum addresses, and extended **public** keys (`btc_xpub`, `ltc_xpub`, `doge_xpub`) for Bitcoin, Litecoin and Dogecoin. Each is validated (Base58Check and version bytes for an xpub); an `xprv`, a WIF key, a raw 64-hex string or a Solana secret-key array is refused with a message that private keys do not belong in settings, and the message never repeats the value. An xpub is shown as a short prefix everywhere (`settings.get`, the TUI, the API) and the config file is mode 600. A read-only *signing key source* row shows whether `~/.ssh/wallet.private` (the EVM, Ethereum/Base, key) and `~/.ssh/solana.private` (the Solana key) exist and are mode 600, by `stat` alone. **There is no field that accepts a private key.** Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
-| **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. The left table also shows each strategy's **test history** from the background sweep's results file: tested yes/no/n/a, times tested (distinct configurations), when last tested, and the card-preset result (median Sharpe, net return, trades) — never the best of many variations. Three buttons start the background worker at each card's own parameters: **Backtest selected**, **Backtest all untested**, **Backtest all**. Already-recorded configurations are skipped, and only one background sweep runs at a time. Results written before dates were recorded read `date not recorded`. |
+| **Strategies** | The left table shows all active strategy and indicator cards, including retained TradingView specifications; incomplete research stays excluded. Filter by title, ID, family or description, and choose All active cards, Registered strategies, Specifications or TradingView cards. Status distinguishes specification, implemented and measured cards; missing data is labeled. Selecting a specification opens its card in the shared editor. Specifications have no repository implementation, so Add and Backtest selected are disabled and keyboard/programmatic actions refuse them. Registered strategies keep their existing roster, parameter, code-opening and test-history behavior. Backtest all/untested still select only runnable strategies. Refresh cards reloads the catalog. |
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
 | **Forwardtest** | Paper-test every strategy, the roster or custom combinations. Forecast 1, 5, 10 and 30 minutes separately; inspect accuracy, unresolved calls and settings changes. |
 | **Compound 5m** | Four sections: **Call & metrics**, **Backtest** (a *What is tested* paragraph, readable row names, buy & hold, net bps 1h/24h, and a **Frontier** button that tests every metric's strongest 2% of readings held 1 h-24 h), **Forward test**, **All coins**. Scores every metric from `5minleveragestrategies.json` (and the ones it lacked: higher timeframe, funding/premium/OI, order book, BTC lead, trend lifecycle, market-cycle phase) for the **next 5-minute bar**, -1 down to +1 up; families vote once, the regime reweights trend vs reversion styles, and cost / liquidation / shock / thin-market / event / news gates force FLAT. Double-click a metric to switch it on or off (or select it and press Space); a single click selects it and shows its full detail (formula, parameters, evidence, adoptions) in the editor below, as do coin, backtest and forward rows; **Autopilot** (on by default) runs tuning, adopts tuned settings per coin by itself and keeps every coin training (with `python -m soltui.compound_agent install` for a LaunchAgent); **Toggle on/off**, edit `weight=` and parameters, and aggregate settings (`entry`, `exit`, `leverage`, `fee_bps`…). **Signal now** scores the latest closed bar from public data; **Backtest selected** runs the compound and each enabled metric alone on cached 5m data (OOS hit rate, z, oracle net bps, engine return after fees); **Forward tick** / **Auto-forward** record a call per closed bar and resolve it when the next bar closes; **Start unattended training** runs that in a detached background process that keeps going after the console closes. Calls are sized to the Settings Solana wallet (`wallet (live)`), and a status line under the buttons summarises each backtest run in plain words. No order path. See `docs/COMPOUND-5M.md`. |
@@ -274,26 +274,30 @@ series add up to the window's net P&L because the first day is measured against 
 
 ### The Wallet tab
 
-`portfolio.scan` (`chain`, `tokens`, `record`) reads the Settings addresses from public endpoints only; no API key
-is in the code or sent anywhere, and there is no key, signature or transaction. It never calls a contract
-function other than the standard views (`balanceOf`, `symbol`, `decimals`, `name`) and never visits a token's site.
+`portfolio.scan` (`chain`, `tokens`, `record`) reads the public addresses in Settings. SolTUI never
+loads a private key, signs a transaction or stores API credentials. For Base discovery it can invoke the
+already configured Coinbase Developer Platform CLI (`cdp`); that separate CLI manages its own API authentication.
+The same scan powers the Wallet tab, CLI and HTTP API.
 
-* **Solana.** `getBalance`; `getTokenAccountsByOwner` under both the Token and Token-2022 programs; stake accounts
-  via `getProgramAccounts` (as staker or withdrawer); names and USD prices from Jupiter's keyless token and price
-  APIs.
-* **Base.** `eth_getBalance`; `balanceOf` by `eth_call` on a built-in token list, the tokens the liquidity daemon
-  watches (`ledger.sqlite`, opened read-only) and any `tokens=[...]` you pass; Blockscout's token list when it
-  answers; prices from DefiLlama, then DexScreener; position NFTs in the Aero, Uniswap v3 and PancakeSwap v3
-  position managers; the Aero positions in the daemon's `status.json` (valued from that file, noted as not live
-  when the daemon is in dry-run).
-* **Honest limits.** Blockscout is behind a Cloudflare challenge and usually answers 403 to a script; the scan then
-  says so and checks only the known set, and adds that a token sent to the address that is in none of them cannot
-  be discovered without an indexer. A failing endpoint gives a *partial* result with its name and error, never an
-  exception or a quietly smaller total. Each host is paced, a 429 or 5xx is retried twice with a capped back-off,
-  and the whole scan stops asking after 60 s (420 s for the all-chain scan, which makes many small requests).
-* **Airdrops.** A token is flagged when its name or symbol reads like spam (a URL, "claim", "reward", an amount),
-  or when it is unknown, unverified and has no price or under $5,000 of liquidity. Flagged tokens are listed with
-  the reason and left out of every total.
+* **Solana.** `getBalance`; `getTokenAccountsByOwner` under both Token programs; stake accounts via
+  `getProgramAccounts`; names and USD prices from Jupiter's keyless APIs.
+* **Base.** `eth_getBalance(address, "latest")` reads native ETH. The configured `cdp data evm token-balances`
+  command discovers native and ERC-20 balances, following every `nextPageToken` (100 rows per page, at most
+  25 pages). SolTUI finds `cdp` on PATH or in Homebrew's standard locations. No separate SolTUI credential
+  setup is needed on a machine where CDP already works. See [the balance query recipe](../docs/BASE-WALLET-QUERIES.md).
+  If CDP is unavailable, the scanner tries Blockscout, including its continuation pages. Built-in tokens,
+  daemon tokens and explicitly requested `tokens=[...]` are checked by `eth_call` to `balanceOf`; current
+  RPC balances win over indexed balances. Other contracts are never called. Indexed balances remain
+  labelled as indexed when an RPC read fails. USD prices come from DefiLlama (confidence at least 0.5),
+  then DexScreener. NFT position managers and daemon position values retain their existing checks.
+* **Honest limits.** If CDP and Blockscout fail, only available pages and known/requested tokens can be
+  checked. Errors appear in the Wallet summary, mark the scan partial, and mark its total incomplete.
+  Missing or malformed replies never become a zero balance. A later page failure retains earlier pages.
+  Requests, CLI subprocesses and pagination have deadlines/limits; CLI stderr is never displayed.
+* **Airdrops.** Unrecognized indexed tokens are displayed with a flag and excluded from totals until
+  explicitly requested or trusted by the built-in/daemon lists. Spam wording still flags requested tokens.
+  SolTUI reads their indexed metadata and never calls their contracts or visits their sites.
+
 * **Ethereum.** `eth_address` is read on mainnet: `eth_getBalance` plus `balanceOf` for 12 well-known tokens
   (no indexer, so a token outside the list is not found; the scan says so). Prices come from Coinbase's public
   spot endpoint.
