@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 120
-Delta: v119 to v120; record request to continue investigation.
+Version: 121
+Delta: v120 to v121; record request for a Gemini handoff.
+
+## v121 - 2026-11-08
+
+```text
+Fine if you don't want to complete the task I'll get gemini to do it. Give me a handoff markdown file for what you've done
+```
 
 ## v120 - 2026-11-08
 
