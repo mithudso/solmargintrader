@@ -1103,3 +1103,23 @@ The local full-suite arithmetic is884cases:878passed,4failed,2skipped. The four 
 ## v111 - 2026-11-08 (guide and strategy separation)
 
 Version: 111. Delta: v110 to v111; user supersedes the earlier policy that allowed indicator-only specifications in the active strategy folder. Preserve content and move guides to a guides directory and other untestable material outside the active strategy folder. The loader reads only flat cards; 312 of 351 lack runners. Verify actual strategy capability, coverage manifests, UI, and paths; do not infer that all missing-data runners lack implementations. Task TASK-992; worktree /Users/mitch/dev/solmargintrader-wt-guides, branch feat/strategy-guides. Preserve concurrent sessions. Remaining: classify each card, move content, adapt coverage, validate, deliver, and safely synchronize canonical checkout.
+
+
+## v112 - 2026-11-08 (immediate canonical correction)
+
+Version: 112. Delta: v111 to v112; the owner corrected the failure to move cards. Move the verified no-runner active cards immediately in both the private worktree and canonical checkout under byte and collision checks. Put identified educational guides in backtester/guides and other non-runnable cards in backtester/strategy_research. Then update evidence paths, coverage, tests, UI wording, and finish delivery without touching concurrent work. TASK-992 and draft PR101 remain active.
+
+
+## v113 - 2026-11-08 (SolTUI list requirement)
+
+Version: 113. Delta: v112 to v113; owner explicitly requires SolTUI list to reflect the moves. The nonrecursive active loader automatically excludes the312 pre-applied moves, but update misleading status labels and verify fresh mounted SolTUI. Six identified guides and306 other no-runner cards have been moved in both canonical and private worktree under verified byte preconditions; receipt /tmp/strategy-guide-moves-992.json. Coverage paths and hashes must be updated before completion. Audit remaining incomplete guides.
+
+
+## v114 - 2026-11-08 (owner corrected remaining templates)
+
+Version: 114. Delta: v113 to v114; owner explicitly classified JLP/SOL, BTC/ETH pair cards and resting-ladder grid as non-strategy guides/templates. Move these and the two other unregistered bot templates out of the active strategy directory. Registered strategies remain subject to registry and implementation tests. Retain separate simulator code and keep documentation contract tests bound to the relocated files. SolTUI must list only registered strategies.
+
+
+## v115 - 2026-11-08 (canonical moves and SolTUI verified)
+
+Version: 115. Delta: v114 to v115; moved 348 files byte-for-byte in canonical and private worktrees under exact preconditions. The active catalog now has34 registered strategies;42 guides and templates,306 other research cards, and760 incomplete cards preserve all1142 documents. The named JLP/SOL, BTC/ETH and resting-ladder examples and two other unregistered bot templates are in backtester/guides. Coverage manifest and checker follow all four locations; canonical coverage passes. Relocated simulator card drift checks remain enabled. SolTUI filters to registered strategy cards; focused63 tests pass and lint is clean. Canonical runtime and checker paths were pre-applied under hash receipts /tmp/strategy-guide-ui-992.json and /tmp/strategy-guide-checker-992.json; moved-file receipts /tmp/strategy-guide-moves-992.json, /tmp/strategy-guide-more-992.json and /tmp/strategy-template-moves-992.json. Final fresh SolTUI acceptance, offline index refresh, final-head CI, merge and safe canonical reconciliation remain. No research card bytes changed.

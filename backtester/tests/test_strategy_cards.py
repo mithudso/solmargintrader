@@ -431,7 +431,7 @@ class TestLadderDrift(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.cards = sc.load_all()
+        self.cards = sc.load_all(sc.CARD_DIR.parent / "guides")
         ladders = [c for c in self.cards.values() if c.kind == "ladder"]
         self.assertEqual(len(ladders), 1, "expected exactly one ladder card")
         self.card = ladders[0]
@@ -478,7 +478,7 @@ class TestBotCards(unittest.TestCase):
     """A bot card's params must be exactly its simulator config's fields and defaults."""
 
     def setUp(self) -> None:
-        self.cards = sc.load_all()
+        self.cards = sc.load_all(sc.CARD_DIR.parent / "guides")
 
     def _assert_matches(self, card_id: str, cls: type) -> None:
         card = self.cards[card_id]
@@ -588,8 +588,10 @@ class TestCardsAreRunnable(unittest.TestCase):
         self.assertEqual(built.params["window"], 33)
 
     def test_a_spec_only_card_refuses_to_build_and_says_what_it_needs(self) -> None:
-        spec_only = [c for c in self.cards.values() if c.status == "spec-only"]
-        self.assertTrue(spec_only, "expected at least one spec-only card")
+        self.assertTrue(all(c.runner for c in self.cards.values()))
+        research_dir = sc.CARD_DIR.parent / "strategy_research"
+        spec_only = [c for c in sc.load_all(research_dir).values() if c.status == "spec-only"]
+        self.assertTrue(spec_only, "expected preserved research cards")
         for card in spec_only:
             self.assertIsNone(card.registry_key)
             self.assertIsNone(card.runner)
@@ -601,7 +603,7 @@ class TestCardsAreRunnable(unittest.TestCase):
     def test_the_ladder_card_is_implemented_but_not_registry_buildable(self) -> None:
         # The ladder grid is not a Strategy: it has no on_bar and no registry
         # key, and runs through gridcli against core/gridsim.py.
-        ladders = [c for c in self.cards.values() if c.kind == "ladder"]
+        ladders = [c for c in sc.load_all(sc.CARD_DIR.parent / "guides").values() if c.kind == "ladder"]
         self.assertEqual(len(ladders), 1, "expected exactly one ladder card")
         ladder = ladders[0]
         self.assertTrue(ladder.implemented)

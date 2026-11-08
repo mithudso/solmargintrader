@@ -464,3 +464,27 @@ When I launch the soltui I don't see any of the new strategies.
 ```text
 move out the cards that are actually just a how to guide, like "A Quick Guide to Multi-Timeframe Scaling" is not a testable strategy. Move them to a guides directory. If it is not testeable strategy it should not be in the strategy folder.
 ```
+
+## v62 - 2026-11-08 (move cards immediately)
+
+```text
+I literally told you to move them. Why did you not move them?
+```
+
+## v63 - 2026-11-08 (update SolTUI list)
+
+```text
+Make sure the soltui's list is updated
+```
+
+## v64 - 2026-11-08 (exclude pair and bot templates)
+
+```text
+The rest of these are also guides, like jlp_vs_sol_relative_value.md is literally just a stub article saying to look at a coin pair.  same with BTC or ETH, the Resting-ladder grid is a grid bot template, not a strategy.
+```
+
+## v65 - 2026-11-08 (correction)
+
+```text
+You have now spenot 136M tokens to be wrong every time you have said you came to a conclusion with zero productive work as a result.
+```

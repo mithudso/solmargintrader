@@ -410,7 +410,7 @@ CONTROL_HELP = {
     "btn-save": "Save the edited Settings and apply them to later actions. This persists configuration; it does not start a backtest, background sweep or live trading.",
     "strategy-params": "Explicit strategy parameters in name=value form, for example fast=20 slow=50. These override signal defaults for the added roster entry. An empty field uses the saved defaults.",
     "strategy-card-filter": "Search active card titles, IDs, families and descriptions. Incomplete research cards remain in their separate directory and are excluded from this list.",
-    "strategy-card-scope": "Show all active cards, only registered strategies, specification cards, or retained TradingView cards. A specification documents rules but has no runnable repository implementation.",
+    "strategy-card-scope": "Show registered strategy cards or TradingView cards. Guides, templates and unimplemented research are excluded.",
     "strategy-cards-refresh": "Reload the active card files and registered-strategy history. This does not start a backtest or add a card to the roster.",
     "btn-roster-all": "Add every registered strategy missing from the roster. Existing custom versions stay as they are.",
     "forward-start": "Start prospective paper tests for the Settings asset. The scope, horizons, cost threshold and initial parameters are fixed until you stop and start again.",
@@ -574,7 +574,7 @@ def column_help(label: str, table_id: str | None = None) -> str | None:
     key = label.strip().casefold()
     if table_id == "available-table":
         if key == "strategy":
-            return "An active strategy or indicator card. Registered rows keep their executable ID; other rows show the card title. Select a specification to read its equations, inputs and limitations below."
+            return "A registered strategy card. Its ID identifies the executable strategy."
         if key == "status":
             return "Specification means documented mechanics without a runnable repository implementation. Implemented means code exists; measured means results are recorded. Only registered strategies can enter this roster."
         if key == "in roster":
