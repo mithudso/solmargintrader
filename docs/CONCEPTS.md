@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:02:27+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:35:36+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -40,7 +40,7 @@ Full list: `python3 index/search.py --concept costs -n 1299`
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **467 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **468 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -55,7 +55,7 @@ Strongest files:
 - `skills/trading-and-investing/SKILL.md` (51 hits)
 - `soltui/tui.py` (39 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 467`
+Full list: `python3 index/search.py --concept risk-rails -n 468`
 
 ### Grid trading
 
@@ -78,7 +78,7 @@ Full list: `python3 index/search.py --concept grid -n 370`
 
 ### On-chain execution reality
 
-`execution-onchain` · **337 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **339 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -93,7 +93,7 @@ Strongest files:
 - `llms-full.txt` (102 hits)
 - `pagesource` (98 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 337`
+Full list: `python3 index/search.py --concept execution-onchain -n 339`
 
 ### Data integrity
 
@@ -154,22 +154,22 @@ Full list: `python3 index/search.py --concept evidence-floor -n 180`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **175 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **177 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
 Strongest files:
 
 - `research/tradingview-card-coverage.json` (112 hits)
-- `docs/FILES.md` (34 hits)
+- `docs/FILES.md` (35 hits)
 - `research/perturb.py` (29 hits)
 - `research/RANKED_LISTS.md` (25 hits)
 - `backtester/core/deflated_sharpe.py` (21 hits)
-- `memory.md` (15 hits)
+- `memory.md` (16 hits)
 - `backtester/core/dcasim.py` (15 hits)
 - `docs/CONCEPTS.md` (14 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 175`
+Full list: `python3 index/search.py --concept benchmark -n 177`
 
 ### Combinatorial purged cross-validation
 
@@ -261,7 +261,7 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 | `oscillator-reversion` | 267 | `rsi`, `stochastic`, `oscillator` |
 | `regime-filter` | 210 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `momentum` | 197 | `momentum`, `ts_momentum`, `dual_momentum` |
-| `baseline` | 148 | `buy_and_hold`, `baseline` |
+| `baseline` | 149 | `buy_and_hold`, `baseline` |
 | `breakout` | 144 | `breakout`, `bb_breakout`, `keltner` |
 | `mean-reversion` | 95 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
 | `volume-flow` | 85 | `obv`, `volume-flow` |
