@@ -2203,7 +2203,7 @@
     "llms/aero-lp-explained-2026-11-06.md": 678,
     "llms/defillama-llms-free.txt": 1332,
     "llms/defillama-llms.txt": 997,
-    "memory.md": 28903,
+    "memory.md": 28910,
     "mongo/README.md": 870,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3104,
@@ -2635,7 +2635,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T20:30:31+00:00",
+  "generatedAt": "2026-11-08T20:30:51+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -156798,7 +156798,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 12,
       "llms-small.txt": 1,
-      "memory.md": 21,
+      "memory.md": 22,
       "mongo/tests/test_load.py": 1,
       "prompts.md": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -224339,7 +224339,7 @@
       "liquidity/tests/test_engine.py": 3,
       "llms-full.txt": 4,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 19,
+      "memory.md": 20,
       "mongo/queries/04-decisions.js": 8,
       "mongo/queries/08-provenance-and-health.js": 4,
       "mongo/schema.py": 4,
@@ -277680,6 +277680,9 @@
     },
     "e92e2": {
       "docs/design/soltui-v2/screens/05-money.svg": 1
+    },
+    "e92e4": {
+      "memory.md": 1
     },
     "e92fe72245bdee5d7aa91b603c6a5f9f2e8d8b538ec7fd7486312c2381cf99e6": {
       "research/tradingview-card-coverage.json": 1
@@ -574077,7 +574080,7 @@
       "soltui/compound.py": 1
     },
     "outbox": {
-      "memory.md": 22
+      "memory.md": 23
     },
     "outbreak": {
       "research/tradingview-card-coverage.json": 7
@@ -645268,7 +645271,7 @@
       "extension/test/engine-command-audit.test.js": 2,
       "extension/test/soltui-bridge.test.js": 1,
       "extension/test/wallet-audit.test.js": 1,
-      "memory.md": 29,
+      "memory.md": 30,
       "research/five-minute-perps-suite/run-report.md": 1,
       "skills/trading-and-investing/references/jupiter-jlp-pool.md": 1,
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 1,
@@ -785712,7 +785715,7 @@
       "extension/src/ui/view-grid.js": 2,
       "extension/src/ui/view-trade.js": 2,
       "extension/vendor/lightweight-charts/README.md": 2,
-      "memory.md": 81,
+      "memory.md": 82,
       "prompts.md": 8,
       "research/LEVERAGE-TIERS.md": 4,
       "research/RELIABLE_SIGNALS.md": 2,
@@ -856943,7 +856946,7 @@
       "liquidity/tests/test_market_state.py": 1,
       "liquidity/tests/test_providers.py": 26,
       "llms-full.txt": 3,
-      "memory.md": 22,
+      "memory.md": 23,
       "research/tradingview-card-coverage.json": 12,
       "research/tradingview-script-profiles/shard-c.jsonl": 1,
       "soltui/serve.py": 1,
@@ -947266,8 +947269,8 @@
   "stats": {
     "avgDocLength": 1441.5,
     "documents": 2634,
-    "terms": 68568,
-    "termsBeforePrune": 68642,
-    "totalTokens": 3796787
+    "terms": 68569,
+    "termsBeforePrune": 68643,
+    "totalTokens": 3796794
   }
 }

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T20:30:31+00:00",
+  "generatedAt": "2026-11-08T20:30:51+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "a88016b",
+  "commit": "9db8e67",
   "counts": {
     "files": 2634,
-    "bytes": 43640907,
+    "bytes": 43640983,
     "byKind": {
       "strategy-card": 1478,
       "doc": 547,
@@ -70631,9 +70631,9 @@
       "title": "Work continuation",
       "summary": "Version: 199 Delta: v198 to v199; record the owner's parameter-relative adjustment decision. Version: 146",
       "summarySource": "opening-prose",
-      "bytes": 276633,
-      "lines": 1800,
-      "sha1": "88f7979305255584e87fce5d5cab42b488909924",
+      "bytes": 276709,
+      "lines": 1801,
+      "sha1": "b941973c8f364720e5fb78fcf30c2a8dd0e71225",
       "symbols": [],
       "imports": [],
       "internalImports": [],

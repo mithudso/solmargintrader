@@ -1797,3 +1797,4 @@ ExperimentScreen now derives range defaults from the selected parameter baseline
 ## v199 - 2026-11-08
 
 The owner confirmed that percentage controls should adjust the selected parameter relative to its current value. The separate verified coin price is a reference and does not populate non-price parameters.
+The Stele decision is queued in outbox 609e92e4 after the transport closed.
