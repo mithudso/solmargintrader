@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 104
-Delta: v103 to v104; preserve research and card-readiness histories.
+Version: 105
+Delta: v104 to v105; apply requested canonical card moves immediately.
 
 ## v1 - 2026-11-06
 
@@ -1064,3 +1064,7 @@ Final delivery is tracked by TASK-941 and branch feat/tradingview-card-triage. I
 Version: 104. Delta: v103 to v104; preserve PR94 research work.
 
 Integrated origin/master 0b46a88 after concurrent PR94 landed while this task opened PR97. Preserve all research artifacts and histories; regenerate only shared indexes after resolving Git stages. Card contents and the292/791 readiness decisions are unchanged. PR97 and TASK-941 own final CI, merge receipt and cleanup. If already merged, verify that receipt instead of replaying review/moves.
+
+## v105 - 2026-11-08 (canonical incomplete directory correction)
+
+The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.

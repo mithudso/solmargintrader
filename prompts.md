@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 58
-Delta: v57 to v58; preserve research and card-readiness histories.
+Version: 59
+Delta: v58 to v59; apply requested canonical card moves immediately.
 
 ## v1 - 2026-11-06
 
@@ -445,4 +445,10 @@ create an incomplete directory and put all the cards you just created that canno
 
 ```text
 Keep complete indicator specifications too (Recommended)
+```
+
+## v59 - 2026-11-08 (canonical incomplete directory correction)
+
+```text
+I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
 ```

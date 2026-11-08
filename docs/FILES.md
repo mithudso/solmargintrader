@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `2c37366` (2026-11-08T11:19:49+00:00). 1872 tracked files, 30.9 MB.
+**Generated** from `index/INDEX.json` at commit `b95f0b3` (2026-11-08T11:31:27+00:00). 1872 tracked files, 30.9 MB.
 
 Regenerate with:
 
@@ -185,9 +185,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1067 lines · 160,626 B · description: **extracted**
+`doc` · 1071 lines · 161,255 B · description: **extracted**
 
-**Purpose.** Version: 104 Delta: v103 to v104; preserve research and card-readiness histories. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 105 Delta: v104 to v105; apply requested canonical card moves immediately. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -201,9 +201,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 449 lines · 26,807 B · description: **extracted**
+`doc` · 455 lines · 27,090 B · description: **extracted**
 
-**Purpose.** Version: 58 Delta: v57 to v58; preserve research and card-readiness histories. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 59 Delta: v58 to v59; apply requested canonical card moves immediately. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -281,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18283 lines · 900,955 B · description: **extracted**
+`doc` · 18327 lines · 911,836 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
