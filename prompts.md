@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 87
-Delta: v86 to v87; record the backtest launch error.
+Version: 88
+Delta: v87 to v88; record the recurring sweep proof error.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -725,4 +725,12 @@ In the signal call and metrics tab when I try and apply edits, I get this error:
 
 ```text
 In the signal backtest tab I get this error: bad value(s) in fds_to_keep
+```
+
+## v88 - 2026-11-08
+
+```text
+Nope, when I got o the Research, sweep tab I get this error still:
+error: ValueError: evaluation proof is missing or differs for SOL at /Users/mitch/.config/soltui/bg/results.jsonl; preserve this history and use --results-path for a fresh file · 361 rankable, 253 with positive median Sharpe · 224
+below the 10-trade floor
 ```

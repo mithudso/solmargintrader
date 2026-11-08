@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 155
-Delta: v154 to v155; record the backtest descriptor fix.
+Version: 156
+Delta: v155 to v156; track actionable sweep recovery guidance.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1618,3 +1618,7 @@ Task: Fix Signal Call and Metrics edit error, Stele TASK-1018. Worktree: /Users/
 ## v155 - 2026-11-08
 
 Task: Signal Backtest reports bad value(s) in fds_to_keep (Stele TASK-1021). Worktree /Users/mitch/dev/solmargintrader-wt-backtest-fds, based on origin/master 788d5a8. Compound all-coins and frontier use ProcessPoolExecutor in a background thread. Textual stderr capture returns -1 from fileno; multiprocessing resource_tracker passes it into spawn and fails with bad value(s) in fds_to_keep. Wrapped the capture to raise UnsupportedOperation when no fd exists, while preserving writes. A fresh-interpreter Textual test starts real child workers; the same test fails with the unwrapped capture and passes with the fix. Preserve live processes and data. Remaining: integrate with the concurrent metric fix, rerun checks, deliver, and restart the interactive console only when safe.
+
+## v156 - 2026-11-08
+
+TASK-1009: The current interactive SolTUI process started after PR 109 and uses the current checkout. Its Sweep pane shows the saved error in /Users/mitch/.config/soltui/bg/state.json from a stopped worker at 09:07. Existing results and proof remain unchanged. The Start fresh button creates a separate history only when selected; opening the tab must not start a worker. Update the display to identify the prior error and explain that Start fresh preserves history. The status now labels the prior proof error and points to Start fresh. All 82 queue and fresh-history tests pass. Remaining: index refresh, CI and delivery; verify live process acceptance without disturbing the user session.

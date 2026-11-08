@@ -315,6 +315,13 @@ class TestLeaderboard(unittest.TestCase):
     def test_summarise_surfaces_an_error(self) -> None:
         state = q.QueueState(phase="error", error="no price cache")
         self.assertIn("no price cache", q.summarise(state, []))
+        proof = q.QueueState(phase="error", error="ValueError: evaluation proof is missing or differs for SOL")
+        text = q.summarise(proof, [], worker_alive=False)
+        self.assertIn("previous sweep stopped", text)
+        self.assertIn("press Start fresh", text)
+        self.assertIn("preserve these results", text)
+        self.assertIn(proof.error, text)
+        self.assertNotIn("press Start fresh", q.summarise(proof, [], worker_alive=True))
 
 
 class TestJobImmutability(unittest.TestCase):

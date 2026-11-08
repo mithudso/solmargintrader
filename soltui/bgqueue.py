@@ -911,7 +911,13 @@ def summarise(
         pct_txt = f" ({pct:.0%})" if pct is not None else ""
         bits.append(f"running {state.done}/{state.total}{pct_txt}, {state.remaining} left")
     elif state.phase == "error":
-        bits.append(f"error: {state.error or 'unknown'}")
+        error = state.error or "unknown"
+        if worker_alive is False and "evaluation proof is missing or differs" in error:
+            bits.append("previous sweep stopped: its evaluation proof is missing or differs; "
+                        "press Start fresh to start a separate sweep and preserve these results")
+            bits.append(f"previous error: {error}")
+        else:
+            bits.append(f"error: {error}")
     else:
         bits.append(state.phase)
         # A sweep that finished having skipped a whole interval for want of its
