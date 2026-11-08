@@ -362,6 +362,11 @@ class NativeExperiments(unittest.TestCase):
         self.assertIn("manual mode", result["verdict"]["reason"])
         self.assertEqual(bots.get_config("grid", "SOL")["range_pct"], 15)
 
+    def test_ledger_backed_per_coin_summary_is_not_mistaken_for_legacy_exposure(self):
+        bots._write_json(bots.optimize_path("grid"), {"at": time.time(), "skipped": {},
+                         "reports": {"SOL": {"experiment_id": "known-run"}}})
+        self.assertIsNone(runner._legacy_cutoff(self.store, "grid"))
+
     def test_last_boundary_pause_wins_over_adoption_and_seals_report(self):
         run = self._reliable_run()
         finalize = self.store.finalize_run

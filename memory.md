@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 198
-Delta: v197 to v198; record passing full SolTUI suite and delivered sort fix.
+Version: 199
+Delta: v198 to v199; record experiment range editor request.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1793,3 +1793,7 @@ The owner wants frequent, incremental per-coin auto-optimization and reports tha
 ## v198 - 2026-11-08
 
 PR 126 merged as 14c04d0f07e383bf4aeea2e8e77a3190dc4dfcf2 after required CI passed. It preserves Forward Test sorting, adds F8 strategy handoff, and documents Jupiter spot/perpetual cost differences. The complete SolTUI suite passed 1085 tests with two skips after the catalogue, help, glossary and table-title fixes. Two additional F8 Forward Test interaction tests also passed. The per-coin bot controls and optimizer remain under active implementation in this worktree.
+
+## v199 - 2026-11-08
+
+The owner asks the Experiments workbench Range, Stop and Step inputs to show defaults, clarify whether values are percentages, and offer percent adjustments beside the fields. These inputs describe the selected parameter's candidate values, not generally coin prices. The user was asked whether percentages should be relative to the current parameter value. Do not put a market price into a rung count or other non-price parameter. Stele task creation is queued as outbox baf0d624.
