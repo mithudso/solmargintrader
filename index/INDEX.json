@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T08:37:20+00:00",
+  "generatedAt": "2026-11-08T08:37:26+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b899458",
+  "commit": "769ab47",
   "counts": {
     "files": 747,
-    "bytes": 12846873,
+    "bytes": 12847268,
     "byKind": {
       "code-python": 169,
       "doc": 143,
@@ -6024,9 +6024,9 @@
       "title": "high_signal_file_index",
       "summary": "Generated JSON object, 4 keys ($comment, repo, components, files).",
       "summarySource": "derived",
-      "bytes": 42291,
-      "lines": 1417,
-      "sha1": "b1ac4bcb42008108442e9e9a3834a9b00636837b",
+      "bytes": 42686,
+      "lines": 1437,
+      "sha1": "76019b0011a9acac391c7f98559f424bab240ed1",
       "symbols": [],
       "imports": [],
       "internalImports": [],

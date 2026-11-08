@@ -196,7 +196,7 @@
     "docs/dso-skill/SKILL.md": 2025,
     "docs/dso-skill/references/passes.md": 782,
     "docs/external-calls.md": 1569,
-    "docs/high_signal_file_index.json": 3443,
+    "docs/high_signal_file_index.json": 3463,
     "docs/integrations-and-assumptions.md": 706,
     "docs/jupiter-trigger-contract.md": 422,
     "docs/known-issues.md": 719,
@@ -748,7 +748,7 @@
     "tools/land.sh": 425,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-08T08:37:20+00:00",
+  "generatedAt": "2026-11-08T08:37:26+00:00",
   "postings": {
     "001": {
       "research/five-minute-perps-suite/synthesis-audit-receipt.json": 1
@@ -172096,7 +172096,7 @@
       "docs/code-deep-optimizer-2026-11-06.md": 34,
       "docs/codebase-overview.md": 1,
       "docs/dso-skill/SKILL.md": 1,
-      "docs/high_signal_file_index.json": 173,
+      "docs/high_signal_file_index.json": 193,
       "docs/profitable-crypto-strategies-analysis.md": 1,
       "executor/src/executor/api.py": 1,
       "executor/src/executor/journal.py": 4,
@@ -360333,6 +360333,6 @@
     "documents": 747,
     "terms": 36762,
     "termsBeforePrune": 36764,
-    "totalTokens": 1003296
+    "totalTokens": 1003316
   }
 }
