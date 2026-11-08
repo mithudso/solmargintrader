@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 82
-Delta: v81 to v82; preserve concurrent converter records and Base wallet acceptance.
+Version: 84
+Delta: v83 to v84; complete21 strategy interpretations and independent source-card review.
 
 ## v1 - 2026-11-06
 
@@ -831,3 +831,25 @@ Remaining product step: installed synchronization and fresh-console acceptance a
 ## v82 - 2026-11-08: final concurrent integration
 
 Preserved PR 90's converter records and workflow history after origin/master advanced to eea27e2. Wallet, commands and TUI source hashes did not change in this merge. The final local full suite passed all 884 SolTUI tests (2 optional skips) in 709.185 seconds, and all 900 backtester tests passed. Stage resolved records before rebuilding indexes, as KNOW-919 requires. Source delivery remains PR 92; query its final-head checks and Stele TASK-915 for the merge receipt. Installed synchronization remains gated by other sessions releasing shared-checkout ownership (TASK-922).
+
+## v83 - 2026-11-08 (script strategy understanding; TASK-929)
+
+Target: explain the idea, objective and mechanics of each strategy publication in the saved script directory and create individual cards. There are 742 HTML pages here. Existing TASK-888 / PR91 covers a broader inventory of 747 canonical script publications, with 21 explicitly typed strategy, 666 study, 55 library, and 5 missing type. This pass starts with the 21 strategy publications; optional user clarification about including indicator studies remains pending.
+
+Existing generic cards quote author passages but often lack publication-specific synthesis. Read complete ssrIdeaData descriptions and preserve exact provenance. Strategy templates must be identified as frameworks rather than invented entry edges. Source code is not assumed available from an open-source badge. Keep missing rules, parameters and performance as explicit gaps. Preserve registry implementations, measured cards, shared checkout changes and active PR91 ownership.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63, base d596856. Stele search helper could not start on this account; direct graph records supply the context. Relevant decisions: KNOW-663 strict card schema; KNOW-620 status semantics; KNOW-889 source-specific coverage; KNOW-898 title-only extraction failures; KNOW-930 current purpose/rule boundary.
+
+Remaining: read and interpret every in-scope publication; author grounded individual cards and evidence manifest; validate/audit; commit/push PR, pass final checks, merge and verify delivery. Keep existing PR91 work distinct and do not merge another task's unfinished PR.
+
+## v84 - 2026-11-08 (strategy source interpretation accepted; TASK-929)
+
+Read all21 complete strategy-typed descriptions (92,770 characters) and checked native metadata for all742 HTML publications: 666 studies,55 libraries,21 strategies. Optional broader-scope question received no answer; proceed with the stated21-strategy interpretation scope. Authored13 canonical card enrichments and8 companion tool cards, indexed in research/TRADINGVIEW-STRATEGY-CARDS.md. Tools remain outside the executable card loader. No order path, registry strategy or measured result changed.
+
+research/tradingview-strategy-understanding.json binds the complete metadata inventory,21 card hashes,55 raw-source passages and68 normalized legacy passages. scripts/check_tradingview_strategy_profiles.py checks schema/status, card identity/hash, independent audit freshness, source inventory/native types and exact passage offsets; --source-root performs full local-source verification. The source script.content fields are empty. Independent research-contract-auditor reviewed all21 source/card pairs and passed the final corrected set: manifest SHA256 1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5; card set SHA256 762c8b10551e660352147dd100d9187d3b1b27076e10fbe9797639fe132bbcaf. Receipt: research/tradingview-strategy-understanding-audit.json.
+
+Corrected findings: the single-instrument Bitcoin martingale needs no point-in-time universe; gap non-fill confirmation must not impose an extra bar not established by the author. Preserve both fixes and the source limitations. Canonical cards are version1.1.0. Newly merged PR91 has a legacy validator requiring literal Version:1.0.0 and a stale martingale data_review; reconcile both during integration. Retain all prior coverage passages and card identities.
+
+Checks:43 existing card tests pass; full-source and offline interpretation checkers pass; Ruff lint/format, docs drift and whitespace checks pass. CI runs the new offline interpretation checker. Portable, directly usable collection: /Users/mitch/dev/tradingview-strategy-cards/README.md, with its own checker and pure-stdlib card parser. Raw readings and authoring inputs remain outside Git at /Users/mitch/dev/tradingview-strategy-card-work.
+
+Remaining: commit own checkpoint, integrate newly merged PR91 while preserving the13 enriched cards and both workflow histories, reconcile coverage metadata/validator version handling, regenerate offline indexes after staging resolutions, revalidate, push PR, pass final checks, merge and verify remote contents, refresh portable package and remove only own clean worktree/branch.

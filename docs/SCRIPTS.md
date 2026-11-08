@@ -55,10 +55,28 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
 | `python3 scripts/html_to_markdown.py SOURCE` | saved HTML tree to text-only Markdown | no |
+| `python3 scripts/check_tradingview_strategy_profiles.py` | strategy-publication coverage and evidence bindings | no |
 | `node --test` (in `extension/`) | extension unit + parity tests | no |
 | `node tools/dryrun.js` | headless grid dry run, no orders | optional |
 
 ---
+
+## Strategy publication card validation
+
+The strategy-publication interpretation pass is indexed in
+`research/TRADINGVIEW-STRATEGY-CARDS.md`. Its validator checks all 21 native
+strategy publications against the recorded 742-page metadata inventory, card
+hashes, classifications and evidence passages:
+
+```bash
+python3 scripts/check_tradingview_strategy_profiles.py
+python3 scripts/check_tradingview_strategy_profiles.py --source-root /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com/www.tradingview.com/script
+```
+
+The default is offline and checks committed artifacts. `--source-root` additionally
+re-reads every captured HTML file, checks its hash/native type, and binds all cited
+passages to the complete author descriptions. A mismatch exits nonzero. It never
+executes a strategy or measures performance.
 
 ## Saved HTML to Markdown
 

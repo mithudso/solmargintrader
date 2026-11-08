@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T09:50:10+00:00",
+  "generatedAt": "2026-11-08T10:32:52+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 336,
+      "matchingFiles": 349,
       "shown": 30,
       "files": [
         {
@@ -40,6 +40,10 @@
         {
           "path": "llms-full.txt",
           "hits": 67
+        },
+        {
+          "path": "research/tradingview-strategy-understanding.json",
+          "hits": 66
         },
         {
           "path": "skills/trading-and-investing/references/strategies-and-risk.md",
@@ -122,6 +126,10 @@
           "hits": 21
         },
         {
+          "path": "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
+          "hits": 21
+        },
+        {
           "path": "liquidity/src/aero_lp/providers.py",
           "hits": 21
         },
@@ -134,16 +142,8 @@
           "hits": 20
         },
         {
-          "path": "docs/API.md",
+          "path": "backtester/strategy_cards/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md",
           "hits": 20
-        },
-        {
-          "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
-          "hits": 20
-        },
-        {
-          "path": "docs/code-deep-optimizer-2026-11-06.md",
-          "hits": 19
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 328,
+      "matchingFiles": 336,
       "shown": 30,
       "files": [
         {
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 219,
+      "matchingFiles": 227,
       "shown": 30,
       "files": [
         {
@@ -345,6 +345,10 @@
         {
           "path": "soltui/bots.py",
           "hits": 52
+        },
+        {
+          "path": "research/tradingview-strategy-understanding.json",
+          "hits": 48
         },
         {
           "path": "backtester/gridcli.py",
@@ -417,10 +421,6 @@
         {
           "path": "soltui/signals.py",
           "hits": 22
-        },
-        {
-          "path": "docs/codebase-overview.md",
-          "hits": 21
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -438,7 +438,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 213,
+      "matchingFiles": 222,
       "shown": 30,
       "files": [
         {
@@ -576,12 +576,20 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 206,
+      "matchingFiles": 211,
       "shown": 30,
       "files": [
         {
+          "path": "backtester/strategy_cards/tv_ghocsiv7_gap_filling_strategy.md",
+          "hits": 40
+        },
+        {
           "path": "soltui/bots.py",
           "hits": 39
+        },
+        {
+          "path": "research/tradingview-strategy-understanding.json",
+          "hits": 38
         },
         {
           "path": "backtester/tests/test_engine.py",
@@ -688,16 +696,8 @@
           "hits": 8
         },
         {
-          "path": "research/five-minute-perps-suite/scored-concepts.json",
-          "hits": 8
-        },
-        {
-          "path": "index/build.py",
-          "hits": 7
-        },
-        {
           "path": "memory.md",
-          "hits": 7
+          "hits": 8
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -712,7 +712,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 197,
+      "matchingFiles": 206,
       "shown": 30,
       "files": [
         {
@@ -730,6 +730,10 @@
         {
           "path": "backtester/core/scorecard.py",
           "hits": 110
+        },
+        {
+          "path": "research/tradingview-strategy-understanding.json",
+          "hits": 100
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
@@ -830,10 +834,6 @@
         {
           "path": "docs/CONCEPTS.md",
           "hits": 23
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 23
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -851,7 +851,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 192,
+      "matchingFiles": 205,
       "shown": 30,
       "files": [
         {
@@ -988,7 +988,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 192,
+      "matchingFiles": 193,
       "shown": 30,
       "files": [
         {
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 171,
+      "matchingFiles": 173,
       "shown": 30,
       "files": [
         {
@@ -1265,7 +1265,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 165,
+      "matchingFiles": 169,
       "shown": 30,
       "files": [
         {
@@ -1329,16 +1329,16 @@
           "hits": 27
         },
         {
+          "path": "memory.md",
+          "hits": 21
+        },
+        {
           "path": "research/coin-intelligence/trx-tron.md",
           "hits": 21
         },
         {
           "path": "docs/COMPOUND-5M.md",
           "hits": 21
-        },
-        {
-          "path": "memory.md",
-          "hits": 20
         },
         {
           "path": "backtester/core/funding.py",
@@ -1400,7 +1400,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 159,
+      "matchingFiles": 160,
       "shown": 30,
       "files": [
         {
@@ -1534,7 +1534,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 135,
+      "matchingFiles": 136,
       "shown": 30,
       "files": [
         {
@@ -1807,9 +1807,13 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 114,
+      "matchingFiles": 119,
       "shown": 30,
       "files": [
+        {
+          "path": "research/tradingview-strategy-understanding.json",
+          "hits": 133
+        },
         {
           "path": "soltui/tests/test_compound.py",
           "hits": 99
@@ -1891,6 +1895,10 @@
           "hits": 20
         },
         {
+          "path": "research/tradingview-strategy-tools/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
+          "hits": 20
+        },
+        {
           "path": "research/STRATEGIES.md",
           "hits": 19
         },
@@ -1921,14 +1929,6 @@
         {
           "path": "backtester/core/strategies/rsi.py",
           "hits": 15
-        },
-        {
-          "path": "soltui/tests/test_bgqueue.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/strategy_cards/stochastic.md",
-          "hits": 14
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2080,7 +2080,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 101,
+      "matchingFiles": 107,
       "shown": 30,
       "files": [
         {
@@ -2144,6 +2144,10 @@
           "hits": 17
         },
         {
+          "path": "research/tradingview-strategy-understanding.json",
+          "hits": 17
+        },
+        {
           "path": "soltui/help.py",
           "hits": 17
         },
@@ -2192,15 +2196,146 @@
           "hits": 10
         },
         {
-          "path": "research/results/cpcv_pbo.json",
+          "path": "backtester/strategy_cards/tv_rlkjr2sq_bjorgum_double_tap.md",
           "hits": 9
         },
         {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 8
+          "path": "research/results/cpcv_pbo.json",
+          "hits": 9
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
+      "id": "family:momentum",
+      "label": "Strategy family: momentum",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "momentum",
+        "ts_momentum",
+        "dual_momentum"
+      ],
+      "matchingFiles": 94,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 80
         },
         {
-          "path": "research/results/geometry_medium_k2.txt",
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 69
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 50
+        },
+        {
+          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
+          "hits": 41
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 34
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 32
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 26
+        },
+        {
+          "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",
+          "hits": 20
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 19
+        },
+        {
+          "path": "backtester/strategy_cards/ts_momentum.md",
+          "hits": 19
+        },
+        {
+          "path": "research/tradingview-strategy-understanding.json",
+          "hits": 19
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
+          "hits": 19
+        },
+        {
+          "path": "backtester/tests/test_decide.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/strategy_cards/dual_momentum_12_1.md",
+          "hits": 17
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 17
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 17
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
+          "hits": 16
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 15
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis.md",
+          "hits": 14
+        },
+        {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 13
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 13
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 12
+        },
+        {
+          "path": "research/results/cpcv_tables.md",
+          "hits": 12
+        },
+        {
+          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
+          "hits": 12
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 10
+        },
+        {
+          "path": "backtester/strategy_cards/xs_momentum.md",
+          "hits": 9
+        },
+        {
+          "path": "backtester/tests/test_ratio_rotation.py",
+          "hits": 9
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 9
+        },
+        {
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
           "hits": 8
         }
       ],
@@ -2481,141 +2616,6 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
-      "id": "family:momentum",
-      "label": "Strategy family: momentum",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "momentum",
-        "ts_momentum",
-        "dual_momentum"
-      ],
-      "matchingFiles": 91,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 80
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 69
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 50
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 41
-        },
-        {
-          "path": "docs/TRADINGVIEW-REFERENCE.md",
-          "hits": 34
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 32
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 26
-        },
-        {
-          "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",
-          "hits": 20
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 19
-        },
-        {
-          "path": "backtester/strategy_cards/ts_momentum.md",
-          "hits": 19
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 19
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/strategy_cards/dual_momentum_12_1.md",
-          "hits": 17
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 17
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 15
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis.md",
-          "hits": 14
-        },
-        {
-          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
-          "hits": 13
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 13
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 12
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 12
-        },
-        {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
-          "hits": 12
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 10
-        },
-        {
-          "path": "backtester/strategy_cards/xs_momentum.md",
-          "hits": 9
-        },
-        {
-          "path": "backtester/tests/test_ratio_rotation.py",
-          "hits": 9
-        },
-        {
-          "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 9
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 9
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 8
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
-          "hits": 8
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
       "id": "family:volume-flow",
       "label": "Strategy family: volume-flow",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -2623,7 +2623,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 74,
+      "matchingFiles": 75,
       "shown": 30,
       "files": [
         {
@@ -2743,7 +2743,7 @@
           "hits": 4
         },
         {
-          "path": "soltui/tests/test_tradingstrategyresults_coverage.py",
+          "path": "research/tradingview-strategy-understanding.json",
           "hits": 4
         }
       ],
@@ -2925,7 +2925,28 @@
       "null": [
         "backtester/strategy_cards/dca_bot.md",
         "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
-        "backtester/strategy_cards/triangular_arbitrage.md"
+        "backtester/strategy_cards/triangular_arbitrage.md",
+        "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
+        "backtester/strategy_cards/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md",
+        "backtester/strategy_cards/tv_ghocsiv7_gap_filling_strategy.md",
+        "backtester/strategy_cards/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md",
+        "backtester/strategy_cards/tv_i9tjotjl_lube.md",
+        "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md",
+        "backtester/strategy_cards/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md",
+        "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
+        "backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
+        "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md",
+        "backtester/strategy_cards/tv_rlkjr2sq_bjorgum_double_tap.md",
+        "backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
+        "backtester/strategy_cards/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md",
+        "research/tradingview-strategy-tools/tv_2lgyzykc_ultimate_strategy_template.md",
+        "research/tradingview-strategy-tools/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md",
+        "research/tradingview-strategy-tools/tv_ihvpg6ts_stop_loss_and_take_profit_in_example.md",
+        "research/tradingview-strategy-tools/tv_kzp8e4x3_monthly_returns_in_pinescript_strategies.md",
+        "research/tradingview-strategy-tools/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
+        "research/tradingview-strategy-tools/tv_n8bgynwl_template_trailing_strategy_backtester.md",
+        "research/tradingview-strategy-tools/tv_otfw8b2a_trading_report_generator_from_csv.md",
+        "research/tradingview-strategy-tools/tv_xaeg4zjg_how_to_set_backtest_time_ranges.md"
       ],
       "real-sol-daily-and-hourly-recentred-blocks": [
         "backtester/strategy_cards/ladder_grid.md"
@@ -3029,6 +3050,21 @@
         "backtester/strategy_cards/sma_regime.md",
         "backtester/strategy_cards/voltarget.md"
       ],
+      "source-defined": [
+        "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
+        "backtester/strategy_cards/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md",
+        "backtester/strategy_cards/tv_ghocsiv7_gap_filling_strategy.md",
+        "backtester/strategy_cards/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md",
+        "backtester/strategy_cards/tv_i9tjotjl_lube.md",
+        "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md",
+        "backtester/strategy_cards/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md",
+        "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
+        "backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
+        "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md",
+        "backtester/strategy_cards/tv_rlkjr2sq_bjorgum_double_tap.md",
+        "backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
+        "backtester/strategy_cards/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md"
+      ],
       "trend": [
         "backtester/strategy_cards/ema_crossover.md",
         "backtester/strategy_cards/ichimoku_cloud.md",
@@ -3049,6 +3085,16 @@
       ]
     },
     "status": {
+      "documentation-only": [
+        "research/tradingview-strategy-tools/tv_2lgyzykc_ultimate_strategy_template.md",
+        "research/tradingview-strategy-tools/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md",
+        "research/tradingview-strategy-tools/tv_ihvpg6ts_stop_loss_and_take_profit_in_example.md",
+        "research/tradingview-strategy-tools/tv_kzp8e4x3_monthly_returns_in_pinescript_strategies.md",
+        "research/tradingview-strategy-tools/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
+        "research/tradingview-strategy-tools/tv_n8bgynwl_template_trailing_strategy_backtester.md",
+        "research/tradingview-strategy-tools/tv_otfw8b2a_trading_report_generator_from_csv.md",
+        "research/tradingview-strategy-tools/tv_xaeg4zjg_how_to_set_backtest_time_ranges.md"
+      ],
       "implemented": [
         "backtester/strategy_cards/dca.md",
         "backtester/strategy_cards/dca_bot.md",
@@ -3111,6 +3157,19 @@
         "backtester/strategy_cards/social_sentiment.md",
         "backtester/strategy_cards/staking_ratio_flow.md",
         "backtester/strategy_cards/trade_flow_imbalance.md",
+        "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
+        "backtester/strategy_cards/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md",
+        "backtester/strategy_cards/tv_ghocsiv7_gap_filling_strategy.md",
+        "backtester/strategy_cards/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md",
+        "backtester/strategy_cards/tv_i9tjotjl_lube.md",
+        "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md",
+        "backtester/strategy_cards/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md",
+        "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
+        "backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
+        "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md",
+        "backtester/strategy_cards/tv_rlkjr2sq_bjorgum_double_tap.md",
+        "backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
+        "backtester/strategy_cards/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md",
         "backtester/strategy_cards/vol_of_vol_term_structure.md",
         "backtester/strategy_cards/xs_momentum.md"
       ]
@@ -3139,6 +3198,19 @@
         "backtester/strategy_cards/pairs_cointegration.md",
         "backtester/strategy_cards/sma_regime.md",
         "backtester/strategy_cards/stochastic.md",
+        "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
+        "backtester/strategy_cards/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md",
+        "backtester/strategy_cards/tv_ghocsiv7_gap_filling_strategy.md",
+        "backtester/strategy_cards/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md",
+        "backtester/strategy_cards/tv_i9tjotjl_lube.md",
+        "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md",
+        "backtester/strategy_cards/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md",
+        "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
+        "backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
+        "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md",
+        "backtester/strategy_cards/tv_rlkjr2sq_bjorgum_double_tap.md",
+        "backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
+        "backtester/strategy_cards/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md",
         "backtester/strategy_cards/vol_regime_hmm.md",
         "backtester/strategy_cards/voltarget.md",
         "backtester/strategy_cards/xs_momentum.md"

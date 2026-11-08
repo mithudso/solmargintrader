@@ -17,6 +17,12 @@ python3 -m backtester.core.strategy_cards
 That command is the index. There is deliberately no committed table here, because a
 committed table drifts the moment someone adds a card.
 
+For the saved TradingView publications explicitly marked as strategies, see
+[the purpose-and-rule interpretation index](../../research/TRADINGVIEW-STRATEGY-CARDS.md).
+It links each of the 21 publications to its individual card. Strategy-labelled
+reporting tools and templates have companion cards outside this loader directory;
+their platform type does not make them runnable trading hypotheses.
+
 ## Anatomy
 
 ```markdown
