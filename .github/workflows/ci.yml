@@ -240,6 +240,9 @@ jobs:
       - name: Offline HTML converter behavior
         run: python3 -m unittest scripts.test_html_to_markdown
 
+      - name: TradingView source-to-card coverage is consistent
+        run: python3 scripts/check_tradingview_cards.py
+
       # The exhaustive index under index/ is a separate artifact from
       # docs/high_signal_file_index.json above, and it goes stale the same way: it
       # looks authoritative, and nothing notices when a file moves. --check
@@ -293,8 +296,6 @@ jobs:
         working-directory: executor
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      # Match liquidity's pinned installer: its official mirror avoided the GitHub
-      # release-asset HTTP 504 that prevented this job from reaching its tests.
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       - run: uv sync --extra dev -p 3.13 --frozen
       - run: uv run ruff check src tests

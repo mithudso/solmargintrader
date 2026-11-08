@@ -753,7 +753,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 4278
+      "lines": 4280
     },
     {
       "path": "soltui/signals.py",
@@ -879,7 +879,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 503
+      "lines": 507
     },
     {
       "path": "soltui/tests",
@@ -1011,7 +1011,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 297
+      "lines": 303
     },
     {
       "path": "CONTRIBUTING.md",
