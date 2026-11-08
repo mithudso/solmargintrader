@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 82
-Delta: v81 to v82; correct capped Docs test setup and retain editor assertions.
+Version: 86
+Delta: v85 to v86; preserve converter and card histories with final delivery context.
 
 ## v1 - 2026-11-06
 
@@ -772,10 +772,36 @@ Merged origin/master afaa03a after another active session delivered Bots tab v2 
 
 Canonical repairs are merged: Stop PR 33 as 79bc183c99a171d7221813724bbc10d6a85df7cd; adapter PR 11 as 4d385318438647bcddad9f368da927b5e9c9ada9. Installed acceptance already passed. Remaining: wait for final PR 88 checks, merge, verify remote content, clean only this task's worktree/branch, and complete TASK-895.
 
+## v76 - 2026-11-08 (HTML mirror conversion; TASK-894)
 
-## v76 - 2026-11-08 (TradingView card coverage, inventory)
+Target: recursively convert HTML/HTM below /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com to text-only Markdown. Inventory: 31,880 HTML files, 9,371,462,657 bytes. Keep original HTML and generated mirror artifacts out of Git. Use Python stdlib and no network. Preserve headings, lists, code and table text. Remove scripts, styles, images and hidden markup; link labels remain text. Default output is a sibling tree; skip existing Markdown unless overwrite is requested. This extracts saved HTML, not content that requires JavaScript execution.
 
-Version: 76. Delta: v75 to v76; start TASK-886, TASK-887, TASK-888.
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63. Shared checkout has other sessions and unowned changes. Base updated from a75f5b6 to origin/master 4d0f027 in the private worktree only.
+
+Remaining: implement converter and documentation; verify regression fixtures and representative local mirror files; refresh offline indexes; commit/push PR, pass checks, merge and verify remote default branch. Do not change the shared checkout or other worktrees.
+
+## v77 - 2026-11-08 (HTML mirror converter verification; TASK-894)
+
+Completed: scripts/html_to_markdown.py uses Python stdlib, preserves subfolders and textual Markdown structure, filters hidden/embedded payloads, detects encoding, preflights name collisions, publishes atomically, and supports skip/overwrite/dry-run. scripts/test_html_to_markdown.py has 11 passing behavior checks on Python 3.13 and system Python 3.15. Ruff lint/format, scripts/check_docs.py and offline index checks pass. CI runs the converter suite in its docs job. docs/SCRIPTS.md documents the command. Incoming Bots tab history from origin/master afaa03a is retained; no Bots code was changed by this task.
+
+Execution: converted 31,880 files into /Users/mitch/dev/tradingview-markdown with zero errors; 11 outputs are empty (10 meta-refresh redirect stubs and the JavaScript-only chart page). A rerun skipped all 31,880 outputs. /Users/mitch/dev/tradingview-markdown/conversion-manifest.json lists every source/output, output hash, empty source and the final rerun summary. /Users/mitch/.local/bin/tradingview-html-to-markdown.py is an executable copy matching the repository script. Source HTML and the shared dirty checkout remain untouched.
+
+Stele transport closed after initial lifecycle writes. Queued outbox operation IDs: 5c1ebafe, 8c704dd2, 9462ad7b, 56faab7b, 976096d2.
+
+Remaining: finish merge/index commit, push task branch, create PR, pass final-head CI, merge and verify remote contents, record delivery receipt and remove only this task's clean worktree/branch. No source-conversion work remains.
+
+## v78 - 2026-11-08 (HTML converter acceptance and concurrent delivery)
+
+Independent live-acceptance-verifier confirmed all 31,880 output hashes, sizes, path mappings and UTF-8 decodes. The installed executable matches committed source SHA-256 c814d3e40f17a69d3c7f3a780a532b924f503b43774532ae6bab120a90a3e074. Actual --help and --dry-run succeed. The receipt is /Users/mitch/dev/tradingview-markdown/acceptance-receipt.json. Stele transport recovered; all five queued operation IDs in v77 were replayed.
+
+PR 90: https://github.com/mithudso/solmargintrader/pull/90. Concurrent PR 88 merged as d355b694f3d56d7ab4ee0456691bf51c54352298 while CI ran. Retain all hook records, renumber converter entries after them, and rebuild offline indexes. Converter code and installed script stay unchanged. Current delivery checkpoint is /Users/mitch/dev/tradingview-markdown/conversion-memory.json.
+
+Remaining: pass checks on the updated final head, merge PR 90, verify remote contents and clean only the converter worktree/branch.
+
+
+## v79 - 2026-11-08 (TradingView card coverage, inventory)
+
+Version: 79. Delta: v78 to v79; start TASK-886, TASK-887, TASK-888.
 
 Target: reconcile all 114 built-in studies and local TradingView script/idea sources against existing cards and code. Create missing cards as spec-only, with source provenance and explicit rule gaps. Do not change executable registry or invent performance.
 
@@ -786,9 +812,9 @@ Learned: prior PR 79 cataloged built-ins only. Local web mirror contains 742 scr
 Remaining: source inventory, semantic/exact existence reconciliation, new cards and coverage validation, owning tests and indexes, commit/push/PR/checks/merge, final receipts.
 
 
-## v77 - 2026-11-08 (TradingView cards, source review)
+## v80 - 2026-11-08 (TradingView cards, source review)
 
-Version: 77. Delta: v76 to v77; author specifications and complete expanded inventory.
+Version: 80. Delta: v79 to v80; author specifications and complete expanded inventory.
 
 Inventory includes 114 built-in studies and 4,770 canonical source records: 747 script publications, 1,610 chart/idea publications, 2,323 help solutions, and 90 other exports. The help review selects 313 financial definitions. Explicit existence matches preserve 59 original cards and all 34 registry entries. Created 1,082 spec-only cards: 84 built-in signals, 600 custom script descriptions, 70 source-specific chart methods, 202 support definitions, 64 reusable methods, 47 library-function/group specifications, 12 named custom MACD/PPO variants, and 3 named-but-undisclosed strategies. No execution or measured status was invented.
 
@@ -803,9 +829,9 @@ Continuation tooling is /tmp/solmargintrader-tv-cards: inventory.py, definitions
 Remaining: complete full raw-source verification and independent review, run owning/integration tests, regenerate offline retrieval indexes, commit/push/PR/CI/merge, synchronize safely and record receipts. Preserve original checkout dirty files and other live sessions.
 
 
-## v78 - 2026-11-08 (TradingView cards, final content)
+## v81 - 2026-11-08 (TradingView cards, final content)
 
-Version: 78. Delta: v77 to v78; close expanded inventory and finalize 1,083 new cards (1,142 total).
+Version: 81. Delta: v80 to v81; close expanded inventory and finalize 1,083 new cards (1,142 total).
 
 All 114 built-ins have a card/code/alias disposition. 4,770 canonical sources and 4,890 physical source files are bound to source hashes and selected excerpt offsets. Added the independently found short-strangle method and corrected 29 non-OHLCV input requirements. Eight detailed chart strategies now retain their disclosed entry, filter, stop and management rules with additional bound source passages. Fifty-four new built-in cards also include official help clarifications. Named-only methods remain explicit source-limited specifications.
 
@@ -816,9 +842,9 @@ The new offline validator refuses duplicate new-card ownership, missing built-in
 Remaining: final independent audit of the corrected content; refreshed offline retrieval artifacts; passing backtester and focused SolTUI integration; commit/push/PR/final CI/merge; safe default-checkout synchronization and final receipts. Original dirty paths remain untouched.
 
 
-## v79 - 2026-11-08 (TradingView cards, verified)
+## v82 - 2026-11-08 (TradingView cards, verified)
 
-Version: 79. Delta: v78 to v79; record final local checks and targeted review.
+Version: 82. Delta: v81 to v82; record final local checks and targeted review.
 
 Completed content: 1,083 new spec-only cards; 1,142 total cards; all 114 built-in study dispositions; all original 59 cards and 34 registry entries preserved. Complete source inventory has 4,770 canonical records and 4,890 verified physical sources including the reference and excluded captures. docs/TRADINGVIEW-CARD-FILES.md lists every changed canonical checkout path.
 
@@ -831,9 +857,9 @@ Operational incident: index/search.py --text slippage also calls idle.maybe_star
 Remaining delivery work only: commit/push current branch, open PR, record its URL, wait final CI, merge, verify remote content, and synchronize the default checkout only if unrelated active files remain intact. TASK-886 inventory and TASK-887 cards are done; TASK-888 owns delivery.
 
 
-## v80 - 2026-11-08 (TradingView card delivery checkpoint)
+## v83 - 2026-11-08 (TradingView card delivery checkpoint)
 
-Version: 80. Delta: v79 to v80; integrate concurrent upstream work and preserve both histories.
+Version: 83. Delta: v82 to v83; integrate concurrent upstream work and preserve both histories.
 
 PR: https://github.com/mithudso/solmargintrader/pull/91 ; branch feat/tradingview-card-coverage. Initial catalog commit 776aedb. Integrated upstream d355b69, including Bots tab v2 from PR 87 and hook-repair records from PR 88. Their code and history are preserved; only derived indexes are regenerated. This task owns the card catalog and related validation/docs, not those other sessions' live services or hook installations.
 
@@ -842,9 +868,9 @@ Final card content is 1,083 new specs, 1,142 total cards, 114 built-ins and 4,77
 No further card implementation is required for this request. For delivery/resume, inspect PR 91: if it is still open, finish final-head CI and merge; if merged, use its merge receipt and complete TASK-888 if needed. TASK-888 holds the authoritative final delivery receipt. Recheck conditional remaining actions rather than replaying completed inventory or card extraction. Source-limited definitions are documented product limitations, not a pending permission request.
 
 
-## v81 - 2026-11-08 (TradingView final integration checks)
+## v84 - 2026-11-08 (TradingView final integration checks)
 
-Version: 81. Delta: v80 to v81; confirm merged-tree checks without changing card content.
+Version: 84. Delta: v83 to v84; confirm merged-tree checks without changing card content.
 
 Integrated upstream d355b69 in merge commit 67b2e5d. All 59 pre-existing cards match origin/master byte for byte. The task diff contains no SolTUI runtime, backtester/core, backtester/tests, liquidity, executor, extension or Mongo changes. The catalog source ledger remains SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
 
@@ -855,12 +881,21 @@ Documentation discovery now agrees with the concurrent Bots changes: backtester 
 Delivery continuation is conditional on https://github.com/mithudso/solmargintrader/pull/91 : if open, wait for final-head required checks and merge; if merged, verify its default-branch files and use the merge receipt in TASK-888. No more card implementation is required. Preserve the original checkout's unrelated changes and all other active PRs/worktrees.
 
 
-## v82 - 2026-11-08 (large-catalog CI test setup)
+## v85 - 2026-11-08 (large-catalog CI test setup)
 
-Version: 82. Delta: v81 to v82; fix the five Docs editor test assumptions exposed by the expanded card catalog.
+Version: 85. Delta: v84 to v85; fix the five Docs editor test assumptions exposed by the expanded card catalog.
 
 CI run 42467823348 on c09ecc9 passed backtester, docs, extension units/browser, liquidity and Mongo. Executor setup failed before tests after three HTTP 504 responses downloading uv 0.13.7. The macOS suite ran 872 cases in 747.928 seconds and had five StopIteration errors: Docs editor tests assumed soltui/config.py or research/results files would occur in the unfiltered first 1,000 alphabetically sorted rows. New strategy cards legitimately fill that first page.
 
 Changed only those five test setups in soltui/tests/test_tui.py to use the real #docs-filter input before selecting late-sorted target files. Existing cursor/open/read-only/unsaved-editor assertions remain intact. The production table cap, filtering and editor behavior did not change. Full TestDocsTab now passes all 9 cases locally in 78.133 seconds. KNOW-923 records the literal failure and the reason. No card content or ledger provenance changed.
 
 Final delivery stays conditional on https://github.com/mithudso/solmargintrader/pull/91 ; push this test/index correction and wait for a passing final-head CI run. The new run also retries the transient executor tool download. Preserve all other sessions and their active PRs. TASK-888 owns the final merge receipt and cleanup; no new strategy implementation is required.
+
+
+## v86 - 2026-11-08 (card delivery: concurrent converter integration)
+
+Version: 86. Delta: v85 to v86; integrate origin/master eea27e2 from PR 90 without losing either task.
+
+Preserved all converter source, documentation, tests and history. The docs CI job retains both Offline HTML converter behavior and TradingView source-to-card coverage checks. Card content remains unchanged at ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
+
+The five capped-catalog Docs editor fixture corrections pass all 9 TestDocsTab cases locally. Other preceding CI checks passed; the executor artifact download receives a new attempt with the final integrated head. Delivery is still through https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. If that PR is already merged, verify its receipt rather than replaying extraction or test fixes. No card implementation or new source extraction is pending.

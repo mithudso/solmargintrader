@@ -237,6 +237,9 @@ jobs:
       - name: Test counts and retrieval indexes agree with the repo
         run: python3 scripts/check_docs.py
 
+      - name: Offline HTML converter behavior
+        run: python3 -m unittest scripts.test_html_to_markdown
+
       - name: TradingView source-to-card coverage is consistent
         run: python3 scripts/check_tradingview_cards.py
 

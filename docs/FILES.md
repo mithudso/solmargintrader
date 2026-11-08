@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `c09ecc9` (2026-11-08T09:54:33+00:00). 1835 tracked files, 29.5 MB.
+**Generated** from `index/INDEX.json` at commit `a4df3b2` (2026-11-08T09:57:43+00:00). 1837 tracked files, 29.5 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (1615 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 269/283 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (1617 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 271/285 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (119 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`liquidity`](#liquidity) — 57 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 17 files
-- [`scripts`](#scripts) — 3 files
+- [`scripts`](#scripts) — 5 files
 - [`skills`](#skills) — 62 files
 - [`tools`](#tools) — 3 files
 
@@ -184,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 867 lines · 130,269 B · description: **extracted**
+`doc` · 902 lines · 134,912 B · description: **extracted**
 
-**Purpose.** Version: 82 Delta: v81 to v82; correct capped Docs test setup and retain editor assertions. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 86 Delta: v85 to v86; preserve converter and card histories with final delivery context. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -200,9 +200,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 411 lines · 25,335 B · description: **extracted**
+`doc` · 420 lines · 25,666 B · description: **extracted**
 
-**Purpose.** Version: 54 Delta: v53 to v54; integrate concurrent histories and TradingView card coverage. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 54 Delta: v53 to v54; preserve converter and card histories with final delivery context. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -280,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18008 lines · 885,976 B · description: **extracted**
+`doc` · 18008 lines · 885,975 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -312,7 +312,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/SCRIPTS.md`
 
-`doc` · 978 lines · 49,252 B · description: **extracted**
+`doc` · 1006 lines · 50,937 B · description: **extracted**
 
 **Purpose.** Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual — the commands you actually type.
 
@@ -16208,7 +16208,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 301 lines · 12,828 B · description: **curated**
+`ci` · 304 lines · 12,938 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -17436,7 +17436,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-3 files.
+5 files.
 
 #### `scripts/build_doc_index.py`
 
@@ -17467,6 +17467,26 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `REPO`, `normalize_description()`, `source_description()`, `validate()`, `main()`. Depends on `backtester`.
 
 **Use.** `python3 scripts/check_tradingview_cards.py --help`
+
+#### `scripts/html_to_markdown.py`
+
+`code-python` · 366 lines · 11,996 B · description: **extracted**
+
+**Purpose.** Recursively convert saved HTML to text-only Markdown, without network or dependencies. Usage: python3 scripts/html_to_markdown.py SOURCE [--output OUTPUT] [--overwrite] The default SOURCE is the current directory. OUTPUT defaults to a sibling directory named SOURCE-markdown. Original HTML is never modified; existing outputs are skipped.
+
+**Contents.** Defines `VOID`, `IGNORE`, `BLOCK`, `SPACE`, `ESCAPE`, `CHARSET`, `class MarkdownParser`, `html_to_markdown()`, `read_html()`, `conversion_plan()` and 2 more.
+
+**Use.** `python3 scripts/html_to_markdown.py --help`
+
+#### `scripts/test_html_to_markdown.py`
+
+`test` · 143 lines · 6,180 B · description: **extracted**
+
+**Purpose.** Behavior checks for offline HTML conversion and safe recursive output.
+
+**Contents.** Defines `class MarkdownTests`, `class FileTests`.
+
+**Use.** `python3 -m pytest scripts/test_html_to_markdown.py -q`
 
 ---
 

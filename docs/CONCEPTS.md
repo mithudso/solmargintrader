@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T09:54:33+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T09:57:43+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -40,7 +40,7 @@ Full list: `python3 index/search.py --concept costs -n 1299`
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **466 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **467 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -55,7 +55,7 @@ Strongest files:
 - `skills/trading-and-investing/SKILL.md` (51 hits)
 - `soltui/tui.py` (39 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 466`
+Full list: `python3 index/search.py --concept risk-rails -n 467`
 
 ### Grid trading
 
