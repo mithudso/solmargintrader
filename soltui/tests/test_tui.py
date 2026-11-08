@@ -192,6 +192,21 @@ class TestQueueTab(unittest.IsolatedAsyncioTestCase):
             app.query_one(TabbedContent).active = "tab-queue"
             await pilot.pause()
 
+    async def test_start_fresh_button_calls_fresh_launch(self) -> None:
+        with TemporaryDirectory() as tmp:
+            for p in self._patch_paths(Path(tmp)):
+                p.start()
+                self.addCleanup(p.stop)
+            app = SolTuiApp(make_settings())
+            with mock.patch("soltui.bgcontrol.start") as start:
+                async with app.run_test(size=TEST_SIZE) as pilot:
+                    from textual.widgets import TabbedContent
+                    app.query_one(TabbedContent).active = "tab-queue"
+                    await pilot.pause()
+                    await pilot.click("#queue-start-fresh")
+                    await pilot.pause()
+                start.assert_called_once_with("SOL", fresh=True)
+
     async def test_an_empty_queue_renders_without_a_worker(self) -> None:
         """Opening the tab before any sweep has run must not error."""
         with TemporaryDirectory() as tmp:
