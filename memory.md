@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 156
-Delta: v155 to v156; track actionable sweep recovery guidance.
+Version: 158
+Delta: v157 to v158; record authorized synthetic proof-of-concept sweep.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1622,3 +1622,11 @@ Task: Signal Backtest reports bad value(s) in fds_to_keep (Stele TASK-1021). Wor
 ## v156 - 2026-11-08
 
 TASK-1009: The current interactive SolTUI process started after PR 109 and uses the current checkout. Its Sweep pane shows the saved error in /Users/mitch/.config/soltui/bg/state.json from a stopped worker at 09:07. Existing results and proof remain unchanged. The Start fresh button creates a separate history only when selected; opening the tab must not start a worker. Update the display to identify the prior error and explain that Start fresh preserves history. The status now labels the prior proof error and points to Start fresh. All 82 queue and fresh-history tests pass. Remaining: index refresh, CI and delivery; verify live process acceptance without disturbing the user session.
+
+## v157 - 2026-11-08
+
+The active SOL sweep uses a new proof-bound results file; 1d jobs succeed and 1h jobs fail. The Coinbase SOL_1h.csv contains three six-hour jumps, with 15 missing bars total. Direct Coinbase reads confirm all 15 remain unavailable. Binance.US returns bars at each missing hour, but its venue prices must not be silently mixed with Coinbase. Do not modify the active data or proof while its worker runs. Preserve historic results. User was asked whether to use a recent continuous range or investigate other sources. Stele task create queued in outbox 33ab8890 because transport closed. Remaining: determine a complete honest source or chosen range, verify, preserve worker and proof, and deliver. Worktree: /Users/mitch/dev/solmargintrader-wt-hourly-gaps.
+
+## v158 - 2026-11-08
+
+Owner authorized synthetic bars for the proof of concept. Three gaps contain 15 missing hourly bars in total. Stopped prior worker at its job boundary. Original price cache and prior results remain untouched. Created separate /Users/mitch/.config/soltui/poc-data/sol-hourly-synthetic-epsmf8t9 with original copy, a 15-bar flat previous-close zero-volume hourly series and SOL_1h.synthetic.json provenance. New worker PID 26985 uses that directory and writes separate results /Users/mitch/.config/soltui/bg/results-8f615318bd7af7168ba68c0469d43b7c.jsonl. These outputs use synthetic data and are not real-market evidence. CLI overrides data-dir for this run; ordinary UI Start does not retain that override and will refuse proof mismatch rather than mix data. Remaining: verify first hourly job, deliver records, and retain the worker and historical files.
