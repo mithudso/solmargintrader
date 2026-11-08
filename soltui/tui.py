@@ -2,8 +2,8 @@
 
     python3 -m soltui.tui
 
-Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only),
-Analyze, Cumulative, Research, Docs.
+The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are
+grouped by `shell.py` into five destinations; `--classic` shows the original tab bar.
 
 All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`,
 `status`); this file is presentation and wiring. That split is what lets the
@@ -54,6 +54,7 @@ from .help_screen import HelpScreen
 from backtester.core import scorecard as sc
 
 from . import bgcontrol
+from . import shell
 from . import bots as bots_mod
 from .bots_screens import CoinPickerScreen, OptimizeScreen
 from .experiment_screens import ExperimentScreen
@@ -536,10 +537,18 @@ class EditorBar(Widget):
 
 
 class SolTuiApp(App):
-    """The console: sixteen tabs over the tested modules."""
+    """The console over the tested modules.
+
+    v2 (the default) groups the panes into five destinations (Now, Signal, Research, Money, Library)
+    plus Settings; see `shell.py` and docs/design/soltui-v2/DESIGN.md. Every classic tab is still a
+    pane of the one `#main-tabs` TabbedContent, so `query_one(TabbedContent).active = "tab-…"` and every
+    pane id keep working; v2 hides that tab bar and drives it from its own navigation. `classic=True`
+    shows the original tab bar instead (`python -m soltui.tui --classic`).
+    """
 
     TITLE = "soltui — SOL strategy console"
     SUB_TITLE = "dry-run only · no live order path"
+    COMMANDS = App.COMMANDS | {shell.SolCommands}
     CSS = """
     #execute-banner, #live-run-banner {
         background: $warning 30%;
@@ -598,6 +607,35 @@ class SolTuiApp(App):
     /* Every table gets a title line: bold, in the accent colour, with a space above it so a page of
        tables reads as sections rather than one long grid. */
     .table-title { color: $accent; margin-top: 1; padding: 0 1; }
+
+    /* -- v2 shell (docs/design/soltui-v2/DESIGN.md). The classic tab bar stays in the DOM and keeps
+       driving the panes; v2 only hides it and navigates through #v2-topbar / #v2-subnav. -- */
+    Screen { layers: default overlay; }
+    Screen.v2 Header { display: none; }
+    Screen.v2 #main-tabs > ContentTabs { display: none; }
+    Screen.v2 #compound-sections > ContentTabs { display: none; }
+    Screen.classic #v2-topbar, Screen.classic #v2-subnav, Screen.classic #v2-health,
+    Screen.classic #v2-live-banner { display: none; }
+    #v2-topbar { height: 1; background: $surface; }
+    #v2-subnav { height: 1; }
+    #status-row { height: 1; }
+    #status-row #indicator { width: auto; }
+    #v2-health { width: 1fr; height: 1; }
+    #v2-live-banner { height: 1; display: none; }
+    #v2-live-banner.on { display: block; }
+    #v2-explain {
+        layer: overlay; dock: right; width: 48; height: 1fr; display: none; margin: 4 0 1 0;
+        background: $panel; border-left: thick $accent; padding: 1 2;
+    }
+    #v2-explain.open { display: block; }
+    #now-body { height: 1fr; }
+    #now-left, #now-right { width: 1fr; height: 1fr; }
+    #now-needs { height: auto; max-height: 14; }
+    #now-coins { height: 13; }
+    #now-tiles { height: 5; }
+    .now-tile { width: 1fr; height: 5; border: round $panel-lighten-1; padding: 0 1; }
+    #now-activity, #now-research, #now-prices { padding: 0 1; height: auto; }
+    #compound-hero { padding: 0 1; height: auto; margin-bottom: 1; }
     """
     BINDINGS = [
         Binding("f1", "show_help", "Help / glossary", priority=True),
@@ -611,14 +649,47 @@ class SolTuiApp(App):
         Binding("ctrl+down", "shrink_editor", "Editor shorter", show=False),
         ("f5", "liq_refresh", "Liquidity: refresh"),
         ("f8", "liq_toggle_kill", "Liquidity: kill/resume"),
+        # v2 navigation. Inputs and editors consume printable keys first, so typing a 1 or a ? into a
+        # field never jumps away; these fire only when a table, list or button has focus.
+        Binding("1", "v2_goto('now')", "Now", show=False),
+        Binding("2", "v2_goto('signal')", "Signal", show=False),
+        Binding("3", "v2_goto('research')", "Research", show=False),
+        Binding("4", "v2_goto('money')", "Money", show=False),
+        Binding("5", "v2_goto('library')", "Library", show=False),
+        Binding("comma", "v2_goto('settings')", "Settings", show=False),
+        Binding("left_square_bracket", "v2_cycle(-1)", "Previous view", show=False),
+        Binding("right_square_bracket", "v2_cycle(1)", "Next view", show=False),
+        Binding("question_mark", "v2_explain", "Explain"),
     ]
 
     EDITOR_HEIGHT = 16
 
     def __init__(self, settings: Settings | None = None, *, ui_state_path: Path | None = None,
                  ensure_autopilot: bool = False, refresh_wallet: bool = False,
-                 stream_prices: bool = False) -> None:
+                 stream_prices: bool = False, start: str = "tab-backtest", classic: bool = False) -> None:
         super().__init__()
+        # v2 shell state. `start` is the pane shown first: the console (`main`) opens on Now; the class
+        # default stays Backtest because embedding code and the test suite address its widgets without
+        # switching to it first. `classic` restores the original tab bar and theme.
+        self._v2 = not classic
+        self._start = start
+        self._v2_dests: tuple[shell.Destination, ...] = shell.DESTINATIONS
+        self._v2_dest, self._v2_index = "research", 0
+        self._v2_last: dict[str, int] = {}
+        self._v2_reads: dict[str, dict[str, Any]] = {}
+        self._v2_autopilot: dict[str, Any] | None = None
+        self._v2_autopilot_at = 0.0
+        self._v2_notice: dict[str, Any] | None = None
+        self._v2_needs: list[shell.Need] = []
+        self._v2_now_loading = False
+        self._v2_cumulative: str | None = None
+        self._v2_forward: dict[str, Any] | None = None
+        # Now hides the shared editor (it would take half the overview) without persisting that.
+        self._v2_editor_suppressed = False
+        self._v2_editor_was_open = True
+        if self._v2:
+            self.register_theme(shell.NIGHT)
+            self.theme = shell.NIGHT.name
         # The real console starts the detached price recorder (public Coinbase stream) so the Bots
         # tab's forward tests have data; a test app must never spawn it or reach the network.
         self._stream_prices = stream_prices
@@ -755,14 +826,25 @@ class SolTuiApp(App):
         yield OptionList(*[Option(f"{p['title']}   {p['net_pct_text']}", id=p["value"])
                            for p in self._presets], id=f"preset-{tab}", classes="preset-list")
 
+    def get_theme_variable_defaults(self) -> dict[str, str]:
+        # The CSS names the v2 tokens ($up, $down, ...); it parses before any theme applies.
+        return {**super().get_theme_variable_defaults(), **shell.theme_variable_defaults()}
+
     def compose(self) -> ComposeResult:
-        """Build the tab set."""
+        """Build the tab set, and around it the v2 chrome (hidden in classic mode)."""
         self._load_presets()
         yield Header()
-        yield Static(build_title(self.state), id="indicator")
-        yield Static("Hover a control, table header or value for help · F1: searchable glossary",
-                     id="help-hint", markup=False)
-        with TabbedContent(initial="tab-backtest"):
+        yield shell.SegmentBar(id="v2-topbar")
+        yield shell.SegmentBar(id="v2-subnav")
+        with Horizontal(id="status-row"):
+            yield Static(build_title(self.state), id="indicator")
+            yield Static("", id="v2-health")
+        yield Static("Hover a control, table header or value for help · F1: searchable glossary · "
+                     "? explain · ctrl+p every command", id="help-hint", markup=False)
+        yield Static("", id="v2-live-banner")
+        with TabbedContent(id="main-tabs", initial=self._start):
+            with TabPane("Now", id="tab-now"):
+                yield from self._now_pane()
             with TabPane("Settings", id="tab-settings"):
                 yield from self._settings_pane()
             with TabPane("Strategies", id="tab-strategies"):
@@ -800,7 +882,29 @@ class SolTuiApp(App):
             with TabPane("Docs", id="tab-docs"):
                 yield from self._docs_pane()
         yield from self._editor_pane()
+        yield Static("", id="v2-explain")
         yield Footer()
+
+    def _now_pane(self) -> ComposeResult:
+        """Now: does anything need me? Built from the same registry reads as every other surface."""
+        with Horizontal(id="now-body"):
+            with VerticalScroll(id="now-left"):
+                yield Static("[b]Needs you[/b]: everything stale, failed or unseen, worst first. "
+                             "Enter opens the view that fixes it.", classes="table-title", id="now-needs-title")
+                yield OptionList(id="now-needs")
+                yield Static("[b]Signal · every coin[/b]: latest backtest verdict, hit rates, paper dollars "
+                             "and trainer state. Enter opens that coin's call.", classes="table-title")
+                yield GlossaryTable(id="now-coins")
+                yield Static("[b]Activity[/b]: recent dated events, newest first.", classes="table-title")
+                yield Static("Loading…", id="now-activity")
+            with VerticalScroll(id="now-right"):
+                with Horizontal(id="now-tiles"):
+                    for i in range(4):
+                        yield Static("", id=f"now-tile-{i}", classes="now-tile")
+                yield Static("[b]Research · the evidence so far[/b]", classes="table-title")
+                yield Static("Loading…", id="now-research")
+                yield Static("[b]Live prices[/b] from the price recorder", classes="table-title")
+                yield Static("", id="now-prices")
 
     def _editor_pane(self) -> ComposeResult:
         """The one file viewer/editor, visible under every tab.
@@ -1108,6 +1212,8 @@ class SolTuiApp(App):
                             "forces FLAT. Double-click a metric (or select it and press Space) to switch it; "
                             "a single click shows its full detail in the editor below. No order is placed.",
                             classes="hint")
+                        # v2: the call as the answer (badge, composite, gates, context) above the detail.
+                        yield Static("No call yet: press Signal now.", id="compound-hero")
                         with Horizontal(classes="form-row"):
                             yield Button("Signal now", variant="success", id="compound-signal")
                             yield Button("Toggle on/off", id="compound-toggle")
@@ -1760,6 +1866,8 @@ class SolTuiApp(App):
             self._bots_job("prices.ensure", {}, "starting the price recorder")
         self._install_help()
         self._apply_ui_state()
+        # After the saved editor state: Now hides the editor, and that must not be undone by it.
+        self._v2_setup()
 
     def _install_help(self) -> None:
         """Include every form and lazy tab without copying text into handlers."""
@@ -1784,6 +1892,10 @@ class SolTuiApp(App):
         if isinstance(self.screen, HelpScreen):
             self.screen.dismiss()
             return
+        self.push_screen(HelpScreen(self._focused_help_text()))
+
+    def _focused_help_text(self) -> str:
+        """What F1 and the v2 Explain drawer show: the focused field, else the current tab."""
         widget = self.focused
         text = ""
         if isinstance(widget, GlossaryTable):
@@ -1800,7 +1912,7 @@ class SolTuiApp(App):
             text = control_help(widget.id) or str(widget.tooltip or "")
         if not text:
             text = TAB_HELP.get(self.query_one(TabbedContent).active, "")
-        self.push_screen(HelpScreen(text))
+        return text
 
     def _tick(self) -> None:
         """Refresh the in-app indicator line. Mirrors the menu-bar title exactly.
@@ -2614,6 +2726,8 @@ class SolTuiApp(App):
             self._compound_load_results()
 
     def _compound_render_signal(self, r: dict[str, Any]) -> None:
+        for hero in self.query("#compound-hero"):
+            hero.update(shell.signal_hero(r))
         when = time.strftime("%H:%M UTC", time.gmtime(r["decided_at"]))
         blocked = ", ".join(r["blocked_by"]) or "none"
         self.query_one("#compound-call", Static).update(Text(
@@ -4175,6 +4289,10 @@ class SolTuiApp(App):
     # -- the editor's size and visibility (the orange bar above it) ---------------------------
 
     def _set_editor_open(self, open_: bool, *, persist: bool = True) -> None:
+        if self._v2_editor_suppressed:
+            # ctrl+e on Now: the owner asked for the editor, so stop hiding it there.
+            self._v2_editor_suppressed = False
+            self.query_one("#editor-bar").display = True
         panel = self.query_one("#editor-panel")
         panel.display = open_
         bar = self.query_one("#editor-bar", EditorBar)
@@ -4369,10 +4487,397 @@ class SolTuiApp(App):
         self._docs_loaded_text = text
         status.update(f"{path} — saved")
 
+    # -- v2 shell ----------------------------------------------------------
+    # Navigation only ever sets `#main-tabs`.active (and the Compound section), so every pane's own
+    # TabActivated hooks (lazy loads, help install) run exactly as they do from the classic tab bar.
+
+    # Status reads for the health strip and Now. All read-only and cheap (each well under 20 ms);
+    # `compound.autopilot_status` shells out to launchctl, so it refreshes at most once a minute.
+    _V2_TICK_READS = ("backtest.status", "queue.progress", "liquidity.status", "prices.status",
+                      "portfolio.last")
+
+    def _v2_setup(self) -> None:
+        self.screen.add_class("v2" if self._v2 else "classic")
+        tabs = self.query_one("#main-tabs", TabbedContent)
+        # Only this TabbedContent's own panes (they sit in its ContentSwitcher), not the sections nested
+        # inside Compound or Bots.
+        panes = [(p.id, str(tabs.get_tab(p.id).label)) for p in tabs.query(TabPane)
+                 if p.id and next(a for a in p.ancestors if isinstance(a, TabbedContent)) is tabs]
+        self._v2_dests = shell.with_extra_views(panes)
+        coins = self.query_one("#now-coins", GlossaryTable)
+        coins.cursor_type = "row"
+        coins.add_columns("coin", "backtest verdict", "bt hit", "fwd calls", "fwd hit", "paper $", "unattended")
+        self._v2_sync_from_tabs()
+        if not self._v2:
+            return
+        self._v2_health_tick()
+        self.set_interval(5, self._v2_health_tick)
+        if self._start == "tab-now":
+            self._v2_load_now()
+            # Focus starts on the classic tab bar, which v2 hides; put it on the list that answers
+            # the screen's question instead. Not an input, so the 1-5 / ? keys still navigate.
+            self.call_after_refresh(lambda: self.query_one("#now-needs", OptionList).focus())
+
+    def _v2_destination(self, key: str) -> shell.Destination:
+        return next(d for d in self._v2_dests if d.key == key)
+
+    def _v2_show(self, dest_key: str, index: int | None = None) -> None:
+        dest = self._v2_destination(dest_key)
+        index = self._v2_last.get(dest_key, 0) if index is None else index % len(dest.views)
+        view = dest.views[index]
+        # Drop focus first. A focused widget in the pane being hidden hands focus to a sibling in that
+        # same pane, and TabbedContent answers a pane's focus by switching back to it, so the move
+        # would bounce. The classic tab bar never hit this because clicking a tab focuses the tab bar.
+        self.set_focus(None)
+        if view.inner:
+            pane = self.query_one(f"#{view.inner}", TabPane)
+            inner = next(a for a in pane.ancestors if isinstance(a, TabbedContent))
+            inner.active = view.inner
+        self.query_one("#main-tabs", TabbedContent).active = view.tab
+        self._v2_dest, self._v2_index = dest_key, index
+        self._v2_last[dest_key] = index
+        self._v2_render_chrome()
+        # Synchronously, not after a refresh: the pane's "focused" message must queue before the next
+        # key press, or a late one for the view just left switches the tabs back to it.
+        self._v2_focus_into(view.inner or view.tab)
+
+    def _v2_focus_into(self, pane_id: str) -> None:
+        """Focus the view's first table, list or button: keyboard-ready, and not an input, so the
+        number keys keep navigating. Widgets inside a nested, hidden section are skipped."""
+        current = self._v2_destination(self._v2_dest).views[self._v2_index]
+        if pane_id != (current.inner or current.tab):
+            # Scheduled for a view the owner already left (fast keys, or a slow first load such as
+            # Cumulative's): focusing into it now would pull the tabs back there.
+            return
+        panes = self.query(f"#{pane_id}")
+        if not panes:
+            return
+        pane = panes.first(TabPane)
+
+        def shown(widget: Widget) -> bool:
+            # A Select's dropdown is an OptionList kept with display: none; focusing it opens nothing
+            # useful and confuses the pane. Only widgets displayed all the way up to the pane count.
+            node: Any = widget
+            while node is not None and node is not pane:
+                if not node.display:
+                    return False
+                node = node.parent
+            return True
+
+        candidates = [w for w in pane.query("*")
+                      if isinstance(w, (DataTable, OptionList, Button)) and w.focusable and shown(w)
+                      and next((a for a in w.ancestors if isinstance(a, TabPane)), None) is pane]
+        best = next((w for w in candidates if isinstance(w, (DataTable, OptionList))), None) \
+            or next(iter(candidates), None)
+        if best is not None:
+            best.focus()
+
+    def _v2_sync_from_tabs(self) -> None:
+        """Follow the panes when something other than the v2 bars switched them (tests, links)."""
+        tabs = self.query("#main-tabs")
+        if not tabs:
+            return
+        active = tabs.first(TabbedContent).active
+        inner = None
+        if active == "tab-compound":
+            sections = self.query("#compound-sections")
+            inner = sections.first(TabbedContent).active if sections else None
+        found = shell.locate(active, inner, self._v2_dests)
+        if found:
+            dest, index = found
+            self._v2_dest, self._v2_index = dest.key, index
+            self._v2_last[dest.key] = index
+        self._v2_render_chrome()
+
+    @on(TabbedContent.TabActivated)
+    def _v2_tab_activated(self, event: TabbedContent.TabActivated) -> None:
+        if event.tabbed_content.id not in ("main-tabs", "compound-sections"):
+            return
+        self._v2_sync_from_tabs()
+        if event.pane is not None and event.pane.id == "tab-now":
+            self._v2_load_now()
+
+    def _v2_render_chrome(self) -> None:
+        if not self._v2 or not self.query("#v2-topbar"):
+            return
+        dest = self._v2_destination(self._v2_dest)
+        clock = time.strftime("%H:%M")
+        price = shell.price_line(self._v2_reads)
+        self.query_one("#v2-topbar", shell.SegmentBar).set_segments(
+            shell.topbar_segments(dest.key, price, self.SUB_TITLE, clock, self.size.width))
+        self.query_one("#v2-subnav", shell.SegmentBar).set_segments(shell.subnav_segments(dest, self._v2_index, self.size.width))
+        panel, bar = self.query_one("#editor-panel"), self.query_one("#editor-bar")
+        if dest.key == "now" and not self._v2_editor_suppressed and bar.display:
+            self._v2_editor_was_open = bool(panel.display)
+            self._v2_editor_suppressed = True
+            panel.display = bar.display = False
+        elif dest.key != "now" and self._v2_editor_suppressed:
+            self._v2_editor_suppressed = False
+            bar.display = True
+            panel.display = self._v2_editor_was_open
+        banner = self.query_one("#v2-live-banner", Static)
+        banner.set_class(dest.live_money, "on")
+        if dest.live_money:
+            line = Text()
+            line.append(" ◆ LIVE MONEY ", f"bold {shell.TOK['bg']} on {shell.TOK['live']}")
+            line.append("  Real balances and positions. These views read; the only write is the Aero LP "
+                        "Kill / Resume (F8), and Resume asks twice.", shell.TOK["live"])
+            banner.update(line)
+
+    def on_resize(self) -> None:
+        self._v2_render_chrome()
+
+    @on(shell.SegmentBar.Selected)
+    def _v2_segment(self, event: shell.SegmentBar.Selected) -> None:
+        kind, _, value = event.segment.partition(":")
+        if kind == "dest":
+            self._v2_show(value)
+        elif kind == "view":
+            self._v2_show(self._v2_dest, int(value))
+
+    def action_v2_goto(self, key: str) -> None:
+        self._v2_show(key)
+
+    def action_v2_cycle(self, step: int) -> None:
+        self._v2_show(self._v2_dest, self._v2_index + int(step))
+
+    def _v2_health_tick(self) -> None:
+        """Every background process on one line, refreshed every 5 s; Needs-you follows it."""
+        if not self.query("#v2-health"):
+            return
+        for name in self._V2_TICK_READS:
+            self._v2_reads[name] = self._call(name, quiet=True)
+        notice = self._call("portfolio.notice", {}, quiet=True)
+        self._v2_notice = notice["result"] if notice.get("ok") else None
+        if time.time() - self._v2_autopilot_at > 60:
+            self._v2_autopilot_at = time.time()
+            env = self._call("compound.autopilot_status", quiet=True)
+            self._v2_autopilot = env["result"] if env.get("ok") else None
+        items = shell.health_items(self._v2_reads, forward_running=self._forward_running,
+                                   autopilot=self._v2_autopilot)
+        self.query_one("#v2-health", Static).update(shell.health_text(items))
+        self._v2_render_needs()
+        self._v2_render_prices()
+        self._v2_render_chrome()
+
+    def _v2_render_needs(self) -> None:
+        listing = self.query("#now-needs")
+        if not listing:
+            return
+        self._v2_needs = shell.needs(self._v2_reads, autopilot=self._v2_autopilot, notice=self._v2_notice)
+        options = listing.first(OptionList)
+        highlighted = options.highlighted
+        options.clear_options()
+        if self._v2_needs:
+            options.add_options([Option(shell.need_prompt(n), id=f"need-{i}") for i, n in enumerate(self._v2_needs)])
+        else:
+            options.add_option(Option(shell.status_text("ok", "All clear", "nothing stale, failed or unseen"),
+                                      id="need-none"))
+        if highlighted is not None and highlighted < options.option_count:
+            options.highlighted = highlighted
+        self.query_one("#now-needs-title", Static).update(
+            f"[b]Needs you · {len(self._v2_needs)}[/b]: everything stale, failed or unseen, worst first. "
+            "Enter opens the view that fixes it.")
+
+    @on(OptionList.OptionSelected, "#now-needs")
+    def _v2_need_selected(self, event: OptionList.OptionSelected) -> None:
+        option_id = event.option.id or ""
+        if not option_id.startswith("need-") or option_id == "need-none":
+            return
+        need = self._v2_needs[int(option_id.removeprefix("need-"))]
+        found = shell.locate(need.tab, need.inner, self._v2_dests)
+        if found:
+            self._v2_show(found[0].key, found[1])
+
+    @on(DataTable.RowSelected, "#now-coins")
+    def _v2_coin_selected(self, event: DataTable.RowSelected) -> None:
+        coin = str(event.row_key.value or "")
+        select = self.query_one("#compound-coin", Select)
+        if coin and coin != select.value:
+            try:
+                select.value = coin
+            except Exception:  # noqa: BLE001 - a coin with no cached data is not in the list
+                pass
+        self._v2_show("signal", 0)
+
+    def _v2_load_now(self) -> None:
+        """The slower Now reads (the per-coin overview is ~0.7 s) run off the UI thread."""
+        if self._v2_now_loading:
+            return
+        self._v2_now_loading = True
+        self.run_worker(self._v2_now_worker, thread=True, exclusive=True, group="v2-now", exit_on_error=False)
+
+    def _v2_now_worker(self) -> None:
+        data: dict[str, Any] = {}
+        try:
+            data["compound.overview"] = self._call("compound.overview", quiet=True)
+            data["compound.autopilot_status"] = self._call("compound.autopilot_status", quiet=True)
+            data["queue.status"] = self._call("queue.status", quiet=True)
+            data["compound.forward_status"] = self._call("compound.forward_status", quiet=True)
+            if self._v2_cumulative is None:
+                data["cumulative.summary"] = self._call("cumulative.summary", quiet=True)
+        finally:
+            try:
+                self.call_from_thread(self._v2_render_now, data)
+            except RuntimeError:  # the app closed while the reads ran
+                self._v2_now_loading = False
+
+    def _v2_render_now(self, data: dict[str, Any]) -> None:
+        self._v2_now_loading = False
+        if not self.query("#now-coins"):
+            return
+        if data.get("queue.status"):
+            self._v2_reads["queue.status"] = data["queue.status"]
+        auto = data.get("compound.autopilot_status") or {}
+        if auto.get("ok"):
+            self._v2_autopilot, self._v2_autopilot_at = auto["result"], time.time()
+        fwd = data.get("compound.forward_status") or {}
+        self._v2_forward = fwd["result"] if fwd.get("ok") else None
+        cum = data.get("cumulative.summary") or {}
+        if cum.get("ok"):
+            self._v2_cumulative = str(cum["result"].get("headline") or "")
+
+        table = self.query_one("#now-coins", GlossaryTable)
+        table.clear()
+        overview = data.get("compound.overview") or {}
+        for r in (overview.get("result") or {}).get("coins", []) if overview.get("ok") else []:
+            table.add_row(r["asset"], r["backtest_verdict"], _pct(r["backtest_hit"]), str(r["fwd_calls"]),
+                          _pct(r["fwd_hit"]), "-" if r["paper_usd"] is None else f"{r['paper_usd']:+,.2f}",
+                          "RUNNING" if r["unattended"] else ("-" if r.get("live", True) else "backtest only"),
+                          key=r["asset"])
+
+        for i, (label, value, sub) in enumerate(shell.tiles(self._v2_reads, forward=self._v2_forward)[:4]):
+            tile = Text()
+            tile.append(f"{label}\n", shell.TOK["muted"])
+            tile.append_text(value)
+            tile.append("\n")
+            tile.append_text(sub)
+            self.query_one(f"#now-tile-{i}", Static).update(tile)
+
+        self.query_one("#now-activity", Static).update(
+            shell.activity_text(shell.activity(self._v2_autopilot, self._v2_reads)))
+        research = Text()
+        research.append(self._v2_cumulative or "No saved research results found.", shell.TOK["fg"])
+        research.append("\nRanked by out-of-sample median Sharpe; rows under 10 trades are listed, never ranked. "
+                        "3 Research › Cumulative has every file.", shell.TOK["muted"])
+        self.query_one("#now-research", Static).update(research)
+        self._v2_render_needs()
+        self._v2_render_prices()
+
+    def _v2_render_prices(self) -> None:
+        widget = self.query("#now-prices")
+        if not widget:
+            return
+        env = self._v2_reads.get("prices.status") or {}
+        prices = (env.get("result") or {}).get("prices") or {} if env.get("ok") else {}
+        line = Text()
+        for product in ("SOL-USD", "BTC-USD", "ETH-USD", "XRP-USD", "DOGE-USD", "AVAX-USD", "LINK-USD", "SUI-USD"):
+            quote = prices.get(product) or {}
+            mid = quote.get("mid") or quote.get("last")
+            if not isinstance(mid, (int, float)):
+                continue
+            spread = quote.get("spread_bps")
+            line.append(f"{product.split('-')[0]:<5}", f"bold {shell.TOK['fg']}")
+            line.append(f"${mid:>12,.4f}" if mid < 10 else f"${mid:>12,.2f}", shell.TOK["fg"])
+            if isinstance(spread, (int, float)):
+                line.append(f"   spread {spread:.1f} bps", shell.TOK["muted"])
+            line.append("\n")
+        widget.first(Static).update(line if line.plain else Text("No recorded prices yet.", shell.TOK["muted"]))
+
+    # Explain: the same text F1 shows, in a drawer on the overlay layer so the screen never reflows.
+    def action_v2_explain(self) -> None:
+        panel = self.query_one("#v2-explain", Static)
+        panel.toggle_class("open")
+        if panel.has_class("open"):
+            self._v2_fill_explain()
+
+    def on_descendant_focus(self) -> None:
+        if self.query("#v2-explain.open"):
+            self._v2_fill_explain()
+
+    def _v2_fill_explain(self) -> None:
+        widget = self.focused
+        title = ""
+        if isinstance(widget, GlossaryTable) and widget.ordered_columns:
+            column = widget.ordered_columns[max(0, min(widget.cursor_column, len(widget.ordered_columns) - 1))]
+            title = f"{(widget.id or 'table').replace('-', ' ')} › {column.label}"
+        elif widget is not None and widget.id:
+            title = widget.id.replace("-", " ")
+        if not title:
+            dest = self._v2_destination(self._v2_dest)
+            title = f"{dest.label} › {dest.views[self._v2_index].label}"
+        self.query_one("#v2-explain", Static).update(shell.explain_text(title, self._focused_help_text()))
+
+    # Palette: every destination, the app's own actions, and every registry command by name.
+    def v2_palette_entries(self) -> list[shell.PaletteEntry]:
+        from functools import partial
+
+        from .commands import COMMANDS
+
+        out: list[shell.PaletteEntry] = []
+        for dest in self._v2_dests:
+            for i, view in enumerate(dest.views):
+                was = f" · was the {view.was} tab" if view.was else ""
+                out.append(shell.PaletteEntry(f"Go to {dest.label} › {view.label}",
+                                              f"key {dest.hotkey} · {dest.question}{was}",
+                                              partial(self._v2_show, dest.key, i), "go"))
+        for name, text, action in (("Explain the focused field", "? · the same text as F1, in a drawer",
+                                    self.action_v2_explain),
+                                   ("Glossary: search every term", "F1", self.action_show_help),
+                                   ("Show or hide the editor", "ctrl+e", self.action_toggle_editor),
+                                   ("Run backtest on the roster", "r", self.action_run_backtest),
+                                   ("Cancel the running backtest", "c", self.action_cancel),
+                                   ("Liquidity: refresh", "F5", self.action_liq_refresh)):
+            out.append(shell.PaletteEntry(name, text, action, "action"))
+        for name, cmd in sorted(COMMANDS.items()):
+            runnable = cmd.read_only and not cmd.long_running and not any(p.required for p in cmd.params)
+            tab, _button = self._v2_command_home(name)
+            found = shell.locate(tab, None, self._v2_dests) if tab else None
+            where = f"{found[0].label} › {found[0].views[found[1]].label}" if found else "—"
+            text = (f"{cmd.describe[:100]} · {where}"
+                    + (" · runs now (read-only)" if runnable else " · opens its view"))
+            out.append(shell.PaletteEntry(name, text, partial(self._v2_palette_command, name, runnable), "cmd"))
+        return out
+
+    def _v2_command_home(self, name: str) -> tuple[str | None, str | None]:
+        """The pane (and button) that owns a registry command: the button map first, then its prefix."""
+        if name.startswith("experiments."):
+            return "tab-bots", "bots-workbench"
+        for selector, command in BUTTON_COMMANDS.items():
+            if command != name:
+                continue
+            for widget in self.query(selector):
+                pane = next((a for a in reversed(list(widget.ancestors)) if isinstance(a, TabPane)), None)
+                if pane is not None and pane.id:
+                    return pane.id, widget.id
+        return shell.COMMAND_HOME.get(name.split(".")[0]), None
+
+    def _v2_palette_command(self, name: str, runnable: bool) -> None:
+        tab, button = self._v2_command_home(name)
+        found = shell.locate(tab, None, self._v2_dests) if tab else None
+        if found:
+            self._v2_show(found[0].key, found[1])
+        if button:
+            self.call_after_refresh(lambda: self.query_one(f"#{button}").focus())
+        if runnable:
+            env = self._call(name, quiet=True)
+            message = shell.summarise(env["result"]) if env["ok"] else self._msg(env)
+            self.notify(message, title=name, severity="information" if env["ok"] else "error")
+        else:
+            self.notify(f"{name} is a write or needs parameters: its control is focused here.", title=name)
+
+
 def main(argv: list[str] | None = None) -> int:
-    """Entry point for `python3 -m soltui.tui`."""
+    """Entry point for `python3 -m soltui.tui` (`--classic` for the original tab bar)."""
+    import argparse
+
+    parser = argparse.ArgumentParser(prog="soltui", description="The SOL strategy console.")
+    parser.add_argument("--classic", action="store_true",
+                        help="show the original eighteen-tab bar instead of the v2 destinations")
+    args = parser.parse_args(argv)
     SolTuiApp(ui_state_path=config_mod.CONFIG_DIR / "tui.json", ensure_autopilot=True, stream_prices=True,
-              refresh_wallet=True).run()
+              refresh_wallet=True, start="tab-backtest" if args.classic else "tab-now",
+              classic=args.classic).run()
     return 0
 
 

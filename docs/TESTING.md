@@ -2,13 +2,13 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 900 tests
-python3 -m unittest discover -s soltui/tests -t .       # 953 tests (~720s)
+python3 -m unittest discover -s soltui/tests -t .       # 969 tests (~720s)
 python3 -m unittest discover -s mongo/tests -t .        # 34 tests
 cd extension && npm test                                # 361 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-2248 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2264 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -151,7 +151,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 953 tests
+## soltui — 969 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with
