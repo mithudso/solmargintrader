@@ -91,13 +91,31 @@ def state() -> dict[str, Any]:
 
 
 def _details(product_id: str, side: str, size: str, size_currency: str,
-             call: Callable[[list[str]], dict[str, Any]]) -> dict[str, Any]:
+             call: Callable[[list[str]], dict[str, Any]], *, order_type: str = 'market',
+             limit_price: str = '', stop_price: str = '') -> dict[str, Any]:
     product_id = product_id.strip().upper()
     side = side.strip().upper()
+    if order_type not in ('market', 'limit', 'stop_limit', 'bracket'):
+        raise ValueError('Unsupported Coinbase order type')
+    if order_type != 'market' and size_currency != 'base':
+        raise ValueError('Conditional and limit orders require a base-coin quantity')
+    if order_type == 'bracket' and side != 'SELL':
+        raise ValueError('Coinbase spot brackets require SELL')
+    prices = {}
+    for key, value in (('limit_price', limit_price), ('stop_price', stop_price)):
+        required = key == 'limit_price' and order_type != 'market' or key == 'stop_price' and order_type in ('stop_limit', 'bracket')
+        if required:
+            if not re.fullmatch(r'\d+(?:\.\d+)?', str(value)) or len(str(value)) > 32:
+                raise ValueError(f'Enter an exact positive {key.replace("_", " ")}')
+            prices[key] = _decimal(value, key.replace('_', ' '))
+        elif value:
+            raise ValueError(f'{key} is not used for this order type')
+    if order_type == 'bracket' and prices['limit_price'] <= prices['stop_price']:
+        raise ValueError('Take-profit price must exceed the stop trigger')
     if not re.fullmatch(r'[A-Z0-9]{1,15}-[A-Z0-9]{1,15}', product_id):
         raise ValueError('Enter a spot pair such as SOL-USDC')
-    if (side, size_currency) not in (('BUY', 'quote'), ('SELL', 'base')):
-        raise ValueError('Market buys use quote currency; market sells use base-coin quantity')
+    if (side, size_currency) not in (('BUY', 'quote'), ('BUY', 'base'), ('SELL', 'base')):
+        raise ValueError('Market buys use quote or base quantity; market sells use base-coin quantity')
     if not re.fullmatch(r'\d+(?:\.\d+)?', str(size)) or len(str(size)) > 32:
         raise ValueError('Enter an exact positive decimal size')
     amount = _decimal(size, 'Order size')
@@ -125,24 +143,41 @@ def _details(product_id: str, side: str, size: str, size_currency: str,
     if len(matches) != 1 or not isinstance(matches[0].get('available_balance'), dict):
         raise ValueError(f'Cannot determine the available {wanted} balance')
     available = _decimal(matches[0]['available_balance'].get('value'), 'Available balance', allow_zero=True)
-    if amount > available:
+    if (side, size_currency) != ('BUY', 'base') and amount > available:
         raise ValueError(f'Insufficient available {wanted} balance')
     size_field = 'quote_size' if size_currency == 'quote' else 'base_size'
-    fields = ['product_id='+product_id, 'side='+side, 'type=market', size_field+'='+str(amount),
+    if prices and amount * max(prices.values()) > MAX_QUOTE:
+        raise ValueError('Manual orders are limited to an estimated 100 USD or USDC per order')
+    fields = ['product_id='+product_id, 'side='+side, 'type='+order_type, size_field+'='+str(amount),
               'product_type=SPOT', 'portfolio_id='+pid]
+    if order_type != 'market':
+        fields += ['time_in_force=GTC', 'limit_price='+str(prices['limit_price'])]
+        if 'stop_price' in prices:
+            fields.append('stop_price='+str(prices['stop_price']))
+        if order_type == 'stop_limit':
+            fields.append('stop_direction=' + ('down' if side == 'SELL' else 'up'))
     estimate = call(['orders', 'preview', *fields])
+    if estimate.get('errs') or estimate.get('error') or estimate.get('errorType'):
+        raise ValueError('Coinbase preview reports an order error; no order was submitted')
     price = _decimal(estimate.get('est_average_filled_price'), 'Estimated price')
     fee = _decimal(estimate.get('commission_total'), 'Estimated fee', allow_zero=True)
     gross = _decimal(estimate.get('quote_size'), 'Estimated quote amount')
     total = _decimal(estimate.get('order_total'), 'Estimated order total')
-    if fee >= gross or (side == 'BUY' and total > amount):
+    if fee >= gross or (side == 'BUY' and size_currency == 'quote' and total > amount):
         raise ValueError('Coinbase estimate exceeds the reviewed budget or fees exceed proceeds')
-    if gross > MAX_QUOTE or (side == 'BUY' and amount > MAX_QUOTE):
+    if side == 'BUY' and total > available:
+        raise ValueError(f'Insufficient available {wanted} balance')
+    if side == 'BUY' and prices and amount * prices['limit_price'] + fee > available:
+        raise ValueError(f'Insufficient available {wanted} balance at the limit price')
+    if side == 'BUY' and prices and amount * prices['limit_price'] + fee > MAX_QUOTE:
         raise ValueError('Manual orders are limited to an estimated 100 USD or USDC per order')
-    quoted_size = amount if side == 'BUY' else gross
+    if gross > MAX_QUOTE or (side == 'BUY' and total > MAX_QUOTE) or (side == 'BUY' and size_currency == 'quote' and amount > MAX_QUOTE):
+        raise ValueError('Manual orders are limited to an estimated 100 USD or USDC per order')
+    quoted_size = amount if (side, size_currency) == ('BUY', 'quote') else gross
     if quoted_size < _decimal(product.get('quote_min_size'), 'Market quote minimum'):
         raise ValueError('Estimated order value is below the market minimum')
     return {'product_id':product_id, 'side':side, 'size':str(amount), 'size_currency':size_currency,
+            'order_type':order_type, 'limit_price':limit_price, 'stop_price':stop_price,
             'portfolio_id':pid, 'fields':fields, 'price':str(price), 'fee':str(fee),
             'estimate':{'price':str(price), 'fee':str(fee), 'gross_quote':str(gross),
                         'order_total':str(total), 'base_size':str(estimate.get('base_size', '')),
@@ -151,19 +186,61 @@ def _details(product_id: str, side: str, size: str, size_currency: str,
 
 
 def preview(product_id: str, side: str, size: str, size_currency: str,
-            call: Callable[[list[str]], dict[str, Any]] | None = None) -> dict[str, Any]:
+            call: Callable[[list[str]], dict[str, Any]] | None = None, *, order_type: str = 'market',
+            limit_price: str = '', stop_price: str = '') -> dict[str, Any]:
     call = call or cb._cli
     with _lock():
         _block_unresolved()
-        details = _details(product_id, side, size, size_currency, call)
+        details = _details(product_id, side, size, size_currency, call, order_type=order_type,
+                           limit_price=limit_price, stop_price=stop_price)
         preview_id = uuid.uuid4().hex
         expires_at = time.time() + PREVIEW_SECONDS
         _save(_path(preview_id), {**details, 'preview_id':preview_id, 'expires_at':expires_at,
                                   'state':'preview', 'client_order_id':str(uuid.uuid4())})
-    return {k:details[k] for k in ('product_id','side','size','size_currency','estimate')} | {
+    return {k:details[k] for k in ('product_id','side','size','size_currency','order_type','limit_price','stop_price','estimate')} | {
         'preview_id':preview_id, 'expires_at':expires_at,
         'notice':'Estimates can change; price moves over 1% or materially higher fees require a new review. '
                  'Maximum estimated order value: 100 USD/USDC.'}
+
+
+def percent_preview(product_id: str, side: str, percent: str,
+                    call: Callable[[list[str]], dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Review a percentage of the available quote (buy) or base (sell) balance."""
+    call = call or cb._cli
+    product_id, side = product_id.strip().upper(), side.strip().upper()
+    if not re.fullmatch(r'[A-Z0-9]{1,15}-[A-Z0-9]{1,15}', product_id) or side not in ('BUY', 'SELL'):
+        raise ValueError('Enter a valid spot pair and side')
+    value = _decimal(percent, 'Balance percentage')
+    if value > 100:
+        raise ValueError('Balance percentage must be at most 100')
+    product = call(['products', 'get', product_id, 'product_type==SPOT'])
+    base, quote = product_id.split('-')
+    if (product.get('product_id') != product_id or product.get('product_type') != 'SPOT'
+            or product.get('base_currency_id') != base or product.get('quote_currency_id') != quote
+            or product.get('status', '').lower() != 'online' or quote not in ('USD', 'USDC')):
+        raise ValueError('Coinbase did not confirm an online USD or USDC spot market for this pair')
+    snapshot = cb.sync_account(call)
+    defaults = [p for p in snapshot['portfolios'] if p.get('type') == 'DEFAULT' and not p.get('deleted')]
+    if len(defaults) != 1 or not defaults[0].get('uuid'):
+        raise ValueError('Coinbase did not identify one default trading portfolio')
+    wanted = quote if side == 'BUY' else base
+    matches = [a for a in snapshot['accounts'] if a.get('portfolio_id') == defaults[0]['uuid']
+               and a.get('currency') == wanted]
+    if len(matches) != 1 or not isinstance(matches[0].get('available_balance'), dict):
+        raise ValueError(f'Cannot determine the available {wanted} balance')
+    available = _decimal(matches[0]['available_balance'].get('value'), 'Available balance', allow_zero=True)
+    unit = 'quote' if side == 'BUY' else 'base'
+    increment = _decimal(product.get(unit + '_increment'), 'Market increment')
+    exact = available * value / Decimal('100')
+    amount = (exact // increment) * increment
+    if amount <= 0:
+        raise ValueError('Percentage rounds below the market increment')
+    result = preview(product_id, side, str(amount), unit, call)
+    if _decimal(result['estimate']['available'], 'Available balance', allow_zero=True) != available:
+        raise ValueError('Available balance changed while sizing; review again')
+    result['balance_percentage'] = str(value)
+    result['sizing_notice'] = f'{value}% of available {wanted}, rounded down to the market increment.'
+    return result
 
 
 def _public_order(order: dict[str, Any]) -> dict[str, Any]:
@@ -182,7 +259,9 @@ def submit(preview_id: str, call: Callable[[list[str]], dict[str, Any]] | None =
         if time.time() >= record['expires_at']:
             raise ValueError('Preview expired; review a new quote')
         _block_unresolved()
-        fresh = _details(record['product_id'], record['side'], record['size'], record['size_currency'], call)
+        fresh = _details(record['product_id'], record['side'], record['size'], record['size_currency'], call,
+                         order_type=record.get('order_type', 'market'), limit_price=record.get('limit_price', ''),
+                         stop_price=record.get('stop_price', ''))
         if time.time() >= record['expires_at']:
             raise ValueError('Preview expired while checking Coinbase; review a new quote')
         if fresh['portfolio_id'] != record['portfolio_id']:

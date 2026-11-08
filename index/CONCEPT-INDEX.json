@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T21:14:27+00:00",
+  "generatedAt": "2026-11-08T21:11:23+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1591,
+      "matchingFiles": 1592,
       "shown": 30,
       "files": [
         {
@@ -78,6 +78,10 @@
           "hits": 54
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 53
+        },
+        {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
           "hits": 52
         },
@@ -90,12 +94,8 @@
           "hits": 51
         },
         {
-          "path": "soltui/tui.py",
-          "hits": 49
-        },
-        {
           "path": "soltui/commands.py",
-          "hits": 44
+          "hits": 50
         },
         {
           "path": "skills/trading-and-investing/references/options-trading-and-strategies.md",
@@ -806,7 +806,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 38
+          "hits": 39
         },
         {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
@@ -986,7 +986,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 439,
+      "matchingFiles": 440,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 394,
+      "matchingFiles": 395,
       "shown": 30,
       "files": [
         {
@@ -1162,7 +1162,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 87
+          "hits": 88
         },
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
@@ -1225,12 +1225,12 @@
           "hits": 35
         },
         {
-          "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
+          "path": "soltui/help.py",
           "hits": 35
         },
         {
-          "path": "soltui/help.py",
-          "hits": 34
+          "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
+          "hits": 35
         },
         {
           "path": "soltui/tests/test_wallet.py",
@@ -1241,11 +1241,11 @@
           "hits": 30
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 29
+          "path": "soltui/tui.py",
+          "hits": 30
         },
         {
-          "path": "executor/src/executor/txverify.py",
+          "path": "docs/CONCEPTS.md",
           "hits": 29
         }
       ],
@@ -1805,7 +1805,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 217,
+      "matchingFiles": 218,
       "shown": 30,
       "files": [
         {

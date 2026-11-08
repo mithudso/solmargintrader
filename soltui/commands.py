@@ -2153,12 +2153,56 @@ def coinbase_pairs(ctx: Context, p: dict[str, Any]) -> Any:
 @command("coinbase.order_preview", "Review an estimated Coinbase spot market order; places no order.",
          (P("product_id", "string", "Spot pair, for example SOL-USDC.", required=True),
           P("side", "string", "BUY or SELL.", required=True),
-          P("size", "string", "Exact decimal quote budget for BUY or base amount for SELL.", required=True),
-          P("size_currency", "string", "quote for BUY; base for SELL.", required=True)),
+          P("size", "string", "Exact decimal size in the specified currency.", required=True),
+          P("size_currency", "string", "BUY: quote or base; SELL: base.", required=True)),
          read_only=False, long_running=True)
 def coinbase_order_preview(ctx: Context, p: dict[str, Any]) -> Any:
     from . import coinbase_manual
     return coinbase_manual.preview(p['product_id'], p['side'], p['size'], p['size_currency'])
+
+
+@command("coinbase.order_percent_preview", "Review a market order sized as a percentage of available balance.",
+         (P("product_id", "string", "Spot pair, for example SOL-USDC.", required=True),
+          P("side", "string", "BUY or SELL.", required=True),
+          P("percent", "string", "Percentage of available quote balance for BUY or base balance for SELL.", required=True)),
+         read_only=False, long_running=True)
+def coinbase_order_percent_preview(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_manual
+    return coinbase_manual.percent_preview(p['product_id'], p['side'], p['percent'])
+
+
+@command("coinbase.order_conditional_preview", "Review a Coinbase limit, stop-limit, or spot exit bracket; places no order.",
+         (P("product_id", "string", "Spot pair.", required=True),
+          P("side", "string", "BUY or SELL; bracket requires SELL.", required=True),
+          P("size", "string", "Base-coin amount.", required=True),
+          P("order_type", "string", "limit, stop_limit, or bracket.", required=True),
+          P("limit_price", "string", "Limit price; take-profit price for bracket.", required=True),
+          P("stop_price", "string", "Stop trigger for stop-limit or bracket.")),
+         read_only=False, long_running=True)
+def coinbase_order_conditional_preview(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_manual
+    if p['order_type'] not in ('limit', 'stop_limit', 'bracket'):
+        raise ValueError('Unsupported conditional order type')
+    return coinbase_manual.preview(p['product_id'], p['side'], p['size'], 'base',
+                                   order_type=p['order_type'], limit_price=p['limit_price'],
+                                   stop_price=p.get('stop_price') or '')
+
+
+@command("coinbase.order_conditional_quick", "Place a Coinbase conditional order without per-order confirmation after opting in.",
+         (P("product_id", "string", "Spot pair.", required=True),
+          P("side", "string", "BUY or SELL; bracket requires SELL.", required=True),
+          P("size", "string", "Base-coin amount.", required=True),
+          P("order_type", "string", "limit, stop_limit, or bracket.", required=True),
+          P("limit_price", "string", "Limit or take-profit price.", required=True),
+          P("stop_price", "string", "Stop trigger for stop-limit or bracket."),
+          P("skip_confirm", "bool", "Explicitly place the live order without review.", required=True)),
+         read_only=False, long_running=True)
+def coinbase_order_conditional_quick(ctx: Context, p: dict[str, Any]) -> Any:
+    if p['skip_confirm'] is not True:
+        raise ValueError('Quick orders require skip_confirm=true; this places a live order')
+    from . import coinbase_manual
+    reviewed = coinbase_order_conditional_preview(ctx, p)
+    return coinbase_manual.submit(reviewed['preview_id'])
 
 
 @command("coinbase.order_submit", "Submit one explicitly confirmed, reviewed live Coinbase order.",
@@ -2172,8 +2216,8 @@ def coinbase_order_submit(ctx: Context, p: dict[str, Any]) -> Any:
 @command("coinbase.order_quick", "Place a live Coinbase order without a per-order confirmation after opting in.",
          (P("product_id", "string", "Spot pair, for example SOL-USDC.", required=True),
           P("side", "string", "BUY or SELL.", required=True),
-          P("size", "string", "Exact quote budget for BUY or base amount for SELL.", required=True),
-          P("size_currency", "string", "quote for BUY; base for SELL.", required=True),
+          P("size", "string", "Exact decimal size in the specified currency.", required=True),
+          P("size_currency", "string", "BUY: quote or base; SELL: base.", required=True),
           P("skip_confirm", "bool", "Explicitly opt in to placing this live order without review.", required=True)),
          read_only=False, long_running=True)
 def coinbase_order_quick(ctx: Context, p: dict[str, Any]) -> Any:
@@ -2181,6 +2225,20 @@ def coinbase_order_quick(ctx: Context, p: dict[str, Any]) -> Any:
         raise ValueError('Quick orders require skip_confirm=true; this places a live order')
     from . import coinbase_manual
     reviewed = coinbase_manual.preview(p['product_id'], p['side'], p['size'], p['size_currency'])
+    return coinbase_manual.submit(reviewed['preview_id'])
+
+
+@command("coinbase.order_percent_quick", "Place a balance-percentage live order without per-order confirmation after opting in.",
+         (P("product_id", "string", "Spot pair, for example SOL-USDC.", required=True),
+          P("side", "string", "BUY or SELL.", required=True),
+          P("percent", "string", "Percentage of available balance.", required=True),
+          P("skip_confirm", "bool", "Explicitly opt in to placing this live order without review.", required=True)),
+         read_only=False, long_running=True)
+def coinbase_order_percent_quick(ctx: Context, p: dict[str, Any]) -> Any:
+    if p['skip_confirm'] is not True:
+        raise ValueError('Quick orders require skip_confirm=true; this places a live order')
+    from . import coinbase_manual
+    reviewed = coinbase_manual.percent_preview(p['product_id'], p['side'], p['percent'])
     return coinbase_manual.submit(reviewed['preview_id'])
 
 
