@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 181
-Delta: v180 to v181; record Coinbase command mutation metadata.
+Version: 182
+Delta: v181 to v182; record the Jupiter MCP signing blocker.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1722,3 +1722,7 @@ PR 120's macOS CI exposed an invalid paper_experiment command namespace and miss
 ## v181 - 2026-11-08
 
 Coinbase sync and market download write local snapshots, so their registry entries set read_only=False. The last-snapshot command remains read-only. This prevents read-only command surfaces from treating downloads or refreshes as passive actions. The registry metadata has a focused regression test.
+
+## v182 - 2026-11-08
+
+PR 119 merged as 2f649690c38acaac8bee36c299ce325679b7cd30 after required CI passed. The user requested using Jupiter's trading MCP for the JUPSOL to SOL swap and identified /Users/mitch/.env as the API-key location. The configured server was not exposed as a session tool, but its HTTP MCP endpoint accepted read-only requests. swap_get_order quoted 0.04 JUPSOL to about 0.0487 SOL. swap_execute_order requires a signed transaction; the Jupiter CLI listed no signing keys and Coinbase CDP did not control the source address. No swap or transfer was sent. A Codex MCP configuration inspection inadvertently exposed the Jupiter credential in tool output. The owner must rotate that credential. Do not copy, print, import or inspect the project's Solana private key. Preserve the running paper worker and Signal trainer. The current interactive console still predates delivery.
