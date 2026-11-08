@@ -17,6 +17,8 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import ModalScreen
 from textual.widgets import Button, DataTable, SelectionList, Static
 
+from .csv_table import ExportPanel, ExportTable
+
 
 def _pct(value: Any) -> str:
     return "-" if value is None else f"{100 * float(value):+.2f}%"
@@ -100,7 +102,7 @@ class OptimizeScreen(ModalScreen[None]):
     BINDINGS: ClassVar[list[tuple[str, str, str]]] = [("escape", "close", "Close")]
 
     def __init__(self, label: str, poll: Callable[[], dict[str, Any] | None],
-                 table_cls: type[DataTable] = DataTable) -> None:
+                 table_cls: type[DataTable] = ExportTable) -> None:
         super().__init__()
         self.label = label
         self.poll = poll
@@ -116,10 +118,10 @@ class OptimizeScreen(ModalScreen[None]):
                 yield Static("", id="opt-result")
                 yield Static("Configurations under test (the first row is your current settings):",
                              classes="table-title")
-                yield self.table_cls(id="opt-candidates")
+                yield ExportPanel(self.table_cls(id="opt-candidates"))
                 yield Static("Per coin, filled in when the run ends: the windows it ran and the pick against "
                              "your current settings out of sample.", classes="table-title")
-                yield self.table_cls(id="opt-coins")
+                yield ExportPanel(self.table_cls(id="opt-coins"))
             with Horizontal(id="opt-buttons"):
                 yield Button("Close", variant="primary", id="opt-close")
 

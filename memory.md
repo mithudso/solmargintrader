@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 206
-Delta: v205 to v206; exclude the recorder's open hour from triangle optimization.
+Version: 208
+Delta: v207 to v208; update suite counts for CSV export tests.
+
+## v207 - 2026-11-08
+
+TASK-1051: Add CSV exports to all SolTUI tables and ensure editor save works. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bd0d. Existing editor has guarded save; verify and improve discoverability as needed. Preserve read-only document restrictions and concurrent work. Implemented CSV export wrappers across main and modal tables, plus non-overwriting Downloads output. Existing editor save uses button, Ctrl+S and :w and retains the catalog guard. CSV tests and editor save/read-only tests passed; 19 experiment and bot editor tests passed. Remaining: delivery, CI, merge and fresh live acceptance.
 
 ## v206 - 2026-11-08
 
