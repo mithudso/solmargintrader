@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T10:50:12+00:00",
+  "generatedAt": "2026-11-08T11:00:37+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 467,
+      "matchingFiles": 468,
       "shown": 30,
       "files": [
         {
@@ -574,7 +574,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 338,
+      "matchingFiles": 340,
       "shown": 30,
       "files": [
         {
@@ -1531,7 +1531,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 175,
+      "matchingFiles": 177,
       "shown": 30,
       "files": [
         {
@@ -1540,7 +1540,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 34
+          "hits": 35
         },
         {
           "path": "research/perturb.py",
@@ -1665,12 +1665,12 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 148,
+      "matchingFiles": 149,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 32
+          "hits": 33
         },
         {
           "path": "research/tradingview-card-coverage.json",
