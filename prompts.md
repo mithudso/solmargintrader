@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 48
-Delta: v47 to v48; resolve PR 46 and PR 58 conflicts while preserving both histories.
+Version: 49
+Delta: v48 to v49; resume integration after concurrent master index repair.
 
 
 ## v1 - 2026-11-06
@@ -353,4 +353,10 @@ Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintra
 
 ```text
 Resolve the pr conflicts in https://github.com/mithudso/solmargintrader/pull/46 and https://github.com/mithudso/solmargintrader/pull/58 and then merge, commit, pr
+```
+
+## v49 - 2026-11-08
+
+```text
+resume
 ```

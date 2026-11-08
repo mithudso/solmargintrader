@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 54
-Delta: v53 to v54; resolve PR 46 and PR 58 conflicts while preserving both histories.
+Version: 55
+Delta: v54 to v55; resume integration after concurrent master index repair.
 
 ## v1 - 2026-11-06
 
@@ -559,3 +559,11 @@ Completed: inspected PR heads and merge guidance; merged origin/master into PR 4
 Verification: executor source exactly matches original PR head 00be663; 202 offline tests pass (5 network tests excluded); Ruff lint and formatting pass. Hash-index check passes. Docs counts currently read the pre-merge HEAD; rerun after the merge commit before interpreting count drift. All final-head GitHub CI checks remain required.
 
 Remaining: regenerate indexes after staging resolutions, commit and push to executor-e1, wait for CI and merge PR 46; repeat against updated master for PR 58; verify both merge receipts and clean this private worktree. No trading or service restart is part of this task.
+
+## v55 - 2026-11-08 (resumed integration)
+
+Completed: PR 46 resolution was pushed at 6c1fc4b. Executor 202 offline tests, Ruff lint and format, docs counts, index freshness and unique paths passed. Seven CI jobs passed; SolTUI was running when concurrent PR 86 updated master to ea2d288 and caused new index conflicts.
+
+Current: merge ea2d288 into this private branch. Only generated index files conflict. Resolve and stage before regeneration. PR 58 advanced to b899458; use that or a newer remote head.
+
+Remaining: commit regenerated artifacts, push executor-e1, wait for all final-head CI and merge PR 46. Then integrate latest PR 58 against the landed master, verify all CI and merge. Preserve other sessions and their worktrees.
