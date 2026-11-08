@@ -1263,7 +1263,7 @@
     "docs/COMPOUND-5M.md": 3435,
     "docs/CONCEPTS.md": 2159,
     "docs/DEVELOPMENT.md": 947,
-    "docs/FILES.md": 90196,
+    "docs/FILES.md": 90298,
     "docs/INSTALLATION.md": 821,
     "docs/MCP.md": 148,
     "docs/OPERATIONS.md": 502,
@@ -1838,7 +1838,7 @@
     "tools/land.sh": 425,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-08T09:57:43+00:00",
+  "generatedAt": "2026-11-08T09:59:05+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -6669,6 +6669,9 @@
     },
     "a4de00f8fdeb6980d1a2a0979827c3e05dad768d8b3f52dc48bb0911440d3b": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "a4df3b2": {
+      "docs/FILES.md": 1
     },
     "a4e18b725e035053e833f6ea4f2a1f81f3201276fe9e307de3381fb50953a7a6": {
       "research/tradingview-card-coverage.json": 1
@@ -36093,7 +36096,7 @@
     "assertions": {
       "backtester/tests/test_fetch_minutes.py": 1,
       "backtester/tests/test_interpret.py": 1,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 2,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/logging.md": 1,
@@ -56348,7 +56351,7 @@
       "backtester/strategy_cards/tv_yyrxrhi9_atr_rope.md": 1,
       "backtester/strategy_cards/tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines.md": 2,
       "backtester/strategy_cards/tv_zus134uh_heat_map_seasons.md": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
@@ -60535,7 +60538,7 @@
       "docs/BASE-WALLET-QUERIES.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 7,
       "docs/COMPOUND-5M.md": 1,
-      "docs/FILES.md": 27,
+      "docs/FILES.md": 28,
       "docs/SCRIPTS.md": 3,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 13,
@@ -70907,7 +70910,6 @@
       "research/tradingview-card-coverage.json": 1
     },
     "c09ecc9": {
-      "docs/FILES.md": 1,
       "memory.md": 1
     },
     "c0a06b7660edef81bfa3fc247ccddef26c91b130e19390a6f5dc2b5d538": {
@@ -80915,7 +80917,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 2,
       "docs/COMPOUND-5M.md": 2,
-      "docs/FILES.md": 4,
+      "docs/FILES.md": 3,
       "docs/SCRIPTS.md": 1,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-CARD-FILES.md": 1,
@@ -89178,6 +89180,7 @@
     },
     "charset": {
       ".editorconfig": 1,
+      "docs/FILES.md": 1,
       "executor/src/executor/api.py": 1,
       "extension/src/ui/dashboard.html": 1,
       "extension/src/ui/popup.html": 1,
@@ -90601,7 +90604,7 @@
       "docs/COMPOUND-5M-PAPER.md": 40,
       "docs/COMPOUND-5M.md": 2,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 11,
+      "docs/FILES.md": 12,
       "docs/INSTALLATION.md": 1,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 3,
@@ -105235,7 +105238,6 @@
     },
     "concurrent": {
       "backtester/core/fetch_minutes.py": 2,
-      "docs/FILES.md": 1,
       "docs/SCRIPTS.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/trading-signals-concept-family.md": 1,
@@ -110506,7 +110508,7 @@
     "contents": {
       ".github/workflows/ci.yml": 1,
       "backtester/README.md": 1,
-      "docs/FILES.md": 1527,
+      "docs/FILES.md": 1529,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/logging.md": 1,
       "executor/README.md": 1,
@@ -110656,7 +110658,7 @@
       "backtester/strategy_cards/tv_zus134uh_heat_map_seasons.md": 1,
       "backtester/tests/test_decide.py": 1,
       "docs/COMPOUND-5M-PAPER.md": 6,
-      "docs/FILES.md": 7,
+      "docs/FILES.md": 9,
       "docs/TRADINGVIEW-REFERENCE.md": 57,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "docs/dso-skill/SKILL.md": 2,
@@ -112409,7 +112411,7 @@
       "backtester/strategy_cards/ichimoku_cloud.md": 1,
       "backtester/strategy_cards/tv_43000668584_24_hour_volume.md": 1,
       "backtester/strategy_cards/tv_ypz7tsjn_ichimoku_oscillator.md": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 7,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -112434,6 +112436,7 @@
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 2
     },
     "conversion_plan": {
+      "docs/FILES.md": 1,
       "scripts/html_to_markdown.py": 3,
       "scripts/test_html_to_markdown.py": 4
     },
@@ -112457,7 +112460,7 @@
       "backtester/strategy_cards/tv_builtin_fisher_transform.md": 1,
       "backtester/strategy_cards/tv_shvvlgmm_fast_fourier_transform_fft_filter.md": 1,
       "backtester/strategy_cards/tv_tnq7fvvw_trend_target_ribbon_boswaves.md": 1,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 4,
       "liquidity/README.md": 2,
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/cli.py": 11,
@@ -112540,6 +112543,7 @@
     },
     "converter": {
       ".github/workflows/ci.yml": 1,
+      "docs/FILES.md": 2,
       "memory.md": 12,
       "prompts.md": 2,
       "research/tradingview-card-coverage.json": 2,
@@ -120426,7 +120430,7 @@
       "docs/COMPOUND-5M-PAPER.md": 5,
       "docs/COMPOUND-5M.md": 2,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 7,
+      "docs/FILES.md": 8,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 2,
       "docs/TESTING.md": 3,
@@ -137498,7 +137502,7 @@
       "backtester/strategy_cards/tv_r8g2yhdg_order_block_finder_experimental.md": 1,
       "backtester/strategy_cards/tv_s9knr6dg_crowding_model_bullvision.md": 1,
       "backtester/strategy_cards/tv_xkbwnq2h_intrabar_run_count_indicator_tbiktag.md": 1,
-      "docs/FILES.md": 345,
+      "docs/FILES.md": 347,
       "docs/logging.md": 2,
       "index/make_files_doc.py": 2,
       "research/dso_audit.py": 2,
@@ -140656,6 +140660,7 @@
     },
     "delivery": {
       "AGENTS.md": 2,
+      "docs/FILES.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 4,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "docs/runbooks/handoff.md": 1,
@@ -141365,7 +141370,7 @@
       "backtester/PROMPT.md": 1,
       "backtester/requirements.txt": 3,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 9,
+      "docs/FILES.md": 10,
       "docs/INSTALLATION.md": 5,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
@@ -149148,7 +149153,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "backtester/tests/test_strategy_duplication.py": 1,
       "docs/DEVELOPMENT.md": 2,
-      "docs/FILES.md": 8,
+      "docs/FILES.md": 10,
       "docs/INSTALLATION.md": 3,
       "docs/SCRIPTS.md": 3,
       "docs/TESTING.md": 1,
@@ -154141,7 +154146,7 @@
       "docs/COMPOUND-5M.md": 1,
       "docs/CONCEPTS.md": 17,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 97,
+      "docs/FILES.md": 96,
       "docs/INSTALLATION.md": 3,
       "docs/MCP.md": 1,
       "docs/OPERATIONS.md": 1,
@@ -169928,7 +169933,7 @@
     "editor": {
       ".gitignore": 1,
       ".vscode/settings.json": 5,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 2,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -182072,7 +182077,7 @@
     "escape": {
       "backtester/gridcli.py": 1,
       "backtester/tests/test_signal_redundancy.py": 1,
-      "docs/FILES.md": 1,
+      "docs/FILES.md": 2,
       "extension/src/ui/ui-kit.js": 2,
       "extension/src/ui/view-grid.js": 1,
       "extension/test/surfaces.test.js": 1,
@@ -196037,7 +196042,7 @@
       "backtester/strategy_cards/dex_cex_dislocation.md": 1,
       "backtester/strategy_cards/tv_gsrqnt8q_trend_line_methods_tlm.md": 1,
       "backtester/strategy_cards/tv_gztrrvcd_distance_to_demand_vector.md": 1,
-      "docs/FILES.md": 1616,
+      "docs/FILES.md": 1618,
       "index/README.md": 1,
       "index/make_files_doc.py": 5,
       "research/coin-intelligence/xrp-ripple.md": 2,
@@ -209616,6 +209621,7 @@
       "tradingskilllist/trading-skills.md": 4
     },
     "filetests": {
+      "docs/FILES.md": 1,
       "scripts/test_html_to_markdown.py": 2
     },
     "fileurltopath": {
@@ -210782,7 +210788,7 @@
       "backtester/tests/test_engine_audit.py": 9,
       "backtester/tests/test_gridsim.py": 8,
       "backtester/tests/test_textbook_strategies.py": 2,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 4,
       "docs/SCRIPTS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
       "docs/caching-and-optimization.md": 1,
@@ -238240,7 +238246,7 @@
       "backtester/tests/test_gridcli.py": 1,
       "docs/API.md": 4,
       "docs/DEVELOPMENT.md": 2,
-      "docs/FILES.md": 78,
+      "docs/FILES.md": 79,
       "docs/SCRIPTS.md": 1,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 5,
@@ -240416,7 +240422,7 @@
     },
     "histories": {
       "backtester/PROMPT.md": 1,
-      "docs/FILES.md": 1,
+      "docs/FILES.md": 2,
       "docs/SCRIPTS.md": 1,
       "liquidity/src/aero_lp/market.py": 1,
       "memory.md": 6,
@@ -243489,7 +243495,7 @@
       ".github/workflows/ci.yml": 2,
       ".gitignore": 1,
       "README.md": 2,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 13,
       "docs/SCRIPTS.md": 11,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 21,
@@ -243538,6 +243544,7 @@
       "soltui/tests/test_wallet.py": 1
     },
     "html_to_markdown": {
+      "docs/FILES.md": 4,
       "docs/SCRIPTS.md": 3,
       "memory.md": 1,
       "prompts.md": 1,
@@ -246746,6 +246753,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "backtester/tests/test_geometry.py": 1,
       "backtester/tests/test_universe.py": 1,
+      "docs/FILES.md": 1,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 6,
       "docs/dso-skill/SKILL.md": 1,
@@ -259321,7 +259329,6 @@
     },
     "integrate": {
       "backtester/strategy_cards/tv_1nhvl40i_fibonacci_time_price_zones.md": 1,
-      "docs/FILES.md": 1,
       "memory.md": 6,
       "research/tradingview-card-coverage.json": 1
     },
@@ -285930,7 +285937,7 @@
       "backtester/tests/test_trianglesim.py": 1,
       "docs/API.md": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 1843,
+      "docs/FILES.md": 1845,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 7,
       "docs/TRADINGVIEW-CARD-FILES.md": 6,
       "docs/TRADINGVIEW-REFERENCE.md": 36,
@@ -301329,7 +301336,7 @@
       "backtester/tests/test_scorecard.py": 1,
       "docs/COMPOUND-5M-PAPER.md": 2,
       "docs/COMPOUND-5M.md": 1,
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 13,
       "docs/SCRIPTS.md": 11,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 8,
@@ -301370,6 +301377,7 @@
       "memory.md": 1
     },
     "markdownparser": {
+      "docs/FILES.md": 1,
       "scripts/html_to_markdown.py": 3
     },
     "markdowntablerowstests": {
@@ -301377,6 +301385,7 @@
       "docs/FILES.md": 1
     },
     "markdowntests": {
+      "docs/FILES.md": 1,
       "scripts/test_html_to_markdown.py": 2
     },
     "marked": {
@@ -313660,7 +313669,7 @@
       "backtester/strategy_cards/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md": 10,
       "backtester/strategy_cards/tv_tedvnpgs_spread_by.md": 1,
       "backtester/strategy_cards/tv_wyyxkhdn_correlation_cycle_correlationangle_market_state_john_ehlers.md": 1,
-      "docs/FILES.md": 7,
+      "docs/FILES.md": 8,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 6,
       "docs/TRADINGVIEW-CARD-FILES.md": 8,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
@@ -320164,7 +320173,7 @@
       "docs/API.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 2,
       "docs/COMPOUND-5M.md": 2,
-      "docs/FILES.md": 21,
+      "docs/FILES.md": 22,
       "docs/SCRIPTS.md": 1,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 15,
@@ -323355,7 +323364,7 @@
       "docs/COMPONENTS.md": 2,
       "docs/COMPOUND-5M.md": 1,
       "docs/DEVELOPMENT.md": 2,
-      "docs/FILES.md": 46,
+      "docs/FILES.md": 47,
       "docs/INSTALLATION.md": 3,
       "docs/SCRIPTS.md": 4,
       "docs/TESTING.md": 4,
@@ -333951,7 +333960,7 @@
       "backtester/tests/test_index_search_tooling.py": 2,
       "docs/ARCHITECTURE.md": 3,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 15,
+      "docs/FILES.md": 16,
       "docs/INSTALLATION.md": 2,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 3,
@@ -340933,7 +340942,7 @@
       "backtester/strategy_cards/vol_regime_hmm.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 6,
       "backtester/tests/test_engine_audit.py": 3,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/code-deep-optimizer-2026-11-06.md": 4,
@@ -342846,7 +342855,7 @@
       "docs/API.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 9,
+      "docs/FILES.md": 13,
       "docs/INSTALLATION.md": 1,
       "docs/SCRIPTS.md": 14,
       "docs/TESTING.md": 1,
@@ -343013,6 +343022,7 @@
       "backtester/strategy_cards/tv_fnlmn99w_tasc_2026_09_adaptive_supersmoother.md": 1,
       "backtester/strategy_cards/tv_qetnobdk_half_causal_estimator.md": 1,
       "backtester/strategy_cards/tv_svp0szo5_tasc_2025_04_the_ultimate_oscillator.md": 1,
+      "docs/FILES.md": 1,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "docs/dso-skill/SKILL.md": 1,
@@ -344199,6 +344209,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 2,
       "backtester/tests/test_decide.py": 2,
       "backtester/tests/test_signal_redundancy.py": 1,
+      "docs/FILES.md": 1,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "extension/src/bg/service-worker.js": 1,
@@ -360757,7 +360768,7 @@
       "docs/COMPONENTS.md": 2,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 1,
-      "docs/FILES.md": 15,
+      "docs/FILES.md": 16,
       "docs/OPERATIONS.md": 3,
       "docs/SCRIPTS.md": 3,
       "docs/TESTING.md": 3,
@@ -368814,7 +368825,7 @@
       "backtester/strategy_cards/tv_library_x8mujqgt_tweezer.md": 1,
       "backtester/strategy_cards/tv_library_x8mujqgt_window_gap.md": 1,
       "backtester/tests/test_decide_audit.py": 1,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 5,
       "docs/INSTALLATION.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/caching-and-optimization.md": 2,
@@ -379733,7 +379744,7 @@
       "backtester/tests/test_index.py": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/DEVELOPMENT.md": 2,
-      "docs/FILES.md": 1840,
+      "docs/FILES.md": 1842,
       "docs/INSTALLATION.md": 1,
       "docs/SCRIPTS.md": 21,
       "docs/TRADINGVIEW-REFERENCE.md": 12,
@@ -380562,7 +380573,7 @@
       "backtester/README.md": 1,
       "backtester/requirements.txt": 1,
       "docs/DEVELOPMENT.md": 3,
-      "docs/FILES.md": 122,
+      "docs/FILES.md": 123,
       "docs/INSTALLATION.md": 2,
       "docs/TESTING.md": 3,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -380688,7 +380699,7 @@
       "docs/COMPOUND-5M-PAPER.md": 5,
       "docs/COMPOUND-5M.md": 9,
       "docs/DEVELOPMENT.md": 8,
-      "docs/FILES.md": 210,
+      "docs/FILES.md": 211,
       "docs/INSTALLATION.md": 13,
       "docs/SCRIPTS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 18,
@@ -380823,7 +380834,7 @@
       "docs/COMPOUND-5M.md": 7,
       "docs/CONCEPTS.md": 19,
       "docs/DEVELOPMENT.md": 20,
-      "docs/FILES.md": 275,
+      "docs/FILES.md": 278,
       "docs/INSTALLATION.md": 13,
       "docs/MCP.md": 3,
       "docs/SCRIPTS.md": 116,
@@ -388192,7 +388203,7 @@
       "docs/COMPOUND-5M.md": 11,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 5,
-      "docs/FILES.md": 1454,
+      "docs/FILES.md": 1455,
       "docs/INSTALLATION.md": 5,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 10,
@@ -388565,6 +388576,7 @@
       "soltui/tests/test_bridge_surfaces.py": 2
     },
     "read_html": {
+      "docs/FILES.md": 1,
       "scripts/html_to_markdown.py": 3,
       "scripts/test_html_to_markdown.py": 2
     },
@@ -396372,7 +396384,7 @@
       "backtester/strategy_cards/tv_rgnbiicd_abc_on_recursive_zigzag_trendoscope.md": 9,
       "backtester/strategy_cards/tv_wz8b1fiw_auto_chart_patterns_trendoscope.md": 1,
       "backtester/strategy_cards/tv_yhpgau7a_carrier_volatility_pumori.md": 1,
-      "docs/FILES.md": 6,
+      "docs/FILES.md": 7,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 6,
       "docs/TRADINGVIEW-CARD-FILES.md": 6,
       "docs/profitable-crypto-strategies-analysis.md": 3,
@@ -396394,6 +396406,7 @@
       "backtester/gridcli.py": 1,
       "backtester/strategy_cards/tv_builtin_fisher_transform.md": 1,
       "backtester/strategy_cards/tv_yhpgau7a_carrier_volatility_pumori.md": 1,
+      "docs/FILES.md": 1,
       "docs/SCRIPTS.md": 1,
       "memory.md": 1,
       "research/tradingview-card-coverage.json": 1,
@@ -409431,7 +409444,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 1,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/caching-and-optimization.md": 4,
@@ -421280,7 +421293,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
-      "docs/FILES.md": 15,
+      "docs/FILES.md": 16,
       "docs/INSTALLATION.md": 1,
       "docs/OPERATIONS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
@@ -422402,7 +422415,7 @@
       "backtester/tests/test_scorecard.py": 1,
       "docs/COMPOUND-5M-PAPER.md": 10,
       "docs/COMPOUND-5M.md": 9,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 4,
       "docs/SCRIPTS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 15,
       "docs/codebase-overview.md": 2,
@@ -426949,7 +426962,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 23,
+      "docs/FILES.md": 28,
       "docs/INSTALLATION.md": 4,
       "docs/SCRIPTS.md": 14,
       "docs/SECURITY.md": 1,
@@ -437184,7 +437197,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/DEVELOPMENT.md": 3,
-      "docs/FILES.md": 10,
+      "docs/FILES.md": 9,
       "docs/INSTALLATION.md": 1,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 8,
@@ -441273,7 +441286,7 @@
       "backtester/core/ticks.py": 2,
       "backtester/strategy_cards/jlp_vs_sol_relative_value.md": 2,
       "backtester/strategy_cards/ou_half_life_sizing.md": 2,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 4,
       "docs/SCRIPTS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/dso-skill/SKILL.md": 1,
@@ -448441,7 +448454,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "backtester/tests/test_universe.py": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/SCRIPTS.md": 2,
       "docs/TESTING.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -455673,6 +455686,7 @@
       "backtester/strategy_cards/tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines.md": 4,
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 1,
+      "docs/FILES.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/profitable-crypto-strategies-analysis.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 2,
@@ -490002,6 +490016,7 @@
     },
     "test_html_to_markdown": {
       ".github/workflows/ci.yml": 1,
+      "docs/FILES.md": 2,
       "docs/SCRIPTS.md": 1,
       "memory.md": 1,
       "scripts/test_html_to_markdown.py": 1
@@ -495821,7 +495836,7 @@
       "backtester/tests/test_universe.py": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/CONCEPTS.md": 1,
-      "docs/FILES.md": 14,
+      "docs/FILES.md": 15,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 6,
       "docs/TESTING.md": 1,
@@ -534234,7 +534249,7 @@
       "backtester/tests/test_gridcli.py": 6,
       "backtester/tests/test_simulation_blind_audit.py": 1,
       "docs/API.md": 1,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -537455,11 +537470,9 @@
       "memory.md": 3
     },
     "v81": {
-      "docs/FILES.md": 1,
       "memory.md": 3
     },
     "v82": {
-      "docs/FILES.md": 1,
       "memory.md": 3
     },
     "v83": {
@@ -537469,9 +537482,11 @@
       "memory.md": 3
     },
     "v85": {
+      "docs/FILES.md": 1,
       "memory.md": 5
     },
     "v86": {
+      "docs/FILES.md": 1,
       "memory.md": 4
     },
     "v8a": {
@@ -543846,7 +543861,7 @@
     },
     "void": {
       "backtester/strategy_cards/tv_q1hxs0v6_liquidity_void_detector_zeiierman.md": 9,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 86,
@@ -553451,7 +553466,7 @@
       "docs/BASE-WALLET-QUERIES.md": 2,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 4,
-      "docs/FILES.md": 40,
+      "docs/FILES.md": 41,
       "docs/INSTALLATION.md": 1,
       "docs/MCP.md": 1,
       "docs/OPERATIONS.md": 1,
@@ -562862,10 +562877,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1347.1,
+    "avgDocLength": 1347.2,
     "documents": 1837,
-    "terms": 59252,
-    "termsBeforePrune": 59432,
-    "totalTokens": 2474711
+    "terms": 59253,
+    "termsBeforePrune": 59433,
+    "totalTokens": 2474813
   }
 }
