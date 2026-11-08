@@ -101,7 +101,8 @@ SPACE: dict[str, dict[str, list[Any]]] = {
 
 BACKTEST_INTERVAL = "1h"
 BAR_SECONDS = 3600
-DEFAULT_BACKTEST_DAYS = 90
+MAX_BRIDGE_BARS = 48  # missing hours bridged with flat bars; a longer gap ends a run
+MAX_BRIDGED_FRACTION = 0.02  # an optimize window may be at most this share bridged
 MIN_BACKTEST_BARS = 24
 MIN_HOUR_MINUTES = 30  # an hour resampled from 1m needs this many minutes, or it counts as missing
 MAX_FORWARD_GAP_MIN = 2
@@ -318,43 +319,102 @@ def available_coins(settings: Any = None) -> list[str]:
 _HOURLY_CACHE: dict[tuple, dict[str, np.ndarray]] = {}
 
 
-def hourly(asset: str, settings: Any = None) -> dict[str, Any]:
-    """Hourly OHLC for `asset` (gaps kept, never filled): the 1h cache, else 1m resampled.
+def _load_hourly(path: Path, how: str) -> dict[str, np.ndarray]:
+    import pandas as pd
 
+    st = path.stat()
+    key = (str(path), st.st_mtime_ns, st.st_size)
+    if key in _HOURLY_CACHE:
+        return _HOURLY_CACHE[key]
+    df = pd.read_csv(path)
+    df = df.sort_values("timestamp").drop_duplicates("timestamp")
+    if how != "1h":
+        df["hour"] = (df["timestamp"] // BAR_SECONDS) * BAR_SECONDS
+        g = df.groupby("hour").agg(open=("open", "first"), high=("high", "max"), low=("low", "min"),
+                                   close=("close", "last"), volume=("volume", "sum"),
+                                   minutes=("open", "size"))
+        df = g[g["minutes"] >= MIN_HOUR_MINUTES].reset_index().rename(columns={"hour": "timestamp"})
+    arrays = {"ts": df["timestamp"].to_numpy(dtype="int64"),
+              "open": df["open"].to_numpy(dtype="float64"), "high": df["high"].to_numpy(dtype="float64"),
+              "low": df["low"].to_numpy(dtype="float64"), "close": df["close"].to_numpy(dtype="float64")}
+    ok = (arrays["low"] > 0) & np.isfinite(arrays["close"]) & (arrays["high"] >= arrays["low"])
+    arrays = {k: v[ok] for k, v in arrays.items()}
+    if len(_HOURLY_CACHE) > 60:
+        _HOURLY_CACHE.clear()
+    _HOURLY_CACHE[key] = arrays
+    return arrays
+
+
+def hourly(asset: str, settings: Any = None) -> dict[str, Any]:
+    """Hourly OHLC for `asset` (gaps kept, never filled), from as far back as the caches reach.
+
+    The 1h files start in 2023 while several 1m caches reach back to 2019, so "from the
+    beginning of the data" uses the minutes resampled to hours before the 1h file starts, and
+    the native hours from then on.
     An hour resampled from minutes needs `MIN_HOUR_MINUTES` of them; a thinner hour is dropped,
     which leaves a gap, because an hour built from five minutes has the wrong high and low.
     """
-    import pandas as pd
-
     a = str(asset).upper()
     base = data_dir(settings)
-    for path, how in ((base / f"{a}_1h.csv", "1h"), (base / f"{a}_1m.csv", "1m->1h")):
-        if not path.exists():
-            continue
-        st = path.stat()
-        key = (str(path), st.st_mtime_ns, st.st_size)
-        if key in _HOURLY_CACHE:
-            return {**_HOURLY_CACHE[key], "source": how}
-        df = pd.read_csv(path)
-        df = df.sort_values("timestamp").drop_duplicates("timestamp")
-        if how != "1h":
-            df["hour"] = (df["timestamp"] // BAR_SECONDS) * BAR_SECONDS
-            g = df.groupby("hour").agg(open=("open", "first"), high=("high", "max"), low=("low", "min"),
-                                       close=("close", "last"), volume=("volume", "sum"),
-                                       minutes=("open", "size"))
-            g = g[g["minutes"] >= MIN_HOUR_MINUTES].reset_index().rename(columns={"hour": "timestamp"})
-            df = g
-        arrays = {"ts": df["timestamp"].to_numpy(dtype="int64"),
-                  "open": df["open"].to_numpy(dtype="float64"), "high": df["high"].to_numpy(dtype="float64"),
-                  "low": df["low"].to_numpy(dtype="float64"), "close": df["close"].to_numpy(dtype="float64")}
-        ok = (arrays["low"] > 0) & np.isfinite(arrays["close"]) & (arrays["high"] >= arrays["low"])
-        arrays = {k: v[ok] for k, v in arrays.items()}
-        if len(_HOURLY_CACHE) > 40:
-            _HOURLY_CACHE.clear()
-        _HOURLY_CACHE[key] = arrays
-        return {**arrays, "source": how}
-    raise BotError(f"no cached bars for {a}: expected {base / (a + '_1h.csv')} or {a}_1m.csv. "
-                   f"Fetch: python -m backtester.core.fetch --asset {a} --interval 1h --start 2024-01-01")
+    h_path, m_path = base / f"{a}_1h.csv", base / f"{a}_1m.csv"
+    h = _load_hourly(h_path, "1h") if h_path.exists() else None
+    m = _load_hourly(m_path, "1m->1h") if m_path.exists() else None
+    if h is None and m is None:
+        raise BotError(f"no cached bars for {a}: expected {h_path} or {a}_1m.csv. "
+                       f"Fetch: python -m backtester.core.fetch --asset {a} --interval 1h --start 2024-01-01")
+    if h is None or not h["ts"].size:
+        return {**m, "source": "1m->1h"}
+    if m is None or not m["ts"].size or m["ts"][0] >= h["ts"][0]:
+        return {**h, "source": "1h"}
+    # Native hours wherever they exist; minutes resampled to hours only before them.
+    early = m["ts"] < h["ts"][0]
+    return {**{k: np.concatenate([m[k][early], h[k]]) for k in h}, "source": "1m->1h, then 1h"}
+
+
+def bridged(arrays: dict[str, Any], start_index: int = 0, max_bars: int | None = None,
+            step: int = BAR_SECONDS) -> dict[str, Any]:
+    """The run of bars from `start_index` with short gaps bridged, ending at the first long gap.
+
+    A gap of up to MAX_BRIDGE_BARS missing bars is filled with flat bars at the last close:
+    nothing can fill during it, and the first real bar after it fills whatever its range
+    crosses. That is pessimistic for the bot (a level crossed and recrossed inside an outage
+    is missed) and it is reported. A longer gap ends the run there, because pretending a
+    multi-day outage was flat would be a story, not data. `max_bars` counts hours of time.
+
+    Returns {"bars": arrays, "bridged": bool per bar, "bridged_bars", "bridged_gaps", "stopped_at_gap"}.
+    """
+    ts = arrays["ts"]
+    gaps = np.diff(ts[start_index:]) // step - 1
+    long_gap = np.nonzero(gaps > MAX_BRIDGE_BARS)[0]
+    end = ts.size if not long_gap.size else start_index + int(long_gap[0]) + 1
+    stopped = int(ts[end - 1]) if long_gap.size else None
+    real = slice(start_index, end)
+    t0 = int(ts[start_index])
+    grid_ts = np.arange(t0, int(ts[end - 1]) + step, step, dtype="int64")
+    if max_bars is not None and grid_ts.size > max_bars:
+        grid_ts = grid_ts[:max_bars]
+        stopped = None
+    pos = (ts[real] - t0) // step
+    keep = pos < grid_ts.size
+    pos = pos[keep]
+    src = np.full(grid_ts.size, -1, dtype="int64")
+    src[pos] = np.arange(start_index, end)[keep]
+    is_bridge = src < 0
+    filled = np.maximum.accumulate(np.where(is_bridge, -1, src))  # last real bar at or before each slot
+    close = arrays["close"][filled]
+    out = {"ts": grid_ts}
+    for name in ("open", "high", "low"):
+        out[name] = np.where(is_bridge, close, arrays[name][filled])
+    out["close"] = close
+    n_gaps = int(np.count_nonzero(np.diff(is_bridge.astype("int8")) == 1))
+    return {"bars": out, "bridged": is_bridge, "bridged_bars": int(is_bridge.sum()), "bridged_gaps": n_gaps,
+            "stopped_at_gap": stopped}
+
+
+def usable_start(arrays: dict[str, Any], step: int = BAR_SECONDS) -> int:
+    """Index of the first bar after the last gap too long to bridge (0 when there is none)."""
+    gaps = np.nonzero(np.diff(arrays["ts"]) // step - 1 > MAX_BRIDGE_BARS)[0]
+    return int(gaps[-1]) + 1 if gaps.size else 0
 
 
 def contiguous(arrays: dict[str, Any], start_index: int, max_bars: int | None = None,
@@ -469,7 +529,8 @@ def _record(row: dict[str, Any]) -> dict[str, Any]:
 
 def backtest(bot: str, asset: str, settings: Any = None, *, start: Any = None, days: Any = None,
              config: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Start the bot at `start` (UTC date or epoch; default 90 days ago) and run it `days` days."""
+    """Start the bot at `start` (UTC date or epoch) and run it `days` days; default from the
+    beginning of the usable data to its end."""
     bot = _bot(bot)
     cfg = validate(bot, config) if config else get_config(bot)
     days_n = None if days in (None, "", 0) else float(days)
@@ -481,20 +542,72 @@ def backtest(bot: str, asset: str, settings: Any = None, *, start: Any = None, d
     ts = arrays["ts"]
     if ts.size < MIN_BACKTEST_BARS:
         raise BotError(f"{asset}: only {ts.size} cached bars")
-    start_ts = _start_ts(start, DEFAULT_BACKTEST_DAYS, int(ts[-1]))
-    i = int(np.searchsorted(ts, start_ts))
-    if i >= ts.size:
-        raise BotError(f"{asset}: no cached bar at or after {_iso(start_ts)}; data ends {_iso(int(ts[-1]))}")
-    seg, gap_at = contiguous(arrays, i, None if days_n is None else int(days_n * 24))
+    note = None
+    if start in (None, ""):
+        i = usable_start(arrays)
+        if i:
+            note = (f"the data before {_iso(int(ts[i]))} has gaps longer than {MAX_BRIDGE_BARS} h, so the "
+                    "backtest starts after the last one")
+    else:
+        start_ts = _start_ts(start, 0, int(ts[-1]))
+        i = int(np.searchsorted(ts, start_ts))
+        if i >= ts.size:
+            raise BotError(f"{asset}: no cached bar at or after {_iso(start_ts)}; data ends {_iso(int(ts[-1]))}")
+    run = bridged(arrays, i, None if days_n is None else int(days_n * 24))
+    seg = run["bars"]
     if seg["ts"].size < MIN_BACKTEST_BARS:
-        raise BotError(f"{asset}: only {seg['ts'].size} gap-free bars from {_iso(int(ts[i]))} "
-                       f"(a gap follows {_iso(gap_at)}); pick a later start")
+        raise BotError(f"{asset}: only {seg['ts'].size} bars from {_iso(int(ts[i]))} before a gap longer "
+                       f"than {MAX_BRIDGE_BARS} h (after {_iso(run['stopped_at_gap'])}); pick a later start")
     out = run_bars(bot, cfg, seg, BACKTEST_INTERVAL, _costs(settings))
     return _record({"id": uuid.uuid4().hex[:12], "kind": "backtest", "bot": bot, "asset": str(asset).upper(),
                     "at": time.time(), "start_ts": int(seg["ts"][0]), "end_ts": int(seg["ts"][-1]),
                     "start": _iso(seg["ts"][0]), "end": _iso(seg["ts"][-1]), "interval": BACKTEST_INTERVAL,
-                    "data_source": arrays["source"], "stopped_at_gap": _iso(gap_at), "config": cfg,
-                    "fee_bps": _costs(settings).fee_bps, "slippage_bps": _costs(settings).slippage_bps, **out})
+                    "data_source": arrays["source"], "stopped_at_gap": _iso(run["stopped_at_gap"]),
+                    "bridged_bars": run["bridged_bars"], "bridged_gaps": run["bridged_gaps"], "start_note": note,
+                    "config": cfg, "fee_bps": _costs(settings).fee_bps,
+                    "slippage_bps": _costs(settings).slippage_bps, **out})
+
+
+def _coin_list(coins: Any, settings: Any) -> list[str]:
+    if coins in (None, "", []):
+        return [str(getattr(settings, "asset", "SOL")).upper()]
+    if isinstance(coins, str):
+        coins = [c for c in coins.replace(",", " ").split() if c]
+    names = [str(c).upper() for c in coins]
+    if names == ["ALL"]:
+        return available_coins(settings)
+    return list(dict.fromkeys(names))
+
+
+def backtest_many(bot: str, coins: Any, settings: Any = None, *, start: Any = None, days: Any = None,
+                  progress: Callable[[float, str], None] | None = None) -> dict[str, Any]:
+    """The same bot and start on several coins: one saved backtest each, and a per-coin summary.
+
+    A coin that cannot run (no data, start past its data) is listed under `errors` with the
+    reason, never silently dropped. The triangle bot watches every triangle at once, so it runs once.
+    """
+    bot = _bot(bot)
+    names = ["ALL"] if bot == "triangle" else _coin_list(coins, settings)
+    runs, errors, summary = [], {}, []
+    for k, coin in enumerate(names):
+        if progress:
+            progress(k / max(1, len(names)), f"{coin} ({k + 1}/{len(names)})")
+        try:
+            r = backtest(bot, coin, settings, start=start, days=days)
+        except (BotError, ValueError, RuntimeError) as exc:
+            errors[coin] = str(exc)
+            continue
+        runs.append(r)
+        res = r["results"]
+        summary.append({"coin": r["asset"], "start": r["start"], "end": r["end"], "bars": res.get("bars"),
+                        "total_return": res.get("total_return"), "hold_return": res.get("hold_return"),
+                        "excess_return": res.get("excess_return"), "max_drawdown": res.get("max_drawdown"),
+                        "trades": res.get("trades", res.get("executed")), "pnl_usd": res.get("pnl_usd"),
+                        "bridged_bars": r.get("bridged_bars", 0), "data_source": r["data_source"],
+                        "id": r["id"]})
+    beat = [row for row in summary if (row.get("excess_return") or 0) > 0]
+    return {"bot": bot, "coins": names, "runs": runs, "errors": errors, "summary": summary,
+            "beat_hold": len(beat), "ran": len(summary)}
 
 
 def _iter_recorded(start_ts: float, end_ts: float | None, *, last_days: int | None = None):
@@ -810,7 +923,7 @@ def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder
     a = "ALL" if bot == "triangle" else str(asset).upper()
     if bot != "triangle" and f"{a}-USD" not in _triangle_products():
         raise BotError(f"{a}-USD is not in the recorded stream; forward tests need a Coinbase USD market")
-    recorder = pricefeed.start_recorder() if ensure_recorder else {"started": False}
+    recorder = pricefeed.ensure_recorder() if ensure_recorder else {"running": None}
     raw = _forward_all()
     raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot),
                 "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
@@ -887,39 +1000,142 @@ def _forward_replay(bot: str, rec: dict[str, Any], end: float, settings: Any, st
 # -- auto-optimize --------------------------------------------------------------------------------
 
 
-def candidates(bot: str, current: dict[str, Any]) -> list[dict[str, Any]]:
-    """The current config first, then every combination of SPACE over it that validates."""
-    bot = _bot(bot)
-    keys = list(SPACE[bot])
-    out = [current]
-    seen = {json.dumps(current, sort_keys=True)}
-    for combo in itertools.product(*(SPACE[bot][k] for k in keys)):
-        try:
-            cfg = validate(bot, {**current, **dict(zip(keys, combo))})
-        except BotError:
+# Where each setting may roam when a re-run widens the search: (kind, low, high, scale).
+DOMAINS: dict[str, dict[str, tuple]] = {
+    "grid": {"range_pct": ("float", 2.0, 60.0, "log"), "rungs": ("int", 3, 40, "log"),
+             "spacing": ("choice", ("geom", "arith")), "deadband_bps": ("float", 0.0, 100.0, "lin")},
+    "dca": {"price_deviation_pct": ("float", 0.3, 10.0, "log"), "take_profit_pct": ("float", 0.3, 10.0, "log"),
+            "max_safety_orders": ("int", 0, 12, "lin"), "volume_scale": ("float", 1.0, 2.5, "lin"),
+            "step_scale": ("float", 0.8, 2.0, "lin"), "stop_loss_pct": ("float", 0.0, 40.0, "lin"),
+            "cooldown_bars": ("int", 0, 48, "lin")},
+    "triangle": {"min_edge_bps": ("float", 0.0, 100.0, "lin"), "latency_s": ("float", 0.2, 5.0, "log"),
+                 "max_quote_age_s": ("float", 1.0, 20.0, "log"), "cooldown_s": ("float", 0.0, 60.0, "lin")},
+}
+RANDOM_PER_RUN = 12
+MAX_CANDIDATES = 97
+
+
+def _cfg_key(cfg: dict[str, Any]) -> str:
+    return json.dumps(cfg, sort_keys=True)
+
+
+def history_path(bot: str) -> Path:
+    return home() / f"optimize-history-{bot}.json"
+
+
+def optimize_history(bot: str) -> dict[str, Any]:
+    raw = _read_json(history_path(_bot(bot)), {})
+    if not isinstance(raw, dict):
+        raw = {}
+    return {"runs": int(raw.get("runs") or 0), "tried": list(raw.get("tried") or []), "log": list(raw.get("log") or [])}
+
+
+def _sample(bot: str, current: dict[str, Any], rng: np.random.Generator, spread: float) -> dict[str, Any]:
+    """One configuration around `current`: each setting moves with some probability, by up to
+    `spread` (a fraction of its whole domain, log-scaled where the setting is multiplicative)."""
+    out = dict(current)
+    for key, dom in DOMAINS[bot].items():
+        if rng.random() > min(1.0, 0.35 + spread):
             continue
-        key = json.dumps(cfg, sort_keys=True)
-        if key not in seen:
-            seen.add(key)
-            out.append(cfg)
+        if dom[0] == "choice":
+            out[key] = str(rng.choice(dom[1]))
+            continue
+        kind, lo, hi, scale = dom
+        value = float(current[key])
+        if scale == "log":
+            llo, lhi = math.log(lo), math.log(hi)
+            centre = math.log(min(max(value, lo), hi))
+            x = math.exp(min(lhi, max(llo, centre + rng.uniform(-1, 1) * spread * (lhi - llo))))
+        else:
+            x = min(hi, max(lo, value + rng.uniform(-1, 1) * spread * (hi - lo)))
+        out[key] = int(round(x)) if kind == "int" else round(float(x), 3)
+    return out
+
+
+def candidates(bot: str, current: dict[str, Any], run: int = 1,
+               tried: Iterable[str] = ()) -> list[dict[str, Any]]:
+    """The configurations one auto-optimize run tests, current settings first.
+
+    Run 1 is the fixed representative grid in SPACE. Every later run widens the search: it
+    skips configurations earlier runs already tried, adds every one-setting neighbour of the
+    current settings, and fills up to RANDOM_PER_RUN more configurations than the first run per
+    run number with random samples whose reach grows with the run number until it covers each
+    setting's whole domain. The sampler is seeded
+    by bot and run, so a run's candidate list is reproducible.
+    """
+    bot = _bot(bot)
+    seen = {_cfg_key(current)}
+    skip = set(tried)
+    out = [current]
+
+    def add(values: dict[str, Any]) -> None:
+        if len(out) >= MAX_CANDIDATES:
+            return
+        try:
+            cfg = validate(bot, values)
+        except BotError:
+            return
+        key = _cfg_key(cfg)
+        if key in seen or (run > 1 and key in skip):
+            return
+        seen.add(key)
+        out.append(cfg)
+
+    keys = list(SPACE[bot])
+    for combo in itertools.product(*(SPACE[bot][k] for k in keys)):
+        add({**current, **dict(zip(keys, combo))})
+    if run <= 1:
+        return out
+    for key, dom in DOMAINS[bot].items():  # one-setting neighbours of the current settings
+        if dom[0] == "choice":
+            for choice in dom[1]:
+                add({**current, key: choice})
+            continue
+        kind, lo, hi, scale = dom
+        value = float(current[key])
+        for factor in (0.5, 0.8, 1.25, 2.0):
+            x = value * factor if scale == "log" or value else lo + (hi - lo) * (factor - 0.5) / 4
+            x = min(hi, max(lo, x))
+            add({**current, key: int(round(x)) if kind == "int" else round(x, 3)})
+    rng = np.random.default_rng(zlib.crc32(f"{bot}|{run}".encode()))
+    spread = min(1.0, 0.15 * run)
+    # Each run tests more configurations than the one before: the first run's grid size plus
+    # RANDOM_PER_RUN more per run, filled with fresh samples.
+    grid_size = math.prod(len(v) for v in SPACE[bot].values()) + 1
+    target = min(MAX_CANDIDATES, grid_size + RANDOM_PER_RUN * (run - 1))
+    attempts = 0
+    while len(out) < target and attempts < 50 * RANDOM_PER_RUN * run:
+        attempts += 1
+        add(_sample(bot, current, rng, spread))
     return out
 
 
 def windows_for(arrays: dict[str, Any], count: int, bars: int) -> list[dict[str, np.ndarray]]:
-    """Up to `count` non-overlapping gap-free windows of `bars` bars, the most recent history, oldest first."""
+    """Up to `count` non-overlapping windows of `bars` hours from the most recent history, oldest first.
+
+    Short gaps are bridged (see `bridged`); a window may be at most MAX_BRIDGED_FRACTION bridged,
+    and no window spans a gap too long to bridge.
+    """
     ts = arrays["ts"]
-    out = []
-    end = ts.size
-    while end - bars >= 0 and len(out) < count:
-        start = end - bars
-        seg, gap = contiguous(arrays, start, bars)
-        if gap is None and seg["ts"].size == bars:
-            out.append(seg)
-            end = start
-        else:
-            # Skip back past the gap: restart just before it.
-            gaps = np.nonzero(np.diff(ts[start:end]) != BAR_SECONDS)[0]
-            end = start + int(gaps[-1]) + 1 if gaps.size else start
+    if ts.size == 0:
+        return []
+    # Split at the long gaps, newest segment first.
+    long_gaps = np.nonzero(np.diff(ts) // BAR_SECONDS - 1 > MAX_BRIDGE_BARS)[0]
+    starts = [0] + [int(g) + 1 for g in long_gaps]
+    out: list[dict[str, np.ndarray]] = []
+    for s0 in reversed(starts):
+        run = bridged(arrays, s0)
+        seg, flags = run["bars"], run["bridged"]
+        end = seg["ts"].size
+        while end - bars >= 0 and len(out) < count:
+            lo = end - bars
+            if flags[lo:end].mean() <= MAX_BRIDGED_FRACTION:
+                out.append({k: v[lo:end] for k, v in seg.items()})
+                end = lo
+            else:
+                end -= max(1, bars // 4)
+        if len(out) >= count:
+            break
     return out[::-1]
 
 
@@ -947,20 +1163,24 @@ def _ranks(scores: list[float]) -> list[float]:
 
 
 def _cells_bars(bot: str, cands: list[dict[str, Any]], settings: Any, coins: Sequence[str], windows: int,
-                window_bars: int, progress: Callable[[float, str], None]) -> tuple[list[dict], dict]:
+                window_bars: int, progress: Callable[[float, str], None]) -> tuple[list[dict], dict, dict]:
+    """One cell per (coin, window): every candidate's total return. Also which coins were used."""
     costs = _costs(settings)
     cells: list[dict[str, Any]] = []
     skipped: dict[str, str] = {}
     usable = []
+    sources: dict[str, str] = {}
     for coin in coins:
         try:
-            wins = windows_for(hourly(coin, settings), windows, window_bars)
+            arrays = hourly(coin, settings)
+            wins = windows_for(arrays, windows, window_bars)
         except BotError as exc:
             skipped[coin] = str(exc)
             continue
         if len(wins) < 2:
-            skipped[coin] = f"only {len(wins)} gap-free {window_bars // 24}-day window(s)"
+            skipped[coin] = f"only {len(wins)} usable {window_bars // 24}-day window(s) in its data"
             continue
+        sources[coin] = arrays["source"]
         usable.append((coin, wins))
     total = sum(len(w) for _, w in usable) * len(cands) or 1
     done = 0
@@ -975,9 +1195,9 @@ def _cells_bars(bot: str, cands: list[dict[str, Any]], settings: Any, coins: Seq
                     scores.append(-math.inf)
                 done += 1
             progress(done / total, f"{coin} window {w_idx + 1}/{len(wins)}")
-            cells.append({"cell": f"{coin}#{w_idx + 1}", "split": "train" if w_idx < half else "test",
-                          "start": _iso(seg["ts"][0]), "scores": scores})
-    return cells, skipped
+            cells.append({"cell": f"{coin}#{w_idx + 1}", "coin": coin, "split": "train" if w_idx < half else "test",
+                          "start": _iso(seg["ts"][0]), "end": _iso(seg["ts"][-1]), "scores": scores})
+    return cells, skipped, sources
 
 
 def _cells_triangle(cands: list[dict[str, Any]], progress: Callable[[float, str], None]) -> tuple[list[dict], dict]:
@@ -1016,41 +1236,78 @@ def _cells_triangle(cands: list[dict[str, Any]], progress: Callable[[float, str]
     n_hours = len(hours) // max(1, len(tris))
     if n_hours < 2:
         return [], {"recorded": f"{seen} recorded snapshots give {n_hours} usable hour window(s); "
-                                "auto-optimize needs at least two (keep the recorder running)"}
+                                "auto-optimize needs at least two (keep the recorder running)"}, {}
     half = n_hours // 2
     cells = []
     for idx, (name, scores) in enumerate(hours):
         w = idx // max(1, len(tris))
-        cells.append({"cell": name, "split": "train" if w < half else "test", "start": name.split("@")[-1],
-                      "scores": scores})
-    return cells, {}
+        cells.append({"cell": name, "coin": name.split("@")[0], "split": "train" if w < half else "test",
+                      "start": name.split("@")[-1], "end": None, "scores": scores})
+    return cells, {}, {}
+
+
+def _changes(before: dict[str, Any], after: dict[str, Any]) -> list[dict[str, Any]]:
+    return [{"setting": k, "before": before.get(k), "after": v} for k, v in after.items() if before.get(k) != v]
+
+
+def _per_coin(cells: list[dict[str, Any]], best: int, sources: dict[str, str]) -> list[dict[str, Any]]:
+    """For each coin (each triangle): how many windows ran, and the pick against the current settings."""
+    rows = []
+    for coin in dict.fromkeys(c["coin"] for c in cells):
+        mine = [c for c in cells if c["coin"] == coin]
+        test = [c for c in mine if c["split"] == "test"]
+        diffs = [c["scores"][best] - c["scores"][0] for c in test
+                 if math.isfinite(c["scores"][best]) and math.isfinite(c["scores"][0])]
+        own_best = min(range(len(mine[0]["scores"])),
+                       key=lambda i: statistics.fmean(_ranks(c["scores"])[i] for c in mine))
+        rows.append({"coin": coin, "data_source": sources.get(coin), "windows": len(mine),
+                     "train_windows": len(mine) - len(test), "test_windows": len(test),
+                     "first_window": mine[0]["start"], "last_window_end": mine[-1].get("end"),
+                     "current_test_median": statistics.median(c["scores"][0] for c in test) if test else None,
+                     "pick_test_median": statistics.median(c["scores"][best] for c in test) if test else None,
+                     "pick_wins": sum(d > 1e-12 for d in diffs), "pick_losses": sum(d < -1e-12 for d in diffs),
+                     "coin_best_index": own_best})
+    return rows
 
 
 def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = None,
              windows: int = OPTIMIZE_WINDOWS, window_days: int = OPTIMIZE_WINDOW_DAYS, adopt: bool = True,
              progress: Callable[[float, str], None] | None = None) -> dict[str, Any]:
-    """Search SPACE across every coin and window; adopt only a reliable out-of-sample winner."""
+    """Search the candidates across every coin and window; adopt only a reliable out-of-sample winner.
+
+    Each run is numbered per bot. Run 1 tests the representative grid; each later run tests
+    configurations no earlier run tried, reaching further from the current settings
+    (`candidates`). The report says which coins ran with how many windows, and exactly which
+    settings changed and whether they were saved.
+    """
     bot = _bot(bot)
     if not 2 <= int(windows) <= 24:
         raise BotError("windows must be in [2, 24]")
     if not 3 <= int(window_days) <= 365:
         raise BotError("window_days must be in [3, 365]")
     started = time.time()
+    hist = optimize_history(bot)
+    run_no = hist["runs"] + 1
+    current = get_config(bot)
+    cands = candidates(bot, current, run_no, hist["tried"])
+    cand_rows = [{"index": i, "changes": {k: v for k, v in c.items() if current.get(k) != v}} for i, c in enumerate(cands)]
 
     def report(frac: float, msg: str) -> None:
-        runtime().progress[bot] = {"fraction": round(frac, 4), "message": msg, "at": time.time()}
+        runtime().progress[bot] = {"fraction": round(frac, 4), "message": msg, "at": time.time(), "run": run_no,
+                                   "candidates": cand_rows, "started": started, "done": False}
         if progress:
             progress(frac, msg)
 
-    current = get_config(bot)
-    cands = candidates(bot, current)
+    report(0.0, f"run {run_no}: {len(cands)} configurations")
     if bot == "triangle":
-        cells, skipped = _cells_triangle(cands, report)
+        cells, skipped, sources = _cells_triangle(cands, report)
         universe = "every recorded triangle, hour windows"
+        coin_list: list[str] = []
     else:
         coin_list = [c.upper() for c in (coins or available_coins(settings))]
-        cells, skipped = _cells_bars(bot, cands, settings, coin_list, int(windows), int(window_days) * 24, report)
-        universe = f"{len(coin_list)} coins x {windows} windows of {window_days} days (1h bars)"
+        cells, skipped, sources = _cells_bars(bot, cands, settings, coin_list, int(windows), int(window_days) * 24,
+                                              report)
+        universe = f"{len(coin_list)} coins x up to {windows} windows of {window_days} days (1h bars)"
     train = [c for c in cells if c["split"] == "train"]
     test = [c for c in cells if c["split"] == "test"]
     table = []
@@ -1062,22 +1319,24 @@ def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = No
                       "train_mean_rank": statistics.fmean(_ranks(c["scores"])[i] for c in train) if train else None,
                       "train_median": statistics.median(tr) if tr else None,
                       "test_median": statistics.median(te) if te else None})
-    verdict: dict[str, Any] = {"reliable": False, "adopted": False}
+    verdict: dict[str, Any] = {"reliable": False, "adopted": False, "saved": False, "changes": []}
+    best_index = 0
     if not train or not test:
         verdict["reason"] = "not enough data to split into train and test windows"
     else:
         best = min(table, key=lambda r: (r["train_mean_rank"], r["index"]))
-        diffs = [c["scores"][best["index"]] - c["scores"][0] for c in test]
+        best_index = best["index"]
+        diffs = [c["scores"][best_index] - c["scores"][0] for c in test]
         diffs = [d for d in diffs if math.isfinite(d)]
         wins = sum(d > 1e-12 for d in diffs)
         losses = sum(d < -1e-12 for d in diffs)
         p = sign_test_p(wins, losses)
         med = statistics.median(diffs) if diffs else 0.0
-        reliable = (best["index"] != 0 and wins + losses >= MIN_DECIDED_CELLS and p < SIGN_TEST_ALPHA and med > 0)
-        verdict.update({"best_index": best["index"], "best_config": best["config"], "best_changes": best["changes"],
+        reliable = (best_index != 0 and wins + losses >= MIN_DECIDED_CELLS and p < SIGN_TEST_ALPHA and med > 0)
+        verdict.update({"best_index": best_index, "best_config": best["config"], "best_changes": best["changes"],
                         "test_cells": len(diffs), "wins": wins, "losses": losses, "ties": len(diffs) - wins - losses,
                         "p_value": p, "median_improvement": med, "reliable": reliable})
-        if best["index"] == 0:
+        if best_index == 0:
             verdict["reason"] = "the current configuration ranks best on the train windows"
         elif wins + losses < MIN_DECIDED_CELLS:
             verdict["reason"] = f"only {wins + losses} test cells differ (need {MIN_DECIDED_CELLS})"
@@ -1088,12 +1347,24 @@ def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = No
             verdict["reason"] = (f"the train winner beat the current config in {wins} of {wins + losses} test cells "
                                  f"(p = {p:.4f}, median improvement {med:+.4f})")
         if reliable and adopt:
-            save_config(bot, best["config"], merge=False, reason=f"auto-optimize: {verdict['reason']}")
-            verdict["adopted"] = True
+            saved = save_config(bot, best["config"], merge=False, reason=f"auto-optimize run {run_no}: {verdict['reason']}")
+            verdict.update({"adopted": True, "saved": True, "changes": _changes(current, saved),
+                            "saved_to": str(config_path())})
+        elif reliable:
+            verdict["changes_not_saved"] = _changes(current, best["config"])
+    per_coin = _per_coin(cells, best_index, sources) if cells else []
     report(1.0, "done")
-    out = {"bot": bot, "at": time.time(), "seconds": round(time.time() - started, 1), "universe": universe,
-           "candidates": len(cands), "train_cells": len(train), "test_cells": len(test), "skipped": skipped,
-           "space": SPACE[bot], "current": current, "verdict": verdict,
+    runtime().progress[bot]["done"] = True
+    hist["runs"] = run_no
+    hist["tried"] = list(dict.fromkeys(hist["tried"] + [_cfg_key(c) for c in cands]))[-5000:]
+    hist["log"] = (hist["log"] + [{"run": run_no, "at": time.time(), "candidates": len(cands),
+                                   "adopted": verdict["adopted"], "changes": verdict["changes"]}])[-100:]
+    _write_json(history_path(bot), hist)
+    out = {"bot": bot, "run": run_no, "at": time.time(), "seconds": round(time.time() - started, 1),
+           "universe": universe, "coins_requested": coin_list, "coins_used": [r["coin"] for r in per_coin],
+           "candidates": len(cands), "new_candidates": sum(1 for c in cands[1:]),
+           "train_cells": len(train), "test_cells": len(test), "skipped": skipped, "space": SPACE[bot],
+           "current": current, "verdict": verdict, "per_coin": per_coin,
            "table": sorted(table, key=lambda r: (r["train_mean_rank"] is None, r["train_mean_rank"] or 0))}
     _write_json(optimize_path(bot), out)
     return _json_safe(out)

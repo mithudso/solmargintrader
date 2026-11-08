@@ -54,6 +54,7 @@ from backtester.core import scorecard as sc
 
 from . import bgcontrol
 from . import bots as bots_mod
+from .bots_screens import CoinPickerScreen, OptimizeScreen
 from . import compound as compound_mod
 from . import cumulative as cumulative_mod
 from . import bgqueue
@@ -196,8 +197,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#bots-forward-stop": "bots.forward_stop",
     "#bots-forward-refresh": "bots.forward_status",
     "#bots-optimize": "bots.optimize",
-    "#bots-rec-start": "prices.start",
-    "#bots-rec-stop": "prices.stop",
+    "#bots-coins": "bots.overview",
 }
 
 class GlossaryTable(DataTable):
@@ -576,9 +576,13 @@ class SolTuiApp(App):
     #compound-call { padding: 0 1; border: round $accent; }
     #compound-detail { color: $text-muted; padding: 0 1; }
     #compound-autopilot-status { padding: 0 1; border: round $success; }
-    #bots-bot { width: 30; }
-    #bots-coin { width: 14; }
-    #bots-start, #bots-days { width: 24; }
+    #bots-top Label { width: auto; padding: 0 0 0 1; }
+    #bots-bot { width: 24; }
+    #bots-top Button { min-width: 8; width: auto; }
+    #bots-start { width: 16; }
+    #bots-days { width: 8; }
+    #bots-config { width: 1fr; min-width: 16; }
+    #bots-bt-coins, #bots-opt-coins { height: 14; }
     #bots-about { color: $text-muted; padding: 0 1; }
     #bots-stream { padding: 0 1; border: round $accent; }
     #bots-sections { height: 1fr; }
@@ -619,6 +623,9 @@ class SolTuiApp(App):
         self._bots_coins: list[str] = []
         self._bots_ticks = 0
         self._bots_forward_running = False
+        self._bots_selected: list[str] = []
+        self._bots_runs: list[dict[str, Any]] = []
+        self._bots_opt_screen: OptimizeScreen | None = None
         # Where the editor's height and open/closed state persist. None (every test) keeps them
         # in memory, so no test reads or writes the owner's real layout.
         self._ui_state_path = ui_state_path
@@ -1155,23 +1162,21 @@ class SolTuiApp(App):
         """
         with Vertical(id="bots-scroll"):
             yield Static("SIMULATION AND DRY RUN ONLY: these bots place no orders.", classes="hint")
-            with Horizontal(classes="form-row"):
-                yield Label("Bot:")
+            with Horizontal(classes="form-row", id="bots-top"):
+                yield Label("Bot")
                 yield Select([(bots_mod.LABELS[b], b) for b in bots_mod.BOTS], value="grid",
                              allow_blank=False, id="bots-bot")
-                yield Label("Coin:")
-                yield Select([("SOL", "SOL")], value="SOL", allow_blank=False, id="bots-coin")
-            with Horizontal(classes="form-row"):
-                yield Label("Backtest start (UTC):")
-                yield Input(placeholder="2026-06-01 (empty: 90 days ago)", id="bots-start")
-                yield Label("Days:")
-                yield Input(placeholder="empty: to the end", id="bots-days")
-            yield Static("", id="bots-about")
-            with Horizontal(classes="form-row"):
-                yield Label("Settings (k=v):")
+                yield Label("Coins")
+                yield Button("SOL", id="bots-coins")
+                yield Label("Start")
+                yield Input(placeholder="start of data", id="bots-start")
+                yield Label("Days")
+                yield Input(placeholder="all", id="bots-days")
+                yield Label("Settings")
                 yield Input(placeholder="range_pct=10 rungs=9", id="bots-config")
                 yield Button("Apply", variant="primary", id="bots-apply")
                 yield Button("Defaults", id="bots-reset")
+            yield Static("", id="bots-about")
             with Horizontal(classes="form-row"):
                 yield Button("Backtest", variant="warning", id="bots-backtest")
                 yield Button("Start forward test", variant="success", id="bots-forward-start")
@@ -1179,14 +1184,14 @@ class SolTuiApp(App):
                 yield Button("Refresh forward", id="bots-forward-refresh")
                 yield Button("Auto-optimize (all coins)", variant="warning", id="bots-optimize")
             yield Static("", id="bots-status")
-            with Horizontal(classes="form-row"):
-                yield Button("Start recorder", id="bots-rec-start")
-                yield Button("Stop recorder", id="bots-rec-stop")
-                yield Static("price stream: not read yet", id="bots-stream")
+            yield Static("price recorder: checking…", id="bots-stream")
             with TabbedContent(id="bots-sections", initial="bots-sec-backtest"):
                 with TabPane("Backtest", id="bots-sec-backtest"):
                     with VerticalScroll():
                         yield Static("No backtest yet for this bot: press Backtest.", id="bots-bt-title")
+                        yield Static("[b]Every coin in the last backtest[/b]: select a row to show its detail "
+                                     "below", classes="table-title")
+                        yield GlossaryTable(id="bots-bt-coins")
                         yield Static("[b]What it set[/b] at its start, from the price at that moment",
                                      classes="table-title")
                         yield GlossaryTable(id="bots-set")
@@ -1202,6 +1207,9 @@ class SolTuiApp(App):
                 with TabPane("Auto-optimize", id="bots-sec-optimize"):
                     with VerticalScroll():
                         yield Static("Auto-optimize has not run for this bot.", id="bots-opt-verdict")
+                        yield Static("[b]Per coin[/b]: the windows each coin ran and the pick against the "
+                                     "current settings out of sample", classes="table-title")
+                        yield GlossaryTable(id="bots-opt-coins")
                         yield Static("[b]Every configuration searched[/b], best train rank first; the test "
                                      "columns are out of sample", classes="table-title")
                         yield GlossaryTable(id="bots-opt-table")
@@ -1214,7 +1222,11 @@ class SolTuiApp(App):
 
     def _bots_load(self) -> None:
         """First view: fill the coin list and the tables' columns, then render the selected bot."""
-        for table_id, cols in (("#bots-set", ("setting", "value")), ("#bots-bt-table", ("metric", "value")),
+        for table_id, cols in (("#bots-bt-coins", ("coin", "from", "to", "hours", "bot return", "hold return",
+                                                   "vs hold", "bot max dd", "fills", "bridged h", "history")),
+                               ("#bots-opt-coins", ("coin", "history", "windows", "current test median",
+                                                    "pick test median", "pick wins", "pick losses")),
+                               ("#bots-set", ("setting", "value")), ("#bots-bt-table", ("metric", "value")),
                                ("#bots-fwd-table", ("metric", "value")),
                                ("#bots-opt-table", ("config change", "train rank", "train median return",
                                                     "test median return")),
@@ -1224,17 +1236,23 @@ class SolTuiApp(App):
                 table.add_columns(*cols)
                 table.cursor_type = "row"
         env = self._call("bots.overview", quiet=True)
+        coin = self.settings.asset.upper()
         if env["ok"]:
-            self._bots_coins = env["result"]["coins"] or [self.settings.asset.upper()]
-            coin = self.settings.asset.upper()
-            select = self.query_one("#bots-coin", Select)
-            select.set_options([(c, c) for c in self._bots_coins])
-            select.value = coin if coin in self._bots_coins else self._bots_coins[0]
+            self._bots_coins = env["result"]["coins"] or [coin]
+        self._bots_selected = [coin if coin in (self._bots_coins or [coin]) else (self._bots_coins or [coin])[0]]
+        self._bots_show_coins()
         self._bots_render_selected()
 
     def _bots_coin(self) -> str:
-        value = self.query_one("#bots-coin", Select).value
-        return str(value) if isinstance(value, str) else self.settings.asset.upper()
+        """The first selected coin: what a forward test runs on."""
+        return (self._bots_selected or [self.settings.asset.upper()])[0]
+
+    def _bots_show_coins(self) -> None:
+        chosen = self._bots_selected
+        label = (chosen[0] if len(chosen) == 1 else
+                 f"all {len(chosen)}" if self._bots_coins and set(chosen) == set(self._bots_coins) else
+                 f"{len(chosen)} coins")
+        self.query_one("#bots-coins", Button).label = label
 
     def _bots_render_selected(self) -> None:
         env = self._call("bots.config", {"bot": self._bots_bot}, quiet=True)
@@ -1246,18 +1264,19 @@ class SolTuiApp(App):
         cfg = " ".join(f"{k}={v}" for k, v in r["config"].items())
         about.update(Text(f"{r['about']}\nCurrent settings: {cfg}"))
         self.query_one("#bots-config", Input).placeholder = cfg
-        self.query_one("#bots-coin", Select).disabled = self._bots_bot == "triangle"
+        self.query_one("#bots-coins", Button).disabled = self._bots_bot == "triangle"
         results = self._call("bots.results", {"bot": self._bots_bot, "limit": 1}, quiet=True)
         if results["ok"] and results["result"]:
+            self._bots_runs = list(results["result"])
             self._bots_render_backtest(results["result"][0])
         else:
-            self._bots_clear("#bots-set", "#bots-bt-table")
+            self._bots_clear("#bots-set", "#bots-bt-table", "#bots-bt-coins")
             self.query_one("#bots-bt-title", Static).update("No backtest yet for this bot: press Backtest.")
         opt = self._call("bots.optimize_result", {"bot": self._bots_bot}, quiet=True)
         if opt["ok"] and opt["result"]:
             self._bots_render_optimize(opt["result"])
         else:
-            self._bots_clear("#bots-opt-table")
+            self._bots_clear("#bots-opt-table", "#bots-opt-coins")
             self.query_one("#bots-opt-verdict", Static).update("Auto-optimize has not run for this bot.")
         self._bots_forward_refresh()
 
@@ -1312,6 +1331,10 @@ class SolTuiApp(App):
     def _bots_render_backtest(self, r: dict[str, Any]) -> None:
         where = r["asset"] if r["bot"] != "triangle" else "every triangle"
         gap = f"; stopped at a data gap after {r['stopped_at_gap']}" if r.get("stopped_at_gap") else ""
+        if r.get("bridged_bars"):
+            gap += f"; {r['bridged_bars']} missing hour(s) in {r['bridged_gaps']} short gap(s) bridged flat"
+        if r.get("start_note"):
+            gap += f"; {r['start_note']}"
         self.query_one("#bots-bt-title", Static).update(Text(
             f"{bots_mod.LABELS[r['bot']]} on {where}, started {r['start']} -> {r['end']} "
             f"({r['interval']}, data: {r['data_source']}{gap}). What it set at the start, then what it made:"))
@@ -1328,11 +1351,25 @@ class SolTuiApp(App):
 
     def _bots_render_optimize(self, r: dict[str, Any]) -> None:
         v = r["verdict"]
-        head = ("ADOPTED: " if v.get("adopted") else "kept the current settings: ") + v.get("reason", "")
+        if v.get("saved"):
+            head = "SAVED new settings: " + ", ".join(f"{c['setting']} {c['before']} -> {c['after']}"
+                                                      for c in v.get("changes") or [])
+        else:
+            head = "NOT SAVED: your settings are unchanged"
         skipped = f" Skipped: {', '.join(r['skipped'])}." if r.get("skipped") else ""
+        used = r.get("coins_used") or []
         self.query_one("#bots-opt-verdict", Static).update(Text(
-            f"{head}\n{r['candidates']} configurations on {r['universe']}; picked on {r['train_cells']} train "
-            f"cells, checked on {r['test_cells']} test cells ({r['seconds']} s).{skipped}"))
+            f"Run {r.get('run', 1)}. {head}.\nWhy: {v.get('reason', '-')}\n{r['candidates']} configurations on "
+            f"{len(used)} coin(s) ({r['universe']}); picked on {r['train_cells']} train cells, checked on "
+            f"{r['test_cells']} test cells ({r['seconds']} s).{skipped}"))
+        coins = self.query_one("#bots-opt-coins", DataTable)
+        coins.clear()
+        for row in r.get("per_coin") or []:
+            coins.add_row(row["coin"], row.get("data_source") or "-",
+                          f"{row['train_windows']} train / {row['test_windows']} test",
+                          self._bots_pct(row["current_test_median"]) if row["current_test_median"] is not None else "-",
+                          self._bots_pct(row["pick_test_median"]) if row["pick_test_median"] is not None else "-",
+                          str(row["pick_wins"]), str(row["pick_losses"]))
         table = self.query_one("#bots-opt-table", DataTable)
         table.clear()
         for row in r["table"]:
@@ -1368,11 +1405,12 @@ class SolTuiApp(App):
         stream = self.query_one("#bots-stream", Static)
         prices = r.get("prices") or {}
         if r.get("live"):
-            state = f"price stream LIVE ({len(prices)} markets, {r.get('recorded_days', 0)} day file(s) recorded)"
+            state = (f"recording automatically: {len(prices)} markets, {r.get('recorded_days', 0)} day file(s) "
+                     f"in {r.get('dir', 'prices/')}")
         elif r.get("running"):
-            state = "price recorder running, waiting for data"
+            state = "price recorder running, waiting for its first snapshot"
         else:
-            state = "price recorder STOPPED: forward tests get no new data"
+            state = "price recorder not running: restarting it (checked every minute)"
         if r.get("last_error"):
             state += f"; last error: {r['last_error']}"
         top = "  ".join(f"{p.split('-')[0]} {self._bots_price(prices[p]['mid'])}"
@@ -1403,22 +1441,24 @@ class SolTuiApp(App):
             return
         if not env["ok"]:
             self._bots_status(f"{name}: {self._msg(env)}")
+            if name == "bots.optimize" and self._bots_opt_screen is not None and self._bots_opt_screen.is_attached:
+                self._bots_opt_screen.show_result(None, self._msg(env))
             return
         r = env["result"]
         if name == "bots.backtest":
-            res = r.get("results") or {}
-            self._bots_status(f"backtest {r['id']} saved: {bots_mod.LABELS[r['bot']]} "
-                              + (f"returned {self._bots_pct(res['total_return'])} vs hold {self._bots_pct(res['hold_return'])}"
-                                 if "total_return" in res else
-                                 f"executed {res.get('executed', 0)} cycles, P&L ${res.get('pnl_usd', 0):,.4f}"))
-            self._bots_render_backtest(r)
+            self._bots_render_many(r)
             self.query_one("#bots-sections", TabbedContent).active = "bots-sec-backtest"
         elif name == "bots.optimize":
             v = r["verdict"]
-            self._bots_status(("adopted a new configuration" if v.get("adopted") else
-                               "no configuration reliably outperforms; kept the current one"))
-            self._bots_render_optimize(r)
-            self._bots_render_selected()
+            msg = ("SAVED: " + ", ".join(f"{c['setting']} {c['before']} -> {c['after']}" for c in v.get("changes") or [])
+                   if v.get("saved") else "not saved: no configuration reliably beat your settings")
+            self._bots_status(f"auto-optimize run {r.get('run', 1)}: {msg}")
+            self.notify(f"{bots_mod.LABELS[r['bot']]} auto-optimize run {r.get('run', 1)}: {msg}",
+                        severity="information" if v.get("saved") else "warning", timeout=12)
+            if self._bots_opt_screen is not None and self._bots_opt_screen.is_attached:
+                self._bots_opt_screen.show_result(r)
+            self._bots_render_selected()  # reloads the (possibly adopted) settings first
+            self._bots_render_optimize(r)  # then the report in hand, which is authoritative
             self.query_one("#bots-sections", TabbedContent).active = "bots-sec-optimize"
         elif name in ("bots.forward_start", "bots.forward_stop"):
             self._bots_status("forward test started" if name == "bots.forward_start" else
@@ -1432,19 +1472,21 @@ class SolTuiApp(App):
             self._bots_status("settings saved: " + " ".join(f"{k}={v}" for k, v in r["config"].items()))
             self.query_one("#bots-config", Input).value = ""
             self._bots_render_selected()
-        elif name in ("prices.start", "prices.stop"):
-            if name == "prices.start":
-                self._bots_status("price recorder running" if r.get("started") or r.get("already_running")
-                                  else f"price recorder did not start; see {r.get('log')}")
-            else:
-                self._bots_status(r.get("message") or "price recorder stopping")
+        elif name == "prices.ensure":
+            if not r.get("running"):
+                self._bots_status("the price recorder could not start: " + (r.get("agent_error") or
+                                  str((r.get("started") or {}).get("log") or "see prices/recorder.log")))
             self._bots_tick()
 
     def _bots_forward_refresh(self) -> None:
         self._bots_job("bots.forward_status", {"bot": self._bots_bot}, "replaying the recorded stream")
 
     def _bots_tick(self) -> None:
-        """Every 5 s while the Bots tab is open: the stream line, live prices and optimize progress."""
+        """Every 5 s: once a minute keep the recorder on (any tab); while the Bots tab is open, the
+        stream line, live prices, forward refresh and optimize progress."""
+        self._bots_ticks += 1
+        if self._stream_prices and self._bots_ticks % 12 == 0:
+            self._bots_job("prices.ensure", {}, "checking the price recorder")
         if not self.query("#bots-stream") or not self._bots_loaded:
             return
         try:
@@ -1456,7 +1498,6 @@ class SolTuiApp(App):
         if env["ok"]:
             self._bots_render_prices(env["result"])
         # A running forward test advances with the recording: replay what arrived every 30 s.
-        self._bots_ticks += 1
         if self._bots_ticks % 6 == 0 and self._bots_forward_running:
             self._bots_forward_refresh()
         prog = bots_mod.runtime().progress.get(self._bots_bot)
@@ -1485,7 +1526,7 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#bots-backtest")
     def _bots_backtest(self) -> None:
-        params: dict[str, Any] = {"bot": self._bots_bot, "asset": self._bots_coin()}
+        params: dict[str, Any] = {"bot": self._bots_bot, "coins": list(self._bots_selected) or [self._bots_coin()]}
         start = self.query_one("#bots-start", Input).value.strip()
         days = self.query_one("#bots-days", Input).value.strip()
         if start:
@@ -1496,7 +1537,9 @@ class SolTuiApp(App):
             except ValueError:
                 self._bots_status(f"days must be a number, got {days!r}")
                 return
-        self._bots_job("bots.backtest", params, "backtesting from the chosen start")
+        n = len(params["coins"])
+        self._bots_job("bots.backtest", params, f"backtesting on {n} coin(s) from "
+                       + (params.get("start") or "the beginning of the data"))
 
     @on(Button.Pressed, "#bots-forward-start")
     def _bots_forward_start(self) -> None:
@@ -1513,16 +1556,65 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#bots-optimize")
     def _bots_optimize(self) -> None:
-        self._bots_job("bots.optimize", {"bot": self._bots_bot},
+        """Open the auto-optimize window and start the run; the window follows `bots.progress`."""
+        bot = self._bots_bot
+
+        def poll() -> dict[str, Any] | None:
+            env = self._call("bots.progress", {"bot": bot}, quiet=True)
+            return env["result"] if env["ok"] else None
+
+        bots_mod.runtime().progress.pop(bot, None)
+        self._bots_opt_screen = OptimizeScreen(bots_mod.LABELS[bot], poll, GlossaryTable)
+        self.push_screen(self._bots_opt_screen)
+        self._bots_job("bots.optimize", {"bot": bot},
                        "auto-optimizing on every coin (train windows pick, test windows decide)")
 
-    @on(Button.Pressed, "#bots-rec-start")
-    def _bots_rec_start(self) -> None:
-        self._bots_job("prices.start", {}, "starting the price recorder")
+    @on(Button.Pressed, "#bots-coins")
+    def _bots_pick_coins(self) -> None:
+        """Refresh the coin list, then tick the coins the next backtest runs on."""
+        env = self._call("bots.overview", quiet=True)
+        if env["ok"] and env["result"]["coins"]:
+            self._bots_coins = env["result"]["coins"]
 
-    @on(Button.Pressed, "#bots-rec-stop")
-    def _bots_rec_stop(self) -> None:
-        self._bots_job("prices.stop", {}, "stopping the price recorder")
+        def chosen(coins: list[str] | None) -> None:
+            if coins:
+                self._bots_selected = coins
+                self._bots_show_coins()
+            elif coins == []:
+                self._bots_status("no coin ticked: the previous choice stays")
+
+        self.push_screen(CoinPickerScreen(self._bots_coins or [self._bots_coin()], self._bots_selected), chosen)
+
+    def _bots_render_many(self, r: dict[str, Any]) -> None:
+        """A multi-coin backtest: the per-coin table, then the first run's detail."""
+        runs, errors = r.get("runs") or [], r.get("errors") or {}
+        self._bots_runs = runs
+        table = self.query_one("#bots-bt-coins", DataTable)
+        table.clear()
+        for row in r.get("summary") or []:
+            ret = row.get("total_return")
+            table.add_row(row["coin"], row["start"] or "-", row["end"] or "-", self._bots_fmt(row.get("bars")),
+                          self._bots_pct(ret) if ret is not None else f"${row.get('pnl_usd') or 0:,.4f}",
+                          self._bots_pct(row["hold_return"]) if row.get("hold_return") is not None else "-",
+                          self._bots_pct(row["excess_return"]) if row.get("excess_return") is not None else "-",
+                          self._bots_pct(row["max_drawdown"]) if row.get("max_drawdown") is not None else "-",
+                          self._bots_fmt(row.get("trades")), str(row.get("bridged_bars") or 0),
+                          row.get("data_source") or "-", key=row["id"])
+        for coin, msg in errors.items():
+            table.add_row(coin, "error", msg[:60], "-", "-", "-", "-", "-", "-", "-", "-")
+        if runs:
+            self._bots_render_backtest(runs[0])
+        msg = f"backtest on {r.get('ran', 0)} coin(s): the bot beat buy-and-hold on {r.get('beat_hold', 0)}"
+        if errors:
+            msg += f"; {len(errors)} could not run ({', '.join(errors)})"
+        self._bots_status(msg)
+
+    @on(DataTable.RowSelected, "#bots-bt-coins")
+    def _bots_coin_row(self, event: DataTable.RowSelected) -> None:
+        key = event.row_key.value if event.row_key is not None else None
+        run = next((x for x in self._bots_runs if x.get("id") == key), None)
+        if run is not None:
+            self._bots_render_backtest(run)
 
     ROSTER_PICK = "__roster__"
 
@@ -1651,7 +1743,7 @@ class SolTuiApp(App):
         self._compound_setup()
         self.set_interval(5, self._bots_tick)
         if self._stream_prices:
-            self._bots_job("prices.start", {}, "starting the price recorder")
+            self._bots_job("prices.ensure", {}, "starting the price recorder")
         self._install_help()
         self._apply_ui_state()
 

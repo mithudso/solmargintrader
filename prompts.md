@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 47
-Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder.
+Version: 48
+Delta: v47 to v48; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields.
 Version: 45
 Delta: v44 to v45; resume the Compound 5m full-suite run.
 Delta: v44 to v45; trend filter for the compound.
@@ -337,3 +337,11 @@ Similar to the grid trading bot strategy, create a DCA (dollar cost averaging) t
 ```
 
 Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11). Stele TASK-870.
+
+## v48 - 2026-11-08 (Bots tab v2)
+
+```text
+WHen I'm in teh Bots tab and click Auto-optimize (all coins), it should open the configuration window and start the test. If I run it again it should increase the diversity of the configurations it tries. Also the default backtest start should be from the beginning of the data available, not 90 days. Also the auto-optimize doesn't give per coin stats so it's impossible to know if it was actually run on any but sol. For the backtest I should be able to select more than one coin to test it against. With the auto-optimize it's not clear if the new optimized configuration options were saved or not, have a popup describing which changes were made. Also the price stream is great, but it should automatically start the price recording as that's data that's going to be used for backtesting and training, why would I ever not want it recorded? Also the text fields at the top, move them so they're all on the same horizontal plane as each other to free up screen realestate.
+```
+
+Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch feat/bots-tab-v2).
