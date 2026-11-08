@@ -167,6 +167,10 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#status-compound-forward": "compound.unattended_status",
     "#status-bots": "bots.progress",
     "#status-backtest": "backtest.status",
+    "#batch-status": "batch.status",
+    "#batch-resume": "batch.start",
+    "#batch-stop": "batch.stop",
+    "#batch-fresh": "batch.create",
     "#status-top5": "backtest.status",
     "#status-queue": "queue.progress",
     "#status-live": "live.recommendation",
@@ -721,7 +725,7 @@ class SolTuiApp(App):
         ("ctrl+e", "toggle_editor", "Show/hide editor"),
         Binding("ctrl+up", "grow_editor", "Editor taller", show=False),
         Binding("ctrl+down", "shrink_editor", "Editor shorter", show=False),
-        ("f5", "liq_refresh", "Liquidity: refresh"),
+        Binding("f5", "batch_everything", "Backtest + forward test all", priority=True),
         Binding("f8", "experiment_selected", "Experiment with selected strategy", priority=True),
         # v2 navigation. Inputs and editors consume printable keys first, so typing a 1 or a ? into a
         # field never jumps away; these fire only when a table, list or button has focus.
@@ -833,6 +837,10 @@ class SolTuiApp(App):
         self._forward_running = False
         self._forward_busy = False
         self._forward_seen: dict[str, Any] = {}
+        self._batch_id: str | None = None
+        self._batch_busy = False
+        self._batch_last_summary = ""
+        self._batch_log_key: str | None = None
         self._cumulative_loaded = False
         # Last results-file mtime the Queue tab rendered (the worker is a separate process).
         self._queue_mtime = 0.0
@@ -2435,6 +2443,138 @@ class SolTuiApp(App):
 
     ROSTER_PICK = "__roster__"
 
+    def action_batch_everything(self) -> None:
+        self._batch_request("default")
+
+    @on(Button.Pressed, "#batch-status")
+    def _batch_status_pressed(self) -> None:
+        self._batch_request("status")
+
+    @on(Button.Pressed, "#batch-resume")
+    def _batch_resume_pressed(self) -> None:
+        self._batch_request("resume")
+
+    @on(Button.Pressed, "#batch-stop")
+    def _batch_stop_pressed(self) -> None:
+        self._batch_request("stop")
+
+    @on(Button.Pressed, "#batch-fresh")
+    def _batch_fresh_pressed(self) -> None:
+        self._batch_request("fresh")
+
+    def _batch_poll(self) -> None:
+        if self._batch_id and not self._batch_busy:
+            self._batch_request("poll")
+
+    def _batch_request(self, action: str) -> None:
+        if self._batch_busy:
+            if action not in ("discover", "poll"):
+                self.notify("A batch status or start operation is already in progress.", severity="warning")
+            return
+        self._batch_busy = True
+        self._batch_worker(action, self._batch_id)
+
+    @work(thread=True, exit_on_error=False, group="all-market-batch")
+    def _batch_worker(self, action: str, run_id: str | None) -> None:
+        message = ""
+        status: dict[str, Any] | None = None
+        try:
+            def call(name: str, params: dict[str, Any] | None = None) -> Any:
+                env = self._call(name, params or {}, quiet=True)
+                if not env.get("ok"):
+                    raise ValueError(self._msg(env))
+                return env["result"]
+
+            if action in ("discover", "default", "fresh") or not run_id:
+                runs = call("batch.list")["runs"]
+                active = next((row for row in runs if row.get("running")), None)
+                chosen = active or (runs[0] if runs else None)
+                run_id = str(chosen["run_id"]) if chosen else None
+                if action == "fresh" and active:
+                    message = "A batch is already running; stop it before starting a separate batch."
+                elif action == "fresh" or (action == "default" and not chosen):
+                    created = call("batch.create")
+                    run_id = str(created["run_id"])
+                    message = "Batch created; starting the worker."
+                    call("batch.start", {"run_id": run_id})
+            if run_id and action == "resume":
+                prior = call("batch.status", {"run_id": run_id})
+                if prior.get("running"):
+                    message = "The selected batch is already running."
+                else:
+                    call("batch.start", {"run_id": run_id})
+                    message = "Resume requested for the saved batch."
+            elif run_id and action == "stop":
+                stopped = call("batch.stop", {"run_id": run_id})
+                message = ("Stopping this batch after its current work finishes." if stopped.get("stopping")
+                           else "This batch is not running. " + str(stopped.get("error") or ""))
+            if run_id:
+                status = call("batch.status", {"run_id": run_id})
+                shown = {row.get("state") for row in status.get("problems") or []}
+                extra = []
+                if action not in ("discover", "poll"):
+                    for state in ("failed", "missing", "unsupported", "partial"):
+                        if (status.get("counts") or {}).get(state, 0) and state not in shown:
+                            extra.extend(call("batch.cells", {"run_id": run_id, "state": state, "limit": 3})["rows"])
+                status["representative_problems"] = extra
+            elif action not in ("discover", "poll"):
+                message = "No saved batch. Press F5 to create one."
+        except Exception as exc:  # noqa: BLE001 - preserve the run id if creation or start failed
+            message = f"Batch operation failed: {type(exc).__name__}: {exc}"
+        try:
+            self.call_from_thread(self._batch_done, action, run_id, status, message)
+        except RuntimeError:
+            pass
+
+    def _batch_done(self, action: str, run_id: str | None, status: dict[str, Any] | None, message: str) -> None:
+        self._batch_busy = False
+        if not self.query("#batch-summary"):
+            return
+        if run_id:
+            self._batch_id = run_id
+        lines = []
+        if message:
+            lines.append(message)
+        if run_id and not status:
+            lines.append(f"Saved batch: {run_id}. Use Batch status or Resume batch to recover it.")
+        if status:
+            counts = status.get("counts") or {}
+            lines.append(f"Batch {status.get('run_id')} · {status.get('phase')} · "
+                         f"{'running' if status.get('running') else 'not running'}")
+            lines.append("Open Batch status, Resume, Stop, or Start fresh on the Backtest tab.")
+            lines.append("Cells: " + ", ".join(f"{k}={v}" for k, v in sorted(counts.items()))
+                         + f" · total={status.get('total', 0)}")
+            universe = status.get("universe") or {}
+            if universe:
+                lines.append(f"Market universe: {universe.get('selection') or universe.get('source', '-')} · "
+                             f"eligible={universe.get('eligible', '-')} · excluded={universe.get('excluded', {})}")
+            if status.get("current"):
+                lines.append(f"Current: {status['current']}")
+            if status.get("error"):
+                lines.append(f"Error: {status['error']}")
+            for row in (status.get("problems") or []) + (status.get("representative_problems") or []):
+                lines.append(f"{row['state']}: {row['asset']} {row['interval']} {row['strategy']} "
+                             f"{row['horizon']} — {row['reason']}")
+            if status.get("problems_truncated"):
+                lines.append("Only the first 100 problem cells and representative missing states are shown; "
+                             "use batch.cells to page through the full ledger.")
+            checks = status.get("forward_checks") or []
+            lines.append(f"Forward checks: {len(checks)}; backlog: {status.get('forward_backlog', {})}")
+            for row in checks:
+                if row.get("error"):
+                    lines.append(f"Forward error: {row.get('asset')} {row.get('interval')}: {row['error']}")
+            if status.get("notice"):
+                lines.append(str(status["notice"]))
+            if status.get("log"):
+                lines.append(f"Worker log: {status['log']}")
+        text = "\n".join(lines) or "No saved batch. Press F5 to create one."
+        self.query_one("#batch-summary", Static).update(text.split("\n")[0])
+        if action not in ("discover", "poll"):
+            self._batch_log_key = self._start_log("All-market batch", text)
+        elif action == "poll" and text != self._batch_last_summary and self._batch_log_key:
+            self._append_log(self._batch_log_key, text)
+        self._batch_last_summary = text
+
     def _backtest_pane(self) -> ComposeResult:
         """Run a CPCV sweep over the roster (or one roster strategy) and show the distribution."""
         with Vertical():
@@ -2456,6 +2596,12 @@ class SolTuiApp(App):
                 yield Button("Backtest untested + little-tested", variant="warning", id="btn-run-untested")
                 yield Button("Cancel (c)", variant="error", id="btn-cancel")
                 yield Static("", id="backtest-status")
+            with Horizontal(classes="form-row"):
+                yield Button("Batch status", id="batch-status")
+                yield Button("Resume batch", id="batch-resume")
+                yield Button("Stop batch", id="batch-stop", variant="error")
+                yield Button("Start fresh batch", id="batch-fresh")
+            yield Static("F5: backtest eligible Coinbase USD markets, then begin paper forward tests.", id="batch-summary")
             yield Static("", id="backtest-bg-status")
             yield Static("[b]CPCV results[/b], latest Run backtest: one row per strategy, best median Sharpe "
                          "first. Sharpe, net return and trades are medians across the held-out paths; IQR is "
@@ -2555,6 +2701,8 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self.set_interval(5, self._forward_schedule)
+        self.set_interval(5, self._batch_poll)
+        self._batch_request("discover")
         self.set_interval(15, self._paper_exp_tick)
         self._refresh_liquidity(force=True)
         self._compound_setup()

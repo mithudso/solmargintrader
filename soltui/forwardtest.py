@@ -18,7 +18,7 @@ import numpy as np
 
 from backtester.core import scorecard
 from backtester.core.strategies import REGISTRY, build, build_composite
-from backtester.core.types import BarWindow, validate_bar_arrays
+from backtester.core.types import BarWindow, INTERVAL_SECONDS, validate_bar_arrays
 
 from . import compound, config
 
@@ -41,10 +41,10 @@ def _json(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
 
 
-def _db() -> sqlite3.Connection:
-    root = config.CONFIG_DIR / "forwardtest"
-    root.mkdir(mode=0o700, parents=True, exist_ok=True)
-    db = sqlite3.connect(root / "trials.sqlite3")
+def _db(path: Path | None = None) -> sqlite3.Connection:
+    path = path or config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    db = sqlite3.connect(path)
     db.executescript("""
         CREATE TABLE IF NOT EXISTS trial (
             id TEXT PRIMARY KEY, asset TEXT, label TEXT, mode TEXT, minutes INTEGER,
@@ -227,7 +227,8 @@ def _choose(history: list[tuple], corrected: list, current: Spec) -> tuple | Non
 
 def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, moved: int,
              cost: float, candles: dict[int, tuple[float, float]], bar: int, minutes: int, tune: bool,
-             on_adopt: Callable[[Spec, Spec, float, int], None] | None = None) -> tuple[Spec, int]:
+             on_adopt: Callable[[Spec, Spec, float, int], None] | None = None,
+             expire_missing: bool = True) -> tuple[Spec, int]:
     misses: list = []
     latest = None
     for origin, start, finish, gen, raw, prediction in db.execute(
@@ -236,7 +237,7 @@ def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, mo
         (key, bar + 60),
     ).fetchall():
         if not all(t in candles for t in range(start, finish, 60)):
-            if start < min(candles):
+            if expire_missing and start < min(candles):
                 db.execute("UPDATE call SET expired=1 WHERE trial=? AND bar=?", (key, origin))
             continue
         bps = 10000 * math.log(candles[finish - 60][1] / candles[start][0])
@@ -266,7 +267,10 @@ def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, mo
 
 def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float, *,
          fetch: Callable | None = None, clock: Callable[[], float] = time.time,
-         stop: Event | None = None, code: str | None = None, tune: bool = True) -> dict:
+         stop: Event | None = None, code: str | None = None, tune: bool = True,
+         db_path: Path | None = None, history: int = HISTORY,
+         signal_interval: str = "1m", signal_fetch: Callable | None = None,
+         expire_missing: bool = True) -> dict:
     """Record only fresh calls, resolving past calls before computing the next forecast.
 
     With `tune` (auto-optimize) a trial whose newest call missed may move to a neighbouring
@@ -286,7 +290,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     check_stop()
     code = code or revision()
     observed = clock()
-    raw = fetch(asset, now=observed, bars=HISTORY, seconds=60, get=get, sleep=stop.wait)
+    raw = fetch(asset, now=observed, bars=max(HISTORY, history), seconds=60, get=get, sleep=stop.wait)
     check_stop()
     mask = raw["ts"] + 60 <= observed
     raw = {k: v[mask] for k, v in raw.items()}
@@ -301,13 +305,28 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     breaks = np.flatnonzero(np.diff(ts) != 60)
     tail = int(breaks[-1] + 1) if len(breaks) else 0
     bars = validate_bar_arrays({k: v[tail:] for k, v in raw.items()}, "1m")
+    if signal_interval not in INTERVAL_SECONDS:
+        raise ValueError("unsupported signal candle interval")
+    if signal_interval != "1m":
+        seconds = INTERVAL_SECONDS[signal_interval]
+        signal_raw = (signal_fetch or fetch)(asset, now=observed, bars=HISTORY, seconds=seconds,
+                                            get=get, sleep=stop.wait)
+        check_stop()
+        signal_mask = signal_raw["ts"] + seconds <= observed
+        signal_raw = {k: v[signal_mask] for k, v in signal_raw.items()}
+        st = signal_raw["ts"]
+        if not len(st) or np.any(np.diff(st) <= 0) or int(st[-1]) != (int(observed) // seconds - 1) * seconds:
+            raise ValueError(f"No current closed {signal_interval} signal candle")
+        breaks = np.flatnonzero(np.diff(st) != seconds)
+        tail_signal = int(breaks[-1] + 1) if len(breaks) else 0
+        bars = validate_bar_arrays({k: v[tail_signal:] for k, v in signal_raw.items()}, signal_interval)
     bar = int(ts[-1])
     start = bar + 120  # next minute that has not opened yet
     forecasts: dict[tuple, int | None] = {}
     staged = []
     active_keys = {}
     defaults = load_defaults()
-    with closing(_db()) as db, db:
+    with closing(_db(db_path)) as db, db:
         db.execute("BEGIN IMMEDIATE")
         for trial in trials:
             seed, mode, label = trial["members"], trial["mode"], trial["label"]
@@ -329,7 +348,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                 save_default(asset, label, h, spec, previous, probability=probability, samples=samples, bar=bar)
 
             active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
-                                   h, tune and key in active_keys, adopt)
+                                   h, tune and key in active_keys, adopt, expire_missing=expire_missing)
             if key not in active_keys or not bar + 60 <= observed < start:
                 continue
             previous = db.execute("SELECT finish FROM call WHERE trial=? ORDER BY bar DESC LIMIT 1",
@@ -339,7 +358,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                 continue
             guesses = []
             note = ""
-            for spec in neighbours(active, mode):
+            for spec in (neighbours(active, mode) if tune else [active]):
                 check_stop()
                 ck = mode, _json(spec)
                 try:
@@ -368,13 +387,13 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
             "message": ("Waiting for a fresh candle" if not bar + 60 <= observed < start
                         else "Forecast window elapsed during calculation" if not fresh
                         else "Checked the latest closed minute"),
-            "rows": status(asset)}
+            "rows": status(asset, db_path=db_path)}
 
 
-def status(asset: str) -> list[dict]:
-    if not (config.CONFIG_DIR / "forwardtest" / "trials.sqlite3").exists():
+def status(asset: str, *, db_path: Path | None = None) -> list[dict]:
+    path = db_path or config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
+    if not path.exists():
         return []
-    path = config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
     defaults = load_defaults()
     with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
         return [
