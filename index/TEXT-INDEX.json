@@ -2498,6 +2498,7 @@
     "soltui/cli.py": 354,
     "soltui/coin_fit.py": 4542,
     "soltui/coinbase_account.py": 1344,
+    "soltui/coinbase_manual.py": 1380,
     "soltui/commands.py": 14113,
     "soltui/compound.py": 10437,
     "soltui/compound_agent.py": 668,
@@ -2557,6 +2558,8 @@
     "soltui/tests/test_coin_fit.py": 1095,
     "soltui/tests/test_coin_fit_ui.py": 2138,
     "soltui/tests/test_coinbase_account.py": 659,
+    "soltui/tests/test_coinbase_manual.py": 713,
+    "soltui/tests/test_coinbase_manual_ui.py": 2007,
     "soltui/tests/test_compound.py": 6949,
     "soltui/tests/test_compound_pool_capture.py": 154,
     "soltui/tests/test_docs_browser.py": 640,
@@ -2629,7 +2632,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T19:43:09+00:00",
+  "generatedAt": "2026-11-08T19:45:56+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -14948,6 +14951,7 @@
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 4,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "soltui/coin_fit.py": 5,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 3,
       "soltui/experiments.py": 2,
       "soltui/liquidity.py": 3,
@@ -17500,6 +17504,7 @@
       "soltui/app.py": 3,
       "soltui/coin_fit.py": 10,
       "soltui/coinbase_account.py": 17,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 10,
       "soltui/compound.py": 11,
       "soltui/config.py": 2,
@@ -17784,9 +17789,11 @@
       "soltui/README.md": 3,
       "soltui/coin_fit.py": 3,
       "soltui/coinbase_account.py": 6,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/tests/bridge_support.py": 2,
       "soltui/tests/test_coinbase_account.py": 12,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_wallet.py": 5,
       "soltui/tui.py": 4,
       "soltui/wallet.py": 11
@@ -21370,6 +21377,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 3,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 11,
       "soltui/tests/test_compound.py": 8,
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_docs_search.py": 3,
@@ -23916,6 +23924,9 @@
     "add_years_considering_dst": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
+    "addasynccleanup": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
+    },
     "addb0acec65883e3a0b2abf7543fcf360c8bfb7f1e973d3947b01bef720ed6": {
       "research/tradingview-script-understanding.json": 1
     },
@@ -23945,6 +23956,7 @@
       "soltui/tests/test_bots.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 8,
       "soltui/tests/test_docs_browser.py": 4,
       "soltui/tests/test_docs_search.py": 5,
@@ -30137,6 +30149,7 @@
       "mongo/tests/test_snapshot_audit.py": 1,
       "research/decide.py": 4,
       "research/five-minute-perps-suite/skill-installation-receipt.json": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 4,
       "soltui/liquidity.py": 3,
@@ -30325,6 +30338,7 @@
       "soltui/bots.py": 1,
       "soltui/bots_screens.py": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 4,
       "soltui/experiments.py": 1,
@@ -35728,6 +35742,7 @@
       "soltui/bots.py": 2,
       "soltui/coin_fit.py": 4,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 1,
       "soltui/compound.py": 3,
       "soltui/experiment_jobs.py": 1,
@@ -35859,6 +35874,9 @@
     "allow_truncated": {
       "backtester/core/ticks.py": 1
     },
+    "allow_zero": {
+      "soltui/coinbase_manual.py": 6
+    },
     "allowable": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_sxzrzqzq_divergence_indicator_any_oscillator.md": 1,
       "backtester/strategy_cards/incomplete/tv_43000653216_chart_pattern_rectangle.md": 1,
@@ -35986,6 +36004,7 @@
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1,
       "soltui/api.py": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/experiment_jobs.py": 1,
       "soltui/experiment_screens.py": 3,
       "soltui/help.py": 3,
@@ -37095,6 +37114,7 @@
       "soltui/bgworker.py": 7,
       "soltui/bots.py": 3,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 4,
       "soltui/compound.py": 7,
       "soltui/compound_agent.py": 2,
@@ -37123,6 +37143,7 @@
       "soltui/tests/test_bgcontrol.py": 2,
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_experiments.py": 4,
       "soltui/tests/test_pricefeed.py": 1,
@@ -37984,7 +38005,8 @@
       "skills/trading-and-investing/references/grid-trading-strategy.md": 1,
       "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md": 1,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
-      "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1
+      "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
+      "soltui/tests/test_coinbase_manual.py": 2
     },
     "ambiguous": {
       "AGENTS.md": 1,
@@ -38072,6 +38094,7 @@
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1,
       "soltui/paper.py": 2,
       "soltui/status.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_status_roster.py": 1
     },
@@ -38578,6 +38601,7 @@
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1,
       "skills/trading-and-investing/references/trading-risk-management.md": 3,
       "soltui/coin_fit.py": 5,
+      "soltui/coinbase_manual.py": 10,
       "soltui/commands.py": 3,
       "soltui/compound.py": 1,
       "soltui/eth_scan.py": 7,
@@ -42684,6 +42708,8 @@
       "soltui/tests/test_coin_fit.py": 9,
       "soltui/tests/test_coin_fit_ui.py": 11,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 7,
       "soltui/tests/test_compound.py": 32,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_docs_search.py": 3,
@@ -43690,6 +43716,7 @@
       "soltui/cli.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 1,
       "soltui/compound_agent.py": 1,
@@ -43742,6 +43769,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
@@ -45407,6 +45435,7 @@
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 2,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 4,
       "soltui/compound.py": 2,
       "soltui/experiment_runner.py": 1,
       "soltui/experiments.py": 4,
@@ -45416,6 +45445,7 @@
       "soltui/reference.py": 2,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bgworker_audit.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_experiments.py": 2,
@@ -46843,6 +46873,7 @@
       "soltui/tests/test_bridge_surfaces.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 80,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 142,
       "soltui/tests/test_compound.py": 100,
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_docs_browser.py": 6,
@@ -47450,6 +47481,7 @@
       "soltui/cli.py": 1,
       "soltui/coin_fit.py": 13,
       "soltui/coinbase_account.py": 5,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 25,
       "soltui/compound.py": 42,
       "soltui/cumulative.py": 2,
@@ -47484,6 +47516,8 @@
       "soltui/tests/test_bridge_buttons.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tests/test_compound.py": 16,
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_editor_backtest.py": 1,
@@ -50448,6 +50482,7 @@
       "soltui/tests/test_bridge_surfaces.py": 6,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coinbase_account.py": 16,
+      "soltui/tests/test_coinbase_manual.py": 10,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_editor_backtest.py": 2,
@@ -51220,6 +51255,7 @@
       "soltui/help.py": 3,
       "soltui/liquidity.py": 14,
       "soltui/tests/test_bridge_surfaces.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tui.py": 4
     },
     "arm64": {
@@ -51272,6 +51308,7 @@
       "research/tradingview-card-coverage.json": 1,
       "soltui/README.md": 2,
       "soltui/config.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 16,
       "soltui/tests/test_status_roster.py": 4,
       "soltui/tui.py": 16
     },
@@ -53602,6 +53639,7 @@
       "soltui/tests/test_bgcontrol_identity.py": 2,
       "soltui/tests/test_bgworker_audit.py": 12,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_search.py": 2,
@@ -53676,6 +53714,7 @@
       "soltui/tests/test_bgcontrol_identity.py": 2,
       "soltui/tests/test_bgworker_audit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
@@ -53859,6 +53898,8 @@
       "soltui/tests/test_coin_fit.py": 29,
       "soltui/tests/test_coin_fit_ui.py": 37,
       "soltui/tests/test_coinbase_account.py": 12,
+      "soltui/tests/test_coinbase_manual.py": 10,
+      "soltui/tests/test_coinbase_manual_ui.py": 17,
       "soltui/tests/test_compound.py": 164,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 6,
@@ -53929,6 +53970,8 @@
       "soltui/tests/test_bridge_surfaces.py": 7,
       "soltui/tests/test_coin_fit_ui.py": 7,
       "soltui/tests/test_coinbase_account.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 11,
+      "soltui/tests/test_coinbase_manual_ui.py": 14,
       "soltui/tests/test_compound.py": 30,
       "soltui/tests/test_docs_browser.py": 6,
       "soltui/tests/test_eth_scan.py": 1,
@@ -53980,6 +54023,7 @@
       "mongo/tests/test_load.py": 1,
       "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bots.py": 7,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
@@ -54056,6 +54100,8 @@
       "soltui/tests/test_bridge_surfaces.py": 4,
       "soltui/tests/test_coin_fit.py": 6,
       "soltui/tests/test_coin_fit_ui.py": 14,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tests/test_compound.py": 51,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_docs_search.py": 7,
@@ -54159,6 +54205,7 @@
       "liquidity/tests/test_executor.py": 3,
       "liquidity/tests/test_providers.py": 1,
       "soltui/tests/test_coin_fit.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_tui.py": 1,
@@ -54253,6 +54300,7 @@
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_eth_scan.py": 3,
       "soltui/tests/test_experiment_runner.py": 5,
       "soltui/tests/test_experiments.py": 3,
@@ -54342,6 +54390,7 @@
       "backtester/tests/test_textbook_strategies.py": 1,
       "backtester/tests/test_trianglesim.py": 1,
       "soltui/tests/test_bgworker.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_liquidity.py": 1,
@@ -54398,6 +54447,7 @@
       "soltui/tests/test_bridge_parity.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_editor_backtest.py": 1,
@@ -54475,6 +54525,7 @@
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 7,
       "soltui/tests/test_docs_browser.py": 4,
       "soltui/tests/test_experiment_interface.py": 1,
@@ -54505,6 +54556,7 @@
       "soltui/tests/test_bots.py": 8,
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 8,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_experiment_interface.py": 4,
       "soltui/tests/test_experiment_runner.py": 9,
@@ -54622,6 +54674,8 @@
       "soltui/tests/test_coin_fit.py": 7,
       "soltui/tests/test_coin_fit_ui.py": 19,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 20,
       "soltui/tests/test_compound.py": 36,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_docs_search.py": 8,
@@ -59343,6 +59397,7 @@
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 22,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 24,
       "soltui/tests/test_compound.py": 23,
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_docs_search.py": 6,
@@ -59385,6 +59440,7 @@
     "asyncsetup": {
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_help.py": 1,
       "soltui/tests/test_v2_shell.py": 1
     },
@@ -60343,6 +60399,7 @@
       "skills/trading-and-investing/SCHEDULED-RESEARCH.md": 1,
       "soltui/compound.py": 2,
       "soltui/liquidity.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_experiments.py": 2,
       "soltui/wallet.py": 6
     },
@@ -65155,7 +65212,9 @@
       "soltui/tests/test_tui_presets_pnl.py": 1
     },
     "available_balance": {
+      "soltui/coinbase_manual.py": 2,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tui.py": 1
     },
     "available_coins": {
@@ -65164,6 +65223,9 @@
       "soltui/experiment_runner.py": 1,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 2
+    },
+    "available_currency": {
+      "soltui/coinbase_manual.py": 1
     },
     "available_data": {
       "research/PROMPT_STRATEGIES.md": 2
@@ -65838,7 +65900,9 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 1,
       "soltui/README.md": 1,
       "soltui/bots.py": 2,
+      "soltui/coinbase_manual.py": 2,
       "soltui/help.py": 47,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_strategy_history.py": 1,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 9,
@@ -65849,6 +65913,9 @@
     },
     "average7": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "average_filled_price": {
+      "soltui/coinbase_manual.py": 1
     },
     "averageclosepricelabelvisible": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -66601,6 +66668,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 29,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 48,
       "soltui/tests/test_compound.py": 60,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_search.py": 9,
@@ -78008,6 +78076,7 @@
       "soltui/README.md": 7,
       "soltui/app.py": 2,
       "soltui/coinbase_account.py": 5,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 2,
       "soltui/compound.py": 1,
       "soltui/config.py": 1,
@@ -78016,6 +78085,7 @@
       "soltui/pnl.py": 1,
       "soltui/portfolio.py": 5,
       "soltui/tests/test_coinbase_account.py": 6,
+      "soltui/tests/test_coinbase_manual.py": 3,
       "soltui/tests/test_eth_scan.py": 2,
       "soltui/tests/test_portfolio.py": 3,
       "soltui/tests/test_status_roster.py": 2,
@@ -79788,6 +79858,7 @@
       "soltui/bgqueue.py": 6,
       "soltui/bots.py": 25,
       "soltui/coin_fit.py": 15,
+      "soltui/coinbase_manual.py": 10,
       "soltui/commands.py": 14,
       "soltui/compound.py": 26,
       "soltui/config.py": 4,
@@ -79808,6 +79879,8 @@
       "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bots.py": 6,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 9,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_experiments.py": 12,
       "soltui/tests/test_forwardtest.py": 10,
@@ -79955,6 +80028,10 @@
       "soltui/pricefeed.py": 1,
       "soltui/tests/test_pricefeed.py": 6
     },
+    "base_currency_id": {
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
     "base_evidence": {
       "executor/src/executor/engine.py": 8
     },
@@ -79975,7 +80052,8 @@
     },
     "base_increment": {
       "research/coin-intelligence/doge-dogecoin.md": 2,
-      "research/coin-intelligence/zec-zcash.md": 2
+      "research/coin-intelligence/zec-zcash.md": 2,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "base_indexed_tokens": {
       "soltui/wallet.py": 2
@@ -79985,6 +80063,12 @@
     },
     "base_mask": {
       "research/triggers.py": 2
+    },
+    "base_max_size": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "base_min_size": {
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "base_mint": {
       "executor/src/executor/engine.py": 2,
@@ -80065,6 +80149,10 @@
     },
     "base_signal_t": {
       "backtester/strategy_research/day_trading.md": 1
+    },
+    "base_size": {
+      "soltui/coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 2
     },
     "base_token_balances": {
       "docs/BASE-WALLET-QUERIES.md": 1,
@@ -86897,6 +86985,7 @@
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 3,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
@@ -93773,6 +93862,7 @@
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 1,
       "soltui/README.md": 1,
       "soltui/app.py": 1,
+      "soltui/coinbase_manual.py": 4,
       "soltui/compound.py": 1,
       "soltui/help.py": 7,
       "soltui/pricefeed.py": 1,
@@ -93821,6 +93911,9 @@
       "docs/BASE-WALLET-QUERIES.md": 1,
       "liquidity/src/aero_lp/executor.py": 9,
       "liquidity/tests/test_executor.py": 2
+    },
+    "block_unresolved": {
+      "soltui/coinbase_manual.py": 4
     },
     "blockbook": {
       "soltui/utxo_scan.py": 1
@@ -94510,6 +94603,8 @@
       "soltui/reference.py": 1,
       "soltui/serve.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_presets_netpct.py": 1,
@@ -96194,6 +96289,7 @@
       "soltui/bots.py": 9,
       "soltui/coin_fit.py": 9,
       "soltui/coinbase_account.py": 3,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 57,
       "soltui/compound.py": 38,
       "soltui/compound_agent.py": 2,
@@ -101120,6 +101216,7 @@
       "soltui/soltui-service": 4,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_experiment_interface.py": 2,
       "soltui/tests/test_forwardtest.py": 3,
@@ -103182,6 +103279,7 @@
       "soltui/tests/test_bots.py": 17,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tests/test_compound.py": 37,
       "soltui/tests/test_editor_backtest.py": 3,
       "soltui/tests/test_experiment_runner.py": 2,
@@ -103762,6 +103860,7 @@
       "soltui/README.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/coin_fit.py": 4,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 6,
       "soltui/compound.py": 1,
       "soltui/experiment_runner.py": 2,
@@ -106316,6 +106415,7 @@
       "soltui/tests/test_bridge_buttons.py": 16,
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 16,
+      "soltui/tests/test_coinbase_manual_ui.py": 17,
       "soltui/tests/test_compound.py": 16,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 5,
@@ -107740,6 +107840,7 @@
       "soltui/bgqueue.py": 1,
       "soltui/bots.py": 2,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 6,
       "soltui/compound.py": 3,
       "soltui/config.py": 1,
@@ -107752,6 +107853,8 @@
       "soltui/signals.py": 2,
       "soltui/tests/bridge_support.py": 5,
       "soltui/tests/test_bgqueue.py": 6,
+      "soltui/tests/test_coinbase_manual.py": 8,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_forwardtest.py": 2,
@@ -108208,6 +108311,7 @@
       "soltui/README.md": 2,
       "soltui/bgqueue.py": 1,
       "soltui/bots.py": 4,
+      "soltui/coinbase_manual.py": 1,
       "soltui/help.py": 1,
       "soltui/reference.py": 2,
       "soltui/tests/test_bgqueue.py": 1
@@ -120548,6 +120652,7 @@
       "soltui/cli.py": 10,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 4,
+      "soltui/coinbase_manual.py": 18,
       "soltui/commands.py": 19,
       "soltui/compound.py": 121,
       "soltui/compound_agent.py": 1,
@@ -120575,6 +120680,8 @@
       "soltui/tests/test_bridge_parity.py": 3,
       "soltui/tests/test_bridge_surfaces.py": 20,
       "soltui/tests/test_coinbase_account.py": 8,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 40,
       "soltui/tests/test_compound.py": 79,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_eth_scan.py": 1,
@@ -120608,6 +120715,7 @@
       "research/tradingview-card-coverage.json": 6
     },
     "call__": {
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_utxo_scan.py": 1,
       "soltui/tests/test_wallet.py": 2,
@@ -120715,6 +120823,7 @@
       "soltui/bots_screens.py": 2,
       "soltui/coin_fit.py": 5,
       "soltui/coinbase_account.py": 5,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 6,
       "soltui/compound.py": 14,
       "soltui/eth_scan.py": 3,
@@ -120870,6 +120979,7 @@
       "soltui/tests/test_bgworker_audit.py": 6,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
@@ -121394,6 +121504,8 @@
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bridge_buttons.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 15,
+      "soltui/tests/test_coinbase_manual_ui.py": 22,
       "soltui/tests/test_compound.py": 30,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_experiment_interface.py": 3,
@@ -121876,6 +121988,7 @@
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 1,
       "soltui/bots_screens.py": 1,
       "soltui/coin_fit.py": 10,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 24,
       "soltui/experiment_jobs.py": 2,
       "soltui/experiment_runner.py": 2,
@@ -123620,6 +123733,7 @@
       "soltui/bin/soltui": 1,
       "soltui/bots.py": 2,
       "soltui/coin_fit.py": 3,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 5,
       "soltui/compound.py": 2,
       "soltui/config.py": 6,
@@ -123653,6 +123767,7 @@
       "soltui/tests/test_bgworker_audit.py": 3,
       "soltui/tests/test_bridge_buttons.py": 2,
       "soltui/tests/test_coin_fit.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_experiment_interface.py": 3,
       "soltui/tests/test_experiment_runner.py": 6,
@@ -125121,10 +125236,12 @@
       "skills/trading-and-investing/references/technical-analysis.md": 2,
       "skills/trading-and-investing/references/trading-risk-management.md": 2,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 4,
       "soltui/docs_browser.py": 1,
       "soltui/live_run.py": 3,
       "soltui/status.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_wallet.py": 1,
       "soltui/tui.py": 3,
       "tradingskilllist/trading-skills.md": 1
@@ -136411,6 +136528,7 @@
       "soltui/app.py": 1,
       "soltui/bgqueue.py": 2,
       "soltui/bots_screens.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 9,
       "soltui/compound.py": 2,
       "soltui/config.py": 2,
@@ -136627,6 +136745,7 @@
       "soltui/bots.py": 1,
       "soltui/bots_screens.py": 4,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 2,
       "soltui/docs_browser.py": 1,
       "soltui/experiment_runner.py": 8,
@@ -136645,6 +136764,8 @@
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit.py": 6,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_experiment_runner.py": 16,
       "soltui/tests/test_experiments.py": 6,
@@ -140949,6 +141070,7 @@
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 4,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 4,
       "soltui/commands.py": 12,
       "soltui/compound.py": 2,
       "soltui/compound_agent.py": 2,
@@ -140962,6 +141084,7 @@
       "soltui/serve.py": 1,
       "soltui/soltui-service": 3,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_forwardtest.py": 2,
       "soltui/tests/test_launcher.py": 5,
@@ -141190,6 +141313,7 @@
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1,
       "soltui/README.md": 1,
       "soltui/experiment_screens.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 18,
       "soltui/tui.py": 14
     },
     "checkboxes": {
@@ -142492,6 +142616,7 @@
       "skills/trading-and-investing/references/the-greeks.md": 1,
       "soltui/README.md": 1,
       "soltui/bgqueue.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 4,
       "soltui/help.py": 2,
       "soltui/tui.py": 6,
@@ -142842,6 +142967,7 @@
       "soltui/signals.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_signals.py": 1,
@@ -153274,6 +153400,7 @@
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 2,
       "soltui/tui.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
@@ -153399,6 +153526,8 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
@@ -153806,6 +153935,7 @@
       "soltui/commands.py": 3,
       "soltui/compound.py": 2,
       "soltui/cumulative.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_help.py": 1,
       "soltui/tests/test_wallet_integration.py": 1,
@@ -154009,6 +154139,7 @@
       "soltui/cli.py": 5,
       "soltui/coin_fit.py": 6,
       "soltui/coinbase_account.py": 18,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 8,
       "soltui/compound.py": 4,
       "soltui/config.py": 1,
@@ -154023,6 +154154,7 @@
       "soltui/tests/test_bridge_surfaces.py": 20,
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 8,
       "soltui/tests/test_portfolio.py": 9,
       "soltui/tests/test_presets_netpct.py": 1,
@@ -154193,12 +154325,18 @@
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
       "soltui/README.md": 2,
       "soltui/api.py": 2,
+      "soltui/coinbase_manual.py": 6,
       "soltui/paper.py": 1,
       "soltui/pricefeed.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_pricefeed.py": 5
     },
     "client_id": {
       "docs/TRADINGVIEW-REFERENCE.md": 4
+    },
+    "client_order_id": {
+      "soltui/coinbase_manual.py": 6,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "clientheight": {
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1
@@ -155222,6 +155360,7 @@
       "soltui/bots.py": 20,
       "soltui/bots_screens.py": 9,
       "soltui/coin_fit.py": 11,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 2,
       "soltui/compound.py": 22,
       "soltui/experiment_jobs.py": 1,
@@ -156603,6 +156742,7 @@
       "soltui/pricefeed.py": 8,
       "soltui/tests/test_bg_fresh_results.py": 1,
       "soltui/tests/test_bgworker_audit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 3,
       "soltui/tests/test_compound.py": 7,
       "soltui/tests/test_experiment_interface.py": 1,
       "soltui/tests/test_forwardtest.py": 2,
@@ -159440,6 +159580,7 @@
       "soltui/bots.py": 11,
       "soltui/bots_screens.py": 16,
       "soltui/coin_fit.py": 75,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 102,
       "soltui/compound.py": 78,
       "soltui/compound_agent.py": 2,
@@ -160309,6 +160450,7 @@
       "soltui/README.md": 22,
       "soltui/bots.py": 10,
       "soltui/coinbase_account.py": 38,
+      "soltui/coinbase_manual.py": 17,
       "soltui/commands.py": 53,
       "soltui/compound.py": 13,
       "soltui/config.py": 4,
@@ -160322,6 +160464,8 @@
       "soltui/tests/bridge_support.py": 13,
       "soltui/tests/test_bridge_parity.py": 1,
       "soltui/tests/test_coinbase_account.py": 10,
+      "soltui/tests/test_coinbase_manual.py": 9,
+      "soltui/tests/test_coinbase_manual_ui.py": 121,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_eth_scan.py": 5,
       "soltui/tests/test_utxo_scan.py": 2,
@@ -160330,6 +160474,7 @@
     },
     "coinbase_account": {
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 5,
       "soltui/tests/test_coinbase_account.py": 1
     },
@@ -160349,7 +160494,9 @@
       "research/results/top50-nonpegged-2026-11-07.json": 1
     },
     "coinbase_manual": {
-      "soltui/commands.py": 11
+      "soltui/coinbase_manual.py": 1,
+      "soltui/commands.py": 11,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "coinbase_market_done": {
       "soltui/tui.py": 2
@@ -160370,6 +160517,7 @@
       "soltui/tui.py": 1
     },
     "coinbase_order_check_pressed": {
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tui.py": 1
     },
     "coinbase_order_controls": {
@@ -160385,15 +160533,18 @@
       "soltui/commands.py": 1
     },
     "coinbase_order_preview_data": {
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tui.py": 9
     },
     "coinbase_order_preview_pressed": {
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tui.py": 1
     },
     "coinbase_order_quick": {
       "soltui/commands.py": 1
     },
     "coinbase_order_quick_pressed": {
+      "soltui/tests/test_coinbase_manual_ui.py": 5,
       "soltui/tui.py": 1
     },
     "coinbase_order_state": {
@@ -160403,6 +160554,7 @@
       "soltui/tui.py": 1
     },
     "coinbase_order_state_start": {
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tui.py": 3
     },
     "coinbase_order_status": {
@@ -160412,9 +160564,11 @@
       "soltui/commands.py": 1
     },
     "coinbase_order_submit_pressed": {
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tui.py": 1
     },
     "coinbase_order_unknown": {
+      "soltui/tests/test_coinbase_manual_ui.py": 7,
       "soltui/tui.py": 12
     },
     "coinbase_order_values": {
@@ -160433,12 +160587,14 @@
       "soltui/tui.py": 2
     },
     "coinbase_pairs_filter": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tui.py": 1
     },
     "coinbase_pairs_generation": {
       "soltui/tui.py": 4
     },
     "coinbase_pairs_start": {
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tui.py": 5
     },
     "coinbase_pairs_worker": {
@@ -160482,6 +160638,9 @@
     },
     "coinbaseaccounttests": {
       "soltui/tests/test_coinbase_account.py": 2
+    },
+    "coinbasemanualuitests": {
+      "soltui/tests/test_coinbase_manual_ui.py": 2
     },
     "coinbasepanetests": {
       "soltui/tests/test_coinbase_account.py": 2
@@ -165429,6 +165588,7 @@
       "soltui/tests/test_bridge_surfaces.py": 32,
       "soltui/tests/test_coin_fit_ui.py": 4,
       "soltui/tests/test_coinbase_account.py": 7,
+      "soltui/tests/test_coinbase_manual.py": 8,
       "soltui/tests/test_compound.py": 19,
       "soltui/tests/test_docs_search.py": 3,
       "soltui/tests/test_editor_backtest.py": 3,
@@ -165655,12 +165815,18 @@
       "skills/trading-and-investing/references/the-greeks.md": 1,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/experiments.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_experiments.py": 1
     },
     "commission3": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md": 1,
       "research/tradingview-script-profiles/shard-a.jsonl": 1
+    },
+    "commission_total": {
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "commissioned": {
       "backtester/strategy_research/discount_to_anchor.md": 1,
@@ -169734,12 +169900,16 @@
       "skills/trading-and-investing/references/market-participants-and-structure.md": 2,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
       "soltui/bgqueue.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/experiment_jobs.py": 1,
       "soltui/soltui-service": 1,
       "soltui/status.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/AGENTS.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+    },
+    "completion_percentage": {
+      "soltui/coinbase_manual.py": 1
     },
     "complex": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_12ferxal_harmonicpattern.md": 1,
@@ -178679,6 +178849,8 @@
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 10,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_compound.py": 67,
       "soltui/tests/test_compound_pool_capture.py": 4,
       "soltui/tests/test_experiment_interface.py": 17,
@@ -178718,6 +178890,8 @@
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_experiment_interface.py": 2,
@@ -182048,6 +182222,7 @@
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1,
       "soltui/README.md": 8,
       "soltui/bots_screens.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 27,
       "soltui/compound.py": 1,
       "soltui/docs_browser.py": 1,
@@ -182056,6 +182231,8 @@
       "soltui/tests/bridge_support.py": 3,
       "soltui/tests/test_bridge_parity.py": 4,
       "soltui/tests/test_bridge_surfaces.py": 8,
+      "soltui/tests/test_coinbase_manual.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_tui.py": 3,
@@ -182406,6 +182583,7 @@
       "soltui/README.md": 2,
       "soltui/commands.py": 3,
       "soltui/native_host_install.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tui.py": 1
     },
     "confirmational": {
@@ -189380,6 +189558,7 @@
       "mongo/tests/test_load_audit.py": 3,
       "scripts/test_html_to_markdown.py": 1,
       "soltui/bots.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 2,
       "soltui/experiment_runner.py": 1,
       "soltui/experiments.py": 1,
@@ -189396,6 +189575,7 @@
       "liquidity/src/aero_lp/ledger.py": 2,
       "liquidity/src/aero_lp/submissions.py": 2,
       "soltui/bots.py": 2,
+      "soltui/coinbase_manual.py": 2,
       "soltui/compound.py": 1,
       "soltui/experiment_runner.py": 2,
       "soltui/experiments.py": 2
@@ -191164,6 +191344,7 @@
       "soltui/commands.py": 1,
       "soltui/eth_scan.py": 3,
       "soltui/help.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_help.py": 1,
       "soltui/tests/test_tui.py": 1,
@@ -199007,6 +199188,7 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 8,
       "soltui/tests/test_coinbase_account.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 7,
       "soltui/tests/test_compound.py": 11,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_experiment_interface.py": 3,
@@ -201325,6 +201507,7 @@
       "index/idle.py": 2,
       "soltui/api.py": 1,
       "soltui/bgcontrol.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 3,
       "soltui/config.py": 1,
       "soltui/experiment_jobs.py": 1,
@@ -201514,6 +201697,7 @@
       "soltui/bgcontrol.py": 3,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 4,
       "soltui/experiment_runner.py": 1,
       "soltui/experiment_screens.py": 8,
@@ -201530,6 +201714,7 @@
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgworker_audit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 19,
       "soltui/tests/test_experiment_interface.py": 6,
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_experiments.py": 18,
@@ -201556,6 +201741,9 @@
     },
     "create_default_context": {
       "soltui/pricefeed.py": 1
+    },
+    "create_error": {
+      "soltui/tests/test_coinbase_manual.py": 4
     },
     "create_index": {
       "mongo/schema.py": 1,
@@ -201643,6 +201831,9 @@
     "created_card_ids": {
       "research/tradingview-card-coverage.json": 1,
       "scripts/check_tradingview_cards.py": 2
+    },
+    "created_time": {
+      "soltui/coinbase_manual.py": 1
     },
     "createdat": {
       "docs/trading-signals-concept-family.md": 1,
@@ -201883,6 +202074,7 @@
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 1,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
@@ -205458,6 +205650,7 @@
       "skills/trading-and-investing/references/trading-risk-management.md": 3,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 3,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 15,
       "soltui/commands.py": 4,
       "soltui/experiment_runner.py": 2,
       "soltui/experiment_screens.py": 4,
@@ -205466,6 +205659,8 @@
       "soltui/pricefeed.py": 2,
       "soltui/tests/bridge_support.py": 3,
       "soltui/tests/test_coinbase_account.py": 11,
+      "soltui/tests/test_coinbase_manual.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_pricefeed.py": 12,
       "soltui/tui.py": 8,
@@ -206371,6 +206566,7 @@
       "soltui/bots.py": 19,
       "soltui/bots_screens.py": 6,
       "soltui/coin_fit.py": 8,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 14,
       "soltui/compound.py": 6,
       "soltui/experiment_jobs.py": 2,
@@ -206607,6 +206803,7 @@
       "skills/trading-and-investing/references/jupiter-jlp-pool.md": 1,
       "skills/trading-and-investing/references/options-fundamentals.md": 2,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/help.py": 3,
       "soltui/soltui-service": 1,
       "soltui/tui.py": 3
@@ -218804,6 +219001,7 @@
       "soltui/tests/test_bots.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 10,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_docs_search.py": 3,
       "soltui/tests/test_experiment_interface.py": 4,
@@ -223799,6 +223997,7 @@
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
       "skills/trading-and-investing/references/forex-and-currency-trading.md": 5,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1,
+      "soltui/coinbase_manual.py": 25,
       "soltui/commands.py": 1,
       "soltui/compound.py": 1,
       "soltui/experiments.py": 9,
@@ -233978,6 +234177,7 @@
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 2,
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1,
       "soltui/tests/test_bgcontrol_identity.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_experiment_interface.py": 1
     },
     "delayed_streaming": {
@@ -234164,6 +234364,7 @@
       "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound_agent.py": 2,
       "soltui/pricefeed.py": 1,
       "soltui/setup_app.py": 1,
@@ -241668,6 +241869,7 @@
       "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "soltui/README.md": 1,
+      "soltui/coinbase_manual.py": 8,
       "soltui/live_run.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 2,
@@ -242387,6 +242589,7 @@
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 1,
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1,
       "skills/trading-and-investing/references/strategy-backtesting-and-development-workflow.md": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/help.py": 1
     },
     "determine_first_data_request_size_using_visible_range": {
@@ -244943,6 +245146,7 @@
       "soltui/cli.py": 4,
       "soltui/coin_fit.py": 32,
       "soltui/coinbase_account.py": 26,
+      "soltui/coinbase_manual.py": 15,
       "soltui/commands.py": 214,
       "soltui/compound.py": 100,
       "soltui/compound_agent.py": 9,
@@ -247229,6 +247433,7 @@
       "soltui/bgcontrol.py": 3,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/cumulative.py": 3,
       "soltui/experiment_screens.py": 2,
@@ -247474,6 +247679,7 @@
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 2,
+      "soltui/coinbase_manual.py": 2,
       "soltui/experiment_screens.py": 1,
       "soltui/experiments.py": 5,
       "soltui/help.py": 2,
@@ -248126,6 +248332,7 @@
       "soltui/bots.py": 8,
       "soltui/coin_fit.py": 19,
       "soltui/coinbase_account.py": 9,
+      "soltui/coinbase_manual.py": 9,
       "soltui/commands.py": 18,
       "soltui/compound.py": 14,
       "soltui/compound_agent.py": 4,
@@ -248161,6 +248368,8 @@
       "soltui/tests/test_coin_fit.py": 6,
       "soltui/tests/test_coin_fit_ui.py": 2,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 9,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
@@ -249817,6 +250026,7 @@
       "soltui/pricefeed.py": 1,
       "soltui/soltui-service": 1,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 15,
       "soltui/tests/test_experiment_interface.py": 2,
       "soltui/tests/test_forwardtest.py": 2,
       "soltui/tests/test_tui.py": 4,
@@ -250162,6 +250372,7 @@
       "memory.md": 3,
       "soltui/README.md": 3,
       "soltui/config.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tui.py": 3
     },
@@ -250178,7 +250389,8 @@
       "extension/test/engine-command-audit.test.js": 1,
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
-      "memory.md": 1
+      "memory.md": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1
     },
     "disaster": {
       "backtester/strategy_cards/stochastic.md": 1,
@@ -250304,6 +250516,7 @@
       "soltui/roster.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_tui.py": 1
     },
     "discern": {
@@ -254039,6 +254252,7 @@
       "soltui/tests/test_bridge_parity.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 16,
       "soltui/tests/test_coin_fit_ui.py": 15,
+      "soltui/tests/test_coinbase_manual.py": 5,
       "soltui/tests/test_compound.py": 7,
       "soltui/tests/test_docs_search.py": 12,
       "soltui/tests/test_experiment_interface.py": 2,
@@ -255032,6 +255246,7 @@
       "soltui/runner.py": 1,
       "soltui/setup_app.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 5,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_status_console.py": 1,
@@ -270761,6 +270976,7 @@
       "skills/trading-and-investing/references/selection-rule-design.md": 1,
       "soltui/README.md": 3,
       "soltui/bots.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 2,
       "soltui/experiment_runner.py": 3,
       "soltui/experiment_screens.py": 1,
@@ -284601,6 +284817,7 @@
       "soltui/tests/test_bgworker_audit.py": 4,
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 10,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 2,
@@ -286777,6 +286994,7 @@
       "soltui/cli.py": 5,
       "soltui/coin_fit.py": 43,
       "soltui/coinbase_account.py": 3,
+      "soltui/coinbase_manual.py": 4,
       "soltui/commands.py": 64,
       "soltui/compound.py": 116,
       "soltui/compound_agent.py": 2,
@@ -286820,6 +287038,7 @@
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 5,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_experiment_interface.py": 2,
@@ -289709,6 +289928,7 @@
       "soltui/bgworker.py": 5,
       "soltui/bots.py": 4,
       "soltui/coinbase_account.py": 4,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 2,
       "soltui/compound.py": 9,
       "soltui/config.py": 1,
@@ -292698,11 +292918,13 @@
       "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 4,
       "soltui/README.md": 2,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 2,
       "soltui/experiment_screens.py": 2,
       "soltui/help.py": 6,
       "soltui/runner.py": 1,
       "soltui/tests/bridge_support.py": 10,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_presets_netpct.py": 1,
@@ -292770,6 +292992,7 @@
       "soltui/help.py": 1,
       "soltui/paper_experiments.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 15,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_forwardtest.py": 4
     },
     "entering": {
@@ -295976,6 +296199,7 @@
       "soltui/tests/bridge_support.py": 6,
       "soltui/tests/test_bridge_parity.py": 3,
       "soltui/tests/test_bridge_surfaces.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 15,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tui.py": 8
     },
@@ -301356,6 +301580,8 @@
       "soltui/tests/test_bridge_parity.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 16,
       "soltui/tests/test_coin_fit_ui.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_compound.py": 10,
       "soltui/tests/test_docs_search.py": 3,
       "soltui/tests/test_eth_scan.py": 2,
@@ -301979,7 +302205,13 @@
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1,
       "skills/trading-and-investing/references/ml-backtesting-pitfalls-and-production-systems.md": 1,
-      "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 1
+      "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 1,
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "est_average_filled_price": {
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "establishcompleteknowledgeorprofit": {
       "memory.md": 1
@@ -303316,10 +303548,12 @@
       "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md": 3,
       "skills/trading-and-investing/references/trading-risk-management.md": 3,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 11,
       "soltui/experiments.py": 1,
       "soltui/help.py": 10,
       "soltui/liquidity.py": 1,
       "soltui/tests/bridge_support.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tui.py": 4
     },
     "estimate_gas": {
@@ -303431,6 +303665,7 @@
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1,
       "skills/trading-and-investing/references/trading-risk-management.md": 1,
       "soltui/README.md": 2,
+      "soltui/coinbase_manual.py": 10,
       "soltui/commands.py": 1,
       "soltui/experiments.py": 1,
       "soltui/help.py": 12,
@@ -303573,6 +303808,7 @@
       "skills/trading-and-investing/references/regime-detection-and-classification.md": 2,
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 2,
       "soltui/README.md": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/help.py": 5,
       "soltui/liquidity.py": 2,
       "soltui/tui.py": 1
@@ -306687,6 +306923,7 @@
       "soltui/status.py": 2,
       "soltui/tests/test_bg_fresh_results.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 12,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_experiment_interface.py": 1,
       "soltui/tests/test_forwardtest.py": 5,
@@ -310531,6 +310768,7 @@
       "skills/trading-and-investing/references/trading-risk-management.md": 2,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "skills/trading-and-investing/references/volatility-and-pricing.md": 3,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 1,
       "soltui/experiment_runner.py": 2,
       "soltui/experiments.py": 1,
@@ -310737,6 +310975,7 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 3,
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 2,
       "soltui/experiments.py": 6,
       "soltui/help.py": 2,
@@ -310927,6 +311166,7 @@
       "soltui/cli.py": 2,
       "soltui/coin_fit.py": 7,
       "soltui/coinbase_account.py": 7,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 43,
       "soltui/compound.py": 40,
       "soltui/compound_agent.py": 1,
@@ -311058,6 +311298,7 @@
       "soltui/app.py": 3,
       "soltui/bgworker.py": 2,
       "soltui/bots.py": 1,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 13,
       "soltui/compound.py": 7,
       "soltui/docs_browser.py": 1,
@@ -316264,6 +316505,7 @@
       "soltui/bots.py": 5,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 2,
       "soltui/compound.py": 8,
       "soltui/compound_agent.py": 2,
@@ -316351,6 +316593,7 @@
       "soltui/bots.py": 4,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 8,
       "soltui/compound_agent.py": 2,
@@ -323408,9 +323651,12 @@
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 1,
       "skills/trading-and-investing/references/options-fundamentals.md": 1,
       "skills/trading-and-investing/references/the-greeks.md": 1,
+      "soltui/coinbase_manual.py": 3,
       "soltui/forwardtest.py": 9,
       "soltui/help.py": 1,
       "soltui/paper_experiments.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tui.py": 6
     },
     "expires": {
@@ -323426,12 +323672,18 @@
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 1,
       "skills/trading-and-investing/references/options-fundamentals.md": 2,
       "skills/trading-and-investing/references/strategies-and-risk.md": 2,
+      "soltui/coinbase_manual.py": 7,
       "soltui/compound.py": 1,
       "soltui/tests/bridge_support.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tui.py": 8
     },
     "expires_at": {
+      "soltui/coinbase_manual.py": 7,
       "soltui/tests/bridge_support.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tui.py": 4
     },
     "expiresat": {
@@ -324836,6 +325088,8 @@
       "soltui/tests/test_bg_fresh_results.py": 1,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_experiments.py": 3,
       "soltui/tests/test_signals.py": 5,
@@ -325145,6 +325399,7 @@
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 2,
       "soltui/README.md": 3,
       "soltui/bgqueue.py": 1,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 3,
       "soltui/experiment_jobs.py": 3,
       "soltui/experiment_runner.py": 1,
@@ -325915,6 +326170,7 @@
       "research/tradingview-script-profiles/shard-c.jsonl": 20,
       "research/tradingview-script-understanding.json": 17,
       "soltui/README.md": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/config.py": 2,
       "soltui/tests/test_coinbase_account.py": 2,
       "soltui/tests/test_experiments.py": 15,
@@ -337185,6 +337441,7 @@
       "soltui/setup_app.py": 1,
       "soltui/soltui-service": 1,
       "soltui/tests/test_bgworker_audit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 3,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_eth_scan.py": 5,
       "soltui/tests/test_experiment_interface.py": 3,
@@ -337425,6 +337682,7 @@
       "soltui/cli.py": 1,
       "soltui/coin_fit.py": 2,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 39,
       "soltui/compound.py": 6,
       "soltui/experiment_jobs.py": 3,
@@ -342540,6 +342798,7 @@
       "liquidity/src/aero_lp/submissions.py": 6,
       "soltui/bgcontrol.py": 10,
       "soltui/bots.py": 5,
+      "soltui/coinbase_manual.py": 3,
       "soltui/compound.py": 10,
       "soltui/experiment_jobs.py": 19,
       "soltui/experiment_runner.py": 6,
@@ -344487,6 +344746,7 @@
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 11,
       "soltui/coin_fit.py": 35,
+      "soltui/coinbase_manual.py": 17,
       "soltui/commands.py": 9,
       "soltui/compound.py": 4,
       "soltui/config.py": 3,
@@ -344503,6 +344763,8 @@
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 9,
+      "soltui/tests/test_coinbase_manual.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_docs_search.py": 4,
       "soltui/tests/test_experiment_runner.py": 2,
@@ -345446,6 +345708,7 @@
       "soltui/README.md": 7,
       "soltui/bots.py": 3,
       "soltui/coin_fit.py": 6,
+      "soltui/coinbase_manual.py": 4,
       "soltui/commands.py": 3,
       "soltui/compound.py": 2,
       "soltui/experiment_runner.py": 2,
@@ -348399,6 +348662,7 @@
       "soltui/bgqueue.py": 5,
       "soltui/bots.py": 4,
       "soltui/coin_fit.py": 7,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 1,
       "soltui/compound.py": 2,
       "soltui/config.py": 6,
@@ -348413,6 +348677,7 @@
       "soltui/signals.py": 8,
       "soltui/status.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_help.py": 5,
       "soltui/tests/test_presets_netpct.py": 1,
       "soltui/tests/test_signals.py": 15,
@@ -348555,6 +348820,7 @@
       "soltui/bgqueue.py": 7,
       "soltui/coin_fit.py": 7,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 7,
       "soltui/commands.py": 9,
       "soltui/config.py": 7,
       "soltui/docs_browser.py": 1,
@@ -348565,6 +348831,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_signals.py": 4,
       "soltui/tests/test_status_roster.py": 1,
@@ -351295,6 +351562,7 @@
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 4,
       "soltui/coin_fit.py": 5,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 6,
       "soltui/config.py": 3,
       "soltui/experiment_jobs.py": 1,
@@ -351507,10 +351775,17 @@
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 2,
       "soltui/bots.py": 10,
       "soltui/bots_screens.py": 1,
+      "soltui/coinbase_manual.py": 4,
       "soltui/make_icon.py": 1,
       "soltui/tests/bridge_support.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 7,
+      "soltui/tests/test_coinbase_manual_ui.py": 5,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tui.py": 3
+    },
+    "filled_size": {
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "filledareas": {
       "docs/TRADINGVIEW-REFERENCE.md": 2
@@ -351784,6 +352059,7 @@
       "soltui/README.md": 9,
       "soltui/bots.py": 2,
       "soltui/coin_fit.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 10,
       "soltui/compound.py": 1,
       "soltui/help.py": 9,
@@ -351793,6 +352069,7 @@
       "soltui/pnl.py": 25,
       "soltui/status.py": 5,
       "soltui/tests/bridge_support.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_pnl.py": 13,
       "soltui/tests/test_presets_netpct.py": 3,
@@ -352195,6 +352472,7 @@
       "soltui/help.py": 9,
       "soltui/make_icon.py": 3,
       "soltui/reference.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_panes.py": 5,
       "soltui/tests/test_tui.py": 14,
@@ -352965,6 +353243,7 @@
       "soltui/bots.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 5,
       "soltui/compound.py": 4,
       "soltui/experiment_jobs.py": 1,
@@ -352978,6 +353257,7 @@
       "soltui/tests/test_bg_fresh_results.py": 2,
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_pricefeed.py": 1,
@@ -355747,6 +356027,7 @@
       "skills/trading-and-investing/references/strategies-and-risk.md": 1,
       "soltui/bots.py": 1,
       "soltui/coin_fit.py": 14,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 3,
       "soltui/compound.py": 1,
       "soltui/experiment_runner.py": 1,
@@ -357954,6 +358235,7 @@
       "soltui/signals.py": 5,
       "soltui/tests/test_coin_fit.py": 52,
       "soltui/tests/test_coin_fit_ui.py": 88,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tui.py": 235
     },
@@ -362856,6 +363138,7 @@
       "soltui/bgcontrol.py": 5,
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 4,
       "soltui/experiment_jobs.py": 7,
       "soltui/experiment_runner.py": 2,
@@ -363892,6 +364175,7 @@
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "soltui/README.md": 1,
       "soltui/help_screen.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_help.py": 4,
@@ -364552,6 +364836,7 @@
       "soltui/bots.py": 1,
       "soltui/config.py": 2,
       "soltui/help.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2
     },
@@ -366232,6 +366517,7 @@
       "soltui/roster.py": 3,
       "soltui/signals.py": 5,
       "soltui/status.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_tui.py": 2,
@@ -373365,6 +373651,7 @@
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 7,
       "soltui/bots.py": 3,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 9,
       "soltui/config.py": 2,
       "soltui/experiment_runner.py": 2,
@@ -374296,6 +374583,7 @@
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/paper_experiments.py": 1
     },
     "fsynced": {
@@ -376221,6 +376509,7 @@
       "scripts/html_to_markdown.py": 5,
       "soltui/bgqueue.py": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 4,
       "soltui/experiment_jobs.py": 1,
       "soltui/hdwallet.py": 5,
       "soltui/top5.py": 1,
@@ -379015,6 +379304,7 @@
       "soltui/cli.py": 1,
       "soltui/coin_fit.py": 9,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 2,
       "soltui/compound.py": 2,
       "soltui/compound_agent.py": 1,
@@ -379067,6 +379357,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
@@ -379320,6 +379611,7 @@
       "soltui/cli.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 1,
       "soltui/compound_agent.py": 1,
@@ -379372,6 +379664,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
@@ -385498,6 +385791,7 @@
       "soltui/bots_screens.py": 13,
       "soltui/coin_fit.py": 44,
       "soltui/coinbase_account.py": 39,
+      "soltui/coinbase_manual.py": 45,
       "soltui/commands.py": 159,
       "soltui/compound.py": 266,
       "soltui/compound_agent.py": 1,
@@ -385534,6 +385828,8 @@
       "soltui/tests/test_bridge_parity.py": 2,
       "soltui/tests/test_bridge_surfaces.py": 23,
       "soltui/tests/test_coin_fit_ui.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 51,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
@@ -388875,6 +389171,7 @@
       "soltui/analyze.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 3,
+      "soltui/coinbase_manual.py": 3,
       "soltui/cumulative.py": 1,
       "soltui/forwardtest.py": 2,
       "soltui/paper_experiments.py": 1,
@@ -392327,6 +392624,7 @@
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 3,
       "soltui/README.md": 3,
       "soltui/bots.py": 3,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 1,
       "soltui/compound.py": 5,
       "soltui/help.py": 7,
@@ -392378,6 +392676,9 @@
     },
     "gross_pos": {
       "research/minute_sweep.py": 3
+    },
+    "gross_quote": {
+      "soltui/coinbase_manual.py": 1
     },
     "gross_ret": {
       "research/ratio_rotation.py": 3
@@ -398000,11 +398301,13 @@
       "research/ratio_rotation.py": 2,
       "research/verify_numbers.py": 3,
       "soltui/coinbase_account.py": 10,
+      "soltui/coinbase_manual.py": 4,
       "soltui/pnl.py": 5,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bridge_buttons.py": 1,
       "soltui/tests/test_bridge_parity.py": 1,
       "soltui/tests/test_coinbase_account.py": 7,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_experiment_runner.py": 1,
@@ -398075,7 +398378,8 @@
     "has_next": {
       "memory.md": 1,
       "soltui/coinbase_account.py": 10,
-      "soltui/tests/test_coinbase_account.py": 7
+      "soltui/tests/test_coinbase_account.py": 7,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "has_pct": {
       "soltui/tests/test_liquidity.py": 2
@@ -398092,6 +398396,9 @@
     "has_trades": {
       "soltui/pnl.py": 5,
       "soltui/tests/test_pnl.py": 1
+    },
+    "has_unresolved": {
+      "soltui/coinbase_manual.py": 4
     },
     "has_weekly_and_monthly": {
       "docs/TRADINGVIEW-REFERENCE.md": 5
@@ -402117,6 +402424,7 @@
       "soltui/README.md": 1,
       "soltui/bgcontrol.py": 2,
       "soltui/bots.py": 3,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/eth_scan.py": 4,
       "soltui/experiments.py": 1,
@@ -404818,6 +405126,7 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 4,
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 1,
       "soltui/README.md": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/help.py": 2,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_compound.py": 1
@@ -418405,6 +418714,7 @@
       "skills/trading-and-investing/references/regime-detection-and-classification.md": 1,
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 4,
       "soltui/bgcontrol.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 2
     },
     "identifyelement": {
@@ -418585,6 +418895,7 @@
       "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 3,
       "soltui/coin_fit.py": 3,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 2,
       "soltui/experiment_runner.py": 2,
       "soltui/experiment_screens.py": 1,
@@ -425400,7 +425711,9 @@
       "research/tradingview-script-understanding.json": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/ml-backtesting-pitfalls-and-production-systems.md": 1,
-      "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1
+      "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1,
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2
     },
     "increased_amounts": {
       "liquidity/src/aero_lp/executor.py": 5,
@@ -425572,6 +425885,8 @@
       "skills/trading-and-investing/references/grid-trading-strategy.md": 2,
       "skills/trading-and-investing/references/market-microstructure-and-execution.md": 1,
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1,
+      "soltui/coinbase_manual.py": 6,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2
     },
     "incremental": {
@@ -425650,6 +425965,7 @@
       "skills/trading-and-investing/references/market-microstructure-and-execution.md": 1,
       "skills/trading-and-investing/references/order-lifecycle-and-execution.md": 1,
       "skills/trading-and-investing/references/volatility-and-pricing.md": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/CONTRIBUTING.md": 2
     },
     "incresing": {
@@ -433473,6 +433789,7 @@
       "soltui/tests/__init__.py": 2,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bgworker.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_pricefeed.py": 1,
@@ -433578,6 +433895,7 @@
       "soltui/tests/__init__.py": 1,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bgworker.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_pricefeed.py": 1,
@@ -435611,6 +435929,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 16,
       "soltui/tests/test_compound.py": 7,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
@@ -439164,6 +439483,7 @@
       "soltui/analyze.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/coin_fit.py": 4,
+      "soltui/coinbase_manual.py": 1,
       "soltui/cumulative.py": 3,
       "soltui/help.py": 4,
       "soltui/runner.py": 1,
@@ -441273,7 +441593,8 @@
       "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md": 1,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 3,
       "skills/trading-and-investing/references/technical-analysis.md": 1,
-      "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 3
+      "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 3,
+      "soltui/coinbase_manual.py": 1
     },
     "intent_id": {
       "executor/src/executor/engine.py": 11,
@@ -444772,6 +445093,7 @@
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/coinbase_account.py": 6,
+      "soltui/coinbase_manual.py": 2,
       "soltui/experiment_jobs.py": 1,
       "soltui/experiment_runner.py": 4,
       "soltui/experiments.py": 9,
@@ -444940,6 +445262,7 @@
       "executor/src/executor/jupiter.py": 3,
       "executor/src/executor/lifi.py": 2,
       "executor/src/executor/tokens.py": 2,
+      "soltui/coinbase_manual.py": 2,
       "soltui/experiments.py": 2,
       "soltui/tui.py": 2
     },
@@ -448213,6 +448536,7 @@
       "executor/src/executor/jupiter.py": 2,
       "executor/src/executor/lifi.py": 1,
       "executor/src/executor/tokens.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/experiments.py": 1
     },
     "is_hi": {
@@ -448397,6 +448721,7 @@
       "soltui/forwardtest.py": 1,
       "soltui/runner.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_forwardtest.py": 3,
       "soltui/tui.py": 3
     },
@@ -448892,6 +449217,7 @@
       "soltui/cli.py": 1,
       "soltui/coin_fit.py": 12,
       "soltui/coinbase_account.py": 23,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 61,
       "soltui/compound.py": 15,
       "soltui/experiment_runner.py": 7,
@@ -449184,6 +449510,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
@@ -449870,6 +450197,7 @@
       "soltui/compound.py": 3,
       "soltui/experiment_runner.py": 2,
       "soltui/roster.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_pricefeed.py": 2,
       "soltui/tui.py": 2
@@ -452971,6 +453299,7 @@
       "soltui/cli.py": 15,
       "soltui/coin_fit.py": 17,
       "soltui/coinbase_account.py": 16,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 53,
       "soltui/compound.py": 50,
       "soltui/compound_agent.py": 3,
@@ -458507,6 +458836,7 @@
       "soltui/tests/test_bg_fresh_results.py": 6,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 20,
+      "soltui/tests/test_coinbase_manual_ui.py": 20,
       "soltui/tests/test_editor_backtest.py": 4,
       "soltui/tests/test_experiment_interface.py": 9,
       "soltui/tests/test_experiment_runner.py": 8,
@@ -465031,6 +465361,7 @@
       "soltui/bots.py": 31,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 21,
       "soltui/compound.py": 24,
       "soltui/compound_agent.py": 1,
@@ -465156,6 +465487,9 @@
       "soltui/shell.py": 1,
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tui.py": 2
+    },
+    "last_fill_time": {
+      "soltui/coinbase_manual.py": 1
     },
     "last_hour": {
       "soltui/experiment_runner.py": 3
@@ -471452,6 +471786,7 @@
       "soltui/bots_screens.py": 5,
       "soltui/coin_fit.py": 12,
       "soltui/coinbase_account.py": 6,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 44,
       "soltui/compound.py": 32,
       "soltui/cumulative.py": 5,
@@ -471488,6 +471823,8 @@
       "soltui/tests/test_bridge_surfaces.py": 9,
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 15,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_eth_scan.py": 2,
@@ -479031,6 +479368,7 @@
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
       "soltui/api.py": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/help.py": 1,
       "soltui/tui.py": 1,
       "soltui/wallet.py": 1
@@ -483391,6 +483729,7 @@
       "soltui/cli.py": 8,
       "soltui/coin_fit.py": 8,
       "soltui/coinbase_account.py": 13,
+      "soltui/coinbase_manual.py": 4,
       "soltui/commands.py": 101,
       "soltui/compound.py": 51,
       "soltui/compound_agent.py": 1,
@@ -483439,6 +483778,7 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 3,
       "soltui/tests/test_coinbase_account.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 8,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_search.py": 3,
@@ -485895,6 +486235,7 @@
       "soltui/bots.py": 3,
       "soltui/coin_fit.py": 4,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 35,
       "soltui/compound.py": 16,
       "soltui/compound_agent.py": 2,
@@ -488214,6 +488555,7 @@
       "soltui/bgcontrol.py": 79,
       "soltui/bgworker.py": 16,
       "soltui/bots.py": 8,
+      "soltui/coinbase_manual.py": 7,
       "soltui/commands.py": 24,
       "soltui/compound.py": 33,
       "soltui/compound_agent.py": 1,
@@ -488243,6 +488585,7 @@
       "liquidity/src/aero_lp/submissions.py": 2,
       "soltui/bgcontrol.py": 4,
       "soltui/bots.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 3,
       "soltui/experiment_jobs.py": 4,
       "soltui/experiment_runner.py": 1,
@@ -491365,6 +491708,8 @@
       "script-profile-orchestration.md": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 5,
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_tui.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1
     },
@@ -496041,6 +496386,7 @@
       "soltui/bgworker.py": 4,
       "soltui/bots.py": 5,
       "soltui/coin_fit.py": 5,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 4,
       "soltui/compound.py": 3,
       "soltui/docs_browser.py": 3,
@@ -499860,6 +500206,8 @@
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 4,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_compound_pool_capture.py": 4,
       "soltui/tests/test_docs_browser.py": 2,
@@ -500024,6 +500372,8 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
@@ -501592,6 +501942,7 @@
       "soltui/soltui-service": 2,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 12,
       "soltui/tests/test_compound.py": 13,
       "soltui/tests/test_docs_search.py": 4,
       "soltui/tests/test_dryrun_strategy.py": 7,
@@ -501722,6 +502073,7 @@
     "make_settings": {
       "docs/FILES.md": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 12,
       "soltui/tests/test_compound.py": 13,
       "soltui/tests/test_docs_search.py": 4,
       "soltui/tests/test_dryrun_strategy.py": 7,
@@ -503831,12 +504183,15 @@
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
       "soltui/README.md": 5,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 12,
       "soltui/config.py": 4,
       "soltui/menubar_launcher.py": 1,
       "soltui/native_host_install.py": 1,
       "soltui/status.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 5,
       "soltui/tests/test_experiment_runner.py": 3,
       "soltui/tui.py": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
@@ -503898,6 +504253,9 @@
       "research/tradingview-script-profiles/shard-c.jsonl": 9,
       "research/tradingview-script-understanding.json": 21,
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 2
+    },
+    "manualordertests": {
+      "soltui/tests/test_coinbase_manual.py": 2
     },
     "manufacture": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_hspqnbax_function_logistic_equation.md": 1,
@@ -506139,6 +506497,7 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 4,
       "soltui/README.md": 2,
       "soltui/coinbase_account.py": 10,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 3,
       "soltui/help.py": 3,
       "soltui/pricefeed.py": 3,
@@ -508233,6 +508592,7 @@
       "soltui/README.md": 1,
       "soltui/api.py": 3,
       "soltui/bgqueue.py": 2,
+      "soltui/coinbase_manual.py": 4,
       "soltui/compound.py": 1,
       "soltui/docs_browser.py": 3,
       "soltui/help.py": 1,
@@ -508606,7 +508966,8 @@
       "skills/trading-and-investing/references/strategies-and-risk.md": 1,
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "skills/trading-and-investing/references/the-greeks.md": 1,
-      "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1
+      "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1,
+      "soltui/coinbase_manual.py": 1
     },
     "materials": {
       "research/tradingview-card-coverage.json": 23,
@@ -509832,6 +510193,7 @@
       "soltui/bots.py": 58,
       "soltui/coin_fit.py": 34,
       "soltui/coinbase_account.py": 5,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 14,
       "soltui/compound.py": 27,
       "soltui/cumulative.py": 2,
@@ -509864,6 +510226,7 @@
       "soltui/tests/test_bridge_surfaces.py": 4,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 2,
@@ -510390,6 +510753,9 @@
     "max_priority_lamports": {
       "executor/src/executor/jupiter.py": 2
     },
+    "max_quote": {
+      "soltui/coinbase_manual.py": 4
+    },
     "max_quote_age_s": {
       "backtester/core/trianglesim.py": 11,
       "backtester/guides/triangular_arbitrage.md": 2,
@@ -510463,6 +510829,9 @@
     },
     "max_series_default_size": {
       "docs/TRADINGVIEW-REFERENCE.md": 4
+    },
+    "max_size": {
+      "soltui/coinbase_manual.py": 1
     },
     "max_slippage_bps": {
       "docs/FILES.md": 1,
@@ -511037,6 +511406,7 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 2,
       "soltui/README.md": 1,
       "soltui/bots.py": 1,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 1,
       "soltui/help.py": 5,
       "soltui/pnl.py": 1,
@@ -514486,7 +514856,8 @@
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 2,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 2,
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 2,
-      "soltui/bgqueue.py": 2
+      "soltui/bgqueue.py": 2,
+      "soltui/coinbase_manual.py": 1
     },
     "meeting": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_du228vjm_flag_finder.md": 1,
@@ -515712,6 +516083,7 @@
       "soltui/bots_screens.py": 1,
       "soltui/cli.py": 1,
       "soltui/coinbase_account.py": 3,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 36,
       "soltui/compound.py": 3,
       "soltui/eth_scan.py": 3,
@@ -515732,6 +516104,7 @@
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
@@ -519773,6 +520146,7 @@
       "soltui/bgqueue.py": 7,
       "soltui/bots.py": 36,
       "soltui/coin_fit.py": 26,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 17,
       "soltui/compound.py": 12,
       "soltui/cumulative.py": 9,
@@ -519790,6 +520164,7 @@
       "soltui/signals.py": 6,
       "soltui/status.py": 1,
       "soltui/tests/test_bgqueue.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
       "soltui/tests/test_forwardtest.py": 2,
@@ -520104,6 +520479,9 @@
     },
     "min_sep": {
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1
+    },
+    "min_size": {
+      "soltui/coinbase_manual.py": 1
     },
     "min_sol_reserve_lamports": {
       "executor/CLAUDE.md": 1,
@@ -520776,6 +521154,7 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 2,
       "soltui/bots.py": 2,
       "soltui/coin_fit.py": 7,
+      "soltui/coinbase_manual.py": 6,
       "soltui/help.py": 5,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_forwardtest.py": 1,
@@ -523121,6 +523500,7 @@
       "soltui/bots.py": 4,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 8,
       "soltui/compound_agent.py": 2,
@@ -523547,6 +523927,8 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 12,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 12,
       "soltui/tests/test_compound.py": 37,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_docs_search.py": 7,
@@ -524057,6 +524439,7 @@
       "soltui/bgqueue.py": 1,
       "soltui/coin_fit.py": 26,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 49,
       "soltui/compound.py": 1,
       "soltui/config.py": 6,
@@ -529824,6 +530207,7 @@
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 2,
       "soltui/README.md": 3,
       "soltui/bots.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/help.py": 6,
       "soltui/help_screen.py": 1,
@@ -533576,6 +533960,8 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 1,
@@ -536206,6 +536592,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_liquidity.py": 3,
@@ -536447,6 +536834,7 @@
       "soltui/experiments.py": 1,
       "soltui/help.py": 2,
       "soltui/status.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_v2_shell.py": 2,
       "soltui/tui.py": 1
@@ -540292,6 +540680,7 @@
       "soltui/coinbase_account.py": 2,
       "soltui/experiment_screens.py": 3,
       "soltui/tests/test_bots.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_pricefeed.py": 2
     },
     "needles": {
@@ -544000,6 +544389,7 @@
       "soltui/bots.py": 5,
       "soltui/coin_fit.py": 3,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 21,
       "soltui/compound.py": 11,
       "soltui/compound_agent.py": 1,
@@ -544037,6 +544427,7 @@
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 3,
       "soltui/tests/test_compound.py": 5,
       "soltui/tests/test_docs_browser.py": 4,
       "soltui/tests/test_docs_search.py": 3,
@@ -545556,6 +545947,7 @@
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 2,
       "soltui/bots_screens.py": 1,
+      "soltui/coinbase_manual.py": 8,
       "soltui/commands.py": 5,
       "soltui/compound.py": 7,
       "soltui/experiment_jobs.py": 2,
@@ -545575,6 +545967,7 @@
       "soltui/tests/test_bots.py": 9,
       "soltui/tests/test_bridge_buttons.py": 2,
       "soltui/tests/test_bridge_surfaces.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 3,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_editor_backtest.py": 1,
@@ -545619,6 +546012,9 @@
     },
     "new_ctx": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
+    },
+    "new_fee": {
+      "soltui/coinbase_manual.py": 2
     },
     "new_history": {
       "soltui/tests/test_experiments.py": 2
@@ -545749,6 +546145,7 @@
       "soltui/config.py": 1,
       "soltui/help.py": 5,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1
     },
@@ -546560,6 +546957,8 @@
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 13,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 9,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_forwardtest.py": 4,
@@ -551055,6 +551454,7 @@
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 4,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 10,
       "soltui/tests/test_docs_browser.py": 5,
       "soltui/tests/test_docs_search.py": 3,
@@ -552118,6 +552518,7 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 1,
       "soltui/README.md": 1,
       "soltui/app.py": 5,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 3,
       "soltui/help.py": 3,
       "soltui/native_host.py": 1,
@@ -552126,6 +552527,7 @@
       "soltui/shell.py": 5,
       "soltui/tests/bridge_support.py": 4,
       "soltui/tests/test_bgqueue.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_pnl.py": 1,
       "soltui/tests/test_portfolio.py": 16,
       "soltui/tests/test_presets_netpct.py": 1,
@@ -554315,6 +554717,7 @@
       "soltui/bgqueue.py": 4,
       "soltui/bots.py": 9,
       "soltui/coin_fit.py": 2,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 34,
       "soltui/compound.py": 3,
       "soltui/cumulative.py": 2,
@@ -554336,6 +554739,9 @@
       "soltui/top5.py": 1,
       "soltui/tui.py": 7,
       "soltui/utxo_scan.py": 1
+    },
+    "number_of_fills": {
+      "soltui/coinbase_manual.py": 1
     },
     "number_of_pivots_back": {
       "backtester/strategy_research/tv_builtin_pivot_points_standard.md": 1
@@ -558085,6 +558491,7 @@
       "soltui/api.py": 2,
       "soltui/bgcontrol.py": 3,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 3,
       "soltui/config.py": 2,
       "soltui/experiment_jobs.py": 2,
@@ -558152,6 +558559,7 @@
       "executor/src/executor/config.py": 1,
       "extension/e2e/lib/soltui-host.mjs": 1,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/experiment_jobs.py": 1,
       "soltui/forwardtest.py": 2,
       "soltui/paper_experiments.py": 1,
@@ -558243,6 +558651,7 @@
       "index/idle.py": 2,
       "soltui/api.py": 1,
       "soltui/bgcontrol.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 3,
       "soltui/config.py": 1,
       "soltui/experiment_jobs.py": 1,
@@ -558271,12 +558680,14 @@
       "executor/src/executor/signer.py": 1,
       "liquidity/src/aero_lp/state.py": 1,
       "liquidity/src/aero_lp/submissions.py": 1,
-      "soltui/bgcontrol.py": 1
+      "soltui/bgcontrol.py": 1,
+      "soltui/coinbase_manual.py": 1
     },
     "o_rdwr": {
       "backtester/tests/test_index_search_tooling.py": 1,
       "index/idle.py": 2,
       "soltui/bgcontrol.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 3,
       "soltui/experiment_jobs.py": 1,
       "soltui/paper_experiments.py": 2,
@@ -558630,6 +559041,8 @@
       "soltui/tests/test_coin_fit.py": 6,
       "soltui/tests/test_coin_fit_ui.py": 6,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 11,
       "soltui/tests/test_compound.py": 30,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_docs_search.py": 6,
@@ -560111,6 +560524,7 @@
       "soltui/help.py": 4,
       "soltui/pnl.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_experiment_interface.py": 1,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tui.py": 2,
@@ -560946,7 +561360,8 @@
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 2,
       "skills/trading-and-investing/references/options-fundamentals.md": 1,
       "skills/trading-and-investing/references/technical-analysis.md": 1,
-      "skills/trading-and-investing/references/trading-risk-management.md": 1
+      "skills/trading-and-investing/references/trading-risk-management.md": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1
     },
     "ocdiqvy": {
       "research/tradingview-card-coverage.json": 4
@@ -562920,6 +563335,7 @@
       "soltui/bgcontrol.py": 5,
       "soltui/bgqueue.py": 1,
       "soltui/bgworker.py": 7,
+      "soltui/coinbase_manual.py": 3,
       "soltui/compound.py": 4,
       "soltui/experiment_screens.py": 1,
       "soltui/experiments.py": 4,
@@ -562962,6 +563378,9 @@
     },
     "old_bytes": {
       "soltui/tests/test_bg_fresh_results.py": 2
+    },
+    "old_fee": {
+      "soltui/coinbase_manual.py": 3
     },
     "old_final": {
       "soltui/tests/test_experiments.py": 2
@@ -563058,6 +563477,7 @@
       "soltui/help.py": 7,
       "soltui/portfolio.py": 5,
       "soltui/roster.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 1
@@ -564331,6 +564751,7 @@
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_bgworker_audit.py": 2,
       "soltui/tests/test_bridge_surfaces.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_pricefeed.py": 3,
@@ -564534,6 +564955,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 33,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 69,
       "soltui/tests/test_compound.py": 50,
       "soltui/tests/test_docs_search.py": 7,
       "soltui/tests/test_dryrun_strategy.py": 6,
@@ -564836,7 +565258,9 @@
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
       "skills/trading-and-investing/references/order-lifecycle-and-execution.md": 3,
       "skills/trading-and-investing/references/regime-detection-and-classification.md": 9,
+      "soltui/coinbase_manual.py": 2,
       "soltui/pricefeed.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_pricefeed.py": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1
     },
@@ -564961,6 +565385,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 5,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 7,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_experiment_runner.py": 3,
@@ -566266,6 +566691,7 @@
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 14,
       "soltui/coin_fit.py": 13,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 6,
       "soltui/compound.py": 19,
       "soltui/config.py": 1,
@@ -566293,6 +566719,8 @@
       "soltui/tests/test_bots.py": 5,
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 9,
       "soltui/tests/test_editor_backtest.py": 2,
       "soltui/tests/test_experiment_interface.py": 2,
@@ -567665,6 +568093,7 @@
       "soltui/experiment_runner.py": 1,
       "soltui/soltui-service": 4,
       "soltui/tests/test_bots.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_wallet.py": 1,
       "soltui/tui.py": 30,
       "soltui/wallet.py": 1
@@ -569429,6 +569858,9 @@
     "order3": {
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1
     },
+    "order_": {
+      "soltui/tests/test_coinbase_manual_ui.py": 2
+    },
     "order_book_imbalance": {
       "backtester/strategy_research/order_book_imbalance.md": 1,
       "backtester/strategy_research/scalping.md": 2,
@@ -569440,8 +569872,11 @@
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 2
     },
     "order_id": {
+      "soltui/coinbase_manual.py": 22,
       "soltui/commands.py": 2,
       "soltui/tests/bridge_support.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tui.py": 11
     },
     "order_info": {
@@ -569470,12 +569905,15 @@
     "order_preview": {
       "soltui/commands.py": 1,
       "soltui/tests/bridge_support.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tui.py": 4
     },
     "order_quick": {
       "soltui/README.md": 1,
       "soltui/commands.py": 1,
       "soltui/tests/bridge_support.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tui.py": 6
     },
     "order_required_fields": {
@@ -569488,18 +569926,26 @@
     "order_state": {
       "soltui/commands.py": 1,
       "soltui/tests/bridge_support.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tui.py": 3
     },
     "order_status": {
       "soltui/commands.py": 1,
       "soltui/tests/bridge_support.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 4,
       "soltui/tui.py": 3
     },
     "order_submit": {
       "soltui/commands.py": 2,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bridge_parity.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tui.py": 5
+    },
+    "order_total": {
+      "soltui/coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "order_type": {
       "docs/FILES.md": 1,
@@ -570030,6 +570476,7 @@
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 5,
       "soltui/coin_fit.py": 2,
+      "soltui/coinbase_manual.py": 10,
       "soltui/commands.py": 8,
       "soltui/config.py": 2,
       "soltui/help.py": 10,
@@ -570041,6 +570488,8 @@
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bots.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 19,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_status_roster.py": 4,
       "soltui/tests/test_tui.py": 1,
@@ -570864,6 +571313,7 @@
       "soltui/tests/test_bgcontrol_identity.py": 2,
       "soltui/tests/test_coin_fit.py": 6,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 20,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_experiment_interface.py": 4,
@@ -573407,12 +573857,15 @@
       "skills/trading-and-investing/references/trading-risk-management.md": 2,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "soltui/README.md": 1,
+      "soltui/coinbase_manual.py": 8,
       "soltui/commands.py": 16,
       "soltui/compound.py": 4,
       "soltui/forwardtest.py": 19,
       "soltui/help.py": 4,
       "soltui/paper_experiments.py": 5,
       "soltui/runner.py": 12,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tui.py": 7,
@@ -580932,6 +581385,7 @@
       "soltui/cli.py": 3,
       "soltui/coin_fit.py": 3,
       "soltui/coinbase_account.py": 7,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 6,
       "soltui/experiments.py": 1,
       "soltui/help.py": 1,
@@ -580943,6 +581397,7 @@
       "soltui/signals.py": 1,
       "soltui/tests/test_bg_fresh_results.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_liquidity.py": 10,
       "soltui/tests/test_status_roster.py": 1,
@@ -581343,6 +581798,7 @@
       "soltui/status.py": 1,
       "soltui/tests/bridge_support.py": 2,
       "soltui/tests/test_coinbase_account.py": 9,
+      "soltui/tests/test_coinbase_manual_ui.py": 15,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_strategy_history.py": 1,
       "soltui/tests/test_tui.py": 1,
@@ -586035,6 +586491,8 @@
       "soltui/tests/test_bridge_surfaces.py": 32,
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 6,
+      "soltui/tests/test_coinbase_manual.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 26,
       "soltui/tests/test_compound.py": 39,
       "soltui/tests/test_docs_search.py": 3,
       "soltui/tests/test_eth_scan.py": 2,
@@ -586217,6 +586675,7 @@
       "soltui/bots.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 3,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 3,
       "soltui/compound.py": 11,
       "soltui/compound_agent.py": 4,
@@ -586384,6 +586843,7 @@
       "soltui/bots.py": 4,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 8,
       "soltui/compound_agent.py": 2,
@@ -590370,6 +590830,8 @@
       "soltui/tests/test_coin_fit.py": 6,
       "soltui/tests/test_coin_fit_ui.py": 20,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 14,
       "soltui/tests/test_compound.py": 43,
       "soltui/tests/test_docs_browser.py": 8,
       "soltui/tests/test_docs_search.py": 6,
@@ -590864,6 +591326,7 @@
       "soltui/bots.py": 65,
       "soltui/coin_fit.py": 35,
       "soltui/coinbase_account.py": 30,
+      "soltui/coinbase_manual.py": 19,
       "soltui/commands.py": 86,
       "soltui/compound.py": 93,
       "soltui/compound_agent.py": 37,
@@ -590909,6 +591372,8 @@
       "soltui/tests/test_coin_fit.py": 13,
       "soltui/tests/test_coin_fit_ui.py": 4,
       "soltui/tests/test_coinbase_account.py": 7,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 23,
       "soltui/tests/test_compound_pool_capture.py": 4,
       "soltui/tests/test_docs_browser.py": 13,
@@ -591114,6 +591579,7 @@
       "soltui/bots.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 1,
       "soltui/compound_agent.py": 1,
@@ -591153,6 +591619,8 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_docs_browser.py": 1,
@@ -592014,6 +592482,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 11,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 47,
       "soltui/tests/test_compound.py": 47,
       "soltui/tests/test_docs_search.py": 6,
       "soltui/tests/test_dryrun_strategy.py": 6,
@@ -593703,12 +594172,15 @@
       "soltui/README.md": 3,
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 4,
+      "soltui/coinbase_manual.py": 8,
       "soltui/commands.py": 1,
       "soltui/compound.py": 8,
       "soltui/forwardtest.py": 4,
       "soltui/help.py": 1,
       "soltui/pricefeed.py": 7,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_forwardtest.py": 2,
@@ -594529,6 +595001,7 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 1,
       "soltui/README.md": 4,
       "soltui/app.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/experiments.py": 4,
       "soltui/help.py": 7,
       "soltui/liquidity.py": 3,
@@ -599877,6 +600350,7 @@
       "soltui/bgqueue.py": 5,
       "soltui/bgworker.py": 9,
       "soltui/coinbase_account.py": 11,
+      "soltui/coinbase_manual.py": 4,
       "soltui/compound.py": 28,
       "soltui/experiment_jobs.py": 2,
       "soltui/experiment_runner.py": 1,
@@ -600066,6 +600540,7 @@
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 39,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 59,
       "soltui/tests/test_compound.py": 70,
       "soltui/tests/test_docs_search.py": 12,
       "soltui/tests/test_dryrun_strategy.py": 10,
@@ -604629,6 +605104,7 @@
       "soltui/liquidity.py": 8,
       "soltui/netpct.py": 4,
       "soltui/runner.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_presets_netpct.py": 2,
       "soltui/tests/test_status_roster.py": 3,
@@ -604667,6 +605143,7 @@
       "skills/trading-and-investing/references/liquidation-as-an-absorbing-barrier.md": 1,
       "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md": 1,
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 1,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 1,
       "soltui/tui.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2
@@ -611257,6 +611734,7 @@
       "soltui/app.py": 17,
       "soltui/coin_fit.py": 3,
       "soltui/coinbase_account.py": 16,
+      "soltui/coinbase_manual.py": 7,
       "soltui/commands.py": 34,
       "soltui/help.py": 3,
       "soltui/portfolio.py": 14,
@@ -611264,6 +611742,7 @@
       "soltui/shell.py": 5,
       "soltui/tests/bridge_support.py": 2,
       "soltui/tests/test_coinbase_account.py": 11,
+      "soltui/tests/test_coinbase_manual.py": 5,
       "soltui/tests/test_portfolio.py": 61,
       "soltui/tests/test_tui.py": 6,
       "soltui/tests/test_v2_shell.py": 1,
@@ -611290,7 +611769,9 @@
     },
     "portfolio_id": {
       "soltui/coinbase_account.py": 3,
-      "soltui/tests/test_coinbase_account.py": 5
+      "soltui/coinbase_manual.py": 5,
+      "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "portfolio_last": {
       "soltui/commands.py": 1
@@ -611336,7 +611817,9 @@
       "skills/trading-and-investing/references/portfolio-theory-and-asset-allocation.md": 1,
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 2,
       "soltui/coinbase_account.py": 8,
-      "soltui/tests/test_coinbase_account.py": 8
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_account.py": 8,
+      "soltui/tests/test_coinbase_manual.py": 3
     },
     "portfoliostock": {
       "research/tradingview-card-coverage.json": 1
@@ -612841,6 +613324,7 @@
       "soltui/bgworker.py": 3,
       "soltui/bots.py": 2,
       "soltui/coin_fit.py": 10,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 13,
       "soltui/config.py": 2,
       "soltui/cumulative.py": 10,
@@ -617217,6 +617701,7 @@
       "soltui/README.md": 1,
       "soltui/bgqueue.py": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 4,
       "soltui/commands.py": 1,
       "soltui/config.py": 1,
       "soltui/hdwallet.py": 1,
@@ -619847,6 +620332,7 @@
       "soltui/tests/test_bg_fresh_results.py": 1,
       "soltui/tests/test_bgworker_audit.py": 2,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_signals.py": 1,
@@ -621228,6 +621714,7 @@
       "soltui/tests/test_bots.py": 7,
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 15,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 14,
       "soltui/tests/test_experiment_interface.py": 2,
       "soltui/tests/test_forwardtest.py": 3,
@@ -621249,6 +621736,7 @@
       "soltui/bots_screens.py": 5,
       "soltui/experiment_screens.py": 14,
       "soltui/tests/test_bridge_buttons.py": 8,
+      "soltui/tests/test_coinbase_manual_ui.py": 16,
       "soltui/tests/test_status_console.py": 4,
       "soltui/tui.py": 111
     },
@@ -621725,6 +622213,7 @@
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 2,
       "soltui/README.md": 3,
+      "soltui/coinbase_manual.py": 29,
       "soltui/commands.py": 14,
       "soltui/compound.py": 3,
       "soltui/experiment_runner.py": 24,
@@ -621732,6 +622221,8 @@
       "soltui/experiments.py": 2,
       "soltui/make_icon.py": 12,
       "soltui/tests/bridge_support.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 28,
+      "soltui/tests/test_coinbase_manual_ui.py": 32,
       "soltui/tests/test_compound.py": 5,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 2,
@@ -621747,8 +622238,11 @@
       "soltui/tests/test_experiment_runner.py": 3
     },
     "preview_id": {
+      "soltui/coinbase_manual.py": 17,
       "soltui/commands.py": 3,
       "soltui/tests/bridge_support.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 11,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tui.py": 5
     },
     "preview_path": {
@@ -621759,6 +622253,9 @@
     },
     "preview_search": {
       "soltui/experiment_screens.py": 1
+    },
+    "preview_seconds": {
+      "soltui/coinbase_manual.py": 3
     },
     "preview_space": {
       "docs/FILES.md": 1,
@@ -621992,6 +622489,7 @@
       "soltui/bgqueue.py": 6,
       "soltui/bgworker.py": 1,
       "soltui/bots_screens.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 2,
       "soltui/experiment_jobs.py": 3,
       "soltui/experiment_runner.py": 6,
@@ -623492,6 +623990,7 @@
       "soltui/bgworker.py": 11,
       "soltui/bots.py": 22,
       "soltui/coin_fit.py": 6,
+      "soltui/coinbase_manual.py": 14,
       "soltui/commands.py": 12,
       "soltui/compound.py": 16,
       "soltui/eth_scan.py": 10,
@@ -623515,6 +624014,7 @@
       "soltui/tests/test_bgworker.py": 4,
       "soltui/tests/test_bots.py": 11,
       "soltui/tests/test_coin_fit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 6,
       "soltui/tests/test_compound.py": 12,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_eth_scan.py": 2,
@@ -627085,6 +627585,7 @@
       "soltui/help.py": 1,
       "soltui/requirements.txt": 1,
       "soltui/tests/test_bots.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_hdwallet.py": 6,
       "soltui/tests/test_pricefeed.py": 2,
@@ -627103,6 +627604,9 @@
     },
     "private_credential": {
       "soltui/tests/test_wallet.py": 2
+    },
+    "private_field": {
+      "soltui/tests/test_coinbase_manual.py": 2
     },
     "private_manifest": {
       "research/five-minute-perps-suite/archive-receipt.json": 1
@@ -627982,7 +628486,8 @@
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 4,
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 3,
-      "skills/trading-and-investing/references/trading-risks-and-protections.md": 1
+      "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
+      "soltui/coinbase_manual.py": 1
     },
     "process": {
       ".github/workflows/ci.yml": 1,
@@ -629900,6 +630405,7 @@
       "skills/trading-and-investing/references/strategies-and-risk.md": 1,
       "soltui/bots.py": 13,
       "soltui/coinbase_account.py": 21,
+      "soltui/coinbase_manual.py": 38,
       "soltui/commands.py": 4,
       "soltui/compound.py": 7,
       "soltui/experiments.py": 5,
@@ -629908,6 +630414,8 @@
       "soltui/tests/bridge_support.py": 3,
       "soltui/tests/test_bots.py": 3,
       "soltui/tests/test_coinbase_account.py": 13,
+      "soltui/tests/test_coinbase_manual.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_pricefeed.py": 5,
       "soltui/tui.py": 25,
@@ -629922,10 +630430,13 @@
       "backtester/core/universe.py": 3,
       "docs/FILES.md": 1,
       "soltui/coinbase_account.py": 8,
+      "soltui/coinbase_manual.py": 25,
       "soltui/commands.py": 4,
       "soltui/pricefeed.py": 2,
       "soltui/tests/bridge_support.py": 3,
       "soltui/tests/test_coinbase_account.py": 8,
+      "soltui/tests/test_coinbase_manual.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_pricefeed.py": 5,
       "soltui/tui.py": 3
     },
@@ -629934,7 +630445,9 @@
     },
     "product_type": {
       "soltui/coinbase_account.py": 6,
-      "soltui/tests/test_coinbase_account.py": 5
+      "soltui/coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "production": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
@@ -630074,6 +630587,7 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 2,
       "soltui/bots.py": 21,
       "soltui/coinbase_account.py": 26,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 5,
       "soltui/compound.py": 1,
       "soltui/experiment_runner.py": 15,
@@ -630081,6 +630595,7 @@
       "soltui/shell.py": 2,
       "soltui/tests/test_bots.py": 5,
       "soltui/tests/test_coinbase_account.py": 7,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_experiment_runner.py": 3,
       "soltui/tests/test_pricefeed.py": 9,
@@ -637482,6 +637997,7 @@
       "soltui/bgcontrol.py": 1,
       "soltui/bots.py": 2,
       "soltui/coinbase_account.py": 11,
+      "soltui/coinbase_manual.py": 4,
       "soltui/commands.py": 16,
       "soltui/compound.py": 5,
       "soltui/compound_agent.py": 1,
@@ -637514,6 +638030,9 @@
     },
     "public_float": {
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1
+    },
+    "public_order": {
+      "soltui/coinbase_manual.py": 4
     },
     "public_products": {
       "soltui/coinbase_account.py": 6
@@ -643294,8 +643813,10 @@
       "skills/trading-and-investing/references/the-greeks.md": 1,
       "soltui/README.md": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/shell.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tui.py": 1
     },
     "quantitybackgroundbuycolor": {
@@ -643665,6 +644186,7 @@
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 33,
       "soltui/tests/test_coinbase_account.py": 7,
+      "soltui/tests/test_coinbase_manual_ui.py": 77,
       "soltui/tests/test_compound.py": 42,
       "soltui/tests/test_docs_search.py": 15,
       "soltui/tests/test_dryrun_strategy.py": 6,
@@ -643706,6 +644228,7 @@
       "soltui/tests/test_bots.py": 22,
       "soltui/tests/test_coin_fit_ui.py": 33,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 69,
       "soltui/tests/test_compound.py": 40,
       "soltui/tests/test_docs_search.py": 7,
       "soltui/tests/test_dryrun_strategy.py": 6,
@@ -644440,6 +644963,8 @@
       "soltui/tests/bridge_support.py": 3,
       "soltui/tests/test_coin_fit.py": 15,
       "soltui/tests/test_coin_fit_ui.py": 7,
+      "soltui/tests/test_coinbase_manual.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 16,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_strategy_history.py": 1,
       "soltui/tests/test_tui.py": 1,
@@ -644597,6 +645122,7 @@
       "soltui/experiment_screens.py": 10,
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 5,
       "soltui/tests/test_experiment_interface.py": 2,
       "soltui/tests/test_forwardtest.py": 12,
       "soltui/tests/test_liquidity.py": 3,
@@ -646287,12 +646813,15 @@
       "soltui/README.md": 2,
       "soltui/bgcontrol.py": 2,
       "soltui/bots.py": 5,
+      "soltui/coinbase_manual.py": 28,
       "soltui/commands.py": 4,
       "soltui/experiment_runner.py": 3,
       "soltui/help.py": 8,
       "soltui/pricefeed.py": 14,
       "soltui/shell.py": 3,
       "soltui/tests/bridge_support.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 13,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_presets_netpct.py": 1,
       "soltui/tests/test_pricefeed.py": 7,
       "soltui/tui.py": 10
@@ -646315,11 +646844,23 @@
       "soltui/pricefeed.py": 1,
       "soltui/tests/test_pricefeed.py": 6
     },
+    "quote_currency_id": {
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
     "quote_increment": {
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 2,
-      "research/coin-intelligence/zec-zcash.md": 2
+      "research/coin-intelligence/zec-zcash.md": 2,
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "quote_max_size": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "quote_min_size": {
+      "soltui/coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "quote_mint": {
       "docs/FILES.md": 1,
@@ -646330,6 +646871,10 @@
     },
     "quote_rate": {
       "executor/src/executor/quote.py": 7
+    },
+    "quote_size": {
+      "soltui/coinbase_manual.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 2
     },
     "quote_sol_usdc": {
       "executor/tests/conftest.py": 3,
@@ -646454,6 +646999,7 @@
       "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md": 1,
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "skills/trading-and-investing/references/the-greeks.md": 1,
+      "soltui/coinbase_manual.py": 2,
       "soltui/help.py": 2,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_pricefeed.py": 1,
@@ -646469,6 +647015,9 @@
     "quoted_base_apy": {
       "liquidity/src/aero_lp/providers.py": 9,
       "liquidity/tests/test_providers.py": 4
+    },
+    "quoted_size": {
+      "soltui/coinbase_manual.py": 2
     },
     "quotedata": {
       "docs/TRADINGVIEW-REFERENCE.md": 5
@@ -647961,6 +648510,7 @@
       "soltui/cli.py": 4,
       "soltui/coin_fit.py": 43,
       "soltui/coinbase_account.py": 19,
+      "soltui/coinbase_manual.py": 29,
       "soltui/commands.py": 105,
       "soltui/compound.py": 25,
       "soltui/compound_agent.py": 2,
@@ -647995,6 +648545,7 @@
       "soltui/tests/test_bgworker.py": 5,
       "soltui/tests/test_bgworker_audit.py": 1,
       "soltui/tests/test_bots.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 9,
       "soltui/tests/test_eth_scan.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
@@ -649215,6 +649766,7 @@
       "soltui/tests/test_bots.py": 13,
       "soltui/tests/test_coin_fit.py": 21,
       "soltui/tests/test_coin_fit_ui.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_experiment_interface.py": 4,
@@ -653227,7 +653779,8 @@
       "executor/src/executor/signer.py": 1,
       "liquidity/src/aero_lp/state.py": 1,
       "liquidity/src/aero_lp/submissions.py": 1,
-      "soltui/bgcontrol.py": 1
+      "soltui/bgcontrol.py": 1,
+      "soltui/coinbase_manual.py": 1
     },
     "rdt": {
       "soltui/SolTUI.icns": 1
@@ -653239,6 +653792,7 @@
       "backtester/tests/test_index_search_tooling.py": 1,
       "index/idle.py": 2,
       "soltui/bgcontrol.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 3,
       "soltui/experiment_jobs.py": 1,
       "soltui/paper_experiments.py": 2,
@@ -654332,6 +654886,7 @@
       "soltui/bots.py": 15,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 5,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 102,
       "soltui/compound.py": 43,
       "soltui/compound_agent.py": 1,
@@ -659402,6 +659957,7 @@
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 2,
       "soltui/experiment_runner.py": 1,
       "soltui/help.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tui.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
@@ -663051,6 +663607,7 @@
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 1,
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 3,
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_experiment_interface.py": 1
     },
     "reconciling": {
@@ -664483,6 +665040,7 @@
       "soltui/bgworker.py": 1,
       "soltui/bots.py": 3,
       "soltui/bots_screens.py": 1,
+      "soltui/coinbase_manual.py": 42,
       "soltui/commands.py": 5,
       "soltui/compound.py": 20,
       "soltui/compound_agent.py": 1,
@@ -670972,6 +671530,7 @@
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "research/tradingview-card-coverage.json": 3,
       "scripts/check_tradingview_strategy_profiles.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 1
     },
@@ -671312,6 +671871,7 @@
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 5,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_experiment_interface.py": 1,
@@ -672208,6 +672768,7 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 1,
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 2,
       "soltui/tests/test_bots.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_tui.py": 1
@@ -673333,6 +673894,7 @@
       "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md": 1,
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 1,
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_presets_netpct.py": 2,
       "soltui/tests/test_signals.py": 1,
@@ -675568,6 +676130,7 @@
       "soltui/tests/test_bg_fresh_results.py": 3,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 8,
+      "soltui/tests/test_coinbase_manual_ui.py": 8,
       "soltui/tui.py": 3
     },
     "release_mouse": {
@@ -676793,6 +677356,7 @@
       "soltui/docs_browser.py": 1,
       "soltui/experiment_jobs.py": 2,
       "soltui/help.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tui.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
@@ -677645,6 +678209,7 @@
       "soltui/tests/test_bots.py": 3,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_experiment_interface.py": 3,
       "soltui/tests/test_service_plist_parity.py": 2,
@@ -680057,6 +680622,7 @@
       "soltui/soltui-service": 2,
       "soltui/status.py": 1,
       "soltui/tests/test_bg_fresh_results.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_wallet_integration.py": 1,
       "soltui/tests/test_wallet_settings.py": 1,
       "soltui/tui.py": 7,
@@ -683271,6 +683837,7 @@
       "skills/trading-and-investing/references/trading-risk-management.md": 1,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 5,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/experiments.py": 1,
       "soltui/native_host_install.py": 1,
@@ -684660,6 +685227,8 @@
       "soltui/setup_app.py": 1,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bridge_parity.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_experiments.py": 3,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_liquidity.py": 1,
@@ -684689,6 +685258,7 @@
       "soltui/commands.py": 11,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bridge_parity.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_tui.py": 3,
@@ -687538,6 +688108,7 @@
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1,
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 2,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tui.py": 1
     },
     "responsiveness": {
@@ -687774,6 +688345,7 @@
       "soltui/bgworker.py": 2,
       "soltui/bots.py": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 3,
       "soltui/compound.py": 1,
       "soltui/config.py": 1,
@@ -687781,6 +688353,7 @@
       "soltui/soltui-service": 1,
       "soltui/tests/test_bg_fresh_results.py": 1,
       "soltui/tests/test_bgworker.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_tui.py": 1,
@@ -688295,6 +688868,7 @@
       "research/tradingview-card-coverage.json": 3
     },
     "resubmit": {
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tui.py": 2
     },
     "resubmits": {
@@ -691724,6 +692298,8 @@
       "memory.md": 3,
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
       "soltui/README.md": 1,
+      "soltui/coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_wallet.py": 3,
       "soltui/wallet.py": 8,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 1,
@@ -693068,6 +693644,7 @@
       "research/PROMPT_STRATEGIES.md": 1,
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 2,
       "soltui/bgworker.py": 1,
+      "soltui/coinbase_manual.py": 2,
       "soltui/compound.py": 4,
       "soltui/experiment_runner.py": 1,
       "soltui/experiments.py": 1,
@@ -693225,6 +693802,7 @@
       "soltui/tests/test_bots.py": 10,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 11,
       "soltui/tests/test_docs_search.py": 4,
       "soltui/tests/test_dryrun_strategy.py": 4,
@@ -693298,6 +693876,7 @@
       "soltui/tests/test_bots.py": 3,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 10,
       "soltui/tests/test_docs_search.py": 4,
       "soltui/tests/test_dryrun_strategy.py": 4,
@@ -693438,6 +694017,7 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 2,
       "soltui/bgqueue.py": 1,
       "soltui/coinbase_account.py": 7,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 2,
       "soltui/compound.py": 1,
       "soltui/experiment_runner.py": 2,
@@ -695289,7 +695869,8 @@
       "backtester/strategy_research/tv_lcgcwwwi_bar_balance_lucf.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 1,
-      "research/tradingview-card-coverage.json": 12
+      "research/tradingview-card-coverage.json": 12,
+      "soltui/coinbase_manual.py": 1
     },
     "reveals": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_htaf8nf9_market_sessions_viewer_panel_by_muqwishi.md": 2,
@@ -697004,7 +697585,10 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 4,
       "skills/trading-and-investing/references/volatility-and-pricing.md": 1,
       "soltui/README.md": 2,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 10,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tui.py": 24,
@@ -697794,7 +698378,9 @@
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 6,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
       "skills/trading-and-investing/references/volatility-and-pricing.md": 3,
+      "soltui/coinbase_manual.py": 4,
       "soltui/commands.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_experiment_runner.py": 1
     },
     "reviewed165": {
@@ -699125,6 +699711,7 @@
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_experiments.py": 5,
@@ -703456,6 +704043,7 @@
       "soltui/tests/test_coin_fit.py": 5,
       "soltui/tests/test_coin_fit_ui.py": 25,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 47,
       "soltui/tests/test_docs_search.py": 3,
       "soltui/tests/test_experiment_interface.py": 2,
@@ -703497,6 +704085,7 @@
       "soltui/tests/test_bots.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 8,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
@@ -703842,6 +704431,7 @@
       "soltui/tests/test_bots.py": 11,
       "soltui/tests/test_coin_fit.py": 31,
       "soltui/tests/test_coin_fit_ui.py": 14,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 35,
       "soltui/tests/test_experiment_interface.py": 1,
       "soltui/tests/test_experiment_runner.py": 6,
@@ -707040,6 +707630,7 @@
       "soltui/tests/test_coin_fit.py": 18,
       "soltui/tests/test_coin_fit_ui.py": 11,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 11,
       "soltui/tests/test_compound.py": 27,
       "soltui/tests/test_compound_pool_capture.py": 5,
       "soltui/tests/test_docs_search.py": 5,
@@ -707403,6 +707994,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 10,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 11,
       "soltui/tests/test_compound.py": 12,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_search.py": 3,
@@ -709375,6 +709967,7 @@
       "soltui/app.py": 2,
       "soltui/bgcontrol.py": 2,
       "soltui/bots.py": 1,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 4,
       "soltui/compound.py": 1,
       "soltui/docs_browser.py": 1,
@@ -709388,6 +709981,7 @@
       "soltui/tests/test_bg_fresh_results.py": 3,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgworker_audit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 5,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 1,
@@ -710377,6 +710971,7 @@
       "soltui/help.py": 5,
       "soltui/serve.py": 1,
       "soltui/tests/test_bots.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tui.py": 4
@@ -712769,6 +713364,7 @@
       "skills/trading-and-investing/references/investing-vs-trading.md": 1,
       "soltui/README.md": 4,
       "soltui/bots.py": 4,
+      "soltui/coinbase_manual.py": 9,
       "soltui/commands.py": 27,
       "soltui/compound.py": 12,
       "soltui/config.py": 4,
@@ -713637,6 +714233,7 @@
       "soltui/app.py": 1,
       "soltui/bots.py": 4,
       "soltui/bots_screens.py": 7,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 13,
       "soltui/compound.py": 10,
       "soltui/experiment_runner.py": 8,
@@ -716479,6 +717076,7 @@
       "soltui/help.py": 4,
       "soltui/tests/bridge_support.py": 3,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_forwardtest.py": 4,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 1,
@@ -724006,6 +724604,7 @@
       "soltui/bots.py": 9,
       "soltui/bots_screens.py": 1,
       "soltui/coin_fit.py": 2,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 3,
       "soltui/compound.py": 28,
       "soltui/config.py": 4,
@@ -727155,6 +727754,7 @@
       "soltui/tests/test_bg_fresh_results.py": 2,
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_experiment_interface.py": 4,
@@ -728726,9 +729326,12 @@
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 5,
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 3,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 6,
       "soltui/help.py": 6,
       "soltui/pricefeed.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 8,
       "soltui/tests/test_pnl.py": 3,
       "soltui/tests/test_presets_netpct.py": 1,
       "soltui/tests/test_pricefeed.py": 1,
@@ -729079,6 +729682,7 @@
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
       "soltui/README.md": 2,
       "soltui/bots.py": 4,
+      "soltui/coinbase_manual.py": 1,
       "soltui/help.py": 1,
       "soltui/tui.py": 1
     },
@@ -734869,6 +735473,7 @@
       "soltui/pricefeed.py": 1,
       "soltui/soltui-service": 1,
       "soltui/status.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_pnl.py": 2,
       "soltui/tests/test_presets_netpct.py": 1,
@@ -735926,6 +736531,7 @@
       "soltui/tests/test_bridge_surfaces.py": 8,
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 16,
+      "soltui/tests/test_coinbase_manual_ui.py": 10,
       "soltui/tests/test_compound.py": 12,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_eth_scan.py": 1,
@@ -737779,6 +738385,7 @@
       "soltui/tests/test_coin_fit.py": 14,
       "soltui/tests/test_coin_fit_ui.py": 19,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 12,
       "soltui/tests/test_compound.py": 24,
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_docs_search.py": 4,
@@ -738130,6 +738737,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_docs_search.py": 2,
@@ -743133,6 +743741,7 @@
       "soltui/portfolio.py": 1,
       "soltui/shell.py": 2,
       "soltui/status.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 1,
@@ -743942,6 +744551,7 @@
       "soltui/soltui-service": 1,
       "soltui/status.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_liquidity.py": 2,
       "soltui/tests/test_paper_experiments.py": 1,
       "soltui/tests/test_status_roster.py": 5,
@@ -744540,6 +745150,7 @@
       "soltui/bgcontrol.py": 1,
       "soltui/bgqueue.py": 1,
       "soltui/bots.py": 1,
+      "soltui/coinbase_manual.py": 25,
       "soltui/commands.py": 8,
       "soltui/compound.py": 14,
       "soltui/cumulative.py": 2,
@@ -744559,6 +745170,8 @@
       "soltui/tests/test_bgworker_audit.py": 4,
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 10,
+      "soltui/tests/test_coinbase_manual_ui.py": 18,
       "soltui/tests/test_compound.py": 11,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 2,
@@ -744605,6 +745218,7 @@
       "soltui/tests/test_bgworker_audit.py": 4,
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 10,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 2,
@@ -753601,6 +754215,7 @@
       "soltui/shell.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_coin_fit.py": 6,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_presets_netpct.py": 2,
       "soltui/tests/test_top5.py": 5,
@@ -754728,6 +755343,7 @@
       "soltui/bots.py": 26,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 4,
+      "soltui/coinbase_manual.py": 37,
       "soltui/commands.py": 13,
       "soltui/compound.py": 16,
       "soltui/docs_browser.py": 10,
@@ -754744,6 +755360,8 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 10,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 17,
+      "soltui/tests/test_coinbase_manual_ui.py": 42,
       "soltui/tests/test_compound.py": 47,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 4,
@@ -754779,9 +755397,15 @@
       "docs/FILES.md": 1
     },
     "size_currency": {
+      "soltui/coinbase_manual.py": 10,
       "soltui/commands.py": 4,
       "soltui/tests/bridge_support.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tui.py": 3
+    },
+    "size_field": {
+      "soltui/coinbase_manual.py": 2
     },
     "size_k": {
       "backtester/guides/dca_bot.md": 4
@@ -755615,6 +756239,8 @@
       "soltui/signals.py": 6,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bridge_buttons.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 7,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_liquidity.py": 4,
       "soltui/tests/test_service.py": 6,
@@ -755625,6 +756251,8 @@
       "soltui/README.md": 1,
       "soltui/commands.py": 3,
       "soltui/tests/bridge_support.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tui.py": 1
     },
     "skip_existing": {
@@ -759529,6 +760157,7 @@
       "soltui/README.md": 4,
       "soltui/bots.py": 7,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 3,
       "soltui/commands.py": 24,
       "soltui/compound.py": 1,
       "soltui/help.py": 7,
@@ -763379,6 +764008,7 @@
       "soltui/bin/soltui": 1,
       "soltui/bots.py": 2,
       "soltui/coin_fit.py": 5,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 5,
       "soltui/compound.py": 16,
       "soltui/config.py": 1,
@@ -763400,6 +764030,8 @@
       "soltui/tests/test_bots.py": 33,
       "soltui/tests/test_coin_fit_ui.py": 14,
       "soltui/tests/test_coinbase_account.py": 12,
+      "soltui/tests/test_coinbase_manual.py": 9,
+      "soltui/tests/test_coinbase_manual_ui.py": 9,
       "soltui/tests/test_compound.py": 149,
       "soltui/tests/test_dryrun_strategy.py": 4,
       "soltui/tests/test_editor_backtest.py": 5,
@@ -764364,6 +764996,7 @@
       "soltui/cli.py": 6,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 7,
       "soltui/compound.py": 18,
       "soltui/compound_agent.py": 18,
@@ -764423,6 +765056,8 @@
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 11,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_compound.py": 13,
       "soltui/tests/test_compound_pool_capture.py": 4,
       "soltui/tests/test_docs_browser.py": 11,
@@ -764624,6 +765259,7 @@
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 3,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 12,
       "soltui/tests/test_compound.py": 13,
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_docs_search.py": 4,
@@ -775513,6 +776149,7 @@
       "soltui/bgqueue.py": 1,
       "soltui/bots.py": 6,
       "soltui/coin_fit.py": 8,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 7,
       "soltui/compound.py": 17,
       "soltui/docs_browser.py": 2,
@@ -775527,6 +776164,7 @@
       "soltui/shell.py": 1,
       "soltui/tests/test_backtest_log.py": 1,
       "soltui/tests/test_bgworker_audit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 8,
       "soltui/tests/test_eth_scan.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
@@ -776074,6 +776712,7 @@
       "soltui/README.md": 3,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 24,
+      "soltui/coinbase_manual.py": 7,
       "soltui/commands.py": 10,
       "soltui/compound.py": 9,
       "soltui/eth_scan.py": 3,
@@ -776082,6 +776721,8 @@
       "soltui/spot_prices.py": 12,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_coinbase_account.py": 13,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_utxo_scan.py": 1,
       "soltui/tui.py": 14,
@@ -781056,6 +781697,8 @@
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 6,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 5,
       "soltui/tests/test_compound.py": 30,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_docs_search.py": 4,
@@ -781320,6 +781963,7 @@
       "soltui/bgqueue.py": 3,
       "soltui/bgworker.py": 3,
       "soltui/bots.py": 6,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 18,
       "soltui/compound.py": 7,
       "soltui/experiment_runner.py": 3,
@@ -781329,6 +781973,7 @@
       "soltui/pricefeed.py": 7,
       "soltui/soltui-service": 3,
       "soltui/tests/bridge_support.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_compound.py": 8,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_experiment_interface.py": 2,
@@ -781743,6 +782388,8 @@
       "soltui/presets.py": 1,
       "soltui/tests/test_bridge_buttons.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_hdwallet.py": 3,
@@ -782261,6 +782908,7 @@
       "soltui/bgworker.py": 41,
       "soltui/bots.py": 1,
       "soltui/coin_fit.py": 7,
+      "soltui/coinbase_manual.py": 13,
       "soltui/commands.py": 67,
       "soltui/compound.py": 36,
       "soltui/compound_agent.py": 1,
@@ -782288,6 +782936,8 @@
       "soltui/tests/test_bridge_surfaces.py": 3,
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 7,
       "soltui/tests/test_compound.py": 60,
       "soltui/tests/test_experiment_interface.py": 10,
       "soltui/tests/test_forwardtest.py": 8,
@@ -782927,6 +783577,7 @@
       "soltui/tests/fixtures/wallet/jupiter_recorded.json": 1,
       "soltui/tests/test_bots.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 7,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_experiment_interface.py": 4,
       "soltui/tests/test_forwardtest.py": 2,
@@ -787139,6 +787790,8 @@
       "soltui/tests/test_bridge_buttons.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 2,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 23,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_docs_search.py": 2,
@@ -787722,6 +788375,7 @@
       "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md": 1,
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
       "soltui/coinbase_account.py": 7,
+      "soltui/coinbase_manual.py": 1,
       "soltui/tests/test_coinbase_account.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
@@ -787737,6 +788391,7 @@
     },
     "storage_dir": {
       "soltui/coinbase_account.py": 7,
+      "soltui/coinbase_manual.py": 1,
       "soltui/tests/test_coinbase_account.py": 3
     },
     "storageandnoticetests": {
@@ -787871,6 +788526,7 @@
       "soltui/bgworker.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 5,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 3,
       "soltui/compound.py": 10,
       "soltui/compound_agent.py": 1,
@@ -788374,6 +789030,7 @@
       "soltui/cli.py": 8,
       "soltui/coin_fit.py": 69,
       "soltui/coinbase_account.py": 39,
+      "soltui/coinbase_manual.py": 49,
       "soltui/commands.py": 292,
       "soltui/compound.py": 268,
       "soltui/compound_agent.py": 18,
@@ -788424,6 +789081,7 @@
       "soltui/tests/test_bridge_surfaces.py": 4,
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 6,
+      "soltui/tests/test_coinbase_manual_ui.py": 7,
       "soltui/tests/test_compound.py": 23,
       "soltui/tests/test_docs_browser.py": 3,
       "soltui/tests/test_docs_search.py": 2,
@@ -790696,6 +791354,7 @@
       "soltui/bgqueue.py": 4,
       "soltui/bots.py": 5,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 7,
       "soltui/compound.py": 7,
       "soltui/compound_agent.py": 2,
@@ -794815,6 +795474,8 @@
       "research/five-minute-perps-suite/source-leads.json": 1,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1,
       "soltui/README.md": 2,
+      "soltui/coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tui.py": 4
     },
     "submission_journal": {
@@ -794897,12 +795558,18 @@
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 4,
       "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md": 2,
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 6,
       "soltui/compound.py": 1,
       "soltui/help.py": 1,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bridge_parity.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 15,
+      "soltui/tests/test_coinbase_manual_ui.py": 19,
       "soltui/tui.py": 15
+    },
+    "submit_started_at": {
+      "soltui/coinbase_manual.py": 2
     },
     "submits": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_apsqmw8f_combo_strategy_123_reversal_fractal_chaos_bands.md": 1,
@@ -794916,7 +795583,8 @@
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1,
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 2,
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 1,
-      "soltui/README.md": 3
+      "soltui/README.md": 3,
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "submitted": {
       ".github/copilot-instructions.md": 1,
@@ -794947,6 +795615,7 @@
       "research/tradingview-card-coverage.json": 3,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
+      "soltui/coinbase_manual.py": 3,
       "soltui/tui.py": 6
     },
     "submittedatms": {
@@ -794963,6 +795632,7 @@
       "llms-full.txt": 5,
       "research/tradingview-script-profiles/shard-b.jsonl": 1,
       "research/tradingview-script-understanding.json": 1,
+      "soltui/coinbase_manual.py": 3,
       "soltui/tui.py": 2
     },
     "subnav": {
@@ -796046,6 +796716,7 @@
       "soltui/tests/test_bridge_parity.py": 2,
       "soltui/tests/test_bridge_surfaces.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_experiments.py": 6,
       "soltui/tests/test_hdwallet.py": 1,
       "soltui/tests/test_liquidity.py": 4,
@@ -804590,6 +805261,7 @@
       "soltui/api.py": 6,
       "soltui/bin/soltui": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/help.py": 1,
       "soltui/native_host_install.py": 9,
       "soltui/portfolio.py": 7,
@@ -806076,6 +806748,7 @@
       "soltui/coin_fit.py": 1,
       "soltui/commands.py": 1,
       "soltui/help.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tui.py": 1
     },
     "supports20": {
@@ -810258,6 +810931,7 @@
       "skills/README.md": 2,
       "skills/trading-and-investing/manifest.yaml": 1,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 3,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_coinbase_account.py": 5,
@@ -810266,6 +810940,7 @@
     "sync_account": {
       "memory.md": 1,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/tests/test_coinbase_account.py": 4
     },
@@ -812515,6 +813190,7 @@
       "soltui/tests/test_bots.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 6,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 11,
       "soltui/tests/test_compound.py": 12,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_docs_search.py": 7,
@@ -812577,6 +813253,7 @@
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 3,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 12,
       "soltui/tests/test_compound.py": 9,
       "soltui/tests/test_docs_search.py": 4,
       "soltui/tests/test_dryrun_strategy.py": 4,
@@ -812897,6 +813574,7 @@
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 14,
+      "soltui/tests/test_coinbase_manual_ui.py": 8,
       "soltui/tests/test_compound.py": 43,
       "soltui/tests/test_docs_search.py": 6,
       "soltui/tests/test_experiment_interface.py": 3,
@@ -817316,6 +817994,8 @@
       "soltui/tests/test_coin_fit.py": 5,
       "soltui/tests/test_coin_fit_ui.py": 2,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_docs_browser.py": 1,
@@ -817558,6 +818238,8 @@
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 3,
@@ -818219,6 +818901,7 @@
       "soltui/README.md": 2,
       "soltui/app.py": 10,
       "soltui/coin_fit.py": 6,
+      "soltui/coinbase_manual.py": 4,
       "soltui/commands.py": 3,
       "soltui/docs_browser.py": 2,
       "soltui/experiment_jobs.py": 2,
@@ -818229,6 +818912,8 @@
       "soltui/setup_app.py": 1,
       "soltui/shell.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_help.py": 1,
@@ -820197,6 +820882,9 @@
     "test_changed_historical_bytes_with_preserved_stat_metadata_refuse_cached_resume": {
       "soltui/tests/test_experiment_runner.py": 1
     },
+    "test_changed_input_discards_delayed_preview_and_ui_remains_responsive": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
+    },
     "test_changed_parameter_invalidates_prior_semantic_acceptance": {
       "scripts/test_tradingview_script_profiles.py": 1
     },
@@ -820393,6 +821081,12 @@
     },
     "test_coinbase_account": {
       "soltui/tests/test_coinbase_account.py": 1
+    },
+    "test_coinbase_manual": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "test_coinbase_manual_ui": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
     },
     "test_coinfit": {
       "backtester/tests/test_coinfit.py": 1,
@@ -821632,6 +822326,9 @@
       "docs/high_signal_file_index.json": 1,
       "soltui/tests/test_experiments.py": 1
     },
+    "test_expired_or_changed_price_never_submits": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
     "test_expiring_blockhash_is_refused": {
       "executor/tests/test_engine.py": 2
     },
@@ -821859,6 +822556,9 @@
     },
     "test_fills_carry_a_readable_timestamp": {
       "soltui/tests/test_status_roster.py": 1
+    },
+    "test_filter_and_select_spot_pair_only_fills_disarmed_form": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
     },
     "test_filtering_by_kind_narrows_without_a_query": {
       "soltui/tests/test_panes.py": 1
@@ -822477,6 +823177,12 @@
     "test_increase_receipt_survives_failed_state_read": {
       "docs/FILES.md": 1,
       "liquidity/tests/test_executor_audit.py": 2
+    },
+    "test_increased_fee_requires_new_review": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "test_increments_modes_and_cap_fail_closed": {
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "test_independent_signals_stay_two_bets": {
       "backtester/tests/test_signal_redundancy.py": 1
@@ -823222,6 +823928,9 @@
     "test_manual_baseline_edit_cannot_be_overwritten_by_promotion": {
       "soltui/tests/test_experiment_runner.py": 1
     },
+    "test_manual_order_fields_fit_a_narrow_terminal": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
+    },
     "test_manual_save_matching_winner_does_not_forge_own_adoption_receipt": {
       "soltui/tests/test_experiment_runner.py": 1
     },
@@ -823917,6 +824626,9 @@
       "docs/FILES.md": 1,
       "liquidity/tests/test_chain_audit.py": 2
     },
+    "test_older_filter_result_cannot_replace_newer_result": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
+    },
     "test_omitted_pagination_does_not_hide_incomplete_page": {
       "soltui/tests/test_coinbase_account.py": 1
     },
@@ -824232,6 +824944,9 @@
     "test_penalty_fills_below_the_liquidation_price_and_forfeits": {
       "backtester/tests/test_intrabar_liquidation.py": 1
     },
+    "test_pending_order_blocks_new_preview_until_terminal_lookup": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
     "test_percent_is_none_when_total_unknown": {
       "soltui/tests/test_status_roster.py": 1
     },
@@ -824388,6 +825103,9 @@
     "test_presets_reach_back_from_now": {
       "soltui/tests/test_pnl.py": 1
     },
+    "test_preview_never_places_order_and_submit_is_single_use": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
     "test_preview_never_simulates_and_actual_workload_includes_only_frozen_pair_on_final": {
       "soltui/tests/test_experiment_runner.py": 1
     },
@@ -824523,6 +825241,15 @@
     },
     "test_quick_does_not_score_holdout_prices": {
       "soltui/tests/test_coin_fit.py": 1
+    },
+    "test_quick_order_requires_opt_in_and_preserves_single_submission_checks": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "test_quick_order_timeout_blocks_following_orders": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "test_quick_sell_filled_shows_receipt_and_remains_armed": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
     },
     "test_quote": {
       "docs/FILES.md": 2
@@ -824715,6 +825442,9 @@
     "test_refresh_button_and_tick_pick_up_a_new_file": {
       "soltui/tests/test_liquidity.py": 1
     },
+    "test_refreshing_safety_state_disarms_and_clears_review": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
+    },
     "test_refreshing_twice_does_not_duplicate_rows": {
       "soltui/tests/test_tui.py": 1
     },
@@ -824757,6 +825487,9 @@
     },
     "test_registry_metadata_is_complete": {
       "soltui/tests/test_bridge_parity.py": 1
+    },
+    "test_registry_requires_explicit_confirmation": {
+      "soltui/tests/test_coinbase_manual.py": 1
     },
     "test_rejects_a_ladder_that_cannot_be_built": {
       "backtester/tests/test_gridsim.py": 1
@@ -824931,6 +825664,9 @@
     "test_restart_retains_recovery_explanation": {
       "soltui/tests/test_bg_fresh_results.py": 1
     },
+    "test_restart_shows_unresolved_order_before_review": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
+    },
     "test_result_and_summary_values_cannot_overwrite_reserved_metadata": {
       "mongo/tests/test_load_audit.py": 1
     },
@@ -824977,6 +825713,9 @@
     },
     "test_reversion_and_breakout_disagree_on_the_same_band_break": {
       "backtester/tests/test_decide.py": 1
+    },
+    "test_review_is_disarmed_then_explicit_submit_occurs_once": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
     },
     "test_revised_source_and_unread_tail_refuse_acceptance": {
       "scripts/test_tradingview_script_profiles.py": 1
@@ -825228,6 +825967,12 @@
     "test_selecting_a_metric_previews_it_in_the_editor": {
       "soltui/tests/test_compound.py": 1
     },
+    "test_sell_preview_uses_base_size_and_expired_review_is_refused": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
+    },
+    "test_sell_uses_exact_base_quantity": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
     "test_semantic_only_with_no_index_returns_nothing_and_says_so": {
       "backtester/tests/test_index_search_tooling.py": 1
     },
@@ -825263,6 +826008,9 @@
       "docs/FILES.md": 2,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
       "soltui/soltui-service": 1
+    },
+    "test_session_quick_order_requires_arm_and_blocks_on_unknown": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
     },
     "test_settings_tab_shows_addresses_and_the_key_source_row_and_no_key_field": {
       "soltui/tests/test_wallet_integration.py": 1
@@ -825406,6 +826154,7 @@
     "test_size": {
       "docs/FILES.md": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 11,
       "soltui/tests/test_compound.py": 14,
       "soltui/tests/test_docs_search.py": 4,
       "soltui/tests/test_dryrun_strategy.py": 2,
@@ -826369,6 +827118,9 @@
     "test_time_series_collections_carry_no_validator": {
       "mongo/tests/test_load.py": 1
     },
+    "test_timeout_blocks_retries_and_new_orders": {
+      "soltui/tests/test_coinbase_manual.py": 1
+    },
     "test_timestamps_are_epoch_seconds_with_subsecond_precision": {
       "backtester/tests/test_ticks.py": 1
     },
@@ -826542,6 +827294,7 @@
       "llms-full.txt": 1,
       "memory.md": 2,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 2,
@@ -826745,6 +827498,9 @@
     },
     "test_unknown_strategy_returns_empty_rather_than_raising": {
       "soltui/tests/test_signals.py": 1
+    },
+    "test_unknown_submit_blocks_another_attempt_and_supports_status_check": {
+      "soltui/tests/test_coinbase_manual_ui.py": 1
     },
     "test_unknown_total_reports_no_percent": {
       "soltui/tests/test_bgqueue.py": 1
@@ -827343,6 +828099,7 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 3,
@@ -829689,6 +830446,8 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_browser.py": 3,
@@ -831171,6 +831930,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 5,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 5,
       "soltui/tests/test_compound_pool_capture.py": 3,
       "soltui/tests/test_docs_search.py": 1,
@@ -831931,6 +832691,7 @@
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker_audit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_liquidity.py": 1,
@@ -833715,6 +834476,7 @@
       "soltui/tests/bridge_support.py": 2,
       "soltui/tests/test_bg_fresh_results.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 12,
+      "soltui/tests/test_coinbase_manual_ui.py": 5,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_pricefeed.py": 2,
@@ -838916,6 +839678,7 @@
       "soltui/bots.py": 18,
       "soltui/coin_fit.py": 11,
       "soltui/coinbase_account.py": 7,
+      "soltui/coinbase_manual.py": 11,
       "soltui/commands.py": 16,
       "soltui/compound.py": 58,
       "soltui/compound_agent.py": 1,
@@ -838941,6 +839704,8 @@
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bridge_parity.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 5,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_experiment_interface.py": 7,
       "soltui/tests/test_experiment_runner.py": 10,
@@ -840677,6 +841442,7 @@
       "soltui/runner.py": 2,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_experiment_interface.py": 2,
@@ -840699,6 +841465,7 @@
       "executor/tests/conftest.py": 1,
       "liquidity/tests/test_submission_audit.py": 3,
       "soltui/pricefeed.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/wallet.py": 1
     },
     "timeoutexpired": {
@@ -843157,6 +843924,8 @@
       "soltui/tests/test_coin_fit.py": 8,
       "soltui/tests/test_coin_fit_ui.py": 5,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 3,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_compound.py": 14,
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_docs_browser.py": 6,
@@ -847831,6 +848600,7 @@
       "soltui/bgworker.py": 3,
       "soltui/bots.py": 7,
       "soltui/coin_fit.py": 19,
+      "soltui/coinbase_manual.py": 9,
       "soltui/commands.py": 13,
       "soltui/compound.py": 2,
       "soltui/cumulative.py": 3,
@@ -847855,6 +848625,8 @@
       "soltui/tests/test_bots.py": 5,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_eth_scan.py": 2,
@@ -847956,7 +848728,8 @@
       "backtester/core/metrics.py": 2,
       "backtester/core/report.py": 2,
       "backtester/tests/test_engine.py": 1,
-      "research/minute_sweep.py": 2
+      "research/minute_sweep.py": 2,
+      "soltui/coinbase_manual.py": 1
     },
     "total_hours": {
       "soltui/coin_fit.py": 2
@@ -848068,6 +848841,9 @@
       "soltui/tests/test_wallet_integration.py": 6,
       "soltui/tui.py": 2,
       "soltui/wallet.py": 7
+    },
+    "total_value_after_fees": {
+      "soltui/coinbase_manual.py": 1
     },
     "total_vs_hodl_usd": {
       "soltui/liquidity.py": 3,
@@ -859923,6 +860699,7 @@
       "soltui/cli.py": 2,
       "soltui/coin_fit.py": 7,
       "soltui/coinbase_account.py": 8,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 43,
       "soltui/compound.py": 46,
       "soltui/compound_agent.py": 1,
@@ -859961,6 +860738,7 @@
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_experiments.py": 1,
@@ -860512,6 +861290,7 @@
       "soltui/tests/test_bridge_surfaces.py": 8,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_compound_pool_capture.py": 1,
       "soltui/tests/test_docs_search.py": 2,
@@ -880184,6 +880963,7 @@
       "soltui/bots_screens.py": 1,
       "soltui/coin_fit.py": 13,
       "soltui/coinbase_account.py": 11,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 27,
       "soltui/compound.py": 45,
       "soltui/compound_agent.py": 2,
@@ -880211,6 +880991,7 @@
       "soltui/tests/test_bridge_parity.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coinbase_account.py": 7,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 43,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_pricefeed.py": 12,
@@ -880895,6 +881676,7 @@
       "soltui/cli.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 1,
       "soltui/compound.py": 1,
       "soltui/compound_agent.py": 1,
@@ -886992,6 +887774,7 @@
       "soltui/experiments.py": 28,
       "soltui/help.py": 2,
       "soltui/pnl.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 4,
       "soltui/tests/test_experiments.py": 10,
       "soltui/tui.py": 5,
       "tradingskilllist/trading-skills.md": 1,
@@ -887310,6 +888093,8 @@
       "soltui/tests/test_coin_fit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 5,
       "soltui/tests/test_coinbase_account.py": 5,
+      "soltui/tests/test_coinbase_manual.py": 4,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_compound.py": 11,
       "soltui/tests/test_compound_pool_capture.py": 3,
       "soltui/tests/test_docs_browser.py": 6,
@@ -887901,6 +888686,7 @@
       "soltui/bgqueue.py": 7,
       "soltui/bots.py": 6,
       "soltui/coin_fit.py": 7,
+      "soltui/coinbase_manual.py": 7,
       "soltui/commands.py": 19,
       "soltui/compound.py": 8,
       "soltui/config.py": 1,
@@ -887923,6 +888709,8 @@
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_bridge_surfaces.py": 5,
       "soltui/tests/test_coin_fit.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 12,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 3,
       "soltui/tests/test_eth_scan.py": 3,
@@ -889143,6 +889931,7 @@
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgworker_audit.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_status_console.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
@@ -889595,9 +890384,12 @@
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 1,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 2,
       "soltui/README.md": 1,
+      "soltui/coinbase_manual.py": 12,
       "soltui/commands.py": 3,
       "soltui/help.py": 1,
       "soltui/tests/bridge_support.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 5,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_compound.py": 1,
       "soltui/tui.py": 6
     },
@@ -890731,6 +891523,7 @@
       "soltui/soltui-service": 2,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_docs_search.py": 3,
       "soltui/tests/test_forwardtest.py": 1,
@@ -891770,6 +892563,7 @@
       "soltui/bots_screens.py": 6,
       "soltui/cli.py": 2,
       "soltui/coin_fit.py": 3,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 5,
       "soltui/compound.py": 5,
       "soltui/experiment_jobs.py": 6,
@@ -892528,6 +893322,7 @@
       "soltui/bots.py": 10,
       "soltui/coin_fit.py": 7,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 5,
       "soltui/compound.py": 1,
       "soltui/experiment_runner.py": 2,
@@ -892538,6 +893333,7 @@
       "soltui/runner.py": 1,
       "soltui/shell.py": 1,
       "soltui/tests/test_bots.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tui.py": 9
     },
     "upper_deviation": {
@@ -895103,6 +895899,7 @@
       "soltui/README.md": 10,
       "soltui/bots.py": 38,
       "soltui/coin_fit.py": 24,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 25,
       "soltui/compound.py": 35,
       "soltui/eth_scan.py": 11,
@@ -895124,6 +895921,7 @@
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 3,
       "soltui/tests/test_coinbase_account.py": 7,
+      "soltui/tests/test_coinbase_manual_ui.py": 4,
       "soltui/tests/test_compound.py": 26,
       "soltui/tests/test_eth_scan.py": 5,
       "soltui/tests/test_experiment_runner.py": 6,
@@ -895316,6 +896114,7 @@
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 10,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 20,
       "soltui/README.md": 2,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 2,
       "soltui/compound.py": 13,
       "soltui/eth_scan.py": 2,
@@ -895324,6 +896123,8 @@
       "soltui/tests/fixtures/wallet/base_recorded.json": 2,
       "soltui/tests/fixtures/wallet/jupiter_recorded.json": 2,
       "soltui/tests/test_coinbase_account.py": 4,
+      "soltui/tests/test_coinbase_manual.py": 9,
+      "soltui/tests/test_coinbase_manual_ui.py": 6,
       "soltui/tests/test_compound.py": 12,
       "soltui/tests/test_eth_scan.py": 5,
       "soltui/tests/test_liquidity.py": 1,
@@ -896970,6 +897771,7 @@
       "soltui/bots.py": 2,
       "soltui/bots_screens.py": 4,
       "soltui/coin_fit.py": 2,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 5,
       "soltui/compound.py": 2,
       "soltui/experiment_runner.py": 6,
@@ -896985,6 +897787,7 @@
       "soltui/shell.py": 5,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bots.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_forwardtest.py": 2,
@@ -898356,6 +899159,8 @@
       "soltui/soltui-service": 1,
       "soltui/tests/test_bg_fresh_results.py": 1,
       "soltui/tests/test_coin_fit.py": 1,
+      "soltui/tests/test_coinbase_manual.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_experiments.py": 1,
@@ -899456,6 +900261,7 @@
       "soltui/bgworker.py": 5,
       "soltui/bots.py": 5,
       "soltui/coinbase_account.py": 4,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 5,
       "soltui/compound.py": 10,
       "soltui/compound_agent.py": 1,
@@ -899891,9 +900697,11 @@
       "scripts/check_tradingview_strategy_profiles.py": 3,
       "soltui/bots.py": 4,
       "soltui/coinbase_account.py": 2,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 2,
       "soltui/experiments.py": 2,
       "soltui/tests/test_coinbase_account.py": 8,
+      "soltui/tests/test_coinbase_manual.py": 2,
       "soltui/tui.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1
@@ -899902,6 +900710,7 @@
       "executor/src/executor/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 1,
       "soltui/bots.py": 3,
+      "soltui/coinbase_manual.py": 2,
       "soltui/commands.py": 1,
       "soltui/experiments.py": 1,
       "soltui/tui.py": 1
@@ -901342,6 +902151,7 @@
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
       "soltui/api.py": 1,
       "soltui/cli.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 3,
       "soltui/compound.py": 3,
       "soltui/cumulative.py": 1,
@@ -903625,6 +904435,7 @@
       "soltui/cli.py": 1,
       "soltui/coin_fit.py": 7,
       "soltui/coinbase_account.py": 22,
+      "soltui/coinbase_manual.py": 28,
       "soltui/commands.py": 13,
       "soltui/compound.py": 19,
       "soltui/config.py": 1,
@@ -903658,6 +904469,7 @@
       "soltui/tests/test_bgworker_audit.py": 4,
       "soltui/tests/test_coin_fit_ui.py": 2,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 8,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_forwardtest.py": 1,
@@ -908034,6 +908846,7 @@
       "soltui/paper_experiments.py": 2,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit.py": 3,
+      "soltui/tests/test_coinbase_manual.py": 38,
       "soltui/tests/test_compound.py": 74,
       "soltui/tests/test_tui.py": 2,
       "soltui/tui.py": 1
@@ -918336,6 +919149,7 @@
       "soltui/tests/test_bg_fresh_results.py": 2,
       "soltui/tests/test_bots.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 21,
+      "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_experiment_interface.py": 16,
       "soltui/tests/test_forwardtest.py": 2,
@@ -918951,6 +919765,7 @@
       "soltui/tests/fixtures/wallet/solana_recorded.json": 1,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coinbase_account.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 11,
       "soltui/tests/test_compound.py": 25,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_hdwallet.py": 2,
@@ -919358,6 +920173,7 @@
       "skills/trading-and-investing/references/regime-detection-and-classification.md": 2,
       "skills/trading-and-investing/references/strategies-and-risk.md": 1,
       "soltui/bgqueue.py": 3,
+      "soltui/coinbase_manual.py": 5,
       "soltui/commands.py": 6,
       "soltui/eth_scan.py": 2,
       "soltui/utxo_scan.py": 3,
@@ -923175,6 +923991,7 @@
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "soltui/bots_screens.py": 1,
+      "soltui/coinbase_manual.py": 2,
       "soltui/compound.py": 1,
       "soltui/experiment_jobs.py": 1,
       "soltui/experiment_screens.py": 1,
@@ -928303,6 +929120,7 @@
       "soltui/experiment_screens.py": 1,
       "soltui/help.py": 9,
       "soltui/tests/test_bridge_buttons.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 3,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_tui.py": 8,
       "soltui/top5.py": 2,
@@ -928331,6 +929149,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 3,
       "soltui/tests/test_coinbase_account.py": 1,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 2,
@@ -928564,6 +929383,7 @@
       "soltui/make_icon.py": 10,
       "soltui/shell.py": 17,
       "soltui/signals.py": 2,
+      "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_liquidity.py": 2,
@@ -931766,6 +932586,7 @@
       "soltui/bgworker.py": 4,
       "soltui/bots.py": 2,
       "soltui/coinbase_account.py": 1,
+      "soltui/coinbase_manual.py": 1,
       "soltui/commands.py": 8,
       "soltui/compound.py": 6,
       "soltui/config.py": 2,
@@ -940550,6 +941371,7 @@
       "skills/trading-and-investing/references/volatility-and-pricing.md": 3,
       "soltui/bots.py": 1,
       "soltui/bots_screens.py": 14,
+      "soltui/coinbase_manual.py": 1,
       "soltui/compound.py": 1,
       "soltui/experiment_runner.py": 3,
       "soltui/experiment_screens.py": 74,
@@ -943918,6 +944740,7 @@
       "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 1,
       "soltui/coin_fit.py": 1,
+      "soltui/coinbase_manual.py": 6,
       "soltui/commands.py": 1,
       "soltui/help.py": 7,
       "soltui/liquidity.py": 1,
@@ -945727,10 +946550,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1441.7,
-    "documents": 2628,
-    "terms": 68458,
-    "termsBeforePrune": 68532,
-    "totalTokens": 3788777
+    "avgDocLength": 1441.6,
+    "documents": 2631,
+    "terms": 68521,
+    "termsBeforePrune": 68595,
+    "totalTokens": 3792877
   }
 }

@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-08T19:43:09+00:00",
+  "generatedAt": "2026-11-08T19:45:56+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "94c9f00",
+  "commit": "8abf145",
   "counts": {
-    "files": 2628,
-    "bytes": 43562067,
+    "files": 2631,
+    "bytes": 43602580,
     "byKind": {
       "strategy-card": 1478,
       "doc": 546,
-      "code-python": 188,
-      "test": 139,
+      "code-python": 189,
+      "test": 141,
       "code-js": 87,
       "result": 85,
       "config": 40,
@@ -24,7 +24,7 @@
     "byTopDir": {
       "backtester": 1911,
       "research": 178,
-      "soltui": 116,
+      "soltui": 119,
       "extension": 92,
       "skills": 67,
       "docs": 62,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2532
+    "withSummary": 2535
   },
   "files": [
     {
@@ -78379,6 +78379,54 @@
       "frontmatter": {}
     },
     {
+      "id": "soltui/coinbase_manual.py",
+      "path": "soltui/coinbase_manual.py",
+      "dir": "soltui",
+      "name": "coinbase_manual.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "coinbase_manual",
+      "summary": "Explicitly reviewed Coinbase spot orders. Never retries a submitted order.",
+      "summarySource": "docstring",
+      "bytes": 12657,
+      "lines": 247,
+      "sha1": "5065cc0f6a4859f93121cf9b78740d573795b56b",
+      "symbols": [
+        "MAX_QUOTE",
+        "PREVIEW_SECONDS",
+        "TERMINAL",
+        "_decimal()",
+        "_dir()",
+        "_path()",
+        "_lock()",
+        "_read()",
+        "_save()",
+        "_has_unresolved()",
+        "_block_unresolved()",
+        "state()",
+        "_details()",
+        "preview()",
+        "_public_order()",
+        "submit()",
+        "status()"
+      ],
+      "imports": [
+        "__future__",
+        "contextlib",
+        "decimal",
+        "fcntl",
+        "json",
+        "os",
+        "pathlib",
+        "re",
+        "time",
+        "typing",
+        "uuid"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "soltui/commands.py",
       "path": "soltui/commands.py",
       "dir": "soltui",
@@ -80766,6 +80814,67 @@
         "textual",
         "unittest",
         "urllib"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_coinbase_manual.py",
+      "path": "soltui/tests/test_coinbase_manual.py",
+      "dir": "soltui/tests",
+      "name": "test_coinbase_manual.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_coinbase_manual",
+      "summary": "Manual orders use exact reviewed contracts and fail closed on ambiguity.",
+      "summarySource": "docstring",
+      "bytes": 8049,
+      "lines": 148,
+      "sha1": "b52d01907051f60c30b21f090cad2385872f327a",
+      "symbols": [
+        "class Venue",
+        "class ManualOrderTests"
+      ],
+      "imports": [
+        "pathlib",
+        "soltui",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_coinbase_manual_ui.py",
+      "path": "soltui/tests/test_coinbase_manual_ui.py",
+      "dir": "soltui/tests",
+      "name": "test_coinbase_manual_ui.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_coinbase_manual_ui",
+      "summary": "Manual Coinbase order UI: review, explicit arm, one submit, and reconciliation.",
+      "summarySource": "docstring",
+      "bytes": 19807,
+      "lines": 371,
+      "sha1": "41e1253a9e3fb936aac2eefafb0319275981faa2",
+      "symbols": [
+        "envelope()",
+        "preview()",
+        "class CoinbaseManualUiTests"
+      ],
+      "imports": [
+        "__future__",
+        "pathlib",
+        "soltui",
+        "tempfile",
+        "textual",
+        "threading",
+        "time",
+        "unittest"
       ],
       "internalImports": [
         "soltui"
