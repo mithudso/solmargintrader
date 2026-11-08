@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T09:31:03+00:00",
+  "generatedAt": "2026-11-08T10:17:02+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 336,
+      "matchingFiles": 339,
       "shown": 30,
       "files": [
         {
@@ -35,7 +35,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 73
+          "hits": 74
         },
         {
           "path": "llms-full.txt",
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 328,
+      "matchingFiles": 330,
       "shown": 30,
       "files": [
         {
@@ -274,7 +274,7 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 29
+          "hits": 30
         },
         {
           "path": "executor/src/executor/txverify.py",
@@ -656,16 +656,16 @@
           "hits": 11
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 10
-        },
-        {
           "path": "research/coin-intelligence/btc-bitcoin.md",
           "hits": 10
         },
         {
           "path": "research/coin-intelligence/xrp-ripple.md",
           "hits": 10
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 9
         },
         {
           "path": "backtester/core/trigger_conditions.py",
@@ -1400,12 +1400,12 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 159,
+      "matchingFiles": 162,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 34
+          "hits": 36
         },
         {
           "path": "research/perturb.py",
@@ -1534,12 +1534,12 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 135,
+      "matchingFiles": 137,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 32
+          "hits": 34
         },
         {
           "path": "research/perturb.py",
@@ -1708,11 +1708,11 @@
           "hits": 31
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 25
+          "path": "backtester/tests/test_cpcv.py",
+          "hits": 24
         },
         {
-          "path": "backtester/tests/test_cpcv.py",
+          "path": "docs/CONCEPTS.md",
           "hits": 24
         },
         {
@@ -2249,10 +2249,6 @@
           "hits": 10
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 9
-        },
-        {
           "path": "research/results/perturb_all_singles_long.txt",
           "hits": 9
         },
@@ -2263,6 +2259,10 @@
         {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 9
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 8
         },
         {
           "path": "research/results/perturb_all_singles_short.txt",

@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "delta": "Initial component-local curated source map, independent of the parent generated index.",
+  "source_root": "..",
+  "coverage": "critical and high cards only; complete coverage is in external dossier/filemap and retrieval manifest",
+  "files": [
+    {
+      "path": "_locales/en/messages.json",
+      "purpose": "Defines the extension name, short name and purpose used by the manifest. [src: _locales/en/messages.json:1]",
+      "importance": "high"
+    },
+    {
+      "path": "background.js",
+      "purpose": "Routes extension messages, creates the offscreen document, selects the chart tab and validates licenses. [src: background.js:1]",
+      "importance": "critical"
+    },
+    {
+      "path": "css/popup.css",
+      "purpose": "Styles the extension popup. [src: css/popup.css:1]",
+      "importance": "high"
+    },
+    {
+      "path": "css/report.css",
+      "purpose": "Styles report controls, tables and heatmaps. [src: css/report.css:1]",
+      "importance": "high"
+    },
+    {
+      "path": "css/trading-view.css",
+      "purpose": "Styles the optimizer UI inserted into TradingView. [src: css/trading-view.css:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/classes/dialogs.js",
+      "purpose": "Defines DialogWindow, InputWindow, StartOptimizationWindow, ReportWindow and linked/rule editor classes. [src: js/classes/dialogs.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/classes/queues.js",
+      "purpose": "Defines Queue and AutoQueue for queued actions. [src: js/classes/queues.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/classes/scanner.js",
+      "purpose": "Scanner coordinates iteration state, strategy input changes, result capture, retries and database messages. [src: js/classes/scanner.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/classes/test.js",
+      "purpose": "Contains a separate Scanner and deepBackTest experiment; absent from manifest content scripts. [src: js/classes/test.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/content/popup_script.js",
+      "purpose": "Loads and stores popup preferences and sends license and database requests. [src: js/content/popup_script.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/content/report_script.js",
+      "purpose": "Defines Report and report normalization, result table and visualization behavior. [src: js/content/report_script.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/content/tradingview-content-script.js",
+      "purpose": "Coordinates optimization dialogs, input combinations, TradingView UI interactions and performance capture. [src: js/content/tradingview-content-script.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/globals/globals.js",
+      "purpose": "Initializes shared content-script state including the search name. [src: js/globals/globals.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/helpers/helpers.js",
+      "purpose": "Defines timing, Cartesian combinations, numeric sanitization and event helpers. [src: js/helpers/helpers.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/helpers/inputs.js",
+      "purpose": "Finds and changes chart inputs and popup choices, loads/saves settings and handles input metadata. [src: js/helpers/inputs.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/helpers/license.js",
+      "purpose": "Contains license/product-key and hashing helpers; preserve the upstream licensing implementation. [src: js/helpers/license.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/helpers/linked_search.js",
+      "purpose": "Draws and updates linked-input ropes and SVG clip paths. [src: js/helpers/linked_search.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/helpers/manipulators.js",
+      "purpose": "Defines chart ticker/timeframe selection and save-profile interactions. [src: js/helpers/manipulators.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/helpers/security.js",
+      "purpose": "Sends license-validation requests to the background worker with the selected service domain. [src: js/helpers/security.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/helpers/strategy.js",
+      "purpose": "Orders strategies and timeframes by scan priority. [src: js/helpers/strategy.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/injectors/after.js",
+      "purpose": "Injects after_inject.js into the page at document_end. [src: js/injectors/after.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/injectors/after_inject.js",
+      "purpose": "Changes page before-unload handling. [src: js/injectors/after_inject.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/injectors/before.js",
+      "purpose": "Injects before_inject.js into the page at document_start. [src: js/injectors/before.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/injectors/before_inject.js",
+      "purpose": "Installs page-side offline and event hooks. [src: js/injectors/before_inject.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "js/injectors/page-script.js",
+      "purpose": "Handles page-world input events, React input setters and deep-backtest date changes. [src: js/injectors/page-script.js:1]",
+      "importance": "high"
+    },
+    {
+      "path": "manifest.json",
+      "purpose": "Declares MV3 permissions, script order, page matches, worker, popup, CSP and isolation policies. [src: manifest.json:1]",
+      "importance": "critical"
+    },
+    {
+      "path": "off_screen.html",
+      "purpose": "Loads the module that bridges runtime messages to the database worker. [src: off_screen.html:1]",
+      "importance": "high"
+    },
+    {
+      "path": "off_screen.js",
+      "purpose": "Forwards database requests to sqlite_worker.js and sends its results back to extension contexts. [src: off_screen.js:1]",
+      "importance": "critical"
+    },
+    {
+      "path": "popup.html",
+      "purpose": "Defines settings, delay controls, theme, machine identity and registration inputs. [src: popup.html:1]",
+      "importance": "high"
+    },
+    {
+      "path": "report.html",
+      "purpose": "Defines result table, export/import controls and heatmap UI with vendored visualization scripts. [src: report.html:1]",
+      "importance": "high"
+    },
+    {
+      "path": "sqlite_worker.js",
+      "purpose": "Implements SQLite database creation, row insertion, filtering, export, import and OPFS operations. [src: sqlite_worker.js:1]",
+      "importance": "critical"
+    },
+    {
+      "path": "test.html",
+      "purpose": "References a worker demo whose relative scripts are absent from this bundle. [src: test.html:1]",
+      "importance": "high"
+    }
+  ]
+}
