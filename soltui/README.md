@@ -382,8 +382,11 @@ while you use the machine. The TUI only *reads* what it writes — the sweep kee
 going with the console closed. Resume requires a matching proof sidecar for the
 settings, date range, CSV bytes and relevant Python source. Legacy or changed evidence
 refuses before appending results; it never silently mixes runs or replaces old history.
-Use an explicit fresh `--results-path /absolute/path/results.jsonl` for a new CLI run.
-The Queue pane reads the default results path; it does not discover custom CLI paths.
+Use **Start fresh** in the Queue pane when the proof no longer matches. It selects a new,
+separate results file; the old results and their proof remain in `~/.config/soltui/bg/`.
+The Queue and Strategies views show only the selected sweep. **Start** resumes that selection.
+For a CLI run, use an explicit fresh `--results-path /absolute/path/results.jsonl`; arbitrary
+CLI paths are not automatically selected in the Queue pane.
 Stop sends a nonce-bound request to the current worker's private control socket. It
 never signals a PID taken from an old PID file. The worker consumes requests between jobs.
 

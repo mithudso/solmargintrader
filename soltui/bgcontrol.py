@@ -58,9 +58,11 @@ import shutil
 import socket
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any, Sequence
 
+from . import bgqueue
 from .bgqueue import BG_DIR, PID_PATH, ensure_dir
 
 # Where the liveness lock lives, and the variable that tells a spawned worker the
@@ -326,6 +328,7 @@ def worker_command(
     limit: int | None = None,
     strategies: Sequence[str] | None = None,
     python: str | None = None,
+    results_path: Path | None = None,
 ) -> list[str]:
     """The argv that runs the worker, wrapped in the background-QoS launcher.
 
@@ -334,6 +337,8 @@ def worker_command(
     failure shows up as a missing numpy rather than as a wrong interpreter.
     """
     cmd = [python or sys.executable, "-m", "soltui.bgworker", "--asset", asset]
+    if results_path is not None:
+        cmd += ["--results-path", str(results_path)]
     if horizons:
         cmd += ["--horizons", *horizons]
     cmd += ["--max-tier", str(max_tier)]
@@ -354,6 +359,7 @@ def start(
     strategies: Sequence[str] | None = None,
     cwd: Path | None = None,
     log_path: Path | None = None,
+    fresh: bool = False,
 ) -> subprocess.Popen[bytes]:
     """Spawn the worker. Refuses to start a second one.
 
@@ -389,10 +395,30 @@ def start(
 
     control: WorkerControl | None = None
     try:
+        results_path = bgqueue.active_results_path()
+        if fresh:
+            # Reserve an unused file and publish its name atomically while holding
+            # the worker lock. Existing files and proofs remain untouched.
+            results_path = bgqueue.RESULTS_PATH.parent / f"results-{secrets.token_hex(16)}.jsonl"
+            fd = os.open(results_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            os.close(fd)
+            pointer = bgqueue.RESULTS_PATH.parent / "active-results"
+            temporary = None
+            try:
+                with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=pointer.parent,
+                                                 delete=False) as out:
+                    temporary = out.name
+                    out.write(results_path.name + "\n")
+                    out.flush()
+                    os.fsync(out.fileno())
+                os.replace(temporary, pointer)
+            finally:
+                if temporary is not None:
+                    Path(temporary).unlink(missing_ok=True)
         control = create_control(lock_fd)
         proc = subprocess.Popen(  # noqa: S603 - argv list, no shell
             worker_command(asset, horizons=horizons, max_tier=max_tier, limit=limit,
-                           strategies=strategies),
+                           strategies=strategies, results_path=results_path),
             cwd=str(repo),
             stdout=handle,
             stderr=subprocess.STDOUT,

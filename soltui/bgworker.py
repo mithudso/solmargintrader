@@ -388,6 +388,7 @@ def run(
 
     state = QueueState(
         phase="running",
+        results_path=str(results_path),
         done=0,
         total=len(todo),
         asset=asset,
@@ -564,6 +565,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         write_state(
             QueueState(
                 phase="error",
+                results_path=str(args.results_path),
                 error=f"{type(exc).__name__}: {exc}",
                 pid=os.getpid(),
                 updated_at=time.time(),

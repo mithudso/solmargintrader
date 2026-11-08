@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 149
-Delta: v148 to v149; investigate background sweep proof mismatch.
+Version: 151
+Delta: v150 to v151; implement fresh sweep selection and verify focused safeguards.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1594,3 +1594,11 @@ Diagnosis: persisted SOL proof differs from current code in 26 Python paths and 
 Verification: the live checkout fresh-path --plan succeeded with 1,059 pending jobs and did not run evaluations. The running TUI still reads the old default history.
 
 Remaining: implement safe Queue recovery with archive and lock semantics, verify with isolated data, deliver the code, and verify loaded behavior without disrupting the active session. No new sweep was started.
+
+## v150 - 2026-11-08
+
+TASK-1009 resumed in /Users/mitch/dev/solmargintrader-wt-01a1bb7d. Existing history and its proof must remain paired and incompatible results must not mix. Current SOL candle and code hashes differ from saved proof; the rejection is valid. The Queue reads the default path and cannot use the CLI fresh-path workaround. Implement and test safe recovery, deliver, and verify actual loaded behavior without disturbing the active TUI or other services.
+
+## v151 - 2026-11-08
+
+TASK-1009: Queue Start fresh reserves a separate history under the worker lock and atomically selects it; normal Start resumes that history. Queue and strategy views follow the selection and retain proof isolation. 151 focused tests passed (one skipped), and the dedicated UI button test passed. A broader UI run was interrupted after NoMatches: #btn-add and is not claimed as passed. Remaining: update documentation counts, final CI and delivery; verify installed fresh-launch behavior while preserving the active process and historical results.
