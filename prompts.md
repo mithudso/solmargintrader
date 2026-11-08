@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 50
-Delta: v49 to v50; integrate PR 58 against landed PR 46 and retain both workflow histories.
+Version: 51
+Delta: v50 to v51; add recursive HTML-to-Markdown converter request.
 
 ## v1 - 2026-11-06
 
@@ -369,3 +369,12 @@ Resolve the pr conflicts in https://github.com/mithudso/solmargintrader/pull/46 
 ```text
 resume
 ```
+
+## v51 - 2026-11-08 (HTML mirror conversion)
+
+```text
+Write a script to convert all of the html files in the subfolders here into text only markdown files.
+```
+
+Target: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com.
+Implementation: /Users/mitch/dev/solmargintrader-wt-01a1ba63/scripts/html_to_markdown.py.
