@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 183
-Delta: v182 to v183; record finalized Jupiter swap and Coinbase deposit.
+Version: 184
+Delta: v183 to v184; record the filled Coinbase live test.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1730,3 +1730,7 @@ PR 119 merged as 2f649690c38acaac8bee36c299ce325679b7cd30 after required CI pass
 ## v183 - 2026-11-08
 
 The owner configured the Jupiter CLI signer. Its public address matched the intended Solana source wallet. A Jupiter MCP swap order passed exact-transaction simulation and checks of all existing owner token accounts, SOL reserve, fees, and signed message. One submission swapped 0.04 JUPSOL for 0.048699999 SOL; Solana finalized signature 615rbyxBnwRVgYyR8tCSuuprAewbhwmNbELbNbABX8VqkSGtAzqV4oPzJcohVEYvhEccrgkFedeUcT2MFL65WncQ. A separately decoded and simulated payment sent 0.055834729 SOL, approximately $5 at the live quote, to the verified Coinbase Solana address. Solana finalized signature 2447YyVGsyr2K9NxikpcKJGTxfTZ32NncmZTWSBHzjhc5yFkSfNQbTunKxtagKnRxqPxy35Z6hPXBj1P7yZAem36. Coinbase showed the deposited amount available, and the local Coinbase account snapshot was refreshed. Receipt journals are in /Users/mitch/.config/soltui/jupiter-transactions. Stele knowledge and task updates are queued as outbox ff51a048 and 006238b9. The requested $0.03 SOL/USDC buy remains below the 1 USDC minimum and was not submitted; deposited SOL is not USDC. The exposed Jupiter API credential still needs rotation unless the owner has already rotated it.
+
+## v184 - 2026-11-08
+
+The owner authorized any Coinbase transaction as the live connector test. Coinbase filled order 8039c0bd-d54a-49c8-86b5-cbc1160a7084, selling 0.01232907 SOL at 89.19 USDC for 1.0897330855203 USDC after fees of 0.0098966677797 USDC. Order lookup confirmed FILLED and one fill. The connected Coinbase account snapshot was refreshed. The receipt is /Users/mitch/.config/soltui/coinbase/orders/8039c0bd-d54a-49c8-86b5-cbc1160a7084.json. The prior queued Stele entries ff51a048 and 006238b9 were cancelled as stale; TASK-1037 now reflects the filled order, and KNOW-1039 records its evidence. The app's independent read-enabled credentials and full equity-market catalog remain open. No further real order is authorized by this test.
