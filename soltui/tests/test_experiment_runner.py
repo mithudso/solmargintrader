@@ -454,6 +454,15 @@ runner.run_experiment(run_id, Settings(data_dir=data), store=ExperimentStore(roo
                 child.kill()
             child.communicate(timeout=5)
 
+    def test_triangle_only_freezes_completed_recorded_hours(self):
+        hour = 1_800_000_000 // 3600 * 3600
+        rows = [(hour - 3600 + k, {}) for k in range(65)] + [(hour + k, {}) for k in range(65)]
+        with mock.patch.object(runner.time, 'time', return_value=hour + 100), \
+             mock.patch.object(bots, '_iter_recorded', return_value=iter(rows)):
+            chunks = list(runner._recorded_hours())
+        self.assertEqual(len(chunks), 1)
+        self.assertTrue(all(t < hour for t, _ in chunks[0]))
+
     def test_triangle_uses_recorded_hours_and_checkpoints_each_triangle_candidate(self):
         t0 = 1_794_000_000 // 3600 * 3600
         rows = [(t0 + hour * 3600 + k, tri_quotes(t0 + hour * 3600 + k, 0.0505))

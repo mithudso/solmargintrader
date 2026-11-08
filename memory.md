@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 205
-Delta: v203 to v205; retain the advanced ticket, venue references and scheduler delivery.
+Version: 206
+Delta: v205 to v206; exclude the recorder's open hour from triangle optimization.
+
+## v206 - 2026-11-08
+
+The first scheduled optimizer cycle failed triangle with `historical recorded evidence changed for USD-ADA-BTC:1794171600:1794175200`. It froze the hour while the recorder was still appending. Freeze only completed recorded hours and retain the fingerprint check so later changes to closed history still fail. Per-coin work continues independently. The running scheduler must be restarted using its own controls after delivery to load this fix. Stele lesson queued as outbox a9307950.
 
 ## v205 - 2026-11-08
 
