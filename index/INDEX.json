@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-08T14:36:15+00:00",
+  "generatedAt": "2026-11-08T14:34:26+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b17623e",
+  "commit": "374d0b9",
   "counts": {
-    "files": 2622,
-    "bytes": 43406297,
+    "files": 2621,
+    "bytes": 43405213,
     "byKind": {
       "strategy-card": 1478,
       "doc": 546,
       "code-python": 186,
-      "test": 135,
+      "test": 134,
       "code-js": 87,
       "result": 85,
       "config": 40,
@@ -24,7 +24,7 @@
     "byTopDir": {
       "backtester": 1911,
       "research": 178,
-      "soltui": 110,
+      "soltui": 109,
       "extension": 92,
       "skills": 67,
       "docs": 62,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2526
+    "withSummary": 2525
   },
   "files": [
     {
@@ -70611,11 +70611,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 153 Delta: v152 to v153; integrate sweep recovery with liquidity archival. Version: 146",
+      "summary": "Version: 154 Delta: v153 to v154; preserve sweep recovery and metric editor repair. Version: 146",
       "summarySource": "opening-prose",
-      "bytes": 245967,
+      "bytes": 245759,
       "lines": 1617,
-      "sha1": "7a803772b4b9666b483b05488adf3cc0869470fb",
+      "sha1": "fc519b7953b2bbcfd27842f29e2e1c8efcf3588a",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -71080,11 +71080,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 85 Delta: v84 to v85; retain the renewed sweep report and liquidity archival requests. Version: 75",
+      "summary": "Version: 86 Delta: v85 to v86; retain the sweep and metric editor requests. Version: 75",
       "summarySource": "opening-prose",
-      "bytes": 37336,
+      "bytes": 37411,
       "lines": 723,
-      "sha1": "c9c85c9897635790c9ba7b98081406029ff53582",
+      "sha1": "2898178d111095f0d970cfa9079db279f73bc162",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -80643,9 +80643,9 @@
       "title": "test_compound",
       "summary": "Compound five-minute tester: saved config, live reads, forward ledger, and the tab.",
       "summarySource": "docstring",
-      "bytes": 67034,
-      "lines": 1229,
-      "sha1": "2ee68ebc4c7faf6ed6d45cd3d13d925636657da6",
+      "bytes": 68321,
+      "lines": 1252,
+      "sha1": "e4c617b02cdf7b91097f8288cd0725a3717d9d43",
       "symbols": [
         "T0",
         "candles()",
@@ -80700,33 +80700,6 @@
         "backtester",
         "soltui"
       ],
-      "frontmatter": {}
-    },
-    {
-      "id": "soltui/tests/test_compound_pool_capture.py",
-      "path": "soltui/tests/test_compound_pool_capture.py",
-      "dir": "soltui/tests",
-      "name": "test_compound_pool_capture.py",
-      "ext": ".py",
-      "kind": "test",
-      "title": "test_compound_pool_capture",
-      "summary": "Exercise a real spawn under the console's active Textual output capture.",
-      "summarySource": "docstring",
-      "bytes": 1384,
-      "lines": 43,
-      "sha1": "b24e204a62f5e3da506e5ade8384ac3df94f8806",
-      "symbols": [
-        "class CompoundPoolCapture"
-      ],
-      "imports": [
-        "__future__",
-        "pathlib",
-        "subprocess",
-        "sys",
-        "tempfile",
-        "unittest"
-      ],
-      "internalImports": [],
       "frontmatter": {}
     },
     {
@@ -81953,11 +81926,10 @@
       "title": "Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.",
       "summary": "Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.",
       "summarySource": "docstring",
-      "bytes": 283496,
-      "lines": 5458,
-      "sha1": "c05b7f687bcc6d4c7551061c6bfafea14d7dcdbd",
+      "bytes": 282642,
+      "lines": 5436,
+      "sha1": "f7733ffdb98612f08e99693ff65c74c8534ec58a",
       "symbols": [
-        "class _CaptureWithoutInvalidFd",
         "_mtime()",
         "sort_key()",
         "_pct()",
@@ -81987,7 +81959,6 @@
         "hdwallet",
         "help",
         "help_screen",
-        "io",
         "json",
         "math",
         "paper",

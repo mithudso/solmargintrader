@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 85
-Delta: v84 to v85; retain the renewed sweep report and liquidity archival requests.
+Version: 87
+Delta: v86 to v87; record the backtest launch error.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -715,7 +715,13 @@ In the soltui IO get this error: error: ValueError: evaluation proof is missing 
 below the 10-trade floor
 ```
 
-## v85 - 2026-11-08
+## v86 - 2026-11-08
+
+```text
+In the signal call and metrics tab when I try and apply edits, I get this error: vwap_side: unknown parameter 'weekend'; known: mode, window, spread_window, scale, atr
+```
+
+## v87 - 2026-11-08
 
 ```text
 In the signal backtest tab I get this error: bad value(s) in fds_to_keep

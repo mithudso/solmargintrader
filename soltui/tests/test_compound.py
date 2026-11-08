@@ -1033,6 +1033,29 @@ class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
         table = app.query_one("#compound-table", DataTable)
         return str(table.get_row_at(table.get_row_index(cid))[0])
 
+    async def test_sorted_table_edits_and_toggles_the_displayed_metric(self) -> None:
+        from soltui.tui import CompoundTable
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-compound"
+            await pilot.pause()
+            table = app.query_one("#compound-table", CompoundTable)
+            table.sort("component", reverse=True)
+            table.move_cursor(row=table.get_row_index("gate_session"))
+            await pilot.pause()
+            self.assertIn("weekend=", app.query_one("#compound-edit", Input).value)
+            app.query_one("#compound-edit", Input).value = "weekend=1"
+            app.query_one("#compound-apply", Button).press()
+            await pilot.pause()
+            self.assertEqual(compound.load_state()["config"]["components"]["gate_session"]["params"]["weekend"], 1)
+            self.assertIn("saved", text_of(app, "#compound-status"))
+            table.sort("component", reverse=True)
+            row = table.get_row_index("vwap_side")
+            before = self.on(app, "vwap_side")
+            table.post_message(CompoundTable.Toggle(row))
+            await pilot.pause()
+            self.assertNotEqual(self.on(app, "vwap_side"), before)
+
     async def test_double_click_and_space_toggle_and_a_single_click_only_selects(self) -> None:
         from soltui.tui import CompoundTable
         app = SolTuiApp(make_settings())

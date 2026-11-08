@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 153
-Delta: v152 to v153; integrate sweep recovery with liquidity archival.
+Version: 155
+Delta: v154 to v155; record the backtest descriptor fix.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1611,6 +1611,10 @@ Target: liquidity, Aero LP, positions and liquidity scout. Stele task TASK-1011.
 
 Owner confirmed Archive navigation and withdrawal of any remaining Aero LP positions to the wallet. Archive navigation is implemented in the isolated worktree. CDP history found three known Aero NFTs; each was burned on 2026-11-06, and Base RPC found zero manager balance and no stake in the known gauge. No withdrawal was needed or sent. This does not rule out all third-party staking paths. Keep the daemon disabled and KILL set. Verify navigation, finish PR 108, and verify delivery.
 
-## v153 - 2026-11-08
+## v154 - 2026-11-08
+
+Task: Fix Signal Call and Metrics edit error, Stele TASK-1018. Worktree: /Users/mitch/dev/solmargintrader-wt-metric-weekend; base origin/master 788d5a8. Sorting changes the displayed row order, but Apply and Toggle used the original component order. The editor correctly follows the displayed row key, so gate_session weekend could be sent to vwap_side. Updated both actions to use displayed row keys. The sorted edit and toggle regression passes in a Textual test with temporary settings. Eight Compound tab and click tests pass. Remaining: verify loaded app and deliver.
+
+## v155 - 2026-11-08
 
 Task: Signal Backtest reports bad value(s) in fds_to_keep (Stele TASK-1021). Worktree /Users/mitch/dev/solmargintrader-wt-backtest-fds, based on origin/master 788d5a8. Compound all-coins and frontier use ProcessPoolExecutor in a background thread. Textual stderr capture returns -1 from fileno; multiprocessing resource_tracker passes it into spawn and fails with bad value(s) in fds_to_keep. Wrapped the capture to raise UnsupportedOperation when no fd exists, while preserving writes. A fresh-interpreter Textual test starts real child workers; the same test fails with the unwrapped capture and passes with the fix. Preserve live processes and data. Remaining: integrate with the concurrent metric fix, rerun checks, deliver, and restart the interactive console only when safe.
