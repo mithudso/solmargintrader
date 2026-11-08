@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T13:35:49+00:00",
+  "generatedAt": "2026-11-08T13:39:06+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -253,6 +253,10 @@
           "hits": 21
         },
         {
+          "path": "memory.md",
+          "hits": 21
+        },
+        {
           "path": "liquidity/src/aero_lp/providers.py",
           "hits": 21
         },
@@ -263,10 +267,6 @@
         {
           "path": "liquidity/tests/test_daemon.py",
           "hits": 21
-        },
-        {
-          "path": "memory.md",
-          "hits": 20
         },
         {
           "path": "backtester/strategy_cards/incomplete/tv_edel00bp_risk_adjusted_momentum_oscillator.md",
@@ -507,15 +507,15 @@
           "hits": 36
         },
         {
+          "path": "memory.md",
+          "hits": 32
+        },
+        {
           "path": "soltui/help.py",
           "hits": 32
         },
         {
           "path": "backtester/README.md",
-          "hits": 31
-        },
-        {
-          "path": "memory.md",
           "hits": 31
         },
         {

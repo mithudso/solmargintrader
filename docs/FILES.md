@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `609882b` (2026-11-08T13:35:45+00:00). 1914 tracked files, 32.9 MB.
+**Generated** from `index/INDEX.json` at commit `6ca5999` (2026-11-08T13:39:04+00:00). 1914 tracked files, 32.9 MB.
 
 Regenerate with:
 
@@ -193,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1387 lines · 209,918 B · description: **extracted**
+`doc` · 1411 lines · 212,889 B · description: **extracted**
 
-**Purpose.** Version: 143 Delta: v142 to v143; resolve PR 104 against concurrent records. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 144 Delta: v143 to v144; preserve PR 100 records and resolve PR 104. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 567 lines · 31,152 B · description: **extracted**
+`doc` · 581 lines · 32,115 B · description: **extracted**
 
-**Purpose.** Version: 75 Delta: v74 to v75; resolve PR 104 against concurrent records. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 76 Delta: v75 to v76; preserve PR 100 records and resolve PR 104. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18719 lines · 927,264 B · description: **extracted**
+`doc` · 18719 lines · 927,278 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
