@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T11:53:45+00:00",
+  "generatedAt": "2026-11-08T12:00:33+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -21,7 +21,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1295,
+      "matchingFiles": 1296,
       "shown": 30,
       "files": [
         {
@@ -161,12 +161,16 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 475,
+      "matchingFiles": 476,
       "shown": 30,
       "files": [
         {
           "path": "research/tradingview-card-coverage.json",
           "hits": 1637
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 95
         },
         {
           "path": "docs/FILES.md",
@@ -279,10 +283,6 @@
         {
           "path": "backtester/strategy_cards/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md",
           "hits": 19
-        },
-        {
-          "path": "backtester/strategy_cards/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md",
-          "hits": 19
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -297,7 +297,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 458,
+      "matchingFiles": 459,
       "shown": 30,
       "files": [
         {
@@ -307,6 +307,10 @@
         {
           "path": "docs/FILES.md",
           "hits": 193
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 150
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -415,10 +419,6 @@
         {
           "path": "research/5minleveragestrategies.json",
           "hits": 29
-        },
-        {
-          "path": "backtester/strategy_cards/tv_tnq7fvvw_trend_target_ribbon_boswaves.md",
-          "hits": 28
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -435,7 +435,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 374,
+      "matchingFiles": 375,
       "shown": 30,
       "files": [
         {
@@ -461,6 +461,10 @@
         {
           "path": "docs/FILES.md",
           "hits": 102
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 89
         },
         {
           "path": "extension/src/core/grid.js",
@@ -553,10 +557,6 @@
         {
           "path": "docs/code-deep-optimizer-2026-11-06.md",
           "hits": 25
-        },
-        {
-          "path": "extension/src/ui/ui.css",
-          "hits": 25
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -574,7 +574,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 347,
+      "matchingFiles": 348,
       "shown": 30,
       "files": [
         {
@@ -709,7 +709,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 272,
+      "matchingFiles": 273,
       "shown": 30,
       "files": [
         {
@@ -726,6 +726,10 @@
         },
         {
           "path": "docs/TRADINGVIEW-CARD-FILES.md",
+          "hits": 140
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 140
         },
         {
@@ -827,10 +831,6 @@
         {
           "path": "soltui/help.py",
           "hits": 20
-        },
-        {
-          "path": "research/tradingview-strategy-tools/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
-          "hits": 20
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -847,7 +847,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 265,
+      "matchingFiles": 266,
       "shown": 30,
       "files": [
         {
@@ -872,6 +872,10 @@
         },
         {
           "path": "backtester/tests/test_engine.py",
+          "hits": 34
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 34
         },
         {
@@ -965,10 +969,6 @@
         {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 11
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 11
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -986,7 +986,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 224,
+      "matchingFiles": 225,
       "shown": 30,
       "files": [
         {
@@ -1032,6 +1032,10 @@
         {
           "path": "research/tradingview-card-coverage.json",
           "hits": 38
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 30
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
@@ -1104,10 +1108,6 @@
         {
           "path": "backtester/core/fetch_minutes.py",
           "hits": 10
-        },
-        {
-          "path": "soltui/tests/test_utxo_scan.py",
-          "hits": 10
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1123,7 +1123,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 211,
+      "matchingFiles": 212,
       "shown": 30,
       "files": [
         {
@@ -1153,6 +1153,10 @@
         {
           "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
           "hits": 63
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 53
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -1241,10 +1245,6 @@
         {
           "path": "research/results/perturb_long_vol_regime.txt",
           "hits": 19
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 18
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1258,7 +1258,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 200,
+      "matchingFiles": 201,
       "shown": 30,
       "files": [
         {
@@ -1276,6 +1276,10 @@
         {
           "path": "research/results/cpcv_combos_tables.md",
           "hits": 69
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 54
         },
         {
           "path": "research/results/tables.md",
@@ -1376,10 +1380,6 @@
         {
           "path": "research/STRATEGIES.md",
           "hits": 12
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 12
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1396,7 +1396,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 182,
+      "matchingFiles": 183,
       "shown": 30,
       "files": [
         {
@@ -1531,12 +1531,16 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 178,
+      "matchingFiles": 179,
       "shown": 30,
       "files": [
         {
           "path": "research/tradingview-card-coverage.json",
           "hits": 112
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 68
         },
         {
           "path": "docs/FILES.md",
@@ -1649,10 +1653,6 @@
         {
           "path": "research/coin-intelligence/sol-solana.md",
           "hits": 5
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1666,7 +1666,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 150,
+      "matchingFiles": 151,
       "shown": 30,
       "files": [
         {
@@ -1688,6 +1688,10 @@
         {
           "path": "research/results/tables.md",
           "hits": 45
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 40
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -1784,10 +1788,6 @@
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 13
-        },
-        {
-          "path": "backtester/strategy_cards/tv_muxarne5_audcad_day_trade_signal_by_keltner_channel.md",
-          "hits": 13
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1800,9 +1800,13 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 150,
+      "matchingFiles": 151,
       "shown": 30,
       "files": [
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 34
+        },
         {
           "path": "docs/FILES.md",
           "hits": 33
@@ -1917,10 +1921,6 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 4
-        },
-        {
-          "path": "soltui/tests/test_status_roster.py",
           "hits": 4
         }
       ],
@@ -2077,12 +2077,16 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 124,
+      "matchingFiles": 125,
       "shown": 30,
       "files": [
         {
           "path": "research/tradingview-card-coverage.json",
           "hits": 63
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 32
         },
         {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
@@ -2195,10 +2199,6 @@
         {
           "path": "research/sweep.py",
           "hits": 4
-        },
-        {
-          "path": "backtester/strategy_cards/tv_tnq7fvvw_trend_target_ribbon_boswaves.md",
-          "hits": 4
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 112,
+      "matchingFiles": 113,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 103,
+      "matchingFiles": 104,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 86,
+      "matchingFiles": 87,
       "shown": 30,
       "files": [
         {
@@ -2707,6 +2707,10 @@
           "hits": 8
         },
         {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 8
+        },
+        {
           "path": "research/5minleveragestrategies.json",
           "hits": 7
         },
@@ -2740,10 +2744,6 @@
         },
         {
           "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 5
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
           "hits": 5
         }
       ],
