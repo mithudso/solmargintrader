@@ -33,6 +33,18 @@ class DryRunStrategyTests(unittest.TestCase):
         self.assertEqual(factory.call_args.args[0]["value"], "top5:1")
         self.assertIn("Historical dry run: top5:1", result["stdout"])
 
+    def test_gaps_use_only_latest_real_segment_and_explain_excluded_bars(self):
+        arrays = frame_to_arrays(SyntheticLoader(n_bars=300, seed=4).load("SOL", None, None, "1d"))
+        arrays["ts"] = arrays["ts"].copy()
+        arrays["ts"][100:] += 86400
+        progress = []
+        with mock.patch("soltui.runner.load_arrays", return_value=arrays):
+            result = live_run.run_dryrun("rsi", settings=make_settings(), progress=progress.append)
+        self.assertEqual(result["input_bars_total"], 300)
+        self.assertEqual(result["bars_excluded_for_gaps"], 100)
+        self.assertIn("excluded 100 earlier bars", result["stdout"])
+        self.assertTrue(any("Price history has gaps" in line for line in progress))
+
     def test_unknown_name_fails_before_running(self):
         with self.assertRaisesRegex(ValueError, "Unknown strategy"):
             live_run.run_dryrun("definitely_unknown", settings=make_settings())

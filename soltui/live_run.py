@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import re
+import time
 from collections.abc import Callable
 from pathlib import Path
 
+import numpy as np
+
 from backtester.core.strategies import REGISTRY
+from backtester.core.types import INTERVAL_SECONDS
 
 # Legacy integration fixture; this file no longer determines the default strategy.
 RECOMMENDATION_FILE = Path(__file__).resolve().parent.parent / "research" / "TOP_UNTESTED_RECOMMENDATION.json"
@@ -50,18 +54,34 @@ def run_dryrun(strategy_name: str, settings=None, progress=None) -> dict:
         progress(f"Loading {asset} {interval} cached bars for {name}")
         arrays = load_arrays(settings)
         config = engine_config(settings)
+    # The engine requires contiguous candles. Use the latest contiguous segment rather
+    # than filling a price gap, and disclose exactly how much history was excluded.
+    total_bars = len(arrays["ts"])
+    seconds = INTERVAL_SECONDS.get(interval)
+    if seconds is None:
+        raise ValueError(f"Unsupported candle interval {interval!r}")
+    gaps = np.flatnonzero(np.diff(arrays["ts"]) != seconds)
+    first = int(gaps[-1] + 1) if len(gaps) else 0
+    if first:
+        arrays = {key: value[first:] for key, value in arrays.items()}
+        progress(f"Price history has gaps; using the most recent contiguous segment and excluding {first} earlier bars")
     progress(f"Running {name} on {len(arrays['ts'])} historical bars; no orders are placed")
     session = start_session(strategy, arrays, config)
     session.seek_end()
     summary = session.summary()
     progress(f"Completed {name}: {summary['fills']} simulated fills")
+    start_date = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(int(arrays["ts"][0])))
+    end_date = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(int(arrays["ts"][-1])))
     text = (f"Historical dry run: {name} on {asset} {interval}\n"
-            f"Bars: {summary['bars_total']}; simulated fills: {summary['fills']}\n"
-            f"Net return: {summary['pnl']:+.2%}; final equity: ${summary['equity']:,.2f}\n"
+            f"Window: {start_date} to {end_date}\n"
+            f"Bars: {summary['bars_total']} of {total_bars} cached bars; simulated fills: {summary['fills']}\n"
+            + (f"Price gaps: excluded {first} earlier bars; used the latest contiguous segment.\n" if first else "")
+            + f"Net return: {summary['pnl']:+.2%}; final equity: ${summary['equity']:,.2f}\n"
             "No live prices or orders; this is not a forward test.")
     return {"command": ["historical simulation", name], "returncode": 0,
             "stdout": text, "net_pct": summary["pnl"], "asset": asset, "interval": interval,
-            "strategy": name, "mode": "historical simulation"}
+            "strategy": name, "mode": "historical simulation", "input_bars_total": total_bars,
+            "bars_excluded_for_gaps": first}
 
 
 _CAPITAL_RE = re.compile(r"capital needed:\s*\$([0-9][0-9,]*\.?[0-9]*)")

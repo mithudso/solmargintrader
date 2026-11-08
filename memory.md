@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 169
-Delta: v166 to v169; retain running sweep and status/dry-run work.
+Version: 170
+Delta: v169 to v170; record actual cached-data dry-run validation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1674,3 +1674,7 @@ The v2 Dry Run tab was passing a strategy string to extension/tools/dryrun.js, b
 ## v169 - 2026-11-08
 
 Implemented 10 test-status buttons with independent in-session operation logs, bounded detached-worker log retrieval, responsive status refresh, and unsaved-editor protection. Dry Run now runs the exact selected registry strategy or Top 5 composite on cached historical bars with the shared simulation engine. It does not run Node grid code, claim a profitable recommendation, use live prices, or place orders. Verified 36 bridge parity/surface tests, 39 preset/editor/handler tests, the 25-test initial UI subset, and targeted tests for narrow layout, actual selected strategy and detached log boundaries. Two additional focused UI tests passed after the thread-safe callback refactor. Stele TASK-1034 remains in progress; new Dry Run task and decision are queued in outbox IDs 03b25b07 and 2012e44c. Remaining: commit, update suite counts, push draft, coordinate parent integration and verify loaded app; preserve active trainer and sweep.
+
+## v170 - 2026-11-08
+
+Actual cached-data smoke on the status branch initially failed because SOL_1h.csv has gaps. The Dry Run now selects only the latest contiguous real candle segment and reports its exact dates and excluded bar count. A historical RSI run on /Users/mitch/dev/solmargintrader/data/SOL_1h.csv completed using 4,410 of 24,999 bars, excluded 20,589, and recorded 78 simulated fills. No prices were fabricated and no orders were placed. This is a historical smoke, not proof of live behavior or profitable future performance. Focused gap regression passes; draft PR 118 awaits integrated tests and coordinated delivery.
