@@ -157,6 +157,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r backtester/requirements.txt
+          pip install -e executor
           grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
           pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
 
@@ -193,6 +194,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r backtester/requirements.txt
+          pip install -e executor
           grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
           pip install -r "$RUNNER_TEMP/soltui-req.txt"
       - name: Verify selector

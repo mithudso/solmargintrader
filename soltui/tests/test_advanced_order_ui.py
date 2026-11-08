@@ -40,19 +40,27 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
             app.query_one("#advanced-size", Input).value = "1"
             app.query_one("#advanced-armed", Checkbox).value = True
             await pilot.pause()
-            for field, value in (("#advanced-venue", "jupiter"), ("#advanced-leverage", "2x"),
+            for field, value in (("#advanced-type", "bracket"), ("#advanced-leverage", "2x"),
                                  ("#advanced-position", "short")):
                 app.query_one(field, Select).value = value
                 await pilot.pause()
                 self.assertTrue(app.query_one("#advanced-preview", Button).disabled)
                 self.assertTrue(app.query_one("#advanced-submit", Button).disabled)
-                if field == "#advanced-venue":
-                    app.query_one(field, Select).value = "coinbase"
+                if field == "#advanced-type":
+                    app.query_one(field, Select).value = "market"
                 elif field == "#advanced-leverage":
                     app.query_one(field, Select).value = "1x"
                 else:
                     app.query_one(field, Select).value = "long"
                 await pilot.pause()
+            # Jupiter does not support conditional orders
+            app.query_one("#advanced-venue", Select).value = "jupiter"
+            app.query_one("#advanced-type", Select).value = "limit"
+            await pilot.pause()
+            self.assertTrue(app.query_one("#advanced-preview", Button).disabled)
+            app.query_one("#advanced-type", Select).value = "market"
+            app.query_one("#advanced-venue", Select).value = "coinbase"
+            await pilot.pause()
             app.query_one("#advanced-side", Select).value = "SELL"
             app.query_one("#advanced-unit", Select).value = "quote"
             await pilot.pause()
@@ -270,4 +278,72 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(calls, [{"product_id":"SOL-USDC", "side":"SELL", "size":"0.1", "order_type":"bracket",
                                           "limit_price":"200", "stop_price":"100", "skip_confirm":True}])
                 self.assertTrue(app._coinbase_order_unknown)
+                self.assertFalse(app.query_one("#advanced-armed", Checkbox).value)
+
+    async def test_jupiter_market_swap_preview_and_explicit_submit(self):
+        from textual.widgets import Static
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-advanced-order"
+            await pilot.pause(.4)
+            app._coinbase_order_unknown = False
+            app.query_one("#advanced-venue", Select).value = "jupiter"
+            app.query_one("#advanced-product", Input).value = "BONK-USDC"
+            app.query_one("#advanced-size", Input).value = "10"
+            app.query_one("#advanced-unit", Select).value = "quote"
+            await pilot.pause()
+            calls = []
+            original = app._call
+            def call(name, params=None, **kwargs):
+                if name == "jupiter.order_preview":
+                    calls.append((name, params))
+                    return env({
+                        "preview_id": "jup-p1",
+                        "venue": "jupiter",
+                        "product_id": "BONK-USDC",
+                        "side": "BUY",
+                        "size": "10",
+                        "size_currency": "quote",
+                        "expires_at": time.time() + 45,
+                        "estimate": {
+                            "in_amount": "10 USDC",
+                            "out_amount": "400000 BONK",
+                            "price_impact_pct": "0.010%",
+                            "route_plan": ["Orca", "Raydium"],
+                            "fee_lamports": 5000,
+                        },
+                        "notice": "Semantically verified."
+                    })
+                if name == "jupiter.order_submit":
+                    calls.append((name, params))
+                    return env({
+                        "order_id": "sig-jupiter-123",
+                        "signature": "sig-jupiter-123",
+                        "status": "FILLED",
+                        "venue": "jupiter",
+                        "solscan_url": "https://solscan.io/tx/sig-jupiter-123",
+                    })
+                return original(name, params, **kwargs)
+
+            with mock.patch.object(app, "_call", side_effect=call):
+                app._advanced_preview_pressed()
+                await pilot.pause(.3)
+                self.assertEqual(calls[0], ("jupiter.order_preview", {
+                    "product_id": "BONK-USDC", "side": "BUY", "size": "10", "size_currency": "quote"
+                }))
+                review = str(app.query_one("#advanced-review", Static).render())
+                self.assertIn("Venue: Jupiter Swap v2 (Solana)", review)
+                self.assertIn("Orca -> Raydium", review)
+                self.assertIn("400000 BONK", review)
+
+                # Armed checkbox enables submit
+                app.query_one("#advanced-armed", Checkbox).value = True
+                await pilot.pause()
+                self.assertFalse(app.query_one("#advanced-submit", Button).disabled)
+
+                app._advanced_submit_pressed()
+                await pilot.pause(.3)
+                self.assertEqual(calls[-1], ("jupiter.order_submit", {"preview_id": "jup-p1", "confirm": True}))
+                receipt = str(app.query_one("#advanced-receipt", Static).render())
+                self.assertIn("sig-jupiter-123", receipt)
                 self.assertFalse(app.query_one("#advanced-armed", Checkbox).value)

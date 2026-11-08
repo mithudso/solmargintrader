@@ -237,6 +237,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#advanced-quick": "coinbase.order_quick",
     "#advanced-percent-quick": "coinbase.order_percent_quick",
     "#advanced-conditional-quick": "coinbase.order_conditional_quick",
+    "#advanced-token-search": "jupiter.tokens_search",
     "#coinbase-pairs-filter": "coinbase.pairs",
     "#docs-search-run": "docs.search",
     "#docs-search-free": "docs.search_unload",
@@ -4396,6 +4397,7 @@ class SolTuiApp(App):
             self._call("portfolio.notice", {"mark_seen": True}, quiet=True)
         elif pane == "tab-advanced-order":
             self._coinbase_order_state_start()
+            self._jupiter_order_state_start()
         elif pane == "tab-liquidity":
             self._refresh_liquidity(force=True)
         elif pane == "tab-bots":
@@ -4733,9 +4735,9 @@ class SolTuiApp(App):
         with VerticalScroll():
             with Vertical(id="advanced-order-ticket") as ticket:
                 ticket.border_title = "Advanced order ticket"
-                yield Static("Coinbase market orders support amounts or balance percentages; conditional orders use coin units. $100 order cap. Jupiter is unavailable.", classes="hint")
+                yield Static("Coinbase spot orders ($100 cap); Jupiter Swap v2 spot market swaps ($100 cap).", classes="hint")
                 with Horizontal(classes="form-row"):
-                    yield Select([("Coinbase", "coinbase"), ("Jupiter — unavailable", "jupiter")], value="coinbase",
+                    yield Select([("Coinbase", "coinbase"), ("Jupiter", "jupiter")], value="coinbase",
                                  allow_blank=False, id="advanced-venue")
                     yield Select([("Market", "market"), ("Limit (GTC)", "limit"),
                                   ("Stop-limit (GTC)", "stop_limit"), ("Take-profit + stop bracket (SELL)", "bracket")],
@@ -4895,16 +4897,22 @@ class SolTuiApp(App):
 
     def _advanced_supported(self) -> bool:
         venue, kind, side, product, size, unit = self._advanced_values()
-        if (venue != "coinbase" or side not in ("BUY", "SELL") or not product or not size
+        if (side not in ("BUY", "SELL") or not product or not size
                 or self.query_one("#advanced-leverage", Select).value != "1x"
                 or self.query_one("#advanced-position", Select).value != "long"):
             return False
-        if kind == "market":
-            return unit in (("quote", "base", "percent") if side == "BUY" else ("base", "percent"))
-        if kind not in ("limit", "stop_limit", "bracket") or unit != "base" or (kind == "bracket" and side != "SELL"):
-            return False
-        return bool(self.query_one("#advanced-limit-price", Input).value.strip()
-                    and (kind == "limit" or self.query_one("#advanced-stop-price", Input).value.strip()))
+        if venue == "coinbase":
+            if kind == "market":
+                return unit in (("quote", "base", "percent") if side == "BUY" else ("base", "percent"))
+            if kind not in ("limit", "stop_limit", "bracket") or unit != "base" or (kind == "bracket" and side != "SELL"):
+                return False
+            return bool(self.query_one("#advanced-limit-price", Input).value.strip()
+                        and (kind == "limit" or self.query_one("#advanced-stop-price", Input).value.strip()))
+        elif venue == "jupiter":
+            if kind != "market":
+                return False
+            return unit in (("quote", "base") if side == "BUY" else ("base",))
+        return False
 
     def _advanced_controls(self) -> None:
         if not self.query("#advanced-preview"):
@@ -4914,10 +4922,10 @@ class SolTuiApp(App):
                          "#advanced-size", "#advanced-unit", "#advanced-armed", "#advanced-skip-review",
                          "#advanced-leverage", "#advanced-position"):
             self.query_one(selector).disabled = busy
-        kind = self._advanced_values()[1]
+        venue, kind, side, _, _, unit = self._advanced_values()
         conditional = kind != "market"
-        self.query_one("#advanced-limit-price", Input).disabled = busy or not conditional
-        self.query_one("#advanced-stop-price", Input).disabled = busy or kind not in ("stop_limit", "bracket")
+        self.query_one("#advanced-limit-price", Input).disabled = busy or not conditional or venue == "jupiter"
+        self.query_one("#advanced-stop-price", Input).disabled = busy or kind not in ("stop_limit", "bracket") or venue == "jupiter"
         supported = self._advanced_supported()
         locked = busy or self._coinbase_order_unknown or not supported
         quick = self.query_one("#advanced-skip-review", Checkbox).value
@@ -4937,13 +4945,13 @@ class SolTuiApp(App):
         submit.disabled = locked or not armed or not valid
         fast = self.query_one("#advanced-quick", Button)
         fast.display = quick and not percent and not conditional
-        fast.disabled = locked or not armed or not quick or percent or conditional
+        fast.disabled = locked or not armed or not quick or percent or conditional or (venue == "jupiter")
         percent_fast = self.query_one("#advanced-percent-quick", Button)
         percent_fast.display = quick and percent and not conditional
-        percent_fast.disabled = locked or not armed or not quick or not percent or conditional
+        percent_fast.disabled = locked or not armed or not quick or not percent or conditional or (venue == "jupiter")
         conditional_fast = self.query_one("#advanced-conditional-quick", Button)
         conditional_fast.display = quick and conditional
-        conditional_fast.disabled = locked or not armed or not quick or not conditional
+        conditional_fast.disabled = locked or not armed or not quick or not conditional or (venue == "jupiter")
 
     @on(Input.Changed, "#advanced-product")
     @on(Input.Changed, "#advanced-size")
@@ -4971,9 +4979,20 @@ class SolTuiApp(App):
                 "Loading timestamped session prices…" if venue == "coinbase" else "Jupiter price history unavailable.")
             self.query_one("#advanced-forecast-status", Static).update(
                 "Loading recorded forward forecasts…" if venue == "coinbase" else "Jupiter forecast unavailable.")
-        if (venue != "coinbase" or self.query_one("#advanced-leverage", Select).value != "1x"
+        if (self.query_one("#advanced-leverage", Select).value != "1x"
                 or self.query_one("#advanced-position", Select).value != "long"):
-            message = "Unavailable: this venue, leverage or short position is not implemented. No order can be placed."
+            message = "Unavailable: leverage and short execution require a supported venue. No order can be placed."
+        elif venue not in ("coinbase", "jupiter"):
+            message = "Unavailable: this venue is not implemented. No order can be placed."
+        elif venue == "jupiter":
+            if kind != "market":
+                message = "Jupiter supports market spot swaps only; conditional orders are unavailable."
+            elif unit not in (("quote", "base") if side == "BUY" else ("base",)):
+                message = "Jupiter market BUY accepts quote or coin units; SELL accepts coin units. Choose a supported unit."
+            elif self.query_one("#advanced-skip-review", Checkbox).value:
+                message = "Jupiter orders require explicit per-order review. Quick mode is disabled for Jupiter."
+            else:
+                message = "Jupiter market swap selected. Enter amount; review before placing LIVE order."
         elif kind in ("limit", "stop_limit", "bracket"):
             if unit != "base":
                 message = "Conditional orders require coin units; percentage and quote sizing are unavailable."
@@ -5074,19 +5093,24 @@ class SolTuiApp(App):
         if self._coinbase_order_busy or self._coinbase_order_unknown or not self._advanced_supported():
             return
         values = self._advanced_signature()
-        _, kind, side, product, size, unit, limit, stop, _, _ = values
+        venue, kind, side, product, size, unit, limit, stop, _, _ = values
         self._advanced_preview_data = None
         self._coinbase_order_busy = True
         self._coinbase_order_controls()
-        self.query_one("#advanced-message", Static).update("Reviewing with Coinbase. No order has been placed.")
-        if kind != "market":
-            operation = "coinbase.order_conditional_preview"
-            params = {"product_id": product, "side": side, "size": size, "order_type": kind,
-                      "limit_price": limit, "stop_price": stop}
-        elif unit == "percent":
-            operation, params = "coinbase.order_percent_preview", {"product_id": product, "side": side, "percent": size}
+        if venue == "jupiter":
+            self.query_one("#advanced-message", Static).update("Reviewing with Jupiter Swap v2. No order has been placed.")
+            operation = "jupiter.order_preview"
+            params = {"product_id": product, "side": side, "size": size, "size_currency": unit}
         else:
-            operation, params = "coinbase.order_preview", {"product_id": product, "side": side, "size": size, "size_currency": unit}
+            self.query_one("#advanced-message", Static).update("Reviewing with Coinbase. No order has been placed.")
+            if kind != "market":
+                operation = "coinbase.order_conditional_preview"
+                params = {"product_id": product, "side": side, "size": size, "order_type": kind,
+                          "limit_price": limit, "stop_price": stop}
+            elif unit == "percent":
+                operation, params = "coinbase.order_percent_preview", {"product_id": product, "side": side, "percent": size}
+            else:
+                operation, params = "coinbase.order_preview", {"product_id": product, "side": side, "size": size, "size_currency": unit}
         self._advanced_worker(operation, params, self._advanced_generation, values)
 
     @on(Button.Pressed, "#advanced-submit")
@@ -5095,19 +5119,24 @@ class SolTuiApp(App):
         preview = self._advanced_preview_data
         if self.query_one("#advanced-submit", Button).disabled or not preview:
             return
-        self._advanced_submit("coinbase.order_submit", {"preview_id": preview["preview_id"], "confirm": True})
+        venue = (preview.get("values") or ("coinbase",))[0]
+        if venue == "jupiter":
+            self._advanced_submit("jupiter.order_submit", {"preview_id": preview["preview_id"], "confirm": True})
+        else:
+            self._advanced_submit("coinbase.order_submit", {"preview_id": preview["preview_id"], "confirm": True})
 
     @on(Button.Pressed, "#advanced-quick")
     @on(Button.Pressed, "#advanced-percent-quick")
     @on(Button.Pressed, "#advanced-conditional-quick")
     def _advanced_quick_pressed(self) -> None:
         self._advanced_controls()
-        kind = self._advanced_values()[1]
-        percent = self._advanced_values()[5] == "percent"
+        venue, kind, side, product, size, unit = self._advanced_values()
+        if venue == "jupiter":
+            return  # Jupiter orders require explicit review
+        percent = unit == "percent"
         button = "#advanced-conditional-quick" if kind != "market" else "#advanced-percent-quick" if percent else "#advanced-quick"
         if self.query_one(button, Button).disabled:
             return
-        _, _, side, product, size, unit = self._advanced_values()
         if kind != "market":
             signature = self._advanced_signature()
             self._advanced_submit("coinbase.order_conditional_quick", {"product_id": product, "side": side,
@@ -5127,7 +5156,9 @@ class SolTuiApp(App):
         self._coinbase_order_busy = True
         self._coinbase_order_unknown = True
         self._coinbase_order_controls()
-        self.query_one("#advanced-message", Static).update("Submitting a LIVE order. If interrupted, reconcile at Coinbase; do not retry.")
+        venue_name = "Jupiter" if "jupiter" in operation else "Coinbase"
+        self.query_one("#advanced-message", Static).update(
+            f"Submitting a LIVE order. If interrupted, reconcile onchain/{venue_name}; do not retry.")
         self._advanced_worker(operation, params, self._advanced_generation, None)
 
     @work(thread=True, exit_on_error=False, group="advanced-coinbase-order")
@@ -5146,11 +5177,13 @@ class SolTuiApp(App):
                        values: tuple[str, ...] | None) -> None:
         self._coinbase_order_busy = False
         msg = self.query_one("#advanced-message", Static)
+        preview_ops = ("coinbase.order_preview", "coinbase.order_percent_preview", "coinbase.order_conditional_preview", "jupiter.order_preview")
         if not env.get("ok"):
             reason = self._msg(env)
-            if operation not in ("coinbase.order_preview", "coinbase.order_percent_preview", "coinbase.order_conditional_preview"):
+            if operation not in preview_ops:
                 self.query_one("#advanced-armed", Checkbox).value = False
-                msg.update("Order outcome may be unknown. Do not resubmit; reconcile at Coinbase. " + reason)
+                venue_label = "Jupiter" if "jupiter" in operation else "Coinbase"
+                msg.update(f"Order outcome may be unknown. Do not resubmit; reconcile onchain/{venue_label}. " + reason)
             else:
                 if "unresolved" in reason.lower():
                     self._coinbase_order_unknown = True
@@ -5158,7 +5191,7 @@ class SolTuiApp(App):
             self._coinbase_order_controls()
             return
         result = env.get("result") or {}
-        if operation in ("coinbase.order_preview", "coinbase.order_percent_preview", "coinbase.order_conditional_preview"):
+        if operation in preview_ops:
             expires = result.get("expires_at")
             try:
                 field = "balance_percentage" if operation == "coinbase.order_percent_preview" else "size"
@@ -5174,38 +5207,74 @@ class SolTuiApp(App):
                 except InvalidOperation:
                     same_conditional = False
             expected_unit = ("quote" if values and values[2] == "BUY" else "base") if values and values[5] == "percent" else (values[5] if values else "")
+            product_matches = bool(values and (result.get("product_id") == values[3] or operation == "jupiter.order_preview"))
             if (not values or generation != self._advanced_generation or values != self._advanced_signature()
                     or not result.get("preview_id") or not isinstance(expires, (int, float)) or expires <= time.time()
-                    or not same_size or not same_conditional or any(str(result.get(k, "")) != v for k, v in zip(
-                        ("product_id", "side", "size_currency"), (values[3], values[2], expected_unit)))):
+                    or not same_size or not same_conditional or not product_matches
+                    or any(str(result.get(k, "")) != v for k, v in zip(
+                        ("side", "size_currency"), (values[2], expected_unit) if values else (("", ""))))):
                 msg.update("Review expired or the order changed. Review it again.")
             else:
                 self._advanced_preview_data = {"preview_id": result["preview_id"], "expires_at": expires, "values": values}
                 estimate = result.get("estimate") if isinstance(result.get("estimate"), dict) else {}
-                self.query_one("#advanced-review", Static).update(
-                    f"LIVE {values[2]} {values[3]} · {values[4]} {values[5]}\n"
-                    f"Type: {values[1]} · limit: {values[6] or '-'} · stop: {values[7] or '-'}\n"
-                    f"Resolved size: {result.get('size', '')} {result.get('size_currency', '')}\n"
-                    f"{result.get('sizing_notice', '')}\n"
-                    f"Coinbase estimate: {json.dumps(result.get('estimate'), ensure_ascii=True, default=str)}\n"
-                    f"Estimated fee: {estimate.get('fee', 'unavailable')} (venue estimate). Maker/taker status "
-                    "and final fee depend on execution, especially for limit orders.\n"
-                    f"{result.get('notice', '')}")
+                if operation == "jupiter.order_preview":
+                    routes = " -> ".join(estimate.get("route_plan") or ["Jupiter AMM"])
+                    self.query_one("#advanced-review", Static).update(
+                        f"LIVE {values[2]} {values[3]} · {values[4]} {values[5]}\n"
+                        f"Venue: Jupiter Swap v2 (Solana)\n"
+                        f"Input: {estimate.get('in_amount', '-')}\n"
+                        f"Estimated output: {estimate.get('out_amount', '-')}\n"
+                        f"Price impact: {estimate.get('price_impact_pct', '-')}\n"
+                        f"Route: {routes}\n"
+                        f"Estimated fee: {estimate.get('fee_lamports', 5000)} lamports\n"
+                        f"{result.get('notice', '')}\n"
+                        "To place this order, arm live submission and press Place advanced LIVE order.")
+                else:
+                    self.query_one("#advanced-review", Static).update(
+                        f"LIVE {values[2]} {values[3]} · {values[4]} {values[5]}\n"
+                        f"Type: {values[1]} · limit: {values[6] or '-'} · stop: {values[7] or '-'}\n"
+                        f"Resolved size: {result.get('size', '')} {result.get('size_currency', '')}\n"
+                        f"{result.get('sizing_notice', '')}\n"
+                        f"Coinbase estimate: {json.dumps(result.get('estimate'), ensure_ascii=True, default=str)}\n"
+                        f"Estimated fee: {estimate.get('fee', 'unavailable')} (venue estimate). Maker/taker status "
+                        "and final fee depend on execution, especially for limit orders.\n"
+                        f"{result.get('notice', '')}")
                 msg.update("Review ready. Nothing has been submitted.")
         else:
-            order_id = result.get("order_id")
+            order_id = result.get("order_id") or result.get("signature")
             state = str(result.get("status") or "unknown")
             self.query_one("#advanced-receipt", Static).update(json.dumps(result, ensure_ascii=True, default=str))
-            if order_id:
+            if order_id and "coinbase" in operation:
                 self.query_one("#coinbase-order-id", Input).value = str(order_id)
             terminal = state.upper() in {"FILLED", "CANCELLED", "CANCELED", "FAILED", "REJECTED", "EXPIRED"}
             if terminal and order_id:
                 self._coinbase_order_unknown = False
-            if operation not in ("coinbase.order_quick", "coinbase.order_percent_quick", "coinbase.order_conditional_quick") or state.upper() != "FILLED" or not order_id:
-                self.query_one("#advanced-armed", Checkbox).value = False
-            msg.update("Order submitted. A resting order locks further orders; check its status at Coinbase." if order_id else
-                       "Order outcome unknown. Do not resubmit; reconcile at Coinbase.")
+            self.query_one("#advanced-armed", Checkbox).value = False
+            msg.update("Order submitted. " + ("Confirmed onchain." if state.upper() == "FILLED" else
+                       ("A resting order locks further orders; check its status at Coinbase." if "coinbase" in operation else "Check status on Solscan.")))
         self._coinbase_order_controls()
+
+    def _jupiter_order_state_start(self) -> None:
+        self._jupiter_order_worker("jupiter.order_state", {})
+
+    @work(thread=True, group="jupiter-order-state", exit_on_error=False)
+    def _jupiter_order_worker(self, operation: str, params: dict[str, Any]) -> None:
+        try:
+            env = self._call(operation, params, quiet=True)
+            self.call_from_thread(self._jupiter_order_state_done, env)
+        except (RuntimeError, NoMatches):
+            pass
+
+    def _jupiter_order_state_done(self, env: dict[str, Any]) -> None:
+        if not env.get("ok"):
+            return
+        res = env.get("result") or {}
+        if res.get("unresolved"):
+            self._coinbase_order_unknown = True
+            if self.query("#advanced-message"):
+                self.query_one("#advanced-message", Static).update(
+                    "A previous Jupiter order is unresolved. Reconcile onchain status before placing another order.")
+            self._coinbase_order_controls()
 
     def _coinbase_order_controls(self) -> None:
         busy = self._coinbase_order_busy
