@@ -1,9 +1,8 @@
 # Prompt history
 
-Version: 50
-Delta: v49 to v50; SolTUI redesign mockup request.
-Delta: v48 to v49; resume integration after concurrent master index repair.
-
+Version: 51
+Delta: v50 to v51; SolTUI redesign mockup request.
+Delta: v49 to v50; integrate PR 58 against landed PR 46 and retain both workflow histories.
 
 ## v1 - 2026-11-06
 
@@ -350,6 +349,16 @@ Similar to the grid trading bot strategy, create a DCA (dollar cost averaging) t
 
 Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11). Stele TASK-870.
 
+## v48 - 2026-11-07 (Five-minute leveraged perps full-suite)
+
+```text
+Run the full-suite skill on high margin leveraged perps trading strategies like exists here https://jup.ag/perps/long/SOL-SOL. Effectively betting on how the price will move in the next 5 minutes. What signals, indicators, and technicals best predict an extremely short timeframe, but that also cannot withstand a big swing in the wrong direction.
+```
+## v49 - 2026-11-08 (Approved archival and full-suite continuation)
+
+```text
+Yes, Approve moving /Users/mitch/.research intact to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808 so the workflow can continue
+
 ## v48 - 2026-11-08 (PR conflict resolution)
 
 ```text
@@ -362,7 +371,7 @@ Resolve the pr conflicts in https://github.com/mithudso/solmargintrader/pull/46 
 resume
 ```
 
-## v50 - 2026-11-08 (SolTUI redesign mockup)
+## v51 - 2026-11-08 (SolTUI redesign mockup)
 
 ```text
 Create a list of the primary functions of the TUI in this repo and without looking at its current layout use the design, ui, data viewing, and frontend skills to design an ideal UI interface that provides the same rich data it does now but in an easily accessible, intuitive, and scannable format. Do a simple mockup of it in TUI format using the best TUI tools you can find.

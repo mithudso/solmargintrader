@@ -1,0 +1,22 @@
+{
+  "schema": "task808-approved-archive/v1",
+  "version": 1,
+  "delta": "Approved legacy archive relocation completed and verified.",
+  "original_retired_path": "/Users/mitch/.research",
+  "preserved_source": "/Users/mitch/.research-archived-2026-11-07",
+  "destination": "/Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808",
+  "private_manifest": "/Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808.archive-manifest.json",
+  "inventory_sha256": "4e70f32dc2cd59f308c74c485fb76ca2e1fc1d49239ab6105fdedac36a165d2d",
+  "counts": {
+    "files": 1802,
+    "directories": 34,
+    "symlinks": 0,
+    "file_bytes": 18822683
+  },
+  "verified_at": "2026-11-08T06:38:38.617874+00:00",
+  "verification": "Exact before/after path/type/mode/owner/mtime/content-hash inventories match",
+  "scope_limit": "Verifies this relocation, not the earlier user archive from /Users/mitch/.research.",
+  "original_retired_path_absent": true,
+  "preserved_source_absent": true,
+  "destination_present": true
+}

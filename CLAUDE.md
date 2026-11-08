@@ -165,11 +165,12 @@ execution as working.
 
 <!-- llms-routing:start -->
 ## llms routing
-> Cached from the llms files below on 2026-11-06; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
+> Cached from the llms files below on 2026-11-08; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
 
 | File | Path | Holds | Ask it for |
 |---|---|---|---|
-| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Every unit in the -v4 packs passed the research-gate/v4 evidence gate on 2026-11-06 (708 claims kept of about 5,000 researched; the rest could not be bound to exact source quotes or were not judged SUPPORTED). Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
+| llms.txt | ~/.global-ai-hub/llms-concepts/five-minute-sol-perps-task808-suite.family/llms.txt | Seven private reference packs compile accepted authored claims about executable short-horizon SOL signals. They retain scoped evidence and open limitations; this suite does not demonstrate a live trading edge. | Products, Navigation |
+| llms-sitemap.txt | ~/.global-ai-hub/llms-concepts/five-minute-sol-perps-task808-suite.family/llms-sitemap.txt | Kind: store · Entries: 7 · Internal private reading aids | Files, Resources |
 
 ### Quick answers
 
@@ -181,3 +182,11 @@ _none found: no misbelief, default, file-role, formula or command lines in the f
 - Keyword: SQLite FTS5 table `files_fts` in ~/.global-ai-hub/hub.db (hub/scripts/keyword_index.py); query with `hub_search_keyword` or `keyword_index.py query "<term>"`.
 - Access ledger: ~/.global-ai-hub/llms-access-ledger.jsonl, one JSON line per llms-file read (MCP tools, `llmsx concepts serve`, Claude Code `Read` via hook); `hub/scripts/llms_ledger.py report --days 30`. A shell `cat` is not recorded.
 <!-- llms-routing:end -->
+
+### Existing Solana margin family
+
+The earlier broad family remains available alongside the five-minute suite. Its source-check date and historical verification scope remain those stated in the retained row.
+
+| File | Path | Holds | Ask it for |
+|---|---|---|---|
+| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Every unit in the -v4 packs passed the research-gate/v4 evidence gate on 2026-11-06 (708 claims kept of about 5,000 researched; the rest could not be bound to exact source quotes or were not judged SUPPORTED). Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |

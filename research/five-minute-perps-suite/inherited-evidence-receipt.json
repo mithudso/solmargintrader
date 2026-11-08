@@ -1,0 +1,650 @@
+{
+  "schema": "inherited-research-reuse/v1",
+  "as_of": "2026-11-07",
+  "canonical_run": "/Users/mitch/.global-ai-hub/research/fast-trading-signals",
+  "canonical_gate": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/gate.json",
+  "gate_sha256": "51ea7793b64faa65d658da1ac41f2c2ac69770a0d87d78ba862cc5de50f3a016",
+  "gate_packet_sha256": "d0a423934c90f4da6e2f1d980d8bcb7f33ed2d7e4addc197ed0927c8de758b31",
+  "review_binding": "f935d9e69f298ce38c3efea209f2cd2b5d0517de4c0983657094f16b08409b5e",
+  "assertions_matched": 47,
+  "spans_checked": 114,
+  "failures": [],
+  "claims": [
+    {
+      "claim_id": "clm:328c020aa2d939ffb8bf27ad1cb8a0cd602b1cb54969adac6e8f069939a1cb5f",
+      "claim_sha256": "328c020aa2d939ffb8bf27ad1cb8a0cd602b1cb54969adac6e8f069939a1cb5f",
+      "concept": "Funding and open interest divergence and basis",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/funding-and-open-interest-divergence-and-basis.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://www.bis.org/publ/work1087.htm",
+        "https://coinmarketman.com/blog/open-interest-on-hyperliquid-what-rising-oi-actually-tells-you--en/"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:e3dd40e91735d18f8e9e0d6f5b79a3053b4c78c76066defe0333d9811e1254de",
+      "claim_sha256": "e3dd40e91735d18f8e9e0d6f5b79a3053b4c78c76066defe0333d9811e1254de",
+      "concept": "Funding and open interest divergence and basis",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/funding-and-open-interest-divergence-and-basis.json",
+      "bound_spans": 1,
+      "sources": [
+        "https://coinmarketman.com/blog/open-interest-on-hyperliquid-what-rising-oi-actually-tells-you--en/"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:75dc9bb10f7efb889e2857c0ed8214933fdafc026115aa7c13ef4aecab515e19",
+      "claim_sha256": "75dc9bb10f7efb889e2857c0ed8214933fdafc026115aa7c13ef4aecab515e19",
+      "concept": "Funding and open interest divergence and basis",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/funding-and-open-interest-divergence-and-basis.json",
+      "bound_spans": 1,
+      "sources": [
+        "https://coinmarketman.com/blog/open-interest-on-hyperliquid-what-rising-oi-actually-tells-you--en/"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:a3c27cfd47b3d355a2662aceeb27522a24a6e5d3e4110f2303296006216a57ec",
+      "claim_sha256": "a3c27cfd47b3d355a2662aceeb27522a24a6e5d3e4110f2303296006216a57ec",
+      "concept": "Funding and open interest divergence and basis",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/funding-and-open-interest-divergence-and-basis.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://prestolabs.io/research/can-funding-rate-predict-price-change",
+        "https://prestolabs.io/research/can-funding-rate-predict-price-change",
+        "https://arxiv.org/html/2212.06888v7"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:2a65ca5fe5ccef57a59964021b93f1d1600c02e229bf094cd85181739e8892d0",
+      "claim_sha256": "2a65ca5fe5ccef57a59964021b93f1d1600c02e229bf094cd85181739e8892d0",
+      "concept": "Funding and open interest divergence and basis",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/funding-and-open-interest-divergence-and-basis.json",
+      "bound_spans": 4,
+      "sources": [
+        "https://arxiv.org/html/2212.06888v7",
+        "https://arxiv.org/html/2212.06888v7",
+        "https://arxiv.org/html/2212.06888v7",
+        "https://www.bis.org/publ/work1087.htm"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:854f1cbc24fe386a10f67dceb2af8d701d5009b4506e01007e31b826220122bb",
+      "claim_sha256": "854f1cbc24fe386a10f67dceb2af8d701d5009b4506e01007e31b826220122bb",
+      "concept": "Funding and open interest divergence and basis",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/funding-and-open-interest-divergence-and-basis.json",
+      "bound_spans": 1,
+      "sources": [
+        "https://www.dlnews.com/external/bitmex-study-finds-cryptocurrency-funding-rates-positive-92-of-the-time-revealing-a-structural-market-bias"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:339827a3ba459b7ca11f15a865e852d2610e2db863fae92a03ba9ed1bbebef59",
+      "claim_sha256": "339827a3ba459b7ca11f15a865e852d2610e2db863fae92a03ba9ed1bbebef59",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "https://people.duke.edu/~charvey/Research/Published_Papers/P118_and_the_cross.PDF"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:5d5f80384b9ec4a26d8e97af394cd883528583b450baa65678766e9a76d0414c",
+      "claim_sha256": "5d5f80384b9ec4a26d8e97af394cd883528583b450baa65678766e9a76d0414c",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+        "https://people.duke.edu/~charvey/Research/Published_Papers/P120_Backtesting.pdf"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:840652bc9498e6227de7472313fde13fa95e63ada8e4d4aab4592ddb226f925c",
+      "claim_sha256": "840652bc9498e6227de7472313fde13fa95e63ada8e4d4aab4592ddb226f925c",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "https://people.duke.edu/~charvey/Research/Published_Papers/P120_Backtesting.pdf"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:0cf0eef5f743fcb36b9fbf0366deaaa2f93d867e9d2059ec7abac4efe5169f68",
+      "claim_sha256": "0cf0eef5f743fcb36b9fbf0366deaaa2f93d867e9d2059ec7abac4efe5169f68",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+        "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:706a13d82ace8f178d57ba5f1ba763b2ed40a0909f74d79c6adb5949e1142507",
+      "claim_sha256": "706a13d82ace8f178d57ba5f1ba763b2ed40a0909f74d79c6adb5949e1142507",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://hftbacktest.readthedocs.io/en/latest/order_fill.html",
+        "https://hftbacktest.readthedocs.io/en/latest/latency_models.html"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:c18d8dda2617b31c00c6f3c72ce160f936fb94fab7eb0e4d4a25b467818e47fd",
+      "claim_sha256": "c18d8dda2617b31c00c6f3c72ce160f936fb94fab7eb0e4d4a25b467818e47fd",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 6,
+      "sources": [
+        "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+        "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:98439056c6936830c485d1996c4c9a43d528646aaa60225830126585502a4d3e",
+      "claim_sha256": "98439056c6936830c485d1996c4c9a43d528646aaa60225830126585502a4d3e",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "https://people.duke.edu/~charvey/Research/Published_Papers/P118_and_the_cross.PDF"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:2d52ffe250ddcd385bab76f310a685fc7ea9f676c070fd1ae7c18105293694b1",
+      "claim_sha256": "2d52ffe250ddcd385bab76f310a685fc7ea9f676c070fd1ae7c18105293694b1",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://people.duke.edu/~charvey/Research/Published_Papers/P120_Backtesting.pdf",
+        "https://hftbacktest.readthedocs.io/en/latest/order_fill.html"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:bd2745c298b69dd0cbb5034e297ad896e52766d522e723a19c8f883577e17cff",
+      "claim_sha256": "bd2745c298b69dd0cbb5034e297ad896e52766d522e723a19c8f883577e17cff",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "https://people.duke.edu/~charvey/Research/Published_Papers/P120_Backtesting.pdf"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:22e36f4953d61e4ba0bb683e9029903c69397f45e37a14b183a72a869f37a837",
+      "claim_sha256": "22e36f4953d61e4ba0bb683e9029903c69397f45e37a14b183a72a869f37a837",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 1,
+      "sources": [
+        "https://mysimon.rochester.edu/novy-marx/research/ToAatTC.pdf"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:726dcbbdaffbc20ac9fa0f57ea495bb9f2b124ac1654ca372ce07f02f39408ba",
+      "claim_sha256": "726dcbbdaffbc20ac9fa0f57ea495bb9f2b124ac1654ca372ce07f02f39408ba",
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/honest-signal-evaluation-out-of-sample-costs-and-multiple-testing.json",
+      "bound_spans": 1,
+      "sources": [
+        "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:84a401194c89a751a48aa9ef6776f82be6c6b0953e0b27af93109e7dfaa9299e",
+      "claim_sha256": "84a401194c89a751a48aa9ef6776f82be6c6b0953e0b27af93109e7dfaa9299e",
+      "concept": "Liquidation heatmaps and cascades",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/liquidation-heatmaps-and-cascades.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://academy.hyblockcapital.com/tools/liquidation-levels-1",
+        "https://docs.coinglass.com/reference/liquidation-heatmap",
+        "https://www.coinglass.com/learn/how-to-use-liqmap-to-assist-trading-en"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:ec76019a9c29f4af068978b2d976cf6db2cf784ad2c4e6b26b818e849e7db1ef",
+      "claim_sha256": "ec76019a9c29f4af068978b2d976cf6db2cf784ad2c4e6b26b818e849e7db1ef",
+      "concept": "Liquidation heatmaps and cascades",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/liquidation-heatmaps-and-cascades.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://academy.hyblockcapital.com/tools/liquidation-levels-1",
+        "https://www.coinglass.com/learn/how-to-use-liqmap-to-assist-trading-en"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:dc2821f0ba24dd460db2027b85dc1b13bb0544210a1fa4ca963b24f1124f5639",
+      "claim_sha256": "dc2821f0ba24dd460db2027b85dc1b13bb0544210a1fa4ca963b24f1124f5639",
+      "concept": "Liquidation heatmaps and cascades",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/liquidation-heatmaps-and-cascades.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://mmt.gg/learn/hyperliquid-heatmaps",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/liquidations"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:c728e5518c350ef6ec73b2de3d75207c9f3d8cc93f413275869ecb99574765b4",
+      "claim_sha256": "c728e5518c350ef6ec73b2de3d75207c9f3d8cc93f413275869ecb99574765b4",
+      "concept": "Liquidation heatmaps and cascades",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/liquidation-heatmaps-and-cascades.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/liquidations",
+        "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/auto-deleveraging"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:8add52bb564bec2341ed0f7292a7d6c99c50db24ca96a053b601ac7e8fa3f81e",
+      "claim_sha256": "8add52bb564bec2341ed0f7292a7d6c99c50db24ca96a053b601ac7e8fa3f81e",
+      "concept": "Liquidation heatmaps and cascades",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/liquidation-heatmaps-and-cascades.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://www.coinglass.com/learn/how-to-use-liqmap-to-assist-trading-en",
+        "https://www.coinglass.com/learn/how-to-use-liqmap-to-assist-trading-en",
+        "https://academy.hyblockcapital.com/tools/liquidation-levels-1"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:f62902c24284e2cec663e552b9103f8b7a8b9b275f2648295e66c92f5995e596",
+      "claim_sha256": "f62902c24284e2cec663e552b9103f8b7a8b9b275f2648295e66c92f5995e596",
+      "concept": "Liquidation heatmaps and cascades",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/liquidation-heatmaps-and-cascades.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://academy.hyblockcapital.com/tools/liquidation-levels-1",
+        "https://academy.hyblockcapital.com/tools/liquidation-levels-1",
+        "https://mmt.gg/learn/hyperliquid-heatmaps"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:9e259e7be81cb71342ca5f0d1fd62df8fb3900db7b39e0f68108ac1c4bf5ea71",
+      "claim_sha256": "9e259e7be81cb71342ca5f0d1fd62df8fb3900db7b39e0f68108ac1c4bf5ea71",
+      "concept": "Liquidation heatmaps and cascades",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/liquidation-heatmaps-and-cascades.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://www.coinglass.com/learn/how-to-use-liqmap-to-assist-trading-en",
+        "https://academy.hyblockcapital.com/tools/liquidation-levels-1",
+        "https://mmt.gg/learn/hyperliquid-heatmaps"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:81cd90def5da75ccb6866ced007fc634a3915c087c20fb13ec07aa0d37b32693",
+      "claim_sha256": "81cd90def5da75ccb6866ced007fc634a3915c087c20fb13ec07aa0d37b32693",
+      "concept": "On-chain flows and smart money tracking",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/on-chain-flows-and-smart-money-tracking.json",
+      "bound_spans": 4,
+      "sources": [
+        "https://www.philadelphiafed.org/-/media/frbp/assets/working-papers/2026/wp26-42.pdf",
+        "https://www.philadelphiafed.org/-/media/frbp/assets/working-papers/2026/wp26-42.pdf",
+        "https://www.blockchainresearchlab.org/2022/07/29/the-role-of-whale-alerts-and-sentiment-in-bitcoins-reaction-to-minting-and-burning-of-tethers-usdt",
+        "https://www.blockchainresearchlab.org/2022/07/29/the-role-of-whale-alerts-and-sentiment-in-bitcoins-reaction-to-minting-and-burning-of-tethers-usdt"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:5b27cfa347ad09e8b522296852e848631109521629002c1a6ec7bedb6aaaef03",
+      "claim_sha256": "5b27cfa347ad09e8b522296852e848631109521629002c1a6ec7bedb6aaaef03",
+      "concept": "On-chain flows and smart money tracking",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/on-chain-flows-and-smart-money-tracking.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://arxiv.org/html/2601.08641v3",
+        "https://arxiv.org/html/2601.08641v3",
+        "https://arxiv.org/html/2601.08641v3"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:2d2fc8f865a65e47c0dd8594ad4fb290877960a0b3d67e471f4bf0048dda8d5a",
+      "claim_sha256": "2d2fc8f865a65e47c0dd8594ad4fb290877960a0b3d67e471f4bf0048dda8d5a",
+      "concept": "Oracle and data latency and signal half-life",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/oracle-and-data-latency-and-signal-half-life.json",
+      "bound_spans": 4,
+      "sources": [
+        "https://docs.pyth.network/llms-price-feeds-core.txt",
+        "https://chain.link/education-hub/pull-oracles-vs-push-oracles",
+        "https://chain.link/education-hub/pull-oracles-vs-push-oracles",
+        "https://chain.link/blog/data-streams-mainnet"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:dd66d213f4085c42f39af26d5c169e4e5f7951efdf932a04ad8db930815f89ca",
+      "claim_sha256": "dd66d213f4085c42f39af26d5c169e4e5f7951efdf932a04ad8db930815f89ca",
+      "concept": "Oracle and data latency and signal half-life",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/oracle-and-data-latency-and-signal-half-life.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://chain.link/education-hub/pull-oracles-vs-push-oracles",
+        "https://docs.pyth.network/price-feeds/core/pull-updates"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:016cbb8b9dbcd471acc21120d43c1428449f54640dff45150e419ec4a9bfc56d",
+      "claim_sha256": "016cbb8b9dbcd471acc21120d43c1428449f54640dff45150e419ec4a9bfc56d",
+      "concept": "Oracle and data latency and signal half-life",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/oracle-and-data-latency-and-signal-half-life.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://conference.nber.org/conf_papers/f69665.pdf",
+        "https://conference.nber.org/conf_papers/f69665.pdf",
+        "https://www.richmondfed.org/publications/research/econ_focus/2015/q3/research_spotlight"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:b9282cdbc4e30385ddf36b73f6964bf21c89bc942065d5b1b8a7a04f23646c35",
+      "claim_sha256": "b9282cdbc4e30385ddf36b73f6964bf21c89bc942065d5b1b8a7a04f23646c35",
+      "concept": "Oracle and data latency and signal half-life",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/oracle-and-data-latency-and-signal-half-life.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://archive.nyu.edu/bitstream/2451/28346/2/DynamicTrading.pdf",
+        "https://archive.nyu.edu/bitstream/2451/28346/2/DynamicTrading.pdf",
+        "https://archive.nyu.edu/bitstream/2451/28346/2/DynamicTrading.pdf"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:218d3f3776b6418753709ca1c17eb1ceb585ae120a3dd2fba4481a1d60258c20",
+      "claim_sha256": "218d3f3776b6418753709ca1c17eb1ceb585ae120a3dd2fba4481a1d60258c20",
+      "concept": "Oracle and data latency and signal half-life",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/oracle-and-data-latency-and-signal-half-life.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://arxiv.org/html/2602.00776",
+        "https://arxiv.org/html/2602.00776"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:2ba10ef4a62f3d2e774e19d44856f306dab816952a2b69d12ceef16bb735a9d9",
+      "claim_sha256": "2ba10ef4a62f3d2e774e19d44856f306dab816952a2b69d12ceef16bb735a9d9",
+      "concept": "Oracle and data latency and signal half-life",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/oracle-and-data-latency-and-signal-half-life.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://www.coinapi.io/learn/glossary/time_exchange-vs-time_coinapi",
+        "https://github.com/gavincyi/BitcoinExchangeFH/wiki/FAQ"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:689c85af0a28d8e1ef91cea9591b1e3b6a3715992672f368a698a633b0fed8af",
+      "claim_sha256": "689c85af0a28d8e1ef91cea9591b1e3b6a3715992672f368a698a633b0fed8af",
+      "concept": "Oracle and data latency and signal half-life",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/oracle-and-data-latency-and-signal-half-life.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://chorus.one/articles/an-introduction-to-oracle-extractable-value-oev",
+        "https://chorus.one/articles/an-introduction-to-oracle-extractable-value-oev",
+        "https://chain.link/blog/chainlink-svr-analysis"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:8d2262de2ec8fc5544abed0e2fc1f2050344d0b893295bdeb84ec89447f1162e",
+      "claim_sha256": "8d2262de2ec8fc5544abed0e2fc1f2050344d0b893295bdeb84ec89447f1162e",
+      "concept": "Order flow signals CVD and order book imbalance",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/order-flow-signals-cvd-and-order-book-imbalance.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://www.coinglass.com/cvd",
+        "https://www.coinglass.com/cvd"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:073555377ad31e5d323bc55f4cf78fdfb7f858e4f99ce8436d08810d29f9c333",
+      "claim_sha256": "073555377ad31e5d323bc55f4cf78fdfb7f858e4f99ce8436d08810d29f9c333",
+      "concept": "Order flow signals CVD and order book imbalance",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/order-flow-signals-cvd-and-order-book-imbalance.json",
+      "bound_spans": 4,
+      "sources": [
+        "https://ar5iv.labs.arxiv.org/html/1011.6402",
+        "https://ar5iv.labs.arxiv.org/html/1011.6402",
+        "https://arxiv.org/abs/1907.06230",
+        "https://arxiv.org/abs/2004.08290"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:e74faced93d0ac320b0741a7e5dcd9842e34ef6285923e98e1b76dda04648d74",
+      "claim_sha256": "e74faced93d0ac320b0741a7e5dcd9842e34ef6285923e98e1b76dda04648d74",
+      "concept": "Order flow signals CVD and order book imbalance",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/order-flow-signals-cvd-and-order-book-imbalance.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://arxiv.org/abs/1512.03492",
+        "https://ideas.repec.org/a/bla/mathfi/v33y2023i4p1044-1081.html",
+        "https://arxiv.org/html/2602.00776"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:ef20ffbc212c8009a3e1653633aaaf51c2555ea6e9ac746900c837e6a7ec946d",
+      "claim_sha256": "ef20ffbc212c8009a3e1653633aaaf51c2555ea6e9ac746900c837e6a7ec946d",
+      "concept": "Order flow signals CVD and order book imbalance",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/order-flow-signals-cvd-and-order-book-imbalance.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://ar5iv.labs.arxiv.org/html/1011.6402",
+        "https://arxiv.org/abs/1907.06230"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:eb932b2c6a52b7e92033e898b7e51a30eb8aaa7f9a4573f7684f79af84207662",
+      "claim_sha256": "eb932b2c6a52b7e92033e898b7e51a30eb8aaa7f9a4573f7684f79af84207662",
+      "concept": "Order flow signals CVD and order book imbalance",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/order-flow-signals-cvd-and-order-book-imbalance.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://raw.githubusercontent.com/binance/binance-spot-api-docs/master/web-socket-streams.md",
+        "https://docs.cdp.coinbase.com/exchange/websocket-feed/channels.md",
+        "https://bybit-exchange.github.io/docs/v5/websocket/public/trade"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:607c8f7cd1d6e06183c4b4cd8cedc563b3a5c92ca3a3f175ffd73555e6326a6c",
+      "claim_sha256": "607c8f7cd1d6e06183c4b4cd8cedc563b3a5c92ca3a3f175ffd73555e6326a6c",
+      "concept": "Order flow signals CVD and order book imbalance",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/order-flow-signals-cvd-and-order-book-imbalance.json",
+      "bound_spans": 1,
+      "sources": [
+        "https://docs.cdp.coinbase.com/exchange/websocket-feed/channels.md"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:8db0a1e99d66541908ddcc5ea41d95b798c1145b5e2d0d88b2f4248026d0ea67",
+      "claim_sha256": "8db0a1e99d66541908ddcc5ea41d95b798c1145b5e2d0d88b2f4248026d0ea67",
+      "concept": "Order flow signals CVD and order book imbalance",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/order-flow-signals-cvd-and-order-book-imbalance.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://arxiv.org/abs/1512.03492",
+        "https://arxiv.org/html/2602.00776"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:fbbc6cc02f7d90de3545239332c73e6b5d4516d7d56a7637962087a90c925ffc",
+      "claim_sha256": "fbbc6cc02f7d90de3545239332c73e6b5d4516d7d56a7637962087a90c925ffc",
+      "concept": "Order flow signals CVD and order book imbalance",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/order-flow-signals-cvd-and-order-book-imbalance.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://ideas.repec.org/a/bla/mathfi/v33y2023i4p1044-1081.html",
+        "https://arxiv.org/abs/1907.06230",
+        "https://arxiv.org/abs/2506.05764"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:be1c614b663eca5cb9adca4a93aecb8f3d0e4625fb45d5accb72a4d77ccf3db9",
+      "claim_sha256": "be1c614b663eca5cb9adca4a93aecb8f3d0e4625fb45d5accb72a4d77ccf3db9",
+      "concept": "Short horizon momentum breakout and mean reversion",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/short-horizon-momentum-breakout-and-mean-reversion.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://ideas.repec.org/a/eee/ecofin/v62y2022ics1062940822000833.html",
+        "https://research.birmingham.ac.uk/en/publications/bitcoin-intraday-time-series-momentum/"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:7931106062fdce6b0ae7aed34543faa0b558986d9c01067868be398f038cf6b4",
+      "claim_sha256": "7931106062fdce6b0ae7aed34543faa0b558986d9c01067868be398f038cf6b4",
+      "concept": "Short horizon momentum breakout and mean reversion",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/short-horizon-momentum-breakout-and-mean-reversion.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://link.springer.com/article/10.1007/s10479-019-03357-1",
+        "https://link.springer.com/article/10.1007/s10479-019-03357-1"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:4aaaa19ec31a12195c46c606af8e5cbea235e87b961986535248276ea622078f",
+      "claim_sha256": "4aaaa19ec31a12195c46c606af8e5cbea235e87b961986535248276ea622078f",
+      "concept": "Short horizon momentum breakout and mean reversion",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/short-horizon-momentum-breakout-and-mean-reversion.json",
+      "bound_spans": 3,
+      "sources": [
+        "https://ideas.repec.org/p/chf/rpseri/rp2580.html",
+        "https://link.springer.com/article/10.1007/s11408-025-00474-9",
+        "https://ideas.repec.org/a/eee/finana/v78y2021ics1057521921002349.html"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:18932ae97ae25d622ad977eadf8893ecfb4d4c08f1f1a78986e55602b47a5861",
+      "claim_sha256": "18932ae97ae25d622ad977eadf8893ecfb4d4c08f1f1a78986e55602b47a5861",
+      "concept": "Short horizon momentum breakout and mean reversion",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/short-horizon-momentum-breakout-and-mean-reversion.json",
+      "bound_spans": 1,
+      "sources": [
+        "https://link.springer.com/article/10.1007/s10479-019-03357-1"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:7ab5230fb9f2a67dbf77903bbe3fe26a854cd78d6447f1a5f46fde65d0bf9cc8",
+      "claim_sha256": "7ab5230fb9f2a67dbf77903bbe3fe26a854cd78d6447f1a5f46fde65d0bf9cc8",
+      "concept": "Short horizon momentum breakout and mean reversion",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/short-horizon-momentum-breakout-and-mean-reversion.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://arxiv.org/abs/2608.21888",
+        "https://arxiv.org/abs/2608.21888"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    },
+    {
+      "claim_id": "clm:17024a5d715ff3e91c215b628b7f3c446544abb02addf4a1bc3599e24508135a",
+      "claim_sha256": "17024a5d715ff3e91c215b628b7f3c446544abb02addf4a1bc3599e24508135a",
+      "concept": "Short horizon momentum breakout and mean reversion",
+      "canonical_claim_file": "/Users/mitch/.global-ai-hub/research/fast-trading-signals/claims/short-horizon-momentum-breakout-and-mean-reversion.json",
+      "bound_spans": 2,
+      "sources": [
+        "https://arxiv.org/abs/2608.21888",
+        "https://github.com/nadav2/short-horizon-reversion"
+      ],
+      "verdict": "SUPPORTED",
+      "reuse_scope": "exact assertion and unchanged pinned evidence only; no horizon or asset transfer inferred"
+    }
+  ],
+  "projection_discrepancy": {
+    "canonical_supported_assertions": 47,
+    "prior_units_count": 48,
+    "excluded_projection_claim": "Data sources APIs latency and cost claim not in canonical gate; do not promote unchanged48-unit pack as a47-claim proof"
+  }
+}
