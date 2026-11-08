@@ -198,7 +198,13 @@ class ForwardLedgerTests(TempConfig):
         again = compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post)
         self.assertTrue(first["recorded"])
         self.assertFalse(again["recorded"])
-        venue.now += 300
+        venue.now += 60
+        sampled = compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post)
+        self.assertFalse(sampled["recorded"])
+        one_minute = [r for r in compound.read_ledger("SOL")
+                      if r.get("type") == "horizon_call" and r.get("minutes") == 1]
+        self.assertEqual(len(one_minute), 2)
+        venue.now += 240
         second = compound.forward_tick("SOL", now=venue.now, get=venue.get, post=venue.post)
         self.assertTrue(second["recorded"])
         self.assertEqual(second["resolved"], 1)
