@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `3d2f4d4` (2026-11-08T08:16:33+00:00). 694 tracked files, 12.4 MB.
+**Generated** from `index/INDEX.json` at commit `4d0f027` (2026-11-08T09:28:46+00:00). 1834 tracked files, 29.4 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (499 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 242/253 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (101 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (1614 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 268/282 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (119 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,10 +34,10 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 18 files
-- [`docs`](#docs) — 39 files
+- [`docs`](#docs) — 41 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 145 files
-- [`research`](#research) — 140 files
+- [`backtester`](#backtester) — 1228 files
+- [`research`](#research) — 156 files
 - [`extension`](#extension) — 92 files
 - [`soltui`](#soltui) — 92 files
 - [`.github`](#github) — 9 files
@@ -46,10 +46,11 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.claude`](#claude) — 1 files
 - [`.githooks`](#githooks) — 2 files
 - [`.vscode`](#vscode) — 3 files
+- [`executor`](#executor) — 38 files
 - [`liquidity`](#liquidity) — 57 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 17 files
-- [`scripts`](#scripts) — 2 files
+- [`scripts`](#scripts) — 3 files
 - [`skills`](#skills) — 62 files
 - [`tools`](#tools) — 3 files
 
@@ -111,7 +112,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 181 lines · 12,406 B · description: **curated**
+`doc` · 193 lines · 13,836 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -143,7 +144,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 133 lines · 8,123 B · description: **curated**
+`doc` · 135 lines · 8,573 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -183,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 538 lines · 78,821 B · description: **extracted**
+`doc` · 767 lines · 117,087 B · description: **extracted**
 
-**Purpose.** Version: 53 Delta: v52 to v53; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 72 Delta: v71 to v72; verified card catalog ready for remote delivery. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -199,9 +200,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 340 lines · 20,904 B · description: **extracted**
+`doc` · 381 lines · 22,829 B · description: **extracted**
 
-**Purpose.** Version: 47 Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder. Version: 45
+**Purpose.** Version: 50 Delta: v49 to v50; TradingView source-to-card inventory and specification coverage. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -211,7 +212,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-39 files.
+41 files.
 
 #### `docs/API.md`
 
@@ -223,9 +224,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 161 lines · 10,309 B · description: **extracted**
+`doc` · 161 lines · 10,329 B · description: **extracted**
 
-**Purpose.** Six components with explicit execution boundaries. The backtester and research do not place orders. The extension and liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
+**Purpose.** Seven components with explicit execution boundaries. The backtester and research do not place orders. The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
 **Use.** Read it.
 
@@ -247,7 +248,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPOUND-5M-PAPER.md`
 
-`doc` · 565 lines · 53,032 B · description: **extracted**
+`doc` · 574 lines · 53,792 B · description: **extracted**
 
 **Purpose.** The compound scorecard asks one question: **will the next five-minute bar of a crypto perpetual close up or down?** It scores 28 metrics from -1 (down) to +1 (up), removes the double-counting between metrics that measure the same thing, reweights styles by market regime, and combines the scores into one call (UP, DOWN or FLAT) behind seven veto gates.
 
@@ -255,7 +256,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPOUND-5M.md`
 
-`doc` · 487 lines · 34,609 B · description: **extracted**
+`doc` · 503 lines · 35,901 B · description: **extracted**
 
 **Purpose.** A tester for one question: **will the next 5-minute bar close up or down?** Every metric in (up). The scores are combined into one call (UP, DOWN or FLAT), which you can backtest and forward test, metric by metric and combined. Nothing here places an order.
 
@@ -263,7 +264,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,302 B · description: **extracted**
+`doc` · 320 lines · 18,677 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -279,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 6641 lines · 332,449 B · description: **extracted**
+`doc` · 17998 lines · 885,353 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -287,9 +288,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/INSTALLATION.md`
 
-`doc` · 183 lines · 7,638 B · description: **extracted**
+`doc` · 184 lines · 7,745 B · description: **extracted**
 
-**Purpose.** Six components with separate dependencies. The optional soltui app and liquidity daemon can each install a persistent macOS launchd service. Test commands below do not install them. verified against that runtime. Liquidity declares its own Python range in `pyproject.toml`.
+**Purpose.** Seven components with separate dependencies. The optional soltui app and liquidity daemon can each install a persistent macOS launchd service. Test commands below do not install them. verified against that runtime. Liquidity declares its own Python range in `pyproject.toml`.
 
 **Use.** Read it.
 
@@ -333,6 +334,22 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/TRADINGVIEW-CARD-COVERAGE.md`
+
+`doc` · 1257 lines · 100,543 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 (2026-11-08). Delta: first source-to-card reconciliation. Created **1083 specification cards** after checking existing cards, the strategy registry, indicator functions and Compound scorecard. Existing code and measured cards keep their status.
+
+**Use.** Read it.
+
+#### `docs/TRADINGVIEW-CARD-FILES.md`
+
+`doc` · 1104 lines · 281,905 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 (2026-11-08). Delta: first complete path receipt. Canonical checkout paths for every file created or modified by this task. The coverage report and JSON ledger explain the matches and source limitations.
+
+**Use.** Read it.
+
 #### `docs/TRADINGVIEW-REFERENCE.md`
 
 `doc` · 3648 lines · 424,800 B · description: **extracted**
@@ -367,9 +384,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/codebase-overview.md`
 
-`doc` · 306 lines · 20,740 B · description: **extracted**
+`doc` · 335 lines · 22,845 B · description: **extracted**
 
-**Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Six components, in ascending order of how much damage a bug can do: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
+**Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Seven components, in ascending order of how much damage a bug can do: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 
 **Use.** Read it.
 
@@ -383,7 +400,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1291 lines · 38,507 B · description: **derived**
+`doc` · 1437 lines · 42,686 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -423,9 +440,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/onboarding.md`
 
-`doc` · 145 lines · 5,985 B · description: **extracted**
+`doc` · 146 lines · 6,043 B · description: **extracted**
 
-**Purpose.** An offline verification path, followed by optional component setup. Identify the two components that can move money before running any live command. Six components with different failure modes:
+**Purpose.** An offline verification path, followed by optional component setup. Identify the two components that can move money before running any live command. Seven components with different failure modes:
 
 **Use.** Read it.
 
@@ -613,7 +630,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-145 files.
+1228 files.
 
 #### `backtester/PROMPT.md`
 
@@ -1083,7 +1100,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/README.md`
 
-`strategy-card` · 233 lines · 11,657 B · description: **extracted**
+`strategy-card` · 245 lines · 12,300 B · description: **extracted**
 
 **Purpose.** One file per strategy or signal. Each card is self-contained: the equations, the code pointer, the reasoning, the failure modes, the caveats, the measured results, and the or an agent to run without reading anything else.
 
@@ -1619,6 +1636,10836 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** Read the card, then build it: `build('ts_momentum', **params)`. Status: measured.
 
+#### `backtester/strategy_cards/tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator.md`
+
+`strategy-card` · 100 lines · 5,844 B · description: **extracted**
+
+**Purpose.** Specification of Innovation Adaptive Kalman Filter Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_0enoetmo_smartphase_analyzer.md`
+
+`strategy-card` · 96 lines · 4,310 B · description: **extracted**
+
+**Purpose.** Specification of SmartPhase Analyzer; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_0ghsw1kr_moving_regression.md`
+
+`strategy-card` · 98 lines · 4,857 B · description: **extracted**
+
+**Purpose.** Specification of Moving Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_0j7owdat_flowscope_hapharmonic.md`
+
+`strategy-card` · 98 lines · 5,080 B · description: **extracted**
+
+**Purpose.** Specification of FlowScope [Hapharmonic]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc.md`
+
+`strategy-card` · 96 lines · 5,829 B · description: **extracted**
+
+**Purpose.** Specification of BITCOIN and CORRELATION, alternative trading strategies (CC); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_0nz4m9e7_holographic_market_microstructure_alphanatt.md`
+
+`strategy-card` · 98 lines · 4,557 B · description: **extracted**
+
+**Purpose.** Specification of Holographic Market Microstructure | AlphaNatt; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md`
+
+`strategy-card` · 98 lines · 4,788 B · description: **extracted**
+
+**Purpose.** Specification of Nasan Risk Score & Postion Size Estimator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_0sbntaqj_trading_abc.md`
+
+`strategy-card` · 94 lines · 4,119 B · description: **extracted**
+
+**Purpose.** Specification of Trading ABC; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_0x1dgqjw_xabcd_harmonic_pattern_custom_range_interactive.md`
+
+`strategy-card` · 104 lines · 5,024 B · description: **extracted**
+
+**Purpose.** Specification of XABCD Harmonic Pattern Custom Range Interactive; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_10xmhfge_volume_per_point.md`
+
+`strategy-card` · 90 lines · 3,821 B · description: **extracted**
+
+**Purpose.** Specification of Volume per Point; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_119rqjou_potential_breakout_on_btcusd_to_the_upside.md`
+
+`strategy-card` · 130 lines · 5,570 B · description: **extracted**
+
+**Purpose.** Specification of Potential breakout on BTCUSD to the upside; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_12m8jqu6_function_polynomial_regression.md`
+
+`strategy-card` · 92 lines · 3,994 B · description: **extracted**
+
+**Purpose.** Specification of Function Polynomial Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_15kb0kgb_rsi_buy_sell_force_ver_1.md`
+
+`strategy-card` · 90 lines · 3,875 B · description: **extracted**
+
+**Purpose.** Specification of RSI buy sell force ver 1 ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_17xrxgad_auto_pitchfan_fib_extension_retracement_and_zigzag_by_dgt.md`
+
+`strategy-card` · 100 lines · 5,665 B · description: **extracted**
+
+**Purpose.** Specification of Auto PitchFan, Fib Extension/Retracement and ZigZag by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_195p3ylk_commitment_of_traders_legacy_metrics.md`
+
+`strategy-card` · 98 lines · 5,440 B · description: **extracted**
+
+**Purpose.** Specification of Commitment of Traders: Legacy Metrics; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md`
+
+`strategy-card` · 96 lines · 5,408 B · description: **extracted**
+
+**Purpose.** Specification of Bitcoin approaches $25,000, how can we identify a potential top?; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_1cv4puad_redk_indicator_amplifier_redk_i_amp.md`
+
+`strategy-card` · 98 lines · 5,003 B · description: **extracted**
+
+**Purpose.** Specification of RedK Indicator Amplifier (RedK i-Amp); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_1i4bnwmu_js_squeeze_pro_overlays.md`
+
+`strategy-card` · 102 lines · 4,693 B · description: **extracted**
+
+**Purpose.** Specification of (JS) Squeeze Pro Overlays; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_1imcwzbc_the_simplest_scalping_strategy_with_3_ema_s_for_20_pips_per_day.md`
+
+`strategy-card` · 98 lines · 4,660 B · description: **extracted**
+
+**Purpose.** Specification of The Simplest Scalping Strategy With 3 EMA's For 20 Pips Per Day; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_1nhvl40i_fibonacci_time_price_zones.md`
+
+`strategy-card` · 100 lines · 6,147 B · description: **extracted**
+
+**Purpose.** Specification of Fibonacci Time-Price Zones; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_1uw4irtx_all_time_high_low_widget.md`
+
+`strategy-card` · 92 lines · 3,958 B · description: **extracted**
+
+**Purpose.** Specification of All-Time High/Low Widget; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_1z60bvmr_previous_period_levels_x_alerts.md`
+
+`strategy-card` · 96 lines · 4,133 B · description: **extracted**
+
+**Purpose.** Specification of Previous Period Levels - X Alerts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_23wjedff_ehlers_loops_bigbeluga.md`
+
+`strategy-card` · 98 lines · 5,590 B · description: **extracted**
+
+**Purpose.** Specification of Ehlers Loops [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_25py1uvb_position_cost_distribution.md`
+
+`strategy-card` · 100 lines · 5,003 B · description: **extracted**
+
+**Purpose.** Specification of Position Cost Distribution; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_2gaiphlg_periodic_activity_tracker_luxalgo.md`
+
+`strategy-card` · 102 lines · 4,734 B · description: **extracted**
+
+**Purpose.** Specification of Periodic Activity Tracker [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md`
+
+`strategy-card` · 112 lines · 7,612 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2026.10 A Low-Risk ETF-Trading Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_2sf3nchw_s_p_500_risk_off_watch_the_put_call_ratio_and_us_dollar.md`
+
+`strategy-card` · 96 lines · 5,432 B · description: **extracted**
+
+**Purpose.** Specification of S&P 500 Risk Off? Watch the Put-Call Ratio and US Dollar; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_2tennpoc_rsi_past_can_turn_rsi_into_a_directional_tool.md`
+
+`strategy-card` · 92 lines · 4,346 B · description: **extracted**
+
+**Purpose.** Specification of RSI Past Can Turn RSI Into a Directional Tool; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md`
+
+`strategy-card` · 91 lines · 4,223 B · description: **extracted**
+
+**Purpose.** Specification of Annual Returns % Comparison [By MUQWISHI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_2vlzhblv_modified_obv_w_divergence_detection_by_cryptorhythms.md`
+
+`strategy-card` · 94 lines · 4,297 B · description: **extracted**
+
+**Purpose.** Specification of Modified OBV w/ Divergence Detection by Cryptorhythms; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_2vmbqbln_market_ekg.md`
+
+`strategy-card` · 94 lines · 4,601 B · description: **extracted**
+
+**Purpose.** Specification of Market EKG; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_34r4mh5w_market_microstructure_analytics.md`
+
+`strategy-card` · 100 lines · 7,642 B · description: **extracted**
+
+**Purpose.** Specification of Market Microstructure Analytics; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_3aqxmxoc_s_p_500_vs_stocks.md`
+
+`strategy-card` · 95 lines · 4,230 B · description: **extracted**
+
+**Purpose.** Specification of S&P 500 VS STOCKS; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_3jkrk2at_vqzl_z_score.md`
+
+`strategy-card` · 98 lines · 5,365 B · description: **extracted**
+
+**Purpose.** Specification of VQZL Z-Score; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_3lzg4gmr_machine_learning_knn_new_approach.md`
+
+`strategy-card` · 98 lines · 5,336 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning: kNN (New Approach); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_3mkewfnn_10x_bull_vs_bear_vp_intraday_sessions_kioseff_trading.md`
+
+`strategy-card` · 94 lines · 4,362 B · description: **extracted**
+
+**Purpose.** Specification of 10x Bull Vs. Bear VP Intraday Sessions [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_3w5o68jp_rs_zigzag_multiple_methods_forecast_patterns_labels.md`
+
+`strategy-card` · 92 lines · 4,146 B · description: **extracted**
+
+**Purpose.** Specification of [RS]ZigZag Multiple Methods - Forecast - patterns - labels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_3xe8qqfr_directional_volume_shapes_zeiierman.md`
+
+`strategy-card` · 104 lines · 5,772 B · description: **extracted**
+
+**Purpose.** Specification of Directional Volume Shapes (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000474007_understanding_range_charts.md`
+
+`strategy-card` · 98 lines · 4,357 B · description: **extracted**
+
+**Purpose.** Specification of Understanding range charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000501972_bollinger_bandwidth_bbw.md`
+
+`strategy-card` · 98 lines · 5,477 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger BandWidth (BBW); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000502040_volume_profile_indicators_basic_concepts.md`
+
+`strategy-card` · 104 lines · 5,845 B · description: **extracted**
+
+**Purpose.** Specification of Volume profile indicators: basic concepts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000502272_learn_to_use_kagi_charts.md`
+
+`strategy-card` · 100 lines · 4,947 B · description: **extracted**
+
+**Purpose.** Specification of Learn to use Kagi charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000502273_introduction_to_line_break_charts.md`
+
+`strategy-card` · 98 lines · 5,235 B · description: **extracted**
+
+**Purpose.** Specification of Introduction to line break charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000502276_learn_using_point_and_figure_charts.md`
+
+`strategy-card` · 102 lines · 5,354 B · description: **extracted**
+
+**Purpose.** Specification of Learn using point and figure charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000502591_multi_time_period_charts_indicator.md`
+
+`strategy-card` · 100 lines · 5,386 B · description: **extracted**
+
+**Purpose.** Specification of Multi-Time Period Charts indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583765_bearish_abandoned_baby_how_to_spot_a_reversal_at_the_top_of_an_up.md`
+
+`strategy-card` · 98 lines · 5,508 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Abandoned baby: how to spot a reversal at the top of an uptrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583766_bullish_abandoned_baby_how_to_catch_a_reversal_at_the_bottom_of_a.md`
+
+`strategy-card` · 98 lines · 5,527 B · description: **extracted**
+
+**Purpose.** Specification of Bullish Abandoned baby: how to catch a reversal at the bottom of a downtrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583767_doji_interpreting_market_indecision_on_a_price_chart.md`
+
+`strategy-card` · 102 lines · 5,435 B · description: **extracted**
+
+**Purpose.** Specification of Doji: interpreting market indecision on a price chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583768_bullish_dragonfly_doji_recognizing_lower_price_rejection_in_a_dow.md`
+
+`strategy-card` · 100 lines · 5,396 B · description: **extracted**
+
+**Purpose.** Specification of Bullish Dragonfly Doji: recognizing lower price rejection in a downtrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583769_bearish_engulfing_recognizing_sellers_taking_over_at_an_uptrend_s.md`
+
+`strategy-card` · 96 lines · 5,103 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Engulfing: recognizing sellers taking over at an uptrend's peak; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583771_bullish_engulfing_recognizing_buyers_taking_over_at_a_downtrend_s.md`
+
+`strategy-card` · 96 lines · 5,110 B · description: **extracted**
+
+**Purpose.** Specification of Bullish Engulfing: recognizing buyers taking over at a downtrend's base; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583772_bearish_evening_star_identifying_the_end_of_an_uptrend_in_three_c.md`
+
+`strategy-card` · 98 lines · 5,625 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Evening star: identifying the end of an uptrend in three candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583773_bearish_gravestone_doji_how_to_spot_rejected_buying_at_the_top_of.md`
+
+`strategy-card` · 100 lines · 5,440 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Gravestone Doji: how to spot rejected buying at the top of a move; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583775_bullish_hammer_detecting_a_possible_bottom_in_a_downtrend.md`
+
+`strategy-card` · 98 lines · 5,098 B · description: **extracted**
+
+**Purpose.** Specification of Bullish Hammer: detecting a possible bottom in a downtrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583776_bearish_hanging_man_detecting_warning_signs_at_market_highs.md`
+
+`strategy-card` · 100 lines · 5,429 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Hanging man: detecting warning signs at market highs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583777_bearish_harami_how_to_confirm_a_slowdown_at_the_top_of_an_uptrend.md`
+
+`strategy-card` · 96 lines · 5,099 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Harami: how to confirm a slowdown at the top of an uptrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583778_harami_bullish.md`
+
+`strategy-card` · 96 lines · 4,724 B · description: **extracted**
+
+**Purpose.** Specification of Harami - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583780_inverted_hammer_bullish.md`
+
+`strategy-card` · 96 lines · 4,781 B · description: **extracted**
+
+**Purpose.** Specification of Inverted Hammer - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583781_kicking_bearish.md`
+
+`strategy-card` · 90 lines · 4,171 B · description: **extracted**
+
+**Purpose.** Specification of Kicking - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583782_kicking_bullish.md`
+
+`strategy-card` · 90 lines · 4,389 B · description: **extracted**
+
+**Purpose.** Specification of Kicking - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583783_long_lower_shadow_bullish.md`
+
+`strategy-card` · 92 lines · 4,120 B · description: **extracted**
+
+**Purpose.** Specification of Long Lower Shadow - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583784_long_upper_shadow_bearish.md`
+
+`strategy-card` · 92 lines · 4,134 B · description: **extracted**
+
+**Purpose.** Specification of Long Upper Shadow - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583785_marubozu_black_bearish.md`
+
+`strategy-card` · 92 lines · 4,120 B · description: **extracted**
+
+**Purpose.** Specification of Marubozu Black - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583786_marubozu_white_bullish.md`
+
+`strategy-card` · 92 lines · 4,143 B · description: **extracted**
+
+**Purpose.** Specification of Marubozu White - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583787_morning_star_bullish.md`
+
+`strategy-card` · 96 lines · 4,902 B · description: **extracted**
+
+**Purpose.** Specification of Morning Star - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583789_shooting_star_bearish.md`
+
+`strategy-card` · 96 lines · 4,739 B · description: **extracted**
+
+**Purpose.** Specification of Shooting Star - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583790_spinning_top_white.md`
+
+`strategy-card` · 92 lines · 4,076 B · description: **extracted**
+
+**Purpose.** Specification of Spinning Top White; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583791_spinning_top_black.md`
+
+`strategy-card` · 92 lines · 4,049 B · description: **extracted**
+
+**Purpose.** Specification of Spinning Top Black; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583792_three_black_crows_bearish.md`
+
+`strategy-card` · 92 lines · 4,136 B · description: **extracted**
+
+**Purpose.** Specification of Three Black Crows - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583793_three_white_soldiers_bullish.md`
+
+`strategy-card` · 92 lines · 4,100 B · description: **extracted**
+
+**Purpose.** Specification of Three White Soldiers - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583794_tri_star_bearish.md`
+
+`strategy-card` · 96 lines · 4,922 B · description: **extracted**
+
+**Purpose.** Specification of Tri Star - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000583796_tri_star_bullish.md`
+
+`strategy-card` · 96 lines · 4,945 B · description: **extracted**
+
+**Purpose.** Specification of Tri Star - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000589092_advance_decline_line.md`
+
+`strategy-card` · 93 lines · 4,406 B · description: **extracted**
+
+**Purpose.** Specification of Advance/Decline Line; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000589093_advance_decline_ratio.md`
+
+`strategy-card` · 95 lines · 4,620 B · description: **extracted**
+
+**Purpose.** Specification of Advance/Decline Ratio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000589104_bollinger_bands_strategy.md`
+
+`strategy-card` · 100 lines · 6,086 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Bands Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000589126_cumulative_volume_index_cvi.md`
+
+`strategy-card` · 99 lines · 4,583 B · description: **extracted**
+
+**Purpose.** Specification of Cumulative Volume Index (CVI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000589129_dividend_yield.md`
+
+`strategy-card` · 94 lines · 4,548 B · description: **extracted**
+
+**Purpose.** Specification of Dividend Yield; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000589195_pivot_points_high_low.md`
+
+`strategy-card` · 96 lines · 4,983 B · description: **extracted**
+
+**Purpose.** Specification of Pivot Points High Low; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000591333_rob_booker_adx_breakout.md`
+
+`strategy-card` · 98 lines · 5,476 B · description: **extracted**
+
+**Purpose.** Specification of Rob Booker - ADX Breakout; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000591336_rob_booker_knoxville_divergence.md`
+
+`strategy-card` · 94 lines · 4,662 B · description: **extracted**
+
+**Purpose.** Specification of Rob Booker - Knoxville Divergence; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000591664_zigzag_indicator.md`
+
+`strategy-card` · 102 lines · 6,021 B · description: **extracted**
+
+**Purpose.** Specification of Zigzag indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000591665_inside_bar_strategy.md`
+
+`strategy-card` · 100 lines · 6,098 B · description: **extracted**
+
+**Purpose.** Specification of InSide Bar Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592285_stochastic_slow_strategy.md`
+
+`strategy-card` · 100 lines · 5,337 B · description: **extracted**
+
+**Purpose.** Specification of Stochastic Slow Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592558_piercing_bullish.md`
+
+`strategy-card` · 96 lines · 4,721 B · description: **extracted**
+
+**Purpose.** Specification of Piercing - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592563_bearish_dark_cloud_cover_how_to_read_a_failed_push_higher_in_an_u.md`
+
+`strategy-card` · 96 lines · 5,057 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Dark cloud cover: how to read a failed push higher in an uptrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592704_morning_doji_star_bullish.md`
+
+`strategy-card` · 96 lines · 5,054 B · description: **extracted**
+
+**Purpose.** Specification of Morning Doji Star - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592705_bearish_evening_doji_star_recognizing_a_confirmed_reversal_at_an_.md`
+
+`strategy-card` · 98 lines · 5,361 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Evening Doji star: recognizing a confirmed reversal at an uptrend's peak; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592707_harami_cross_bearish.md`
+
+`strategy-card` · 96 lines · 4,854 B · description: **extracted**
+
+**Purpose.** Specification of Harami Cross - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592708_harami_cross_bullish.md`
+
+`strategy-card` · 96 lines · 4,735 B · description: **extracted**
+
+**Purpose.** Specification of Harami Cross - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592709_tweezer_bottom_bullish.md`
+
+`strategy-card` · 96 lines · 4,827 B · description: **extracted**
+
+**Purpose.** Specification of Tweezer Bottom - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592710_tweezer_top_bearish.md`
+
+`strategy-card` · 96 lines · 4,819 B · description: **extracted**
+
+**Purpose.** Specification of Tweezer Top - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592711_rising_three_methods_bullish.md`
+
+`strategy-card` · 96 lines · 4,962 B · description: **extracted**
+
+**Purpose.** Specification of Rising Three Methods - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592712_bearish_falling_three_methods_catching_a_temporary_pullback_in_a_.md`
+
+`strategy-card` · 98 lines · 5,469 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Falling three methods: catching a temporary pullback in a downtrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592713_bearish_falling_window_interpreting_a_price_gap_within_a_downtren.md`
+
+`strategy-card` · 100 lines · 5,444 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Falling window: interpreting a price gap within a downtrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592721_rising_window_bullish.md`
+
+`strategy-card` · 98 lines · 4,958 B · description: **extracted**
+
+**Purpose.** Specification of Rising Window - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592722_on_neck_bearish.md`
+
+`strategy-card` · 96 lines · 4,807 B · description: **extracted**
+
+**Purpose.** Specification of On Neck - Bearish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592723_bearish_downside_tasuki_gap_how_to_confirm_a_downtrend_will_conti.md`
+
+`strategy-card` · 100 lines · 5,420 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Downside Tasuki gap: how to confirm a downtrend will continue; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592725_upside_tasuki_gap_bullish.md`
+
+`strategy-card` · 96 lines · 4,932 B · description: **extracted**
+
+**Purpose.** Specification of Upside Tasuki Gap - Bullish; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592726_bullish_doji_star_detecting_seller_exhaustion_at_a_downtrend_s_ba.md`
+
+`strategy-card` · 98 lines · 5,306 B · description: **extracted**
+
+**Purpose.** Specification of Bullish Doji star: detecting seller exhaustion at a downtrend's base; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000592727_bearish_doji_star_identifying_early_hesitation_at_the_top_of_an_u.md`
+
+`strategy-card` · 98 lines · 5,312 B · description: **extracted**
+
+**Purpose.** Specification of Bearish Doji star: identifying early hesitation at the top of an uptrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000594526_pivot_reversal_strategy.md`
+
+`strategy-card` · 102 lines · 5,426 B · description: **extracted**
+
+**Purpose.** Specification of Pivot Reversal Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000594546_rob_booker_intraday_pivot_points.md`
+
+`strategy-card` · 94 lines · 4,444 B · description: **extracted**
+
+**Purpose.** Specification of Rob Booker Intraday Pivot Points; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000594673_woodies_cci.md`
+
+`strategy-card` · 98 lines · 4,729 B · description: **extracted**
+
+**Purpose.** Specification of Woodies CCI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000594676_volatility_stop.md`
+
+`strategy-card` · 110 lines · 7,707 B · description: **extracted**
+
+**Purpose.** Specification of Volatility Stop; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000594678_rob_booker_missed_pivot_points.md`
+
+`strategy-card` · 92 lines · 4,434 B · description: **extracted**
+
+**Purpose.** Specification of Rob Booker Missed Pivot Points; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000594679_rob_booker_ziv_ghost_pivots.md`
+
+`strategy-card` · 92 lines · 4,582 B · description: **extracted**
+
+**Purpose.** Specification of Rob Booker Ziv Ghost Pivots; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000594680_weighted_moving_average.md`
+
+`strategy-card` · 92 lines · 4,745 B · description: **extracted**
+
+**Purpose.** Specification of Weighted Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599823_barupdn_strategy.md`
+
+`strategy-card` · 96 lines · 4,378 B · description: **extracted**
+
+**Purpose.** Specification of BarUpDn Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599826_bollinger_bands_strategy_directed.md`
+
+`strategy-card` · 102 lines · 5,519 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Bands Strategy Directed; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599828_channel_breakout_strategy.md`
+
+`strategy-card` · 98 lines · 4,931 B · description: **extracted**
+
+**Purpose.** Specification of Channel BreakOut Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599836_consecutive_up_down_strategy.md`
+
+`strategy-card` · 96 lines · 4,921 B · description: **extracted**
+
+**Purpose.** Specification of Consecutive Up/Down Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599840_rob_booker_reversal.md`
+
+`strategy-card` · 92 lines · 4,454 B · description: **extracted**
+
+**Purpose.** Specification of Rob Booker Reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599876_greedy_strategy.md`
+
+`strategy-card` · 106 lines · 5,127 B · description: **extracted**
+
+**Purpose.** Specification of Greedy Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599883_momentum_strategy.md`
+
+`strategy-card` · 92 lines · 4,762 B · description: **extracted**
+
+**Purpose.** Specification of Momentum Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599884_moon_phases.md`
+
+`strategy-card` · 90 lines · 3,957 B · description: **extracted**
+
+**Purpose.** Specification of Moon Phases; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599887_outside_bar_strategy.md`
+
+`strategy-card` · 90 lines · 4,228 B · description: **extracted**
+
+**Purpose.** Specification of OutSide Bar Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599888_pivot_extension_strategy.md`
+
+`strategy-card` · 94 lines · 4,826 B · description: **extracted**
+
+**Purpose.** Specification of Pivot Extension Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000599890_volty_expan_close_strategy.md`
+
+`strategy-card` · 90 lines · 4,330 B · description: **extracted**
+
+**Purpose.** Specification of Volty Expan Close Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000601862_price_channel_strategy.md`
+
+`strategy-card` · 92 lines · 4,795 B · description: **extracted**
+
+**Purpose.** Specification of Price Channel Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000614331_technical_ratings.md`
+
+`strategy-card` · 98 lines · 5,021 B · description: **extracted**
+
+**Purpose.** Specification of Technical Ratings; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000628415_technical_ratings_strategy.md`
+
+`strategy-card` · 96 lines · 4,672 B · description: **extracted**
+
+**Purpose.** Specification of Technical Ratings Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000644914_advance_decline_ratio_bars.md`
+
+`strategy-card` · 92 lines · 4,485 B · description: **extracted**
+
+**Purpose.** Specification of Advance/Decline Ratio (Bars); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000644929_keltner_channels_strategy.md`
+
+`strategy-card` · 96 lines · 4,420 B · description: **extracted**
+
+**Purpose.** Specification of Keltner Channels Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000644936_linear_regression.md`
+
+`strategy-card` · 98 lines · 4,719 B · description: **extracted**
+
+**Purpose.** Specification of Linear Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000644943_macd_strategy.md`
+
+`strategy-card` · 94 lines · 4,131 B · description: **extracted**
+
+**Purpose.** Specification of MACD Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000645065_parabolic_sar_strategy.md`
+
+`strategy-card` · 90 lines · 4,026 B · description: **extracted**
+
+**Purpose.** Specification of Parabolic SAR Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000645066_rsi_strategy.md`
+
+`strategy-card` · 96 lines · 4,171 B · description: **extracted**
+
+**Purpose.** Specification of RSI Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000645068_supertrend_strategy.md`
+
+`strategy-card` · 90 lines · 3,997 B · description: **extracted**
+
+**Purpose.** Specification of Supertrend Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000652199_vwap_auto_anchored.md`
+
+`strategy-card` · 98 lines · 4,651 B · description: **extracted**
+
+**Purpose.** Specification of VWAP Auto Anchored; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000653216_chart_pattern_rectangle.md`
+
+`strategy-card` · 92 lines · 4,341 B · description: **extracted**
+
+**Purpose.** Specification of Chart Pattern Rectangle; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000668584_24_hour_volume.md`
+
+`strategy-card` · 98 lines · 5,315 B · description: **extracted**
+
+**Purpose.** Specification of 24-hour Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000672561_up_down_volume.md`
+
+`strategy-card` · 96 lines · 4,822 B · description: **extracted**
+
+**Purpose.** Specification of Up/Down Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000675999_gaps.md`
+
+`strategy-card` · 100 lines · 5,543 B · description: **extracted**
+
+**Purpose.** Specification of Gaps; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000678409_analyst_price_forecast.md`
+
+`strategy-card` · 93 lines · 4,310 B · description: **extracted**
+
+**Purpose.** Specification of Analyst price forecast; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000678766_visible_average_price.md`
+
+`strategy-card` · 92 lines · 4,168 B · description: **extracted**
+
+**Purpose.** Specification of Visible Average Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000692939_time_weighted_average_price.md`
+
+`strategy-card` · 98 lines · 5,286 B · description: **extracted**
+
+**Purpose.** Specification of Time Weighted Average Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000695003_average_daily_range_adr_indicator.md`
+
+`strategy-card` · 98 lines · 5,021 B · description: **extracted**
+
+**Purpose.** Specification of Average Daily Range (ADR) indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000703071_periodic_volume_profile.md`
+
+`strategy-card` · 98 lines · 4,957 B · description: **extracted**
+
+**Purpose.** Specification of Periodic Volume Profile; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000703077_auto_anchored_volume_profile.md`
+
+`strategy-card` · 102 lines · 5,300 B · description: **extracted**
+
+**Purpose.** Specification of Auto Anchored Volume Profile; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000705489_relative_volume_at_time.md`
+
+`strategy-card` · 98 lines · 6,151 B · description: **extracted**
+
+**Purpose.** Specification of Relative Volume at Time; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000707882_stochastic_momentum_index_smi.md`
+
+`strategy-card` · 98 lines · 4,775 B · description: **extracted**
+
+**Purpose.** Specification of Stochastic Momentum Index (SMI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000717955_bull_bear_power.md`
+
+`strategy-card` · 94 lines · 4,343 B · description: **extracted**
+
+**Purpose.** Specification of Bull Bear Power; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000724995_understanding_volume_candle_charts.md`
+
+`strategy-card` · 98 lines · 4,757 B · description: **extracted**
+
+**Purpose.** Specification of Understanding volume candle charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000725590_time_price_opportunity_charts_explained.md`
+
+`strategy-card` · 100 lines · 5,152 B · description: **extracted**
+
+**Purpose.** Specification of Time price opportunity charts explained; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000726749_bbtrend.md`
+
+`strategy-card` · 98 lines · 4,852 B · description: **extracted**
+
+**Purpose.** Specification of BBTrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000730980_price_target_indicator.md`
+
+`strategy-card` · 91 lines · 4,148 B · description: **extracted**
+
+**Purpose.** Specification of Price target - indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000732559_chart_pattern_inverted_cup_and_handle.md`
+
+`strategy-card` · 100 lines · 5,188 B · description: **extracted**
+
+**Purpose.** Specification of Chart Pattern Inverted Cup and Handle; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000736064_performance.md`
+
+`strategy-card` · 98 lines · 5,360 B · description: **extracted**
+
+**Purpose.** Specification of Performance; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000741165_auto_trendlines.md`
+
+`strategy-card` · 100 lines · 4,864 B · description: **extracted**
+
+**Purpose.** Specification of Auto trendlines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000742575_bollinger_bars.md`
+
+`strategy-card` · 90 lines · 4,222 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Bars; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000745275_session_volume_profile_charts_explained.md`
+
+`strategy-card` · 100 lines · 5,173 B · description: **extracted**
+
+**Purpose.** Specification of Session volume profile charts explained; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000762388_understanding_crypto_open_interest.md`
+
+`strategy-card` · 94 lines · 4,633 B · description: **extracted**
+
+**Purpose.** Specification of Understanding crypto open interest; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000762390_funding_rate_a_guide_to_market_sentiment.md`
+
+`strategy-card` · 102 lines · 5,279 B · description: **extracted**
+
+**Purpose.** Specification of Funding rate: a guide to market sentiment; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000762397_long_short_accounts.md`
+
+`strategy-card` · 91 lines · 3,943 B · description: **extracted**
+
+**Purpose.** Specification of Long Short Accounts %; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000762399_long_short_ratio_accounts.md`
+
+`strategy-card` · 95 lines · 4,465 B · description: **extracted**
+
+**Purpose.** Specification of Long / Short Ratio Accounts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000762400_liquidation_data_what_to_watch_and_why_it_matters.md`
+
+`strategy-card` · 98 lines · 5,102 B · description: **extracted**
+
+**Purpose.** Specification of Liquidation data: what to watch and why it matters; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000765571_rci_ribbon.md`
+
+`strategy-card` · 98 lines · 5,167 B · description: **extracted**
+
+**Purpose.** Specification of RCI Ribbon; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773004_aroon_oscillator.md`
+
+`strategy-card` · 98 lines · 4,868 B · description: **extracted**
+
+**Purpose.** Specification of Aroon Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773005_negative_volume_index_nvi.md`
+
+`strategy-card` · 96 lines · 4,783 B · description: **extracted**
+
+**Purpose.** Specification of Negative Volume Index (NVI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773006_positive_volume_index_pvi.md`
+
+`strategy-card` · 96 lines · 4,791 B · description: **extracted**
+
+**Purpose.** Specification of Positive Volume Index (PVI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773010_price_momentum_oscillator_pmo.md`
+
+`strategy-card` · 98 lines · 5,079 B · description: **extracted**
+
+**Purpose.** Specification of Price Momentum Oscillator (PMO); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773011_pring_s_special_k.md`
+
+`strategy-card` · 94 lines · 4,981 B · description: **extracted**
+
+**Purpose.** Specification of Pring's Special K; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773012_kaufman_s_adaptive_moving_average_kama.md`
+
+`strategy-card` · 98 lines · 5,291 B · description: **extracted**
+
+**Purpose.** Specification of Kaufman's Adaptive Moving Average (KAMA); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773013_chandelier_exit.md`
+
+`strategy-card` · 100 lines · 4,892 B · description: **extracted**
+
+**Purpose.** Specification of Chandelier Exit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773115_ulcer_index.md`
+
+`strategy-card` · 100 lines · 5,015 B · description: **extracted**
+
+**Purpose.** Specification of Ulcer Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773986_1_year_active_supply.md`
+
+`strategy-card` · 94 lines · 4,903 B · description: **extracted**
+
+**Purpose.** Specification of 1 year active supply %; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773987_addresses_with_balance_x_of_supply.md`
+
+`strategy-card` · 98 lines · 5,254 B · description: **extracted**
+
+**Purpose.** Specification of Addresses with balance ≥ X (% of supply); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773988_addresses_with_balance_x_usd.md`
+
+`strategy-card` · 96 lines · 5,202 B · description: **extracted**
+
+**Purpose.** Specification of Addresses with balance ≥ X (USD); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773989_average_transaction_volume.md`
+
+`strategy-card` · 94 lines · 4,265 B · description: **extracted**
+
+**Purpose.** Specification of Average transaction volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773990_held_tokens_in_addresses_x_usd.md`
+
+`strategy-card` · 96 lines · 5,236 B · description: **extracted**
+
+**Purpose.** Specification of Held tokens in addresses ≥ X (USD); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773991_held_tokens_in_addresses_x_tokens.md`
+
+`strategy-card` · 98 lines · 5,315 B · description: **extracted**
+
+**Purpose.** Specification of Held tokens in addresses ≥ X (tokens); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773992_held_tokens_in_addresses_x_of_supply.md`
+
+`strategy-card` · 96 lines · 5,311 B · description: **extracted**
+
+**Purpose.** Specification of Held tokens in addresses ≥ X (% of supply); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773993_large_transaction_volume.md`
+
+`strategy-card` · 94 lines · 4,290 B · description: **extracted**
+
+**Purpose.** Specification of Large transaction volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773994_realized_market_cap.md`
+
+`strategy-card` · 92 lines · 4,511 B · description: **extracted**
+
+**Purpose.** Specification of Realized market cap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773995_rvt_ratio_90_days.md`
+
+`strategy-card` · 92 lines · 4,314 B · description: **extracted**
+
+**Purpose.** Specification of RVT ratio, 90 days; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773996_supply_equality_ratio.md`
+
+`strategy-card` · 92 lines · 4,572 B · description: **extracted**
+
+**Purpose.** Specification of Supply Equality Ratio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000773997_transaction_fees.md`
+
+`strategy-card` · 92 lines · 4,143 B · description: **extracted**
+
+**Purpose.** Specification of Transaction fees; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778534_sending_addresses.md`
+
+`strategy-card` · 92 lines · 4,132 B · description: **extracted**
+
+**Purpose.** Specification of Sending addresses; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778535_receiving_addresses.md`
+
+`strategy-card` · 92 lines · 4,156 B · description: **extracted**
+
+**Purpose.** Specification of Receiving addresses; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778537_spent_output_profit_ratio_sopr.md`
+
+`strategy-card` · 90 lines · 4,235 B · description: **extracted**
+
+**Purpose.** Specification of Spent Output Profit Ratio (SOPR); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778538_mean_transfer_volume.md`
+
+`strategy-card` · 96 lines · 4,247 B · description: **extracted**
+
+**Purpose.** Specification of Mean transfer volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778539_median_transfer_volume.md`
+
+`strategy-card` · 94 lines · 4,190 B · description: **extracted**
+
+**Purpose.** Specification of Median transfer volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778541_transfer_count.md`
+
+`strategy-card` · 94 lines · 4,517 B · description: **extracted**
+
+**Purpose.** Specification of Transfer count; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778542_transfer_rate.md`
+
+`strategy-card` · 90 lines · 3,880 B · description: **extracted**
+
+**Purpose.** Specification of Transfer rate; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778543_transaction_rate.md`
+
+`strategy-card` · 90 lines · 3,970 B · description: **extracted**
+
+**Purpose.** Specification of Transaction rate; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778547_transaction_fees.md`
+
+`strategy-card` · 92 lines · 4,140 B · description: **extracted**
+
+**Purpose.** Specification of Transaction fees; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778548_mean_transaction_fees.md`
+
+`strategy-card` · 92 lines · 4,223 B · description: **extracted**
+
+**Purpose.** Specification of Mean transaction fees; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778549_median_transaction_fees.md`
+
+`strategy-card` · 90 lines · 4,033 B · description: **extracted**
+
+**Purpose.** Specification of Median transaction fees; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778550_total_gas_used.md`
+
+`strategy-card` · 92 lines · 4,037 B · description: **extracted**
+
+**Purpose.** Specification of Total gas used; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778551_mean_gas_used.md`
+
+`strategy-card` · 92 lines · 4,024 B · description: **extracted**
+
+**Purpose.** Specification of Mean gas used; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778552_median_gas_used.md`
+
+`strategy-card` · 92 lines · 4,053 B · description: **extracted**
+
+**Purpose.** Specification of Median gas used; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778553_mean_transaction_gas_price.md`
+
+`strategy-card` · 96 lines · 4,384 B · description: **extracted**
+
+**Purpose.** Specification of Mean transaction gas price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778554_median_transaction_gas_price.md`
+
+`strategy-card` · 96 lines · 4,515 B · description: **extracted**
+
+**Purpose.** Specification of Median transaction gas price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778555_block_height.md`
+
+`strategy-card` · 90 lines · 4,021 B · description: **extracted**
+
+**Purpose.** Specification of Block height; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778556_blocks_mined.md`
+
+`strategy-card` · 94 lines · 4,391 B · description: **extracted**
+
+**Purpose.** Specification of Blocks mined; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778557_mean_block_interval.md`
+
+`strategy-card` · 94 lines · 4,369 B · description: **extracted**
+
+**Purpose.** Specification of Mean block interval; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778558_median_block_interval.md`
+
+`strategy-card` · 92 lines · 4,146 B · description: **extracted**
+
+**Purpose.** Specification of Median block interval; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778559_total_block_size_in_bytes.md`
+
+`strategy-card` · 96 lines · 4,471 B · description: **extracted**
+
+**Purpose.** Specification of Total block size in bytes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778560_mean_block_size_in_bytes.md`
+
+`strategy-card` · 90 lines · 3,999 B · description: **extracted**
+
+**Purpose.** Specification of Mean block size in bytes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778561_hash_rate.md`
+
+`strategy-card` · 92 lines · 4,121 B · description: **extracted**
+
+**Purpose.** Specification of Hash Rate; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778562_difficulty.md`
+
+`strategy-card` · 90 lines · 4,209 B · description: **extracted**
+
+**Purpose.** Specification of Difficulty; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778563_total_utxos.md`
+
+`strategy-card` · 90 lines · 3,969 B · description: **extracted**
+
+**Purpose.** Specification of Total UTXOs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778564_created_utxos.md`
+
+`strategy-card` · 92 lines · 4,085 B · description: **extracted**
+
+**Purpose.** Specification of Created UTXOs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778565_spent_utxos.md`
+
+`strategy-card` · 92 lines · 4,078 B · description: **extracted**
+
+**Purpose.** Specification of Spent UTXOs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778566_mean_utxo_value_created.md`
+
+`strategy-card` · 96 lines · 4,410 B · description: **extracted**
+
+**Purpose.** Specification of Mean UTXO value created; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778567_median_utxo_value_created.md`
+
+`strategy-card` · 96 lines · 4,418 B · description: **extracted**
+
+**Purpose.** Specification of Median UTXO value created; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778568_total_utxo_value_created.md`
+
+`strategy-card` · 98 lines · 4,599 B · description: **extracted**
+
+**Purpose.** Specification of Total UTXO value created; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778569_mean_utxo_value_spent.md`
+
+`strategy-card` · 98 lines · 4,668 B · description: **extracted**
+
+**Purpose.** Specification of Mean UTXO value spent; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778570_median_utxo_value_spent.md`
+
+`strategy-card` · 96 lines · 4,424 B · description: **extracted**
+
+**Purpose.** Specification of Median UTXO value spent; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778572_total_utxo_value_spent.md`
+
+`strategy-card` · 98 lines · 4,555 B · description: **extracted**
+
+**Purpose.** Specification of Total UTXO value spent; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778573_total_transactions_size_in_bytes.md`
+
+`strategy-card` · 96 lines · 4,490 B · description: **extracted**
+
+**Purpose.** Specification of Total transactions size in bytes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778574_mean_transaction_size_in_bytes.md`
+
+`strategy-card` · 96 lines · 4,438 B · description: **extracted**
+
+**Purpose.** Specification of Mean transaction size in bytes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778575_el_salvador_government_balance.md`
+
+`strategy-card` · 90 lines · 3,952 B · description: **extracted**
+
+**Purpose.** Specification of El Salvador Government balance; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778576_power_law_model.md`
+
+`strategy-card` · 92 lines · 4,363 B · description: **extracted**
+
+**Purpose.** Specification of Power-Law Model; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778577_stock_to_flow_ratio_in_usd.md`
+
+`strategy-card` · 92 lines · 4,286 B · description: **extracted**
+
+**Purpose.** Specification of Stock-to-Flow Ratio in USD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778578_ethereum_new_deposits.md`
+
+`strategy-card` · 92 lines · 4,175 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum new deposits; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778579_ethereum_new_value_staked.md`
+
+`strategy-card` · 94 lines · 4,458 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum new value staked; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778580_ethereum_new_unique_depositors.md`
+
+`strategy-card` · 90 lines · 4,194 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum new unique depositors; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778581_ethereum_total_number_of_deposits.md`
+
+`strategy-card` · 90 lines · 4,077 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum total number of deposits; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778582_ethereum_total_unique_depositors.md`
+
+`strategy-card` · 90 lines · 4,150 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum total unique depositors; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778583_ethereum_total_value_staked.md`
+
+`strategy-card` · 90 lines · 4,049 B · description: **extracted**
+
+**Purpose.** Specification of Ethereum total value staked; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778584_mean_transaction_gas_limit.md`
+
+`strategy-card` · 94 lines · 4,231 B · description: **extracted**
+
+**Purpose.** Specification of Mean transaction gas limit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778585_median_transaction_gas_limit.md`
+
+`strategy-card` · 94 lines · 4,145 B · description: **extracted**
+
+**Purpose.** Specification of Median transaction gas limit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778587_active_addresses_with_contracts.md`
+
+`strategy-card` · 90 lines · 4,165 B · description: **extracted**
+
+**Purpose.** Specification of Active addresses with contracts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778588_us_spot_crypto_etf_balances.md`
+
+`strategy-card` · 94 lines · 4,215 B · description: **extracted**
+
+**Purpose.** Specification of US spot crypto ETF balances; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778589_us_spot_crypto_etf_flows.md`
+
+`strategy-card` · 94 lines · 4,281 B · description: **extracted**
+
+**Purpose.** Specification of US spot crypto ETF flows; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778590_etf_balances.md`
+
+`strategy-card` · 90 lines · 3,903 B · description: **extracted**
+
+**Purpose.** Specification of ETF balances; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000778591_etf_flows.md`
+
+`strategy-card` · 90 lines · 3,927 B · description: **extracted**
+
+**Purpose.** Specification of ETF flows; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000783958_auto_key_levels.md`
+
+`strategy-card` · 100 lines · 5,126 B · description: **extracted**
+
+**Purpose.** Specification of Auto key levels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000784529_top_trader_long_short_accounts.md`
+
+`strategy-card` · 93 lines · 4,064 B · description: **extracted**
+
+**Purpose.** Specification of Top trader long/short accounts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000784530_top_trader_long_short_accounts_ratio.md`
+
+`strategy-card` · 91 lines · 3,972 B · description: **extracted**
+
+**Purpose.** Specification of Top trader long/short accounts ratio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000784531_top_trader_long_short_positions.md`
+
+`strategy-card` · 90 lines · 3,927 B · description: **extracted**
+
+**Purpose.** Specification of Top trader long/short positions; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000784532_top_trader_long_short_positions_ratio.md`
+
+`strategy-card` · 92 lines · 3,994 B · description: **extracted**
+
+**Purpose.** Specification of Top trader long/short positions ratio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000784533_index_price.md`
+
+`strategy-card` · 93 lines · 4,011 B · description: **extracted**
+
+**Purpose.** Specification of Index price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000784534_mark_price.md`
+
+`strategy-card` · 98 lines · 4,210 B · description: **extracted**
+
+**Purpose.** Specification of Mark price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000784535_premium.md`
+
+`strategy-card` · 99 lines · 4,180 B · description: **extracted**
+
+**Purpose.** Specification of Premium; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000784536_basis.md`
+
+`strategy-card` · 99 lines · 4,176 B · description: **extracted**
+
+**Purpose.** Specification of Basis; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000793423_options_volume_profile_see_call_and_put_volume_right_on_the_chart.md`
+
+`strategy-card` · 97 lines · 4,815 B · description: **extracted**
+
+**Purpose.** Specification of Options Volume Profile: see call and put volume right on the chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000796657_supply_in_profit.md`
+
+`strategy-card` · 96 lines · 4,556 B · description: **extracted**
+
+**Purpose.** Specification of Supply in Profit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_43000796930_expected_move_see_the_market_s_projected_price_range_on_the_chart.md`
+
+`strategy-card` · 97 lines · 5,036 B · description: **extracted**
+
+**Purpose.** Specification of Expected Move: see the market's projected price range on the chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_4774rrry_your_strength_meter_for_candlestick_best_momentum_indicator.md`
+
+`strategy-card` · 94 lines · 4,238 B · description: **extracted**
+
+**Purpose.** Specification of Your Strength Meter For Candlestick | Best Momentum Indicator 🕯; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_49yiv1jw_machine_learning_logistic_regression.md`
+
+`strategy-card` · 98 lines · 4,883 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning: Logistic Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_4kigelgo_finra_daily_short_sale_volume.md`
+
+`strategy-card` · 94 lines · 4,263 B · description: **extracted**
+
+**Purpose.** Specification of FINRA Daily Short Sale Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_4lbygqj0_weighted_percentile_nearest_rank.md`
+
+`strategy-card` · 94 lines · 4,274 B · description: **extracted**
+
+**Purpose.** Specification of Weighted percentile nearest rank; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_4n9sh3lz_funamental_and_financials.md`
+
+`strategy-card` · 90 lines · 3,928 B · description: **extracted**
+
+**Purpose.** Specification of Funamental and financials; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_4nmghanl_redk_slow_smooth_average_rss_wma.md`
+
+`strategy-card` · 92 lines · 4,215 B · description: **extracted**
+
+**Purpose.** Specification of RedK Slow_Smooth Average (RSS_WMA); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_4odvb8q4_relative_currency_strength.md`
+
+`strategy-card` · 92 lines · 4,502 B · description: **extracted**
+
+**Purpose.** Specification of Relative Currency Strength; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_4psxdoyc_a_technique_from_1202_really.md`
+
+`strategy-card` · 98 lines · 5,207 B · description: **extracted**
+
+**Purpose.** Specification of A technique from 1202 - Really? ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_4rlnnl5e_polynomial_linear_regression_volume_profile_bigbeluga.md`
+
+`strategy-card` · 102 lines · 5,746 B · description: **extracted**
+
+**Purpose.** Specification of Polynomial/Linear Regression Volume Profile [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5a8qkpsh_point_of_control_v2.md`
+
+`strategy-card` · 96 lines · 4,354 B · description: **extracted**
+
+**Purpose.** Specification of Point of Control V2 ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5eglveln_relative_bandwidth_filter.md`
+
+`strategy-card` · 98 lines · 4,619 B · description: **extracted**
+
+**Purpose.** Specification of Relative Bandwidth Filter; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5fqgmcio_adaptive_candlestick_pattern_recognition_system.md`
+
+`strategy-card` · 102 lines · 7,284 B · description: **extracted**
+
+**Purpose.** Specification of Adaptive Candlestick Pattern Recognition System; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5ghqjxjj_vol_control_fund_positioning.md`
+
+`strategy-card` · 102 lines · 5,624 B · description: **extracted**
+
+**Purpose.** Specification of Vol-Control Fund Positioning; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5js51rsp_multitimeframe_fair_value_gap_fvg_zeiierman.md`
+
+`strategy-card` · 100 lines · 5,480 B · description: **extracted**
+
+**Purpose.** Specification of Multitimeframe Fair Value Gap – FVG (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5kgra3dl_dynamic_volume_clusters_with_retest_signals_zeiierman.md`
+
+`strategy-card` · 104 lines · 5,520 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Volume Clusters with Retest Signals (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5nsvcovp_industry_group_strength.md`
+
+`strategy-card` · 100 lines · 4,684 B · description: **extracted**
+
+**Purpose.** Specification of Industry Group Strength; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5qth3kyd_multi_layer_volume_profile_bigbeluga.md`
+
+`strategy-card` · 102 lines · 4,505 B · description: **extracted**
+
+**Purpose.** Specification of Multi-Layer Volume Profile [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5uubjdyo_range_sentiment_profile_luxalgo.md`
+
+`strategy-card` · 100 lines · 4,929 B · description: **extracted**
+
+**Purpose.** Specification of Range Sentiment Profile [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5v1unbrn_average_force.md`
+
+`strategy-card` · 90 lines · 3,882 B · description: **extracted**
+
+**Purpose.** Specification of Average Force; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_5wxlrdaq_tasc_2022_06_ehlers_loops.md`
+
+`strategy-card` · 94 lines · 4,762 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2022.06 Ehlers Loops; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_66gsofej_separated_moving_average_evo.md`
+
+`strategy-card` · 92 lines · 4,217 B · description: **extracted**
+
+**Purpose.** Specification of Separated Moving Average - evo; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_672uph9q_enhanced_time_segmented_volume.md`
+
+`strategy-card` · 94 lines · 4,631 B · description: **extracted**
+
+**Purpose.** Specification of Enhanced Time Segmented Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_680r1i3z_strength_of_divergence_across_multiple_indicators.md`
+
+`strategy-card` · 100 lines · 5,336 B · description: **extracted**
+
+**Purpose.** Specification of Strength of Divergence Across Multiple Indicators; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_68z68uzz_vix_cheat_sheet.md`
+
+`strategy-card` · 98 lines · 5,513 B · description: **extracted**
+
+**Purpose.** Specification of VIX Cheat Sheet; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_69wrttlx_correlation_array_s.md`
+
+`strategy-card` · 92 lines · 3,973 B · description: **extracted**
+
+**Purpose.** Specification of Correlation [array's]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_6aln4qkl_zahorchak_measure.md`
+
+`strategy-card` · 96 lines · 4,587 B · description: **extracted**
+
+**Purpose.** Specification of Zahorchak Measure; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_6f7ztdvh_equity_bond_currency_dashboard.md`
+
+`strategy-card` · 93 lines · 4,245 B · description: **extracted**
+
+**Purpose.** Specification of Equity Bond Currency Dashboard; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_6qwqyut8_tasc_2025_07_laguerre_filters.md`
+
+`strategy-card` · 98 lines · 5,326 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2025.07 Laguerre Filters; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_6qx7rznd_outlier_detector_with_n_sigma_confidence_intervals.md`
+
+`strategy-card` · 92 lines · 4,787 B · description: **extracted**
+
+**Purpose.** Specification of Outlier Detector with N-Sigma Confidence Intervals; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_6tsfpe3w_reflex_trendflex.md`
+
+`strategy-card` · 104 lines · 5,989 B · description: **extracted**
+
+**Purpose.** Specification of Reflex & Trendflex; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_6wr1ceuo_deviation_trend_profile_bigbeluga.md`
+
+`strategy-card` · 98 lines · 4,474 B · description: **extracted**
+
+**Purpose.** Specification of Deviation Trend Profile [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_6yqqyzp9_vicious_mortgage_rates_v1_0.md`
+
+`strategy-card` · 92 lines · 4,045 B · description: **extracted**
+
+**Purpose.** Specification of Vicious Mortgage Rates V1.0; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7biqbrfz_how_to_utilize_multi_time_frame_analysis_in_your_trading.md`
+
+`strategy-card` · 92 lines · 4,263 B · description: **extracted**
+
+**Purpose.** Specification of How to utilize Multi-time frame analysis in your trading; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7emr6ckb_fancy_triple_moving_averages_bigbitsio.md`
+
+`strategy-card` · 94 lines · 4,279 B · description: **extracted**
+
+**Purpose.** Specification of Fancy Triple Moving Averages [BigBitsIO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7gx1fmgo_everything_bitcoin_kioseff_trading.md`
+
+`strategy-card` · 94 lines · 4,182 B · description: **extracted**
+
+**Purpose.** Specification of Everything Bitcoin [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7jm5ebze_yelober_sector_rotation_detector.md`
+
+`strategy-card` · 102 lines · 4,808 B · description: **extracted**
+
+**Purpose.** Specification of Yelober - Sector Rotation Detector; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7kmrab2f_gann_square_of_144.md`
+
+`strategy-card` · 102 lines · 5,516 B · description: **extracted**
+
+**Purpose.** Specification of Gann Square of 144; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7prbcbjk_stochastic_heat_map.md`
+
+`strategy-card` · 92 lines · 3,959 B · description: **extracted**
+
+**Purpose.** Specification of Stochastic Heat Map; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7qjxp2op_fundamentals_graphing_kioseff_trading.md`
+
+`strategy-card` · 92 lines · 4,181 B · description: **extracted**
+
+**Purpose.** Specification of Fundamentals Graphing [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7s0lx2bw_redk_volume_accelerated_directional_energy_ratio_redk_vader.md`
+
+`strategy-card` · 98 lines · 5,470 B · description: **extracted**
+
+**Purpose.** Specification of RedK Volume-Accelerated Directional Energy Ratio (RedK VADER); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7skzirbb_machine_learning_neural_network_engine.md`
+
+`strategy-card` · 96 lines · 4,458 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning Neural Network Engine; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7tsb40pn_magic_change_of_bill_williams_s_awesome_oscillator.md`
+
+`strategy-card` · 98 lines · 6,346 B · description: **extracted**
+
+**Purpose.** Specification of \"Magic Change\" of Bill Williams's Awesome Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_7vcb6m4j_volume_delta_footprint_map_zeiierman.md`
+
+`strategy-card` · 98 lines · 5,050 B · description: **extracted**
+
+**Purpose.** Specification of Volume Delta Footprint Map (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_84vjsklo_nunchucks.md`
+
+`strategy-card` · 90 lines · 3,786 B · description: **extracted**
+
+**Purpose.** Specification of Nunchucks; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8ea9mvz5_technical_ratings_on_multi_frames_assets.md`
+
+`strategy-card` · 102 lines · 5,889 B · description: **extracted**
+
+**Purpose.** Specification of Technical Ratings on Multi-frames / Assets; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8ezad3cw_supertrend_ladder_atr.md`
+
+`strategy-card` · 96 lines · 5,181 B · description: **extracted**
+
+**Purpose.** Specification of Supertrend - Ladder ATR; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8hiw5vzw_tutorial_how_to_identify_potentially_strong_trend_days.md`
+
+`strategy-card` · 92 lines · 4,315 B · description: **extracted**
+
+**Purpose.** Specification of Tutorial | How To Identify Potentially Strong Trend Days; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8jahmkxs_bear_market_probability_model.md`
+
+`strategy-card` · 104 lines · 6,094 B · description: **extracted**
+
+**Purpose.** Specification of Bear Market Probability Model; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8lxcviym_bayesian_bbsma_oscillator.md`
+
+`strategy-card` · 100 lines · 4,954 B · description: **extracted**
+
+**Purpose.** Specification of Bayesian BBSMA Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8mvftxpg_tape_lucf.md`
+
+`strategy-card` · 100 lines · 5,633 B · description: **extracted**
+
+**Purpose.** Specification of Tape [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8njgasbv_volume_rotor_clock_hapharmonic.md`
+
+`strategy-card` · 102 lines · 5,832 B · description: **extracted**
+
+**Purpose.** Specification of Volume Rotor Clock [hapharmonic]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md`
+
+`strategy-card` · 108 lines · 5,079 B · description: **extracted**
+
+**Purpose.** Specification of inwCoin Martingale Strategy ( for Bitcoin ); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8owcuqfq_multi_distribution_volume_profile_zeiierman.md`
+
+`strategy-card` · 102 lines · 5,688 B · description: **extracted**
+
+**Purpose.** Specification of Multi-Distribution Volume Profile (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8utwhfo3_rsi_radar_multi_time_frame.md`
+
+`strategy-card` · 90 lines · 4,080 B · description: **extracted**
+
+**Purpose.** Specification of RSI Radar Multi Time Frame; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_8zsalctc_trendflex_oscillator_dr_john_ehlers.md`
+
+`strategy-card` · 94 lines · 5,469 B · description: **extracted**
+
+**Purpose.** Specification of TrendFlex Oscillator - Dr. John Ehlers; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_93tde1fd_liquidity_price_depth_chart_luxalgo.md`
+
+`strategy-card` · 98 lines · 4,810 B · description: **extracted**
+
+**Purpose.** Specification of Liquidity Price Depth Chart [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_94gz1qy4_pandora_vast_volatility_treasure_trove.md`
+
+`strategy-card` · 100 lines · 5,863 B · description: **extracted**
+
+**Purpose.** Specification of [Pandora] Vast Volatility Treasure Trove; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_94xv1hsx_linear_correlation_oscillator.md`
+
+`strategy-card` · 92 lines · 4,322 B · description: **extracted**
+
+**Purpose.** Specification of Linear Correlation Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_96cld5is_trend_correlation_heatmap.md`
+
+`strategy-card` · 96 lines · 4,671 B · description: **extracted**
+
+**Purpose.** Specification of Trend Correlation Heatmap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_9bkoihdl_numbers_renko.md`
+
+`strategy-card` · 100 lines · 4,515 B · description: **extracted**
+
+**Purpose.** Specification of Numbers Renko; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_9gviczng_sk_fibonacci_auto_trend_scouter.md`
+
+`strategy-card` · 98 lines · 5,591 B · description: **extracted**
+
+**Purpose.** Specification of [SK] Fibonacci Auto Trend Scouter; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_9k34g20s_normalized_oscillators_spider_chart_luxalgo.md`
+
+`strategy-card` · 96 lines · 4,916 B · description: **extracted**
+
+**Purpose.** Specification of Normalized Oscillators Spider Chart [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_9mpc4ifp_volume_spread_analysis_iq_tradingiq.md`
+
+`strategy-card` · 100 lines · 4,615 B · description: **extracted**
+
+**Purpose.** Specification of Volume Spread Analysis IQ [TradingIQ]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_9pd60gmz_blackcat_l2_ehlers_swamicharts_rsi.md`
+
+`strategy-card` · 100 lines · 5,629 B · description: **extracted**
+
+**Purpose.** Specification of [blackcat] L2 Ehlers SwamiCharts RSI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_9q1vcipg_monte_carlo_ct_ss.md`
+
+`strategy-card` · 102 lines · 5,439 B · description: **extracted**
+
+**Purpose.** Specification of Monte Carlo CT [SS]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_9roydod6_probability_grid_luxalgo.md`
+
+`strategy-card` · 96 lines · 4,450 B · description: **extracted**
+
+**Purpose.** Specification of Probability Grid [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_9uiewdmd_trend_following_moving_averages.md`
+
+`strategy-card` · 94 lines · 4,351 B · description: **extracted**
+
+**Purpose.** Specification of Trend Following Moving Averages; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_a35ki2pb_px_external_level.md`
+
+`strategy-card` · 100 lines · 4,921 B · description: **extracted**
+
+**Purpose.** Specification of [PX] External Level; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_a3eudme3_raff_regression_channel_rrc.md`
+
+`strategy-card` · 92 lines · 4,298 B · description: **extracted**
+
+**Purpose.** Specification of Raff Regression Channel (RRC); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_a4lgcdz1_dominance_pie_chart.md`
+
+`strategy-card` · 91 lines · 3,937 B · description: **extracted**
+
+**Purpose.** Specification of Dominance Pie Chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_a4qsrfcq_how_to_trade_a_scythe_pattern_spy_used_as_example.md`
+
+`strategy-card` · 94 lines · 4,631 B · description: **extracted**
+
+**Purpose.** Specification of How to Trade a Scythe Pattern (SPY used as example); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_a7a6ys0y_chart_patterns_screener_trendoscope.md`
+
+`strategy-card` · 100 lines · 4,984 B · description: **extracted**
+
+**Purpose.** Specification of Chart Patterns Screener [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_a8peqinu_smart_nr2_nr20_and_inside_bar_zeiierman.md`
+
+`strategy-card` · 102 lines · 5,514 B · description: **extracted**
+
+**Purpose.** Specification of Smart NR2-NR20 and Inside Bar (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_aapsyqft_gann_box_zeiierman.md`
+
+`strategy-card` · 98 lines · 5,277 B · description: **extracted**
+
+**Purpose.** Specification of Gann Box (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_abwbbb9h_equivolume_bars.md`
+
+`strategy-card` · 90 lines · 3,882 B · description: **extracted**
+
+**Purpose.** Specification of Equivolume Bars; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_akskg1ih_mcginley_dynamic_improved_john_r_mcginley_jr.md`
+
+`strategy-card` · 96 lines · 5,915 B · description: **extracted**
+
+**Purpose.** Specification of McGinley Dynamic (Improved) - John R. McGinley, Jr.; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_apsqmw8f_combo_strategy_123_reversal_fractal_chaos_bands.md`
+
+`strategy-card` · 96 lines · 4,236 B · description: **extracted**
+
+**Purpose.** Specification of Combo Strategy 123 Reversal & Fractal Chaos Bands; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_arpbta5n_kernel_regression_toolkit.md`
+
+`strategy-card` · 94 lines · 5,050 B · description: **extracted**
+
+**Purpose.** Specification of Kernel Regression Toolkit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_asev0vxd_tasc_2022_07_pairs_rotation_with_ehlers_loops.md`
+
+`strategy-card` · 99 lines · 5,574 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2022.07 Pairs Rotation With Ehlers Loops; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_asr7nob2_liquidity_sentiment_profile_luxalgo.md`
+
+`strategy-card` · 100 lines · 5,025 B · description: **extracted**
+
+**Purpose.** Specification of Liquidity Sentiment Profile [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_asvg5mjc_monte_carlo_simulation_random_walk.md`
+
+`strategy-card` · 92 lines · 4,634 B · description: **extracted**
+
+**Purpose.** Specification of Monte Carlo Simulation - Random Walk; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_atzwb4pu_bin_based_support_and_resistance_ss.md`
+
+`strategy-card` · 100 lines · 5,031 B · description: **extracted**
+
+**Purpose.** Specification of BIN Based Support and Resistance [SS]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_audl9zek_tasc_2022_6_ehlers_loops_sectors.md`
+
+`strategy-card` · 90 lines · 3,993 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2022.6 Ehlers' Loops - Sectors; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ausph7vf_fair_value_ms.md`
+
+`strategy-card` · 100 lines · 4,701 B · description: **extracted**
+
+**Purpose.** Specification of Fair Value MS; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md`
+
+`strategy-card` · 100 lines · 4,473 B · description: **extracted**
+
+**Purpose.** Specification of Fair Value Gap Profile + Rolling POC [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_b094banp_laguerre_rsi.md`
+
+`strategy-card` · 90 lines · 3,821 B · description: **extracted**
+
+**Purpose.** Specification of Laguerre RSI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_b0kzf6ug_polynomial_regression_bands_channel_dw.md`
+
+`strategy-card` · 102 lines · 4,902 B · description: **extracted**
+
+**Purpose.** Specification of Polynomial Regression Bands + Channel [DW]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_b3almahh_indices_sector_sigmaspikes.md`
+
+`strategy-card` · 100 lines · 4,548 B · description: **extracted**
+
+**Purpose.** Specification of Indices Sector SigmaSpikes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_b3pcu8qn_ce_42macro_equity_factor_table.md`
+
+`strategy-card` · 100 lines · 4,478 B · description: **extracted**
+
+**Purpose.** Specification of CE - 42MACRO Equity Factor Table ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_b4jcgfrd_linear_continuation.md`
+
+`strategy-card` · 90 lines · 3,822 B · description: **extracted**
+
+**Purpose.** Specification of Linear Continuation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bbeeqrdm_time_of_day_day_of_week_sigma_spike.md`
+
+`strategy-card` · 92 lines · 4,041 B · description: **extracted**
+
+**Purpose.** Specification of Time of day / day of week Sigma Spike; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bbhc0nit_mcdonald_s_pattern_luxalgo.md`
+
+`strategy-card` · 92 lines · 4,144 B · description: **extracted**
+
+**Purpose.** Specification of McDonald's Pattern [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bbidyx3r_berlin_range_index_bar_color_version.md`
+
+`strategy-card` · 94 lines · 4,519 B · description: **extracted**
+
+**Purpose.** Specification of BERLIN Range Index | Bar color version; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bcuqpa0q_multi_time_frame_candles_with_volume_info_3d.md`
+
+`strategy-card` · 92 lines · 4,339 B · description: **extracted**
+
+**Purpose.** Specification of Multi Time Frame Candles with Volume Info / 3D; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bdk3oefq_tasc_2025_11_the_points_and_line_chart.md`
+
+`strategy-card` · 102 lines · 5,500 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2025.11 The Points and Line Chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_beczr3nb_buyers_sellers_profile_dynamic_s_r_zeiierman.md`
+
+`strategy-card` · 102 lines · 4,922 B · description: **extracted**
+
+**Purpose.** Specification of Buyers & Sellers Profile + Dynamic S/R (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bfu1hmks_neural_weight_oscillator_zeiierman.md`
+
+`strategy-card` · 100 lines · 4,735 B · description: **extracted**
+
+**Purpose.** Specification of Neural Weight Oscillator (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md`
+
+`strategy-card` · 97 lines · 4,421 B · description: **extracted**
+
+**Purpose.** Specification of Built-in Kelly ratio for dynamic position sizing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_blgcy3yu_this_is_my_plan_to_trade_btcusd_based_on_historical_price_data.md`
+
+`strategy-card` · 96 lines · 4,724 B · description: **extracted**
+
+**Purpose.** Specification of This is my plan to trade BTCUSD based on historical price data.; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bluvjpa3_aggregate_btc_candles.md`
+
+`strategy-card` · 90 lines · 4,321 B · description: **extracted**
+
+**Purpose.** Specification of Aggregate BTC Candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bmbdsegq_the_bitcoin_cheatsheet_the_price_and_time_of_the_next_top.md`
+
+`strategy-card` · 96 lines · 5,281 B · description: **extracted**
+
+**Purpose.** Specification of The BITCOIN Cheatsheet! The price and time of the next Top!; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bmkcccil_day_trading_booster_by_dgt.md`
+
+`strategy-card` · 98 lines · 4,742 B · description: **extracted**
+
+**Purpose.** Specification of Day Trading Booster by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bmxmwmne_momentum_acceleration_by_dgt.md`
+
+`strategy-card` · 100 lines · 5,229 B · description: **extracted**
+
+**Purpose.** Specification of Momentum Acceleration by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bnhlqnsp_volume_bull_bear_activity_zc.md`
+
+`strategy-card` · 90 lines · 3,899 B · description: **extracted**
+
+**Purpose.** Specification of Volume Bull/Bear Activity [ZC]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bswaptez_breakout_volume_delta_flux_charts.md`
+
+`strategy-card` · 98 lines · 4,769 B · description: **extracted**
+
+**Purpose.** Specification of Breakout Volume Delta | Flux Charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bugfwu53_atr_based_trendlines_jd.md`
+
+`strategy-card` · 92 lines · 3,937 B · description: **extracted**
+
+**Purpose.** Specification of ATR Based Trendlines - JD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_52_week_high_low.md`
+
+`strategy-card` · 92 lines · 3,906 B · description: **extracted**
+
+**Purpose.** Specification of 52 Week High/Low; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_accelerator_oscillator.md`
+
+`strategy-card` · 90 lines · 3,561 B · description: **extracted**
+
+**Purpose.** Specification of Accelerator Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_accumulation_distribution.md`
+
+`strategy-card` · 110 lines · 4,330 B · description: **extracted**
+
+**Purpose.** Specification of Accumulation/Distribution; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_accumulative_swing_index.md`
+
+`strategy-card` · 91 lines · 3,815 B · description: **extracted**
+
+**Purpose.** Specification of Accumulative Swing Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_advance_decline.md`
+
+`strategy-card` · 91 lines · 3,807 B · description: **extracted**
+
+**Purpose.** Specification of Advance/Decline; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_anchored_vwap.md`
+
+`strategy-card` · 96 lines · 4,812 B · description: **extracted**
+
+**Purpose.** Specification of Anchored VWAP; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_arnaud_legoux_moving_average.md`
+
+`strategy-card` · 113 lines · 5,242 B · description: **extracted**
+
+**Purpose.** Specification of Arnaud Legoux Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_aroon.md`
+
+`strategy-card` · 111 lines · 4,768 B · description: **extracted**
+
+**Purpose.** Specification of Aroon; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_average_price.md`
+
+`strategy-card` · 90 lines · 3,557 B · description: **extracted**
+
+**Purpose.** Specification of Average Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_awesome_oscillator.md`
+
+`strategy-card` · 110 lines · 4,526 B · description: **extracted**
+
+**Purpose.** Specification of Awesome Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_bollinger_bands_b.md`
+
+`strategy-card` · 112 lines · 4,474 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Bands %B; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_bollinger_bands_width.md`
+
+`strategy-card` · 92 lines · 3,832 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Bands Width; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_chaikin_oscillator.md`
+
+`strategy-card` · 112 lines · 4,936 B · description: **extracted**
+
+**Purpose.** Specification of Chaikin Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_chaikin_volatility.md`
+
+`strategy-card` · 92 lines · 3,876 B · description: **extracted**
+
+**Purpose.** Specification of Chaikin Volatility; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_chande_kroll_stop.md`
+
+`strategy-card` · 113 lines · 5,443 B · description: **extracted**
+
+**Purpose.** Specification of Chande Kroll Stop; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_chande_momentum_oscillator.md`
+
+`strategy-card` · 111 lines · 4,581 B · description: **extracted**
+
+**Purpose.** Specification of Chande Momentum Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_chop_zone.md`
+
+`strategy-card` · 106 lines · 4,648 B · description: **extracted**
+
+**Purpose.** Specification of Chop Zone; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_choppiness_index.md`
+
+`strategy-card` · 111 lines · 4,392 B · description: **extracted**
+
+**Purpose.** Specification of Choppiness Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_compare.md`
+
+`strategy-card` · 91 lines · 3,908 B · description: **extracted**
+
+**Purpose.** Specification of Compare; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_connors_rsi.md`
+
+`strategy-card` · 113 lines · 5,097 B · description: **extracted**
+
+**Purpose.** Specification of Connors RSI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_coppock_curve.md`
+
+`strategy-card` · 113 lines · 5,216 B · description: **extracted**
+
+**Purpose.** Specification of Coppock Curve; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_correlation_coefficient.md`
+
+`strategy-card` · 111 lines · 4,549 B · description: **extracted**
+
+**Purpose.** Specification of Correlation Coefficient; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_correlation_log.md`
+
+`strategy-card` · 91 lines · 3,860 B · description: **extracted**
+
+**Purpose.** Specification of Correlation - Log; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_detrended_price_oscillator.md`
+
+`strategy-card` · 108 lines · 4,424 B · description: **extracted**
+
+**Purpose.** Specification of Detrended Price Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_double_ema.md`
+
+`strategy-card` · 111 lines · 4,316 B · description: **extracted**
+
+**Purpose.** Specification of Double EMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_ease_of_movement.md`
+
+`strategy-card` · 112 lines · 4,490 B · description: **extracted**
+
+**Purpose.** Specification of Ease of Movement; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_elder_s_force_index.md`
+
+`strategy-card` · 111 lines · 4,523 B · description: **extracted**
+
+**Purpose.** Specification of Elder's Force Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_envelopes.md`
+
+`strategy-card` · 115 lines · 4,914 B · description: **extracted**
+
+**Purpose.** Specification of Envelopes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_fisher_transform.md`
+
+`strategy-card` · 111 lines · 4,592 B · description: **extracted**
+
+**Purpose.** Specification of Fisher Transform; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_guppy_multiple_moving_average.md`
+
+`strategy-card` · 102 lines · 5,711 B · description: **extracted**
+
+**Purpose.** Specification of Guppy Multiple Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_hull_moving_average.md`
+
+`strategy-card` · 111 lines · 4,338 B · description: **extracted**
+
+**Purpose.** Specification of Hull Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_klinger_oscillator.md`
+
+`strategy-card` · 110 lines · 5,146 B · description: **extracted**
+
+**Purpose.** Specification of Klinger Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_know_sure_thing.md`
+
+`strategy-card` · 119 lines · 5,887 B · description: **extracted**
+
+**Purpose.** Specification of Know Sure Thing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_least_squares_moving_average.md`
+
+`strategy-card` · 112 lines · 5,040 B · description: **extracted**
+
+**Purpose.** Specification of Least Squares Moving Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_linear_regression_slope.md`
+
+`strategy-card` · 91 lines · 3,718 B · description: **extracted**
+
+**Purpose.** Specification of Linear Regression Slope; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_ma_with_ema_cross.md`
+
+`strategy-card` · 92 lines · 3,877 B · description: **extracted**
+
+**Purpose.** Specification of MA with EMA Cross; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_majority_rule.md`
+
+`strategy-card` · 91 lines · 3,727 B · description: **extracted**
+
+**Purpose.** Specification of Majority Rule; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_mass_index.md`
+
+`strategy-card` · 111 lines · 4,916 B · description: **extracted**
+
+**Purpose.** Specification of Mass Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_mcginley_dynamic.md`
+
+`strategy-card` · 111 lines · 4,811 B · description: **extracted**
+
+**Purpose.** Specification of McGinley Dynamic; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_median_price.md`
+
+`strategy-card` · 110 lines · 4,747 B · description: **extracted**
+
+**Purpose.** Specification of Median Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_momentum.md`
+
+`strategy-card` · 108 lines · 4,772 B · description: **extracted**
+
+**Purpose.** Specification of Momentum; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_money_flow_index.md`
+
+`strategy-card` · 111 lines · 4,960 B · description: **extracted**
+
+**Purpose.** Specification of Money Flow Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_moving_average_adaptive.md`
+
+`strategy-card` · 91 lines · 3,804 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Adaptive; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_moving_average_channel.md`
+
+`strategy-card` · 94 lines · 4,208 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Channel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_moving_average_double.md`
+
+`strategy-card` · 93 lines · 4,146 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Double; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_moving_average_hamming.md`
+
+`strategy-card` · 91 lines · 3,769 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Hamming; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_moving_average_multiple.md`
+
+`strategy-card` · 97 lines · 4,739 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Multiple; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_moving_average_triple.md`
+
+`strategy-card` · 94 lines · 4,203 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Triple; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_moving_average_weighted.md`
+
+`strategy-card` · 93 lines · 3,946 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Weighted; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_net_volume.md`
+
+`strategy-card` · 110 lines · 5,281 B · description: **extracted**
+
+**Purpose.** Specification of Net Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_overlay.md`
+
+`strategy-card` · 91 lines · 3,922 B · description: **extracted**
+
+**Purpose.** Specification of Overlay; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_parabolic_sar.md`
+
+`strategy-card` · 113 lines · 5,005 B · description: **extracted**
+
+**Purpose.** Specification of Parabolic SAR; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_pivot_points_standard.md`
+
+`strategy-card` · 114 lines · 5,396 B · description: **extracted**
+
+**Purpose.** Specification of Pivot Points Standard; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_price_volume_trend.md`
+
+`strategy-card` · 106 lines · 4,139 B · description: **extracted**
+
+**Purpose.** Specification of Price Volume Trend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_rank_correlation_index.md`
+
+`strategy-card` · 111 lines · 4,878 B · description: **extracted**
+
+**Purpose.** Specification of Rank Correlation Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_ratio.md`
+
+`strategy-card` · 91 lines · 3,846 B · description: **extracted**
+
+**Purpose.** Specification of Ratio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_regression_trend.md`
+
+`strategy-card` · 97 lines · 4,780 B · description: **extracted**
+
+**Purpose.** Specification of Regression Trend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_relative_vigor_index.md`
+
+`strategy-card` · 111 lines · 4,505 B · description: **extracted**
+
+**Purpose.** Specification of Relative Vigor Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_relative_volatility_index.md`
+
+`strategy-card` · 111 lines · 4,819 B · description: **extracted**
+
+**Purpose.** Specification of Relative Volatility Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_session_volume_profile.md`
+
+`strategy-card` · 142 lines · 8,029 B · description: **extracted**
+
+**Purpose.** Specification of Session Volume Profile; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_sessions.md`
+
+`strategy-card` · 110 lines · 4,772 B · description: **extracted**
+
+**Purpose.** Specification of Sessions; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_smi_ergodic_indicator_oscillator.md`
+
+`strategy-card` · 134 lines · 5,650 B · description: **extracted**
+
+**Purpose.** Specification of SMI Ergodic Indicator/Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_spread.md`
+
+`strategy-card` · 91 lines · 3,830 B · description: **extracted**
+
+**Purpose.** Specification of Spread; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_standard_error.md`
+
+`strategy-card` · 91 lines · 3,782 B · description: **extracted**
+
+**Purpose.** Specification of Standard Error; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_standard_error_bands.md`
+
+`strategy-card` · 94 lines · 4,274 B · description: **extracted**
+
+**Purpose.** Specification of Standard Error Bands; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_stochastic_rsi.md`
+
+`strategy-card` · 114 lines · 5,295 B · description: **extracted**
+
+**Purpose.** Specification of Stochastic RSI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_supertrend.md`
+
+`strategy-card` · 112 lines · 4,706 B · description: **extracted**
+
+**Purpose.** Specification of SuperTrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_trend_strength_index.md`
+
+`strategy-card` · 107 lines · 4,580 B · description: **extracted**
+
+**Purpose.** Specification of Trend Strength Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_triple_ema.md`
+
+`strategy-card` · 111 lines · 4,442 B · description: **extracted**
+
+**Purpose.** Specification of Triple EMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_trix.md`
+
+`strategy-card` · 111 lines · 4,184 B · description: **extracted**
+
+**Purpose.** Specification of TRIX; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_true_strength_indicator.md`
+
+`strategy-card` · 113 lines · 5,231 B · description: **extracted**
+
+**Purpose.** Specification of True Strength Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_typical_price.md`
+
+`strategy-card` · 90 lines · 3,526 B · description: **extracted**
+
+**Purpose.** Specification of Typical Price; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_ultimate_oscillator.md`
+
+`strategy-card` · 113 lines · 5,146 B · description: **extracted**
+
+**Purpose.** Specification of Ultimate Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_volatility_index.md`
+
+`strategy-card` · 93 lines · 4,116 B · description: **extracted**
+
+**Purpose.** Specification of Volatility Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_volatility_o_h_l_c.md`
+
+`strategy-card` · 93 lines · 4,111 B · description: **extracted**
+
+**Purpose.** Specification of Volatility O-H-L-C; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_volatility_zero_trend_close_to_close.md`
+
+`strategy-card` · 92 lines · 3,982 B · description: **extracted**
+
+**Purpose.** Specification of Volatility Zero Trend Close-to-Close; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volatility, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_volume_oscillator.md`
+
+`strategy-card` · 108 lines · 4,342 B · description: **extracted**
+
+**Purpose.** Specification of Volume Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_volume_profile_fixed_range.md`
+
+`strategy-card` · 117 lines · 6,126 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile Fixed Range; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_volume_profile_visible_range.md`
+
+`strategy-card` · 116 lines · 5,760 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile Visible Range; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=volume, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_vortex_indicator.md`
+
+`strategy-card` · 111 lines · 4,557 B · description: **extracted**
+
+**Purpose.** Specification of Vortex Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_vwma.md`
+
+`strategy-card` · 111 lines · 4,883 B · description: **extracted**
+
+**Purpose.** Specification of VWMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_williams_alligator.md`
+
+`strategy-card` · 116 lines · 5,315 B · description: **extracted**
+
+**Purpose.** Specification of Williams Alligator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=trend, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_williams_fractal.md`
+
+`strategy-card` · 91 lines · 3,778 B · description: **extracted**
+
+**Purpose.** Specification of Williams Fractal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=other, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_builtin_williams_r.md`
+
+`strategy-card` · 111 lines · 4,768 B · description: **extracted**
+
+**Purpose.** Specification of Williams %R; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=momentum, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bv2arqnd_cup_finder.md`
+
+`strategy-card` · 98 lines · 4,259 B · description: **extracted**
+
+**Purpose.** Specification of Cup Finder; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bvyz1cdf_bernoulli_process_binary_entropy_function.md`
+
+`strategy-card` · 92 lines · 5,091 B · description: **extracted**
+
+**Purpose.** Specification of Bernoulli Process - Binary Entropy Function; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bwbicwa6_emd_trend_investorunknown.md`
+
+`strategy-card` · 98 lines · 4,511 B · description: **extracted**
+
+**Purpose.** Specification of EMD Trend [InvestorUnknown]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_by9maioc_oscillator_workbench_chart_lucf.md`
+
+`strategy-card` · 104 lines · 6,863 B · description: **extracted**
+
+**Purpose.** Specification of Oscillator Workbench — Chart [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bzgubzri_smart_trader_episode_03_by_ata_sabanci_candles_and_tradelines.md`
+
+`strategy-card` · 102 lines · 5,223 B · description: **extracted**
+
+**Purpose.** Specification of Smart Trader, Episode 03, by Ata Sabanci, Candles and Tradelines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_bzo4yadb_per_bak_self_organized_criticality.md`
+
+`strategy-card` · 102 lines · 4,839 B · description: **extracted**
+
+**Purpose.** Specification of Per Bak Self-Organized Criticality; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_c2fzxjii_evar_indicator_and_position_sizing.md`
+
+`strategy-card` · 102 lines · 5,050 B · description: **extracted**
+
+**Purpose.** Specification of EVaR Indicator and Position Sizing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_c75af3t1_fractional_ema_kalman_filter_d7.md`
+
+`strategy-card` · 102 lines · 5,568 B · description: **extracted**
+
+**Purpose.** Specification of Fractional EMA Kalman Filter [D7]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_c7z3p2xh_dynamic_money_flow.md`
+
+`strategy-card` · 94 lines · 4,036 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Money Flow; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_c8rargoe_relative_crypto_dominance_polar_chart_luxalgo.md`
+
+`strategy-card` · 97 lines · 4,571 B · description: **extracted**
+
+**Purpose.** Specification of Relative Crypto Dominance Polar Chart [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_capg3ivf_bjorgum_key_levels.md`
+
+`strategy-card` · 100 lines · 5,208 B · description: **extracted**
+
+**Purpose.** Specification of Bjorgum Key Levels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cbnacnmq_volume_and_price_z_score_multi_asset_by_leviathan.md`
+
+`strategy-card` · 98 lines · 5,499 B · description: **extracted**
+
+**Purpose.** Specification of Volume and Price Z-Score [Multi-Asset] - By Leviathan; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cdu6e9rm_volume_footprint_luxalgo.md`
+
+`strategy-card` · 98 lines · 4,532 B · description: **extracted**
+
+**Purpose.** Specification of Volume Footprint [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cgbtzxz3_zigzag_candles.md`
+
+`strategy-card` · 92 lines · 4,247 B · description: **extracted**
+
+**Purpose.** Specification of Zigzag Candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cghgbnh9_naked_intrabar_poc.md`
+
+`strategy-card` · 94 lines · 4,543 B · description: **extracted**
+
+**Purpose.** Specification of Naked Intrabar POC; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_chhv7iv6_cta_trading_strategy_only_system_you_need_to_use.md`
+
+`strategy-card` · 104 lines · 5,387 B · description: **extracted**
+
+**Purpose.** Specification of CTA TRADING STRATEGY - ONLY SYSTEM YOU NEED TO USE; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cjnk8au1_volume_bubbles_quantalgo.md`
+
+`strategy-card` · 102 lines · 5,700 B · description: **extracted**
+
+**Purpose.** Specification of Volume Bubbles [QuantAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cjx3k6l2_stop_loss_cascades_breakouts_kioseff_trading.md`
+
+`strategy-card` · 110 lines · 6,134 B · description: **extracted**
+
+**Purpose.** Specification of Stop Loss Cascades (Breakouts) [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_clk71qgy_machine_learning_adaptive_supertrend_algoalpha.md`
+
+`strategy-card` · 98 lines · 4,797 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning Adaptive SuperTrend [AlgoAlpha]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cluzc70g_wavetrend_3d.md`
+
+`strategy-card` · 100 lines · 6,505 B · description: **extracted**
+
+**Purpose.** Specification of WaveTrend 3D; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cmforvlp_dual_phase_reversal_by_dgt.md`
+
+`strategy-card` · 96 lines · 4,358 B · description: **extracted**
+
+**Purpose.** Specification of Dual-Phase Reversal by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cojscaaa_multi_asset_similarity_matrix.md`
+
+`strategy-card` · 98 lines · 4,896 B · description: **extracted**
+
+**Purpose.** Specification of Multi Asset Similarity Matrix; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cp49eqt5_probability_cones.md`
+
+`strategy-card` · 96 lines · 4,277 B · description: **extracted**
+
+**Purpose.** Specification of Probability Cones; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cq5x2ame_ar_forecast_scatterplot_ss.md`
+
+`strategy-card` · 98 lines · 4,409 B · description: **extracted**
+
+**Purpose.** Specification of AR Forecast Scatterplot [SS]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ctjx82hp_extrapolated_pivot_connector_lets_make_support_and_resistances.md`
+
+`strategy-card` · 98 lines · 5,396 B · description: **extracted**
+
+**Purpose.** Specification of Extrapolated Pivot Connector - Lets Make Support And Resistances; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ctwzt4va_tick_travel.md`
+
+`strategy-card` · 90 lines · 3,856 B · description: **extracted**
+
+**Purpose.** Specification of Tick travel ⍗; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cujanbts_kinetic_slippage_index_ksi.md`
+
+`strategy-card` · 96 lines · 4,541 B · description: **extracted**
+
+**Purpose.** Specification of Kinetic Slippage Index (KSI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cwm8ucfq_whale_liquidity_and_absorption_profile_algoalpha.md`
+
+`strategy-card` · 100 lines · 5,149 B · description: **extracted**
+
+**Purpose.** Specification of Whale Liquidity and Absorption Profile [AlgoAlpha]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cy6rizcl_probability_distribution_histogram.md`
+
+`strategy-card` · 92 lines · 4,208 B · description: **extracted**
+
+**Purpose.** Specification of Probability Distribution Histogram; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_czknkfns_technical_rank.md`
+
+`strategy-card` · 94 lines · 5,028 B · description: **extracted**
+
+**Purpose.** Specification of Technical Rank; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_cztmlgfy_magnificent_7_oscillator.md`
+
+`strategy-card` · 104 lines · 5,455 B · description: **extracted**
+
+**Purpose.** Specification of Magnificent 7 Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_d2nmolmk_mxwll_price_action_suite_mxwll.md`
+
+`strategy-card` · 102 lines · 4,909 B · description: **extracted**
+
+**Purpose.** Specification of Mxwll Price Action Suite [Mxwll]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_d3iafa7c_trend_impulse_channels_zeiierman.md`
+
+`strategy-card` · 100 lines · 5,215 B · description: **extracted**
+
+**Purpose.** Specification of Trend Impulse Channels (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_d4tdeuru_volume_composition_flowly_indicators.md`
+
+`strategy-card` · 102 lines · 5,724 B · description: **extracted**
+
+**Purpose.** Specification of Volume composition / Flowly Indicators; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_daukfrmd_hurst_diamond_notation_pivots.md`
+
+`strategy-card` · 90 lines · 4,429 B · description: **extracted**
+
+**Purpose.** Specification of Hurst Diamond Notation Pivots; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ddvp5qaz_match_finder_theultimator5.md`
+
+`strategy-card` · 98 lines · 4,844 B · description: **extracted**
+
+**Purpose.** Specification of Match Finder [theUltimator5]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_de2slurk_average_lines.md`
+
+`strategy-card` · 92 lines · 4,090 B · description: **extracted**
+
+**Purpose.** Specification of Average Lines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_df63cmxh_quartile_vol_vol_aggregation_range_us_bars_gaps_kioseff.md`
+
+`strategy-card` · 102 lines · 5,064 B · description: **extracted**
+
+**Purpose.** Specification of (Quartile Vol.; Vol. Aggregation; Range US Bars; Gaps) [Kioseff]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dfy6orqi_intraday_volume_swings.md`
+
+`strategy-card` · 92 lines · 3,966 B · description: **extracted**
+
+**Purpose.** Specification of Intraday Volume Swings; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dgmumvhd_black_scholes_options_pricing_model.md`
+
+`strategy-card` · 100 lines · 5,401 B · description: **extracted**
+
+**Purpose.** Specification of Black-Scholes Options Pricing Model; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dh3cpnga_doubled_numbered_square_of_nine_progression_regression.md`
+
+`strategy-card` · 96 lines · 5,171 B · description: **extracted**
+
+**Purpose.** Specification of Doubled Numbered Square of Nine Progression | Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dhpw18sb_multiple_frequency_volatility_correlation.md`
+
+`strategy-card` · 92 lines · 4,129 B · description: **extracted**
+
+**Purpose.** Specification of Multiple Frequency Volatility Correlation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_djr8hv4v_waindrops_makit0.md`
+
+`strategy-card` · 104 lines · 5,234 B · description: **extracted**
+
+**Purpose.** Specification of Waindrops [Makit0]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dksawola_next_pivot_projection_trendoscope.md`
+
+`strategy-card` · 96 lines · 4,611 B · description: **extracted**
+
+**Purpose.** Specification of Next Pivot Projection [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dluyt9rs_trader_s_guide_to_options_part_2.md`
+
+`strategy-card` · 107 lines · 7,617 B · description: **extracted**
+
+**Purpose.** Specification of Trader's Guide to Options Part 2; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dogvqoph_stochastic_weights_basic_bigbitsio.md`
+
+`strategy-card` · 92 lines · 4,526 B · description: **extracted**
+
+**Purpose.** Specification of Stochastic Weights - Basic [BigBitsIO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dq9wjj11_average_volume_profile.md`
+
+`strategy-card` · 94 lines · 4,083 B · description: **extracted**
+
+**Purpose.** Specification of Average Volume Profile; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dqfelcpl_gex_flow_absorption_fvg_orb_mas_signals.md`
+
+`strategy-card` · 100 lines · 4,728 B · description: **extracted**
+
+**Purpose.** Specification of GEX Flow + Absorption + FVG + ORB + MAs + Signals; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_drx2sbyv_vix_curve_pro_real_time_term_structure_with_statistics.md`
+
+`strategy-card` · 96 lines · 4,396 B · description: **extracted**
+
+**Purpose.** Specification of VIX Curve Pro - Real-Time Term Structure with Statistics; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_du228vjm_flag_finder.md`
+
+`strategy-card` · 94 lines · 4,056 B · description: **extracted**
+
+**Purpose.** Specification of Flag Finder; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dxc0pi3n_swingarm_atr_trend_indicator.md`
+
+`strategy-card` · 94 lines · 4,040 B · description: **extracted**
+
+**Purpose.** Specification of SwingArm ATR Trend Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_dyb13ida_hull_candles_bigbitsio.md`
+
+`strategy-card` · 98 lines · 4,747 B · description: **extracted**
+
+**Purpose.** Specification of Hull Candles [BigBitsIO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_e2s2v4fl_byo_pattern_v1_trendoscope.md`
+
+`strategy-card` · 100 lines · 4,699 B · description: **extracted**
+
+**Purpose.** Specification of BYO Pattern V1 [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_e5azkgtc_best_dollar_cost_average.md`
+
+`strategy-card` · 98 lines · 4,387 B · description: **extracted**
+
+**Purpose.** Specification of BEST Dollar Cost Average; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_e5hytuxi_my_fib_methodology_for_defining_trend.md`
+
+`strategy-card` · 90 lines · 4,016 B · description: **extracted**
+
+**Purpose.** Specification of My FIB Methodology for Defining trend.; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_e5kzxosk_tasc_2021_12_directional_movement_w_hann.md`
+
+`strategy-card` · 96 lines · 4,631 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2021.12 Directional Movement w/Hann; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_e9l1xaqd_support_resistance_mtf.md`
+
+`strategy-card` · 98 lines · 4,614 B · description: **extracted**
+
+**Purpose.** Specification of Support Resistance MTF; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eabatkg5_how_to_use_volume_with_trends.md`
+
+`strategy-card` · 90 lines · 4,305 B · description: **extracted**
+
+**Purpose.** Specification of How to use Volume with Trends.; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ebb5mw6b_extreme_trend_reversal_points_hewhomustnotbenamed.md`
+
+`strategy-card` · 102 lines · 5,551 B · description: **extracted**
+
+**Purpose.** Specification of Extreme Trend Reversal Points [HeWhoMustNotBeNamed]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_edel00bp_risk_adjusted_momentum_oscillator.md`
+
+`strategy-card` · 104 lines · 6,770 B · description: **extracted**
+
+**Purpose.** Specification of Risk-Adjusted Momentum Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eetjcnc8_dividend_calendar_zeiierman.md`
+
+`strategy-card` · 98 lines · 4,991 B · description: **extracted**
+
+**Purpose.** Specification of Dividend Calendar (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_efbdipvs_bjorgum_autotrail.md`
+
+`strategy-card` · 96 lines · 5,182 B · description: **extracted**
+
+**Purpose.** Specification of Bjorgum AutoTrail; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_efxi515c_linear_regression_channel.md`
+
+`strategy-card` · 92 lines · 4,280 B · description: **extracted**
+
+**Purpose.** Specification of Linear Regression Channel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eihtlrnm_jrl_mm_fibonacci.md`
+
+`strategy-card` · 90 lines · 4,227 B · description: **extracted**
+
+**Purpose.** Specification of [JRL] MM Fibonacci; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eis1vcdx_golden_ratio_cubes_gorac.md`
+
+`strategy-card` · 96 lines · 4,089 B · description: **extracted**
+
+**Purpose.** Specification of 'Golden ratio' Cubes - 'GoRaC'; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ej53t8wv_support_resistance_channels.md`
+
+`strategy-card` · 98 lines · 4,284 B · description: **extracted**
+
+**Purpose.** Specification of Support Resistance Channels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eji1igag_binomial_option_pricing_model.md`
+
+`strategy-card` · 100 lines · 5,650 B · description: **extracted**
+
+**Purpose.** Specification of Binomial Option Pricing Model; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ejmwjmdf_dynamic_gap_probability_tool.md`
+
+`strategy-card` · 102 lines · 4,885 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Gap Probability Tool; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ekbuz93v_delta_ladder_kioseff_trading.md`
+
+`strategy-card` · 96 lines · 4,623 B · description: **extracted**
+
+**Purpose.** Specification of Delta Ladder [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ekkb1vlg_voss_predictor_a_peek_into_the_future_dr_john_ehlers.md`
+
+`strategy-card` · 92 lines · 5,013 B · description: **extracted**
+
+**Purpose.** Specification of Voss Predictor (A Peek Into the Future) - Dr. John Ehlers; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ektpaxcq_bloomberg_financial_conditions_index_proxy.md`
+
+`strategy-card` · 100 lines · 6,198 B · description: **extracted**
+
+**Purpose.** Specification of Bloomberg Financial Conditions Index (Proxy); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_enc8rzn0_modern_portfolio_management_indicator.md`
+
+`strategy-card` · 100 lines · 5,915 B · description: **extracted**
+
+**Purpose.** Specification of Modern Portfolio Management Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eoijuoln_synthetic_vx3_vx4_continuous_vx_futures.md`
+
+`strategy-card` · 96 lines · 4,854 B · description: **extracted**
+
+**Purpose.** Specification of Synthetic VX3! & VX4! continuous /VX futures; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eolvuvxl_market_manipulation_index_mmi.md`
+
+`strategy-card` · 98 lines · 5,471 B · description: **extracted**
+
+**Purpose.** Specification of Market Manipulation Index (MMI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eos9u1qm_fair_value_bands_flowly_indicators.md`
+
+`strategy-card` · 102 lines · 6,703 B · description: **extracted**
+
+**Purpose.** Specification of Fair value bands / Flowly Indicators; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eqlogqrf_rs_simple_forecast_keltner_worms.md`
+
+`strategy-card` · 90 lines · 3,966 B · description: **extracted**
+
+**Purpose.** Specification of [RS]Simple Forecast - Keltner Worms; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_er9y7zmm_log_regression_oscillator_channel_bigbeluga.md`
+
+`strategy-card` · 94 lines · 4,393 B · description: **extracted**
+
+**Purpose.** Specification of Log Regression Oscillator Channel [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_erbzovy8_fair_value_gap.md`
+
+`strategy-card` · 92 lines · 4,015 B · description: **extracted**
+
+**Purpose.** Specification of Fair Value Gap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ertrxbpf_musashi_fractal_dimension.md`
+
+`strategy-card` · 102 lines · 5,299 B · description: **extracted**
+
+**Purpose.** Specification of Musashi_Fractal_Dimension; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_etm15sgp_moving_averages_3d.md`
+
+`strategy-card` · 92 lines · 4,061 B · description: **extracted**
+
+**Purpose.** Specification of Moving Averages 3D; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ev2tidhj_faith_indicator.md`
+
+`strategy-card` · 92 lines · 4,326 B · description: **extracted**
+
+**Purpose.** Specification of Faith Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ewwysggk_smooth_theil_sen.md`
+
+`strategy-card` · 94 lines · 5,567 B · description: **extracted**
+
+**Purpose.** Specification of Smooth Theil-Sen; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_exaabrye_education_trends_and_basic_patterns.md`
+
+`strategy-card` · 90 lines · 4,028 B · description: **extracted**
+
+**Purpose.** Specification of EDUCATION - TRENDS AND BASIC PATTERNS ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_eyhkvavh_index_generator_by_muqwishi.md`
+
+`strategy-card` · 90 lines · 4,314 B · description: **extracted**
+
+**Purpose.** Specification of Index Generator [By MUQWISHI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_f2oh2wqt_volumatic_support_resistance_levels_bigbeluga.md`
+
+`strategy-card` · 100 lines · 4,590 B · description: **extracted**
+
+**Purpose.** Specification of Volumatic Support/Resistance Levels [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_f2yleyoo_delta_volume_columns_pro_lucf.md`
+
+`strategy-card` · 112 lines · 7,320 B · description: **extracted**
+
+**Purpose.** Specification of Delta Volume Columns Pro [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_f6fk5ima_function_weighted_standard_deviation.md`
+
+`strategy-card` · 92 lines · 4,083 B · description: **extracted**
+
+**Purpose.** Specification of Function - Weighted Standard Deviation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fd3r5rrb_33_years_ago_1987_terminal_pattern_in_spx500_diagrammed.md`
+
+`strategy-card` · 92 lines · 4,774 B · description: **extracted**
+
+**Purpose.** Specification of 33 Years Ago - 1987 TERMINAL Pattern in $SPX500 Diagrammed ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fgvtpifr_tf_segmented_linear_regression.md`
+
+`strategy-card` · 98 lines · 4,645 B · description: **extracted**
+
+**Purpose.** Specification of TF Segmented Linear Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fk25igs7_price_convergence.md`
+
+`strategy-card` · 90 lines · 3,891 B · description: **extracted**
+
+**Purpose.** Specification of Price Convergence; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fletgfxw_ss_linear_modeler.md`
+
+`strategy-card` · 100 lines · 4,612 B · description: **extracted**
+
+**Purpose.** Specification of [SS] Linear Modeler; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fnlmn99w_tasc_2026_09_adaptive_supersmoother.md`
+
+`strategy-card` · 100 lines · 5,739 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2026.09 Adaptive SuperSmoother; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fnxxrrpg_auto_pitchfork_fib_retracement_and_zig_zag_by_dgt.md`
+
+`strategy-card` · 96 lines · 4,802 B · description: **extracted**
+
+**Purpose.** Specification of Auto Pitchfork, Fib Retracement and Zig Zag by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fqmvaak9_volume_profile_makit0.md`
+
+`strategy-card` · 102 lines · 4,867 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile [Makit0]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fqnxjggs_cycles_analysis.md`
+
+`strategy-card` · 98 lines · 5,408 B · description: **extracted**
+
+**Purpose.** Specification of Cycles Analysis; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fra2t8gk_blockchain_fundamentals_active_address_sentiment_osc_cr.md`
+
+`strategy-card` · 96 lines · 4,818 B · description: **extracted**
+
+**Purpose.** Specification of Blockchain Fundamentals - Active Address Sentiment Osc. [CR]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ft4zyo1f_swing_structure_forecast_boswaves.md`
+
+`strategy-card` · 110 lines · 6,392 B · description: **extracted**
+
+**Purpose.** Specification of Swing Structure Forecast [BOSWaves]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fuzfly3o_is_it_time_to_lighten_equities_and_go_overweight_gold.md`
+
+`strategy-card` · 93 lines · 4,477 B · description: **extracted**
+
+**Purpose.** Specification of Is it time to lighten equities and go overweight gold?; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fvpgxfb3_wolfe_scanner_multi_zigzag_hewhomustnotbenamed.md`
+
+`strategy-card` · 98 lines · 4,989 B · description: **extracted**
+
+**Purpose.** Specification of Wolfe Scanner (Multi - zigzag) [HeWhoMustNotBeNamed]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fwb6gwpc_support_resistance_ai_k_means_median_thinklogicai.md`
+
+`strategy-card` · 106 lines · 6,290 B · description: **extracted**
+
+**Purpose.** Specification of Support & Resistance AI (K means/median) [ThinkLogicAI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_fxnublkt_revolution_volatility_bands_with_range_contraction_signal_vii.md`
+
+`strategy-card` · 90 lines · 4,372 B · description: **extracted**
+
+**Purpose.** Specification of Revolution Volatility Bands With Range Contraction Signal VII; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_g30euydh_liquidity_thermal_map_bigbeluga.md`
+
+`strategy-card` · 98 lines · 4,408 B · description: **extracted**
+
+**Purpose.** Specification of Liquidity Thermal Map [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_g7gugu9i_rs_simplistic_automatic_growth_models.md`
+
+`strategy-card` · 90 lines · 3,916 B · description: **extracted**
+
+**Purpose.** Specification of [RS]Simplistic Automatic Growth Models; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gamszeig_logarithmic_moving_average_lma_quantalgo.md`
+
+`strategy-card` · 106 lines · 6,563 B · description: **extracted**
+
+**Purpose.** Specification of Logarithmic Moving Average (LMA) [QuantAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gbc8qoy8_a_quick_guide_to_multi_timeframe_scaling.md`
+
+`strategy-card` · 100 lines · 5,463 B · description: **extracted**
+
+**Purpose.** Specification of A Quick Guide to Multi-Timeframe Scaling; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gbesfgsq_nasdaq_day_and_night_breakdown.md`
+
+`strategy-card` · 90 lines · 3,882 B · description: **extracted**
+
+**Purpose.** Specification of Nasdaq Day and night breakdown; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gdgxyl8b_recursive_reversal_chart_patterns_trendoscope.md`
+
+`strategy-card` · 96 lines · 4,702 B · description: **extracted**
+
+**Purpose.** Specification of Recursive Reversal Chart Patterns [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gfhcvho3_how_to_use_multi_timeframe_analysis_and_what_it_means.md`
+
+`strategy-card` · 94 lines · 4,890 B · description: **extracted**
+
+**Purpose.** Specification of How to Use Multi-Timeframe Analysis and What It Means; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gflv7t7r_swing_profile_bigbeluga.md`
+
+`strategy-card` · 94 lines · 4,185 B · description: **extracted**
+
+**Purpose.** Specification of Swing Profile [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ghocsiv7_gap_filling_strategy.md`
+
+`strategy-card` · 96 lines · 4,979 B · description: **extracted**
+
+**Purpose.** Specification of Gap Filling Strategy ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gjpxvoub_education_excerpt_sma_lwma_gma_tma_ema.md`
+
+`strategy-card` · 100 lines · 5,814 B · description: **extracted**
+
+**Purpose.** Specification of Education Excerpt: SMA, LWMA, GMA, TMA, EMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gjugg1kv_key_ideas_to_trade_big_daily_structures_example_on_amat.md`
+
+`strategy-card` · 116 lines · 5,845 B · description: **extracted**
+
+**Purpose.** Specification of Key Ideas to trade big daily structures. Example on AMAT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_glj0deuy_indicator_introduction_custom_volume_periodic_peaks_troughs.md`
+
+`strategy-card` · 94 lines · 4,318 B · description: **extracted**
+
+**Purpose.** Specification of Indicator introduction: Custom Volume - Periodic Peaks & Troughs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gpct4m6t_machine_learning_knn_based_strategy.md`
+
+`strategy-card` · 94 lines · 4,269 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning: kNN-based Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gqklw3yv_tasc_2026_05_the_autotune_filter.md`
+
+`strategy-card` · 100 lines · 5,371 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2026.05 The AutoTune Filter; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gsrqnt8q_trend_line_methods_tlm.md`
+
+`strategy-card` · 100 lines · 5,029 B · description: **extracted**
+
+**Purpose.** Specification of Trend Line Methods (TLM); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_guxndiot_interactive_atr_stop_loss_tanhef.md`
+
+`strategy-card` · 106 lines · 5,447 B · description: **extracted**
+
+**Purpose.** Specification of Interactive ATR Stop-Loss [TANHEF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gxqp712z_portfolio_laboratory_kioseff_trading.md`
+
+`strategy-card` · 100 lines · 5,058 B · description: **extracted**
+
+**Purpose.** Specification of Portfolio Laboratory [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gy4ilk5n_momentum_based_zigzag_incl_qqe_non_repainting.md`
+
+`strategy-card` · 96 lines · 5,611 B · description: **extracted**
+
+**Purpose.** Specification of Momentum-based ZigZag (incl. QQE) NON-REPAINTING; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gyifyer4_how_to_identify_mean_reversion_vs_complete_reversal.md`
+
+`strategy-card` · 94 lines · 5,011 B · description: **extracted**
+
+**Purpose.** Specification of How to Identify Mean Reversion VS Complete Reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_gztrrvcd_distance_to_demand_vector.md`
+
+`strategy-card` · 92 lines · 3,940 B · description: **extracted**
+
+**Purpose.** Specification of Distance to Demand Vector; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_h0yse9xz_rsi_direction_bias_jd.md`
+
+`strategy-card` · 90 lines · 3,911 B · description: **extracted**
+
+**Purpose.** Specification of RSI direction bias - JD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_h0yzptis_delta_volume_candles_lucf.md`
+
+`strategy-card` · 104 lines · 7,366 B · description: **extracted**
+
+**Purpose.** Specification of Delta Volume Candles [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_h4xuu8kn_dynamic_rsi_regression_bands_zeiierman.md`
+
+`strategy-card` · 104 lines · 5,297 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic RSI Regression Bands (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_h7koz2pw_the_one_chart_pattern_that_you_must_trade.md`
+
+`strategy-card` · 90 lines · 3,975 B · description: **extracted**
+
+**Purpose.** Specification of The One Chart Pattern That You Must Trade!!!; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_h93g3fqn_how_to_trade_holiday_s_and_low_volume_environments.md`
+
+`strategy-card` · 90 lines · 4,123 B · description: **extracted**
+
+**Purpose.** Specification of How To Trade Holiday's and Low Volume Environments; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_haxmmjon_risk_distribution_histogram.md`
+
+`strategy-card` · 108 lines · 5,107 B · description: **extracted**
+
+**Purpose.** Specification of Risk Distribution Histogram; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hbmp20tn_volume_profile_with_a_few_polylines.md`
+
+`strategy-card` · 92 lines · 4,059 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile with a few polylines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hcokncdk_percent_rank_histogram.md`
+
+`strategy-card` · 96 lines · 4,380 B · description: **extracted**
+
+**Purpose.** Specification of Percent Rank Histogram; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hdskv6q5_ltf_volume_microburst_bubbles_zeiierman.md`
+
+`strategy-card` · 102 lines · 5,135 B · description: **extracted**
+
+**Purpose.** Specification of LTF Volume Microburst Bubbles (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hefekydl_sma_directional_matrix_luxalgo.md`
+
+`strategy-card` · 96 lines · 4,972 B · description: **extracted**
+
+**Purpose.** Specification of SMA Directional Matrix [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hfcy7ciq_cvd_cumulative_volume_delta_chart.md`
+
+`strategy-card` · 100 lines · 5,923 B · description: **extracted**
+
+**Purpose.** Specification of CVD - Cumulative Volume Delta (Chart); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hfizhwba_rs_donchian_hl_width_cycle_information.md`
+
+`strategy-card` · 90 lines · 3,951 B · description: **extracted**
+
+**Purpose.** Specification of [RS]Donchian HL Width - Cycle Information; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hi8pzktb_evaluation_of_bitcoin.md`
+
+`strategy-card` · 96 lines · 5,205 B · description: **extracted**
+
+**Purpose.** Specification of Evaluation of Bitcoin?; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hixxuhev_resampling_filter_pack_dw.md`
+
+`strategy-card` · 94 lines · 4,037 B · description: **extracted**
+
+**Purpose.** Specification of Resampling Filter Pack [DW]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hjgcuw6g_dynamic_equity_allocation_model.md`
+
+`strategy-card` · 106 lines · 7,459 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Equity Allocation Model; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hjgk75ze_how_to_identify_ethereums_trend.md`
+
+`strategy-card` · 92 lines · 4,435 B · description: **extracted**
+
+**Purpose.** Specification of How to Identify Ethereum’s Trend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hjjizrog_manual_harmonic_patterns_with_interactive_inputs.md`
+
+`strategy-card` · 98 lines · 4,968 B · description: **extracted**
+
+**Purpose.** Specification of Manual Harmonic Patterns - With interactive inputs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hjxrfmmg_session_candles_reversals_flowly_indicators.md`
+
+`strategy-card` · 102 lines · 6,271 B · description: **extracted**
+
+**Purpose.** Specification of Session candles & reversals / Flowly Indicators; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hkjvjhbt_breakouts_pullbacks_trendoscope.md`
+
+`strategy-card` · 96 lines · 4,773 B · description: **extracted**
+
+**Purpose.** Specification of Breakouts & Pullbacks [Trendoscope®]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hl1sw0i4_uhl_ma_crossover_system.md`
+
+`strategy-card` · 100 lines · 6,003 B · description: **extracted**
+
+**Purpose.** Specification of Uhl MA Crossover System; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hl4uheb9_max_gain.md`
+
+`strategy-card` · 98 lines · 4,307 B · description: **extracted**
+
+**Purpose.** Specification of Max Gain; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hlktlpwc_oscillator_scatterplot_analysis_trendoscope.md`
+
+`strategy-card` · 98 lines · 4,559 B · description: **extracted**
+
+**Purpose.** Specification of Oscillator Scatterplot Analysis [Trendoscope®]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hnpilzeg_market_sessions_by_leviathan.md`
+
+`strategy-card` · 98 lines · 5,166 B · description: **extracted**
+
+**Purpose.** Specification of Market Sessions - By Leviathan; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md`
+
+`strategy-card` · 92 lines · 4,060 B · description: **extracted**
+
+**Purpose.** Specification of Сalculation a position size based on risk; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_htaf8nf9_market_sessions_viewer_panel_by_muqwishi.md`
+
+`strategy-card` · 100 lines · 4,970 B · description: **extracted**
+
+**Purpose.** Specification of Market Sessions & Viewer Panel [By MUQWISHI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_htj7v7sx_arbitrage_matrix_luxalgo.md`
+
+`strategy-card` · 96 lines · 4,388 B · description: **extracted**
+
+**Purpose.** Specification of Arbitrage Matrix [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hv8ghojp_recursive_auto_pitchfork_trendoscope.md`
+
+`strategy-card` · 102 lines · 5,561 B · description: **extracted**
+
+**Purpose.** Specification of Recursive Auto-Pitchfork [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hvk0dicj_abc_123_harmonic_ratio_custom_range_interactive.md`
+
+`strategy-card` · 92 lines · 4,074 B · description: **extracted**
+
+**Purpose.** Specification of ABC 123 Harmonic Ratio Custom Range Interactive; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hvk5wzpi_smart_money_breakout_channels_algoalpha.md`
+
+`strategy-card` · 96 lines · 5,241 B · description: **extracted**
+
+**Purpose.** Specification of Smart Money Breakout Channels [AlgoAlpha]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hvn0eeko_multi_anchored_linear_regression_channels_tanhef.md`
+
+`strategy-card` · 104 lines · 5,490 B · description: **extracted**
+
+**Purpose.** Specification of Multi-Anchored Linear Regression Channels [TANHEF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md`
+
+`strategy-card` · 100 lines · 5,708 B · description: **extracted**
+
+**Purpose.** Specification of SIP Evaluator and Screener [Trendoscope®]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_hyeodyzn_lowess_locally_weighted_scatterplot_smoothing_chartprime.md`
+
+`strategy-card` · 98 lines · 4,461 B · description: **extracted**
+
+**Purpose.** Specification of LOWESS (Locally Weighted Scatterplot Smoothing) [ChartPrime]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_i0mhumsk_focus_bars_kioseff_trading.md`
+
+`strategy-card` · 90 lines · 4,009 B · description: **extracted**
+
+**Purpose.** Specification of Focus Bars [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_i4ifuwsu_daily_play_ace_spectrum.md`
+
+`strategy-card` · 94 lines · 4,136 B · description: **extracted**
+
+**Purpose.** Specification of Daily Play Ace Spectrum; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_i4xznaoy_std_filtered_n_pole_gaussian_filter_loxx.md`
+
+`strategy-card` · 94 lines · 4,632 B · description: **extracted**
+
+**Purpose.** Specification of STD-Filtered, N-Pole Gaussian Filter [Loxx]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_i5qjdpxt_redk_everex_effort_versus_results_explorer.md`
+
+`strategy-card` · 104 lines · 6,512 B · description: **extracted**
+
+**Purpose.** Specification of RedK EVEREX - Effort Versus Results Explorer; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_i8qanszp_tasc_2025_01_linear_predictive_filters.md`
+
+`strategy-card` · 100 lines · 6,068 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2025.01 Linear Predictive Filters; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_i9tjotjl_lube.md`
+
+`strategy-card` · 92 lines · 4,415 B · description: **extracted**
+
+**Purpose.** Specification of LUBE; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_icrp4b2u_stochastic_momentum_index_smi_of_money_flow_index_mfi.md`
+
+`strategy-card` · 98 lines · 4,711 B · description: **extracted**
+
+**Purpose.** Specification of Stochastic Momentum Index (SMI) of Money Flow Index (MFI); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ieahireo_rs_bar_pattern_statistics_tool.md`
+
+`strategy-card` · 90 lines · 3,873 B · description: **extracted**
+
+**Purpose.** Specification of [RS]Bar Pattern Statistics Tool; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_if0jgsn1_p_square_estimation_of_the_nth_percentile_of_a_series.md`
+
+`strategy-card` · 90 lines · 4,495 B · description: **extracted**
+
+**Purpose.** Specification of P-Square - Estimation of the Nth percentile of a series; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ifjxxalc_the_investment_clock_orbital_graph.md`
+
+`strategy-card` · 96 lines · 4,519 B · description: **extracted**
+
+**Purpose.** Specification of The Investment Clock Orbital Graph; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ifw3re7j_equivolume_overlay_volume_bars.md`
+
+`strategy-card` · 90 lines · 3,931 B · description: **extracted**
+
+**Purpose.** Specification of Equivolume Overlay - Volume Bars; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ih8z9vsb_automatic_trendlines.md`
+
+`strategy-card` · 90 lines · 3,885 B · description: **extracted**
+
+**Purpose.** Specification of Automatic Trendlines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_iini8ml2_weighted_harrell_davis_quantile_estimator_with_absolutedeviation.md`
+
+`strategy-card` · 98 lines · 4,989 B · description: **extracted**
+
+**Purpose.** Specification of Weighted Harrell-Davis Quantile Estimator with AbsoluteDeviation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ijpiemfw_rolling_largest_impulse_murreys_lines.md`
+
+`strategy-card` · 90 lines · 4,003 B · description: **extracted**
+
+**Purpose.** Specification of Rolling largest Impulse Murreys Lines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ikvq3zpr_defining_a_single_market_indicator_in_tradingview.md`
+
+`strategy-card` · 94 lines · 4,289 B · description: **extracted**
+
+**Purpose.** Specification of Defining a single market indicator in TradingView -; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_in9ftv45_divergence_for_many_indicator_v3.md`
+
+`strategy-card` · 94 lines · 4,399 B · description: **extracted**
+
+**Purpose.** Specification of Divergence for many indicator v3; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ioqkeiwd_ichimoku_theories_luxalgo.md`
+
+`strategy-card` · 102 lines · 4,741 B · description: **extracted**
+
+**Purpose.** Specification of Ichimoku Theories [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ipddusgl_dynamic_linear_regression_channels.md`
+
+`strategy-card` · 92 lines · 4,217 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Linear Regression Channels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ipvs7b7x_multi_ticker_anchored_candles.md`
+
+`strategy-card` · 98 lines · 4,894 B · description: **extracted**
+
+**Purpose.** Specification of Multi-Ticker Anchored Candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_iqq6b3pk_yield_curve_percent_inverted.md`
+
+`strategy-card` · 92 lines · 4,090 B · description: **extracted**
+
+**Purpose.** Specification of Yield Curve Percent Inverted; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_iznark90_time_sales_tape_by_muqwishi.md`
+
+`strategy-card` · 94 lines · 4,476 B · description: **extracted**
+
+**Purpose.** Specification of Time & Sales (Tape) [By MUQWISHI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_j38vuavw_intrabar_profile_kioseff_trading.md`
+
+`strategy-card` · 94 lines · 4,246 B · description: **extracted**
+
+**Purpose.** Specification of Intrabar Profile [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_j8fs5jmi_swing_high_low_anchored_spiral.md`
+
+`strategy-card` · 92 lines · 4,044 B · description: **extracted**
+
+**Purpose.** Specification of Swing High/Low Anchored Spiral; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_j9a6nwwm_volume_open_interest_footprint_by_leviathan.md`
+
+`strategy-card` · 96 lines · 4,653 B · description: **extracted**
+
+**Purpose.** Specification of Volume / Open Interest \"Footprint\" - By Leviathan; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jcrhuirl_tensor_market_analysis_engine_tmae.md`
+
+`strategy-card` · 110 lines · 5,466 B · description: **extracted**
+
+**Purpose.** Specification of Tensor Market Analysis Engine (TMAE); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jdw7ww2g_technical_ratings.md`
+
+`strategy-card` · 104 lines · 5,994 B · description: **extracted**
+
+**Purpose.** Specification of Technical Ratings; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jgafgaly_gann_theory_finally_completed_strategy.md`
+
+`strategy-card` · 98 lines · 5,801 B · description: **extracted**
+
+**Purpose.** Specification of GANN Theory Finally Completed Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jja8tyjc_redk_auto_stepping_ladder_trader.md`
+
+`strategy-card` · 98 lines · 5,150 B · description: **extracted**
+
+**Purpose.** Specification of RedK Auto-Stepping Ladder Trader; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md`
+
+`strategy-card` · 96 lines · 4,096 B · description: **extracted**
+
+**Purpose.** Specification of Stepped trailing strategy example; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jlrxim5v_rsi_bar_chart.md`
+
+`strategy-card` · 90 lines · 3,805 B · description: **extracted**
+
+**Purpose.** Specification of RSI Bar Chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jncgedj7_order_chain_kioseff_trading.md`
+
+`strategy-card` · 92 lines · 4,045 B · description: **extracted**
+
+**Purpose.** Specification of Order Chain [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jpbq3j0s_t_virus_sentiment_hapharmonic.md`
+
+`strategy-card` · 102 lines · 5,341 B · description: **extracted**
+
+**Purpose.** Specification of T-Virus Sentiment [hapharmonic]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jpkfecgc_no_duplicates_interval_range_eq.md`
+
+`strategy-card` · 90 lines · 4,039 B · description: **extracted**
+
+**Purpose.** Specification of No Duplicates Interval Range & EQ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jqrhr1xy_relative_strength_of_volume_indicators_by_dgt.md`
+
+`strategy-card` · 102 lines · 5,215 B · description: **extracted**
+
+**Purpose.** Specification of Relative Strength of Volume Indicators by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jumbqtqk_time_series_lag_reduction_filter_by_cryptorhythms.md`
+
+`strategy-card` · 90 lines · 3,975 B · description: **extracted**
+
+**Purpose.** Specification of Time Series Lag Reduction Filter by Cryptorhythms; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_juwuaxdx_deltaflow_volume_profile_bigbeluga.md`
+
+`strategy-card` · 102 lines · 4,818 B · description: **extracted**
+
+**Purpose.** Specification of DeltaFlow Volume Profile [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jxgpf0jz_tasc_2024_07_gaps_and_extreme_closes.md`
+
+`strategy-card` · 94 lines · 4,647 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2024.07 Gaps and Extreme Closes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jz2cehpf_be_indicator_aggregator_toolkit.md`
+
+`strategy-card` · 102 lines · 4,725 B · description: **extracted**
+
+**Purpose.** Specification of BE-Indicator Aggregator toolkit; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_jzxkmci2_williams_fractal_trailing_stops.md`
+
+`strategy-card` · 92 lines · 4,354 B · description: **extracted**
+
+**Purpose.** Specification of Williams Fractal Trailing Stops; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_k2br8xol_intraday_spark_chart_astrideunicorn.md`
+
+`strategy-card` · 96 lines · 4,657 B · description: **extracted**
+
+**Purpose.** Specification of Intraday Spark Chart [AstrideUnicorn]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_k6olgkao_relative_candle.md`
+
+`strategy-card` · 90 lines · 4,190 B · description: **extracted**
+
+**Purpose.** Specification of Relative Candle; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kehhfjfb_everything_you_need_to_know_about_spacs.md`
+
+`strategy-card` · 143 lines · 6,980 B · description: **extracted**
+
+**Purpose.** Specification of Everything You Need to Know About SPACs; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kfuhomlx_redk_supply_demand_volume_viewer_v1.md`
+
+`strategy-card` · 102 lines · 6,047 B · description: **extracted**
+
+**Purpose.** Specification of RedK_Supply/Demand Volume Viewer v1; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kgcatbqy_sd_distance_mean_beta.md`
+
+`strategy-card` · 98 lines · 4,823 B · description: **extracted**
+
+**Purpose.** Specification of SD Distance Mean Beta; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kjd8byiq_augmented_dickeyfuller_adf_mean_reversion_test.md`
+
+`strategy-card` · 102 lines · 5,684 B · description: **extracted**
+
+**Purpose.** Specification of Augmented Dickey–Fuller (ADF) mean reversion test; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kjj8hddk_dynamic_dots_dashboard_a_cloud_zlema_composite.md`
+
+`strategy-card` · 98 lines · 5,274 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Dots Dashboard (a Cloud/ZLEMA Composite); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kjpmckbt_bitcoin_power_law_clock_luxalgo.md`
+
+`strategy-card` · 90 lines · 3,982 B · description: **extracted**
+
+**Purpose.** Specification of Bitcoin Power Law Clock [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kn353wpw_responsive_linear_regression_channels.md`
+
+`strategy-card` · 102 lines · 4,547 B · description: **extracted**
+
+**Purpose.** Specification of Responsive Linear Regression Channels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ks2qgulb_initial_balance_auction_intelligence_by_dgt.md`
+
+`strategy-card` · 100 lines · 4,941 B · description: **extracted**
+
+**Purpose.** Specification of Initial Balance Auction Intelligence by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ksmls0hh_supertrend_parameter_sensitivity_3d_luxalgo.md`
+
+`strategy-card` · 102 lines · 5,137 B · description: **extracted**
+
+**Purpose.** Specification of Supertrend Parameter Sensitivity 3D [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kvrhsptp_elliott_wave_luxalgo.md`
+
+`strategy-card` · 102 lines · 4,463 B · description: **extracted**
+
+**Purpose.** Specification of Elliott Wave [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_kzjqxdgq_cot_net_non_commercials_vs_commercials_updated_mtf_non_repaint.md`
+
+`strategy-card` · 92 lines · 4,182 B · description: **extracted**
+
+**Purpose.** Specification of COT Net Non-Commercials vs Commercials (Updated MTF Non-Repaint); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_l0aiilvh_pivot_point_supertrend.md`
+
+`strategy-card` · 96 lines · 4,539 B · description: **extracted**
+
+**Purpose.** Specification of Pivot Point Supertrend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_l1zvvqbx_monte_carlo_polyline_traceback_kioseff_trading.md`
+
+`strategy-card` · 96 lines · 4,330 B · description: **extracted**
+
+**Purpose.** Specification of Monte Carlo (Polyline Traceback) [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_l2lxyays_zig_zag_volume_profile_bull_vs_bear_kioseff_trading.md`
+
+`strategy-card` · 96 lines · 4,507 B · description: **extracted**
+
+**Purpose.** Specification of Zig-Zag Volume Profile (Bull vs. Bear) [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_l6nreqzb_adaptive_trend_classification_moving_averages_investorunknown.md`
+
+`strategy-card` · 100 lines · 5,036 B · description: **extracted**
+
+**Purpose.** Specification of Adaptive Trend Classification: Moving Averages [InvestorUnknown]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lbrwvaq7_my_trading_strategy_in_4_simple_steps.md`
+
+`strategy-card` · 94 lines · 4,582 B · description: **extracted**
+
+**Purpose.** Specification of My Trading Strategy in 4 simple steps.; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lbxl9oqz_financials_on_chart.md`
+
+`strategy-card` · 100 lines · 4,647 B · description: **extracted**
+
+**Purpose.** Specification of Financials on Chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lcgcwwwi_bar_balance_lucf.md`
+
+`strategy-card` · 108 lines · 7,242 B · description: **extracted**
+
+**Purpose.** Specification of Bar Balance [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ldxohpmz_volume_cluster_profile_vcp_zeiierman.md`
+
+`strategy-card` · 100 lines · 4,914 B · description: **extracted**
+
+**Purpose.** Specification of Volume Cluster Profile [VCP] (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lei57qv6_rotation_in_international_markets.md`
+
+`strategy-card` · 96 lines · 4,634 B · description: **extracted**
+
+**Purpose.** Specification of Rotation in international markets; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lfe3imad_how_to_find_the_best_trending_momentum_stocks_across_the_globe.md`
+
+`strategy-card` · 103 lines · 5,350 B · description: **extracted**
+
+**Purpose.** Specification of How to find the best trending momentum stocks across the globe; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_is3driver.md`
+
+`strategy-card` · 95 lines · 4,079 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: is3Driver; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_is4tap.md`
+
+`strategy-card` · 94 lines · 3,985 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: is4Tap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_is5o.md`
+
+`strategy-card` · 95 lines · 4,043 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: is5o; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_isabcd.md`
+
+`strategy-card` · 93 lines · 3,862 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: isABCD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_isbat.md`
+
+`strategy-card` · 95 lines · 4,050 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: isBat; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_isbutterfly.md`
+
+`strategy-card` · 95 lines · 4,092 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: isButterfly; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_iscrab.md`
+
+`strategy-card` · 95 lines · 4,057 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: isCrab; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_isgartley.md`
+
+`strategy-card` · 95 lines · 4,078 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: isGartley; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_isharmonictriangle.md`
+
+`strategy-card` · 92 lines · 3,848 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: isHarmonicTriangle; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_isshark.md`
+
+`strategy-card` · 95 lines · 4,064 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: isShark; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_12ferxal_iswolfe.md`
+
+`strategy-card` · 95 lines · 4,064 B · description: **extracted**
+
+**Purpose.** Specification of HarmonicPattern: isWolfe; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_94iacmva_holt.md`
+
+`strategy-card` · 88 lines · 3,713 B · description: **extracted**
+
+**Purpose.** Specification of MovingAverages: Holt; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_94iacmva_laguerre.md`
+
+`strategy-card` · 88 lines · 3,733 B · description: **extracted**
+
+**Purpose.** Specification of MovingAverages: Laguerre; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_94iacmva_one_euro.md`
+
+`strategy-card` · 88 lines · 3,733 B · description: **extracted**
+
+**Purpose.** Specification of MovingAverages: One Euro; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_94iacmva_slew_rate_limiter.md`
+
+`strategy-card` · 88 lines · 3,778 B · description: **extracted**
+
+**Purpose.** Specification of MovingAverages: Slew Rate Limiter; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_94iacmva_smooth_damp.md`
+
+`strategy-card` · 88 lines · 3,748 B · description: **extracted**
+
+**Purpose.** Specification of MovingAverages: Smooth Damp; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_94iacmva_super_smoother.md`
+
+`strategy-card` · 88 lines · 3,763 B · description: **extracted**
+
+**Purpose.** Specification of MovingAverages: Super Smoother; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_94iacmva_swma.md`
+
+`strategy-card` · 94 lines · 4,275 B · description: **extracted**
+
+**Purpose.** Specification of MovingAverages: SWMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_abandoned_baby.md`
+
+`strategy-card` · 94 lines · 3,813 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: abandonedBull, abandonedBear; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_doji_variants.md`
+
+`strategy-card` · 94 lines · 3,802 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: dragonflyDoji, gravestoneDoji; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_harami_cross.md`
+
+`strategy-card` · 94 lines · 3,827 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: haramiBullCross, haramiBearCross; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_kicking.md`
+
+`strategy-card` · 94 lines · 3,772 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: kickingBull, kickingBear; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_long_shadow.md`
+
+`strategy-card` · 98 lines · 3,980 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: lls, lus; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_marubozu.md`
+
+`strategy-card` · 94 lines · 3,765 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: marubullzu, marubearzu; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_neck.md`
+
+`strategy-card` · 94 lines · 3,739 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: bullNeck, bearNeck; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_piercing_dark_cloud.md`
+
+`strategy-card` · 94 lines · 3,778 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: piercing, darkCloudCover; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_spinning_top.md`
+
+`strategy-card` · 105 lines · 4,672 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: spinningTopBull, spinningTopBear, spinningTop; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_tasuki_gap.md`
+
+`strategy-card` · 94 lines · 3,771 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: tasukiBull, tasukiBear; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_three_methods.md`
+
+`strategy-card` · 94 lines · 3,794 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: risingThree, fallingThree; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_tristar.md`
+
+`strategy-card` · 94 lines · 3,774 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: triStarBull, triStarBear; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_tweezer.md`
+
+`strategy-card` · 98 lines · 4,163 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: tweezerBottom, tweezerTop; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_library_x8mujqgt_window_gap.md`
+
+`strategy-card` · 94 lines · 3,787 B · description: **extracted**
+
+**Purpose.** Specification of BjCandlePatterns: risingWindow, fallingWindow; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_linquv2i_zigzag_volume_bars.md`
+
+`strategy-card` · 90 lines · 3,864 B · description: **extracted**
+
+**Purpose.** Specification of Zigzag Volume Bars; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_llaoploy_liquidation_ranges_volume_oi_dots_kioseff_trading.md`
+
+`strategy-card` · 96 lines · 4,622 B · description: **extracted**
+
+**Purpose.** Specification of Liquidation Ranges + Volume/OI Dots [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_llg6gdb4_open_interest_footprint_iq_tradingiq.md`
+
+`strategy-card` · 100 lines · 4,842 B · description: **extracted**
+
+**Purpose.** Specification of Open Interest Footprint IQ [TradingIQ]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_llhsdjyh_angle_market_structure_bigbeluga.md`
+
+`strategy-card` · 96 lines · 4,674 B · description: **extracted**
+
+**Purpose.** Specification of Angle Market Structure [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lmirygpg_vortex_mtf.md`
+
+`strategy-card` · 100 lines · 4,823 B · description: **extracted**
+
+**Purpose.** Specification of Vortex MTF; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lncfcfod_googl_ipo_base_to_study_for_future_trades.md`
+
+`strategy-card` · 120 lines · 5,802 B · description: **extracted**
+
+**Purpose.** Specification of GOOGL: IPO Base to study for Future trades; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lper4qca_volume_analysis_heatmap_and_volume_profile.md`
+
+`strategy-card` · 100 lines · 5,479 B · description: **extracted**
+
+**Purpose.** Specification of Volume Analysis - Heatmap and Volume Profile; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lpnsjmbh_clusters_volume_profile_luxalgo.md`
+
+`strategy-card` · 104 lines · 5,585 B · description: **extracted**
+
+**Purpose.** Specification of Clusters Volume Profile [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lr5qd0kk_screener_mean_reversion_channel.md`
+
+`strategy-card` · 94 lines · 4,287 B · description: **extracted**
+
+**Purpose.** Specification of Screener - Mean Reversion Channel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lrdshlst_sniffer.md`
+
+`strategy-card` · 100 lines · 5,337 B · description: **extracted**
+
+**Purpose.** Specification of Sniffer; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ls42zpse_72s_adaptive_hull_moving_average.md`
+
+`strategy-card` · 106 lines · 5,716 B · description: **extracted**
+
+**Purpose.** Specification of 72s: Adaptive Hull Moving Average+; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lu0mtsud_earnings_snapshot_trendoscope.md`
+
+`strategy-card` · 100 lines · 5,532 B · description: **extracted**
+
+**Purpose.** Specification of Earnings Snapshot [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lut7sbgg_range_filter_dw.md`
+
+`strategy-card` · 94 lines · 4,082 B · description: **extracted**
+
+**Purpose.** Specification of Range Filter [DW]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lvqopkkp_volume_surprise_luxalgo.md`
+
+`strategy-card` · 102 lines · 4,920 B · description: **extracted**
+
+**Purpose.** Specification of Volume Surprise [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lwoxh0vh_range_volume_change.md`
+
+`strategy-card` · 90 lines · 3,959 B · description: **extracted**
+
+**Purpose.** Specification of Range Volume Change; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lx3zlt9l_volume_profile_3d_zeiierman.md`
+
+`strategy-card` · 98 lines · 5,078 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile 3D (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lxhedc8e_machine_learning_using_neural_networks_educational.md`
+
+`strategy-card` · 100 lines · 4,875 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning using Neural Networks | Educational; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_lxxlkr1w_recession_warning_traffic_light.md`
+
+`strategy-card` · 100 lines · 5,522 B · description: **extracted**
+
+**Purpose.** Specification of Recession Warning Traffic Light; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_m88uomnh_techniques_for_getting_better_prices.md`
+
+`strategy-card` · 92 lines · 4,278 B · description: **extracted**
+
+**Purpose.** Specification of Techniques For Getting Better Prices 🎯; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mb0famot_advanced_fed_decision_forecast_model_afdfm.md`
+
+`strategy-card` · 102 lines · 5,707 B · description: **extracted**
+
+**Purpose.** Specification of Advanced Fed Decision Forecast Model (AFDFM); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mbxxbs1f_redk_directional_index_k_xdmi.md`
+
+`strategy-card` · 96 lines · 5,310 B · description: **extracted**
+
+**Purpose.** Specification of RedK_Directional Index / K xDMI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mc8mxglm_fearzone_panel.md`
+
+`strategy-card` · 94 lines · 3,956 B · description: **extracted**
+
+**Purpose.** Specification of Fearzone Panel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mdgjq4j5_simplified_percentile_clustering.md`
+
+`strategy-card` · 100 lines · 4,346 B · description: **extracted**
+
+**Purpose.** Specification of Simplified Percentile Clustering; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mdtqpnt0_excalibur_ehlers_autocorrelation_periodogram_modified.md`
+
+`strategy-card` · 104 lines · 8,046 B · description: **extracted**
+
+**Purpose.** Specification of [Excalibur] Ehlers AutoCorrelation Periodogram Modified; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab.md`
+
+`strategy-card` · 96 lines · 4,846 B · description: **extracted**
+
+**Purpose.** Specification of Bias And Sentiment Strength (BASS) Indicator by mattzab; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_atr_trailing.md`
+
+`strategy-card` · 92 lines · 3,994 B · description: **extracted**
+
+**Purpose.** Specification of ATR trailing band stops; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_bump_run.md`
+
+`strategy-card` · 87 lines · 3,796 B · description: **extracted**
+
+**Purpose.** Specification of Bump and run reversal BARR; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_candlestick_patterns.md`
+
+`strategy-card` · 92 lines · 4,157 B · description: **extracted**
+
+**Purpose.** Specification of Candlestick pattern recognition; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_covered_call.md`
+
+`strategy-card` · 92 lines · 4,223 B · description: **extracted**
+
+**Purpose.** Specification of Covered call strike selection; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_cup_handle.md`
+
+`strategy-card` · 92 lines · 4,082 B · description: **extracted**
+
+**Purpose.** Specification of Cup and handle; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_doji.md`
+
+`strategy-card` · 92 lines · 4,058 B · description: **extracted**
+
+**Purpose.** Specification of Doji indecision; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_dominance_rotation.md`
+
+`strategy-card` · 92 lines · 4,284 B · description: **extracted**
+
+**Purpose.** Specification of Bitcoin dominance and altcoin rotation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_double_top_bottom.md`
+
+`strategy-card` · 92 lines · 4,049 B · description: **extracted**
+
+**Purpose.** Specification of Double top and double bottom; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_elliott_wave.md`
+
+`strategy-card` · 92 lines · 4,107 B · description: **extracted**
+
+**Purpose.** Specification of Elliott wave counts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_engulfing.md`
+
+`strategy-card` · 92 lines · 4,172 B · description: **extracted**
+
+**Purpose.** Specification of Bullish and bearish engulfing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_fair_value_gap.md`
+
+`strategy-card` · 92 lines · 4,063 B · description: **extracted**
+
+**Purpose.** Specification of Three-candle fair value gap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_fib_extensions.md`
+
+`strategy-card` · 92 lines · 4,173 B · description: **extracted**
+
+**Purpose.** Specification of Fibonacci extension and channel projections; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_flag_pennant.md`
+
+`strategy-card` · 92 lines · 4,139 B · description: **extracted**
+
+**Purpose.** Specification of Flag and pennant continuation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_fourier_cycle.md`
+
+`strategy-card` · 92 lines · 4,124 B · description: **extracted**
+
+**Purpose.** Specification of Fourier and dominant cycle estimation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_futures_hedge.md`
+
+`strategy-card` · 89 lines · 3,934 B · description: **extracted**
+
+**Purpose.** Specification of Spot and futures hedge; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_gann.md`
+
+`strategy-card` · 92 lines · 4,080 B · description: **extracted**
+
+**Purpose.** Specification of Gann time and price geometry; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_gap_fill.md`
+
+`strategy-card` · 92 lines · 4,081 B · description: **extracted**
+
+**Purpose.** Specification of Session and CME gap fill; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_hammer.md`
+
+`strategy-card` · 92 lines · 4,134 B · description: **extracted**
+
+**Purpose.** Specification of Hammer and hanging man; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_harami.md`
+
+`strategy-card` · 92 lines · 4,229 B · description: **extracted**
+
+**Purpose.** Specification of Harami inside-body reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_harmonic_xabcd.md`
+
+`strategy-card` · 92 lines · 4,091 B · description: **extracted**
+
+**Purpose.** Specification of XABCD harmonic ratios; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_head_shoulders.md`
+
+`strategy-card` · 92 lines · 4,184 B · description: **extracted**
+
+**Purpose.** Specification of Head and shoulders reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_heikin_ashi.md`
+
+`strategy-card` · 92 lines · 4,051 B · description: **extracted**
+
+**Purpose.** Specification of Heikin Ashi trend candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_inside_bar.md`
+
+`strategy-card` · 92 lines · 4,165 B · description: **extracted**
+
+**Purpose.** Specification of Inside bar and narrow range breakout; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_intermarket_correlation.md`
+
+`strategy-card` · 92 lines · 4,258 B · description: **extracted**
+
+**Purpose.** Specification of Intermarket correlation and lead lag; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_iron_condor.md`
+
+`strategy-card` · 92 lines · 4,161 B · description: **extracted**
+
+**Purpose.** Specification of Iron condor options spread; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_kalman_filter.md`
+
+`strategy-card` · 92 lines · 4,141 B · description: **extracted**
+
+**Purpose.** Specification of Kalman trend state estimation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_kelly_sizing.md`
+
+`strategy-card` · 88 lines · 3,812 B · description: **extracted**
+
+**Purpose.** Specification of Fractional Kelly position sizing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_knn_prediction.md`
+
+`strategy-card` · 92 lines · 4,148 B · description: **extracted**
+
+**Purpose.** Specification of K nearest neighbor prediction; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_linear_regression_channel.md`
+
+`strategy-card` · 92 lines · 4,139 B · description: **extracted**
+
+**Purpose.** Specification of Trailing linear regression channel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_liquidity_sweep.md`
+
+`strategy-card` · 92 lines · 4,110 B · description: **extracted**
+
+**Purpose.** Specification of Liquidity sweep and failed break; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_logistic_prediction.md`
+
+`strategy-card` · 89 lines · 3,933 B · description: **extracted**
+
+**Purpose.** Specification of Logistic regression classification; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_market_profile.md`
+
+`strategy-card` · 92 lines · 4,183 B · description: **extracted**
+
+**Purpose.** Specification of Time price opportunity market profile; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_market_structure.md`
+
+`strategy-card` · 92 lines · 4,137 B · description: **extracted**
+
+**Purpose.** Specification of Higher high and lower low market structure; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_martingale_sizing.md`
+
+`strategy-card` · 89 lines · 3,899 B · description: **extracted**
+
+**Purpose.** Specification of Martingale loss recovery sizing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_megaphone.md`
+
+`strategy-card` · 92 lines · 4,163 B · description: **extracted**
+
+**Purpose.** Specification of Broadening megaphone formation; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_morning_evening_star.md`
+
+`strategy-card` · 92 lines · 4,113 B · description: **extracted**
+
+**Purpose.** Specification of Morning and evening star; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_neural_prediction.md`
+
+`strategy-card` · 92 lines · 4,179 B · description: **extracted**
+
+**Purpose.** Specification of Neural network return classification; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_oops_gap_reversal.md`
+
+`strategy-card` · 87 lines · 3,681 B · description: **extracted**
+
+**Purpose.** Specification of OOPS opening gap reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_opening_range.md`
+
+`strategy-card` · 92 lines · 4,094 B · description: **extracted**
+
+**Purpose.** Specification of Opening range breakout; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_order_blocks.md`
+
+`strategy-card` · 92 lines · 4,093 B · description: **extracted**
+
+**Purpose.** Specification of Order block zones; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_oscillator_divergence.md`
+
+`strategy-card` · 92 lines · 4,120 B · description: **extracted**
+
+**Purpose.** Specification of Price oscillator divergence; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_pitchfork.md`
+
+`strategy-card` · 92 lines · 4,137 B · description: **extracted**
+
+**Purpose.** Specification of Andrews pitchfork and median lines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_polynomial_regression.md`
+
+`strategy-card` · 92 lines · 4,073 B · description: **extracted**
+
+**Purpose.** Specification of Trailing polynomial regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_quasimodo.md`
+
+`strategy-card` · 88 lines · 3,801 B · description: **extracted**
+
+**Purpose.** Specification of Quasimodo market structure reversal; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_renko.md`
+
+`strategy-card` · 92 lines · 4,017 B · description: **extracted**
+
+**Purpose.** Specification of Renko brick trend; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_risk_based_sizing.md`
+
+`strategy-card` · 92 lines · 4,104 B · description: **extracted**
+
+**Purpose.** Specification of Fixed fractional risk and stop sizing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_round_number_levels.md`
+
+`strategy-card` · 92 lines · 4,180 B · description: **extracted**
+
+**Purpose.** Specification of Psychological round number levels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_rsi_divergence.md`
+
+`strategy-card` · 92 lines · 4,088 B · description: **extracted**
+
+**Purpose.** Specification of RSI divergence; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_seasonality.md`
+
+`strategy-card` · 92 lines · 4,148 B · description: **extracted**
+
+**Purpose.** Specification of Calendar and time of day seasonality; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_shooting_star.md`
+
+`strategy-card` · 92 lines · 4,190 B · description: **extracted**
+
+**Purpose.** Specification of Shooting star and inverted hammer; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_short_strangle.md`
+
+`strategy-card` · 91 lines · 3,817 B · description: **extracted**
+
+**Purpose.** Specification of Short strangle option premium; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_support_resistance.md`
+
+`strategy-card` · 92 lines · 4,100 B · description: **extracted**
+
+**Purpose.** Specification of Support and resistance levels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_td_sequential.md`
+
+`strategy-card` · 88 lines · 3,918 B · description: **extracted**
+
+**Purpose.** Specification of TD Sequential exhaustion counts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_three_soldiers_crows.md`
+
+`strategy-card` · 91 lines · 4,057 B · description: **extracted**
+
+**Purpose.** Specification of Three white soldiers and three black crows; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_trailing_stop.md`
+
+`strategy-card` · 92 lines · 4,046 B · description: **extracted**
+
+**Purpose.** Specification of Trailing and breakeven stops; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_triangle.md`
+
+`strategy-card` · 92 lines · 4,187 B · description: **extracted**
+
+**Purpose.** Specification of Ascending descending and symmetrical triangles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_triple_top_bottom.md`
+
+`strategy-card` · 92 lines · 4,097 B · description: **extracted**
+
+**Purpose.** Specification of Triple top and triple bottom; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_value_investing.md`
+
+`strategy-card` · 92 lines · 4,182 B · description: **extracted**
+
+**Purpose.** Specification of Financial ratio value screening; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_vertical_debit_spread.md`
+
+`strategy-card` · 88 lines · 3,789 B · description: **extracted**
+
+**Purpose.** Specification of Vertical debit option spread; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_vix_timing.md`
+
+`strategy-card` · 92 lines · 4,184 B · description: **extracted**
+
+**Purpose.** Specification of VIX term structure and equity timing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_volume_delta.md`
+
+`strategy-card` · 92 lines · 4,108 B · description: **extracted**
+
+**Purpose.** Specification of Cumulative volume delta; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_volume_footprint.md`
+
+`strategy-card` · 92 lines · 4,150 B · description: **extracted**
+
+**Purpose.** Specification of Volume footprint and absorption; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_volume_spread_analysis.md`
+
+`strategy-card` · 92 lines · 4,090 B · description: **extracted**
+
+**Purpose.** Specification of Volume spread analysis; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_wedge.md`
+
+`strategy-card` · 92 lines · 4,103 B · description: **extracted**
+
+**Purpose.** Specification of Rising and falling wedges; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_method_wyckoff.md`
+
+`strategy-card` · 92 lines · 4,108 B · description: **extracted**
+
+**Purpose.** Specification of Wyckoff accumulation and distribution; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=research-method, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mfgggcef_death_cross_chart_pattern_gold.md`
+
+`strategy-card` · 92 lines · 4,611 B · description: **extracted**
+
+**Purpose.** Specification of Death Cross Chart Pattern - Gold; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mfupuzwd_arbitrage_detector_luxalgo.md`
+
+`strategy-card` · 100 lines · 4,972 B · description: **extracted**
+
+**Purpose.** Specification of Arbitrage Detector [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mgslckwl_angled_volume_profile_trendoscope.md`
+
+`strategy-card` · 100 lines · 5,056 B · description: **extracted**
+
+**Purpose.** Specification of Angled Volume Profile [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mheetfmn_a_useful_ma_weighting_function_for_controlling_lag_smoothness.md`
+
+`strategy-card` · 98 lines · 5,181 B · description: **extracted**
+
+**Purpose.** Specification of A Useful MA Weighting Function For Controlling Lag & Smoothness; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_miig3gou_grid_bot_simulator.md`
+
+`strategy-card` · 94 lines · 4,571 B · description: **extracted**
+
+**Purpose.** Specification of Grid Bot Simulator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mk7uyofu_adjustable_ma_alternating_extremities_luxalgo.md`
+
+`strategy-card` · 100 lines · 4,823 B · description: **extracted**
+
+**Purpose.** Specification of Adjustable MA & Alternating Extremities [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mketjg7e_periodic_linear_regressions_luxalgo.md`
+
+`strategy-card` · 100 lines · 4,967 B · description: **extracted**
+
+**Purpose.** Specification of Periodic Linear Regressions [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mll8cpjq_range_oscillator_zeiierman.md`
+
+`strategy-card` · 100 lines · 5,038 B · description: **extracted**
+
+**Purpose.** Specification of Range Oscillator (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_moaqapdw_advanced_how_to_aggressively_grow_a_small_10k_account.md`
+
+`strategy-card` · 102 lines · 6,353 B · description: **extracted**
+
+**Purpose.** Specification of [Advanced] How to aggressively grow a small (10k) account?; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mombnm8e_tick_cvd_kioseff_trading.md`
+
+`strategy-card` · 100 lines · 4,557 B · description: **extracted**
+
+**Purpose.** Specification of Tick CVD [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_muxarne5_audcad_day_trade_signal_by_keltner_channel.md`
+
+`strategy-card` · 120 lines · 5,540 B · description: **extracted**
+
+**Purpose.** Specification of AUDCAD - Day trade signal by Keltner channel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md`
+
+`strategy-card` · 106 lines · 5,019 B · description: **extracted**
+
+**Purpose.** Specification of TrendMaster Pro 2.3 with Alerts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md`
+
+`strategy-card` · 100 lines · 6,802 B · description: **extracted**
+
+**Purpose.** Specification of 3Commas Bot; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mxdttwh8_footprint_iq_pro_tradingiq.md`
+
+`strategy-card` · 96 lines · 4,191 B · description: **extracted**
+
+**Purpose.** Specification of Footprint IQ Pro [TradingIQ]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mxn4pesd_htf_volume_spike_imbalance_projection_luxalgo.md`
+
+`strategy-card` · 98 lines · 5,400 B · description: **extracted**
+
+**Purpose.** Specification of HTF Volume Spike & Imbalance Projection [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_mykmv8br_linear_regression_oscillator_chartprime.md`
+
+`strategy-card` · 102 lines · 5,352 B · description: **extracted**
+
+**Purpose.** Specification of Linear Regression Oscillator [ChartPrime]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_n0f50jkv_relative_volume_at_time.md`
+
+`strategy-card` · 102 lines · 4,598 B · description: **extracted**
+
+**Purpose.** Specification of Relative Volume at Time; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_n3g6jvob_wedge_and_flag_finder_multi_zigzag.md`
+
+`strategy-card` · 92 lines · 4,216 B · description: **extracted**
+
+**Purpose.** Specification of Wedge and Flag Finder (Multi - zigzag); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_n8agnizd_divergence_for_many_indicators_v4.md`
+
+`strategy-card` · 96 lines · 4,299 B · description: **extracted**
+
+**Purpose.** Specification of Divergence for Many Indicators v4; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nachnnj6_trading_plan_on_bynd_for_2022_this_is_what_i_want_to_see.md`
+
+`strategy-card` · 92 lines · 4,514 B · description: **extracted**
+
+**Purpose.** Specification of Trading plan on BYND for 2022. This is what I want to see. ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_4iykx938_4_color_macd.md`
+
+`strategy-card` · 89 lines · 3,733 B · description: **extracted**
+
+**Purpose.** Specification of 4 Color MACD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_5cv2hgjk_double_macd_buy_sell.md`
+
+`strategy-card` · 89 lines · 3,788 B · description: **extracted**
+
+**Purpose.** Specification of Double MACD buy sell; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_gq9i627q_macd_x_by_dgt.md`
+
+`strategy-card` · 89 lines · 3,769 B · description: **extracted**
+
+**Purpose.** Specification of MACD-X by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_hnrsbpj2_macz_vwap.md`
+
+`strategy-card` · 89 lines · 3,764 B · description: **extracted**
+
+**Purpose.** Specification of MACZ VWAP; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_jxvqru4q_obv_macd.md`
+
+`strategy-card` · 89 lines · 3,855 B · description: **extracted**
+
+**Purpose.** Specification of OBV MACD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_nl1z2syw_macd_dema.md`
+
+`strategy-card` · 89 lines · 3,658 B · description: **extracted**
+
+**Purpose.** Specification of MACD DEMA; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_oqx7vju0_customizable_macd_for_any_timeframe.md`
+
+`strategy-card` · 89 lines · 3,991 B · description: **extracted**
+
+**Purpose.** Specification of Customizable MACD for any timeframe; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_qe0umj8p_stick_line_macd.md`
+
+`strategy-card` · 89 lines · 3,762 B · description: **extracted**
+
+**Purpose.** Specification of Stick Line MACD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_qt6xlfli_impulse_macd.md`
+
+`strategy-card` · 89 lines · 3,743 B · description: **extracted**
+
+**Purpose.** Specification of Impulse MACD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_slcjqy3v_supersmoothed_macd.md`
+
+`strategy-card` · 89 lines · 3,889 B · description: **extracted**
+
+**Purpose.** Specification of SuperSmoothed MACD; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_the_80_20_trading_strategy.md`
+
+`strategy-card` · 87 lines · 3,664 B · description: **extracted**
+
+**Purpose.** Specification of The 80 – 20 Trading Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_the_holy_grail_trading_strategy.md`
+
+`strategy-card` · 87 lines · 3,672 B · description: **extracted**
+
+**Purpose.** Specification of The Holy Grail Trading Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_three_little_indians_trading_strategy.md`
+
+`strategy-card` · 87 lines · 3,696 B · description: **extracted**
+
+**Purpose.** Specification of Three Little Indians Trading Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_wc7xhzhy_advanced_laguerre_ppo.md`
+
+`strategy-card` · 89 lines · 3,853 B · description: **extracted**
+
+**Purpose.** Specification of Advanced Laguerre PPO; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_named_yflkxhnp_macdas.md`
+
+`strategy-card` · 90 lines · 3,676 B · description: **extracted**
+
+**Purpose.** Specification of MACDAS; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nbptoyxr_asset_drift_model.md`
+
+`strategy-card` · 100 lines · 6,269 B · description: **extracted**
+
+**Purpose.** Specification of Asset Drift Model; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ngljvbwa_redk_compound_ratio_moving_average_cora_wave.md`
+
+`strategy-card` · 98 lines · 5,302 B · description: **extracted**
+
+**Purpose.** Specification of RedK Compound Ratio Moving Average (CoRa_Wave); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nh9youzp_unbroke_reversal_signals_kernel_bands.md`
+
+`strategy-card` · 92 lines · 4,033 B · description: **extracted**
+
+**Purpose.** Specification of Unbroke Reversal Signals + Kernel Bands; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ni17vkdu_reflex_oscillator_dr_john_ehlers.md`
+
+`strategy-card` · 94 lines · 5,451 B · description: **extracted**
+
+**Purpose.** Specification of Reflex Oscillator - Dr. John Ehlers; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_niohixy1_logistic_rsi_stoch_roc_ao_by_dgt.md`
+
+`strategy-card` · 96 lines · 4,595 B · description: **extracted**
+
+**Purpose.** Specification of Logistic RSI, STOCH, ROC, AO, ... by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_niy5oyf7_volume_by_session.md`
+
+`strategy-card` · 94 lines · 4,366 B · description: **extracted**
+
+**Purpose.** Specification of Volume by Session; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nj6cmjkp_donchian_zig_zag_luxalgo.md`
+
+`strategy-card` · 94 lines · 4,230 B · description: **extracted**
+
+**Purpose.** Specification of Donchian Zig-Zag [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nlm312nk_cvd_cumulative_volume_delta_candles.md`
+
+`strategy-card` · 102 lines · 6,420 B · description: **extracted**
+
+**Purpose.** Specification of CVD - Cumulative Volume Delta Candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nlygzrmb_short_volume_stamper.md`
+
+`strategy-card` · 98 lines · 5,283 B · description: **extracted**
+
+**Purpose.** Specification of Short Volume Stamper; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nlzhcxgf_hh_ll_zz.md`
+
+`strategy-card` · 94 lines · 3,957 B · description: **extracted**
+
+**Purpose.** Specification of HH-LL ZZ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nueh5q6t_linear_regression_all_data.md`
+
+`strategy-card` · 90 lines · 4,031 B · description: **extracted**
+
+**Purpose.** Specification of Linear Regression (All Data); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md`
+
+`strategy-card` · 100 lines · 5,256 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2026.03 One Percent A Week; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nw5ogfdo_ict_killzones_pivots_tfo.md`
+
+`strategy-card` · 92 lines · 4,466 B · description: **extracted**
+
+**Purpose.** Specification of ICT Killzones + Pivots [TFO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nwjy3xpv_first_passage_time_distribution_analysis.md`
+
+`strategy-card` · 106 lines · 5,134 B · description: **extracted**
+
+**Purpose.** Specification of First Passage Time - Distribution Analysis; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ny63myd9_time_volume_point_of_control_flowly_indicators.md`
+
+`strategy-card` · 98 lines · 5,932 B · description: **extracted**
+
+**Purpose.** Specification of Time & volume point of control / Flowly Indicators; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_nzvqcush_detrended_rhythm_oscillator_dro.md`
+
+`strategy-card` · 98 lines · 4,913 B · description: **extracted**
+
+**Purpose.** Specification of Detrended Rhythm Oscillator (DRO); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_o0mu1wau_cme_equity_futures_price_limits.md`
+
+`strategy-card` · 92 lines · 3,989 B · description: **extracted**
+
+**Purpose.** Specification of CME Equity Futures Price Limits; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract.md`
+
+`strategy-card` · 100 lines · 4,513 B · description: **extracted**
+
+**Purpose.** Specification of Bitcoin Monthly Seasonality [Alpha Extract]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md`
+
+`strategy-card` · 102 lines · 5,702 B · description: **extracted**
+
+**Purpose.** Specification of RedK Momentum Bars (RedK Mo_Bars); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_o8trzczt_intrabar_efficiency_ratio.md`
+
+`strategy-card` · 98 lines · 5,725 B · description: **extracted**
+
+**Purpose.** Specification of Intrabar Efficiency Ratio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_odyzzlzu_median_convergence_divergence.md`
+
+`strategy-card` · 102 lines · 5,313 B · description: **extracted**
+
+**Purpose.** Specification of Median Convergence Divergence; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_oe3v6w93_new_technical_tools_back_tested_on_old_extreme_markets.md`
+
+`strategy-card` · 100 lines · 6,752 B · description: **extracted**
+
+**Purpose.** Specification of New Technical Tools Back Tested on Old Extreme Markets; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_oihw2xg2_delta_rsi_oscillator_strategy.md`
+
+`strategy-card` · 96 lines · 4,344 B · description: **extracted**
+
+**Purpose.** Specification of Delta-RSI Oscillator Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_okuj0d2n_earnings_price_move_cheat_sheet_kt.md`
+
+`strategy-card` · 98 lines · 4,885 B · description: **extracted**
+
+**Purpose.** Specification of Earnings Price Move Cheat Sheet [KT]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_onab2fve_fair_value_gaps_by_dgt.md`
+
+`strategy-card` · 96 lines · 4,446 B · description: **extracted**
+
+**Purpose.** Specification of Fair Value Gaps by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_oneeyhxe_projection.md`
+
+`strategy-card` · 90 lines · 4,136 B · description: **extracted**
+
+**Purpose.** Specification of Projection; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_oooobeta_htf_candles_pivots.md`
+
+`strategy-card` · 90 lines · 3,830 B · description: **extracted**
+
+**Purpose.** Specification of HTF Candles & Pivots; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_oqc4nnbf_guide_to_trading_btc_during_consolidation_by_trading_guru.md`
+
+`strategy-card` · 92 lines · 4,301 B · description: **extracted**
+
+**Purpose.** Specification of Guide to Trading BTC During CONSOLIDATION - By Trading-Guru; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_oqttrc35_tasc_2025_02_autocorrelation_indicator.md`
+
+`strategy-card` · 100 lines · 5,953 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2025.02 Autocorrelation Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ostukg4q_all_candlestick_patterns_on_backtest_by_muqwishi.md`
+
+`strategy-card` · 104 lines · 5,385 B · description: **extracted**
+
+**Purpose.** Specification of All Candlestick Patterns on Backtest [By MUQWISHI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ou82izcq_reversal_finder.md`
+
+`strategy-card` · 96 lines · 4,147 B · description: **extracted**
+
+**Purpose.** Specification of Reversal finder; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md`
+
+`strategy-card` · 108 lines · 7,439 B · description: **extracted**
+
+**Purpose.** Specification of Grid Like Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_oyazawb9_d_shape_breakout_signals_luxalgo.md`
+
+`strategy-card` · 106 lines · 5,251 B · description: **extracted**
+
+**Purpose.** Specification of D-Shape Breakout Signals [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ozhquifn_trader_s_guide_to_options_part_3.md`
+
+`strategy-card` · 98 lines · 5,614 B · description: **extracted**
+
+**Purpose.** Specification of Trader's Guide to Options Part 3; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_p0h2afk4_probability_of_atr_index_racer8.md`
+
+`strategy-card` · 100 lines · 5,227 B · description: **extracted**
+
+**Purpose.** Specification of Probability of ATR Index [racer8]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_p2f0pqtd_covid_statistics_tracker_model_projections_by_cryptorhythms.md`
+
+`strategy-card` · 94 lines · 4,418 B · description: **extracted**
+
+**Purpose.** Specification of COVID Statistics Tracker & Model Projections by Cryptorhythms; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_p3xsntqp_how_to_use_session_volume_hd_to_study_price_and_volume.md`
+
+`strategy-card` · 94 lines · 4,440 B · description: **extracted**
+
+**Purpose.** Specification of How to use Session Volume HD to study price and volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_p5ggwhl5_trailing_management_zeiierman.md`
+
+`strategy-card` · 106 lines · 6,716 B · description: **extracted**
+
+**Purpose.** Specification of Trailing Management (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_p68ukxre_iwm_185_180_march_16_put_credit_spread.md`
+
+`strategy-card` · 99 lines · 4,605 B · description: **extracted**
+
+**Purpose.** Specification of IWM 185/180 March 16 Put Credit Spread; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_p6xx04kb_vix_multi_tool.md`
+
+`strategy-card` · 132 lines · 6,162 B · description: **extracted**
+
+**Purpose.** Specification of VIX Multi-Tool; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_p9avc7vy_tpo_market_profile_kioseff_trading.md`
+
+`strategy-card` · 96 lines · 4,465 B · description: **extracted**
+
+**Purpose.** Specification of TPO Market Profile [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pej263bg_volumeheatmap_experimental_version_of_marketorders_matrix.md`
+
+`strategy-card` · 90 lines · 4,053 B · description: **extracted**
+
+**Purpose.** Specification of VolumeHeatmap | Experimental Version of Marketorders Matrix; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pk0aidt2_resampling_reverse_engineering_bands_dw.md`
+
+`strategy-card` · 98 lines · 4,700 B · description: **extracted**
+
+**Purpose.** Specification of Resampling Reverse Engineering Bands [DW]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pkflcpyi_mandelbrot_fibonacci_cascade_vortex_mfcv.md`
+
+`strategy-card` · 102 lines · 4,429 B · description: **extracted**
+
+**Purpose.** Specification of Mandelbrot-Fibonacci Cascade Vortex (MFCV); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pkhv9soh_auto_fib_speed_resistance_fans_by_dgt.md`
+
+`strategy-card` · 100 lines · 5,577 B · description: **extracted**
+
+**Purpose.** Specification of Auto Fib Speed Resistance Fans by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pkzxrfha_atai_volume_pressure_analyzer_v_1_0_pure_up_down.md`
+
+`strategy-card` · 100 lines · 4,684 B · description: **extracted**
+
+**Purpose.** Specification of ATAI Volume Pressure Analyzer V 1.0 — Pure Up/Down; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pl0ipxy0_htf_liquidity_levels.md`
+
+`strategy-card` · 92 lines · 4,414 B · description: **extracted**
+
+**Purpose.** Specification of HTF Liquidity Levels; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pon9i3pi_tutorial_how_smac_can_help_find_the_ideal_covered_call_strike.md`
+
+`strategy-card` · 122 lines · 6,555 B · description: **extracted**
+
+**Purpose.** Specification of Tutorial: How SMAC can help find the Ideal Covered Call Strike; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ppjps450_neglected_volume_by_dgt.md`
+
+`strategy-card` · 102 lines · 6,213 B · description: **extracted**
+
+**Purpose.** Specification of Neglected Volume by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_psnjpa2y_vwap_price_channel.md`
+
+`strategy-card` · 100 lines · 4,636 B · description: **extracted**
+
+**Purpose.** Specification of VWAP Price Channel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ptcl4kv6_volume_profile_auto_line.md`
+
+`strategy-card` · 94 lines · 4,390 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile Auto [line]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_puwmpoyc_macd_with_htf_panels_theultimator5.md`
+
+`strategy-card` · 94 lines · 4,469 B · description: **extracted**
+
+**Purpose.** Specification of MACD with HTF Panels [theUltimator5]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pvpyfz2h_atr_osc_and_volume_screener_atroscvs.md`
+
+`strategy-card` · 96 lines · 5,566 B · description: **extracted**
+
+**Purpose.** Specification of ATR OSC and Volume Screener (ATROSCVS); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pwvoxmso_machine_learning_pivot_points_knn_ss.md`
+
+`strategy-card` · 100 lines · 4,607 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning Pivot Points (KNN) [SS]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pxnwlarh_how_i_trade_price_action_structures_patterns.md`
+
+`strategy-card` · 90 lines · 3,980 B · description: **extracted**
+
+**Purpose.** Specification of How I trade Price Action Structures/Patterns; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_pydmopdi_gme_identical_chart_pattern_as_amc_before_explosive_move.md`
+
+`strategy-card` · 90 lines · 4,045 B · description: **extracted**
+
+**Purpose.** Specification of GME Identical Chart Pattern as AMC Before Explosive Move!!!; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_q1hxs0v6_liquidity_void_detector_zeiierman.md`
+
+`strategy-card` · 102 lines · 5,143 B · description: **extracted**
+
+**Purpose.** Specification of Liquidity Void Detector (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_q3jrr7sn_spy_expected_move_by_vix.md`
+
+`strategy-card` · 92 lines · 4,203 B · description: **extracted**
+
+**Purpose.** Specification of SPY Expected Move by VIX; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_q7yifaaf_multi_zigzag_harmonic_patterns.md`
+
+`strategy-card` · 94 lines · 4,191 B · description: **extracted**
+
+**Purpose.** Specification of Multi ZigZag Harmonic Patterns; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_q7yqqq7g_volume_gaps_imbalances_zeiierman.md`
+
+`strategy-card` · 98 lines · 5,001 B · description: **extracted**
+
+**Purpose.** Specification of Volume Gaps & Imbalances (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_q9oqye4c_hull_suite_strategy.md`
+
+`strategy-card` · 92 lines · 3,963 B · description: **extracted**
+
+**Purpose.** Specification of Hull Suite Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qaaxkw1p_ai_predictive_flow_zeiierman.md`
+
+`strategy-card` · 102 lines · 4,659 B · description: **extracted**
+
+**Purpose.** Specification of AI Predictive Flow (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qakfjgfu_liquidity_levels_luxalgo.md`
+
+`strategy-card` · 102 lines · 4,945 B · description: **extracted**
+
+**Purpose.** Specification of Liquidity Levels [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qamnmxzi_volume_forks_trendoscope.md`
+
+`strategy-card` · 98 lines · 4,737 B · description: **extracted**
+
+**Purpose.** Specification of Volume Forks [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qe4dq4zm_chart_vwap.md`
+
+`strategy-card` · 98 lines · 5,319 B · description: **extracted**
+
+**Purpose.** Specification of Chart VWAP; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qeqcsffc_dekidaka_ashi_candles_and_volume_teaming_up_again.md`
+
+`strategy-card` · 102 lines · 6,956 B · description: **extracted**
+
+**Purpose.** Specification of Dekidaka-Ashi - Candles And Volume Teaming Up (Again); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qetnobdk_half_causal_estimator.md`
+
+`strategy-card` · 102 lines · 6,566 B · description: **extracted**
+
+**Purpose.** Specification of Half Causal Estimator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qhncxbml_relative_strength_rsmk_perks_markos_katsanos.md`
+
+`strategy-card` · 98 lines · 6,223 B · description: **extracted**
+
+**Purpose.** Specification of Relative Strength(RSMK) + Perks - Markos Katsanos; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qibyvt4j_hurst_exponent.md`
+
+`strategy-card` · 98 lines · 4,370 B · description: **extracted**
+
+**Purpose.** Specification of Hurst Exponent; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ql1t3hh0_fancy_bollinger_bands_bigbitsio.md`
+
+`strategy-card` · 96 lines · 4,375 B · description: **extracted**
+
+**Purpose.** Specification of Fancy Bollinger Bands [BigBitsIO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qnqbqiex_correlation_heatmap_tradingfinder_sessions_data_science_stats.md`
+
+`strategy-card` · 100 lines · 5,624 B · description: **extracted**
+
+**Purpose.** Specification of Correlation HeatMap [TradingFinder] Sessions Data Science Stats; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qnx9nxw0_multi_timeframe_volume_profiles_tradingiq.md`
+
+`strategy-card` · 94 lines · 4,174 B · description: **extracted**
+
+**Purpose.** Specification of Multi Timeframe Volume Profiles [TradingIQ]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qqlorjta_usd_jpy_three_scenarios_and_how_to_trade_them.md`
+
+`strategy-card` · 98 lines · 4,618 B · description: **extracted**
+
+**Purpose.** Specification of USD/JPY: Three Scenarios and How To Trade Them 📊; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qrevzodw_mad_acceleration_based_dampened_sma_projections.md`
+
+`strategy-card` · 100 lines · 4,603 B · description: **extracted**
+
+**Purpose.** Specification of [MAD] Acceleration based dampened SMA projections; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qstlq23r_auto_adjust_to_ideal_pearson_s_r_oscillator.md`
+
+`strategy-card` · 92 lines · 4,307 B · description: **extracted**
+
+**Purpose.** Specification of Auto Adjust To Ideal Pearson's R Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qt7fqntr_breakout_probability_expo.md`
+
+`strategy-card` · 96 lines · 5,101 B · description: **extracted**
+
+**Purpose.** Specification of Breakout Probability (Expo); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qt7frw7q_3d_wave_pm.md`
+
+`strategy-card` · 90 lines · 3,878 B · description: **extracted**
+
+**Purpose.** Specification of 3D Wave-PM; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qtkfi42t_macd_x_overlay_more_than_macd_by_dgt.md`
+
+`strategy-card` · 102 lines · 5,870 B · description: **extracted**
+
+**Purpose.** Specification of MACD-X Overlay, More Than MACD by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qtos0wyg_dji_wall_street_pattern_in_the_chaos.md`
+
+`strategy-card` · 92 lines · 4,565 B · description: **extracted**
+
+**Purpose.** Specification of DJI (Wall Street): Pattern in the chaos.; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qvcjkcw3_mad_position_starter_calculator.md`
+
+`strategy-card` · 100 lines · 4,501 B · description: **extracted**
+
+**Purpose.** Specification of [MAD] Position starter & calculator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qvsw9gup_moving_average_entanglement.md`
+
+`strategy-card` · 90 lines · 3,934 B · description: **extracted**
+
+**Purpose.** Specification of Moving Average Entanglement; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qwmafztl_tasc_2025_06_cybernetic_oscillator.md`
+
+`strategy-card` · 98 lines · 6,256 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2025.06 Cybernetic Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_qypmcjka_lowest_highest_from_widget.md`
+
+`strategy-card` · 92 lines · 4,018 B · description: **extracted**
+
+**Purpose.** Specification of Lowest / Highest From Widget; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_r72jbjt4_market_matrix_zeiierman.md`
+
+`strategy-card` · 100 lines · 5,153 B · description: **extracted**
+
+**Purpose.** Specification of Market Matrix (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_r7o3zulh_estimated_time_at_price_kioseff_trading.md`
+
+`strategy-card` · 96 lines · 4,572 B · description: **extracted**
+
+**Purpose.** Specification of Estimated Time At Price [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_r8g2yhdg_order_block_finder_experimental.md`
+
+`strategy-card` · 100 lines · 4,924 B · description: **extracted**
+
+**Purpose.** Specification of Order Block Finder (Experimental); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rbeervr5_rolling_z_score_trend_quantalgo.md`
+
+`strategy-card` · 100 lines · 5,286 B · description: **extracted**
+
+**Purpose.** Specification of Rolling Z-Score Trend [QuantAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rcfo5hhf_reverse_stochastic_momentum_index_on_chart.md`
+
+`strategy-card` · 100 lines · 4,508 B · description: **extracted**
+
+**Purpose.** Specification of Reverse Stochastic Momentum Index On Chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rddlqjfh_berlin_candles.md`
+
+`strategy-card` · 96 lines · 4,147 B · description: **extracted**
+
+**Purpose.** Specification of BERLIN Candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rdxjz0lr_elliot_waves_complete_guide_chapter_2_3_extensions.md`
+
+`strategy-card` · 92 lines · 4,176 B · description: **extracted**
+
+**Purpose.** Specification of Elliot Waves Complete Guide | Chapter 2.3 - \"Extensions\"; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rfbdceg1_gaps_profile_vnhilton.md`
+
+`strategy-card` · 90 lines · 3,979 B · description: **extracted**
+
+**Purpose.** Specification of Gaps Profile [vnhilton]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rgnbiicd_abc_on_recursive_zigzag_trendoscope.md`
+
+`strategy-card` · 100 lines · 5,017 B · description: **extracted**
+
+**Purpose.** Specification of ABC on Recursive Zigzag [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rlkjr2sq_bjorgum_double_tap.md`
+
+`strategy-card` · 106 lines · 7,239 B · description: **extracted**
+
+**Purpose.** Specification of Bjorgum Double Tap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rnkr88ze_tick_delta_volume.md`
+
+`strategy-card` · 90 lines · 3,954 B · description: **extracted**
+
+**Purpose.** Specification of Tick Delta Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rs3xqwyx_support_and_resistance_logistic_regression_flux_charts.md`
+
+`strategy-card` · 102 lines · 6,035 B · description: **extracted**
+
+**Purpose.** Specification of Support and Resistance Logistic Regression | Flux Charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rtofqf13_trading_activity_index_zeiierman.md`
+
+`strategy-card` · 100 lines · 4,832 B · description: **extracted**
+
+**Purpose.** Specification of Trading Activity Index (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rtorjfrl_how_to_use_the_rsi_to_find_oversold_stocks_now_recovering.md`
+
+`strategy-card` · 94 lines · 4,365 B · description: **extracted**
+
+**Purpose.** Specification of How To: Use the RSI to find Oversold Stocks now Recovering; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rv3pibxo_ttp_vix_spy.md`
+
+`strategy-card` · 98 lines · 4,399 B · description: **extracted**
+
+**Purpose.** Specification of TTP VIX Spy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rxrafvef_langlands_operadic_mobius_vortex_lomv.md`
+
+`strategy-card` · 104 lines · 4,785 B · description: **extracted**
+
+**Purpose.** Specification of Langlands-Operadic Möbius Vortex (LOMV); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_rzs7ydmi_renko_candles_overlay.md`
+
+`strategy-card` · 100 lines · 4,468 B · description: **extracted**
+
+**Purpose.** Specification of Renko Candles Overlay; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_s2clgbm5_volume_based_support_resistance_zones.md`
+
+`strategy-card` · 92 lines · 4,157 B · description: **extracted**
+
+**Purpose.** Specification of Volume-based Support & Resistance Zones; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_s40vmzm4_asset_rotation_system_investorunknown.md`
+
+`strategy-card` · 101 lines · 4,926 B · description: **extracted**
+
+**Purpose.** Specification of Asset Rotation System [InvestorUnknown]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_s7hgang6_intraday_intensity_modes.md`
+
+`strategy-card` · 98 lines · 5,849 B · description: **extracted**
+
+**Purpose.** Specification of Intraday Intensity Modes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_s9knr6dg_crowding_model_bullvision.md`
+
+`strategy-card` · 100 lines · 4,739 B · description: **extracted**
+
+**Purpose.** Specification of Crowding model ║ BullVision; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_sc6a9izn_quick_tip_add_a_signal_line_to_your_indicator_no_coding.md`
+
+`strategy-card` · 90 lines · 4,087 B · description: **extracted**
+
+**Purpose.** Specification of Quick tip: Add a signal line to your indicator, no coding!; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_seduwoij_zeiierman_trend_pressure_zeiierman.md`
+
+`strategy-card` · 104 lines · 5,461 B · description: **extracted**
+
+**Purpose.** Specification of Zeiierman Trend Pressure (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_sg5cvyr9_tick_data_detailed.md`
+
+`strategy-card` · 92 lines · 4,405 B · description: **extracted**
+
+**Purpose.** Specification of Tick Data Detailed; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_sg7vk6uh_iq_trend_beams_tradingiq.md`
+
+`strategy-card` · 98 lines · 5,500 B · description: **extracted**
+
+**Purpose.** Specification of IQ Trend Beams [TradingIQ]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_sgfm0bj3_elastic_volume_weighted_student_t_tension.md`
+
+`strategy-card` · 100 lines · 5,007 B · description: **extracted**
+
+**Purpose.** Specification of Elastic Volume-Weighted Student-T Tension; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_shevujyq_machine_learning_rsi_bullvision.md`
+
+`strategy-card` · 100 lines · 4,968 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning RSI ║ BullVision; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_shvvlgmm_fast_fourier_transform_fft_filter.md`
+
+`strategy-card` · 98 lines · 5,259 B · description: **extracted**
+
+**Purpose.** Specification of Fast Fourier Transform (FFT) Filter; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_shy8kacw_market_structure_volume_profiles_kioseff_trading.md`
+
+`strategy-card` · 98 lines · 4,556 B · description: **extracted**
+
+**Purpose.** Specification of Market Structure Volume Profiles [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md`
+
+`strategy-card` · 94 lines · 4,920 B · description: **extracted**
+
+**Purpose.** Specification of Modified Mannarino Market Risk Indicator MMMRI MMRI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_sq5xt0ez_hyperfork_matrix.md`
+
+`strategy-card` · 102 lines · 4,944 B · description: **extracted**
+
+**Purpose.** Specification of Hyperfork Matrix; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_sr0scav5_wavelet_trend_ml_integration_alpha_extract.md`
+
+`strategy-card` · 102 lines · 4,831 B · description: **extracted**
+
+**Purpose.** Specification of Wavelet-Trend ML Integration [Alpha Extract]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_su8qcnj3_expected_value_monte_carlo.md`
+
+`strategy-card` · 104 lines · 5,077 B · description: **extracted**
+
+**Purpose.** Specification of Expected Value Monte Carlo; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_svp0szo5_tasc_2025_04_the_ultimate_oscillator.md`
+
+`strategy-card` · 98 lines · 5,480 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2025.04 The Ultimate Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_swwmsmqw_indicator_panel.md`
+
+`strategy-card` · 94 lines · 4,447 B · description: **extracted**
+
+**Purpose.** Specification of Indicator Panel; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_sxgyrede_dynamic_swing_anchored_vwap_zeiierman.md`
+
+`strategy-card` · 98 lines · 5,122 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Swing Anchored VWAP (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_sxzrzqzq_divergence_indicator_any_oscillator.md`
+
+`strategy-card` · 92 lines · 4,079 B · description: **extracted**
+
+**Purpose.** Specification of Divergence Indicator (any oscillator); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_szvbr1vq_kcgmut.md`
+
+`strategy-card` · 96 lines · 5,369 B · description: **extracted**
+
+**Purpose.** Specification of KCGmut; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_t1v41bl5_session_edge_profiler_flux_charts.md`
+
+`strategy-card` · 104 lines · 7,357 B · description: **extracted**
+
+**Purpose.** Specification of Session Edge Profiler | Flux Charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_frama.md`
+
+`strategy-card` · 92 lines · 3,791 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: frama; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_ht.md`
+
+`strategy-card` · 91 lines · 3,567 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: ht; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_ift.md`
+
+`strategy-card` · 91 lines · 3,579 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: ift; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_pzo.md`
+
+`strategy-card` · 91 lines · 3,584 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: pzo; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_relativevolume.md`
+
+`strategy-card` · 94 lines · 4,639 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: relativeVolume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_rms.md`
+
+`strategy-card` · 92 lines · 3,637 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: rms; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_rwi.md`
+
+`strategy-card` · 91 lines · 3,615 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: rwi; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_stc.md`
+
+`strategy-card` · 96 lines · 4,050 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: stc; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_szo.md`
+
+`strategy-card` · 92 lines · 3,662 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: szo; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_t3.md`
+
+`strategy-card` · 93 lines · 3,762 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: t3; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_trima.md`
+
+`strategy-card` · 92 lines · 3,675 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: trima; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_vhf.md`
+
+`strategy-card` · 92 lines · 3,640 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: vhf; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_vstop.md`
+
+`strategy-card` · 93 lines · 4,086 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: vStop; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_vzo.md`
+
+`strategy-card` · 91 lines · 3,585 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: vzo; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ta_wpo.md`
+
+`strategy-card` · 97 lines · 3,681 B · description: **extracted**
+
+**Purpose.** Specification of TradingView ta library: wpo; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tbz9rgx9_weekly_volume_heatmap.md`
+
+`strategy-card` · 98 lines · 4,607 B · description: **extracted**
+
+**Purpose.** Specification of Weekly Volume Heatmap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tcwijygr_sigma_spike_filtered_binned_opr_adam_h_grimes.md`
+
+`strategy-card` · 92 lines · 4,355 B · description: **extracted**
+
+**Purpose.** Specification of Sigma Spike Filtered Binned OPR ( Adam H. Grimes ); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tdtl9jea_how_to_use_the_new_fixed_range_volume_profile_drawing_tool.md`
+
+`strategy-card` · 94 lines · 4,468 B · description: **extracted**
+
+**Purpose.** Specification of How to use the new Fixed Range Volume Profile drawing tool; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tedvnpgs_spread_by.md`
+
+`strategy-card` · 94 lines · 4,063 B · description: **extracted**
+
+**Purpose.** Specification of Spread by; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tjzklojn_wyckoff_theultimator5.md`
+
+`strategy-card` · 104 lines · 6,331 B · description: **extracted**
+
+**Purpose.** Specification of Wyckoff [theUltimator5]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tk7fhng9_adaptive_trend_finder_log.md`
+
+`strategy-card` · 94 lines · 4,625 B · description: **extracted**
+
+**Purpose.** Specification of Adaptive Trend Finder (log); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tkzp5uj0_hancock_rsi_volume.md`
+
+`strategy-card` · 92 lines · 4,501 B · description: **extracted**
+
+**Purpose.** Specification of Hancock - RSI Volume; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tmlc5wma_adaptive_market_profile_auto_detect_dynamic_activity_zones.md`
+
+`strategy-card` · 100 lines · 5,448 B · description: **extracted**
+
+**Purpose.** Specification of Adaptive Market Profile – Auto Detect & Dynamic Activity Zones; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tmqir1jp_rsi_cyclic_smoothed_v2.md`
+
+`strategy-card` · 96 lines · 4,344 B · description: **extracted**
+
+**Purpose.** Specification of RSI cyclic smoothed v2; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tng177sv_realtime_5d_profile_lucf.md`
+
+`strategy-card` · 102 lines · 7,071 B · description: **extracted**
+
+**Purpose.** Specification of Realtime 5D Profile [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tnq7fvvw_trend_target_ribbon_boswaves.md`
+
+`strategy-card` · 112 lines · 8,587 B · description: **extracted**
+
+**Purpose.** Specification of Trend Target Ribbon [BOSWaves]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_toatqabg_diluted_earnings_per_share_signal_astrideunicorn.md`
+
+`strategy-card` · 98 lines · 5,252 B · description: **extracted**
+
+**Purpose.** Specification of Diluted Earnings Per Share Signal [AstrideUnicorn]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tpseizhp_volume_x_ray_lucf.md`
+
+`strategy-card` · 100 lines · 6,312 B · description: **extracted**
+
+**Purpose.** Specification of Volume X-ray [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tstsp9sk_peak_trading_activity_graphs_luxalgo.md`
+
+`strategy-card` · 98 lines · 5,157 B · description: **extracted**
+
+**Purpose.** Specification of Peak Trading Activity Graphs [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tt0t369u_volatility_stop_mtf.md`
+
+`strategy-card` · 96 lines · 4,304 B · description: **extracted**
+
+**Purpose.** Specification of Volatility Stop MTF; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tt7060bw_modern_portfolio_theory.md`
+
+`strategy-card` · 98 lines · 4,850 B · description: **extracted**
+
+**Purpose.** Specification of Modern Portfolio Theory; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_tv3rcaj9_market_sessions_and_volume_profile_by_leviathan.md`
+
+`strategy-card` · 90 lines · 4,201 B · description: **extracted**
+
+**Purpose.** Specification of Market sessions and Volume profile - By Leviathan; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_u0r2gpti_fourier_extrapolator_of_price_w_projection_forecast_loxx.md`
+
+`strategy-card` · 100 lines · 4,799 B · description: **extracted**
+
+**Purpose.** Specification of Fourier Extrapolator of Price w/ Projection Forecast [Loxx]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_u1l7ixmp_rolling_candle_profile_with_buy_sell_signals_zeiierman.md`
+
+`strategy-card` · 102 lines · 5,130 B · description: **extracted**
+
+**Purpose.** Specification of Rolling Candle Profile with Buy/Sell Signals (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_u64lz5n3_mesa_stochastic_multi_length.md`
+
+`strategy-card` · 90 lines · 4,336 B · description: **extracted**
+
+**Purpose.** Specification of MESA Stochastic Multi Length; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_u8imfw8n_redk_portfolio_tracker_v2_few_enhancements_and_display_options.md`
+
+`strategy-card` · 92 lines · 4,618 B · description: **extracted**
+
+**Purpose.** Specification of RedK_Portfolio Tracker v2: few enhancements and display options; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ucux0rjl_tops_bottoms_time_of_day_report.md`
+
+`strategy-card` · 92 lines · 4,023 B · description: **extracted**
+
+**Purpose.** Specification of Tops & Bottoms - Time of Day Report; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_udti2iuw_central_bank_liquidity_gap_indicator.md`
+
+`strategy-card` · 96 lines · 4,335 B · description: **extracted**
+
+**Purpose.** Specification of Central Bank Liquidity Gap Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_uftt8roh_redk_portfolio_tracker_table_version.md`
+
+`strategy-card` · 92 lines · 4,333 B · description: **extracted**
+
+**Purpose.** Specification of RedK Portfolio Tracker [Table Version]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_uive2izt_harmonic_patterns_based_trend_follower.md`
+
+`strategy-card` · 100 lines · 4,744 B · description: **extracted**
+
+**Purpose.** Specification of Harmonic Patterns Based Trend Follower; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ujgvguvt_volatility_risk_premium.md`
+
+`strategy-card` · 106 lines · 7,149 B · description: **extracted**
+
+**Purpose.** Specification of Volatility Risk Premium; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ujvs2xfg_monte_carlo_range_forecast_dw.md`
+
+`strategy-card` · 102 lines · 4,795 B · description: **extracted**
+
+**Purpose.** Specification of Monte Carlo Range Forecast [DW]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ukaod896_divergence_support_resistence.md`
+
+`strategy-card` · 96 lines · 4,497 B · description: **extracted**
+
+**Purpose.** Specification of Divergence-Support/Resistence; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ukgkppqm_dynamic_volume_profile_oscillator_alphaalgos.md`
+
+`strategy-card` · 106 lines · 4,591 B · description: **extracted**
+
+**Purpose.** Specification of Dynamic Volume Profile Oscillator | AlphaAlgos; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ulnivzea_smu_stdev_candles.md`
+
+`strategy-card` · 90 lines · 3,902 B · description: **extracted**
+
+**Purpose.** Specification of SMU STDEV Candles; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ulvxjaub_zigzag_circles_strategy_test_1st_april_6th_june.md`
+
+`strategy-card` · 102 lines · 4,665 B · description: **extracted**
+
+**Purpose.** Specification of Zigzag Circles Strategy Test 1st April → 6th June; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ulz8mjlu_rs_majors_volume_sum.md`
+
+`strategy-card` · 90 lines · 3,877 B · description: **extracted**
+
+**Purpose.** Specification of [RS]Majors Volume Sum; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ulzjcb7h_volume_by_time_luxalgo.md`
+
+`strategy-card` · 92 lines · 4,071 B · description: **extracted**
+
+**Purpose.** Specification of Volume by Time [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_unwex8n4_heatmap_volume_xdecow.md`
+
+`strategy-card` · 90 lines · 3,931 B · description: **extracted**
+
+**Purpose.** Specification of Heatmap Volume [xdecow]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_utcrhzep_volume_profile_pivot_anchored_by_dgt.md`
+
+`strategy-card` · 94 lines · 4,853 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile, Pivot Anchored by DGT; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_uudeajsi_quadratic_regression.md`
+
+`strategy-card` · 98 lines · 4,741 B · description: **extracted**
+
+**Purpose.** Specification of Quadratic Regression; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_uvby6vlf_mad_gann_o_maticus.md`
+
+`strategy-card` · 100 lines · 4,977 B · description: **extracted**
+
+**Purpose.** Specification of [MAD] Gann o Maticus; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_uwufcff8_indicators_overlay.md`
+
+`strategy-card` · 94 lines · 4,326 B · description: **extracted**
+
+**Purpose.** Specification of Indicators Overlay; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_v8sbugsw_redk_trader_pressure_index_tpx_v1_0.md`
+
+`strategy-card` · 100 lines · 5,528 B · description: **extracted**
+
+**Purpose.** Specification of RedK Trader Pressure Index (TPX v1.0) ; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vakdjwdk_head_shoulders_s_r_regular.md`
+
+`strategy-card` · 94 lines · 4,004 B · description: **extracted**
+
+**Purpose.** Specification of Head & Shoulders S/R Regular; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vb8jw3i2_trend_following_mas_3d.md`
+
+`strategy-card` · 92 lines · 4,032 B · description: **extracted**
+
+**Purpose.** Specification of Trend Following MAs 3D; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vdzfb2wa_quality_screen.md`
+
+`strategy-card` · 90 lines · 3,916 B · description: **extracted**
+
+**Purpose.** Specification of Quality Screen; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md`
+
+`strategy-card` · 102 lines · 5,359 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2026.08 An Ag Selling Model; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_viwa6cr8_ma_sabres_luxalgo.md`
+
+`strategy-card` · 98 lines · 4,397 B · description: **extracted**
+
+**Purpose.** Specification of MA Sabres [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vnzbp63l_zigzag_trend_divergence_detector.md`
+
+`strategy-card` · 100 lines · 5,065 B · description: **extracted**
+
+**Purpose.** Specification of Zigzag Trend/Divergence Detector; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vo99pov0_htf_candle_volume_thermometer_chartprime.md`
+
+`strategy-card` · 94 lines · 4,324 B · description: **extracted**
+
+**Purpose.** Specification of HTF Candle Volume Thermometer [ChartPrime]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vozihfu9_obv_traffic_lights.md`
+
+`strategy-card` · 92 lines · 4,088 B · description: **extracted**
+
+**Purpose.** Specification of OBV Traffic Lights; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vraarpaa_tasc_2021_11_madh_moving_average_difference_hann.md`
+
+`strategy-card` · 100 lines · 5,273 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2021.11 MADH Moving Average Difference, Hann; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vrtl3vwf_machine_learning_rsi_ai_classification_ranking_zeiierman.md`
+
+`strategy-card` · 106 lines · 5,732 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning RSI | AI Classification & Ranking (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vspwh0vn_options_max_pain_calculator_backquant.md`
+
+`strategy-card` · 100 lines · 4,894 B · description: **extracted**
+
+**Purpose.** Specification of Options Max Pain Calculator [BackQuant]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vt3jbshj_cointegration_heatmap_spread_table_edgeterminal.md`
+
+`strategy-card` · 100 lines · 5,014 B · description: **extracted**
+
+**Purpose.** Specification of Cointegration Heatmap & Spread Table [EdgeTerminal]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md`
+
+`strategy-card` · 102 lines · 5,957 B · description: **extracted**
+
+**Purpose.** Specification of Grover Llorens Activator Strategy Analysis; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vxui7vrm_market_structure_dashboard_flux_charts.md`
+
+`strategy-card` · 110 lines · 7,189 B · description: **extracted**
+
+**Purpose.** Specification of Market Structure Dashboard | Flux Charts; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vy7sifia_candle_body_shapes.md`
+
+`strategy-card` · 90 lines · 3,885 B · description: **extracted**
+
+**Purpose.** Specification of Candle Body Shapes; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_vyu6a3gb_anchored_vwap_pinch_handoff_intervals_and_signals.md`
+
+`strategy-card` · 98 lines · 6,030 B · description: **extracted**
+
+**Purpose.** Specification of Anchored VWAP Pinch & Handoff, Intervals, and Signals; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_w5lbl0mv_john_ehlers_the_price_radio.md`
+
+`strategy-card` · 90 lines · 4,138 B · description: **extracted**
+
+**Purpose.** Specification of John Ehlers - The Price Radio; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_w5vmuuda_financial_growth.md`
+
+`strategy-card` · 92 lines · 3,956 B · description: **extracted**
+
+**Purpose.** Specification of Financial Growth; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wba7j6tu_mean_deviation_index.md`
+
+`strategy-card` · 90 lines · 3,943 B · description: **extracted**
+
+**Purpose.** Specification of Mean Deviation Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wbqdfanb_mboxalgos.md`
+
+`strategy-card` · 104 lines · 5,500 B · description: **extracted**
+
+**Purpose.** Specification of MBoxAlgos; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wc3dyn1w_trend_range_detector_zeiierman.md`
+
+`strategy-card` · 102 lines · 5,360 B · description: **extracted**
+
+**Purpose.** Specification of Trend Range Detector (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wdotecyq_pivot_and_price_discovery.md`
+
+`strategy-card` · 96 lines · 4,827 B · description: **extracted**
+
+**Purpose.** Specification of Pivot and Price Discovery; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_we9amcve_tasc_2026_04_a_synthetic_oscillator.md`
+
+`strategy-card` · 100 lines · 4,815 B · description: **extracted**
+
+**Purpose.** Specification of TASC 2026.04 A Synthetic Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_whbzgfdu_machine_learning_lorentzian_classification.md`
+
+`strategy-card` · 102 lines · 5,584 B · description: **extracted**
+
+**Purpose.** Specification of Machine Learning: Lorentzian Classification; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_whfedbdv_chart_oscillator.md`
+
+`strategy-card` · 90 lines · 3,841 B · description: **extracted**
+
+**Purpose.** Specification of Chart Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wijmcwz7_financial_statement_indicator_by_zdmre.md`
+
+`strategy-card` · 92 lines · 4,301 B · description: **extracted**
+
+**Purpose.** Specification of Financial Statement Indicator by zdmre; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wiwhv552_custom_pattern_detection.md`
+
+`strategy-card` · 98 lines · 4,728 B · description: **extracted**
+
+**Purpose.** Specification of Custom Pattern Detection; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wixmhdwt_seasonality_tfo.md`
+
+`strategy-card` · 94 lines · 4,869 B · description: **extracted**
+
+**Purpose.** Specification of Seasonality [TFO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wobqqsxf_black_scholes_option_pricing_model_w_greeks_loxx.md`
+
+`strategy-card` · 100 lines · 5,642 B · description: **extracted**
+
+**Purpose.** Specification of Black Scholes Option Pricing Model w/ Greeks [Loxx]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wp434cpg_btc_difficulty_adjustments.md`
+
+`strategy-card` · 92 lines · 4,014 B · description: **extracted**
+
+**Purpose.** Specification of BTC difficulty adjustments; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wp7wwjll_supertrend_ai_clustering_luxalgo.md`
+
+`strategy-card` · 102 lines · 5,511 B · description: **extracted**
+
+**Purpose.** Specification of SuperTrend AI (Clustering) [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wpbrh5sq_simple_decesion_matrix_classification_algorithm_ss.md`
+
+`strategy-card` · 100 lines · 5,541 B · description: **extracted**
+
+**Purpose.** Specification of Simple Decesion Matrix Classification Algorithm [SS]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wtmg0nge_golden_pocket.md`
+
+`strategy-card` · 96 lines · 4,434 B · description: **extracted**
+
+**Purpose.** Specification of Golden Pocket; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wvcqygsx_mtf_oscillator_framework_pinecoders.md`
+
+`strategy-card` · 108 lines · 5,828 B · description: **extracted**
+
+**Purpose.** Specification of MTF Oscillator Framework [PineCoders]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wyyxkhdn_correlation_cycle_correlationangle_market_state_john_ehlers.md`
+
+`strategy-card` · 94 lines · 5,690 B · description: **extracted**
+
+**Purpose.** Specification of Correlation Cycle, CorrelationAngle, Market State - John Ehlers; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wz8b1fiw_auto_chart_patterns_trendoscope.md`
+
+`strategy-card` · 100 lines · 4,685 B · description: **extracted**
+
+**Purpose.** Specification of Auto Chart Patterns [Trendoscope®]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_wzvigqk7_vama_volume_adjusted_moving_average_function.md`
+
+`strategy-card` · 98 lines · 4,537 B · description: **extracted**
+
+**Purpose.** Specification of VAMA Volume Adjusted Moving Average Function; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_x2llrvbe_higher_order_pivots.md`
+
+`strategy-card` · 94 lines · 4,225 B · description: **extracted**
+
+**Purpose.** Specification of Higher Order Pivots; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_x2y6hyok_bitcoin_bullish_percent_index.md`
+
+`strategy-card` · 97 lines · 4,962 B · description: **extracted**
+
+**Purpose.** Specification of Bitcoin Bullish Percent Index; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_x4xoo9ax_fibonacci_sequence_circles_bigbeluga.md`
+
+`strategy-card` · 94 lines · 4,886 B · description: **extracted**
+
+**Purpose.** Specification of Fibonacci Sequence Circles [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_x9qyvbyn_andean_oscillator.md`
+
+`strategy-card` · 96 lines · 4,268 B · description: **extracted**
+
+**Purpose.** Specification of Andean Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xascppnw_nick_rypock_trailing_reverse_nrtr_everget.md`
+
+`strategy-card` · 92 lines · 4,435 B · description: **extracted**
+
+**Purpose.** Specification of Nick Rypock Trailing Reverse (NRTR) [everget]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xdwgv3fx_ttrades_daily_bias_tfo.md`
+
+`strategy-card` · 98 lines · 5,481 B · description: **extracted**
+
+**Purpose.** Specification of TTrades Daily Bias [TFO]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xebjei3o_how_to_identify_valid_high_probability_price_action_structures.md`
+
+`strategy-card` · 94 lines · 4,836 B · description: **extracted**
+
+**Purpose.** Specification of How to identify valid, high probability price action structures; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xfr7xhqz_cm_macd_custom_indicator_multiple_time_frame_v2.md`
+
+`strategy-card` · 96 lines · 4,167 B · description: **extracted**
+
+**Purpose.** Specification of CM MACD Custom Indicator - Multiple Time Frame - V2; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xfrmtqfi_using_psychology_large_price_moves_and_volume_to_spot_bottoms.md`
+
+`strategy-card` · 92 lines · 4,517 B · description: **extracted**
+
+**Purpose.** Specification of Using psychology, large price moves, and volume to spot bottoms; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xgnuhodo_open_interest_chart_luxalgo.md`
+
+`strategy-card` · 96 lines · 4,368 B · description: **extracted**
+
+**Purpose.** Specification of Open Interest Chart [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xh8tldte_realtime_delta_volume_action_lucf.md`
+
+`strategy-card` · 106 lines · 6,988 B · description: **extracted**
+
+**Purpose.** Specification of Realtime Delta Volume Action [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xkbwnq2h_intrabar_run_count_indicator_tbiktag.md`
+
+`strategy-card` · 100 lines · 6,627 B · description: **extracted**
+
+**Purpose.** Specification of Intrabar Run Count Indicator [tbiktag]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xlv4mwjk_time_range_statistics.md`
+
+`strategy-card` · 96 lines · 5,232 B · description: **extracted**
+
+**Purpose.** Specification of Time Range Statistics; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xmke97vn_developing_market_profile_tpo_honestcowboy.md`
+
+`strategy-card` · 98 lines · 4,839 B · description: **extracted**
+
+**Purpose.** Specification of Developing Market Profile / TPO [Honestcowboy]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xp9odtfm_volume_profile_volume_delta_oi_delta_kioseff_trading.md`
+
+`strategy-card` · 102 lines · 5,169 B · description: **extracted**
+
+**Purpose.** Specification of Volume Profile Volume Delta OI Delta [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xux5vvn0_earnings_splits_dividends.md`
+
+`strategy-card` · 90 lines · 3,936 B · description: **extracted**
+
+**Purpose.** Specification of Earnings, Splits, Dividends; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals.md`
+
+`strategy-card` · 100 lines · 5,438 B · description: **extracted**
+
+**Purpose.** Specification of Auto Trendline Indicator (based on fractals); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_xzfb6isb_smart_trader_concentric_candles_aristotelian_cycloids.md`
+
+`strategy-card` · 100 lines · 4,358 B · description: **extracted**
+
+**Purpose.** Specification of Smart Trader, Concentric Candles & Aristotelian Cycloids; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_y1wyhpg2_the_best_long_term_indicator.md`
+
+`strategy-card` · 90 lines · 3,961 B · description: **extracted**
+
+**Purpose.** Specification of The best long-term indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_y1x3vuyd_bollinger_band_and_t_line_timing.md`
+
+`strategy-card` · 100 lines · 6,830 B · description: **extracted**
+
+**Purpose.** Specification of Bollinger Band and T-Line Timing; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_y3pnzg2q_correlation_heatmap.md`
+
+`strategy-card` · 102 lines · 6,039 B · description: **extracted**
+
+**Purpose.** Specification of Correlation Heatmap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_y5n6dljm_spearman_rank_correlation_coefficient.md`
+
+`strategy-card` · 90 lines · 4,065 B · description: **extracted**
+
+**Purpose.** Specification of Spearman Rank Correlation Coefficient; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_y6jyas39_market_sessions_and_tpo_forecast.md`
+
+`strategy-card` · 94 lines · 4,340 B · description: **extracted**
+
+**Purpose.** Specification of Market Sessions and TPO (+Forecast); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_y6x4nem5_treasury_yields_heatmap_by_muqwishi.md`
+
+`strategy-card` · 92 lines · 4,591 B · description: **extracted**
+
+**Purpose.** Specification of Treasury Yields Heatmap [By MUQWISHI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ya0kopdo_markov_chain_3d_fractalyst.md`
+
+`strategy-card` · 106 lines · 5,418 B · description: **extracted**
+
+**Purpose.** Specification of Markov Chain [3D] | Fractalyst; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yftex5f0_correlation_matrix_heatmap.md`
+
+`strategy-card` · 91 lines · 3,958 B · description: **extracted**
+
+**Purpose.** Specification of Correlation Matrix Heatmap; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yg0rpnzo_efficient_work_lucf.md`
+
+`strategy-card` · 108 lines · 5,877 B · description: **extracted**
+
+**Purpose.** Specification of Efficient Work [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ygno2g1v_tick_chart.md`
+
+`strategy-card` · 92 lines · 4,304 B · description: **extracted**
+
+**Purpose.** Specification of Tick Chart; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yhpgau7a_carrier_volatility_pumori.md`
+
+`strategy-card` · 100 lines · 5,425 B · description: **extracted**
+
+**Purpose.** Specification of Carrier Volatility [Pumori]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan.md`
+
+`strategy-card` · 100 lines · 6,033 B · description: **extracted**
+
+**Purpose.** Specification of Multi-Asset Performance [Spaghetti] - By Leviathan; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ykinbu20_true_close_institutional_trading_sessions_zeiierman.md`
+
+`strategy-card` · 94 lines · 5,412 B · description: **extracted**
+
+**Purpose.** Specification of True Close – Institutional Trading Sessions (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ykvjs2dw_htf_floating_candles_w_volume_footprint_theultimator5.md`
+
+`strategy-card` · 94 lines · 4,523 B · description: **extracted**
+
+**Purpose.** Specification of HTF Floating Candles w/ Volume Footprint [theUltimator5]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yln2bnaa_auto_fibonacci_and_gann_fan_retracements_combo.md`
+
+`strategy-card` · 100 lines · 5,672 B · description: **extracted**
+
+**Purpose.** Specification of Auto Fibonacci and Gann Fan/Retracements Combo; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ypaxpury_interactive_motive_wave_checklist.md`
+
+`strategy-card` · 94 lines · 4,184 B · description: **extracted**
+
+**Purpose.** Specification of Interactive Motive Wave Checklist; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ypz7tsjn_ichimoku_oscillator.md`
+
+`strategy-card` · 94 lines · 4,192 B · description: **extracted**
+
+**Purpose.** Specification of Ichimoku Oscillator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yqkwbg4m_intrabar_analyzer_kioseff_trading.md`
+
+`strategy-card` · 98 lines · 4,478 B · description: **extracted**
+
+**Purpose.** Specification of Intrabar Analyzer [Kioseff Trading]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md`
+
+`strategy-card` · 100 lines · 6,295 B · description: **extracted**
+
+**Purpose.** Specification of Time-of-Day/Session Performance Stats [QuantAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yrdyq40y_function_simple_markov_chain_monte_carlo_simulation_mcmc.md`
+
+`strategy-card` · 90 lines · 4,034 B · description: **extracted**
+
+**Purpose.** Specification of Function - simple* Markov Chain Monte Carlo Simulation (MCMC); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yrff3z4j_financials_comparing_companies.md`
+
+`strategy-card` · 96 lines · 4,851 B · description: **extracted**
+
+**Purpose.** Specification of Financials - Comparing Companies; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_ysrwimbi_ridethepig_recession_strategy.md`
+
+`strategy-card` · 92 lines · 4,297 B · description: **extracted**
+
+**Purpose.** Specification of ridethepig | Recession Strategy; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_yyrxrhi9_atr_rope.md`
+
+`strategy-card` · 102 lines · 5,876 B · description: **extracted**
+
+**Purpose.** Specification of ATR Rope; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_z6rxdyt1_a_simple_novice_friendly_system.md`
+
+`strategy-card` · 94 lines · 4,137 B · description: **extracted**
+
+**Purpose.** Specification of A simple novice friendly system; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zartjpet_simple_investing_strategy_affordable_for_all.md`
+
+`strategy-card` · 100 lines · 5,196 B · description: **extracted**
+
+**Purpose.** Specification of Simple Investing Strategy, Affordable for all!; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zcv9cpue_managing_your_trades_using_time_of_day.md`
+
+`strategy-card` · 92 lines · 4,076 B · description: **extracted**
+
+**Purpose.** Specification of Managing Your trades using TIME of DAY; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zdqq3mfb_minervini_qualifier.md`
+
+`strategy-card` · 96 lines · 4,739 B · description: **extracted**
+
+**Purpose.** Specification of Minervini Qualifier; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zewvhavq_divergence_screener_trendoscope.md`
+
+`strategy-card` · 104 lines · 5,407 B · description: **extracted**
+
+**Purpose.** Specification of Divergence Screener [Trendoscope®]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zhfjqywg_cvd_profiles_tradingiq.md`
+
+`strategy-card` · 96 lines · 4,267 B · description: **extracted**
+
+**Purpose.** Specification of CVD Profiles [TradingIQ]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zkbuifk7_delta_volume_channels_lucf.md`
+
+`strategy-card` · 108 lines · 8,376 B · description: **extracted**
+
+**Purpose.** Specification of Delta Volume Channels [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zkf0qji2_signs_of_the_times_lucf.md`
+
+`strategy-card` · 100 lines · 5,680 B · description: **extracted**
+
+**Purpose.** Specification of Signs of the Times [LucF]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zkrpp4fi_us_presidential_elections_and_investment_strategies_explained.md`
+
+`strategy-card` · 94 lines · 4,696 B · description: **extracted**
+
+**Purpose.** Specification of US Presidential Elections and Investment Strategies Explained; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zlyn2rht_zigzag_cloud.md`
+
+`strategy-card` · 92 lines · 3,980 B · description: **extracted**
+
+**Purpose.** Specification of Zigzag Cloud; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zmdzlgaj_volume_speed_by_muqwishi.md`
+
+`strategy-card` · 96 lines · 4,575 B · description: **extracted**
+
+**Purpose.** Specification of Volume Speed [By MUQWISHI]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zmxb93wd_volume_footprint_voids_bigbeluga.md`
+
+`strategy-card` · 104 lines · 5,060 B · description: **extracted**
+
+**Purpose.** Specification of Volume Footprint Voids [BigBeluga]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zn9dhlps_volume_delta_compare_ticks_ltf_data.md`
+
+`strategy-card` · 100 lines · 4,655 B · description: **extracted**
+
+**Purpose.** Specification of Volume Delta Compare [Ticks ~ LTF data]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zoamxj65_moving_regression_prediction_bands.md`
+
+`strategy-card` · 100 lines · 4,561 B · description: **extracted**
+
+**Purpose.** Specification of Moving Regression Prediction Bands; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zonrvq00_oil_strategy_weekly.md`
+
+`strategy-card` · 90 lines · 4,154 B · description: **extracted**
+
+**Purpose.** Specification of Oil Strategy Weekly; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zr7ztqm1_renko_rsi.md`
+
+`strategy-card` · 96 lines · 4,056 B · description: **extracted**
+
+**Purpose.** Specification of Renko RSI; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zrc6twt4_z_score_probability_indicator.md`
+
+`strategy-card` · 98 lines · 4,775 B · description: **extracted**
+
+**Purpose.** Specification of Z-Score Probability Indicator; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zsdlpebt_trend_type_indicator_by_bobrivera990.md`
+
+`strategy-card` · 96 lines · 4,412 B · description: **extracted**
+
+**Purpose.** Specification of Trend Type Indicator by BobRivera990; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines.md`
+
+`strategy-card` · 102 lines · 6,794 B · description: **extracted**
+
+**Purpose.** Specification of Smart Trader, Episode 06, Isotropic Trend Lines; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zsmaleyi_rsi_impact_heat_map_trendoscope.md`
+
+`strategy-card` · 100 lines · 5,341 B · description: **extracted**
+
+**Purpose.** Specification of RSI Impact Heat Map [Trendoscope]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zsnllxmm_dual_phase_trend_regime_oscillator_zeiierman.md`
+
+`strategy-card` · 102 lines · 5,329 B · description: **extracted**
+
+**Purpose.** Specification of Dual-Phase Trend Regime Oscillator (Zeiierman); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zus134uh_heat_map_seasons.md`
+
+`strategy-card` · 98 lines · 5,698 B · description: **extracted**
+
+**Purpose.** Specification of Heat Map Seasons; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zvct18wt_mawreez_rsi_divergence_detector.md`
+
+`strategy-card` · 94 lines · 4,722 B · description: **extracted**
+
+**Purpose.** Specification of Mawreez' RSI Divergence Detector; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zx1z1z2r_liquidity_heatmap_ltf_luxalgo.md`
+
+`strategy-card` · 90 lines · 3,971 B · description: **extracted**
+
+**Purpose.** Specification of Liquidity Heatmap LTF [LuxAlgo]; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zxcxrnij_redk_multi_modal_trailingstop_redk_mmtstop.md`
+
+`strategy-card` · 102 lines · 5,650 B · description: **extracted**
+
+**Purpose.** Specification of RedK Multi-Modal TrailingStop (RedK MMTStop); not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zxtnurdh_cup_handle.md`
+
+`strategy-card` · 92 lines · 3,877 B · description: **extracted**
+
+**Purpose.** Specification of Cup & Handle; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/tv_zxxjiyij_adaptive_volume_delta_map.md`
+
+`strategy-card` · 100 lines · 4,616 B · description: **extracted**
+
+**Purpose.** Specification of Adaptive Volume Delta Map; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
 #### `backtester/strategy_cards/vol_of_vol_term_structure.md`
 
 `strategy-card` · 57 lines · 1,885 B · description: **extracted**
@@ -2065,7 +12912,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-140 files.
+156 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -2096,6 +12943,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 225 lines · 14,429 B · description: **extracted**
 
 **Purpose.** python3 research/cross_asset_cpcv.py --self-test # gate: reproduces the BTC/ETH file python3 research/cross_asset_cpcv.py --assets SOL,DOGE,ZEC # 25 singles, medium horizon python3 research/cross_asset_cpcv.py --top5 --assets DOGE,ZEC # the five, with SOL as control
+
+**Use.** Read it.
+
+#### `research/FIVE-MINUTE-PERPS.md`
+
+`doc` · 115 lines · 7,246 B · description: **extracted**
+
+**Purpose.** Version: 1 Delta: initial public synthesis from the accepted TASK-808 evidence cohort and preserved prior research. Reviewed: 2026-11-08. This is research, not a tested trading rule.
 
 **Use.** Read it.
 
@@ -2427,6 +13282,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Configuration; nothing to run.
 
+#### `research/tradingview-card-coverage.json`
+
+`config` · 225060 lines · 10,479,519 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema_version, version, delta, source_root, source_publication_counts, existing_card_ids...).
+
+**Use.** Configuration; nothing to run.
+
 #### `research/trigger_backtest.py`
 
 `code-python` · 105 lines · 5,781 B · description: **extracted**
@@ -2556,6 +13419,120 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Purpose.** Trader-facing reference for Zcash (ZEC) — $513/coin on a ~16.8M supply and an $8.6B cap, optional-privacy design with transparent and shielded pools, a 38x move dated to a 2025-10-01 breakout, and real venue-availability risk (Coinbase lists ZEC-USD but has delisted ZEC-BTC and ZEC-USDC).
 
 **Use.** Read it.
+
+### `research/five-minute-perps-suite/`
+
+#### `research/five-minute-perps-suite/accepted-gate-receipt.json`
+
+`config` · 122 lines · 5,679 B · description: **derived**
+
+**Purpose.** Generated JSON object, 22 keys (schema, created, run_slug, research_depth, research_model, research_effort...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/archive-receipt.json`
+
+`config` · 23 lines · 1,041 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (schema, version, delta, original_retired_path, preserved_source, destination...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/benchmark-scope-review.json`
+
+`config` · 107 lines · 4,823 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (schema, version, delta, reviewed_as_of, reviewer, source_revision...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/competency-questions.md`
+
+`doc` · 11 lines · 1,136 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/five-minute-perps-suite/coverage-resolution.json`
+
+`config` · 363 lines · 13,167 B · description: **derived**
+
+**Purpose.** Generated JSON array, 30 entries.
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/full-suite-receipt.json`
+
+`config` · 241 lines · 10,631 B · description: **derived**
+
+**Purpose.** Generated JSON object, 34 keys (schema, record_version, created, subject, research_slug, cohort_status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/inherited-evidence-receipt.json`
+
+`config` · 651 lines · 37,588 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (schema, as_of, canonical_run, canonical_gate, gate_sha256, gate_packet_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/inventory.json`
+
+`config` · 165 lines · 5,653 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, as_of, source_path, source_sha256, node_count, inventory_mode...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/run-report.md`
+
+`doc` · 54 lines · 8,231 B · description: **extracted**
+
+**Purpose.** Version: 5.0.0. Delta: replaces the preparation-only checkpoint with actual execution and qualification results. Date: 2026-11-08. The concept-family exit is **SATURATED** after two evidence-grounded empty expansions and a fresh-context blind audit. Seven new concepts were researched, installed and compiled. This means the mapped conceptual frontier stopped yielding distinct useful gaps.
+
+**Use.** Read it.
+
+#### `research/five-minute-perps-suite/run-state.json`
+
+`config` · 1063 lines · 41,769 B · description: **derived**
+
+**Purpose.** Generated JSON object, 40 keys (schema, subject, started, updated, budget, round...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/scored-concepts.json`
+
+`config` · 546 lines · 16,715 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (threshold, rows).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/skill-installation-receipt.json`
+
+`config` · 39 lines · 2,070 B · description: **derived**
+
+**Purpose.** Generated JSON object, 29 keys (schema, version, delta, reviewed, source_pr, source_merge_commit...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/source-leads.json`
+
+`config` · 156 lines · 8,283 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, as_of, concepts_scouted, fast_path_concepts, url_library_seeds_written, mirrors_written...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/five-minute-perps-suite/synthesis-audit-receipt.json`
+
+`config` · 34 lines · 1,568 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (schema, version, delta, reviewed, reviewer, definition_version...).
+
+**Use.** Configuration; nothing to run.
 
 ### `research/results/`
 
@@ -5221,7 +16198,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 281 lines · 11,949 B · description: **curated**
+`ci` · 301 lines · 12,828 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -5326,6 +16303,376 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** Generated JSON object, 6 keys (files.insertFinalNewline, files.trimTrailingWhitespace, editor.detectIndentation, editor.tabSize, [python], [markdown]).
 
 **Use.** Configuration; nothing to run.
+
+---
+
+## executor
+
+38 files.
+
+#### `executor/.gitignore`
+
+`other` · 13 lines · 118 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `executor/CLAUDE.md`
+
+`doc` · 87 lines · 6,504 B · description: **extracted**
+
+**Purpose.** Guarded spot swaps on Solana through Jupiter. **It signs and sends real transactions from the owner's wallet.** Treat every change as production software. Read the root `CLAUDE.md` "Live on-chain actions" first; its six conditions bind you here too.
+
+**Use.** Read it.
+
+#### `executor/README.md`
+
+`doc` · 75 lines · 4,374 B · description: **extracted**
+
+**Purpose.** The **executor** component of solmargintrader: best-price spot swaps on Solana through Jupiter, behind a semantic transaction verifier, hard rails, a research gate, a dry-run soak and an append-only journal. cd executor
+
+**Use.** Read it.
+
+#### `executor/pyproject.toml`
+
+`config` · 38 lines · 947 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `executor/uv.lock`
+
+`other` · 0 lines · 19,617 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `executor/src/executor/`
+
+#### `executor/src/executor/__init__.py`
+
+`code-python` · 4 lines · 136 B · description: **extracted**
+
+**Purpose.** executor: a guarded spot-swap executor for Solana (Jupiter). It can move real money; read CLAUDE.md first.
+
+**Use.** `import executor.src.executor.__init__`
+
+#### `executor/src/executor/api.py`
+
+`code-python` · 199 lines · 8,058 B · description: **extracted**
+
+**Purpose.** HTTP surface: `executor api [--port N]`. Stdlib `http.server`; the same access model as extension/tools/api-server.js. GET /v1/health liveness, no auth GET /v1/commands the `list` envelope GET /v1/<command>?a=1 read-only commands, args from the query string POST /v1/<command> any command, args from a JSON object body Command routes return the registry envelope exactly as `registry.dumps` renders i
+
+**Contents.** Defines `HOST`, `DEFAULT_PORT`, `MAX_BODY_BYTES`, `_ROUTE`, `_STATUS`, `token_path()`, `load_token()`, `token_matches()`, `make_handler()`, `create_server()` and 1 more.
+
+**Use.** `python3 executor/src/executor/api.py --help`
+
+#### `executor/src/executor/cli.py`
+
+`code-python` · 117 lines · 4,536 B · description: **extracted**
+
+**Purpose.** Command line: `executor quote|swap|status|journal|kill|resume|gates|reconcile|list|call|api`. The CLI prints the registry envelope exactly as the HTTP API returns it (same serializer, byte-identical), and exits 0 when `ok` is true, 1 otherwise, 2 for a usage error.
+
+**Contents.** Defines `_emit()`, `_parser()`, `_params()`, `main()`.
+
+**Use.** `python3 executor/src/executor/cli.py --help`
+
+#### `executor/src/executor/config.py`
+
+`code-python` · 240 lines · 10,328 B · description: **extracted**
+
+**Purpose.** Configuration: `~/.executor/config.toml` (or `$EXECUTOR_HOME/config.toml`), created mode 600 with safe defaults. Fail closed: an unknown key, a wrong type, a non-finite or non-positive number, or a file that other users can write is an error. Defaults are the owner's (2026-11-07): max position $25 per strategy, daily loss stop $10.
+
+**Contents.** Defines `OWNER_SOLANA`, `OWNER_BASE`, `VALIDATION_STRATEGY`, `VALIDATION_MAX_TRADE_USD`, `VALIDATION_MAX_DAILY_USD`, `HEADER`, `class Rails`, `class Gates`, `class Validation`, `class Bridge` and 10 more.
+
+**Use.** `import executor.src.executor.config`
+
+#### `executor/src/executor/engine.py`
+
+`code-python` · 469 lines · 22,773 B · description: **extracted**
+
+**Purpose.** The swap pipeline. Dry-run and live share every step up to the signature, so dry-run simulates exactly what live would send (the same pattern as liquidity's Rebalancer/Runner). resolve -> quote + independent price -> rails -> /swap -> decode -> VERIFY (static) -> pre-state -> simulate -> VERIFY (economic) ........ dry-run stops here ........
+
+**Contents.** Defines `LOOKUP_TABLE_PROGRAM`, `BLOCKHASH_MARGIN`, `class Engine`, `_tokens()`, `realized_from_meta()`.
+
+**Use.** `import executor.src.executor.engine`
+
+#### `executor/src/executor/errors.py`
+
+`code-python` · 70 lines · 2,105 B · description: **extracted**
+
+**Purpose.** Error types. Every refusal carries a code that maps to the envelope `error.code`.
+
+**Contents.** Defines `CODES`, `class ExecutorError`, `class BadParams`, `class Refused`, `class Forbidden`, `class Ambiguous`, `class RpcError`, `class WalletError`, `class SendRejected`, `class HttpError`.
+
+**Use.** `import executor.src.executor.errors`
+
+#### `executor/src/executor/gates.py`
+
+`code-python` · 209 lines · 8,542 B · description: **extracted**
+
+**Purpose.** Pre-live gates, per strategy: a dry-run soak and a research gate. Same pattern as liquidity/src/aero_lp/gates.py. 1. Dry-run soak. A strategy must have run in dry-run for `[gates].soak_hours` (24 h) with at least `[gates].min_dry_runs` fully simulated dry-run swaps before it may go live. Every dry-run swap that passes the whole pipeline credits one tick (`record_dry_run`).
+
+**Contents.** Defines `SOAK_SCHEMA`, `RESEARCH_SCHEMA`, `MAX_TICK_GAP_S`, `_atomic_write()`, `_iso()`, `_soak_path()`, `load_soak()`, `record_dry_run()`, `soak_status()`, `research_path()` and 6 more.
+
+**Use.** `import executor.src.executor.gates`
+
+#### `executor/src/executor/http.py`
+
+`code-python` · 51 lines · 1,855 B · description: **extracted**
+
+**Purpose.** Minimal HTTP seam so every network client can be tested with recorded fixtures and no live network.
+
+**Contents.** Defines `class Http`, `class HttpxHttp`.
+
+**Use.** `import executor.src.executor.http`
+
+#### `executor/src/executor/journal.py`
+
+`code-python` · 121 lines · 4,703 B · description: **extracted**
+
+**Purpose.** Append-only journal of intents and results: `$EXECUTOR_HOME/journal.jsonl`, mode 600. Every swap that will be sent is written BEFORE sending (`intent`, then `sending` with the signature) and its outcome AFTER (`result`). Lines are only ever appended, each under an exclusive lock and fsynced. State is derived by replaying the file; nothing is rewritten.
+
+**Contents.** Defines `TERMINAL`, `class Journal`, `require_clear()`.
+
+**Use.** `import executor.src.executor.journal`
+
+#### `executor/src/executor/jupiter.py`
+
+`code-python` · 199 lines · 8,150 B · description: **extracted**
+
+**Purpose.** Jupiter Swap API v1 client (quote + swap) and the Jupiter Price API (the independent reference). Verified 2026-11-07 against https://dev.jup.ag/docs/swap/get-quote: base URL `https://api.jup.ag` (key via the `x-api-key` header) and the keyless `https://lite-api.jup.ag`, the host the extension's manifest also lists.
+
+**Contents.** Defines `class RouteLeg`, `class Quote`, `_int()`, `parse_quote()`, `class Jupiter`.
+
+**Use.** `import executor.src.executor.jupiter`
+
+#### `executor/src/executor/ledger.py`
+
+`code-python` · 109 lines · 4,162 B · description: **extracted**
+
+**Purpose.** Pure accounting over the journal: per-strategy position (cost basis) and realized P&L per UTC day. Only confirmed, on-chain outcomes count. The quote asset is always USDC, so cost and proceeds are exact USDC amounts taken from the transaction itself; the base-asset quantity is the transaction's measured delta.
+
+**Contents.** Defines `class Position`, `_confirmed_trades()`, `positions()`, `utc_day()`, `realized_pnl_usd()`, `trades_notional_usd()`, `is_quote()`.
+
+**Use.** `import executor.src.executor.ledger`
+
+#### `executor/src/executor/lifi.py`
+
+`code-python` · 109 lines · 4,405 B · description: **extracted**
+
+**Purpose.** Cross-chain quote, QUOTE ONLY. Nothing here builds, signs or sends a cross-chain transaction. LI.FI's `/v1/quote` answers without an API key (checked 2026-11-07; unauthenticated use is rate limited). It also returns a `transactionRequest`; this module drops it on purpose so that no caller can execute from it.
+
+**Contents.** Defines `CHAINS`, `SOLANA_CHAIN`, `_dec()`, `quote_cross_chain()`.
+
+**Use.** `import executor.src.executor.lifi`
+
+#### `executor/src/executor/quote.py`
+
+`code-python` · 147 lines · 5,452 B · description: **extracted**
+
+**Purpose.** Quote evaluation: the best route Jupiter finds, checked against an independent price reference. A quote is only usable when (a) every number is present, (b) its price impact is within `max_price_impact_bps`, (c) its implied rate is within `max_price_deviation_bps` of the Jupiter Price API (a separate service and data path from the quote engine), and (d) its slippage cap is within `max_slippage_bps
+
+**Contents.** Defines `class QuoteReport`, `evaluate()`, `fetch_report()`.
+
+**Use.** `import executor.src.executor.quote`
+
+#### `executor/src/executor/rails.py`
+
+`code-python` · 167 lines · 7,808 B · description: **extracted**
+
+**Purpose.** Rails: every limit an order must pass, as code. A rail documented but not enforced is not a rail. All rails fail closed: a missing price, an unknown side, an unreadable record or a non-finite number is a refusal, never a pass. `check_trade` returns every problem at once so a caller sees the whole picture.
+
+**Contents.** Defines `class Decision`, `classify()`, `check_trade()`, `_loss_today()`.
+
+**Use.** `import executor.src.executor.rails`
+
+#### `executor/src/executor/registry.py`
+
+`code-python` · 481 lines · 17,769 B · description: **extracted**
+
+**Purpose.** The executor command registry: one set of calls for the CLI and the HTTP API. Every surface calls `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log. The surfaces only carry bytes; none holds command logic.
+
+**Contents.** Defines `LOG_ROTATE_BYTES`, `PARAM_TYPES`, `class CommandError`, `class Param`, `class Command`, `CONFIRM_PARAM`, `P()`, `command()`, `class Context`, `dumps()` and 23 more.
+
+**Use.** `import executor.src.executor.registry`
+
+#### `executor/src/executor/rpc.py`
+
+`code-python` · 127 lines · 5,363 B · description: **extracted**
+
+**Purpose.** Solana JSON-RPC client over the injectable HTTP seam. Read calls retry (bounded, with backoff) because repeating a read is harmless. `send_transaction` NEVER retries: a send that errors or times out has an unknown outcome, and the caller must journal it as such.
+
+**Contents.** Defines `READ_RETRIES`, `class Rpc`, `_account()`.
+
+**Use.** `import executor.src.executor.rpc`
+
+#### `executor/src/executor/signer.py`
+
+`code-python` · 74 lines · 2,647 B · description: **extracted**
+
+**Purpose.** Signing key loading. The key is never printed, logged, hashed, copied, or included in an exception message. The file must be a regular file, owned by the current user, with no group or other permission bits (mode 600 or stricter). The same open file descriptor is used for the checks and the read, so the file cannot be swapped in between.
+
+**Contents.** Defines `check_key_file_mode()`, `_open()`, `_check_fd()`, `load_keypair()`.
+
+**Use.** `import executor.src.executor.signer`
+
+#### `executor/src/executor/tokens.py`
+
+`code-python` · 71 lines · 2,416 B · description: **extracted**
+
+**Purpose.** Token table and exact amount conversion. Only tokens listed here can ever be traded: decimals come from this table, never from a guess. A mint that is not here is refused even when it is in the config allowlist, because an unknown decimal count turns a $1 order into a $1,000,000 one.
+
+**Contents.** Defines `WSOL_MINT`, `USDC_MINT`, `USDT_MINT`, `class Token`, `QUOTE_MINT`, `resolve()`, `ui_to_raw()`, `raw_to_ui()`.
+
+**Use.** `import executor.src.executor.tokens`
+
+#### `executor/src/executor/txverify.py`
+
+`code-python` · 480 lines · 21,922 B · description: **extracted**
+
+**Purpose.** Semantic transaction verifier: what the extension never had. Runs BEFORE anything is signed. Jupiter's `/swap` returns a serialized transaction. That response is untrusted: a compromised or buggy API could return a transaction that drains the wallet while still "being a swap". Nothing is signed until two layers pass. Layer 1, `check_static` (pure, no network): reads the transaction itself.
+
+**Contents.** Defines `JUPITER_V6`, `TOKEN_PROGRAM`, `TOKEN_2022`, `ATA_PROGRAM`, `COMPUTE_BUDGET`, `SYSTEM_PROGRAM`, `JUPITER_ALLOWED_DISCRIMINATORS`, `TOKEN_ACCOUNT_RENT_LAMPORTS`, `BASE_FEE_PER_SIGNATURE`, `MAX_INSTRUCTIONS` and 17 more.
+
+**Use.** `import executor.src.executor.txverify`
+
+### `executor/tests/`
+
+#### `executor/tests/conftest.py`
+
+`test` · 376 lines · 13,676 B · description: **extracted**
+
+**Purpose.** Shared test machinery: an isolated home, a fixture-backed HTTP seam, an in-memory chain, and a transaction builder. No test here touches the network. Recorded responses live in tests/fixtures (captured from the live services on 2026-11-07); everything else is built in memory.
+
+**Contents.** Defines `FIX`, `SYSTEM`, `TOKEN`, `ATA`, `CB`, `JUP`, `SHARED_ROUTE`, `fixture()`, `isolated()`, `pk()` and 30 more.
+
+**Use.** `python3 -m pytest executor/tests/conftest.py -q`
+
+#### `executor/tests/test_engine.py`
+
+`test` · 346 lines · 14,774 B · description: **extracted**
+
+**Purpose.** The swap pipeline end to end against an in-memory chain: dry-run, live, and every way a send can go wrong.
+
+**Contents.** Defines `AMOUNT_UI`, `AMOUNT`, `FEE`, `OUT`, `sell_setup()`, `live_cfg()`, `swap()`, `kinds()`, `test_dry_run_simulates_and_sends_nothing()`, `test_mode_live_without_the_live_flag_is_still_a_dry_run()` and 26 more.
+
+**Use.** `python3 -m pytest executor/tests/test_engine.py -q`
+
+#### `executor/tests/test_journal_ledger_signer.py`
+
+`test` · 182 lines · 7,437 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `test_journal_is_append_only_fsynced_and_mode_600()`, `test_states_replay()`, `test_unknown_blocks_until_reconciled_and_never_clears_itself()`, `test_a_late_unknown_does_not_reopen_a_terminal_state()`, `test_torn_line_is_surfaced_not_skipped()`, `test_records_carry_no_key_material()`, `trade()`, `test_average_cost_positions_and_realized_pnl()`, `test_failed_and_unknown_trades_do_not_count()`, `test_a_sell_beyond_the_tracked_quantity_realizes_no_phantom_profit()` and 5 more.
+
+**Use.** `python3 -m pytest executor/tests/test_journal_ledger_signer.py -q`
+
+#### `executor/tests/test_network.py`
+
+`test` · 61 lines · 2,237 B · description: **extracted**
+
+**Purpose.** Live, READ-ONLY checks (run with `pytest -m network`). They quote, build and simulate against mainnet; none signs or sends anything, and none needs the key. They use the owner's public address only to build a transaction.
+
+**Contents.** Defines `live()`, `test_live_quote_is_acceptable_and_has_a_second_price()`, `test_live_price_impact_units_agree_with_the_independent_reference()`, `test_live_dry_run_swap_builds_verifies_and_simulates()`, `test_live_cross_chain_quote_is_quote_only()`, `test_live_rpc_reads()`.
+
+**Use.** `python3 -m pytest executor/tests/test_network.py -q`
+
+#### `executor/tests/test_quote.py`
+
+`test` · 182 lines · 6,752 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `PRICE_MAP`, `quote()`, `test_recorded_quote_parses_and_is_acceptable()`, `test_malformed_quote_is_refused()`, `test_price_impact_over_cap_is_a_problem()`, `test_deviation_worse_and_better_than_reference_both_refused()`, `test_missing_price_refuses_rather_than_guessing()`, `test_prices_endpoint_drops_unusable_entries()`, `test_fetch_report_enforces_allowlist_and_same_token()`, `test_jupiter_retries_429_a_bounded_number_of_times()` and 8 more.
+
+**Use.** `python3 -m pytest executor/tests/test_quote.py -q`
+
+#### `executor/tests/test_rails.py`
+
+`test` · 353 lines · 14,127 B · description: **extracted**
+
+**Purpose.** Every rail, one test each, plus the property that dry-run applies the same trade rails as live.
+
+**Contents.** Defines `PRICE_MAP`, `NOW`, `report()`, `journal_with()`, `check()`, `refused()`, `test_side_classification()`, `test_max_trade_usd()`, `test_max_position_usd_is_per_strategy()`, `test_position_cap_default_is_the_owners_25()` and 26 more.
+
+**Use.** `python3 -m pytest executor/tests/test_rails.py -q`
+
+#### `executor/tests/test_surfaces.py`
+
+`test` · 342 lines · 13,856 B · description: **extracted**
+
+**Purpose.** One registry, two surfaces: the CLI and the HTTP API return byte-identical envelopes, with the same access model as extension/tools/api-server.js and the same logging.
+
+**Contents.** Defines `wired()`, `run_cli()`, `server()`, `request()`, `test_every_command_is_declared_the_same_way()`, `test_envelope_shape_ok_and_error()`, `test_error_codes()`, `test_resume_removes_kill_only_with_confirm()`, `test_unexpected_exceptions_become_failed_envelopes_without_details()`, `test_the_swap_command_defaults_to_dry_run()` and 23 more.
+
+**Use.** `python3 -m pytest executor/tests/test_surfaces.py -q`
+
+#### `executor/tests/test_tokens_config.py`
+
+`test` · 112 lines · 3,829 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `test_ui_to_raw_exact()`, `test_ui_to_raw_rejects()`, `test_ui_to_raw_rejects_numbers_that_are_not_strings()`, `test_resolve_symbol_and_mint_and_unknown()`, `test_config_created_mode_600_with_owner_defaults()`, `test_code_defaults_are_dry_run_and_match_the_generated_file()`, `test_config_round_trips_overrides()`, `test_config_fails_closed()`, `test_config_refused_when_writable_by_others()`, `test_fingerprint_changes_with_rails_and_strategy()` and 1 more.
+
+**Use.** `python3 -m pytest executor/tests/test_tokens_config.py -q`
+
+#### `executor/tests/test_txverify.py`
+
+`test` · 413 lines · 16,535 B · description: **extracted**
+
+**Purpose.** The semantic verifier: honest transactions pass; every malicious fixture is refused, each for its own reason.
+
+**Contents.** Defines `AMOUNT`, `MIN_OUT`, `RESERVE`, `exp()`, `static()`, `honest()`, `has()`, `test_honest_sol_to_usdc_passes()`, `test_honest_usdc_to_sol_passes()`, `test_foreign_fee_payer_is_refused()` and 30 more.
+
+**Use.** `python3 -m pytest executor/tests/test_txverify.py -q`
+
+### `executor/tests/fixtures/`
+
+#### `executor/tests/fixtures/alt_accounts.json`
+
+`test` · 13 lines · 2,887 B · description: **derived**
+
+**Purpose.** Generated JSON object, 1 keys (23iTfgGpQMxmeDhF4BcjW6D33UYG4Up25ttdc27vDD42).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/alt_accounts.json -q`
+
+#### `executor/tests/fixtures/jup_prices.json`
+
+`test` · 18 lines · 494 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v, So11111111111111111111111111111111111111112).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/jup_prices.json -q`
+
+#### `executor/tests/fixtures/jup_quote_sol_usdc.json`
+
+`test` · 42 lines · 1,164 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (contextSlot, inAmount, inputMint, instructionVersion, loadedLongtailToken, longtailMarketQuoteReport...).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/jup_quote_sol_usdc.json -q`
+
+#### `executor/tests/fixtures/jup_swap_sol_usdc.json`
+
+`test` · 21 lines · 1,354 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (addressesByLookupTableAddress, computeUnitLimit, createAtaTimeTaken, dynamicSlippageReport, lastValidBlockHeight, loadedAccountsDataSize...).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/jup_swap_sol_usdc.json -q`
+
+#### `executor/tests/fixtures/lifi_quote_usdc_base.json`
+
+`test` · 145 lines · 3,858 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (estimate, executionType, id, integrator, recommendedSlippage, tool...).
+
+**Use.** `python3 -m pytest executor/tests/fixtures/lifi_quote_usdc_base.json -q`
 
 ---
 
@@ -6079,7 +17426,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-2 files.
+3 files.
 
 #### `scripts/build_doc_index.py`
 
@@ -6093,13 +17440,23 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/check_docs.py`
 
-`code-python` · 390 lines · 14,927 B · description: **extracted**
+`code-python` · 390 lines · 14,939 B · description: **extracted**
 
 **Purpose.** Fail the build when the docs drift from the repo. python3 scripts/check_docs.py python3 scripts/check_docs.py --prune # drop dead index entries Two kinds of rot, both of which happened here before this existed: * **Stale test counts.** The docs claimed 250 backtester tests for several commits while the suite had grown to 454.
 
 **Contents.** Defines `REPO`, `COUNT_DOCS`, `INDEX_JSON`, `OVERVIEW_MD`, `is_ignored()`, `is_tracked()`, `missing_and_tracked()`, `committed_test_files()`, `count_tests()`, `load_failures()` and 9 more.
 
 **Use.** `python3 scripts/check_docs.py --help`
+
+#### `scripts/check_tradingview_cards.py`
+
+`code-python` · 214 lines · 11,855 B · description: **extracted**
+
+**Purpose.** Check card coverage; optionally re-bind evidence to the owner's local dumps. The default is offline and uses committed evidence. --source-root verifies physical capture hashes, decoded descriptions and excerpt offsets; it never fetches pages.
+
+**Contents.** Defines `REPO`, `normalize_description()`, `source_description()`, `validate()`, `main()`. Depends on `backtester`.
+
+**Use.** `python3 scripts/check_tradingview_cards.py --help`
 
 ---
 

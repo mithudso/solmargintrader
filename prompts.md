@@ -1,7 +1,7 @@
 # Prompt history
 
 Version: 50
-Delta: v49 to v50; integrate PR 58 against landed PR 46 and retain both workflow histories.
+Delta: v49 to v50; TradingView source-to-card inventory and specification coverage.
 
 ## v1 - 2026-11-06
 
@@ -368,4 +368,13 @@ Resolve the pr conflicts in https://github.com/mithudso/solmargintrader/pull/46 
 
 ```text
 resume
+```
+
+
+## v50 - 2026-11-08 (TradingView card coverage)
+
+Version: 50. Delta: 49 to 50; preserve card-coverage request.
+
+```text
+For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.
 ```

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 68
-Delta: v67 to v68; integrate PR 58 against landed PR 46 and retain both workflow histories.
+Version: 72
+Delta: v71 to v72; verified card catalog ready for remote delivery.
 
 ## v1 - 2026-11-06
 
@@ -706,3 +706,61 @@ Completed: PR 46 merged by a concurrent session as 06a1f95347a835cdb2951bf2f0434
 Current: merged origin/master 06a1f95 into latest PR 58 head b899458 in private worktree /Users/mitch/dev/solmargintrader-wt-01a1ba3b on agent-01a1ba3b-pr58. Conflicts affect generated indexes and workflow records only. Both histories are retained. No source or research receipt is rewritten.
 
 Remaining: regenerate derived indexes after staging resolutions, verify docs and index checks, commit and push HEAD to agent-01a1b5ef without force. Wait for all final-head CI jobs, merge PR 58, verify both merge receipts and source/receipt preservation, then remove only our clean private branches and worktree. Shared checkout and original PR worktrees remain untouched.
+
+
+## v69 - 2026-11-08 (TradingView card coverage, inventory)
+
+Version: 69. Delta: 68 to 69; start TASK-886, TASK-887, TASK-888.
+
+Target: reconcile all 114 built-in studies and local TradingView script/idea sources against existing cards and code. Create missing cards as spec-only, with source provenance and explicit rule gaps. Do not change executable registry or invent performance.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-tv-cards; branch feat/tradingview-card-coverage; base origin/master 4d0f027. Original checkout has live sessions and unrelated dirty work and remains untouched.
+
+Learned: prior PR 79 cataloged built-ins only. Local web mirror contains 742 script HTML pages and 1,609 chart HTML pages, plus 200 Markdown pages. Need canonical-URL deduplication and separation of actual indicator/method publications from market commentary/navigation. Stele KNOW-889 records scope and status constraints.
+
+Remaining: source inventory, semantic/exact existence reconciliation, new cards and coverage validation, owning tests and indexes, commit/push/PR/checks/merge, final receipts.
+
+
+## v70 - 2026-11-08 (TradingView cards, source review)
+
+Version: 70. Delta: v69 to v70; author specifications and complete expanded inventory.
+
+Inventory includes 114 built-in studies and 4,770 canonical source records: 747 script publications, 1,610 chart/idea publications, 2,323 help solutions, and 90 other exports. The help review selects 313 financial definitions. Explicit existence matches preserve 59 original cards and all 34 registry entries. Created 1,082 spec-only cards: 84 built-in signals, 600 custom script descriptions, 70 source-specific chart methods, 202 support definitions, 64 reusable methods, 47 library-function/group specifications, 12 named custom MACD/PPO variants, and 3 named-but-undisclosed strategies. No execution or measured status was invented.
+
+Files: research/tradingview-card-coverage.json records hashes/excerpts/match reasons; docs/TRADINGVIEW-CARD-COVERAGE.md lists the cards and scope. scripts/check_tradingview_cards.py validates all references and optionally physical sources; CI runs its offline mode. Normalizer tv-description-v2 retains comparison operators and separates HTML block text. Raw dumps remain ignored. Source-limited cards explicitly retain missing formulas, parameters or future-post gaps.
+
+Independent audit: research-contract-auditor reviewed 401 candidate chart titles and targeted full descriptions, 72 library definitions and 313 support definitions. It corrected holiday-art/platform false cards, undisclosed strategies, incomplete-source wording and hidden strategy omissions. KNOW-898 records concrete failures. It does not independently certify semantic completeness of every commentary page.
+
+Verification so far: 1,141 cards parse, 1,082 new cards match ledger, all 114 built-ins covered; source re-binding and final independent audit in progress.
+
+Continuation tooling is /tmp/solmargintrader-tv-cards: inventory.py, definitions.py, methods.py, generate.py, original publication extract and read-only audit artifacts. The committed ledger/cards are the durable products; generator scripts are session working material.
+
+Remaining: complete full raw-source verification and independent review, run owning/integration tests, regenerate offline retrieval indexes, commit/push/PR/CI/merge, synchronize safely and record receipts. Preserve original checkout dirty files and other live sessions.
+
+
+## v71 - 2026-11-08 (TradingView cards, final content)
+
+Version: 71. Delta: v70 to v71; close expanded inventory and finalize 1,083 new cards (1,142 total).
+
+All 114 built-ins have a card/code/alias disposition. 4,770 canonical sources and 4,890 physical source files are bound to source hashes and selected excerpt offsets. Added the independently found short-strangle method and corrected 29 non-OHLCV input requirements. Eight detailed chart strategies now retain their disclosed entry, filter, stop and management rules with additional bound source passages. Fifty-four new built-in cards also include official help clarifications. Named-only methods remain explicit source-limited specifications.
+
+Initial local checks: backtester 900 tests had one search-fallback failure; focused SolTUI integration 97 tests had the same failure. Cause: repeating fees/slippage/carry in over 1,000 cards made slippage exceed the keyword index 60-percent document-frequency pruning cutoff, so that single-word fallback returned no hits. Reworded the shared cost instruction without altering the research risk requirement or search implementation. Rebuild the text index, then rerun both suites. No semantic embedding or inference runtime was started.
+
+The new offline validator refuses duplicate new-card ownership, missing built-ins, stale implementation pointers, unrecorded cards and dishonest reviewed data availability. All four injected negative cases were refused. The full raw-source verification passed before final content enrichment and is running again. scripts/check_docs.py passed all 2,155 discovered test counts.
+
+Remaining: final independent audit of the corrected content; refreshed offline retrieval artifacts; passing backtester and focused SolTUI integration; commit/push/PR/final CI/merge; safe default-checkout synchronization and final receipts. Original dirty paths remain untouched.
+
+
+## v72 - 2026-11-08 (TradingView cards, verified)
+
+Version: 72. Delta: v71 to v72; record final local checks and targeted review.
+
+Completed content: 1,083 new spec-only cards; 1,142 total cards; all 114 built-in study dispositions; all original 59 cards and 34 registry entries preserved. Complete source inventory has 4,770 canonical records and 4,890 verified physical sources including the reference and excluded captures. docs/TRADINGVIEW-CARD-FILES.md lists every changed canonical checkout path.
+
+Verification: backtester 900/900 pass (42.359 seconds); focused SolTUI background queue, Docs browser and Docs search integration 97/97 pass (33.896 seconds); scripts/check_docs.py passes 2,155 discovered tests; card CLI prints all 1,142 cards; all four negative validator injections are refused. Independent research-contract-auditor final targeted re-audit passed: 8 strategy summaries, 62 added source passages, 29 data metadata anchors, corrected exclusions/aliases and non-runnable status. Scope remains complete deterministic inventory plus targeted semantic review, not an independent semantic reading of every chart page.
+
+Formatting gate found trailing spaces at bounded excerpt cutoffs. Card lines/EOF were normalized, corresponding excerpt end offsets were shortened, and full raw-source verification is repeated on the final artifact. No formula, source text, input requirement or status changed.
+
+Operational incident: index/search.py --text slippage also calls idle.maybe_start and spawned this task worktree index/idle.py --run-build worker PID 88605. Stopped that exact task-owned process with SIGTERM after matching its full command. Pre-existing Ollama servers were untouched. Use INDEX_NO_AUTO=1 on all remaining checks/commits. The query correctly returns 173 keyword hits after shared boilerplate rewording. No search implementation changed.
+
+Remaining delivery work only: commit/push current branch, open PR, record its URL, wait final CI, merge, verify remote content, and synchronize the default checkout only if unrelated active files remain intact. TASK-886 inventory and TASK-887 cards are done; TASK-888 owns delivery.
