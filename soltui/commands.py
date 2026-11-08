@@ -36,7 +36,7 @@ import sys
 import threading
 import time
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
@@ -51,7 +51,7 @@ from . import portfolio as portfolio_mod
 from . import liquidity as liq
 from . import top5 as top5_mod
 from .config import INTERVALS, Settings, load_settings, save_settings
-from .netpct import labelled, net_pct
+from .netpct import labelled
 from .paper import MODE_LABEL, PaperSession, start_session
 from .reference import FAMILY_NOTES, RESEARCH_DRIVERS, RESEARCH_FINDINGS, SIGNAL_REFERENCE
 from .roster import Roster, RosterEntry, RosterError, available_strategies
@@ -64,7 +64,7 @@ from .signals import (
     mapped_strategies,
     merged_params,
 )
-from .status import AppState, Phase, build_title, format_pct
+from .status import AppState, Phase, build_title
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -547,6 +547,29 @@ def _entry(e) -> dict[str, Any]:
 @command("strategies.list", "Every registered strategy and its family.")
 def strategies_list(ctx: Context, p: dict[str, Any]) -> Any:
     return [{"name": n, "family": f} for n, f in available_strategies()]
+
+
+@command("strategies.cards", "Active strategy and indicator cards, including specifications and execution capabilities.")
+def strategies_cards(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core.strategy_cards import load_all
+
+    registered = dict(available_strategies())
+    rows = []
+    for card in load_all().values():
+        key = card.registry_key or card.id
+        is_registered = key in registered and card.registry_key is not None
+        rows.append({
+            "key": key, "id": card.id, "name": card.name, "family": card.family,
+            "status": card.status, "summary": card.summary, "runner": card.runner,
+            "registered": is_registered,
+            "testable": is_registered and card.buildable and card.data_available,
+            "data_available": card.data_available,
+            "path": f"backtester/strategy_cards/{card.path.name}",
+        })
+    rows.sort(key=lambda row: (row["name"].casefold(), row["key"]))
+    return {"cards": rows, "count": len(rows),
+            "registered": sum(row["registered"] for row in rows),
+            "tradingview": sum(row["id"].startswith("tv_") for row in rows)}
 
 
 def _testable_strategies() -> set[str]:

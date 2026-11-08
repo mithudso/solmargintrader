@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 60
-Delta: v59 to v60; coin suitability skill, CLI, quick/audit backtests and Bots ranking.
+Version: 61
+Delta: v60 to v61; coin suitability skill/CLI and Bots quick/audit ranking.
 
 ## v1 - 2026-11-06
 
@@ -453,7 +453,13 @@ Keep complete indicator specifications too (Recommended)
 I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
 ```
 
-## v60 - Coin suitability and Bots ranking
+## v60 - 2026-11-08 (SolTUI card visibility)
+
+```text
+When I launch the soltui I don't see any of the new strategies.
+```
+
+## v61 - Coin suitability and Bots ranking
 
 ```text
 Create a skill that applies the template to a coin and determines if it's a good fit or not, and then explains its reasoning. Also have a bulk mode where it applies the template to a group of coins and outputs a table. And then write a script that does the same thing

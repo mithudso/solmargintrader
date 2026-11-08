@@ -54,7 +54,8 @@ from textual.widgets import (
     TextArea,
 )
 
-from .help import HEADER_GLOSSARY, column_help, control_help, row_help, TAB_HELP
+from .help import column_help, control_help, row_help, TAB_HELP
+from .help import HEADER_GLOSSARY as HEADER_GLOSSARY  # Preserve the existing public re-export.
 from .help_screen import HelpScreen
 from backtester.core import scorecard as sc
 
@@ -138,6 +139,7 @@ DOCS_TABLE_CAP = 1000
 # parses this file and fails when a button is missing here or names a command that does not exist, so a
 # new button cannot skip the registry (the extension, CLI and API would silently lack its action).
 BUTTON_COMMANDS: dict[str, str] = {
+    "#strategy-cards-refresh": "strategies.cards",
     "#btn-save": "settings.save",
     "#btn-add": "roster.add",
     "#btn-roster-all": "roster.add_all",
@@ -915,17 +917,21 @@ class SolTuiApp(App):
             yield Static("", id="key-sources")
 
     def _strategies_pane(self) -> ComposeResult:
-        """Add/remove strategies from the roster."""
+        """Browse active cards and manage the executable roster."""
         with Vertical():
             yield Static(
-                "Left: every registered strategy. Right: your roster — what the "
-                "Backtest tab will sweep. Focus either table and press Space to toggle membership.",
+                "Left: active strategy and indicator cards. Specifications are documented rules "
+                "without a runnable implementation. Right: your executable backtest roster. "
+                "Space toggles registered strategies; selecting a specification opens its card.",
                 classes="hint",
             )
-            yield Static("[b]Available strategies[/b] (left): every registered strategy, whether and when it "
-                         "was backtested, and its card-preset result. [b]Roster[/b] (right): what Run backtest "
-                         "on the Backtest tab tests. Select a row to see its source in the editor below.",
-                         classes="table-title")
+            with Horizontal(classes="form-row"):
+                yield Input(placeholder="Filter cards by name, family or description", id="strategy-card-filter")
+                yield Select([("All active cards", "all"), ("Registered strategies", "registered"),
+                              ("Specifications", "spec-only"), ("TradingView cards", "tradingview")],
+                             value="all", allow_blank=False, id="strategy-card-scope")
+                yield Button("Refresh cards", id="strategy-cards-refresh")
+            yield Static("", id="strategy-card-count", classes="table-title", markup=False)
             with Horizontal():
                 yield GlossaryTable(id="available-table")
                 yield GlossaryTable(id="roster-table")
@@ -2099,11 +2105,10 @@ class SolTuiApp(App):
         """Populate tables and start the indicator refresh."""
         self._bots_fit_alive.set()
         avail = self.query_one("#available-table", DataTable)
-        for label in ("strategy", "family", "in roster", "tested", "times tested", "last tested", "card-preset result"):
+        for label in ("strategy", "family", "status", "in roster", "tested", "times tested", "last tested", "card-preset result"):
             avail.add_column(label, key=label)
         avail.cursor_type = "row"
-        for row in self._call("strategies.list")["result"]:
-            avail.add_row(row["name"], row["family"], "", "…", "", "", "", key=row["name"])
+        self._load_strategy_cards()
         self._refresh_strategy_history()
 
         roster_t = self.query_one("#roster-table", DataTable)
@@ -2297,6 +2302,79 @@ class SolTuiApp(App):
 
     # -- roster ----------------------------------------------------------
 
+    def _load_strategy_cards(self) -> None:
+        env = self._call("strategies.cards", quiet=True)
+        if not env["ok"]:
+            self.query_one("#strategy-card-count", Static).update(self._msg(env))
+            return
+        self._strategy_card_catalog = env["result"]
+        self._strategy_cards = {row["key"]: row for row in env["result"]["cards"]}
+        self._render_strategy_cards()
+
+    def _render_strategy_cards(self) -> None:
+        table = self.query_one("#available-table", DataTable)
+        if not table.columns or not hasattr(self, "_strategy_cards"):
+            return
+        query = self.query_one("#strategy-card-filter", Input).value.casefold().strip()
+        scope = self.query_one("#strategy-card-scope", Select).value
+        roster_names = {entry.name for entry in self.roster}
+        table.clear()
+        for key, card in self._strategy_cards.items():
+            if scope == "registered" and not card["registered"]:
+                continue
+            if scope == "spec-only" and card["status"] != "spec-only":
+                continue
+            if scope == "tradingview" and not card["id"].startswith("tv_"):
+                continue
+            if query and query not in " ".join(str(card[k]) for k in ("key", "name", "family", "summary")).casefold():
+                continue
+            status = "specification" if card["status"] == "spec-only" else card["status"]
+            if not card["data_available"]:
+                status += " · data needed"
+            result = "Implementation required" if card["status"] == "spec-only" else "Use the card's runner"
+            table.add_row(Text(key if card["registered"] else card["name"]), card["family"], status,
+                          "yes" if key in roster_names else "", "…" if card["registered"] else "n/a",
+                          "", "", "" if card["registered"] else result, key=key)
+        catalog = self._strategy_card_catalog
+        self.query_one("#strategy-card-count", Static).update(
+            f"{table.row_count} of {catalog['count']} active cards · {catalog['registered']} registered strategies · "
+            f"{catalog['tradingview']} TradingView specifications · incomplete research excluded")
+        self._apply_strategy_history()
+        self._update_strategy_actions()
+
+    @on(Input.Changed, "#strategy-card-filter")
+    @on(Select.Changed, "#strategy-card-scope")
+    def _strategy_card_filter_changed(self) -> None:
+        self._render_strategy_cards()
+
+    @on(Button.Pressed, "#strategy-cards-refresh")
+    def _strategy_cards_refresh(self) -> None:
+        self._load_strategy_cards()
+        self._refresh_strategy_history()
+
+    @staticmethod
+    def _strategy_table_key(table: DataTable) -> str:
+        row_key, _ = table.coordinate_to_cell_key(table.cursor_coordinate)
+        return str(row_key.value)
+
+    def _update_strategy_actions(self, key: str | None = None) -> None:
+        if key is None:
+            table = self.query_one("#available-table", DataTable)
+            key = self._strategy_table_key(table) if table.row_count else ""
+        card = getattr(self, "_strategy_cards", {}).get(key, {})
+        self.query_one("#btn-add", Button).disabled = not card.get("registered", False)
+        self.query_one("#btn-bt-selected", Button).disabled = not card.get("testable", False)
+
+    def _registered_card_selected(self, key: str) -> bool:
+        card = getattr(self, "_strategy_cards", {}).get(key, {})
+        if card.get("registered", False):
+            return True
+        message = ("This specification needs an implementation before backtesting. Read its card below."
+                   if card.get("status") == "spec-only" else
+                   "This card uses a separate runner. Read its card below; this roster accepts registered strategies only.")
+        self.query_one("#roster-status", Static).update(message)
+        return False
+
     def _refresh_strategy_history(self) -> None:
         """Fill the Strategies table's test-history columns from `strategies.history`.
 
@@ -2304,13 +2382,21 @@ class SolTuiApp(App):
         highlighted row (which opens that strategy's source) all survive a refresh.
         """
         env = self._call("strategies.history", quiet=True)
-        table = self.query_one("#available-table", DataTable)
         status = self.query_one("#history-status", Static)
         if not env["ok"]:
             status.update(f"[red]{self._msg(env)}[/]")
             return
         r = env["result"]
-        for row in r["rows"]:
+        self._strategy_history_rows = r["rows"]
+        self._apply_strategy_history()
+        note = (f"{r['asset']}: {r['tested']} tested, {r['untested']} untested "
+                "(background sweep results; the Queue tab shows the full leaderboard)")
+        action = getattr(self, "_history_action", "")
+        status.update(f"{action}\n{note}" if action else note)
+
+    def _apply_strategy_history(self) -> None:
+        table = self.query_one("#available-table", DataTable)
+        for row in getattr(self, "_strategy_history_rows", []):
             if not row["testable"] and not row["tested"]:
                 tested = "n/a"
             else:
@@ -2322,14 +2408,10 @@ class SolTuiApp(App):
                     table.update_cell(row["name"], column, value)
                 except Exception:  # noqa: BLE001 - a row removed under us; the next refresh redraws
                     pass
-        note = (f"{r['asset']}: {r['tested']} tested, {r['untested']} untested "
-                "(background sweep results; the Queue tab shows the full leaderboard)")
-        action = getattr(self, "_history_action", "")
-        status.update(f"{action}\n{note}" if action else note)
 
     def _start_backtest(self, scope: str, names: list[str] | None = None) -> None:
         """Run `queue.backtest` and say what happened where the user is looking."""
-        status = self.query_one("#history-status", Static)
+        self.query_one("#history-status", Static)
         params: dict[str, Any] = {"scope": scope}
         if names is not None:
             params["names"] = names
@@ -2345,11 +2427,12 @@ class SolTuiApp(App):
         """Backtest the highlighted strategy (the `queue.backtest` command, scope selected)."""
         table = self.query_one("#available-table", DataTable)
         try:
-            name = str(table.get_row_at(table.cursor_row)[0])
+            name = self._strategy_table_key(table)
         except Exception:  # noqa: BLE001 - nothing highlighted
             self.query_one("#history-status", Static).update("[red]highlight a strategy first[/]")
             return
-        self._start_backtest("selected", [name])
+        if self._registered_card_selected(name):
+            self._start_backtest("selected", [name])
 
     @on(Button.Pressed, "#btn-bt-untested")
     def _backtest_untested(self) -> None:
@@ -2418,10 +2501,12 @@ class SolTuiApp(App):
             return
         status = self.query_one("#roster-status", Static)
         try:
-            name = str(focused.get_row_at(focused.cursor_row)[0])
+            name = self._strategy_table_key(focused)
             params = self._parse_params()
         except (RosterError, IndexError) as exc:
             status.update(Text(str(exc)))
+            return
+        if not self._registered_card_selected(name):
             return
         env = self._call("roster.toggle", {"name": name, "params": params})
         if not env["ok"]:
@@ -2451,10 +2536,12 @@ class SolTuiApp(App):
         status = self.query_one("#roster-status", Static)
         table = self.query_one("#available-table", DataTable)
         try:
-            name = str(table.get_row_at(table.cursor_row)[0])
+            name = self._strategy_table_key(table)
             explicit = self._parse_params()
         except Exception as exc:  # noqa: BLE001
             status.update(f"[red]{exc}[/]")
+            return
+        if not self._registered_card_selected(name):
             return
         env = self._call("roster.add", {"name": name, "params": explicit})
         if not env["ok"]:
@@ -2508,7 +2595,8 @@ class SolTuiApp(App):
         forcing past it, since arrow-keying through the strategy list is
         exactly the kind of incidental navigation that guard exists for.
         """
-        rel = self._strategy_source_path(name)
+        card = getattr(self, "_strategy_cards", {}).get(name)
+        rel = card["path"] if card and not card["registered"] else self._strategy_source_path(name)
         if rel is None:
             self.query_one("#docs-view-status", Static).update(
                 f"{name}: source file not in the Docs catalogue")
@@ -2518,9 +2606,12 @@ class SolTuiApp(App):
     @on(DataTable.RowHighlighted, "#available-table")
     def _available_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         try:
-            name = str(event.data_table.get_row_at(event.cursor_row)[0])
+            if event.row_key not in event.data_table.rows:
+                return
+            name = str(event.row_key.value)
         except Exception:  # noqa: BLE001 - an empty table has no row to open
             return
+        self._update_strategy_actions(name)
         self._open_strategy_file(name)
 
     @on(DataTable.RowHighlighted, "#roster-table")
