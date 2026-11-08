@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "version": "1.0.0",
-  "delta": "Initial independent complete-source principal-computation readiness and final-location review of all 21 accepted native-strategy cards; accepted manifest and card bytes remain frozen.",
+  "version": "1.1.0",
+  "delta": "v1.0.0 to v1.1.0; apply owner definition of complete as a self-contained coin test; preserve source-computation review judgments separately.",
   "verdict": "pass",
   "accepted_manifest_sha256": "1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5",
   "reviewer": "B7 independent native-strategy readiness reviewer (codex)",
@@ -10,7 +10,7 @@
     {
       "publication_id": "2lGyzYkC",
       "original_card_path": "research/tradingview-strategy-tools/tv_2lgyzykc_ultimate_strategy_template.md",
-      "current_card_path": "research/tradingview-strategy-tools/tv_2lgyzykc_ultimate_strategy_template.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_2lgyzykc_ultimate_strategy_template.md",
       "card_sha256": "ab4a338de57025733e317b54d9c48c1a9a28ee43a7369c626e121c8ebb0b8e9f",
       "source_sha256": "c834f044843657dc4b19f29aaea8059d1ce554ef1a27931b58db47184cbffad8",
       "raw_description_sha256": "2f0802d03cbc3aca356ff0301163dfa4de006611ce1d590d2265628e50ad2e0c",
@@ -46,12 +46,14 @@
           "end": 2455,
           "quote": "// buy and sell conditions\nbuy        =  crossover(MA1, MA2)\nsell       =  crossunder(MA1, MA2)\n\nplot(MA1, color=color_ma1, title=\"Plot MA1\", linewidth=3)\nplot(MA2, color=color_ma2, title=\"Plot MA2\", linewidth=3)\n\nplotshape(buy, title='LONG SIGNAL', style=shape.circle, location=location.belowbar, color=color_ma1, size=size.normal)\nplotshape(sell, title='SHORT SIGNAL', style=shape.circle, location=location.abovebar, color=color_ma2, size=size.normal)\n\n/////////////////////////// SIGNAL FOR STRATEGY /////////////////////////\n\nSignal = buy ? 1 : sell ? -1 : 0\nplot(Signal, title=\"🔌Connector🔌\", transp=100)\n"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "8OS1nbr8",
       "original_card_path": "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
-      "current_card_path": "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
       "card_sha256": "d517f11167f294ea0a0c74500437c7d41d75af8c97ea4a6683bd4aeca4c9b0df",
       "source_sha256": "fd5a4f1c85d360694c7d5ff227fb8a6d6708e64033b196d706b34ace49d1afb1",
       "raw_description_sha256": "7a9d5bb94e4905c5e6fe10d774e05ef34e782d545860fa1008a2f77c3d7ae66e",
@@ -87,12 +89,14 @@
           "end": 814,
           "quote": "as you can see, the next bet will be first bet x 2^(n-1)"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "9Iwinz7I",
       "original_card_path": "research/tradingview-strategy-tools/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md",
-      "current_card_path": "research/tradingview-strategy-tools/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md",
       "card_sha256": "f814ad1dcb9411b65b5abe5c963cafc5c0e991b0d98173aaed815c6ee3efb2c9",
       "source_sha256": "5f611f9206e3312f4bb0a1e7d9cea3488b0201329eb430355ab6f1ff212f10d0",
       "raw_description_sha256": "8cf4ba61d7a59f43174ac83d9843407d001daf565952ed2ae4a336b6749db568",
@@ -123,7 +127,9 @@
           "end": 2718,
           "quote": "margin_long = 1./30*50, margin_short = 1./30*50[/pine]\n\nWhereas \"30\" is a leverage scale as in 30:1, and \"50\" stands for 50% of Margin required by your broker. Personally the Required Margin number I've met most often is 50%, so I'm using value 50 here, but there are literally 1000+ brokers in this world and this is individual decision by each of them, so you'd better ask yourself."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "IHVPG6TS",
@@ -151,12 +157,14 @@
           "end": 87,
           "quote": "This is a simple exit example in $$ (symbol's currency) for [b]educational purpose[/b]."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "M9taaIkp",
       "original_card_path": "research/tradingview-strategy-tools/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
-      "current_card_path": "research/tradingview-strategy-tools/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
       "card_sha256": "a0428d633ba08ec2b7b34da76db9f762005508487724505a7cda486b79f2ca29",
       "source_sha256": "e0fe605883b76ea0c3cddd2e21623cb31ccbe85762fbb9fab6ba38d60ebfbb31",
       "raw_description_sha256": "3a775308569242035552b9e9bb2388f4e0111a8cf7608b619ad3b52083d64614",
@@ -187,12 +195,14 @@
           "end": 1602,
           "quote": "This script is not intended to be used as a full strategy but as a tool."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "MvlwAzSg",
       "original_card_path": "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
-      "current_card_path": "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_mvlwazsg_3commas_bot.md",
       "card_sha256": "e9a20bc6304eff4f1813d85c46444427c165351c8b2fcc07c6dbb619e266fad7",
       "source_sha256": "69b7eba82f2652c3f75531b75ca9c919738e2658c114c12bab1873eb929e3bd7",
       "raw_description_sha256": "e224b8f5d5257215ff38d3824b0a6c8f63fbcc1d5e6e6f5b83d57cccf156ab4e",
@@ -223,12 +233,14 @@
           "end": 4572,
           "quote": "Among the options for possible settings is a trailing stop. This stop will ratchet higher once triggered as a function of the Average True Range (ATR). There is a variable level to choose where the user would like to begin trailing the stop during the trade. The level can be assigned with a decimal between 0 and 1 (eg. 0.5 = 50% of the distance between entry and the target which must be exceeded before the trail triggers to begin). This can allow for some dips to occur during the trade possibly keeping you in the trade for longer, while potentially reducing risk of drawdown over time. The default for this setting is 0 meaning unless adjusted, the trail will trigger on entry if the trailing stop exit method is selected."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "OTfw8b2a",
       "original_card_path": "research/tradingview-strategy-tools/tv_otfw8b2a_trading_report_generator_from_csv.md",
-      "current_card_path": "research/tradingview-strategy-tools/tv_otfw8b2a_trading_report_generator_from_csv.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_otfw8b2a_trading_report_generator_from_csv.md",
       "card_sha256": "be1976bca36bc4b9c92f209f616a9becc8fb4a849218d71dd884135df24be3bd",
       "source_sha256": "ed897956b39c13442ab9ba4773bceb02714ffe56be47997bf7cc742f16f7a742",
       "raw_description_sha256": "b97def127f90dcb24704708a71a7749e5a8f8f8c30082d3c8de0c4471df33e04",
@@ -259,12 +271,14 @@
           "end": 2531,
           "quote": "At the beginning of the calculation, we parse the csv once, create trade objects (Trade) and sort them in chronological order. Next, on each bar, we check whether we have trades for the time period of the next bar. If there are, we place a limit order for each trade, with limit price == Fill Price of the trade. Here, we assume that if the trade is real, its execution price will be within the bar range, and the Pine strategy engine will execute this order at the specified limit price."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "VFzCk3HX",
       "original_card_path": "backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
-      "current_card_path": "backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
       "card_sha256": "1f1d6d38bc01ca713baac1f48b09572f9ff327930b2d04b8c812b410ca3f853f",
       "source_sha256": "06547feb67b76d5616b9be185a05d1dfe95cc2c1496a57b9c0cc2859b48c2ebe",
       "raw_description_sha256": "68fe8943a678ec1b7c7ef0e026b00dc921313f15b8610edac55bcb27ea18bf9f",
@@ -300,7 +314,9 @@
           "end": 3492,
           "quote": "[b]MA length[/b]: Moving Average length (Simple Moving Average). A 20 to 60 day range is recommended; with 40 as a starting point.\n[*][b]ATR length[/b]: Average True Range length.\n[*][b]ATR factor[/b]: Factor by which to multiply ATR when calculating selling level. 2.5 to 3.5 is generally recommended but higher has been seen for more volatile grains.\n[*][b]Month of Harvest[/b]: Set the month of harvest for the crop being traded, which changes depending on the seasonality of the commodity.\n[*][b]Delay in months after harvest[/b]: Set this to the typical downtime after harvest where prices are typically lowest. This can vary per instrument but 2 months is the suggested point for tuning.\n[*][b]Days between trades[/b]: Days to wait between sales.\n[/list]"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "VuYM89Tw",
@@ -338,7 +354,9 @@
           "end": 6270,
           "quote": "We can easily conclude that the indicator can't possibly generate long term returns under chaotic and volatile markets, and could even produce unnecessary trades in trending markets without much parasitic fluctuations such as noise and retracements (think about a simple linear trend) since the indicator converge toward the price and would therefore automatically cross over/under the trend, thus guaranteeing a false signal."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "bFXf4IXh",
@@ -366,7 +384,9 @@
           "end": 400,
           "quote": "This is the defaut keltners channel strategy with a few additions.\nThe main purpose is to show how we include the[url=https://en.wikipedia.org/wiki/Kelly_criterion] Kelly ratio[/url] into our scripts for dynamic position sizing based on the performance of the strategy on a per trade basis.\n\nWe've also included the usual take-profit and stop-loss parameters in the event you want to play a little :)"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "ghocsiv7",
@@ -405,7 +425,9 @@
           "end": 3597,
           "quote": "The analysis will be tested in different tech stocks with a main TF of 15 minutes with no spread and commissions applied. Default settings will be used. We'll be making our first analysis using AMD, who has recently formed a full reverse HS pattern, where the neckline has been crossed by the price. (by the way i have a bad feeling about it, hey ! feeling [i]filling[/i] ! Lame jokes!)"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "hoCPm5UY",
@@ -433,7 +455,9 @@
           "end": 109,
           "quote": "This is an example how to calculate position size based on risk and stop loss for [b]educational purpose[/b]."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "i9tJOtjl",
@@ -472,12 +496,14 @@
           "end": 2731,
           "quote": "Bot traders using alerts: beware the alert conditions. If a trade goes directly from long to short (which happens rarely), without closing a trade first, it might not act properly. If you use bots to trade, for \"LONG\" please close any old trades first before putting in instructions to open a leveraged long. To go \"SHORT\" please remember to close any old trade first as well, and things *should* work out just fine."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "jjhUHcje",
       "original_card_path": "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md",
-      "current_card_path": "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_jjhuhcje_stepped_trailing_strategy_example.md",
       "card_sha256": "a7249501f82659b320c81c3d7103544113ec446cde9769006c2e97f0e912ffde",
       "source_sha256": "02fc752484b2cbe57fc2de2c9ce6cf5fd3c3968dd3d3d45c9daac77628c39b81",
       "raw_description_sha256": "5461e127f22f5aa22ed55784f2f2512ee3afa172ee8f6673896ac0319a6c92cc",
@@ -498,7 +524,9 @@
           "end": 318,
           "quote": "There are 1 stop loss and 3 profit levels.\n[list]\n[*]When first tp is reached we move stop loss to break-even.\n[*]When second tp is reached we move stop loss to first tp.\n[*]When third tp is reached we exit by profit.\n[/list]"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "kzp8e4X3",
@@ -526,7 +554,9 @@
           "end": 636,
           "quote": "This script will just show a table with monthly/yearly performance of your script. Quite a lot of traders/investors used to look at returns like that. Also, it might help you to identify periods of time when your strategy performed good/bad than expected and try to analyze that better."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "mVkDf8qh",
@@ -565,7 +595,9 @@
           "end": 2219,
           "quote": "[b]Session-Based Trading Management[/b]\n[list]\n[*][b]Four Trading Sessions[/b] - Asia (18:00-00:00), London (00:00-08:00), NY AM (08:00-13:00), NY PM (13:00-18:00)\n[*][b]Individual Session Limits[/b] - Separate maximum trade counts for each session (default 5 per session)\n[*][b]Automatic Session Closure[/b] - All positions close at specified market close time\n[/list]\n\n[b]Risk Management Features[/b]\n[list]\n[*][b]Multiple Stop Loss Options[/b] - Percentage-based, MA cross, or band-based SL methods\n[*][b]Risk/Reward Ratio[/b] - Configurable TP levels based on SL distance (default 1:2)\n[*][b]Auto-Risk Calculation[/b] - Dynamic position sizing based on dollar risk limits ($150-$250 range)\n[*][b]Daily Limits[/b] - Stop trading after reaching specified TP or SL counts per day\n[/list]"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "n8bgynWl",
@@ -613,12 +645,14 @@
           "end": 20285,
           "quote": "While this framework can satisfy quite a large number of trading strategies there are cases where it cannot do so. For example, if you have a custom logic for your stop-loss or take-profit placement, or if you want to dollar cost average, then it might be better to start a new strategy script from scratch."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "nVECqIQx",
       "original_card_path": "backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
-      "current_card_path": "backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
       "card_sha256": "75ddfa787fcc79ffbd9cf58744c6eea77a093e14e40ed1e3dd7b8696103b0599",
       "source_sha256": "0105143cfac7459406b4242a585dc6a30186939594b9cef1a865c6b0d3b79987",
       "raw_description_sha256": "77238fe4805ba8e3c721865913313d9da7b350396195ecdb6db0ccf4b5de35dc",
@@ -649,12 +683,14 @@
           "end": 3207,
           "quote": "[b]█ THE RULES[/b]\n[list=1]\n[*] [b]Track Monday's Opening Price: [/b][i]Each week, Monday's open is noted.\n\n[/i]\n[*] [b]Enter on a 1% dip from the Open: [/b][i]On the open, a limit buy order is set at -1% from the open.\n\n[/i]\n[*] [b]Set a 1% profit target: [/b][i]If the buy order is filled, a limit sell (take-profit) order is set at the start of the following day for +1% from the fill price. By waiting until the start of the following day, this allows for occasional profits greater than 1% each week.\n\n[/i]\n[*] [b]Breakeven if 0.5% drawdown occurs: [/b][i]While in a position, if a drawdown of 0.5% or greater is observed, we immediately set a limit sell order at the entry price (breakeven).\n\n[/i]\n[*] [b]Hard stop at Friday close: [/b][i]A market-on-close order is set for EOD Friday to exit us from any position which has not met the target or breakeven limits.\n\n[/i]\n[/list]"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "oxvR5vMy",
       "original_card_path": "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md",
-      "current_card_path": "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_oxvr5vmy_grid_like_strategy.md",
       "card_sha256": "3097d1a378fffdc5b7030a6e491cb7b65cb79af8e37ac468f1e79ce75990ee19",
       "source_sha256": "c73531aadae767741c0b2d0b3d9ffa3e19678180a814a9073c0ef76e6648bb91",
       "raw_description_sha256": "0babd366fdcec13a869468dafc1021079aeed064ad5d718a491492962d67a487",
@@ -690,7 +726,9 @@
           "end": 5318,
           "quote": "Our first problem is frictional costs, one example being the spread, but this is a common problem for any strategy, however here a martingale is extra sensitive to it, if the strategy does not account for it then we will still double our positions costs but we might not recover all the losses of a losing streak, instead we would be recovering only a proportion of it, under such scenario you would be certain to lose over time."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "rLkjr2sQ",
@@ -734,7 +772,9 @@
           "end": 10964,
           "quote": "It is important to understand that the calculations on the account size take place from the beginning of the price history of the strategy. This means that if historical results have inflated or depleted the account size from the beginning of trade history until now, the values sent in alerts will reflect the calculated size based on the inputs in the [i]\"Properties\"[/i] tab. To start fresh, the [b]user must set the date[/b] in the [i]\"Inputs\"[/i] tab to the current date as to remove trades from the trade history. Failure to follow this instruction can result in an unexpected order size being sent in the alert."
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     },
     {
       "publication_id": "xAEG4ZJG",
@@ -762,7 +802,12 @@
           "end": 728,
           "quote": "Example how to set the time range window to be backtested for both entries and exits. Additional examples are also included showing how to set the date range and toggle plot visibility. \n\nBy incorporating this code with your own strategy's logic, it will allow you to backtest various time windows. \n\nMuch gratitude to @LucF and @a.tesla2018 for help with including ':1234567' for time ranges on weekends. Thank you both!\n \n\nNOTICE: This is an example script and not meant to be used as an actual strategy. By using this script or any portion thereof, you acknowledge that you have read and understood that this is for research purposes only and I am not responsible for any financial losses you may incur by using this script!"
         }
-      ]
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
     }
-  ]
+  ],
+  "coin_test_qualification": "not-qualified",
+  "coin_test_ready_count": 0,
+  "placement_basis": "Every current card remains incomplete as a standalone coin test. Source disclosure is a separate judgment."
 }

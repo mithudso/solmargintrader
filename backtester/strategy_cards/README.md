@@ -47,6 +47,12 @@ It links each of the 21 publications to its individual card. Strategy-labelled
 reporting tools and templates have companion cards outside this loader directory;
 their platform type does not make them runnable trading hypotheses.
 
+The expanded TradingView source-profile collection is indexed in
+[the source-card index](../../research/TRADINGVIEW-SCRIPT-CARDS.md).
+All691 source-profile cards remain under `incomplete/`: none has qualified a
+self-contained coin test. Disclosed calculations are source interpretation,
+not a claim of a complete test contract or runnable implementation.
+
 ## Anatomy
 
 ```markdown

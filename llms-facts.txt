@@ -29,3 +29,11 @@ One declarative fact per line, each tagged with the repo-relative file it came f
 - The kill command is latching: it disarms and blocks every rail until clearKill is run [src: docs/OPERATIONS.md]
 - Kill does not cancel resting venue orders; they are removed with cancelOrder [src: docs/OPERATIONS.md]
 - The README states grid trading is short volatility: it earns in a range and loses in a trend [src: README.md]
+
+## 2026-11-08 [gen: p/2.1.0]
+
+- The saved HTML script corpus contains742 publications:666studies,55libraries and21native strategies. [src: research/tradingview-script-profile-work.json]
+- The accepted21 native-strategy cards retain their exact semantic manifest and card bytes; a reviewed receipt records10 disclosed principal outputs and11 partial descriptions. All21 are incomplete as standalone coin tests. [src: research/tradingview-strategy-card-locations.json]
+- Incomplete expanded publication documentation lives beneath backtester/strategy_cards/incomplete/publication-profiles; companion native-strategy tools use incomplete/native-strategy-profiles. The flat executable-card loader excludes these nested documentation cards. [src: scripts/render_tradingview_script_cards.py] [src: backtester/core/strategy_cards.py]
+- Computation readiness is distinct from cached data, current API compatibility, full Pine parity and portfolio trade rules. A usable card states its reproducible principal-output scope; missing core inputs or equations remain blocking gaps. [src: research/tradingview-script-profile-audit-prompts.md]
+- The final script-card checker refuses draft coverage, stale profile/source/review/card hashes, unread source tails, misplaced incomplete cards and unresolved medium-or-higher findings. [src: scripts/render_tradingview_script_cards.py]

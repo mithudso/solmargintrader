@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "reviewed_on": "2026-11-08",
-  "delta": "v1.0.0 to v1.1.0; preserve landed separation and re-review13 enriched canonical cards from complete native-strategy descriptions.",
+  "delta": "v1.1.0 to v1.2.0; file all13 current source-only canonical cards as incomplete under the owner standalone coin-test standard.",
   "scope": "1083 cards created in PR91; all 59 pre-existing cards remain active and unchanged.",
   "criteria": [
     "Keep a complete reproducible indicator calculation, strategy/risk procedure or script.",
@@ -15,10 +15,10 @@
   "review_method": "Three source-text reviews of 361 cards each; cross-review of 188 initial keeps and 120 math-bearing incompletes; parent adjudication of 16 corrections and three conditional candlestick cases. Followed by independent complete-source readiness/location review of21 native-strategy cards, rebinding13 enriched canonical cards without changing their accepted bytes.",
   "counts": {
     "reviewed": 1083,
-    "kept_new": 294,
-    "incomplete": 789,
+    "kept_new": 288,
+    "incomplete": 795,
     "pre_existing_active": 59,
-    "active_total": 353,
+    "active_total": 347,
     "all_cards": 1142
   },
   "cards": [
@@ -4416,9 +4416,9 @@
     },
     {
       "id": "tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin",
-      "disposition": "keep",
-      "kind": "principal-output-specification",
-      "reason": "Usable scope: geometric martingale stake sizing from a supplied initial stake and losing-streak index, explicitly first stake times 2^(n-1). The averaging-down trading system is not certified: MACD/channel definitions and conflicting profit-exit prose remain unresolved.",
+      "disposition": "incomplete",
+      "kind": "incomplete",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Usable scope: geometric martingale stake sizing from a supplied initial stake and losing-streak index, explicitly first stake times 2^(n-1). The averaging-down trading system is not certified: MACD/channel definitions and conflicting profit-exit prose remain unresolved.",
       "evidence": [
         "inwCoin Martingale Strategy is the proof of concept strategy that in the end, anyone who using martingale strategy will kaboom their portfolio.",
         "Start Position Logic = condition to enter first trade",
@@ -4432,10 +4432,12 @@
         "If equity less than 0, it will close any remaining positions ( It's mean your position got liquidated )",
         "If price > equity line for \"take profit percent\" it will close any remaining positions."
       ],
-      "gaps": [],
+      "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation."
+      ],
       "review_batch": "native21-full-source-review",
       "sha256": "d517f11167f294ea0a0c74500437c7d41d75af8c97ea4a6683bd4aeca4c9b0df",
-      "path": "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
+      "path": "backtester/strategy_cards/incomplete/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
       "prior_readiness_review": {
         "id": "tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin",
         "disposition": "keep",
@@ -4451,7 +4453,13 @@
         "sha256": "7ee761a51b5be2a4503d5de7560d589052313cb08ff546ca58a0d737f6456175",
         "path": "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: geometric martingale stake sizing from a supplied initial stake and losing-streak index, explicitly first stake times 2^(n-1). The averaging-down trading system is not certified: MACD/channel definitions and conflicting profit-exit prose remain unresolved.",
+        "gaps": []
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_8owcuqfq_multi_distribution_volume_profile_zeiierman",
@@ -5132,13 +5140,14 @@
       "id": "tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing",
       "disposition": "incomplete",
       "kind": "incomplete",
-      "reason": "Naming Kelly and Keltner does not disclose the adaptive sizing computation.",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Naming Kelly and Keltner does not disclose the adaptive sizing computation.",
       "evidence": [
         "This is the defaut keltners channel strategy with a few additions.",
         "The main purpose is to show how we include the Kelly ratio into our scripts for dynamic position sizing based on the performance of the strategy on a per trade basis.",
         "We've also included the usual take-profit and stop-loss parameters in the event you want to play a little :)"
       ],
       "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation.",
         "Kelly estimator/formula and its trade-performance inputs are not defined; neither initial-history behavior nor size transformation is supplied."
       ],
       "review_batch": "native21-full-source-review",
@@ -5159,7 +5168,15 @@
         "sha256": "493d137fb4ced972b841bc4c03655d993eb517977850ce5eec085f752ba8de72",
         "path": "backtester/strategy_cards/incomplete/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "incomplete",
+        "reason": "Naming Kelly and Keltner does not disclose the adaptive sizing computation.",
+        "gaps": [
+          "Kelly estimator/formula and its trade-performance inputs are not defined; neither initial-history behavior nor size transformation is supplied."
+        ]
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_blgcy3yu_this_is_my_plan_to_trade_btcusd_based_on_historical_price_data",
@@ -8185,7 +8202,7 @@
       "id": "tv_ghocsiv7_gap_filling_strategy",
       "disposition": "incomplete",
       "kind": "incomplete",
-      "reason": "The trade trigger depends on an unresolved non-fill confirmation and an undefined exact fill/reference level; generic gap arithmetic alone is not the principal strategy.",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. The trade trigger depends on an unresolved non-fill confirmation and an undefined exact fill/reference level; generic gap arithmetic alone is not the principal strategy.",
       "evidence": [
         "Significant up gaps will have an opening price greater than the previous high, while significant down gap will have an opening price lower than the previous low with both high volume accompanying them.",
         "In this strategy, the significance of a gap is determined by the position of the opening price relative to the previous high/low and make sure the bar following the gap don't fill it.",
@@ -8197,6 +8214,7 @@
         "The analysis will be tested in different tech stocks with a main TF of 15 minutes with no spread and commissions applied. Default settings will be used. We'll be making our first analysis using AMD, who has recently formed a full reverse HS pattern, where the neckline has been crossed by the price. (by the way i have a bad feeling about it, hey ! feeling filling ! Lame jokes!)"
       ],
       "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation.",
         "The phrase bar following the gap does not define the confirmation bar.",
         "The red gap-fill price is not explicitly calculated or anchored, so the confirmation/exit predicate is not reproducible without a choice."
       ],
@@ -8218,7 +8236,16 @@
         "sha256": "b9ddf205d26cb699723755e807a9d785e2e73971a18ca9da16557fdaca1d0883",
         "path": "backtester/strategy_cards/tv_ghocsiv7_gap_filling_strategy.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "incomplete",
+        "reason": "The trade trigger depends on an unresolved non-fill confirmation and an undefined exact fill/reference level; generic gap arithmetic alone is not the principal strategy.",
+        "gaps": [
+          "The phrase bar following the gap does not define the confirmation bar.",
+          "The red gap-fill price is not explicitly calculated or anchored, so the confirmation/exit predicate is not reproducible without a choice."
+        ]
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_gjpxvoub_education_excerpt_sma_lwma_gma_tma_ema",
@@ -8741,11 +8768,12 @@
       "id": "tv_hocpm5uy_alculation_a_position_size_based_on_risk",
       "disposition": "incomplete",
       "kind": "incomplete",
-      "reason": "The entire description names risk and stop loss without defining their transformation into size.",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. The entire description names risk and stop loss without defining their transformation into size.",
       "evidence": [
         "This is an example how to calculate position size based on risk and stop loss for educational purpose."
       ],
       "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation.",
         "No position-sizing equation, units or risk-to-stop-distance conversion is supplied."
       ],
       "review_batch": "native21-full-source-review",
@@ -8766,7 +8794,15 @@
         "sha256": "c0a638cb022d4c24304ec586eab84bea6416e22187debabcf222d3c85722fe2e",
         "path": "backtester/strategy_cards/incomplete/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "incomplete",
+        "reason": "The entire description names risk and stop loss without defining their transformation into size.",
+        "gaps": [
+          "No position-sizing equation, units or risk-to-stop-distance conversion is supplied."
+        ]
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_htaf8nf9_market_sessions_viewer_panel_by_muqwishi",
@@ -8967,13 +9003,14 @@
       "id": "tv_i9tjotjl_lube",
       "disposition": "incomplete",
       "kind": "incomplete",
-      "reason": "The normalized friction signal and directional series determine the principal trade output, but their exact computation is absent.",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. The normalized friction signal and directional series determine the principal trade output, but their exact computation is absent.",
       "evidence": [
         "I decided on the strange title \"LUBE\" because I was measuring how many of the previous 500 bars had the current price level already been in. I wanted to discover when the price was in a new zone or an area that it hadn't spent much time in recently... the LUBE zone.",
         "The direction to trade in is determined by a very quick moving weighted moving average (variable name is \"fir\") to see if the recent trend is up or down. To end a trade, an arbitrary number between 0 and 100 is picked telling us when we are experiencing enough friction again to end the trade. I have it preset to 50 (think of it as 50/100 or half way between the white bars. At a 50% friction level it's time to get out of the trade.",
         "Bot traders using alerts: beware the alert conditions. If a trade goes directly from long to short (which happens rarely), without closing a trade first, it might not act properly. If you use bots to trade, for \"LONG\" please close any old trades first before putting in instructions to open a leveraged long. To go \"SHORT\" please remember to close any old trade first as well, and things *should* work out just fine."
       ],
       "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation.",
         "Visit-count price inclusion and friction normalization/baseline equation are not fully defined.",
         "The fir weighted-average length and directional comparison are undisclosed."
       ],
@@ -8995,7 +9032,16 @@
         "sha256": "e45ed96c7730e827bfde4e0c93f1e5881ae26dca02b66d080d29d5b08dab1bb6",
         "path": "backtester/strategy_cards/incomplete/tv_i9tjotjl_lube.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "incomplete",
+        "reason": "The normalized friction signal and directional series determine the principal trade output, but their exact computation is absent.",
+        "gaps": [
+          "Visit-count price inclusion and friction normalization/baseline equation are not fully defined.",
+          "The fir weighted-average length and directional comparison are undisclosed."
+        ]
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_icrp4b2u_stochastic_momentum_index_smi_of_money_flow_index_mfi",
@@ -9329,19 +9375,21 @@
     },
     {
       "id": "tv_jjhuhcje_stepped_trailing_strategy_example",
-      "disposition": "keep",
-      "kind": "principal-output-specification",
-      "reason": "Usable scope: parameterized exit state machine with supplied initial stop and three profit prices: TP1 moves stop to entry, TP2 moves stop to TP1, TP3 exits. Level values are inputs to this procedure, not a missing entry strategy. Intrabar execution parity is not certified.",
+      "disposition": "incomplete",
+      "kind": "incomplete",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Usable scope: parameterized exit state machine with supplied initial stop and three profit prices: TP1 moves stop to entry, TP2 moves stop to TP1, TP3 exits. Level values are inputs to this procedure, not a missing entry strategy. Intrabar execution parity is not certified.",
       "evidence": [
         "There are 1 stop loss and 3 profit levels.",
         "When first tp is reached we move stop loss to break-even.",
         "When second tp is reached we move stop loss to first tp.",
         "When third tp is reached we exit by profit."
       ],
-      "gaps": [],
+      "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation."
+      ],
       "review_batch": "native21-full-source-review",
       "sha256": "a7249501f82659b320c81c3d7103544113ec446cde9769006c2e97f0e912ffde",
-      "path": "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md",
+      "path": "backtester/strategy_cards/incomplete/tv_jjhuhcje_stepped_trailing_strategy_example.md",
       "prior_readiness_review": {
         "id": "tv_jjhuhcje_stepped_trailing_strategy_example",
         "disposition": "keep",
@@ -9357,7 +9405,13 @@
         "sha256": "051af91a2840e67b0482fc7ec57ad11d2e52a03efd105b6191d73c62580844f1",
         "path": "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: parameterized exit state machine with supplied initial stop and three profit prices: TP1 moves stop to entry, TP2 moves stop to TP1, TP3 exits. Level values are inputs to this procedure, not a missing entry strategy. Intrabar execution parity is not certified.",
+        "gaps": []
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_jlrxim5v_rsi_bar_chart",
@@ -11861,7 +11915,7 @@
       "id": "tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts",
       "disposition": "incomplete",
       "kind": "incomplete",
-      "reason": "The primary crossover candidates must pass multiple confirmation layers before becoming the stated output. Undisclosed gates prevent reproducing the principal filtered signal.",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. The primary crossover candidates must pass multiple confirmation layers before becoming the stated output. Undisclosed gates prevent reproducing the principal filtered signal.",
       "evidence": [
         "Core Strategy Components",
         "Multi-Moving Average System - Uses configurable MA types (EMA, SMA, SMMA) with short-term (9) and long-term (21) periods for primary signal generation through crossovers",
@@ -11884,6 +11938,7 @@
         "Daily Limits - Stop trading after reaching specified TP or SL counts per day"
       ],
       "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation.",
         "Bollinger width pass threshold, stochastic pass conditions and Band Power calculation are absent.",
         "Exact combination/enablement of confirmation layers and higher-timeframe alignment predicate are not supplied."
       ],
@@ -11905,13 +11960,22 @@
         "sha256": "5345b340f818e94b554af8882a1f7b34dcdb7a4f15520fe257c2b93076c3098d",
         "path": "backtester/strategy_cards/incomplete/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "incomplete",
+        "reason": "The primary crossover candidates must pass multiple confirmation layers before becoming the stated output. Undisclosed gates prevent reproducing the principal filtered signal.",
+        "gaps": [
+          "Bollinger width pass threshold, stochastic pass conditions and Band Power calculation are absent.",
+          "Exact combination/enablement of confirmation layers and higher-timeframe alignment predicate are not supplied."
+        ]
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_mvlwazsg_3commas_bot",
-      "disposition": "keep",
-      "kind": "principal-output-specification",
-      "reason": "Usable scope: directional MA-cross signal using user-selected MA types and lengths, upward for long and downward for short. It is the explicit primary signal; stop-anchor, sizing and trailing-order parity are not certified.",
+      "disposition": "incomplete",
+      "kind": "incomplete",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Usable scope: directional MA-cross signal using user-selected MA types and lengths, upward for long and downward for short. It is the explicit primary signal; stop-anchor, sizing and trailing-order parity are not certified.",
       "evidence": [
         "The default settings have a basic 1:1 risk to reward ratio, which sets a limit and a stop equal distance from the entry. The entry is a simple MA cross (up for long, down for short). There a variety of MA's to choose from and the user can define the lengths of the averages. The ratio can be adjusted from the menu along with a volatility based adder (ATR) that helps to distance a stop from support or resistance. These values are calculated off the swing low/high of the user defined lookback period. Risk is calculated from position entry to stop, and projected upwards to the limit as a function of the desired risk to reward ratio. Of note: the default settings include 0.05% commissions. Competitive commissions of the leading cryptocurrency exchanges are .1% round trip (one buy and one sell) for market orders. There is also some slippage to allow time for alerts to be sent and orders to fill giving the back test results a more accurate representation of real time conditions. Its recommended to research the going rates for your exchange and set them to default for the strategy you use or build.",
         "settings used for the display image:",
@@ -11924,10 +11988,12 @@
         "-Trail trigger 60% of target",
         "Among the options for possible settings is a trailing stop. This stop will ratchet higher once triggered as a function of the Average True Range (ATR). There is a variable level to choose where the user would like to begin trailing the stop during the trade. The level can be assigned with a decimal between 0 and 1 (eg. 0.5 = 50% of the distance between entry and the target which must be exceeded before the trail triggers to begin). This can allow for some dips to occur during the trade possibly keeping you in the trade for longer, while potentially reducing risk of drawdown over time. The default for this setting is 0 meaning unless adjusted, the trail will trigger on entry if the trailing stop exit method is selected."
       ],
-      "gaps": [],
+      "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation."
+      ],
       "review_batch": "native21-full-source-review",
       "sha256": "e9a20bc6304eff4f1813d85c46444427c165351c8b2fcc07c6dbb619e266fad7",
-      "path": "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
+      "path": "backtester/strategy_cards/incomplete/tv_mvlwazsg_3commas_bot.md",
       "prior_readiness_review": {
         "id": "tv_mvlwazsg_3commas_bot",
         "disposition": "incomplete",
@@ -11943,7 +12009,13 @@
         "sha256": "ef0b89a044c0b412a4e5ba9c77300a8fe413d786a099cae5d1ab54425a4bac5a",
         "path": "backtester/strategy_cards/incomplete/tv_mvlwazsg_3commas_bot.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: directional MA-cross signal using user-selected MA types and lengths, upward for long and downward for short. It is the explicit primary signal; stop-anchor, sizing and trailing-order parity are not certified.",
+        "gaps": []
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_mxdttwh8_footprint_iq_pro_tradingiq",
@@ -12442,9 +12514,9 @@
     },
     {
       "id": "tv_nvecqiqx_tasc_2026_03_one_percent_a_week",
-      "disposition": "keep",
-      "kind": "principal-output-specification",
-      "reason": "Usable scope: normal-week order/level procedure: Monday open minus 1% buy limit, next-day fill plus 1% target, 0.5% drawdown triggers entry-price limit, Friday close ends position, one trade/week and 10% equity. Holiday policy and exact drawdown-reference implementation remain outside this scoped procedure.",
+      "disposition": "incomplete",
+      "kind": "incomplete",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Usable scope: normal-week order/level procedure: Monday open minus 1% buy limit, next-day fill plus 1% target, 0.5% drawdown triggers entry-price limit, Friday close ends position, one trade/week and 10% equity. Holiday policy and exact drawdown-reference implementation remain outside this scoped procedure.",
       "evidence": [
         "Simply put, the goal of this strategy is to trade TQQQ using an objective system with simple rules and no weekend holds, targeting 1% weekly returns while controlling drawdowns and preventing overtrading.",
         "This strategy was created to exploit short-term pullbacks during strong uptrends on TQQQ. With this in mind, the strategy is naturally long-only. Additionally, the strategy executes only one trade per week, which naturally limits trade activity and makes for a more robust system.",
@@ -12457,10 +12529,12 @@
         "Breakeven if 0.5% drawdown occurs: While in a position, if a drawdown of 0.5% or greater is observed, we immediately set a limit sell order at the entry price (breakeven).",
         "Hard stop at Friday close: A market-on-close order is set for EOD Friday to exit us from any position which has not met the target or breakeven limits."
       ],
-      "gaps": [],
+      "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation."
+      ],
       "review_batch": "native21-full-source-review",
       "sha256": "75ddfa787fcc79ffbd9cf58744c6eea77a093e14e40ed1e3dd7b8696103b0599",
-      "path": "backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
+      "path": "backtester/strategy_cards/incomplete/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
       "prior_readiness_review": {
         "id": "tv_nvecqiqx_tasc_2026_03_one_percent_a_week",
         "disposition": "incomplete",
@@ -12476,7 +12550,13 @@
         "sha256": "6443e41b8c3c7aa94ca612df68c5852283cff7f10a7e833698233992b27deb4e",
         "path": "backtester/strategy_cards/incomplete/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: normal-week order/level procedure: Monday open minus 1% buy limit, next-day fill plus 1% target, 0.5% drawdown triggers entry-price limit, Friday close ends position, one trade/week and 10% equity. Holiday policy and exact drawdown-reference implementation remain outside this scoped procedure.",
+        "gaps": []
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_nw5ogfdo_ict_killzones_pivots_tfo",
@@ -12765,9 +12845,9 @@
     },
     {
       "id": "tv_oxvr5vmy_grid_like_strategy",
-      "disposition": "keep",
-      "kind": "principal-output-specification",
-      "reason": "Usable scope: supplied equally spaced grid levels and base size drive the explicit long-state transition: upward cross opens long with adjacent stop/target; winning exit opens next long, losing exit opens short with adjacent levels. Loss/win-conditioned multiplicative sizing is specified. Grid anchoring, complete mirrored short recurrence and resets are not certified.",
+      "disposition": "incomplete",
+      "kind": "incomplete",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Usable scope: supplied equally spaced grid levels and base size drive the explicit long-state transition: upward cross opens long with adjacent stop/target; winning exit opens next long, losing exit opens short with adjacent levels. Loss/win-conditioned multiplicative sizing is specified. Grid anchoring, complete mirrored short recurrence and resets are not certified.",
       "evidence": [
         "The motivations behind posting such a strategy isn't to glorify such systems, but rather to present the problems behind them, many users come to me with their ideas and glorious ways to make money, sometimes they present strategies using the martingale, and it is important to present the flaws of this methodology rather than blindly saying \"you shouldn't use it\".",
         "The martingale multiplier determines the factor by which the position size is multiplied after a loss, using values higher to 2 will \"squarify\" your balance, while a value of 1 would use a constant position sizing.",
@@ -12775,10 +12855,12 @@
         "The goal of a simple grid strategy is to go long once the price crossover a certain level, a take profit is set at the level above the current one and stop loss is placed at the level below the current one, in a winning scenario the price reach the take profit, the position is closed and a new one is opened with the same setup. In a losing scenario, the price reaches the stop loss level, the position is closed and a short one is opened, the take profit is set at the level below the current one, and a stop loss is set at the level above the current one. Note that all levels are equally spaced.",
         "Our first problem is frictional costs, one example being the spread, but this is a common problem for any strategy, however here a martingale is extra sensitive to it, if the strategy does not account for it then we will still double our positions costs but we might not recover all the losses of a losing streak, instead we would be recovering only a proportion of it, under such scenario you would be certain to lose over time."
       ],
-      "gaps": [],
+      "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation."
+      ],
       "review_batch": "native21-full-source-review",
       "sha256": "3097d1a378fffdc5b7030a6e491cb7b65cb79af8e37ac468f1e79ce75990ee19",
-      "path": "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md",
+      "path": "backtester/strategy_cards/incomplete/tv_oxvr5vmy_grid_like_strategy.md",
       "prior_readiness_review": {
         "id": "tv_oxvr5vmy_grid_like_strategy",
         "disposition": "keep",
@@ -12794,7 +12876,13 @@
         "sha256": "8f12c7e4005aa0fd579270a7b4268e86a7eef22b11fb58e508b9564c5cd6ba63",
         "path": "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: supplied equally spaced grid levels and base size drive the explicit long-state transition: upward cross opens long with adjacent stop/target; winning exit opens next long, losing exit opens short with adjacent levels. Loss/win-conditioned multiplicative sizing is specified. Grid anchoring, complete mirrored short recurrence and resets are not certified.",
+        "gaps": []
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_oyazawb9_d_shape_breakout_signals_luxalgo",
@@ -13700,7 +13788,7 @@
       "id": "tv_rlkjr2sq_bjorgum_double_tap",
       "disposition": "incomplete",
       "kind": "incomplete",
-      "reason": "Target-height arithmetic depends on identifying the double pattern and pivots, whose decisive numerical recognition criteria remain undefined. The target alone is an intermediate calculation with hidden core inputs.",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Target-height arithmetic depends on identifying the double pattern and pivots, whose decisive numerical recognition criteria remain undefined. The target alone is an intermediate calculation with hidden core inputs.",
       "evidence": [
         "Doubles are technical formations that are both reversal patterns and breakout patterns. These formations typically have a distinctive “M” or a “W” shape with price action breaking beyond the neckline formed by the center of the pattern. They can be recognized when a ​pivot fails to break when tested for a second time and the retracement that follows breaks beyond the key level opposite. This can trap entrants that were playing in the direction of the prior trend. Entries are made on the breakout with a target projected beyond the neckline equal to the height of the pattern.",
         "Patterns are recognized through the use of ​zig-zag; a method of filtering price action by connecting swing highs and lows in an alternating fashion to establish trend, ​support and resistance, or derive shapes from price action. The script looks for the highest or lowest point in a given number of bars and updates a list with the values as they form. If the levels are exceeded, the values are updated. If the direction changes and a new significant point is made, a new point is added to the list and the process starts again. Meanwhile, we scan the list of values looking for the distinctive shape to form as previously described.",
@@ -13711,6 +13799,7 @@
         "It is important to understand that the calculations on the account size take place from the beginning of the price history of the strategy. This means that if historical results have inflated or depleted the account size from the beginning of trade history until now, the values sent in alerts will reflect the calculated size based on the inputs in the \"Properties\" tab. To start fresh, the user must set the date in the \"Inputs\" tab to the current date as to remove trades from the trade history. Failure to follow this instruction can result in an unexpected order size being sent in the alert."
       ],
       "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation.",
         "Exact zig-zag direction-change/confirmation predicate and significant-point rule are absent.",
         "Double-test tolerance and admissible pivot arrangement/spacing are not defined."
       ],
@@ -13732,7 +13821,16 @@
         "sha256": "fa691933724035e329222ee9fbe24fa93e04bc1d55ae6ebd95d6772fe1c5fd7f",
         "path": "backtester/strategy_cards/incomplete/tv_rlkjr2sq_bjorgum_double_tap.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "incomplete",
+        "reason": "Target-height arithmetic depends on identifying the double pattern and pivots, whose decisive numerical recognition criteria remain undefined. The target alone is an intermediate calculation with hidden core inputs.",
+        "gaps": [
+          "Exact zig-zag direction-change/confirmation predicate and significant-point rule are absent.",
+          "Double-test tolerance and admissible pivot arrangement/spacing are not defined."
+        ]
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_rnkr88ze_tick_delta_volume",
@@ -15030,9 +15128,9 @@
     },
     {
       "id": "tv_vfzck3hx_tasc_2026_08_an_ag_selling_model",
-      "disposition": "keep",
-      "kind": "principal-output-specification",
-      "reason": "Usable scope: agricultural selling level from a source SMA plus a user-supplied factor times ATR, with lengths and factor supplied as parameters. Exact harvest-day execution and futures contract parity are outside this level-calculation scope.",
+      "disposition": "incomplete",
+      "kind": "incomplete",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Usable scope: agricultural selling level from a source SMA plus a user-supplied factor times ATR, with lengths and factor supplied as parameters. Exact harvest-day execution and futures contract parity are outside this level-calculation scope.",
       "evidence": [
         "The core idea is that if there is only one crop per year, crop prices will be lowest around harvest and highest around peak growing season. Based on this timing, the strategy spaces out its sell orders up to three times throughout the year, and covers its position at harvest.",
         "The goal of this strategy is simply to beat the average price. Since selling at harvest should typically provide a lower-than-average price exit, success for this strategy means having the average of its entries above the average price.",
@@ -15048,10 +15146,12 @@
         "Delay in months after harvest: Set this to the typical downtime after harvest where prices are typically lowest. This can vary per instrument but 2 months is the suggested point for tuning.",
         "Days between trades: Days to wait between sales."
       ],
-      "gaps": [],
+      "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation."
+      ],
       "review_batch": "native21-full-source-review",
       "sha256": "1f1d6d38bc01ca713baac1f48b09572f9ff327930b2d04b8c812b410ca3f853f",
-      "path": "backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
+      "path": "backtester/strategy_cards/incomplete/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
       "prior_readiness_review": {
         "id": "tv_vfzck3hx_tasc_2026_08_an_ag_selling_model",
         "disposition": "incomplete",
@@ -15067,7 +15167,13 @@
         "sha256": "f62c139beb1a68418aea5221ac4f184cf6e179c1a60c49908e2c03245cf2b3be",
         "path": "backtester/strategy_cards/incomplete/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: agricultural selling level from a source SMA plus a user-supplied factor times ATR, with lengths and factor supplied as parameters. Exact harvest-day execution and futures contract parity are outside this level-calculation scope.",
+        "gaps": []
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_viwa6cr8_ma_sabres_luxalgo",
@@ -15193,7 +15299,7 @@
       "id": "tv_vuym89tw_grover_llorens_activator_strategy_analysis",
       "disposition": "incomplete",
       "kind": "incomplete",
-      "reason": "Crossing rules depend on a custom activator whose principal numerical series is not defined in the description. Performance-statistic formulas are ancillary and do not define that series.",
+      "reason": "No self-contained coin-test contract has been qualified. Source disclosure alone is not a complete coin test. Crossing rules depend on a custom activator whose principal numerical series is not defined in the description. Performance-statistic formulas are ancillary and do not define that series.",
       "evidence": [
         "The Grover Llorens Activator is a trailing stop indicator deeply inspired by the parabolic SAR indicator, and aim to provide early exit points and reversal detection. The indicator was posted not so long ago, you can find it here :",
         "https://www.tradingview.com/script/UVzC9TOv-Grover-Llorens-Activator-alexgrover-Lucía-Llorens/",
@@ -15205,6 +15311,7 @@
         "We can easily conclude that the indicator can't possibly generate long term returns under chaotic and volatile markets, and could even produce unnecessary trades in trending markets without much parasitic fluctuations such as noise and retracements (think about a simple linear trend) since the indicator converge toward the price and would therefore automatically cross over/under the trend, thus guaranteeing a false signal."
       ],
       "gaps": [
+        "Define and qualify a complete coin-test contract: inputs, parameters, calculation, timing and output interpretation.",
         "Grover Llorens Activator recurrence, acceleration/convergence calculation and initialization are absent."
       ],
       "review_batch": "native21-full-source-review",
@@ -15225,7 +15332,15 @@
         "sha256": "85a5ff800d86734b3b9d4a9487b326a700631735a83379a762dd4398324cc73a",
         "path": "backtester/strategy_cards/incomplete/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md"
       },
-      "review_receipt": "research/tradingview-strategy-card-locations.json"
+      "review_receipt": "research/tradingview-strategy-card-locations.json",
+      "source_computation_readiness": {
+        "status": "incomplete",
+        "reason": "Crossing rules depend on a custom activator whose principal numerical series is not defined in the description. Performance-statistic formulas are ancillary and do not define that series.",
+        "gaps": [
+          "Grover Llorens Activator recurrence, acceleration/convergence calculation and initialization are absent."
+        ]
+      },
+      "coin_test_ready": false
     },
     {
       "id": "tv_vxui7vrm_market_structure_dashboard_flux_charts",

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 108
-Delta: v107 to v108; checkpoint full independent acceptance of batcha and literal-quote display preservation.
+Version: 109
+Delta: v108 to v109; apply clarified standalone coin-test qualification and finish source-card delivery.
 
 ## v1 - 2026-11-06
 
@@ -1170,3 +1170,12 @@ Batcha TASK954 is independently qualified:240/240 current profiles pass,1,269,02
 Batchb/c full-source audits continue toward their tails. Their exact current coverage and revise queues are in the owned audit JSONLs. Original authors handle bounded repair tasks, independent reviewers recheck exact hashes, and only then qualify. TASK979 andTASK984 repaired23 batchb records; all23 have independent approval. No full b/c acceptance is claimed yet.
 
 Ten current source profiles quote lines with trailing spaces/tabs. The renderer now normalizes quote display line endings and trims only trailing presentation whitespace; raw exact quotations and offsets remain unchanged in the manifest. A red-to-green fixture proves display cleanup preserves the raw evidence string and indentation. Nine review/placement tests pass. Final card rendering remains blocked by unfinished semantic reviews, not source inventory.
+
+
+## v109 - 2026-11-08 (user clarified complete means standalone coin test)
+
+All742 descriptions are read and checked. Expanded audits qualify all721 current source interpretations; native21 source QA is separately accepted. The user asked whether each card by itself can run calculations for a specific coin test. Answered No: documented components are not complete coin tests. No new card has a qualified standalone coin-test contract or runnable implementation. All691 source-profile cards now belong beneath backtester/strategy_cards/incomplete, with source disclosure kept separate from coin-test readiness. Do not present the208 disclosed source components as208 complete coin tests.
+
+Root changed placement and labels mechanically without changing any independently audited semantic JSONL or frozen native card bytes. Native location receipt1.1.0 carries coin_test_ready:false for all21 and preserves the old source-computation judgments. All13 enriched canonical cards are incomplete; global legacy catalog remains1142 total with347 active/795 incomplete. The unrelated legacy catalog retains its earlier source-calculation criterion and is not certified runnable.
+
+Remaining: final render/whole-source gates, publish portable collection immediately, finish exact-head CI/merge/remote verification and clean only own worktree. Do not reopen content review or imply coin-test implementation was delivered. Source interpretation/card creation can be delivered; standalone coin-test development remains unimplemented.

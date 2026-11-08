@@ -6,7 +6,6 @@ import copy
 import unittest
 
 from scripts.render_tradingview_script_cards import (
-    CARD_DIR,
     INCOMPLETE_DIR,
     REVIEW_FIELDS,
     card_path,
@@ -116,7 +115,8 @@ class SourceReviewTests(unittest.TestCase):
 
     def test_incomplete_card_is_physically_under_requested_directory(self) -> None:
         source = {"publication_id": "demo", "name": "A source indicator"}
-        self.assertEqual(card_path(source, self.profile).parent, CARD_DIR)
+        # A disclosed calculation alone is not a qualified standalone coin test.
+        self.assertEqual(card_path(source, self.profile).parent, INCOMPLETE_DIR)
         profile = {
             **self.profile,
             "readiness": {

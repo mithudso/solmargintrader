@@ -84,6 +84,9 @@ def protected_entries() -> list[dict]:
                     "accepted_card_path": row["card_path"],
                     "card_path": card_location(ROOT, row).relative_to(ROOT).as_posix(),
                     "readiness": moves[row["publication_id"]]["readiness"],
+                    "coin_test_ready": moves[row["publication_id"]].get(
+                        "coin_test_ready", False
+                    ),
                 }
             )
         entries.append(entry)
@@ -158,11 +161,8 @@ def check_readiness(profile: dict) -> None:
 
 def card_path(source: dict, profile: dict) -> Path:
     slug = re.sub(r"[^a-z0-9]+", "_", source["name"].lower()).strip("_")[:80]
-    directory = (
-        CARD_DIR
-        if profile.get("readiness", {}).get("status") == "usable-specification"
-        else INCOMPLETE_DIR
-    )
+    # These reviews qualify source interpretation, not a self-contained coin test.
+    directory = INCOMPLETE_DIR
     return directory / f"tv_{source['publication_id'].lower()}_{slug or 'script'}.md"
 
 
@@ -200,6 +200,7 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
         "name: " + json.dumps(source["name"], ensure_ascii=False),
         "kind: research-tool",
         "status: documentation-only",
+        "coin_test_ready: false",
         "classification: " + profile["classification"],
         "summary: " + json.dumps(profile["purpose"], ensure_ascii=False),
         "registry_key: null",
@@ -211,8 +212,15 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
         f"**Classification:** {profile['classification']}. Native publication type: {source['native_type']}. Review: {status}.",
         "## Idea and objective",
         profile["purpose"],
-        "## Completeness and location",
-        f"**{readiness['status']}**. {readiness['reason']}",
+        "## Coin-test readiness: incomplete",
+        "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this card. Source disclosure alone does not establish that readiness.",
+        "## Source calculation and gaps",
+        (
+            "**Disclosed principal calculation.** "
+            if readiness["status"] == "usable-specification"
+            else "**Partly disclosed computation.** "
+        )
+        + readiness["reason"],
         bullets(readiness["gaps"])
         if readiness["gaps"]
         else "No blocking gap was identified for the principal computation described above. Runtime integration and performance remain separate questions.",
@@ -298,7 +306,9 @@ def index_text(data: dict) -> str:
         "",
         "Version: 1.0.0. Delta: expand the accepted strategy subset to all trading-related saved scripts.",
         "",
-        f"State: **{data['state']}**. {len(entries)} of {data['source_count']} publications accounted for; {len(included)} trading-related cards and {len(excluded)} source-grounded non-trading exclusions.",
+        f"Source-review state: **{data['state']}**. {len(entries)} of {data['source_count']} publications accounted for; {len(included)} trading-related cards and {len(excluded)} source-grounded non-trading exclusions.",
+        "",
+        "**Self-contained coin tests qualified: 0. All cards in this collection remain in the incomplete directory.** Source calculation disclosure is distinct from a complete test with all coin inputs, parameters, timing, calculation and output rules defined. These are research specifications, not ready-to-run coin tests.",
         "",
         "Each card explains the idea, mechanism, intended use, settings, limitations and data needs. Indicator and tool cards are documentation outside the executable strategy loader. Author claims are not measured results. Missing rules remain explicit.",
         "",
@@ -310,7 +320,7 @@ def index_text(data: dict) -> str:
         "",
         "## Trading-related publications",
         "",
-        "| Publication | Native type | Classification | Completeness | Idea and objective |",
+        "| Publication | Native type | Classification | Coin-test readiness | Idea and objective |",
         "| --- | --- | --- | --- | --- |",
     ]
     for row in included:
@@ -320,7 +330,7 @@ def index_text(data: dict) -> str:
             else "../" + row["card_path"]
         )
         lines.append(
-            f"| [{table_text(row['name'])}]({relative}) (`{row['publication_id']}`) | {row['native_type']} | {row['classification']} | {row.get('readiness', {}).get('status', 'preserved strategy subset; separate readiness review')} | {table_text(row['purpose'])} |"
+            f"| [{table_text(row['name'])}]({relative}) (`{row['publication_id']}`) | {row['native_type']} | {row['classification']} | incomplete | {table_text(row['purpose'])} |"
         )
     lines.extend(
         [
@@ -454,6 +464,7 @@ def render(draft: bool) -> dict:
                         "card_path": target.as_posix(),
                         "card_sha256": sha(text.encode()),
                         "readiness": profile.get("readiness", {"status": "pending"}),
+                        "coin_test_ready": False,
                     }
                 )
             else:
@@ -701,6 +712,12 @@ def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
             elif row["exclusion_reason"] != profile["exclusion_reason"]:
                 raise ValueError(f"Exclusion reason drifted: {pid}")
         if row["in_scope"]:
+            if row.get("coin_test_ready") is not False or not row[
+                "card_path"
+            ].startswith("backtester/strategy_cards/incomplete/"):
+                raise ValueError(
+                    f"Source documentation falsely claims coin-test readiness: {pid}"
+                )
             target = bounded(ROOT, row["card_path"])
             if sha(target.read_bytes()) != row["card_sha256"]:
                 raise ValueError(f"Card hash mismatch: {pid}")

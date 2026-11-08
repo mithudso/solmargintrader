@@ -127,9 +127,10 @@ def card_location(repo: Path, profile: dict) -> Path:
             raise ValueError("Strategy-card completeness evidence has invalid offsets")
     target = bounded(repo, entry["current_card_path"])
     incomplete = "backtester/strategy_cards/incomplete/"
-    if (readiness["status"] == "incomplete") != entry["current_card_path"].startswith(
-        incomplete
-    ):
+    incomplete_placement = (
+        entry.get("coin_test_ready") is False or readiness["status"] == "incomplete"
+    )
+    if incomplete_placement != entry["current_card_path"].startswith(incomplete):
         raise ValueError("Strategy-card completeness disagrees with its location")
     return target
 

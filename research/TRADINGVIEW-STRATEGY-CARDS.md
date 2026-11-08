@@ -1,8 +1,10 @@
-# Saved TradingView native-strategy cards
+# Saved native-strategy source cards
 
-Version: 1.1.0. Delta: apply independent completeness review and final incomplete locations.
+Version: 1.2.0. Delta: distinguish source disclosure from standalone coin-test qualification.
 
-The21 native-strategy descriptions were read in full (92,770 characters). Their accepted card contents remain unchanged. Ten disclose a usable principal output within the scope below; eleven lack a reproducible principal computation and reside beneath `backtester/strategy_cards/incomplete`. Indicator or procedure usability does not certify the entire published trading system, repository integration or profitability.
+**All21 cards are incomplete as standalone coin tests and are stored in the incomplete directory.** The historical source review below identifies10 disclosed principal calculations and11 partial descriptions; that distinction does not qualify any complete coin test.
+
+The21 native-strategy descriptions were read in full (92,770 characters). Their accepted card contents remain unchanged. Ten disclose a principal calculation; eleven have partial computational definitions. All21 remain coin-test-incomplete. Indicator or procedure usability does not certify the entire published trading system, repository integration or profitability.
 
 The wider742-publication task includes indicators and financial libraries; its expanded review is separate. All saved `script.content` fields are empty, so description snippets do not establish complete Pine source.
 
@@ -10,25 +12,25 @@ The wider742-publication task includes indicators and financial libraries; its e
 
 | Publication | Classification | Principal-output readiness |
 | --- | --- | --- |
-| [Ultimate Strategy Template](tradingview-strategy-tools/tv_2lgyzykc_ultimate_strategy_template.md) | strategy-template | usable-specification |
-| [inwCoin Martingale Strategy ( for Bitcoin )](../backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md) | trading-strategy | usable-specification |
-| [How to use Leverage and Margin in PineScript](tradingview-strategy-tools/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md) | leverage-example | usable-specification |
+| [Ultimate Strategy Template](../backtester/strategy_cards/incomplete/native-strategy-profiles/tv_2lgyzykc_ultimate_strategy_template.md) | strategy-template | usable-specification |
+| [inwCoin Martingale Strategy ( for Bitcoin )](../backtester/strategy_cards/incomplete/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md) | trading-strategy | usable-specification |
+| [How to use Leverage and Margin in PineScript](../backtester/strategy_cards/incomplete/native-strategy-profiles/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md) | leverage-example | usable-specification |
 | [Stop loss and Take Profit in $$ example](../backtester/strategy_cards/incomplete/native-strategy-profiles/tv_ihvpg6ts_stop_loss_and_take_profit_in_example.md) | exit-example | incomplete |
-| [Oscillator Evaluator (Analysis tool)](tradingview-strategy-tools/tv_m9taaikp_oscillator_evaluator_analysis_tool.md) | evaluation-tool | usable-specification |
-| [3Commas Bot](../backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md) | execution-template-with-demo | usable-specification |
-| [Trading Report Generator from CSV](tradingview-strategy-tools/tv_otfw8b2a_trading_report_generator_from_csv.md) | reporting-tool | usable-specification |
-| [TASC 2026.08 An Ag Selling Model](../backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md) | trading-strategy | usable-specification |
+| [Oscillator Evaluator (Analysis tool)](../backtester/strategy_cards/incomplete/native-strategy-profiles/tv_m9taaikp_oscillator_evaluator_analysis_tool.md) | evaluation-tool | usable-specification |
+| [3Commas Bot](../backtester/strategy_cards/incomplete/tv_mvlwazsg_3commas_bot.md) | execution-template-with-demo | usable-specification |
+| [Trading Report Generator from CSV](../backtester/strategy_cards/incomplete/native-strategy-profiles/tv_otfw8b2a_trading_report_generator_from_csv.md) | reporting-tool | usable-specification |
+| [TASC 2026.08 An Ag Selling Model](../backtester/strategy_cards/incomplete/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md) | trading-strategy | usable-specification |
 | [Grover Llorens Activator Strategy Analysis](../backtester/strategy_cards/incomplete/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md) | trading-strategy | incomplete |
 | [Built-in Kelly ratio for dynamic position sizing](../backtester/strategy_cards/incomplete/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md) | sizing-overlay | incomplete |
 | [Gap Filling Strategy ](../backtester/strategy_cards/incomplete/tv_ghocsiv7_gap_filling_strategy.md) | trading-strategy | incomplete |
 | [Сalculation a position size based on risk](../backtester/strategy_cards/incomplete/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md) | sizing-example | incomplete |
 | [LUBE](../backtester/strategy_cards/incomplete/tv_i9tjotjl_lube.md) | trading-strategy | incomplete |
-| [Stepped trailing strategy example](../backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md) | exit-example | usable-specification |
+| [Stepped trailing strategy example](../backtester/strategy_cards/incomplete/tv_jjhuhcje_stepped_trailing_strategy_example.md) | exit-example | usable-specification |
 | [Monthly Returns in PineScript Strategies](../backtester/strategy_cards/incomplete/native-strategy-profiles/tv_kzp8e4x3_monthly_returns_in_pinescript_strategies.md) | reporting-tool | incomplete |
 | [TrendMaster Pro 2.3 with Alerts](../backtester/strategy_cards/incomplete/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md) | trading-strategy | incomplete |
 | [Template Trailing Strategy (Backtester)](../backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md) | strategy-template | incomplete |
-| [TASC 2026.03 One Percent A Week](../backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md) | trading-strategy | usable-specification |
-| [Grid Like Strategy](../backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md) | trading-strategy | usable-specification |
+| [TASC 2026.03 One Percent A Week](../backtester/strategy_cards/incomplete/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md) | trading-strategy | usable-specification |
+| [Grid Like Strategy](../backtester/strategy_cards/incomplete/tv_oxvr5vmy_grid_like_strategy.md) | trading-strategy | usable-specification |
 | [Bjorgum Double Tap](../backtester/strategy_cards/incomplete/tv_rlkjr2sq_bjorgum_double_tap.md) | trading-strategy | incomplete |
 | [How To Set Backtest Time Ranges](../backtester/strategy_cards/incomplete/native-strategy-profiles/tv_xaeg4zjg_how_to_set_backtest_time_ranges.md) | backtest-utility | incomplete |
 

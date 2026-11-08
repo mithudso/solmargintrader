@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 61
-Delta: v60 to v61; preserve the status question during ongoing full-script review.
+Version: 63
+Delta: v61 to v63; preserve the delay question and standalone coin-test completeness clarification.
 
 ## v1 - 2026-11-06
 
@@ -487,3 +487,18 @@ So what're you doing now?
 ```
 
 Answered that all742 publications have a draft explanation or exclusion, the21 native-strategy cards are reviewed/sorted, and556 of the721 expanded profiles had completed source review at that moment. Continue the original task; this is not a pause or replacement objective.
+
+
+## v62 - 2026-11-08
+
+```text
+It's been 3 hours, what's up
+```
+
+## v63 - 2026-11-08 (standalone coin-test standard)
+
+```text
+Are each of these cards complete in that by itself can be used to run calculations for a specific test that can be applied to a coin?
+```
+
+Answered No. Source-component disclosure was too loose a standard. No new card has qualified a standalone coin test; file all current source-profile documentation as incomplete and label it explicitly. Preserve the source interpretations and their independent evidence.

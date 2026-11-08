@@ -1,0 +1,1 @@
+{"agents_blocked": 0, "agents_dispatched": 22, "coin_tests_qualified": 0, "distinct_agents": 7, "pipeline": "full", "prompt_version": "p/2.1.0", "research_runs": 0, "run_at": "2026-11-08T13:23:20Z", "self_check": "8/8", "stages_degraded": ["stage8: owner-required complete-source continuations exceeded default dispatch cap"]}
