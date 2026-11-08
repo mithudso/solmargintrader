@@ -1,5 +1,8 @@
 # Work continuation
 
+Version: 148
+Delta: v147 to v148; incorporate PR 106 while resolving PR 96.
+
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
 
@@ -7,6 +10,8 @@ Version: 143
 Delta: v142 to v143; preserve concurrent delivery histories and source-card records.
 Version: 145
 Delta: v144 to v145; retain CI changes and editor work.
+Version: 147
+Delta: v146 to v147; correct test counts and record CI.
 Version: 144
 Delta: v143 to v144; preserve PR 100 records and resolve PR 104.
 
@@ -1572,3 +1577,10 @@ TASK-1006: registered and roster strategy selection opens the full card; selecte
 ## v146 - 2026-11-08: PR 96 conflict resolution
 
 Owner confirmed the existing merge was abandoned. Preserve its staged merge against 2d9e27b, merge the native-card source reviews with the newer catalog relocation, verify source profiles and card integrity, run CI, and merge PR 96. The offline catalog, native-profile and full-script gates pass after updating links for relocated cards. Source profile hashes and independent review bindings remain intact. Remaining: final checks, commit, push and verify merge.
+## v146 - 2026-11-08
+
+Integrated upstream guide separation and targeted CI. After catalog integration, four editor/strategy tests passed; earlier 27 focused tests passed. Compound and v2 shell regression cases passed, but the combined invocation also named nonexistent soltui.tests.test_commands and therefore exited 1 (90 actual tests passed plus one import error). Current live process PID 50024 loaded before these changes from the dirty shared checkout; loaded bytes are unverified and it cannot auto-reload. Leave that checkout and process alone. Remaining: final PR checks, merge, remote content verification, and a safe new-launch acceptance test.
+
+## v147 - 2026-11-08
+
+PR 105 was merged externally as 2d9e27b while its CI was still running. The docs check reported stale test counts caused by five added tests. PR 106 corrects counts to 1015 SolTUI and 2319 total; scripts/check_docs.py passes locally. PR 106 also scrolls the log to the latest lines. Browser e2e failure from PR 105 awaits CI logs. Live process remains on the shared dirty checkout and has not loaded these changes.
