@@ -1249,6 +1249,7 @@ class SolTuiApp(App):
                     with VerticalScroll():
                         yield Static("Rank all cached coins, then select a row to inspect or audit it. "
                                      "These simulations neither adopt settings nor place orders.", markup=False)
+                        yield Static("Coin suitability ranking and selected audit outcomes", classes="table-title")
                         yield GlossaryTable(id="bots-fit-table")
                         yield Static("No coin selected.", id="bots-fit-selection-summary", markup=False)
                         yield Static("Select an audit window below to inspect its equity path. Sparklines show shape "

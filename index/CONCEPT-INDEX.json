@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T12:28:07+00:00",
+  "generatedAt": "2026-11-08T13:02:04+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -21,12 +21,16 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1302,
+      "matchingFiles": 1309,
       "shown": 30,
       "files": [
         {
           "path": "research/ratio_rotation.py",
           "hits": 89
+        },
+        {
+          "path": "soltui/coin_fit.py",
+          "hits": 73
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
@@ -57,8 +61,24 @@
           "hits": 37
         },
         {
+          "path": "backtester/tests/test_coinfit.py",
+          "hits": 34
+        },
+        {
           "path": "backtester/tests/test_engine_audit.py",
           "hits": 34
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 33
+        },
+        {
+          "path": "backtester/core/coinfit.py",
+          "hits": 32
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 32
         },
         {
           "path": "research/minute_sweep.py",
@@ -66,10 +86,6 @@
         },
         {
           "path": "soltui/bots.py",
-          "hits": 31
-        },
-        {
-          "path": "soltui/help.py",
           "hits": 31
         },
         {
@@ -83,6 +99,10 @@
         {
           "path": "docs/FILES.md",
           "hits": 26
+        },
+        {
+          "path": "soltui/commands.py",
+          "hits": 22
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -123,26 +143,6 @@
         {
           "path": "executor/src/executor/quote.py",
           "hits": 20
-        },
-        {
-          "path": "backtester/gridcli.py",
-          "hits": 19
-        },
-        {
-          "path": "backtester/tests/test_dcasim.py",
-          "hits": 19
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 19
-        },
-        {
-          "path": "backtester/PROMPT.md",
-          "hits": 18
-        },
-        {
-          "path": "research/5minleveragestrategies.json",
-          "hits": 18
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 471,
+      "matchingFiles": 475,
       "shown": 30,
       "files": [
         {
@@ -435,7 +435,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 373,
+      "matchingFiles": 381,
       "shown": 30,
       "files": [
         {
@@ -455,11 +455,11 @@
           "hits": 128
         },
         {
-          "path": "backtester/core/gridsim.py",
-          "hits": 102
+          "path": "docs/FILES.md",
+          "hits": 104
         },
         {
-          "path": "docs/FILES.md",
+          "path": "backtester/core/gridsim.py",
           "hits": 102
         },
         {
@@ -507,11 +507,19 @@
           "hits": 36
         },
         {
+          "path": "soltui/help.py",
+          "hits": 32
+        },
+        {
           "path": "backtester/README.md",
-          "hits": 30
+          "hits": 31
         },
         {
           "path": "backtester/tests/test_gridcli.py",
+          "hits": 30
+        },
+        {
+          "path": "memory.md",
           "hits": 30
         },
         {
@@ -519,15 +527,7 @@
           "hits": 30
         },
         {
-          "path": "soltui/help.py",
-          "hits": 29
-        },
-        {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
-          "hits": 27
-        },
-        {
-          "path": "memory.md",
           "hits": 27
         },
         {
@@ -551,11 +551,11 @@
           "hits": 25
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "docs/code-deep-optimizer-2026-11-06.md",
           "hits": 25
         },
         {
-          "path": "docs/code-deep-optimizer-2026-11-06.md",
+          "path": "extension/src/ui/ui.css",
           "hits": 25
         }
       ],
@@ -574,7 +574,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 343,
+      "matchingFiles": 350,
       "shown": 30,
       "files": [
         {
@@ -651,7 +651,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 55
+          "hits": 56
         },
         {
           "path": "docs/short-horizon-leverage-concept-family.md",
@@ -679,7 +679,7 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 32
+          "hits": 34
         },
         {
           "path": "soltui/tests/test_wallet.py",
@@ -690,11 +690,11 @@
           "hits": 30
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "executor/src/executor/txverify.py",
           "hits": 29
         },
         {
-          "path": "executor/src/executor/txverify.py",
+          "path": "soltui/coin_fit.py",
           "hits": 29
         }
       ],
@@ -847,7 +847,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 263,
+      "matchingFiles": 266,
       "shown": 30,
       "files": [
         {
@@ -986,7 +986,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 225,
+      "matchingFiles": 226,
       "shown": 30,
       "files": [
         {
@@ -1059,7 +1059,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 19
+          "hits": 20
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -1396,7 +1396,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 182,
+      "matchingFiles": 186,
       "shown": 30,
       "files": [
         {
@@ -1436,12 +1436,12 @@
           "hits": 18
         },
         {
-          "path": "research/RANKED_LISTS.md",
+          "path": "soltui/tui.py",
           "hits": 17
         },
         {
-          "path": "soltui/tui.py",
-          "hits": 16
+          "path": "research/RANKED_LISTS.md",
+          "hits": 17
         },
         {
           "path": "docs/CONCEPTS.md",
@@ -1452,12 +1452,12 @@
           "hits": 14
         },
         {
-          "path": "research/decide.py",
-          "hits": 13
+          "path": "soltui/help.py",
+          "hits": 14
         },
         {
-          "path": "soltui/help.py",
-          "hits": 12
+          "path": "research/decide.py",
+          "hits": 13
         },
         {
           "path": "docs/SCRIPTS.md",
@@ -1531,7 +1531,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 179,
+      "matchingFiles": 184,
       "shown": 30,
       "files": [
         {
@@ -1643,16 +1643,16 @@
           "hits": 6
         },
         {
+          "path": "soltui/coin_fit.py",
+          "hits": 6
+        },
+        {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
           "hits": 6
         },
         {
           "path": "skills/trading-and-investing/references/selection-rule-design.md",
           "hits": 6
-        },
-        {
-          "path": "backtester/strategy_cards/dca.md",
-          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1665,7 +1665,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 151,
+      "matchingFiles": 155,
       "shown": 30,
       "files": [
         {
@@ -1844,12 +1844,12 @@
           "hits": 24
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "research/STRATEGIES.md",
           "hits": 23
         },
         {
-          "path": "research/STRATEGIES.md",
-          "hits": 23
+          "path": "docs/CONCEPTS.md",
+          "hits": 22
         },
         {
           "path": "docs/TRADINGVIEW-CARD-FILES.md",
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 107,
+      "matchingFiles": 108,
       "shown": 30,
       "files": [
         {

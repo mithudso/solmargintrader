@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 113
-Delta: v110 to v113; retain card catalog delivery and add coin-fit implementation/verification.
+Version: 114
+Delta: v113 to v114; complete independent corrections and refresh required verification metadata.
 
 ## v1 - 2026-11-06
 
@@ -1122,3 +1122,11 @@ Next: commit tracked source so deterministic index/test counts can refresh; run 
 ## v113 - Concurrent catalog integration
 
 Merged source master3e5a9f3(PR99) with the coin-fit feature. Both Strategies catalog behavior and Bots ranking survive. Preserved incoming logs verbatim; own unpublished sections now111/112 and prompt61. Help tables combine both contexts; button registry has70handlers(67incoming plus3coin-fit). Rebuild only offline retrieval indexes after final tracked source changes.
+
+## v114 - Reviewed feature and verification gates
+
+The independent review rechecked all findings and reports no residual issues. Economic tests hand-check next-open, full-capital and terminal-cost accounting. Quick scoring ignores the reserved newest window; audit refuses changed data and preserves frozen config/costs/capital/policy. All22 template fields distinguish simulation evidence from unknown current depth and eligibility. Scheduled accumulation needs a supplied ownership thesis for a positive screen. Source and methodology documentation are complete; skill validation passes.
+
+Thirty-eight focused economic/screener/UI tests pass, plus registry/help/bridge coverage. The first909-case backtester run found only expected offline-index staleness before metadata refresh. Full SolTUI validation and final CI are required on the integrated head. Only offline metadata/text/concept indexes are regenerated; no embeddings, service restarts or live operations are part of this feature. Actual installed-entrypoint acceptance will distinguish a fresh guarded session from the owner's older Terminal TUI PID.
+
+Candidate branchfeat/bot-coin-fit remains recoverable; finish final-head gates, merge, safe canonical fast-forward, installed skill symlink and actual installed click flow. Preserve unrelated source and current consoles. Final Git/install/cleanup identities will be stored in a private receipt outside tracked source to avoid a post-merge bookkeeping commit loop.
