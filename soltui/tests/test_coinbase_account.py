@@ -50,6 +50,26 @@ class CoinbaseAccountTests(unittest.TestCase):
         result = cb.sync_account(call)
         self.assertEqual([r['currency'] for r in result['accounts']], ['USD', 'SOL'])
 
+    def test_cli_terminal_page_may_omit_false_pagination_fields(self):
+        def call(args):
+            if args[0] == 'portfolios':
+                return {'portfolios': [{'uuid': 'one'}]} if args[1] == 'list' else {'portfolio': {'uuid': 'one'}}
+            if not any(x.startswith('cursor==') for x in args):
+                return {'portfolio_id': 'one', 'accounts': [{'currency': 'USD'}], 'has_next': True, 'cursor': 'next'}
+            return {'portfolio_id': 'one', 'accounts': [{'currency': 'SOL'}], 'size': 1}
+        result = cb.sync_account(call)
+        self.assertEqual([r['currency'] for r in result['accounts']], ['USD', 'SOL'])
+
+    def test_omitted_pagination_does_not_hide_incomplete_page(self):
+        cb._store(cb.storage_dir() / 'account.json', {'accounts': [{'currency': 'OLD'}]})
+        def call(args):
+            if args[0] == 'portfolios':
+                return {'portfolios': [{'uuid': 'one'}]} if args[1] == 'list' else {'portfolio': {'uuid': 'one'}}
+            return {'portfolio_id': 'one', 'accounts': [{'currency': 'SOL'}], 'size': 2}
+        with self.assertRaisesRegex(ValueError, 'incomplete balance page'):
+            cb.sync_account(call)
+        self.assertEqual(cb.last_account()['accounts'][0]['currency'], 'OLD')
+
     def test_snapshot_writers_are_not_registered_as_read_only(self):
         from soltui import commands
         self.assertTrue(commands.COMMANDS['coinbase.account'].read_only)

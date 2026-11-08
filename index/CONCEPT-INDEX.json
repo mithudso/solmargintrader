@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T19:07:18+00:00",
+  "generatedAt": "2026-11-08T19:22:54+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -103,7 +103,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 34
+          "hits": 35
         },
         {
           "path": "executor/src/executor/registry.py",
@@ -511,12 +511,12 @@
           "hits": 30
         },
         {
-          "path": "research/cross_asset_cpcv.py",
+          "path": "memory.md",
           "hits": 28
         },
         {
-          "path": "memory.md",
-          "hits": 27
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 28
         },
         {
           "path": "research/RATIO-ROTATION.md",
