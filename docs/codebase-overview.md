@@ -172,6 +172,7 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/app.py` | The menu-bar app |
 | `soltui/menubar_launcher.py` | Exists because py2app runs its target as a top-level script, which breaks relative imports; also `chdir`s to the repo |
 | `soltui/tui.py` | Terminal UI |
+| `soltui/shell.py` | v2 navigation over the TUI's panes: five destinations, health strip, Now overview builders, registry palette, Explain, theme (`docs/design/soltui-v2/DESIGN.md`) |
 | `soltui/signals.py` | Signal derivation for display |
 | `soltui/status.py` | Status model |
 | `soltui/roster.py` | Watched-asset roster |
