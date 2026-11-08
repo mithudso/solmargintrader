@@ -1,0 +1,23 @@
+strategy,metric,definition,direction_or_constraint,caveat
+all,venue_pair,Actual executable exchange product and quote currency,hard gate,Do not substitute a reference-price endpoint for product availability
+all,as_of,Timestamp at which all features were available,hard gate,Preserve point-in-time universe membership; coverage start/end alone does not establish listing lifecycle or continuity
+all,intended_order_notional,Quote-currency value of each planned order,input,Liquidity and costs depend on size
+all,round_trip_cost,Buy and sell fees plus nonduplicated execution costs at planned size,lower,Include stress estimates and actual fee tier
+grid,spacing_cost_ratio,Planned percentage spacing divided by modeled round-trip percentage cost,higher subject to turnover,"Three times cost is a testable starting heuristic, not an established optimum"
+grid,completed_net_cycles,Actually executable paired cycles with costs applied,higher,Do not count every level touch as a filled cycle
+grid,efficiency_ratio,Absolute net log price change / sum of absolute consecutive log price changes,lower as descriptive feature,Zero path length is undefined; sampling and bid/ask bounce matter; not standalone proof
+grid,future_band_occupancy,Share of next test window inside a band selected using prior data,higher,No full-sample fitting of the band
+grid,downside_escape_duration,Time below the lower band in future test windows,lower,Include unresolved escapes
+basket_dca,full_required_reserve,Base order plus all planned averaging orders and cost buffer,within funded limit,Sum overlapping bot requirements under joint selloffs
+basket_dca,exit_hit_by_horizon,Fraction reaching specified fee-adjusted basket exit by a fixed horizon,higher,Unresolved positions count as not hit at horizon
+basket_dca,recovery_duration,Time to target after actual ladder fills,lower,Preserve right-censoring and time underwater
+basket_dca,adverse_excursion,Worst liquidation-value decline before exit or evaluation end,lower,"Evaluate entire basket, not initial entry alone"
+scheduled_dca,investment_thesis,Recorded ownership rationale and conditions that invalidate it,hard gate,Historical price oscillation cannot establish future expected appreciation
+scheduled_dca,cash_flow_schedule,Dollar amounts and dates funds become available,input,Do not compare against unavailable upfront capital
+all,total_equity_return,Change in cash plus liquidatable marked inventory net of cash flows and costs,higher subject to risk limit,Use full allocated/reserved capital; preserve daily equity curve
+all,max_equity_drawdown,Largest peak-to-trough decline in strategy equity on consistent cash-flow basis,within risk limit,Closed-trade profit is insufficient
+all,time_underwater,Duration below prior strategy-equity high,lower,Include ongoing episodes
+all,oos_rank_stability,Performance/rank of the complete prior-data selection procedure in later windows,higher,"Count all tried features, parameters and refit cadences"
+portfolio,joint_reserve_shortfall,Funding shortfall when correlated positions demand reserves together,zero,Do not treat nominal ticker count as independent diversification
+all,cash_flow_return_convention,Record return methodology and dated external contributions/withdrawals on a defined portfolio boundary,consistent with comparison purpose,TWR and MWR answer different questions; preserve funded reserve cash and valuation times
+portfolio,benchmark_cash_flow_match,"Compare strategy and benchmark with consistent cash-flow history, horizon and return convention",hard comparison gate,Do not compare a time-weighted index number directly with investor money-weighted performance

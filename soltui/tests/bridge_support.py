@@ -65,6 +65,10 @@ HEAVY = {
                       "beat_hold": 0, "ran": 0},
     "bots.forward_start": {"forward": {"id": "stub", "bot": "grid"}, "recorder": {"started": False}},
     "bots.optimize": {"bot": "grid", "verdict": {"reliable": False, "adopted": False}, "table": []},
+    "bots.rank_coins": {"bot": "grid", "mode": "quick", "rows": [], "errors": {}, "cancelled": False},
+    "bots.audit_coin": {"bot": "grid", "mode": "audit", "rows": [], "errors": {}, "cancelled": False},
+    # Starts the background Forwardtest thread, which reads public Coinbase candles every minute.
+    "forwardtest.run": {"running": True, "assets": ["SOL"], "since": 0},
     # Experiment creation fingerprints local evidence; starts/finalization spawn an explicit process.
     "experiments.create": {"id": "stub", "status": "created"},
     "experiments.start": {"id": "stub", "status": "running"},
@@ -97,6 +101,8 @@ def default_params() -> dict[str, dict]:
         "bots.config": {"bot": "grid"},
         "bots.save": {"bot": "dca", "text": "take_profit_pct=3"},
         "bots.backtest": {"bot": "grid"},
+        "bots.rank_coins": {"bot": "grid"},
+        "bots.audit_coin": {"bot": "grid", "asset": "SOL"},
         "bots.forward_start": {"bot": "grid"},
         "bots.forward_stop": {"bot": "grid"},
         "bots.forward_status": {"bot": "grid"},

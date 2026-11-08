@@ -4,6 +4,8 @@ Version: 60
 Delta: v59 to v60; start EPIC-980 research tracks.
 Version: 66
 Delta: v65 to v66; stop repeating full CI at the owner's instruction.
+Version: 74
+Delta: v73 to v74; preserve activation and concurrent delivery records.
 
 ## v1 - 2026-11-06
 
@@ -523,3 +525,54 @@ Are you using the firecrawl skills and mcp server?
 ```
 
 Confirmed Firecrawl skills, MCP and worker CLI collection are active. Existing two-track request continues.
+## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
+
+```text
+For the forwardtest tab, add a dropdown to choose which coins are tested, including all coins, and also add an "auto-optimize" option which dynamically changes the strategies' settings when they get an answer wrong. If a new setting tests superior than an old setting then save it as the default. Also make the forwardtest keep running in the background if I change tabs.
+```
+
+Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd, branch feat/forwardtest-coins-optimize, stacked on PR #87).
+
+## v61 - 2026-11-08
+
+```text
+› REsolve the merge conflicts on https://github.com/mithudso/solmargintrader/pull/89 and merge commit pr
+```
+
+## v62 - 2026-11-08
+
+```text
+Look at the CI tests, and determine which tests are causing the hour long delays in testing and make it so only the tests that affect what you doing are necessary, and do whatever else you need to to actually do this.
+```
+
+## v71 - Coin suitability and Bots ranking
+
+```text
+Create a skill that applies the template to a coin and determines if it's a good fit or not, and then explains its reasoning. Also have a bulk mode where it applies the template to a group of coins and outputs a table. And then write a script that does the same thing
+```
+
+```text
+Add a heuristic backtesting mechanism to quickly test it, and a more detailed audit backtest. And then incorporate this into the soltui in the bots tab, so that I can click a button and it will ranksort the most suitable coins and do a backtest to show it.
+```
+
+## v72 - Optional full SolTUI suite
+
+```text
+make the 999-case SolTUI suite optional, then skip it and push the code
+```
+
+## v73 - 2026-11-08 (owner merged the redesign)
+
+Version: 73. Delta: v72 to v73; preserve the owner's merge notification.
+
+```text
+I merged it
+```
+
+## v74 - 2026-11-08 (activate the actual console)
+
+Version: 74. Delta: v73 to v74; preserve the loaded-UI report.
+
+```text
+I dopn't see the new ui when loading the soltui
+```
