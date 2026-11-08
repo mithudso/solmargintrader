@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 81
-Delta: v80 to v81; record PR 96 request and takeover confirmation.
+Version: 82
+Delta: v81 to v82; record request to archive unprofitable liquidity tools.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -685,4 +685,10 @@ resolve the conflicts in https://github.com/mithudso/solmargintrader/pull/96 and
 
 ```text
 Yes it's abandonedd
+```
+
+## v82 - 2026-11-08
+
+```text
+Liquidity and so the Aero LP and the positions, and liquidity scout are all unprofitable and should be archived.
 ```
