@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 45
-Delta: v44 to v45; trend filter for the compound.
+Version: 47
+Delta: v46 to v47; SolTUI redesign mockup request.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -322,3 +322,11 @@ In the strategies tab, you can click on a strategy and then click the "add selec
 ```text
 Also in the forwardtest tab, make the time forward the strategy is asked to predict configurable so it can be 1, 5, 10, or 30 min. And ask it to predict all of them, and track the success of each individually.
 ```
+
+## v47 - 2026-11-08 (SolTUI redesign mockup)
+
+```text
+Create a list of the primary functions of the TUI in this repo and without looking at its current layout use the design, ui, data viewing, and frontend skills to design an ideal UI interface that provides the same rich data it does now but in an easily accessible, intuitive, and scannable format. Do a simple mockup of it in TUI format using the best TUI tools you can find.
+```
+
+Context: Stele TASK-877. Output under docs/design/soltui-v2/.
