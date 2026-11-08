@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 165
-Delta: v164 to v165; implement proof-aware sweep recovery and record verification.
+Version: 166
+Delta: v165 to v166; record live sweep and Signal trainer activation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1658,3 +1658,7 @@ Owner also reports a stopped SOL sweep because the evaluation proof is missing o
 ## v165 - 2026-11-08
 
 Sweep recovery TASK-1029 implemented by textual-job-lifecycle-specialist in branch agent-01a1bc24-sweep. The affected SOL proof bound its hourly input to /Users/mitch/.config/soltui/poc-data/sol-hourly-synthetic-epsmf8t9/SOL_1h.csv; current data path differs. On a selected UI sweep proof mismatch, reserve and select a separate fresh results segment while holding the worker lock, persist provenance and a synthetic-input notice, and retain the old history and proof unchanged. Explicit CLI paths still fail closed. Strategy cards now enter the evaluation fingerprint. Focused specialist tests: 152 passed, one skipped; reproduction used a temporary copy of the actual 1,059-row file and proof with a mocked evaluation, leaving both byte-identical. The Signal in-app Auto-forward timer also samples each minute and records horizon calls even when the five-minute source bar is unchanged. Focused Signal ledger/cadence and runner checks pass. Remaining: deliver both PRs, verify actual loaded app/trainer and safe recovery of the live sweep without mixing proof contexts.
+
+## v166 - 2026-11-08
+
+The SOL sweep resumed in a new proof-isolated results segment /Users/mitch/.config/soltui/bg/results-b97fdfd3748763c996ba74a0ddb12fde.jsonl. The old results and proof remain in place. As of 17:38 UTC it had completed 554 of 1,059 evaluations without an error; process 83636 runs from /Users/mitch/dev/solmargintrader-wt-01a1bc24, whose data symlink points to the original checkout. The ten-coin Signal trainer was gracefully replaced with PID 91333 from the same worktree. Each coin has separate 1-, 5- and 30-minute prediction records; initial one-minute outcomes resolved for BTC and SOL. The console PID 74766 still uses /Users/mitch/dev/solmargintrader and has not loaded the updated UI. Computer-use access to Terminal was denied. The active autopilot still points to the original checkout, so a future automatic restart can reload its older code until that checkout is safely updated. Preserve the active worktree and processes. PR 117 delivery and the five- and thirty-minute live outcomes remain to verify.
