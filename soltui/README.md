@@ -1,6 +1,7 @@
 # soltui — SOL strategy console
 
-A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
+A Textual TUI plus a macOS menu-bar indicator over the backtester. Its panes are grouped into five
+destinations (Now, Signal, Research, Money, Library) plus Settings; see [Navigation](#navigation).
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 wiring shell.
 
@@ -17,7 +18,8 @@ uv venv ~/.venvs/soltui -p 3.13
 uv pip install -p ~/.venvs/soltui/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
 ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui    # once; ~/.local/bin must be on PATH
 
-soltui          # the sixteen-tab console, from any directory
+soltui          # the console, from any directory (opens on Now)
+soltui --classic  # the same console with the original tab bar
 soltui app      # the macOS menu-bar indicator (needs rumps)
 soltui serve    # the console in a browser window
 ```
@@ -75,6 +77,34 @@ that test will fail until you label it.
 Long titles clip from the **head**, never the tail, because the figure is at the
 end — an earlier version clipped the tail and silently ate the number the
 indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_label`.
+
+## Navigation
+
+The console groups its panes by the question you bring, not as eighteen peer tabs. The design is in
+`docs/design/soltui-v2/DESIGN.md`. The shell is `soltui/shell.py`.
+
+| Key | Destination | Sub-views (the classic tab each one is) |
+| --- | --- | --- |
+| `1` | **Now** | Overview: Needs you (everything stale, failed or unseen, worst first), every coin, money tiles, activity, live prices |
+| `2` | **Signal** | Call & metrics · Backtest · Forward test · All coins (the four Compound 5m sections) |
+| `3` | **Research** | Backtest · Roster (Strategies) · Sweep (Queue) · Cumulative · Top 5 · Decide (Analyze) · Forward (Forwardtest) · Bots · Replay (Execute) · Dry run (Live Run) · Indicators (Signals) |
+| `4` | **Money** | Aero LP (Liquidity) · P&L · Wallet, under a LIVE MONEY band |
+| `5` | **Library** | Docs · Findings (Research) |
+| `,` | **Settings** | Settings |
+
+- `[` and `]` step through a destination's sub-views. Clicking a destination or a sub-view works too.
+- `?` opens Explain for the focused field: the same text as F1, in a drawer that does not reflow the
+  screen.
+- `ctrl+p` opens the palette. It lists every view, the app's actions and all registry commands by
+  name. A read-only command with no required parameters runs from the palette and shows a one-line
+  result. Any other command (every write, including the LP Kill and Resume) opens the view that owns
+  its button and focuses it, so confirm steps stay where they are.
+- The strip under the top bar shows every background process: sweep, trainers, autopilot, LP daemon,
+  price recorder, forward test and wallet scan. It refreshes every 5 s.
+
+Every classic pane is still a pane of the one `#main-tabs` TabbedContent. A tab added later is filed
+under Research automatically (`shell.with_extra_views`). `soltui --classic` shows the original tab bar.
+The pre-v2 console is also preserved as the git tag `soltui-ui-v1` (branch `backup/soltui-ui-v1`).
 
 ## The tabs
 
