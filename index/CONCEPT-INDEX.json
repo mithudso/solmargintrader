@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T08:34:09+00:00",
+  "generatedAt": "2026-11-08T08:35:31+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 317,
+      "matchingFiles": 334,
       "shown": 30,
       "files": [
         {
@@ -66,6 +66,14 @@
           "hits": 38
         },
         {
+          "path": "executor/src/executor/registry.py",
+          "hits": 34
+        },
+        {
+          "path": "executor/src/executor/engine.py",
+          "hits": 31
+        },
+        {
           "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
           "hits": 31
         },
@@ -84,6 +92,18 @@
         {
           "path": "extension/README.md",
           "hits": 25
+        },
+        {
+          "path": "executor/tests/test_rails.py",
+          "hits": 25
+        },
+        {
+          "path": "executor/src/executor/config.py",
+          "hits": 24
+        },
+        {
+          "path": "executor/tests/test_surfaces.py",
+          "hits": 23
         },
         {
           "path": "soltui/live_run.py",
@@ -124,26 +144,6 @@
         {
           "path": "extension/tools/e2e.mjs",
           "hits": 19
-        },
-        {
-          "path": "skills/trading-and-investing/references/the-greeks.md",
-          "hits": 19
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 18
-        },
-        {
-          "path": "memory.md",
-          "hits": 17
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 17
-        },
-        {
-          "path": "soltui/tests/test_bridge_surfaces.py",
-          "hits": 17
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 296,
+      "matchingFiles": 319,
       "shown": 30,
       "files": [
         {
@@ -253,16 +253,16 @@
           "hits": 35
         },
         {
+          "path": "memory.md",
+          "hits": 32
+        },
+        {
           "path": "soltui/help.py",
           "hits": 31
         },
         {
           "path": "soltui/tests/test_wallet.py",
           "hits": 31
-        },
-        {
-          "path": "memory.md",
-          "hits": 30
         },
         {
           "path": "docs/COMPOUND-5M.md",
@@ -273,16 +273,16 @@
           "hits": 29
         },
         {
+          "path": "executor/src/executor/txverify.py",
+          "hits": 29
+        },
+        {
           "path": "soltui/compound.py",
           "hits": 28
         },
         {
           "path": "extension/src/venues/index.js",
           "hits": 27
-        },
-        {
-          "path": "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
-          "hits": 26
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -438,7 +438,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 203,
+      "matchingFiles": 212,
       "shown": 30,
       "files": [
         {
@@ -534,6 +534,10 @@
           "hits": 20
         },
         {
+          "path": "executor/src/executor/quote.py",
+          "hits": 20
+        },
+        {
           "path": "backtester/gridcli.py",
           "hits": 19
         },
@@ -556,10 +560,144 @@
         {
           "path": "research/cross_asset_cpcv.py",
           "hits": 17
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "data-integrity",
+      "label": "Data integrity",
+      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
+      "terms": [
+        "validate_bars",
+        "strict_gaps",
+        "allow_gaps",
+        "datavalidationerror",
+        "monotone",
+        "gap"
+      ],
+      "matchingFiles": 203,
+      "shown": 30,
+      "files": [
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 34
         },
         {
-          "path": "skills/trading-and-investing/SKILL.md",
+          "path": "soltui/bots.py",
+          "hits": 34
+        },
+        {
+          "path": "backtester/core/data.py",
+          "hits": 33
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 32
+        },
+        {
+          "path": "extension/src/ui/ui.css",
+          "hits": 28
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 25
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 24
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 23
+        },
+        {
+          "path": "research/candle_gap_audit.py",
+          "hits": 20
+        },
+        {
+          "path": "soltui/utxo_scan.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/tests/test_candle_gap_audit.py",
           "hits": 16
+        },
+        {
+          "path": "pagesource",
+          "hits": 16
+        },
+        {
+          "path": "research/results/minute_coverage.json",
+          "hits": 12
+        },
+        {
+          "path": "backtester/core/universe.py",
+          "hits": 11
+        },
+        {
+          "path": "research/tick_backfill.py",
+          "hits": 11
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 11
+        },
+        {
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/xrp-ripple.md",
+          "hits": 10
+        },
+        {
+          "path": "backtester/core/trigger_conditions.py",
+          "hits": 9
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
+        },
+        {
+          "path": "executor/src/executor/jupiter.py",
+          "hits": 8
+        },
+        {
+          "path": "soltui/tests/test_bots.py",
+          "hits": 8
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 8
+        },
+        {
+          "path": "index/build.py",
+          "hits": 7
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 6
+        },
+        {
+          "path": "executor/src/executor/gates.py",
+          "hits": 6
+        },
+        {
+          "path": "executor/tests/test_quote.py",
+          "hits": 6
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -699,144 +837,6 @@
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "data-integrity",
-      "label": "Data integrity",
-      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
-      "terms": [
-        "validate_bars",
-        "strict_gaps",
-        "allow_gaps",
-        "datavalidationerror",
-        "monotone",
-        "gap"
-      ],
-      "matchingFiles": 197,
-      "shown": 30,
-      "files": [
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 34
-        },
-        {
-          "path": "soltui/bots.py",
-          "hits": 34
-        },
-        {
-          "path": "backtester/core/data.py",
-          "hits": 33
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 32
-        },
-        {
-          "path": "extension/src/ui/ui.css",
-          "hits": 28
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 25
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "research/CANDLE-GAP-AUDIT.md",
-          "hits": 23
-        },
-        {
-          "path": "research/candle_gap_audit.py",
-          "hits": 20
-        },
-        {
-          "path": "soltui/utxo_scan.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/tests/test_candle_gap_audit.py",
-          "hits": 16
-        },
-        {
-          "path": "pagesource",
-          "hits": 16
-        },
-        {
-          "path": "research/results/minute_coverage.json",
-          "hits": 12
-        },
-        {
-          "path": "backtester/core/universe.py",
-          "hits": 11
-        },
-        {
-          "path": "research/tick_backfill.py",
-          "hits": 11
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 11
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 11
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 10
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 10
-        },
-        {
-          "path": "research/coin-intelligence/xrp-ripple.md",
-          "hits": 10
-        },
-        {
-          "path": "backtester/core/trigger_conditions.py",
-          "hits": 9
-        },
-        {
-          "path": "docs/TRADINGVIEW-REFERENCE.md",
-          "hits": 9
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_bots.py",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 8
-        },
-        {
-          "path": "index/build.py",
-          "hits": 7
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 6
-        },
-        {
-          "path": "liquidity/src/aero_lp/ledger.py",
-          "hits": 6
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 6
-        },
-        {
-          "path": "soltui/tests/test_forwardtest.py",
-          "hits": 6
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
     },
     {
       "id": "lookahead",
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 172,
+      "matchingFiles": 175,
       "shown": 30,
       "files": [
         {
@@ -1265,7 +1265,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 162,
+      "matchingFiles": 166,
       "shown": 30,
       "files": [
         {
