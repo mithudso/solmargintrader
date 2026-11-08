@@ -714,3 +714,9 @@ Confirmation: move liquidity views into an Archive section and withdraw any rema
 In the soltui IO get this error: error: ValueError: evaluation proof is missing or differs for SOL at /Users/mitch/.config/soltui/bg/results.jsonl; preserve this history and use --results-path for a fresh file · 361 rankable, 253 with positive median Sharpe · 224
 below the 10-trade floor
 ```
+
+## v85 - 2026-11-08
+
+```text
+In the signal backtest tab I get this error: bad value(s) in fds_to_keep
+```

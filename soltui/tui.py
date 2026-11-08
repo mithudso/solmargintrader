@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import io
 import json
 import math
 import threading
@@ -88,6 +89,22 @@ from .signals import SIGNAL_GROUPS, SignalDefaults
 from .status import build_title, format_pct
 
 from .reference import FAMILY_NOTES, RESEARCH_DRIVERS, RESEARCH_FINDINGS, SIGNAL_REFERENCE  # noqa: F401
+
+
+class _CaptureWithoutInvalidFd:
+    """Keep Textual's stderr capture while reporting a missing descriptor correctly."""
+
+    def __init__(self, capture: Any) -> None:
+        self._capture = capture
+
+    def fileno(self) -> int:
+        fd = self._capture.fileno()
+        if fd < 0:
+            raise io.UnsupportedOperation("captured stderr has no file descriptor")
+        return fd
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._capture, name)
 
 
 def _mtime(path: Path) -> float:
@@ -695,6 +712,11 @@ class SolTuiApp(App):
                  ensure_autopilot: bool = False, refresh_wallet: bool = False,
                  stream_prices: bool = False, start: str = "tab-backtest", classic: bool = False) -> None:
         super().__init__()
+        # Textual's capture returns -1 from fileno(). Python's multiprocessing
+        # resource tracker passes that number to spawn, which rejects it. A
+        # stream without a descriptor must raise instead; preserve capture and
+        # let the tracker omit stderr rather than changing process-wide streams.
+        self._capture_stderr = _CaptureWithoutInvalidFd(self._capture_stderr)
         # v2 shell state. `start` is the pane shown first: the console (`main`) opens on Now; the class
         # default stays Backtest because embedding code and the test suite address its widgets without
         # switching to it first. `classic` restores the original tab bar and theme.

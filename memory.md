@@ -1610,3 +1610,7 @@ Target: liquidity, Aero LP, positions and liquidity scout. Stele task TASK-1011.
 ## v151 - 2026-11-08
 
 Owner confirmed Archive navigation and withdrawal of any remaining Aero LP positions to the wallet. Archive navigation is implemented in the isolated worktree. CDP history found three known Aero NFTs; each was burned on 2026-11-06, and Base RPC found zero manager balance and no stake in the known gauge. No withdrawal was needed or sent. This does not rule out all third-party staking paths. Keep the daemon disabled and KILL set. Verify navigation, finish PR 108, and verify delivery.
+
+## v153 - 2026-11-08
+
+Task: Signal Backtest reports bad value(s) in fds_to_keep (Stele TASK-1021). Worktree /Users/mitch/dev/solmargintrader-wt-backtest-fds, based on origin/master 788d5a8. Compound all-coins and frontier use ProcessPoolExecutor in a background thread. Textual stderr capture returns -1 from fileno; multiprocessing resource_tracker passes it into spawn and fails with bad value(s) in fds_to_keep. Wrapped the capture to raise UnsupportedOperation when no fd exists, while preserving writes. A fresh-interpreter Textual test starts real child workers; the same test fails with the unwrapped capture and passes with the fix. Preserve live processes and data. Remaining: integrate with the concurrent metric fix, rerun checks, deliver, and restart the interactive console only when safe.
