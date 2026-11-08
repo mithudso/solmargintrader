@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 68
-Delta: v67 to v68; integrate PR 58 against landed PR 46 and retain both workflow histories.
+Version: 71
+Delta: v70 to v71; record reproduced plaintext SessionStart adapter failure and repair scope.
 
 ## v1 - 2026-11-06
 
@@ -706,3 +706,33 @@ Completed: PR 46 merged by a concurrent session as 06a1f95347a835cdb2951bf2f0434
 Current: merged origin/master 06a1f95 into latest PR 58 head b899458 in private worktree /Users/mitch/dev/solmargintrader-wt-01a1ba3b on agent-01a1ba3b-pr58. Conflicts affect generated indexes and workflow records only. Both histories are retained. No source or research receipt is rewritten.
 
 Remaining: regenerate derived indexes after staging resolutions, verify docs and index checks, commit and push HEAD to agent-01a1b5ef without force. Wait for all final-head CI jobs, merge PR 58, verify both merge receipts and source/receipt preservation, then remove only our clean private branches and worktree. Shared checkout and original PR worktrees remain untouched.
+
+## v69 - 2026-11-08 (SessionStart hook JSON repair)
+
+Target: identify and repair the Codex error "hook returned invalid session start JSON output". Stele TASK-892 (diagnosis), TASK-893 (repair), TASK-895 (verification and delivery).
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba64; branch agent-01a1ba64; base origin/master 4d0f027. Original checkout has live concurrent sessions and unrelated dirty files. Preserve them.
+
+Completed: read project instructions and prior hook failure records; isolate workflow records. The prior TASK-127 exit 126 issue is a different failure and does not establish the current cause. The hook specialist owns canonical implementation/config and test edits outside this repository. This repository changes only its required workflow records.
+
+Constraints: reproduce actual registered SessionStart stdout; preserve enabled hooks and trust metadata; avoid restarting the shared daemon. Do not touch trading runtime, signing, services, research jobs, or unrelated work.
+
+Remaining: finish diagnosis, repair canonical producer, install and verify output, run relevant checks, commit and merge task-owned changes, record delivery evidence.
+
+## v70 - 2026-11-08 (Stop hook ownership repair)
+
+Target: extend the hook repair to the recurring Stop block counting 336 shared-checkout paths. TASK-893 now includes both fixes. Keep legitimate checks on this session's own unshipped work. Preserve unrelated dirty files and active sessions. The canonical-hook specialist owns both implementation fixes; a separate read-only verifier inspects loaded daemon evidence.
+
+Verification: workflow-only diff passes git diff --check and scripts/check_docs.py (2,155 discovered tests). index/build.py --check correctly detects changed workflow records; rebuild the offline index after finalizing these records. No trading code changed.
+
+Remaining: diagnose/repair both hooks, verify installed behavior, deliver canonical source and these workflow records through passing PRs.
+
+## v71 - 2026-11-08 (hook diagnosis confirmed)
+
+Root cause: actual Codex 0.167.0 daemon registry enables adapter74c6161da6b220bd for memory-central-session-brief.py. That adapter exits 0 with 1,671 bytes of plaintext beginning "[memory-central] STALE:". Parsing stdout as JSON fails at line 1 column 2. The installed adapter /Users/mitch/.codex/hooks/claude_hook_adapter.py passes a single command output through without normalization. Canonical source is /Users/mitch/dev/codex-local-ai-setup/scripts/claude_hook_adapter.py. Preserve valid JSON and wrap plaintext SessionStart output in hookSpecificOutput.additionalContext with hookEventName SessionStart. Lesson KNOW-903 records this trigger.
+
+Stop diagnosis: /Users/mitch/.claude/hooks/ship-it-stop.py attributes inherited dirty paths when a snapshot is absent, overwrites baseline on resume, and repeats identical blocks across turns. Lesson KNOW-902 anchors the concrete symbols. The current parent baseline already matches 337 paths, so preserve it; no blanket sweep or counter reset.
+
+Implementation worktrees: /Users/mitch/dev/codex-local-ai-setup-wt-hook-json-20261108 (adapter) and /Users/mitch/dev/claude-wt-hook-json-20261108 (Stop hook). The specialist owns those source changes. A separate verifier captured actual loaded registry and reproduced the offending output.
+
+Remaining: focused regression checks, install both canonical repairs, verify exact launcher and disposable ownership scenarios, deliver all task-owned changes through passing PRs, and complete TASK-893/TASK-895.

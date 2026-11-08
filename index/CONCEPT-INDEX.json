@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T08:37:26+00:00",
+  "generatedAt": "2026-11-08T09:08:28+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1440,6 +1440,10 @@
           "hits": 12
         },
         {
+          "path": "memory.md",
+          "hits": 11
+        },
+        {
           "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
           "hits": 11
         },
@@ -1450,10 +1454,6 @@
         {
           "path": "backtester/tests/test_deflated_sharpe.py",
           "hits": 10
-        },
-        {
-          "path": "memory.md",
-          "hits": 9
         },
         {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
@@ -1578,6 +1578,10 @@
           "hits": 8
         },
         {
+          "path": "memory.md",
+          "hits": 8
+        },
+        {
           "path": "backtester/tests/test_cpcv.py",
           "hits": 7
         },
@@ -1587,10 +1591,6 @@
         },
         {
           "path": "backtester/tests/test_signal_redundancy.py",
-          "hits": 6
-        },
-        {
-          "path": "memory.md",
           "hits": 6
         },
         {
