@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T20:17:22+00:00",
+  "generatedAt": "2026-11-08T20:09:46+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -91,7 +91,7 @@
         },
         {
           "path": "soltui/tui.py",
-          "hits": 48
+          "hits": 46
         },
         {
           "path": "soltui/commands.py",
@@ -161,7 +161,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1347,
+      "matchingFiles": 1346,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1317,
+      "matchingFiles": 1315,
       "shown": 30,
       "files": [
         {
@@ -507,12 +507,12 @@
           "hits": 32
         },
         {
-          "path": "memory.md",
-          "hits": 32
-        },
-        {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 30
+        },
+        {
+          "path": "memory.md",
+          "hits": 29
         },
         {
           "path": "research/cross_asset_cpcv.py",
@@ -802,7 +802,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 37
+          "hits": 38
         },
         {
           "path": "soltui/tests/test_bots.py",
@@ -1161,16 +1161,16 @@
           "hits": 98
         },
         {
+          "path": "memory.md",
+          "hits": 82
+        },
+        {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
           "hits": 80
         },
         {
           "path": "docs/trading-signals-concept-family.md",
           "hits": 79
-        },
-        {
-          "path": "memory.md",
-          "hits": 77
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 258,
+      "matchingFiles": 257,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 209,
+      "matchingFiles": 208,
       "shown": 30,
       "files": [
         {
@@ -2023,10 +2023,6 @@
           "hits": 8
         },
         {
-          "path": "soltui/tests/test_f5_batch.py",
-          "hits": 8
-        },
-        {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md",
           "hits": 8
         },
@@ -2061,6 +2057,10 @@
         {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 6
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_9bkoihdl_numbers_renko.md",
+          "hits": 6
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 137,
+      "matchingFiles": 136,
       "shown": 30,
       "files": [
         {

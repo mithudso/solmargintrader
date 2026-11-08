@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 107
-Delta: v106 to v107; record F5 full backtest and forwardtest request.
+Version: 110
+Delta: v109 to v110; retain the per-coin bot optimization request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -889,5 +889,25 @@ Add the option to silence the confirmations. I'm going to be automating orders a
 ## v107 - 2026-11-08
 
 ```text
-At the bottom where there's a list of commands the user can run, remove both of the liquidity commands and instead add f5 - Backtest everything then Fowardtest everything - which does just that, all strategies on all coins on all timescales auto optimized backtest since the beginning and forwardtest starting and recording.
+At the bottom where there's a list of commands the user can run, remove both of the liquidity commands and instead add f5 - Backtest everything then Fowardtest everything - which does just that, all strategies on all coins on all timescales auto optimized backtest since the beginning and forwardtest starting and recording.    And f8 - add strategy to experiments       If I see a promising strategy I want to be able to press f8 and it pops up automatically in experiments as of now with default parameters that I can tune.  And then on the experiments tab I need a "run this experiment live" option that pops up a questionaire about which account, how much money, key pairs etc.
+
+Also for the experiments I think you've been using coinbase's fee schedule. If I'm trading sol/usdc and I use Jupiter's fee schedule how does that change some of the equations? Also enable leveraged orders on jupiter up to the maximum number, which means also enable leveraging in the experiments, and also instead of just selling, what if it uses shorting to make money on the up and the down
+```
+
+## v108 - 2026-11-08
+
+```text
+In the forward test tab when I sort one of the columns it re-draws and resorts it back in the next minute, make it stop doing that.
+```
+
+## v109 - 2026-11-08
+
+```text
+In the Bots tab, let me set all of the variables manually if I choose to but make the default automatic. For instance I believe gemoetric spacing is more profitable than arithmetic spacing for grid orders.
+```
+
+## v110 - 2026-11-08
+
+```text
+When doing the auto-optimize for the bots, it's trying to apply the same configs to all coins, but the different coins may need different variables. Make it optimize each coin separately.
 ```

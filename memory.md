@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 191
-Delta: v190 to v191; record F5 backend implementation, evidence and integration limits.
+Version: 196
+Delta: v195 to v196; record independent per-coin bot optimization.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1757,8 +1757,35 @@ The owner requested an option to silence order confirmations once selected, for 
 
 ## v190 - 2026-11-08
 
-Backend work: Stele TASK-1046, worktree /Users/mitch/dev/solmargintrader-wt-f5-1046 on agent-f5-1046. Owner asks F5 to optimize backtests from the beginning for every supported strategy, configured coin universe and supported interval, then start and record forward tests. Parent owns UI and command integration; this work owns backend lifecycle, persistence and tests. Preserve active sweep and trainers; do not run the production-scale batch as a test. Freeze and record universe and proof; mark missing, unsupported and failed combinations explicitly; do not call partial coverage complete or silently mix incompatible evidence. Parent queued overarching task 32c40404.
+The owner requested F5 to run optimized historical backtests from the beginning and then recording forward tests for every strategy, coin, and timescale. F8 should transfer the selected strategy into Experiments with editable defaults. Experiments need a live-run questionnaire for account, capital, and keys. The owner also requests Jupiter cost modeling, leverage up to the venue's actual maximum, and both long and short experiments and orders. Jupiter spot swaps and perpetuals are distinct venues; identify the product and current venue limits and fees before execution. Do not claim arbitrary token swaps, live perps, or backtest coverage until implemented and verified. Existing dry-run defaults and uncertain-submission protections remain. The Coinbase manual-order PR 125 is in CI. The F5/F8 UI investigation is assigned to the Textual specialist in this worktree.
+
+Stele task creation for the new scope is queued in outbox 32c40404 because the Stele transport closed.
+The sourced Jupiter spot versus perpetual cost distinction is queued in outbox a5df844f.
 
 ## v191 - 2026-11-08
+
+The owner reports that the Forward Test table reverts the chosen column sort when the minute refresh redraws it. Preserve the chosen column and direction when new rows arrive. Stele task creation is queued in outbox b552278a because the transport closed. Implement in the active shortcuts worktree without interrupting forward workers.
+
+## v192 - 2026-11-08
+
+The optional 1082-test SolTUI suite on the Coinbase branch finished with eight failures and two errors. The strategy catalogue failures were stale expectations after PR 101 moved research and bot guides out of the executable cards directory. The catalogue test now verifies the relocated files without adding them to the queue. Stele lesson is queued as outbox bd3fb46a. UI help, title and glossary failures remain under investigation. The Coinbase feature passed its focused checks and required CI and merged in PR 125.
+
+## v193 - 2026-11-08
+
+The three full-suite UI failures now pass their focused tests after adding missing help, glossary entries, and four table titles. The relocated catalogue coverage tests also pass, with one unrelated skip. A complete suite rerun is still required. The F5 backend is being implemented separately as TASK-1046; it must not treat research-only guides as executable strategies.
+
+## v194 - 2026-11-08
+
+PR 125 merged at d945ac626d85d17f34b9391c21b4fc4df57a62b1 after required CI passed. The installed launcher returns the retained 928-pair Coinbase spot catalog; four headless interface tests passed with mocked orders. The already-open console predates the merge. The catalog task completion is queued as outbox a51dc1f8. Jupiter execution, F5 and live experiments remain unfinished.
+
+## v195 - 2026-11-08
+
+The owner requested optional manual entry for every Bots tab variable while retaining automatic defaults. They specifically want geometric versus arithmetic grid-order spacing available for comparison. Do not assume geometric spacing is more profitable; evaluate it on matching data and costs. Stele task creation is queued as outbox f2b957fa. Inspect each bot's configuration, backtest, forward and optimizer path so manual values are honored consistently.
+
+## v196 - 2026-11-08
+
+The owner requests independent bot optimization and configuration for every coin instead of choosing one shared configuration for all coins. Preserve separate evidence, saved settings and forward behavior per coin; do not overwrite unrelated coin settings. Stele task creation is queued as outbox ae3e15a1. The existing optimizer and configuration storage need investigation.
+
+## v195 - 2026-11-08
 
 Implemented the detached F5 batch in /Users/mitch/dev/solmargintrader-wt-f5-1046/soltui/f5_batch.py. The durable per-run ledger freezes the complete retained Coinbase USD spot universe, evaluation sources, settings and each historical series, resumes compatible work, and reports missing, failed, partial and unsupported cells. The retained catalog observed 405 eligible assets. History comes from existing cached bars; unavailable or gapped series are reported instead of invented. The engine is spot-only, so leveraged strategy tiers are unsupported. Independent forward trials use closed candles at each matching interval, prospective minute settlement and a separate results database. Unrecoverable overdue settlements remain pending. The backend has not been load-tested on the full universe; venue rate limits and throughput are unknown. No production batch was launched and existing sweep and trainer processes were not touched. Forty-four focused tests passed with ResourceWarning treated as an error. A bounded detached-worker smoke used one missing series, and one real historical SOL daily backtest used a stubbed forward feed. Parent owns UI wiring and combined delivery; do not merge this branch before integration.

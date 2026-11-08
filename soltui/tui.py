@@ -87,7 +87,7 @@ from .config import INTERVALS, XPUB_FIELDS, Settings, load_settings
 from .hdwallet import redact
 from .paper import MODE_LABEL
 from .roster import RosterError, available_strategies
-from .signals import SIGNAL_GROUPS, SignalDefaults
+from .signals import SIGNAL_GROUPS, SignalDefaults, merged_params
 from .status import build_title, format_pct
 
 from .reference import FAMILY_NOTES, RESEARCH_DRIVERS, RESEARCH_FINDINGS, SIGNAL_REFERENCE  # noqa: F401
@@ -167,6 +167,10 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#status-compound-forward": "compound.unattended_status",
     "#status-bots": "bots.progress",
     "#status-backtest": "backtest.status",
+    "#batch-status": "batch.status",
+    "#batch-resume": "batch.start",
+    "#batch-stop": "batch.stop",
+    "#batch-fresh": "batch.create",
     "#status-top5": "backtest.status",
     "#status-queue": "queue.progress",
     "#status-live": "live.recommendation",
@@ -721,8 +725,8 @@ class SolTuiApp(App):
         ("ctrl+e", "toggle_editor", "Show/hide editor"),
         Binding("ctrl+up", "grow_editor", "Editor taller", show=False),
         Binding("ctrl+down", "shrink_editor", "Editor shorter", show=False),
-        ("f5", "liq_refresh", "Liquidity: refresh"),
-        ("f8", "liq_toggle_kill", "Liquidity: kill/resume"),
+        Binding("f5", "batch_everything", "Backtest + forward test all", priority=True),
+        Binding("f8", "experiment_selected", "Experiment with selected strategy", priority=True),
         # v2 navigation. Inputs and editors consume printable keys first, so typing a 1 or a ? into a
         # field never jumps away; these fire only when a table, list or button has focus.
         Binding("1", "v2_goto('now')", "Now", show=False),
@@ -833,6 +837,10 @@ class SolTuiApp(App):
         self._forward_running = False
         self._forward_busy = False
         self._forward_seen: dict[str, Any] = {}
+        self._batch_id: str | None = None
+        self._batch_busy = False
+        self._batch_last_summary = ""
+        self._batch_log_key: str | None = None
         self._cumulative_loaded = False
         # Last results-file mtime the Queue tab rendered (the worker is a separate process).
         self._queue_mtime = 0.0
@@ -1141,12 +1149,15 @@ class SolTuiApp(App):
                 yield Button("Stop selected", id="paper-exp-stop")
                 yield Button("Refresh", id="paper-exp-refresh")
                 yield Button("Status / activity", id="paper-exp-activity")
+            yield Static("", id="paper-exp-transfer", markup=False)
             yield Static("No paper experiments yet.", id="paper-exp-status", markup=False)
+            yield Static("Paper experiments — prospective simulated runs", classes="table-title")
             table = GlossaryTable(id="paper-exp-table")
             table.cursor_type = "row"
             table.add_columns("strategy", "coin", "horizon", "state", "calls", "resolved", "trades", "paper $", "P&L $", "message")
             yield table
             yield Static("Select a run to inspect its recent predictions and results.", id="paper-exp-detail", markup=False)
+            yield Static("Selected experiment — predictions and outcomes", classes="table-title")
             events = GlossaryTable(id="paper-exp-events")
             events.add_columns("issued UTC", "starts UTC", "prediction", "outcome", "move bps", "paper P&L")
             yield events
@@ -1435,6 +1446,9 @@ class SolTuiApp(App):
     def _forward_render(self, rows: list[dict[str, Any]]) -> None:
         table = self.query_one("#forward-table", DataTable)
         cursor = table.cursor_row
+        selected = self._strategy_table_key(table) if table.row_count else None
+        sort_state = getattr(table, "_sorted_by", None)
+        self._forward_rows = {str(row["id"]): row for row in rows}
         table.clear()
         directions = {-1: "DOWN", 0: "FLAT", 1: "UP"}
         for r in rows:
@@ -1449,6 +1463,13 @@ class SolTuiApp(App):
                           directions.get(r["last_call"], "-"), directions.get(r["last_outcome"], "-"), issued,
                           f"{r['cost_bps']:g}", r["note"] or settings, key=r["id"])
         if rows:
+            if sort_state:
+                column, reverse = sort_state
+                table.sort(column, key=sort_key, reverse=reverse)
+            try:
+                cursor = table.get_row_index(selected) if selected is not None else cursor
+            except Exception:  # noqa: BLE001 - the selected trial may no longer be in the refreshed results
+                pass
             table.move_cursor(row=min(cursor, len(rows) - 1))
 
     async def on_unmount(self) -> None:
@@ -1574,6 +1595,7 @@ class SolTuiApp(App):
                         yield Static("", id="compound-fwd-summary")
                         yield Static("", id="compound-horizon-summary", markup=False)
                         yield GlossaryTable(id="compound-horizons")
+                        yield Static("Signal forward calls and outcomes", classes="table-title")
                         yield GlossaryTable(id="compound-forward")
                 with TabPane("All coins", id="cmp-coins"):
                     with VerticalScroll():
@@ -2421,6 +2443,138 @@ class SolTuiApp(App):
 
     ROSTER_PICK = "__roster__"
 
+    def action_batch_everything(self) -> None:
+        self._batch_request("default")
+
+    @on(Button.Pressed, "#batch-status")
+    def _batch_status_pressed(self) -> None:
+        self._batch_request("status")
+
+    @on(Button.Pressed, "#batch-resume")
+    def _batch_resume_pressed(self) -> None:
+        self._batch_request("resume")
+
+    @on(Button.Pressed, "#batch-stop")
+    def _batch_stop_pressed(self) -> None:
+        self._batch_request("stop")
+
+    @on(Button.Pressed, "#batch-fresh")
+    def _batch_fresh_pressed(self) -> None:
+        self._batch_request("fresh")
+
+    def _batch_poll(self) -> None:
+        if self._batch_id and not self._batch_busy:
+            self._batch_request("poll")
+
+    def _batch_request(self, action: str) -> None:
+        if self._batch_busy:
+            if action not in ("discover", "poll"):
+                self.notify("A batch status or start operation is already in progress.", severity="warning")
+            return
+        self._batch_busy = True
+        self._batch_worker(action, self._batch_id)
+
+    @work(thread=True, exit_on_error=False, group="all-market-batch")
+    def _batch_worker(self, action: str, run_id: str | None) -> None:
+        message = ""
+        status: dict[str, Any] | None = None
+        try:
+            def call(name: str, params: dict[str, Any] | None = None) -> Any:
+                env = self._call(name, params or {}, quiet=True)
+                if not env.get("ok"):
+                    raise ValueError(self._msg(env))
+                return env["result"]
+
+            if action in ("discover", "default", "fresh") or not run_id:
+                runs = call("batch.list")["runs"]
+                active = next((row for row in runs if row.get("running")), None)
+                chosen = active or (runs[0] if runs else None)
+                run_id = str(chosen["run_id"]) if chosen else None
+                if action == "fresh" and active:
+                    message = "A batch is already running; stop it before starting a separate batch."
+                elif action == "fresh" or (action == "default" and not chosen):
+                    created = call("batch.create")
+                    run_id = str(created["run_id"])
+                    message = "Batch created; starting the worker."
+                    call("batch.start", {"run_id": run_id})
+            if run_id and action == "resume":
+                prior = call("batch.status", {"run_id": run_id})
+                if prior.get("running"):
+                    message = "The selected batch is already running."
+                else:
+                    call("batch.start", {"run_id": run_id})
+                    message = "Resume requested for the saved batch."
+            elif run_id and action == "stop":
+                stopped = call("batch.stop", {"run_id": run_id})
+                message = ("Stopping this batch after its current work finishes." if stopped.get("stopping")
+                           else "This batch is not running. " + str(stopped.get("error") or ""))
+            if run_id:
+                status = call("batch.status", {"run_id": run_id})
+                shown = {row.get("state") for row in status.get("problems") or []}
+                extra = []
+                if action not in ("discover", "poll"):
+                    for state in ("failed", "missing", "unsupported", "partial"):
+                        if (status.get("counts") or {}).get(state, 0) and state not in shown:
+                            extra.extend(call("batch.cells", {"run_id": run_id, "state": state, "limit": 3})["rows"])
+                status["representative_problems"] = extra
+            elif action not in ("discover", "poll"):
+                message = "No saved batch. Press F5 to create one."
+        except Exception as exc:  # noqa: BLE001 - preserve the run id if creation or start failed
+            message = f"Batch operation failed: {type(exc).__name__}: {exc}"
+        try:
+            self.call_from_thread(self._batch_done, action, run_id, status, message)
+        except RuntimeError:
+            pass
+
+    def _batch_done(self, action: str, run_id: str | None, status: dict[str, Any] | None, message: str) -> None:
+        self._batch_busy = False
+        if not self.query("#batch-summary"):
+            return
+        if run_id:
+            self._batch_id = run_id
+        lines = []
+        if message:
+            lines.append(message)
+        if run_id and not status:
+            lines.append(f"Saved batch: {run_id}. Use Batch status or Resume batch to recover it.")
+        if status:
+            counts = status.get("counts") or {}
+            lines.append(f"Batch {status.get('run_id')} · {status.get('phase')} · "
+                         f"{'running' if status.get('running') else 'not running'}")
+            lines.append("Open Batch status, Resume, Stop, or Start fresh on the Backtest tab.")
+            lines.append("Cells: " + ", ".join(f"{k}={v}" for k, v in sorted(counts.items()))
+                         + f" · total={status.get('total', 0)}")
+            universe = status.get("universe") or {}
+            if universe:
+                lines.append(f"Market universe: {universe.get('selection') or universe.get('source', '-')} · "
+                             f"eligible={universe.get('eligible', '-')} · excluded={universe.get('excluded', {})}")
+            if status.get("current"):
+                lines.append(f"Current: {status['current']}")
+            if status.get("error"):
+                lines.append(f"Error: {status['error']}")
+            for row in (status.get("problems") or []) + (status.get("representative_problems") or []):
+                lines.append(f"{row['state']}: {row['asset']} {row['interval']} {row['strategy']} "
+                             f"{row['horizon']} — {row['reason']}")
+            if status.get("problems_truncated"):
+                lines.append("Only the first 100 problem cells and representative missing states are shown; "
+                             "use batch.cells to page through the full ledger.")
+            checks = status.get("forward_checks") or []
+            lines.append(f"Forward checks: {len(checks)}; backlog: {status.get('forward_backlog', {})}")
+            for row in checks:
+                if row.get("error"):
+                    lines.append(f"Forward error: {row.get('asset')} {row.get('interval')}: {row['error']}")
+            if status.get("notice"):
+                lines.append(str(status["notice"]))
+            if status.get("log"):
+                lines.append(f"Worker log: {status['log']}")
+        text = "\n".join(lines) or "No saved batch. Press F5 to create one."
+        self.query_one("#batch-summary", Static).update(text.split("\n")[0])
+        if action not in ("discover", "poll"):
+            self._batch_log_key = self._start_log("All-market batch", text)
+        elif action == "poll" and text != self._batch_last_summary and self._batch_log_key:
+            self._append_log(self._batch_log_key, text)
+        self._batch_last_summary = text
+
     def _backtest_pane(self) -> ComposeResult:
         """Run a CPCV sweep over the roster (or one roster strategy) and show the distribution."""
         with Vertical():
@@ -2442,6 +2596,12 @@ class SolTuiApp(App):
                 yield Button("Backtest untested + little-tested", variant="warning", id="btn-run-untested")
                 yield Button("Cancel (c)", variant="error", id="btn-cancel")
                 yield Static("", id="backtest-status")
+            with Horizontal(classes="form-row"):
+                yield Button("Batch status", id="batch-status")
+                yield Button("Resume batch", id="batch-resume")
+                yield Button("Stop batch", id="batch-stop", variant="error")
+                yield Button("Start fresh batch", id="batch-fresh")
+            yield Static("F5: backtest eligible Coinbase USD markets, then begin paper forward tests.", id="batch-summary")
             yield Static("", id="backtest-bg-status")
             yield Static("[b]CPCV results[/b], latest Run backtest: one row per strategy, best median Sharpe "
                          "first. Sharpe, net return and trades are medians across the held-out paths; IQR is "
@@ -2541,6 +2701,8 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self.set_interval(5, self._forward_schedule)
+        self.set_interval(5, self._batch_poll)
+        self._batch_request("discover")
         self.set_interval(15, self._paper_exp_tick)
         self._refresh_liquidity(force=True)
         self._compound_setup()
@@ -4201,6 +4363,7 @@ class SolTuiApp(App):
                 yield Button("Check order", id="coinbase-order-check")
                 yield Button("Refresh order safety", id="coinbase-order-state")
             yield Static("No order submitted in this session.", id="coinbase-order-receipt", markup=False)
+            yield Static("Coinbase holdings — available and held balances", classes="table-title")
             cbhold = GlossaryTable(id="coinbase-holdings")
             cbhold.add_columns("portfolio", "asset", "available", "hold")
             yield cbhold
@@ -4947,10 +5110,12 @@ class SolTuiApp(App):
         self.query_one("#queue-status", Static).update(r["summary"])
         table = self.query_one("#queue-table", DataTable)
         table.clear()
-        for x in r["ranked"]:
+        self._queue_ranked_rows = r["ranked"]
+        for index, x in enumerate(r["ranked"]):
             table.add_row(
                 x["label"], x["family"], f"{x['median_sharpe']:+.3f}", f"{x['iqr']:.3f}",
                 f"{x['frac_positive']:.0%}", format_pct(x["net_pct"]), str(x["trades"]),
+                key=str(index),
             )
         floor_table = self.query_one("#queue-floor", DataTable)
         floor_table.clear()
@@ -4958,6 +5123,63 @@ class SolTuiApp(App):
             floor_table.add_row(x["label"], x["family"], str(x["trades"]), x["why"])
 
     # -- P&L: profit and loss over a window -------------------------------
+
+    def action_experiment_selected(self) -> None:
+        tabs = self.query_one("#main-tabs", TabbedContent)
+        try:
+            horizon_note = ""
+            horizon = None
+            if tabs.active == "tab-queue":
+                table = self.query_one("#queue-table", DataTable)
+                if not table.row_count:
+                    raise ValueError("Select a ranked Queue result first.")
+                row = self._queue_ranked_rows[int(self._strategy_table_key(table))]
+                name, params, asset = row["strategy"], row["params"], row["asset"]
+            elif tabs.active == "tab-strategies":
+                table = self.query_one("#available-table", DataTable)
+                if not table.row_count:
+                    raise ValueError("Select a registered strategy first.")
+                name = self._strategy_table_key(table)
+                if not self._registered_card_selected(name):
+                    return
+                params = merged_params(name, self.signals)
+                params.update(self._parse_params())
+                asset = self.settings.asset
+            elif tabs.active == "tab-forwardtest":
+                table = self.query_one("#forward-table", DataTable)
+                if not table.row_count:
+                    raise ValueError("Select a Forward Test trial first.")
+                row = self._forward_rows[self._strategy_table_key(table)]
+                members = row.get("settings")
+                if not isinstance(members, list) or not members:
+                    raise ValueError("The selected Forward Test trial has no available strategy settings.")
+                if len(members) != 1:
+                    raise ValueError("This Forward Test trial is an ensemble; it cannot be copied as one strategy. Select a single-strategy trial.")
+                member = members[0]
+                if not isinstance(member, dict):
+                    raise ValueError("The selected Forward Test trial has invalid strategy settings.")
+                name, params, asset = member["name"], member["params"], row["asset"]
+                if row.get("minutes") in (1, 5, 30):
+                    horizon = row["minutes"]
+                else:
+                    horizon_note = (f" The selected {row.get('minutes')}-minute horizon is unavailable in "
+                                    "Experiments; choose an available horizon before starting.")
+            else:
+                raise ValueError("Select a Forward Test trial, ranked Queue result or registered strategy first.")
+            if name not in {key for key, _ in available_strategies()} or not isinstance(params, dict):
+                raise ValueError("This result does not name an available paper strategy with valid parameters.")
+            self.query_one("#paper-exp-strategy", Select).value = name
+            self.query_one("#paper-exp-asset", Input).value = str(asset)
+            self.query_one("#paper-exp-params", Input).value = json.dumps(params, sort_keys=True)
+            if horizon is not None:
+                self.query_one("#paper-exp-horizon", Select).value = horizon
+            self.set_focus(None)
+            tabs.active = "tab-paper-experiments"
+            self.query_one("#paper-exp-transfer", Static).update(
+                "Strategy and parameters copied. Edit them, then press Start experiment. Nothing has started yet."
+                + horizon_note)
+        except (ValueError, KeyError, IndexError, AttributeError, RosterError) as exc:
+            self._start_log("Experiment selection", str(exc) or "Select a strategy first.")
 
     def _pnl_pane(self) -> ComposeResult:
         """Net/gross P&L, costs, drawdown, win rate and attribution over a chosen window.
@@ -5967,7 +6189,7 @@ class SolTuiApp(App):
             line = Text()
             line.append(" ◆ LIVE MONEY ", f"bold {shell.TOK['bg']} on {shell.TOK['live']}")
             line.append("  Real balances and positions. These views read; the only write is the Aero LP "
-                        "Kill / Resume (F8), and Resume asks twice.", shell.TOK["live"])
+                        "Kill / Resume buttons, and Resume asks twice.", shell.TOK["live"])
             banner.update(line)
 
     def on_resize(self) -> None:
