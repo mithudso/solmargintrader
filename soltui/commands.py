@@ -2150,6 +2150,13 @@ def coinbase_pairs(ctx: Context, p: dict[str, Any]) -> Any:
     return cb.spot_pairs(p.get('query') or '')
 
 
+@command("jupiter.tokens_search", "Find Jupiter tokens by symbol or mint; returns matching mint identities.",
+         (P("query", "string", "Token symbol or mint.", required=True),), long_running=True)
+def jupiter_tokens_search(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_tokens
+    return {"tokens": jupiter_tokens.search(p["query"])}
+
+
 @command("coinbase.order_preview", "Review an estimated Coinbase spot market order; places no order.",
          (P("product_id", "string", "Spot pair, for example SOL-USDC.", required=True),
           P("side", "string", "BUY or SELL.", required=True),

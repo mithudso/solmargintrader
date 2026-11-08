@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-08T21:47:48+00:00",
+  "generatedAt": "2026-11-08T22:49:28+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b0c2464",
+  "commit": "17ef585",
   "counts": {
-    "files": 2643,
-    "bytes": 43875101,
+    "files": 2645,
+    "bytes": 43885520,
     "byKind": {
       "strategy-card": 1478,
       "doc": 547,
-      "code-python": 192,
-      "test": 149,
+      "code-python": 193,
+      "test": 150,
       "code-js": 87,
       "result": 85,
       "config": 40,
@@ -24,7 +24,7 @@
     "byTopDir": {
       "backtester": 1911,
       "research": 178,
-      "soltui": 130,
+      "soltui": 132,
       "extension": 92,
       "skills": 67,
       "docs": 63,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2546
+    "withSummary": 2548
   },
   "files": [
     {
@@ -70629,11 +70629,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 208 Delta: v207 to v208; update suite counts for CSV export tests. TASK-1051: Add CSV exports to all SolTUI tables and ensure editor save works. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bd0d. Existing editor has guarded save; verify and improve discoverability as needed. Preserve read-only document restrictions and concurrent work.",
+      "summary": "Version: 211 Delta: v210 to v211; record teardown fix and token discovery. TASK-1044 continuation: fixed _docs_view_changed teardown NoMatches; previously failing test passes. Added Jupiter Tokens API v2 discovery command and UI search; rejects missing decimals, ambiguous symbols and unverified resolution, displays full mint. Five focused tests pass.",
       "summarySource": "opening-prose",
-      "bytes": 281480,
-      "lines": 1832,
-      "sha1": "0681df68c9e5ce009db11940805553973517a6e1",
+      "bytes": 283284,
+      "lines": 1840,
+      "sha1": "3735f29171e6a49489e3884a8516f847640628a0",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -71098,11 +71098,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 118 Delta: v117 to v118; record table export and editor save request. For all of the tables in the soltui, add an \"export to csv\" small export button at the top right of each table that exports the table to csv and saves it to Downloads. Also add a save function to the editor.",
+      "summary": "Version: 120 Delta: v119 to v120; record request to continue investigation. So investigate it. WHy are you stopping because something needs to be done. Do what's necessary to complete the task",
       "summarySource": "opening-prose",
-      "bytes": 46968,
-      "lines": 962,
-      "sha1": "32b7db840e4c66ddd319b3358cfe77c33a5148ce",
+      "bytes": 47686,
+      "lines": 976,
+      "sha1": "1795471fa64d8084f3b63cda9ccc02c7a5a74d4d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -78510,9 +78510,9 @@
       "title": "The research scripts import pandas and numpy, so they must run on the interpreter running this",
       "summary": "The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.",
       "summarySource": "docstring",
-      "bytes": 145014,
-      "lines": 2949,
-      "sha1": "0861eaec3aee7e1e243ba529d3b927ccc5c7f6dc",
+      "bytes": 145376,
+      "lines": 2956,
+      "sha1": "e76fb9d874bdf336ef69dcb504b22600ed3d0c13",
       "symbols": [
         "REPO",
         "UNTESTED_SWEEP_TIMEOUT_S",
@@ -79353,6 +79353,37 @@
         "help",
         "textual",
         "typing"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/jupiter_tokens.py",
+      "path": "soltui/jupiter_tokens.py",
+      "dir": "soltui",
+      "name": "jupiter_tokens.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "jupiter_tokens",
+      "summary": "Jupiter token discovery. Symbols are never treated as unique mint identities.",
+      "summarySource": "docstring",
+      "bytes": 2365,
+      "lines": 60,
+      "sha1": "c447bb5eff2effb89a98f3201d36ce0faf8cee34",
+      "symbols": [
+        "API",
+        "MINT",
+        "get()",
+        "search()",
+        "resolve()"
+      ],
+      "imports": [
+        "__future__",
+        "json",
+        "os",
+        "re",
+        "typing",
+        "urllib"
       ],
       "internalImports": [],
       "frontmatter": {}
@@ -80213,9 +80244,9 @@
       "title": "-- tokens -------------------------------------------------------------------------------------",
       "summary": "SolTUI v2 shell: five destinations, the health strip, the Now overview, the palette and Explain. Design: docs/design/soltui-v2/DESIGN.md. The classic console grouped eighteen peer tabs; this module groups the same panes by the question the owner brings (does anything need me, what is the call, what works, what is my money doing, what does this mean).",
       "summarySource": "docstring",
-      "bytes": 31787,
-      "lines": 728,
-      "sha1": "908d7141a0a6add00af8615e5144a8d918673e2e",
+      "bytes": 31841,
+      "lines": 729,
+      "sha1": "5147763406320efeb13028efceea9b8d96b60c62",
       "symbols": [
         "THEME_VARIABLES",
         "NIGHT",
@@ -80510,9 +80541,9 @@
       "title": "test_advanced_order_ui",
       "summary": "Advanced order ticket: fail closed and dispatch only mocked Coinbase requests.",
       "summarySource": "docstring",
-      "bytes": 14742,
-      "lines": 258,
-      "sha1": "88cbcaa6d89be016ae0aa40f3672ee3449979af2",
+      "bytes": 15797,
+      "lines": 274,
+      "sha1": "d245ba0fc5f51e1522f3a1f688a97c7684830324",
       "symbols": [
         "env()",
         "class AdvancedOrderUiTests"
@@ -81741,6 +81772,34 @@
       "frontmatter": {}
     },
     {
+      "id": "soltui/tests/test_jupiter_tokens.py",
+      "path": "soltui/tests/test_jupiter_tokens.py",
+      "dir": "soltui/tests",
+      "name": "test_jupiter_tokens.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_jupiter_tokens",
+      "summary": "Token discovery must never guess a mint or token decimals.",
+      "summarySource": "docstring",
+      "bytes": 1494,
+      "lines": 39,
+      "sha1": "8fa78d65b9988c8af49aa9bc5ffdd7b9771a5040",
+      "symbols": [
+        "MINT",
+        "OTHER",
+        "item()",
+        "class JupiterTokenTests"
+      ],
+      "imports": [
+        "soltui",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "soltui/tests/test_launcher.py",
       "path": "soltui/tests/test_launcher.py",
       "dir": "soltui/tests",
@@ -82518,9 +82577,9 @@
       "title": "test_v2_shell",
       "summary": "The v2 shell: every classic pane stays reachable, and the new chrome reads without writing. The redesign (docs/design/soltui-v2/DESIGN.md) regroups the classic tabs into destinations. Its one non-negotiable is that no function is lost, so the coverage test asserts every pane of `#main-tabs` against the live navigation, including a pane added after the map was written.",
       "summarySource": "docstring",
-      "bytes": 14214,
+      "bytes": 14236,
       "lines": 270,
-      "sha1": "44c183b9277eba58b6753eaccefb2d9fb0309e80",
+      "sha1": "05856416018cd2506acafada83c988d5a08330f3",
       "symbols": [
         "SIZE",
         "ok()",
@@ -82713,9 +82772,9 @@
       "title": "Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.",
       "summary": "Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.",
       "summarySource": "docstring",
-      "bytes": 389310,
-      "lines": 7198,
-      "sha1": "bc391cc3a8f69567cd0c45637cf06cbfc3ebc903",
+      "bytes": 391855,
+      "lines": 7241,
+      "sha1": "4f6fafa145dbb85d16fa84daf5648ab37125008f",
       "symbols": [
         "class _CaptureWithoutInvalidFd",
         "_mtime()",

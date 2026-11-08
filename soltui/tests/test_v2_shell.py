@@ -30,7 +30,7 @@ class PureBuilderTests(unittest.TestCase):
     def test_every_classic_tab_has_a_home(self) -> None:
         classic = {"tab-settings", "tab-strategies", "tab-signals", "tab-compound", "tab-forwardtest",
                    "tab-bots", "tab-backtest", "tab-top5", "tab-liverun", "tab-execute", "tab-analyze",
-                   "tab-cumulative", "tab-queue", "tab-liquidity", "tab-pnl", "tab-wallet", "tab-research",
+                   "tab-cumulative", "tab-queue", "tab-liquidity", "tab-pnl", "tab-wallet", "tab-advanced-order", "tab-research",
                    "tab-docs"}
         self.assertEqual(classic - shell.COVERED_TABS, set())
         self.assertEqual(shell.locate("tab-liquidity")[0].key, "archive")

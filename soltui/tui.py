@@ -1183,6 +1183,8 @@ class SolTuiApp(App):
                 yield from self._pnl_pane()
             with TabPane("Wallet", id="tab-wallet"):
                 yield from self._wallet_pane()
+            with TabPane("Advanced order", id="tab-advanced-order"):
+                yield from self._advanced_order_pane()
             with TabPane("Research", id="tab-research"):
                 yield from self._research_pane()
             with TabPane("Docs", id="tab-docs"):
@@ -4387,6 +4389,8 @@ class SolTuiApp(App):
             self._coinbase_order_state_start()
             self._coinbase_pairs_start()
             self._call("portfolio.notice", {"mark_seen": True}, quiet=True)
+        elif pane == "tab-advanced-order":
+            self._coinbase_order_state_start()
         elif pane == "tab-liquidity":
             self._refresh_liquidity(force=True)
         elif pane == "tab-bots":
@@ -4702,6 +4706,26 @@ class SolTuiApp(App):
                     yield Button("Check order", id="coinbase-order-check")
                     yield Button("Refresh order safety", id="coinbase-order-state")
                 yield Static("No order submitted in this session.", id="coinbase-order-receipt", markup=False)
+            yield Static("Coinbase holdings — available and held balances", classes="table-title")
+            cbhold = GlossaryTable(id="coinbase-holdings")
+            cbhold.add_columns("portfolio", "asset", "available", "hold")
+            yield ExportPanel(cbhold)
+            yield Static("[b]Coinbase positions[/b] — totals are approximate; staking is shown separately.", classes="table-title")
+            cbpositions = GlossaryTable(id="coinbase-positions")
+            cbpositions.add_columns("portfolio", "asset", "account type", "quantity", "value $")
+            yield ExportPanel(cbpositions)
+            yield Static("[b]Holdings[/b]", classes="table-title")
+            holdings = GlossaryTable(id="wallet-holdings")
+            holdings.add_columns("chain", "asset", "amount", "price $", "value $ (wallet (live))", "status")
+            yield ExportPanel(holdings)
+            yield Static("[b]Contracts and accounts each holding lives in[/b]", classes="table-title")
+            contracts = GlossaryTable(id="wallet-contracts")
+            contracts.add_columns("chain", "holding", "kind", "address", "program", "explorer")
+            yield ExportPanel(contracts)
+
+    def _advanced_order_pane(self) -> ComposeResult:
+        """Dedicated Money view for the advanced order ticket."""
+        with VerticalScroll():
             with Vertical(id="advanced-order-ticket") as ticket:
                 ticket.border_title = "Advanced order ticket"
                 yield Static("Coinbase market orders support amounts or balance percentages; conditional orders use coin units. $100 order cap. Jupiter is unavailable.", classes="hint")
@@ -4718,6 +4742,11 @@ class SolTuiApp(App):
                     yield Select([("Auto (BUY quote / SELL coin)", "auto"), ("USD / quote", "quote"),
                                   ("% available balance", "percent"), ("Coin units", "base")],
                                  value="auto", allow_blank=False, id="advanced-unit")
+                with Horizontal(classes="form-row"):
+                    yield Input(placeholder="Jupiter token symbol or mint", id="advanced-token-query")
+                    yield Button("Find Jupiter token", id="advanced-token-search")
+                yield Static("Search results include full mint addresses. Jupiter order execution is unavailable until verified.",
+                             id="advanced-token-results", markup=False)
                 with Horizontal(classes="form-row"):
                     yield Input(placeholder="Limit / take-profit price (quote currency)", id="advanced-limit-price", disabled=True)
                     yield Input(placeholder="Stop trigger price (quote currency)", id="advanced-stop-price", disabled=True)
@@ -4744,22 +4773,6 @@ class SolTuiApp(App):
                 yield Static("Disarmed. Choose a supported Coinbase market order.", id="advanced-message", markup=False)
                 yield Static("", id="advanced-review", markup=False)
                 yield Static("No advanced order submitted in this session.", id="advanced-receipt", markup=False)
-            yield Static("Coinbase holdings — available and held balances", classes="table-title")
-            cbhold = GlossaryTable(id="coinbase-holdings")
-            cbhold.add_columns("portfolio", "asset", "available", "hold")
-            yield ExportPanel(cbhold)
-            yield Static("[b]Coinbase positions[/b] — totals are approximate; staking is shown separately.", classes="table-title")
-            cbpositions = GlossaryTable(id="coinbase-positions")
-            cbpositions.add_columns("portfolio", "asset", "account type", "quantity", "value $")
-            yield ExportPanel(cbpositions)
-            yield Static("[b]Holdings[/b]", classes="table-title")
-            holdings = GlossaryTable(id="wallet-holdings")
-            holdings.add_columns("chain", "asset", "amount", "price $", "value $ (wallet (live))", "status")
-            yield ExportPanel(holdings)
-            yield Static("[b]Contracts and accounts each holding lives in[/b]", classes="table-title")
-            contracts = GlossaryTable(id="wallet-contracts")
-            contracts.add_columns("chain", "holding", "kind", "address", "program", "explorer")
-            yield ExportPanel(contracts)
 
     def _coinbase_order_values(self) -> tuple[str, str, str, str]:
         product = self.query_one("#coinbase-order-product", Input).value.strip().upper()
@@ -4824,6 +4837,36 @@ class SolTuiApp(App):
         self.query_one("#coinbase-order-armed", Checkbox).value = False
         self.query_one("#coinbase-order-product", Input).value = str(event.row_key.value)
         self.query_one("#coinbase-order-message", Static).update("Pair selected. Review the amount before placing an order.")
+
+    @on(Button.Pressed, "#advanced-token-search")
+    @on(Input.Submitted, "#advanced-token-query")
+    def _advanced_token_search(self) -> None:
+        query = self.query_one("#advanced-token-query", Input).value.strip()
+        if not query:
+            self.query_one("#advanced-token-results", Static).update("Enter a token symbol or mint.")
+            return
+        self.query_one("#advanced-token-results", Static).update("Searching Jupiter tokens…")
+        self._advanced_token_search_worker(query)
+
+    @work(thread=True, exit_on_error=False, group="advanced-token-search")
+    def _advanced_token_search_worker(self, query: str) -> None:
+        try:
+            env = self._call("jupiter.tokens_search", {"query": query}, quiet=True)
+            self.call_from_thread(self._advanced_token_search_done, query, env)
+        except (RuntimeError, NoMatches):
+            pass
+
+    def _advanced_token_search_done(self, query: str, env: dict[str, Any]) -> None:
+        if not self.query("#advanced-token-query") or self.query_one("#advanced-token-query", Input).value.strip() != query:
+            return
+        target = self.query_one("#advanced-token-results", Static)
+        if not env.get("ok"):
+            target.update(self._msg(env))
+            return
+        tokens = (env.get("result") or {}).get("tokens", [])
+        target.update("\n".join(f"{t['symbol']} · {t['name']} · {t['mint']} · decimals {t['decimals']} · "
+                                f"{'verified' if t['verified'] else 'unverified'}" for t in tokens)
+                      or "No matching tokens.")
 
     def _advanced_values(self) -> tuple[str, str, str, str, str, str]:
         venue = str(self.query_one("#advanced-venue", Select).value)
@@ -4947,7 +4990,7 @@ class SolTuiApp(App):
     def _advanced_context_tick(self) -> None:
         if self._advanced_context_busy or not self.query("#advanced-product"):
             return
-        if self.query_one("#main-tabs", TabbedContent).active != "tab-wallet":
+        if self.query_one("#main-tabs", TabbedContent).active != "tab-advanced-order":
             return
         venue, _, _, product, _, _ = self._advanced_values()
         if venue != "coinbase" or "-" not in product:
@@ -6757,8 +6800,8 @@ class SolTuiApp(App):
     def _docs_view_changed(self) -> None:
         """Live "unsaved" marker, so a lost-on-navigate edit is visible
         before it is lost, not just guarded against after the fact."""
-        if self._docs_current_path is None:
-            return
+        if self._docs_current_path is None or not self.query("#docs-view") or not self.query("#docs-view-status"):
+            return  # A queued change can arrive while the screen is unmounting.
         view = self.query_one("#docs-view", TextArea)
         status = self.query_one("#docs-view-status", Static)
         base = (f"{self._docs_current_path} — "

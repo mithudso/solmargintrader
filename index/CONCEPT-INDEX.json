@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T21:47:48+00:00",
+  "generatedAt": "2026-11-08T22:49:28+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 395,
+      "matchingFiles": 397,
       "shown": 30,
       "files": [
         {
@@ -1162,7 +1162,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 88
+          "hits": 96
         },
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
@@ -1229,6 +1229,10 @@
           "hits": 35
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 35
+        },
+        {
           "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
           "hits": 35
         },
@@ -1238,10 +1242,6 @@
         },
         {
           "path": "docs/COMPOUND-5M.md",
-          "hits": 30
-        },
-        {
-          "path": "soltui/tui.py",
           "hits": 30
         },
         {

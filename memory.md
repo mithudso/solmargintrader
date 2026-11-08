@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 208
-Delta: v207 to v208; update suite counts for CSV export tests.
+Version: 211
+Delta: v210 to v211; record teardown fix and token discovery.
+
+## v211 - 2026-11-08
+
+TASK-1044 continuation: fixed _docs_view_changed teardown NoMatches; previously failing test passes. Added Jupiter Tokens API v2 discovery command and UI search; rejects missing decimals, ambiguous symbols and unverified resolution, displays full mint. Five focused tests pass. Jupiter quote, on-chain mint checks, balance, fees, exact Swap v2 transaction verification, confirmed submission and reconciliation remain unimplemented; UI remains disarmed and labels Jupiter unavailable. The docs and backtester CI failures were stale generated index. Rebuild index after staging final files. Draft PR 134 remains open. No live transaction.
+
+## v209 - 2026-11-08
+
+TASK-1044: Implement Jupiter and Coinbase advanced orders on a dedicated Money page. Worktree /Users/mitch/dev/solmargintrader-wt-jupiter, based on origin/master ee75ba4. Owner confirmed previous task claim is stale. Preserve original untracked guide and other work. Guide has unsafe default decimals, zero valuation fallback, and unverified signing. Require exact mint and decimals, independent valuation, balances, exact transaction verification and explicit review; no ambiguous retry or unsolicited live order. Checkpoint: moved the existing advanced Coinbase ticket to a Money navigation view and updated UI tests. Jupiter remains unavailable; no token search, Swap v2 quote, transaction verification, signing, execute, or reconciliation has been implemented. Focused UI run completed: 23 passed and one errored during teardown in _docs_view_changed with NoMatches #docs-view; investigate. Draft PR https://github.com/mithudso/solmargintrader/pull/134. Remaining: fix and rerun tests, implement and test the full Jupiter path with semantic verification and ambiguity handling, then deliver and verify the loaded app.
 
 ## v207 - 2026-11-08
 
