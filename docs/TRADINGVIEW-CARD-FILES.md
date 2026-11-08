@@ -1102,3 +1102,4 @@ Canonical checkout paths for every file created or modified by this task. The co
 - [/Users/mitch/dev/solmargintrader/research/tradingview-card-coverage.json](/Users/mitch/dev/solmargintrader/research/tradingview-card-coverage.json) — source coverage and verification artifact.
 - [/Users/mitch/dev/solmargintrader/scripts/check_tradingview_cards.py](/Users/mitch/dev/solmargintrader/scripts/check_tradingview_cards.py) — source coverage and verification artifact.
 - [/Users/mitch/dev/solmargintrader/docs/high_signal_file_index.json](/Users/mitch/dev/solmargintrader/docs/high_signal_file_index.json) — updated retrieval line counts.
+- [/Users/mitch/dev/solmargintrader/soltui/tests/test_tui.py](/Users/mitch/dev/solmargintrader/soltui/tests/test_tui.py) — filter before selecting capped catalog rows.

@@ -592,11 +592,15 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
     async def test_moving_the_row_cursor_opens_an_editable_file(self) -> None:
         """A click (which moves the cursor) must load the file, not just
         highlight a row and wait for a separate Enter press."""
-        from textual.widgets import Button, DataTable, TabbedContent, TextArea
+        from textual.widgets import Input, Button, DataTable, TabbedContent, TextArea
 
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            # The unfiltered catalogue is capped. Find the target through the same
+            # filter a user uses once strategy cards fill the initial page.
+            app.query_one("#docs-filter", Input).value = "soltui/"
             await pilot.pause()
             table = app.query_one("#docs-table", DataTable)
             row = next(i for i in range(table.row_count)
@@ -638,11 +642,15 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
     async def test_o_binding_opens_the_highlighted_row(self) -> None:
         """The explicit fallback for when a click's RowHighlighted doesn't
         land through the browser-rendered terminal (textual-serve)."""
-        from textual.widgets import DataTable, TabbedContent, TextArea
+        from textual.widgets import Input, DataTable, TabbedContent, TextArea
 
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            # The unfiltered catalogue is capped. Find the target through the same
+            # filter a user uses once strategy cards fill the initial page.
+            app.query_one("#docs-filter", Input).value = "soltui/"
             await pilot.pause()
             table = app.query_one("#docs-table", DataTable)
             row = next(i for i in range(table.row_count)
@@ -660,11 +668,15 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
         """`read_only` is the actual policy enforcement for research/results/
         -- a widget that accepted the flag but ignored it would still pass
         the "looks read-only" assertions above, so this checks behavior."""
-        from textual.widgets import DataTable, TabbedContent, TextArea
+        from textual.widgets import Input, DataTable, TabbedContent, TextArea
 
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            # The unfiltered catalogue is capped. Find the target through the same
+            # filter a user uses once strategy cards fill the initial page.
+            app.query_one("#docs-filter", Input).value = "research/results/"
             await pilot.pause()
             table = app.query_one("#docs-table", DataTable)
             row = next(i for i in range(table.row_count)
@@ -684,11 +696,15 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
         """The bug report: editing, then moving to another row, silently lost
         the edit. Navigating (RowHighlighted) must refuse; an explicit Enter
         on the new row is what is allowed to discard it."""
-        from textual.widgets import DataTable, TabbedContent, TextArea
+        from textual.widgets import Input, DataTable, TabbedContent, TextArea
 
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            # The unfiltered catalogue is capped. Find the target through the same
+            # filter a user uses once strategy cards fill the initial page.
+            app.query_one("#docs-filter", Input).value = "soltui/"
             await pilot.pause()
             table = app.query_one("#docs-table", DataTable)
             row_a = next(i for i in range(table.row_count)
@@ -721,11 +737,15 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
     async def test_editor_panel_is_visible_from_a_different_tab(self) -> None:
         """The whole point of moving it out of _docs_pane: it must still be
         on screen after switching away from Docs."""
-        from textual.widgets import DataTable, TabbedContent, TextArea
+        from textual.widgets import Input, DataTable, TabbedContent, TextArea
 
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             app.query_one(TabbedContent).active = "tab-docs"
+            await pilot.pause()
+            # The unfiltered catalogue is capped. Find the target through the same
+            # filter a user uses once strategy cards fill the initial page.
+            app.query_one("#docs-filter", Input).value = "soltui/"
             await pilot.pause()
             table = app.query_one("#docs-table", DataTable)
             row = next(i for i in range(table.row_count)

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `67b2e5d` (2026-11-08T09:35:06+00:00). 1835 tracked files, 29.5 MB.
+**Generated** from `index/INDEX.json` at commit `c09ecc9` (2026-11-08T09:54:33+00:00). 1835 tracked files, 29.5 MB.
 
 Regenerate with:
 
@@ -184,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 856 lines · 128,811 B · description: **extracted**
+`doc` · 867 lines · 130,269 B · description: **extracted**
 
-**Purpose.** Version: 81 Delta: v80 to v81; final integrated verification and PR 91 continuation receipt. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 82 Delta: v81 to v82; correct capped Docs test setup and retain editor assertions. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -264,7 +264,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 320 lines · 18,659 B · description: **extracted**
+`doc` · 320 lines · 18,660 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -280,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18008 lines · 885,975 B · description: **extracted**
+`doc` · 18008 lines · 885,976 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -344,7 +344,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-CARD-FILES.md`
 
-`doc` · 1105 lines · 282,077 B · description: **extracted**
+`doc` · 1106 lines · 282,247 B · description: **extracted**
 
 **Purpose.** Version: 1.0.0 (2026-11-08). Delta: first complete path receipt. Canonical checkout paths for every file created or modified by this task. The coverage report and JSON ledger explain the matches and source limitations.
 
@@ -16046,7 +16046,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tui.py`
 
-`test` · 1323 lines · 58,782 B · description: **extracted**
+`test` · 1343 lines · 60,117 B · description: **extracted**
 
 **Purpose.** Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.
 

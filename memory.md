@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 81
-Delta: v80 to v81; final integrated verification and PR 91 continuation receipt.
+Version: 82
+Delta: v81 to v82; correct capped Docs test setup and retain editor assertions.
 
 ## v1 - 2026-11-06
 
@@ -853,3 +853,14 @@ Integrated checks: 97 SolTUI queue/Docs integration tests pass (29.510 seconds).
 Documentation discovery now agrees with the concurrent Bots changes: backtester 900, extension 361, Mongo 34, SolTUI 872; total 2,167. Default card integrity checker and full raw-source binding checker pass; source inventory is 4,770 canonical records over 4,890 verified physical files. All four negative integrity probes are refused.
 
 Delivery continuation is conditional on https://github.com/mithudso/solmargintrader/pull/91 : if open, wait for final-head required checks and merge; if merged, verify its default-branch files and use the merge receipt in TASK-888. No more card implementation is required. Preserve the original checkout's unrelated changes and all other active PRs/worktrees.
+
+
+## v82 - 2026-11-08 (large-catalog CI test setup)
+
+Version: 82. Delta: v81 to v82; fix the five Docs editor test assumptions exposed by the expanded card catalog.
+
+CI run 42467823348 on c09ecc9 passed backtester, docs, extension units/browser, liquidity and Mongo. Executor setup failed before tests after three HTTP 504 responses downloading uv 0.13.7. The macOS suite ran 872 cases in 747.928 seconds and had five StopIteration errors: Docs editor tests assumed soltui/config.py or research/results files would occur in the unfiltered first 1,000 alphabetically sorted rows. New strategy cards legitimately fill that first page.
+
+Changed only those five test setups in soltui/tests/test_tui.py to use the real #docs-filter input before selecting late-sorted target files. Existing cursor/open/read-only/unsaved-editor assertions remain intact. The production table cap, filtering and editor behavior did not change. Full TestDocsTab now passes all 9 cases locally in 78.133 seconds. KNOW-923 records the literal failure and the reason. No card content or ledger provenance changed.
+
+Final delivery stays conditional on https://github.com/mithudso/solmargintrader/pull/91 ; push this test/index correction and wait for a passing final-head CI run. The new run also retries the transient executor tool download. Preserve all other sessions and their active PRs. TASK-888 owns the final merge receipt and cleanup; no new strategy implementation is required.
