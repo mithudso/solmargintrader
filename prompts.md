@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 104
-Delta: v103 to v104; retain the manual order screen request.
+Version: 106
+Delta: v105 to v106; retain the optional no-confirmation order request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -872,4 +872,16 @@ I do intend the soltrader to actually trade with live money eventually. Of cours
 
 ```text
 Yes, build a manual order screen now.
+```
+
+## v105 - 2026-11-08
+
+```text
+Download and keep a full list of the coinbase trading pairs. And add jupiter support to the manual transaction feature for solana coins not listed on Coinbase.
+```
+
+## v106 - 2026-11-08
+
+```text
+Add the option to silence the confirmations. I'm going to be automating orders and make fast manual orders I  want to be able to do that without confirmation, once selected.
 ```

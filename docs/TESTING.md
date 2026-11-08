@@ -2,7 +2,7 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 909 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1059 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1082 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 34 tests
 cd extension && npm test                                # 361 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
@@ -14,7 +14,7 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. This delivery skips the full suite at the owner's explicit request;
 focused UI, accounting and installed acceptance checks are recorded separately.
 
-2363 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2386 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -157,13 +157,13 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1059 tests
+## soltui — 1082 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with
 `python3 -m unittest discover -s soltui/tests -t .`.
 
-soltui is read-only over the research side and places no orders, so its tests are about
+soltui keeps research simulations separate from explicitly confirmed manual Coinbase orders. Its tests cover
 display correctness, not money. `test_compound.py` covers the Compound 5m tab end to end
 (toggle, edit, refused values, a stubbed live signal) plus the forward ledger with stub venues:
 the still-forming bar is dropped, a call is recorded once per bar and resolved by the next close,
@@ -178,7 +178,7 @@ The optimization workbench has dedicated foundation, native runner and interface
 They cover immutable cells, typed budgets, observed sparse maps, CSV units/provenance,
 spent/explored temporal reservations, legacy fences, historical mutation, cooperative controls,
 process termination/recovery, baseline comparison, adoption crash receipts and the headless UI.
-Fixtures isolate configuration/data; no live order path or real service starts are required.
+Fixtures isolate configuration/data; tests stub the live order path and do not submit real orders.
 
 ## mongo — 34 tests
 

@@ -10,8 +10,8 @@ All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`,
 logic be tested without driving a terminal, and it mirrors how
 `netdnsmonitor/app.py` stays thin over tested modules.
 
-The Execute tab is **dry-run only**. See `paper.py` for why there is no order
-path anywhere in this package.
+The Execute tab remains **dry-run only**. The Wallet tab also has a separately
+armed, explicitly confirmed Coinbase manual-order workflow.
 """
 
 from __future__ import annotations
@@ -24,6 +24,7 @@ import math
 import threading
 import time
 import uuid
+from decimal import Decimal, InvalidOperation
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable
@@ -40,6 +41,7 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets.option_list import Option
 from textual.widgets import (
     Button,
+    Checkbox,
     DataTable,
     Footer,
     Header,
@@ -217,6 +219,12 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#wallet-scan": "portfolio.scan",
     "#coinbase-sync": "coinbase.sync",
     "#coinbase-markets": "coinbase.markets",
+    "#coinbase-order-preview": "coinbase.order_preview",
+    "#coinbase-order-submit": "coinbase.order_submit",
+    "#coinbase-order-quick": "coinbase.order_quick",
+    "#coinbase-order-check": "coinbase.order_status",
+    "#coinbase-order-state": "coinbase.order_state",
+    "#coinbase-pairs-filter": "coinbase.pairs",
     "#docs-search-run": "docs.search",
     "#docs-search-free": "docs.search_unload",
     "#compound-toggle": "compound.save",
@@ -600,7 +608,7 @@ class SolTuiApp(App):
     """
 
     TITLE = "soltui — SOL strategy console"
-    SUB_TITLE = "dry-run only · no live order path"
+    SUB_TITLE = "paper by default · Coinbase manual orders require review"
     COMMANDS = App.COMMANDS | {shell.SolCommands}
     CSS = """
     #execute-banner, #live-run-banner {
@@ -624,6 +632,12 @@ class SolTuiApp(App):
     #forward-mode { width: 14; }
     #forward-start, #forward-stop, #forward-refresh { min-width: 10; }
     #forward-combos { width: 1fr; }
+    #coinbase-order-product { width: 30; }
+    #coinbase-order-quick { display: none; }
+    #coinbase-order-side { width: 16; }
+    #coinbase-order-size, #coinbase-order-id { width: 1fr; }
+    #coinbase-pairs-query { width: 1fr; }
+    #coinbase-pairs-table { height: 8; }
     #roster-table { width: 1fr; }
     #docs-filter, #docs-search { width: 1fr; }
     #docs-kind, #docs-search-mode { width: 24; }
@@ -792,6 +806,11 @@ class SolTuiApp(App):
         # The real console shows the last kept wallet scan at start and re-scans in the background;
         # a test app must neither read the owner's kept scan nor reach the network.
         self._refresh_wallet = refresh_wallet
+        self._coinbase_order_preview_data: dict[str, Any] | None = None
+        self._coinbase_order_generation = 0
+        self._coinbase_order_busy = False
+        self._coinbase_order_unknown = True
+        self._coinbase_pairs_generation = 0
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
         # periodic table refresh does not reload an identical preview and reset its scroll.
@@ -1013,8 +1032,8 @@ class SolTuiApp(App):
         """Editable settings form."""
         with VerticalScroll():
             yield Static(
-                "Saved to ~/.config/soltui/. Mode is dry-run only: this build has "
-                "no live order path to select.",
+                "Saved to ~/.config/soltui/. Strategy execution is dry-run only. "
+                "Manual Coinbase orders are separate in Wallet and start disarmed.",
                 classes="hint",
             )
             # At the top so the button stays on screen however many fields the form grows.
@@ -2457,8 +2476,7 @@ class SolTuiApp(App):
             yield Static(MODE_LABEL, id="execute-banner")
             yield Static(
                 "This replays a historical simulation bar by bar and shows the fills "
-                "a strategy WOULD have made. There is no order path in this package: "
-                "no keys, no signing, no venue client.",
+                "a strategy WOULD have made. This replay does not place orders or use signing keys.",
                 classes="hint",
             )
             yield from self._preset_list("exec")
@@ -3867,6 +3885,8 @@ class SolTuiApp(App):
         elif pane == "tab-wallet":
             self._refresh_portfolio_notice()
             self._coinbase_show(self._call("coinbase.account", quiet=True))
+            self._coinbase_order_state_start()
+            self._coinbase_pairs_start()
             self._call("portfolio.notice", {"mark_seen": True}, quiet=True)
         elif pane == "tab-liquidity":
             self._refresh_liquidity(force=True)
@@ -4131,7 +4151,7 @@ class SolTuiApp(App):
         with VerticalScroll():
             yield Static(
                 "Reads the public wallets from Settings (Base discovery uses configured CDP when available). "
-                "No private key or transaction. Every figure is wallet (live): a read of real money at "
+                "The wallet scan uses no private key or transaction. Every figure is wallet (live): a read of real money at "
                 "the time of the scan. Airdrop-looking tokens are flagged and left out of the totals.",
                 classes="hint")
             with Horizontal(classes="form-row"):
@@ -4148,6 +4168,39 @@ class SolTuiApp(App):
                 yield Button("Sync Coinbase", id="coinbase-sync")
                 yield Button("Download Coinbase markets", id="coinbase-markets")
                 yield Static("", id="coinbase-status")
+            yield Static("[b]Manual Coinbase spot order[/b] — real money only after review and explicit submission.",
+                         classes="table-title")
+            yield Static("Market orders quoted in USD or USDC only. BUY spends the quote currency; SELL sells the base coin. "
+                         "Quotes and fees are estimates, and the final fill may differ.", classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Input(placeholder="Filter Coinbase spot pairs", id="coinbase-pairs-query")
+                yield Button("Filter pairs", id="coinbase-pairs-filter")
+            yield Static("Loading the saved spot-pair catalog…", id="coinbase-pairs-status", markup=False)
+            pairs = GlossaryTable(id="coinbase-pairs-table")
+            pairs.cursor_type = "row"
+            pairs.add_columns("Coinbase spot pair — select to use")
+            yield pairs
+            with Horizontal(classes="form-row"):
+                yield Input(value="SOL-USDC", placeholder="Pair, e.g. SOL-USDC", id="coinbase-order-product")
+                yield Select([("BUY", "BUY"), ("SELL", "SELL")], value="BUY", allow_blank=False,
+                             id="coinbase-order-side")
+                yield Input(placeholder="Amount to spend in quote currency", id="coinbase-order-size")
+            with Horizontal(classes="form-row"):
+                yield Checkbox("Arm LIVE order submission", value=False, id="coinbase-order-armed")
+                yield Button("Review order", id="coinbase-order-preview", disabled=True)
+                yield Button("Place LIVE order", variant="error", id="coinbase-order-submit", disabled=True)
+                yield Button("Place LIVE immediately", variant="error", id="coinbase-order-quick", disabled=True)
+            yield Checkbox("Skip per-order review for this session", value=False, id="coinbase-order-skip-review")
+            yield Static("When selected, an armed LIVE order can execute immediately when you press Place LIVE immediately. "
+                         "This setting resets when the app closes.", classes="hint")
+            yield Static("Disarmed. Checking previous order state before a review can start.",
+                         id="coinbase-order-message", markup=False)
+            yield Static("", id="coinbase-order-review", markup=False)
+            with Horizontal(classes="form-row"):
+                yield Input(placeholder="Coinbase order ID", id="coinbase-order-id")
+                yield Button("Check order", id="coinbase-order-check")
+                yield Button("Refresh order safety", id="coinbase-order-state")
+            yield Static("No order submitted in this session.", id="coinbase-order-receipt", markup=False)
             cbhold = GlossaryTable(id="coinbase-holdings")
             cbhold.add_columns("portfolio", "asset", "available", "hold")
             yield cbhold
@@ -4163,6 +4216,276 @@ class SolTuiApp(App):
             contracts = GlossaryTable(id="wallet-contracts")
             contracts.add_columns("chain", "holding", "kind", "address", "program", "explorer")
             yield contracts
+
+    def _coinbase_order_values(self) -> tuple[str, str, str, str]:
+        product = self.query_one("#coinbase-order-product", Input).value.strip().upper()
+        side = str(self.query_one("#coinbase-order-side", Select).value)
+        size = self.query_one("#coinbase-order-size", Input).value.strip()
+        return product, side, size, "quote" if side == "BUY" else "base"
+
+    @on(Button.Pressed, "#coinbase-pairs-filter")
+    @on(Input.Submitted, "#coinbase-pairs-query")
+    def _coinbase_pairs_filter(self) -> None:
+        self._coinbase_pairs_start()
+
+    def _coinbase_pairs_start(self) -> None:
+        self._coinbase_pairs_generation += 1
+        token = self._coinbase_pairs_generation
+        query = self.query_one("#coinbase-pairs-query", Input).value.strip()
+        self.query_one("#coinbase-pairs-status", Static).update("Loading saved Coinbase spot pairs…")
+        self._coinbase_pairs_worker(query, token)
+
+    @work(thread=True, group="coinbase-pair-catalog", exit_on_error=False)
+    def _coinbase_pairs_worker(self, query: str, token: int) -> None:
+        try:
+            env = self._call("coinbase.pairs", {"query": query}, quiet=True)
+        except Exception:
+            env = {"ok": False, "error": {"message": "Could not load the saved spot-pair catalog."}}
+        try:
+            self.call_from_thread(self._coinbase_pairs_done, env, token)
+        except (RuntimeError, NoMatches):
+            pass  # The console closed while the catalog was being read.
+
+    def _coinbase_pairs_done(self, env: dict[str, Any], token: int) -> None:
+        if token != self._coinbase_pairs_generation:
+            return
+        status = self.query_one("#coinbase-pairs-status", Static)
+        if not env.get("ok"):
+            status.update(self._msg(env))
+            return
+        result = env.get("result") or {}
+        pairs = result.get("pairs")
+        if not isinstance(pairs, list) or any(not isinstance(pair, str) for pair in pairs):
+            status.update("The saved spot-pair catalog is invalid. Download Coinbase markets again.")
+            return
+        table = self.query_one("#coinbase-pairs-table", DataTable)
+        table.clear()
+        seen: set[str] = set()
+        for pair in pairs:
+            if pair not in seen:
+                table.add_row(pair, key=pair)
+                seen.add(pair)
+        state = "complete" if result.get("complete") is True else "incomplete or not downloaded"
+        status.update(f"Spot pairs: {len(seen)} matching of {result.get('count', '?')} saved · {state}. "
+                      "Select a row to fill the order pair; trading eligibility is checked during review.")
+
+    @on(DataTable.RowSelected, "#coinbase-pairs-table")
+    def _coinbase_pair_selected(self, event: DataTable.RowSelected) -> None:
+        if self._coinbase_order_busy:
+            self.query_one("#coinbase-order-message", Static).update("Wait for the current order operation to finish.")
+            return
+        if not event.row_key or not event.row_key.value:
+            return
+        # Selection edits the form only; it cannot review, arm, or submit an order.
+        self.query_one("#coinbase-order-armed", Checkbox).value = False
+        self.query_one("#coinbase-order-product", Input).value = str(event.row_key.value)
+        self.query_one("#coinbase-order-message", Static).update("Pair selected. Review the amount before placing an order.")
+
+    def _coinbase_order_controls(self) -> None:
+        busy = self._coinbase_order_busy
+        for name, cls in (("#coinbase-order-product", Input), ("#coinbase-order-side", Select),
+                          ("#coinbase-order-size", Input), ("#coinbase-order-armed", Checkbox),
+                          ("#coinbase-order-skip-review", Checkbox),
+                          ("#coinbase-order-id", Input)):
+            self.query_one(name, cls).disabled = busy
+        self.query_one("#coinbase-order-preview", Button).disabled = busy or self._coinbase_order_unknown
+        self.query_one("#coinbase-order-check", Button).disabled = busy
+        self.query_one("#coinbase-order-state", Button).disabled = busy
+        preview = self._coinbase_order_preview_data
+        valid = bool(preview and preview.get("values") == self._coinbase_order_values()
+                     and isinstance(preview.get("expires_at"), (int, float))
+                     and preview["expires_at"] > time.time())
+        self.query_one("#coinbase-order-submit", Button).disabled = (
+            busy or self._coinbase_order_unknown or not valid
+            or not self.query_one("#coinbase-order-armed", Checkbox).value)
+        quick = self.query_one("#coinbase-order-skip-review", Checkbox).value
+        self.query_one("#coinbase-order-submit", Button).display = not quick
+        quick_button = self.query_one("#coinbase-order-quick", Button)
+        quick_button.display = quick
+        product, side, size, _ = self._coinbase_order_values()
+        quick_button.disabled = (busy or self._coinbase_order_unknown or not quick
+                                 or not self.query_one("#coinbase-order-armed", Checkbox).value
+                                 or not product or side not in ("BUY", "SELL") or not size)
+
+    @on(Input.Changed, "#coinbase-order-product")
+    @on(Input.Changed, "#coinbase-order-size")
+    @on(Select.Changed, "#coinbase-order-side")
+    def _coinbase_order_changed(self) -> None:
+        self._coinbase_order_generation += 1
+        self._coinbase_order_preview_data = None
+        if self.query("#coinbase-order-review"):
+            self.query_one("#coinbase-order-review", Static).update("")
+            side = self.query_one("#coinbase-order-side", Select).value
+            self.query_one("#coinbase-order-size", Input).placeholder = (
+                "Amount to spend in quote currency" if side == "BUY" else "Amount of base coin to sell")
+            self._coinbase_order_controls()
+
+    @on(Checkbox.Changed, "#coinbase-order-armed")
+    @on(Checkbox.Changed, "#coinbase-order-skip-review")
+    def _coinbase_order_armed_changed(self) -> None:
+        if self.query("#coinbase-order-submit"):
+            self._coinbase_order_controls()
+
+    @on(Button.Pressed, "#coinbase-order-preview")
+    def _coinbase_order_preview_pressed(self) -> None:
+        if self._coinbase_order_busy or self._coinbase_order_unknown:
+            return
+        product, side, size, unit = self._coinbase_order_values()
+        if not product or side not in ("BUY", "SELL") or not size:
+            self.query_one("#coinbase-order-message", Static).update("Enter a pair, side and amount to review.")
+            return
+        self._coinbase_order_preview_data = None
+        self._coinbase_order_busy = True
+        self._coinbase_order_controls()
+        self.query_one("#coinbase-order-message", Static).update("Reviewing with Coinbase… No order has been placed.")
+        self._coinbase_order_worker("coinbase.order_preview", {"product_id": product, "side": side,
+                                    "size": size, "size_currency": unit}, self._coinbase_order_generation,
+                                    (product, side, size, unit))
+
+    @on(Button.Pressed, "#coinbase-order-submit")
+    def _coinbase_order_submit_pressed(self) -> None:
+        preview = self._coinbase_order_preview_data
+        self._coinbase_order_controls()
+        if self.query_one("#coinbase-order-submit", Button).disabled or not preview:
+            self.query_one("#coinbase-order-message", Static).update("Arm live orders and review an unexpired order first.")
+            return
+        # Consume the review before starting the worker: a double-click cannot submit twice.
+        self._coinbase_order_preview_data = None
+        self._coinbase_order_busy = True
+        self._coinbase_order_unknown = True
+        self._coinbase_order_controls()
+        self.query_one("#coinbase-order-message", Static).update(
+            "Submitting one LIVE order… If this is interrupted, check Coinbase before doing anything else.")
+        self._coinbase_order_worker("coinbase.order_submit", {"preview_id": preview["preview_id"], "confirm": True},
+                                    self._coinbase_order_generation, None)
+
+    @on(Button.Pressed, "#coinbase-order-quick")
+    def _coinbase_order_quick_pressed(self) -> None:
+        self._coinbase_order_controls()
+        if self.query_one("#coinbase-order-quick", Button).disabled:
+            return
+        product, side, size, unit = self._coinbase_order_values()
+        self._coinbase_order_preview_data = None
+        self._coinbase_order_busy = True
+        self._coinbase_order_unknown = True
+        self._coinbase_order_controls()
+        self.query_one("#coinbase-order-message", Static).update(
+            "Submitting one LIVE order immediately… If interrupted, check Coinbase before doing anything else.")
+        self._coinbase_order_worker("coinbase.order_quick", {"product_id": product, "side": side,
+                                    "size": size, "size_currency": unit, "skip_confirm": True},
+                                    self._coinbase_order_generation, None)
+
+    @on(Button.Pressed, "#coinbase-order-check")
+    def _coinbase_order_check_pressed(self) -> None:
+        if self._coinbase_order_busy:
+            return
+        order_id = self.query_one("#coinbase-order-id", Input).value.strip()
+        if not order_id:
+            self.query_one("#coinbase-order-message", Static).update("Enter a Coinbase order ID to check it.")
+            return
+        self._coinbase_order_busy = True
+        self._coinbase_order_controls()
+        self.query_one("#coinbase-order-message", Static).update("Checking Coinbase order status…")
+        self._coinbase_order_worker("coinbase.order_status", {"order_id": order_id},
+                                    self._coinbase_order_generation, None)
+
+    @on(Button.Pressed, "#coinbase-order-state")
+    def _coinbase_order_state_pressed(self) -> None:
+        self._coinbase_order_state_start()
+
+    def _coinbase_order_state_start(self) -> None:
+        self._coinbase_order_generation += 1
+        self._coinbase_order_preview_data = None
+        self.query_one("#coinbase-order-armed", Checkbox).value = False
+        self.query_one("#coinbase-order-review", Static).update("")
+        if self._coinbase_order_busy:
+            return
+        self._coinbase_order_busy = True
+        self._coinbase_order_unknown = True
+        self._coinbase_order_controls()
+        self.query_one("#coinbase-order-message", Static).update("Checking prior Coinbase order state…")
+        self._coinbase_order_worker("coinbase.order_state", {}, self._coinbase_order_generation, None)
+
+    @work(thread=True, group="coinbase-manual-order", exit_on_error=False)
+    def _coinbase_order_worker(self, operation: str, params: dict[str, Any], generation: int,
+                               values: tuple[str, str, str, str] | None) -> None:
+        try:
+            env = self._call(operation, params)
+        except Exception:
+            env = {"ok": False, "error": {"message": "The operation failed or was interrupted."}}
+        try:
+            self.call_from_thread(self._coinbase_order_done, operation, env, generation, values)
+        except (RuntimeError, NoMatches):
+            pass  # The console closed; the backend must retain any submission outcome.
+
+    def _coinbase_order_done(self, operation: str, env: dict[str, Any], generation: int,
+                             values: tuple[str, str, str, str] | None) -> None:
+        self._coinbase_order_busy = False
+        msg = self.query_one("#coinbase-order-message", Static)
+        if not env.get("ok"):
+            reason = self._msg(env)
+            if operation in ("coinbase.order_submit", "coinbase.order_quick"):
+                self.query_one("#coinbase-order-armed", Checkbox).value = False
+                msg.update("Order outcome may be unknown. Do not resubmit; reconcile at Coinbase. " + reason)
+            else:
+                if operation == "coinbase.order_preview" and "unresolved" in reason.lower():
+                    self._coinbase_order_unknown = True
+                msg.update(reason)
+            self._coinbase_order_controls()
+            return
+        result = env.get("result") or {}
+        if operation == "coinbase.order_state":
+            if type(result.get("unresolved")) is not bool:
+                msg.update("Cannot verify order safety state. Check Coinbase, then refresh order safety.")
+            elif result["unresolved"]:
+                self._coinbase_order_unknown = True
+                orders = result.get("orders") or []
+                self.query_one("#coinbase-order-receipt", Static).update(
+                    "Unresolved saved submissions: " + json.dumps(orders, ensure_ascii=True, default=str))
+                msg.update("A previous order is unresolved. Check Coinbase before placing another order.")
+            else:
+                self._coinbase_order_unknown = False
+                msg.update("Disarmed. Enter a pair and amount, then review the order.")
+        elif operation == "coinbase.order_preview":
+            expires = result.get("expires_at")
+            try:
+                same_size = bool(values) and Decimal(str(result.get("size", ""))) == Decimal(values[2])
+            except InvalidOperation:
+                same_size = False
+            if (generation != self._coinbase_order_generation or values != self._coinbase_order_values()
+                    or not result.get("preview_id") or not isinstance(expires, (int, float)) or expires <= time.time()
+                    or not same_size or any(str(result.get(k, "")) != v for k, v in zip(
+                        ("product_id", "side", "size_currency"),
+                        (values[0], values[1], values[3]) if values else ()))):
+                msg.update("Review expired or the order changed. Review it again.")
+            else:
+                self._coinbase_order_preview_data = {"preview_id": result["preview_id"],
+                                                     "expires_at": expires, "values": values}
+                estimate = json.dumps(result.get("estimate"), ensure_ascii=True, default=str)
+                self.query_one("#coinbase-order-review", Static).update(
+                    f"LIVE {values[1]} {values[0]} · {values[2]} {values[3]} currency\n"
+                    f"Coinbase estimate: {estimate}\n{result.get('notice', '')}\n"
+                    "To place this order, arm live submission and press Place LIVE order.")
+                msg.update("Review ready. Nothing has been submitted.")
+        else:
+            order_id = result.get("order_id")
+            status = str(result.get("status") or "unknown")
+            if order_id:
+                self.query_one("#coinbase-order-id", Input).value = str(order_id)
+            self.query_one("#coinbase-order-receipt", Static).update(
+                json.dumps(result, ensure_ascii=True, default=str))
+            terminal = status.upper() in {"FILLED", "CANCELLED", "CANCELED", "FAILED", "REJECTED", "EXPIRED"}
+            if terminal and ((operation in ("coinbase.order_submit", "coinbase.order_quick") and order_id)
+                             or (operation == "coinbase.order_status" and result.get("unresolved") is False)):
+                self._coinbase_order_unknown = False
+            if operation in ("coinbase.order_submit", "coinbase.order_quick"):
+                if operation != "coinbase.order_quick" or status.upper() != "FILLED" or not order_id:
+                    self.query_one("#coinbase-order-armed", Checkbox).value = False
+                msg.update("Order submitted. Check its status at Coinbase before another order." if order_id
+                           else "Order outcome unknown. Do not resubmit; reconcile at Coinbase.")
+            else:
+                msg.update("Coinbase order status: " + status)
+        self._coinbase_order_controls()
 
     @on(Button.Pressed, "#coinbase-sync")
     def _coinbase_sync_button(self) -> None:
@@ -4183,11 +4506,16 @@ class SolTuiApp(App):
         status = self.query_one("#coinbase-status", Static)
         if not env["ok"]:
             status.update(escape(self._msg(env)))
+            self._coinbase_pairs_start()
             return
         r = env["result"]
         incomplete = [name for name, scope in r["scopes"].items() if not scope["complete"]]
-        status.update(f"Markets: {r['count']} products, {r['global_count']} global instruments; "
+        spot = r.get("spot_pairs") or {}
+        status.update(f"Spot pairs: {spot.get('count', '?')} "
+                      + ("complete" if spot.get("complete") is True else "incomplete")
+                      + f" · Wider catalog: {r['count']} products, {r['global_count']} global instruments; "
                       + ("incomplete: " + ", ".join(incomplete) if incomplete else "all scopes complete"))
+        self._coinbase_pairs_start()
 
     def _coinbase_show(self, env: dict[str, Any]) -> None:
         status = self.query_one("#coinbase-status", Static)
@@ -4785,7 +5113,7 @@ class SolTuiApp(App):
     def _liquidity_pane(self) -> ComposeResult:
         """A read-only view of `status.json` / `scout.json`, plus the KILL switch.
 
-        soltui holds no keys and has no order path: the daemon (`liquidity/`)
+        This archived pane has no order path: the daemon (`liquidity/`)
         does the managing and writes files; this pane reads them. The only thing
         it writes is the `KILL` file, via the Kill/Resume buttons.
         """

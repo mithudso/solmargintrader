@@ -10,10 +10,9 @@ dependency degrades rather than crashes.
 `CLAUDE.md` for this repo states: dry-run is the default, the extension installs
 disarmed, and "never change a default so that a fresh install can place an
 order." Accordingly `mode` defaults to `dry-run` and `armed` defaults to False,
-and `validate()` REFUSES a config that sets `armed` without an explicit
-`i_understand_this_is_simulated_only` acknowledgement -- which, in this build,
-nothing can satisfy, because there is no live order path to arm. The field exists
-so that a future live surface has to pass through a gate rather than inherit one.
+and `validate()` refuses `armed` without the explicit simulation acknowledgement.
+These fields govern strategy simulations only. The manual Coinbase form has a
+separate, session-only arm control and cannot inherit this setting.
 """
 
 from __future__ import annotations
@@ -117,7 +116,7 @@ def validate(settings: Settings) -> Settings:
     if settings.mode not in MODES:
         raise ConfigError(
             f"mode {settings.mode!r} is not supported. This build is "
-            f"{MODES[0]}-only: there is no live order path to select."
+            f"{MODES[0]}-only for strategy execution. Manual Coinbase orders are separate."
         )
     if settings.capital <= 0:
         raise ConfigError("capital must be positive")
@@ -152,13 +151,11 @@ def validate(settings: Settings) -> Settings:
                 hdwallet.parse_extended_key(value, coin)
             except hdwallet.ExtKeyError as exc:
                 raise ConfigError(f"{name}: {exc}") from None
-    # The arming gate. Both flags must be set together, and even then this build
-    # has nothing to arm -- the check exists so a future live surface cannot
-    # inherit an armed default from an old config file.
+    # Simulation settings cannot arm the separate manual Coinbase form.
     if settings.armed and not settings.i_understand_this_is_simulated_only:
         raise ConfigError(
             "armed=True requires i_understand_this_is_simulated_only=True. "
-            "Note that this build has no live order path regardless."
+            "This setting cannot arm manual Coinbase orders."
         )
     # Signal defaults are validated by their own module, which knows the
     # relationships (fast < slow, oversold < exit). Surfacing the failure as a

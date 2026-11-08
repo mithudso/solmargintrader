@@ -73,8 +73,8 @@ class ParityTests(unittest.TestCase):
         kill = commands.COMMANDS["liquidity.kill"]
         self.assertTrue(resume.requires_confirm)
         self.assertFalse(kill.requires_confirm)
-        self.assertEqual([n for n, c in commands.COMMANDS.items() if c.requires_confirm],
-                         ["liquidity.resume"])
+        self.assertEqual({n for n, c in commands.COMMANDS.items() if c.requires_confirm},
+                         {"liquidity.resume", "coinbase.order_submit"})
 
 
 if __name__ == "__main__":

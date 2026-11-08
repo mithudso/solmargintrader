@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 187
-Delta: v186 to v187; record the manual order screen request.
+Version: 189
+Delta: v188 to v189; record the owner's optional no-confirmation mode.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1746,3 +1746,11 @@ The owner clarified that SolTUI should eventually trade real money and needs Tra
 ## v187 - 2026-11-08
 
 The owner chose to build a manual Coinbase order screen now. Stele TASK-1042 tracks the work, and KNOW-1043 records explicit review, disarmed defaults, validation, reconciliation and no automatic resubmission. Finish the authenticated account-sync fix, then implement and verify the manual screen. The owner did not request another live order or authorize automatic trading.
+
+## v188 - 2026-11-08
+
+The owner also requested a complete, retained list of Coinbase trading pairs and Jupiter support for manual transactions involving Solana coins unavailable on Coinbase. TASK-1045 tracks the complete spot catalog and TASK-1044 tracks the Jupiter venue. Stele claim and dependency writes for TASK-1045 are queued as outbox f3235951 and 99dcf151. Preserve strict venue identification, mint and amount validation, disarmed defaults, exact transaction verification, and no automatic resubmission after an ambiguous outcome. No new real transaction was requested for testing. The manual Coinbase screen and backend are under active implementation in /Users/mitch/dev/solmargintrader-wt-coinbase-manual.
+
+## v189 - 2026-11-08
+
+The owner requested an option to silence order confirmations once selected, for fast manual orders and automation. Keep this option off by default; retain venue validation, order limits, submission journaling and the uncertain-outcome lock. This supersedes the prior mandatory per-order review decision in KNOW-1043. Its update is queued as Stele outbox f3e6ff65 after the transport closed. No new live order was authorized as a test.

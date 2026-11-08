@@ -30,6 +30,28 @@ class CoinbaseAccountTests(unittest.TestCase):
         self.assertEqual(cb.markets()['products'][0]['product_id'], 'old')
         self.assertTrue(Path(r['path']).exists())
 
+    def test_spot_pairs_publish_only_after_all_pages(self):
+        def fetch(url):
+            query=parse_qs(urlparse(url).query)
+            if 'cursor' not in query:
+                return {'products':[{'product_id':'SOL-USDC','product_type':'SPOT'}],
+                        'pagination':{'has_next':True,'next_cursor':'next'}}
+            return {'products':[{'product_id':'BTC-USD','product_type':'SPOT'},{'product_id':'SOL-USDC','product_type':'SPOT'}],
+                    'pagination':{'has_next':False}}
+        result=cb.download_spot_pairs(fetch)
+        self.assertTrue(result['complete']); self.assertEqual(result['count'],2)
+        self.assertEqual(cb.spot_pairs('sol')['pairs'],['SOL-USDC'])
+        self.assertEqual(cb.spot_pairs()['count'],2)
+
+    def test_spot_pagination_failure_preserves_last_complete_catalog(self):
+        cb._store(cb.spot_pairs_path(),{'complete':True,'count':1,'products':[{'product_id':'OLD-USD'}]})
+        def fetch(url):
+            return {'products':[{'product_id':'SOL-USDC','product_type':'SPOT'}],
+                    'pagination':{'has_next':True,'next_cursor':'stalled'}}
+        with self.assertRaisesRegex(ValueError,'pagination stalled'):
+            cb.download_spot_pairs(fetch)
+        self.assertEqual(cb.spot_pairs()['pairs'],['OLD-USD'])
+
     def test_balance_pages_are_validated_before_replacing_snapshot(self):
         cb._store(cb.storage_dir() / 'account.json', {'accounts': [{'currency': 'OLD'}]})
         def call(args):
