@@ -81,6 +81,17 @@ class Configs(Isolated):
         self.assertEqual(bots.get_config("grid", "ETH")["range_pct"], 20)
         self.assertEqual(bots.config_mode("grid", "ETH"), "manual")
 
+    def test_single_coin_experiment_uses_that_coins_current_settings(self) -> None:
+        from soltui import commands, experiment_runner
+        bots.save_config("grid", {"range_pct": 25}, coin="SOL")
+        ctx = commands.Context.from_settings(self.settings)
+        schema = commands.dispatch("experiments.schema", {"bot": "grid", "asset": "SOL"}, ctx=ctx, quiet=True)
+        self.assertEqual(schema["result"]["baseline"]["range_pct"], 25)
+        options = commands._experiment_options({"bot": "grid", "coins": ["SOL"]})
+        self.assertEqual(options["config_coin"], "SOL")
+        preview = experiment_runner.preview_experiment("grid", self.settings, **options)
+        self.assertEqual(preview["baseline"]["range_pct"], 25)
+
     def test_coin_settings_are_independent_and_feed_backtests(self) -> None:
         bots.save_config("grid", {"spacing": "arith", "range_pct": 10}, coin="SOL")
         bots.save_config("grid", {"spacing": "geom", "range_pct": 25}, coin="BTC")

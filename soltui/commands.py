@@ -2654,14 +2654,17 @@ def _experiment_options(p: dict[str, Any]) -> dict[str, Any]:
                                                 or int(value) != value):
             raise CommandError("bad_params", f"{name} must be an integer")
         out[name] = value if name in {"space", "coins"} else int(value)
+    if str(p.get("bot") or "").strip().lower() != "triangle" and len(out.get("coins", [])) == 1:
+        out["config_coin"] = out["coins"][0]
     return out
 
 
-@command("experiments.schema", "Current bot configuration and typed search parameter domains.", (BOT_PARAM,))
+@command("experiments.schema", "Current bot configuration and typed search parameter domains.",
+         (BOT_PARAM, P("asset", "string", "Optional single coin for its effective settings.")))
 def experiments_schema(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots
     bot = _bot_param(p)
-    return _experiment(lambda: {"bot": bot, "baseline": bots.get_config(bot), "domains": bots.DOMAINS[bot]})
+    return _experiment(lambda: {"bot": bot, "baseline": bots.get_config(bot, p.get("asset")), "domains": bots.DOMAINS[bot]})
 
 
 @command("experiments.preview", "Validate a bounded search and preview actual cached-data workload; no evaluations.",

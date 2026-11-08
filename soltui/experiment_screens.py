@@ -218,7 +218,11 @@ class ExperimentScreen(ModalScreen[None]):
             "exp-compare-table": ("Provenance", "Left", "Right", "Match"),
         }.items():
             self.query_one(f"#{wid}", DataTable).add_columns(*cols)
-        self._command("experiments.schema", {"bot": self.bot}, self._schema)
+        self._schema_coins = tuple(str(c).strip().upper() for c in self.coins) if len(self.coins) == 1 and self.bot != "triangle" else ()
+        schema_params = {"bot": self.bot}
+        if self._schema_coins:
+            schema_params["asset"] = self._schema_coins[0]
+        self._command("experiments.schema", schema_params, self._schema)
         self.refresh_runs()
         if len(self.coins) == 1:
             self.refresh_live_price()
@@ -440,6 +444,9 @@ class ExperimentScreen(ModalScreen[None]):
             "windows": int(self._input("exp-windows")), "window_days": int(self._input("exp-days")),
             "max_candidates": int(self._input("exp-max-candidates")), "max_evaluations": int(self._input("exp-max-evaluations"))}
         coins = [c.strip().upper() for c in self._input("exp-coins").split(",") if c.strip()]
+        current_scope = tuple(coins) if len(coins) == 1 and self.bot != "triangle" else ()
+        if current_scope != self._schema_coins:
+            raise ValueError("Coin scope changed. Reopen the workbench to load the matching current settings.")
         if coins:
             params["coins"] = coins
         return params
@@ -448,8 +455,9 @@ class ExperimentScreen(ModalScreen[None]):
     def preview_search(self) -> None:
         try:
             params = self._search_params()
-        except ValueError:
-            self.query_one("#exp-status", Static).update(Text("Windows, days and budgets must be integers."))
+        except ValueError as exc:
+            message = str(exc) if str(exc).startswith("Coin scope changed.") else "Windows, days and budgets must be integers."
+            self.query_one("#exp-status", Static).update(Text(message))
             return
         self._invalidate()
         self._command("experiments.preview", params, lambda result: self._previewed(result, params))
@@ -476,7 +484,13 @@ class ExperimentScreen(ModalScreen[None]):
 
     @on(Button.Pressed, "#exp-create")
     def create_search(self) -> None:
-        if self._preview_request is None or self._preview_request != self._search_params():
+        try:
+            current = self._search_params()
+        except ValueError as exc:
+            self._invalidate()
+            self.query_one("#exp-status", Static).update(Text(str(exc)))
+            return
+        if self._preview_request is None or self._preview_request != current:
             self._invalidate()
             return
         self.query_one("#exp-create", Button).disabled = True

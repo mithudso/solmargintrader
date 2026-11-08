@@ -541,7 +541,7 @@ def _report(store: ExperimentStore, run_id: str, *, unseal: bool = False) -> dic
     if not spec["windows"]:
         reason = "not enough data to split into train, validation and final holdout windows"
     verdict = {"reliable": reliable, "promotion_eligible": reliable or incremental,
-               "confidence": "confirmed" if reliable else "tentative" if incremental else "insufficient",
+               "confidence": "statistically supported" if reliable else "tentative" if incremental else "insufficient",
                "adopted": False, "saved": False, "changes": [], "best_index": best_index,
                "best_config": best["config"], "best_changes": best["changes"], "test_cells": len(diffs),
                "wins": wins, "losses": losses, "ties": len(diffs) - wins - losses, "p_value": p,

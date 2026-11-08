@@ -10,8 +10,8 @@ All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`,
 logic be tested without driving a terminal, and it mirrors how
 `netdnsmonitor/app.py` stays thin over tested modules.
 
-The Execute tab remains **dry-run only**. The Wallet tab also has a separately
-armed, explicitly confirmed Coinbase manual-order workflow.
+The Execute tab remains **dry-run only**. The Wallet tab has separately armed
+Coinbase live orders, with review by default and an optional quick mode.
 """
 
 from __future__ import annotations
@@ -783,7 +783,7 @@ class SolTuiApp(App):
     """
 
     TITLE = "soltui — SOL strategy console"
-    SUB_TITLE = "paper by default · Coinbase manual orders require review"
+    SUB_TITLE = "paper by default · Coinbase manual orders can be live"
     COMMANDS = App.COMMANDS | {shell.SolCommands}
     CSS = """
     #execute-banner, #live-run-banner {
