@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import shutil
 import tempfile
 import unittest
@@ -13,7 +12,7 @@ from pathlib import Path
 from unittest import mock
 
 from backtester.core.data import SyntheticLoader, frame_to_arrays
-from textual.widgets import DataTable, Input, OptionList, Select, Static, TabbedContent
+from textual.widgets import DataTable, Input, OptionList, Select, TabbedContent
 
 from soltui import analyze as analyze_mod
 from soltui import commands, presets
@@ -182,6 +181,15 @@ class TestEveryPercentageNamesItsSource(Isolated):
                 for i, col in enumerate(table.ordered_columns):
                     header = str(col.label).casefold()
                     cells = [str(table.get_row_at(r)[i]) for r in range(table.row_count)]
+                    if table.id == "available-table" and header == "strategy":
+                        # Titles such as "1 Year Active Supply %" name indicators,
+                        # rather than report a return. Pin them to actual card
+                        # labels; every result column still needs its source label.
+                        from backtester.core.strategy_cards import load_all
+
+                        labels = {card.registry_key or card.name for card in load_all().values()}
+                        self.assertTrue(set(cells) <= labels)
+                        continue
                     if not any("%" in c for c in cells) or header == "% paths +":
                         continue
                     checked += 1

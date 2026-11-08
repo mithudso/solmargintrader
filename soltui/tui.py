@@ -133,6 +133,7 @@ DOCS_TABLE_CAP = 1000
 # parses this file and fails when a button is missing here or names a command that does not exist, so a
 # new button cannot skip the registry (the extension, CLI and API would silently lack its action).
 BUTTON_COMMANDS: dict[str, str] = {
+    "#strategy-cards-refresh": "strategies.cards",
     "#btn-save": "settings.save",
     "#btn-add": "roster.add",
     "#btn-roster-all": "roster.add_all",
