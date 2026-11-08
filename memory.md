@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 69
-Delta: v68 to v69; Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder).
+Version: 71
+Delta: v70 to v71; Base wallet implementation and live acceptance verified. Previous delta: Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder).
 
 ## v1 - 2026-11-06
 
@@ -717,3 +717,23 @@ Completed: `soltui/bots_screens.py` (coin picker, auto-optimize window with the 
 Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backtest from the start of data runs 2021-06-17 (SOL) and 2019-11-09 (BTC).
 
 Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.
+
+## v70 - 2026-11-08: Base wallet discovery (TASK-911)
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba75; branch agent-01a1ba75; base afaa03a. Preserve the shared checkout and all other worktrees.
+
+Verified Base llms-full live: ETH uses eth_getBalance(address, latest), ERC-20 uses eth_call balanceOf(address); RPC alone does not enumerate tokens. Context7 cached pending/Flashblocks guidance is stale; current live docs explicitly prefer latest. Live baseline discovers ETH, USDC and gtUSDCp but Blockscout returns HTTP 403 and no other tokens can be discovered. The configured cdp CLI returns paginated balances successfully (100 rows on first page). KNOW-852 describes that existing indexed source.
+
+Decision: use the configured cdp CLI for indexed balances, bounded pages/timeouts and sanitized failures, with public Blockscout/trusted RPC fallback. SolTUI must never load private keys or call unknown unsolicited token contracts. Preserve price confidence and airdrop exclusions.
+
+Remaining: implement, focused regression tests, live acceptance and suite/docs/index gates, commit/push/PR/green CI/merge, verify remote content.
+
+## v71 - 2026-11-08: Base wallet verification
+
+Implemented in soltui/wallet.py, commands.py and tui.py: bounded configured CDP CLI balance pages, paginated Blockscout fallback, trusted/requested RPC balance checks, indexed provenance, safe malformed responses, conservative unknown-token exclusions and batched price URLs. No private keys or credential files loaded. CLI stderr is sanitized. Corrected AERO wallet-list address to the canonical address already recorded in docs/BASE-WALLET-QUERIES.md; liquidity configuration stays unchanged.
+
+Verification: 12 new regression tests. 90 wallet/settings/integration tests pass; 73 wallet/Ethereum/UTXO tests pass. Independent live-acceptance verifier exercised the production _portfolio_scan handler with saved Settings: status ok, partial false; ETH 0.000558130650770097, USDC 1.0, gtUSDCp 77.44216571536937; 387 unrecognized rows excluded. Wallet compose/render shows those assets and indexed/exclusion labels. Full SolTUI suite running in /tmp/soltui-base-suite-01a1ba75.log.
+
+Installation limit: /Users/mitch/.local/bin/soltui delegates to shared /Users/mitch/dev/solmargintrader at a75f5b6. Two running consoles have already imported old code. The shared checkout is held by other live sessions and has unrelated dirty work; do not change it or kill/restart their processes. Deliver the merged source; fast-forward the shared checkout and reopen consoles only after those owners release it. Avoid import overlays or silently retargeting the launcher.
+
+Remaining: full suite/docs/index checks, final diff, commit/push/PR/passing CI/merge, verify remote content. Installed-console parity is not yet established.

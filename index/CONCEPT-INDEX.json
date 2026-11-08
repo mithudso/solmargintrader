@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T08:56:28+00:00",
+  "generatedAt": "2026-11-08T09:34:06+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -130,16 +130,16 @@
           "hits": 20
         },
         {
+          "path": "memory.md",
+          "hits": 20
+        },
+        {
           "path": "docs/API.md",
           "hits": 20
         },
         {
           "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
           "hits": 20
-        },
-        {
-          "path": "memory.md",
-          "hits": 19
         },
         {
           "path": "docs/code-deep-optimizer-2026-11-06.md",
@@ -246,7 +246,7 @@
         },
         {
           "path": "soltui/wallet.py",
-          "hits": 48
+          "hits": 47
         },
         {
           "path": "extension/src/market/holdings.js",
@@ -1444,16 +1444,16 @@
           "hits": 11
         },
         {
+          "path": "memory.md",
+          "hits": 10
+        },
+        {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 10
         },
         {
           "path": "backtester/tests/test_deflated_sharpe.py",
           "hits": 10
-        },
-        {
-          "path": "memory.md",
-          "hits": 9
         },
         {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
@@ -1582,15 +1582,15 @@
           "hits": 7
         },
         {
+          "path": "memory.md",
+          "hits": 7
+        },
+        {
           "path": "backtester/core/strategies/__init__.py",
           "hits": 6
         },
         {
           "path": "backtester/tests/test_signal_redundancy.py",
-          "hits": 6
-        },
-        {
-          "path": "memory.md",
           "hits": 6
         },
         {

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 51
-Delta: v50 to v51; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields.
+Version: 52
+Delta: v51 to v52; Base wallet discovery repair. Previous delta: Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields.
 
 ## v1 - 2026-11-06
 
@@ -377,3 +377,9 @@ WHen I'm in teh Bots tab and click Auto-optimize (all coins), it should open the
 ```
 
 Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch feat/bots-tab-v2).
+
+## v52 - 2026-11-08
+
+```text
+Look at https://docs.base.org/llms-full.txt and determine how to check the coins in a wallet, and then implement that in this repo, the soltui cannot check my base chain accounts.
+```

@@ -1,9 +1,10 @@
 """Read-only wallet discovery: what the owner's two public addresses hold, and where it lives.
 
 Nothing here can move funds. There is no key, no signature, no transaction and no write to a chain:
-only public JSON-RPC reads (`getBalance`, `getTokenAccountsByOwner`, `getProgramAccounts`,
+only JSON-RPC reads (`getBalance`, `getTokenAccountsByOwner`, `getProgramAccounts`,
 `eth_getBalance`, `eth_call` to `balanceOf`), the public Jupiter, DefiLlama and DexScreener price
-APIs, and, when it is reachable, Blockscout's token list. No API key is used or stored anywhere.
+APIs, the optional configured CDP CLI's indexed balances, and Blockscout's token list.
+SolTUI never loads or stores an API credential; the CDP CLI manages its own API authentication.
 
 ## What it finds
 
@@ -16,16 +17,17 @@ APIs, and, when it is reachable, Blockscout's token list. No API key is used or 
 
 ## Honest limits
 
-* Blockscout sits behind a Cloudflare challenge for scripts, so it often answers 403. When it does
-  the scan says so and falls back to checking a known set of Base tokens by `eth_call`: a built-in
+* The configured CDP CLI discovers Base tokens across all balance pages. Without it, Blockscout is
+  the fallback. Blockscout often answers 403. If both fail, the scan says so and checks known
+  Base tokens by `eth_call`: a built-in
   list, the tokens the liquidity daemon watches, and any `tokens=[...]` the caller adds. A token
   sent to the address that is in none of those is **not discoverable without an indexer**; the scan
   says that too instead of implying it saw everything.
 * A fallback RPC or price source that fails produces a **partial** result with the error named, never
   an exception and never a silently smaller total.
-* Unsolicited airdrop tokens are flagged and left out of every total. They are only read: this module
-  never calls a token contract's functions other than the standard views (`balanceOf`, `symbol`,
-  `decimals`, `name`), never visits a token's site and never signs or approves anything.
+* Unrecognized indexed tokens are flagged and left out of totals until explicitly requested or
+  trusted by the built-in/daemon lists. Their balances and metadata come from the indexer. This
+  module never calls their contracts or visits their sites, and never signs or approves anything.
 
 Every figure is labelled `wallet (live)`: it is a read of real money at the time of the scan.
 """
@@ -36,7 +38,9 @@ import json
 import math
 import os
 import re
+import shutil
 import stat as stat_mod
+import subprocess
 import time
 import urllib.error
 import urllib.parse
@@ -79,7 +83,7 @@ KNOWN_BASE_TOKENS = (
     ("0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb", "DAI", 18),
     ("0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf", "cbBTC", 8),
     ("0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22", "cbETH", 18),
-    ("0x3f5bF3EdAc59d650D8fDf9657a71F2f904A3a4Ee", "AERO", 18),
+    ("0x940181a94A35A4569E4529A3CDfB74e38FD98631", "AERO", 18),
     ("0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452", "wstETH", 18),
     ("0x60a3E35Cc302bFA44Cb288Bc5a4F316Fdb1adb42", "EURC", 6),
     ("0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2", "USDT", 6),
@@ -106,6 +110,8 @@ _SPAM_TEXT = re.compile(
     re.IGNORECASE)
 MIN_LIQUIDITY_USD = 5_000.0
 DUST_USD = 0.0001
+NATIVE_EVM = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+MAX_TOKEN_PAGES = 25
 
 _B58 = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
 _EVM = re.compile(r"^0x[0-9a-fA-F]{40}$")
@@ -166,7 +172,10 @@ class HttpFetcher:
             self._last[host] = self._clock()
             req = urllib.request.Request(url, data=data, headers=headers)
             try:
-                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                remaining = self._deadline - self._clock()
+                if remaining <= 0:
+                    raise WalletHttpError(0, "scan time budget used up")
+                with urllib.request.urlopen(req, timeout=min(self.timeout, remaining)) as resp:
                     return json.loads(resp.read().decode("utf-8"))
             except urllib.error.HTTPError as exc:
                 if exc.code in (429, 500, 502, 503, 504) and attempt < self.retries:
@@ -186,6 +195,40 @@ class HttpFetcher:
             except ValueError as exc:
                 raise WalletHttpError(0, f"{host} sent something that is not JSON: {exc}") from None
         raise WalletHttpError(0, f"{host}: gave up")
+
+    def base_token_balances(self, address: str, page_token: str | None = None) -> Any:
+        """Read one indexed page through the optional, independently configured CDP CLI.
+
+        The CLI owns its API credentials. This process never loads them, forwards stderr, or invokes
+        a signing command. Fixed argv and closed stdin prevent shell expansion and login prompts.
+        """
+        if not valid_evm_address(address):
+            raise WalletHttpError(0, "invalid Base address")
+        executable = shutil.which("cdp")
+        if executable is None:
+            # GUI launchers often omit Homebrew from PATH.
+            executable = next((p for p in ("/opt/homebrew/bin/cdp", "/usr/local/bin/cdp")
+                               if os.path.isfile(p) and os.access(p, os.X_OK)), None)
+        if executable is None:
+            raise WalletHttpError(0, "CDP CLI unavailable; install and configure cdp for indexed discovery")
+        remaining = self._deadline - self._clock()
+        if remaining <= 0:
+            raise WalletHttpError(0, "scan time budget used up")
+        argv = [executable, "data", "evm", "token-balances", "base", address, "pageSize==100"]
+        if page_token:
+            argv.append("pageToken==" + page_token)
+        try:
+            result = subprocess.run(argv, stdin=subprocess.DEVNULL, capture_output=True, text=True,
+                                    timeout=min(self.timeout, remaining), check=False)
+        except (OSError, subprocess.TimeoutExpired):
+            raise WalletHttpError(0, "CDP balance request could not finish") from None
+        if result.returncode:
+            # CLI errors may contain authentication details; expose only the remedy.
+            raise WalletHttpError(0, "CDP balance request failed; check cdp environment and API access")
+        try:
+            return json.loads(result.stdout)
+        except ValueError:
+            raise WalletHttpError(0, "CDP balance reply was not JSON") from None
 
 
 # -- result shapes ------------------------------------------------------------------------------------
@@ -225,7 +268,7 @@ class ChainScan:
         flagged = [h for h in self.holdings if h["airdrop"]]
         got_any = bool(self.native or self.holdings or self.stakes or self.positions)
         status = "ok" if not self.errors else ("partial" if got_any else "error")
-        return {**self.extra, "unpriced": unpriced, "total_complete": not unpriced,
+        return {**self.extra, "unpriced": unpriced, "total_complete": not unpriced and not self.errors,
             "chain": self.chain, "label": LABEL, "address": self.address, "status": status,
             "total_usd": total, "native": self.native,
             "holdings": self.holdings, "stakes": self.stakes, "positions": self.positions,
@@ -430,20 +473,17 @@ def _pad(addr: str) -> str:
 
 
 def _hex_int(value: Any) -> int | None:
-    if isinstance(value, str) and value.startswith("0x") and len(value) > 2:
-        try:
-            return int(value, 16)
-        except ValueError:
-            return None
-    return 0 if value == "0x" else None
+    if isinstance(value, str) and re.fullmatch(r"0x[0-9a-fA-F]{1,64}", value):
+        return int(value, 16)
+    return None
 
 
 def _decode_string(value: Any) -> str | None:
     """ABI string, or the bytes32 some old tokens return, decoded; None when it is neither."""
     if not isinstance(value, str) or not value.startswith("0x") or len(value) < 66:
         return None
-    raw = bytes.fromhex(value[2:])
     try:
+        raw = bytes.fromhex(value[2:])
         if len(raw) >= 96:
             length = int.from_bytes(raw[32:64], "big")
             if 0 < length <= len(raw) - 64:
@@ -487,6 +527,95 @@ def daemon_context(status: dict[str, Any] | None, ledger_tokens: list[str] | Non
     return {"tokens": tokens, "positions": positions, "mode": (status or {}).get("mode")}
 
 
+def _raw_token_amount(value: Any, decimals: Any) -> tuple[int, int]:
+    """Reject malformed indexed amounts before scaling; never round an integer through float."""
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9]{1,78}", value):
+        raise WalletHttpError(0, "invalid indexed token amount")
+    if isinstance(decimals, bool) or not isinstance(decimals, (str, int)) or not str(decimals).isdigit():
+        raise WalletHttpError(0, "invalid indexed token decimals")
+    dec = int(decimals)
+    if not 0 <= dec <= 255:
+        raise WalletHttpError(0, "invalid indexed token decimals")
+    return int(value), dec
+
+
+def _base_indexed_tokens(address: str, fetch: Fetch, scan: ChainScan) -> tuple[dict, bool]:
+    """CDP first, then paginated Blockscout. Retain earlier pages if a later page fails."""
+    indexer: dict[str, dict[str, Any]] = {}
+    read_page = getattr(fetch, "base_token_balances", None)
+    if callable(read_page):
+        cursor = None
+        seen: set[str] = set()
+        try:
+            for _ in range(MAX_TOKEN_PAGES):
+                reply = read_page(address, cursor)
+                if not isinstance(reply, dict) or not isinstance(reply.get("balances"), list):
+                    raise WalletHttpError(0, "CDP balance reply has no balances list")
+                for row in reply["balances"]:
+                    if not isinstance(row, dict):
+                        raise WalletHttpError(0, "invalid CDP balance row")
+                    tok, amt = row.get("token"), row.get("amount")
+                    if not isinstance(tok, dict) or not isinstance(amt, dict):
+                        raise WalletHttpError(0, "invalid CDP token metadata")
+                    addr = str(tok.get("contractAddress") or "")
+                    if not valid_evm_address(addr) or tok.get("network") != "base":
+                        raise WalletHttpError(0, "invalid CDP token address or network")
+                    raw, dec = _raw_token_amount(amt.get("amount"), amt.get("decimals"))
+                    indexer[addr.lower()] = {
+                        "token": {"address_hash": addr, "symbol": tok.get("symbol"),
+                                  "name": tok.get("name"), "decimals": dec},
+                        "item": {"value": str(raw)}, "via": "cdp"}
+                cursor = reply.get("nextPageToken")
+                if not cursor:
+                    scan.notes.append("Base token discovery: CDP indexed balances (all pages); "
+                                      "trusted tokens verified by balanceOf; other balances are indexed reads")
+                    return indexer, True
+                if not isinstance(cursor, str) or cursor in seen:
+                    raise WalletHttpError(0, "CDP pagination repeated or invalid cursor")
+                seen.add(cursor)
+            raise WalletHttpError(0, "CDP token page limit reached; discovery is incomplete")
+        except WalletHttpError as exc:
+            scan.error("cdp token list", exc)
+
+    params: dict[str, Any] = {"type": "ERC-20"}
+    seen_pages: set[str] = set()
+    try:
+        for _ in range(MAX_TOKEN_PAGES):
+            query = urllib.parse.urlencode(params)
+            reply = fetch(f"{BLOCKSCOUT}/addresses/{address}/tokens?{query}")
+            if not isinstance(reply, dict) or not isinstance(reply.get("items"), list):
+                raise WalletHttpError(0, "Blockscout reply has no items list")
+            for item in reply["items"]:
+                if not isinstance(item, dict) or not isinstance(item.get("token"), dict):
+                    raise WalletHttpError(0, "invalid Blockscout token row")
+                tok = item["token"]
+                if tok.get("type", "ERC-20") != "ERC-20":
+                    continue
+                addr = str(tok.get("address_hash") or tok.get("address") or "")
+                if not valid_evm_address(addr):
+                    raise WalletHttpError(0, "invalid Blockscout token address")
+                _raw_token_amount(item.get("value"), tok.get("decimals"))
+                indexer.setdefault(addr.lower(), {"item": item, "token": tok, "via": "blockscout"})
+            next_params = reply.get("next_page_params")
+            if not next_params:
+                return indexer, True
+            if not isinstance(next_params, dict):
+                raise WalletHttpError(0, "invalid Blockscout pagination")
+            cursor = json.dumps(next_params, sort_keys=True)
+            if cursor in seen_pages:
+                raise WalletHttpError(0, "Blockscout pagination repeated cursor")
+            seen_pages.add(cursor)
+            params = {**next_params, "type": "ERC-20"}
+        raise WalletHttpError(0, "Blockscout token page limit reached; discovery is incomplete")
+    except WalletHttpError as exc:
+        why = "blocked by Cloudflare" if exc.status == 403 else str(exc)
+        scan.error("blockscout token list", WalletHttpError(exc.status, f"{why} ({exc})"))
+        scan.notes.append("token discovery incomplete: only available indexed pages, the built-in list, "
+                          "the liquidity daemon's tokens and tokens you pass in were checked. "
+                          "Other tokens cannot be discovered without an indexer")
+    return indexer, False
+
+
 def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
               daemon: dict[str, Any] | None = None, extra_tokens: list[str] | None = None) -> ChainScan:
     scan = ChainScan("base", address)
@@ -505,7 +634,10 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
 
     # 1. native ETH
     raw = call_rpc("base eth_getBalance", lambda u: _rpc(fetch, u, "eth_getBalance", [address, "latest"]))
-    eth = (_hex_int(raw) or 0) / 1e18 if raw is not None else None
+    wei = _hex_int(raw)
+    if wei is None and not any(e["source"] == "base eth_getBalance" for e in scan.errors):
+        scan.error("base eth_getBalance", WalletHttpError(0, "invalid ETH balance reply"))
+    eth = wei / 1e18 if wei is not None else None
     if eth is not None:
         scan.native = {"symbol": "ETH", "name": "Ether", "amount": eth, "price_usd": None, "usd": None,
                        "source": LABEL, "kind": "native"}
@@ -522,44 +654,47 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
         if valid_evm_address(addr):
             candidates.setdefault(addr.lower(), {"address": addr, "symbol": None, "decimals": None,
                                                  "name": None, "known": False, "via": "requested"})
-    indexer: dict[str, dict[str, Any]] = {}
-    indexer_ok = False
-    try:
-        reply = fetch(f"{BLOCKSCOUT}/addresses/{address}/tokens?type=ERC-20")
-        for item in (reply or {}).get("items", []):
-            tok = item.get("token") or {}
-            addr = str(tok.get("address_hash") or tok.get("address") or "")
-            if valid_evm_address(addr):
-                indexer[addr.lower()] = {"item": item, "token": tok}
-        indexer_ok = True
-    except WalletHttpError as exc:
-        why = "blocked by Cloudflare" if exc.status == 403 else str(exc)
-        scan.error("blockscout token list", WalletHttpError(exc.status, f"{why} ({exc})"))
-        scan.notes.append("no token indexer answered: only the built-in list, the liquidity daemon's tokens "
-                          "and tokens you pass in were checked. A token sent here that is in none of "
-                          "those cannot be discovered without an indexer")
+    indexer, complete = _base_indexed_tokens(address, fetch, scan)
+    scan.extra["token_discovery_complete"] = complete
     for addr, entry in indexer.items():
         tok = entry["token"]
-        c = candidates.setdefault(addr, {"address": _checksumless(addr), "known": False, "via": "blockscout"})
+        if addr == NATIVE_EVM:
+            if scan.native is None:
+                raw, dec = _raw_token_amount(entry["item"]["value"], tok["decimals"])
+                scan.native = {"symbol": "ETH", "name": "Ether", "amount": raw / 10 ** dec,
+                               "price_usd": None, "usd": None, "source": LABEL, "kind": "native",
+                               "verified_onchain": False, "discovered_via": entry["via"]}
+            continue
+        c = candidates.setdefault(addr, {"address": tok.get("address_hash") or addr,
+                                         "known": False, "via": entry["via"]})
         c.setdefault("symbol", None)
         c["symbol"] = c.get("symbol") or tok.get("symbol")
         c["name"] = c.get("name") or tok.get("name")
         dec = _num(tok.get("decimals"))
         c["decimals"] = c.get("decimals") if c.get("decimals") is not None else (None if dec is None else int(dec))
-        c["indexer_value"] = _num(entry["item"].get("value"))
+        c["indexer_value"] = int(entry["item"]["value"])
         c["indexer_rate"] = _num(tok.get("exchange_rate"))
 
-    # 3. on-chain balances for every candidate (the indexer's number is never trusted alone)
+    # 3. Only call trusted or explicitly requested contracts. Indexed airdrops stay indexed reads.
     addrs = sorted(candidates)
-    balances: dict[str, int | None] = {}
-    for i in range(0, len(addrs), 40):
-        chunk = addrs[i:i + 40]
+    rpc_addrs = [a for a in addrs if candidates[a]["known"] or candidates[a]["via"] == "requested"]
+    verified: set[str] = set()
+    balances: dict[str, int | None] = {a: c.get("indexer_value") for a, c in candidates.items()}
+    for i in range(0, len(rpc_addrs), 40):
+        chunk = rpc_addrs[i:i + 40]
         out = call_rpc("base balanceOf batch", lambda u, ch=chunk: _batch(
             fetch, u, [_eth_call(a, ERC20_BALANCE_OF + _pad(address)) for a in ch]))
         for a, res in zip(chunk, out or [None] * len(chunk)):
-            balances[a] = _hex_int(res)
+            value = _hex_int(res)
+            if value is not None:
+                balances[a] = value
+                verified.add(a)
+            elif balances.get(a) is not None:
+                scan.error("base balanceOf", WalletHttpError(0, f"{a}: using indexed balance; RPC read failed"))
+            else:
+                scan.error("base balanceOf", WalletHttpError(0, f"{a}: RPC balance unavailable"))
     # metadata for tokens that came without it
-    need = [a for a in addrs if balances.get(a) and (candidates[a].get("decimals") is None
+    need = [a for a in rpc_addrs if balances.get(a) and (candidates[a].get("decimals") is None
                                                       or not candidates[a].get("symbol"))]
     if need:
         calls = [c for a in need for c in (_eth_call(a, ERC20_DECIMALS), _eth_call(a, ERC20_SYMBOL),
@@ -577,22 +712,24 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
     if skipped and not any(e["source"] == "base balanceOf batch" for e in scan.errors):
         scan.notes.append(f"{skipped} token(s) did not answer balanceOf and are not listed")
 
-    # 4. prices: DefiLlama in one call, DexScreener for what it did not price
+    # 4. prices: bounded DefiLlama batches, DexScreener for what it did not price
     price: dict[str, float] = {}
     liquidity: dict[str, float] = {}
     if held or scan.native:
         keys = [f"base:{c['address']}" for c in held.values()] + ["coingecko:ethereum"]
-        try:
-            reply = fetch(LLAMA_PRICES + ",".join(keys))
-            coins = (reply or {}).get("coins", {})
+        coins: dict[str, Any] = {}
+        for i in range(0, len(keys), 40):
+            try:
+                reply = fetch(LLAMA_PRICES + ",".join(keys[i:i + 40]))
+                coins.update((reply or {}).get("coins", {}))
+            except WalletHttpError as exc:
+                scan.error("defillama prices", exc)
+        if coins:
             for a, c in held.items():
                 p = coins.get(f"base:{c['address']}") or coins.get(f"base:{a}") or {}
                 if _num(p.get("price")) is not None and (_num(p.get("confidence")) or 0.0) >= 0.5:
                     price[a] = _num(p["price"])
-            eth_price = _num((coins.get("coingecko:ethereum") or {}).get("price"))
-        except WalletHttpError as exc:
-            scan.error("defillama prices", exc)
-            eth_price = None
+        eth_price = _num((coins.get("coingecko:ethereum") or {}).get("price"))
         unpriced = [c["address"] for a, c in held.items() if a not in price]
         for i in range(0, len(unpriced), 30):
             chunk = unpriced[i:i + 30]
@@ -628,7 +765,7 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
             dust += 1      # e.g. 9e-18 DAI left behind by a swap; listing it would only be noise
             continue
         mismatch = None
-        if indexer_ok and c.get("indexer_value") is not None:
+        if a in verified and c.get("indexer_value") is not None:
             ind = c["indexer_value"] / (10 ** dec)
             if abs(ind - amount) > 0.005 * max(amount, 1e-18):
                 mismatch = f"indexer said {ind:g}, on-chain balanceOf says {amount:g}; on-chain used"
@@ -636,10 +773,12 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
         reasons = airdrop_reasons(str(c.get("symbol") or ""), str(c.get("name") or ""), price=px,
                                   liquidity=liquidity.get(a), verified=False,
                                   known=bool(c.get("known")))
+        if not c.get("known") and c["via"] != "requested":
+            reasons.append("unrecognized indexed token; excluded until explicitly requested")
         scan.holdings.append({
             "symbol": c.get("symbol") or "?", "name": c.get("name") or "", "address": c["address"],
             "amount": amount, "price_usd": px, "usd": None if px is None else amount * px,
-            "verified_onchain": True, "indexer_mismatch": mismatch, "discovered_via": c["via"],
+            "verified_onchain": a in verified, "indexer_mismatch": mismatch, "discovered_via": c["via"],
             "airdrop": bool(reasons), "airdrop_reasons": reasons, "included": not reasons,
             "source": LABEL, "kind": "erc20", "link": base_links(c["address"], "token")})
         scan.contracts.append({"holding": c.get("symbol") or "?", "kind": "token contract",

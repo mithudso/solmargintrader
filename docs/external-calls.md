@@ -122,3 +122,14 @@ report track smaller grounded fixes separately.
 
 This inventory is manually reviewed. `scripts/check_docs.py` checks counts and retrieval
 paths, not transport coverage; a new external call does not automatically fail CI.
+
+## SolTUI Base wallet discovery
+
+`soltui/wallet.py:HttpFetcher.base_token_balances` invokes the configured `cdp data evm token-balances
+base <public-address> pageSize==100 [pageToken==<cursor>]` read command. The independent CDP CLI owns
+API authentication. SolTUI never loads its credentials or a wallet key. Each subprocess has closed
+stdin, no shell, captured output, a deadline, and sanitized errors. Discovery follows at most 25 pages.
+If CDP fails, the scanner tries paginated Blockscout and public RPC checks for trusted/requested tokens.
+Unknown indexed tokens cause no contract calls. DefiLlama price URLs contain at most 40 identifiers.
+`soltui/tests/test_wallet.py:BaseDiscoveryTests` covers pagination, partial failures, malformed amounts,
+read-only argv, credential-safe errors and the unsolicited-contract boundary.
