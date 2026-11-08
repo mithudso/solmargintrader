@@ -72,4 +72,4 @@ New core modules: `soltui/experiments.py`, `soltui/experiment_runner.py`, `soltu
 | Compile | complete | p helper backed up and appended 7 sourced facts plus routing entry |
 | Self-check | 8/8 | deterministic helper, no invalid artifacts |
 
-Full-suite, required CI, merge and installation-boundary receipts are maintained in TASK-962 rather than inferred from this pre-merge document. The shared checkout's unrelated work is preserved.
+The complete SolTUI suite passed: 947 tests in 721.036 seconds, with two expected skips. New Python modules/tests pass Ruff; documentation counts, offline index hashes, card coverage and 11 HTML converter tests pass. Required final-commit CI, merge and installation-boundary receipts are maintained in TASK-962 rather than inferred from this pre-merge document. The shared checkout's unrelated work is preserved.

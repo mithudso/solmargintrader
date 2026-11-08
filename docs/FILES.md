@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `1f72841` (2026-11-08T12:13:15+00:00). 1884 tracked files, 31.1 MB.
+**Generated** from `index/INDEX.json` at commit `3be4381` (2026-11-08T12:14:19+00:00). 1884 tracked files, 31.1 MB.
 
 Regenerate with:
 
@@ -193,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1107 lines · 166,408 B · description: **extracted**
+`doc` · 1111 lines · 166,627 B · description: **extracted**
 
-**Purpose.** Version: 109 Delta: v108 to v109; record final source/acceptance checkpoint and delivery receipt location. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 110 Delta: v109 to v110; record passing full suite and ready-for-delivery checkpoint. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18437 lines · 916,968 B · description: **extracted**
+`doc` · 18437 lines · 916,971 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -489,7 +489,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/optimization-workbench-run.md`
 
-`doc` · 76 lines · 5,154 B · description: **extracted**
+`doc` · 76 lines · 5,372 B · description: **extracted**
 
 **Purpose.** Version: 1 Delta: initial implementation, review and acceptance record. Goal: implement all six accepted comparison recommendations.
 

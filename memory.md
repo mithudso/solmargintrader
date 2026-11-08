@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 109
-Delta: v108 to v109; record final source/acceptance checkpoint and delivery receipt location.
+Version: 110
+Delta: v109 to v110; record passing full suite and ready-for-delivery checkpoint.
 
 ## v1 - 2026-11-06
 
@@ -1097,10 +1097,14 @@ Remaining: verify final review fixes and loaded UI; full relevant suite, accurat
 
 ## v109 - 2026-11-08: final source and acceptance checkpoint
 
-Source committed as8726780 and currentdefault integrated as1f72841; concurrent incoming prompt/memory histories retained, own prompt nowv60 and continuation entriesv106-v109. No other session's files were edited.
+The source was committed as 8726780 and the current default integrated as 1f72841. Concurrent incoming prompt/memory histories were retained. The task prompt is now v60; task continuation entries are v106 onward. Other sessions' working files were preserved.
 
-All six features implemented. Independent review reproduced and then cleared all3concrete findings. Actual native CLI, detached worker controls, source hashes, real simulator, CSV comparison and80x24/160x55headlessUI passed; actualBotsentry openedtheworkbench. Installedwrapper originallyexposed91commands; verifiedfeaturecode exposes105including14experiments actions. Installation may synchronize only after finalmerge and preservation/overlap checks; no service restart is required or authorized by this checkpoint.
+All six features are implemented. Independent review reproduced and cleared three findings. Actual native CLI, detached worker controls, simulator results, CSV comparison and 80x24/160x55 headless UI passed. The actual Bots entry opened the workbench. The installed wrapper originally exposed 91 commands; verified feature code exposes 105, including 14 experiment actions. Synchronize installation only after final merge and preservation/overlap checks. No service restart is required.
 
-Validation:27newrunner tests,36foundation/interface tests and existing optimization/config/parity tests pass; newPythonmodules/tests Ruffpass. Fullsuite discovery947SolTUI tests (63additional),900backtester,34mongo,361extension; documentation total2242. Full947caseSolTUI run is active atthispre-merge checkpoint. Docs/countcheck,offlineindexhashcheck,cardcoveragevalidator and11HTMLconverter tests pass. phelper orchestration self-check8/8; rootllmsfacts/index appended withsourcebindings andbackups cleaned.
+The orchestration helper passed 8/8. The root llms facts/index received sourced additions and helper backups were removed. Consult TASK-962 for subsequent delivery receipts before repeating work. Preserve unrelated research JSON and untracked application files during default-branch sync.
 
-Continuation: TASK-962 is the canonical live receipt for full-suite result, requiredfinalcommitCI, PR/merge identity, remotecontentverification, safeinstalledcheckoutsync andcleanup. Consult that receipt before repeating work. This record is committed before the merge; subsequent delivery receipts live in the task so no self-referential mergecommit is claimed here. Preserve anyunrelatedresearchJSON anduntrackedapplicationfiles during default-branch sync.
+## v110 - 2026-11-08: full verification passed
+
+The complete SolTUI suite passed: 947 tests in 721.036 seconds, with two expected skips. Resource warnings were treated as errors. This includes 63 additional test cases. New Python modules and dedicated tests pass Ruff. Documentation counts agree: 900 backtester, 947 SolTUI, 34 mongo, 361 extension; total 2242. Offline repository index hashes agree. The card coverage validator and 11 HTML converter tests pass.
+
+All six implementation capabilities, independent review fixes and actual loaded private-worktree acceptance are complete. Remaining delivery actions are required final-commit CI, merge, remote-content verification, safe default-checkout synchronization, installed-command parity and task-owned cleanup. TASK-962 holds the canonical live delivery receipt; this pre-merge record deliberately does not invent its own future merge SHA.
