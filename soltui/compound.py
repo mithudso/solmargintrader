@@ -1028,9 +1028,13 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
     if new_call and not any(r.get("type") == "call" for r in written):
         new_call = False  # another writer recorded this bar first
     n_resolved = sum(1 for r in written if r.get("type") == "resolve")
+    horizon_stamp = int(time.time() if now is None else now)
     if new_call:
         saved_call = next(r for r in written if r.get("type") == "call")
-        _record_horizon_calls(asset, saved_call, int(time.time() if now is None else now),
+    else:
+        saved_call = next((r for r in ledger if r.get("type") == "call" and r.get("id") == call_id), None)
+    if saved_call and horizon_stamp < int(saved_call["bar_ts"]) + 600:
+        _record_horizon_calls(asset, saved_call, horizon_stamp,
                               clock=time.time if now is None else lambda: now)
     try:
         horizon_resolved = _resolve_horizons(asset, int(time.time() if now is None else now),
