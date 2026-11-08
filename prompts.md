@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 86
-Delta: v85 to v86; retain the sweep and metric editor requests.
+Version: 87
+Delta: v86 to v87; record the backtest launch error.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -719,4 +719,10 @@ below the 10-trade floor
 
 ```text
 In the signal call and metrics tab when I try and apply edits, I get this error: vwap_side: unknown parameter 'weekend'; known: mode, window, spread_window, scale, atr
+```
+
+## v87 - 2026-11-08
+
+```text
+In the signal backtest tab I get this error: bad value(s) in fds_to_keep
 ```
