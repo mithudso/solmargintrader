@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 203
-Delta: v202 to v203; record delivered parameter range controls.
+Version: 204
+Delta: v203 to v204; preserve recurring optimizer scheduler handoff.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1813,3 +1813,7 @@ The owner provided /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_referenc
 ## v203 - 2026-11-08
 
 Experiment range PR 130 merged as 514edb0651c5ba2c0c25e10f4dc44f6971c085ad after required CI. It shows selected parameter units, baseline defaults and relative percentage controls, with a separate fresh recorder quote when available. The owner confirmed parameter-relative adjustments. Headless installed-entrypoint acceptance passed; the existing console predates delivery. Stele decision queued as outbox 609e92e4.
+
+## v204 - 2026-11-08
+
+TASK-1049 adds a daily recurring bot optimizer, a detached worker and dedicated launchd recovery watchdog. Stop disables recovery and completes the current optimizer call without killing other workers. The scheduler only enables per-coin adoption when the integrated backend declares its safe capability; triangle remains evidence-only. Status exposes last and next runs, partial results and errors. Tests used mocked service calls; the production scheduler has not been started. Integrate with the per-coin backend and verify launchd before claiming it is running.

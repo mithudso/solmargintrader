@@ -659,6 +659,48 @@ class BotsTab(unittest.IsolatedAsyncioTestCase):
             self.assertNotIsInstance(app.screen, OptimizeScreen)
             self.assertIn("SAVED", str(app.query_one("#bots-opt-verdict", Static).render()))
 
+    async def test_daily_schedule_controls_reconnect_and_never_launch_real_service(self) -> None:
+        from textual.widgets import Button, Static, TabbedContent
+        from soltui import bot_scheduler
+        from soltui.tui import SolTuiApp
+
+        state = {"enabled": False, "running": False, "phase": "stopped", "last_run": 100,
+                 "next_run": 200, "last_result": "partial", "error": "SOL failed", "items": []}
+        def start():
+            state.update(enabled=True, running=True, phase="running")
+            return {"pid": 123}
+        def stop():
+            state.update(enabled=False, running=False, phase="stopped")
+            return dict(state)
+        app = SolTuiApp(Settings(data_dir=str(self.data), poll_interval_seconds=60))
+        with mock.patch.object(bot_scheduler, "start", side_effect=start) as started, \
+             mock.patch.object(bot_scheduler, "stop", side_effect=stop) as stopped, \
+             mock.patch.object(bot_scheduler, "status", side_effect=lambda: dict(state)):
+            async with app.run_test(size=(170, 60)) as pilot:
+                app.query_one(TabbedContent).active = "tab-bots"
+                await pilot.pause(.2)
+                await app.workers.wait_for_complete()
+                await pilot.pause()
+                self.assertIn("SOL failed", str(app.query_one("#bots-schedule-summary", Static).render()))
+                app.query_one("#bots-schedule-start", Button).press()
+                await pilot.pause(.2)
+                await app.workers.wait_for_complete()
+                await pilot.pause()
+                started.assert_called_once_with()
+                self.assertIn("enabled True", str(app.query_one("#bots-schedule-summary", Static).render()))
+                app.query_one(TabbedContent).active = "tab-backtest"
+                await pilot.pause()
+                app.query_one(TabbedContent).active = "tab-bots"
+                await pilot.pause(.2)
+                await app.workers.wait_for_complete()
+                self.assertIn("running", str(app.query_one("#bots-schedule-summary", Static).render()))
+                app.query_one("#bots-schedule-stop", Button).press()
+                await pilot.pause(.2)
+                await app.workers.wait_for_complete()
+                await pilot.pause()
+                stopped.assert_called_once_with()
+                self.assertIn("enabled False", str(app.query_one("#bots-schedule-summary", Static).render()))
+
 
 if __name__ == "__main__":
     unittest.main()
