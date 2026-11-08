@@ -1,7 +1,7 @@
 # Prompt history
 
 Version: 95
-Delta: v93 to v95; retain sweep, test status and dry-run requests.
+Delta: v94 to v95; record dry-run usability report.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -771,7 +771,7 @@ previous sweep stopped: its evaluation proof is missing or differs; press Start 
 ## v94 - 2026-11-08
 
 ```text
-For every tab that has a test on it make a status button which opens up the console in the editor and shows the current status of the running operation. If I click off the run button I can't get back to see where it is or what's going onn.
+For every tab that has a test on it make a status button which opens up the console in the editor and shows the current status of the running operation. If I click off the run button I can't get back to see where it is or what's going onn. Also there are several strategies that after hundreds of tests are showing very promising results, create an experiments tab which takes any strategy and runs it as if it were live and in the moment, meaning it makes the calls/predictions, and pretends its real, which will take a long time to watch, that's fine.
 ```
 
 ## v95 - 2026-11-08

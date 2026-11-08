@@ -2681,3 +2681,42 @@ def prices_ensure(ctx: Context, p: dict[str, Any]) -> Any:
 def bots_progress(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
     return bots_mod.runtime().progress.get(_bot_param(p))
+
+
+@command("paperexperiment.start", "Start a prospective, paper-only strategy experiment.",
+         (P("strategy", "string", "Registered strategy name.", required=True),
+          P("asset", "string", "Coin symbol; defaults to Settings asset."),
+          P("minutes", "number", "Forecast horizon: 1, 5 or 30 minutes."),
+          P("capital", "number", "Starting paper dollars."),
+          P("params", "json", "Strategy parameter overrides.")), read_only=False)
+def experiments_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import paper_experiments
+    params = p.get("params") or {}
+    if not isinstance(params, dict):
+        raise CommandError("bad_params", "Strategy parameters must be a JSON object")
+    minutes = p.get("minutes", 5)
+    if minutes not in paper_experiments.HORIZONS:
+        raise CommandError("bad_params", "Choose a 1, 5 or 30 minute horizon")
+    return paper_experiments.start(str(p.get("strategy", "")), str(p.get("asset") or ctx.settings.asset),
+                                   int(minutes), float(p.get("capital", 1000)),
+                                   2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps), params)
+
+
+@command("paperexperiment.resume", "Resume a stopped paper experiment without changing its evidence.",
+         (P("id", "string", "Experiment id.", required=True),), read_only=False)
+def paper_experiment_resume(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import paper_experiments
+    return paper_experiments.resume(str(p["id"]))
+
+
+@command("paperexperiment.stop", "Stop an active paper experiment.",
+         (P("id", "string", "Experiment id.", required=True),), read_only=False)
+def experiments_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import paper_experiments
+    return paper_experiments.stop(str(p["id"]))
+
+
+@command("paperexperiment.status", "List prospective paper experiments and recorded calls.")
+def experiments_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import paper_experiments
+    return {"experiments": paper_experiments.list_experiments()}
