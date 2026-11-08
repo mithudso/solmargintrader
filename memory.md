@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 128
-Delta: v127 to v128; finish delivery without repeating full CI, as instructed.
+Version: 130
+Delta: v129 to v130; install the runtime while preserving concurrent guide edits.
 
 ## v1 - 2026-11-06
 
@@ -1260,3 +1260,27 @@ The owner instructed that another full CI run is unnecessary. This overrides the
 Evidence remains precise: Claude's original full CI passed. Codex started three more runs; two were superseded rather than completed passes, and the third was still running at this checkpoint. The local 898-case run passed with two optional skips. The final combined workbench source passes all sixteen focused shell tests in 26.477 seconds. Independent mounted acceptance verifies the actual Bots workbench button, real schema and preview rendering, clean dismissal, every experiment write palette entry navigating without dispatch, preserved 351/292 card catalog, and 80/100-column navigation. No real optimizer job or service was started.
 
 Commit this fully resolved integration with CI skipped, then verify final 969-case discovery/docs counts, offline index freshness and whitespace before pushing. Update PR93 with the exact verification scope and owner instruction, merge normally, verify the actual remote files, safely activate the canonical launcher under fresh preservation checks, and remove only the private recovery worktree. TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json hold the final live receipts. Preserve the locked original Claude worktree and all unrelated active work.
+
+## v129 - 2026-11-08 (canonical UI activation)
+
+Version: 129. Delta: v128 to v129; recover the actual launcher after the owner merged PR93.
+
+The owner merged PR93 as 9bd7067d30af3a3fad93120d989d8fa409834966 from source 4e4693e. All 27 task paths match the actual merged commit, which is present on remote master. The owner waived repeated full CI; obsolete run 42482448847 was cancelled. The ordinary merge guard had refused the automated merge during its two-minute new-push check-registration window; the owner then merged it.
+
+The launcher still delegates to canonical checkout 3e5a9f3. A normal fast-forward safely refused to overwrite another live session's changes in soltui/commands.py, soltui/help.py and soltui/tui.py. These are guide/card behavior changes and must be preserved. The owner explicitly reports that new console launches still show the old UI. TASK-1002 owns actual activation and blocks final delivery TASK-987.
+
+The guarded runtime writer prepares a private three-way merge against canonical base 3e5a9f3 and merged source 9bd7067. Only the nine required runtime Python files are eligible: bots.py, commands.py, experiment_jobs.py, experiment_runner.py, experiment_screens.py, experiments.py, help.py, shell.py and tui.py under soltui. The writer backs up preimages, verifies fresh hashes and installs atomically. It does not change shared Git HEAD/index/branch, stash work, edit other dirty files or restart services. Independent fresh launcher acceptance follows installation. The canonical runtime will be qualified by installed hashes plus retained local changes, not described as a clean Git revision.
+
+Stele transport closed after TASK-1002 creation and claim. Exact writes are queued in outbox IDs 20e78a8c, 608187fb and 3f944787. Installation, preservation and rollback receipts belong under /tmp/soltui-v2-resume-01a1bb24/activation/. Remaining: finish guarded installation, verify actual new launches open Now while retaining local guide behavior, record final hashes and receipts, ship only this follow-up workflow record without another full CI, and clean only the private recovery worktree. Preserve the locked original Claude worktree and all other active work.
+
+## v130 - 2026-11-08 (actual runtime installed)
+
+Version: 130. Delta: v129 to v130; qualify the installed canonical runtime by exact source hashes.
+
+The guarded writer installed all nine runtime files from merged source 9bd7067. It retained the active guide/card changes in commands.py, help.py and tui.py through clean three-way merges. It checked 1,036 unrelated existing dirty/untracked paths and found no changed bytes during installation. Canonical Git HEAD remains 3e5a9f3 and index bytes remain unchanged. The first preflight detected an index-byte change and refused before writing; a fresh preparation qualified the stable state before installation. Publication used fresh hash preconditions and atomic file renames; it does not claim a true compare-and-swap against arbitrary concurrent writers.
+
+Actual canonical imports pass. The normal /Users/mitch/.local/bin/soltui wrapper now exposes --classic in --help. The actual main entry point, with only run stubbed to prevent service startup, constructs tab-now with v2 enabled; --classic constructs tab-backtest with v2 disabled. The installed registry has 106 commands. Existing guide-only filtering and wording remain intact. No service, real optimizer job or trading action was started.
+
+Install receipt: /tmp/soltui-v2-resume-01a1bb24/activation/install-receipt.json. Backups: activation/before/. Import and entry-point proof: activation/canonical-import.json and launcher-help.txt. Guarded rollback helper: activation/rollback_runtime.py (not run). TASK-1003 is the install subtask; TASK-1002 owns final independent canonical acceptance. These are runtime overlays, not a clean checkout of the merged SHA. A future synchronization must preserve the installed redesign and the user's concurrent guide edits; never overwrite the hybrid runtime with an older branch's UI files.
+
+Final independent mounted acceptance is saved under /tmp/soltui-v2-resume-01a1bb24/acceptance/canonical/. TASK-987 and the private checkpoint hold the current final result and any remaining work. Read those receipts before repeating installation or tests. Ship this workflow-only follow-up without another full CI run under the owner's explicit instruction. Preserve the live locked original Claude worktree and every other active task.

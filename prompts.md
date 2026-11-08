@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 66
-Delta: v65 to v66; stop repeating full CI at the owner's instruction.
+Version: 68
+Delta: v67 to v68; activate the merged UI in the actual launcher.
 
 ## v1 - 2026-11-06
 
@@ -505,4 +505,20 @@ Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
 
 ```text
 So you don't have to run this, you've already passed the CI 3 times.
+```
+
+## v67 - 2026-11-08 (owner merged the redesign)
+
+Version: 67. Delta: v66 to v67; preserve the owner's merge notification.
+
+```text
+I merged it
+```
+
+## v68 - 2026-11-08 (activate the actual console)
+
+Version: 68. Delta: v67 to v68; preserve the loaded-UI report.
+
+```text
+I dopn't see the new ui when loading the soltui
 ```
