@@ -37,6 +37,8 @@ HEAVY = {
     "analyze.run": {"headline": "stub", "truncated": False, "decisions": [], "actions": {}},
     "docs.write": {"path": "x", "bytes": 1, "file": "x"},
     # Compound: live reads hit public market-data endpoints; backtests read the real 5m cache.
+    "forwardtest.tick": {"asset": "SOL", "bar": None, "recorded": 0, "rows": [], "message": "stub"},
+    "forwardtest.status": {"asset": "SOL", "rows": []},
     "compound.signal": {"call": "FLAT", "composite": None, "components": []},
     "compound.forward_tick": {"asset": "SOL", "recorded": False, "call": "FLAT", "resolved": 0},
     "compound.unattended_start": {"started": True, "asset": "SOL", "pid": 1, "log": "x"},
@@ -75,6 +77,7 @@ def default_params() -> dict[str, dict]:
     return {
         "strategies.source": {"name": "rsi"},
         "roster.add": {"name": fresh},
+        "roster.toggle": {"name": fresh},
         "roster.remove": {"label": "rsi_14_30_50"},
         "signals.save": {"values": {"rsi_period": 9}},
         "paper.start": {"label": "rsi_14_30_50"},

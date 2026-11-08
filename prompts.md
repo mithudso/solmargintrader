@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 45
-Delta: v44 to v45; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder.
+Version: 47
+Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -305,7 +305,25 @@ Expand the wallet, for the base wallet, use the base mcp server to query my wall
 Use lightweight charts, run the deep prompt optimizer on the rest of this prompt and then run it:  What are all of the ways a strategy or indicator can be evaluated? List all of them and then create a deep strategy optimizer skill that evaluates, and optimizes the strategy in multiple passes one per method just like the other deep optimizers.
 ```
 
-## v45 - 2026-11-08 (Bots tab; DCA bot; streaming price feed)
+## v45 - 2026-11-08 (trend filter)
+
+```text
+1. ok 2. Yes add the trend filter
+```
+
+Context: answers to "restart soltui" (1) and "add a filter that blocks UP calls while the higher-timeframe trend points down" (2).
+
+## v46 - 2026-11-08 (Adaptive Forwardtest)
+
+```text
+In the strategies tab, you can click on a strategy and then click the "add selected" button which adds that strategy to the roster for later testing. Make it so if I have a strategy highlighted and then I press the spacebar it will add or remove that strategy from the roster. Also create an "add all strategies to the roster" button. Then create a Forwardtest tab, this will be a dedicated tab for forward testing all stratgies or strategy combinations, use the same self-optimizing process we used with the compound test, but each of these test are going to be testing each stratgy individually so every strategy is self-optimizing in that if it gets a prediction wrong then it should change its settings in the direction of the configuration that would have made it right if that information is available.
+```
+
+```text
+Also in the forwardtest tab, make the time forward the strategy is asked to predict configurable so it can be 1, 5, 10, or 30 min. And ask it to predict all of them, and track the success of each individually.
+```
+
+## v47 - 2026-11-08 (Bots tab; DCA bot; streaming price feed)
 
 ```text
 Similar to the grid trading bot strategy, create a DCA (dollar cost averaging) trading bot strategy. Create a bots tab and include there the grid bot, the triangle arbitrage bot, and the dca bot. In the bots tab create a backtest script for each one that simulates at a given point what it would have set and calculates the results, and then add a forwardtest which does a dryrun simluation going into the future using the streamed price data as a guide. Also create an auto-optimize button which back tests each bot with a representative range of different configurations to determine if one configuration reliably outperforms another, and then have it adopt the best configuration. Also have it test against all the coins. Also I don't believe there is a streaming coin price feed into the soltui, if I remember correctly that's not a difficult subscription so implement that and record the pricing data.

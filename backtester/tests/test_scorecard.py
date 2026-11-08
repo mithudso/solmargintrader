@@ -298,6 +298,40 @@ class AggregationTests(unittest.TestCase):
         self.assertEqual(x["call"], "FLAT")
         self.assertEqual(x["blocked_by"], ["gate_cost"])
 
+    def test_trend_gate_blocks_only_calls_against_the_higher_timeframe_trend(self) -> None:
+        # A steady 1h decline: a reversion metric keeps saying UP. With the trend gate on, no UP
+        # call survives where the 1h trend is down, while a DOWN call there is left alone.
+        n = 1500
+        close = 100 * np.exp(np.cumsum(np.full(n, -4e-4) + np.sin(np.arange(n) / 3.0) * 1e-3))
+        open_ = np.concatenate(([close[0]], close[:-1]))
+        b = sc.Bars(1_780_000_200 + 300 * np.arange(n), open_, np.maximum(open_, close) * 1.0005,
+                    np.minimum(open_, close) * 0.9995, close, np.full(n, 10.0))
+        g = sc.BY_ID["gate_trend"]
+        d = g.fn(b, g.defaults(), {})
+        down = d == -1.0
+        self.assertGreater(down[400:].mean(), 0.5)
+        for cid in ("rsi", "zscore"):
+            off = sc.evaluate(b, only(**{cid: 1}))
+            on = sc.evaluate(b, only(**{cid: 1, "gate_trend": 1}))
+            self.assertTrue((off.indication[down] > 0).any(), cid)      # the fade fires into the decline
+            self.assertFalse((on.indication[down] > 0).any(), cid)      # ...and the gate removes it
+            self.assertTrue(np.array_equal(on.indication[down & (off.indication < 0)],
+                                           off.indication[down & (off.indication < 0)]), cid)
+            x = sc.explain(on, int(np.flatnonzero(down & (off.indication > 0))[-1]))
+            self.assertIn("gate_trend", x["blocked_by"])
+        # Unknown trend (warm-up) blocks every call: the gate fails closed.
+        warm = ~np.isfinite(d)
+        self.assertTrue(warm[:50].all())
+        self.assertFalse(sc.evaluate(b, only(rsi=1, gate_trend=1)).indication[warm].any())
+
+    def test_trend_gate_call_is_prefix_invariant(self) -> None:
+        b = synthetic(1500)
+        cfg = only(rsi=1, zscore=1, gate_trend=1)
+        full = sc.evaluate(b, cfg).indication
+        for cut in (700, 1100, 1499):
+            part = sc.Bars(b.ts[:cut], b.open[:cut], b.high[:cut], b.low[:cut], b.close[:cut], b.volume[:cut])
+            self.assertTrue(np.array_equal(sc.evaluate(part, cfg).indication, full[:cut]), cut)
+
     def test_liquidation_gate_tightens_with_leverage(self) -> None:
         g = sc.BY_ID["gate_liquidation"]
         low = g.fn(self.bars, g.defaults(), {"leverage": 2.0})

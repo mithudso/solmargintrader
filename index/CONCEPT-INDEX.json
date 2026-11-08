@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T07:56:10+00:00",
+  "generatedAt": "2026-11-08T07:18:40+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -134,16 +134,16 @@
           "hits": 18
         },
         {
+          "path": "memory.md",
+          "hits": 17
+        },
+        {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 17
         },
         {
           "path": "soltui/tests/test_bridge_surfaces.py",
           "hits": 17
-        },
-        {
-          "path": "index/build.py",
-          "hits": 16
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -270,6 +270,10 @@
         },
         {
           "path": "docs/CONCEPTS.md",
+          "hits": 29
+        },
+        {
+          "path": "soltui/help.py",
           "hits": 29
         },
         {
@@ -490,7 +494,7 @@
           "hits": 29
         },
         {
-          "path": "backtester/tests/test_gridsim.py",
+          "path": "soltui/help.py",
           "hits": 28
         },
         {
@@ -712,7 +716,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 192,
+      "matchingFiles": 191,
       "shown": 30,
       "files": [
         {
@@ -729,7 +733,7 @@
         },
         {
           "path": "backtester/core/scorecard.py",
-          "hits": 96
+          "hits": 110
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
@@ -737,7 +741,7 @@
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 82
+          "hits": 87
         },
         {
           "path": "docs/FILES.md",
@@ -761,6 +765,10 @@
         },
         {
           "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 44
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
           "hits": 44
         },
         {
@@ -796,10 +804,6 @@
           "hits": 37
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 31
-        },
-        {
           "path": "backtester/core/trigger_conditions.py",
           "hits": 31
         },
@@ -816,6 +820,10 @@
           "hits": 25
         },
         {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 24
+        },
+        {
           "path": "research/results/cpcv_tables.md",
           "hits": 24
         },
@@ -830,10 +838,6 @@
         {
           "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
           "hits": 23
-        },
-        {
-          "path": "backtester/core/strategies/signals.py",
-          "hits": 21
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -851,7 +855,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 191,
+      "matchingFiles": 190,
       "shown": 30,
       "files": [
         {
@@ -978,6 +982,144 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
+      "id": "data-integrity",
+      "label": "Data integrity",
+      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
+      "terms": [
+        "validate_bars",
+        "strict_gaps",
+        "allow_gaps",
+        "datavalidationerror",
+        "monotone",
+        "gap"
+      ],
+      "matchingFiles": 190,
+      "shown": 30,
+      "files": [
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 34
+        },
+        {
+          "path": "backtester/core/data.py",
+          "hits": 33
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 32
+        },
+        {
+          "path": "extension/src/ui/ui.css",
+          "hits": 28
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 24
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 24
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 23
+        },
+        {
+          "path": "research/candle_gap_audit.py",
+          "hits": 20
+        },
+        {
+          "path": "soltui/utxo_scan.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/tests/test_candle_gap_audit.py",
+          "hits": 16
+        },
+        {
+          "path": "pagesource",
+          "hits": 16
+        },
+        {
+          "path": "research/results/minute_coverage.json",
+          "hits": 12
+        },
+        {
+          "path": "backtester/core/universe.py",
+          "hits": 11
+        },
+        {
+          "path": "research/tick_backfill.py",
+          "hits": 11
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 11
+        },
+        {
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/xrp-ripple.md",
+          "hits": 10
+        },
+        {
+          "path": "backtester/core/trigger_conditions.py",
+          "hits": 9
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
+        },
+        {
+          "path": "index/build.py",
+          "hits": 7
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 6
+        },
+        {
+          "path": "liquidity/src/aero_lp/ledger.py",
+          "hits": 6
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 6
+        },
+        {
+          "path": "soltui/tests/test_forwardtest.py",
+          "hits": 6
+        },
+        {
+          "path": "soltui/tests/test_utxo_scan.py",
+          "hits": 6
+        },
+        {
+          "path": "backtester/core/fetch.py",
+          "hits": 5
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 5
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "family:regime-filter",
       "label": "Strategy family: regime-filter",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -988,7 +1130,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 182,
+      "matchingFiles": 183,
       "shown": 30,
       "files": [
         {
@@ -1261,7 +1403,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 154,
+      "matchingFiles": 151,
       "shown": 30,
       "files": [
         {
@@ -1279,10 +1421,6 @@
         {
           "path": "backtester/core/deflated_sharpe.py",
           "hits": 21
-        },
-        {
-          "path": "backtester/core/dcasim.py",
-          "hits": 15
         },
         {
           "path": "docs/CONCEPTS.md",
@@ -1383,6 +1521,10 @@
         {
           "path": "docs/dso-skill/SKILL.md",
           "hits": 5
+        },
+        {
+          "path": "skills/trading-and-investing/references/ai-and-ml-for-trading.md",
+          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1400,7 +1542,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 153,
+      "matchingFiles": 150,
       "shown": 30,
       "files": [
         {
@@ -1460,20 +1602,20 @@
           "hits": 27
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 22
+        },
+        {
           "path": "research/coin-intelligence/trx-tron.md",
           "hits": 21
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 21
+          "path": "memory.md",
+          "hits": 20
         },
         {
           "path": "backtester/core/funding.py",
           "hits": 20
-        },
-        {
-          "path": "memory.md",
-          "hits": 19
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",
@@ -1534,7 +1676,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 132,
+      "matchingFiles": 129,
       "shown": 30,
       "files": [
         {
@@ -1807,7 +1949,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 112,
+      "matchingFiles": 113,
       "shown": 30,
       "files": [
         {
@@ -1839,12 +1981,12 @@
           "hits": 40
         },
         {
-          "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
-          "hits": 31
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 32
         },
         {
-          "path": "backtester/tests/test_scorecard.py",
-          "hits": 29
+          "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
+          "hits": 31
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
@@ -2080,7 +2222,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 93,
+      "matchingFiles": 95,
       "shown": 30,
       "files": [
         {
@@ -2422,6 +2564,10 @@
           "hits": 10
         },
         {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 10
+        },
+        {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 10
         },
@@ -2439,10 +2585,6 @@
         },
         {
           "path": "backtester/core/strategies/__init__.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/tests/test_scorecard.py",
           "hits": 8
         },
         {
@@ -2623,7 +2765,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 72,
+      "matchingFiles": 74,
       "shown": 30,
       "files": [
         {

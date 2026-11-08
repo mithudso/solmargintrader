@@ -133,6 +133,10 @@ DOCS_TABLE_CAP = 1000
 BUTTON_COMMANDS: dict[str, str] = {
     "#btn-save": "settings.save",
     "#btn-add": "roster.add",
+    "#btn-roster-all": "roster.add_all",
+    "#forward-start": "forwardtest.start",
+    "#forward-stop": "forwardtest.stop",
+    "#forward-refresh": "forwardtest.status",
     "#btn-remove": "roster.remove",
     "#btn-reset-roster": "roster.reset",
     "#btn-save-signals": "signals.save",
@@ -547,6 +551,11 @@ class SolTuiApp(App):
     .preset-list { height: 7; margin-bottom: 1; }
     DataTable { height: 1fr; }
     #available-table { width: 3fr; }
+    #forward-scope { width: 21; }
+    #forward-horizon { width: 17; }
+    #forward-mode { width: 14; }
+    #forward-start, #forward-stop, #forward-refresh { min-width: 10; }
+    #forward-combos { width: 1fr; }
     #roster-table { width: 1fr; }
     #docs-filter, #docs-search { width: 1fr; }
     #docs-kind, #docs-search-mode { width: 24; }
@@ -638,6 +647,10 @@ class SolTuiApp(App):
         self._docs_highlighted_path: str | None = None
         # The text as it was on disk when _docs_current_path was loaded, to detect unsaved edits.
         self._docs_loaded_text = ""
+        self._forward_running = False
+        self._forward_busy = False
+        self._forward_bar = 0
+        self._forward_next = 0.0
         self._cumulative_loaded = False
         # Last results-file mtime the Queue tab rendered (the worker is a separate process).
         self._queue_mtime = 0.0
@@ -747,6 +760,8 @@ class SolTuiApp(App):
                 yield from self._signals_pane()
             with TabPane("Compound 5m", id="tab-compound"):
                 yield from self._compound_pane()
+            with TabPane("Forwardtest", id="tab-forwardtest"):
+                yield from self._forward_pane()
             with TabPane("Bots", id="tab-bots"):
                 yield from self._bots_pane()
             with TabPane("Backtest", id="tab-backtest"):
@@ -859,7 +874,7 @@ class SolTuiApp(App):
         with Vertical():
             yield Static(
                 "Left: every registered strategy. Right: your roster — what the "
-                "Backtest tab will sweep.",
+                "Backtest tab will sweep. Focus either table and press Space to toggle membership.",
                 classes="hint",
             )
             yield Static("[b]Available strategies[/b] (left): every registered strategy, whether and when it "
@@ -874,6 +889,7 @@ class SolTuiApp(App):
                 yield Input(placeholder="fast=20 slow=50", id="strategy-params")
             with Horizontal(classes="form-row"):
                 yield Button("Add selected →", variant="success", id="btn-add")
+                yield Button("Add all to roster", id="btn-roster-all")
                 yield Button("← Remove selected", variant="error", id="btn-remove")
                 yield Button("Reset to default", id="btn-reset-roster")
             with Horizontal(classes="form-row"):
@@ -882,6 +898,138 @@ class SolTuiApp(App):
                 yield Button("Backtest all", variant="warning", id="btn-bt-all")
             yield Static("", id="history-status")
             yield Static("", id="roster-status")
+
+    def _forward_pane(self) -> ComposeResult:
+        with Vertical():
+            yield Static(
+                "Paper direction calls on closed 1m data for the Settings asset. "
+                "UP/DOWN mean a move beyond the cost threshold; FLAT predicts neither.", classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Select([("All strategies", "all"), ("Roster only", "roster"),
+                              ("Combinations only", "combinations")],
+                             id="forward-scope", value="all", allow_blank=False)
+                yield Select([("All four", "all"), *((f"{h} min", str(h)) for h in (1, 5, 10, 30))],
+                             id="forward-horizon", value="all", allow_blank=False)
+                yield Button("Start", id="forward-start", variant="success")
+                yield Button("Stop", id="forward-stop", disabled=True)
+                yield Button("Refresh", id="forward-refresh")
+            with Horizontal(classes="form-row"):
+                yield Input(placeholder="Combinations: rsi,macd; breakout,obv_trend", id="forward-combos")
+                yield Select([(m, m) for m in ("all", "any", "vote", "mean")],
+                             id="forward-mode", value="all", allow_blank=False)
+            yield Static("Forward results by strategy and horizon · Stopped",
+                         id="forward-status", classes="table-title", markup=False)
+            table = GlossaryTable(id="forward-table")
+            table.cursor_type = "row"
+            table.add_columns("trial", "minutes", "resolved", "accuracy", "pending", "expired",
+                              "changes", "last call", "last outcome", "issued UTC", "cost bps", "active settings")
+            yield table
+
+    @on(Button.Pressed, "#forward-start")
+    def _forward_start(self) -> None:
+        horizon = self.query_one("#forward-horizon", Select).value
+        raw = self.query_one("#forward-combos", Input).value
+        params = {"scope": self.query_one("#forward-scope", Select).value,
+                  "mode": self.query_one("#forward-mode", Select).value,
+                  "combinations": [[v.strip() for v in c.split(",")]
+                                   for c in raw.split(";") if c.strip()]}
+        if horizon != "all":
+            params["horizons"] = [int(horizon)]
+        env = self._call("forwardtest.start", params)
+        status = self.query_one("#forward-status", Static)
+        if not env["ok"]:
+            status.update(self._msg(env))
+            return
+        result = env["result"]
+        self._forward_running = True
+        self._forward_bar = 0
+        self._forward_next = 0.0
+        self._forward_controls()
+        status.update(f"{result['asset']}: watching {result['trials']} trials; "
+                      f"horizons {', '.join(map(str, result['horizons']))} min.")
+        self._forward_schedule()
+
+    @on(Button.Pressed, "#forward-stop")
+    def _forward_stop(self) -> None:
+        self._forward_running = False
+        self._call("forwardtest.stop")
+        self._forward_controls()
+        self.query_one("#forward-status", Static).update(
+            "Stopping after the current check…" if self._forward_busy else "Stopped; results saved.")
+
+    @on(Button.Pressed, "#forward-refresh")
+    def _forward_refresh(self) -> None:
+        if self._forward_busy or self._forward_running:
+            return
+        env = self._call("forwardtest.status", quiet=True)
+        if env["ok"]:
+            self._forward_render(env["result"]["rows"])
+        else:
+            self.query_one("#forward-status", Static).update(self._msg(env))
+
+    def _forward_controls(self) -> None:
+        self.query_one("#forward-start", Button).disabled = self._forward_running or self._forward_busy
+        self.query_one("#forward-stop", Button).disabled = not self._forward_running
+        self.query_one("#forward-refresh", Button).disabled = self._forward_running or self._forward_busy
+
+    def _forward_schedule(self) -> None:
+        now = time.time()
+        if (self._forward_running and not self._forward_busy and self.query("#forward-status")
+                and now >= self._forward_next and now % 60 >= 4 and int(now // 60) * 60 - 60 > self._forward_bar):
+            self._forward_busy = True
+            self._forward_worker()
+
+    @work(thread=True, exit_on_error=False, group="forwardtest")
+    def _forward_worker(self) -> None:
+        env = self._call("forwardtest.tick", quiet=True)
+        try:
+            self.call_from_thread(self._forward_done, env)
+        except RuntimeError:
+            # Textual may have closed the event loop while the public price request drained.
+            pass
+
+    def _forward_done(self, env: dict[str, Any]) -> None:
+        self._forward_busy = False
+        self._forward_next = time.time() + 10
+        if not self.query("#forward-status"):
+            return
+        self._forward_controls()
+        status = self.query_one("#forward-status", Static)
+        if env["ok"]:
+            result = env["result"]
+            self._forward_render(result["rows"])
+            if result["bar"] is not None:
+                self._forward_bar = result["bar"]
+            status.update(f"{result['asset']}: {result['message']} · {result['recorded']} new predictions"
+                          if self._forward_running else "Stopped; results saved.")
+        elif self._forward_running:
+            status.update(f"Will retry: {self._msg(env)}")
+        else:
+            status.update("Stopped; results saved.")
+
+    def _forward_render(self, rows: list[dict[str, Any]]) -> None:
+        table = self.query_one("#forward-table", DataTable)
+        cursor = table.cursor_row
+        table.clear()
+        directions = {-1: "DOWN", 0: "FLAT", 1: "UP"}
+        for r in rows:
+            issued = (time.strftime("%m-%d %H:%M:%S", time.gmtime(r["last_issued"]))
+                      if r["last_issued"] else "-")
+            settings = "; ".join(
+                f"{m['name']} " + ", ".join(f"{k}={v}" for k, v in m["params"].items())
+                for m in r["settings"])
+            table.add_row(r["label"], r["minutes"], r["resolved"],
+                          _pct(r["correct"] / r["resolved"] if r["resolved"] else None),
+                          r["pending"], r["expired"], r["changes"],
+                          directions.get(r["last_call"], "-"), directions.get(r["last_outcome"], "-"), issued,
+                          f"{r['cost_bps']:g}", r["note"] or settings, key=r["id"])
+        if rows:
+            table.move_cursor(row=min(cursor, len(rows) - 1))
+
+    def on_unmount(self) -> None:
+        if self._forward_running or self._forward_busy:
+            self._forward_running = False
+            self._call("forwardtest.stop", quiet=True)
 
     def _signals_pane(self) -> ComposeResult:
         """Editable signal parameters, grouped by indicator.
@@ -1448,11 +1596,11 @@ class SolTuiApp(App):
     def on_mount(self) -> None:
         """Populate tables and start the indicator refresh."""
         avail = self.query_one("#available-table", DataTable)
-        for label in ("strategy", "family", "tested", "times tested", "last tested", "card-preset result"):
+        for label in ("strategy", "family", "in roster", "tested", "times tested", "last tested", "card-preset result"):
             avail.add_column(label, key=label)
         avail.cursor_type = "row"
         for row in self._call("strategies.list")["result"]:
-            avail.add_row(row["name"], row["family"], "…", "", "", "", key=row["name"])
+            avail.add_row(row["name"], row["family"], "", "…", "", "", "", key=row["name"])
         self._refresh_strategy_history()
 
         roster_t = self.query_one("#roster-table", DataTable)
@@ -1488,6 +1636,7 @@ class SolTuiApp(App):
         self._wallet_restore()
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
+        self.set_interval(5, self._forward_schedule)
         self._refresh_liquidity(force=True)
         self._compound_setup()
         self.set_interval(5, self._bots_tick)
@@ -1713,7 +1862,12 @@ class SolTuiApp(App):
         """Redraw the roster side."""
         t = self.query_one("#roster-table", DataTable)
         t.clear()
-        for e in self._call("roster.list")["result"]["entries"]:
+        entries = self._call("roster.list")["result"]["entries"]
+        names = {e["name"] for e in entries}
+        available = self.query_one("#available-table", DataTable)
+        for row_key in tuple(available.rows):
+            available.update_cell(row_key, "in roster", "yes" if row_key.value in names else "")
+        for e in entries:
             t.add_row(e["label"], e["family"], str(e["warmup"]), key=e["label"])
 
     def _refresh_exec_choices(self) -> None:
@@ -1747,6 +1901,46 @@ class SolTuiApp(App):
                 except ValueError:
                     params[k] = v
         return params
+
+    def on_key(self, event: events.Key) -> None:
+        focused = self.focused
+        if event.key != "space" or not isinstance(focused, DataTable):
+            return
+        if focused.id not in ("available-table", "roster-table") or not focused.row_count:
+            return
+        event.stop()
+        event.prevent_default()
+        if focused.id == "roster-table":
+            self._remove()
+            return
+        status = self.query_one("#roster-status", Static)
+        try:
+            name = str(focused.get_row_at(focused.cursor_row)[0])
+            params = self._parse_params()
+        except (RosterError, IndexError) as exc:
+            status.update(Text(str(exc)))
+            return
+        env = self._call("roster.toggle", {"name": name, "params": params})
+        if not env["ok"]:
+            status.update(Text(self._msg(env)))
+            return
+        self._refresh_roster_table()
+        self._refresh_exec_choices()
+        result = env["result"]
+        action = "added" if "added" in result else "removed"
+        status.update(Text(f"{action} {result[action]['label']}"))
+
+    @on(Button.Pressed, "#btn-roster-all")
+    def _roster_all(self) -> None:
+        env = self._call("roster.add_all")
+        status = self.query_one("#roster-status", Static)
+        if not env["ok"]:
+            status.update(Text(self._msg(env)))
+            return
+        self._refresh_roster_table()
+        self._refresh_exec_choices()
+        result = env["result"]
+        status.update(Text(f"Added {len(result['added'])}; {result['count']} configurations in the roster."))
 
     @on(Button.Pressed, "#btn-add")
     def _add(self) -> None:
@@ -2621,6 +2815,8 @@ class SolTuiApp(App):
         elif pane == "tab-docs" and not self._docs_loaded:
             self._docs_loaded = True
             self._refresh_docs()
+        elif pane == "tab-forwardtest":
+            self._forward_refresh()
         elif pane == "tab-queue":
             # No once-only guard: unlike Cumulative and Docs, this tab's source
             # is being written by another process right now, so re-reading on

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 51
-Delta: v50 to v51; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder.
+Version: 53
+Delta: v52 to v53; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder.
 
 ## v1 - 2026-11-06
 
@@ -528,9 +528,23 @@ Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithud
 
 Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
 
-## v51 - 2026-11-08
+## v51 - 2026-11-08 (trend filter)
 
-Target: prompts.md v45. Stele TASK-870 (decision KNOW-871, architecture KNOW-872).
+Target: the owner asked for a filter that stops the compound fading a clear trend. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-trend, branch feat/compound-trend-gate.
+
+Completed: Component.directional; gate_trend (htf_trend formula; threshold 0.5; default on). A directional gate returns a direction per bar, and evaluate blocks only a call against it (NaN blocks all, failing closed), so blocked_by and target_path work unchanged. Docs and the five-minute-signal skill updated.
+
+Verification: tests cover blocking UP in a decline, keeping DOWN, explain blocked_by, warm-up failing closed, and prefix invariance. Last 120 days OOS: threshold 0.3 keeps 35-45% of calls and lowers the hit rate on 7 of 10 coins; 0.5 is about equal on SOL/ETH/XRP and about 1 point lower on BTC/DOGE; 0.7 is equal or higher on SOL/ETH/XRP. Live SOL, last 6h: 26 UP / 8 DOWN became 0 UP / 8 DOWN.
+
+Remaining: after merge, restart the unattended trainer so it runs gate_trend; the owner restarts soltui.
+
+## v52 - 2026-11-08 (Adaptive Forwardtest)
+
+Target: prompts v46, Stele TASK-863 and KNOW-864. Worktree /Users/mitch/dev/solmargintrader-wt-forwardtest. Reuse compound tuning gates on prospective shadow predictions. Isolate each trial and each of four horizons. Implemented Space toggle and bulk roster add. Added a console-owned paper Forwardtest worker, closed 1m Coinbase feed, SQLite prediction history, separate 1/5/10/30-minute trials and shadow learning gated by paired resolved observations. Nine focused tests passed for separate outcomes, pre-window timing, missing data, adoption, roster and worker stop. The 853 backtester tests and documentation checks passed. An isolated SOL tick recorded all 140 calls for 34 standalone strategies and one combination across four horizons. Full local suite caught missing shared glossary entries and the Forwardtest table title; corrected both. Remaining: confirm full CI and merge PR 83 (https://github.com/mithudso/solmargintrader/pull/83).
+
+## v53 - 2026-11-08 (Bots tab and price stream)
+
+Target: prompts.md v47. Stele TASK-870 (decision KNOW-871, architecture KNOW-872).
 Worktree: /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch agent-39e8bf11 (four other sessions held the main checkout).
 
 Completed:
