@@ -1,5 +1,29 @@
 # Strategy cards
 
+## Active specifications and incomplete research
+
+Cards directly in this directory form the active catalog. A card can stay here
+when it defines a reproducible indicator calculation or strategy rule set, even
+if its repository implementation has not been written. Check `status`, `runner`
+and `registry_key` before trying to run it: `spec-only` still has no runner.
+An independently usable principal output or explicitly selectable complete branch
+can qualify. Its review states that narrow scope and any missing sibling features.
+
+`incomplete/` holds newly extracted TradingView cards whose essential mechanics
+are missing or too vague to implement. The normal card loader does not recurse
+into that directory. The cards remain available through the Docs browser for
+further research. No original measured or implemented card was moved.
+
+`research/tradingview-card-readiness.json` records the decision, exact supporting
+card passages and research gaps for every card from the extraction. A formula
+must define the card's own calculation; names, marketing, unrelated component
+formulas and input lists alone do not establish a complete specification.
+
+To promote an incomplete card, recover its missing mechanics, document the
+inputs and computation, move it back here and update its reviewed disposition,
+evidence and hash. Run `python3 scripts/check_tradingview_cards.py`; that checker
+validates both directories and refuses missing, duplicated or stale reviews.
+
 One file per strategy or signal. Each card is self-contained: the equations, the code
 pointer, the reasoning, the failure modes, the caveats, the measured results, and the
 **machine-readable parameters with defaults already set** — enough for a person to edit
@@ -234,11 +258,13 @@ live strategy.
 
 ## TradingView source coverage
 
-Version: 1.0.0 (2026-11-08). Delta: document the source-reconciled expansion.
+Version: 1.1.0 (2026-11-08). Delta: separate incomplete research from usable specifications.
 
 The source inventory and existence-check decisions live in `research/tradingview-card-coverage.json`.
 See `docs/TRADINGVIEW-CARD-COVERAGE.md` for the built-in study matches, new card list,
 source limitations and validation commands. New `tv_` cards are specifications;
-missing equations or source definitions remain explicit. They do not enter the
+cards missing essential equations or source definitions now live in `incomplete/`.
+Their review decisions and gaps live in `research/tradingview-card-readiness.json`.
+They do not enter the
 SolTUI executable strategy roster merely because a card exists. The Docs tab can
 find them through the regenerated repository index.

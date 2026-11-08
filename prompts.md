@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 55
-Delta: v54 to v55; preserve concurrent wallet and TradingView card histories.
+Version: 57
+Delta: v56 to v57; record confirmed indicator retention.
 
 ## v1 - 2026-11-06
 
@@ -421,4 +421,16 @@ Version: 55. Delta: v54 to v55; preserve card-coverage request.
 
 ```text
 For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.
+```
+
+## v56 - 2026-11-08 (incomplete TradingView cards)
+
+```text
+create an incomplete directory and put all the cards you just created that cannot actually be run into it for further research, keep any cards that contain an equation, script, and/or parameters that make it a functional strategy
+```
+
+## v57 - 2026-11-08 (card readiness clarification)
+
+```text
+Keep complete indicator specifications too (Recommended)
 ```

@@ -20,6 +20,52 @@ sys.path.insert(0, str(REPO))
 from backtester.core.strategy_cards import load_all  # noqa: E402
 
 
+def load_catalog(repo: Path) -> tuple[dict, dict]:
+    """Keep runtime discovery flat; audit research cards separately."""
+    directory = repo / "backtester/strategy_cards"
+    active = load_all(directory)
+    incomplete = load_all(directory / "incomplete")
+    overlap = active.keys() & incomplete.keys()
+    if overlap:
+        raise ValueError(f"card exists in both active and incomplete: {sorted(overlap)}")
+    return active, incomplete
+
+
+def validate_readiness(review: dict, created: set[str], active: dict,
+                       incomplete: dict, repo: Path) -> None:
+    """Bind the human completeness decisions to exact cards and locations.
+
+    This checks review integrity, not whether a mathematical rule is profitable
+    or whether prose is semantically complete. The recorded review owns that judgment.
+    """
+    rows = review["cards"]
+    ids = [row["id"] for row in rows]
+    if len(ids) != len(set(ids)) or set(ids) != created:
+        raise ValueError("readiness review must cover every created card exactly once")
+    if set(incomplete) - created:
+        raise ValueError("incomplete directory contains a card outside the reviewed extraction")
+    for row in rows:
+        key = row["id"]
+        disposition = row["disposition"]
+        if disposition not in {"keep", "incomplete"}:
+            raise ValueError(f"{key}: unknown readiness disposition")
+        location = active if disposition == "keep" else incomplete
+        if key not in location:
+            raise ValueError(f"{key}: readiness disposition disagrees with card location")
+        card = location[key]
+        if row["path"] != card.path.relative_to(repo).as_posix():
+            raise ValueError(f"{key}: readiness path does not match card")
+        if hashlib.sha256(card.path.read_bytes()).hexdigest() != row["sha256"]:
+            raise ValueError(f"{key}: readiness review is stale after a card edit")
+        if not row.get("reason") or not row.get("evidence"):
+            raise ValueError(f"{key}: readiness decision lacks reason or evidence")
+        if disposition == "incomplete" and not row.get("gaps"):
+            raise ValueError(f"{key}: incomplete card lacks a research gap")
+        for quote in row["evidence"]:
+            if not isinstance(quote, str) or len(quote.strip()) < 12 or quote not in card.body:
+                raise ValueError(f"{key}: readiness evidence is not bound to card text")
+
+
 def normalize_description(text: str) -> str:
     """tv-description-v2: presentation cleanup, without semantic rewriting."""
     text = re.sub(r'</?(?:p|div|h[1-6]|li|br|blockquote|tr|pre)(?:\s[^>]*)?/?>', '\n', text, flags=re.I)
@@ -57,16 +103,21 @@ def source_description(path: Path, *, normalized: bool = True) -> str:
 
 
 def validate(data: dict, repo: Path = REPO, source_root: Path | None = None) -> dict:
-    cards = load_all(repo / "backtester/strategy_cards")
+    active, incomplete = load_catalog(repo)
+    cards = {**active, **incomplete}
     created = set(data["created_card_ids"])
     if len(created) != len(data["created_card_ids"]):
         raise ValueError("duplicate created card id")
     if created & set(data["existing_card_ids"]):
         raise ValueError("new card overwrites an existing card")
+    if not set(data["existing_card_ids"]) <= active.keys():
+        raise ValueError("pre-existing card missing from active catalog")
     if not created <= cards.keys():
         raise ValueError("created card missing from card directory")
     if {key for key in cards if key.startswith("tv_")} != created:
         raise ValueError("unrecorded or orphaned TradingView card")
+    review = json.loads((repo / "research/tradingview-card-readiness.json").read_text())
+    validate_readiness(review, created, active, incomplete, repo)
     rows = data["rows"]
     builtin_rows = [row for row in rows if row["kind"] == "builtin"]
     catalog = (repo / "docs/TRADINGVIEW-REFERENCE.md").read_text().split(
@@ -192,6 +243,7 @@ def validate(data: dict, repo: Path = REPO, source_root: Path | None = None) -> 
             raise ValueError("physical source inventory differs from ledger")
     return {"builtins": len(builtin_rows), "publications": len(publications),
             "new_cards": len(created), "total_cards": len(cards),
+            "active_cards": len(active), "incomplete_cards": len(incomplete),
             "verified_source_files": len(verified_files)}
 
 

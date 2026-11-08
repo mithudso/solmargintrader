@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 92
-Delta: v91 to v92; preserve concurrent wallet and TradingView card histories.
+Version: 95
+Delta: v94 to v95; apply complete per-card readiness review.
 
 ## v1 - 2026-11-06
 
@@ -951,3 +951,32 @@ Version: 92. Delta: v91 to v92; preserve concurrent Base wallet PR 92.
 Integrated origin/master d596856 after PR 92 landed during final CI. Preserve all wallet code, tests and its installed-console limitations. Only shared histories and generated indexes require conflict resolution. The catalog remains 1083 new spec-only cards, 1142 total, with unchanged source ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
 
 Delivery remains conditional on https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. Complete final integrated-head checks before merge. Existing running consoles are owned by other sessions; do not restart them or retarget launchers. Preserve unrelated checkout changes and verify any safe synchronization independently.
+
+## v93 - 2026-11-08 (incomplete card separation)
+
+Version: 93. Delta: v92 to v93; start TASK-939 review, TASK-940 relocation, TASK-941 delivery.
+
+Target: review the1083 cards added in PR91, keep substantive implementable specifications, and relocate cards with undisclosed/vague mechanics under backtester/strategy_cards/incomplete. Preserve all59 older cards, registry34, source evidence and unrelated dirty work. No new trading implementation is authorized by this sorting request.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-card-triage; branch feat/tradingview-card-triage. Shared master is188d329 with337 unrelated dirty/untracked files. Concurrent PR96 enriches13 canonical cards and adds8 companion tools; integrate that delivered work without discarding its improvements.
+
+Classification must inspect actual equations, code and mechanism text, not just spec-only status or numeric inputs. Asked whether complete indicator formulas without order rules should remain; default is to keep complete computable signals while flagging their absent runner. Classification decisions and unknowns must be explicit.
+
+Remaining: classify every new card, independent review, move incomplete cards without loss, update catalog/ledger validation and references, relevant tests and source gates, commit/push/CI/merge, safe canonical sync and own-worktree cleanup. Use INDEX_NO_AUTO=1 on searches to preserve paused indexing.
+
+## v94 - 2026-11-08 (card readiness clarification)
+
+Confirmed user clarification: keep complete indicator specifications even without buy/sell rules. Retain a reproducible calculation with declared inputs; move names, generic descriptions, ambiguous predicates and undisclosed algorithms. Three research-contract reviewers each own361 cards, with exact evidence/gaps per decision under /tmp/solmargin-card-triage. Coverage validation will include both directories; the existing flat runtime loader naturally excludes incomplete/. Seven behavior checks pass for loss, duplicate, stale review, location and quote binding. Source/card bodies will not be rewritten during relocation. Remaining: assess all review results, reconcile concurrent PR96 enriched cards, relocate, final verification and delivery.
+
+
+## v95 - 2026-11-08 (reviewed card relocation)
+
+Version: 95. Delta: v94 to v95; complete TASK-939 and apply TASK-940.
+
+Reviewed all 1083 PR91 cards in three361-card source-text batches. Cross-review covered188 initial keeps and120 math-bearing incomplete candidates. Parent accepted6 downgrades and10 upgrades. Final:292 new usable specifications remain active;791 incomplete cards move under backtester/strategy_cards/incomplete. All59 original cards remain active; active catalog351 and total1142. Every card byte is unchanged from the188d329 baseline. Registry34 is unchanged.
+
+research/tradingview-card-readiness.json records each disposition, exact card quotes, narrow functional scope, SHA256, path and gaps. The owner confirmed complete indicator specifications should stay without buy/sell rules. Independent principal outputs/explicit selectable branches can qualify despite incomplete sibling features; hidden intermediate equations do not qualify. Runtime status stays spec-only.
+
+Coverage checker now audits both directories and validates the readiness bindings. Existing flat runtime loading excludes incomplete/. Seven behavior checks pass for loss, duplicate location, stale review, wrong location and unbound evidence. Docs and the old extraction-file receipt preserve source coverage and relocated paths.
+
+Remaining: finish full raw-source and relevant suite checks, update offline indexes, preserve incoming PR95/PR96 histories and any enriched canonical cards, commit/push/PR/final CI/merge, canonical read-back and own-worktree cleanup. TASK-941 owns final delivery. Do not rerun /tmp/solmargin-card-triage/apply.py after relocation; its one-time assertions intentionally refuse a second move. Existing and new card hashes are in /tmp/solmargin-card-triage/card-baseline.json. Shared checkout preservation snapshot contains337 unrelated paths.

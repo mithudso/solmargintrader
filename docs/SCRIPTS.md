@@ -54,11 +54,28 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 index/build.py` | build the four repo indexes | localhost only |
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
+| `python3 scripts/check_tradingview_cards.py` | **gate:** source inventory and active/incomplete card review integrity | no |
+| `python3 -m unittest scripts.test_card_readiness` | relocation loss, duplicate, stale-review and evidence checks | no |
 | `python3 scripts/html_to_markdown.py SOURCE` | saved HTML tree to text-only Markdown | no |
 | `node --test` (in `extension/`) | extension unit + parity tests | no |
 | `node tools/dryrun.js` | headless grid dry run, no orders | optional |
 
 ---
+
+## TradingView card readiness
+
+`python3 scripts/check_tradingview_cards.py` audits source coverage across the
+active cards and `backtester/strategy_cards/incomplete/`. It also binds each
+readiness decision to its exact path, card hash and quoted evidence. It refuses
+lost cards, duplicate locations and stale reviews after card edits. This proves
+inventory and review integrity; semantic completeness remains a documented review
+judgment, and no specification is promoted to executable status.
+
+Add `--source-root /Users/mitch/dev/solmargintrader/tradingview` to verify the
+local capture hashes and source excerpts as well. No command fetches sources or
+starts semantic indexing. Runtime discovery stays flat and excludes incomplete
+research. `python3 -m unittest scripts.test_card_readiness` exercises those
+separation and failure cases.
 
 ## Saved HTML to Markdown
 
