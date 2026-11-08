@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 68
-Delta: v67 to v68; preserve installed activation and incoming forwardtest history.
+Version: 74
+Delta: v73 to v74; preserve activation and concurrent delivery records.
 
 ## v1 - 2026-11-06
 
@@ -527,17 +527,33 @@ Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintra
 Look at the CI tests, and determine which tests are causing the hour long delays in testing and make it so only the tests that affect what you doing are necessary, and do whatever else you need to to actually do this.
 ```
 
-## v67 - 2026-11-08 (owner merged the redesign)
+## v71 - Coin suitability and Bots ranking
 
-Version: 67. Delta: v66 to v67; preserve the owner's merge notification.
+```text
+Create a skill that applies the template to a coin and determines if it's a good fit or not, and then explains its reasoning. Also have a bulk mode where it applies the template to a group of coins and outputs a table. And then write a script that does the same thing
+```
+
+```text
+Add a heuristic backtesting mechanism to quickly test it, and a more detailed audit backtest. And then incorporate this into the soltui in the bots tab, so that I can click a button and it will ranksort the most suitable coins and do a backtest to show it.
+```
+
+## v72 - Optional full SolTUI suite
+
+```text
+make the 999-case SolTUI suite optional, then skip it and push the code
+```
+
+## v73 - 2026-11-08 (owner merged the redesign)
+
+Version: 73. Delta: v72 to v73; preserve the owner's merge notification.
 
 ```text
 I merged it
 ```
 
-## v68 - 2026-11-08 (activate the actual console)
+## v74 - 2026-11-08 (activate the actual console)
 
-Version: 68. Delta: v67 to v68; preserve the loaded-UI report.
+Version: 74. Delta: v73 to v74; preserve the loaded-UI report.
 
 ```text
 I dopn't see the new ui when loading the soltui

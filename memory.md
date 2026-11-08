@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 132
-Delta: v131 to v132; record independently verified canonical activation.
+Version: 142
+Delta: v141 to v142; preserve activation and concurrent delivery records.
 
 ## v1 - 2026-11-06
 
@@ -1283,9 +1283,63 @@ TASK-1001: PR 89 final CI at 0d2ba8d passed; SolTUI took 15m35s, all other jobs 
 
 PR 89 SolTUI CI ran 895 tests in 893.969 seconds and logged 165 app mounts. Other jobs took at most 73 seconds. Added conservative test-only module selection, four timed shards and nightly full coverage. Merged master through 9bd7067; combined discovery is 980 tests. Remaining: run focused integration, regenerate indexes, push and verify final CI, then merge PR 89. Stele outbox 03002488.
 
-## v130 - 2026-11-08 (canonical UI activation)
+## v130 - Coin suitability implementation
 
-Version: 130. Delta: v129 to v130; recover the actual launcher after the owner merged PR93.
+The user requested a reusable skill/CLI for one or many coins, then added quick heuristic and detailed audit backtests plus a Bots-tab rank/sort button. Canonical implementation belongs here so all surfaces reuse the existing grid/DCA economics. The earlier independent stdlib prototype in the research worktree is archived, not installed or advertised as production code.
+
+Worktree: /Users/mitch/dev/solmargintrader-coin-fit-20261108, branch feat/bot-coin-fit, base8ed41ad. Preserve the maintained checkout's unrelated minute_coverage edit and untracked web application files. No signing, order, executor or live configuration changes. Backtest code remains offline.
+
+Reuse backtester.core.gridsim and dcasim for next-bar, pessimistic, fee-aware simulation. Quick ranking uses an older development window and reserves the newest holdout. Audit runs the fixed configuration over chronological windows, a continuous full-capital path, and stressed fees/slippage; it does not auto-adopt a configuration or claim independent profitability from a ranked winner. Current-cache membership is not a historical universe. Missing live depth, fundamentals and portfolio stress remain explicit in the22-field template.
+
+Parent owns soltui/coin_fit.py, backtest computations, CLI/skill, tests/docs/workflow/Git. Textual lifecycle specialist owns tui.py, commands.py, help.py, optional bots_screens.py and dedicated UI tests. Backend interface: rank_coins(bot,coins,settings,mode,start,days,progress,cancelled). Frozen input/config, bounded windows, cooperative cancellation, deterministic rows including errors. The small Stele reader model was unavailable; direct recall found KNOW-871 (train-rank caution), KNOW-531 (no orders/keys), TASK-870 (superseded Bots implementation). No unrelated project binding is created.
+
+Remaining: backend+CLI/skill, UI, synthetic invariants/no-lookahead tests, audit and live cached-data smoke, installed UI acceptance, full required checks and merged delivery.
+
+## v131 - Verification checkpoint
+
+Implemented the shared offline coin-fit backend, direct/skill script entrypoints,22-field evidence output, deterministic single/bulk ranking, quick development-only scoring and10audit scenarios. Existing grid/DCA economics remain unchanged. Scheduled accumulation uses a separate explicit prefunded next-open schedule. The TUI freezes config, capital, policy, dates, costs and input hash; its selected audit preserves the quick order. Threaded jobs support cancellation, stale/context guards and teardown. No live order or config adoption exists.
+
+Independent forward review hand-reconciled60grid/DCA scenarios and a scheduled-account example. It found and rechecked fixes for explicit-cache fallback, inaccurate audit as-of, minute alignment, malformed context, missing context identity, hidden failed UI checks and incomplete cost/inventory/ledger display. No residual findings from that review.25new economic/screener tests plus13new UI tests pass; focused registry/help/bridge checks pass. Full backtester run909cases has only expected lexical-index staleness while uncommitted; full SolTUI run is active. No archived study is represented as a current profitability proof.
+
+Next: commit tracked source so deterministic index/test counts can refresh; run full checks and CI, then merge. Install the skill by symlink to the maintained checkout after delivery. Verify actual installed TUI entrypoint and click flow. Keep the maintained checkout's dirty files untouched. Context recall small-model agent could not run; direct MCP recall was read-only and no project binding was created.
+
+## v132 - Concurrent catalog integration
+
+Merged source master3e5a9f3(PR99) with the coin-fit feature. Both Strategies catalog behavior and Bots ranking survive. Preserved incoming logs verbatim; own unpublished sections now111/112 and prompt61. Help tables combine both contexts; button registry has70handlers(67incoming plus3coin-fit). Rebuild only offline retrieval indexes after final tracked source changes.
+
+## v133 - Reviewed feature and verification gates
+
+The independent review rechecked all findings and reports no residual issues. Economic tests hand-check next-open, full-capital and terminal-cost accounting. Quick scoring ignores the reserved newest window; audit refuses changed data and preserves frozen config/costs/capital/policy. All22 template fields distinguish simulation evidence from unknown current depth and eligibility. Scheduled accumulation needs a supplied ownership thesis for a positive screen. Source and methodology documentation are complete; skill validation passes.
+
+Thirty-eight focused economic/screener/UI tests pass, plus registry/help/bridge coverage. The first909-case backtester run found only expected offline-index staleness before metadata refresh. Full SolTUI validation and final CI are required on the integrated head. Only offline metadata/text/concept indexes are regenerated; no embeddings, service restarts or live operations are part of this feature. Actual installed-entrypoint acceptance will distinguish a fresh guarded session from the owner's older Terminal TUI PID.
+
+Candidate branchfeat/bot-coin-fit remains recoverable; finish final-head gates, merge, safe canonical fast-forward, installed skill symlink and actual installed click flow. Preserve unrelated source and current consoles. Final Git/install/cleanup identities will be stored in a private receipt outside tracked source to avoid a post-merge bookkeeping commit loop.
+
+## v134 - coin-fit final local verification
+
+Backtester909 tests pass after the offline index refresh. Full SolTUI913 ran with one failure: test_every_table_has_a_title_above_it reported bots-fit-table. An explicit table title fixes that failure; the affected title and coin-fit UI suites pass14 tests. Final CI must verify the complete integrated head. Two new test import-order findings were fixed; scoped Ruff passes. No existing unrelated UI lint is claimed clean.
+
+Cached23-coin quick smoke retained11 complete and12 insufficient-data rows without bridging missing candles. A separate SOL/BTC/ETH audit exercised all three supported bot types and ten scenarios each. These are operation checks, not an investment recommendation or calibrated edge. PR: https://github.com/mithudso/solmargintrader/pull/102 . Final merge/install acceptance remains pending; the final private receipt will be /Users/mitch/dev/crypto-grid-dca-research/evidence/coin-fit-final-delivery.json . Existing native consoles, WIP and paused services must remain preserved.
+
+## v135 - Workbench integration
+
+Merged published optimization workbench PR98 at bc5c701 into the coin-fit branch. Preserve its experiment lifecycle, sealed holdout safeguards and Strategies browser. Both new and existing Bots controls remain. Combined suite discovery is expected to be982SolTUI and909backtester; final checks verify actual counts. No live configuration, service or order changes.
+
+## v136 - v2 shell integration
+
+Concurrent PR93 published the v2 shell at9bd7067. Preserve Research→Bots and the classic Bots tab. Production source auto-merged; a regression exercises actual Rank/Audit clicks in both full shells. Recompute combined discovery and offline metadata. Final CI and installed acceptance remain the delivery gate for this feature; prior research and other owners' verification outcomes are historical scope, not proof of this combined revision.
+
+## v137 - Optional full SolTUI suite
+
+The owner explicitly requested: make the999-case SolTUI suite optional, skip it and push the code. Cancelled the running full-suite job. CI now runs it only for workflow_dispatch with run_soltui_suite=true; normal PR/push jobs skip it. Keep the existing check name stable. Other fast CI checks remain enabled. No full999-case pass is claimed. Local909backtester checks, focused36-case combined v2/classic UI checks and independent accounting/source preflight passed; installed-primary acceptance remains after merge.
+
+## v138 - Forwardtest and optional CI integration
+
+Concurrent PR89 published forwardtest control changes and conservative timed CI shards atfedde2a. Preserve those functions and scripts. The owner's newer explicit optional-suite instruction controls the full SolTUI job: only workflow_dispatch with run_soltui_suite=true enables all four shards. PR, push and scheduled workflows skip this job; other jobs stay enabled. Combined discovery is1010cases after incoming11additional tests and this feature30tests. No full suite is run or claimed passed.
+
+## v139 - 2026-11-08 (canonical UI activation)
+
+Version: 139. Delta: v138 to v139; recover the actual launcher after the owner merged PR93.
 
 The owner merged PR93 as 9bd7067d30af3a3fad93120d989d8fa409834966 from source 4e4693e. All 27 task paths match the actual merged commit, which is present on remote master. The owner waived repeated full CI; obsolete run 42482448847 was cancelled. The ordinary merge guard had refused the automated merge during its two-minute new-push check-registration window; the owner then merged it.
 
@@ -1295,9 +1349,9 @@ The guarded runtime writer prepares a private three-way merge against canonical 
 
 Stele transport closed after TASK-1002 creation and claim. Exact writes are queued in outbox IDs 20e78a8c, 608187fb and 3f944787. Installation, preservation and rollback receipts belong under /tmp/soltui-v2-resume-01a1bb24/activation/. Remaining: finish guarded installation, verify actual new launches open Now while retaining local guide behavior, record final hashes and receipts, ship only this follow-up workflow record without another full CI, and clean only the private recovery worktree. Preserve the locked original Claude worktree and all other active work.
 
-## v131 - 2026-11-08 (actual runtime installed)
+## v140 - 2026-11-08 (actual runtime installed)
 
-Version: 131. Delta: v130 to v131; qualify the installed canonical runtime by exact source hashes.
+Version: 140. Delta: v139 to v140; qualify the installed canonical runtime by exact source hashes.
 
 The guarded writer installed all nine runtime files from merged source 9bd7067. It retained the active guide/card changes in commands.py, help.py and tui.py through clean three-way merges. It checked 1,036 unrelated existing dirty/untracked paths and found no changed bytes during installation. Canonical Git HEAD remains 3e5a9f3 and index bytes remain unchanged. The first preflight detected an index-byte change and refused before writing; a fresh preparation qualified the stable state before installation. Publication used fresh hash preconditions and atomic file renames; it does not claim a true compare-and-swap against arbitrary concurrent writers.
 
@@ -1307,12 +1361,18 @@ Install receipt: /tmp/soltui-v2-resume-01a1bb24/activation/install-receipt.json.
 
 Final independent mounted acceptance is saved under /tmp/soltui-v2-resume-01a1bb24/acceptance/canonical/. TASK-987 and the private checkpoint hold the current final result and any remaining work. Read those receipts before repeating installation or tests. Ship this workflow-only follow-up without another full CI run under the owner's explicit instruction. Preserve the live locked original Claude worktree and every other active task.
 
-## v132 - 2026-11-08 (canonical acceptance and final records)
+## v141 - 2026-11-08 (canonical acceptance and final records)
 
-Version: 132. Delta: v131 to v132; finish actual loaded-UI verification and retain incoming PR89.
+Version: 141. Delta: v140 to v141; finish actual loaded-UI verification and retain incoming PR89.
 
 Independent canonical acceptance passed with process exit 0. The actual normal wrapper exposes --classic. Fresh canonical mounts verify Now startup, soltui-night theme, five destinations, Explain, Bots workbench, classic fallback, write-safe experiment navigation and 80/100-column labels. Current guide behavior remains intact: 34 registered cards, zero TradingView cards, 42 guide files excluded, and nonregistered guide keys refused. All nine installed runtime hashes match before and after verification. Canonical HEAD 3e5a9f3 and index bytes remain unchanged. Existing consoles were not restarted.
 
-Final acceptance is /tmp/soltui-v2-resume-01a1bb24/acceptance/canonical/receipt.json. TASK-1002 is complete; installation subtask TASK-1003 is complete. Three queued writes from v130 were replayed and marked done, and gap KNOW-1004 auto-archived when activation completed. The actual new-launch behavior is fixed.
+Final acceptance is /tmp/soltui-v2-resume-01a1bb24/acceptance/canonical/receipt.json. TASK-1002 is complete; installation subtask TASK-1003 is complete. Three queued writes from v139 were replayed and marked done, and gap KNOW-1004 auto-archived when activation completed. The actual new-launch behavior is fixed.
 
 While the workflow-only follow-up PR103 was open, PR89 merged as fedde2a. Preserve its forwardtest implementation, conservative CI scope/shards, every prompt/memory entry and current documentation counts. This follow-up changes no product source. Restore only the missing closing fence on this task's existing CI-waiver prompt; preserve the owner's exact text and all incoming history. Regenerate offline retrieval artifacts, check final documentation/index/whitespace, push this record-only integration with CI skipped, finish ordinary PR103 merge and verify its exact content, then remove only the clean private recovery worktree. TASK-987 and the private checkpoint hold final delivery closure; do not replay installation or full tests.
+
+## v142 - 2026-11-08 (activation record integration)
+
+Version: 142. Delta: v141 to v142; preserve incoming coin-suitability and scoped-CI delivery.
+
+Concurrent PR102 advanced master to 078c895 while the workflow-only PR103 awaited merge. Preserve all incoming source, tests, CI policy and exact workflow history. This follow-up still changes only prompt/continuation records and offline retrieval indexes. Canonical UI activation remains independently accepted under its installed hashes. No runtime reinstall or full test suite is required for these record-only merges. Complete the ordinary PR103 merge, verify exact five-artifact content, and clean only the private worktree.

@@ -5,6 +5,12 @@ on:
     branches: [master, main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      run_soltui_suite:
+        description: Run the optional full SolTUI suite using four timed shards
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: "23 4 * * *"
 
@@ -125,7 +131,10 @@ jobs:
   # equivalent), so this job runs on a macOS runner. It covers the unit suite
   # only: the packaging paths -- the alias bundle and the launchd agent -- are
   # verified by hand, per docs/known-issues.md.
+  # Owner instruction: full SolTUI coverage is explicit opt-in. PR, push and
+  # scheduled runs skip this job; a manual dispatch enables all timed shards.
   soltui:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_soltui_suite }}
     name: soltui (python, macos, shard ${{ matrix.shard }})
     runs-on: macos-latest
     strategy:
