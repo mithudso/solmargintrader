@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 51
-Delta: v50 to v51; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields.
+Version: 53
+Delta: v52 to v53; retain hook history and add HTML converter request.
 
 ## v1 - 2026-11-06
 
@@ -399,3 +399,12 @@ Also fix this hook error at the end of every turn: • Blocked by hook
     6. Sync main (`git pull --ff-only`), delete the local branch, remove the worktree. Leave no stale branch, PR or dead code.
     If the pending changes are not yours (another session's work, or this session changed nothing), say so in one line and stop.
 ```
+
+## v53 - 2026-11-08 (HTML mirror conversion)
+
+```text
+Write a script to convert all of the html files in the subfolders here into text only markdown files.
+```
+
+Target: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com.
+Implementation: /Users/mitch/dev/solmargintrader-wt-01a1ba63/scripts/html_to_markdown.py.
