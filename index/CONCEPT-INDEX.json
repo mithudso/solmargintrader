@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T20:27:04+00:00",
+  "generatedAt": "2026-11-08T20:39:43+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -508,7 +508,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 31
+          "hits": 30
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -1564,12 +1564,12 @@
           "hits": 29
         },
         {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 25
+          "path": "memory.md",
+          "hits": 26
         },
         {
-          "path": "memory.md",
-          "hits": 23
+          "path": "research/RANKED_LISTS.md",
+          "hits": 25
         },
         {
           "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
@@ -1577,6 +1577,10 @@
         },
         {
           "path": "backtester/core/deflated_sharpe.py",
+          "hits": 21
+        },
+        {
+          "path": "soltui/experiment_screens.py",
           "hits": 21
         },
         {
@@ -1637,10 +1641,6 @@
         },
         {
           "path": "research/tradingview-card-readiness.json",
-          "hits": 9
-        },
-        {
-          "path": "soltui/experiment_screens.py",
           "hits": 9
         },
         {
@@ -1963,6 +1963,10 @@
           "hits": 25
         },
         {
+          "path": "memory.md",
+          "hits": 23
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 21
         },
@@ -1971,8 +1975,8 @@
           "hits": 21
         },
         {
-          "path": "memory.md",
-          "hits": 20
+          "path": "soltui/experiment_screens.py",
+          "hits": 21
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -2012,10 +2016,6 @@
         },
         {
           "path": "research/tradingview-card-readiness.json",
-          "hits": 9
-        },
-        {
-          "path": "soltui/experiment_screens.py",
           "hits": 9
         },
         {

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 110
-Delta: v109 to v110; retain the per-coin bot optimization request.
+Version: 113
+Delta: v112 to v113; reconcile optimizer and parameter-adjustment requests.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -910,4 +910,20 @@ In the Bots tab, let me set all of the variables manually if I choose to but mak
 
 ```text
 When doing the auto-optimize for the bots, it's trying to apply the same configs to all coins, but the different coins may need different variables. Make it optimize each coin separately.
+```
+
+## v111 - 2026-11-08
+
+```text
+And with the auto-optimizer I think you've been denying any new configuration if it has ANY failed evaluation so unless it's not perfect it won't get any better. I'm looking for incremental improvements and for the auto optimizer to be run frequently as it tunes to optimal configurations for each coin. I want better I'll get to best eventually.
+```
+
+## v112 - 2026-11-08
+
+“In the experiments tab, it has Range, stop, and step, it's not clear if the range and stop are asking for whole values or percentages, so pre-populate the fields with the current price and defaults for each with a percentage change to the right of the text field that lets you adjust the number by the percent shown.”
+
+## v113 - 2026-11-08
+
+```text
+Yes, use the current parameter value (Recommended)
 ```

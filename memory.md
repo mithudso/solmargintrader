@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 196
-Delta: v195 to v196; record independent per-coin bot optimization.
+Version: 200
+Delta: v199 to v200; record F5 delivery.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1786,6 +1786,19 @@ The owner requested optional manual entry for every Bots tab variable while reta
 
 The owner requests independent bot optimization and configuration for every coin instead of choosing one shared configuration for all coins. Preserve separate evidence, saved settings and forward behavior per coin; do not overwrite unrelated coin settings. Stele task creation is queued as outbox ae3e15a1. The existing optimizer and configuration storage need investigation.
 
-## v195 - 2026-11-08
+## v197 - 2026-11-08
 
-Implemented the detached F5 batch in /Users/mitch/dev/solmargintrader-wt-f5-1046/soltui/f5_batch.py. The durable per-run ledger freezes the complete retained Coinbase USD spot universe, evaluation sources, settings and each historical series, resumes compatible work, and reports missing, failed, partial and unsupported cells. The retained catalog observed 405 eligible assets. History comes from existing cached bars; unavailable or gapped series are reported instead of invented. The engine is spot-only, so leveraged strategy tiers are unsupported. Independent forward trials use closed candles at each matching interval, prospective minute settlement and a separate results database. Unrecoverable overdue settlements remain pending. The backend has not been load-tested on the full universe; venue rate limits and throughput are unknown. No production batch was launched and existing sweep and trainer processes were not touched. Forty-four focused tests passed with ResourceWarning treated as an error. A bounded detached-worker smoke used one missing series, and one real historical SOL daily backtest used a stubbed forward feed. Parent owns UI wiring and combined delivery; do not merge this branch before integration.
+The experiment range fields are candidate parameter values, not necessarily prices. Worktree /Users/mitch/dev/solmargintrader-wt-experiment-range owns experiment_screens.py and focused tests. Populate selected-parameter defaults, label actual units, implement adjacent relative percentage controls, and preserve numeric, integer and choice semantics. A coin price must never populate unrelated parameter fields. Show a live price separately only if a verified quote is available without blocking the UI. Preserve active jobs. Stele task creation queued as ba7f78e0 after transport closed; parent integrates before merge.
+
+## v198 - 2026-11-08
+
+ExperimentScreen now derives range defaults from the selected parameter baseline, labels real parameter units, and applies adjacent percentage adjustments relative to that baseline. Integer parameters round to whole values; choice fields disable ranges, logarithmic count is a whole number, out-of-domain and zero-baseline percent adjustments are refused. A separate on-demand recorder status check runs off the UI thread and shows a single coin midpoint only with a fresh live bid/ask and timestamp. It never writes the price into a parameter. Forty-three focused tests passed. No active jobs or services were touched. Parent owns integration and clarification; the branch is not to be merged independently.
+
+## v199 - 2026-11-08
+
+The owner confirmed that percentage controls should adjust the selected parameter relative to its current value. The separate verified coin price is a reference and does not populate non-price parameters.
+The Stele decision is queued in outbox 609e92e4 after the transport closed.
+
+## v200 - 2026-11-08
+
+F5 batch PR 127 merged as bb18a64fd2f52feae435680a22d0e8e1f81c3655 after required CI. It uses eligible Coinbase USD spot markets and cached history, reports missing and unsupported cells, and records separate interval-specific forward results. Leveraged tiers and full-universe throughput remain unverified. No production batch was started in testing.
