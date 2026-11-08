@@ -34,7 +34,7 @@
 
 The compound scorecard asks one question: **will the next five-minute bar of a crypto perpetual close up or down?** It scores 28 metrics from -1 (down) to +1 (up), removes the double-counting between metrics that measure the same thing, reweights styles by market regime, and combines the scores into one call (UP, DOWN or FLAT) behind seven veto gates. This paper lists every metric, what it checks and why it was included, every tunable parameter with its default and range, and the evidence so far.
 
-The evidence is negative. Across 1,420 configurations on five coins (30 days of 5-minute bars, last 30% held out), **none made money after costs in a way that survives scrutiny**: 10 of 1,420 had a positive out-of-sample return, and each of those 10 had a hit rate statistically indistinguishable from a coin flip. The compound with static weights (the configuration the saved sweep ran) lost between 17% and 63% of capital out-of-sample at 5x leverage on every coin (mean -43%). Even a call that is *always right* loses money per one-bar trade on all five coins (about -7 to -10 bps on four, -0.4 on ZEC), because the average 5-minute move is smaller than the 16 bps round-trip cost. The one weak positive signal is a **reversion** effect in the oscillators (RSI, z-score, Stochastic, Bollinger: out-of-sample hit rates 50 to 57% across the five coins), which is the opposite direction from the catalogue's regime advice, may be partly a measurement artefact, and has not been forward tested. A later addition, **learned weights** (each metric weighted by its own capped, Bayesian-updated record), reaches this reversion tilt without anyone choosing it and lifts the compound's out-of-sample hit rate to 46.5 to 55.6%, but returns stayed negative in every row. **No forward-test record exists yet, and the planned year-long run has not completed.** These results are weak evidence about one 30-day regime, and say nothing about profitability.
+The evidence is negative. Across 1,420 configurations on five coins (30 days of 5-minute bars, last 30% held out), **none made money after costs in a way that survives scrutiny**: 10 of 1,420 had a positive out-of-sample return, and each of those 10 had a hit rate statistically indistinguishable from a coin flip. The compound with static weights (the configuration the saved sweep ran) lost between 17% and 63% of capital out-of-sample at 5x leverage on every coin (mean -43%). The all-transitions diagnostic is negative on all five coins (about -7 to -10 bps on four, -0.4 on ZEC): the average absolute close-to-close log return is smaller than the configured 16 bps round-trip cost. This unconditional average does not bound a selective trading policy. The one weak positive signal is a **reversion** effect in the oscillators (RSI, z-score, Stochastic, Bollinger: out-of-sample hit rates 50 to 57% across the five coins), which is the opposite direction from the catalogue's regime advice, may be partly a measurement artefact, and has not been forward tested. A later addition, **learned weights** (each metric weighted by its own capped, Bayesian-updated record), reaches this reversion tilt without anyone choosing it and lifts the compound's out-of-sample hit rate to 46.5 to 55.6%, but returns stayed negative in every row. **No forward-test record exists yet, and the planned year-long run has not completed.** These results are weak evidence about one 30-day regime, and say nothing about profitability.
 
 ## 1. Scope and question
 
@@ -368,14 +368,14 @@ The tunable parameters are in section 4.1: `adaptive`, `adaptive_prior`, `adapti
 * **Data.** 30 days of 5-minute bars, 2026-07-06 00:00 to 2026-08-06 00:00 UTC (8,927 to 8,929 bars per coin). SOL is native 5m; BTC, ETH, DOGE and ZEC are aggregated from 1-minute bars. All are Coinbase series.
 * **Split.** First 70% in-sample, last 30% out-of-sample (2,678 bars per coin, from 2026-07-27 16:50 UTC). Rankings use out-of-sample results only.
 * **Costs.** 6 bps fee plus 2 bps slippage per side, 16 bps per round trip, applied to every fill.
-* **Forecast statistics** (per configuration, per split): hit rate among calls, a z-score against a coin flip (standard errors from 50%), gross and net basis points per call if held one bar, calibration (up-rate by composite bucket), and the **oracle**: the net result per one-bar trade of a call that is always right.
+* **Forecast statistics** (per configuration, per split): hit rate among calls, a z-score against a coin flip (standard errors from 50%), gross and net basis points per call if held one bar, calibration (up-rate by composite bucket), and the **oracle**: mean absolute close-to-close log return over every time-selected transition minus a fixed round-trip cost. The oracle includes no-call periods and ties, ignores call coverage, and does not model next-open execution or liquidation paths.
 * **Engine statistics:** total return, drawdown, trades, time in market, fees, borrow and liquidations, from the repository's backtest engine with the leveraged perp cost model.
 * **Weights in the saved sweep.** Static (`adaptive` absent, equivalent to 0): the sweep predates learned weights. Section 6.7 reports the learned-weight comparison, taken from `docs/COMPOUND-5M.md` and not recomputed here.
 * **Configurations.** 284 labels per coin (each metric alone at its defaults, then one-parameter perturbations, then the compound and eight variants of it), 1,420 rows in total.
 
 ## 6. Results so far
 
-### 6.1 Even perfect foresight does not pay at one bar
+### 6.1 The all-bars diagnostic is negative in this thirty-day sample
 
 
 | | BTC | DOGE | ETH | SOL | ZEC |
@@ -384,7 +384,16 @@ The tunable parameters are in section 4.1: `adaptive`, `adaptive_prior`, `adapti
 | net per one-bar trade if always right (bps) | -9.8 | -7.3 | -7.4 | -7.5 | -0.4 |
 | out-of-sample share of up bars | 48.7% | 47.0% | 48.7% | 45.6% | 48.8% |
 
-The average move is smaller than the 16 bps round-trip cost on BTC, DOGE, ETH and SOL, so a perfect one-bar call loses 7 to 10 bps per trade there; ZEC's larger moves bring it to -0.4 bps, which is break-even before any real error. **A five-minute direction call can only pay by holding through several bars in one round trip**, which is what the hysteresis and the cost gate exist for, and which also means the useful question is not "is the next bar up?" but "does this call predict a move larger than the cost over the holding period?".
+At the assumed 16 bps round-trip cost, this direction-perfect, close-to-close average is
+negative on all five coins, including ZEC. `forecast_stats.oracle_net_bps` averages every
+time-selected transition, including FLAT/no-call periods and ties. It does not condition
+on a strategy's selected events. A negative all-bars average therefore cannot rule out a
+selective one-bar policy with different conditional outcomes. Holding through several bars
+is another way to amortize the toll; neither possibility is validated by this diagnostic.
+Actual next-open fills, costs and intrabar survival must be evaluated for the selected
+policy. See `research/five-minute-perps-suite/benchmark-scope-review.json` for the reviewed
+metric definition and a synthetic counterexample. These figures retain their historical
+sample and configured costs; they are not live venue quotes.
 
 ### 6.2 Which metrics have any directional information
 
@@ -480,9 +489,9 @@ The forward tester exists (one call per closed 5-minute bar, resolved when the n
 3. **Overlapping calls.** Calls on consecutive bars share information, so z-scores overstate independence. A z of 5 on DOGE's RSI is an upper bound on its significance, not an estimate.
 4. **Possible bid-ask bounce.** These are Coinbase closes, which alternate between bid and ask prints and create negative autocorrelation that cannot be traded. Jupiter fills at the oracle price, which has no bounce. If part of the reversion edge is bounce, it is not capturable at the venue the cost model assumes. This is a hypothesis, not a measurement; it has not been tested against oracle-priced bars.
 5. **Aggregated bars.** Four of five coins are built from 1-minute bars, which could differ subtly from native 5-minute bars.
-6. **Costs are assumed.** The 16 bps round trip is the venue's published fee plus an assumed adverse execution; the repository's cost model does not include price-impact fees, keeper latency or priority fees, each of which makes results worse.
+6. **Costs are assumed.** The 16 bps round trip is a configured fee and slippage proxy, not a current executable venue quote; the repository's cost model does not include price-impact fees, keeper latency or priority fees, each of which makes results worse.
 7. **Metrics not testable here.** `premium`, `oi_flow`, `book_imbalance` and `gate_news` need live data; funding history covers only some coins. Their value is unmeasured, not zero.
-8. **Hit rate is not profit.** A hit rate above 50% on one-bar calls is necessary, not sufficient: the oracle table shows costs exceed the average move, so even a modest real edge would need to be held for several bars to pay.
+8. **Hit rate is not profit.** Profit depends on win and loss magnitudes, execution costs and survival before exit. A profitable policy can win fewer than half its trades with asymmetric payoffs. The negative unconditional oracle average does not rule out selective one-bar calls or require a longer holding period; those alternatives need separate conditional expectancy and path tests.
 
 ## 8. Conclusions and next steps
 

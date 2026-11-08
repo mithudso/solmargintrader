@@ -1,0 +1,33 @@
+{
+  "schema": "task808-synthesis-audit/v1",
+  "version": 1,
+  "delta": "Initial independent review of the authored synthesis; not a full-suite completion receipt.",
+  "reviewed": "2026-11-08",
+  "reviewer": "research-contract-auditor",
+  "definition_version": "1.0.0",
+  "document": "research/FIVE-MINUTE-PERPS.md",
+  "document_sha256": "23cb83fbecd903c5b9f1fbc6a5fa07e73726def4a76cdd1c650ce7b854d90431",
+  "accepted_packet_sha256": "53f1e45fae9cc0570ca7ba4085ad120785c3928beef135a4809ed0261191023c",
+  "verdict": "Accepted within the stated scope; no corrective finding.",
+  "checks": {
+    "factual_calculated_and_proposed_boundaries": "pass",
+    "signal_priority_explicitly_unvalidated": "pass",
+    "venue_fee_components_and_path_caveats": "pass",
+    "vendor_horizon_and_calibration_scope": "pass",
+    "accepted_gate_proof_hashes": "pass",
+    "decimal_recomputation": "pass"
+  },
+  "calculated_examples": {
+    "base_plus_minimum_linear_round_trip_fraction": 0.0014,
+    "cost_to_posted_collateral_fraction_at_25x": 0.035,
+    "cost_to_posted_collateral_fraction_at_50x": 0.07,
+    "cost_to_posted_collateral_fraction_at_100x": 0.14,
+    "binary_break_even_probability_for_0_002_gain_0_001_loss_0_0014_cost": 0.8
+  },
+  "limits": [
+    "The calculations assume unchanged notional and exclude additional costs.",
+    "No testing priority is an empirical ranking of profitable predictors.",
+    "No new market backtest or live trade was performed.",
+    "Artifact installation, indexing, frontier saturation and final publication need their own receipts."
+  ]
+}

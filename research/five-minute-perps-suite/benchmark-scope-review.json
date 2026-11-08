@@ -1,0 +1,88 @@
+{
+  "schema": "task808-benchmark-scope-review/v1",
+  "version": 2,
+  "delta": "v1 to v2; independent archive/function audit and frozen documentation correction accepted.",
+  "reviewed_as_of": "2026-11-08",
+  "reviewer": "independent explorer, read-only source inspection and real-function synthetic check",
+  "source_revision": "5cf5918e9f7a7d46a1aae7ae09995ba994ecdc07",
+  "source_sha256": {
+    "backtester/core/scorecard.py": "1ec5aae49afbc50f15187a938c376a35fa62ed9104077bb5708c98376dfd9d49",
+    "backtester/core/compound.py": "d367a28565076bf3f381943c1c1ff435cb7d2a8524ec7c435cab2ad0a37c1f6f",
+    "backtester/core/engine.py": "292e2b41fc6e127f00bfec099c16201b969b32dadf683fd6529ee9f8c2a0f78b"
+  },
+  "symbols": [
+    "forecast_stats",
+    "oracle_net_bps"
+  ],
+  "metric_scope": {
+    "return_type": "close-to-close log return in basis points",
+    "selection": "starting-bar timestamp window, all selected transitions including FLAT/no-call periods and ties",
+    "fixed_cost": "first evaluation execution configuration round-trip fee and slippage",
+    "formula": "mean(abs(log(close[t+1]/close[t]))*10000) - round_trip_bps",
+    "indication_coverage_changes_this_metric": false,
+    "does_not_model": [
+      "next-open execution",
+      "intrabar high/low path",
+      "liquidation",
+      "borrow",
+      "stop/target ordering",
+      "realized fill timing"
+    ]
+  },
+  "source_locators": {
+    "time_selection": "backtester/core/scorecard.py:1918",
+    "return": "backtester/core/scorecard.py:1923",
+    "active_call_filter": "backtester/core/scorecard.py:1946",
+    "all_transitions_oracle": "backtester/core/scorecard.py:1978",
+    "next_open_engine": "backtester/core/compound.py:163",
+    "engine_outcomes": "backtester/core/compound.py:348",
+    "proportional_cost": "backtester/core/engine.py:197"
+  },
+  "synthetic_counterexample": {
+    "status": "toy arithmetic exercised through actual function; no market result or profitable trading signal",
+    "gross_log_return_bps": [
+      {
+        "count": 99,
+        "value": 0.1
+      },
+      {
+        "count": 1,
+        "value": 100.0
+      }
+    ],
+    "round_trip_bps": 13.0,
+    "all_transitions": {
+      "calls": 100,
+      "oracle_net_bps": -11.901,
+      "diagnostic_net_bps_per_call": -11.901
+    },
+    "fixed_final_transition_only": {
+      "calls": 1,
+      "oracle_net_bps": -11.901,
+      "diagnostic_net_bps_per_call": 87.0
+    }
+  },
+  "leverage_identity": {
+    "assumptions": "fixed notional N, simple signed price return r, proportional round-trip cost c, collateral C=N/L, no liquidation or other costs",
+    "net_pnl": "N*(r-c)",
+    "return_on_collateral": "L*(r-c)",
+    "break_even_underlying_move": "r>c",
+    "separate_terms": [
+      "fixed-dollar network costs",
+      "size-dependent impact",
+      "borrow and funding",
+      "liquidation path"
+    ]
+  },
+  "conclusion": "The unconditional average does not establish a bound on every event-selected strategy. Evaluate conditional net expectancy, coverage, causal timing and adverse-path survival out of sample.",
+  "independent_audit": {
+    "agent": "research-contract-auditor",
+    "scope": "Exact function counterexample and proportional leverage identity; changed documentation sentences; archive preservation independently checked separately. No full-suite publication certification.",
+    "verdict": "accepted",
+    "document_sha256": {
+      "docs/COMPOUND-5M.md": "c6a734b4211a19e51f7ec8ed5e098f306e1ed148ef79a99f09b29b42371076f9",
+      "docs/COMPOUND-5M-PAPER.md": "cf93ddd184fd36b0c84615ec76928fc80be51e418cdce611f923d6e44f745f94"
+    },
+    "historical_numbers_unchanged": true
+  }
+}
