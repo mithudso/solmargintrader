@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 54
-Delta: v53 to v54; append four-child research records after concurrent hook and converter delivery.
+Version: 55
+Delta: v54 to v55; remove private operator paths from task metadata, preserving the exact request.
 
 ## v1 - 2026-11-06
 
@@ -418,4 +418,5 @@ Lag-selection multiplicity (frontier, viability 3.60 / 5)
 Directed graph preservation (frontier, viability 3.60 / 5)
 ````
 
-Target: /Users/mitch/dev/solmargintrader-wt-01a1b5ef. Stele TASK-905.
+Target: solmargintrader, isolated branch agent-01a1b5ef. Stele TASK-905.
+Metadata v55: operator-neutral continuation reference; user request unchanged.

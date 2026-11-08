@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 82
-Delta: v81 to v82; final root checks passed and Git delivery is ready.
+Version: 83
+Delta: v82 to v83; replace private operator paths in public task metadata with neutral run identifiers.
 
 ## v1 - 2026-11-06
 
@@ -801,7 +801,7 @@ Remaining: pass checks on the updated final head, merge PR 90, verify remote con
 ## v79 - 2026-11-08 (Four-child /dr start)
 
 Active: TASK-905; research stage TASK-907, install stage TASK-908, publication/delivery stage TASK-909.
-Worktree: /Users/mitch/dev/solmargintrader-wt-01a1b5ef; branch agent-01a1b5ef; base afaa03a.
+Workspace: isolated task checkout; branch agent-01a1b5ef; base afaa03a.
 Scope: standard-depth /dr on Conditional nonlinear information transfer; Finite-sample dependency uncertainty; Lag-selection multiplicity; Directed graph preservation. Parent: Uncertainty-aware nonlinear crypto lead-lag. Prior TASK-808 is complete; reuse exact parent evidence without claiming this explicit child depth was already done.
 Constraints: research only; no trades, keys, services, broad source rewrites or shared-checkout edits. Three independent source origins per concept; negative searches; exact readable source spans; deterministic and semantic research-gate/v4 checks for all assertions; preserve paid supported judgments. Do not infer executable SOL profitability from dependence, significance or graph stability.
 Completed: read routing and /dr instructions; semantic hub lookup found parent claims and reference; verified shared checkout contains unrelated work; created isolated worktree from fresh origin/master. Research worker owns only canonical new run and its evidence; root owns project records, installation, audit and Git delivery.
@@ -813,7 +813,7 @@ Completed: actual standard-depth native adapter adaptive research on all four na
 
 Independent source review: three original research groups per child, negative searches, 81 structured evidence spans and 32 bound snapshots. One bounded combined repair fixed seven first-review failures and six context gaps, with overlap between them; 60 judgments reused and only 13 changed pairs reviewed. Scientific statements and sources remain scoped to their actual studies. No measured five-minute SOL strategy is established.
 
-Root report reproduces ten exact accepted assertions and labels the experiment proposal. Its identifiers were rebound to the final packet after two source-span repairs changed canonical IDs. Public-safe selected claim index and gate receipt are in research/nonlinear-lead-lag-children/. Raw sources and judge transcripts remain private in the canonical run /Users/mitch/.global-ai-hub/research/nonlinear-lead-lag-four-children-task905.
+Root report reproduces ten exact accepted assertions and labels the experiment proposal. Its identifiers were rebound to the final packet after two source-span repairs changed canonical IDs. Public-safe selected claim index and gate receipt are in research/nonlinear-lead-lag-children/. Raw sources and judge transcripts remain private in run nonlinear-lead-lag-four-children-task905.
 
 Checks: 872 SolTUI tests ran (870 passed, 2 skipped); 34 Mongo tests ran (17 passed, 17 server/driver skips); 361 extension tests passed; offline oscillating dry run closed one positive round trip. Archived figure check passed 1084 transcription/recomputation checks, not a new market experiment. Initial 900-test backtester run had only the expected index-staleness failure from changed workflow records; regenerate the offline index and rerun after final documentation.
 
@@ -835,10 +835,16 @@ Required source-library reconciliation completed without errors. The stock helpe
 
 Tracker fallback: additional exact writes queued in 6892023a (complete TASK-908) and 21e256d6 (claim TASK-909), alongside the earlier IDs. Graph closure is not inferred from queued writes.
 
-At this source checkpoint, remaining actions are local final offline-index/document checks, root PR/CI/merge, website independent publication review/PR/CI/merge, production acceptance and cleanup of this task's clean merged worktrees. No further research or code implementation is planned. The authoritative final status and exact next action live in /Users/mitch/.global-ai-hub/research/nonlinear-lead-lag-four-children-task905/checkpoints/final-delivery.json. Read that receipt before resuming a stage; completed gates and source discovery must not be rerun.
+At this source checkpoint, remaining actions are local final offline-index/document checks, root PR/CI/merge, website independent publication review/PR/CI/merge, production acceptance and cleanup of this task's clean merged worktrees. No further research or code implementation is planned. The authoritative final status and exact next action live in private run nonlinear-lead-lag-four-children-task905, checkpoint final-delivery (JSON). Read that receipt before resuming a stage; completed gates and source discovery must not be rerun.
 
 ## v82 - 2026-11-08 (Final root checks and delivery)
 
 Final local checks passed: 900 backtester tests; 872 SolTUI tests ran with 2 skips; 34 Mongo tests ran with 17 server/driver skips; 361 extension tests; 11 converter tests inherited from the concurrent merge; positive offline oscillating round trip; 1084 archived figure checks; documentation drift and offline retrieval-index freshness. No new market experiment or live execution was performed. The final record-only change is followed by offline index regeneration and its targeted index tests; final-head CI remains the delivery gate.
 
 The root report and selected claim index remain source-audited. The root run report adds only verified skill activation and supported canonical-completion metadata, and separates remote publication status. Final delivery receipt remains authoritative for downstream checks, exact remote commit pins and cleanup. Remaining: push final root branch/open PR, pass final-head CI, complete website delivery and live verification, merge the final pushed root tip, remove owned clean merged worktrees, then write final private receipts and tracker closure.
+
+## v83 - 2026-11-08 (Public metadata privacy correction)
+
+Independent final-delta review found operator-specific paths in this task's new public continuation metadata. Replaced only task-owned auto-authored paths with a neutral run slug, checkpoint identifier or isolated-branch reference. The exact user request, all incoming history and all scientific assertion text remain unchanged. Private pre-redaction snapshots and exact metadata-change receipts remain in the private run. Offline retrieval indexes are regenerated after this correction. Website workflow records receive the same scoped correction before the final merge.
+
+The original root CI executor job failed before tests because setup-uv's release-binary download returned HTTP 504. GitHub could not rerun that job while the run was active. The required metadata correction creates a legitimate fresh final tip; all required checks must pass on that tip. No trading or research source behavior changes for this correction.

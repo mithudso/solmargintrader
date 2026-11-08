@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T09:58:49+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:09:02+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -243,7 +243,7 @@ Strongest files:
 - `soltui/compound.py` (16 hits)
 - `research/coin-intelligence/sol-solana.md` (11 hits)
 - `research/triggers.py` (10 hits)
-- `research/results/perturb_all_singles_long.txt` (9 hits)
+- `docs/CONCEPTS.md` (9 hits)
 
 Full list: `python3 index/search.py --concept robustness -n 94`
 

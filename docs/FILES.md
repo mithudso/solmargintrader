@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `a0e2ad4` (2026-11-08T09:58:49+00:00). 754 tracked files, 13.0 MB.
+**Generated** from `index/INDEX.json` at commit `4b2ba88` (2026-11-08T10:09:02+00:00). 754 tracked files, 13.0 MB.
 
 Regenerate with:
 
@@ -184,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 845 lines · 129,928 B · description: **extracted**
+`doc` · 851 lines · 130,854 B · description: **extracted**
 
-**Purpose.** Version: 82 Delta: v81 to v82; final root checks passed and Git delivery is ready. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 83 Delta: v82 to v83; replace private operator paths in public task metadata with neutral run identifiers. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -200,9 +200,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 422 lines · 25,853 B · description: **extracted**
+`doc` · 423 lines · 25,934 B · description: **extracted**
 
-**Purpose.** Version: 54 Delta: v53 to v54; append four-child research records after concurrent hook and converter delivery. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 55 Delta: v54 to v55; remove private operator paths from task metadata, preserving the exact request. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -264,7 +264,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,321 B · description: **extracted**
+`doc` · 316 lines · 15,350 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -280,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 7198 lines · 359,826 B · description: **extracted**
+`doc` · 7198 lines · 359,798 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -2708,9 +2708,9 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/nonlinear-lead-lag-children/run-report.md`
 
-`doc` · 39 lines · 3,343 B · description: **extracted**
+`doc` · 37 lines · 3,359 B · description: **extracted**
 
-**Purpose.** Version: 1 Delta: initial source checkpoint for the completed standard-depth /dr and canonical publication. Run status: COMPLETED. Four named concepts were researched, with none blocked. The supported runtime finalized the run in 39 elapsed minutes, including installation work; this is not a claim that remote CI or deployment finished in that time.
+**Purpose.** Version: 2 Delta: v1 to v2; use an operator-neutral continuation identifier for public metadata. Run status: COMPLETED. Four named concepts were researched, with none blocked. The supported runtime finalized the run in 39 elapsed minutes, including installation work; this is not a claim that remote CI or deployment finished in that time.
 
 **Use.** Read it.
 

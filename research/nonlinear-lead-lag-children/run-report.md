@@ -1,7 +1,7 @@
 # Four-child nonlinear lead-lag research completion
 
-Version: 1
-Delta: initial source checkpoint for the completed standard-depth /dr and canonical publication.
+Version: 2
+Delta: v1 to v2; use an operator-neutral continuation identifier for public metadata.
 
 Run status: COMPLETED. Four named concepts were researched, with none blocked. The supported runtime finalized the run in 39 elapsed minutes, including installation work; this is not a claim that remote CI or deployment finished in that time.
 
@@ -31,8 +31,6 @@ https://llmsx.org/tree/lag-selection-multiplicity/
 
 Delivery qualification: reader generation, local tests, independent publication review, final Git CI/merges and production verification are separate checks. The source and evidence receipts above establish the completed research and installed reference. The final delivery receipt below is authoritative for remote checks and cleanup; a source checkpoint cannot certify a future merge or deployment.
 
-Private continuation receipt:
-
-/Users/mitch/.global-ai-hub/research/nonlinear-lead-lag-four-children-task905/checkpoints/final-delivery.json
+Continuation: private run `nonlinear-lead-lag-four-children-task905`, checkpoint `final-delivery` (JSON). The private inventory records its operator-specific location.
 
 The synthesis is in `../NONLINEAR-LEAD-LAG-CHILDREN.md`. Selected exact canonical assertions are in `claim-index.json`; the public-safe gate summary is in `accepted-gate-receipt.json`.
