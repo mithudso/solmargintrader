@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 61
-Delta: v60 to v61; request to resolve and merge PR 89.
+Version: 62
+Delta: v61 to v62; reduce CI latency with relevant tests.
 
 ## v1 - 2026-11-06
 
@@ -471,4 +471,10 @@ Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintra
 
 ```text
 › REsolve the merge conflicts on https://github.com/mithudso/solmargintrader/pull/89 and merge commit pr
+```
+
+## v62 - 2026-11-08
+
+```text
+Look at the CI tests, and determine which tests are causing the hour long delays in testing and make it so only the tests that affect what you doing are necessary, and do whatever else you need to to actually do this.
 ```

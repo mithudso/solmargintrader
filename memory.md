@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 111
-Delta: v110 to v111; integrate PR 89 with master and verify delivery.
+Version: 112
+Delta: v111 to v112; investigate and reduce CI latency.
 
 ## v1 - 2026-11-06
 
@@ -1112,3 +1112,7 @@ Not reproduced: in-process, the old timer already kept ticking after a tab switc
 ## v111 - 2026-11-08
 
 Target: PR 89, forwardtest coin selection and optimization. Stele TASK-998. Private worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb38. Merging current origin/master into eecade5; preserve both workflow histories and regenerate indexes after conflicts are staged. Remaining: test, push, await final CI, merge and verify remote.
+
+## v112 - 2026-11-08
+
+TASK-1001: PR 89 final CI at 0d2ba8d passed; SolTUI took 15m35s, all other jobs at most 1m13s. Master advanced to bc5c701, so merge again. Inspect test timing and implement conservative change-aware checks and parallel full coverage; preserve scheduled/manual full coverage. Stele decision outbox 03002488. Remaining: implementation, tests, fresh CI, PR merge and delivery. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb38.
