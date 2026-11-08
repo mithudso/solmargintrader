@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 98
-Delta: v97 to v98; retain the Signal Backtest question.
+Version: 99
+Delta: v98 to v99; retain the Jupiter MCP and key-location request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -828,4 +828,14 @@ COnvertt from Jupsol to sol
 
 ```text
 In the Signal Backtest, why does it talk about frontier metrics, top 2%, and holding prices for 1 or 24 hours, none of those things make sense.
+```
+
+## v99 - 2026-11-08
+
+```text
+I don't know where you're saying that's open but I installed the jup.ag trading and docs mcp servers as well as the jup cli and authenticated them all. You can use these as reference for how to interact with the API which the API key is already used for the pre-auth but it's also in .env as JUP_API_KEY if needed. Use the trading MCP server to make the swap.
+```
+
+```text
+The variable is in ~/.env
 ```

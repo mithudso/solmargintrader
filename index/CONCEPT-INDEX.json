@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T18:26:28+00:00",
+  "generatedAt": "2026-11-08T18:35:17+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -515,12 +515,12 @@
           "hits": 28
         },
         {
-          "path": "research/RATIO-ROTATION.md",
+          "path": "memory.md",
           "hits": 27
         },
         {
-          "path": "memory.md",
-          "hits": 26
+          "path": "research/RATIO-ROTATION.md",
+          "hits": 27
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -1173,6 +1173,10 @@
           "hits": 72
         },
         {
+          "path": "memory.md",
+          "hits": 68
+        },
+        {
           "path": "research/coin-intelligence/hype-hyperliquid.md",
           "hits": 68
         },
@@ -1191,10 +1195,6 @@
         {
           "path": "extension/README.md",
           "hits": 63
-        },
-        {
-          "path": "memory.md",
-          "hits": 62
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
