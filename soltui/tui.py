@@ -173,11 +173,11 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#btn-save": "settings.save",
     "#btn-add": "roster.add",
     "#btn-roster-all": "roster.add_all",
-    "#paper-exp-start": "paper_experiment.start",
-    "#paper-exp-resume": "paper_experiment.resume",
-    "#paper-exp-stop": "paper_experiment.stop",
-    "#paper-exp-refresh": "paper_experiment.status",
-    "#paper-exp-activity": "paper_experiment.status",
+    "#paper-exp-start": "paperexperiment.start",
+    "#paper-exp-resume": "paperexperiment.resume",
+    "#paper-exp-stop": "paperexperiment.stop",
+    "#paper-exp-refresh": "paperexperiment.status",
+    "#paper-exp-activity": "paperexperiment.status",
     "#forward-start": "forwardtest.start",
     "#forward-stop": "forwardtest.stop",
     "#forward-refresh": "forwardtest.status",
@@ -1143,7 +1143,7 @@ class SolTuiApp(App):
         except (ValueError, TypeError) as exc:
             self.query_one("#paper-exp-status", Static).update(f"Invalid experiment: {exc}")
             return
-        env = self._call("paper_experiment.start", payload)
+        env = self._call("paperexperiment.start", payload)
         if not env["ok"]:
             self.query_one("#paper-exp-status", Static).update(self._msg(env))
             return
@@ -1155,7 +1155,7 @@ class SolTuiApp(App):
         if not table.row_count:
             return
         key = self._strategy_table_key(table)
-        env = self._call("paper_experiment.resume", {"id": str(key)})
+        env = self._call("paperexperiment.resume", {"id": str(key)})
         if not env["ok"]:
             self.query_one("#paper-exp-status", Static).update(self._msg(env))
         else:
@@ -1167,7 +1167,7 @@ class SolTuiApp(App):
         if not table.row_count:
             return
         key = self._strategy_table_key(table)
-        env = self._call("paper_experiment.stop", {"id": str(key)})
+        env = self._call("paperexperiment.stop", {"id": str(key)})
         if not env["ok"]:
             self.query_one("#paper-exp-status", Static).update(self._msg(env))
         else:
@@ -1204,7 +1204,7 @@ class SolTuiApp(App):
             self._paper_exp_refresh()
 
     def _paper_exp_refresh(self) -> None:
-        env = self._call("paper_experiment.status", quiet=True)
+        env = self._call("paperexperiment.status", quiet=True)
         if not env["ok"]:
             self.query_one("#paper-exp-status", Static).update(self._msg(env))
             return
