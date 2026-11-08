@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 160
-Delta: v159 to v160; implement and verify archived LP home suppression.
+Version: 161
+Delta: v160 to v161; guard a delayed Queue refresh and rerun the shell suite.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1638,3 +1638,7 @@ TASK-1024 in /Users/mitch/dev/solmargintrader-wt-archived-alerts: user reports a
 ## v160 - 2026-11-08
 
 TASK-1024: removed archived LP from home needs, health, tiles, and recurring home polling; Archive remains accessible and KILL is unchanged. Isolated home regression and mounted startup passed 11 tests. A broader UI run using the live configuration failed with NoMatches for #queue-status; no broader pass is claimed. Remaining: final verification, index refresh, CI, delivery and loaded launcher acceptance.
+
+## v161 - 2026-11-08
+
+TASK-1024: a delayed Queue activation during palette teardown raised NoMatches for #queue-status. The activation now checks that the widget exists. All 17 isolated v2 shell tests pass, including the formerly failing palette test. The independent mounted check verified archived LP suppression and other alerts. Remaining: rebuild indexes, final CI, merge and normal-launch acceptance.

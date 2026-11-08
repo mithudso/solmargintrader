@@ -3642,7 +3642,7 @@ class SolTuiApp(App):
             self._refresh_docs()
         elif pane == "tab-forwardtest":
             self._forward_refresh()
-        elif pane == "tab-queue":
+        elif pane == "tab-queue" and self.query("#queue-status"):
             # No once-only guard: unlike Cumulative and Docs, this tab's source
             # is being written by another process right now, so re-reading on
             # every activation is the correct behaviour rather than waste.
