@@ -108,6 +108,11 @@ while True:
         with patch:
             jobs.launch(self.store, self.id, self.settings)
         self.wait(lambda: processes[0].returncode is not None)
+        # wait() sets returncode before the detached reaper has reconciled the
+        # database. While it holds the lease, status may still report running.
+        # Require the terminal state as well as the process exit, not a timing
+        # assumption about which thread next acquires the lease.
+        self.wait(lambda: jobs.status(self.store, self.id)["status"] == "interrupted")
         report = jobs.status(self.store, self.id)
         self.assertEqual(report["status"], "interrupted")
         self.assertIn("deterministic crash evidence", report["log_tail"])
