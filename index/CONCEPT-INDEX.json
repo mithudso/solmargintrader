@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T09:34:06+00:00",
+  "generatedAt": "2026-11-08T09:34:36+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -118,6 +118,10 @@
           "hits": 21
         },
         {
+          "path": "memory.md",
+          "hits": 21
+        },
+        {
           "path": "liquidity/src/aero_lp/providers.py",
           "hits": 21
         },
@@ -127,10 +131,6 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 20
-        },
-        {
-          "path": "memory.md",
           "hits": 20
         },
         {
@@ -1420,6 +1420,10 @@
           "hits": 21
         },
         {
+          "path": "memory.md",
+          "hits": 16
+        },
+        {
           "path": "backtester/core/dcasim.py",
           "hits": 15
         },
@@ -1442,10 +1446,6 @@
         {
           "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
           "hits": 11
-        },
-        {
-          "path": "memory.md",
-          "hits": 10
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -1562,6 +1562,10 @@
           "hits": 13
         },
         {
+          "path": "memory.md",
+          "hits": 13
+        },
+        {
           "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
           "hits": 11
         },
@@ -1579,10 +1583,6 @@
         },
         {
           "path": "backtester/tests/test_cpcv.py",
-          "hits": 7
-        },
-        {
-          "path": "memory.md",
           "hits": 7
         },
         {

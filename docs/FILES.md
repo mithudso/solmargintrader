@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `afaa03a` (2026-11-08T09:34:06+00:00). 748 tracked files, 13.0 MB.
+**Generated** from `index/INDEX.json` at commit `5314a18` (2026-11-08T09:34:36+00:00). 752 tracked files, 13.3 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (529 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 268/282 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (533 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 268/282 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (118 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -33,7 +33,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 ## Contents
 
-- [`(root)`](#root) — 18 files
+- [`(root)`](#root) — 22 files
 - [`docs`](#docs) — 39 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 145 files
@@ -60,7 +60,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md` are the operative rules for anyone — human or agent — changing this repo; read them before the code.
 
-18 files.
+22 files.
 
 #### `.editorconfig`
 
@@ -184,9 +184,25 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 740 lines · 113,766 B · description: **extracted**
+`doc` · 794 lines · 120,822 B · description: **extracted**
 
-**Purpose.** Version: 71 Delta: v70 to v71; Base wallet implementation and live acceptance verified. Previous delta: Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder). Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 77 Delta: v76 to v77; preserve concurrent hook records and add Base wallet repair and acceptance. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+
+**Use.** Read it.
+
+#### `memory.md`
+
+`doc` · 794 lines · 120,822 B · description: **extracted**
+
+**Purpose.** Version: 77 Delta: v76 to v77; preserve concurrent hook records and add Base wallet repair and acceptance. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+
+**Use.** Read it.
+
+#### `memory.md`
+
+`doc` · 794 lines · 120,822 B · description: **extracted**
+
+**Purpose.** Version: 77 Delta: v76 to v77; preserve concurrent hook records and add Base wallet repair and acceptance. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -200,9 +216,25 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 386 lines · 24,021 B · description: **extracted**
+`doc` · 408 lines · 25,288 B · description: **extracted**
 
-**Purpose.** Version: 52 Delta: v51 to v52; Base wallet discovery repair. Previous delta: Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 54 Delta: v53 to v54; preserve concurrent hook records and add Base wallet repair and acceptance. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+
+**Use.** Read it.
+
+#### `prompts.md`
+
+`doc` · 408 lines · 25,288 B · description: **extracted**
+
+**Purpose.** Version: 54 Delta: v53 to v54; preserve concurrent hook records and add Base wallet repair and acceptance. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+
+**Use.** Read it.
+
+#### `prompts.md`
+
+`doc` · 408 lines · 25,288 B · description: **extracted**
+
+**Purpose.** Version: 54 Delta: v53 to v54; preserve concurrent hook records and add Base wallet repair and acceptance. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
