@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 166
-Delta: v165 to v166; record live sweep and Signal trainer activation.
+Version: 171
+Delta: v170 to v171; record offline index CI remediation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1662,3 +1662,23 @@ Sweep recovery TASK-1029 implemented by textual-job-lifecycle-specialist in bran
 ## v166 - 2026-11-08
 
 The SOL sweep resumed in a new proof-isolated results segment /Users/mitch/.config/soltui/bg/results-b97fdfd3748763c996ba74a0ddb12fde.jsonl. The old results and proof remain in place. As of 17:38 UTC it had completed 554 of 1,059 evaluations without an error; process 83636 runs from /Users/mitch/dev/solmargintrader-wt-01a1bc24, whose data symlink points to the original checkout. The ten-coin Signal trainer was gracefully replaced with PID 91333 from the same worktree. Each coin has separate 1-, 5- and 30-minute prediction records; initial one-minute outcomes resolved for BTC and SOL. The console PID 74766 still uses /Users/mitch/dev/solmargintrader and has not loaded the updated UI. Computer-use access to Terminal was denied. The active autopilot still points to the original checkout, so a future automatic restart can reload its older code until that checkout is safely updated. Preserve the active worktree and processes. PR 117 delivery and the five- and thirty-minute live outcomes remain to verify.
+
+## v167 - 2026-11-08
+
+Active: Stele TASK-1034. Worktree /Users/mitch/dev/solmargintrader-wt-status-1034, branch agent-status-1034 based on origin/master 4c4a4e7. Request: status button on every test tab, reopen the correct operation in the editor after navigation, show existing operation state and logs without starting or interrupting jobs. Stele decision write queued in outbox 2012e44c. Inventory test surfaces and their status/log sources, implement independent per-operation logs and reconnection, test missing logs, navigation and concurrent jobs; deliver after coordination with parent session. Parent owns separate paper experiment feature and active sweep worktree.
+
+## v168 - 2026-11-08
+
+The v2 Dry Run tab was passing a strategy string to extension/tools/dryrun.js, but that script ignores it and always simulates the grid. Removing the false strategy association, /Users/mitch/dev/solmargintrader-wt-status-1034 now routes registered strategies and selected Top 5 configurations to independent historical simulations using the existing backtest engine and cached candles. It labels the run as historical, not prospective, and keeps no order path. Adds a neutral baseline and strategy picker, Start dry run, progress logs, and test-status buttons. Test status retains separate simultaneous logs and reopens editor previews. Stele new task create queued in outbox 03b25b07. Remaining: full focused UI tests, resolve any failures, run documentation gate, commit and coordinate integration with parent; do not disturb active jobs.
+
+## v169 - 2026-11-08
+
+Implemented 10 test-status buttons with independent in-session operation logs, bounded detached-worker log retrieval, responsive status refresh, and unsaved-editor protection. Dry Run now runs the exact selected registry strategy or Top 5 composite on cached historical bars with the shared simulation engine. It does not run Node grid code, claim a profitable recommendation, use live prices, or place orders. Verified 36 bridge parity/surface tests, 39 preset/editor/handler tests, the 25-test initial UI subset, and targeted tests for narrow layout, actual selected strategy and detached log boundaries. Two additional focused UI tests passed after the thread-safe callback refactor. Stele TASK-1034 remains in progress; new Dry Run task and decision are queued in outbox IDs 03b25b07 and 2012e44c. Remaining: commit, update suite counts, push draft, coordinate parent integration and verify loaded app; preserve active trainer and sweep.
+
+## v170 - 2026-11-08
+
+Actual cached-data smoke on the status branch initially failed because SOL_1h.csv has gaps. The Dry Run now selects only the latest contiguous real candle segment and reports its exact dates and excluded bar count. A historical RSI run on /Users/mitch/dev/solmargintrader/data/SOL_1h.csv completed using 4,410 of 24,999 bars, excluded 20,589, and recorded 78 simulated fills. No prices were fabricated and no orders were placed. This is a historical smoke, not proof of live behavior or profitable future performance. Focused gap regression passes; draft PR 118 awaits integrated tests and coordinated delivery.
+
+## v171 - 2026-11-08
+
+PR 118 CI at head 26d4ec5 reported the backtester and docs checks failed because the committed offline retrieval indexes were stale after source, test and documentation changes. Rebuilt the three tracked offline indexes with index/build.py all. The builder does not run embeddings or contact the network. The exact failing backtester index staleness test and scripts/check_docs.py passed locally. Head 89b12f0 pushed those indexes; this continuation update requires one more offline rebuild before the next push. Remaining: verify CI on the final head, coordinate integration and verify the installed app. Preserve the active trainer and sweep.

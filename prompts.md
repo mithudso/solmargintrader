@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 93
-Delta: v92 to v93; record sweep proof recovery request.
+Version: 95
+Delta: v93 to v95; retain sweep, test status and dry-run requests.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -766,4 +766,16 @@ In the forward test, I had asked that to be done at 1, 5, and 30 min intervals e
 For the sweep I'm getting the error again
 previous sweep stopped: its evaluation proof is missing or differs; press Start fresh to start a separate sweep and preserve these results · previous error: ValueError: evaluation proof is missing or differs for SOL at
 /Users/mitch/.config/soltui/bg/results-8f615318bd7af7168ba68c0469d43b7c.jsonl; preserve this history and use --results-path for a fresh file · 972 rankable, 579 with positive median Sharpe · 87 below the 10-trade floor. Make it not completely fail on data like that,
+```
+
+## v94 - 2026-11-08
+
+```text
+For every tab that has a test on it make a status button which opens up the console in the editor and shows the current status of the running operation. If I click off the run button I can't get back to see where it is or what's going onn.
+```
+
+## v95 - 2026-11-08
+
+```text
+I can't tell what the dry run tab is supposed to be doing, there's no start button, it onlyh takes the top 5, but recommends an unproven unprofitable untested macd strategy that's not in the list and can't be chosen, there's no log, activitiy, it says "click one to fill this tab" which clicking on anything doesn't appear to do anything other than change the text in the Strategy text box.
 ```
