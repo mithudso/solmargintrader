@@ -104,7 +104,7 @@ COLLECTIONS: dict[str, dict[str, Any]] = {
             {
                 "_id": {"bsonType": "string", "description": "the card's own id"},
                 "name": {"bsonType": "string"},
-                "kind": {"enum": ["exposure-strategy", "ladder", "pairs"]},
+                "kind": {"enum": ["exposure-strategy", "ladder", "pairs", "bot"]},
                 "status": {"enum": ["measured", "implemented", "spec-only"]},
                 "family": {"bsonType": "string"},
                 "summary": {"bsonType": "string"},

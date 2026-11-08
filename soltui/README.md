@@ -107,6 +107,7 @@ larger open losses; read total net account equity as well as realized P&L.
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
 | **Forwardtest** | Paper-test every strategy, the roster or custom combinations. Forecast 1, 5, 10 and 30 minutes separately; inspect accuracy, unresolved calls and settings changes. |
 | **Compound 5m** | Four sections: **Call & metrics**, **Backtest** (a *What is tested* paragraph, readable row names, buy & hold, net bps 1h/24h, and a **Frontier** button that tests every metric's strongest 2% of readings held 1 h-24 h), **Forward test**, **All coins**. Scores every metric from `5minleveragestrategies.json` (and the ones it lacked: higher timeframe, funding/premium/OI, order book, BTC lead, trend lifecycle, market-cycle phase) for the **next 5-minute bar**, -1 down to +1 up; families vote once, the regime reweights trend vs reversion styles, and cost / liquidation / shock / thin-market / event / news gates force FLAT. Double-click a metric to switch it on or off (or select it and press Space); a single click selects it and shows its full detail (formula, parameters, evidence, adoptions) in the editor below, as do coin, backtest and forward rows; **Autopilot** (on by default) runs tuning, adopts tuned settings per coin by itself and keeps every coin training (with `python -m soltui.compound_agent install` for a LaunchAgent); **Toggle on/off**, edit `weight=` and parameters, and aggregate settings (`entry`, `exit`, `leverage`, `fee_bps`…). **Signal now** scores the latest closed bar from public data; **Backtest selected** runs the compound and each enabled metric alone on cached 5m data (OOS hit rate, z, oracle net bps, engine return after fees); **Forward tick** / **Auto-forward** record a call per closed bar and resolve it when the next bar closes; **Start unattended training** runs that in a detached background process that keeps going after the console closes. Calls are sized to the Settings Solana wallet (`wallet (live)`), and a status line under the buttons summarises each backtest run in plain words. No order path. See `docs/COMPOUND-5M.md`. |
+| **Bots** | The **grid bot** (the resting ladder the extension trades, `backtester/core/gridsim.py`), the **triangle arbitrage bot** (three-leg USD cycles through Coinbase cross pairs, `core/trianglesim.py`) and the **DCA bot** (base order, deeper safety orders, one take-profit above the average entry, `core/dcasim.py`). **Backtest** starts the selected bot at a chosen UTC date and shows what it set from the price then (ladder levels, safety orders, watched triangles) and what it made, beside buy-and-hold. **Start forward test** runs it in dry-run from now on the live recorded price stream; **Auto-optimize (all coins)** tests a fixed grid of settings on every cached coin and adopts one only if it beats the current settings out of sample by a sign test. A **Live prices** section shows every streamed market's bid, ask and spread. All simulation; no order path. See [The Bots tab](#the-bots-tab-and-the-price-stream). |
 | **Backtest** | **Strategy to backtest** picks the whole roster or one roster strategy (the roster is the right-hand list on the Strategies tab, shown on the line beside the picker); **Run backtest** runs that pick through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. **Backtest untested + little-tested** starts the background worker at once on every strategy never tested or with fewer than three recorded configurations (card parameters plus near variations, every horizon); its progress shows under the buttons and on the Queue tab. |
 | **Top 5** | The five recommended configurations with their evidence and off-asset transfer tests. |
 | **Live Run** | Launches the extension's dry-run tool. A Top 5 preset list fills the strategy; the result shows `dry-run net %`. |
@@ -149,6 +150,46 @@ Stop or close the console to stop checking. The SQLite file in the local SolTUI 
 directory retains predictions, shadow calls, outcomes and adoptions. Restarting with the same
 trial and evaluation code resumes that record. Old pending calls can settle only if their exact
 candles are still available. No wallet or order is involved.
+
+### The Bots tab and the price stream
+
+**The price stream.** `soltui/pricefeed.py` is a standard-library WebSocket client (RFC 6455; no
+new dependency) on Coinbase Exchange's public feed, `wss://ws-feed.exchange.coinbase.com`. It
+subscribes to every USD market of the cached coins that Coinbase lists plus every cross pair
+among them (24 markets on 2026-11-08), on two keyless channels: `level2_batch`, from which it keeps
+each market's book and so its true best bid and ask with sizes, and `ticker`, for the last trade.
+The ticker's own bid/ask changes only on a trade; on 2026-11-08 the SOL-BTC ticker quote was 89
+minutes old while the book had moved, which is why books are used where they exist. Once a second
+it writes a snapshot of every market to `~/.config/soltui/prices/YYYY-MM-DD.jsonl.gz` (one gzip member
+per flush, so a crash loses at most ten seconds) and replaces `prices/latest.json`. The console
+starts it as a detached background process (`python -m soltui.pricefeed record`) that keeps
+recording after the console closes; **Start recorder** / **Stop recorder** control it, and one
+`flock` on `prices/recorder.lock` keeps it to one. About 50-200 KB/s of public market data, and
+about 15 MB a day on disk (measured 2026-11-08; nothing prunes it).
+
+**Backtest = "had I started it then".** At the chosen start the bot reads the price at that
+bar's close and sets itself up from it; the simulator then runs it over the following hourly
+bars with the backtester's pessimistic rules (nothing fills on the bar that placed it, buys
+before sells, adverse slippage, fees on every fill). A backtest stops at the first gap in the
+cached bars and says so. The triangle bot backtests on recorded bid/ask snapshots; for a time
+before the recording it falls back to a **candle proxy** (Coinbase 1m closes with an assumed
+half-spread, labelled `candle-proxy`, executed a minute later), which bounds noise rather than
+measuring an opportunity.
+
+**Forward test = the same bot on the future, in dry-run.** It starts now on the current
+settings and, on every refresh, replays what the recorder captured since (incrementally: only
+new gzip members are read). Grid and DCA run on one-minute mid-price bars built from the
+snapshots; a gap of up to two minutes is bridged with flat bars, and a longer one ends the
+coverage at the gap because what the market did unseen is unknown.
+
+**Auto-optimize.** A fixed, small grid of settings per bot (12 grid, 36 DCA, 12 triangle
+configurations plus the current one) runs on every cached coin over six 30-day windows of
+hourly bars (every recorded triangle over hour windows, for the triangle bot). The older three
+windows rank the candidates; the newer three decide. The train winner is adopted only when it
+beats the current settings in significantly more test cells than it loses (one-sided sign
+test, p < 0.05, at least ten decided cells) with a positive median gain. On 2026-11-08, over 23
+coins, neither the grid (p = 0.78) nor the DCA bot (p = 0.45) had a reliable winner, so both kept
+their defaults. That is the expected answer in this repo (Stele KNOW-561, KNOW-871).
 
 ### Searching the repo from the Docs tab
 
@@ -389,6 +430,12 @@ order."* This package holds to that:
   tested engine once and exposes a cursor over the result.
 - `summary()["live_orders_placed"]` is structurally always `0`, and a test asserts
   it so a regression is loud.
+- **The Bots tab simulates.** Its grid, triangle and DCA bots run the backtester's simulators
+  over cached bars or the recorded stream; `test_bots.py` and `test_pricefeed.py` assert that
+  neither module names a key file, a signer or an order call. The price recorder reads public
+  Coinbase market data only and writes only under `~/.config/soltui/prices/`; the bots write only
+  under `~/.config/soltui/bots/` (settings, results, forward-test state, optimize reports, and the
+  candle-proxy cache).
 
 Adding live execution later means routing through
 `extension/src/core/commands.js` and its risk rails as separate, explicit work —
@@ -420,6 +467,8 @@ soltui/
   bgworker.py  the background sweep process itself (python3 -m soltui.bgworker)
   bgcontrol.py spawn/stop the worker; the liveness lock
   liquidity.py pure: read/validate/format the liquidity daemon's state files; KILL toggle
+  bots.py      the Bots tab: grid / triangle / DCA bot configs, backtest, forward test, auto-optimize
+  pricefeed.py the streaming price recorder: stdlib WebSocket, Coinbase level2_batch + ticker, gzip JSONL
   app.py       rumps menu-bar shell (wiring only, lazy rumps import)
   commands.py  the command registry: dispatch, envelope, confirm gate, call log (every action lives here)
   reference.py static Research/Signals tab content, served by research.get / signals.reference

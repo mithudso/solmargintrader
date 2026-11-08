@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 52
-Delta: v51 to v52; adaptive strategy Forwardtest and roster shortcuts.
+Version: 53
+Delta: v52 to v53; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder.
 
 ## v1 - 2026-11-06
 

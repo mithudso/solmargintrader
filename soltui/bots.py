@@ -1,0 +1,1122 @@
+"""The Bots tab: grid, triangular-arbitrage and DCA bots. Backtest, forward test, auto-optimize.
+
+Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to
+a venue's trading API; the only network reads are public market data (the recorded Coinbase
+stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).
+
+The three bots and the simulator each one runs:
+
+| bot      | simulator                            | backtest data                   | forward data            |
+|----------|--------------------------------------|---------------------------------|-------------------------|
+| grid     | `backtester.core.gridsim` (the ladder the extension trades) | cached 1h bars | recorded 1m bars |
+| triangle | `backtester.core.trianglesim`        | recorded bid/ask, else candle proxy | recorded bid/ask    |
+| dca      | `backtester.core.dcasim`             | cached 1h bars                  | recorded 1m bars        |
+
+**Backtest** answers "had I started this bot at that moment": the bot reads the price at the
+start bar's close and sets itself up from it (the grid's ladder around that price, the DCA bot's
+base order and safety ladder), then the simulator runs it forward over the following bars with
+the repo's pessimistic fill rules and costs. The result shows what it set and what it made,
+beside buy-and-hold of the same capital.
+
+**Forward test** is the same bot run in dry-run on the future: it starts now, and every refresh
+replays what the price stream has recorded since. Nothing is assumed about time the recorder
+did not see; a gap longer than `MAX_FORWARD_GAP_MIN` minutes ends the forward test's coverage
+at the gap and says so.
+
+**Auto-optimize** runs a fixed, representative grid of configurations for one bot over every
+cached coin (every triangle, for the triangle bot) and several chronological windows. It picks
+a candidate on the older windows only, then checks it against the current configuration on the
+newer windows cell by cell. It adopts the candidate only when it wins a significant majority of
+those out-of-sample cells (one-sided sign test, p < 0.05) with a positive median improvement.
+Otherwise it keeps the current configuration and says that no configuration reliably
+outperforms. This repo has measured an anti-informative in-sample rank (PBO 0.700), which is
+why the in-sample winner alone is never adopted (Stele KNOW-561, KNOW-871).
+"""
+
+from __future__ import annotations
+
+import itertools
+import json
+import math
+import statistics
+import threading
+import time
+import uuid
+import zlib
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Callable, Iterable, Sequence
+
+import numpy as np
+
+from backtester.core.dcasim import DcaConfig, run_dca_backtest
+from backtester.core.gridsim import SPACINGS, GridConfig, grid_levels, run_grid_backtest
+from backtester.core.trianglesim import (
+    SOURCE_CANDLE_PROXY,
+    SOURCE_RECORDED,
+    TriangleConfig,
+    TriangleReplay,
+    parse_snapshot_line,
+    snapshots_from_closes,
+    triangles_from_products,
+)
+from backtester.core.types import CostConfig
+
+from . import config as config_mod
+from . import pricefeed
+
+BOTS = ("grid", "triangle", "dca")
+LABELS = {"grid": "Grid bot", "triangle": "Triangle arbitrage bot", "dca": "DCA bot"}
+ABOUT = {
+    "grid": "Resting ladder of limit buys below the price and paired sells one rung above each fill "
+            "(the strategy the extension trades). At its start it centres the ladder on the price: "
+            "range_pct either side, rungs levels, capital_usd split evenly across them. Earns the rung "
+            "width in a range; accumulates losing inventory in a trend.",
+    "triangle": "Watches every USD triangle with a Coinbase cross pair (e.g. USD-SOL-ETH) at the best bid "
+                "and ask, and executes a three-leg cycle when its net edge after three taker fees beats "
+                "min_edge_bps, at the quotes latency_s later. Needs the recorded stream: candle closes "
+                "carry no bid or ask, so a candle backtest is a labelled proxy.",
+    "dca": "Buys a base order, rests deeper and (optionally) larger safety orders below it, and sells "
+           "everything at take_profit_pct above the average entry; then starts again. Wins most deals by "
+           "construction and holds the bag in a downtrend; compare it with buy-and-hold, not its win rate.",
+}
+
+GRID_DEFAULTS: dict[str, Any] = {"range_pct": 15.0, "rungs": 7, "capital_usd": 1000.0, "spacing": "geom",
+                                 "deadband_bps": 25.0}
+DEFAULTS: dict[str, dict[str, Any]] = {
+    "grid": GRID_DEFAULTS,
+    "triangle": TriangleConfig().to_dict(),
+    "dca": DcaConfig().to_dict(),
+}
+
+# The representative grids auto-optimize searches. Small on purpose: every extra configuration is
+# another trial, and more trials make a lucky winner likelier, not a better one.
+SPACE: dict[str, dict[str, list[Any]]] = {
+    "grid": {"range_pct": [5.0, 10.0, 15.0, 25.0], "rungs": [5, 9, 15]},
+    "triangle": {"min_edge_bps": [5.0, 15.0, 35.0, 60.0], "latency_s": [0.5, 1.0, 2.0]},
+    "dca": {"price_deviation_pct": [1.0, 2.0, 3.5], "take_profit_pct": [1.0, 2.0, 4.0],
+            "max_safety_orders": [3, 6], "volume_scale": [1.0, 1.5]},
+}
+
+BACKTEST_INTERVAL = "1h"
+BAR_SECONDS = 3600
+DEFAULT_BACKTEST_DAYS = 90
+MIN_BACKTEST_BARS = 24
+MIN_HOUR_MINUTES = 30  # an hour resampled from 1m needs this many minutes, or it counts as missing
+MAX_FORWARD_GAP_MIN = 2
+OPTIMIZE_WINDOWS = 6
+OPTIMIZE_WINDOW_DAYS = 30
+SIGN_TEST_ALPHA = 0.05
+MIN_DECIDED_CELLS = 10
+TRIANGLE_MIN_SNAPSHOTS = 60
+TRIANGLE_WINDOW_S = 3600
+TRIANGLE_OPT_DAYS = 2  # 13 candidates x 10 triangles x 86,400 snapshots a day is already minutes of work
+PROXY_MAX_DAYS = 3
+PROXY_HALF_SPREAD_BPS = {"USD": 2.0, "cross": 10.0}
+EQUITY_POINTS = 200
+
+
+class BotError(ValueError):
+    """A user-facing bot failure: bad config, no data, too little data."""
+
+
+# -- files -------------------------------------------------------------------------------------
+
+
+def home() -> Path:
+    return config_mod.CONFIG_DIR / "bots"
+
+
+def config_path() -> Path:
+    return home() / "config.json"
+
+
+def results_path() -> Path:
+    return home() / "results.jsonl"
+
+
+def forward_path() -> Path:
+    return home() / "forward.json"
+
+
+def optimize_path(bot: str) -> Path:
+    return home() / f"optimize-{bot}.json"
+
+
+def _read_json(path: Path, default: Any) -> Any:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return default
+    except (OSError, ValueError) as exc:
+        raise BotError(f"unreadable {path}: {exc}") from exc
+
+
+def _write_json(path: Path, data: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(json.dumps(_json_safe(data), indent=2, allow_nan=False), encoding="utf-8")
+    tmp.replace(path)
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, (np.floating, np.integer)):
+        return _json_safe(value.item())
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(v) for v in value]
+    return value
+
+
+def _bot(bot: Any) -> str:
+    name = str(bot or "").strip().lower()
+    if name not in BOTS:
+        raise BotError(f"unknown bot {bot!r}; expected one of {', '.join(BOTS)}")
+    return name
+
+
+# -- configuration -----------------------------------------------------------------------------
+
+
+def _coerce(bot: str, key: str, value: Any) -> Any:
+    default = DEFAULTS[bot][key]
+    if isinstance(default, bool):
+        if isinstance(value, str):
+            return value.strip().lower() in ("1", "true", "yes", "on")
+        return bool(value)
+    if isinstance(default, int):
+        if isinstance(value, bool):
+            raise BotError(f"{key} must be an integer")
+        number = float(value)
+        if not number.is_integer():
+            raise BotError(f"{key} must be an integer, got {value!r}")
+        return int(number)
+    if isinstance(default, float):
+        if isinstance(value, bool):
+            raise BotError(f"{key} must be a number")
+        number = float(value)
+        if not math.isfinite(number):
+            raise BotError(f"{key} must be finite")
+        return number
+    return str(value)
+
+
+def validate(bot: str, values: dict[str, Any]) -> dict[str, Any]:
+    """Defaults overlaid with `values`, coerced, and proven buildable. Unknown keys are refused."""
+    bot = _bot(bot)
+    unknown = sorted(set(values) - set(DEFAULTS[bot]))
+    if unknown:
+        raise BotError(f"unknown {bot} setting(s): {', '.join(unknown)}; "
+                       f"known: {', '.join(DEFAULTS[bot])}")
+    out = dict(DEFAULTS[bot])
+    try:
+        for key, value in values.items():
+            out[key] = _coerce(bot, key, value)
+        if bot == "grid":
+            grid_sim_config(out, 100.0)
+        elif bot == "dca":
+            DcaConfig(**out)
+        else:
+            TriangleConfig(**out)
+    except (TypeError, ValueError) as exc:
+        raise BotError(f"{bot}: {exc}") from exc
+    return out
+
+
+def grid_sim_config(cfg: dict[str, Any], price: float) -> GridConfig:
+    """The absolute ladder a relative grid config sets at `price`."""
+    rng = float(cfg["range_pct"])
+    if not 0 < rng < 95:
+        raise ValueError("range_pct must be in (0, 95)")
+    rungs = int(cfg["rungs"])
+    capital = float(cfg["capital_usd"])
+    if not capital > 0:
+        raise ValueError("capital_usd must be > 0")
+    if rungs < 2:
+        raise ValueError("rungs must be at least 2")
+    notional = capital / rungs
+    if notional < 10.0:
+        raise ValueError(f"capital_usd / rungs is ${notional:,.2f}, below the $10 venue minimum per rung")
+    if cfg["spacing"] not in SPACINGS:
+        raise ValueError(f"spacing must be one of {SPACINGS}")
+    return GridConfig(lower=price * (1 - rng / 100.0), upper=price * (1 + rng / 100.0), rungs=rungs,
+                      notional_per_rung_usd=notional, spacing=cfg["spacing"],
+                      deadband_bps=float(cfg["deadband_bps"]))
+
+
+def _all_configs() -> dict[str, Any]:
+    raw = _read_json(config_path(), {})
+    return raw if isinstance(raw, dict) else {}
+
+
+def get_config(bot: str) -> dict[str, Any]:
+    bot = _bot(bot)
+    saved = _all_configs().get(bot) or {}
+    try:
+        return validate(bot, {k: v for k, v in saved.items() if k in DEFAULTS[bot]})
+    except BotError:
+        return dict(DEFAULTS[bot])  # a stale saved config never blocks the tab; defaults stand in
+
+
+def save_config(bot: str, values: dict[str, Any], *, merge: bool = True, reason: str = "edited") -> dict[str, Any]:
+    bot = _bot(bot)
+    base = get_config(bot) if merge else {}
+    cfg = validate(bot, {**base, **values})
+    raw = _all_configs()
+    raw[bot] = cfg
+    history = raw.setdefault("history", [])
+    history.append({"at": time.time(), "bot": bot, "reason": reason, "config": cfg})
+    raw["history"] = history[-50:]
+    _write_json(config_path(), raw)
+    return cfg
+
+
+def reset_config(bot: str) -> dict[str, Any]:
+    bot = _bot(bot)
+    return save_config(bot, DEFAULTS[bot], merge=False, reason="reset to defaults")
+
+
+def parse_kv(text: str) -> dict[str, str]:
+    """"range_pct=10 rungs=9" -> {"range_pct": "10", "rungs": "9"}."""
+    out: dict[str, str] = {}
+    for token in str(text or "").replace(",", " ").split():
+        key, sep, value = token.partition("=")
+        if not sep or not key or value == "":
+            raise BotError(f"expected name=value, got {token!r}")
+        out[key.strip()] = value.strip()
+    return out
+
+
+# -- price data --------------------------------------------------------------------------------
+
+
+def data_dir(settings: Any = None) -> Path:
+    from backtester.core.data import resolve_data_dir
+
+    configured = Path(getattr(settings, "data_dir", "") or "")
+    if configured.is_absolute() and configured.exists():
+        return configured
+    if str(configured) not in ("", ".") and configured.exists() and any(configured.glob("*_1[mh].csv")):
+        return configured.resolve()
+    return resolve_data_dir()
+
+
+def available_coins(settings: Any = None) -> list[str]:
+    """Every coin with cached 1h or 1m bars, which is what "all the coins" means here."""
+    base = data_dir(settings)
+    if not base.exists():
+        return []
+    coins = {p.name.split("_", 1)[0].upper() for p in base.glob("*_1h.csv")}
+    coins |= {p.name.split("_", 1)[0].upper() for p in base.glob("*_1m.csv")}
+    return sorted(coins)
+
+
+_HOURLY_CACHE: dict[tuple, dict[str, np.ndarray]] = {}
+
+
+def hourly(asset: str, settings: Any = None) -> dict[str, Any]:
+    """Hourly OHLC for `asset` (gaps kept, never filled): the 1h cache, else 1m resampled.
+
+    An hour resampled from minutes needs `MIN_HOUR_MINUTES` of them; a thinner hour is dropped,
+    which leaves a gap, because an hour built from five minutes has the wrong high and low.
+    """
+    import pandas as pd
+
+    a = str(asset).upper()
+    base = data_dir(settings)
+    for path, how in ((base / f"{a}_1h.csv", "1h"), (base / f"{a}_1m.csv", "1m->1h")):
+        if not path.exists():
+            continue
+        st = path.stat()
+        key = (str(path), st.st_mtime_ns, st.st_size)
+        if key in _HOURLY_CACHE:
+            return {**_HOURLY_CACHE[key], "source": how}
+        df = pd.read_csv(path)
+        df = df.sort_values("timestamp").drop_duplicates("timestamp")
+        if how != "1h":
+            df["hour"] = (df["timestamp"] // BAR_SECONDS) * BAR_SECONDS
+            g = df.groupby("hour").agg(open=("open", "first"), high=("high", "max"), low=("low", "min"),
+                                       close=("close", "last"), volume=("volume", "sum"),
+                                       minutes=("open", "size"))
+            g = g[g["minutes"] >= MIN_HOUR_MINUTES].reset_index().rename(columns={"hour": "timestamp"})
+            df = g
+        arrays = {"ts": df["timestamp"].to_numpy(dtype="int64"),
+                  "open": df["open"].to_numpy(dtype="float64"), "high": df["high"].to_numpy(dtype="float64"),
+                  "low": df["low"].to_numpy(dtype="float64"), "close": df["close"].to_numpy(dtype="float64")}
+        ok = (arrays["low"] > 0) & np.isfinite(arrays["close"]) & (arrays["high"] >= arrays["low"])
+        arrays = {k: v[ok] for k, v in arrays.items()}
+        if len(_HOURLY_CACHE) > 40:
+            _HOURLY_CACHE.clear()
+        _HOURLY_CACHE[key] = arrays
+        return {**arrays, "source": how}
+    raise BotError(f"no cached bars for {a}: expected {base / (a + '_1h.csv')} or {a}_1m.csv. "
+                   f"Fetch: python -m backtester.core.fetch --asset {a} --interval 1h --start 2024-01-01")
+
+
+def contiguous(arrays: dict[str, Any], start_index: int, max_bars: int | None = None,
+               step: int = BAR_SECONDS) -> tuple[dict[str, np.ndarray], int | None]:
+    """The gap-free run of bars from `start_index` (at most `max_bars`); and the gap's ts, if one ended it."""
+    ts = arrays["ts"]
+    n = ts.size
+    end = n if max_bars is None else min(n, start_index + max_bars)
+    gaps = np.nonzero(np.diff(ts[start_index:end]) != step)[0]
+    gap_at = None
+    if gaps.size:
+        end = start_index + int(gaps[0]) + 1
+        gap_at = int(ts[end - 1])
+    return {k: arrays[k][start_index:end] for k in ("ts", "open", "high", "low", "close")}, gap_at
+
+
+def _start_ts(start: Any, default_days: int, last_ts: int) -> int:
+    if start in (None, ""):
+        return int(last_ts - default_days * 86_400)
+    if isinstance(start, (int, float)) and not isinstance(start, bool):
+        return int(start)
+    text = str(start).strip()
+    try:
+        return int(float(text))
+    except ValueError:
+        pass
+    try:
+        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise BotError(f"start must be a UTC date like 2026-06-01 or epoch seconds, got {start!r}") from exc
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return int(dt.timestamp())
+
+
+def _costs(settings: Any) -> CostConfig:
+    return CostConfig(fee_bps=float(getattr(settings, "fee_bps", 6.0)),
+                      slippage_bps=float(getattr(settings, "slippage_bps", 2.0)))
+
+
+def _iso(ts: float | None) -> str | None:
+    if ts is None:
+        return None
+    return datetime.fromtimestamp(float(ts), tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+
+def _curve(ts: np.ndarray, equity: np.ndarray, hold: np.ndarray) -> list[list[float]]:
+    n = ts.size
+    if n == 0:
+        return []
+    idx = np.unique(np.linspace(0, n - 1, min(EQUITY_POINTS, n)).astype(int))
+    return [[int(ts[i]), float(equity[i]), float(hold[i])] for i in idx]
+
+
+# -- running one bot over bars -------------------------------------------------------------------
+
+
+def run_bars(bot: str, cfg: dict[str, Any], seg: dict[str, np.ndarray], interval: str,
+             costs: CostConfig) -> dict[str, Any]:
+    """Run the grid or DCA bot over a gap-free bar slice; what it set and what it made."""
+    price = float(seg["close"][0])
+    if bot == "grid":
+        gcfg = grid_sim_config(cfg, price)
+        r = run_grid_backtest(gcfg, seg, initial_capital=float(cfg["capital_usd"]), interval=interval,
+                              costs=costs)
+        m, b = r.metrics, r.baseline_metrics
+        setup = {"start_price": price, "lower": gcfg.lower, "upper": gcfg.upper, "rungs": gcfg.rungs,
+                 "levels": grid_levels(gcfg), "notional_per_rung_usd": gcfg.notional_per_rung_usd,
+                 "rung_width_bps": r.rung_width_bps, "capital_usd": float(cfg["capital_usd"])}
+        detail = {"round_trips": r.round_trips, "buys": r.buys_filled, "sells": r.sells_filled,
+                  "gross_captured_usd": r.gross_captured_usd, "realized_pnl_usd": r.realized_pnl_usd,
+                  "costs_usd": r.fees_paid_usd + r.slippage_paid_usd,
+                  "bars_above": r.bars_above_grid, "bars_below": r.bars_below_grid,
+                  "forced_exit_qty": r.forced_exit_qty}
+        equity, hold = r.equity, r.baseline_equity
+    elif bot == "dca":
+        dcfg = DcaConfig(**cfg)
+        r = run_dca_backtest(dcfg, seg, interval=interval, costs=costs)
+        m, b = r.metrics, r.baseline_metrics
+        # start_price is the close the bot decided on; base_price is its base order's fill at the
+        # next bar's open.
+        setup = {"start_price": price, **(r.first_plan or {})}
+        detail = {"deals_completed": r.deals_completed, "deals_stopped": r.deals_stopped,
+                  "safety_orders_filled": r.safety_orders_filled, "max_safety_used": r.max_safety_used,
+                  "realized_pnl_usd": r.realized_pnl_usd, "costs_usd": r.fees_paid_usd + r.slippage_paid_usd,
+                  "open_deal_at_end": r.open_deal_at_end, "avg_deal_bars": r.avg_deal_bars,
+                  "skipped": r.skipped}
+        equity, hold = r.equity, r.baseline_equity
+    else:
+        raise BotError(f"{bot} does not run on bars")
+    return {
+        "set": setup,
+        "results": {"total_return": m.total_return, "hold_return": b.total_return,
+                    "excess_return": m.total_return - b.total_return, "sharpe": m.sharpe,
+                    "max_drawdown": m.max_drawdown, "hold_max_drawdown": b.max_drawdown,
+                    "final_equity": m.final_equity, "trades": m.trade_count, "win_rate": m.win_rate,
+                    "bars": m.bars, **detail},
+        "equity": _curve(seg["ts"], equity, hold),
+    }
+
+
+# -- backtest ------------------------------------------------------------------------------------
+
+
+def _record(row: dict[str, Any]) -> dict[str, Any]:
+    row = _json_safe(row)
+    home().mkdir(parents=True, exist_ok=True)
+    with results_path().open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(row, allow_nan=False) + "\n")
+    return row
+
+
+def backtest(bot: str, asset: str, settings: Any = None, *, start: Any = None, days: Any = None,
+             config: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Start the bot at `start` (UTC date or epoch; default 90 days ago) and run it `days` days."""
+    bot = _bot(bot)
+    cfg = validate(bot, config) if config else get_config(bot)
+    days_n = None if days in (None, "", 0) else float(days)
+    if days_n is not None and not days_n > 0:
+        raise BotError("days must be positive")
+    if bot == "triangle":
+        return _backtest_triangle(cfg, settings, start, days_n)
+    arrays = hourly(asset, settings)
+    ts = arrays["ts"]
+    if ts.size < MIN_BACKTEST_BARS:
+        raise BotError(f"{asset}: only {ts.size} cached bars")
+    start_ts = _start_ts(start, DEFAULT_BACKTEST_DAYS, int(ts[-1]))
+    i = int(np.searchsorted(ts, start_ts))
+    if i >= ts.size:
+        raise BotError(f"{asset}: no cached bar at or after {_iso(start_ts)}; data ends {_iso(int(ts[-1]))}")
+    seg, gap_at = contiguous(arrays, i, None if days_n is None else int(days_n * 24))
+    if seg["ts"].size < MIN_BACKTEST_BARS:
+        raise BotError(f"{asset}: only {seg['ts'].size} gap-free bars from {_iso(int(ts[i]))} "
+                       f"(a gap follows {_iso(gap_at)}); pick a later start")
+    out = run_bars(bot, cfg, seg, BACKTEST_INTERVAL, _costs(settings))
+    return _record({"id": uuid.uuid4().hex[:12], "kind": "backtest", "bot": bot, "asset": str(asset).upper(),
+                    "at": time.time(), "start_ts": int(seg["ts"][0]), "end_ts": int(seg["ts"][-1]),
+                    "start": _iso(seg["ts"][0]), "end": _iso(seg["ts"][-1]), "interval": BACKTEST_INTERVAL,
+                    "data_source": arrays["source"], "stopped_at_gap": _iso(gap_at), "config": cfg,
+                    "fee_bps": _costs(settings).fee_bps, "slippage_bps": _costs(settings).slippage_bps, **out})
+
+
+def _iter_recorded(start_ts: float, end_ts: float | None, *, last_days: int | None = None):
+    """Recorded snapshots from `start_ts`, streamed file by file (optionally only the newest days)."""
+    from backtester.core.trianglesim import iter_snapshot_files
+
+    first_day = datetime.fromtimestamp(start_ts, tz=timezone.utc).strftime("%Y-%m-%d")
+    files = [p for p in pricefeed.recorded_files() if p.name[:10] >= first_day]
+    if last_days is not None:
+        files = files[-last_days:]
+    return iter_snapshot_files(files, start_ts=start_ts, end_ts=end_ts)
+
+
+def proxy_half_spreads(products: Iterable[str]) -> dict[str, float]:
+    """Half-spread per product for the candle proxy: the recorded one when known, else a cautious default."""
+    latest = pricefeed.read_latest() or {}
+    quotes = latest.get("q") or {}
+    out = {}
+    for p in products:
+        q = quotes.get(p)
+        default = PROXY_HALF_SPREAD_BPS["USD" if p.endswith("-USD") else "cross"]
+        try:
+            bid, ask = float(q[0]), float(q[1])
+            out[p] = max(default / 4, 5_000.0 * (ask - bid) / ((ask + bid) / 2))
+        except (TypeError, ValueError, IndexError, ZeroDivisionError):
+            out[p] = default
+    return out
+
+
+def _proxy_snapshots(products: Sequence[str], start_ts: int, end_ts: int,
+                     fetch: Callable[..., Any] | None = None) -> tuple[list[tuple[float, dict]], list[str]]:
+    """Coinbase 1m closes for every leg, cached under bots/cache, as spread-padded snapshots;
+    and the legs with no candle at all in the window (no trade, so no proxy quote)."""
+    import pandas as pd
+
+    from backtester.core.fetch import FetchError, fetch_coinbase
+
+    fetch = fetch or fetch_coinbase
+    cache = home() / "cache"
+    cache.mkdir(parents=True, exist_ok=True)
+    closes: dict[str, list[tuple[float, float]]] = {}
+    missing: list[str] = []
+    for product in products:
+        path = cache / f"{product}_1m_{start_ts}_{end_ts}.csv"
+        if path.exists():
+            df = pd.read_csv(path)
+        else:
+            try:
+                df = fetch(product, _stamp(start_ts), _stamp(end_ts), "1m", verbose=False)
+            except FetchError as exc:
+                if "no candles" not in str(exc):
+                    raise BotError(f"candle proxy: could not fetch {product} 1m candles: {exc}") from exc
+                df = pd.DataFrame({"timestamp": [], "close": []})  # no trade in the window: no candle
+            df = df[(df["timestamp"] >= start_ts) & (df["timestamp"] <= end_ts)]
+            df.to_csv(path, index=False)
+        if df.empty:
+            missing.append(product)
+            continue
+        closes[product] = list(zip(df["timestamp"].astype(float), df["close"].astype(float)))
+    return snapshots_from_closes(closes, proxy_half_spreads(products)), missing
+
+
+def _stamp(ts: float) -> str:
+    """A naive UTC ISO time, which `fetch_coinbase` reads as UTC (it is never in the future here)."""
+    return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def _triangle_products() -> list[str]:
+    latest = pricefeed.read_latest() or {}
+    products = latest.get("products") or []
+    try:
+        products = products or pricefeed.stream_products()
+    except Exception:  # noqa: BLE001 - the fallback list below covers every failure
+        products = []
+    return list(products or pricefeed.FALLBACK_PRODUCTS)
+
+
+def _triangle_summary(result: Any) -> dict[str, Any]:
+    s = result.summary()
+    observed = [r for r in s["per_triangle"].values() if r["best_edge_bps"] is not None]
+    return {"executed": s["executed"], "wins": s["wins"], "pnl_usd": s["pnl_usd"],
+            "snapshots": s["snapshots"], "triangles_observed": len(observed),
+            "best_net_edge_bps": max((r["best_edge_bps"] for r in observed), default=None),
+            "per_triangle": s["per_triangle"], "cycles": s["cycles"]}
+
+
+def _backtest_triangle(cfg: dict[str, Any], settings: Any, start: Any, days: float | None) -> dict[str, Any]:
+    tcfg = TriangleConfig(**cfg)
+    tris = triangles_from_products(_triangle_products())
+    now = time.time()
+    first_file = pricefeed.recorded_files()[:1]
+    recorded_from = None
+    if first_file:
+        recorded_from = datetime.strptime(first_file[0].name[:10], "%Y-%m-%d").replace(tzinfo=timezone.utc).timestamp()
+    default_start = recorded_from if recorded_from is not None else now - 86_400
+    start_ts = _start_ts(start, 1, int(now)) if start not in (None, "") else int(default_start)
+    end_ts = None if days is None else start_ts + days * 86_400
+    source = SOURCE_RECORDED
+    missing_legs: list[str] = []
+    replay = TriangleReplay(tcfg, tris, source=source)
+    for t, q in _iter_recorded(start_ts, end_ts):
+        replay.feed(t, q)
+    if replay.snapshots < TRIANGLE_MIN_SNAPSHOTS:
+        span = min(days or 1.0, PROXY_MAX_DAYS)
+        end = int(min(now - 120, start_ts + span * 86_400))
+        if end - start_ts < 3600:
+            raise BotError(f"only {replay.snapshots} recorded snapshots from {_iso(start_ts)} and too little "
+                           "history for a candle proxy; start the recorder and backtest later")
+        legs = sorted({leg for t in tris for leg in t.products})
+        snaps, missing_legs = _proxy_snapshots(legs, int(start_ts), end)
+        source = SOURCE_CANDLE_PROXY
+        # One-minute candles: a cycle seen in one minute executes at the next one, and a leg
+        # with no candle in a minute did not trade in it, so its quote is a minute stale.
+        tcfg = TriangleConfig(**{**cfg, "latency_s": max(tcfg.latency_s, 60.0),
+                                 "max_quote_age_s": max(tcfg.max_quote_age_s, 1.0)})
+        replay = TriangleReplay(tcfg, tris, source=source)
+        for t, q in snaps:
+            replay.feed(t, q)
+    result = replay.result()
+    summary = _triangle_summary(result)
+    setup = {"triangles": [t.name for t in tris], "min_edge_bps": tcfg.min_edge_bps,
+             "legs_without_candles": missing_legs if source == SOURCE_CANDLE_PROXY else [],
+             "taker_fee_bps": tcfg.taker_fee_bps, "break_even_gross_bps": 10_000 * (1 / (1 - tcfg.taker_fee_bps / 1e4) ** 3 - 1),
+             "latency_s": tcfg.latency_s, "notional_usd": tcfg.notional_usd}
+    return _record({"id": uuid.uuid4().hex[:12], "kind": "backtest", "bot": "triangle", "asset": "ALL",
+                    "at": time.time(), "start_ts": result.start_ts, "end_ts": result.end_ts,
+                    "start": _iso(result.start_ts), "end": _iso(result.end_ts), "interval": "snapshots",
+                    "data_source": source, "stopped_at_gap": None, "config": cfg, "set": setup,
+                    "results": summary, "equity": []})
+
+
+def latest_results(bot: str | None = None, limit: int = 20) -> list[dict[str, Any]]:
+    path = results_path()
+    if not path.exists():
+        return []
+    rows = []
+    for line in path.read_text(encoding="utf-8").splitlines()[-500:]:
+        try:
+            row = json.loads(line)
+        except ValueError:
+            continue
+        if bot is None or row.get("bot") == bot:
+            rows.append(row)
+    return rows[-limit:][::-1]
+
+
+# -- forward test ---------------------------------------------------------------------------------
+
+
+class SnapshotCursor:
+    """Reads only what the recorder appended since the last call.
+
+    Every recorder flush is a complete gzip member, so the byte offset after the last complete
+    member is a safe place to resume. A member still being written fails to decompress to its
+    end and is left for the next call.
+    """
+
+    CHUNK = 16_384
+
+    def __init__(self, start_ts: float, root: Path | None = None) -> None:
+        self.start_ts = float(start_ts)
+        self.root = root
+        self.offsets: dict[str, int] = {}
+        self._committed = 0
+
+    def _complete_members(self, data: bytes) -> list[str]:
+        """Lines of every complete gzip member in `data`; sets `_committed` to the end of the last.
+
+        Fed in fixed chunks so the work is linear in the file: handing the decompressor the whole
+        remainder once per member would copy that remainder once per member, which on a full day
+        file (thousands of members) is quadratic.
+        """
+        view = memoryview(data)
+        lines: list[str] = []
+        self._committed = 0
+        d = zlib.decompressobj(wbits=31)
+        parts: list[bytes] = []
+        base = 0
+        feed: bytes | memoryview = view[0:self.CHUNK]
+        base = len(feed)
+        while len(feed):
+            try:
+                parts.append(d.decompress(feed))
+            except zlib.error:
+                break
+            if d.eof:
+                leftover = d.unused_data
+                self._committed = base - len(leftover)
+                lines.extend(b"".join(parts).decode("utf-8", errors="replace").splitlines())
+                d, parts = zlib.decompressobj(wbits=31), []
+                if leftover:
+                    feed = leftover
+                    continue
+            if base >= len(data):
+                break
+            feed = view[base:base + self.CHUNK]
+            base += len(feed)
+        return lines
+
+    def read_new(self, end_ts: float | None = None) -> list[tuple[float, dict]]:
+        out: list[tuple[float, dict]] = []
+        first_day = datetime.fromtimestamp(self.start_ts, tz=timezone.utc).strftime("%Y-%m-%d")
+        for path in pricefeed.recorded_files(self.root):
+            if path.name[:10] < first_day:
+                continue
+            offset = self.offsets.get(path.name, 0)
+            try:
+                with path.open("rb") as fh:
+                    fh.seek(offset)
+                    data = fh.read()
+            except OSError:
+                continue
+            for line in self._complete_members(data):
+                parsed = parse_snapshot_line(line)
+                if parsed is None or parsed[0] < self.start_ts:
+                    continue
+                if end_ts is not None and parsed[0] > end_ts:
+                    continue
+                out.append(parsed)
+            pos = self._committed
+            self.offsets[path.name] = offset + pos
+        out.sort(key=lambda r: r[0])
+        return out
+
+
+class MinuteBars:
+    """One product's one-minute mid-price bars, built from one-second snapshots."""
+
+    def __init__(self, product: str) -> None:
+        self.product = product
+        self.bars: dict[int, list[float]] = {}
+
+    def feed(self, t: float, quotes: dict[str, Any]) -> None:
+        q = quotes.get(self.product)
+        if q is None:
+            return
+        mid = (q[0] + q[1]) / 2.0
+        minute = int(t // 60) * 60
+        bar = self.bars.get(minute)
+        if bar is None:
+            self.bars[minute] = [mid, mid, mid, mid]
+        else:
+            bar[1] = max(bar[1], mid)
+            bar[2] = min(bar[2], mid)
+            bar[3] = mid
+
+    def arrays(self, before: float) -> tuple[dict[str, np.ndarray], int | None, int]:
+        """Completed bars before `before`, from the first, bridging gaps of up to MAX_FORWARD_GAP_MIN
+        missing minutes with flat bars at the last close; a longer gap ends the series there.
+        Returns (arrays, gap_start_ts or None, bridged minutes)."""
+        cutoff = int(before // 60) * 60
+        minutes = sorted(m for m in self.bars if m < cutoff)
+        rows: list[list[float]] = []
+        gap_at = None
+        bridged = 0
+        for m in minutes:
+            if rows:
+                missing = (m - int(rows[-1][0])) // 60 - 1
+                if missing > MAX_FORWARD_GAP_MIN:
+                    gap_at = int(rows[-1][0])
+                    break
+                last = rows[-1][4]
+                for k in range(1, missing + 1):
+                    rows.append([rows[-1][0] + 60, last, last, last, last])
+                bridged += max(0, missing)
+            o, h, low, c = self.bars[m]
+            rows.append([m, o, h, low, c])
+        arr = np.asarray(rows, dtype="float64").reshape(-1, 5)
+        return ({"ts": arr[:, 0].astype("int64"), "open": arr[:, 1], "high": arr[:, 2], "low": arr[:, 3],
+                 "close": arr[:, 4]}, gap_at, bridged)
+
+
+@dataclass
+class ForwardSession:
+    """In-memory replay state for one forward test, fed incrementally from the recording."""
+
+    run_id: str
+    cursor: SnapshotCursor
+    bars: MinuteBars | None = None
+    replay: TriangleReplay | None = None
+    last_ts: float | None = None
+    snapshots: int = 0
+
+
+@dataclass
+class BotRuntime:
+    """What outlives one command call in a long-lived process (the console)."""
+
+    sessions: dict[str, ForwardSession] = field(default_factory=dict)
+    progress: dict[str, dict[str, Any]] = field(default_factory=dict)
+    # A forward refresh feeds a session's replay; two at once (the timer and a button) would
+    # feed it from two threads.
+    lock: threading.RLock = field(default_factory=threading.RLock)
+
+
+_RUNTIME = BotRuntime()
+
+
+def runtime() -> BotRuntime:
+    return _RUNTIME
+
+
+def _forward_all() -> dict[str, Any]:
+    raw = _read_json(forward_path(), {})
+    return raw if isinstance(raw, dict) else {}
+
+
+def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder: bool = True,
+                  now: float | None = None) -> dict[str, Any]:
+    """Start (or restart) the bot's forward test now, on the current config."""
+    bot = _bot(bot)
+    now = time.time() if now is None else now
+    a = "ALL" if bot == "triangle" else str(asset).upper()
+    if bot != "triangle" and f"{a}-USD" not in _triangle_products():
+        raise BotError(f"{a}-USD is not in the recorded stream; forward tests need a Coinbase USD market")
+    recorder = pricefeed.start_recorder() if ensure_recorder else {"started": False}
+    raw = _forward_all()
+    raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot),
+                "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
+                "slippage_bps": _costs(settings).slippage_bps}
+    _write_json(forward_path(), raw)
+    runtime().sessions.pop(bot, None)
+    return {"forward": raw[bot], "recorder": recorder}
+
+
+def forward_stop(bot: str, *, now: float | None = None) -> dict[str, Any]:
+    bot = _bot(bot)
+    raw = _forward_all()
+    rec = raw.get(bot)
+    if not rec:
+        return {"stopped": False, "message": f"no {bot} forward test is running"}
+    if rec.get("stopped_at") is None:
+        rec["stopped_at"] = time.time() if now is None else now
+        _write_json(forward_path(), raw)
+    return {"stopped": True, "forward": rec}
+
+
+def forward_status(bot: str, settings: Any = None, *, now: float | None = None,
+                   root: Path | None = None) -> dict[str, Any]:
+    """Replay everything recorded since the forward test started through the bot, in dry-run."""
+    bot = _bot(bot)
+    now = time.time() if now is None else now
+    rec = _forward_all().get(bot)
+    stream = pricefeed.status(root, now)
+    stream_brief = {k: stream[k] for k in ("running", "live", "snapshot_age_s", "recorded_days", "last_error")}
+    if not rec:
+        return {"bot": bot, "running": False, "message": "no forward test; press Start forward test",
+                "recorder": stream_brief}
+    end = rec.get("stopped_at") or now
+    with runtime().lock:
+        return _forward_replay(bot, rec, end, settings, stream_brief, root)
+
+
+def _forward_replay(bot: str, rec: dict[str, Any], end: float, settings: Any, stream_brief: dict[str, Any],
+                    root: Path | None) -> dict[str, Any]:
+    sess = runtime().sessions.get(bot)
+    if sess is None or sess.run_id != rec["id"]:
+        sess = ForwardSession(rec["id"], SnapshotCursor(float(rec["started_at"]), root))
+        cfg = rec["config"]
+        if bot == "triangle":
+            sess.replay = TriangleReplay(TriangleConfig(**cfg), triangles_from_products(_triangle_products()))
+        else:
+            sess.bars = MinuteBars(f"{rec['asset']}-USD")
+        runtime().sessions[bot] = sess
+    for t, q in sess.cursor.read_new(end_ts=end):
+        if sess.last_ts is not None and t <= sess.last_ts:
+            continue  # a snapshot already fed (files are append-only, but stay idempotent)
+        sess.last_ts = t
+        sess.snapshots += 1
+        if sess.replay is not None:
+            sess.replay.feed(t, q)
+        elif sess.bars is not None:
+            sess.bars.feed(t, q)
+    base = {"bot": bot, "running": rec.get("stopped_at") is None, "forward": rec,
+            "started": _iso(rec["started_at"]), "stopped": _iso(rec.get("stopped_at")),
+            "snapshots": sess.snapshots, "last_snapshot": _iso(sess.last_ts), "recorder": stream_brief}
+    if bot == "triangle":
+        result = sess.replay.result() if sess.replay else None
+        return {**base, "results": _triangle_summary(result) if result else {}}
+    assert sess.bars is not None
+    arrays, gap_at, bridged = sess.bars.arrays(before=end)
+    base.update({"bars": int(arrays["ts"].size), "bridged_minutes": bridged, "stopped_at_gap": _iso(gap_at)})
+    if arrays["ts"].size < 2:
+        return {**base, "message": "waiting for the stream: fewer than two completed minutes recorded"}
+    costs = CostConfig(fee_bps=float(rec.get("fee_bps", 6.0)), slippage_bps=float(rec.get("slippage_bps", 2.0)))
+    out = run_bars(bot, rec["config"], arrays, "1m", costs)
+    return {**base, **out, "last_price": float(arrays["close"][-1])}
+
+
+# -- auto-optimize --------------------------------------------------------------------------------
+
+
+def candidates(bot: str, current: dict[str, Any]) -> list[dict[str, Any]]:
+    """The current config first, then every combination of SPACE over it that validates."""
+    bot = _bot(bot)
+    keys = list(SPACE[bot])
+    out = [current]
+    seen = {json.dumps(current, sort_keys=True)}
+    for combo in itertools.product(*(SPACE[bot][k] for k in keys)):
+        try:
+            cfg = validate(bot, {**current, **dict(zip(keys, combo))})
+        except BotError:
+            continue
+        key = json.dumps(cfg, sort_keys=True)
+        if key not in seen:
+            seen.add(key)
+            out.append(cfg)
+    return out
+
+
+def windows_for(arrays: dict[str, Any], count: int, bars: int) -> list[dict[str, np.ndarray]]:
+    """Up to `count` non-overlapping gap-free windows of `bars` bars, the most recent history, oldest first."""
+    ts = arrays["ts"]
+    out = []
+    end = ts.size
+    while end - bars >= 0 and len(out) < count:
+        start = end - bars
+        seg, gap = contiguous(arrays, start, bars)
+        if gap is None and seg["ts"].size == bars:
+            out.append(seg)
+            end = start
+        else:
+            # Skip back past the gap: restart just before it.
+            gaps = np.nonzero(np.diff(ts[start:end]) != BAR_SECONDS)[0]
+            end = start + int(gaps[-1]) + 1 if gaps.size else start
+    return out[::-1]
+
+
+def sign_test_p(wins: int, losses: int) -> float:
+    """One-sided P(X >= wins) for X ~ Binomial(wins + losses, 1/2); 1.0 when nothing was decided."""
+    n = wins + losses
+    if n == 0:
+        return 1.0
+    return float(sum(math.comb(n, k) for k in range(wins, n + 1)) / 2 ** n)
+
+
+def _ranks(scores: list[float]) -> list[float]:
+    """Rank 1 = best (highest); ties share the average rank."""
+    order = sorted(range(len(scores)), key=lambda i: -scores[i])
+    ranks = [0.0] * len(scores)
+    i = 0
+    while i < len(order):
+        j = i
+        while j + 1 < len(order) and scores[order[j + 1]] == scores[order[i]]:
+            j += 1
+        for k in range(i, j + 1):
+            ranks[order[k]] = (i + j) / 2 + 1
+        i = j + 1
+    return ranks
+
+
+def _cells_bars(bot: str, cands: list[dict[str, Any]], settings: Any, coins: Sequence[str], windows: int,
+                window_bars: int, progress: Callable[[float, str], None]) -> tuple[list[dict], dict]:
+    costs = _costs(settings)
+    cells: list[dict[str, Any]] = []
+    skipped: dict[str, str] = {}
+    usable = []
+    for coin in coins:
+        try:
+            wins = windows_for(hourly(coin, settings), windows, window_bars)
+        except BotError as exc:
+            skipped[coin] = str(exc)
+            continue
+        if len(wins) < 2:
+            skipped[coin] = f"only {len(wins)} gap-free {window_bars // 24}-day window(s)"
+            continue
+        usable.append((coin, wins))
+    total = sum(len(w) for _, w in usable) * len(cands) or 1
+    done = 0
+    for coin, wins in usable:
+        half = len(wins) // 2
+        for w_idx, seg in enumerate(wins):
+            scores = []
+            for cfg in cands:
+                try:
+                    scores.append(float(run_bars(bot, cfg, seg, BACKTEST_INTERVAL, costs)["results"]["total_return"]))
+                except (ValueError, RuntimeError):
+                    scores.append(-math.inf)
+                done += 1
+            progress(done / total, f"{coin} window {w_idx + 1}/{len(wins)}")
+            cells.append({"cell": f"{coin}#{w_idx + 1}", "split": "train" if w_idx < half else "test",
+                          "start": _iso(seg["ts"][0]), "scores": scores})
+    return cells, skipped
+
+
+def _cells_triangle(cands: list[dict[str, Any]], progress: Callable[[float, str], None]) -> tuple[list[dict], dict]:
+    """One cell per (triangle, recorded hour) over the newest TRIANGLE_OPT_DAYS day files.
+
+    Streams one hour at a time: every candidate's replay is fed that hour and then discarded, so
+    memory holds one hour of snapshots, not days of them.
+    """
+    tris = triangles_from_products(_triangle_products())
+    hours: list[tuple[str, list[float]]] = []
+    chunk: list[tuple[float, dict]] = []
+    current: int | None = None
+
+    def close_chunk() -> None:
+        if len(chunk) < TRIANGLE_MIN_SNAPSHOTS:
+            return
+        replays = [TriangleReplay(TriangleConfig(**cfg), tris) for cfg in cands]
+        for t, q in chunk:
+            for r in replays:
+                r.feed(t, q)
+        results = [r.result() for r in replays]
+        for tri in tris:
+            hours.append((f"{tri.name}@{_iso(chunk[0][0])}", [res.per_triangle[tri.name]["pnl_usd"] for res in results]))
+        progress(min(0.99, len(hours) / max(1, len(tris) * 48)), f"hour {len(hours) // max(1, len(tris))}")
+
+    seen = 0
+    for t, q in _iter_recorded(0.0, None, last_days=TRIANGLE_OPT_DAYS):
+        seen += 1
+        hour = int(t // TRIANGLE_WINDOW_S)
+        if current is not None and hour != current:
+            close_chunk()
+            chunk = []
+        current = hour
+        chunk.append((t, q))
+    close_chunk()
+    n_hours = len(hours) // max(1, len(tris))
+    if n_hours < 2:
+        return [], {"recorded": f"{seen} recorded snapshots give {n_hours} usable hour window(s); "
+                                "auto-optimize needs at least two (keep the recorder running)"}
+    half = n_hours // 2
+    cells = []
+    for idx, (name, scores) in enumerate(hours):
+        w = idx // max(1, len(tris))
+        cells.append({"cell": name, "split": "train" if w < half else "test", "start": name.split("@")[-1],
+                      "scores": scores})
+    return cells, {}
+
+
+def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = None,
+             windows: int = OPTIMIZE_WINDOWS, window_days: int = OPTIMIZE_WINDOW_DAYS, adopt: bool = True,
+             progress: Callable[[float, str], None] | None = None) -> dict[str, Any]:
+    """Search SPACE across every coin and window; adopt only a reliable out-of-sample winner."""
+    bot = _bot(bot)
+    if not 2 <= int(windows) <= 24:
+        raise BotError("windows must be in [2, 24]")
+    if not 3 <= int(window_days) <= 365:
+        raise BotError("window_days must be in [3, 365]")
+    started = time.time()
+
+    def report(frac: float, msg: str) -> None:
+        runtime().progress[bot] = {"fraction": round(frac, 4), "message": msg, "at": time.time()}
+        if progress:
+            progress(frac, msg)
+
+    current = get_config(bot)
+    cands = candidates(bot, current)
+    if bot == "triangle":
+        cells, skipped = _cells_triangle(cands, report)
+        universe = "every recorded triangle, hour windows"
+    else:
+        coin_list = [c.upper() for c in (coins or available_coins(settings))]
+        cells, skipped = _cells_bars(bot, cands, settings, coin_list, int(windows), int(window_days) * 24, report)
+        universe = f"{len(coin_list)} coins x {windows} windows of {window_days} days (1h bars)"
+    train = [c for c in cells if c["split"] == "train"]
+    test = [c for c in cells if c["split"] == "test"]
+    table = []
+    for i, cfg in enumerate(cands):
+        tr = [c["scores"][i] for c in train]
+        te = [c["scores"][i] for c in test]
+        table.append({"index": i, "current": i == 0, "config": cfg,
+                      "changes": {k: v for k, v in cfg.items() if current.get(k) != v},
+                      "train_mean_rank": statistics.fmean(_ranks(c["scores"])[i] for c in train) if train else None,
+                      "train_median": statistics.median(tr) if tr else None,
+                      "test_median": statistics.median(te) if te else None})
+    verdict: dict[str, Any] = {"reliable": False, "adopted": False}
+    if not train or not test:
+        verdict["reason"] = "not enough data to split into train and test windows"
+    else:
+        best = min(table, key=lambda r: (r["train_mean_rank"], r["index"]))
+        diffs = [c["scores"][best["index"]] - c["scores"][0] for c in test]
+        diffs = [d for d in diffs if math.isfinite(d)]
+        wins = sum(d > 1e-12 for d in diffs)
+        losses = sum(d < -1e-12 for d in diffs)
+        p = sign_test_p(wins, losses)
+        med = statistics.median(diffs) if diffs else 0.0
+        reliable = (best["index"] != 0 and wins + losses >= MIN_DECIDED_CELLS and p < SIGN_TEST_ALPHA and med > 0)
+        verdict.update({"best_index": best["index"], "best_config": best["config"], "best_changes": best["changes"],
+                        "test_cells": len(diffs), "wins": wins, "losses": losses, "ties": len(diffs) - wins - losses,
+                        "p_value": p, "median_improvement": med, "reliable": reliable})
+        if best["index"] == 0:
+            verdict["reason"] = "the current configuration ranks best on the train windows"
+        elif wins + losses < MIN_DECIDED_CELLS:
+            verdict["reason"] = f"only {wins + losses} test cells differ (need {MIN_DECIDED_CELLS})"
+        elif not reliable:
+            verdict["reason"] = (f"the train winner beat the current config in {wins} of {wins + losses} test cells "
+                                 f"(p = {p:.3f}, median {med:+.4f}); not reliable at p < {SIGN_TEST_ALPHA}")
+        else:
+            verdict["reason"] = (f"the train winner beat the current config in {wins} of {wins + losses} test cells "
+                                 f"(p = {p:.4f}, median improvement {med:+.4f})")
+        if reliable and adopt:
+            save_config(bot, best["config"], merge=False, reason=f"auto-optimize: {verdict['reason']}")
+            verdict["adopted"] = True
+    report(1.0, "done")
+    out = {"bot": bot, "at": time.time(), "seconds": round(time.time() - started, 1), "universe": universe,
+           "candidates": len(cands), "train_cells": len(train), "test_cells": len(test), "skipped": skipped,
+           "space": SPACE[bot], "current": current, "verdict": verdict,
+           "table": sorted(table, key=lambda r: (r["train_mean_rank"] is None, r["train_mean_rank"] or 0))}
+    _write_json(optimize_path(bot), out)
+    return _json_safe(out)
+
+
+def latest_optimize(bot: str) -> dict[str, Any] | None:
+    return _read_json(optimize_path(_bot(bot)), None)
+
+
+def overview(settings: Any = None) -> dict[str, Any]:
+    """Everything the tab shows at a glance, for every bot."""
+    rows = []
+    forward = _forward_all()
+    for bot in BOTS:
+        last = latest_results(bot, 1)
+        opt = None
+        try:
+            opt = latest_optimize(bot)
+        except BotError:
+            pass
+        rows.append({"bot": bot, "label": LABELS[bot], "about": ABOUT[bot], "config": get_config(bot),
+                     "defaults": DEFAULTS[bot], "space": SPACE[bot],
+                     "last_backtest": last[0] if last else None, "forward": forward.get(bot),
+                     "optimize": (opt or {}).get("verdict"), "optimized_at": (opt or {}).get("at"),
+                     "progress": runtime().progress.get(bot)})
+    return {"bots": rows, "coins": available_coins(settings)}

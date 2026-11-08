@@ -302,6 +302,8 @@ would put a wrong number under the strategy that runs live:
 |---|---|---|
 | `grid` (`GridLong`) | An **exposure staircase**: exposure rises one rung per `step` below a rolling SMA anchor. A `Strategy` like any other, filled at a bar boundary. | `core/strategies/signals.py`, run via `backtester.cli` |
 | **ladder grid** | A **ladder of resting limit orders** with paired exits one rung above each lot — the extension's strategy. Fills intrabar at known prices. | `core/gridsim.py`, run via `backtester.gridcli` |
+| **DCA bot** | A **deal-based safety-order bot**: market base order, deeper (optionally larger) resting safety buys, one take-profit above the average entry; restarts after each exit. | `core/dcasim.py`, run via `backtester.botcli dca` |
+| **triangle replay** | Three-leg USD cycles through a cross pair at the touch, executed at the quotes `latency_s` after detection; an L1 screening replay over snapshots recorded by `soltui/pricefeed.py`. | `core/trianglesim.py`, run via `backtester.botcli triangle` |
 
 `GridLong` can imitate a grid's *position profile*, but it can never capture a
 rung width, because it never has an order sitting at a level waiting to be hit.
