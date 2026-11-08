@@ -292,26 +292,30 @@ series add up to the window's net P&L because the first day is measured against 
 
 ### The Wallet tab
 
-`portfolio.scan` (`chain`, `tokens`, `record`) reads the Settings addresses from public endpoints only; no API key
-is in the code or sent anywhere, and there is no key, signature or transaction. It never calls a contract
-function other than the standard views (`balanceOf`, `symbol`, `decimals`, `name`) and never visits a token's site.
+`portfolio.scan` (`chain`, `tokens`, `record`) reads the public addresses in Settings. SolTUI never
+loads a private key, signs a transaction or stores API credentials. For Base discovery it can invoke the
+already configured Coinbase Developer Platform CLI (`cdp`); that separate CLI manages its own API authentication.
+The same scan powers the Wallet tab, CLI and HTTP API.
 
-* **Solana.** `getBalance`; `getTokenAccountsByOwner` under both the Token and Token-2022 programs; stake accounts
-  via `getProgramAccounts` (as staker or withdrawer); names and USD prices from Jupiter's keyless token and price
-  APIs.
-* **Base.** `eth_getBalance`; `balanceOf` by `eth_call` on a built-in token list, the tokens the liquidity daemon
-  watches (`ledger.sqlite`, opened read-only) and any `tokens=[...]` you pass; Blockscout's token list when it
-  answers; prices from DefiLlama, then DexScreener; position NFTs in the Aero, Uniswap v3 and PancakeSwap v3
-  position managers; the Aero positions in the daemon's `status.json` (valued from that file, noted as not live
-  when the daemon is in dry-run).
-* **Honest limits.** Blockscout is behind a Cloudflare challenge and usually answers 403 to a script; the scan then
-  says so and checks only the known set, and adds that a token sent to the address that is in none of them cannot
-  be discovered without an indexer. A failing endpoint gives a *partial* result with its name and error, never an
-  exception or a quietly smaller total. Each host is paced, a 429 or 5xx is retried twice with a capped back-off,
-  and the whole scan stops asking after 60 s (420 s for the all-chain scan, which makes many small requests).
-* **Airdrops.** A token is flagged when its name or symbol reads like spam (a URL, "claim", "reward", an amount),
-  or when it is unknown, unverified and has no price or under $5,000 of liquidity. Flagged tokens are listed with
-  the reason and left out of every total.
+* **Solana.** `getBalance`; `getTokenAccountsByOwner` under both Token programs; stake accounts via
+  `getProgramAccounts`; names and USD prices from Jupiter's keyless APIs.
+* **Base.** `eth_getBalance(address, "latest")` reads native ETH. The configured `cdp data evm token-balances`
+  command discovers native and ERC-20 balances, following every `nextPageToken` (100 rows per page, at most
+  25 pages). SolTUI finds `cdp` on PATH or in Homebrew's standard locations. No separate SolTUI credential
+  setup is needed on a machine where CDP already works. See [the balance query recipe](../docs/BASE-WALLET-QUERIES.md).
+  If CDP is unavailable, the scanner tries Blockscout, including its continuation pages. Built-in tokens,
+  daemon tokens and explicitly requested `tokens=[...]` are checked by `eth_call` to `balanceOf`; current
+  RPC balances win over indexed balances. Other contracts are never called. Indexed balances remain
+  labelled as indexed when an RPC read fails. USD prices come from DefiLlama (confidence at least 0.5),
+  then DexScreener. NFT position managers and daemon position values retain their existing checks.
+* **Honest limits.** If CDP and Blockscout fail, only available pages and known/requested tokens can be
+  checked. Errors appear in the Wallet summary, mark the scan partial, and mark its total incomplete.
+  Missing or malformed replies never become a zero balance. A later page failure retains earlier pages.
+  Requests, CLI subprocesses and pagination have deadlines/limits; CLI stderr is never displayed.
+* **Airdrops.** Unrecognized indexed tokens are displayed with a flag and excluded from totals until
+  explicitly requested or trusted by the built-in/daemon lists. Spam wording still flags requested tokens.
+  SolTUI reads their indexed metadata and never calls their contracts or visits their sites.
+
 * **Ethereum.** `eth_address` is read on mainnet: `eth_getBalance` plus `balanceOf` for 12 well-known tokens
   (no indexer, so a token outside the list is not found; the scan says so). Prices come from Coinbase's public
   spot endpoint.

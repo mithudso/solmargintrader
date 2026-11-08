@@ -1933,7 +1933,7 @@ def _portfolio_scan(ctx: Context, chain: str, extra: list[str] | None = None) ->
 @command("portfolio.scan",
          "Find the coins, token contracts, stake accounts, LP positions and UTXO balances at the wallets in "
          "Settings (Solana, Base, Ethereum, and Bitcoin, Litecoin and Dogecoin from their extended public "
-         "keys), from public endpoints only. Appends a snapshot the P&L tab and portfolio.changes read. "
+         "keys), using public reads and optional configured CDP indexed balances. Appends a snapshot the P&L tab and portfolio.changes read. "
          "Derived addresses are counted, never listed.",
          (P("chain", "string", "all (default), solana, base, ethereum, bitcoin, litecoin or dogecoin."),
           P("tokens", "json", "Extra Base token contract addresses to check, as a list."),

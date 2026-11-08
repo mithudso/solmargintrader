@@ -1,9 +1,7 @@
 # Prompt history
 
-Version: 55
-Delta: v54 to v55; implement the SolTUI v2 interface after backing up the classic UI.
-Delta: v53 to v54; SolTUI redesign mockup request.
-Delta: v52 to v53; retain hook history and add HTML converter request.
+Version: 59
+Delta: v58 to v59; apply requested canonical card moves immediately.
 
 ## v1 - 2026-11-06
 
@@ -411,7 +409,51 @@ Write a script to convert all of the html files in the subfolders here into text
 Target: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com.
 Implementation: /Users/mitch/dev/solmargintrader-wt-01a1ba63/scripts/html_to_markdown.py.
 
-## v54 - 2026-11-08 (SolTUI redesign mockup)
+## v54 - 2026-11-08
+
+```text
+Look at https://docs.base.org/llms-full.txt and determine how to check the coins in a wallet, and then implement that in this repo, the soltui cannot check my base chain accounts.
+```
+
+## v55 - 2026-11-08 (TradingView card coverage)
+
+Version: 55. Delta: v54 to v55; preserve card-coverage request.
+
+```text
+For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.
+```
+
+## v56 - 2026-11-08 (Four nonlinear lead-lag children)
+
+````text
+Do a /dr on the 4 unresearched child concepts: Conditional nonlinear information transfer (frontier, viability 3.60 / 5)
+Finite-sample dependency uncertainty (frontier, viability 3.60 / 5)
+Lag-selection multiplicity (frontier, viability 3.60 / 5)
+Directed graph preservation (frontier, viability 3.60 / 5)
+````
+
+Target: solmargintrader, isolated branch agent-01a1b5ef. Stele TASK-905.
+Metadata v57: operator-neutral continuation reference; user request unchanged.
+
+## v57 - 2026-11-08 (incomplete TradingView cards)
+
+```text
+create an incomplete directory and put all the cards you just created that cannot actually be run into it for further research, keep any cards that contain an equation, script, and/or parameters that make it a functional strategy
+```
+
+## v58 - 2026-11-08 (card readiness clarification)
+
+```text
+Keep complete indicator specifications too (Recommended)
+```
+
+## v59 - 2026-11-08 (canonical incomplete directory correction)
+
+```text
+I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
+```
+
+## v60 - 2026-11-08 (SolTUI redesign mockup)
 
 ```text
 Create a list of the primary functions of the TUI in this repo and without looking at its current layout use the design, ui, data viewing, and frontend skills to design an ideal UI interface that provides the same rich data it does now but in an easily accessible, intuitive, and scannable format. Do a simple mockup of it in TUI format using the best TUI tools you can find.
@@ -419,10 +461,18 @@ Create a list of the primary functions of the TUI in this repo and without looki
 
 Context: Stele TASK-877. Output under docs/design/soltui-v2/.
 
-## v55 - 2026-11-08 (implement SolTUI v2)
+## v61 - 2026-11-08 (implement SolTUI v2)
 
 ```text
 I like that interface a lot, make a backup of the current UI, then implement this new one, make sure all of the functionality of the current setup is represented.
 ```
 
 Context: Stele TASK-904. Backup: tag soltui-ui-v1 and branch backup/soltui-ui-v1 at 4d0f027. Branch feat/soltui-v2-ui.
+
+## v62 - 2026-11-08 (resume SolTUI redesign)
+
+Version: 62. Delta: v61 to v62; preserve the recovery request.
+
+```text
+claude ran out of tokens redesigning the UI for the TUI, see if you can resume where it left off.
+```

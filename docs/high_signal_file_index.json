@@ -753,7 +753,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 4689
+      "lines": 4781
     },
     {
       "path": "soltui/shell.py",
@@ -830,14 +830,14 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test",
-      "lines": 1122
+      "lines": 1393
     },
     {
       "path": "soltui/pricefeed.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process",
-      "lines": 708
+      "lines": 856
     },
     {
       "path": "soltui/serve.py",
@@ -886,7 +886,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 512
+      "lines": 533
     },
     {
       "path": "soltui/tests",
@@ -1018,7 +1018,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 297
+      "lines": 300
     },
     {
       "path": "CONTRIBUTING.md",

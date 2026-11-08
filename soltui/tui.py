@@ -3287,8 +3287,8 @@ class SolTuiApp(App):
         """Find the coins, token contracts, stake accounts and LP positions at the Settings addresses."""
         with VerticalScroll():
             yield Static(
-                "Reads the two public addresses from Settings with public endpoints only (no API key, no "
-                "private key, no transaction). Every figure is wallet (live): a read of real money at "
+                "Reads the public wallets from Settings (Base discovery uses configured CDP when available). "
+                "No private key or transaction. Every figure is wallet (live): a read of real money at "
                 "the time of the scan. Airdrop-looking tokens are flagged and left out of the totals.",
                 classes="hint")
             with Horizontal(classes="form-row"):
@@ -3375,6 +3375,8 @@ class SolTuiApp(App):
                 flagged = h.get("airdrop")
                 state = ("airdrop-flagged, excluded: " + "; ".join(h.get("airdrop_reasons", []))) if flagged \
                     else ("counted" if h.get("usd") is not None else "no price, not counted")
+                if h.get("verified_onchain") is False:
+                    state += "; indexed balance, not RPC verified"
                 hold.add_row(name, h["symbol"] + (" (staked)" if h.get("kind") == "stake" else ""),
                              f"{h['amount']:,.6f}", usd(h.get("price_usd")), usd(h.get("usd")), state)
             for p in ch["positions"]:
