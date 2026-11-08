@@ -1,0 +1,21 @@
+{
+ "addressesByLookupTableAddress": null,
+ "computeUnitLimit": 99938,
+ "createAtaTimeTaken": 0.009311735,
+ "dynamicSlippageReport": null,
+ "lastValidBlockHeight": 444456394,
+ "loadedAccountsDataSize": 4450219,
+ "loadedAccountsDataSizeLimit": null,
+ "prioritizationFeeLamports": 386,
+ "prioritizationType": {
+  "computeBudget": {
+   "estimatedMicroLamports": 3872,
+   "microLamports": 3872
+  }
+ },
+ "simulationError": null,
+ "simulationSlot": 466437564,
+ "swapTransaction": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAIC8ZlTA/EHkxw5t8hdzqcw/jgjBB8gcKxOr1XvcJva2HEKUx9YCz2jsHJsMCWXyhcsb2rDJxXZtXgv8PutGSEGNiF+DwC3Hczurs8ynbqnyLCnYLbz6J+imGafVob3g9LzwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwZGb+UhFzL/7K26csOb57yM5bvF9xJrLEObOkAAAAAEedVb8jHAbu50xW7OaBUH/bGy3qP0jlECsc2iVrwTjwabiFf+q4GE+2h/Y0YYwDXaxDncGus7VZig8AAAAAABBt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKmMlyWPTiSJ8bs9ECkUjg2DC1oTmdr/EIQEjnvY2+n4WbQ/+if11/ZKdMCbHylYed5LCas238ndUUsyGqezjOXoxvp6877brTo9ZfNqq8l0MbG75MLS9uDkfKYCA0UvXWGHreqk71R3+tlQhTvKnZjgu4/irrCJ/1jHbnEqfG6mEQcEAAUCYoYBAAQACQMgDwAAAAAAAAgGAAIABgMHAQEDAgACDAIAAACAlpgAAAAAAAcBAgERBRUHAAIBBQoFCQUREAwSDwsAAgEODQcj5RfLl3rjrSoBAAAAMGQAAYCWmAAAAAAA58ENAAAAAAAyAAAHAwIAAAEJAQ+Nui2uT+1NmSOYil2eQ0fDzDRpaNRC51tZ0o6nTtIPBTY4IyIyAxQQMw==",
+ "timeTaken": 0.018914615,
+ "transactionVersion": 0
+}

@@ -1,0 +1,121 @@
+{
+  "schema": "task808-accepted-gate-receipt/v1",
+  "created": "2026-11-08T07:17:44.716329+00:00",
+  "run_slug": "five-minute-high-leverage-sol-perps-task808",
+  "research_depth": "standard",
+  "research_model": "gpt-6.1-sol",
+  "research_effort": "medium",
+  "gate_schema": "research-gate/v4",
+  "validated": true,
+  "all_supported": true,
+  "packet_sha256": "53f1e45fae9cc0570ca7ba4085ad120785c3928beef135a4809ed0261191023c",
+  "review_binding": "774fab9ef04e9e014cc3585c0fc37c9515d6c359387b47af4bf202b619354e86",
+  "counts": {
+    "SUPPORTED": 125,
+    "NO-FACTUAL-ASSERTION": 40
+  },
+  "coverage": {
+    "total_claims": 165,
+    "selected_claims": 165,
+    "structured_claims": 110,
+    "auxiliary_assertions": 55,
+    "risky_claims": 99,
+    "sampled_ordinary_claims": 66
+  },
+  "conflict_resolutions": [
+    {
+      "claim_ids": [
+        "clm:37337460f30111f4728d25c685499919dd44a25197e2f2a6f50a7891047ed982",
+        "prose:97465fe623e1326e2615c63cba1b0c6b93ac1d4eaf203d746c48e1fd9bc2b68b"
+      ],
+      "resolution": "attributed"
+    },
+    {
+      "claim_ids": [
+        "clm:975dbffb355ee15e8cf5815ebb4603931ad236cfa4d305576e1315a9950bd997"
+      ],
+      "resolution": "attributed"
+    },
+    {
+      "claim_ids": [
+        "clm:2dab4fbba438dbd1563bb6755fd37b280f793151c6c1937bb4a5b03d434b950d"
+      ],
+      "resolution": "attributed"
+    }
+  ],
+  "reused_exact_judgments": 159,
+  "newly_judged_assertions": 6,
+  "relative_private_proof_paths": {
+    "packet.json": "gate/attempts/20261108T071503.072906Z-fe9b6245/packet.json",
+    "preflight.json": "gate/attempts/20261108T071503.072906Z-fe9b6245/preflight.json",
+    "verdicts.json": "gate/attempts/20261108T071503.072906Z-fe9b6245/verdicts.json",
+    "validation.json": "gate/attempts/20261108T071503.072906Z-fe9b6245/validation.json"
+  },
+  "proof_file_sha256": {
+    "packet.json": "ba17ff16168d5ad5379c188c2bf1453d092864bc2646f8cc4e519cd8a473cda0",
+    "preflight.json": "796c4c14e96a550c0a864f3ea98bceabdd5dec430e60f965354d02a6da03fcd0",
+    "verdicts.json": "e31e3c234b527486b72f31336d9167cff60253251bf0816b0253664d73cdef19",
+    "validation.json": "5031049357c298e163a7d645464261062b8540f4f387c95c78ccfe9f77d464a3"
+  },
+  "concepts": [
+    {
+      "concept": "Cross-asset hierarchical transfer at five-minute horizon",
+      "slug": "cross-asset-hierarchical-transfer-at-five-minute-horizon",
+      "structured_claims": 17,
+      "research_domain": "scientific",
+      "claim_document_sha256": "e8b9f22d74e00774f67b6e0e7da80f4d8c9d2fd2da4307b563531eee792a9bd9",
+      "relative_private_proof_path": "claims/cross-asset-hierarchical-transfer-at-five-minute-horizon.json"
+    },
+    {
+      "concept": "Five-minute first-passage labels with liquidation and costs",
+      "slug": "five-minute-first-passage-labels-with-liquidation-and-costs",
+      "structured_claims": 17,
+      "research_domain": "scientific",
+      "claim_document_sha256": "c75054003f9260e6083fcd90e5eb63b37668b90d05929e2e8e3ff58a5981ea9e",
+      "relative_private_proof_path": "claims/five-minute-first-passage-labels-with-liquidation-and-costs.json"
+    },
+    {
+      "concept": "Five-minute selective prediction and probability calibration",
+      "slug": "five-minute-selective-prediction-and-probability-calibration",
+      "structured_claims": 15,
+      "research_domain": "scientific",
+      "claim_document_sha256": "613ff89d847e8eae58b4ad0fb7669a37d49f6665d7d9d2d63b008acf43b252c2",
+      "relative_private_proof_path": "claims/five-minute-selective-prediction-and-probability-calibration.json"
+    },
+    {
+      "concept": "Five-minute volatility-regime-conditioned signal selection",
+      "slug": "five-minute-volatility-regime-conditioned-signal-selection",
+      "structured_claims": 12,
+      "research_domain": "scientific",
+      "claim_document_sha256": "f2a14c24496a3052a2799300ffd6559528eebcd80d324cb988d5e74f2f291c95",
+      "relative_private_proof_path": "claims/five-minute-volatility-regime-conditioned-signal-selection.json"
+    },
+    {
+      "concept": "Jupiter dynamic-fee-aware short-horizon feasibility",
+      "slug": "jupiter-dynamic-fee-aware-short-horizon-feasibility",
+      "structured_claims": 20,
+      "research_domain": "venue mechanism documentation",
+      "claim_document_sha256": "4f24136411f7955041a86e1ba5ed6f049ed6d2ff720c1cb8777d1aac71d8d683",
+      "relative_private_proof_path": "claims/jupiter-dynamic-fee-aware-short-horizon-feasibility.json"
+    },
+    {
+      "concept": "SOL cross-venue lead-lag after executable latency",
+      "slug": "sol-cross-venue-lead-lag-after-executable-latency",
+      "structured_claims": 12,
+      "research_domain": "scientific",
+      "claim_document_sha256": "3b5403dddfabaa5457409ff714d203c715b4cbae0cfd07034efd50d4883fa4b4",
+      "relative_private_proof_path": "claims/sol-cross-venue-lead-lag-after-executable-latency.json"
+    },
+    {
+      "concept": "Uncertainty-aware nonlinear crypto lead-lag",
+      "slug": "uncertainty-aware-nonlinear-crypto-lead-lag",
+      "structured_claims": 17,
+      "research_domain": "scientific",
+      "claim_document_sha256": "6d50466d8f653c705d164b661ddf0fca377faf959a03f15db833fd4042d84805",
+      "relative_private_proof_path": "claims/uncertainty-aware-nonlinear-crypto-lead-lag.json"
+    }
+  ],
+  "privacy": "This public receipt contains provenance metadata only. Complete pinned source text, exact excerpts and gate evidence remain in the private research run.",
+  "scope": "Acceptance verifies support for the scoped authored assertions. It does not demonstrate a profitable current five-minute SOL strategy or guarantee stop execution or liquidation survival.",
+  "prior_attempts_preserved": true
+}

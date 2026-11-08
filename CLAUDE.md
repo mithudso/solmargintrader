@@ -19,7 +19,7 @@ from component package versions. Commit only the files owned by the current task
 
 ## What this is
 
-Six components with different risk profiles. Know which one you are in:
+Seven components with different risk profiles. Know which one you are in:
 
 | Component | Risk |
 | --- | --- |
@@ -28,6 +28,7 @@ Six components with different risk profiles. Know which one you are in:
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software. |
 | `soltui/` (Python) | Read-only macOS display over the research side. Places no orders. |
 | `mongo/` (Python) | Derived local datastore. Rebuildable from the repo; nothing else imports it. |
+| `executor/` (Python) | **Moves real money** on Solana: guarded spot swaps through Jupiter. It signs and sends. Its own venv and pytest. Read `executor/CLAUDE.md` first: rails, verifier, journal, and what is not built yet. |
 | `liquidity/` (Python) | **Moves real money** on Aero (Base). It manages, compounds and allocates LP positions. Its own venv and pytest. Read `liquidity/CLAUDE.md` first: it records the owner's live-operation authorization and its limits. |
 
 ## Live on-chain actions (owner's standing authorization)
@@ -60,6 +61,7 @@ Conditions:
    accounts through the standard token program is allowed.
 
 Component boundaries still hold: `backtester/` stays simulation-only, and code defaults stay dry-run.
+The executor's own rails (`executor/CLAUDE.md`) are the live path for swaps: use `executor swap` rather than ad hoc scripts.
 
 ## Non-negotiables — extension
 
@@ -111,7 +113,7 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 900 tests
-python3 -m unittest discover -s soltui/tests -t .       # 860 tests (~610s)
+python3 -m unittest discover -s soltui/tests -t .       # 872 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 34 tests
 cd extension && npm test                                # 361 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
@@ -119,6 +121,7 @@ cd extension && npm run e2e                             # real Chrome for Testin
 node tools/verify-endpoints.js                          # live Jupiter reachability
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 cd liquidity && .venv/bin/pytest -q                     # liquidity (own venv; -m network for live reads)
+cd executor && .venv/bin/pytest -q                      # executor (own venv; -m network for live read-only quotes and simulations)
 ```
 
 `npm run e2e` (`extension/tools/e2e.mjs`) loads the unpacked extension into Chrome for Testing over the
@@ -139,8 +142,8 @@ something the ~150 lines of `src/wallet/solana.js` already solve. Tests are `nod
 **Python** — 3.13, stdlib-first. Backtester dependencies live in
 `backtester/requirements.txt`; its tests use `unittest` and deliberately exclude
 `pyarrow`, `requests`, and `pytest`. `mongo/` and `soltui/` declare their own requirements.
-`liquidity/` uses its own `pyproject.toml`, locked virtualenv, `pytest`, and Ruff; follow
-`liquidity/CLAUDE.md` there. Use `from __future__ import annotations` and type hints.
+`liquidity/` and `executor/` use their own `pyproject.toml`, locked virtualenv, `pytest`, and Ruff; follow
+`liquidity/CLAUDE.md` and `executor/CLAUDE.md` there. Use `from __future__ import annotations` and type hints.
 
 **Both** — comments explain *why*, especially where the obvious implementation is wrong (MV3 timers,
 base58 zero bytes, FIFO vs paired-lot attribution, one-bar leaks). Do not narrate *what*.
@@ -152,7 +155,7 @@ has ever been placed**. The unpacked extension is now loaded and exercised in a 
 dry-run only), so the MV3 load path, service worker, popup, dashboard and message routing are
 covered; live trading is not. Trigger history/cancellation have public-contract fixtures, but authenticated
 wallet responses, execution USD valuation and fee attribution remain unverified. The bundled signer
-has no semantic transaction verifier, so Trigger live signing stays blocked. Do not present live
+has no semantic transaction verifier, so Trigger live signing stays blocked. `executor/src/executor/txverify.py` is a semantic verifier for Jupiter Swap v1 transactions (not for Trigger). Do not present live
 execution as working.
 
 ## Related
@@ -162,11 +165,12 @@ execution as working.
 
 <!-- llms-routing:start -->
 ## llms routing
-> Cached from the llms files below on 2026-11-06; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
+> Cached from the llms files below on 2026-11-08; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
 
 | File | Path | Holds | Ask it for |
 |---|---|---|---|
-| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Every unit in the -v4 packs passed the research-gate/v4 evidence gate on 2026-11-06 (708 claims kept of about 5,000 researched; the rest could not be bound to exact source quotes or were not judged SUPPORTED). Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
+| llms.txt | ~/.global-ai-hub/llms-concepts/five-minute-sol-perps-task808-suite.family/llms.txt | Seven private reference packs compile accepted authored claims about executable short-horizon SOL signals. They retain scoped evidence and open limitations; this suite does not demonstrate a live trading edge. | Products, Navigation |
+| llms-sitemap.txt | ~/.global-ai-hub/llms-concepts/five-minute-sol-perps-task808-suite.family/llms-sitemap.txt | Kind: store · Entries: 7 · Internal private reading aids | Files, Resources |
 
 ### Quick answers
 
@@ -178,3 +182,11 @@ _none found: no misbelief, default, file-role, formula or command lines in the f
 - Keyword: SQLite FTS5 table `files_fts` in ~/.global-ai-hub/hub.db (hub/scripts/keyword_index.py); query with `hub_search_keyword` or `keyword_index.py query "<term>"`.
 - Access ledger: ~/.global-ai-hub/llms-access-ledger.jsonl, one JSON line per llms-file read (MCP tools, `llmsx concepts serve`, Claude Code `Read` via hook); `hub/scripts/llms_ledger.py report --days 30`. A shell `cat` is not recorded.
 <!-- llms-routing:end -->
+
+### Existing Solana margin family
+
+The earlier broad family remains available alongside the five-minute suite. Its source-check date and historical verification scope remain those stated in the retained row.
+
+| File | Path | Holds | Ask it for |
+|---|---|---|---|
+| llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Every unit in the -v4 packs passed the research-gate/v4 evidence gate on 2026-11-06 (708 claims kept of about 5,000 researched; the rest could not be bound to exact source quotes or were not judged SUPPORTED). Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |

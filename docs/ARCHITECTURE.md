@@ -1,7 +1,7 @@
 # Architecture
 
-Six components with explicit execution boundaries. The backtester and research do not place orders.
-The extension and liquidity manager each have their own live-capable execution path. Soltui reads
+Seven components with explicit execution boundaries. The backtester and research do not place orders.
+The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads
 research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
 ```

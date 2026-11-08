@@ -1,0 +1,42 @@
+{
+ "contextSlot": 466437551,
+ "inAmount": "10000000",
+ "inputMint": "So11111111111111111111111111111111111111112",
+ "instructionVersion": null,
+ "loadedLongtailToken": false,
+ "longtailMarketQuoteReport": null,
+ "mostReliableAmmsQuoteReport": {
+  "info": {
+   "BZtgQEyS6eXUXicYPHecYQ7PybqodXQMvkjUbP4R8mUU": "900680",
+   "Czfq3xZZDmsdGdUyrNLtRhGc47cXcZtLG4crryfu44zE": "900920"
+  }
+ },
+ "otherAmountThreshold": "897099",
+ "otherRoutePlans": null,
+ "outAmount": "901607",
+ "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+ "platformFee": null,
+ "priceImpactPct": "0",
+ "routePlan": [
+  {
+   "bps": null,
+   "percent": 100,
+   "swapInfo": {
+    "ammKey": "DbuvwPuLvH8uy2B1sKuu18aCd2QpCvfZdfDtdRZztBd2",
+    "inAmount": "10000000",
+    "inputMint": "So11111111111111111111111111111111111111112",
+    "label": "1DEX",
+    "outAmount": "901607",
+    "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "updateContextSlot": "466437547"
+   }
+  }
+ ],
+ "slippageBps": 50,
+ "swapMode": "ExactIn",
+ "swapUsdValue": "0.9013602304479",
+ "timeTaken": 0.001182071,
+ "transactionVersion": 0,
+ "useIncurredSlippageForQuoting": null,
+ "useRewards": null
+}
