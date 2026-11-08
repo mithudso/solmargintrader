@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 93
-Delta: v92 to v93; record sweep proof recovery request.
+Version: 94
+Delta: v93 to v94; record Coinbase connection and live test requests.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -766,4 +766,46 @@ In the forward test, I had asked that to be done at 1, 5, and 30 min intervals e
 For the sweep I'm getting the error again
 previous sweep stopped: its evaluation proof is missing or differs; press Start fresh to start a separate sweep and preserve these results · previous error: ValueError: evaluation proof is missing or differs for SOL at
 /Users/mitch/.config/soltui/bg/results-8f615318bd7af7168ba68c0469d43b7c.jsonl; preserve this history and use --results-path for a fresh file · 972 rankable, 579 with positive median Sharpe · 87 below the 10-trade floor. Make it not completely fail on data like that,
+```
+
+## v94 - 2026-11-08
+
+```text
+Look at this file, and determine how to connect to my coinbase account and implement a coinbase connector, and sync the asset and wallet information to be in addition to the wallets already saved. download a list of all of the markets, and make a real live test order with actual literal money.
+```
+
+```text
+/Users/mitch/dev/solmargintrader/llms/docs.cdp.coinbase.com.llms-full
+```
+
+```text
+For the live test order allow me to choose the trading pair, and use 1000
+```
+
+```text
+Use $1000 USD
+```
+
+```text
+The chosen pair is sol/usdc
+```
+
+```text
+The test order just needs to make sure it can make orders, buy $0.03 of SOL, just make sure it works. THe $1000 was a response to the live test work you were doing which pretends it's real, give it $1000 to start with and make it run live.
+```
+
+```text
+You get the connector working and I'll add a dollar to the account
+```
+
+```text
+Better yet, transfer the money from my other wallet to that account.
+```
+
+```text
+Transfer like $5 of solana
+```
+
+```text
+COnvertt from Jupsol to sol
 ```

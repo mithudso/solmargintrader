@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 166
-Delta: v165 to v166; record live sweep and Signal trainer activation.
+Version: 167
+Delta: v166 to v167; begin Coinbase connector and live transfer investigation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1662,3 +1662,11 @@ Sweep recovery TASK-1029 implemented by textual-job-lifecycle-specialist in bran
 ## v166 - 2026-11-08
 
 The SOL sweep resumed in a new proof-isolated results segment /Users/mitch/.config/soltui/bg/results-b97fdfd3748763c996ba74a0ddb12fde.jsonl. The old results and proof remain in place. As of 17:38 UTC it had completed 554 of 1,059 evaluations without an error; process 83636 runs from /Users/mitch/dev/solmargintrader-wt-01a1bc24, whose data symlink points to the original checkout. The ten-coin Signal trainer was gracefully replaced with PID 91333 from the same worktree. Each coin has separate 1-, 5- and 30-minute prediction records; initial one-minute outcomes resolved for BTC and SOL. The console PID 74766 still uses /Users/mitch/dev/solmargintrader and has not loaded the updated UI. Computer-use access to Terminal was denied. The active autopilot still points to the original checkout, so a future automatic restart can reload its older code until that checkout is safely updated. Preserve the active worktree and processes. PR 117 delivery and the five- and thirty-minute live outcomes remain to verify.
+
+## v167 - 2026-11-08
+
+Coinbase connector work in /Users/mitch/dev/solmargintrader-wt-coinbase-01a1bc24, branch agent-coinbase-01a1bc24. Stele task creation queued as outbox 2af4599e because transport closed. The user supplied /Users/mitch/dev/solmargintrader/llms/docs.cdp.coinbase.com.llms-full, asked to sync Coinbase alongside existing wallets, download markets, and ultimately test a real SOL/USDC buy. The intended live test was initially $0.03, but Coinbase reports a 1 USDC minimum. The owner then requested transferring around $5 of native SOL from another wallet to Coinbase. Coinbase UI explicitly showed a Solana-network native SOL receive address and 0.001 SOL minimum. The saved Solana wallet has only 0.025544731 SOL, roughly $2.27 at the observed quote, plus JUPSOL; it cannot supply $5 of native SOL while reserving fees. No transfer or order was submitted. Await source wallet/permission to convert JUPSOL; never guess or reuse an ambiguous submission. The $1000 is only simulated experiment starting capital. The connected Coinbase MCP has read access to the default portfolio but does not by itself provide reusable app authentication; determine a secure supported app-level connector without copying OAuth tokens. Market public API supports cursor pagination. Preserve existing wallets, no secret output, and no surprise funding trades.
+
+## v168 - 2026-11-08
+
+The owner authorized converting JUPSOL to SOL. The Jupiter UI has a 0.03 JUPSOL to SOL quote prepared and awaits the owner's wallet approval; no swap, transfer or order has been confirmed. Verify the resulting chain transaction before continuing. The connected Coinbase MCP provided a complete 38-account read snapshot, saved separately in mode 600 under the user's SolTUI config; future refresh requires separate app authentication. Public Coinbase market retrieval produced 929 spot, 100 future, 1,873 equity and 5,665 global derivative entries. Equity pagination stalled, so the catalog is explicitly incomplete and saved separately from the prior snapshot. Staked Coinbase holdings may be excluded. The requested 0.03 SOL/USDC buy is below the reported 1 USDC minimum; do not increase the order without authorization. The received SOL is not USDC.
