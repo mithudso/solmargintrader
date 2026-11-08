@@ -214,6 +214,10 @@ def records(shard: str, complete: bool = True) -> list[dict]:
         raise ValueError(f"Duplicate or unassigned publication in shard{shard}")
     for row in rows:
         validate_record(row, sources[row["publication_id"]])
+        if complete and row["in_scope"] and "readiness" not in row:
+            raise ValueError(
+                f"Computation-readiness review is missing: {row['publication_id']}"
+            )
     missing = sorted(set(entry["publication_ids"]) - set(ids))
     print(
         json.dumps(

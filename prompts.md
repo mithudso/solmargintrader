@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 57
-Delta: v56 to v57; expand understanding to all trading scripts including indicators.
+Version: 58
+Delta: v57 to v58; place newly created incomplete cards in the requested directory.
 
 ## v1 - 2026-11-06
 

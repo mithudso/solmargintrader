@@ -102,7 +102,9 @@ def card_location(repo: Path, profile: dict) -> Path:
         readiness["status"] not in {"usable-specification", "incomplete"}
         or not readiness.get("reason")
         or not entry.get("evidence")
+        or not isinstance(readiness.get("gaps"), list)
         or (readiness["status"] == "incomplete" and not readiness.get("gaps"))
+        or (readiness["status"] == "usable-specification" and readiness["gaps"])
     ):
         raise ValueError(
             "Strategy-card relocation lacks a reviewed completeness decision"

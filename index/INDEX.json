@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-11-08T11:36:58+00:00",
+  "generatedAt": "2026-11-08T11:53:45+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "9e84032",
+  "commit": "1243e37",
   "counts": {
-    "files": 1882,
-    "bytes": 30109814,
+    "files": 1883,
+    "bytes": 30117652,
     "byKind": {
       "strategy-card": 1143,
-      "doc": 181,
+      "doc": 182,
       "code-python": 175,
       "test": 122,
       "code-js": 87,
@@ -23,7 +23,7 @@
     },
     "byTopDir": {
       "backtester": 1228,
-      "research": 169,
+      "research": 170,
       "soltui": 93,
       "extension": 92,
       "skills": 62,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 1803
+    "withSummary": 1804
   },
   "files": [
     {
@@ -50881,11 +50881,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 57 Delta: v56 to v57; expand understanding to all trading scripts including indicators. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.",
+      "summary": "Version: 58 Delta: v57 to v58; place newly created incomplete cards in the requested directory. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.",
       "summarySource": "opening-prose",
-      "bytes": 27189,
+      "bytes": 27188,
       "lines": 451,
-      "sha1": "74544928c8621155c7387750d1a2ce3244d6c502",
+      "sha1": "471e70fcec3fe9a3be3d00fc528ff3bad31aaa08",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -54864,6 +54864,24 @@
       "frontmatter": {}
     },
     {
+      "id": "research/tradingview-script-profile-audit-prompts.md",
+      "path": "research/tradingview-script-profile-audit-prompts.md",
+      "dir": "research",
+      "name": "tradingview-script-profile-audit-prompts.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Expanded script-profile independent review prompts",
+      "summary": "Version: 1.0.0. Delta: preserve exact source-semantic and completeness audit contract. The user requests an explanation and card for every trading script, including indicators. Incomplete cards belong beneath backtester/strategy_cards/incomplete.",
+      "summarySource": "opening-prose",
+      "bytes": 6545,
+      "lines": 41,
+      "sha1": "30603739fe97b5eb69dee01b547b8bfc757e84a2",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "research/tradingview-script-profile-prompts.md",
       "path": "research/tradingview-script-profile-prompts.md",
       "dir": "research",
@@ -55443,9 +55461,9 @@
       "title": "build_tradingview_script_profiles",
       "summary": "Prepare resumable semantic-authoring batches for every saved TradingView script. Raw author descriptions stay in the gitignored tradingview/.script-card-work cache. Authors write original interpretations to assigned JSONL files; this helper checks source coverage and exact quotations, never synthesizes trading rules from titles.",
       "summarySource": "docstring",
-      "bytes": 11744,
-      "lines": 301,
-      "sha1": "8c018f34b25eaab1d68e03b7745d14a9043783a6",
+      "bytes": 11940,
+      "lines": 305,
+      "sha1": "4a7eb8233f4bb2a56873f65283d8b96913846ace",
       "symbols": [
         "ROOT",
         "CACHE",
@@ -55566,9 +55584,9 @@
       "title": "check_tradingview_strategy_profiles",
       "summary": "Verify strategy-publication cards and optionally bind them to saved HTML. Without --source-root, verify committed cards, inventory and quoted evidence. With --source-root, also verify every HTML hash and the complete strategy subset.",
       "summarySource": "docstring",
-      "bytes": 14967,
-      "lines": 358,
-      "sha1": "659ed54c198d756446a70387c22418a6c336806b",
+      "bytes": 15103,
+      "lines": 360,
+      "sha1": "3c0e54bfa5f477ac4abf7f952c5174bbdfba4d4e",
       "symbols": [
         "REPO",
         "class PublicationParser",
@@ -55647,9 +55665,9 @@
       "title": "render_tradingview_script_cards",
       "summary": "Render and verify source-reviewed documentation cards for saved trading scripts. The authored JSONL records are the semantic input. Rendering does no semantic classification. Final rendering requires an independent review of every record. The raw HTML stays local; the default check uses only committed artifacts.",
       "summarySource": "docstring",
-      "bytes": 32119,
-      "lines": 759,
-      "sha1": "7b40d74949c77bd64fc55c236726090d3f48ab3c",
+      "bytes": 33081,
+      "lines": 789,
+      "sha1": "d553f0cef7eb24fe07a8441f40c41d2c4b1d3dc6",
       "symbols": [
         "ROOT",
         "MANIFEST",
@@ -55690,7 +55708,8 @@
         "posixpath",
         "re",
         "scripts",
-        "sys"
+        "sys",
+        "tempfile"
       ],
       "internalImports": [],
       "frontmatter": {}

@@ -14,6 +14,7 @@ import json
 import posixpath
 import re
 import sys
+import tempfile
 from collections import Counter
 from pathlib import Path
 
@@ -366,6 +367,7 @@ def render(draft: bool) -> dict:
     )
     entries = protected_entries()
     bindings = {}
+    pending_cards: dict[Path, str] = {}
     if (ROOT / LOCATIONS).exists():
         bindings[LOCATIONS.as_posix()] = sha((ROOT / LOCATIONS).read_bytes())
     for shard in work["shards"]:
@@ -439,9 +441,8 @@ def render(draft: bool) -> dict:
                 )
             if profile["in_scope"]:
                 target = card_path(source, profile)
-                (ROOT / target).parent.mkdir(parents=True, exist_ok=True)
                 text = render_card(source, profile, reviewed=reviewed)
-                (ROOT / target).write_text(text)
+                pending_cards[target] = text
                 entry.update(
                     {
                         "purpose": profile["purpose"],
@@ -456,8 +457,37 @@ def render(draft: bool) -> dict:
         bindings[path.as_posix()] = sha((ROOT / path).read_bytes())
         if audit_path.exists():
             bindings[audit_path.as_posix()] = sha((ROOT / audit_path).read_bytes())
+    prior = (
+        {
+            row["card_path"]: row["card_sha256"]
+            for row in previous["publications"]
+            if row["in_scope"] and not row["protected"]
+        }
+        if previous
+        else {}
+    )
+    for path, content in pending_cards.items():
+        target = ROOT / path
+        if target.exists() and sha(target.read_bytes()) not in {
+            prior.get(path.as_posix()),
+            sha(content.encode()),
+        }:
+            raise ValueError(f"Preserve an edited or unowned output card: {target}")
     if previous is not None:
         remove_obsolete(previous["publications"], entries)
+    for path, content in pending_cards.items():
+        target = ROOT / path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=target.parent,
+            prefix=".tv-card-",
+            delete=False,
+        ) as handle:
+            handle.write(content)
+            staged = Path(handle.name)
+        staged.replace(target)
     data = {
         "schema_version": 1,
         "version": "1.0.0",
