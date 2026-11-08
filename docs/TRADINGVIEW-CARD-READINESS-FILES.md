@@ -813,3 +813,4 @@ Canonical checkout paths for every created, modified or relocated file. Card con
 - [/Users/mitch/dev/solmargintrader/research/tradingview-card-readiness.json](/Users/mitch/dev/solmargintrader/research/tradingview-card-readiness.json) — Readiness review, validation or continuation metadata.
 - [/Users/mitch/dev/solmargintrader/scripts/check_tradingview_cards.py](/Users/mitch/dev/solmargintrader/scripts/check_tradingview_cards.py) — Readiness review, validation or continuation metadata.
 - [/Users/mitch/dev/solmargintrader/scripts/test_card_readiness.py](/Users/mitch/dev/solmargintrader/scripts/test_card_readiness.py) — Readiness review, validation or continuation metadata.
+- [/Users/mitch/dev/solmargintrader/docs/high_signal_file_index.json](/Users/mitch/dev/solmargintrader/docs/high_signal_file_index.json) — Refreshed committed source line metadata.

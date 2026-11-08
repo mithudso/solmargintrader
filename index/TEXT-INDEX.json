@@ -1273,7 +1273,7 @@
     "docs/TESTING.md": 1744,
     "docs/TRADINGVIEW-CARD-COVERAGE.md": 11897,
     "docs/TRADINGVIEW-CARD-FILES.md": 37276,
-    "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 28182,
+    "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 28209,
     "docs/TRADINGVIEW-CARD-READINESS.md": 32716,
     "docs/TRADINGVIEW-REFERENCE.md": 40585,
     "docs/caching-and-optimization.md": 304,
@@ -1869,7 +1869,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T11:16:39+00:00",
+  "generatedAt": "2026-11-08T11:17:18+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -7434,9 +7434,6 @@
     },
     "a4033d018d0d00d0c116824b5c73c88f00010beb477b6bcc62f93d828dbebb0b": {
       "research/tradingview-card-coverage.json": 1
-    },
-    "a4064e": {
-      "docs/FILES.md": 1
     },
     "a407139386b1b3d053e4747739ba9fb5e8f0ce8548c2cfc03fa278606b183331": {
       "research/tradingview-card-coverage.json": 1
@@ -34560,7 +34557,7 @@
       "backtester/strategy_cards/tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md": 1,
       "backtester/tests/test_signal_redundancy.py": 1,
       "docs/COMPOUND-5M.md": 1,
-      "docs/FILES.md": 6,
+      "docs/FILES.md": 5,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/dso-skill/SKILL.md": 5,
@@ -50882,6 +50879,9 @@
     },
     "b6bf27cef6296f3691e15f822b8e8a8eea99c59ebf1628d1ddf46aeb69f4fbc": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "b6c": {
+      "docs/FILES.md": 1
     },
     "b6c1b3e57799b9d38427dda63edcbe4926352c47cf88588c0be4ace18dac85": {
       "liquidity/uv.lock": 1
@@ -97060,7 +97060,7 @@
     "checkpoint": {
       "backtester/core/fetch_minutes.py": 1,
       "backtester/tests/test_tick_backfill.py": 3,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 4,
       "docs/SCRIPTS.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "memory.md": 14,
@@ -108839,6 +108839,7 @@
       "docs/FILES.md": 9,
       "docs/SCRIPTS.md": 2,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
@@ -148831,7 +148832,7 @@
     },
     "delivery": {
       "AGENTS.md": 2,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/code-deep-optimizer-2026-11-06.md": 4,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "docs/runbooks/handoff.md": 1,
@@ -154793,7 +154794,7 @@
       "docs/INSTALLATION.md": 4,
       "docs/SCRIPTS.md": 4,
       "docs/TRADINGVIEW-CARD-FILES.md": 2198,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1618,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1620,
       "docs/TRADINGVIEW-REFERENCE.md": 8,
       "docs/code-deep-optimizer-2026-11-06.md": 4,
       "docs/codebase-overview.md": 1,
@@ -164978,7 +164979,7 @@
       "docs/TESTING.md": 4,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-FILES.md": 11,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 13,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 15,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 196,
       "docs/caching-and-optimization.md": 3,
@@ -257617,7 +257618,7 @@
       "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 13,
       "docs/TRADINGVIEW-CARD-FILES.md": 12,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 4,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 6,
       "docs/TRADINGVIEW-CARD-READINESS.md": 44,
       "docs/TRADINGVIEW-REFERENCE.md": 65,
       "docs/code-deep-optimizer-2026-11-06.md": 23,
@@ -257794,6 +257795,7 @@
       "docs/FILES.md": 3,
       "docs/SCRIPTS.md": 2,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/high_signal_file_index.json": 1,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "index/README.md": 2,
@@ -271873,7 +271875,7 @@
       "docs/TESTING.md": 3,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 84,
       "docs/TRADINGVIEW-CARD-FILES.md": 74,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 48,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 50,
       "docs/TRADINGVIEW-CARD-READINESS.md": 80,
       "docs/TRADINGVIEW-REFERENCE.md": 71,
       "docs/caching-and-optimization.md": 6,
@@ -287939,7 +287941,7 @@
       "docs/SECURITY.md": 3,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-FILES.md": 12,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 10,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 12,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 23,
       "docs/code-deep-optimizer-2026-11-06.md": 8,
@@ -305758,7 +305760,7 @@
       "docs/TESTING.md": 5,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 17,
       "docs/TRADINGVIEW-CARD-FILES.md": 17,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 14,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 15,
       "docs/TRADINGVIEW-CARD-READINESS.md": 51,
       "docs/TRADINGVIEW-REFERENCE.md": 108,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -329314,7 +329316,7 @@
       "docs/FILES.md": 8,
       "docs/SCRIPTS.md": 1,
       "docs/SECURITY.md": 1,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 18,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 19,
       "docs/TRADINGVIEW-REFERENCE.md": 14,
       "docs/caching-and-optimization.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 6,
@@ -333175,7 +333177,7 @@
       "docs/FILES.md": 3,
       "docs/SCRIPTS.md": 3,
       "docs/TRADINGVIEW-CARD-FILES.md": 2198,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1618,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1620,
       "docs/code-deep-optimizer-2026-11-06.md": 7,
       "docs/dso-skill/README.md": 1,
       "docs/profitable-crypto-strategies-analysis.md": 1,
@@ -424800,6 +424802,7 @@
     },
     "refreshed": {
       "backtester/strategy_cards/incomplete/tv_f2yleyoo_delta_volume_columns_pro_lucf.md": 1,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1,
       "docs/integrations-and-assumptions.md": 1,
       "docs/known-issues.md": 1,
       "extension/src/ui/popup.js": 1,
@@ -441834,7 +441837,7 @@
       "backtester/strategy_cards/tv_ujgvguvt_volatility_risk_premium.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 2,
-      "docs/FILES.md": 16,
+      "docs/FILES.md": 15,
       "docs/SCRIPTS.md": 4,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 4,
@@ -483924,7 +483927,7 @@
       "docs/SCRIPTS.md": 2,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-CARD-FILES.md": 2198,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1618,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1620,
       "docs/TRADINGVIEW-REFERENCE.md": 14,
       "docs/code-deep-optimizer-2026-11-06.md": 8,
       "docs/codebase-overview.md": 1,
@@ -571491,7 +571494,7 @@
       "docs/FILES.md": 6,
       "docs/SCRIPTS.md": 3,
       "docs/TRADINGVIEW-CARD-FILES.md": 2198,
-      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1618,
+      "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 1620,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
       "docs/code-deep-optimizer-2026-11-06.md": 7,
       "docs/dso-skill/README.md": 1,
@@ -573616,7 +573619,6 @@
       "memory.md": 2
     },
     "v94": {
-      "docs/FILES.md": 1,
       "memory.md": 2
     },
     "v95": {
@@ -573624,6 +573626,7 @@
       "memory.md": 5
     },
     "v96": {
+      "docs/FILES.md": 1,
       "memory.md": 4
     },
     "v98": {
@@ -599925,6 +599928,6 @@
     "documents": 1868,
     "terms": 60586,
     "termsBeforePrune": 60752,
-    "totalTokens": 2605431
+    "totalTokens": 2605458
   }
 }

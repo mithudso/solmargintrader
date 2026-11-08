@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `6390b6c` (2026-11-08T11:16:39+00:00). 1868 tracked files, 30.8 MB.
+**Generated** from `index/INDEX.json` at commit `459034c` (2026-11-08T11:17:18+00:00). 1868 tracked files, 30.8 MB.
 
 Regenerate with:
 
@@ -281,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18293 lines · 910,403 B · description: **extracted**
+`doc` · 18293 lines · 910,406 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -353,7 +353,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-CARD-READINESS-FILES.md`
 
-`doc` · 816 lines · 225,509 B · description: **extracted**
+`doc` · 817 lines · 225,692 B · description: **extracted**
 
 **Purpose.** Version: 1.0.0 (2026-11-08). Delta: list the complete incomplete-card separation changes. Canonical checkout paths for every created, modified or relocated file. Card contents are preserved; research cards move into the incomplete directory.
 
