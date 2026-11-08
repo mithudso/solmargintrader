@@ -51,5 +51,25 @@ class CoinbaseAccountTests(unittest.TestCase):
         self.assertEqual([r['currency'] for r in result['accounts']], ['USD', 'SOL'])
 
 
+class CoinbasePaneTests(unittest.IsolatedAsyncioTestCase):
+    async def test_wallet_displays_trading_and_staked_positions_separately(self):
+        from textual.widgets import DataTable, TabbedContent
+        from soltui.tests.test_tui import TEST_SIZE, make_settings
+        from soltui.tui import SolTuiApp
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(config, 'CONFIG_DIR', Path(tmp)):
+            cb._store(cb.storage_dir() / 'account.json', {
+                'accounts': [{'portfolio_name': 'Default', 'currency': 'SOL',
+                              'available_balance': {'value': '1'}, 'hold': {'value': '0'}}],
+                'breakdowns': [{'portfolio': {'name': 'Default'}, 'spot_positions': [
+                    {'asset': 'SOL', 'account_type': 'ACCOUNT_TYPE_STAKED_FUNDS',
+                     'total_balance_crypto': 2, 'total_balance_fiat': 180}]}]})
+            app = SolTuiApp(make_settings())
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                app.query_one('#main-tabs', TabbedContent).active = 'tab-wallet'
+                await pilot.pause()
+                self.assertEqual(app.query_one('#coinbase-holdings', DataTable).row_count, 1)
+                self.assertEqual(app.query_one('#coinbase-positions', DataTable).row_count, 1)
+
+
 if __name__ == '__main__':
     unittest.main()

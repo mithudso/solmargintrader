@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 94
-Delta: v93 to v94; record Coinbase connection and live test requests.
+Version: 95
+Delta: v94 to v95; record the JUPSOL conversion request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -805,6 +805,8 @@ Better yet, transfer the money from my other wallet to that account.
 ```text
 Transfer like $5 of solana
 ```
+
+## v95 - 2026-11-08
 
 ```text
 COnvertt from Jupsol to sol

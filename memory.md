@@ -1670,3 +1670,7 @@ Coinbase connector work in /Users/mitch/dev/solmargintrader-wt-coinbase-01a1bc24
 ## v168 - 2026-11-08
 
 The owner authorized converting JUPSOL to SOL. The Jupiter UI has a 0.03 JUPSOL to SOL quote prepared and awaits the owner's wallet approval; no swap, transfer or order has been confirmed. Verify the resulting chain transaction before continuing. The connected Coinbase MCP provided a complete 38-account read snapshot, saved separately in mode 600 under the user's SolTUI config; future refresh requires separate app authentication. Public Coinbase market retrieval produced 929 spot, 100 future, 1,873 equity and 5,665 global derivative entries. Equity pagination stalled, so the catalog is explicitly incomplete and saved separately from the prior snapshot. Staked Coinbase holdings may be excluded. The requested 0.03 SOL/USDC buy is below the reported 1 USDC minimum; do not increase the order without authorization. The received SOL is not USDC.
+
+## v169 - 2026-11-08
+
+The Coinbase snapshot now includes the authorized portfolio breakdown, including separately identified staked spot positions, in addition to trading balances. The app refresh uses the official CLI and requires a separate read-enabled API key. The current connected MCP authorization does not provide app credentials. Focused connector and button-registry tests pass. Code is a checkpoint in draft PR 119; integrate concurrent UI work, add installed acceptance and finish delivery after CI.
