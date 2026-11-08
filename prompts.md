@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 47
-Delta: v46 to v47; preserved upstream trend-filter request and renumbered task-owned request records without changing prompt text.
+Version: 48
+Delta: v47 to v48; preserve upstream adaptive-roster request and renumber task-owned records without changing prompt text.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -313,12 +313,22 @@ Use lightweight charts, run the deep prompt optimizer on the rest of this prompt
 
 Context: answers to "restart soltui" (1) and "add a filter that blocks UP calls while the higher-timeframe trend points down" (2).
 
-## v46 - 2026-11-07 (Five-minute leveraged perps full-suite)
+## v46 - 2026-11-08 (Adaptive Forwardtest)
+
+```text
+In the strategies tab, you can click on a strategy and then click the "add selected" button which adds that strategy to the roster for later testing. Make it so if I have a strategy highlighted and then I press the spacebar it will add or remove that strategy from the roster. Also create an "add all strategies to the roster" button. Then create a Forwardtest tab, this will be a dedicated tab for forward testing all stratgies or strategy combinations, use the same self-optimizing process we used with the compound test, but each of these test are going to be testing each stratgy individually so every strategy is self-optimizing in that if it gets a prediction wrong then it should change its settings in the direction of the configuration that would have made it right if that information is available.
+```
+
+```text
+Also in the forwardtest tab, make the time forward the strategy is asked to predict configurable so it can be 1, 5, 10, or 30 min. And ask it to predict all of them, and track the success of each individually.
+```
+
+## v47 - 2026-11-07 (Five-minute leveraged perps full-suite)
 
 ```text
 Run the full-suite skill on high margin leveraged perps trading strategies like exists here https://jup.ag/perps/long/SOL-SOL. Effectively betting on how the price will move in the next 5 minutes. What signals, indicators, and technicals best predict an extremely short timeframe, but that also cannot withstand a big swing in the wrong direction.
 ```
-## v47 - 2026-11-08 (Approved archival and full-suite continuation)
+## v48 - 2026-11-08 (Approved archival and full-suite continuation)
 
 ```text
 Yes, Approve moving /Users/mitch/.research intact to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808 so the workflow can continue
