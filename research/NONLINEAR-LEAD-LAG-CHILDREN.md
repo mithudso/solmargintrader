@@ -1,9 +1,9 @@
 # Four nonlinear lead-lag children: research and testing implications
 
-Version: 1
-Delta: initial direct /dr follow-up to the five-minute SOL perps research.
+Version: 2
+Delta: v1 to v2; link the completed canonical run and separate remote delivery qualification.
 Reviewed: 2026-11-08. Research only; no new market backtest or live trade.
-Status: evidence accepted; skill installation and publication delivery are tracked separately.
+Status: evidence, installed reference and canonical completion accepted. Remote delivery is tracked separately in `nonlinear-lead-lag-children/run-report.md`.
 
 ## Findings by concept
 

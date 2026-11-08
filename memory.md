@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 80
-Delta: v78 to v80; append four-child research records after concurrent hook and converter delivery.
+Version: 82
+Delta: v81 to v82; final root checks passed and Git delivery is ready.
 
 ## v1 - 2026-11-06
 
@@ -820,3 +820,25 @@ Checks: 872 SolTUI tests ran (870 passed, 2 skipped); 34 Mongo tests ran (17 pas
 Stele transport closed after stage creation. Exact lifecycle writes queued: claim TASK-907 in 5e16424f; complete TASK-907 in 5532828f; claim TASK-908 in 509bdd0d. These identifiers are recovery receipts, not confirmed graph closure.
 
 Remaining: finish supported skill render/metadata qualification and delivery; exact stable runtime activation; adapter finish and four child projections; independent publication audit; final root records/index checks, PRs/CI/merges and owned cleanup. Preserve original dirty checkouts, shared index differences and paused services.
+
+## v81 - 2026-11-08 (Four-child delivery checkpoint)
+
+Research and implementation work complete: all four concepts passed the accepted v4 gate and independent source/root-synthesis audit. The supported canonical finish returned COMPLETED with no warnings, 39 calculated minutes, artifact SHA a5f5ac0e6ea2cad3a7f562cccf5e0b370cca0849b1647b944236df520f5dea27. Five new nodes per target are four children plus their aggregate. Private tree 2866 to 2871; repository tree 2709 to 2714. The aggregate sits under Uncertainty-aware nonlinear crypto lead-lag. Four child aliases resolve to their own concepts.
+
+Skills PR 92 merged as b5085dfc3ca6979079e34eae9972e2cd242ae5cd. Exact guarded source/loaded activation and stable supported rerender reproduce reference SHA 960ca20a8a07dfe87b34305b8469a9533906491849baece0504a933ab9c6c11f. Source hub 1.7.2 and loaded hub 1.6.2 retain their intentional route/model/SKIP differences. Three fresh skills/list samples passed. The scoped registry added exactly two descriptions, preserving all 1822 prior rows, and the new spoke ranked first. One failed route query used a venv without NumPy; a bounded retry used the existing global hub venv. No installation was needed. Ordinary task-scoped loading of the installed mxbai model on an already-running endpoint preserved Qwen; no server/pool/default/download/forced-unload change occurred.
+
+Canonical completion emitted five packs per target and fresh reader/tree/context/facts data. Existing public search-index.bin bytes are unchanged; semantic metadata retains 1018 existing rows and adds no embeddings. Site typecheck and 2854-page build/publication policy passed. Website tests/privacy review and remote delivery continue independently; inspect actual receipts before claiming them complete.
+
+Concurrent hook and HTML converter changes from origin/master eea27e2 are integrated. All incoming prompt/memory bodies and the prior baseline remain intact. This task's records were renumbered to prompt 54 and memory 79/80; preservation proof is in checkpoints/root-concurrent-record-preservation.json. The incoming duplicate prompt53 headings remain historical; no broad history rewrite was performed.
+
+Required source-library reconciliation completed without errors. The stock helper maintained 8315 pending library-wide text-index rows, 22748 total. This was not a cohort-only row count or a semantic refresh. Raw source proofs remain unchanged.
+
+Tracker fallback: additional exact writes queued in 6892023a (complete TASK-908) and 21e256d6 (claim TASK-909), alongside the earlier IDs. Graph closure is not inferred from queued writes.
+
+At this source checkpoint, remaining actions are local final offline-index/document checks, root PR/CI/merge, website independent publication review/PR/CI/merge, production acceptance and cleanup of this task's clean merged worktrees. No further research or code implementation is planned. The authoritative final status and exact next action live in /Users/mitch/.global-ai-hub/research/nonlinear-lead-lag-four-children-task905/checkpoints/final-delivery.json. Read that receipt before resuming a stage; completed gates and source discovery must not be rerun.
+
+## v82 - 2026-11-08 (Final root checks and delivery)
+
+Final local checks passed: 900 backtester tests; 872 SolTUI tests ran with 2 skips; 34 Mongo tests ran with 17 server/driver skips; 361 extension tests; 11 converter tests inherited from the concurrent merge; positive offline oscillating round trip; 1084 archived figure checks; documentation drift and offline retrieval-index freshness. No new market experiment or live execution was performed. The final record-only change is followed by offline index regeneration and its targeted index tests; final-head CI remains the delivery gate.
+
+The root report and selected claim index remain source-audited. The root run report adds only verified skill activation and supported canonical-completion metadata, and separates remote publication status. Final delivery receipt remains authoritative for downstream checks, exact remote commit pins and cleanup. Remaining: push final root branch/open PR, pass final-head CI, complete website delivery and live verification, merge the final pushed root tip, remove owned clean merged worktrees, then write final private receipts and tracker closure.

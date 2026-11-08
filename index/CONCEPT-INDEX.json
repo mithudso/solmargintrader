@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T09:31:03+00:00",
+  "generatedAt": "2026-11-08T09:58:51+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 328,
+      "matchingFiles": 329,
       "shown": 30,
       "files": [
         {
@@ -274,7 +274,7 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 29
+          "hits": 30
         },
         {
           "path": "executor/src/executor/txverify.py",
@@ -656,16 +656,16 @@
           "hits": 11
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 10
-        },
-        {
           "path": "research/coin-intelligence/btc-bitcoin.md",
           "hits": 10
         },
         {
           "path": "research/coin-intelligence/xrp-ripple.md",
           "hits": 10
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 9
         },
         {
           "path": "backtester/core/trigger_conditions.py",
@@ -1265,7 +1265,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 165,
+      "matchingFiles": 169,
       "shown": 30,
       "files": [
         {
@@ -1329,16 +1329,16 @@
           "hits": 27
         },
         {
+          "path": "memory.md",
+          "hits": 21
+        },
+        {
           "path": "research/coin-intelligence/trx-tron.md",
           "hits": 21
         },
         {
           "path": "docs/COMPOUND-5M.md",
           "hits": 21
-        },
-        {
-          "path": "memory.md",
-          "hits": 20
         },
         {
           "path": "backtester/core/funding.py",
@@ -1421,7 +1421,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 15
+          "hits": 16
         },
         {
           "path": "backtester/core/dcasim.py",
@@ -1563,7 +1563,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 12
+          "hits": 13
         },
         {
           "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
@@ -1708,11 +1708,11 @@
           "hits": 31
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 25
+          "path": "backtester/tests/test_cpcv.py",
+          "hits": 24
         },
         {
-          "path": "backtester/tests/test_cpcv.py",
+          "path": "docs/CONCEPTS.md",
           "hits": 24
         },
         {
@@ -2217,7 +2217,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 92,
+      "matchingFiles": 94,
       "shown": 30,
       "files": [
         {
