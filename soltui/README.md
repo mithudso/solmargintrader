@@ -76,6 +76,10 @@ Long titles clip from the **head**, never the tail, because the figure is at the
 end — an earlier version clipped the tail and silently ate the number the
 indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_label`.
 
+A redesign proposal is in `docs/design/soltui-v2/DESIGN.md`. It groups these functions into five
+question-led destinations: Now, Signal, Research, Money and Library. It comes with a standalone
+Textual mockup on fixture data. It is a proposal only and does not change the console described below.
+
 ## The tabs
 
 Hover any field, button, table heading or table value for plain-language help.

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 52
-Delta: v51 to v52; adaptive strategy Forwardtest and roster shortcuts.
+Version: 53
+Delta: v52 to v53; SolTUI v2 layout-blind redesign and Textual mockup.
 
 ## v1 - 2026-11-06
 
@@ -541,3 +541,13 @@ Remaining: after merge, restart the unattended trainer so it runs gate_trend; th
 ## v52 - 2026-11-08 (Adaptive Forwardtest)
 
 Target: prompts v46, Stele TASK-863 and KNOW-864. Worktree /Users/mitch/dev/solmargintrader-wt-forwardtest. Reuse compound tuning gates on prospective shadow predictions. Isolate each trial and each of four horizons. Implemented Space toggle and bulk roster add. Added a console-owned paper Forwardtest worker, closed 1m Coinbase feed, SQLite prediction history, separate 1/5/10/30-minute trials and shadow learning gated by paired resolved observations. Nine focused tests passed for separate outcomes, pre-window timing, missing data, adoption, roster and worker stop. The 853 backtester tests and documentation checks passed. An isolated SOL tick recorded all 140 calls for 34 standalone strategies and one combination across four horizons. Full local suite caught missing shared glossary entries and the Forwardtest table title; corrected both. Remaining: confirm full CI and merge PR 83 (https://github.com/mithudso/solmargintrader/pull/83).
+
+## v53 - 2026-11-08 (SolTUI v2 redesign mockup)
+
+Target: prompts v47, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
+
+Completed: a read-only subagent inventoried soltui's functions and data surfaces without reporting layout. docs/design/soltui-v2/DESIGN.md lists 16 primary functions and groups them into five question-led destinations (Now, Signal, Research, Money, Library), with a health strip, a registry command palette and an Explain overlay. docs/design/soltui-v2/mockup.py is a standalone Textual 8.2.8 + textual-plotext app on fixture data; it imports nothing from soltui/. screens/ holds 7 SVGs rendered by `mockup.py --shots`. soltui/README.md points to the proposal.
+
+Verification: headless render of all 7 screens at 160x48; pilot smoke run (5 destinations, rail selection, explain toggle, palette navigation); up/down palette passed the dataviz validator; scripts/check_docs.py passed; index/build.py all rebuilt the offline index and --check passed. No production code changed, so the 610 s soltui suite was not run locally; CI runs it.
+
+Remaining: merge PR 85 (the background-job harness forbids this session from merging). Migration steps are listed in DESIGN.md section 11 and are not started.
