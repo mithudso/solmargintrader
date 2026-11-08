@@ -4,7 +4,7 @@ name: "Сalculation a position size based on risk"
 kind: exposure-strategy
 status: spec-only
 family: source-defined
-summary: "Specification of Сalculation a position size based on risk; not a tested trading strategy."
+summary: "Show how a chosen risk budget and stop-loss distance can determine position size; it is a risk overlay rather than a market forecast."
 registry_key: null
 runner: null
 warmup_bars: null
@@ -18,74 +18,65 @@ presets: {}
 ---
 # Сalculation a position size based on risk
 
-Version: 1.0.0 (2026-11-08). Delta: first source-reconciled card.
+Version: 1.1.0 (2026-11-08). Delta: v1.0.0 to v1.1.0; explain the complete publication mechanism, objective and source gaps.
 
-> **Spec-only — no strategy implementation or performance result is claimed.**
-> This card records a signal or research method. An indicator alone is not an order rule.
+**Classification:** sizing-example. Spec-only; no runnable repository implementation or measured performance.
 
-## Mechanism and equations
+## Idea and objective
 
-This publication documents the source-specific strategy named above. The
-author-defined mechanism and any stated inputs are preserved in the passages below.
-A similar component name does not make it equivalent to an existing strategy.
-No missing equation or trading threshold has been supplied by inference.
+Show how a chosen risk budget and stop-loss distance can determine position size; it is a risk overlay rather than a market forecast.
 
-## Documented inputs and source details
+## How it works
 
-> This is an example how to calculate position size based on risk and stop loss for educational purpose.
+- The entire saved description only says that this is an educational example of sizing from risk and stop loss. It does not disclose a formula, units or an executable rule.
+- For an eventual implementation, cash risk, stop distance, instrument value and trade quantity must be dimensionally consistent. That is analytical context, not recovered source code.
 
-These are bounded passages from the author description, not independently verified
-formulas, defaults or performance. No complete repository implementation has been established for this source-specific card. Captured descriptions may include formulas and example code snippets.
-Recover every missing numerical definition before implementation.
+## Documented rules and trade lifecycle
 
-## Existence check
+- Documented inputs in principle: risk and a stop loss.
+- No buy/sell condition, stop placement rule, sizing formula or exit sequence is specified.
 
-The coverage ledger checked the existing card names, registry, indicator functions and
-Compound scorecard before this card was created. Related components do not establish
-equivalence to this complete specification. Exact matches reuse their existing entry
-in the ledger instead of receiving another card.
+## Parameters and stated settings
 
-Related existing/specification cards: `tv_method_risk_based_sizing`.
-
-## Data and availability
-
-Required inputs: ohlcv.
-The repository supports OHLCV history. Verify symbol, cadence, timezone and complete bars for the chosen experiment; this is not a claim that every source market is cached.
-
-## Implementation and validation
-
-No runner or registry key is assigned. Before implementation, freeze the numerical
-formula, seeds, missing-value policy, warm-up and parameter domains. Where the source
-does not disclose an algorithm or default, recover it rather than guessing. Specify
-entry, exit, stop, holding horizon, exposure and costs separately from the indicator.
-Record which choices come from the publication and which define a new experiment.
-
-Compute with closed bars and trailing data only. Confirm pivots and higher-timeframe
-values before use; never backdate a signal to a pivot that needed later bars. Test
-prefix invariance, flat/zero inputs, unavailable data and one-bar-delayed execution.
-Evaluate chronologically out of sample, deduct transaction and financing costs and compare with
-buy-and-hold and simpler component rules. Record all searched configurations.
+- No risk percentage, cash budget, stop distance, size cap or defaults are stated.
 
 ## Failure modes and caveats
 
-An author description is not source code or independent validation. Visual styling,
-retrospective drawing anchors, repainting pivots and fitted full-history models can
-produce unavailable historical signals. A rule can be numerically correct and lose
-after costs. Venue, session, data and asset differences limit transfer to SOL.
+- A vanishing stop distance can imply an excessive position if quantity is not capped.
+- Gaps, slippage and contract-value mistakes can make the realized loss exceed a nominal risk budget.
+
+## Missing information and implementation boundary
+
+- The source is insufficient to recover exact math. Do not insert a conventional sizing equation and call it the author's implementation.
+
+## Evidence and interpretation
+
+The explanation above synthesizes the complete saved author description. Rules and numerical settings are attributed to that description; failure-mode analysis is our interpretation. The saved `script.content` field is empty. A public/open-source label does not supply the missing code. No order, bot or live integration is created by this card.
+
+### E1: scope
+
+> This is an example how to calculate position size based on risk and stop loss for educational purpose.
+
+### Retained coverage passages
+
+These normalized passages retain the earlier coverage ledger's source bindings.
+
+> This is an example how to calculate position size based on risk and stop loss for educational purpose.
+
+## Data and availability
+
+The machine-readable input requirements state the source-reviewed data prerequisites. Availability means only that the named data class is supported; it does not establish a cached instrument, complete session calendar, futures contract metadata or execution parity. Source-specific requirements and gaps above still apply.
 
 ## Measured results
 
-Not measured in this repository. Publication examples, advertised accuracy and
-screenshots are not repository backtest results.
+Not measured in this repository. Author examples and advertised objectives are not independent net-of-cost or out-of-sample results.
 
 ## Likelihood of success: low
 
-Basis: a-priori. The mechanism has no confirming out-of-sample result here. This rating
-does not promote the source author's claims into evidence of profitability.
+Basis: a-priori. No confirming out-of-sample evidence exists here. For templates and overlays this rates an untested trading use, not the usefulness of the software example.
 
 ## Sources
 
-- https://www.tradingview.com/script/hoCPm5UY-Сalculation-a-position-size-based-on-risk/
+https://www.tradingview.com/script/hoCPm5UY-Сalculation-a-position-size-based-on-risk/
 
-The coverage ledger records canonical URLs, source-file hashes, decoded-description
-hashes and the excerpt offsets used for this card. Raw dumps remain outside Git.
+Source and raw-description SHA-256 values, exact passage offsets, classification and card mapping are recorded in `research/tradingview-strategy-understanding.json`. The complete source capture remains local.

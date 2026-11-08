@@ -1,0 +1,813 @@
+{
+  "schema_version": 1,
+  "version": "1.1.0",
+  "delta": "v1.0.0 to v1.1.0; apply owner definition of complete as a self-contained coin test; preserve source-computation review judgments separately.",
+  "verdict": "pass",
+  "accepted_manifest_sha256": "1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5",
+  "reviewer": "B7 independent native-strategy readiness reviewer (codex)",
+  "review_method": "Independently read all 21 complete raw descriptions (92,770 Unicode codepoints) using build_tradingview_script_profiles.py show and all 21 accepted cards. Reproducible independent principal outputs or parameterized risk procedures qualify in explicitly bounded scopes; undisclosed core inputs/formulas do not. Full-script parity, runner integration, cache availability and profitability are separate. Exact evidence offsets are checked against immutable raw descriptions. current_card_path is the proposed final location; root applies physical moves.",
+  "publications": [
+    {
+      "publication_id": "2lGyzYkC",
+      "original_card_path": "research/tradingview-strategy-tools/tv_2lgyzykc_ultimate_strategy_template.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_2lgyzykc_ultimate_strategy_template.md",
+      "card_sha256": "ab4a338de57025733e317b54d9c48c1a9a28ee43a7369c626e121c8ebb0b8e9f",
+      "source_sha256": "c834f044843657dc4b19f29aaea8059d1ce554ef1a27931b58db47184cbffad8",
+      "raw_description_sha256": "2f0802d03cbc3aca356ff0301163dfa4de006611ce1d590d2265628e50ad2e0c",
+      "source_read_ranges": [
+        [
+          0,
+          5441
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: the complete 10/100 SMA-default crossover connector calculation and +1/-1/0 output. The execution shell is not certified; its order/risk configuration is only listed.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 2696,
+          "end": 2819,
+          "quote": "The Strategy Template expects the value to be exactly [b]1 for the bullish signal[/b], and [b]-1 for the bearish signal[/b]"
+        },
+        {
+          "start": 1242,
+          "end": 1566,
+          "quote": "type_ma1 = input(title=\"MA1 type\", defval=\"SMA\", options=[\"RMA\", \"SMA\", \"EMA\"])\nlength_ma1 = input(10, title = \"  [ALL but VWAP] MA1 length\", type=input.integer)\ntype_ma2 = input(title=\"MA2 type\", defval=\"SMA\", options=[\"RMA\", \"SMA\", \"EMA\"])\nlength_ma2 = input(100, title = \"  [ALL but VWAP] MA2 length\", type=input.integer)"
+        },
+        {
+          "start": 3990,
+          "end": 4495,
+          "quote": "- Set the maximum losing streak length with an input\n- Set the maximum winning streak length with an input\n- Set the maximum consecutive days with a loss\n- Set the maximum drawdown (in % of strategy equity)\n- Set the maximum intraday loss in percentage\n- Limit the number of trades per day\n- Limit the number of trades per week\n- Stop-loss: None or Percentage or Trailing Stop Percentage or ATR\n- Take-Profit: None or Percentage or ATR\n- Risk-Reward based on ATR multiple for the Stop-Loss and Take-Profit"
+        },
+        {
+          "start": 1846,
+          "end": 2455,
+          "quote": "// buy and sell conditions\nbuy        =  crossover(MA1, MA2)\nsell       =  crossunder(MA1, MA2)\n\nplot(MA1, color=color_ma1, title=\"Plot MA1\", linewidth=3)\nplot(MA2, color=color_ma2, title=\"Plot MA2\", linewidth=3)\n\nplotshape(buy, title='LONG SIGNAL', style=shape.circle, location=location.belowbar, color=color_ma1, size=size.normal)\nplotshape(sell, title='SHORT SIGNAL', style=shape.circle, location=location.abovebar, color=color_ma2, size=size.normal)\n\n/////////////////////////// SIGNAL FOR STRATEGY /////////////////////////\n\nSignal = buy ? 1 : sell ? -1 : 0\nplot(Signal, title=\"🔌Connector🔌\", transp=100)\n"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "8OS1nbr8",
+      "original_card_path": "backtester/strategy_cards/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md",
+      "card_sha256": "d517f11167f294ea0a0c74500437c7d41d75af8c97ea4a6683bd4aeca4c9b0df",
+      "source_sha256": "fd5a4f1c85d360694c7d5ff227fb8a6d6708e64033b196d706b34ace49d1afb1",
+      "raw_description_sha256": "7a9d5bb94e4905c5e6fe10d774e05ef34e782d545860fa1008a2f77c3d7ae66e",
+      "source_read_ranges": [
+        [
+          0,
+          3322
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: geometric martingale stake sizing from a supplied initial stake and losing-streak index, explicitly first stake times 2^(n-1). The averaging-down trading system is not certified: MACD/channel definitions and conflicting profit-exit prose remain unresolved.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 82,
+          "end": 225,
+          "quote": "inwCoin Martingale Strategy is the proof of concept strategy that in the end, anyone who using martingale strategy will kaboom their portfolio."
+        },
+        {
+          "start": 1771,
+          "end": 2320,
+          "quote": "Start Position Logic = condition to enter first trade\n- MACD singal > 0 : Self explanatory, default macd value\n- Stochastic RSI cross up : enter when sto line cross up from bottom ( 20 )\n- ATR channel : enter trade if price cross above 2.3 ATR\nTake Profit Percent = take profit target % from average entry\nStart martingale ..= if price compare to average position entry less than this %, it will start to double down ( martingale )\nMartingale Multiplier = you can specific how big you'll double down, default is 2\nTrade Direction = long only for now"
+        },
+        {
+          "start": 2507,
+          "end": 2698,
+          "quote": "If equity less than 0, it will close any remaining positions ( It's mean your position got liquidated )\nIf price > equity line for \"take profit percent\" it will close any remaining positions."
+        },
+        {
+          "start": 758,
+          "end": 814,
+          "quote": "as you can see, the next bet will be first bet x 2^(n-1)"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "9Iwinz7I",
+      "original_card_path": "research/tradingview-strategy-tools/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md",
+      "card_sha256": "f814ad1dcb9411b65b5abe5c963cafc5c0e991b0d98173aaed815c6ee3efb2c9",
+      "source_sha256": "5f611f9206e3312f4bb0a1e7d9cea3488b0201329eb430355ab6f1ff212f10d0",
+      "raw_description_sha256": "8cf4ba61d7a59f43174ac83d9843407d001daf565952ed2ae4a336b6749db568",
+      "source_read_ranges": [
+        [
+          0,
+          3146
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: allocation percentage multiplied by leverage to obtain notional percentage, plus the explicitly printed historical margin-parameter arithmetic. This does not certify broker liquidation behavior or current Pine semantics.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 619,
+          "end": 671,
+          "quote": "Having said that - this is purely educational stuff."
+        },
+        {
+          "start": 1084,
+          "end": 1630,
+          "quote": "default_qty_value = 100    // which stands for 100%[/pine]\n\nNow, if you want to trade with 30:1 leverage, you need to multipy the quantity by 30x, so you'd get 30 x 100 = 3000:\n[pine]default_qty_value = 3000    // which stands for 3000%[/pine]\n\nAnd you can play around with this value as you wish, so if you want to enter each trade with 10% equity on 15:1 leverage you'd get default_qty_value = 150.\nThat's easy. Of course you can modify this quantity value not only in the script, but also afterwards in Script Settings popup, \"Properties\" tab."
+        },
+        {
+          "start": 2334,
+          "end": 2718,
+          "quote": "margin_long = 1./30*50, margin_short = 1./30*50[/pine]\n\nWhereas \"30\" is a leverage scale as in 30:1, and \"50\" stands for 50% of Margin required by your broker. Personally the Required Margin number I've met most often is 50%, so I'm using value 50 here, but there are literally 1000+ brokers in this world and this is individual decision by each of them, so you'd better ask yourself."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "IHVPG6TS",
+      "original_card_path": "research/tradingview-strategy-tools/tv_ihvpg6ts_stop_loss_and_take_profit_in_example.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_ihvpg6ts_stop_loss_and_take_profit_in_example.md",
+      "card_sha256": "30f55b14bc1db9a044211148fd701aa5d8636fef2823e0a5364d7b262040777a",
+      "source_sha256": "380bc223ff286626b90027fc6de16a7fbab8f22602ccd389da6cc10b93490dd5",
+      "raw_description_sha256": "845b76e1a8e18e7aa9572c7d3d02c7b66dae56a3b49df3a815b2f9a465a59c7b",
+      "source_read_ranges": [
+        [
+          0,
+          87
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "The sole sentence states an educational currency-denominated exit purpose without its principal computation.",
+        "gaps": [
+          "No conversion from currency amount to stop/target price or position quantity is defined."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 0,
+          "end": 87,
+          "quote": "This is a simple exit example in $$ (symbol's currency) for [b]educational purpose[/b]."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "M9taaIkp",
+      "original_card_path": "research/tradingview-strategy-tools/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_m9taaikp_oscillator_evaluator_analysis_tool.md",
+      "card_sha256": "a0428d633ba08ec2b7b34da76db9f762005508487724505a7cda486b79f2ca29",
+      "source_sha256": "e0fe605883b76ea0c3cddd2e21623cb31ccbe85762fbb9fab6ba38d60ebfbb31",
+      "raw_description_sha256": "3a775308569242035552b9e9bb2388f4e0111a8cf7608b619ad3b52083d64614",
+      "source_read_ranges": [
+        [
+          0,
+          1602
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: mode 3 maps a supplied oscillator crossing above zero to long and crossing below zero to short. It is an independently specified signal mode; the other five modes and performance accounting are not certified.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 39,
+          "end": 168,
+          "quote": "The oscillator evaluator is a tool that will help you analyse and compare the oscillator of your choice to another 2 oscillators."
+        },
+        {
+          "start": 321,
+          "end": 1295,
+          "quote": "First there is a moving average increase or decrease strategy, that will give you a good idea of the correlation of the oscillator with the price.\n\nThe second is a commom 2 MA crossover strategy, that will give you and idea of the validaty of that oscillator as a strategy or as a trend filter.\n\nThe third strategy is a cross over 0 signal, that will go long on a crossover of 0 and short on a crossunder 0. This helps you see how good is the oscillator at evaluating suport and resistance areas and give you an idea of its balance.\n\nThe forth strategy is a Buy/Sell on extremes of the oscillator and will let you know how good is your strategy at spotting good places to buy and sell.\n\nThe fith strategy is to evaluate how goood the oscillator is as a mean reversion filter or how good it is at spotting small price changes.\n\nThe sixth strategy is similar to the last but is focused on how good is the oscillator spotting good places to take profits on trending strategies."
+        },
+        {
+          "start": 1530,
+          "end": 1602,
+          "quote": "This script is not intended to be used as a full strategy but as a tool."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "MvlwAzSg",
+      "original_card_path": "backtester/strategy_cards/tv_mvlwazsg_3commas_bot.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_mvlwazsg_3commas_bot.md",
+      "card_sha256": "e9a20bc6304eff4f1813d85c46444427c165351c8b2fcc07c6dbb619e266fad7",
+      "source_sha256": "69b7eba82f2652c3f75531b75ca9c919738e2658c114c12bab1873eb929e3bd7",
+      "raw_description_sha256": "e224b8f5d5257215ff38d3824b0a6c8f63fbcc1d5e6e6f5b83d57cccf156ab4e",
+      "source_read_ranges": [
+        [
+          0,
+          6038
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: directional MA-cross signal using user-selected MA types and lengths, upward for long and downward for short. It is the explicit primary signal; stop-anchor, sizing and trailing-order parity are not certified.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 1623,
+          "end": 2730,
+          "quote": "The default settings have a basic 1:1 risk to reward ratio, which sets a limit and a stop equal distance from the entry. The entry is a simple MA cross (up for long, down for short). There a variety of MA's to choose from and the user can define the lengths of the averages. The ratio can be adjusted from the menu along with a volatility based adder (ATR) that helps to distance a stop from support or resistance. These values are calculated off the swing low/high of the user defined lookback period. Risk is calculated from position entry to stop, and projected upwards to the limit as a function of the desired risk to reward ratio. Of note: the default settings include 0.05% commissions. Competitive commissions of the leading cryptocurrency exchanges are .1% round trip (one buy and one sell) for market orders. There is also some slippage to allow time for alerts to be sent and orders to fill giving the back test results a more accurate representation of real time conditions. Its recommended to research the going rates for your exchange and set them to default for the strategy you use or build."
+        },
+        {
+          "start": 3429,
+          "end": 3647,
+          "quote": "[b]settings used for the display image: [/b]\n\n1hr chart on BTCUSD \n-ATR stop\n-Risk adjustment 1.2\n-ATR multiplier 1.3\n-RnR 0.6\n-MAs HEMA/SMA\n-MA Length 50/100\n-Order size percent of equity \n-Trail trigger 60% of target"
+        },
+        {
+          "start": 3844,
+          "end": 4572,
+          "quote": "Among the options for possible settings is a trailing stop. This stop will ratchet higher once triggered as a function of the Average True Range (ATR). There is a variable level to choose where the user would like to begin trailing the stop during the trade. The level can be assigned with a decimal between 0 and 1 (eg. 0.5 = 50% of the distance between entry and the target which must be exceeded before the trail triggers to begin). This can allow for some dips to occur during the trade possibly keeping you in the trade for longer, while potentially reducing risk of drawdown over time. The default for this setting is 0 meaning unless adjusted, the trail will trigger on entry if the trailing stop exit method is selected."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "OTfw8b2a",
+      "original_card_path": "research/tradingview-strategy-tools/tv_otfw8b2a_trading_report_generator_from_csv.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_otfw8b2a_trading_report_generator_from_csv.md",
+      "card_sha256": "be1976bca36bc4b9c92f209f616a9becc8fb4a849218d71dd884135df24be3bd",
+      "source_sha256": "ed897956b39c13442ab9ba4773bceb02714ffe56be47997bf7cc742f16f7a742",
+      "raw_description_sha256": "b97def127f90dcb24704708a71a7749e5a8f8f8c30082d3c8de0c4471df33e04",
+      "source_read_ranges": [
+        [
+          0,
+          2532
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: parse the stated CSV trade fields, chronologically sort, select the chart instrument and map next-bar transactions to limit orders at logged fill prices. This is a disclosed replay procedure, not certified realized-P&L accounting or broker execution.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 216,
+          "end": 487,
+          "quote": "This script is a special strategy that parses transactions in csv format from Paper Trading (and it will also work for other brokers) and “plays” them. As a result, we get a Performance Report for a specific instrument based on our real trades in Paper or another broker."
+        },
+        {
+          "start": 713,
+          "end": 763,
+          "quote": "leaving only: Side, Qty, Fill Price, Closing Time."
+        },
+        {
+          "start": 2043,
+          "end": 2531,
+          "quote": "At the beginning of the calculation, we parse the csv once, create trade objects (Trade) and sort them in chronological order. Next, on each bar, we check whether we have trades for the time period of the next bar. If there are, we place a limit order for each trade, with limit price == Fill Price of the trade. Here, we assume that if the trade is real, its execution price will be within the bar range, and the Pine strategy engine will execute this order at the specified limit price."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "VFzCk3HX",
+      "original_card_path": "backtester/strategy_cards/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md",
+      "card_sha256": "1f1d6d38bc01ca713baac1f48b09572f9ff327930b2d04b8c812b410ca3f853f",
+      "source_sha256": "06547feb67b76d5616b9be185a05d1dfe95cc2c1496a57b9c0cc2859b48c2ebe",
+      "raw_description_sha256": "68fe8943a678ec1b7c7ef0e026b00dc921313f15b8610edac55bcb27ea18bf9f",
+      "source_read_ranges": [
+        [
+          0,
+          3493
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: agricultural selling level from a source SMA plus a user-supplied factor times ATR, with lengths and factor supplied as parameters. Exact harvest-day execution and futures contract parity are outside this level-calculation scope.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 709,
+          "end": 1223,
+          "quote": "The core idea is that if there is only one crop per year, crop prices will be lowest around harvest and highest around peak growing season. Based on this timing, the strategy spaces out its sell orders up to three times throughout the year, and covers its position at harvest.\n\nThe goal of this strategy is simply to beat the average price. Since selling at harvest should typically provide a lower-than-average price exit, success for this strategy means having the average of its entries above the average price."
+        },
+        {
+          "start": 1614,
+          "end": 1894,
+          "quote": "[b]█ THE RULES[/b]\n\n[list=1]\n[*]Sell short at the selling level. \n[*]Delay these sells to ensure two sells are not in the same rally.\n[*]Avoid selling immediately after harvest, as a long period of low prices typically follows.\n[*]Exit positions (cover shorts) at harvest.\n[/list]"
+        },
+        {
+          "start": 2292,
+          "end": 2660,
+          "quote": "[b]Initial Capital[/b]: 15,000,000¢ == $150,000; see note above.\n[*][b]Position Sizing[/b]: This strategy sells in one-contract increments up to three times per year.\n[*][b]Commissions[/b]: Commission value is set to 300¢ ($3) per order, which is a generous estimate.\n[*][b]Slippage[/b]: Slippage is set to one tick to simulate reasonable execution conditions.\n[/list]"
+        },
+        {
+          "start": 2732,
+          "end": 3492,
+          "quote": "[b]MA length[/b]: Moving Average length (Simple Moving Average). A 20 to 60 day range is recommended; with 40 as a starting point.\n[*][b]ATR length[/b]: Average True Range length.\n[*][b]ATR factor[/b]: Factor by which to multiply ATR when calculating selling level. 2.5 to 3.5 is generally recommended but higher has been seen for more volatile grains.\n[*][b]Month of Harvest[/b]: Set the month of harvest for the crop being traded, which changes depending on the seasonality of the commodity.\n[*][b]Delay in months after harvest[/b]: Set this to the typical downtime after harvest where prices are typically lowest. This can vary per instrument but 2 months is the suggested point for tuning.\n[*][b]Days between trades[/b]: Days to wait between sales.\n[/list]"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "VuYM89Tw",
+      "original_card_path": "backtester/strategy_cards/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md",
+      "card_sha256": "80cadb915553ff87eec5fabffab4a03001493406205f95f7e9b72d0f61126d80",
+      "source_sha256": "9e98d122661284ebe0df77331d3d0445a7560c77c31cb6347c54b4e363658666",
+      "raw_description_sha256": "50c8477bdcf1d5e669ee4a0175f551549bf1e10b215826f41e742a94425651ee",
+      "source_read_ranges": [
+        [
+          0,
+          7032
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "Crossing rules depend on a custom activator whose principal numerical series is not defined in the description. Performance-statistic formulas are ancillary and do not define that series.",
+        "gaps": [
+          "Grover Llorens Activator recurrence, acceleration/convergence calculation and initialization are absent."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 0,
+          "end": 327,
+          "quote": "The Grover Llorens Activator is a trailing stop indicator deeply inspired by the parabolic SAR indicator, and aim to provide early exit points and reversal detection. The indicator was posted not so long ago, you can find it here :\n\nhttps://www.tradingview.com/script/UVzC9TOv-Grover-Llorens-Activator-alexgrover-Lucía-Llorens/"
+        },
+        {
+          "start": 1519,
+          "end": 2056,
+          "quote": "The settings used are 480 for length and 14 for mult, this create relatively mid term signals that are suited for a trend indicator such as the Grover Llorens Activator, unfortunately we can't infer the indicator optimal settings, thats how it is with any technical indicator anyway.\n\nHere are the rules of our strategy :\n\n[list]\n[*]long : closing price cross over the indicator\n[*]short : closing price cross under the indicator\n[/list]\n\nWe use constant position sizing, once a signal is triggered all the previous positions are closed."
+        },
+        {
+          "start": 5844,
+          "end": 6270,
+          "quote": "We can easily conclude that the indicator can't possibly generate long term returns under chaotic and volatile markets, and could even produce unnecessary trades in trending markets without much parasitic fluctuations such as noise and retracements (think about a simple linear trend) since the indicator converge toward the price and would therefore automatically cross over/under the trend, thus guaranteeing a false signal."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "bFXf4IXh",
+      "original_card_path": "backtester/strategy_cards/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md",
+      "card_sha256": "6cb3dcffb88341e309fe85bd5d8732b3915e05f4fa395a17d3a4dd1f40005a23",
+      "source_sha256": "347ed157b8d2e187057de305b05786e17c04fa8bf8c38737285ab90d7657733d",
+      "raw_description_sha256": "a90007ae0ecea1eddcd3eaa7c71754b81cebf446ff50f408a0ce2f8fe9f88967",
+      "source_read_ranges": [
+        [
+          0,
+          471
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "Naming Kelly and Keltner does not disclose the adaptive sizing computation.",
+        "gaps": [
+          "Kelly estimator/formula and its trade-performance inputs are not defined; neither initial-history behavior nor size transformation is supplied."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 0,
+          "end": 400,
+          "quote": "This is the defaut keltners channel strategy with a few additions.\nThe main purpose is to show how we include the[url=https://en.wikipedia.org/wiki/Kelly_criterion] Kelly ratio[/url] into our scripts for dynamic position sizing based on the performance of the strategy on a per trade basis.\n\nWe've also included the usual take-profit and stop-loss parameters in the event you want to play a little :)"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "ghocsiv7",
+      "original_card_path": "backtester/strategy_cards/tv_ghocsiv7_gap_filling_strategy.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_ghocsiv7_gap_filling_strategy.md",
+      "card_sha256": "5a2cc75ee77e92b621df660e3553e91a90a4301931fd8d58cc0a9803aebf6926",
+      "source_sha256": "57bbceb2cf9c61fb3a52ff8f929f1e0ef52b332eda2b6fd9edde18f28a923163",
+      "raw_description_sha256": "35727fc3c22e43aa6d05315ef3ac85f6534bbd031bed34aae9d33235e1b507ac",
+      "source_read_ranges": [
+        [
+          0,
+          5069
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "The trade trigger depends on an unresolved non-fill confirmation and an undefined exact fill/reference level; generic gap arithmetic alone is not the principal strategy.",
+        "gaps": [
+          "The phrase bar following the gap does not define the confirmation bar.",
+          "The red gap-fill price is not explicitly calculated or anchored, so the confirmation/exit predicate is not reproducible without a choice."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 1574,
+          "end": 1775,
+          "quote": "Significant up gaps will have an opening price greater than the previous high, while significant down gap will have an opening price lower than the previous low with both high volume accompanying them."
+        },
+        {
+          "start": 1976,
+          "end": 3177,
+          "quote": "In this strategy, the significance of a gap is determined by the position of the opening price relative to the previous high/low and make sure the bar following the gap don't fill it.\n\nWhen the setting [i]invert[/i] is set to false the strategy interpret the detected gaps as being exhaustion gaps, therefore when an up gap occur a short position is opened, when a down gap occur a long position is opened. When invert is set to true gaps are considered to be runaway or break away gaps, therefore the contrary positions are opened. Positions are exited when the gap has been filled, which in the chart is show'n when the price cross the red level who act as either a take profit (invert = false) or as a stop loss (invert = true).\n\nThere are various closing conditions available that the user can select from the \"close when\" setting. \n\n[list]\n[*] New Session : This option close all previous positions when the market is in a new session.\n[*] New Gap : This option close all previous position when a new gap has been detected.\n[*] Reverse Position : This option close all previous position when a contrary position to the current one is opened. This option would reduce the number of trades.\n[/list]"
+        },
+        {
+          "start": 3211,
+          "end": 3597,
+          "quote": "The analysis will be tested in different tech stocks with a main TF of 15 minutes with no spread and commissions applied. Default settings will be used. We'll be making our first analysis using AMD, who has recently formed a full reverse HS pattern, where the neckline has been crossed by the price. (by the way i have a bad feeling about it, hey ! feeling [i]filling[/i] ! Lame jokes!)"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "hoCPm5UY",
+      "original_card_path": "backtester/strategy_cards/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md",
+      "card_sha256": "5c26ffbbb3ce88a8922a69e1f524387ff1daf5862f7b2e7a13e403110d125e01",
+      "source_sha256": "80b455d366d3f531e620510a9da06ff0b0c7ca84875566e39d27abdaab4c8592",
+      "raw_description_sha256": "4d777322659497b09ba2a7b40ebe0ac673947e938407b0bdc4213498cf5999fa",
+      "source_read_ranges": [
+        [
+          0,
+          109
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "The entire description names risk and stop loss without defining their transformation into size.",
+        "gaps": [
+          "No position-sizing equation, units or risk-to-stop-distance conversion is supplied."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 0,
+          "end": 109,
+          "quote": "This is an example how to calculate position size based on risk and stop loss for [b]educational purpose[/b]."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "i9tJOtjl",
+      "original_card_path": "backtester/strategy_cards/tv_i9tjotjl_lube.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_i9tjotjl_lube.md",
+      "card_sha256": "ca7e7bd31cbc0b98daa6ac3fb1e9bea62c0805ef136b183cf676f20e9bd253be",
+      "source_sha256": "55d1e5f2cc949549a7cb50cf5bb4ac4c9c6cf7f326497e8a60e3c1034e256df2",
+      "raw_description_sha256": "d1bf0f02135fc1420e1eedb844aca35ad2df9f544b08aa7a3a000d2ed5003264",
+      "source_read_ranges": [
+        [
+          0,
+          2943
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "The normalized friction signal and directional series determine the principal trade output, but their exact computation is absent.",
+        "gaps": [
+          "Visit-count price inclusion and friction normalization/baseline equation are not fully defined.",
+          "The fir weighted-average length and directional comparison are undisclosed."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 115,
+          "end": 1491,
+          "quote": "I decided on the strange title \"LUBE\" because I was measuring how many of the previous 500 bars had the current price level already been in. I wanted to discover when the price was in a new zone or an area that it hadn't spent much time in recently... the LUBE zone.\n\nThink of the blue line as showing you the current level friction. If the blue line is high, price is quagmired and not moving quickly. Price could trend sideways for a while before breaking out.  A high blue line is a high traffic zone for trading. When the blue line dips low, it's encountering a price zone the asset has not been observed in recently, and this could mean price could break out and move more freely and quickly when it does. We get a trade entry signal if the blue line dips below the bottom white line. The bottom white line is currently set to -10. Think about the lowest the blue line has been recently as 0, and the highest as 100. It is set by default (for BTCUSD 30m chart) to -10 meaning the blue line has to dip a little (-10%) below the lowest it has experienced recently to initiate a trade. This is the LUBE zone. The bottom white line shows that level. Again this is a level lower than the lowest amount of friction experienced in price action for the last 100 bars, but offset by 5 bars showing where that level was at 5 bars ago. We want to dip below that to initiate a trade."
+        },
+        {
+          "start": 1493,
+          "end": 1927,
+          "quote": "The direction to trade in is determined by a very quick moving weighted moving average (variable name is \"fir\") to see if the recent trend is up or down. To end a trade, an arbitrary number between 0 and 100 is picked telling us when we are experiencing enough friction again to end the trade. I have it preset to 50 (think of it as 50/100 or half way between the white bars. At a 50% friction level it's time to get out of the trade."
+        },
+        {
+          "start": 2315,
+          "end": 2731,
+          "quote": "Bot traders using alerts: beware the alert conditions. If a trade goes directly from long to short (which happens rarely), without closing a trade first, it might not act properly. If you use bots to trade, for \"LONG\" please close any old trades first before putting in instructions to open a leveraged long. To go \"SHORT\" please remember to close any old trade first as well, and things *should* work out just fine."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "jjhUHcje",
+      "original_card_path": "backtester/strategy_cards/tv_jjhuhcje_stepped_trailing_strategy_example.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_jjhuhcje_stepped_trailing_strategy_example.md",
+      "card_sha256": "a7249501f82659b320c81c3d7103544113ec446cde9769006c2e97f0e912ffde",
+      "source_sha256": "02fc752484b2cbe57fc2de2c9ce6cf5fd3c3968dd3d3d45c9daac77628c39b81",
+      "raw_description_sha256": "5461e127f22f5aa22ed55784f2f2512ee3afa172ee8f6673896ac0319a6c92cc",
+      "source_read_ranges": [
+        [
+          0,
+          318
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: parameterized exit state machine with supplied initial stop and three profit prices: TP1 moves stop to entry, TP2 moves stop to TP1, TP3 exits. Level values are inputs to this procedure, not a missing entry strategy. Intrabar execution parity is not certified.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 93,
+          "end": 318,
+          "quote": "There are 1 stop loss and 3 profit levels.\n[list]\n[*]When first tp is reached we move stop loss to break-even.\n[*]When second tp is reached we move stop loss to first tp.\n[*]When third tp is reached we exit by profit.\n[/list]"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "kzp8e4X3",
+      "original_card_path": "research/tradingview-strategy-tools/tv_kzp8e4x3_monthly_returns_in_pinescript_strategies.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_kzp8e4x3_monthly_returns_in_pinescript_strategies.md",
+      "card_sha256": "977ed8e283d01ab77715e62c336f9d2fae3d818018d69820b012ba0be44a453a",
+      "source_sha256": "dda2bf900fdf6bb06556bf08f026b48290d2ef7285c2df6571bbecdf49e7bc39",
+      "raw_description_sha256": "7c6d814c015b0dbfcc01c88566427f4b05fe7ab68a1aace802428e27290690ff",
+      "source_read_ranges": [
+        [
+          0,
+          1020
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "A monthly/yearly performance table is promised without its principal return calculation.",
+        "gaps": [
+          "Return numerator/denominator, equity sampling and compounding/reset calculation are absent."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 350,
+          "end": 636,
+          "quote": "This script will just show a table with monthly/yearly performance of your script. Quite a lot of traders/investors used to look at returns like that. Also, it might help you to identify periods of time when your strategy performed good/bad than expected and try to analyze that better."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "mVkDf8qh",
+      "original_card_path": "backtester/strategy_cards/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md",
+      "card_sha256": "9b8d0c1fd7dac60fe43e0f3837d26d8780d169932438772d41d296900a5dcc90",
+      "source_sha256": "bcda9658f0162b3d635798b87135ae83b859ed3f3ae2b72d54de5bef89dd3f1e",
+      "raw_description_sha256": "66fcb80787ec57c8aebd4b3b47de306a77e8d50b48925505275512d05511849c",
+      "source_read_ranges": [
+        [
+          0,
+          3338
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "The primary crossover candidates must pass multiple confirmation layers before becoming the stated output. Undisclosed gates prevent reproducing the principal filtered signal.",
+        "gaps": [
+          "Bollinger width pass threshold, stochastic pass conditions and Band Power calculation are absent.",
+          "Exact combination/enablement of confirmation layers and higher-timeframe alignment predicate are not supplied."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 294,
+          "end": 823,
+          "quote": "[b]Core Strategy Components[/b]\n[list]\n[*][b]Multi-Moving Average System[/b] - Uses configurable MA types (EMA, SMA, SMMA) with short-term (9) and long-term (21) periods for primary signal generation through crossovers\n[*][b]Higher Timeframe Trend Filter[/b] - Optional trend confirmation using a separate MA (default 50-period) to ensure trades align with broader market direction\n[*][b]Band Power Indicator[/b] - Dynamic high/low bands calculated using different MA types to identify price channels and volatility zones\n[/list]"
+        },
+        {
+          "start": 825,
+          "end": 1429,
+          "quote": "[b]Advanced Signal Filtering[/b]\n[list]\n[*][b]Bollinger Bands Volatility Filter[/b] - Prevents trading during low-volatility ranging markets by requiring sufficient band width\n[*][b]RSI Momentum Filter[/b] - Uses customizable thresholds (55 for longs, 45 for shorts) to confirm momentum direction\n[*][b]MACD Trend Confirmation[/b] - Ensures MACD line position relative to signal line aligns with trade direction\n[*][b]Stochastic Oscillator[/b] - Adds momentum confirmation with overbought/oversold levels\n[*][b]ADX Strength Filter[/b] - Only allows trades when trend strength exceeds 25 threshold\n[/list]"
+        },
+        {
+          "start": 1431,
+          "end": 2219,
+          "quote": "[b]Session-Based Trading Management[/b]\n[list]\n[*][b]Four Trading Sessions[/b] - Asia (18:00-00:00), London (00:00-08:00), NY AM (08:00-13:00), NY PM (13:00-18:00)\n[*][b]Individual Session Limits[/b] - Separate maximum trade counts for each session (default 5 per session)\n[*][b]Automatic Session Closure[/b] - All positions close at specified market close time\n[/list]\n\n[b]Risk Management Features[/b]\n[list]\n[*][b]Multiple Stop Loss Options[/b] - Percentage-based, MA cross, or band-based SL methods\n[*][b]Risk/Reward Ratio[/b] - Configurable TP levels based on SL distance (default 1:2)\n[*][b]Auto-Risk Calculation[/b] - Dynamic position sizing based on dollar risk limits ($150-$250 range)\n[*][b]Daily Limits[/b] - Stop trading after reaching specified TP or SL counts per day\n[/list]"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "n8bgynWl",
+      "original_card_path": "research/tradingview-strategy-tools/tv_n8bgynwl_template_trailing_strategy_backtester.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md",
+      "card_sha256": "3e16cc422ebe2045100a28e70674a868df87c1601f76c0e103d9a9c12c4d2289",
+      "source_sha256": "19c6f9e0565c9a9bfcef0df7bb483fbb7836c84a21112fdb7850099b324b4f56",
+      "raw_description_sha256": "3a519c5ea9ec13987ecc31fe350fca20f78ef2875a30cab330f74aec895b01cd",
+      "source_read_ranges": [
+        [
+          0,
+          11000
+        ],
+        [
+          11000,
+          21214
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "The orchestration framework requires an opaque encoded deal-condition convention and unspecified execution/sizing transformations. Interface examples and generic trailing definitions do not disclose its principal computation.",
+        "gaps": [
+          "getSignal/DealConditions numeric encoding and decoding are delegated to an unspecified library version.",
+          "Entry/exit/trailing/quantity module formulas and order-priority transitions are not disclosed."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 217,
+          "end": 2187,
+          "quote": "The \"Template Trailing Strategy (Backtester)\" (TTS) is a back-tester orchestration framework. It supercharges the implementation-test-evaluation lifecycle of new trading strategies, by making it possible to plug in your own trading idea.\nWhile TTS offers a vast number of configuration settings, it primarily allows the trader to:\n[list]\n[*] Test and evaluate your own trading logic that is described in terms of entry, exit, and cancellation conditions.\n[*] Define the entry and exit order types as well as their target prices when the limit, stop, or stop-limit order types are used.\n[*] Utilize a variety of options regarding the placement of the stop-loss and take-profit target(s) prices and support for well-known techniques like moving to breakeven and trailing.\n[*] Provide well-known quantity calculation methods to properly handle risk management and easily evaluate trading strategies and compare them.\n[*] Alert on each trading event or any related change through a robust and fully customizable messaging system.\n[/list]\nAll of the above makes TTS a practical toolkit: once you learn it, many repetitive tasks that strategy authors usually re-implement are eliminated. Using TradingView’s built-in [url=https://www.tradingview.com/pine-script-docs/en/v5/concepts/Strategies.html?highlight=backtest#strategy-tester]backtesting engine[/url] makes testing and comparing ideas straightforward.\nBy utilizing the TTS one can easily swap \"trading logic\" by testing, evaluating, and comparing each trading idea and/or individual component of a strategy.\nFinally, TTS, through its per-event alert management (and debugging) system, provides an automated solution that supports live trading with brokers via webhooks.\n\nNOTE: The \"Template Trailing Strategy (Backtester)\" does not dictate how you can combine different indicator types. Thus, it should not be confused as a \"Trading System\", because it gives its user full flexibility on that end (for better or worse)."
+        },
+        {
+          "start": 2228,
+          "end": 3476,
+          "quote": "\"Signal Indicator\" (SI) is an indicator that can output a \"signal\" that follows a specific convention so that the \"Template Trailing Strategy (Backtester)\" can \"understand\" and execute the orders accordingly. The SI realizes the core trading logic signaling to the TTS when to enter, exit, or cancel an order. A SI instructs the TTS \"when\" to enter or exit, and the TTS determines \"how\" to enter and exit the position once the Signal Indicator generates a signal.\nA very simple example of a Signal Indicator might be a 200-day Simple Moving Average Signal. When the price of the security closes above the 200-day SMA, a SI would provide TTS with a \"long entry signal\". Once TTS receives the \"long entry signal\", the TTS will open a long position and send an alert or automated trade message via webhook to a broker, based on the Entry settings defined in TTS. If the TTS Entry settings specify a \"Market\" order type, then the open long position will be executed by TTS immediately. But if the TTS Entry settings specify a \"Stop\" order type with a 1% Stop Distance, then when the price of the security rises by 1% after the \"long entry signal\" occurs, the TTS will open a long position and the Long Entry alert or webhook to the broker will be sent."
+        },
+        {
+          "start": 19076,
+          "end": 19886,
+          "quote": "⚠️ There is an exception though, when the \"Enable Trail⚠️💹\" checkbox is checked, the Take Profit trailing feature is enabled, and a tick-based approach is used, meaning that after a while, when the TradingView discards all the real-time data, assumptions will be made by the backtesting engine that will cause a form of repainting. To avoid making false assumptions please disable this feature in the early stages and evaluate its usefulness in your strategy later on, after first confirming the success of the logic without this feature. In this case, consider turning on the [url=https://www.tradingview.com/support/solutions/43000669285-what-s-bar-magnifier-backtesting-mode/]bar magnifier[/url] feature. This way you will get more accurate backtest results when the Take Profit trailing feature is enabled."
+        },
+        {
+          "start": 19978,
+          "end": 20285,
+          "quote": "While this framework can satisfy quite a large number of trading strategies there are cases where it cannot do so. For example, if you have a custom logic for your stop-loss or take-profit placement, or if you want to dollar cost average, then it might be better to start a new strategy script from scratch."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "nVECqIQx",
+      "original_card_path": "backtester/strategy_cards/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md",
+      "card_sha256": "75ddfa787fcc79ffbd9cf58744c6eea77a093e14e40ed1e3dd7b8696103b0599",
+      "source_sha256": "0105143cfac7459406b4242a585dc6a30186939594b9cef1a865c6b0d3b79987",
+      "raw_description_sha256": "77238fe4805ba8e3c721865913313d9da7b350396195ecdb6db0ccf4b5de35dc",
+      "source_read_ranges": [
+        [
+          0,
+          4527
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: normal-week order/level procedure: Monday open minus 1% buy limit, next-day fill plus 1% target, 0.5% drawdown triggers entry-price limit, Friday close ends position, one trade/week and 10% equity. Holiday policy and exact drawdown-reference implementation remain outside this scoped procedure.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 982,
+          "end": 1808,
+          "quote": "Simply put, the goal of this strategy is to trade TQQQ using an objective system with simple rules and no weekend holds, targeting 1% weekly returns while controlling drawdowns and preventing overtrading.\n\nThis strategy was created to exploit short-term pullbacks during strong uptrends on TQQQ. With this in mind, the strategy is naturally long-only. Additionally, the strategy executes only one trade per week, which naturally limits trade activity and makes for a more robust system.\n\nWhile this strategy may not outperform buy-and-hold returns, it can offer more consistent behavior with relatively modest drawdowns and gains over time. The resulting equity curve is typically smoother overall than that of a typical buy-and-hold position, and therefore potentially more favorable from a long-term performance perspective."
+        },
+        {
+          "start": 1841,
+          "end": 2322,
+          "quote": "[b]Position Sizing:[/b] Sizing is 10% of equity, the same as in the article.\n\n[*][b]Commissions:[/b] Commission value is set to $0. Most major US brokers charge $0 commission on stocks and ETF trades, including leveraged ETFs such as TQQQ. \n\n[*][b]Slippage:[/b]  Slippage is set to 0. This strategy uses only limit orders, with the exception of a market-on-close order for the end of the week as a hard exit. For this reason slippage is not a consideration for this script.\n[/list]"
+        },
+        {
+          "start": 2324,
+          "end": 3207,
+          "quote": "[b]█ THE RULES[/b]\n[list=1]\n[*] [b]Track Monday's Opening Price: [/b][i]Each week, Monday's open is noted.\n\n[/i]\n[*] [b]Enter on a 1% dip from the Open: [/b][i]On the open, a limit buy order is set at -1% from the open.\n\n[/i]\n[*] [b]Set a 1% profit target: [/b][i]If the buy order is filled, a limit sell (take-profit) order is set at the start of the following day for +1% from the fill price. By waiting until the start of the following day, this allows for occasional profits greater than 1% each week.\n\n[/i]\n[*] [b]Breakeven if 0.5% drawdown occurs: [/b][i]While in a position, if a drawdown of 0.5% or greater is observed, we immediately set a limit sell order at the entry price (breakeven).\n\n[/i]\n[*] [b]Hard stop at Friday close: [/b][i]A market-on-close order is set for EOD Friday to exit us from any position which has not met the target or breakeven limits.\n\n[/i]\n[/list]"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "oxvR5vMy",
+      "original_card_path": "backtester/strategy_cards/tv_oxvr5vmy_grid_like_strategy.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_oxvr5vmy_grid_like_strategy.md",
+      "card_sha256": "3097d1a378fffdc5b7030a6e491cb7b65cb79af8e37ac468f1e79ce75990ee19",
+      "source_sha256": "c73531aadae767741c0b2d0b3d9ffa3e19678180a814a9073c0ef76e6648bb91",
+      "raw_description_sha256": "0babd366fdcec13a869468dafc1021079aeed064ad5d718a491492962d67a487",
+      "source_read_ranges": [
+        [
+          0,
+          8113
+        ]
+      ],
+      "readiness": {
+        "status": "usable-specification",
+        "reason": "Usable scope: supplied equally spaced grid levels and base size drive the explicit long-state transition: upward cross opens long with adjacent stop/target; winning exit opens next long, losing exit opens short with adjacent levels. Loss/win-conditioned multiplicative sizing is specified. Grid anchoring, complete mirrored short recurrence and resets are not certified.",
+        "gaps": []
+      },
+      "evidence": [
+        {
+          "start": 681,
+          "end": 1046,
+          "quote": "The motivations behind posting such a strategy isn't to glorify such systems, but rather to present the problems behind them, many users come to me with their ideas and glorious ways to make money, sometimes they present strategies using the martingale, and it is important to present the flaws of this methodology rather than blindly saying \"you shouldn't use it\"."
+        },
+        {
+          "start": 1411,
+          "end": 1799,
+          "quote": "The martingale multiplier determines the factor by which the position size is multiplied after a loss, using values higher to 2 will \"squarify\" your balance, while a value of 1 would use a constant position sizing.\n\nFinally, the anti-martingale parameter determines whether the strategy uses a reverse martingale or not, if set to true then the position size is multiplied after any wins."
+        },
+        {
+          "start": 2215,
+          "end": 2814,
+          "quote": "The goal of a simple grid strategy is to go long once the price crossover a certain level, a take profit is set at the level above the current one and stop loss is placed at the level below the current one, in a winning scenario the price reach the take profit, the position is closed and a new one is opened with the same setup. In a losing scenario, the price reaches the stop loss level, the position is closed and a short one is opened, the take profit is set at the level below the current one, and a stop loss is set at the level above the current one. Note that all levels are equally spaced."
+        },
+        {
+          "start": 4889,
+          "end": 5318,
+          "quote": "Our first problem is frictional costs, one example being the spread, but this is a common problem for any strategy, however here a martingale is extra sensitive to it, if the strategy does not account for it then we will still double our positions costs but we might not recover all the losses of a losing streak, instead we would be recovering only a proportion of it, under such scenario you would be certain to lose over time."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "rLkjr2sQ",
+      "original_card_path": "backtester/strategy_cards/tv_rlkjr2sq_bjorgum_double_tap.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/tv_rlkjr2sq_bjorgum_double_tap.md",
+      "card_sha256": "37d55a03f2ade15e11f78912af88fca854bac5b13ee8b4d1cc6047bbd0844c6c",
+      "source_sha256": "2d932f7b1adf5c6f8c48f6ce83b096203e31951ac606c1ec7a4e5ef21b6dbcdb",
+      "raw_description_sha256": "6783a50472266932c03af7079209bd28f6b449ac5f618971c8712a924b66f746",
+      "source_read_ranges": [
+        [
+          0,
+          12227
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "Target-height arithmetic depends on identifying the double pattern and pivots, whose decisive numerical recognition criteria remain undefined. The target alone is an intermediate calculation with hidden core inputs.",
+        "gaps": [
+          "Exact zig-zag direction-change/confirmation predicate and significant-point rule are absent.",
+          "Double-test tolerance and admissible pivot arrangement/spacing are not defined."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 396,
+          "end": 976,
+          "quote": "Doubles are technical formations that are both reversal patterns and breakout patterns. These formations typically have a distinctive “M” or a “W” shape with price action breaking beyond the neckline formed by the center of the pattern. They can be recognized when a ​pivot fails to break when tested for a second time and the retracement that follows breaks beyond the key level opposite. This can trap entrants that were playing in the direction of the prior trend. Entries are made on the breakout with a target projected beyond the neckline equal to the height of the pattern."
+        },
+        {
+          "start": 1013,
+          "end": 1648,
+          "quote": "Patterns are recognized through the use of ​zig-zag; a method of filtering price action by connecting swing highs and lows in an alternating fashion to establish trend, ​support and resistance, or derive shapes from price action. The script looks for the highest or lowest point in a given number of bars and updates a list with the values as they form. If the levels are exceeded, the values are updated. If the direction changes and a new significant point is made, a new point is added to the list and the process starts again. Meanwhile, we scan the list of values looking for the distinctive shape to form as previously described."
+        },
+        {
+          "start": 4198,
+          "end": 5752,
+          "quote": "By default, the strategy will place a stop loss at the invalidation point of the pattern. This point is beyond the pattern high in the case of Double Tops, or beneath the pattern low in the case of Double Bottoms. The target or take profit point is an equal-legs measurement, or 100% of the pattern height in the direction of the pattern bias. Both the stop and the limit level can be adjusted from the user menu as a percentage of the pattern height. \n\n[b][i]Trailing Stops[/i][/b]\nOptional from the menu is the implementation of an ATR based trailing stop. The trailing stop is designed to begin when the target projection is reached. From there, the script looks back a user-defined number of bars for the highest or lowest point +/- the ATR value. For tighter stops the user can look back a lesser number of bars, or decrease the ATR multiple. When using either Alertatron or Trading Connector, each change in the trail value will trigger an alert to update the stop order on the exchange to reflect the new trail price. This reduces latency and slippage that can occur when relying on alerts only as real exchange orders fill faster and remain in place in the event of a disruption in communication between your strategy and the exchange, which ensures a higher level of safety. \n\n👉  It is important to note that in the case the trailing stop is enabled, limit orders are excluded from the exit criteria. Rather, the point in time that the limit value is exceeded is the point that the trail begins. As such, this method will exit by stop loss only."
+        },
+        {
+          "start": 10346,
+          "end": 10964,
+          "quote": "It is important to understand that the calculations on the account size take place from the beginning of the price history of the strategy. This means that if historical results have inflated or depleted the account size from the beginning of trade history until now, the values sent in alerts will reflect the calculated size based on the inputs in the [i]\"Properties\"[/i] tab. To start fresh, the [b]user must set the date[/b] in the [i]\"Inputs\"[/i] tab to the current date as to remove trades from the trade history. Failure to follow this instruction can result in an unexpected order size being sent in the alert."
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    },
+    {
+      "publication_id": "xAEG4ZJG",
+      "original_card_path": "research/tradingview-strategy-tools/tv_xaeg4zjg_how_to_set_backtest_time_ranges.md",
+      "current_card_path": "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_xaeg4zjg_how_to_set_backtest_time_ranges.md",
+      "card_sha256": "96501b4cd4441f2aae78a5290ee40b2cbedd1aa50e79bd8a736f1e59d56c366d",
+      "source_sha256": "02995831f3073780bc510bde37d57893e557ee0d6225ef48d5a55cb6fa955fcc",
+      "raw_description_sha256": "2184864c8535fa3a561911d47760da20ab143e3488a914287d6c86d0f1549200",
+      "source_read_ranges": [
+        [
+          0,
+          728
+        ]
+      ],
+      "readiness": {
+        "status": "incomplete",
+        "reason": "The description promises time/date filtering but does not disclose its principal inclusion predicate.",
+        "gaps": [
+          "Window boundary/timezone, cross-midnight/day matching and date-range Boolean logic are absent."
+        ]
+      },
+      "evidence": [
+        {
+          "start": 1,
+          "end": 728,
+          "quote": "Example how to set the time range window to be backtested for both entries and exits. Additional examples are also included showing how to set the date range and toggle plot visibility. \n\nBy incorporating this code with your own strategy's logic, it will allow you to backtest various time windows. \n\nMuch gratitude to @LucF and @a.tesla2018 for help with including ':1234567' for time ranges on weekends. Thank you both!\n \n\nNOTICE: This is an example script and not meant to be used as an actual strategy. By using this script or any portion thereof, you acknowledge that you have read and understood that this is for research purposes only and I am not responsible for any financial losses you may incur by using this script!"
+        }
+      ],
+      "coin_test_ready": false,
+      "coin_test_gap": "No complete standalone coin-test contract or runnable coin-test implementation has been qualified for this source card."
+    }
+  ],
+  "coin_test_qualification": "not-qualified",
+  "coin_test_ready_count": 0,
+  "placement_basis": "Every current card remains incomplete as a standalone coin test. Source disclosure is a separate judgment."
+}

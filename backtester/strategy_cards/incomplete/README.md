@@ -1,3 +1,7 @@
+## Standalone coin-test qualification
+
+All691 source-profile cards in the expanded TradingView collection remain incomplete as standalone coin tests. Some disclose mathematical components, but no full coin-test contract or runnable implementation has been qualified. Source interpretation is a separate status. Start with the full source-card index in research/TRADINGVIEW-SCRIPT-CARDS.md.
+
 # Incomplete TradingView research cards
 
 Version: 1.0.0 (2026-11-08). Delta: separate incomplete source material from the active catalog.

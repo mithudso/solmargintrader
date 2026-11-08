@@ -176,7 +176,7 @@ def validate(data: dict, repo: Path = REPO, source_root: Path | None = None) -> 
                 raise ValueError(f"{card.id}: source specification claims runnable status")
             if card.evaluation is not None or card.success_basis != "a-priori":
                 raise ValueError(f"{card.id}: source specification claims measured evidence")
-            if "Version: 1.0.0" not in card.body or "Delta:" not in card.body:
+            if not re.search(r"^Version: \d+\.\d+\.\d+\b", card.body, re.M) or "Delta:" not in card.body:
                 raise ValueError(f"{card.id}: missing version/delta")
             for excerpt in row.get("excerpts", []):
                 if excerpt["quote"] not in card.body:

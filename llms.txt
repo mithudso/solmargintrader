@@ -41,4 +41,6 @@
 
 ## 2026-11-08 [gen: p/2.1.0]
 
+- Full saved-script idea cards and source/profile/review verification: research/TRADINGVIEW-SCRIPT-CARDS.md. [src: research/TRADINGVIEW-SCRIPT-CARDS.md]
+
 - [docs/optimization-workbench.md](docs/optimization-workbench.md): bounded search, durable experiment evidence, observed maps, CSV provenance and fresh final validation. [src: docs/optimization-workbench.md]

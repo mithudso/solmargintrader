@@ -1,6 +1,6 @@
 # Card readiness change files
 
-Version: 1.0.0 (2026-11-08). Delta: list the complete incomplete-card separation changes.
+Version: 1.1.0 (2026-11-08). Delta: retain the separation inventory and refresh the13 enriched native-strategy locations.
 
 Canonical checkout paths for every created, modified or relocated file. Card contents are preserved; research cards move into the incomplete directory.
 

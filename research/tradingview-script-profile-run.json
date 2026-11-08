@@ -1,0 +1,147 @@
+{
+  "pipeline": "full",
+  "plan_b": [
+    {
+      "id": 1,
+      "status": "done",
+      "model": "gpt-6.1-sol",
+      "work": "synthesis"
+    },
+    {
+      "id": 2,
+      "status": "done",
+      "model": "gpt-6.1-sol",
+      "work": "synthesis"
+    },
+    {
+      "id": 3,
+      "status": "done",
+      "model": "gpt-6.1-sol",
+      "work": "synthesis"
+    },
+    {
+      "id": 4,
+      "status": "done",
+      "model": "gpt-6.1-sol",
+      "work": "independent source review"
+    },
+    {
+      "id": 5,
+      "status": "done",
+      "model": "gpt-6.1-sol",
+      "work": "independent source review"
+    },
+    {
+      "id": 6,
+      "status": "done",
+      "model": "gpt-6.1-sol",
+      "work": "independent source review"
+    },
+    {
+      "id": 7,
+      "status": "done",
+      "model": "gpt-6.1-sol",
+      "work": "independent source review"
+    }
+  ],
+  "cited_paths": [
+    {
+      "path": "research/TRADINGVIEW-SCRIPT-CARDS.md"
+    },
+    {
+      "path": "research/tradingview-script-understanding.json"
+    },
+    {
+      "path": "research/tradingview-script-profile-work.json"
+    },
+    {
+      "path": "research/tradingview-strategy-card-locations.json"
+    },
+    {
+      "path": "script-profile-orchestration.md"
+    },
+    {
+      "path": "research/tradingview-script-context-bundle.json"
+    },
+    {
+      "path": "llms.txt"
+    },
+    {
+      "path": "llms-facts.txt"
+    },
+    {
+      "path": "scripts/build_tradingview_script_profiles.py"
+    },
+    {
+      "path": "scripts/render_tradingview_script_cards.py"
+    },
+    {
+      "path": "scripts/check_tradingview_strategy_profiles.py"
+    },
+    {
+      "path": "research/tradingview-script-profiles/shard-a.jsonl"
+    },
+    {
+      "path": "research/tradingview-script-profiles/shard-b.jsonl"
+    },
+    {
+      "path": "research/tradingview-script-profiles/shard-c.jsonl"
+    },
+    {
+      "path": "research/tradingview-script-profile-audits/shard-a.jsonl"
+    },
+    {
+      "path": "research/tradingview-script-profile-audits/shard-b.jsonl"
+    },
+    {
+      "path": "research/tradingview-script-profile-audits/shard-c.jsonl"
+    }
+  ],
+  "sections": [
+    "Project",
+    "Context found",
+    "Existing artifacts",
+    "Plan",
+    "Open questions",
+    "Agents",
+    "Artifacts written",
+    "Stage log"
+  ],
+  "scripts": [
+    {
+      "path": "scripts/build_tradingview_script_profiles.py",
+      "exit_code": 0
+    },
+    {
+      "path": "scripts/render_tradingview_script_cards.py",
+      "exit_code": 0
+    },
+    {
+      "path": "scripts/check_tradingview_strategy_profiles.py",
+      "exit_code": 0
+    }
+  ],
+  "artifacts": [
+    "research/TRADINGVIEW-SCRIPT-CARDS.md",
+    "research/tradingview-script-understanding.json",
+    "research/tradingview-script-profile-work.json",
+    "research/tradingview-strategy-card-locations.json",
+    "script-profile-orchestration.md",
+    "research/tradingview-script-context-bundle.json",
+    "llms.txt",
+    "llms-facts.txt",
+    "scripts/build_tradingview_script_profiles.py",
+    "scripts/render_tradingview_script_cards.py",
+    "scripts/check_tradingview_strategy_profiles.py",
+    "research/tradingview-script-profiles/shard-a.jsonl",
+    "research/tradingview-script-profiles/shard-b.jsonl",
+    "research/tradingview-script-profiles/shard-c.jsonl",
+    "research/tradingview-script-profile-audits/shard-a.jsonl",
+    "research/tradingview-script-profile-audits/shard-b.jsonl",
+    "research/tradingview-script-profile-audits/shard-c.jsonl"
+  ],
+  "research_concepts": [],
+  "stage8_degraded": "Actual full-source continuations exceeded the optional default dispatch cap; owner required complete scope. Seven distinct agents, all assignments finished.",
+  "source_read_characters": 3899878,
+  "coin_tests_qualified": 0
+}

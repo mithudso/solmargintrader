@@ -32,6 +32,18 @@ python3 -m backtester.core.strategy_cards
 That command is the index. There is deliberately no committed table here, because a
 committed table drifts the moment someone adds a card.
 
+For the saved TradingView publications explicitly marked as strategies, see
+[the purpose-and-rule interpretation index](../../research/TRADINGVIEW-STRATEGY-CARDS.md).
+It links each of the 21 publications to its individual card. Strategy-labelled
+reporting tools and templates have companion cards outside this loader directory;
+their platform type does not make them runnable trading hypotheses.
+
+The expanded TradingView source-profile collection is indexed in
+[the source-card index](../../research/TRADINGVIEW-SCRIPT-CARDS.md).
+All691 source-profile cards remain under `incomplete/`: none has qualified a
+self-contained coin test. Disclosed calculations are source interpretation,
+not a claim of a complete test contract or runnable implementation.
+
 ## Anatomy
 
 ```markdown

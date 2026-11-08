@@ -1,5 +1,10 @@
 # Prompt history
 
+Version: 81
+Delta: v80 to v81; record PR 96 request and takeover confirmation.
+
+Version: 75
+Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
 Version: 76
 Delta: v75 to v76; retain CI changes and editor request.
 Version: 76
@@ -425,6 +430,32 @@ Version: 55. Delta: v54 to v55; preserve card-coverage request.
 For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.
 ```
 
+## v56 - 2026-11-08 (script strategy understanding)
+
+```text
+For all of the strategies in the script directory, extract and understand the idea and what it's trying to accomplish, and create strategy cards for each one.
+```
+
+Source: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com/www.tradingview.com/script.
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63.
+
+## v57 - 2026-11-08 (expanded script scope)
+
+```text
+All trading scripts, including indicators
+```
+
+This answers the scope question for the request to extract each script's idea and objective and create strategy cards. Preserve the21 accepted strategy-labelled cards and expand to the remaining721 saved publications.
+
+
+## v58 - 2026-11-08 (incomplete-card location)
+
+```text
+If a card you create is incomplete, in that it is not a fully useable strategy or indicator with equations, sources, code, or parameters, then move it to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
+```
+
+Applies to the active expanded script-understanding pass and its accepted21-card subset. Preserve source interpretations and review usable computation separately from runtime implementation status. Coordinate with the independent PR97 card-relocation work rather than overwriting it.
+
 ## v56 - 2026-11-08 (Four nonlinear lead-lag children)
 
 ````text
@@ -454,6 +485,30 @@ Keep complete indicator specifications too (Recommended)
 ```text
 I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
 ```
+
+
+## v61 - 2026-11-08 (status during expanded source review)
+
+```text
+So what're you doing now?
+```
+
+Answered that all742 publications have a draft explanation or exclusion, the21 native-strategy cards are reviewed/sorted, and556 of the721 expanded profiles had completed source review at that moment. Continue the original task; this is not a pause or replacement objective.
+
+
+## v62 - 2026-11-08
+
+```text
+It's been 3 hours, what's up
+```
+
+## v63 - 2026-11-08 (standalone coin-test standard)
+
+```text
+Are each of these cards complete in that by itself can be used to run calculations for a specific test that can be applied to a coin?
+```
+
+Answered No. Source-component disclosure was too loose a standard. No new card has qualified a standalone coin test; file all current source-profile documentation as incomplete and label it explicitly. Preserve the source interpretations and their independent evidence.
 
 ## v60 - 2026-11-08 (EPIC-980 research request)
 
@@ -620,4 +675,14 @@ no 104 hasd conflicts, resolve them
 
 ```text
 I'm in the soltui, as far as I can tell the Editor does nothing but display one file forever without changing. Whenever I click on a stratgy I want it to show me the strategy card and all the details about that strategy in the edit window, also true of coins, and if I click a backtest button I want the editor to show me the logs of it running,
+```
+
+## v81 - 2026-11-08: PR 96
+
+```text
+resolve the conflicts in https://github.com/mithudso/solmargintrader/pull/96 and merge, commit, pr
+```
+
+```text
+Yes it's abandonedd
 ```

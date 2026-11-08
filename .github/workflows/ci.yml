@@ -302,6 +302,15 @@ jobs:
       - name: TradingView source-to-card coverage is consistent
         run: python3 scripts/check_tradingview_cards.py
 
+      - name: Strategy publication cards and evidence receipts agree
+        run: python3 scripts/check_tradingview_strategy_profiles.py
+
+      - name: Script interpretation review gate refuses stale evidence
+        run: python3 -m unittest scripts.test_tradingview_script_profiles
+
+      - name: Full script source cards and review receipts agree
+        run: python3 scripts/render_tradingview_script_cards.py check
+
       - name: Incomplete card separation integrity
         run: python3 -m unittest scripts.test_card_readiness
 

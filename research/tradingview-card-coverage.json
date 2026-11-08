@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "version": "1.1.0",
-  "delta": "v1.0.0 to v1.1.0; preserve source inventory across active/incomplete directories with per-card readiness decisions.",
+  "version": "1.2.0",
+  "delta": "v1.1.0 to v1.2.0; combine reviewed active/incomplete catalog locations with preserved21 native-strategy interpretations and corrected martingale input prerequisites.",
   "source_root": "tradingview/ (gitignored local source directory)",
   "source_publication_counts": {
     "script": 747,
@@ -14502,7 +14502,14 @@
         "tv_method_risk_based_sizing"
       ],
       "disposition": "new-card",
-      "reason": "No exact card/implementation match. Preserve this source-specific definition separately from its generic components."
+      "reason": "No exact card/implementation match. Preserve this source-specific definition separately from its generic components.",
+      "data_review": {
+        "required": [
+          "ohlcv"
+        ],
+        "available": true,
+        "reason": "Full-description interpretation confirms a single-instrument Bitcoin martingale, with no point-in-time cross-sectional selection. See research/tradingview-strategy-understanding.json for independently reviewed input correction."
+      }
     },
     {
       "url": "https://www.tradingview.com/script/8UtWhfo3-RSI-Radar-Multi-Time-Frame/",

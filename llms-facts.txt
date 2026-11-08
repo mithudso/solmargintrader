@@ -32,6 +32,12 @@ One declarative fact per line, each tagged with the repo-relative file it came f
 
 ## 2026-11-08 [gen: p/2.1.0]
 
+- The saved HTML script corpus contains742 publications:666studies,55libraries and21native strategies. [src: research/tradingview-script-profile-work.json]
+- The accepted21 native-strategy cards retain their exact semantic manifest and card bytes; a reviewed receipt records10 disclosed principal outputs and11 partial descriptions. All21 are incomplete as standalone coin tests. [src: research/tradingview-strategy-card-locations.json]
+- Incomplete expanded publication documentation lives beneath backtester/strategy_cards/incomplete/publication-profiles; companion native-strategy tools use incomplete/native-strategy-profiles. The flat executable-card loader excludes these nested documentation cards. [src: scripts/render_tradingview_script_cards.py] [src: backtester/core/strategy_cards.py]
+- Computation readiness is distinct from cached data, current API compatibility, full Pine parity and portfolio trade rules. A usable card states its reproducible principal-output scope; missing core inputs or equations remain blocking gaps. [src: research/tradingview-script-profile-audit-prompts.md]
+- The final script-card checker refuses draft coverage, stale profile/source/review/card hashes, unread source tails, misplaced incomplete cards and unresolved medium-or-higher findings. [src: scripts/render_tradingview_script_cards.py]
+
 - Native optimization freezes full baseline/candidate configurations, exact windows, code/data/cost fingerprints and numerical runtime; each evaluation commits rich metrics or an explicit failure. [src: soltui/experiment_runner.py]
 - ExperimentStore preserves immutable completed cells and transactional exploration/final temporal reservations; changing search context cannot refresh used dates. [src: soltui/experiments.py]
 - Explicit experiment workers use inherited process leases and durable cooperative pause/cancel controls; source/config changes refuse stale resume. [src: soltui/experiment_jobs.py]
@@ -43,3 +49,7 @@ One declarative fact per line, each tagged with the repo-relative file it came f
 ## 2026-11-08 [gen: p/2.1.0]
 
 - Finalized holdout reservations carry a durable seal: later training may reuse their historical dates, while all other final tests still treat them as spent; own sealed evidence reuse cannot evaluate missing or failed cells again. [src: soltui/experiments.py]
+
+## Source-card coin-test clarification (2026-11-08)
+
+- All691 new source-profile cards are incomplete as standalone coin tests; source-component disclosure is not a qualified coin-test contract or runnable implementation. [src: research/TRADINGVIEW-SCRIPT-CARDS.md]

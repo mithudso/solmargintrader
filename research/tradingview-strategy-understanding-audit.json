@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "version": "1.0.0",
+  "delta": "final independent source-card acceptance after two corrected findings",
+  "agent": "research-contract-auditor",
+  "definition_version": "1.0.0",
+  "observed_at": "2026-11-08T10:30:13Z",
+  "status": "complete",
+  "qualification_verdict": "pass-for-final-card-source-contract",
+  "scope": "All21 native strategy publications; no executable parity or profitability qualification.",
+  "manifest_sha256": "1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5",
+  "card_set_sha256": "762c8b10551e660352147dd100d9187d3b1b27076e10fbe9797639fe132bbcaf",
+  "card_set_serialization": "JSON of sorted [publication_id,card_path,card_sha256] tuples; separators comma/colon; ensure_ascii true.",
+  "source_files_verified": 742,
+  "complete_descriptions_reviewed": 21,
+  "raw_description_characters": 92770,
+  "raw_passages_verified": 55,
+  "legacy_passages_verified": 68,
+  "material_findings_remaining": 0,
+  "corrected_findings": [
+    "Removed unsupported cross-sectional universe requirement from the single-instrument martingale.",
+    "Preserved ambiguity about the gap confirmation bar instead of imposing an additional bar."
+  ],
+  "card_hashes": {
+    "2lGyzYkC": "ab4a338de57025733e317b54d9c48c1a9a28ee43a7369c626e121c8ebb0b8e9f",
+    "8OS1nbr8": "d517f11167f294ea0a0c74500437c7d41d75af8c97ea4a6683bd4aeca4c9b0df",
+    "9Iwinz7I": "f814ad1dcb9411b65b5abe5c963cafc5c0e991b0d98173aaed815c6ee3efb2c9",
+    "IHVPG6TS": "30f55b14bc1db9a044211148fd701aa5d8636fef2823e0a5364d7b262040777a",
+    "M9taaIkp": "a0428d633ba08ec2b7b34da76db9f762005508487724505a7cda486b79f2ca29",
+    "MvlwAzSg": "e9a20bc6304eff4f1813d85c46444427c165351c8b2fcc07c6dbb619e266fad7",
+    "OTfw8b2a": "be1976bca36bc4b9c92f209f616a9becc8fb4a849218d71dd884135df24be3bd",
+    "VFzCk3HX": "1f1d6d38bc01ca713baac1f48b09572f9ff327930b2d04b8c812b410ca3f853f",
+    "VuYM89Tw": "80cadb915553ff87eec5fabffab4a03001493406205f95f7e9b72d0f61126d80",
+    "bFXf4IXh": "6cb3dcffb88341e309fe85bd5d8732b3915e05f4fa395a17d3a4dd1f40005a23",
+    "ghocsiv7": "5a2cc75ee77e92b621df660e3553e91a90a4301931fd8d58cc0a9803aebf6926",
+    "hoCPm5UY": "5c26ffbbb3ce88a8922a69e1f524387ff1daf5862f7b2e7a13e403110d125e01",
+    "i9tJOtjl": "ca7e7bd31cbc0b98daa6ac3fb1e9bea62c0805ef136b183cf676f20e9bd253be",
+    "jjhUHcje": "a7249501f82659b320c81c3d7103544113ec446cde9769006c2e97f0e912ffde",
+    "kzp8e4X3": "977ed8e283d01ab77715e62c336f9d2fae3d818018d69820b012ba0be44a453a",
+    "mVkDf8qh": "9b8d0c1fd7dac60fe43e0f3837d26d8780d169932438772d41d296900a5dcc90",
+    "n8bgynWl": "3e16cc422ebe2045100a28e70674a868df87c1601f76c0e103d9a9c12c4d2289",
+    "nVECqIQx": "75ddfa787fcc79ffbd9cf58744c6eea77a093e14e40ed1e3dd7b8696103b0599",
+    "oxvR5vMy": "3097d1a378fffdc5b7030a6e491cb7b65cb79af8e37ac468f1e79ce75990ee19",
+    "rLkjr2sQ": "37d55a03f2ade15e11f78912af88fca854bac5b13ee8b4d1cc6047bbd0844c6c",
+    "xAEG4ZJG": "96501b4cd4441f2aae78a5290ee40b2cbedd1aa50e79bd8a736f1e59d56c366d"
+  },
+  "limits": [
+    "Complete Pine source fields are empty.",
+    "No independent profitability or implementation-parity claim.",
+    "Git delivery and integration are verified separately."
+  ]
+}

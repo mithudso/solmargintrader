@@ -1,5 +1,15 @@
 # Work continuation
 
+Version: 148
+Delta: v147 to v148; incorporate PR 106 while resolving PR 96.
+
+Version: 146
+Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
+
+Version: 143
+Delta: v142 to v143; preserve concurrent delivery histories and source-card records.
+Version: 145
+Delta: v144 to v145; retain CI changes and editor work.
 Version: 147
 Delta: v146 to v147; correct test counts and record CI.
 Version: 144
@@ -954,6 +964,85 @@ Integrated origin/master d596856 after PR 92 landed during final CI. Preserve al
 
 Delivery remains conditional on https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. Complete final integrated-head checks before merge. Existing running consoles are owned by other sessions; do not restart them or retarget launchers. Preserve unrelated checkout changes and verify any safe synchronization independently.
 
+## v93 - 2026-11-08 (script strategy understanding; TASK-929)
+
+Target: explain the idea, objective and mechanics of each strategy publication in the saved script directory and create individual cards. There are 742 HTML pages here. Existing TASK-888 / PR91 covers a broader inventory of 747 canonical script publications, with 21 explicitly typed strategy, 666 study, 55 library, and 5 missing type. This pass starts with the 21 strategy publications; optional user clarification about including indicator studies remains pending.
+
+Existing generic cards quote author passages but often lack publication-specific synthesis. Read complete ssrIdeaData descriptions and preserve exact provenance. Strategy templates must be identified as frameworks rather than invented entry edges. Source code is not assumed available from an open-source badge. Keep missing rules, parameters and performance as explicit gaps. Preserve registry implementations, measured cards, shared checkout changes and active PR91 ownership.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63, base d596856. Stele search helper could not start on this account; direct graph records supply the context. Relevant decisions: KNOW-663 strict card schema; KNOW-620 status semantics; KNOW-889 source-specific coverage; KNOW-898 title-only extraction failures; KNOW-930 current purpose/rule boundary.
+
+Remaining: read and interpret every in-scope publication; author grounded individual cards and evidence manifest; validate/audit; commit/push PR, pass final checks, merge and verify delivery. Keep existing PR91 work distinct and do not merge another task's unfinished PR.
+
+## v94 - 2026-11-08 (strategy source interpretation accepted; TASK-929)
+
+Read all21 complete strategy-typed descriptions (92,770 characters) and checked native metadata for all742 HTML publications: 666 studies,55 libraries,21 strategies. Optional broader-scope question received no answer; proceed with the stated21-strategy interpretation scope. Authored13 canonical card enrichments and8 companion tool cards, indexed in research/TRADINGVIEW-STRATEGY-CARDS.md. Tools remain outside the executable card loader. No order path, registry strategy or measured result changed.
+
+research/tradingview-strategy-understanding.json binds the complete metadata inventory,21 card hashes,55 raw-source passages and68 normalized legacy passages. scripts/check_tradingview_strategy_profiles.py checks schema/status, card identity/hash, independent audit freshness, source inventory/native types and exact passage offsets; --source-root performs full local-source verification. The source script.content fields are empty. Independent research-contract-auditor reviewed all21 source/card pairs and passed the final corrected set: manifest SHA256 1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5; card set SHA256 762c8b10551e660352147dd100d9187d3b1b27076e10fbe9797639fe132bbcaf. Receipt: research/tradingview-strategy-understanding-audit.json.
+
+Corrected findings: the single-instrument Bitcoin martingale needs no point-in-time universe; gap non-fill confirmation must not impose an extra bar not established by the author. Preserve both fixes and the source limitations. Canonical cards are version1.1.0. Newly merged PR91 has a legacy validator requiring literal Version:1.0.0 and a stale martingale data_review; reconcile both during integration. Retain all prior coverage passages and card identities.
+
+Checks:43 existing card tests pass; full-source and offline interpretation checkers pass; Ruff lint/format, docs drift and whitespace checks pass. CI runs the new offline interpretation checker. Portable, directly usable collection: /Users/mitch/dev/tradingview-strategy-cards/README.md, with its own checker and pure-stdlib card parser. Raw readings and authoring inputs remain outside Git at /Users/mitch/dev/tradingview-strategy-card-work.
+
+Remaining: commit own checkpoint, integrate newly merged PR91 while preserving the13 enriched cards and both workflow histories, reconcile coverage metadata/validator version handling, regenerate offline indexes after staging resolutions, revalidate, push PR, pass final checks, merge and verify remote contents, refresh portable package and remove only own clean worktree/branch.
+
+## v95 - 2026-11-08 (landed coverage integration)
+
+Integrated origin/master 188d329 (PR91) while preserving all1083 source specification cards, existing executable implementations, coverage ledger and prior workflow histories. The13 overlapping cards retain this task's independently accepted1.1.0 content and all68 prior source excerpts. Eight companion tools stay outside the canonical loader. Preserve both CI evidence-check steps. Reconcile the legacy martingale input review to OHLCV and allow semantic card versions rather than an immutable1.0.0 literal. Then stage resolutions before regenerating indexes.
+
+Remaining: revalidate the combined catalog, commit/push, pass final-head CI, merge and verify remote contents, refresh the portable package and clean only own worktree/branch.
+
+## v96 - 2026-11-08 (integrated strategy interpretations ready for delivery)
+
+PR91 is merged as188d329. Both coverage gates now pass together: the legacy catalog retains1083 added specifications and1142 total canonical cards; the new interpretation manifest covers21 publications with13 enriched canonical cards,8 separate companion tools,55 raw passages and68 retained normalized passages. The original accepted manifest/card-set hashes remain unchanged. The legacy coverage ledger is version1.1.0 with an explicit single-instrument OHLCV review for the martingale. Its validator now accepts semantic card revisions while requiring a Delta record; the previous1.0.0-only check was reproduced as a failure before fixing it.
+
+Checks on the integrated tree:43 card tests pass; both offline source/card checkers pass; the new checker verifies all742 original HTML files and every cited source offset with --source-root. Ruff lint/format passes for the new checker; docs drift and exhaustive offline index freshness pass. No unresolved merge markers remain after regeneration. Both CI evidence gates are retained. Independent semantic audit remains accepted for the exact21-card set.
+
+Remaining: commit this integrated checkpoint, push a PR, wait for final-head checks, merge and verify remote content, refresh the stable portable collection and its audit/continuation receipts, then remove only this task's clean worktree and branch. Shared checkout and other active sessions remain untouched.
+
+## v97 - 2026-11-08 (all trading scripts, including indicators; TASK-929)
+
+The user answered the optional scope question: All trading scripts, including indicators. The previous21-publication scope is now a completed subset, not the full goal. Review all742 saved publications, including666 studies and55 libraries, and create source-specific semantic cards or exact existing-card mappings for every trading-related item. Review non-trading exclusions from complete descriptions too. Preserve the accepted21-card set and its1d40b13a manifest hash.
+
+PR96 currently checkpoints the21-card subset at e9931f4 and must not be called complete for the expanded goal. A merge of optimizer documentation a70d62f is in progress; only three generated indexes conflict. Finish that merge after staging source/record updates, regenerate indexes and keep the PR draft while expansion is active.
+
+Use p2.1.0 orchestration for bounded, disjoint semantic-authoring batches and independent source audits. The user's standing commit/ship and exact prompt/memory-record requirements override the skill's generic no-git and output-format defaults. No external research, inference or indexing runtime is needed; source gaps remain gaps. Native Anthropic model labels are unavailable here; use the runtime Codex workhorse tier for synthesis and record the mapping. Keep raw readings in a gitignored task cache under the private worktree, with resumable per-publication checkpoints. Root owns helper/manifest/index integration; workers own their assigned semantic JSONL outputs and must not revert others.
+
+Remaining: extract complete source descriptions for remaining721 pages; balance authoring batches; create and review per-script explanations; expand manifests/cards and coverage; verify all source/card mappings; deliver only after the complete expanded goal is covered.
+
+
+## v98 - 2026-11-08 (expanded source authoring active)
+
+The private worktree merged optimizer docs a70d62f and committed4f011b0. PR96 is draft for the expanded goal. Prepared immutable gitignored source-corpus.json for742 publications,21 protected and721 remaining descriptions totaling3,807,108 characters. The authoritative disjoint assignments and corpus hash are research/tradingview-script-profile-work.json. Three source authors own only research/tradingview-script-profiles/shard-a.jsonl (240 sources,TASK948), shard-b.jsonl (241,TASK949) and shard-c.jsonl (240,TASK950). They save original per-publication synthesis, exact raw-source evidence and full read ranges after every item. Partial helper validation is a draft structural check, not independent semantic acceptance.
+
+The expanded interpretations will use separate documentation cards under research/tradingview-script-cards and an all-script index. Preserve the accepted21 files, manifest hash1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5 and prior source catalog. Existing executable/measured cards and registry are untouched. Existing catalog links do not claim exact publication equivalence. Full-source exclusions retain reasons/evidence in the manifest. Trading-session parsers and financial infrastructure stay in scope even without a market edge. See KNOW951 for this architecture.
+
+Remaining: finish all three authoring shards; independently read/review every new source/profile pair, including exclusions; repair findings; render all in-scope documentation cards; bind deterministic output to source/profile/reviewer hashes; validate source coverage and frozen21; run p stage9 sourced append and executed stage10 selfcheck; finish final-head CI, merge PR96 and verify remote delivery; refresh portable collection; clean only owned branch/worktree.
+
+
+## v99 - 2026-11-08 (incomplete cards inside requested directory)
+
+The user now requires every newly created incomplete card under backtester/strategy_cards/incomplete. All three authors received the readiness schema refinement and will backfill their earlier records. Independently review disclosed computation completeness, not merely spec-only status or absent code. Preserve complete mathematical indicators even without portfolio orders. Place incomplete expanded documentation profiles beneath backtester/strategy_cards/incomplete/publication-profiles so companion documentation does not enter the strict executable-card loader. Root owns the relocation and deterministic links.
+
+Separate TASK941/PR97 is actively moving791 older generic cards while retaining292 usable specifications and59 originals. Do not merge or modify its unfinished branch. Once it lands, integrate its loader/coverage changes and preserve its readiness evidence. The13 accepted native-strategy enrichments overlap its baseline files; preserve their enriched text, update readiness bindings after review, and resolve locations without invalidating prior semantic approval. Accepted21 manifest/card-byte hashes remain the prior source-reading receipt; a separate location receipt can bind relocated unchanged bytes. No original checkout edits are authorized while the other live session holds it.
+
+Remaining: complete all721 original explanations and readiness decisions; independently audit new profiles plus21-card readiness/locations; integrate landed PR97; implement correct incomplete placement and source/profile/review/path gates; final delivery remains conditional on full scope. Draft helper checkpoint9e84032 is pushed to PR96.
+
+
+## v100 - 2026-11-08 (all742 source decisions drafted; reviews active)
+
+All721 new profiles are individually authored and helper-valid, plus the21 accepted native-strategy subset. Authors TASK948/TASK949/TASK950 are done. Their initial scope decisions are227/218/227 in-scope and13/23/13 exclusions; these are draft counts, subject to independent corrections. All742 saved script.content fields are empty. Source descriptions may still disclose complete formulas or snippets. The first author checkpoint is pushed as d88802f on draft PR96. Root has already repaired seven shard-a records after independent findings; exact new hashes were re-reviewed and passed.
+
+Independent research-contract-auditors own only research/tradingview-script-profile-audits/shard-a.jsonl (TASK954), shard-b.jsonl (TASK955), shard-c.jsonl (TASK956). Every full source/profile pair, including exclusions, requires review. The JSONL receipts are the authority for exact covered IDs, full read ranges, pending findings and stale hashes. These audits are still partial. Resume existing reviewers from their saved unread IDs after context limits; never mark unread sources accepted or stop the user goal at a sample. The complete-source requirement and owner-required completeness refinement take precedence over p's default dispatch cap; record actual continuations and degraded/capped stage accounting honestly.
+
+A key correction is KNOW972: do not mechanically copy missing_information into blocking readiness.gaps. Missing feeds/cache, current compatibility, full code parity or portfolio trade rules alone do not invalidate a disclosed independent indicator/output calculation. Conversely hidden core inputs/algorithms stay incomplete. Parent has read and repaired4KIgeLGo FINRA,XUX5VVN0 event decoding,EtM15SgP MA3D,Rhj1nNLH absolute drawdown,SWWMsMQw panel,ygNO2G1V tick candles,vdzfb2WA quality fields. Auditor passed their exact updated records. Other pending revisions are enumerated in the audit JSONLs; read those rather than reconstructing queue messages. Parent may apply concrete independent-review corrections, verify relevant source facts, then obtain a fresh exact-hash review. Do not bulk relabel from keywords.
+
+TASK957 native21 completeness review is authored and mechanically corrected: research/tradingview-strategy-card-locations.json SHA25608568f361f90dfdc9ab12b116246ac64e237b170c785b70c449ddb10d2a68ecf,10 narrowly usable principal outputs and11 incomplete. All source/card bytes, full-read ranges and evidence offsets were reviewed. card_location() resolves21/21 after changing the reviewer's enum usable to usable-specification. Physical moves are NOT applied yet. The receipt is untracked until integration. Its existence makes the old file gate expect the final paths; apply moves before claiming that gate passes. Preserve accepted manifest1d40b13a and card bytes; location receipt is the overlay.
+
+PR97 independently merged as8ed41ad61c731f52a157054790520e3dfc7f23a1 at11:46UTC. Fetch/integrate origin/master, preserve its791 relocations/readiness work and all other sessions. Preserve this task's13 enriched card bodies during rename/modify resolution. Apply the separately reviewed native21 final paths, reconcile affected global readiness rows/hashes/dispositions/counts and retain both validators. Incomplete new documentation cards live beneath backtester/strategy_cards/incomplete/publication-profiles; incomplete native companion tools beneath incomplete/native-strategy-profiles. Usable companion documentation remains under research.
+
+Remaining: finish all three source audits and repair/re-review every finding; integrate landed PR97 and native moves; render all final cards; bind and verify full coverage/source/profile/review/card/path hashes; p sourced llms append and executed selfcheck; final CI/merge/default-branch receipts; refresh the portable collection and remove only owned branch/worktree. Portable README/memory now explicitly say expanded work in progress, not21-card task completion. Never touch the shared dirty original checkout while another live session owns it.
+
 ## v93 - 2026-11-08 (Four-child /dr start)
 
 Active: TASK-905; research stage TASK-907, install stage TASK-908, publication/delivery stage TASK-909.
@@ -1070,6 +1159,38 @@ Integrated origin/master 0b46a88 after concurrent PR94 landed while this task op
 ## v105 - 2026-11-08 (canonical incomplete directory correction)
 
 The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.
+
+
+## v106 - 2026-11-08 (landed readiness integration; full-source audits continue)
+
+Integrated PR97/8ed41ad after it merged. Git preserved all21 accepted card byte hashes across its renames. Applied the separate21-card location receipt (10 scoped usable,11 incomplete) and rebound the13 canonical readiness entries to their enriched bytes. All other classifications are preserved. The catalog now has294 retained new/789 incomplete/353 active total; all1142 remain preserved. The broad catalog retains1142 total cards and59 original active cards. No executable registry or measured result changes.
+
+All721 new source profiles are drafted; audits remain partial and authoritative coverage lives in the three audit JSONLs. Original authors repair bounded review findings in their own profiles (TASK978 batcha15findings; TASK979 batchb16findings), then independent reviewers recheck exact changed hashes and continue unread descriptions. Never stop at a partial context boundary. Index regeneration must wait for active profile writers and stage source resolutions first. Final full-scope publication, package refresh and remote delivery remain pending.
+
+
+## v107 - 2026-11-08 (status question; original goal continues)
+
+User asked So what're you doing now? Answered in commentary with actual partial progress, without claiming completion. All742 source decisions are drafted;21 native-strategy cards are independently reviewed and physically sorted in this worktree. At the status reply, audit coverage was556/721 expanded profiles. Exact current coverage/findings remain in the three audit JSONLs. No pause or scope replacement was requested. Finish the remaining reviews, bounded author repairs, exact-hash rechecks, final rendering and delivery.
+
+Current integration gates pass: native21 full-source check verifies742 HTML captures and all raw/legacy/relocation evidence; broader catalog check verifies4890 local source files and353active/789incomplete/1142total cards. Fifteen script review/relocation tests and43strategy-card tests pass. Merge commit is pending only because two generated Markdown lines needed whitespace cleanup; regenerate indexes after staging their corrections. No canonical shared checkout edit occurred.
+
+
+## v108 - 2026-11-08 (batcha fully accepted)
+
+Batcha TASK954 is independently qualified:240/240 current profiles pass,1,269,027 source characters read,all13 exclusions reviewed,40 historical findings resolved with history retained. TASK989 repaired17 last findings without changing223 already accepted hashes. Current batcha profiles are227 in scope (45 usable principal specifications,182 incomplete),13 excluded. Root reran the full audit gate successfully. Preserve this accepted shard; do not reread or rewrite it without a new source/profile change.
+
+Batchb/c full-source audits continue toward their tails. Their exact current coverage and revise queues are in the owned audit JSONLs. Original authors handle bounded repair tasks, independent reviewers recheck exact hashes, and only then qualify. TASK979 andTASK984 repaired23 batchb records; all23 have independent approval. No full b/c acceptance is claimed yet.
+
+Ten current source profiles quote lines with trailing spaces/tabs. The renderer now normalizes quote display line endings and trims only trailing presentation whitespace; raw exact quotations and offsets remain unchanged in the manifest. A red-to-green fixture proves display cleanup preserves the raw evidence string and indentation. Nine review/placement tests pass. Final card rendering remains blocked by unfinished semantic reviews, not source inventory.
+
+
+## v109 - 2026-11-08 (user clarified complete means standalone coin test)
+
+All742 descriptions are read and checked. Expanded audits qualify all721 current source interpretations; native21 source QA is separately accepted. The user asked whether each card by itself can run calculations for a specific coin test. Answered No: documented components are not complete coin tests. No new card has a qualified standalone coin-test contract or runnable implementation. All691 source-profile cards now belong beneath backtester/strategy_cards/incomplete, with source disclosure kept separate from coin-test readiness. Do not present the208 disclosed source components as208 complete coin tests.
+
+Root changed placement and labels mechanically without changing any independently audited semantic JSONL or frozen native card bytes. Native location receipt1.1.0 carries coin_test_ready:false for all21 and preserves the old source-computation judgments. All13 enriched canonical cards are incomplete; global legacy catalog remains1142 total with347 active/795 incomplete. The unrelated legacy catalog retains its earlier source-calculation criterion and is not certified runnable.
+
+Remaining: final render/whole-source gates, publish portable collection immediately, finish exact-head CI/merge/remote verification and clean only own worktree. Do not reopen content review or imply coin-test implementation was delivered. Source interpretation/card creation can be delivered; standalone coin-test development remains unimplemented.
 
 ## v106 - 2026-11-08 (EPIC-980 research start)
 
@@ -1453,6 +1574,9 @@ Active: Stele TASK-1006. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb5b,
 
 TASK-1006: registered and roster strategy selection opens the full card; selected coin previews its overview; queue backtests follow a bounded worker log; CPCV progress and Compound/Bots engine callbacks populate the editor. Unsaved file edits are protected and later navigation is not stolen by log updates. Focused tests: 29 passed in test_tui backtest/strategy cases, test_backtest_log, test_bgworker, and test_editor_backtest. Broader relevant regressions running. Remaining: integrate latest origin/master, verify checks and remote delivery, and verify actual loaded app without disrupting concurrent sessions. The original checkout is dirty and shared; never reset or switch it.
 
+## v146 - 2026-11-08: PR 96 conflict resolution
+
+Owner confirmed the existing merge was abandoned. Preserve its staged merge against 2d9e27b, merge the native-card source reviews with the newer catalog relocation, verify source profiles and card integrity, run CI, and merge PR 96. The offline catalog, native-profile and full-script gates pass after updating links for relocated cards. Source profile hashes and independent review bindings remain intact. Remaining: final checks, commit, push and verify merge.
 ## v146 - 2026-11-08
 
 Integrated upstream guide separation and targeted CI. After catalog integration, four editor/strategy tests passed; earlier 27 focused tests passed. Compound and v2 shell regression cases passed, but the combined invocation also named nonexistent soltui.tests.test_commands and therefore exited 1 (90 actual tests passed plus one import error). Current live process PID 50024 loaded before these changes from the dirty shared checkout; loaded bytes are unverified and it cannot auto-reload. Leave that checkout and process alone. Remaining: final PR checks, merge, remote content verification, and a safe new-launch acceptance test.
