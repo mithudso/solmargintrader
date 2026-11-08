@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `097aed4` (2026-11-08T10:14:43+00:00). 1837 tracked files, 29.0 MB.
+**Generated** from `index/INDEX.json` at commit `dd9f2a1` (2026-11-08T10:15:57+00:00). 1837 tracked files, 29.5 MB.
 
 Regenerate with:
 
@@ -280,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 7164 lines · 358,374 B · description: **extracted**
+`doc` · 18028 lines · 886,977 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 

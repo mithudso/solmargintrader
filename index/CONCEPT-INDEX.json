@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T10:14:43+00:00",
+  "generatedAt": "2026-11-08T10:15:57+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -82,7 +82,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 24
+          "hits": 26
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -169,16 +169,16 @@
           "hits": 1637
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 87
+        },
+        {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
           "hits": 86
         },
         {
           "path": "skills/trading-and-investing/references/trading-risk-management.md",
           "hits": 84
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 69
         },
         {
           "path": "llms-full.txt",
@@ -305,6 +305,10 @@
           "hits": 2957
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 193
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 132
         },
@@ -335,10 +339,6 @@
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 87
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 72
         },
         {
           "path": "soltui/signals.py",
@@ -460,7 +460,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 75
+          "hits": 102
         },
         {
           "path": "extension/src/core/grid.js",
@@ -583,7 +583,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 150
+          "hits": 152
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -721,6 +721,10 @@
           "hits": 172
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 158
+        },
+        {
           "path": "docs/TRADINGVIEW-CARD-FILES.md",
           "hits": 140
         },
@@ -825,10 +829,6 @@
           "hits": 19
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 18
-        },
-        {
           "path": "soltui/tests/test_signals.py",
           "hits": 18
         }
@@ -855,6 +855,10 @@
           "hits": 267
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 52
+        },
+        {
           "path": "soltui/bots.py",
           "hits": 39
         },
@@ -877,10 +881,6 @@
         {
           "path": "extension/src/ui/ui.css",
           "hits": 28
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 26
         },
         {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
@@ -1143,12 +1143,12 @@
           "hits": 78
         },
         {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 66
+          "path": "docs/FILES.md",
+          "hits": 69
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 63
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 66
         },
         {
           "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
@@ -1270,6 +1270,10 @@
           "hits": 80
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 69
+        },
+        {
           "path": "research/results/cpcv_combos_tables.md",
           "hits": 69
         },
@@ -1292,10 +1296,6 @@
         {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 32
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 26
         },
         {
           "path": "docs/TRADINGVIEW-CARD-FILES.md",
@@ -1816,6 +1816,10 @@
           "hits": 47
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 45
+        },
+        {
           "path": "research/results/tables.md",
           "hits": 45
         },
@@ -1833,10 +1837,6 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 23
-        },
-        {
-          "path": "docs/FILES.md",
           "hits": 23
         },
         {
@@ -2639,12 +2639,12 @@
           "hits": 36
         },
         {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 18
+          "path": "docs/FILES.md",
+          "hits": 22
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 16
+          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
+          "hits": 18
         },
         {
           "path": "backtester/strategy_cards/obv_trend.md",
