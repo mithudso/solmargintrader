@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `4ce4a5c` (2026-11-08T09:37:39+00:00). 748 tracked files, 13.0 MB.
+**Generated** from `index/INDEX.json` at commit `888a5cb` (2026-11-08T09:50:10+00:00). 750 tracked files, 13.0 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (529 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 268/282 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (531 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 270/284 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (118 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`liquidity`](#liquidity) — 57 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 17 files
-- [`scripts`](#scripts) — 2 files
+- [`scripts`](#scripts) — 4 files
 - [`skills`](#skills) — 62 files
 - [`tools`](#tools) — 3 files
 
@@ -184,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 804 lines · 122,712 B · description: **extracted**
+`doc` · 834 lines · 127,054 B · description: **extracted**
 
-**Purpose.** Version: 78 Delta: v77 to v78; frozen Base wallet acceptance, PR and installation handoff. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 82 Delta: v81 to v82; preserve concurrent converter records and Base wallet acceptance. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -200,9 +200,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 408 lines · 25,288 B · description: **extracted**
+`doc` · 417 lines · 25,604 B · description: **extracted**
 
-**Purpose.** Version: 54 Delta: v53 to v54; preserve concurrent hook records and add Base wallet repair and acceptance. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 54 Delta: v53 to v54; preserve concurrent converter records and Base wallet acceptance. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -280,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 7144 lines · 357,387 B · description: **extracted**
+`doc` · 7144 lines · 357,371 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -312,7 +312,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/SCRIPTS.md`
 
-`doc` · 978 lines · 49,252 B · description: **extracted**
+`doc` · 1006 lines · 50,937 B · description: **extracted**
 
 **Purpose.** Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual — the commands you actually type.
 
@@ -5354,7 +5354,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 298 lines · 12,707 B · description: **curated**
+`ci` · 301 lines · 12,817 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -6582,7 +6582,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-2 files.
+4 files.
 
 #### `scripts/build_doc_index.py`
 
@@ -6603,6 +6603,26 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `REPO`, `COUNT_DOCS`, `INDEX_JSON`, `OVERVIEW_MD`, `is_ignored()`, `is_tracked()`, `missing_and_tracked()`, `committed_test_files()`, `count_tests()`, `load_failures()` and 9 more.
 
 **Use.** `python3 scripts/check_docs.py --help`
+
+#### `scripts/html_to_markdown.py`
+
+`code-python` · 366 lines · 11,996 B · description: **extracted**
+
+**Purpose.** Recursively convert saved HTML to text-only Markdown, without network or dependencies. Usage: python3 scripts/html_to_markdown.py SOURCE [--output OUTPUT] [--overwrite] The default SOURCE is the current directory. OUTPUT defaults to a sibling directory named SOURCE-markdown. Original HTML is never modified; existing outputs are skipped.
+
+**Contents.** Defines `VOID`, `IGNORE`, `BLOCK`, `SPACE`, `ESCAPE`, `CHARSET`, `class MarkdownParser`, `html_to_markdown()`, `read_html()`, `conversion_plan()` and 2 more.
+
+**Use.** `python3 scripts/html_to_markdown.py --help`
+
+#### `scripts/test_html_to_markdown.py`
+
+`test` · 143 lines · 6,180 B · description: **extracted**
+
+**Purpose.** Behavior checks for offline HTML conversion and safe recursive output.
+
+**Contents.** Defines `class MarkdownTests`, `class FileTests`.
+
+**Use.** `python3 -m pytest scripts/test_html_to_markdown.py -q`
 
 ---
 

@@ -1,7 +1,7 @@
 # Prompt history
 
 Version: 54
-Delta: v53 to v54; preserve concurrent hook records and add Base wallet repair and acceptance.
+Delta: v53 to v54; preserve concurrent converter records and Base wallet acceptance.
 
 ## v1 - 2026-11-06
 
@@ -399,6 +399,15 @@ Also fix this hook error at the end of every turn: • Blocked by hook
     6. Sync main (`git pull --ff-only`), delete the local branch, remove the worktree. Leave no stale branch, PR or dead code.
     If the pending changes are not yours (another session's work, or this session changed nothing), say so in one line and stop.
 ```
+
+## v53 - 2026-11-08 (HTML mirror conversion)
+
+```text
+Write a script to convert all of the html files in the subfolders here into text only markdown files.
+```
+
+Target: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com.
+Implementation: /Users/mitch/dev/solmargintrader-wt-01a1ba63/scripts/html_to_markdown.py.
 
 ## v54 - 2026-11-08
 

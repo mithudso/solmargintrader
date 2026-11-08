@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 78
-Delta: v77 to v78; frozen Base wallet acceptance, PR and installation handoff.
+Version: 82
+Delta: v81 to v82; preserve concurrent converter records and Base wallet acceptance.
 
 ## v1 - 2026-11-06
 
@@ -772,7 +772,33 @@ Merged origin/master afaa03a after another active session delivered Bots tab v2 
 
 Canonical repairs are merged: Stop PR 33 as 79bc183c99a171d7221813724bbc10d6a85df7cd; adapter PR 11 as 4d385318438647bcddad9f368da927b5e9c9ada9. Installed acceptance already passed. Remaining: wait for final PR 88 checks, merge, verify remote content, clean only this task's worktree/branch, and complete TASK-895.
 
-## v76 - 2026-11-08: Base wallet discovery (TASK-911)
+## v76 - 2026-11-08 (HTML mirror conversion; TASK-894)
+
+Target: recursively convert HTML/HTM below /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com to text-only Markdown. Inventory: 31,880 HTML files, 9,371,462,657 bytes. Keep original HTML and generated mirror artifacts out of Git. Use Python stdlib and no network. Preserve headings, lists, code and table text. Remove scripts, styles, images and hidden markup; link labels remain text. Default output is a sibling tree; skip existing Markdown unless overwrite is requested. This extracts saved HTML, not content that requires JavaScript execution.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63. Shared checkout has other sessions and unowned changes. Base updated from a75f5b6 to origin/master 4d0f027 in the private worktree only.
+
+Remaining: implement converter and documentation; verify regression fixtures and representative local mirror files; refresh offline indexes; commit/push PR, pass checks, merge and verify remote default branch. Do not change the shared checkout or other worktrees.
+
+## v77 - 2026-11-08 (HTML mirror converter verification; TASK-894)
+
+Completed: scripts/html_to_markdown.py uses Python stdlib, preserves subfolders and textual Markdown structure, filters hidden/embedded payloads, detects encoding, preflights name collisions, publishes atomically, and supports skip/overwrite/dry-run. scripts/test_html_to_markdown.py has 11 passing behavior checks on Python 3.13 and system Python 3.15. Ruff lint/format, scripts/check_docs.py and offline index checks pass. CI runs the converter suite in its docs job. docs/SCRIPTS.md documents the command. Incoming Bots tab history from origin/master afaa03a is retained; no Bots code was changed by this task.
+
+Execution: converted 31,880 files into /Users/mitch/dev/tradingview-markdown with zero errors; 11 outputs are empty (10 meta-refresh redirect stubs and the JavaScript-only chart page). A rerun skipped all 31,880 outputs. /Users/mitch/dev/tradingview-markdown/conversion-manifest.json lists every source/output, output hash, empty source and the final rerun summary. /Users/mitch/.local/bin/tradingview-html-to-markdown.py is an executable copy matching the repository script. Source HTML and the shared dirty checkout remain untouched.
+
+Stele transport closed after initial lifecycle writes. Queued outbox operation IDs: 5c1ebafe, 8c704dd2, 9462ad7b, 56faab7b, 976096d2.
+
+Remaining: finish merge/index commit, push task branch, create PR, pass final-head CI, merge and verify remote contents, record delivery receipt and remove only this task's clean worktree/branch. No source-conversion work remains.
+
+## v78 - 2026-11-08 (HTML converter acceptance and concurrent delivery)
+
+Independent live-acceptance-verifier confirmed all 31,880 output hashes, sizes, path mappings and UTF-8 decodes. The installed executable matches committed source SHA-256 c814d3e40f17a69d3c7f3a780a532b924f503b43774532ae6bab120a90a3e074. Actual --help and --dry-run succeed. The receipt is /Users/mitch/dev/tradingview-markdown/acceptance-receipt.json. Stele transport recovered; all five queued operation IDs in v77 were replayed.
+
+PR 90: https://github.com/mithudso/solmargintrader/pull/90. Concurrent PR 88 merged as d355b694f3d56d7ab4ee0456691bf51c54352298 while CI ran. Retain all hook records, renumber converter entries after them, and rebuild offline indexes. Converter code and installed script stay unchanged. Current delivery checkpoint is /Users/mitch/dev/tradingview-markdown/conversion-memory.json.
+
+Remaining: pass checks on the updated final head, merge PR 90, verify remote contents and clean only the converter worktree/branch.
+
+## v79 - 2026-11-08: Base wallet discovery (TASK-911)
 
 Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba75; branch agent-01a1ba75; base afaa03a. Preserve the shared checkout and all other worktrees.
 
@@ -782,7 +808,7 @@ Decision: use the configured cdp CLI for indexed balances, bounded pages/timeout
 
 Remaining: implement, focused regression tests, live acceptance and suite/docs/index gates, commit/push/PR/green CI/merge, verify remote content.
 
-## v77 - 2026-11-08: Base wallet verification
+## v80 - 2026-11-08: Base wallet verification
 
 Implemented in soltui/wallet.py, commands.py and tui.py: bounded configured CDP CLI balance pages, paginated Blockscout fallback, trusted/requested RPC balance checks, indexed provenance, safe malformed responses, conservative unknown-token exclusions and batched price URLs. No private keys or credential files loaded. CLI stderr is sanitized. Corrected AERO wallet-list address to the canonical address already recorded in docs/BASE-WALLET-QUERIES.md; liquidity configuration stays unchanged.
 
@@ -792,7 +818,7 @@ Installation limit: /Users/mitch/.local/bin/soltui delegates to shared /Users/mi
 
 Remaining: full suite/docs/index checks, final diff, commit/push/PR/passing CI/merge, verify remote content. Installed-console parity is not yet established.
 
-## v78 - 2026-11-08: frozen Base wallet delivery checkpoint
+## v81 - 2026-11-08: frozen Base wallet delivery checkpoint
 
 Source delivery: https://github.com/mithudso/solmargintrader/pull/92 (agent-01a1ba75). Final CI and merge receipts live in Stele TASK-915 and the PR; query them before repeating delivery. The concurrent hook-repair records from PR 88 were preserved. The offline index was regenerated after resolving Git stages; duplicate-path check passes. KNOW-919 records the transient DuplicateKey failure from rebuilding before stages were resolved. No application bug remained from that generated-index issue.
 
@@ -801,3 +827,7 @@ Frozen independent acceptance: production _portfolio_scan with actual saved Sett
 Local verification: 90 wallet/settings/integration tests and 73 wallet/Ethereum/UTXO tests pass; all 900 backtester tests pass; compileall, docs drift and index hash gates pass. Full-suite receipts are in /tmp/soltui-base-suite-final-01a1ba75.log and the PR's final-head CI. Use the final receipts rather than the terminated earlier run that observed a transient merge index.
 
 Remaining product step: installed synchronization and fresh-console acceptance after shared-session ownership is released. KNOW-921 records the launcher/check-out mismatch. The source change is ready for remote delivery; preserve all unrelated original checkout changes and running consoles. Do not retarget launchers or use wallet-only import overlays. The live source behavior is verified; installed parity is a separate unresolved gate.
+
+## v82 - 2026-11-08: final concurrent integration
+
+Preserved PR 90's converter records and workflow history after origin/master advanced to eea27e2. Wallet, commands and TUI source hashes did not change in this merge. The final local full suite passed all 884 SolTUI tests (2 optional skips) in 709.185 seconds, and all 900 backtester tests passed. Stage resolved records before rebuilding indexes, as KNOW-919 requires. Source delivery remains PR 92; query its final-head checks and Stele TASK-915 for the merge receipt. Installed synchronization remains gated by other sessions releasing shared-checkout ownership (TASK-922).
