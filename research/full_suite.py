@@ -18,10 +18,10 @@ Run it with the soltui interpreter (it has numpy/pandas/Textual):
 2. **Registry sweep**: `soltui.bgworker` per asset -- every strategy card, every horizon,
    perturbation tiers 0-2 (about 1,060 CPCV jobs per asset). Results land in the file the
    Strategies and Queue tabs read.
-3. **Compound sweep**: `soltui.compound sweep --perturb --aggregate-grid` -- every coin in
+3. **Compound sweep**: `soltui.compound sweep --perturb --aggregate-grid --frontier` -- every coin in
    parallel, each with its own settings: the five-minute compound, each metric alone,
-   one-at-a-time parameter variations and the threshold/gate/regime/leverage grid (about 300
-   configurations per coin), on 5m bars built from the full 1-minute history. Results land in
+   one-at-a-time parameter variations, the threshold/gate/regime/leverage grid and the
+   1h/4h/24h frontier variants for every historical metric, on 5m bars built from the full 1-minute history. Results land in
    the file the Compound 5m tab reads.
 
 Every configuration count is printed. That count is the multiple-testing denominator: the best
@@ -118,11 +118,11 @@ def sweep_steps(assets: list[str], data: Path, args: argparse.Namespace, *,
                 print(f"  skip registry sweep {a}: no {a}_1d.csv in the cache", flush=True)
                 continue
             out.append((f"registry sweep {a} (every card, horizon and tier)", [
-                py, "-m", "soltui.bgworker", "--asset", a, "--max-tier", str(args.max_tier)]))
+                py, "-m", "soltui.bgworker", "--asset", a, "--max-tier", str(args.max_tier), "--data-dir", str(data)]))
     if not args.no_compound:
         out.append(("compound 5m sweep (every metric, variation and asset with 5m data)", [
             py, "-m", "soltui.compound", "sweep", "--assets", ",".join(assets), "--perturb",
-            "--aggregate-grid", "--workers", str(args.workers)]))
+            "--aggregate-grid", "--frontier", "--workers", str(args.workers)]))
     return out
 
 
@@ -174,7 +174,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--fetch-only", action="store_true")
     ap.add_argument("--no-registry", action="store_true", help="skip the registry sweep")
     ap.add_argument("--no-compound", action="store_true", help="skip the compound 5m sweep")
-    ap.add_argument("--keep-results", action="store_true", help="do not archive registry results after a fetch")
+    results = ap.add_mutually_exclusive_group()
+    results.add_argument("--keep-results", action="store_true", help="do not archive registry results after a fetch")
+    results.add_argument("--archive-results", action="store_true",
+                         help="start a fresh registry results file, including with --skip-fetch")
     ap.add_argument("--continue-on-fetch-error", action="store_true",
                     help="run the sweeps even if a fetch step failed (default: stop before them)")
     ap.add_argument("--plan", action="store_true", help="print the steps and exit")
@@ -224,7 +227,7 @@ def main(argv: list[str] | None = None) -> int:
             print("Fix it and re-run, or pass --continue-on-fetch-error.")
             return 1
     sweeps = sweep_steps(assets, data, args)
-    if any(cmd[2] == "soltui.bgworker" for _, cmd in sweeps) and not args.skip_fetch and not args.keep_results:
+    if any(cmd[2] == "soltui.bgworker" for _, cmd in sweeps) and (args.archive_results or (not args.skip_fetch and not args.keep_results)):
         dest = archive_registry_results(stamp)
         if dest:
             print(f"archived previous registry results to {dest}", flush=True)
