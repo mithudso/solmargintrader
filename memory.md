@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 143
-Delta: v142 to v143; preserve concurrent history and record editor implementation.
+Version: 144
+Delta: v143 to v144; retain guide separation and editor work.
 Version: 106
 Delta: v105 to v106; start EPIC-980 research tracks.
 Version: 128

@@ -77,6 +77,22 @@ class CardReadinessTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "both active and incomplete"):
             self.check()
 
+    def test_guide_and_research_locations_keep_evidence_and_stay_out_of_runtime(self):
+        for folder, disposition in (("guides", "guide"), ("strategy_research", "research")):
+            with self.subTest(disposition=disposition):
+                old = self.directory / "incomplete" / "research_example.md"
+                target = self.repo / "backtester" / folder / old.name
+                target.parent.mkdir(exist_ok=True)
+                old.rename(target)
+                row = self.review["cards"][1]
+                row["disposition"] = disposition
+                row["path"] = target.relative_to(self.repo).as_posix()
+                self.check()
+                self.assertNotIn("research_example", load_all(self.directory))
+                target.rename(old)
+                row["disposition"] = "incomplete"
+                row["path"] = old.relative_to(self.repo).as_posix()
+
     def test_missing_or_duplicate_review_is_refused(self):
         self.review["cards"] = [self.review["cards"][0]] * 2
         with self.assertRaisesRegex(ValueError, "exactly once"):

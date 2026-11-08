@@ -1,28 +1,19 @@
 # Strategy cards
 
-## Active specifications and incomplete research
+## Implemented strategies and research
 
-Cards directly in this directory form the active catalog. A card can stay here
-when it defines a reproducible indicator calculation or strategy rule set, even
-if its repository implementation has not been written. Check `status`, `runner`
-and `registry_key` before trying to run it: `spec-only` still has no runner.
-An independently usable principal output or explicitly selectable complete branch
-can qualify. Its review states that narrow scope and any missing sibling features.
+Cards directly in this directory are registered strategies with an implemented runner. The normal card loader
+reads only this directory. An implemented strategy can require external data or a
+separate runner before it can be tested.
 
-`incomplete/` holds newly extracted TradingView cards whose essential mechanics
-are missing or too vague to implement. The normal card loader does not recurse
-into that directory. The cards remain available through the Docs browser for
-further research. No original measured or implemented card was moved.
+Educational guides and non-registered pair and bot templates are in `backtester/guides/`. Cards without a runner are in
+`backtester/strategy_research/`. `incomplete/` holds cards with missing mechanics.
+These locations preserve the card text and do not appear in the active strategy list.
 
-`research/tradingview-card-readiness.json` records the decision, exact supporting
-card passages and research gaps for every card from the extraction. A formula
-must define the card's own calculation; names, marketing, unrelated component
-formulas and input lists alone do not establish a complete specification.
-
-To promote an incomplete card, recover its missing mechanics, document the
-inputs and computation, move it back here and update its reviewed disposition,
-evidence and hash. Run `python3 scripts/check_tradingview_cards.py`; that checker
-validates both directories and refuses missing, duplicated or stale reviews.
+`research/tradingview-card-readiness.json` binds each extracted card to its current
+location, hash, supporting passages and research gaps. When a strategy gains an
+implementation, update its card and reviewed location together. Run
+`python3 scripts/check_tradingview_cards.py` to check coverage and evidence.
 
 One file per strategy or signal. Each card is self-contained: the equations, the code
 pointer, the reasoning, the failure modes, the caveats, the measured results, and the

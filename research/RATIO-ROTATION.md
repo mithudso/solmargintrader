@@ -58,7 +58,7 @@ rebalance, which single asset do I want to hold. That is what the rest of this
 document measures.
 
 The genuinely different strategy — separately quoted cross pairs whose product
-departs from one — is triangular arbitrage. `backtester/strategy_cards/triangular_arbitrage.md`
+departs from one — is triangular arbitrage. `backtester/guides/triangular_arbitrage.md`
 already covers it and explains why this project's data cannot evaluate it. Nothing
 here bears on that card's subject.
 

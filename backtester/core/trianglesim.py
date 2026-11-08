@@ -1,6 +1,6 @@
 """Triangular-arbitrage event replay over top-of-book quote snapshots.
 
-`strategy_cards/triangular_arbitrage.md` specifies the mechanism; this module is the
+`guides/triangular_arbitrage.md` specifies the mechanism; this module is the
 event replay it calls for. A triangle is USD plus two coins A and B with three markets:
 `A-USD`, `B-USD` and the cross `A-B` (quoted in B per A). With `r_XY` the units of Y
 received per unit of X sold, at the touch:

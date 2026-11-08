@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 74
-Delta: v73 to v74; preserve concurrent history and record editor request.
+Version: 75
+Delta: v74 to v75; retain guide separation and editor request.
 Version: 60
 Delta: v59 to v60; start EPIC-980 research tracks.
 Version: 66
