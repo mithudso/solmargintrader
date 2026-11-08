@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 53
-Delta: v52 to v53; retain hook history and add HTML converter request.
+Version: 54
+Delta: v53 to v54; preserve concurrent converter records and Base wallet acceptance.
 
 ## v1 - 2026-11-06
 
@@ -408,3 +408,9 @@ Write a script to convert all of the html files in the subfolders here into text
 
 Target: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com.
 Implementation: /Users/mitch/dev/solmargintrader-wt-01a1ba63/scripts/html_to_markdown.py.
+
+## v54 - 2026-11-08
+
+```text
+Look at https://docs.base.org/llms-full.txt and determine how to check the coins in a wallet, and then implement that in this repo, the soltui cannot check my base chain accounts.
+```

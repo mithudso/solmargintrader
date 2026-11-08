@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:16:55+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:21:00+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -29,7 +29,7 @@ Strongest files:
 
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 - `skills/trading-and-investing/references/trading-risk-management.md` (84 hits)
-- `docs/FILES.md` (73 hits)
+- `docs/FILES.md` (74 hits)
 - `llms-full.txt` (67 hits)
 - `skills/trading-and-investing/references/strategies-and-risk.md` (54 hits)
 - `docs/TRADINGVIEW-REFERENCE.md` (52 hits)
@@ -179,11 +179,11 @@ Zero parameters, and it out-ranked all but one or two strategies on SOL and all 
 
 Strongest files:
 
-- `docs/FILES.md` (34 hits)
+- `docs/FILES.md` (36 hits)
 - `research/perturb.py` (29 hits)
 - `research/RANKED_LISTS.md` (25 hits)
 - `backtester/core/deflated_sharpe.py` (21 hits)
-- `memory.md` (15 hits)
+- `memory.md` (16 hits)
 - `backtester/core/dcasim.py` (15 hits)
 - `docs/CONCEPTS.md` (14 hits)
 - `backtester/core/gridsim.py` (14 hits)
@@ -243,7 +243,7 @@ Strongest files:
 - `soltui/compound.py` (16 hits)
 - `research/coin-intelligence/sol-solana.md` (11 hits)
 - `research/triggers.py` (10 hits)
-- `docs/CONCEPTS.md` (9 hits)
+- `research/results/perturb_all_singles_long.txt` (9 hits)
 
 Full list: `python3 index/search.py --concept robustness -n 92`
 

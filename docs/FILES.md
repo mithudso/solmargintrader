@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `eea27e2` (2026-11-08T10:16:55+00:00). 776 tracked files, 13.0 MB.
+**Generated** from `index/INDEX.json` at commit `5f57462` (2026-11-08T10:21:00+00:00). 778 tracked files, 13.8 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (556 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 270/284 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (558 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 270/284 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (119 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 18 files
-- [`docs`](#docs) — 39 files
+- [`docs`](#docs) — 41 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 145 files
 - [`research`](#research) — 155 files
@@ -185,9 +185,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 800 lines · 121,716 B · description: **extracted**
+`doc` · 834 lines · 127,054 B · description: **extracted**
 
-**Purpose.** Version: 78 Delta: v77 to v78; retain concurrent hook history and record converter acceptance. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 82 Delta: v81 to v82; preserve concurrent converter records and Base wallet acceptance. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -201,9 +201,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 411 lines · 25,376 B · description: **extracted**
+`doc` · 417 lines · 25,604 B · description: **extracted**
 
-**Purpose.** Version: 53 Delta: v52 to v53; retain hook history and add HTML converter request. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 54 Delta: v53 to v54; preserve concurrent converter records and Base wallet acceptance. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -213,7 +213,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-39 files.
+41 files.
 
 #### `docs/API.md`
 
@@ -233,7 +233,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/BASE-WALLET-QUERIES.md`
 
-`doc` · 68 lines · 3,997 B · description: **extracted**
+`doc` · 97 lines · 5,750 B · description: **extracted**
 
 **Purpose.** The owner's Base address is `0x901a89cEC0608eB5435A915f006b45bD46405314` (CLAUDE.md, "Live on-chain actions"). The Coinbase Developer Platform (CDP) MCP server reads it without any key in this repo: the server holds its own credentials (`cdp_env` reports `Active: live`). This page is the recipe agents
 
@@ -265,7 +265,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,302 B · description: **extracted**
+`doc` · 316 lines · 15,321 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -281,9 +281,25 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 7144 lines · 357,482 B · description: **extracted**
+`doc` · 7406 lines · 372,153 B · description: **extracted**
 
-**Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
+**Purpose.** <<<<<<< HEAD ======= Regenerate with:
+
+**Use.** Read it.
+
+#### `docs/FILES.md`
+
+`doc` · 7406 lines · 372,153 B · description: **extracted**
+
+**Purpose.** <<<<<<< HEAD ======= Regenerate with:
+
+**Use.** Read it.
+
+#### `docs/FILES.md`
+
+`doc` · 7406 lines · 372,153 B · description: **extracted**
+
+**Purpose.** <<<<<<< HEAD ======= Regenerate with:
 
 **Use.** Read it.
 
@@ -331,7 +347,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 216 lines · 16,924 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 872 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 884 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
 **Use.** Read it.
 
@@ -377,7 +393,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/external-calls.md`
 
-`doc` · 125 lines · 13,981 B · description: **extracted**
+`doc` · 136 lines · 14,812 B · description: **extracted**
 
 **Purpose.** Inventory reviewed against source on 2026-11-06. A call includes public HTTP/RPC, MongoDB, browser/OS services, and child processes. The tables name the transport boundary and the logical callers that share it; they do not count each RPC inside a
 
@@ -4361,7 +4377,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/README.md`
 
-`doc` · 504 lines · 40,629 B · description: **extracted**
+`doc` · 508 lines · 40,956 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -4475,7 +4491,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 2181 lines · 103,441 B · description: **extracted**
+`code-python` · 2181 lines · 103,478 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -4821,7 +4837,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 4279 lines · 216,413 B · description: **extracted**
+`code-python` · 4281 lines · 216,540 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -4841,9 +4857,9 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/wallet.py`
 
-`code-python` · 848 lines · 43,405 B · description: **extracted**
+`code-python` · 987 lines · 51,694 B · description: **extracted**
 
-**Purpose.** Read-only wallet discovery: what the owner's two public addresses hold, and where it lives. Nothing here can move funds. There is no key, no signature, no transaction and no write to a chain: only public JSON-RPC reads (`getBalance`, `getTokenAccountsByOwner`, `getProgramAccounts`, `eth_getBalance`, `eth_call` to `balanceOf`), the public Jupiter, DefiLlama and DexScreener price APIs, and, when it
+**Purpose.** Read-only wallet discovery: what the owner's two public addresses hold, and where it lives. Nothing here can move funds. There is no key, no signature, no transaction and no write to a chain: only JSON-RPC reads (`getBalance`, `getTokenAccountsByOwner`, `getProgramAccounts`, `eth_getBalance`, `eth_call` to `balanceOf`), the public Jupiter, DefiLlama and DexScreener price APIs, the optional configu
 
 **Contents.** Defines `LABEL`, `USER_AGENT`, `SOLANA_RPC`, `BASE_RPCS`, `JUPITER_PRICE`, `JUPITER_TOKENS`, `BLOCKSCOUT`, `LLAMA_PRICES`, `DEXSCREENER`, `TOKEN_PROGRAM` and 30 more.
 
@@ -5223,11 +5239,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_wallet.py`
 
-`test` · 569 lines · 29,872 B · description: **extracted**
+`test` · 721 lines · 38,662 B · description: **extracted**
 
 **Purpose.** Wallet discovery on recorded fixtures: no network, no key, no transaction. `fixtures/wallet/*.json` hold real replies recorded on 2026-11-07 for the owner's two public addresses (Solana token accounts, Jupiter price and token data, Base eth_getBalance / balanceOf / DefiLlama / DexScreener).
 
-**Contents.** Defines `FIX`, `SOL_ADDR`, `BASE_ADDR`, `USDC_BASE`, `JUPSOL`, `SPAM_MINT`, `SPAM_TOKEN`, `load()`, `class Fake`, `class SolanaTests` and 6 more. Depends on `soltui`.
+**Contents.** Defines `FIX`, `SOL_ADDR`, `BASE_ADDR`, `USDC_BASE`, `JUPSOL`, `SPAM_MINT`, `SPAM_TOKEN`, `load()`, `class Fake`, `class SolanaTests` and 7 more. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_wallet.py -q`
 

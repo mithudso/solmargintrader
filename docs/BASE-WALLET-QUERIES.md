@@ -65,3 +65,32 @@ GROUP BY to_address ORDER BY last_tx DESC LIMIT 50
 Contracts the owner's own transactions touched in the 14 days to 2026-11-07 include USDC, WETH, the real
 cbBTC, AERO (`0x9401…8631`), gtUSDCp, the Aero NonfungiblePositionManager (`0x4857…C60b`) and
 SwapRouter (`0x9Ee3…D418`): the liquidity daemon's work.
+
+## SolTUI runtime integration (2026-11-08)
+
+The Wallet tab now uses the same CDP balance endpoint through the locally configured `cdp` CLI.
+`soltui/wallet.py:HttpFetcher.base_token_balances` invokes only the fixed read command:
+
+```bash
+cdp data evm token-balances base 0x901a89cEC0608eB5435A915f006b45bD46405314 pageSize==100
+```
+
+The scanner passes each `nextPageToken` back as `pageToken==...`. It bounds every subprocess by the
+scan deadline and stops after 25 pages. The CLI owns authentication; SolTUI never opens its credential
+files and never displays its stderr. If the CLI is missing or fails, the summary explains that failure
+and the scanner tries paginated Blockscout plus the trusted RPC list. Earlier pages survive a later failure.
+
+Base's current documentation specifies `eth_getBalance(address, "latest")` for native ETH and
+`eth_call` to `balanceOf(address)` for a known token. JSON-RPC does not enumerate ERC-20 holdings.
+Sources checked live:
+
+- https://docs.base.org/llms-full.txt
+- https://docs.base.org/base-chain/api-reference/ethereum-json-rpc-api/eth_getBalance
+- https://docs.base.org/build-on-base/issue-rwa/cancel-blocked-units
+
+Trusted and explicitly requested tokens receive RPC checks. Other tokens use indexed balances only,
+carry `verified_onchain=false`, and stay excluded until explicitly requested or trusted. This runtime
+filter is conservative; the time-bounded SQL recipe above remains useful for investigating which
+contracts the owner actually used. Native ETH's indexed sentinel is never called as an ERC-20.
+The AERO entry now uses `0x940181a94A35A4569E4529A3CDfB74e38FD98631`, consistent with the owner-query
+record above, rather than the unrelated `0x3f5b...` address formerly copied into the wallet list.

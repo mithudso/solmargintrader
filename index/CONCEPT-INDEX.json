@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T10:17:02+00:00",
+  "generatedAt": "2026-11-08T10:21:08+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -118,6 +118,10 @@
           "hits": 21
         },
         {
+          "path": "memory.md",
+          "hits": 21
+        },
+        {
           "path": "liquidity/src/aero_lp/providers.py",
           "hits": 21
         },
@@ -127,10 +131,6 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 20
-        },
-        {
-          "path": "memory.md",
           "hits": 20
         },
         {
@@ -246,7 +246,7 @@
         },
         {
           "path": "soltui/wallet.py",
-          "hits": 48
+          "hits": 47
         },
         {
           "path": "extension/src/market/holdings.js",
@@ -1421,7 +1421,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 15
+          "hits": 16
         },
         {
           "path": "backtester/core/dcasim.py",
@@ -1563,7 +1563,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 12
+          "hits": 13
         },
         {
           "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
@@ -2249,6 +2249,10 @@
           "hits": 10
         },
         {
+          "path": "docs/CONCEPTS.md",
+          "hits": 9
+        },
+        {
           "path": "research/results/perturb_all_singles_long.txt",
           "hits": 9
         },
@@ -2259,10 +2263,6 @@
         {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 9
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 8
         },
         {
           "path": "research/results/perturb_all_singles_short.txt",

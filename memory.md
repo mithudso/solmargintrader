@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 78
-Delta: v77 to v78; retain concurrent hook history and record converter acceptance.
+Version: 82
+Delta: v81 to v82; preserve concurrent converter records and Base wallet acceptance.
 
 ## v1 - 2026-11-06
 
@@ -797,3 +797,37 @@ Independent live-acceptance-verifier confirmed all 31,880 output hashes, sizes, 
 PR 90: https://github.com/mithudso/solmargintrader/pull/90. Concurrent PR 88 merged as d355b694f3d56d7ab4ee0456691bf51c54352298 while CI ran. Retain all hook records, renumber converter entries after them, and rebuild offline indexes. Converter code and installed script stay unchanged. Current delivery checkpoint is /Users/mitch/dev/tradingview-markdown/conversion-memory.json.
 
 Remaining: pass checks on the updated final head, merge PR 90, verify remote contents and clean only the converter worktree/branch.
+
+## v79 - 2026-11-08: Base wallet discovery (TASK-911)
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba75; branch agent-01a1ba75; base afaa03a. Preserve the shared checkout and all other worktrees.
+
+Verified Base llms-full live: ETH uses eth_getBalance(address, latest), ERC-20 uses eth_call balanceOf(address); RPC alone does not enumerate tokens. Context7 cached pending/Flashblocks guidance is stale; current live docs explicitly prefer latest. Live baseline discovers ETH, USDC and gtUSDCp but Blockscout returns HTTP 403 and no other tokens can be discovered. The configured cdp CLI returns paginated balances successfully (100 rows on first page). KNOW-852 describes that existing indexed source.
+
+Decision: use the configured cdp CLI for indexed balances, bounded pages/timeouts and sanitized failures, with public Blockscout/trusted RPC fallback. SolTUI must never load private keys or call unknown unsolicited token contracts. Preserve price confidence and airdrop exclusions.
+
+Remaining: implement, focused regression tests, live acceptance and suite/docs/index gates, commit/push/PR/green CI/merge, verify remote content.
+
+## v80 - 2026-11-08: Base wallet verification
+
+Implemented in soltui/wallet.py, commands.py and tui.py: bounded configured CDP CLI balance pages, paginated Blockscout fallback, trusted/requested RPC balance checks, indexed provenance, safe malformed responses, conservative unknown-token exclusions and batched price URLs. No private keys or credential files loaded. CLI stderr is sanitized. Corrected AERO wallet-list address to the canonical address already recorded in docs/BASE-WALLET-QUERIES.md; liquidity configuration stays unchanged.
+
+Verification: 12 new regression tests. 90 wallet/settings/integration tests pass; 73 wallet/Ethereum/UTXO tests pass. Independent live-acceptance verifier exercised the production _portfolio_scan handler with saved Settings: status ok, partial false; ETH 0.000558130650770097, USDC 1.0, gtUSDCp 77.44216571536937; 387 unrecognized rows excluded. Wallet compose/render shows those assets and indexed/exclusion labels. Full SolTUI suite running in /tmp/soltui-base-suite-01a1ba75.log.
+
+Installation limit: /Users/mitch/.local/bin/soltui delegates to shared /Users/mitch/dev/solmargintrader at a75f5b6. Two running consoles have already imported old code. The shared checkout is held by other live sessions and has unrelated dirty work; do not change it or kill/restart their processes. Deliver the merged source; fast-forward the shared checkout and reopen consoles only after those owners release it. Avoid import overlays or silently retargeting the launcher.
+
+Remaining: full suite/docs/index checks, final diff, commit/push/PR/passing CI/merge, verify remote content. Installed-console parity is not yet established.
+
+## v81 - 2026-11-08: frozen Base wallet delivery checkpoint
+
+Source delivery: https://github.com/mithudso/solmargintrader/pull/92 (agent-01a1ba75). Final CI and merge receipts live in Stele TASK-915 and the PR; query them before repeating delivery. The concurrent hook-repair records from PR 88 were preserved. The offline index was regenerated after resolving Git stages; duplicate-path check passes. KNOW-919 records the transient DuplicateKey failure from rebuilding before stages were resolved. No application bug remained from that generated-index issue.
+
+Frozen independent acceptance: production _portfolio_scan with actual saved Settings and production Wallet renderer both passed in 9.35 seconds. ETH 0.000558130650770097; USDC 1.0; gtUSDCp 77.44216571536937; 387 excluded; 390 rendered rows; status ok, partial false, discovery complete, total complete, no errors. wallet.py SHA256 190d5046bd15c46c7d8dacc5e8ea4217170af536e9f373cc4aea89b73bf3afd5; tui.py SHA256 609b0a860c6c08f1c52dca36a9f06e587165517b52ae2225a9af1f6586bf6999. No files or services were changed by acceptance.
+
+Local verification: 90 wallet/settings/integration tests and 73 wallet/Ethereum/UTXO tests pass; all 900 backtester tests pass; compileall, docs drift and index hash gates pass. Full-suite receipts are in /tmp/soltui-base-suite-final-01a1ba75.log and the PR's final-head CI. Use the final receipts rather than the terminated earlier run that observed a transient merge index.
+
+Remaining product step: installed synchronization and fresh-console acceptance after shared-session ownership is released. KNOW-921 records the launcher/check-out mismatch. The source change is ready for remote delivery; preserve all unrelated original checkout changes and running consoles. Do not retarget launchers or use wallet-only import overlays. The live source behavior is verified; installed parity is a separate unresolved gate.
+
+## v82 - 2026-11-08: final concurrent integration
+
+Preserved PR 90's converter records and workflow history after origin/master advanced to eea27e2. Wallet, commands and TUI source hashes did not change in this merge. The final local full suite passed all 884 SolTUI tests (2 optional skips) in 709.185 seconds, and all 900 backtester tests passed. Stage resolved records before rebuilding indexes, as KNOW-919 requires. Source delivery remains PR 92; query its final-head checks and Stele TASK-915 for the merge receipt. Installed synchronization remains gated by other sessions releasing shared-checkout ownership (TASK-922).
