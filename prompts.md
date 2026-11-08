@@ -460,3 +460,11 @@ Run the /dr skill on all of the frontier children concepts of https://llmsx.org/
 ```
 
 Scope: all 18 run-start nonlinear frontier labels plus the full crypto trading-bot family. Preserve accepted TASK-905 research and other active work.
+
+## v61 - 2026-11-08 (Firecrawl usage check)
+
+```text
+Are you using the firecrawl skills and mcp server?
+```
+
+Confirmed Firecrawl skills, MCP and worker CLI collection are active. Existing two-track request continues.

@@ -1078,3 +1078,15 @@ Active: TASK-981 frontier research and TASK-982 full-suite bots under EPIC-980. 
 Canonical private continuation: /Users/mitch/.global-ai-hub/research/trading-research-epic980/memory.md and frontier-inventory.json. Bot track owns its private namespace. Root worktree: /Users/mitch/dev/worktrees/solmargintrader-trading-research-epic980. No trading, backtest or risk-configuration change is requested.
 
 Remaining: source-backed child research and bot family exploration; claim gates, skills/packs/rollup, optimization/indexes and registration; serial Git/publication delivery and final live acceptance.
+
+## v107 - 2026-11-08 (EPIC-980 review checkpoint)
+
+Version:107. Delta:v106 to v107; first cohort accepted and research runtime repair delivered.
+
+TASK-981:18run-start frontier labels across4cohorts. Conditional3concepts/61structured+11auxiliary assertions passed72/72review; all original-group ledgers and exact-spans verified. Graph4concepts/96claims audited; one numeric quote repair preserves claim text, fresh gate running. Uncertainty4concepts/74claims drafted and under independent audit. Multiplicity7concepts researching.
+
+TASK-982:14new concepts plus reused accepted grid coverage; all13user labels retained. First7bot concepts drafted154claims, authority/literal repairs underway; remaining7product/execution concepts researching. Full CFE re-expansion, canonical-bound private LCA/LDO packs, rollup and keyword indexing remain substantive work. Semantic embeddings stay paused.
+
+Necessary parser repair TASK-994 delivered by llms-explorer PR310, merge97eb8e9e4bc978f822c2cf55a24d5af8c9773290. Both installed modules match merged bytes and reparse retained completed outputs; malformed tails still fail. Original divergent checkout and unrelated helpers preserved. Website staging now research/trading-publish-epic980.
+
+Canonical private continuation v1.4.0: /Users/mitch/.global-ai-hub/research/trading-research-epic980/memory.md. No serial finish/publication yet; root owns combinedhub quality and all Git delivery. Remaining: complete audits/gates, guides/hub quality, substantive bot full-suite, serial publication, CI/merges and live acceptance. Do not duplicate active coordinator PID47913 or mutate shared original checkouts.
