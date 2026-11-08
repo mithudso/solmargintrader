@@ -177,6 +177,36 @@ jobs:
             python3 scripts/soltui_ci.py --shard ${{ matrix.shard }}
           fi
 
+  # Bounded changed-area checks on PRs and direct pushes. Full coverage is opt-in.
+  soltui-targeted:
+    name: soltui (targeted macos)
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: '3.13'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          pip install -r backtester/requirements.txt
+          grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
+          pip install -r "$RUNNER_TEMP/soltui-req.txt"
+      - name: Verify selector
+        run: python3 -m unittest scripts.test_soltui_ci
+      - name: Changed-area tests and bridge smoke
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -n "$BASE" ] && git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            python3 scripts/soltui_ci.py --targeted --base "$BASE" --shard 0 --shards 1
+          else
+            python3 scripts/soltui_ci.py --targeted --shard 0 --shards 1
+          fi
+
   # The mongo tests skip themselves when no server is listening, which would make
   # this job silently vacuous. A service container is the point: it makes the
   # integration half -- strict validation, provenance, and above all the

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T13:37:26+00:00",
+  "generatedAt": "2026-11-08T13:40:17+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -245,10 +245,6 @@
           "hits": 22
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 21
-        },
-        {
           "path": "extension/README.md",
           "hits": 21
         },
@@ -275,6 +271,10 @@
         {
           "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
           "hits": 20
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 19
         },
         {
           "path": "soltui/commands.py",
@@ -527,6 +527,10 @@
           "hits": 30
         },
         {
+          "path": "docs/CONCEPTS.md",
+          "hits": 27
+        },
+        {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 27
         },
@@ -552,10 +556,6 @@
         },
         {
           "path": "docs/code-deep-optimizer-2026-11-06.md",
-          "hits": 25
-        },
-        {
-          "path": "extension/src/ui/ui.css",
           "hits": 25
         }
       ],
@@ -690,11 +690,11 @@
           "hits": 30
         },
         {
-          "path": "executor/src/executor/txverify.py",
+          "path": "docs/CONCEPTS.md",
           "hits": 29
         },
         {
-          "path": "soltui/coin_fit.py",
+          "path": "executor/src/executor/txverify.py",
           "hits": 29
         }
       ],
@@ -1215,12 +1215,12 @@
           "hits": 24
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 22
         },
         {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 22
+          "path": "docs/CONCEPTS.md",
+          "hits": 20
         },
         {
           "path": "docs/design/soltui-v2/mockup.py",
@@ -1429,15 +1429,15 @@
           "hits": 15
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 14
-        },
-        {
           "path": "backtester/core/gridsim.py",
           "hits": 14
         },
         {
           "path": "backtester/core/report.py",
+          "hits": 13
+        },
+        {
+          "path": "docs/CONCEPTS.md",
           "hits": 13
         },
         {
@@ -1709,12 +1709,12 @@
           "hits": 11
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 10
         },
         {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 10
+          "path": "docs/CONCEPTS.md",
+          "hits": 9
         },
         {
           "path": "soltui/experiment_screens.py",
@@ -1848,16 +1848,16 @@
           "hits": 23
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 22
-        },
-        {
           "path": "docs/TRADINGVIEW-CARD-FILES.md",
           "hits": 20
         },
         {
           "path": "soltui/signals.py",
           "hits": 20
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 19
         },
         {
           "path": "research/results/cpcv_tables.md",
@@ -2545,10 +2545,6 @@
           "hits": 11
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 11
-        },
-        {
           "path": "research/decide.py",
           "hits": 11
         },
@@ -2562,6 +2558,10 @@
         },
         {
           "path": "backtester/tests/test_scorecard.py",
+          "hits": 10
+        },
+        {
+          "path": "docs/CONCEPTS.md",
           "hits": 10
         },
         {
