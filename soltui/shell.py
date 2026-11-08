@@ -198,7 +198,6 @@ DESTINATIONS: tuple[Destination, ...] = (
         View("tab-signals", "Indicators", was="Signals"),
     )),
     Destination("money", "Money", "4", "What is my real money doing?", (
-        View("tab-liquidity", "Aero LP", was="Liquidity"),
         View("tab-pnl", "P&L"),
         View("tab-wallet", "Wallet"),
     ), live_money=True),
@@ -206,6 +205,9 @@ DESTINATIONS: tuple[Destination, ...] = (
         View("tab-docs", "Docs"),
         View("tab-research", "Findings", was="Research"),
     )),
+    Destination("archive", "Archive", "6", "What was retired?", (
+        View("tab-liquidity", "Aero LP", was="Liquidity"),
+    ), live_money=True),
     Destination("settings", "Settings", ",", "What data, costs and wallets does the research use?", (
         View("tab-settings", "Settings"),
     )),

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 82
-Delta: v81 to v82; record request to archive unprofitable liquidity tools.
+Version: 83
+Delta: v82 to v83; record archive and withdrawal confirmations.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -692,3 +692,11 @@ Yes it's abandonedd
 ```text
 Liquidity and so the Aero LP and the positions, and liquidity scout are all unprofitable and should be archived.
 ```
+
+## v83 - 2026-11-08
+
+```text
+1. yes. 2. yes
+```
+
+Confirmation: move liquidity views into an Archive section and withdraw any remaining Aero LP funds to the wallet.
