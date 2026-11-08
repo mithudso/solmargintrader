@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 59
-Delta: v58 to v59; apply requested canonical card moves immediately.
+Version: 60
+Delta: v59 to v60; start EPIC-980 research tracks.
 
 ## v1 - 2026-11-06
 
@@ -452,3 +452,11 @@ Keep complete indicator specifications too (Recommended)
 ```text
 I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
 ```
+
+## v60 - 2026-11-08 (EPIC-980 research request)
+
+```text
+Run the /dr skill on all of the frontier children concepts of https://llmsx.org/tree/nonlinear-lead-lag-inference-conditional-information-transfer-finite-sample-uncertainty-lag-selection-multiplicity-and-directed-graph-preservation/ and run the full-suite skill on crypto trading bots: trend-following, mean-reversion, signal-based, arbitrage, loop, combo, TWAP, geographic, statistical, dip-buying, martingale, rebalancing, moon  https://www.tradingview.com/chart/GOLD/CvDZ1ttE-The-5-Types-of-Trading-Bots-Every-Trader-Should-Know/
+```
+
+Scope: all 18 run-start nonlinear frontier labels plus the full crypto trading-bot family. Preserve accepted TASK-905 research and other active work.

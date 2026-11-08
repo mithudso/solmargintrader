@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 105
-Delta: v104 to v105; apply requested canonical card moves immediately.
+Version: 106
+Delta: v105 to v106; start EPIC-980 research tracks.
 
 ## v1 - 2026-11-06
 
@@ -1068,3 +1068,13 @@ Integrated origin/master 0b46a88 after concurrent PR94 landed while this task op
 ## v105 - 2026-11-08 (canonical incomplete directory correction)
 
 The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.
+
+## v106 - 2026-11-08 (EPIC-980 research start)
+
+Version: 106. Delta: v105 to v106; preserve the new two-track research request and exact run-start frontier.
+
+Active: TASK-981 frontier research and TASK-982 full-suite bots under EPIC-980. The parent has18 unresearched child labels; four broader children already accepted by TASK-905 remain frozen. /dr standard depth applies; full-suite uses CFE maxRounds3, threshold3.2 and no default concept-count cap. Ample Firecrawl is authorized. Source-sharing cohorts, exact source spans and research-gate/v4 are required.
+
+Canonical private continuation: /Users/mitch/.global-ai-hub/research/trading-research-epic980/memory.md and frontier-inventory.json. Bot track owns its private namespace. Root worktree: /Users/mitch/dev/worktrees/solmargintrader-trading-research-epic980. No trading, backtest or risk-configuration change is requested.
+
+Remaining: source-backed child research and bot family exploration; claim gates, skills/packs/rollup, optimization/indexes and registration; serial Git/publication delivery and final live acceptance.
