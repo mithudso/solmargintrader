@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 175
-Delta: v174 to v175; record paper experiment integration after status delivery.
+Version: 176
+Delta: v175 to v176; record the prospective paper run and its source.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1698,3 +1698,7 @@ The prospective Experiments tab and detached paper runner are implemented in /Us
 ## v175 - 2026-11-08
 
 PR 118 merged at 259005c30976a0e9cce45cd2c8135586ce755f81 after its CI passed. The paper experiment branch has integrated the status and historical Dry Run changes and preserves both continuation records. The original SOL sweep segment contains no rankable positive hourly candidate because the hourly candles have gaps; its highest positive rankable daily strategy is vol_regime, which is not evidence that it will work on minute candles. Remaining: validate the combined branch, refresh its offline indexes, finish delivery, and verify the loaded UI before starting a prospective paper run.
+
+## v176 - 2026-11-08
+
+Started prospective paper experiment 7f7057972ebb32c82fcadf75 from /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments as PID 44729. It uses SOL, vol_regime with the highest eligible daily-sweep parameters, a five-minute horizon and $1000 paper capital. It runs on minute candles, so the daily result does not establish minute profitability. Its first prediction was recorded and its balance remained $1000. No real order was sent. Preserve the worktree while this detached process runs, and check its current lock and status before asserting it remains active.
