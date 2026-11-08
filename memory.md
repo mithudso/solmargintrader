@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 110
-Delta: v109 to v110; record passing full suite and ready-for-delivery checkpoint.
+Version: 111
+Delta: v110 to v111; preserve rolling-window continuity without reopening final evidence.
 
 ## v1 - 2026-11-06
 
@@ -1108,3 +1108,11 @@ The orchestration helper passed 8/8. The root llms facts/index received sourced 
 The complete SolTUI suite passed: 947 tests in 721.036 seconds, with two expected skips. Resource warnings were treated as errors. This includes 63 additional test cases. New Python modules and dedicated tests pass Ruff. Documentation counts agree: 900 backtester, 947 SolTUI, 34 mongo, 361 extension; total 2242. Offline repository index hashes agree. The card coverage validator and 11 HTML converter tests pass.
 
 All six implementation capabilities, independent review fixes and actual loaded private-worktree acceptance are complete. Remaining delivery actions are required final-commit CI, merge, remote-content verification, safe default-checkout synchronization, installed-command parity and task-owned cleanup. TASK-962 holds the canonical live delivery receipt; this pre-merge record deliberately does not invent its own future merge SHA.
+
+## v111 - 2026-11-08: sealed-history continuity verified
+
+A final continuity check found that treating every old final reservation as permanently hidden blocked later rolling searches. The store now seals reservations atomically with the final verdict. Later exploration can use sealed periods as training history, while every other final test still refuses those spent dates. Active/paused/unsealed reservations remain protected. Exact own sealed reuse requires complete unchanged baseline/pick cells; new or replaced final evaluations are refused. Existing completed reservations migrate to the sealed state.
+
+Six additional regressions include a five-coin rolling run, fresh later final validation, adoption with zero simulation calls, and historical mutation refusal. Final focused gate: 79 tests passed in 27.137 seconds; Ruff passes. Actual CLI, real simulator, detached controls and headless workbench acceptance were rerun successfully on the final store source, with stable hashes and no remaining fixture workers. The earlier 947-case full run passed before this bounded refinement; final CI covers the current 953 cases (69 additions). Documentation total is 2248.
+
+PR: https://github.com/mithudso/solmargintrader/pull/98 . TASK-962 remains the canonical live receipt for final pushed SHA/checks, merge, remote content, safe installed-checkout parity and cleanup. Other active source edits were detected in the shared checkout; synchronization must preserve them and refuse overlapping changes. No services or live settings were restarted or changed.

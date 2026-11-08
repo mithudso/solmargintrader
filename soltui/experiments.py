@@ -101,7 +101,8 @@ class ExperimentStore:
                 CREATE TABLE IF NOT EXISTS holdouts (
                     bot TEXT NOT NULL, coin TEXT NOT NULL, start REAL NOT NULL, end REAL NOT NULL,
                     run_id TEXT NOT NULL REFERENCES runs(id), candidate_id TEXT NOT NULL,
-                    context TEXT NOT NULL, PRIMARY KEY (bot, coin, start, end));
+                    context TEXT NOT NULL, sealed_at REAL,
+                    PRIMARY KEY (bot, coin, start, end));
                 CREATE INDEX IF NOT EXISTS holdouts_dates ON holdouts(bot, coin, start, end);
                 CREATE TABLE IF NOT EXISTS exposures (
                     bot TEXT NOT NULL, coin TEXT NOT NULL, start REAL NOT NULL, end REAL NOT NULL,
@@ -109,6 +110,14 @@ class ExperimentStore:
                     PRIMARY KEY (bot, coin, start, end, run_id));
                 CREATE INDEX IF NOT EXISTS exposures_dates ON exposures(bot, coin, start, end);
             """)
+            # A durable seal survives the temporary lifecycle states used when
+            # reviewing a completed run before adopting its frozen result.
+            db.execute("BEGIN IMMEDIATE")
+            columns = {row[1] for row in db.execute("PRAGMA table_info(holdouts)")}
+            if "sealed_at" not in columns:
+                db.execute("ALTER TABLE holdouts ADD COLUMN sealed_at REAL")
+                db.execute("""UPDATE holdouts SET sealed_at=(SELECT updated_at FROM runs WHERE id=run_id)
+                              WHERE run_id IN (SELECT id FROM runs WHERE status='completed')""")
 
     @contextmanager
     def _connect(self) -> Iterator[sqlite3.Connection]:
@@ -224,6 +233,8 @@ class ExperimentStore:
                 encoded = canonical(result)
                 db.execute("UPDATE runs SET status='completed',summary=?,updated_at=? WHERE id=?",
                            (encoded, time.time(), run_id))
+                db.execute("UPDATE holdouts SET sealed_at=COALESCE(sealed_at,?) WHERE run_id=?",
+                           (time.time(), run_id))
         return self.get_run(run_id)
 
     def request_control(self, run_id: str, action: str) -> dict[str, Any]:
@@ -244,7 +255,11 @@ class ExperimentStore:
         return {**self.get_run(run_id), "control_applied": applied}
 
     def reserve_exploration(self, run_id: str, intervals: list[dict[str, Any]]) -> dict[str, Any]:
-        """Record dates exposed to search before execution, excluding spent finals."""
+        """Record search exposure, protecting final evidence until its verdict is sealed.
+
+        A sealed final becomes ordinary historical data for later exploration.
+        Its permanent reservation still forbids another run's final validation.
+        """
         normalized = self._intervals(intervals)
         with self._connect() as db:
             db.execute("BEGIN IMMEDIATE")
@@ -252,7 +267,8 @@ class ExperimentStore:
             if run["spec"]["source"] != "native":
                 raise ExperimentError("only native runs reserve exploration dates")
             for coin, start, end in normalized:
-                spent = db.execute("SELECT run_id FROM holdouts WHERE bot=? AND coin=? AND start<? AND end>?",
+                spent = db.execute("""SELECT run_id FROM holdouts
+                                      WHERE bot=? AND coin=? AND start<? AND end>? AND sealed_at IS NULL""",
                                    (run["spec"]["bot"], coin, end, start)).fetchone()
                 if spent is not None:
                     raise ExperimentError(f"exploration for {coin} overlaps reserved final dates; fresh evidence is required")
@@ -302,13 +318,15 @@ class ExperimentStore:
         encoded = canonical(row)
         with self._connect() as db:
             db.execute("BEGIN IMMEDIATE")
+            sealed = False
             if row["split"] == "holdout":
                 if run["spec"]["source"] != "native" or candidate_id not in ("0", run["frozen_candidate"]):
                     raise ExperimentError("holdout cells require a native frozen candidate or baseline")
-                reserved = db.execute("SELECT 1 FROM holdouts WHERE run_id=? AND coin=? AND start<=? AND end>=?",
+                reserved = db.execute("SELECT sealed_at FROM holdouts WHERE run_id=? AND coin=? AND start<=? AND end>=?",
                                       (run_id, row["coin"], start, end)).fetchone()
                 if reserved is None:
                     raise ExperimentError("holdout dates must be reserved before evaluation")
+                sealed = reserved[0] is not None
             elif run["spec"]["source"] == "native":
                 exposed = db.execute("SELECT 1 FROM exposures WHERE run_id=? AND coin=? AND start<=? AND end>=?",
                                      (run_id, row["coin"], start, end)).fetchone()
@@ -321,6 +339,8 @@ class ExperimentStore:
                     return row
                 if json.loads(old[0])["status"] == "completed":
                     raise ExperimentError("completed cell evidence is immutable")
+            if sealed:
+                raise ExperimentError("sealed holdout evidence cannot be evaluated again")
             db.execute("INSERT OR REPLACE INTO cells VALUES (?,?,?,?)", (run_id, candidate_id, cell_key, encoded))
         return row
 
@@ -357,21 +377,40 @@ class ExperimentStore:
             run = self._run(db.execute("SELECT * FROM runs WHERE id=?", (run_id,)).fetchone())
             if run["spec"]["source"] != "native" or run["frozen_candidate"] != candidate_id:
                 raise ExperimentError("reserve holdout only for the native frozen candidate")
-            existing = sorted(tuple(row) for row in db.execute(
-                "SELECT coin,start,end FROM holdouts WHERE run_id=?", (run_id,)))
+            reservations = db.execute(
+                "SELECT coin,start,end,candidate_id,context,sealed_at FROM holdouts WHERE run_id=?",
+                (run_id,)).fetchall()
+            existing = sorted((r["coin"], r["start"], r["end"]) for r in reservations)
             if existing and existing != normalized:
                 raise ExperimentError("a frozen run cannot change its reserved holdout intervals")
             context = fingerprint(run["spec"])
+            if any(r["candidate_id"] != candidate_id or r["context"] != context for r in reservations):
+                raise ExperimentError("reserved holdout candidate or evidence context changed")
+            sealed = bool(reservations) and all(r["sealed_at"] is not None for r in reservations)
+            if sealed:
+                # Public, sealed dates may since have entered another run's
+                # search. Reuse only the already measured exact baseline/pick
+                # pair; never reevaluate a failed or missing measurement.
+                records = [json.loads(r[0]) for r in db.execute(
+                    "SELECT record FROM cells WHERE run_id=?", (run_id,))]
+                for coin, start, end in normalized:
+                    completed = {r["candidate_id"] for r in records
+                                 if r["split"] == "holdout" and r["status"] == "completed"
+                                 and r["coin"] == coin and _timestamp(r["start"]) == start
+                                 and _timestamp(r["end"]) == end}
+                    if not {"0", candidate_id}.issubset(completed):
+                        raise ExperimentError("sealed holdout requires complete frozen evidence; reevaluation refused")
             for coin, start, end in normalized:
                 exposure = db.execute("SELECT run_id FROM exposures WHERE bot=? AND coin=? AND start<? AND end>?",
                                       (run["spec"]["bot"], coin, end, start)).fetchone()
-                if exposure is not None:
+                if exposure is not None and not sealed:
                     raise ExperimentError(f"holdout for {coin} overlaps dates already exposed to exploration; fresh evidence is required")
                 conflict = db.execute("SELECT run_id FROM holdouts WHERE bot=? AND coin=? AND start<? AND end>? AND run_id<>?",
                                       (run["spec"]["bot"], coin, end, start, run_id)).fetchone()
                 if conflict is not None:
                     raise ExperimentError(f"holdout for {coin} overlaps spent dates reserved by experiment {conflict[0]}; fresh evidence is required")
-                db.execute("INSERT OR IGNORE INTO holdouts VALUES (?,?,?,?,?,?,?)",
+                db.execute("""INSERT OR IGNORE INTO holdouts
+                              (bot,coin,start,end,run_id,candidate_id,context) VALUES (?,?,?,?,?,?,?)""",
                            (run["spec"]["bot"], coin, start, end, run_id, candidate_id, context))
         return {"reserved": True, "run_id": run_id, "candidate_id": candidate_id,
                 "intervals": [{"coin": c, "start": s, "end": e} for c, s, e in normalized]}

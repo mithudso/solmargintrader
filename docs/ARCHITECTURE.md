@@ -169,7 +169,9 @@ command registry serves the TUI, CLI and API.
 
 Exploration exposes train/validation only. Final validation freezes one training-selected candidate
 and reserves unused temporal intervals before evaluating it against the baseline. Both exploration
-exposure and final reservations survive search-context changes. Legacy evidence is fenced
+exposure and final reservations survive search-context changes. Sealed final history can enter later
+exploration, while remaining spent for other final tests; active unsealed reservations stay protected.
+Legacy evidence is fenced
 conservatively. Freshness covers recorded local optimization history, not unknown external use.
 Imported TradingView evidence preserves units and provenance, receives compatibility diagnostics,
 and has no native promotion path. See [the guide](optimization-workbench.md).

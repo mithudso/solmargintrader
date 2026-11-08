@@ -1,7 +1,7 @@
 # Optimization workbench implementation plan
 
-Version: 3
-Delta: v2 to v3; bind numerical runtime, canonical drawdown and control-race review requirements.
+Version: 4
+Delta: v3 to v4; allow sealed final history in later exploration while retaining permanent final-date spend.
 
 Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
 Scope: SolTUI simulated grid, DCA and recorded-triangle optimization, plus read-only external result comparison.
@@ -48,7 +48,7 @@ Import normalized CSV and documented TradingView column aliases. Preserve origin
 
 Runner freezes exact candidates, temporal windows and evidence fingerprints. It commits each candidate/coin/window cell before progressing. Resume verifies the stored evidence before reusing cells. A cross-process lock prevents duplicate evaluation/finalization. Pause/cancel are cooperative at cell boundaries and durable; interruption never adopts a partial result. No background service starts without the user action.
 
-Exploration evaluates train and validation only. Freeze the chosen candidate before final validation. Reserve fresh final holdout intervals per bot and coin before evaluating baseline and frozen candidate. Reservations survive search/config/code/cost/data changes and failures. Record exploration exposure before simulation too: a changed window count or duration cannot move an already explored date into a fresh final interval. Exploration must refuse another run's reserved final intervals. Conservatively migrate the known temporal extent of legacy optimization reports, or refuse final validation when legacy history cannot establish unused dates. Freshness refers to recorded local optimization evidence; external/manual prior use cannot be proven absent. Overlap with another experiment is refused; resume permits only the same frozen exact context. Never weaken the existing significance/evidence thresholds. The existing `bots.optimize` route must use the same guards. Triangle replay receives equivalent recorded-data boundaries and checkpoints.
+Exploration evaluates train and validation only. Freeze the chosen candidate before final validation. Reserve fresh final holdout intervals per bot and coin before evaluating baseline and frozen candidate. Reservations survive search/config/code/cost/data changes and failures. Record exploration exposure before simulation too: a changed window count or duration cannot move an already explored date into a fresh final interval. Exploration must refuse another run's active or paused unsealed final intervals. Once finalization seals the evidence, later exploration may use those dates as ordinary training history. The dates remain permanently spent for every other run's final test. Exact own sealed-reservation reuse requires complete unchanged baseline/frozen-pick cells; it cannot create or replace final evidence after those dates become public. Conservatively migrate the known temporal extent of legacy optimization reports, or refuse final validation when legacy history cannot establish unused dates. Freshness refers to recorded local optimization evidence; external/manual prior use cannot be proven absent. Overlap with another experiment is refused; resume permits only the same frozen exact context. Never weaken the existing significance/evidence thresholds. The existing `bots.optimize` route must use the same guards. Triangle replay receives equivalent recorded-data boundaries and checkpoints.
 
 ## Acceptance and tests
 

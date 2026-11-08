@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T12:14:19+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T12:27:05+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -146,7 +146,7 @@ Strongest files:
 - `research/perturb.py` (29 hits)
 - `research/RANKED_LISTS.md` (25 hits)
 - `backtester/core/deflated_sharpe.py` (21 hits)
-- `memory.md` (19 hits)
+- `memory.md` (20 hits)
 - `backtester/core/dcasim.py` (15 hits)
 - `soltui/experiment_runner.py` (15 hits)
 

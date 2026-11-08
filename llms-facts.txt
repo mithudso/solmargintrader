@@ -39,3 +39,7 @@ One declarative fact per line, each tagged with the repo-relative file it came f
 - Experiment drawdown summaries use nonnegative loss magnitude while raw simulator and external signed values remain in evidence; unknown units remain unknown. [src: soltui/experiments.py]
 - Imports never promote native settings; comparable runs require explicit matching assumptions and actual coin/date coverage for every contributing row. [src: soltui/experiments.py]
 - Final native adoption keeps the existing evidence/sign-test thresholds and uses baseline comparison plus durable recovery of an interrupted configuration write. [src: soltui/experiment_runner.py]
+
+## 2026-11-08 [gen: p/2.1.0]
+
+- Finalized holdout reservations carry a durable seal: later training may reuse their historical dates, while all other final tests still treat them as spent; own sealed evidence reuse cannot evaluate missing or failed cells again. [src: soltui/experiments.py]

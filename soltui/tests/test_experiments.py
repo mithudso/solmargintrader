@@ -58,6 +58,125 @@ class StoreTests(unittest.TestCase):
             self.store.record_cell(self.run, "0", "window", self.cell(metrics={"total_return": 0.2}))
         self.assertEqual(len(self.store.cells(self.run)), 1)
 
+    def seal_final(self, *, failed=False):
+        self.final()
+        for cid in ("0", "1"):
+            values = {"split": "holdout", "start": 10, "end": 20}
+            if failed and cid == "1":
+                values.update(status="failed", error="fixture failed", metrics={})
+            self.store.record_cell(self.run, cid, "final", self.cell(**values))
+        self.store.update_run(self.run, status="validating")
+        self.store.finalize_run(self.run, {"verdict": {"adopted": False}})
+
+    def test_sealed_final_dates_can_enter_later_exploration_but_stay_spent_for_final(self):
+        self.seal_final()
+        later = self.store.create_run(self.spec)
+        self.expose(later, start=10, end=20)
+        self.final(later, start=20, end=30)
+        reused = self.store.create_run(self.spec)
+        with self.assertRaisesRegex(ExperimentError, "spent|already exposed"):
+            self.final(reused, start=10, end=20)
+
+    def test_unsealed_paused_cancelled_and_failed_final_dates_stay_protected(self):
+        self.final()
+        later = self.store.create_run(self.spec)
+        for status in ("validating", "paused", "cancelled", "failed"):
+            self.store.update_run(self.run, status=status)
+            with self.subTest(status=status), self.assertRaisesRegex(ExperimentError, "reserved final"):
+                self.expose(later, start=10, end=20)
+
+    def test_own_sealed_evidence_survives_later_exposure_and_transient_running_status(self):
+        self.seal_final()
+        later = self.store.create_run(self.spec)
+        self.expose(later, start=10, end=20)
+        self.store.transition_run(self.run, "running", expected=["completed"])
+        self.assertTrue(self.final()["reserved"])
+        self.store.record_cell(self.run, "1", "final", self.cell(split="holdout", start=10, end=20))
+        with self.assertRaisesRegex(ExperimentError, "sealed holdout"):
+            self.store.record_cell(self.run, "1", "new-key", self.cell(split="holdout", start=10, end=20))
+        another = self.store.create_run(self.spec)
+        self.expose(another, start=10, end=20)  # The seal survives run lifecycle transitions.
+
+    def test_sealed_failed_or_changed_context_cannot_trigger_a_new_final_evaluation(self):
+        self.seal_final(failed=True)
+        later = self.store.create_run(self.spec)
+        self.expose(later, start=10, end=20)
+        with self.assertRaisesRegex(ExperimentError, "complete frozen evidence"):
+            self.final()
+        with self.assertRaisesRegex(ExperimentError, "sealed holdout"):
+            self.store.record_cell(self.run, "1", "final", self.cell(split="holdout", start=10, end=20))
+        with self.store._connect() as db:
+            db.execute("UPDATE holdouts SET context='different-data-cost-code-context' WHERE run_id=?", (self.run,))
+        with self.assertRaisesRegex(ExperimentError, "context changed"):
+            self.final()
+
+    def test_legacy_completed_reservations_gain_a_durable_seal_during_migration(self):
+        self.seal_final()
+        with self.store._connect() as db:
+            db.execute("ALTER TABLE holdouts DROP COLUMN sealed_at")
+        migrated = ExperimentStore(self.store.root)
+        with migrated._connect() as db:
+            self.assertIsNotNone(db.execute("SELECT sealed_at FROM holdouts WHERE run_id=?", (self.run,)).fetchone()[0])
+        later = migrated.create_run(self.spec)
+        migrated.reserve_exploration(later, [{"coin": "SOL", "start": 10, "end": 20}])
+
+    def test_rolling_final_becomes_history_and_original_result_adopts_without_new_evaluation(self):
+        from unittest import mock
+
+        from backtester.core.data import SyntheticLoader
+        from soltui import config
+        from soltui import experiment_runner as runner
+        from soltui.config import Settings
+        from soltui.tests.test_bots import write_hourly
+
+        root = Path(self.tmp.name)
+        data = root / "data"
+        data.mkdir()
+        coins = ["SOL", "AAA", "BBB", "CCC", "DDD"]
+        last = None
+        for seed, coin in enumerate(coins, 3):
+            last = write_hourly(data, coin, n=24 * 12, seed=seed)[-1]
+        settings = Settings(data_dir=str(data))
+        space = {"range_pct": {"kind": "enum", "values": [5.0]}}
+
+        def simulate(bot, cfg, bars, interval, costs):
+            return {"results": {"total_return": .03 if cfg["range_pct"] == 5 else .01,
+                                "trades": 4, "costs_usd": 2, "max_drawdown": -.04, "sharpe": 1.2}}
+
+        with mock.patch.object(config, "CONFIG_DIR", root / "config"), mock.patch.object(
+                runner, "_code_fingerprint", return_value="rolling-fixture-code"):
+            first = runner.prepare_experiment("grid", settings, space=space, coins=coins,
+                                              windows=4, window_days=3, store=self.store)
+            with mock.patch.object(bots, "run_bars", side_effect=simulate):
+                result = runner.run_experiment(first["id"], settings, final=True, store=self.store)
+            self.assertTrue(result["verdict"]["reliable"])
+            self.assertFalse(result["verdict"]["adopted"])
+            for seed, coin in enumerate(coins, 9):
+                more = SyntheticLoader(n_bars=24 * 6, seed=seed, start_ts=int(last) + 3600).load(coin, None, None, "1h")
+                more.to_csv(data / f"{coin}_1h.csv", mode="a", index=False, header=False)
+            second = runner.prepare_experiment("grid", settings, space=space, coins=coins,
+                                               windows=4, window_days=3, store=self.store)
+            old_final = {(w["coin"], w["start"], w["end"]) for w in first["spec"]["windows"] if w["split"] == "holdout"}
+            new_history = {(w["coin"], w["start"], w["end"]) for w in second["spec"]["windows"] if w["split"] != "holdout"}
+            self.assertEqual(old_final, new_history)
+            with mock.patch.object(bots, "run_bars", side_effect=simulate):
+                result = runner.run_experiment(second["id"], settings, final=True, store=self.store)
+            self.assertTrue(result["verdict"]["reliable"])
+            with mock.patch.object(bots, "run_bars") as simulator:
+                result = runner.run_experiment(first["id"], settings, final=True, adopt=True, store=self.store)
+            simulator.assert_not_called()
+            self.assertTrue(result["verdict"]["adopted"])
+            # Public old dates do not waive source validation for a sealed result.
+            path = data / "SOL_1h.csv"
+            rows = path.read_text().splitlines()
+            values = rows[1].split(",")
+            values[1] = str(float(values[1]) + 1)
+            rows[1] = ",".join(values)
+            path.write_text("\n".join(rows) + "\n")
+            with mock.patch.object(bots, "run_bars") as simulator, self.assertRaisesRegex(ExperimentError, "historical evidence changed"):
+                runner.run_experiment(first["id"], settings, final=True, adopt=True, store=self.store)
+            simulator.assert_not_called()
+
     def test_nonfinite_and_unknown_candidates_are_refused(self):
         with self.assertRaisesRegex(ExperimentError, "finite JSON"):
             self.store.create_run({**self.spec, "cost": float("nan")})

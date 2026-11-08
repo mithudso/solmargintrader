@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `3be4381` (2026-11-08T12:14:19+00:00). 1884 tracked files, 31.1 MB.
+**Generated** from `index/INDEX.json` at commit `02c0bbb` (2026-11-08T12:27:05+00:00). 1884 tracked files, 31.1 MB.
 
 Regenerate with:
 
@@ -161,7 +161,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms-facts.txt`
 
-`data` · 42 lines · 4,259 B · description: **derived**
+`data` · 46 lines · 4,551 B · description: **derived**
 
 **Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader: Sourced Facts
 
@@ -193,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1111 lines · 166,627 B · description: **extracted**
+`doc` · 1119 lines · 168,198 B · description: **extracted**
 
-**Purpose.** Version: 110 Delta: v109 to v110; record passing full suite and ready-for-delivery checkpoint. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 111 Delta: v110 to v111; preserve rolling-window continuity without reopening final evidence. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -217,7 +217,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `run-log.jsonl`
 
-`other` · 0 lines · 367 B · description: **none**
+`other` · 0 lines · 684 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -241,7 +241,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 176 lines · 11,361 B · description: **extracted**
+`doc` · 178 lines · 11,501 B · description: **extracted**
 
 **Purpose.** Seven components with explicit execution boundaries. The backtester and research do not place orders. The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18437 lines · 916,971 B · description: **extracted**
+`doc` · 18437 lines · 916,959 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -347,7 +347,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 222 lines · 17,376 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 947 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 953 tests (~720s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
 **Use.** Read it.
 
@@ -481,15 +481,15 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/optimization-workbench-plan.md`
 
-`doc` · 66 lines · 8,382 B · description: **extracted**
+`doc` · 66 lines · 8,752 B · description: **extracted**
 
-**Purpose.** Version: 3 Delta: v2 to v3; bind numerical runtime, canonical drawdown and control-race review requirements. Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
+**Purpose.** Version: 4 Delta: v3 to v4; allow sealed final history in later exploration while retaining permanent final-date spend. Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
 
 **Use.** Read it.
 
 #### `docs/optimization-workbench-run.md`
 
-`doc` · 76 lines · 5,372 B · description: **extracted**
+`doc` · 76 lines · 5,764 B · description: **extracted**
 
 **Purpose.** Version: 1 Delta: initial implementation, review and acceptance record. Goal: implement all six accepted comparison recommendations.
 
@@ -497,7 +497,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/optimization-workbench.md`
 
-`doc` · 58 lines · 7,742 B · description: **extracted**
+`doc` · 58 lines · 8,151 B · description: **extracted**
 
 **Purpose.** The Bots tab's **Experiment workbench** keeps complete simulated search evidence. It adds a bounded search editor, candidate/coin/window explorer, observed parameter maps, resumable workers and reported TradingView comparison. It never places an order. Open Bots, choose a bot, then open **Experiment workbench**.
 
@@ -15537,7 +15537,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/experiments.py`
 
-`code-python` · 843 lines · 49,456 B · description: **extracted**
+`code-python` · 882 lines · 52,141 B · description: **extracted**
 
 **Purpose.** Durable simulation evidence, bounded search spaces and read-only external comparisons. A run spec is immutable. A cell is a completed measurement, never a progress hint. Holdout reservations are a separate temporal ledger so changing a search fingerprint cannot reopen dates that another experiment has already inspected.
 
@@ -16035,7 +16035,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_experiments.py`
 
-`test` · 378 lines · 22,381 B · description: **extracted**
+`test` · 497 lines · 29,415 B · description: **extracted**
 
 **Purpose.** Simulation evidence is durable, bounded and cannot reopen inspected holdout dates.
 

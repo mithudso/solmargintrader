@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T12:14:26+00:00",
+  "generatedAt": "2026-11-08T12:27:12+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1418,7 +1418,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 19
+          "hits": 20
         },
         {
           "path": "backtester/core/dcasim.py",
@@ -1686,7 +1686,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 16
+          "hits": 17
         },
         {
           "path": "backtester/core/dcasim.py",
@@ -1757,6 +1757,10 @@
           "hits": 6
         },
         {
+          "path": "docs/optimization-workbench-plan.md",
+          "hits": 6
+        },
+        {
           "path": "skills/trading-and-investing/references/selection-rule-design.md",
           "hits": 6
         },
@@ -1782,10 +1786,6 @@
         },
         {
           "path": "research/sweep.py",
-          "hits": 5
-        },
-        {
-          "path": "backtester/tests/test_engine_audit.py",
           "hits": 5
         }
       ],
