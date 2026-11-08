@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 176
-Delta: v175 to v176; record the prospective paper run and its source.
+Version: 177
+Delta: v176 to v177; record the cross-interface command fix.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1702,3 +1702,7 @@ PR 118 merged at 259005c30976a0e9cce45cd2c8135586ce755f81 after its CI passed. T
 ## v176 - 2026-11-08
 
 Started prospective paper experiment 7f7057972ebb32c82fcadf75 from /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments as PID 44729. It uses SOL, vol_regime with the highest eligible daily-sweep parameters, a five-minute horizon and $1000 paper capital. It runs on minute candles, so the daily result does not establish minute profitability. Its first prediction was recorded and its balance remained $1000. No real order was sent. Preserve the worktree while this detached process runs, and check its current lock and status before asserting it remains active.
+
+## v177 - 2026-11-08
+
+PR 120 macOS CI exposed two bridge parity failures: the paper_experiment namespace violated the alphanumeric namespace convention, and required calls lacked fixtures. Renamed the commands to paperexperiment and added isolated, non-spawning fixtures for all four operations. The full bridge parity, paper runner and button registry suite passes locally. The running paper worker code and its experiment fingerprint are unchanged. Rebuild offline indexes and wait for final CI before merging.
