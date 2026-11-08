@@ -1,0 +1,106 @@
+{
+  "version": 2,
+  "status": "final-gate-accepted",
+  "selected_claims": [
+    {
+      "claim_id": "clm:500221fa4626e00260a077453dff912fdd409f7742b2a2353e8dc29c8bb3f50c",
+      "claim_sha256": "500221fa4626e00260a077453dff912fdd409f7742b2a2353e8dc29c8bb3f50c",
+      "concept": "Conditional nonlinear information transfer",
+      "text": "Bivariate TE can reflect indirect influences or shared drivers. Conditioning on relevant observed processes can separate those effects from the source-target dependency; the interpretation is relative to the variables and histories actually included.",
+      "sources": [
+        "https://arxiv.org/abs/nlin/0001042",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7517310/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7597255/"
+      ]
+    },
+    {
+      "claim_id": "clm:91e2a00f773fe86214298099300377ea845613b4652c93088846d590b837490b",
+      "claim_sha256": "91e2a00f773fe86214298099300377ea845613b4652c93088846d590b837490b",
+      "concept": "Conditional nonlinear information transfer",
+      "text": "Interpret TE as a measured directed statistical dependency. A predictive dependency alone does not establish a physical causal mechanism: the estimator study explicitly avoids equating Wiener-style dependency with causal effect, and the high-order TE study distinguishes measured behavior from mechanism.",
+      "sources": [
+        "https://arxiv.org/html/2402.03229v4",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7597255/"
+      ]
+    },
+    {
+      "claim_id": "clm:073a9ecd78fc0baccc256965a083ef47da3ead5189c01cb1eff591ec7cfdcfa6",
+      "claim_sha256": "073a9ecd78fc0baccc256965a083ef47da3ead5189c01cb1eff591ec7cfdcfa6",
+      "concept": "Finite-sample dependency uncertainty",
+      "text": "Finite-sample uncertainty in mutual-information estimates includes systematic bias as well as sampling variability; error bars alone do not establish that an estimate is unbiased.",
+      "sources": [
+        "https://arxiv.org/html/1903.09280",
+        "https://arxiv.org/html/2211.00024v2"
+      ]
+    },
+    {
+      "claim_id": "clm:11887efb0eef14fb799f7a2f9181985039e81a457ccd1ad9b428abb17b47f510",
+      "claim_sha256": "11887efb0eef14fb799f7a2f9181985039e81a457ccd1ad9b428abb17b47f510",
+      "concept": "Finite-sample dependency uncertainty",
+      "text": "For KSG, ordinary resampling with replacement can create duplicate points that appear to be fine-scale information-bearing structure. Holmes and Nemenman show severe upward bias in such bootstrap estimates; Piras and colleagues reproduce this failure.",
+      "sources": [
+        "https://arxiv.org/html/1903.09280",
+        "https://arxiv.org/html/2211.00024v2"
+      ]
+    },
+    {
+      "claim_id": "clm:df72010d81b96bfa4d3015a074b17ea5671b7999bca26e854c94a77f6976e7ba",
+      "claim_sha256": "df72010d81b96bfa4d3015a074b17ea5671b7999bca26e854c94a77f6976e7ba",
+      "concept": "Finite-sample dependency uncertainty",
+      "text": "A surrogate null must match the dependence structure required by the hypothesis. Shorten and colleagues show excessive false positives from naive source time shifts in a common-driver spike-process example; Diks and Fang separately warn that destroying unconditional dependence need not reproduce a conditional-independence null. Their findings concern the tested schemes and processes.",
+      "sources": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC8084348/",
+        "https://www.mdpi.com/1099-4300/19/7/372"
+      ]
+    },
+    {
+      "claim_id": "clm:bbeb6fccec412364d9d2ea3c7a614000f1f42ae93daf3b875ea9bd967cfab6e6",
+      "claim_sha256": "bbeb6fccec412364d9d2ea3c7a614000f1f42ae93daf3b875ea9bd967cfab6e6",
+      "concept": "Lag-selection multiplicity",
+      "text": "Searching candidate lags and then testing the selected lag as though it were fixed creates a multiplicity problem. Include lag selection in the inferential procedure rather than reporting an unadjusted selected-lag test.",
+      "sources": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11398661/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC6663300/"
+      ]
+    },
+    {
+      "claim_id": "clm:7b2079e146f799a08eaac92b3bf126a4ffc2e5d2ca6094c48079ed0de3ddaca0",
+      "claim_sha256": "7b2079e146f799a08eaac92b3bf126a4ffc2e5d2ca6094c48079ed0de3ddaca0",
+      "concept": "Lag-selection multiplicity",
+      "text": "A maximum-statistic test mirrors candidate selection: calculate the maximum across candidate surrogate statistics in each surrogate realization, then compare the observed selected maximum against that distribution. The IDTxl paper describes this procedure and its pinned implementation constructs a surrogate table and tests against its maxima.",
+      "sources": [
+        "https://github.com/pwollstadt/IDTxl/blob/master/idtxl/stats.py",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC6663300/"
+      ]
+    },
+    {
+      "claim_id": "clm:33ea9733b2cb8b368f1f750a9552b53ba4dc76c971e5acbddb313f85d34b80c5",
+      "claim_sha256": "33ea9733b2cb8b368f1f750a9552b53ba4dc76c971e5acbddb313f85d34b80c5",
+      "concept": "Directed graph preservation",
+      "text": "Symmetrizing a directed adjacency matrix loses edge orientation. For a lead-lag graph, retaining that symmetrized matrix alone therefore cannot preserve which variable leads which; this application is a methodological inference from the graph representations.",
+      "sources": [
+        "https://arxiv.org/html/2411.15527v2",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9425115/"
+      ]
+    },
+    {
+      "claim_id": "clm:b2f7779a391f4c7d39b2892f9f628a5ce83f1cc4f45f44f5c617c77fda581a92",
+      "claim_sha256": "b2f7779a391f4c7d39b2892f9f628a5ce83f1cc4f45f44f5c617c77fda581a92",
+      "concept": "Directed graph preservation",
+      "text": "Bennett, Cucuringu and Reinert describe significance thresholding when constructing a lead-lag network: an edge is retained only when the associated lead-lag metric is sufficiently large. A direction-preserving encoding therefore addresses a different stage from deciding which inferred edges to retain.",
+      "sources": [
+        "https://link.springer.com/article/10.1007/s10994-022-06250-4"
+      ]
+    },
+    {
+      "claim_id": "clm:ba73e2324552ae6210b763ef08d227829d9c27af155ad5012c7fff1d4858109e",
+      "claim_sha256": "ba73e2324552ae6210b763ef08d227829d9c27af155ad5012c7fff1d4858109e",
+      "concept": "Directed graph preservation",
+      "text": "Bennett, Cucuringu and Reinert report low overall persistence and year-to-year instability in their empirical US-equity lead-lag structure. This is a scope warning for carrying an inferred graph across time; it does not measure five-minute SOL graph stability.",
+      "sources": [
+        "https://link.springer.com/article/10.1007/s10994-022-06250-4"
+      ]
+    }
+  ],
+  "packet_sha256": "80027ebbee91025d1506d54460828fdc6d1a6e22d079d8ad735a12055803d8db"
+}

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "schema": "research-gate/v4",
+  "validated": true,
+  "packet_sha256": "80027ebbee91025d1506d54460828fdc6d1a6e22d079d8ad735a12055803d8db",
+  "validation_sha256": "3edae8b09ac3f75c47e8ffaed95d898bb817db75ee8bf3f3e0b95c81f845c30c",
+  "counts": {
+    "SUPPORTED": 56,
+    "NO-FACTUAL-ASSERTION": 17
+  },
+  "coverage": {
+    "total_claims": 73,
+    "selected_claims": 73,
+    "structured_claims": 49,
+    "auxiliary_assertions": 24,
+    "risky_claims": 44,
+    "sampled_ordinary_claims": 29
+  },
+  "reused_judgments": 60,
+  "changed_pairs_reviewed": 13,
+  "structured_claims_by_concept": {
+    "Conditional nonlinear information transfer": 13,
+    "Finite-sample dependency uncertainty": 13,
+    "Lag-selection multiplicity": 7,
+    "Directed graph preservation": 16
+  },
+  "independent_original_groups_per_concept": 3,
+  "bound_snapshot_pairs": 32,
+  "cited_source_urls": 34,
+  "exact_TASK808_snapshot_pairs_reused": 4,
+  "notes": [
+    "The 49 canonical records are not 49 independent discoveries.",
+    "The other 28 snapshot pairs do not imply 28 fresh acquisitions.",
+    "Raw source bodies, evidence quotes and judge transcripts remain private.",
+    "No new market backtest or live trade."
+  ],
+  "independent_judgment_spans_checked": 139,
+  "independent_source_root_audit_sha256": "c2e953dbf460b204ef1bc8b4c3e7cd6510d98201d05cca0a5bcc16b552fae0db"
+}

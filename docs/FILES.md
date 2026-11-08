@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `b9979d2` (2026-11-08T10:35:36+00:00). 1863 tracked files, 29.6 MB.
+**Generated** from `index/INDEX.json` at commit `ab3252b` (2026-11-08T11:00:36+00:00). 1867 tracked files, 29.6 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (1642 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 271/285 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (120 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (1644 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 271/285 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (122 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -37,7 +37,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`docs`](#docs) — 41 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1228 files
-- [`research`](#research) — 156 files
+- [`research`](#research) — 160 files
 - [`extension`](#extension) — 92 files
 - [`soltui`](#soltui) — 93 files
 - [`.github`](#github) — 9 files
@@ -185,9 +185,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 954 lines · 142,350 B · description: **extracted**
+`doc` · 1021 lines · 154,292 B · description: **extracted**
 
-**Purpose.** Version: 92 Delta: v91 to v92; preserve concurrent wallet and TradingView card histories. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 99 Delta: preserve incoming catalogue history and append sanitized task continuation through v99. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -201,9 +201,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 425 lines · 25,871 B · description: **extracted**
+`doc` · 437 lines · 26,418 B · description: **extracted**
 
-**Purpose.** Version: 55 Delta: v54 to v55; preserve concurrent wallet and TradingView card histories. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 57 Delta: preserve incoming catalogue history and append sanitized task continuation through v57. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -265,7 +265,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 320 lines · 18,593 B · description: **extracted**
+`doc` · 320 lines · 18,660 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -281,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18297 lines · 900,298 B · description: **extracted**
+`doc` · 18249 lines · 899,507 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -12913,7 +12913,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-156 files.
+160 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -12976,6 +12976,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 63 lines · 5,740 B · description: **extracted**
 
 **Purpose.** Simulation only. Reproduce with `python3 -m research.leverage_tiers --asset SOL --interval 1d` (about 6 seconds). Raw rows: `research/results/leverage_tiers_sol_1d_summary.csv`, Leverage multiplies the existing result and adds carry, so it can only help a signal that already
+
+**Use.** Read it.
+
+#### `research/NONLINEAR-LEAD-LAG-CHILDREN.md`
+
+`doc` · 106 lines · 7,775 B · description: **extracted**
+
+**Purpose.** Version: 2 Delta: v1 to v2; link the completed canonical run and separate remote delivery qualification. Reviewed: 2026-11-08. Research only; no new market backtest or live trade.
 
 **Use.** Read it.
 
@@ -13534,6 +13542,32 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Purpose.** Generated JSON object, 13 keys (schema, version, delta, reviewed, reviewer, definition_version...).
 
 **Use.** Configuration; nothing to run.
+
+### `research/nonlinear-lead-lag-children/`
+
+#### `research/nonlinear-lead-lag-children/accepted-gate-receipt.json`
+
+`config` · 40 lines · 1,373 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (version, schema, validated, packet_sha256, validation_sha256, counts...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/nonlinear-lead-lag-children/claim-index.json`
+
+`config` · 107 lines · 6,911 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (version, status, selected_claims, packet_sha256).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/nonlinear-lead-lag-children/run-report.md`
+
+`doc` · 37 lines · 3,359 B · description: **extracted**
+
+**Purpose.** Version: 2 Delta: v1 to v2; use an operator-neutral continuation identifier for public metadata. Run status: COMPLETED. Four named concepts were researched, with none blocked. The supported runtime finalized the run in 39 elapsed minutes, including installation work; this is not a claim that remote CI or deployment finished in that time.
+
+**Use.** Read it.
 
 ### `research/results/`
 

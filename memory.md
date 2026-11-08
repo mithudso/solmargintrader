@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 92
-Delta: v91 to v92; preserve concurrent wallet and TradingView card histories.
+Version: 99
+Delta: preserve incoming catalogue history and append sanitized task continuation through v99.
 
 ## v1 - 2026-11-06
 
@@ -951,3 +951,70 @@ Version: 92. Delta: v91 to v92; preserve concurrent Base wallet PR 92.
 Integrated origin/master d596856 after PR 92 landed during final CI. Preserve all wallet code, tests and its installed-console limitations. Only shared histories and generated indexes require conflict resolution. The catalog remains 1083 new spec-only cards, 1142 total, with unchanged source ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
 
 Delivery remains conditional on https://github.com/mithudso/solmargintrader/pull/91 and TASK-888. Complete final integrated-head checks before merge. Existing running consoles are owned by other sessions; do not restart them or retarget launchers. Preserve unrelated checkout changes and verify any safe synchronization independently.
+
+## v93 - 2026-11-08 (Four-child /dr start)
+
+Active: TASK-905; research stage TASK-907, install stage TASK-908, publication/delivery stage TASK-909.
+Workspace: isolated task checkout; branch agent-01a1b5ef; base afaa03a.
+Scope: standard-depth /dr on Conditional nonlinear information transfer; Finite-sample dependency uncertainty; Lag-selection multiplicity; Directed graph preservation. Parent: Uncertainty-aware nonlinear crypto lead-lag. Prior TASK-808 is complete; reuse exact parent evidence without claiming this explicit child depth was already done.
+Constraints: research only; no trades, keys, services, broad source rewrites or shared-checkout edits. Three independent source origins per concept; negative searches; exact readable source spans; deterministic and semantic research-gate/v4 checks for all assertions; preserve paid supported judgments. Do not infer executable SOL profitability from dependence, significance or graph stability.
+Completed: read routing and /dr instructions; semantic hub lookup found parent claims and reference; verified shared checkout contains unrelated work; created isolated worktree from fresh origin/master. Research worker owns only canonical new run and its evidence; root owns project records, installation, audit and Git delivery.
+Remaining: actual research/gate; qualified installed skill; finish tree/site projections; independent audit; tests, exact owned commits, PRs, CI, final merges and owned cleanup.
+
+## v94 - 2026-11-08 (Four-child evidence accepted)
+
+Completed: actual standard-depth native adapter adaptive research on all four named children. Forty-nine structured claim records (13 conditional, 13 finite-sample, 7 lag-selection, 16 graph) and 24 auxiliary assertions passed the final research-gate/v4: 56 SUPPORTED and 17 nonassertions. Packet SHA: 80027ebbee91025d1506d54460828fdc6d1a6e22d079d8ad735a12055803d8db. Validation SHA: 3edae8b09ac3f75c47e8ffaed95d898bb817db75ee8bf3f3e0b95c81f845c30c.
+
+Independent source review: three original research groups per child, negative searches, 81 structured evidence spans and 32 bound snapshots. One bounded combined repair fixed seven first-review failures and six context gaps, with overlap between them; 60 judgments reused and only 13 changed pairs reviewed. Scientific statements and sources remain scoped to their actual studies. No measured five-minute SOL strategy is established.
+
+Root report reproduces ten exact accepted assertions and labels the experiment proposal. Its identifiers were rebound to the final packet after two source-span repairs changed canonical IDs. Public-safe selected claim index and gate receipt are in research/nonlinear-lead-lag-children/. Raw sources and judge transcripts remain private in run nonlinear-lead-lag-four-children-task905.
+
+Checks: 872 SolTUI tests ran (870 passed, 2 skipped); 34 Mongo tests ran (17 passed, 17 server/driver skips); 361 extension tests passed; offline oscillating dry run closed one positive round trip. Archived figure check passed 1084 transcription/recomputation checks, not a new market experiment. Initial 900-test backtester run had only the expected index-staleness failure from changed workflow records; regenerate the offline index and rerun after final documentation.
+
+Stele transport closed after stage creation. Exact lifecycle writes queued: claim TASK-907 in 5e16424f; complete TASK-907 in 5532828f; claim TASK-908 in 509bdd0d. These identifiers are recovery receipts, not confirmed graph closure.
+
+Remaining: finish supported skill render/metadata qualification and delivery; exact stable runtime activation; adapter finish and four child projections; independent publication audit; final root records/index checks, PRs/CI/merges and owned cleanup. Preserve original dirty checkouts, shared index differences and paused services.
+
+## v95 - 2026-11-08 (Four-child delivery checkpoint)
+
+Research and implementation work complete: all four concepts passed the accepted v4 gate and independent source/root-synthesis audit. The supported canonical finish returned COMPLETED with no warnings, 39 calculated minutes, artifact SHA a5f5ac0e6ea2cad3a7f562cccf5e0b370cca0849b1647b944236df520f5dea27. Five new nodes per target are four children plus their aggregate. Private tree 2866 to 2871; repository tree 2709 to 2714. The aggregate sits under Uncertainty-aware nonlinear crypto lead-lag. Four child aliases resolve to their own concepts.
+
+Skills PR 92 merged as b5085dfc3ca6979079e34eae9972e2cd242ae5cd. Exact guarded source/loaded activation and stable supported rerender reproduce reference SHA 960ca20a8a07dfe87b34305b8469a9533906491849baece0504a933ab9c6c11f. Source hub 1.7.2 and loaded hub 1.6.2 retain their intentional route/model/SKIP differences. Three fresh skills/list samples passed. The scoped registry added exactly two descriptions, preserving all 1822 prior rows, and the new spoke ranked first. One failed route query used a venv without NumPy; a bounded retry used the existing global hub venv. No installation was needed. Ordinary task-scoped loading of the installed mxbai model on an already-running endpoint preserved Qwen; no server/pool/default/download/forced-unload change occurred.
+
+Canonical completion emitted five packs per target and fresh reader/tree/context/facts data. Existing public search-index.bin bytes are unchanged; semantic metadata retains 1018 existing rows and adds no embeddings. Site typecheck and 2854-page build/publication policy passed. Website tests/privacy review and remote delivery continue independently; inspect actual receipts before claiming them complete.
+
+Concurrent hook and HTML converter changes from origin/master eea27e2 are integrated. All incoming prompt/memory bodies and the prior baseline remain intact. This task's records were renumbered to prompt 54 and memory 79/80; preservation proof is in checkpoints/root-concurrent-record-preservation.json. The incoming duplicate prompt53 headings remain historical; no broad history rewrite was performed.
+
+Required source-library reconciliation completed without errors. The stock helper maintained 8315 pending library-wide text-index rows, 22748 total. This was not a cohort-only row count or a semantic refresh. Raw source proofs remain unchanged.
+
+Tracker fallback: additional exact writes queued in 6892023a (complete TASK-908) and 21e256d6 (claim TASK-909), alongside the earlier IDs. Graph closure is not inferred from queued writes.
+
+At this source checkpoint, remaining actions are local final offline-index/document checks, root PR/CI/merge, website independent publication review/PR/CI/merge, production acceptance and cleanup of this task's clean merged worktrees. No further research or code implementation is planned. The authoritative final status and exact next action live in private run nonlinear-lead-lag-four-children-task905, checkpoint final-delivery (JSON). Read that receipt before resuming a stage; completed gates and source discovery must not be rerun.
+
+## v96 - 2026-11-08 (Final root checks and delivery)
+
+Final local checks passed: 900 backtester tests; 872 SolTUI tests ran with 2 skips; 34 Mongo tests ran with 17 server/driver skips; 361 extension tests; 11 converter tests inherited from the concurrent merge; positive offline oscillating round trip; 1084 archived figure checks; documentation drift and offline retrieval-index freshness. No new market experiment or live execution was performed. The final record-only change is followed by offline index regeneration and its targeted index tests; final-head CI remains the delivery gate.
+
+The root report and selected claim index remain source-audited. The root run report adds only verified skill activation and supported canonical-completion metadata, and separates remote publication status. Final delivery receipt remains authoritative for downstream checks, exact remote commit pins and cleanup. Remaining: push final root branch/open PR, pass final-head CI, complete website delivery and live verification, merge the final pushed root tip, remove owned clean merged worktrees, then write final private receipts and tracker closure.
+
+## v97 - 2026-11-08 (Public metadata privacy correction)
+
+Independent final-delta review found operator-specific paths in this task's new public continuation metadata. Replaced only task-owned auto-authored paths with a neutral run slug, checkpoint identifier or isolated-branch reference. The exact user request, all incoming history and all scientific assertion text remain unchanged. Private pre-redaction snapshots and exact metadata-change receipts remain in the private run. Offline retrieval indexes are regenerated after this correction. Website workflow records receive the same scoped correction before the final merge.
+
+The original root CI executor job failed before tests because setup-uv's release-binary download returned HTTP 504. GitHub could not rerun that job while the run was active. The required metadata correction creates a legitimate fresh final tip; all required checks must pass on that tip. No trading or research source behavior changes for this correction.
+
+## v98 - 2026-11-08 (Wallet integration and CI bootstrap repair)
+
+Incoming Base-wallet discovery fix PR 92 landed as d596856 while this task's CI ran. Integrated its code, tests, documentation and complete workflow history without changing its behavior. This task's sanitized record headings were renumbered after the incoming history. Earlier local SolTUI results qualify the earlier source tree; final merged-tree CI is required for the new wallet tests.
+
+The executor CI job failed before tests with setup-uv v5: its GitHub release-asset URL returned HTTP 504. The liquidity job in the same workflow passed using the already-pinned setup-uv v10.3.3, which downloaded the identical uv 0.13.7 from Astral's official mirror. Local HEAD probes returned 504 for the old URL and 200 for the mirror. KNOW-935 records this concrete failure and the narrow repair. Align only the executor installer with that existing pinned action; retain frozen dependency synchronization, Python 3.13, both Ruff steps and pytest. No trading behavior or dependency lock changes are part of this repair.
+
+Remaining: final index/config checks, final push and complete merged-tree CI; website managed CodeQL bundle downloads must recover before its final CI/merge. All scientific assertions and both metadata privacy corrections remain accepted. Read the private run's final-delivery checkpoint before resuming completed research or publication checks.
+
+## v99 - 2026-11-08 (Catalogue integration before final delivery)
+
+The complete root CI run 42471525856 passed on source 8265776, including the current 884-test SolTUI suite. Before merge, concurrent TradingView catalogue PR 91 landed as 188d329 and overlapped the common records and derived indexes. Integrated all incoming catalogue files, tests, coverage checks and exact workflow history. This task changes no incoming component implementation.
+
+PR 91 independently landed the same mirror-capable executor installer already validated on this branch. Retain its workflow byte for byte, including the new card coverage check; this research PR now has no CI workflow behavior delta. The earlier installer investigation remains historical evidence in KNOW-935. Regenerate only offline retrieval artifacts for the combined source and run the catalogue coverage check, documentation check and targeted index/UI tests. Final pushed combined-tree CI remains required.
+
+Website PR 307 merged as 26ed830f8255428a9406e6270be82be55194ae97 after its final checks passed. Production acceptance is separate and continues against that actual merge. All accepted scientific statements, canonical IDs, source bindings, installed reference bytes and public metadata privacy corrections remain unchanged. Resume only remaining delivery actions from the private run's final-delivery checkpoint.

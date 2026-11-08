@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 55
-Delta: v54 to v55; preserve concurrent wallet and TradingView card histories.
+Version: 57
+Delta: preserve incoming catalogue history and append sanitized task continuation through v57.
 
 ## v1 - 2026-11-06
 
@@ -422,3 +422,15 @@ Version: 55. Delta: v54 to v55; preserve card-coverage request.
 ```text
 For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.
 ```
+
+## v56 - 2026-11-08 (Four nonlinear lead-lag children)
+
+````text
+Do a /dr on the 4 unresearched child concepts: Conditional nonlinear information transfer (frontier, viability 3.60 / 5)
+Finite-sample dependency uncertainty (frontier, viability 3.60 / 5)
+Lag-selection multiplicity (frontier, viability 3.60 / 5)
+Directed graph preservation (frontier, viability 3.60 / 5)
+````
+
+Target: solmargintrader, isolated branch agent-01a1b5ef. Stele TASK-905.
+Metadata v57: operator-neutral continuation reference; user request unchanged.
