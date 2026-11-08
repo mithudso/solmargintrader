@@ -583,6 +583,8 @@ class SolTuiApp(App):
     #available-table { width: 3fr; }
     #forward-scope { width: 21; }
     #forward-horizon { width: 17; }
+    #forward-coins { width: 16; }
+    #forward-optimize { width: 24; }
     #forward-mode { width: 14; }
     #forward-start, #forward-stop, #forward-refresh { min-width: 10; }
     #forward-combos { width: 1fr; }
@@ -769,8 +771,7 @@ class SolTuiApp(App):
         self._docs_loaded_text = ""
         self._forward_running = False
         self._forward_busy = False
-        self._forward_bar = 0
-        self._forward_next = 0.0
+        self._forward_seen: dict[str, Any] = {}
         self._cumulative_loaded = False
         # Last results-file mtime the Queue tab rendered (the worker is a separate process).
         self._queue_mtime = 0.0
@@ -1059,14 +1060,19 @@ class SolTuiApp(App):
     def _forward_pane(self) -> ComposeResult:
         with Vertical():
             yield Static(
-                "Paper direction calls on closed 1m data for the Settings asset. "
-                "UP/DOWN mean a move beyond the cost threshold; FLAT predicts neither.", classes="hint")
+                "Paper direction calls on closed 1m Coinbase data for the chosen coins. UP/DOWN mean a move "
+                "beyond the cost threshold; FLAT predicts neither. Once started it runs in the background "
+                "until Stop, whatever tab is open.", classes="hint")
             with Horizontal(classes="form-row"):
                 yield Select([("All strategies", "all"), ("Roster only", "roster"),
                               ("Combinations only", "combinations")],
                              id="forward-scope", value="all", allow_blank=False)
                 yield Select([("All four", "all"), *((f"{h} min", str(h)) for h in (1, 5, 10, 30))],
                              id="forward-horizon", value="all", allow_blank=False)
+                yield Select(self._forward_coin_options(), id="forward-coins",
+                             value=self.settings.asset.upper(), allow_blank=False)
+                yield Select([("Auto-optimize: on", "on"), ("Auto-optimize: off", "off")],
+                             id="forward-optimize", value="on", allow_blank=False)
                 yield Button("Start", id="forward-start", variant="success")
                 yield Button("Stop", id="forward-stop", disabled=True)
                 yield Button("Refresh", id="forward-refresh")
@@ -1074,20 +1080,33 @@ class SolTuiApp(App):
                 yield Input(placeholder="Combinations: rsi,macd; breakout,obv_trend", id="forward-combos")
                 yield Select([(m, m) for m in ("all", "any", "vote", "mean")],
                              id="forward-mode", value="all", allow_blank=False)
-            yield Static("Forward results by strategy and horizon · Stopped",
+            yield Static("Forward results by coin, strategy and horizon · Stopped",
                          id="forward-status", classes="table-title", markup=False)
             table = GlossaryTable(id="forward-table")
             table.cursor_type = "row"
-            table.add_columns("trial", "minutes", "resolved", "accuracy", "pending", "expired",
-                              "changes", "last call", "last outcome", "issued UTC", "cost bps", "active settings")
+            table.add_columns("coin", "trial", "minutes", "resolved", "accuracy", "pending", "expired",
+                              "changes", "saved default", "last call", "last outcome", "issued UTC", "cost bps",
+                              "active settings")
             yield table
+
+    def _forward_coin_options(self) -> list[tuple[str, str]]:
+        from .commands import forward_coins
+
+        coins = forward_coins()
+        asset = self.settings.asset.upper()
+        if asset not in coins:
+            coins = [asset, *coins]
+        return [("All coins", "all"), *((c, c) for c in coins)]
 
     @on(Button.Pressed, "#forward-start")
     def _forward_start(self) -> None:
         horizon = self.query_one("#forward-horizon", Select).value
         raw = self.query_one("#forward-combos", Input).value
+        coins = self.query_one("#forward-coins", Select).value
         params = {"scope": self.query_one("#forward-scope", Select).value,
                   "mode": self.query_one("#forward-mode", Select).value,
+                  "coins": "all" if coins == "all" else [str(coins)],
+                  "optimize": self.query_one("#forward-optimize", Select).value == "on",
                   "combinations": [[v.strip() for v in c.split(",")]
                                    for c in raw.split(";") if c.strip()]}
         if horizon != "all":
@@ -1098,27 +1117,34 @@ class SolTuiApp(App):
             status.update(self._msg(env))
             return
         result = env["result"]
+        run = self._call("forwardtest.run")
+        if not run["ok"]:
+            status.update(self._msg(run))
+            return
         self._forward_running = True
-        self._forward_bar = 0
-        self._forward_next = 0.0
+        self._forward_seen = {}
         self._forward_controls()
-        status.update(f"{result['asset']}: watching {result['trials']} trials; "
-                      f"horizons {', '.join(map(str, result['horizons']))} min.")
-        self._forward_schedule()
+        status.update(f"{len(result['assets'])} coin(s): watching {result['trials']} trials each; horizons "
+                      f"{', '.join(map(str, result['horizons']))} min; auto-optimize "
+                      f"{'on' if result['optimize'] else 'off'}. Runs in the background until Stop.")
+        self._forward_show_running(result["assets"])
 
     @on(Button.Pressed, "#forward-stop")
     def _forward_stop(self) -> None:
         self._forward_running = False
         self._call("forwardtest.stop")
         self._forward_controls()
+        self._forward_show_running([])
         self.query_one("#forward-status", Static).update(
             "Stopping after the current check…" if self._forward_busy else "Stopped; results saved.")
 
     @on(Button.Pressed, "#forward-refresh")
     def _forward_refresh(self) -> None:
-        if self._forward_busy or self._forward_running:
+        if self._forward_busy:
             return
-        env = self._call("forwardtest.status", quiet=True)
+        coins = self.query_one("#forward-coins", Select).value if self.query("#forward-coins") else None
+        params = {} if self._forward_running else {"coins": "all" if coins == "all" else [str(coins)]}
+        env = self._call("forwardtest.status", params, quiet=True)
         if env["ok"]:
             self._forward_render(env["result"]["rows"])
         else:
@@ -1127,41 +1153,67 @@ class SolTuiApp(App):
     def _forward_controls(self) -> None:
         self.query_one("#forward-start", Button).disabled = self._forward_running or self._forward_busy
         self.query_one("#forward-stop", Button).disabled = not self._forward_running
-        self.query_one("#forward-refresh", Button).disabled = self._forward_running or self._forward_busy
+        self.query_one("#forward-refresh", Button).disabled = self._forward_busy
+        for wid in ("#forward-coins", "#forward-optimize", "#forward-scope", "#forward-horizon"):
+            self.query_one(wid, Select).disabled = self._forward_running
+
+    def _forward_show_running(self, assets: list[str]) -> None:
+        """The header says the forward test runs, so it is visible from every tab."""
+        base = type(self).SUB_TITLE
+        self.sub_title = (f"{base} · forwardtest running on {len(assets)} coin(s)" if assets else base)
 
     def _forward_schedule(self) -> None:
-        now = time.time()
-        if (self._forward_running and not self._forward_busy and self.query("#forward-status")
-                and now >= self._forward_next and now % 60 >= 4 and int(now // 60) * 60 - 60 > self._forward_bar):
-            self._forward_busy = True
-            self._forward_worker()
+        """Every 5 s: read the background runner's state; re-read results when a coin was checked.
 
-    @work(thread=True, exit_on_error=False, group="forwardtest")
-    def _forward_worker(self) -> None:
-        env = self._call("forwardtest.tick", quiet=True)
-        try:
-            self.call_from_thread(self._forward_done, env)
-        except RuntimeError:
-            # Textual may have closed the event loop while the public price request drained.
-            pass
-
-    def _forward_done(self, env: dict[str, Any]) -> None:
-        self._forward_busy = False
-        self._forward_next = time.time() + 10
+        The runner (`forwardtest.run`) owns the checking; this only renders, so nothing here
+        depends on which tab is open.
+        """
         if not self.query("#forward-status"):
             return
+        env = self._call("forwardtest.state", quiet=True)
+        if not env["ok"]:
+            return
+        st = env["result"]
+        was_busy = self._forward_busy
+        self._forward_busy = bool(st["busy"]) or (not st["running"] and st["prepared"])
+        if self._forward_running and not st["prepared"]:
+            self._forward_running = False
+        if not self._forward_running and not st["busy"]:
+            self._forward_busy = False
         self._forward_controls()
+        seen = {a: v.get("at") for a, v in st["last"].items()}
+        if seen != getattr(self, "_forward_seen", {}) or was_busy != self._forward_busy:
+            self._forward_seen = seen
+            self._forward_status_job(st)
+
+    @work(thread=True, exit_on_error=False, group="forwardtest")
+    def _forward_status_job(self, st: dict[str, Any]) -> None:
+        env = self._call("forwardtest.status", quiet=True)
+        try:
+            self.call_from_thread(self._forward_done, env, st)
+        except RuntimeError:
+            pass  # the app closed while the read was in flight
+
+    def _forward_done(self, env: dict[str, Any], st: dict[str, Any] | None = None) -> None:
+        if not self.query("#forward-status"):
+            return
         status = self.query_one("#forward-status", Static)
         if env["ok"]:
-            result = env["result"]
-            self._forward_render(result["rows"])
-            if result["bar"] is not None:
-                self._forward_bar = result["bar"]
-            status.update(f"{result['asset']}: {result['message']} · {result['recorded']} new predictions"
-                          if self._forward_running else "Stopped; results saved.")
-        elif self._forward_running:
-            status.update(f"Will retry: {self._msg(env)}")
-        else:
+            self._forward_render(env["result"]["rows"])
+        st = st or {}
+        last = st.get("last") or {}
+        errors = {a: v["error"] for a, v in last.items() if v.get("error")}
+        recorded = sum(v.get("recorded", 0) for v in last.values())
+        if self._forward_running:
+            when = max((v.get("at") or 0 for v in last.values()), default=0)
+            stamp = time.strftime("%H:%M:%S", time.localtime(when)) if when else "-"
+            text = (f"Running in the background on {len(st.get('assets') or [])} coin(s), auto-optimize "
+                    f"{'on' if st.get('optimize') else 'off'} · last check {stamp}, {recorded} new predictions"
+                    f" · {st.get('defaults_saved', 0)} setting(s) saved as defaults")
+            if errors:
+                text += " · will retry " + ", ".join(f"{a}: {e}" for a, e in list(errors.items())[:3])
+            status.update(text)
+        elif not st.get("busy"):
             status.update("Stopped; results saved.")
 
     def _forward_render(self, rows: list[dict[str, Any]]) -> None:
@@ -1175,9 +1227,9 @@ class SolTuiApp(App):
             settings = "; ".join(
                 f"{m['name']} " + ", ".join(f"{k}={v}" for k, v in m["params"].items())
                 for m in r["settings"])
-            table.add_row(r["label"], r["minutes"], r["resolved"],
+            table.add_row(r.get("asset", "-"), r["label"], r["minutes"], r["resolved"],
                           _pct(r["correct"] / r["resolved"] if r["resolved"] else None),
-                          r["pending"], r["expired"], r["changes"],
+                          r["pending"], r["expired"], r["changes"], "yes" if r.get("saved_default") else "-",
                           directions.get(r["last_call"], "-"), directions.get(r["last_outcome"], "-"), issued,
                           f"{r['cost_bps']:g}", r["note"] or settings, key=r["id"])
         if rows:

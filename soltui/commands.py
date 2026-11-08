@@ -197,6 +197,11 @@ class Runtime:
         self.coin_fit_job: dict[str, Any] | None = None
         self.coin_fit_cancelled_requests: set[str] = set()
         self.coin_fit_interrupted_requests: set[str] = set()
+        # The Forwardtest runner: a thread of this process, so a test keeps checking prices whatever
+        # tab (or none) the console shows. One summary per coin from its latest check.
+        self.forward_thread: threading.Thread | None = None
+        self.forward_last: dict[str, dict[str, Any]] = {}
+        self.forward_started_at: float | None = None
         self._catalog: list[docs_browser.DocEntry] | None = None
         self._catalog_key: tuple | None = None
 
@@ -679,11 +684,74 @@ def roster_add_all(ctx: Context, p: dict[str, Any]) -> Any:
     return {"added": added, "count": len(roster)}
 
 
-@command("forwardtest.start", "Prepare an in-session adaptive paper forward test.",
+FORWARD_GRACE_S = 4  # Coinbase publishes a closed minute a moment after it closes
+
+
+def forward_coins() -> list[str]:
+    """Coins a Forwardtest can watch: every Coinbase USD market of the cached coins."""
+    from . import pricefeed
+
+    try:
+        products = pricefeed.stream_products()
+    except Exception:  # noqa: BLE001 - the offline fallback list covers every failure
+        products = list(pricefeed.FALLBACK_PRODUCTS)
+    return sorted({p.split("-")[0] for p in products if p.endswith("-USD")})
+
+
+def _forward_check_all(rt: "Runtime", plan: dict[str, Any]) -> dict[str, Any]:
+    """One check of every planned coin, each settled and forecast on its own."""
+    out: dict[str, Any] = {}
+    for asset in plan["assets"]:
+        if rt.forward_stop.is_set():
+            break
+        try:
+            r = forwardtest.tick(asset, plan["trials"], plan["horizons"], plan["cost"], stop=rt.forward_stop,
+                                 code=plan["code"], tune=plan["tune"])
+            out[asset] = {"at": time.time(), "bar": r["bar"], "recorded": r["recorded"], "message": r["message"]}
+        except Exception as exc:  # noqa: BLE001 - one coin's failure must not stop the others
+            out[asset] = {"at": time.time(), "error": f"{type(exc).__name__}: {exc}"[:300]}
+        with rt.lock:
+            rt.forward_last[asset] = out[asset]
+    return out
+
+
+def _forward_runner(rt: "Runtime") -> None:
+    """Check every planned coin once per closed minute until stopped. Runs on its own thread."""
+    checked_minute = -1
+    try:
+        while not rt.forward_stop.is_set():
+            with rt.lock:
+                plan = rt.forward_plan
+            if plan is None:
+                break
+            now = time.time()
+            minute = int(now // 60)
+            if minute != checked_minute and now % 60 >= FORWARD_GRACE_S:
+                checked_minute = minute
+                with rt.lock:
+                    rt.forward_busy = True
+                try:
+                    _forward_check_all(rt, plan)
+                finally:
+                    with rt.lock:
+                        rt.forward_busy = False
+            rt.forward_stop.wait(1.0)
+    finally:
+        with rt.lock:
+            rt.forward_thread = None
+            rt.forward_busy = False
+
+
+@command("forwardtest.start", "Prepare an adaptive paper forward test (forwardtest.run starts checking).",
          (P("scope", "string", "all, roster, or combinations."),
           P("horizons", "json", "Subset of 1, 5, 10 and 30 minutes. Default: all four."),
           P("combinations", "json", "Lists of strategy names or roster labels."),
-          P("mode", "string", "Combination rule: all, any, vote or mean.")), read_only=False)
+          P("mode", "string", "Combination rule: all, any, vote or mean."),
+          P("coins", "json", "Coins to test: a list, or \"all\" for every Coinbase USD market; default the "
+                             "Settings asset."),
+          P("optimize", "bool", "Auto-optimize (default true): after a miss, move to a neighbouring setting "
+                                "that tested superior on paired calls and save it as that trial's default.")),
+         read_only=False)
 def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
     from backtester.core.strategies import COMBINE_MODES
 
@@ -727,16 +795,59 @@ def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
                        "mode": mode, "members": [spec(e) for e in members]})
     if not trials:
         raise CommandError("bad_params", "Add a strategy or enter a combination first")
-    asset = bgqueue.validate_asset(ctx.settings.asset)
+    coins = p.get("coins")
+    if coins in (None, [], ""):
+        assets = [bgqueue.validate_asset(ctx.settings.asset)]
+    elif coins == "all":
+        assets = forward_coins()
+    elif isinstance(coins, list) and all(isinstance(c, str) for c in coins):
+        assets = list(dict.fromkeys(bgqueue.validate_asset(c) for c in coins))
+    else:
+        raise CommandError("bad_params", 'parameter "coins" must be a list of coins or "all"')
+    if not assets:
+        raise CommandError("bad_params", "no coin to test")
+    tune = bool(p.get("optimize", True))
     cost = 2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps)
     rt = ctx.runtime
     with rt.lock:
-        if rt.forward_plan or rt.forward_busy:
+        if rt.forward_plan or rt.forward_busy or rt.forward_thread is not None:
             raise CommandError("failed", "A forward test is running or stopping")
         rt.forward_stop.clear()
-        rt.forward_plan = {"asset": asset, "trials": trials, "horizons": tuple(sorted(set(horizons))),
-                           "cost": cost, "code": forwardtest.revision()}
-    return {"asset": asset, "trials": len(trials), "horizons": sorted(set(horizons)), "cost_bps": cost}
+        rt.forward_last = {}
+        rt.forward_plan = {"asset": assets[0], "assets": assets, "trials": trials,
+                           "horizons": tuple(sorted(set(horizons))), "cost": cost, "code": forwardtest.revision(),
+                           "tune": tune}
+    return {"asset": assets[0], "assets": assets, "trials": len(trials), "horizons": sorted(set(horizons)),
+            "cost_bps": cost, "optimize": tune}
+
+
+@command("forwardtest.run", "Start checking the prepared forward test in the background: every planned coin "
+         "once per closed minute, on its own thread, whatever tab the console shows, until stopped.",
+         read_only=False)
+def forwardtest_run(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        if rt.forward_plan is None:
+            raise CommandError("failed", "Prepare a forward test first (forwardtest.start)")
+        if rt.forward_thread is None:
+            rt.forward_started_at = time.time()
+            rt.forward_thread = threading.Thread(target=_forward_runner, args=(rt,), name="forwardtest",
+                                                 daemon=True)
+            rt.forward_thread.start()
+        return {"running": True, "assets": rt.forward_plan["assets"], "since": rt.forward_started_at}
+
+
+@command("forwardtest.state", "Whether the background forward test runs, what it watches, and each coin's "
+         "latest check.")
+def forwardtest_state(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        plan = rt.forward_plan
+        return {"running": plan is not None and rt.forward_thread is not None, "prepared": plan is not None,
+                "busy": rt.forward_busy, "assets": list(plan["assets"]) if plan else [],
+                "optimize": bool(plan["tune"]) if plan else None, "since": rt.forward_started_at,
+                "last": {k: dict(v) for k, v in rt.forward_last.items()},
+                "defaults_saved": len(forwardtest.load_defaults())}
 
 
 @command("forwardtest.stop", "Stop issuing forward predictions in this session.", read_only=False)
@@ -758,16 +869,33 @@ def forwardtest_tick(ctx: Context, p: dict[str, Any]) -> Any:
             raise CommandError("failed", "Forwardtest is stopped or already checking prices")
         rt.forward_busy = True
     try:
-        return {"asset": plan["asset"], **forwardtest.tick(**plan, stop=rt.forward_stop)}
+        checks = _forward_check_all(rt, plan)
+        rows = [r for a in plan["assets"] for r in forwardtest.status(a)]
+        first = checks.get(plan["assets"][0], {})
+        return {"asset": plan["asset"], "assets": plan["assets"], "checks": checks, "bar": first.get("bar"),
+                "recorded": sum(c.get("recorded", 0) for c in checks.values()),
+                "message": first.get("message") or first.get("error") or "", "rows": rows}
     finally:
         with rt.lock:
             rt.forward_busy = False
 
 
-@command("forwardtest.status", "Read saved forward results, separately for each forecast horizon.")
+@command("forwardtest.status", "Read saved forward results, separately for each coin and forecast horizon.",
+         (P("coins", "json", "Coins to read: a list or \"all\"; default the running test's coins, else the "
+                             "Settings asset."),))
 def forwardtest_status(ctx: Context, p: dict[str, Any]) -> Any:
-    asset = bgqueue.validate_asset(ctx.settings.asset)
-    return {"asset": asset, "rows": forwardtest.status(asset)}
+    coins = p.get("coins")
+    with ctx.runtime.lock:
+        plan = ctx.runtime.forward_plan
+    if coins == "all":
+        assets = forward_coins()
+    elif isinstance(coins, list) and coins:
+        assets = [bgqueue.validate_asset(c) for c in coins]
+    elif plan is not None:
+        assets = list(plan["assets"])
+    else:
+        assets = [bgqueue.validate_asset(ctx.settings.asset)]
+    return {"asset": assets[0], "assets": assets, "rows": [r for a in assets for r in forwardtest.status(a)]}
 
 
 @command("roster.reset", "Restore the backtester's default comparison set.", read_only=False)
