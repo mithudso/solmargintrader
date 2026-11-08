@@ -266,7 +266,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 1996
+      "lines": 2027
     },
     {
       "path": "backtester/core/compound.py",
@@ -747,7 +747,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3773
+      "lines": 4176
     },
     {
       "path": "soltui/signals.py",
@@ -873,7 +873,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 433
+      "lines": 482
     },
     {
       "path": "soltui/tests",
@@ -1270,14 +1270,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 464
+      "lines": 483
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity",
-      "lines": 561
+      "lines": 564
     },
     {
       "path": "docs/TRADINGVIEW-REFERENCE.md",

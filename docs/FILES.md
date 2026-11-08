@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5e06046` (2026-11-08T07:18:40+00:00). 683 tracked files, 12.1 MB.
+**Generated** from `index/INDEX.json` at commit `d36d4a0` (2026-11-08T07:58:51+00:00). 694 tracked files, 12.4 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (488 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 232/243 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (499 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 242/253 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (101 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -36,10 +36,10 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`(root)`](#root) — 18 files
 - [`docs`](#docs) — 39 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 138 files
+- [`backtester`](#backtester) — 145 files
 - [`research`](#research) — 140 files
 - [`extension`](#extension) — 92 files
-- [`soltui`](#soltui) — 88 files
+- [`soltui`](#soltui) — 92 files
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
@@ -183,9 +183,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 544 lines · 79,721 B · description: **extracted**
+`doc` · 560 lines · 81,215 B · description: **extracted**
 
-**Purpose.** Version: 52 Delta: v51 to v52; adaptive strategy Forwardtest and roster shortcuts. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 53 Delta: v52 to v53; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -199,9 +199,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 325 lines · 19,546 B · description: **extracted**
+`doc` · 333 lines · 20,727 B · description: **extracted**
 
-**Purpose.** Version: 45 Delta: v44 to v45; trend filter for the compound. Delta: added the leverage-tier and reliable-trigger request.
+**Purpose.** Version: 47 Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder. Delta: added the leverage-tier and reliable-trigger request.
 
 **Use.** Read it.
 
@@ -263,7 +263,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,273 B · description: **extracted**
+`doc` · 316 lines · 15,302 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -279,7 +279,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 6531 lines · 325,951 B · description: **extracted**
+`doc` · 6641 lines · 332,498 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -329,7 +329,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 216 lines · 16,924 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 855 tests python3 -m unittest discover -s soltui/tests -t . # 817 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 33 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 860 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 33 tests
 
 **Use.** Read it.
 
@@ -383,7 +383,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1256 lines · 37,089 B · description: **derived**
+`doc` · 1291 lines · 38,507 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -613,7 +613,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-138 files.
+145 files.
 
 #### `backtester/PROMPT.md`
 
@@ -638,6 +638,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Purpose.** SOL-focused crypto strategy backtester.
 
 **Use.** `import backtester.__init__`
+
+#### `backtester/botcli.py`
+
+`code-python` · 162 lines · 7,427 B · description: **extracted**
+
+**Purpose.** Bot backtest entry point: the DCA safety-order bot and the triangular-arbitrage replay. python -m backtester.botcli dca --synthetic 500 python -m backtester.botcli dca --asset SOL --interval 1h --start 2025-01-01 --take-profit-pct 2 python -m backtester.botcli triangle --snapshots ~/.config/soltui/prices/2026-11-08.jsonl.gz Separate from `backtester.cli` and `backtester.gridcli` on purpose: each b
+
+**Contents.** Defines `DISCLAIMER`, `_add_dataclass_args()`, `build_parser()`, `_dca()`, `_triangle()`, `main()`.
+
+**Use.** `python3 backtester/botcli.py --help`
 
 #### `backtester/cli.py`
 
@@ -736,6 +746,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `resolve_data_dir()`, `class DataValidationError`, `class DataLoader`, `validate_bars()`, `_slice_dates()`, `checksum_frame()`, `class CsvLoader`, `class SyntheticLoader`, `frame_to_arrays()`.
 
 **Use.** `CsvLoader(path, allow_gaps=False).load(asset, start, end, interval)`.
+
+#### `backtester/core/dcasim.py`
+
+`code-python` · 485 lines · 22,127 B · description: **extracted**
+
+**Purpose.** DCA (dollar-cost averaging) safety-order bot simulator. This is the "DCA bot" of the 3Commas / Pionex kind, not the periodic-purchase `dca` exposure strategy in `strategies/textbook.py`. A deal works like this: 1. a **base order** buys at market; 2.
+
+**Contents.** Defines `VENUE_MIN_ORDER_USD`, `MAX_SAFETY_ORDERS`, `_finite()`, `class DcaConfig`, `safety_deviations_pct()`, `safety_sizes_usd()`, `capital_required_usd()`, `plan_deal()`, `class DcaRunResult`, `_baseline_equity()` and 2 more.
+
+**Use.** `import backtester.core.dcasim`
 
 #### `backtester/core/deflated_sharpe.py`
 
@@ -906,6 +926,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `MAX_TRADES_PER_REQUEST`, `TRADE_COLUMNS`, `_parse_trades()`, `_trade_page()`, `newest_trade_id()`, `seek_trade_id()`, `fetch_trades()`, `trades_to_bars()`, `default_tick_path()`, `main()`.
 
 **Use.** `python3 backtester/core/ticks.py --help`
+
+#### `backtester/core/trianglesim.py`
+
+`code-python` · 409 lines · 17,884 B · description: **extracted**
+
+**Purpose.** Triangular-arbitrage event replay over top-of-book quote snapshots. `strategy_cards/triangular_arbitrage.md` specifies the mechanism; this module is the event replay it calls for. A triangle is USD plus two coins A and B with three markets: `A-USD`, `B-USD` and the cross `A-B` (quoted in B per A).
+
+**Contents.** Defines `SOURCE_RECORDED`, `SOURCE_CANDLE_PROXY`, `_finite()`, `class Triangle`, `triangles_from_products()`, `class TriangleConfig`, `_usable()`, `cycle_edges_bps()`, `_size_cap_usd()`, `class TriangleRunResult` and 6 more.
+
+**Use.** `import backtester.core.trianglesim`
 
 #### `backtester/core/trigger_conditions.py`
 
@@ -1148,6 +1178,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Frontmatter: `status`=implemented, `family`=baseline, `success_likelihood`=very-low, `data_available`=true, `registry_key`=dca.
 
 **Use.** Read the card, then build it: `build('dca', **params)`. Status: implemented.
+
+#### `backtester/strategy_cards/dca_bot.md`
+
+`strategy-card` · 108 lines · 5,618 B · description: **extracted**
+
+**Purpose.** Base order plus a ladder of deeper safety orders and one take-profit above the average entry; restarts after each exit. Simulated by core/dcasim.py.
+
+**Contents.** Frontmatter: `status`=implemented, `family`=mean-reversion, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: implemented.
 
 #### `backtester/strategy_cards/dex_cex_dislocation.md`
 
@@ -1659,6 +1699,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_advanced_strategies.py -q`
 
+#### `backtester/tests/test_botcli.py`
+
+`test` · 62 lines · 2,327 B · description: **extracted**
+
+**Purpose.** botcli: the DCA bot and the triangle replay run from the command line, offline.
+
+**Contents.** Defines `run()`, `class BotCli`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_botcli.py -q`
+
 #### `backtester/tests/test_candle_gap_audit.py`
 
 `test` · 114 lines · 4,400 B · description: **extracted**
@@ -1698,6 +1748,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `REPO`, `SHARPES`, `RETURNS`, `TRADES`, `USABLE`, `N_PATHS`, `cpcv_result()`, `class PatchMixin`, `class Top5SpecTests`, `class MakeTop5StrategyTests` and 7 more. Depends on `backtester`, `research`.
 
 **Use.** `python3 -m pytest backtester/tests/test_cross_asset_cpcv.py -q`
+
+#### `backtester/tests/test_dcasim.py`
+
+`test` · 202 lines · 10,433 B · description: **extracted**
+
+**Purpose.** DCA safety-order bot: arithmetic, fill timing, costs, and the one-bar leak guard.
+
+**Contents.** Defines `FREE`, `bars()`, `flat_then()`, `class LadderArithmetic`, `class FillTiming`, `class Costs`, `class Lifecycle`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_dcasim.py -q`
 
 #### `backtester/tests/test_decide.py`
 
@@ -1968,6 +2028,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `RAW`, `class TestParseTrades`, `class TestTradesToBars`, `class TestTruncationIsNotWritableBySilence`. Depends on `backtester`.
 
 **Use.** `python3 -m pytest backtester/tests/test_ticks.py -q`
+
+#### `backtester/tests/test_trianglesim.py`
+
+`test` · 197 lines · 9,457 B · description: **extracted**
+
+**Purpose.** Triangular-arbitrage replay: rate direction, the card's worked example, and latency.
+
+**Contents.** Defines `TRI`, `q()`, `parity()`, `class Edges`, `class SnapshotFiles`, `class Replay`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_trianglesim.py -q`
 
 #### `backtester/tests/test_triggers.py`
 
@@ -4163,11 +4233,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
 
-88 files.
+92 files.
 
 #### `soltui/README.md`
 
-`doc` · 434 lines · 33,643 B · description: **extracted**
+`doc` · 483 lines · 38,397 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -4249,6 +4319,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 soltui/bgworker.py --help`
 
+#### `soltui/bots.py`
+
+`code-python` · 1123 lines · 50,364 B · description: **extracted**
+
+**Purpose.** The Bots tab: grid, triangular-arbitrage and DCA bots. Backtest, forward test, auto-optimize. Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to a venue's trading API; the only network reads are public market data (the recorded Coinbase stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).
+
+**Contents.** Defines `BOTS`, `LABELS`, `ABOUT`, `BACKTEST_INTERVAL`, `BAR_SECONDS`, `DEFAULT_BACKTEST_DAYS`, `MIN_BACKTEST_BARS`, `MIN_HOUR_MINUTES`, `MAX_FORWARD_GAP_MIN`, `OPTIMIZE_WINDOWS` and 30 more. Depends on `backtester`.
+
+**Use.** `import soltui.bots`
+
 #### `soltui/cli.py`
 
 `code-python` · 73 lines · 2,967 B · description: **extracted**
@@ -4261,7 +4341,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 2013 lines · 94,614 B · description: **extracted**
+`code-python` · 2173 lines · 102,702 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -4351,7 +4431,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 558 lines · 81,098 B · description: **extracted**
+`code-python` · 589 lines · 88,238 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -4489,6 +4569,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `import soltui.presets`
 
+#### `soltui/pricefeed.py`
+
+`code-python` · 709 lines · 29,181 B · description: **extracted**
+
+**Purpose.** Streaming coin prices: the public Coinbase Exchange `ticker` channel, recorded to disk. python -m soltui.pricefeed record # the recorder loop (the console starts it detached) python -m soltui.pricefeed status # what is recorded, and the latest prices Before this module the console polled prices (Coinbase REST spot, closed 5m candles) and kept nothing between bars.
+
+**Contents.** Defines `WS_URL`, `PRODUCTS_URL`, `WS_GUID`, `REPO`, `FALLBACK_PRODUCTS`, `SNAPSHOT_SECONDS`, `FLUSH_SECONDS`, `RECV_TIMEOUT_S`, `MAX_FRAME_BYTES`, `class PriceFeedError` and 27 more. Depends on `backtester`.
+
+**Use.** `python3 soltui/pricefeed.py --help`
+
 #### `soltui/reference.py`
 
 `code-python` · 87 lines · 5,483 B · description: **extracted**
@@ -4597,7 +4687,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 3774 lines · 188,209 B · description: **extracted**
+`code-python` · 4177 lines · 209,655 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -4649,7 +4739,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 219 lines · 10,217 B · description: **extracted**
+`test` · 234 lines · 11,221 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
@@ -4706,6 +4796,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `class TestEvaluationProof`, `class TestInheritedLock`, `class TestCLI`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_bgworker_audit.py -q`
+
+#### `soltui/tests/test_bots.py`
+
+`test` · 419 lines · 21,123 B · description: **extracted**
+
+**Purpose.** The Bots tab's engine: configs, data, backtests, forward tests and the auto-optimize gate. No network and no real price data: bars come from `SyntheticLoader` written to a temporary data directory, and recorded snapshots are written to a temporary prices directory.
+
+**Contents.** Defines `DAY`, `write_hourly()`, `write_snapshots()`, `tri_quotes()`, `class Isolated`, `class Configs`, `class Data`, `class Backtests`, `class Forward`, `class Optimize` and 2 more. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_bots.py -q`
 
 #### `soltui/tests/test_bridge_buttons.py`
 
@@ -4866,6 +4966,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `HEADER`, `ROWS`, `top5_csv()`, `class NetPctTests`, `class PresetTests`, `class DryRunNetTests`, `class CommandTests`, `class NoBareFiguresTests`. Depends on `backtester`, `research`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_presets_netpct.py -q`
+
+#### `soltui/tests/test_pricefeed.py`
+
+`test` · 307 lines · 13,628 B · description: **extracted**
+
+**Purpose.** The streaming price recorder: RFC 6455 framing, the handshake, books, snapshots and files. No network: every socket here is a fake, and every file lives in a temporary directory.
+
+**Contents.** Defines `class FakeSock`, `server_frame()`, `connected()`, `class Framing`, `class Client`, `class Products`, `class Books`, `class Recording`, `class Status`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_pricefeed.py -q`
 
 #### `soltui/tests/test_service.py`
 
