@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5411f02` (2026-11-08T08:56:20+00:00). 748 tracked files, 12.9 MB.
+**Generated** from `index/INDEX.json` at commit `b88c8aa` (2026-11-08T09:13:15+00:00). 748 tracked files, 13.0 MB.
 
 Regenerate with:
 
@@ -184,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 720 lines · 110,892 B · description: **extracted**
+`doc` · 730 lines · 111,824 B · description: **extracted**
 
-**Purpose.** Version: 69 Delta: v68 to v69; Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder). Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 70 Delta: v69 to v70; Forwardtest coin dropdown, auto-optimize with saved defaults, background runner. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -200,9 +200,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 380 lines · 23,761 B · description: **extracted**
+`doc` · 388 lines · 24,326 B · description: **extracted**
 
-**Purpose.** Version: 51 Delta: v50 to v51; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 52 Delta: v51 to v52; Forwardtest coin dropdown, auto-optimize with saved defaults, background runner. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -280,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 7144 lines · 357,482 B · description: **extracted**
+`doc` · 7144 lines · 357,445 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -330,7 +330,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 216 lines · 16,924 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 872 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 883 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
 **Use.** Read it.
 
@@ -4360,7 +4360,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/README.md`
 
-`doc` · 504 lines · 40,629 B · description: **extracted**
+`doc` · 516 lines · 41,799 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -4474,7 +4474,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 2181 lines · 103,441 B · description: **extracted**
+`code-python` · 2309 lines · 109,654 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -4544,11 +4544,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/forwardtest.py`
 
-`code-python` · 317 lines · 14,607 B · description: **extracted**
+`code-python` · 399 lines · 18,659 B · description: **extracted**
 
 **Purpose.** Prospective, paper-only trials of registered strategies on closed Coinbase minutes.
 
-**Contents.** Defines `HORIZONS`, `HISTORY`, `WARM_REPLAY`, `KNOBS`, `revision()`, `_json()`, `_db()`, `_factory()`, `member()`, `neighbours()` and 5 more. Depends on `backtester`.
+**Contents.** Defines `HORIZONS`, `HISTORY`, `WARM_REPLAY`, `KNOBS`, `revision()`, `_json()`, `_db()`, `defaults_path()`, `_default_key()`, `load_defaults()` and 11 more. Depends on `backtester`.
 
 **Use.** `import soltui.forwardtest`
 
@@ -4564,7 +4564,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 603 lines · 90,208 B · description: **extracted**
+`code-python` · 606 lines · 91,245 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -4820,7 +4820,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 4279 lines · 216,413 B · description: **extracted**
+`code-python` · 4331 lines · 219,582 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -4872,7 +4872,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 236 lines · 11,358 B · description: **extracted**
+`test` · 238 lines · 11,529 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
@@ -5012,11 +5012,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_forwardtest.py`
 
-`test` · 187 lines · 8,863 B · description: **extracted**
+`test` · 293 lines · 15,014 B · description: **extracted**
 
 **Purpose.** Prospective evidence, horizon isolation, and the roster keyboard workflow.
 
-**Contents.** Defines `BASE`, `candles()`, `class ForwardEvidence`, `class ForwardPlan`, `class RosterForwardUI`. Depends on `soltui`.
+**Contents.** Defines `BASE`, `candles()`, `class ForwardEvidence`, `class AutoOptimizeAndDefaults`, `class ForwardPlan`, `class RosterForwardUI`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_forwardtest.py -q`
 
