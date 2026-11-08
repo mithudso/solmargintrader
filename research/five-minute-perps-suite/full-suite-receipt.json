@@ -1,0 +1,240 @@
+{
+  "schema": "task808-full-suite-receipt/v1",
+  "record_version": 2,
+  "created": "2026-11-08T08:11:28.224247+00:00",
+  "subject": "Five-minute high-leverage SOL perpetual signals: executable direction and adverse-path survival",
+  "research_slug": "five-minute-high-leverage-sol-perps-task808",
+  "cohort_status": "COMPLETED",
+  "cfe_exit": "SATURATED",
+  "cfe_rounds_used": 2,
+  "cfe_round_cap": 3,
+  "count_or_time_cap": null,
+  "initial_candidates": 30,
+  "initial_neighborhood_floor": 6,
+  "researched_concepts": 7,
+  "new_unique_structured_claims": 110,
+  "cited_source_urls": 66,
+  "initial_scouts": 7,
+  "scout_llms_fast_paths": 2,
+  "gate": {
+    "gate_schema": "research-gate/v4",
+    "validated": true,
+    "all_supported": true,
+    "packet_sha256": "53f1e45fae9cc0570ca7ba4085ad120785c3928beef135a4809ed0261191023c",
+    "counts": {
+      "SUPPORTED": 125,
+      "NO-FACTUAL-ASSERTION": 40
+    },
+    "coverage": {
+      "total_claims": 165,
+      "selected_claims": 165,
+      "structured_claims": 110,
+      "auxiliary_assertions": 55,
+      "risky_claims": 99,
+      "sampled_ordinary_claims": 66
+    },
+    "reused_exact_judgments": 159,
+    "newly_judged_assertions": 6
+  },
+  "canonical_adapter_packs": {
+    "per_target": 8,
+    "targets": [
+      "private hub",
+      "isolated site worktree"
+    ],
+    "unique_claims": 110,
+    "aggregate_is_duplicate_projection": true
+  },
+  "current_v3_private_packs": {
+    "members": 7,
+    "shape": "single-file per member",
+    "unique_claims": 110,
+    "derived_rows": 164,
+    "shared_context_rows": 54,
+    "vector_rows": 164,
+    "fts_rows": 164,
+    "embedding_failures": 0,
+    "model": "mxbai-embed-large:latest",
+    "runtime": "Existing local Ollama only. No service or global queue changes.",
+    "canonical_projections_retargeted": false
+  },
+  "reader_correctness": {
+    "questions_reviewed": 70,
+    "source_grounded_response_correctness": {
+      "numerator": 70,
+      "denominator": 70
+    },
+    "affirmative_in_scope_answer_accuracy": {
+      "numerator": 65,
+      "denominator": 70
+    },
+    "knowledge_coverage_counts": {
+      "full": 35,
+      "partial": 30,
+      "absent": 5
+    },
+    "exact_excerpts_checked": 118,
+    "exact_excerpts_valid": 118,
+    "unsupported_factual_answers": 0,
+    "missed_available_answers": 0,
+    "wholly_absent_scope_gaps": 5,
+    "complete_knowledge_coverage": false,
+    "qualification": "All seven meet 9/10 response correctness after the bounded excerpt repair. Five meet 9/10 affirmative/in-scope answer accuracy; regime is 8/10 and uncertainty is 7/10 because their five wholly absent questions supply no affirmative answer. These are genuine scope gaps and correctly disclosed, not fabricated facts. Thirty other questions have partial knowledge coverage. This adjudication establishes no new market-fact gate or trading result."
+  },
+  "rollup_reader": "5/5; no navigation findings",
+  "scope_gaps": [
+    {
+      "slug": "five-minute-volatility-regime-conditioned-signal-selection",
+      "question_id": "Q1",
+      "question": "What distinguishes a trend-following regime from a mean-reverting regime?",
+      "rationale": "The complete pack mentions momentum, reversal, calm and trending states but never defines trend-following versus mean-reverting regimes. The response correctly declines to invent that distinction.",
+      "response_disclosure_correct": true,
+      "affirmative_answer_credit": false
+    },
+    {
+      "slug": "five-minute-volatility-regime-conditioned-signal-selection",
+      "question_id": "Q7",
+      "question": "Why can several price-derived indicators provide correlated evidence?",
+      "rationale": "The complete pack gives no account of shared price inputs or correlation among price-derived indicators. The nearest regime-module excerpt exists but is not affirmative evidence for the missing explanation.",
+      "response_disclosure_correct": true,
+      "affirmative_answer_credit": false
+    },
+    {
+      "slug": "uncertainty-aware-nonlinear-crypto-lead-lag",
+      "question_id": "Q2",
+      "question": "Which source discusses SOL at five-, ten- or thirty-minute forward horizons?",
+      "rationale": "The complete pack supplies one-/five-minute sampling and other scoped applications but no identified SOL five-, ten- or thirty-minute forward-horizon source. The response correctly preserves sampling-versus-target and absence-versus-nonexistence boundaries.",
+      "response_disclosure_correct": true,
+      "affirmative_answer_credit": false
+    },
+    {
+      "slug": "uncertainty-aware-nonlinear-crypto-lead-lag",
+      "question_id": "Q3",
+      "question": "What are the publication status and access limits of the named thesis?",
+      "rationale": "The complete pack names no thesis and supplies no thesis publication/access metadata. The nearest stock-application excerpt is correctly labeled as related rather than an answer.",
+      "response_disclosure_correct": true,
+      "affirmative_answer_credit": false
+    },
+    {
+      "slug": "uncertainty-aware-nonlinear-crypto-lead-lag",
+      "question_id": "Q8",
+      "question": "Which observations would count as independent replication?",
+      "rationale": "The complete pack provides no independent-replication criteria or observations satisfying them. Its explicit hourly explanatory-study limitation is correctly treated as a limitation, not as affirmative replication evidence.",
+      "response_disclosure_correct": true,
+      "affirmative_answer_credit": false
+    }
+  ],
+  "source_gap_disposition": "Correct absence disclosures receive response-correctness credit under LCA verification section5. They receive no affirmative-answer credit and do not supply missing knowledge.",
+  "conceptual_frontier": {
+    "round1_new_information": "0/34",
+    "round2_new_information": "0/49",
+    "blind_proposals": 8,
+    "corroborated_new_viable_gaps": 0,
+    "total_scored_rows": 57,
+    "claims_of_profitable_edge": false
+  },
+  "tree_sync": {
+    "hub_nodes": 2866,
+    "site_nodes": 2709,
+    "new_nodes_per_target": 8,
+    "new_structural_problems": 0,
+    "preexisting_hub_problems": 308,
+    "preexisting_site_problems": 312,
+    "scores": 57,
+    "queue_entries_added": 0
+  },
+  "placement": {
+    "project_routing": "Root ran the supported llms_routing installer; existing broad-family routing was preserved.",
+    "canonical_skill_id": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+    "parent_bytes": 7116,
+    "parent_sha256": "39f307bc7bf949c6637a50cab90c83a7150595544f5f1acd184a125ec002ec96",
+    "nested_guides": 7,
+    "loaded_discovery": "Three stable enabled app-server skills/list samples accepted by root parity audit.",
+    "auxiliary_v3_discovery": "Seven independent registered task docsets plus the private rollup; canonical concept llmsFile pointers remain unchanged."
+  },
+  "skill_quality": {
+    "scope": "Task reference, owning hub card and targeted activation; no global asset-parity certification.",
+    "structural_high_medium": 0,
+    "independent_reference_review": "Accepted after lossless partition and metadata normalization.",
+    "pdo": "Not applicable: no separate reusable production prompt was authored; PDO routes skill targets to skill-optimizer.",
+    "whole_existing_hub_content_recertified": false
+  },
+  "inherited_evidence": {
+    "unchanged_preexisting_supported_assertions": 47,
+    "rejudged": false,
+    "included_in_new_110_claim_count": false,
+    "private_reuse_draft_recertified": false
+  },
+  "private_proof_files": {
+    "checkpoints/current-lca-compilation.json": {
+      "sha256": "00a32218c2f87349a192305077855cad7f753bbf918c2d592d569a710b31c56d",
+      "bytes": 4715
+    },
+    "checkpoints/current-lca-indexes.json": {
+      "sha256": "9912e86c241f1fee92d4cf1cdbba34033ea24c806ac8117ea3c2d7b90988fd32",
+      "bytes": 4999
+    },
+    "checkpoints/current-lca-retrieval-probes.json": {
+      "sha256": "19c2dc783d27f730740343256069468ef212afd6c42ed080683150ec0c06658e",
+      "bytes": 36993
+    },
+    "checkpoints/registered-index-live-probes.json": {
+      "sha256": "a5a82bd970a9a483b54ed731ff3bc23f43bf28f2923078cefca5767ccd2ab6f8",
+      "bytes": 26386
+    },
+    "checkpoints/ldo-rollup.json": {
+      "sha256": "8022a26bbeb32ae132e456dfa42659af37eb3dc0eb0f29f67dc25e988551c8f1",
+      "bytes": 903
+    },
+    "checkpoints/cfe-expansion-round-1.json": {
+      "sha256": "43e45f725c69c050c411ff74b3e481a363ad717b68b8abef348ca2c37595dac4",
+      "bytes": 6702
+    },
+    "checkpoints/cfe-expansion-round-2.json": {
+      "sha256": "a1fe0e61547de88f05665590ac9ab9e639cc7982e34bb91fbe1d201edfdeb9c5",
+      "bytes": 27754
+    },
+    "checkpoints/blind-saturation-gate.json": {
+      "sha256": "68ed640549921b52994afde2344a8256e7d6653eff7ad9d7c6ce69e763efb85b",
+      "bytes": 7123
+    },
+    "checkpoints/cfe-tree-sync-apply.json": {
+      "sha256": "9db18a50d0cfa015464937f3d104f41f02c41301553869406d17433b0d265577",
+      "bytes": 1065
+    },
+    "checkpoints/reference-partition.json": {
+      "sha256": "7801cb15ce7c7e83a54681b4f48560b11bf08102e37b74b585f94dadfd3c797f",
+      "bytes": 4569
+    },
+    "checkpoints/parent-anchoring-repair.json": {
+      "sha256": "2e118cd18cbdd07489a24b9d679b1df173cfc4fddbc504125c0cf7e83065bb27",
+      "bytes": 880
+    },
+    "evals/reader-correctness-adjudication.json": {
+      "sha256": "d5b7f39dca92b16878bb1942f0d54ef68cc11e7ce7a63fe0f602365a58b5231e",
+      "bytes": 258141
+    },
+    "evals/rollup-reader-test.json": {
+      "sha256": "8d4648d191b18e0f12fe1099dd14c9704daad8809ee8f29c6ccc8b4c68f7ced7",
+      "bytes": 5790
+    }
+  },
+  "remaining_owner_root": [
+    "Final Git/CI/merge and remote production/content acceptance."
+  ],
+  "privacy": "This public receipt contains authored workflow/provenance metadata. Raw source snapshots, exact third-party excerpts and native worker bodies remain private.",
+  "delta": "v1 to v2; final local publication qualification and retained CFE backup hash recorded by root.",
+  "local_publication": {
+    "qualified": true,
+    "canonical_artifact_sha256": "1254521eda688b644884b05e9bb69be9922b7de9759a38c1cc82b0ea9e48c349",
+    "independent_spans_verified": 365,
+    "immutable_snapshots_verified": 63,
+    "internal_html_links_checked": 344,
+    "site_tests_passed": 328,
+    "built_pages": 2849,
+    "privacy_files_checked": 18611,
+    "privacy_findings": 0,
+    "allowlist_equals_baseline": true,
+    "website_semantic_layer": "Existing website vectors preserved; eight new readers explicitly excluded from its paused semantic layer. Task-local private indexes contain all164derived rows."
+  }
+}

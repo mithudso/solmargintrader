@@ -1,8 +1,7 @@
 # Prompt history
 
-Version: 49
-Delta: v48 to v49; resume integration after concurrent master index repair.
-
+Version: 50
+Delta: v49 to v50; integrate PR 58 against landed PR 46 and retain both workflow histories.
 
 ## v1 - 2026-11-06
 
@@ -348,6 +347,16 @@ Similar to the grid trading bot strategy, create a DCA (dollar cost averaging) t
 ```
 
 Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11). Stele TASK-870.
+
+## v48 - 2026-11-07 (Five-minute leveraged perps full-suite)
+
+```text
+Run the full-suite skill on high margin leveraged perps trading strategies like exists here https://jup.ag/perps/long/SOL-SOL. Effectively betting on how the price will move in the next 5 minutes. What signals, indicators, and technicals best predict an extremely short timeframe, but that also cannot withstand a big swing in the wrong direction.
+```
+## v49 - 2026-11-08 (Approved archival and full-suite continuation)
+
+```text
+Yes, Approve moving /Users/mitch/.research intact to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808 so the workflow can continue
 
 ## v48 - 2026-11-08 (PR conflict resolution)
 

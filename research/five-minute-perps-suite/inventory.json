@@ -1,0 +1,164 @@
+{
+  "schema": "five-minute-perps-inventory/v1",
+  "as_of": "2026-11-07",
+  "source_path": "/Users/mitch/.global-ai-hub/concept-tree/tree.json",
+  "source_sha256": "ab5649954fece41730f93c37a5ce0cdd8a65d330f5375914cf1bed4ce527d08c",
+  "node_count": 2819,
+  "inventory_mode": "direct canonical hub file; full 2819-node census, aliases included; no concept-tree MCP pagination endpoint exists",
+  "relevant_nodes": [
+    {
+      "concept": "Fast crypto trading signals",
+      "slug": "fast-trading-signals",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 108,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Fast trading signals: order flow funding open interest liquidations and data APIs",
+      "slug": "fast-trading-signals-order-flow-funding-open-interest-liquidations-and-data-apis",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 33,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Fast crypto trading signals: order flow, funding and open interest, liquidations, latency and data APIs",
+      "slug": "fast-trading-signals-v4",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 34,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "High leverage short trading and risk of ruin",
+      "slug": "high-leverage-short-trading-and-risk-of-ruin",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 16,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Honest signal evaluation out of sample costs and multiple testing",
+      "slug": "honest-signal-evaluation-out-of-sample-costs-and-multiple-testing",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 5,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Liquidation price formulas for shorts",
+      "slug": "liquidation-price-formulas-for-shorts",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 4,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Momentum versus mean reversion evidence in crypto",
+      "slug": "momentum-versus-mean-reversion-evidence-in-crypto",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 3,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Oracle and data latency and signal half-life",
+      "slug": "oracle-and-data-latency-and-signal-half-life",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 7,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Order flow signals CVD and order book imbalance",
+      "slug": "order-flow-signals-cvd-and-order-book-imbalance",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 6,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Perp maker taker fees funding payments and borrow interest as costs",
+      "slug": "perp-maker-taker-fees-funding-payments-and-borrow-interest-as-costs",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 11,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Position sizing Kelly volatility targeting fixed fractional",
+      "slug": "position-sizing-kelly-volatility-targeting-fixed-fractional",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 6,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Short horizon momentum breakout and mean reversion",
+      "slug": "short-horizon-momentum-breakout-and-mean-reversion",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 4,
+      "conceptsCount": 1
+    },
+    {
+      "concept": "Stop placement vs liquidation buffer",
+      "slug": "stop-placement-vs-liquidation-buffer",
+      "skillId": null,
+      "parentConcept": "Global AI Hub Research Corpus",
+      "childConcepts": [],
+      "aliases": [],
+      "researchedAt": "2026-11-06",
+      "sourcesCount": 3,
+      "conceptsCount": 1
+    }
+  ],
+  "installed_owner": "/Users/mitch/.agents/skills/trading-and-investing/SKILL.md",
+  "preflight": {
+    "command": "python3 /Users/mitch/.global-ai-hub/scripts/dr_run.py check",
+    "exit_code": 1,
+    "error": "retired research sink still present: /Users/mitch/.research"
+  },
+  "unrelated_state_preserved": [
+    "/Users/mitch/.research",
+    "/Users/mitch/dev/llms-explorer dirty checkout",
+    "/Users/mitch/dev/solmargintrader shared checkout"
+  ]
+}
