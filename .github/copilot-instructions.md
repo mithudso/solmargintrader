@@ -57,7 +57,7 @@ repository; this file is a pointer plus the rules that get broken most often.
 ## Build, Test, and Validation Commands
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 853 tests
+python3 -m unittest discover -s backtester/tests -t .   # 855 tests
 python3 -m unittest discover -s soltui/tests -t .       # 808 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
 cd extension && npm test                                # 361 tests

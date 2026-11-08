@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 46
-Delta: v45 to v46; approved archival and resumed perps full-suite with preserved upstream records.
+Version: 47
+Delta: v46 to v47; preserved upstream trend-filter request and renumbered task-owned request records without changing prompt text.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -305,12 +305,20 @@ Expand the wallet, for the base wallet, use the base mcp server to query my wall
 Use lightweight charts, run the deep prompt optimizer on the rest of this prompt and then run it:  What are all of the ways a strategy or indicator can be evaluated? List all of them and then create a deep strategy optimizer skill that evaluates, and optimizes the strategy in multiple passes one per method just like the other deep optimizers.
 ```
 
-## v45 - 2026-11-07 (Five-minute leveraged perps full-suite)
+## v45 - 2026-11-08 (trend filter)
+
+```text
+1. ok 2. Yes add the trend filter
+```
+
+Context: answers to "restart soltui" (1) and "add a filter that blocks UP calls while the higher-timeframe trend points down" (2).
+
+## v46 - 2026-11-07 (Five-minute leveraged perps full-suite)
 
 ```text
 Run the full-suite skill on high margin leveraged perps trading strategies like exists here https://jup.ag/perps/long/SOL-SOL. Effectively betting on how the price will move in the next 5 minutes. What signals, indicators, and technicals best predict an extremely short timeframe, but that also cannot withstand a big swing in the wrong direction.
 ```
-## v46 - 2026-11-08 (Approved archival and full-suite continuation)
+## v47 - 2026-11-08 (Approved archival and full-suite continuation)
 
 ```text
 Yes, Approve moving /Users/mitch/.research intact to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808 so the workflow can continue

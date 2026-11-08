@@ -245,7 +245,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 1996
+      "lines": 2027
     },
     {
       "path": "backtester/core/compound.py",
@@ -453,7 +453,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 610
+      "lines": 612
     },
     {
       "path": "extension/src/core/commands.js",
@@ -642,7 +642,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The experimental grid's forms, charts and journal",
-      "lines": 362
+      "lines": 374
     },
     {
       "path": "extension/src/ui/popup.js",
@@ -942,7 +942,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 178
+      "lines": 180
     },
     {
       "path": "AGENTS.md",
@@ -956,7 +956,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 62
+      "lines": 63
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -1235,20 +1235,21 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 464
+      "lines": 483
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity",
-      "lines": 561
+      "lines": 564
     },
     {
       "path": "docs/TRADINGVIEW-REFERENCE.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format"
+      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format",
+      "lines": 3647
     }
   ]
 }

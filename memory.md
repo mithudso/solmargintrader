@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 58
-Delta: v57 to v58; all-assertion v4 gate accepted and original synthesis drafted.
+Version: 60
+Delta: v59 to v60; integrated current master and preserved all upstream and task continuation records.
 
 ## v1 - 2026-11-06
 
@@ -528,7 +528,17 @@ Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithud
 
 Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
 
-## v51 - 2026-11-07 (Five-minute leveraged perps full-suite)
+## v51 - 2026-11-08 (trend filter)
+
+Target: the owner asked for a filter that stops the compound fading a clear trend. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-trend, branch feat/compound-trend-gate.
+
+Completed: Component.directional; gate_trend (htf_trend formula; threshold 0.5; default on). A directional gate returns a direction per bar, and evaluate blocks only a call against it (NaN blocks all, failing closed), so blocked_by and target_path work unchanged. Docs and the five-minute-signal skill updated.
+
+Verification: tests cover blocking UP in a decline, keeping DOWN, explain blocked_by, warm-up failing closed, and prefix invariance. Last 120 days OOS: threshold 0.3 keeps 35-45% of calls and lowers the hit rate on 7 of 10 coins; 0.5 is about equal on SOL/ETH/XRP and about 1 point lower on BTC/DOGE; 0.7 is equal or higher on SOL/ETH/XRP. Live SOL, last 6h: 26 UP / 8 DOWN became 0 UP / 8 DOWN.
+
+Remaining: after merge, restart the unattended trainer so it runs gate_trend; the owner restarts soltui.
+
+## v52 - 2026-11-07 (Five-minute leveraged perps full-suite)
 
 Target: research five-minute SOL Jupiter Perps directional signals and adverse-path survival. Task TASK-808. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef, branch agent-01a1b5ef at c01412a. Preserve all shared checkout and other worktree changes.
 
@@ -538,7 +548,7 @@ Constraints: research only, no trading or execution/config changes. No keys, sig
 
 Remaining: map coverage and scored gaps; research current venue and short-horizon predictive evidence; compile source packs and rollup; independent audit; offline indexes/docs checks; commit/PR/CI/merge and remote verification.
 
-## v52 - 2026-11-07 (Full-suite preparation and audited private draft)
+## v53 - 2026-11-07 (Full-suite preparation and audited private draft)
 
 Completed: full canonical-tree inventory, 30 scored candidates across five neighborhoods, 23 HAVE and seven distinct above-threshold gaps. Canonical CVS checker passed all 30 rows. Verified 47 prior canonical SUPPORTED claims against 114 bound snapshot spans with zero missing/hash/offset failures. Seven preliminary scouts preserve leads, not evidence. TASK-810 complete; research TASK-811 and parent TASK-808 remain unfinished.
 
@@ -550,13 +560,13 @@ Blocker: python3 /Users/mitch/.global-ai-hub/scripts/dr_run.py check exits 1: re
 
 Verification: system Python lacked pandas; existing /Users/mitch/.venvs/soltui/bin/python ran research/verify_numbers.py successfully (1084 archived figures; not a new performance test). scripts/check_docs.py passed with counts 734/313/33/682. No product code changed; new scenario invariants and independent recomputation passed. Private reuse-only pack: /Users/mitch/.global-ai-hub/llms-concepts/five-minute-perps-inherited-v4.llms/. It retains 47 exact inherited supported assertions and 47 FTS5 rows. It is a private draft, not a new researched family: semantic/agent tests are absent, and facts-format lint conflicts with exact-proof reuse. The run-state receipt records all limitations. Remaining: on approved archive, run adapter research/gates on seven gaps, quality audits, final packs/rollup/index/tree steps and saturation gates. Preserve inventory and successful source reads. Repository recovery delivery is tracked in TASK-808; verify its PR status rather than assuming merge.
 
-## v53 - 2026-11-07 (Private reuse pack and recovery checkpoint)
+## v54 - 2026-11-07 (Private reuse pack and recovery checkpoint)
 
 Completed: private source-bound reuse pack retains all 47 unchanged supported assertions. Keyword FTS5 has 47 rows and four nonzero query checks. Vocabulary and digest repairs pass their relevant checks; exact long assertion formatting still conflicts with facts lint and remains an explicit qualification limit. Semantic indexing and agent tests were not run. No source-derived new research draft is staged for the public repository.
 
 Current recovery task: integrate origin/master 3cc9b44 without losing the other session's continuation records, refresh three offline indexes, commit and push the task branch and open a draft PR. Parent TASK-808 remains unfinished. User archive decision remains pending. Do not run new /dr work or alter /Users/mitch/.research before the answer. Delivery receipt belongs in TASK-808; all research stages after preparation remain owed.
 
-## v54 - 2026-11-07 (Draft recovery delivery)
+## v55 - 2026-11-07 (Draft recovery delivery)
 
 Recovery PR: https://github.com/mithudso/solmargintrader/pull/58 (draft; unfinished research checkpoint). Branch agent-01a1b5ef, private worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef. The branch includes origin/master 3cc9b44. Rebase conflicts in prompts.md and memory.md were resolved by retaining the upstream session's records and appending this task with unique version numbers. The shared dirty checkout was preserved.
 
@@ -565,7 +575,7 @@ Checks after integration: documentation drift passed with 734 backtester, 313 ex
 Private reuse compilation: vocabulary check passes, digest fits 1603 estimated tokens and 6443 bytes, and FTS5 has 47 rows with four successful queries. Two facts-format Medium findings remain (facts/full ratio and 44 long assertions). The exact inherited assertions were preserved; no CLEAN label or new full-suite completion is claimed. Semantic indexing, agent tests, new per-concept research, rollup, skill audits/install/sync, tree registration and saturation gates remain owed.
 
 Current blocker: archive decision for /Users/mitch/.research is still pending. Preserve its approximately 23 MB of older local-model work and do not run dependent /dr stages before the owner answers. The independently audited unpromoted report, calculations and audit receipt remain private under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-task808-unpromoted/. Canonical CFE checkpoint and the public run-state copy preserve the seven queued gaps. No session-owned agents, services or inference jobs remain running. Parent TASK-808 and research child TASK-811 stay unfinished.
-## v55 - 2026-11-08 (Approved archival and full-suite continuation)
+## v56 - 2026-11-08 (Approved archival and full-suite continuation)
 
 Target: user approved intact archival and continuation of TASK-808. Refreshed instructions, current master, PR58 and accepted checkpoints. Reclaimed own stale TASK-808/TASK-811 records. Original source and requested target are absent. TASK-832 records the earlier user archive /Users/mitch/.research-archived-2026-11-07, which exists. Record complete before/after relative-path, type, permission and file-content inventories while relocating that preserved archive to the approved exact destination. No pre-November-7 manifest exists, so only this move can be verified.
 
@@ -573,7 +583,7 @@ Current /dr preflight passes. All seven queued gaps retain missing five-minute/e
 
 Remaining: archive verification; reconcile resolved blocker; actual adapter research/gates, quality audits, private packs and rollup, authorized index/tree placement, independent review and final repository delivery. No trading, signing, wallet changes or service startup belongs to this task.
 
-## v56 - 2026-11-08 (Approved archive verified)
+## v57 - 2026-11-08 (Approved archive verified)
 
 Completed: relocated the user-preserved archive /Users/mitch/.research-archived-2026-11-07 to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808. Exact before/after inventories match for 1802 files, 34 directories, no symlinks and 18822683 bytes. Hash 4e70f32dc2cd59f308c74c485fb76ca2e1fc1d49239ab6105fdedac36a165d2d binds paths, file types, modes, owners, modification times and file SHA256 hashes. Private full manifest is adjacent to the archive; public summary in research/five-minute-perps-suite/archive-receipt.json. This verifies this relocation only, not the earlier user move for which no per-file baseline exists.
 
@@ -584,7 +594,7 @@ Coordinator authorized to execute the actual standard-depth seven-gap adapter co
 Remaining: actual research/gates and per-concept artifacts, quality/rollup/index/tree stages, evidence-based frontier and final audit; scoped docs/index checks, final PR58 update/CI/merge and remote verification. Root owns prompt/memory, archive receipt, synthesis and delivery; coordinator owns research metadata and task-specific private research outputs.
 
 
-## v57 - 2026-11-08 (Full-coverage gate and benchmark scope)
+## v58 - 2026-11-08 (Full-coverage gate and benchmark scope)
 
 Completed: independent archive audit rehashed every recorded file and metadata field with zero mismatches. Added research/five-minute-perps-suite/benchmark-scope-review.json and corrected docs/COMPOUND-5M.md plus docs/COMPOUND-5M-PAPER.md. forecast_stats.oracle_net_bps uses all time-selected close-to-close log returns, including ties and no-call periods; it does not condition on calls or model next-open execution and liquidation paths. A synthetic actual-function check gives the same negative all-bars diagnostic with a positive selected-call result. This is a logical counterexample, not market performance. Leverage multiplies proportional price returns and fees together; it does not lower their underlying break-even. KNOW-818 now records this correction. Historical numbers remain unchanged.
 
@@ -595,7 +605,7 @@ Delivery isolation: skills branch research/perps-task808 in /Users/mitch/dev/wor
 Semantic scope: later November7 explicit user authorization supersedes the historical blanket pause for this task's on-demand local indexing only. Use existing local Ollama mxbai-embed-large:latest; no model download, service start, LAN/eGPU window or background queue resume. Actual full-suite stages, final independent publication audit and all Git deliveries remain owed. Unit verification is running on this private integrated branch; archived numerical verification passed1084 checks and documentation drift passed.
 
 
-## v58 - 2026-11-08 (Accepted v4 research and install qualification)
+## v59 - 2026-11-08 (Accepted v4 research and install qualification)
 
 Accepted: final research-gate/v4 packet53f1e45fae9cc0570ca7ba4085ad120785c3928beef135a4809ed0261191023c reviewed165/165 assertions. It has125SUPPORTED factual assertions and40non-assertions; three conflicts have explicit attribution. The validator reused159 exact judgments and reviewed only6 changed rows. Public metadata-only receipt: research/five-minute-perps-suite/accepted-gate-receipt.json. Private final attempt: gate/attempts/20261108T071503.072906Z-fe9b6245 under the task's canonical run directory. Failed attempts and successful evidence remain preserved; no sampled or invalid response was promoted.
 
@@ -606,3 +616,13 @@ Skill installation: reference rendered in the isolated skills worktree. A banner
 Verification: extension361 passed; real browser dry-run22/22 passed; offline roundtrip net+0.3492; mongo33 ran,17skipped without local server. Backtester853 ran with only the expected stale-index guard failing while metadata is changing; rebuild after final freeze and recheck. SolTUI808 still running. Docs drift passed853/361/33/808,2055total. Site dependency Python manifests match existing venv; private symlink reuses it. Installed private site lock with scripts disabled because original site's dependency versions differ. Site typecheck has0errors/0warnings,19hints. Prebuild site tests273pass20skip and35missing-dist failures require actual build after finish; this is not a code failure or final acceptance.
 
 Remaining: final qualified skills delivery and guarded activation, supported stable rerender, canonical finish/private/public boundary audit, actual per-concept/rollup compile/index/registration/frontier gates, final site build/tests, root/site PRs and CI/merge/content verification. ParentTASK808 remains unfinished.
+
+## v60 - 2026-11-08 (Integrated delivery and qualified research skill)
+
+Merged origin/master55c1dd4 (other-session gate_trend PR82). Preserved upstream prompt45/memory51, then appended this task's records as prompt46-47 and memory52-59 without changing request text or accepted source facts. Preexisting duplicate memory28 remains upstream-owned. Original forecast_stats AST is identical at current upstream and reviewed5cf5918 (SHAe00005b65a01e0bf9c70e85893c0b31e74afe65fe5eca1ecee024f0f0d6598ca); currentline1935, oldline1904. This task changes no strategy or execution code.
+
+Root synthesis research/FIVE-MINUTE-PERPS.md passed independent factual/math/proposal review atSHA23cb83fbecd903c5b9f1fbc6a5fa07e73726def4a76cdd1c650ce7b854d90431; receipt in research/five-minute-perps-suite/synthesis-audit-receipt.json. SolTUI808tests passed with2skips before upstreamintegration. Remaining indexstaleness is expected until final research metadata freezes.
+
+Skills delivery complete: https://github.com/mithudso/skills/pull/91 merged5765c8d755322292b6076d116a7b8e3a4526567b after finaltipf986579772de0d41f761cd1df4b208a3113d1b33 and passingoffline-safetyCI. Exact scopedcontent matchesorigin/main. Finalparent7116bytes plus7nestedguides preserves110exactclaims/7overviews/158bullets/68citationdefinitions; independentauditor accepted both length/privacy repairs. Guarded writer activates with freshhashes/backups, preserving dirty originals and distinct .agentsrouting/model. Canonicalportableindexes differ from deliverybase and need scoped repair, neverwholecorpusreplacement. Stablemanifest path repair must repeat deterministic partition after supportedrender.
+
+Current privateLCA work has7single-filev3packs from110uniqueacceptedunits with15earnedterms perconcept; localvector/FTS indexes initially110rows eachaggregate. The fixed usability bank found missing contextualcost/validation answers in onepack; coordinator repairs only relevantacceptedcohortcontext and keeps original questions. Do not call usabilitypassed or full-suitesaturated until actualreceipts. Canonicalfinish/sitepublication remain held untilactivation/discovery/privacy preconditionspass. RootPR58 staysdraft until finalresearch/pack/quality/frontier/site/deliverywork completes.

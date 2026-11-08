@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T06:37:55+00:00",
+  "generatedAt": "2026-11-08T07:35:19+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -134,16 +134,16 @@
           "hits": 18
         },
         {
+          "path": "memory.md",
+          "hits": 17
+        },
+        {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 17
         },
         {
           "path": "soltui/tests/test_bridge_surfaces.py",
           "hits": 17
-        },
-        {
-          "path": "index/build.py",
-          "hits": 16
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 290,
+      "matchingFiles": 294,
       "shown": 30,
       "files": [
         {
@@ -233,16 +233,20 @@
           "hits": 58
         },
         {
+          "path": "research/five-minute-perps-suite/run-state.json",
+          "hits": 54
+        },
+        {
           "path": "docs/short-horizon-leverage-concept-family.md",
           "hits": 53
         },
         {
-          "path": "soltui/wallet.py",
-          "hits": 48
+          "path": "memory.md",
+          "hits": 50
         },
         {
-          "path": "memory.md",
-          "hits": 40
+          "path": "soltui/wallet.py",
+          "hits": 48
         },
         {
           "path": "extension/src/market/holdings.js",
@@ -262,15 +266,11 @@
         },
         {
           "path": "docs/COMPOUND-5M.md",
-          "hits": 29
+          "hits": 30
         },
         {
           "path": "docs/CONCEPTS.md",
           "hits": 29
-        },
-        {
-          "path": "research/five-minute-perps-suite/run-state.json",
-          "hits": 28
         },
         {
           "path": "soltui/compound.py",
@@ -281,7 +281,7 @@
           "hits": 28
         },
         {
-          "path": "extension/src/venues/index.js",
+          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 27
         }
       ],
@@ -438,7 +438,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 194,
+      "matchingFiles": 196,
       "shown": 30,
       "files": [
         {
@@ -680,6 +680,10 @@
           "hits": 7
         },
         {
+          "path": "memory.md",
+          "hits": 7
+        },
+        {
           "path": "research/five-minute-perps-suite/coverage-resolution.json",
           "hits": 7
         },
@@ -689,10 +693,6 @@
         },
         {
           "path": "liquidity/src/aero_lp/ledger.py",
-          "hits": 6
-        },
-        {
-          "path": "memory.md",
           "hits": 6
         },
         {
@@ -712,7 +712,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 190,
+      "matchingFiles": 191,
       "shown": 30,
       "files": [
         {
@@ -729,7 +729,7 @@
         },
         {
           "path": "backtester/core/scorecard.py",
-          "hits": 96
+          "hits": 110
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
@@ -737,7 +737,7 @@
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 82
+          "hits": 87
         },
         {
           "path": "docs/FILES.md",
@@ -761,6 +761,10 @@
         },
         {
           "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 44
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
           "hits": 44
         },
         {
@@ -796,10 +800,6 @@
           "hits": 37
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 31
-        },
-        {
           "path": "backtester/core/trigger_conditions.py",
           "hits": 31
         },
@@ -816,6 +816,10 @@
           "hits": 25
         },
         {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 24
+        },
+        {
           "path": "research/results/cpcv_tables.md",
           "hits": 24
         },
@@ -830,10 +834,6 @@
         {
           "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
           "hits": 23
-        },
-        {
-          "path": "backtester/core/strategies/signals.py",
-          "hits": 21
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -988,7 +988,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 188,
+      "matchingFiles": 189,
       "shown": 30,
       "files": [
         {
@@ -1329,20 +1329,20 @@
           "hits": 27
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 22
+        },
+        {
           "path": "research/coin-intelligence/trx-tron.md",
           "hits": 21
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 21
+          "path": "memory.md",
+          "hits": 20
         },
         {
           "path": "backtester/core/funding.py",
           "hits": 20
-        },
-        {
-          "path": "memory.md",
-          "hits": 19
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",
@@ -1357,11 +1357,11 @@
           "hits": 17
         },
         {
-          "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 17
+          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 16
         },
         {
-          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 16
         },
         {
@@ -1400,7 +1400,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 150,
+      "matchingFiles": 153,
       "shown": 30,
       "files": [
         {
@@ -1446,6 +1446,10 @@
         {
           "path": "backtester/tests/test_deflated_sharpe.py",
           "hits": 10
+        },
+        {
+          "path": "memory.md",
+          "hits": 9
         },
         {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
@@ -1504,10 +1508,6 @@
           "hits": 5
         },
         {
-          "path": "memory.md",
-          "hits": 5
-        },
-        {
           "path": "research/coin-intelligence/sol-solana.md",
           "hits": 5
         },
@@ -1516,11 +1516,11 @@
           "hits": 5
         },
         {
-          "path": "docs/dso-skill/SKILL.md",
+          "path": "docs/COMPOUND-5M-PAPER.md",
           "hits": 5
         },
         {
-          "path": "skills/trading-and-investing/references/ai-and-ml-for-trading.md",
+          "path": "docs/dso-skill/SKILL.md",
           "hits": 5
         }
       ],
@@ -1672,7 +1672,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 128,
+      "matchingFiles": 129,
       "shown": 30,
       "files": [
         {
@@ -1724,6 +1724,10 @@
           "hits": 6
         },
         {
+          "path": "memory.md",
+          "hits": 6
+        },
+        {
           "path": "research/results/cpcv_tables.md",
           "hits": 6
         },
@@ -1772,10 +1776,6 @@
           "hits": 4
         },
         {
-          "path": "memory.md",
-          "hits": 4
-        },
-        {
           "path": "research/results/tables.md",
           "hits": 4
         },
@@ -1807,7 +1807,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 112,
+      "matchingFiles": 113,
       "shown": 30,
       "files": [
         {
@@ -1839,12 +1839,12 @@
           "hits": 40
         },
         {
-          "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
-          "hits": 31
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 32
         },
         {
-          "path": "backtester/tests/test_scorecard.py",
-          "hits": 29
+          "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
+          "hits": 31
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
@@ -2080,7 +2080,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 98,
+      "matchingFiles": 99,
       "shown": 30,
       "files": [
         {
@@ -2422,6 +2422,10 @@
           "hits": 10
         },
         {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 10
+        },
+        {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 10
         },
@@ -2439,10 +2443,6 @@
         },
         {
           "path": "backtester/core/strategies/__init__.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/tests/test_scorecard.py",
           "hits": 8
         },
         {
@@ -2489,7 +2489,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 89,
+      "matchingFiles": 90,
       "shown": 30,
       "files": [
         {
