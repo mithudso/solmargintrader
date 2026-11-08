@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 66
-Delta: v65 to v66; stop repeating full CI at the owner's instruction.
+Version: 70
+Delta: preserve concurrent histories and integrate PR 89 CI changes.
 
 ## v1 - 2026-11-06
 
@@ -505,4 +505,23 @@ Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
 
 ```text
 So you don't have to run this, you've already passed the CI 3 times.
+
+## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
+
+```text
+For the forwardtest tab, add a dropdown to choose which coins are tested, including all coins, and also add an "auto-optimize" option which dynamically changes the strategies' settings when they get an answer wrong. If a new setting tests superior than an old setting then save it as the default. Also make the forwardtest keep running in the background if I change tabs.
+```
+
+Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd, branch feat/forwardtest-coins-optimize, stacked on PR #87).
+
+## v61 - 2026-11-08
+
+```text
+› REsolve the merge conflicts on https://github.com/mithudso/solmargintrader/pull/89 and merge commit pr
+```
+
+## v62 - 2026-11-08
+
+```text
+Look at the CI tests, and determine which tests are causing the hour long delays in testing and make it so only the tests that affect what you doing are necessary, and do whatever else you need to to actually do this.
 ```

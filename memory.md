@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 128
-Delta: v127 to v128; finish delivery without repeating full CI, as instructed.
+Version: 129
+Delta: preserve concurrent histories and integrate PR 89 CI changes.
 
 ## v1 - 2026-11-06
 
@@ -1260,3 +1260,25 @@ The owner instructed that another full CI run is unnecessary. This overrides the
 Evidence remains precise: Claude's original full CI passed. Codex started three more runs; two were superseded rather than completed passes, and the third was still running at this checkpoint. The local 898-case run passed with two optional skips. The final combined workbench source passes all sixteen focused shell tests in 26.477 seconds. Independent mounted acceptance verifies the actual Bots workbench button, real schema and preview rendering, clean dismissal, every experiment write palette entry navigating without dispatch, preserved 351/292 card catalog, and 80/100-column navigation. No real optimizer job or service was started.
 
 Commit this fully resolved integration with CI skipped, then verify final 969-case discovery/docs counts, offline index freshness and whitespace before pushing. Update PR93 with the exact verification scope and owner instruction, merge normally, verify the actual remote files, safely activate the canonical launcher under fresh preservation checks, and remove only the private recovery worktree. TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json hold the final live receipts. Preserve the locked original Claude worktree and all unrelated active work.
+
+## v70 - 2026-11-08 (Forwardtest coins, auto-optimize, background runner)
+
+Target: prompts.md Forwardtest coins entry. Branch feat/forwardtest-coins-optimize in /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd.
+
+Completed: coin dropdown (one coin or All coins = every Coinbase USD market from `pricefeed.stream_products`); Auto-optimize on/off (`tick(tune=...)`); an adoption is saved as the trial's default (`forwardtest/defaults.json`, key coin|label|minutes) and seeds new trial rows (`_usable_default` refuses other members or unknown params); background runner thread on the Runtime (`forwardtest.run`, `forwardtest.state`), header shows it from every tab.
+
+Measured: one check is 1.5 s per coin with 34 strategies x 4 horizons; a live two-coin run recorded 136 calls per coin and the thread exited on Stop.
+
+Not reproduced: in-process, the old timer already kept ticking after a tab switch (pilot, 2026-11-08); the runner thread removes the UI from the loop either way.
+
+## v111 - 2026-11-08
+
+Target: PR 89, forwardtest coin selection and optimization. Stele TASK-998. Private worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb38. Merging current origin/master into eecade5; preserve both workflow histories and regenerate indexes after conflicts are staged. Remaining: test, push, await final CI, merge and verify remote.
+
+## v112 - 2026-11-08
+
+TASK-1001: PR 89 final CI at 0d2ba8d passed; SolTUI took 15m35s, all other jobs at most 1m13s. Master advanced to bc5c701, so merge again. Inspect test timing and implement conservative change-aware checks and parallel full coverage; preserve scheduled/manual full coverage. Stele decision outbox 03002488. Remaining: implementation, tests, fresh CI, PR merge and delivery. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb38.
+
+## v129 - 2026-11-08: CI latency and PR 89 integration
+
+PR 89 SolTUI CI ran 895 tests in 893.969 seconds and logged 165 app mounts. Other jobs took at most 73 seconds. Added conservative test-only module selection, four timed shards and nightly full coverage. Merged master through 9bd7067; combined discovery is 980 tests. Remaining: run focused integration, regenerate indexes, push and verify final CI, then merge PR 89. Stele outbox 03002488.
