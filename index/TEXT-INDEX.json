@@ -2598,7 +2598,7 @@
     "soltui/tests/test_wallet_integration.py": 1511,
     "soltui/tests/test_wallet_settings.py": 1073,
     "soltui/top5.py": 820,
-    "soltui/tui.py": 30982,
+    "soltui/tui.py": 31003,
     "soltui/utxo_scan.py": 1152,
     "soltui/wallet.py": 4968,
     "tools/gate.sh": 257,
@@ -2632,7 +2632,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T19:46:46+00:00",
+  "generatedAt": "2026-11-08T19:48:17+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -51310,7 +51310,7 @@
       "soltui/config.py": 5,
       "soltui/tests/test_coinbase_manual_ui.py": 16,
       "soltui/tests/test_status_roster.py": 4,
-      "soltui/tui.py": 16
+      "soltui/tui.py": 17
     },
     "armed_compound": {
       "liquidity/tests/test_daemon.py": 5,
@@ -160471,7 +160471,7 @@
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_eth_scan.py": 5,
       "soltui/tests/test_utxo_scan.py": 2,
-      "soltui/tui.py": 277,
+      "soltui/tui.py": 278,
       "soltui/utxo_scan.py": 1
     },
     "coinbase_account": {
@@ -287059,7 +287059,7 @@
       "soltui/tests/test_v2_shell.py": 2,
       "soltui/tests/test_wallet.py": 8,
       "soltui/top5.py": 5,
-      "soltui/tui.py": 282,
+      "soltui/tui.py": 283,
       "soltui/utxo_scan.py": 7,
       "soltui/wallet.py": 32,
       "tools/gate.sh": 3,
@@ -351783,7 +351783,7 @@
       "soltui/tests/test_coinbase_manual.py": 7,
       "soltui/tests/test_coinbase_manual_ui.py": 5,
       "soltui/tests/test_forwardtest.py": 1,
-      "soltui/tui.py": 3
+      "soltui/tui.py": 5
     },
     "filled_size": {
       "soltui/coinbase_manual.py": 1,
@@ -524492,7 +524492,7 @@
       "soltui/tests/test_wallet_integration.py": 5,
       "soltui/tests/test_wallet_settings.py": 5,
       "soltui/top5.py": 5,
-      "soltui/tui.py": 53,
+      "soltui/tui.py": 54,
       "soltui/wallet.py": 20,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 3
     },
@@ -530926,7 +530926,7 @@
       "soltui/shell.py": 2,
       "soltui/tests/test_hdwallet.py": 3,
       "soltui/tests/test_wallet_settings.py": 4,
-      "soltui/tui.py": 91,
+      "soltui/tui.py": 92,
       "soltui/utxo_scan.py": 2
     },
     "msgs": {
@@ -546973,7 +546973,7 @@
       "soltui/tests/test_v2_shell.py": 2,
       "soltui/tests/test_wallet.py": 12,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 29,
+      "soltui/tui.py": 30,
       "soltui/wallet.py": 7
     },
     "next_allowed": {
@@ -567496,7 +567496,7 @@
       "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md": 1,
       "soltui/experiment_screens.py": 2,
       "soltui/help.py": 1,
-      "soltui/tui.py": 17,
+      "soltui/tui.py": 18,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2
     },
     "operational": {
@@ -569880,7 +569880,7 @@
       "soltui/tests/bridge_support.py": 4,
       "soltui/tests/test_coinbase_manual.py": 3,
       "soltui/tests/test_coinbase_manual_ui.py": 4,
-      "soltui/tui.py": 11
+      "soltui/tui.py": 12
     },
     "order_info": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -569917,7 +569917,7 @@
       "soltui/tests/bridge_support.py": 2,
       "soltui/tests/test_coinbase_manual.py": 4,
       "soltui/tests/test_coinbase_manual_ui.py": 3,
-      "soltui/tui.py": 6
+      "soltui/tui.py": 7
     },
     "order_required_fields": {
       "docs/FILES.md": 1,
@@ -644971,7 +644971,7 @@
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_strategy_history.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 34,
+      "soltui/tui.py": 36,
       "tools/gate.sh": 5,
       "tools/install-hooks.sh": 1,
       "tools/land.sh": 1
@@ -677361,7 +677361,7 @@
       "soltui/experiment_jobs.py": 2,
       "soltui/help.py": 1,
       "soltui/tests/test_coinbase_manual_ui.py": 2,
-      "soltui/tui.py": 1,
+      "soltui/tui.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
     },
@@ -892593,7 +892593,7 @@
       "soltui/tests/test_experiments.py": 9,
       "soltui/tests/test_liquidity.py": 3,
       "soltui/tests/test_pricefeed.py": 1,
-      "soltui/tui.py": 256,
+      "soltui/tui.py": 257,
       "soltui/wallet.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
@@ -893342,7 +893342,7 @@
       "soltui/shell.py": 1,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_coinbase_manual_ui.py": 1,
-      "soltui/tui.py": 9
+      "soltui/tui.py": 10
     },
     "upper_deviation": {
       "backtester/strategy_research/tv_builtin_regression_trend.md": 1
@@ -946564,6 +946564,6 @@
     "documents": 2631,
     "terms": 68522,
     "termsBeforePrune": 68596,
-    "totalTokens": 3792898
+    "totalTokens": 3792919
   }
 }
