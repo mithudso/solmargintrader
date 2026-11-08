@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 59
-Delta: v58 to v59; apply requested canonical card moves immediately.
+Version: 60
+Delta: v59 to v60; expose retained cards in SolTUI Strategies.
 
 ## v1 - 2026-11-06
 
@@ -451,4 +451,10 @@ Keep complete indicator specifications too (Recommended)
 
 ```text
 I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
+```
+
+## v60 - 2026-11-08 (SolTUI card visibility)
+
+```text
+When I launch the soltui I don't see any of the new strategies.
 ```
