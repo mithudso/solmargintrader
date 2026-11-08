@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 179
-Delta: v176 to v179; preserve Coinbase connector continuation.
+Version: 180
+Delta: v179 to v180; record cross-interface and Coinbase fixtures.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1714,3 +1714,7 @@ The owner authorized converting JUPSOL to SOL. The Jupiter UI has a 0.03 JUPSOL 
 ## v179 - 2026-11-08
 
 The Coinbase snapshot now includes the authorized portfolio breakdown, including separately identified staked spot positions, in addition to trading balances. The app refresh uses the official CLI and requires a separate read-enabled API key. The current connected MCP authorization does not provide app credentials. Focused connector and button-registry tests pass. Code is a checkpoint in draft PR 119; integrate concurrent UI work, add installed acceptance and finish delivery after CI.
+
+## v180 - 2026-11-08
+
+PR 120's macOS CI exposed an invalid paper_experiment command namespace and missing parity fixtures. The integrated Coinbase branch includes the paperexperiment rename and safe fixtures for both paper and Coinbase commands. PR 119's unchanged extension browser smoke also failed two startup checks once, while the same checks passed on PR 118 and PR 120; rerun on the final head and investigate any repeat. Rebuild offline indexes and wait for final CI before merging.
