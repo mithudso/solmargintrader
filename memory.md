@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 95
-Delta: v94 to v95; apply complete per-card readiness review.
+Version: 96
+Delta: v95 to v96; record tested readiness delivery checkpoint.
 
 ## v1 - 2026-11-06
 
@@ -980,3 +980,14 @@ research/tradingview-card-readiness.json records each disposition, exact card qu
 Coverage checker now audits both directories and validates the readiness bindings. Existing flat runtime loading excludes incomplete/. Seven behavior checks pass for loss, duplicate location, stale review, wrong location and unbound evidence. Docs and the old extraction-file receipt preserve source coverage and relocated paths.
 
 Remaining: finish full raw-source and relevant suite checks, update offline indexes, preserve incoming PR95/PR96 histories and any enriched canonical cards, commit/push/PR/final CI/merge, canonical read-back and own-worktree cleanup. TASK-941 owns final delivery. Do not rerun /tmp/solmargin-card-triage/apply.py after relocation; its one-time assertions intentionally refuse a second move. Existing and new card hashes are in /tmp/solmargin-card-triage/card-baseline.json. Shared checkout preservation snapshot contains337 unrelated paths.
+
+
+## v96 - 2026-11-08 (incomplete cards, verified checkpoint)
+
+Version: 96. Delta: v95 to v96; finish local gates and preserve incoming PR95.
+
+Completed:791 byte-preserving relocations;292 new usable specifications plus59 original cards remain active (351 active,1142 total). Original card/registry contracts remain intact. All4890 raw-source bindings pass. Seven separation-integrity cases pass. Backtester880 guarded cases pass in28.177s; all20 mocked IdleTests pass separately in0.016s with INDEX_NO_AUTO unset, for900/900. SolTUI queue/Docs/coverage/editor selection100 cases pass in93.868s (one optional skip). Documentation counts agree on2179 tests. Targeted Python lint and both working/staged whitespace gates pass. Only offline keyword indexes were regenerated; no inference/runtime/index worker was started.
+
+Integrated origin/master a70d62f from PR95 without modifying its optimizer source-context files. Shared histories and all other active PRs/worktrees are preserved. Concurrent PR96 remains its owner's unfinished branch; do not merge or rewrite it. If it lands during this delivery, preserve its card improvements, re-review affected content and update location/hash bindings before finishing.
+
+Final delivery is tracked by TASK-941 and branch feat/tradingview-card-triage. If its PR is open, finish final-head CI and merge. If already merged, verify the remote receipt and complete TASK-941 if needed. Do not repeat extraction or the one-time move script. After actual merge, safely synchronize canonical master only when incoming paths do not overlap unrelated changes, verify all337 preserved path bytes, repeat focused fresh-process catalog/Docs acceptance and remove only this task's clean worktree/branch.
