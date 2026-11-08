@@ -1,10 +1,10 @@
 # Optimization workbench
 
-The Bots tab's **Experiments** workbench keeps complete simulated search evidence. It adds a bounded search editor, candidate/coin/window explorer, observed parameter maps, resumable workers and reported TradingView comparison. It never places an order.
+The Bots tab's **Experiment workbench** keeps complete simulated search evidence. It adds a bounded search editor, candidate/coin/window explorer, observed parameter maps, resumable workers and reported TradingView comparison. It never places an order.
 
 ## Start with exploration
 
-Open Bots, choose a bot, then open Experiments. Build a search with fixed values, explicit choices, linear ranges with a positive step, or positive log ranges with a point count. Parameters omitted from the search retain the current baseline value. The baseline always appears exactly once.
+Open Bots, choose a bot, then open **Experiment workbench**. Build a search with fixed values, explicit choices, linear ranges with a positive step, or positive log ranges with a point count. Parameters omitted from the search retain the current baseline value. The baseline always appears exactly once.
 
 Preview before starting. Preview validates bot domains and simulator configurations, reports rejected combinations, counts the available coin/window workload and enforces both configuration and evaluation budgets. It does not simulate candidates. The ceiling is 97 configurations including the baseline and 20,000 evaluations. A missing runtime estimate means no measured estimate is available.
 

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 108
-Delta: preserve concurrent remote history and append optimization workbench continuation through v108.
+Version: 109
+Delta: v108 to v109; record final source/acceptance checkpoint and delivery receipt location.
 
 ## v1 - 2026-11-06
 
@@ -1094,3 +1094,13 @@ All six source capabilities implemented in experiments.py, experiment_runner.py,
 Independent review found and sent fixes for undated contributing import rows escaping comparison coverage, launch/failure transitions overwriting pause/cancel, and native negative vsTradingView positive drawdown. Canonical summaries/maps/comparison use loss magnitude while raw evidence stays intact. Runtime versions are frozen and checked on resume. True subprocess death/restart, config-save/report-crash recovery, historical edit with unchanged stat metadata and legacy-report-after-prepare were tested. Live verifier found a clipped adoption label at80columns; responsive fix in progress.
 
 Remaining: verify final review fixes and loaded UI; full relevant suite, accurate doc counts and regenerated indexes; integrate current remote default preserving other work; commit/push, required checks, merge, remote content and cleanup receipts. No real data optimization, live orders, paused research or services were run.
+
+## v109 - 2026-11-08: final source and acceptance checkpoint
+
+Source committed as8726780 and currentdefault integrated as1f72841; concurrent incoming prompt/memory histories retained, own prompt nowv60 and continuation entriesv106-v109. No other session's files were edited.
+
+All six features implemented. Independent review reproduced and then cleared all3concrete findings. Actual native CLI, detached worker controls, source hashes, real simulator, CSV comparison and80x24/160x55headlessUI passed; actualBotsentry openedtheworkbench. Installedwrapper originallyexposed91commands; verifiedfeaturecode exposes105including14experiments actions. Installation may synchronize only after finalmerge and preservation/overlap checks; no service restart is required or authorized by this checkpoint.
+
+Validation:27newrunner tests,36foundation/interface tests and existing optimization/config/parity tests pass; newPythonmodules/tests Ruffpass. Fullsuite discovery947SolTUI tests (63additional),900backtester,34mongo,361extension; documentation total2242. Full947caseSolTUI run is active atthispre-merge checkpoint. Docs/countcheck,offlineindexhashcheck,cardcoveragevalidator and11HTMLconverter tests pass. phelper orchestration self-check8/8; rootllmsfacts/index appended withsourcebindings andbackups cleaned.
+
+Continuation: TASK-962 is the canonical live receipt for full-suite result, requiredfinalcommitCI, PR/merge identity, remotecontentverification, safeinstalledcheckoutsync andcleanup. Consult that receipt before repeating work. This record is committed before the merge; subsequent delivery receipts live in the task so no self-referential mergecommit is claimed here. Preserve anyunrelatedresearchJSON anduntrackedapplicationfiles during default-branch sync.
