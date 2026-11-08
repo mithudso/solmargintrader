@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 99
-Delta: v98 to v99; retain the Jupiter MCP and key-location request.
+Version: 100
+Delta: v99 to v100; retain the Jupiter signer availability request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -838,4 +838,10 @@ I don't know where you're saying that's open but I installed the jup.ag trading 
 
 ```text
 The variable is in ~/.env
+```
+
+## v100 - 2026-11-08
+
+```text
+You can try the jup cli again I added my key to it.
 ```

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 182
-Delta: v181 to v182; record the Jupiter MCP signing blocker.
+Version: 183
+Delta: v182 to v183; record finalized Jupiter swap and Coinbase deposit.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1726,3 +1726,7 @@ Coinbase sync and market download write local snapshots, so their registry entri
 ## v182 - 2026-11-08
 
 PR 119 merged as 2f649690c38acaac8bee36c299ce325679b7cd30 after required CI passed. The user requested using Jupiter's trading MCP for the JUPSOL to SOL swap and identified /Users/mitch/.env as the API-key location. The configured server was not exposed as a session tool, but its HTTP MCP endpoint accepted read-only requests. swap_get_order quoted 0.04 JUPSOL to about 0.0487 SOL. swap_execute_order requires a signed transaction; the Jupiter CLI listed no signing keys and Coinbase CDP did not control the source address. No swap or transfer was sent. A Codex MCP configuration inspection inadvertently exposed the Jupiter credential in tool output. The owner must rotate that credential. Do not copy, print, import or inspect the project's Solana private key. Preserve the running paper worker and Signal trainer. The current interactive console still predates delivery.
+
+## v183 - 2026-11-08
+
+The owner configured the Jupiter CLI signer. Its public address matched the intended Solana source wallet. A Jupiter MCP swap order passed exact-transaction simulation and checks of all existing owner token accounts, SOL reserve, fees, and signed message. One submission swapped 0.04 JUPSOL for 0.048699999 SOL; Solana finalized signature 615rbyxBnwRVgYyR8tCSuuprAewbhwmNbELbNbABX8VqkSGtAzqV4oPzJcohVEYvhEccrgkFedeUcT2MFL65WncQ. A separately decoded and simulated payment sent 0.055834729 SOL, approximately $5 at the live quote, to the verified Coinbase Solana address. Solana finalized signature 2447YyVGsyr2K9NxikpcKJGTxfTZ32NncmZTWSBHzjhc5yFkSfNQbTunKxtagKnRxqPxy35Z6hPXBj1P7yZAem36. Coinbase showed the deposited amount available, and the local Coinbase account snapshot was refreshed. Receipt journals are in /Users/mitch/.config/soltui/jupiter-transactions. Stele knowledge write queued as outbox ff51a048. The requested $0.03 SOL/USDC buy remains below the 1 USDC minimum and was not submitted; deposited SOL is not USDC. The exposed Jupiter API credential still needs rotation unless the owner has already rotated it.
