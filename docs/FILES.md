@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `f7957e0` (2026-11-08T13:02:04+00:00). 1886 tracked files, 31.1 MB.
+**Generated** from `index/INDEX.json` at commit `d4545e3` (2026-11-08T13:06:18+00:00). 1886 tracked files, 31.1 MB.
 
 Regenerate with:
 
@@ -185,9 +185,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1133 lines · 173,150 B · description: **extracted**
+`doc` · 1139 lines · 174,198 B · description: **extracted**
 
-**Purpose.** Version: 114 Delta: v113 to v114; complete independent corrections and refresh required verification metadata. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 115 Delta: v114 to v115; fix full-suite table-title regression and record final local verification. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -531,9 +531,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/coin-fit/tasks.json`
 
-`doc` · 32 lines · 749 B · description: **derived**
+`doc` · 33 lines · 884 B · description: **derived**
 
-**Purpose.** Generated JSON object, 3 keys (version, delta, steps).
+**Purpose.** Generated JSON object, 4 keys (version, delta, steps, final_receipt).
 
 **Use.** Read it.
 
@@ -15961,7 +15961,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_coin_fit_ui.py`
 
-`test` · 363 lines · 18,569 B · description: **extracted**
+`test` · 365 lines · 18,571 B · description: **extracted**
 
 **Purpose.** Suitability command parity and real Textual worker/cancellation behavior; no network.
 

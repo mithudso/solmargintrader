@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T13:02:04+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T13:06:18+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -59,7 +59,7 @@ Full list: `python3 index/search.py --concept risk-rails -n 475`
 
 ### Grid trading
 
-`grid` · **381 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **382 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
@@ -74,7 +74,7 @@ Strongest files:
 - `extension/src/core/grid.js` (66 hits)
 - `research/tradingview-card-readiness.json` (63 hits)
 
-Full list: `python3 index/search.py --concept grid -n 381`
+Full list: `python3 index/search.py --concept grid -n 382`
 
 ### On-chain execution reality
 
