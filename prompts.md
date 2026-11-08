@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 72
-Delta: v70 to v72; preserve incoming history and explicit coin-fit optional-suite instruction.
+Version: 74
+Delta: v73 to v74; preserve activation and concurrent delivery records.
 
 ## v1 - 2026-11-06
 
@@ -505,6 +505,7 @@ Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
 
 ```text
 So you don't have to run this, you've already passed the CI 3 times.
+```
 
 ## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
 
@@ -540,4 +541,20 @@ Add a heuristic backtesting mechanism to quickly test it, and a more detailed au
 
 ```text
 make the 999-case SolTUI suite optional, then skip it and push the code
+```
+
+## v73 - 2026-11-08 (owner merged the redesign)
+
+Version: 73. Delta: v72 to v73; preserve the owner's merge notification.
+
+```text
+I merged it
+```
+
+## v74 - 2026-11-08 (activate the actual console)
+
+Version: 74. Delta: v73 to v74; preserve the loaded-UI report.
+
+```text
+I dopn't see the new ui when loading the soltui
 ```
