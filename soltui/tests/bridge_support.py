@@ -94,6 +94,9 @@ HEAVY = {
                       "beat_hold": 0, "ran": 0},
     "bots.forward_start": {"forward": {"id": "stub", "bot": "grid"}, "recorder": {"started": False}},
     "bots.optimize": {"bot": "grid", "verdict": {"reliable": False, "adopted": False}, "table": []},
+    "bots.schedule_start": {"enabled": True, "running": True, "phase": "running", "items": []},
+    "bots.schedule_stop": {"enabled": False, "running": False, "phase": "stopped", "items": []},
+    "bots.schedule_status": {"enabled": False, "running": False, "phase": "stopped", "items": []},
     "bots.rank_coins": {"bot": "grid", "mode": "quick", "rows": [], "errors": {}, "cancelled": False},
     "bots.audit_coin": {"bot": "grid", "mode": "audit", "rows": [], "errors": {}, "cancelled": False},
     # Starts the background Forwardtest thread, which reads public Coinbase candles every minute.

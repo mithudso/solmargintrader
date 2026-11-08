@@ -2675,6 +2675,33 @@ def bots_optimize_result(ctx: Context, p: dict[str, Any]) -> Any:
     return _bots(bots_mod.latest_optimize, _bot_param(p))
 
 
+@command("bots.schedule_status", "Recurring optimizer state, per-coin progress, last run, next run and errors.")
+def bots_schedule_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bot_scheduler
+    return bot_scheduler.status()
+
+
+@command("bots.schedule_start", "Enable recurring bot optimization every 24 hours and its login recovery watchdog.",
+         read_only=False, long_running=True)
+def bots_schedule_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bot_scheduler
+    try:
+        bot_scheduler.start()
+        return bot_scheduler.status()
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise CommandError("failed", str(exc)) from exc
+
+
+@command("bots.schedule_stop", "Disable recurring optimization and prevent watchdog restart; stop at the current job boundary.",
+         read_only=False, long_running=True)
+def bots_schedule_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bot_scheduler
+    try:
+        return bot_scheduler.stop()
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise CommandError("failed", str(exc)) from exc
+
+
 # -- durable optimization experiments ------------------------------------------------------------
 
 EXPERIMENT_ID = P("run_id", "string", "Saved experiment identifier.", required=True)

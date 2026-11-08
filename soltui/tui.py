@@ -266,6 +266,9 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#bots-forward-stop": "bots.forward_stop",
     "#bots-forward-refresh": "bots.forward_status",
     "#bots-optimize": "bots.optimize",
+    "#bots-schedule-start": "bots.schedule_start",
+    "#bots-schedule-stop": "bots.schedule_stop",
+    "#bots-schedule-status": "bots.schedule_status",
     "#bots-fit-rank": "bots.rank_coins",
     "#bots-fit-audit": "bots.audit_coin",
     "#bots-fit-cancel": "bots.fit_cancel",
@@ -966,6 +969,8 @@ class SolTuiApp(App):
         self._bots_bot = "grid"
         self._bots_coins: list[str] = []
         self._bots_ticks = 0
+        self._bots_schedule_busy = False
+        self._bots_schedule_pending: list[tuple[str, bool]] = []
         self._bots_forward_running = False
         self._bots_selected: list[str] = []
         self._bots_runs: list[dict[str, Any]] = []
@@ -1837,6 +1842,11 @@ class SolTuiApp(App):
                 yield Button("Rank all coins (quick)", variant="primary", id="bots-fit-rank")
                 yield Button("Audit selected coin", id="bots-fit-audit", disabled=True)
                 yield Button("Cancel ranking / audit", id="bots-fit-cancel", disabled=True)
+            with Horizontal(classes="form-row"):
+                yield Button("Start daily auto-optimize", variant="success", id="bots-schedule-start")
+                yield Button("Stop daily auto-optimize", variant="error", id="bots-schedule-stop")
+                yield Button("Daily optimizer status", id="bots-schedule-status")
+            yield Static("Daily optimizer: checking…", id="bots-schedule-summary", markup=False)
             yield Static("Coin suitability: quick ranking is provisional; audit adds multiple windows and stressed costs.",
                          id="bots-fit-status", markup=False)
             yield Static("", id="bots-status")
@@ -2222,12 +2232,70 @@ class SolTuiApp(App):
         env = self._call("prices.status", quiet=True)
         if env["ok"]:
             self._bots_render_prices(env["result"])
+        self._bots_schedule_request("bots.schedule_status")
         # A running forward test advances with the recording: replay what arrived every 30 s.
         if self._bots_ticks % 6 == 0 and self._bots_forward_running:
             self._bots_forward_refresh()
         prog = bots_mod.runtime().progress.get(self._bots_bot)
         if prog and prog.get("fraction", 1) < 1:
             self._bots_status(f"auto-optimize {100 * prog['fraction']:.0f}%: {prog['message']}")
+
+    def _bots_schedule_request(self, name: str, *, show: bool = False) -> None:
+        if self._bots_schedule_busy:
+            if show:
+                self._bots_schedule_pending.append((name, show))
+                self.query_one("#bots-schedule-summary", Static).update(Text("Daily optimizer: request queued…"))
+            return
+        self._bots_schedule_busy = True
+        self._bots_schedule_worker(name, show)
+
+    @work(thread=True, group="bots-schedule", exit_on_error=False)
+    def _bots_schedule_worker(self, name: str, show: bool) -> None:
+        try:
+            env = self._call(name, {}, quiet=True)
+        except Exception as exc:
+            env = {"ok": False, "error": {"message": f"{type(exc).__name__}: {exc}"}}
+        self.call_from_thread(self._bots_schedule_done, name, env, show)
+
+    def _bots_schedule_done(self, name: str, env: dict[str, Any], show: bool) -> None:
+        self._bots_schedule_busy = False
+        if not self.query("#bots-schedule-summary"):
+            return
+        if not env.get("ok"):
+            text = f"Daily optimizer error: {self._msg(env)}"
+        else:
+            result = env.get("result") or {}
+            def when(value: Any) -> str:
+                try:
+                    return time.strftime("%Y-%m-%d %H:%M", time.localtime(float(value))) if value else "none"
+                except (ValueError, TypeError, OverflowError, OSError):
+                    return "unknown"
+            current = result.get("current") or {}
+            text = (f"Daily optimizer: {result.get('phase', 'unknown')} · enabled {bool(result.get('enabled'))} · "
+                    f"last {when(result.get('last_run'))} ({result.get('last_result') or 'none'}) · "
+                    f"next {when(result.get('next_run'))} · current {current.get('bot', 'none')} "
+                    f"{current.get('coin', '')} · error {result.get('error') or 'none'}")
+            if show:
+                text += "\n\n" + json.dumps(result, indent=2, default=str)
+        self.query_one("#bots-schedule-summary", Static).update(Text(text.split("\n\n", 1)[0]))
+        if show:
+            self._set_editor_open(True, persist=False)
+            self._show_preview("Daily optimizer status", text)
+        if self._bots_schedule_pending:
+            next_name, next_show = self._bots_schedule_pending.pop(0)
+            self._bots_schedule_request(next_name, show=next_show)
+
+    @on(Button.Pressed, "#bots-schedule-start")
+    def _bots_schedule_start(self) -> None:
+        self._bots_schedule_request("bots.schedule_start", show=True)
+
+    @on(Button.Pressed, "#bots-schedule-stop")
+    def _bots_schedule_stop(self) -> None:
+        self._bots_schedule_request("bots.schedule_stop", show=True)
+
+    @on(Button.Pressed, "#bots-schedule-status")
+    def _bots_schedule_status(self) -> None:
+        self._bots_schedule_request("bots.schedule_status", show=True)
 
     @on(Select.Changed, "#bots-bot")
     def _bots_bot_changed(self, event: Select.Changed) -> None:

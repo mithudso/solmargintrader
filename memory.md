@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 204
-Delta: v203 to v204; retain the advanced order ticket and venue reference work.
+Version: 205
+Delta: v203 to v205; retain the advanced ticket, venue references and scheduler delivery.
+
+## v205 - 2026-11-08
+
+Recurring bot optimizer PR 128 merged as d7010e63ba04b20fe77bfcb77dc1a7282f8250ed with passing required CI. The owner requested frequent per-coin tuning. A daily detached scheduler and dedicated launchd recovery watchdog have been started; verify their current status before reporting a run. The scheduler only adopts grid and DCA settings if the per-coin capability is present; triangle remains evidence-only. Stele transport was closed; leveraged-order verifier gap is queued as outbox 68fc7f6f.
 
 ## v204 - 2026-11-08
 
