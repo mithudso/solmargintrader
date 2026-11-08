@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 114
-Delta: v112 to v114; retain the range clarification and Jupiter reference path.
+Version: 115
+Delta: v114 to v115; retain the recurring optimizer request for the triangle evidence fix.
+
+## v115 - 2026-11-08
+
+```text
+And with the auto-optimizer I think you've been denying any new configuration if it has ANY failed evaluation so unless it's not perfect it won't get any better. I'm looking for incremental improvements and for the auto optimizer to be run frequently as it tunes to optimal configurations for each coin. I want better I'll get to best eventually.
+```
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.

@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 204
-Delta: v203 to v204; preserve recurring optimizer scheduler handoff.
+Version: 205
+Delta: v204 to v205; exclude the recorder's active hour from triangle optimizer evidence.
+
+## v205 - 2026-11-08
+
+The first scheduled optimizer cycle failed its triangle evaluation with `historical recorded evidence changed for USD-ADA-BTC:1794171600:1794175200`. The frozen window included the hour currently receiving new recorder snapshots. Freeze only completed recorded hours; retain the fingerprint check so later changes to closed history still fail. Per-coin work continues independently. The running scheduler must be restarted through its own controls after delivery to load the fix.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.

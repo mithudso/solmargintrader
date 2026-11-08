@@ -158,10 +158,16 @@ def _bar_windows(bot: str, settings: Any, coins: Sequence[str], count: int,
 def _recorded_hours() -> Iterator[list[tuple[float, dict]]]:
     chunk: list[tuple[float, dict]] = []
     current: int | None = None
+    # The recorder can still append to the current hour after a run freezes
+    # its evidence. Only freeze completed hours so normal recording cannot
+    # invalidate an in-progress triangle evaluation.
+    first_open_hour = int(time.time() // bots.TRIANGLE_WINDOW_S)
     # A bounded ring of descriptors is built by callers; only one hour's quote
     # snapshots is retained here, including on long recordings.
     for t, q in bots._iter_recorded(0.0, None, last_days=bots.TRIANGLE_OPT_DAYS):
         hour = int(t // bots.TRIANGLE_WINDOW_S)
+        if hour >= first_open_hour:
+            continue
         if current is not None and hour != current:
             if len(chunk) >= bots.TRIANGLE_MIN_SNAPSHOTS:
                 yield chunk
