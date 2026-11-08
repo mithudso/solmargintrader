@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 81
-Delta: v80 to v81; record PR 96 request and takeover confirmation.
+Version: 82
+Delta: v81 to v82; record the background sweep proof error.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -685,4 +685,11 @@ resolve the conflicts in https://github.com/mithudso/solmargintrader/pull/96 and
 
 ```text
 Yes it's abandonedd
+```
+
+## v82 - 2026-11-08
+
+```text
+I'm getting this error in the sweep: error: ValueError: evaluation proof is missing or differs for SOL at /Users/mitch/.config/soltui/bg/results.jsonl; preserve this history and use --results-path for a fresh file · 361 rankable, 253 with positive median Sharpe · 224
+below the 10-trade floor
 ```
