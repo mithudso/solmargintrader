@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 73
-Delta: v72 to v73; record SolTUI selection and backtest log request.
+Version: 74
+Delta: v73 to v74; preserve concurrent history and record editor request.
+Version: 60
+Delta: v59 to v60; start EPIC-980 research tracks.
+Version: 66
+Delta: v65 to v66; stop repeating full CI at the owner's instruction.
+Version: 74
+Delta: v73 to v74; preserve activation and concurrent delivery records.
 
 ## v1 - 2026-11-06
 
@@ -453,6 +459,13 @@ Keep complete indicator specifications too (Recommended)
 I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
 ```
 
+## v60 - 2026-11-08 (EPIC-980 research request)
+
+```text
+Run the /dr skill on all of the frontier children concepts of https://llmsx.org/tree/nonlinear-lead-lag-inference-conditional-information-transfer-finite-sample-uncertainty-lag-selection-multiplicity-and-directed-graph-preservation/ and run the full-suite skill on crypto trading bots: trend-following, mean-reversion, signal-based, arbitrage, loop, combo, TWAP, geographic, statistical, dip-buying, martingale, rebalancing, moon  https://www.tradingview.com/chart/GOLD/CvDZ1ttE-The-5-Types-of-Trading-Bots-Every-Trader-Should-Know/
+```
+
+Scope: all 18 run-start nonlinear frontier labels plus the full crypto trading-bot family. Preserve accepted TASK-905 research and other active work.
 ## v60 - 2026-11-08 (SolTUI card visibility)
 
 ```text
@@ -505,7 +518,15 @@ Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
 
 ```text
 So you don't have to run this, you've already passed the CI 3 times.
+```
 
+## v67 - 2026-11-08 (Firecrawl usage check)
+
+```text
+Are you using the firecrawl skills and mcp server?
+```
+
+Confirmed Firecrawl skills, MCP and worker CLI collection are active. Existing two-track request continues.
 ## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
 
 ```text
@@ -540,6 +561,58 @@ Add a heuristic backtesting mechanism to quickly test it, and a more detailed au
 
 ```text
 make the 999-case SolTUI suite optional, then skip it and push the code
+```
+
+## v73 - 2026-11-08 (owner merged the redesign)
+
+Version: 73. Delta: v72 to v73; preserve the owner's merge notification.
+
+```text
+I merged it
+```
+
+## v74 - 2026-11-08 (activate the actual console)
+
+Version: 74. Delta: v73 to v74; preserve the loaded-UI report.
+
+```text
+I dopn't see the new ui when loading the soltui
+```
+
+## v75 - 2026-11-08 (separate guides and non-testable cards)
+
+```text
+move out the cards that are actually just a how to guide, like "A Quick Guide to Multi-Timeframe Scaling" is not a testable strategy. Move them to a guides directory. If it is not testeable strategy it should not be in the strategy folder.
+```
+
+## v76 - 2026-11-08 (move cards immediately)
+
+```text
+I literally told you to move them. Why did you not move them?
+```
+
+## v77 - 2026-11-08 (update SolTUI list)
+
+```text
+Make sure the soltui's list is updated
+```
+
+## v78 - 2026-11-08 (exclude pair and bot templates)
+
+```text
+The rest of these are also guides, like jlp_vs_sol_relative_value.md is literally just a stub article saying to look at a coin pair.  same with BTC or ETH, the Resting-ladder grid is a grid bot template, not a strategy.
+```
+
+## v79 - 2026-11-08 (correction)
+
+```text
+You have now spenot 136M tokens to be wrong every time you have said you came to a conclusion with zero productive work as a result.
+```
+
+## v80 - 2026-11-08 (status check)
+
+```text
+So now what's up? Haven't you moved literally everything you created?
 ```
 
 ## v73 - 2026-11-08
