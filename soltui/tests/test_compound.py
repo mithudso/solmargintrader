@@ -1261,18 +1261,22 @@ class HorizonForwardTests(TempConfig):
         compound._record_horizon_calls("SOL", call, stamp, clock=lambda: stamp)
         rows = compound.read_ledger("SOL")
         self.assertEqual({r["minutes"] for r in rows}, {1, 5, 30})
+        compound._record_horizon_calls("SOL", call, stamp + 60, clock=lambda: stamp + 60)
+        self.assertEqual([r["minutes"] for r in compound.read_ledger("SOL")].count(1), 2)
+        self.assertEqual([r["minutes"] for r in compound.read_ledger("SOL")].count(5), 1)
+        self.assertEqual([r["minutes"] for r in compound.read_ledger("SOL")].count(30), 1)
         start = rows[0]["start"]
         self.assertGreater(start, stamp)
         raw = {"ts": np.arange(start, start + 30 * 60, 60),
                "open": np.full(30, 100.0), "close": np.full(30, 101.0)}
         with mock.patch.object(compound, "fetch_closed_candles", return_value=raw):
             self.assertEqual(compound._resolve_horizons("SOL", start + 60), 1)
-            self.assertEqual(compound._resolve_horizons("SOL", start + 5 * 60), 1)
+            self.assertEqual(compound._resolve_horizons("SOL", start + 5 * 60), 2)
             self.assertEqual(compound._resolve_horizons("SOL", start + 30 * 60), 1)
             self.assertEqual(compound._resolve_horizons("SOL", start + 30 * 60), 0)
         status = compound.horizon_status(compound.read_ledger("SOL"))
         for h in (1, 5, 30):
-            self.assertEqual(status["horizons"][h]["resolved"], 1)
+            self.assertEqual(status["horizons"][h]["resolved"], 2 if h == 1 else 1)
             self.assertEqual(status["horizons"][h]["hit_rate"], 1.0)
 
     def test_gap_stays_pending_and_late_forecast_is_not_recorded(self) -> None:

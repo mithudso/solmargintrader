@@ -591,8 +591,16 @@ def _append(asset: str, rows: Sequence[Mapping[str, Any]], *, unique: bool = Fal
     try:
         fcntl.flock(fd, fcntl.LOCK_EX)
         if unique:
-            have = {(r.get("type"), r.get("id")) for r in read_ledger(asset) if r.get("type") in ("call", "resolve", "horizon_call", "horizon_resolve")}
-            rows = [r for r in rows if r.get("type") not in ("call", "resolve", "horizon_call", "horizon_resolve") or (r["type"], r.get("id")) not in have]
+            existing = read_ledger(asset)
+            have = {(r.get("type"), r.get("id")) for r in existing if r.get("type") in ("call", "resolve", "horizon_call", "horizon_resolve")}
+            latest: dict[int, int] = {}
+            for old in existing:
+                if old.get("type") == "horizon_call":
+                    h = int(old["minutes"])
+                    latest[h] = max(latest.get(h, 0), int(old["start"]))
+            rows = [r for r in rows if (r.get("type") not in ("call", "resolve", "horizon_call", "horizon_resolve")
+                    or (r["type"], r.get("id")) not in have) and (r.get("type") != "horizon_call"
+                    or int(r["start"]) >= latest.get(int(r["minutes"]), 0) + int(r["minutes"]) * 60)]
         if not_after is not None and clock() >= not_after:
             return []  # never record a forecast after its measured interval begins
         if rows:
@@ -1056,11 +1064,27 @@ def _record_horizon_calls(asset: str, call: Mapping[str, Any], stamp: int, *,
     independently trained predictors. Historical calls are deliberately not backfilled.
     """
     start = (stamp // 60 + 1) * 60
-    rows = [{"type": "horizon_call", "id": f"{call['id']}:{h}m", "source_id": call["id"],
+    rows = [{"type": "horizon_call", "id": f"{call['id']}:{start}:{h}m", "source_id": call["id"],
              "asset": asset, "minutes": h, "start": start, "finish": start + h * 60,
              "issued_at": stamp, "call": call["call"], "config_hash": call["config_hash"]}
             for h in HORIZON_MINUTES]
     _append(asset, rows, unique=True, not_after=start, clock=clock)
+
+
+def _horizon_tick(asset: str, *, now: float | None = None, get: Fetcher = http_json) -> dict[str, Any]:
+    """Sample the latest closed-five-minute signal once per horizon's cadence."""
+    stamp = int(time.time() if now is None else now)
+    ledger = read_ledger(asset)
+    calls = [r for r in ledger if r.get("type") == "call" and r.get("recorded_at") is not None]
+    call = max(calls, key=lambda r: int(r["recorded_at"]), default=None)
+    recorded = False
+    if call and int(call["recorded_at"]) <= stamp < int(call["bar_ts"]) + 600:
+        before = len([r for r in ledger if r.get("type") == "horizon_call"])
+        _record_horizon_calls(asset, call, stamp, clock=time.time if now is None else lambda: now)
+        recorded = len([r for r in read_ledger(asset) if r.get("type") == "horizon_call"]) > before
+    resolved = _resolve_horizons(asset, stamp, get=get)
+    return {"asset": asset, "horizon_recorded": recorded, "horizon_resolved": resolved,
+            "stale_signal": not call or stamp >= int(call["bar_ts"]) + 600}
 
 
 def _resolve_horizons(asset: str, stamp: int, get: Fetcher = http_json) -> int:
@@ -1881,7 +1905,9 @@ def run_unattended(assets: str | Sequence[str], *, hold_lock: bool = True, max_t
 
     if hold_lock:
         signal_mod.signal(signal_mod.SIGTERM, on_term)
+    injected_tick = tick is not None
     tick = tick or forward_tick
+    last_scored: dict[str, int] = {}
     ticks = 0
 
     def stamp() -> str:
@@ -1912,15 +1938,22 @@ def run_unattended(assets: str | Sequence[str], *, hold_lock: bool = True, max_t
                     release(a)
                     continue
                 try:
-                    out = tick(a, wallet_address=_settings_address(), hyperliquid_address=_settings_hyperliquid())
+                    latest = (int(clock()) // 300) * 300 - 300
+                    if injected_tick or last_scored.get(a, -1) < latest:
+                        out = tick(a, wallet_address=_settings_address(), hyperliquid_address=_settings_hyperliquid())
+                        if not injected_tick:
+                            last_scored[a] = int(out["bar_ts"])
+                    else:
+                        out = _horizon_tick(a)
                     say(a, json.dumps({"at": int(clock()), **out}, default=_jsonable))
                 except Exception as exc:  # noqa: BLE001 - keep running; the next bar will try again
                     say(a, json.dumps({"at": int(clock()), "asset": a, "error": f"{type(exc).__name__}: {exc}"}))
             ticks += 1
             if max_ticks is not None and ticks >= max_ticks:
                 break
-            # Wake 5 s after the next 5m boundary, checking for stop requests every second.
-            wake = clock() + 300 - (clock() % 300) + 5 + offset
+            # The signal is refreshed on five-minute bars; horizon samples settle each minute.
+            cadence = 300 if injected_tick else 60
+            wake = clock() + cadence - (clock() % cadence) + 5 + offset
             while clock() < wake and not stopping["flag"] and held:
                 for a in list(held):
                     if unattended_paths(a)["stop"].exists():

@@ -2915,7 +2915,7 @@ class SolTuiApp(App):
                             "net bps 1h", "net bps 24h", "oos calls", "oos hit", "z", "gross bps", "max dd",
                             "rankable")
         hz = self.query_one("#compound-horizons", GlossaryTable)
-        hz.add_columns("forecast UTC", "minutes", "prediction", "return bps", "hit")
+        hz.add_columns("forecast UTC", "starts UTC", "minutes", "prediction", "return bps", "hit")
         fwd = self.query_one("#compound-forward", GlossaryTable)
         fwd.cursor_type = "row"
         fwd.add_columns("time", "call", "composite", "regime", "price", "next 5m bps", "hit", "blocked by")
@@ -3332,7 +3332,7 @@ class SolTuiApp(App):
             self.query_one("#compound-horizon-summary", Static).update(" | ".join(parts))
             for row in reversed(hz["recent"]):
                 htable.add_row(time.strftime("%m-%d %H:%M", time.gmtime(row["issued_at"])),
-                               str(row["minutes"]), row["call"], _num(row["ret_bps"]),
+                               time.strftime("%m-%d %H:%M", time.gmtime(row["start"])), str(row["minutes"]), row["call"], _num(row["ret_bps"]),
                                {True: "yes", False: "no"}.get(row["hit"], "-"))
             self._compound_forward_rows = list(reversed(f["recent"]))
             for row in reversed(f["recent"]):
