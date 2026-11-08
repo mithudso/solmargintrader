@@ -228,6 +228,13 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#coinbase-order-quick": "coinbase.order_quick",
     "#coinbase-order-check": "coinbase.order_status",
     "#coinbase-order-state": "coinbase.order_state",
+    "#advanced-preview": "coinbase.order_preview",
+    "#advanced-percent-preview": "coinbase.order_percent_preview",
+    "#advanced-conditional-preview": "coinbase.order_conditional_preview",
+    "#advanced-submit": "coinbase.order_submit",
+    "#advanced-quick": "coinbase.order_quick",
+    "#advanced-percent-quick": "coinbase.order_percent_quick",
+    "#advanced-conditional-quick": "coinbase.order_conditional_quick",
     "#coinbase-pairs-filter": "coinbase.pairs",
     "#docs-search-run": "docs.search",
     "#docs-search-free": "docs.search_unload",
@@ -642,6 +649,13 @@ class SolTuiApp(App):
     #coinbase-order-size, #coinbase-order-id { width: 1fr; }
     #coinbase-pairs-query { width: 1fr; }
     #coinbase-pairs-table { height: 8; }
+    #coinbase-manual-ticket, #advanced-order-ticket { height: auto; border: round $accent; padding: 0 1; }
+    #advanced-product, #advanced-size { width: 1fr; min-width: 14; }
+    #advanced-venue, #advanced-type, #advanced-side, #advanced-unit { width: 1fr; min-width: 16; }
+    #advanced-quick { display: none; }
+    #advanced-percent-preview, #advanced-percent-quick, #advanced-conditional-preview, #advanced-conditional-quick { display: none; }
+    #advanced-limit-price, #advanced-stop-price { width: 1fr; }
+    #advanced-chart { height: 5; }
     #roster-table { width: 1fr; }
     #docs-filter, #docs-search { width: 1fr; }
     #docs-kind, #docs-search-mode { width: 24; }
@@ -814,6 +828,11 @@ class SolTuiApp(App):
         self._coinbase_order_generation = 0
         self._coinbase_order_busy = False
         self._coinbase_order_unknown = True
+        self._advanced_preview_data: dict[str, Any] | None = None
+        self._advanced_generation = 0
+        self._advanced_context_busy = False
+        self._advanced_price_history: dict[str, list[tuple[float, float]]] = {}
+        self._advanced_context_product = ""
         self._coinbase_pairs_generation = 0
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
@@ -2701,6 +2720,7 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self.set_interval(5, self._forward_schedule)
+        self.set_interval(5, self._advanced_context_tick)
         self.set_interval(5, self._batch_poll)
         self._batch_request("discover")
         self.set_interval(15, self._paper_exp_tick)
@@ -4330,39 +4350,83 @@ class SolTuiApp(App):
                 yield Button("Sync Coinbase", id="coinbase-sync")
                 yield Button("Download Coinbase markets", id="coinbase-markets")
                 yield Static("", id="coinbase-status")
-            yield Static("[b]Manual Coinbase spot order[/b] — real money only after review and explicit submission.",
-                         classes="table-title")
-            yield Static("Market orders quoted in USD or USDC only. BUY spends the quote currency; SELL sells the base coin. "
-                         "Quotes and fees are estimates, and the final fill may differ.", classes="hint")
-            with Horizontal(classes="form-row"):
-                yield Input(placeholder="Filter Coinbase spot pairs", id="coinbase-pairs-query")
-                yield Button("Filter pairs", id="coinbase-pairs-filter")
-            yield Static("Loading the saved spot-pair catalog…", id="coinbase-pairs-status", markup=False)
-            pairs = GlossaryTable(id="coinbase-pairs-table")
-            pairs.cursor_type = "row"
-            pairs.add_columns("Coinbase spot pair — select to use")
-            yield pairs
-            with Horizontal(classes="form-row"):
-                yield Input(value="SOL-USDC", placeholder="Pair, e.g. SOL-USDC", id="coinbase-order-product")
-                yield Select([("BUY", "BUY"), ("SELL", "SELL")], value="BUY", allow_blank=False,
-                             id="coinbase-order-side")
-                yield Input(placeholder="Amount to spend in quote currency", id="coinbase-order-size")
-            with Horizontal(classes="form-row"):
-                yield Checkbox("Arm LIVE order submission", value=False, id="coinbase-order-armed")
-                yield Button("Review order", id="coinbase-order-preview", disabled=True)
-                yield Button("Place LIVE order", variant="error", id="coinbase-order-submit", disabled=True)
-                yield Button("Place LIVE immediately", variant="error", id="coinbase-order-quick", disabled=True)
-            yield Checkbox("Skip per-order review for this session", value=False, id="coinbase-order-skip-review")
-            yield Static("When selected, an armed LIVE order can execute immediately when you press Place LIVE immediately. "
-                         "This setting resets when the app closes.", classes="hint")
-            yield Static("Disarmed. Checking previous order state before a review can start.",
-                         id="coinbase-order-message", markup=False)
-            yield Static("", id="coinbase-order-review", markup=False)
-            with Horizontal(classes="form-row"):
-                yield Input(placeholder="Coinbase order ID", id="coinbase-order-id")
-                yield Button("Check order", id="coinbase-order-check")
-                yield Button("Refresh order safety", id="coinbase-order-state")
-            yield Static("No order submitted in this session.", id="coinbase-order-receipt", markup=False)
+            with Vertical(id="coinbase-manual-ticket") as ticket:
+                ticket.border_title = "Manual Coinbase spot order"
+                yield Static("[b]Manual Coinbase spot order[/b] — live orders start disarmed.",
+                             classes="table-title")
+                yield Static("Market orders quoted in USD or USDC only. BUY spends the quote currency; SELL sells the base coin. "
+                             "Quotes and fees are estimates, and the final fill may differ.", classes="hint")
+                with Horizontal(classes="form-row"):
+                    yield Input(placeholder="Filter Coinbase spot pairs", id="coinbase-pairs-query")
+                    yield Button("Filter pairs", id="coinbase-pairs-filter")
+                yield Static("Loading the saved spot-pair catalog…", id="coinbase-pairs-status", markup=False)
+                pairs = GlossaryTable(id="coinbase-pairs-table")
+                pairs.cursor_type = "row"
+                pairs.add_columns("Coinbase spot pair — select to use")
+                yield pairs
+                with Horizontal(classes="form-row"):
+                    yield Input(value="SOL-USDC", placeholder="Pair, e.g. SOL-USDC", id="coinbase-order-product")
+                    yield Select([("BUY", "BUY"), ("SELL", "SELL")], value="BUY", allow_blank=False,
+                                 id="coinbase-order-side")
+                    yield Input(placeholder="Amount to spend in quote currency", id="coinbase-order-size")
+                with Horizontal(classes="form-row"):
+                    yield Checkbox("Arm LIVE order submission", value=False, id="coinbase-order-armed")
+                    yield Button("Review order", id="coinbase-order-preview", disabled=True)
+                    yield Button("Place LIVE order", variant="error", id="coinbase-order-submit", disabled=True)
+                    yield Button("Place LIVE immediately", variant="error", id="coinbase-order-quick", disabled=True)
+                yield Checkbox("Skip per-order review for this session", value=False, id="coinbase-order-skip-review")
+                yield Static("When selected, an armed LIVE order can execute immediately when you press Place LIVE immediately. "
+                             "This setting resets when the app closes.", classes="hint")
+                yield Static("Disarmed. Checking previous order state before a review can start.",
+                             id="coinbase-order-message", markup=False)
+                yield Static("", id="coinbase-order-review", markup=False)
+                with Horizontal(classes="form-row"):
+                    yield Input(placeholder="Coinbase order ID", id="coinbase-order-id")
+                    yield Button("Check order", id="coinbase-order-check")
+                    yield Button("Refresh order safety", id="coinbase-order-state")
+                yield Static("No order submitted in this session.", id="coinbase-order-receipt", markup=False)
+            with Vertical(id="advanced-order-ticket") as ticket:
+                ticket.border_title = "Advanced order ticket"
+                yield Static("Coinbase market orders support amounts or balance percentages; conditional orders use coin units. $100 order cap. Jupiter is unavailable.", classes="hint")
+                with Horizontal(classes="form-row"):
+                    yield Select([("Coinbase", "coinbase"), ("Jupiter — unavailable", "jupiter")], value="coinbase",
+                                 allow_blank=False, id="advanced-venue")
+                    yield Select([("Market", "market"), ("Limit (GTC)", "limit"),
+                                  ("Stop-limit (GTC)", "stop_limit"), ("Take-profit + stop bracket (SELL)", "bracket")],
+                                 value="market", allow_blank=False, id="advanced-type")
+                    yield Select([("BUY", "BUY"), ("SELL", "SELL")], value="BUY", allow_blank=False, id="advanced-side")
+                with Horizontal(classes="form-row"):
+                    yield Input(value="SOL-USDC", placeholder="Pair, e.g. SOL-USDC", id="advanced-product")
+                    yield Input(placeholder="Order amount", id="advanced-size")
+                    yield Select([("Auto (BUY quote / SELL coin)", "auto"), ("USD / quote", "quote"),
+                                  ("% available balance", "percent"), ("Coin units", "base")],
+                                 value="auto", allow_blank=False, id="advanced-unit")
+                with Horizontal(classes="form-row"):
+                    yield Input(placeholder="Limit / take-profit price (quote currency)", id="advanced-limit-price", disabled=True)
+                    yield Input(placeholder="Stop trigger price (quote currency)", id="advanced-stop-price", disabled=True)
+                with Horizontal(classes="form-row"):
+                    yield Select([("Spot 1x", "1x"), ("2x — unavailable", "2x"), ("3x — unavailable", "3x")],
+                                 value="1x", allow_blank=False, id="advanced-leverage")
+                    yield Select([("Spot / long", "long"), ("Short — unavailable", "short")],
+                                 value="long", allow_blank=False, id="advanced-position")
+                yield Static("Leveraged and short execution require a supported venue and are not available in this ticket.", classes="hint")
+                with Horizontal(classes="form-row"):
+                    yield Checkbox("Arm advanced LIVE order", value=False, id="advanced-armed")
+                    yield Button("Review advanced order", id="advanced-preview", disabled=True)
+                    yield Button("Review % order", id="advanced-percent-preview", disabled=True)
+                    yield Button("Review conditional order", id="advanced-conditional-preview", disabled=True)
+                    yield Button("Place advanced LIVE order", id="advanced-submit", variant="error", disabled=True)
+                    yield Button("Place advanced LIVE immediately", id="advanced-quick", variant="error", disabled=True)
+                    yield Button("Place % LIVE immediately", id="advanced-percent-quick", variant="error", disabled=True)
+                    yield Button("Place conditional LIVE immediately", id="advanced-conditional-quick", variant="error", disabled=True)
+                yield Checkbox("Skip per-order review for this session", value=False, id="advanced-skip-review")
+                yield Static("Quick mode can place live orders immediately. Conditional orders can remain open; stop execution and fill are not guaranteed.", classes="hint")
+                yield Static("Price graph unavailable: no historical price series loaded for this ticket.", id="advanced-chart-status", markup=False)
+                yield Sparkline([], id="advanced-chart")
+                yield Static("Strategy forecast unavailable: no ranked forecast loaded for this ticket.", id="advanced-forecast-status", markup=False)
+                yield Static("Disarmed. Choose a supported Coinbase market order.", id="advanced-message", markup=False)
+                yield Static("", id="advanced-review", markup=False)
+                yield Static("No advanced order submitted in this session.", id="advanced-receipt", markup=False)
             yield Static("Coinbase holdings — available and held balances", classes="table-title")
             cbhold = GlossaryTable(id="coinbase-holdings")
             cbhold.add_columns("portfolio", "asset", "available", "hold")
@@ -4444,6 +4508,340 @@ class SolTuiApp(App):
         self.query_one("#coinbase-order-product", Input).value = str(event.row_key.value)
         self.query_one("#coinbase-order-message", Static).update("Pair selected. Review the amount before placing an order.")
 
+    def _advanced_values(self) -> tuple[str, str, str, str, str, str]:
+        venue = str(self.query_one("#advanced-venue", Select).value)
+        kind = str(self.query_one("#advanced-type", Select).value)
+        side = str(self.query_one("#advanced-side", Select).value)
+        product = self.query_one("#advanced-product", Input).value.strip().upper()
+        size = self.query_one("#advanced-size", Input).value.strip()
+        unit = str(self.query_one("#advanced-unit", Select).value)
+        if unit == "auto":
+            unit = "base" if kind != "market" or side == "SELL" else "quote"
+        return venue, kind, side, product, size, unit
+
+    def _advanced_signature(self) -> tuple[str, ...]:
+        values = self._advanced_values()
+        kind = values[1]
+        limit = self.query_one("#advanced-limit-price", Input).value.strip() if kind != "market" else ""
+        stop = self.query_one("#advanced-stop-price", Input).value.strip() if kind in ("stop_limit", "bracket") else ""
+        leverage = str(self.query_one("#advanced-leverage", Select).value)
+        position = str(self.query_one("#advanced-position", Select).value)
+        return (*values, limit, stop, leverage, position)
+
+    def _advanced_supported(self) -> bool:
+        venue, kind, side, product, size, unit = self._advanced_values()
+        if (venue != "coinbase" or side not in ("BUY", "SELL") or not product or not size
+                or self.query_one("#advanced-leverage", Select).value != "1x"
+                or self.query_one("#advanced-position", Select).value != "long"):
+            return False
+        if kind == "market":
+            return unit in (("quote", "base", "percent") if side == "BUY" else ("base", "percent"))
+        if kind not in ("limit", "stop_limit", "bracket") or unit != "base" or (kind == "bracket" and side != "SELL"):
+            return False
+        return bool(self.query_one("#advanced-limit-price", Input).value.strip()
+                    and (kind == "limit" or self.query_one("#advanced-stop-price", Input).value.strip()))
+
+    def _advanced_controls(self) -> None:
+        if not self.query("#advanced-preview"):
+            return
+        busy = self._coinbase_order_busy
+        for selector in ("#advanced-venue", "#advanced-type", "#advanced-side", "#advanced-product",
+                         "#advanced-size", "#advanced-unit", "#advanced-armed", "#advanced-skip-review",
+                         "#advanced-leverage", "#advanced-position"):
+            self.query_one(selector).disabled = busy
+        kind = self._advanced_values()[1]
+        conditional = kind != "market"
+        self.query_one("#advanced-limit-price", Input).disabled = busy or not conditional
+        self.query_one("#advanced-stop-price", Input).disabled = busy or kind not in ("stop_limit", "bracket")
+        supported = self._advanced_supported()
+        locked = busy or self._coinbase_order_unknown or not supported
+        quick = self.query_one("#advanced-skip-review", Checkbox).value
+        armed = self.query_one("#advanced-armed", Checkbox).value
+        preview = self._advanced_preview_data
+        valid = bool(preview and preview.get("values") == self._advanced_signature()
+                     and isinstance(preview.get("expires_at"), (int, float)) and preview["expires_at"] > time.time())
+        percent = self._advanced_values()[5] == "percent"
+        for name, show in (("#advanced-preview", not percent and not conditional),
+                           ("#advanced-percent-preview", percent and not conditional),
+                           ("#advanced-conditional-preview", conditional)):
+            button = self.query_one(name, Button)
+            button.display = show
+            button.disabled = locked
+        submit = self.query_one("#advanced-submit", Button)
+        submit.display = not quick
+        submit.disabled = locked or not armed or not valid
+        fast = self.query_one("#advanced-quick", Button)
+        fast.display = quick and not percent and not conditional
+        fast.disabled = locked or not armed or not quick or percent or conditional
+        percent_fast = self.query_one("#advanced-percent-quick", Button)
+        percent_fast.display = quick and percent and not conditional
+        percent_fast.disabled = locked or not armed or not quick or not percent or conditional
+        conditional_fast = self.query_one("#advanced-conditional-quick", Button)
+        conditional_fast.display = quick and conditional
+        conditional_fast.disabled = locked or not armed or not quick or not conditional
+
+    @on(Input.Changed, "#advanced-product")
+    @on(Input.Changed, "#advanced-size")
+    @on(Input.Changed, "#advanced-limit-price")
+    @on(Input.Changed, "#advanced-stop-price")
+    @on(Select.Changed, "#advanced-venue")
+    @on(Select.Changed, "#advanced-type")
+    @on(Select.Changed, "#advanced-side")
+    @on(Select.Changed, "#advanced-unit")
+    @on(Select.Changed, "#advanced-leverage")
+    @on(Select.Changed, "#advanced-position")
+    def _advanced_changed(self) -> None:
+        self._advanced_generation += 1
+        self._advanced_preview_data = None
+        if not self.query("#advanced-review"):
+            return
+        self.query_one("#advanced-review", Static).update("")
+        venue, kind, side, _, _, unit = self._advanced_values()
+        pair = self.query_one("#advanced-product", Input).value.strip().upper()
+        context_key = venue + ":" + pair
+        if context_key != self._advanced_context_product:
+            self._advanced_context_product = context_key
+            self.query_one("#advanced-chart", Sparkline).data = []
+            self.query_one("#advanced-chart-status", Static).update(
+                "Loading timestamped session prices…" if venue == "coinbase" else "Jupiter price history unavailable.")
+            self.query_one("#advanced-forecast-status", Static).update(
+                "Loading recorded forward forecasts…" if venue == "coinbase" else "Jupiter forecast unavailable.")
+        if (venue != "coinbase" or self.query_one("#advanced-leverage", Select).value != "1x"
+                or self.query_one("#advanced-position", Select).value != "long"):
+            message = "Unavailable: this venue, leverage or short position is not implemented. No order can be placed."
+        elif kind in ("limit", "stop_limit", "bracket"):
+            if unit != "base":
+                message = "Conditional orders require coin units; percentage and quote sizing are unavailable."
+            elif kind == "bracket" and side != "SELL":
+                message = "The take-profit / stop bracket supports SELL only."
+            else:
+                direction = ("SELL stops trigger down; BUY stops trigger up. " if kind == "stop_limit" else
+                             "Bracket limit is take-profit; stop is the trigger. " if kind == "bracket" else "")
+                message = (f"GTC conditional order: {direction}Quick mode can submit immediately; "
+                           "an open order locks further orders. Stop execution and fill are not guaranteed.")
+        elif unit not in (("quote", "base", "percent") if side == "BUY" else ("base", "percent")):
+            message = "Coinbase market BUY accepts quote or coin units; SELL accepts coin units. Choose a supported unit."
+        else:
+            message = ("Percentage of available quote balance for BUY or coin balance for SELL; rounded down, $100 cap."
+                       if unit == "percent" else "Coinbase market order selected. Enter amount; review or use session quick mode.")
+        self.query_one("#advanced-message", Static).update(message)
+        self._advanced_controls()
+
+    def _advanced_context_tick(self) -> None:
+        if self._advanced_context_busy or not self.query("#advanced-product"):
+            return
+        if self.query_one("#main-tabs", TabbedContent).active != "tab-wallet":
+            return
+        venue, _, _, product, _, _ = self._advanced_values()
+        if venue != "coinbase" or "-" not in product:
+            return
+        asset = product.split("-", 1)[0]
+        if not asset.isalnum():
+            return
+        self._advanced_context_busy = True
+        self._advanced_context_worker(product, asset)
+
+    @work(thread=True, exit_on_error=False, group="advanced-market-context")
+    def _advanced_context_worker(self, product: str, asset: str) -> None:
+        try:
+            prices = self._call("prices.status", quiet=True)
+            forward = self._call("forwardtest.status", {"coins": [asset]}, quiet=True)
+            observed = time.time()
+            self.call_from_thread(self._advanced_context_done, product, prices, forward, observed)
+        except (RuntimeError, NoMatches):
+            pass
+        except Exception:  # noqa: BLE001 - context failure must not affect an order
+            try:
+                self.call_from_thread(self._advanced_context_done, product, {"ok": False}, {"ok": False}, time.time())
+            except (RuntimeError, NoMatches):
+                pass
+
+    def _advanced_context_done(self, product: str, prices: dict[str, Any], forward: dict[str, Any], now: float) -> None:
+        self._advanced_context_busy = False
+        if not self.query("#advanced-product") or self._advanced_values()[0] != "coinbase" or self._advanced_values()[3] != product:
+            return
+        price_result = prices.get("result") or {} if prices.get("ok") else {}
+        quote = (price_result.get("prices") or {}).get(product) or {}
+        mid, age = quote.get("mid"), quote.get("quote_age_s")
+        chart_status = self.query_one("#advanced-chart-status", Static)
+        if (isinstance(mid, (int, float)) and not isinstance(mid, bool) and math.isfinite(mid) and mid > 0
+                and isinstance(age, (int, float)) and not isinstance(age, bool) and math.isfinite(age)
+                and 0 <= age <= now):
+            stamp = now - age
+            history = self._advanced_price_history.setdefault(product, [])
+            if not history or stamp > history[-1][0] + 0.5:
+                history.append((stamp, float(mid)))
+                del history[:-120]
+            self.query_one("#advanced-chart", Sparkline).data = [p for _, p in history]
+            freshness = "stale" if age > 30 or not price_result.get("live") else "live recorder"
+            chart_status.update(f"{product} session mid-price history · {freshness} · latest "
+                                f"{time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(stamp))} · "
+                                f"{mid:g} · {len(history)} timestamped sample(s); not an execution quote")
+        else:
+            self.query_one("#advanced-chart", Sparkline).data = []
+            chart_status.update(f"{product} price history unavailable: no timestamped recorder quote.")
+        rows = ((forward.get("result") or {}).get("rows") or []) if forward.get("ok") else []
+        asset = product.split("-", 1)[0]
+        eligible = [r for r in rows if r.get("asset") == asset and isinstance(r.get("resolved"), int)
+                    and r["resolved"] >= 10 and isinstance(r.get("correct"), int)
+                    and 0 <= r["correct"] <= r["resolved"] and r.get("last_call") in (-1, 0, 1)
+                    and isinstance(r.get("settings"), list) and len(r["settings"]) == 1
+                    and isinstance(r.get("last_issued"), (int, float)) and not isinstance(r["last_issued"], bool)
+                    and math.isfinite(r["last_issued"]) and 0 < r["last_issued"] <= now + 86400]
+        status = self.query_one("#advanced-forecast-status", Static)
+        if not eligible:
+            status.update(f"{asset} strategy forecast unavailable: no recorded trial with at least 10 resolved calls.")
+            return
+        best = max(eligible, key=lambda r: (r["correct"] / r["resolved"], r["resolved"], r["last_issued"]))
+        issued = float(best["last_issued"])
+        horizon = best.get("minutes", 0)
+        stale = not isinstance(horizon, (int, float)) or now - issued > horizon * 60 + 120 or issued > now + 60
+        direction = {-1: "DOWN", 0: "FLAT", 1: "UP"}[best["last_call"]]
+        status.update(f"Top {asset}-USD recorded trial by historical accuracy: {best.get('label', '-')} · "
+                      f"{best['correct']}/{best['resolved']} correct · {horizon} min · {direction} · "
+                      f"issued {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(issued))}"
+                      f"{' · stale' if stale else ''}. Historical ranking is not a guarantee.")
+
+    @on(Button.Pressed, "#advanced-preview")
+    @on(Button.Pressed, "#advanced-percent-preview")
+    @on(Button.Pressed, "#advanced-conditional-preview")
+    def _advanced_preview_pressed(self) -> None:
+        if self._coinbase_order_busy or self._coinbase_order_unknown or not self._advanced_supported():
+            return
+        values = self._advanced_signature()
+        _, kind, side, product, size, unit, limit, stop, _, _ = values
+        self._advanced_preview_data = None
+        self._coinbase_order_busy = True
+        self._coinbase_order_controls()
+        self.query_one("#advanced-message", Static).update("Reviewing with Coinbase. No order has been placed.")
+        if kind != "market":
+            operation = "coinbase.order_conditional_preview"
+            params = {"product_id": product, "side": side, "size": size, "order_type": kind,
+                      "limit_price": limit, "stop_price": stop}
+        elif unit == "percent":
+            operation, params = "coinbase.order_percent_preview", {"product_id": product, "side": side, "percent": size}
+        else:
+            operation, params = "coinbase.order_preview", {"product_id": product, "side": side, "size": size, "size_currency": unit}
+        self._advanced_worker(operation, params, self._advanced_generation, values)
+
+    @on(Button.Pressed, "#advanced-submit")
+    def _advanced_submit_pressed(self) -> None:
+        self._advanced_controls()
+        preview = self._advanced_preview_data
+        if self.query_one("#advanced-submit", Button).disabled or not preview:
+            return
+        self._advanced_submit("coinbase.order_submit", {"preview_id": preview["preview_id"], "confirm": True})
+
+    @on(Button.Pressed, "#advanced-quick")
+    @on(Button.Pressed, "#advanced-percent-quick")
+    @on(Button.Pressed, "#advanced-conditional-quick")
+    def _advanced_quick_pressed(self) -> None:
+        self._advanced_controls()
+        kind = self._advanced_values()[1]
+        percent = self._advanced_values()[5] == "percent"
+        button = "#advanced-conditional-quick" if kind != "market" else "#advanced-percent-quick" if percent else "#advanced-quick"
+        if self.query_one(button, Button).disabled:
+            return
+        _, _, side, product, size, unit = self._advanced_values()
+        if kind != "market":
+            signature = self._advanced_signature()
+            self._advanced_submit("coinbase.order_conditional_quick", {"product_id": product, "side": side,
+                                  "size": size, "order_type": kind, "limit_price": signature[6],
+                                  "stop_price": signature[7], "skip_confirm": True})
+        elif percent:
+            self._advanced_submit("coinbase.order_percent_quick", {"product_id": product, "side": side,
+                                  "percent": size, "skip_confirm": True})
+        else:
+            self._advanced_submit("coinbase.order_quick", {"product_id": product, "side": side, "size": size,
+                                  "size_currency": unit, "skip_confirm": True})
+
+    def _advanced_submit(self, operation: str, params: dict[str, Any]) -> None:
+        self._advanced_preview_data = None
+        self._coinbase_order_preview_data = None
+        self.query_one("#coinbase-order-armed", Checkbox).value = False
+        self._coinbase_order_busy = True
+        self._coinbase_order_unknown = True
+        self._coinbase_order_controls()
+        self.query_one("#advanced-message", Static).update("Submitting a LIVE order. If interrupted, reconcile at Coinbase; do not retry.")
+        self._advanced_worker(operation, params, self._advanced_generation, None)
+
+    @work(thread=True, exit_on_error=False, group="advanced-coinbase-order")
+    def _advanced_worker(self, operation: str, params: dict[str, Any], generation: int,
+                         values: tuple[str, ...] | None) -> None:
+        try:
+            env = self._call(operation, params)
+        except Exception as exc:  # noqa: BLE001 - never retry an ambiguous submission
+            env = {"ok": False, "error": {"message": f"{type(exc).__name__}: order operation failed"}}
+        try:
+            self.call_from_thread(self._advanced_done, operation, env, generation, values)
+        except (RuntimeError, NoMatches):
+            pass
+
+    def _advanced_done(self, operation: str, env: dict[str, Any], generation: int,
+                       values: tuple[str, ...] | None) -> None:
+        self._coinbase_order_busy = False
+        msg = self.query_one("#advanced-message", Static)
+        if not env.get("ok"):
+            reason = self._msg(env)
+            if operation not in ("coinbase.order_preview", "coinbase.order_percent_preview", "coinbase.order_conditional_preview"):
+                self.query_one("#advanced-armed", Checkbox).value = False
+                msg.update("Order outcome may be unknown. Do not resubmit; reconcile at Coinbase. " + reason)
+            else:
+                if "unresolved" in reason.lower():
+                    self._coinbase_order_unknown = True
+                msg.update(reason)
+            self._coinbase_order_controls()
+            return
+        result = env.get("result") or {}
+        if operation in ("coinbase.order_preview", "coinbase.order_percent_preview", "coinbase.order_conditional_preview"):
+            expires = result.get("expires_at")
+            try:
+                field = "balance_percentage" if operation == "coinbase.order_percent_preview" else "size"
+                same_size = bool(values) and Decimal(str(result.get(field, ""))) == Decimal(values[4])
+            except InvalidOperation:
+                same_size = False
+            same_conditional = True
+            if operation == "coinbase.order_conditional_preview" and values:
+                try:
+                    same_conditional = (result.get("order_type") == values[1]
+                                        and Decimal(str(result.get("limit_price", ""))) == Decimal(values[6])
+                                        and (values[1] == "limit" or Decimal(str(result.get("stop_price", ""))) == Decimal(values[7])))
+                except InvalidOperation:
+                    same_conditional = False
+            expected_unit = ("quote" if values and values[2] == "BUY" else "base") if values and values[5] == "percent" else (values[5] if values else "")
+            if (not values or generation != self._advanced_generation or values != self._advanced_signature()
+                    or not result.get("preview_id") or not isinstance(expires, (int, float)) or expires <= time.time()
+                    or not same_size or not same_conditional or any(str(result.get(k, "")) != v for k, v in zip(
+                        ("product_id", "side", "size_currency"), (values[3], values[2], expected_unit)))):
+                msg.update("Review expired or the order changed. Review it again.")
+            else:
+                self._advanced_preview_data = {"preview_id": result["preview_id"], "expires_at": expires, "values": values}
+                estimate = result.get("estimate") if isinstance(result.get("estimate"), dict) else {}
+                self.query_one("#advanced-review", Static).update(
+                    f"LIVE {values[2]} {values[3]} · {values[4]} {values[5]}\n"
+                    f"Type: {values[1]} · limit: {values[6] or '-'} · stop: {values[7] or '-'}\n"
+                    f"Resolved size: {result.get('size', '')} {result.get('size_currency', '')}\n"
+                    f"{result.get('sizing_notice', '')}\n"
+                    f"Coinbase estimate: {json.dumps(result.get('estimate'), ensure_ascii=True, default=str)}\n"
+                    f"Estimated fee: {estimate.get('fee', 'unavailable')} (venue estimate). Maker/taker status "
+                    "and final fee depend on execution, especially for limit orders.\n"
+                    f"{result.get('notice', '')}")
+                msg.update("Review ready. Nothing has been submitted.")
+        else:
+            order_id = result.get("order_id")
+            state = str(result.get("status") or "unknown")
+            self.query_one("#advanced-receipt", Static).update(json.dumps(result, ensure_ascii=True, default=str))
+            if order_id:
+                self.query_one("#coinbase-order-id", Input).value = str(order_id)
+            terminal = state.upper() in {"FILLED", "CANCELLED", "CANCELED", "FAILED", "REJECTED", "EXPIRED"}
+            if terminal and order_id:
+                self._coinbase_order_unknown = False
+            if operation not in ("coinbase.order_quick", "coinbase.order_percent_quick", "coinbase.order_conditional_quick") or state.upper() != "FILLED" or not order_id:
+                self.query_one("#advanced-armed", Checkbox).value = False
+            msg.update("Order submitted. A resting order locks further orders; check its status at Coinbase." if order_id else
+                       "Order outcome unknown. Do not resubmit; reconcile at Coinbase.")
+        self._coinbase_order_controls()
+
     def _coinbase_order_controls(self) -> None:
         busy = self._coinbase_order_busy
         for name, cls in (("#coinbase-order-product", Input), ("#coinbase-order-side", Select),
@@ -4469,6 +4867,7 @@ class SolTuiApp(App):
         quick_button.disabled = (busy or self._coinbase_order_unknown or not quick
                                  or not self.query_one("#coinbase-order-armed", Checkbox).value
                                  or not product or side not in ("BUY", "SELL") or not size)
+        self._advanced_controls()
 
     @on(Input.Changed, "#coinbase-order-product")
     @on(Input.Changed, "#coinbase-order-size")
@@ -4485,7 +4884,15 @@ class SolTuiApp(App):
 
     @on(Checkbox.Changed, "#coinbase-order-armed")
     @on(Checkbox.Changed, "#coinbase-order-skip-review")
-    def _coinbase_order_armed_changed(self) -> None:
+    @on(Checkbox.Changed, "#advanced-armed")
+    @on(Checkbox.Changed, "#advanced-skip-review")
+    def _coinbase_order_armed_changed(self, event: Checkbox.Changed) -> None:
+        if event.checkbox.id in ("coinbase-order-skip-review", "advanced-skip-review"):
+            other_id = "#advanced-skip-review" if event.checkbox.id == "coinbase-order-skip-review" else "#coinbase-order-skip-review"
+            if self.query(other_id):
+                other = self.query_one(other_id, Checkbox)
+                if other.value != event.value:
+                    other.value = event.value
         if self.query("#coinbase-order-submit"):
             self._coinbase_order_controls()
 
@@ -4514,6 +4921,8 @@ class SolTuiApp(App):
             return
         # Consume the review before starting the worker: a double-click cannot submit twice.
         self._coinbase_order_preview_data = None
+        self._advanced_preview_data = None
+        self.query_one("#advanced-armed", Checkbox).value = False
         self._coinbase_order_busy = True
         self._coinbase_order_unknown = True
         self._coinbase_order_controls()
@@ -4529,6 +4938,8 @@ class SolTuiApp(App):
             return
         product, side, size, unit = self._coinbase_order_values()
         self._coinbase_order_preview_data = None
+        self._advanced_preview_data = None
+        self.query_one("#advanced-armed", Checkbox).value = False
         self._coinbase_order_busy = True
         self._coinbase_order_unknown = True
         self._coinbase_order_controls()
@@ -4559,8 +4970,12 @@ class SolTuiApp(App):
     def _coinbase_order_state_start(self) -> None:
         self._coinbase_order_generation += 1
         self._coinbase_order_preview_data = None
+        self._advanced_preview_data = None
+        self._advanced_generation += 1
         self.query_one("#coinbase-order-armed", Checkbox).value = False
+        self.query_one("#advanced-armed", Checkbox).value = False
         self.query_one("#coinbase-order-review", Static).update("")
+        self.query_one("#advanced-review", Static).update("")
         if self._coinbase_order_busy:
             return
         self._coinbase_order_busy = True
@@ -4624,10 +5039,13 @@ class SolTuiApp(App):
             else:
                 self._coinbase_order_preview_data = {"preview_id": result["preview_id"],
                                                      "expires_at": expires, "values": values}
+                estimate_data = result.get("estimate") if isinstance(result.get("estimate"), dict) else {}
                 estimate = json.dumps(result.get("estimate"), ensure_ascii=True, default=str)
                 self.query_one("#coinbase-order-review", Static).update(
                     f"LIVE {values[1]} {values[0]} · {values[2]} {values[3]} currency\n"
-                    f"Coinbase estimate: {estimate}\n{result.get('notice', '')}\n"
+                    f"Coinbase estimate: {estimate}\nEstimated fee: {estimate_data.get('fee', 'unavailable')} "
+                    "(venue estimate). Maker/taker status and final fee depend on execution.\n"
+                    f"{result.get('notice', '')}\n"
                     "To place this order, arm live submission and press Place LIVE order.")
                 msg.update("Review ready. Nothing has been submitted.")
         else:

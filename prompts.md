@@ -1,7 +1,19 @@
 # Prompt history
 
-Version: 113
-Delta: v112 to v113; reconcile optimizer and parameter-adjustment requests.
+Version: 117
+Delta: v113 to v117; retain both venue references, advanced order request, and leveraged-order follow-up.
+
+## v117 - 2026-11-08
+
+```text
+Here is coinbase's list of fees and costs like I did for Jupiter: /Users/mitch/dev/solmargintrader/jup.ag/coinbase_trading_reference.md
+```
+
+## v116 - 2026-11-08
+
+```text
+In the advanced order ticket add leveraged buys and sells.
+```
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -926,4 +938,16 @@ And with the auto-optimizer I think you've been denying any new configuration if
 
 ```text
 Yes, use the current parameter value (Recommended)
+```
+
+## v114 - 2026-11-08
+
+```text
+In the /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_reference.md file is a complete list of all of the information you wanted about jupiter's lending, fees, leveraging, etc.
+```
+
+## v115 - 2026-11-08
+
+```text
+In the money add a clear border and title to the coinbase order form. Also add a new advanced order form in the money tab with limit, market, stop-loss, take-profit, percent ordering, market graphs, what the top rated strategies say the price is going to do, the option to buy in units of dollars or the coin, market routing through either coinbase or jupiter, and any other useful trading features you think would be helpful.
 ```

@@ -1,7 +1,17 @@
 # Work continuation
 
-Version: 200
-Delta: v199 to v200; record F5 delivery.
+Version: 203
+Delta: v200 to v203; record advanced Money ticket, leveraged-order follow-up, and Coinbase reference.
+
+## v203 - 2026-11-08
+
+The user supplied /Users/mitch/dev/solmargintrader/jup.ag/coinbase_trading_reference.md for Coinbase fee and leverage context. Its spot, regulated futures, and global derivatives describe distinct venues and eligibility. Do not apply a static schedule or assumed leverage eligibility to the user's account; use venue previews and verified live account terms. The Coinbase spot order preview returns an estimated commission; the final maker/taker mix and fill can differ.
+
+Advanced ticket progress: Coinbase spot market, limit, stop-limit and sell bracket requests use preview, portfolio/balance reconciliation, a $100 cap, and the durable single-submit journal. Coinbase accepted read-only previews for the conditional formats. Percentage sizing uses available balance and rounds down to venue increments. The ticket shows timestamped session samples and eligible forward-test forecasts. Jupiter spot, leveraged longs/shorts and Coinbase derivatives remain unavailable until their venue-specific signing, transaction verification, eligibility and reconciliation paths exist. No live order was submitted for these changes.
+
+## v202 - 2026-11-08
+
+The user requests leveraged buys and sells in the advanced order ticket. Jupiter perps use a different contract and execution path from Jupiter spot swaps. Preserve dry-run defaults and require venue-specific, verified transaction semantics and current leverage limits before enabling a live leveraged order. The current Coinbase spot ticket cannot supply leverage.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1802,3 +1812,7 @@ The Stele decision is queued in outbox 609e92e4 after the transport closed.
 ## v200 - 2026-11-08
 
 F5 batch PR 127 merged as bb18a64fd2f52feae435680a22d0e8e1f81c3655 after required CI. It uses eligible Coinbase USD spot markets and cached history, reports missing and unsupported cells, and records separate interval-specific forward results. Leveraged tiers and full-universe throughput remain unverified. No production batch was started in testing.
+
+## v201 - 2026-11-08
+
+The owner provided /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_reference.md and requested a clearly titled bordered Coinbase form plus an advanced Money order form with market, limit, stop-loss, take-profit, percentage sizing, coin or USD quantities, Coinbase or Jupiter routing, graphs and strategy forecasts. Do not guess prices, fees or quantity; verify venue capabilities and semantics and do not retry ambiguous submissions. Jupiter spot and perps execution are not yet connected to this screen. Stele task creation is queued as outbox 5697c8bd because transport closed. The reference contains conflicting Jupiter price-impact statements; verify current venue documentation before using fee assumptions.
