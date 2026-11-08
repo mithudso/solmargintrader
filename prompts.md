@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 73
-Delta: v72 to v73; add targeted SolTUI CI after PR 102.
+Version: 75
+Delta: v74 to v75; resolve PR 104 against concurrent records.
 
 ## v1 - 2026-11-06
 
@@ -505,6 +505,7 @@ Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
 
 ```text
 So you don't have to run this, you've already passed the CI 3 times.
+```
 
 ## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
 
@@ -540,4 +541,26 @@ Add a heuristic backtesting mechanism to quickly test it, and a more detailed au
 
 ```text
 make the 999-case SolTUI suite optional, then skip it and push the code
+```
+
+## v73 - 2026-11-08 (owner merged the redesign)
+
+Version: 73. Delta: v72 to v73; preserve the owner's merge notification.
+
+```text
+I merged it
+```
+
+## v74 - 2026-11-08 (activate the actual console)
+
+Version: 74. Delta: v73 to v74; preserve the loaded-UI report.
+
+```text
+I dopn't see the new ui when loading the soltui
+```
+
+## v75 - 2026-11-08
+
+```text
+no 104 hasd conflicts, resolve them
 ```
