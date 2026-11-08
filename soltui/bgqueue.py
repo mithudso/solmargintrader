@@ -913,7 +913,7 @@ def summarise(
     elif state.phase == "error":
         error = state.error or "unknown"
         if worker_alive is False and "evaluation proof is missing or differs" in error:
-            bits.append("previous sweep stopped: its evaluation proof no longer matches; "
+            bits.append("previous sweep stopped: its evaluation proof is missing or differs; "
                         "press Start fresh to start a separate sweep and preserve these results")
             bits.append(f"previous error: {error}")
         else:
