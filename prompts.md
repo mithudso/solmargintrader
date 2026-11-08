@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 106
-Delta: v105 to v106; retain the optional no-confirmation order request.
+Version: 107
+Delta: v106 to v107; record F5 full backtest and forwardtest request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -884,4 +884,10 @@ Download and keep a full list of the coinbase trading pairs. And add jupiter sup
 
 ```text
 Add the option to silence the confirmations. I'm going to be automating orders and make fast manual orders I  want to be able to do that without confirmation, once selected.
+```
+
+## v107 - 2026-11-08
+
+```text
+At the bottom where there's a list of commands the user can run, remove both of the liquidity commands and instead add f5 - Backtest everything then Fowardtest everything - which does just that, all strategies on all coins on all timescales auto optimized backtest since the beginning and forwardtest starting and recording.
 ```

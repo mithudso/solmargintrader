@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 189
-Delta: v188 to v189; record the owner's optional no-confirmation mode.
+Version: 191
+Delta: v190 to v191; record F5 backend implementation, evidence and integration limits.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1754,3 +1754,11 @@ The owner also requested a complete, retained list of Coinbase trading pairs and
 ## v189 - 2026-11-08
 
 The owner requested an option to silence order confirmations once selected, for fast manual orders and automation. Keep this option off by default; retain venue validation, order limits, submission journaling and the uncertain-outcome lock. This supersedes the prior mandatory per-order review decision in KNOW-1043. Its update is queued as Stele outbox f3e6ff65 after the transport closed. No new live order was authorized as a test.
+
+## v190 - 2026-11-08
+
+Backend work: Stele TASK-1046, worktree /Users/mitch/dev/solmargintrader-wt-f5-1046 on agent-f5-1046. Owner asks F5 to optimize backtests from the beginning for every supported strategy, configured coin universe and supported interval, then start and record forward tests. Parent owns UI and command integration; this work owns backend lifecycle, persistence and tests. Preserve active sweep and trainers; do not run the production-scale batch as a test. Freeze and record universe and proof; mark missing, unsupported and failed combinations explicitly; do not call partial coverage complete or silently mix incompatible evidence. Parent queued overarching task 32c40404.
+
+## v191 - 2026-11-08
+
+Implemented the detached F5 batch in /Users/mitch/dev/solmargintrader-wt-f5-1046/soltui/f5_batch.py. The durable per-run ledger freezes the complete retained Coinbase USD spot universe, evaluation sources, settings and each historical series, resumes compatible work, and reports missing, failed, partial and unsupported cells. The retained catalog observed 405 eligible assets. History comes from existing cached bars; unavailable or gapped series are reported instead of invented. The engine is spot-only, so leveraged strategy tiers are unsupported. Independent forward trials use closed candles at each matching interval, prospective minute settlement and a separate results database. Unrecoverable overdue settlements remain pending. The backend has not been load-tested on the full universe; venue rate limits and throughput are unknown. No production batch was launched and existing sweep and trainer processes were not touched. Forty-four focused tests passed with ResourceWarning treated as an error. A bounded detached-worker smoke used one missing series, and one real historical SOL daily backtest used a stubbed forward feed. Parent owns UI wiring and combined delivery; do not merge this branch before integration.
