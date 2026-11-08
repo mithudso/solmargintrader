@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 130
-Delta: v129 to v130; install the runtime while preserving concurrent guide edits.
+Version: 132
+Delta: v131 to v132; record independently verified canonical activation.
 
 ## v1 - 2026-11-06
 
@@ -1261,9 +1261,31 @@ Evidence remains precise: Claude's original full CI passed. Codex started three 
 
 Commit this fully resolved integration with CI skipped, then verify final 969-case discovery/docs counts, offline index freshness and whitespace before pushing. Update PR93 with the exact verification scope and owner instruction, merge normally, verify the actual remote files, safely activate the canonical launcher under fresh preservation checks, and remove only the private recovery worktree. TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json hold the final live receipts. Preserve the locked original Claude worktree and all unrelated active work.
 
-## v129 - 2026-11-08 (canonical UI activation)
+## v70 - 2026-11-08 (Forwardtest coins, auto-optimize, background runner)
 
-Version: 129. Delta: v128 to v129; recover the actual launcher after the owner merged PR93.
+Target: prompts.md Forwardtest coins entry. Branch feat/forwardtest-coins-optimize in /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd.
+
+Completed: coin dropdown (one coin or All coins = every Coinbase USD market from `pricefeed.stream_products`); Auto-optimize on/off (`tick(tune=...)`); an adoption is saved as the trial's default (`forwardtest/defaults.json`, key coin|label|minutes) and seeds new trial rows (`_usable_default` refuses other members or unknown params); background runner thread on the Runtime (`forwardtest.run`, `forwardtest.state`), header shows it from every tab.
+
+Measured: one check is 1.5 s per coin with 34 strategies x 4 horizons; a live two-coin run recorded 136 calls per coin and the thread exited on Stop.
+
+Not reproduced: in-process, the old timer already kept ticking after a tab switch (pilot, 2026-11-08); the runner thread removes the UI from the loop either way.
+
+## v111 - 2026-11-08
+
+Target: PR 89, forwardtest coin selection and optimization. Stele TASK-998. Private worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb38. Merging current origin/master into eecade5; preserve both workflow histories and regenerate indexes after conflicts are staged. Remaining: test, push, await final CI, merge and verify remote.
+
+## v112 - 2026-11-08
+
+TASK-1001: PR 89 final CI at 0d2ba8d passed; SolTUI took 15m35s, all other jobs at most 1m13s. Master advanced to bc5c701, so merge again. Inspect test timing and implement conservative change-aware checks and parallel full coverage; preserve scheduled/manual full coverage. Stele decision outbox 03002488. Remaining: implementation, tests, fresh CI, PR merge and delivery. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb38.
+
+## v129 - 2026-11-08: CI latency and PR 89 integration
+
+PR 89 SolTUI CI ran 895 tests in 893.969 seconds and logged 165 app mounts. Other jobs took at most 73 seconds. Added conservative test-only module selection, four timed shards and nightly full coverage. Merged master through 9bd7067; combined discovery is 980 tests. Remaining: run focused integration, regenerate indexes, push and verify final CI, then merge PR 89. Stele outbox 03002488.
+
+## v130 - 2026-11-08 (canonical UI activation)
+
+Version: 130. Delta: v129 to v130; recover the actual launcher after the owner merged PR93.
 
 The owner merged PR93 as 9bd7067d30af3a3fad93120d989d8fa409834966 from source 4e4693e. All 27 task paths match the actual merged commit, which is present on remote master. The owner waived repeated full CI; obsolete run 42482448847 was cancelled. The ordinary merge guard had refused the automated merge during its two-minute new-push check-registration window; the owner then merged it.
 
@@ -1273,9 +1295,9 @@ The guarded runtime writer prepares a private three-way merge against canonical 
 
 Stele transport closed after TASK-1002 creation and claim. Exact writes are queued in outbox IDs 20e78a8c, 608187fb and 3f944787. Installation, preservation and rollback receipts belong under /tmp/soltui-v2-resume-01a1bb24/activation/. Remaining: finish guarded installation, verify actual new launches open Now while retaining local guide behavior, record final hashes and receipts, ship only this follow-up workflow record without another full CI, and clean only the private recovery worktree. Preserve the locked original Claude worktree and all other active work.
 
-## v130 - 2026-11-08 (actual runtime installed)
+## v131 - 2026-11-08 (actual runtime installed)
 
-Version: 130. Delta: v129 to v130; qualify the installed canonical runtime by exact source hashes.
+Version: 131. Delta: v130 to v131; qualify the installed canonical runtime by exact source hashes.
 
 The guarded writer installed all nine runtime files from merged source 9bd7067. It retained the active guide/card changes in commands.py, help.py and tui.py through clean three-way merges. It checked 1,036 unrelated existing dirty/untracked paths and found no changed bytes during installation. Canonical Git HEAD remains 3e5a9f3 and index bytes remain unchanged. The first preflight detected an index-byte change and refused before writing; a fresh preparation qualified the stable state before installation. Publication used fresh hash preconditions and atomic file renames; it does not claim a true compare-and-swap against arbitrary concurrent writers.
 
@@ -1284,3 +1306,13 @@ Actual canonical imports pass. The normal /Users/mitch/.local/bin/soltui wrapper
 Install receipt: /tmp/soltui-v2-resume-01a1bb24/activation/install-receipt.json. Backups: activation/before/. Import and entry-point proof: activation/canonical-import.json and launcher-help.txt. Guarded rollback helper: activation/rollback_runtime.py (not run). TASK-1003 is the install subtask; TASK-1002 owns final independent canonical acceptance. These are runtime overlays, not a clean checkout of the merged SHA. A future synchronization must preserve the installed redesign and the user's concurrent guide edits; never overwrite the hybrid runtime with an older branch's UI files.
 
 Final independent mounted acceptance is saved under /tmp/soltui-v2-resume-01a1bb24/acceptance/canonical/. TASK-987 and the private checkpoint hold the current final result and any remaining work. Read those receipts before repeating installation or tests. Ship this workflow-only follow-up without another full CI run under the owner's explicit instruction. Preserve the live locked original Claude worktree and every other active task.
+
+## v132 - 2026-11-08 (canonical acceptance and final records)
+
+Version: 132. Delta: v131 to v132; finish actual loaded-UI verification and retain incoming PR89.
+
+Independent canonical acceptance passed with process exit 0. The actual normal wrapper exposes --classic. Fresh canonical mounts verify Now startup, soltui-night theme, five destinations, Explain, Bots workbench, classic fallback, write-safe experiment navigation and 80/100-column labels. Current guide behavior remains intact: 34 registered cards, zero TradingView cards, 42 guide files excluded, and nonregistered guide keys refused. All nine installed runtime hashes match before and after verification. Canonical HEAD 3e5a9f3 and index bytes remain unchanged. Existing consoles were not restarted.
+
+Final acceptance is /tmp/soltui-v2-resume-01a1bb24/acceptance/canonical/receipt.json. TASK-1002 is complete; installation subtask TASK-1003 is complete. Three queued writes from v130 were replayed and marked done, and gap KNOW-1004 auto-archived when activation completed. The actual new-launch behavior is fixed.
+
+While the workflow-only follow-up PR103 was open, PR89 merged as fedde2a. Preserve its forwardtest implementation, conservative CI scope/shards, every prompt/memory entry and current documentation counts. This follow-up changes no product source. Restore only the missing closing fence on this task's existing CI-waiver prompt; preserve the owner's exact text and all incoming history. Regenerate offline retrieval artifacts, check final documentation/index/whitespace, push this record-only integration with CI skipped, finish ordinary PR103 merge and verify its exact content, then remove only the clean private recovery worktree. TASK-987 and the private checkpoint hold final delivery closure; do not replay installation or full tests.

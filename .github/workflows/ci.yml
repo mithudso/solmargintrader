@@ -5,6 +5,8 @@ on:
     branches: [master, main]
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: "23 4 * * *"
 
 # Read-only by default; nothing here needs write access to the repo.
 permissions:
@@ -124,8 +126,12 @@ jobs:
   # only: the packaging paths -- the alias bundle and the launchd agent -- are
   # verified by hand, per docs/known-issues.md.
   soltui:
-    name: soltui (python, macos)
+    name: soltui (python, macos, shard ${{ matrix.shard }})
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -145,8 +151,22 @@ jobs:
           grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
           pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
 
-      - name: Unit tests
-        run: python3 -m unittest discover -s soltui/tests -t .
+      - name: Verify test selector
+        run: python3 -m unittest scripts.test_soltui_ci
+
+      - name: Fetch PR base
+        if: github.event_name == 'pull_request'
+        run: git fetch --no-tags --depth=1 origin "${{ github.event.pull_request.base.sha }}"
+
+      - name: Unit tests (sharded, timed)
+        env:
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "${{ github.event_name }}" = pull_request ]; then
+            python3 scripts/soltui_ci.py --shard ${{ matrix.shard }} --base "$PR_BASE"
+          else
+            python3 scripts/soltui_ci.py --shard ${{ matrix.shard }}
+          fi
 
   # The mongo tests skip themselves when no server is listening, which would make
   # this job silently vacuous. A service container is the point: it makes the

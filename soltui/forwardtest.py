@@ -68,6 +68,69 @@ def _db() -> sqlite3.Connection:
     return db
 
 
+# -- saved defaults: a setting that tested superior becomes the trial's starting point -------------
+#
+# An adoption already needs a neighbour to beat the active setting on paired, resolved calls with
+# posterior probability above `tune_confidence` (Compound's Beta comparison). When that happens with
+# auto-optimize on, the adopted setting is also saved here, keyed by coin, trial label and horizon,
+# so the next forward test of that trial starts from it even after a code revision partitions the
+# evidence into new trial rows. The roster and the Signals defaults are not touched: a forward
+# adoption at one horizon on one coin is not evidence for every other use of the strategy.
+
+
+def defaults_path() -> Path:
+    return config.CONFIG_DIR / "forwardtest" / "defaults.json"
+
+
+def _default_key(asset: str, label: str, minutes: int) -> str:
+    return f"{asset}|{label}|{int(minutes)}"
+
+
+def load_defaults() -> dict[str, dict[str, Any]]:
+    try:
+        raw = json.loads(defaults_path().read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return raw if isinstance(raw, dict) else {}
+
+
+def save_default(asset: str, label: str, minutes: int, spec: Spec, previous: Spec, *,
+                 probability: float, samples: int, bar: int) -> None:
+    data = load_defaults()
+    data[_default_key(asset, label, minutes)] = {
+        "members": spec, "previous": previous, "probability": probability, "samples": samples,
+        "bar": bar, "saved_at": time.time()}
+    path = defaults_path()
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(json.dumps(data, indent=1, sort_keys=True, allow_nan=False), encoding="utf-8")
+    tmp.replace(path)
+
+
+def saved_default(asset: str, label: str, minutes: int, defaults: dict | None = None) -> Spec | None:
+    row = (load_defaults() if defaults is None else defaults).get(_default_key(asset, label, minutes))
+    return row["members"] if isinstance(row, dict) and isinstance(row.get("members"), list) else None
+
+
+def _usable_default(saved: Spec | None, seed: Spec, mode: str) -> Spec:
+    """The saved default when it is a parameter variant of the same members that still builds; else the seed.
+
+    A default naming other strategies, or a parameter the member does not take, is ignored rather
+    than trusted: the file is plain JSON a person (or an older revision) may have written.
+    """
+    if not saved or len(saved) != len(seed):
+        return seed
+    for got, want in zip(saved, seed):
+        if (not isinstance(got, dict) or got.get("name") != want["name"]
+                or not isinstance(got.get("params"), dict) or set(got["params"]) - set(want["params"])):
+            return seed
+    try:
+        _factory(saved, mode)
+    except (ValueError, TypeError, OverflowError, KeyError):
+        return seed
+    return saved
+
+
 def _factory(spec: Spec, mode: str):
     if len(spec) == 1:
         return build(spec[0]["name"], **spec[0]["params"])
@@ -163,7 +226,8 @@ def _choose(history: list[tuple], corrected: list, current: Spec) -> tuple | Non
 
 
 def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, moved: int,
-             cost: float, candles: dict[int, tuple[float, float]], bar: int, minutes: int, tune: bool) -> tuple[Spec, int]:
+             cost: float, candles: dict[int, tuple[float, float]], bar: int, minutes: int, tune: bool,
+             on_adopt: Callable[[Spec, Spec, float, int], None] | None = None) -> tuple[Spec, int]:
     misses: list = []
     latest = None
     for origin, start, finish, gen, raw, prediction in db.execute(
@@ -195,13 +259,20 @@ def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, mo
                (key, bar, _json(active), _json(next_spec), probability, samples))
     db.execute("UPDATE trial SET active=?, generation=?, moved=? WHERE id=?",
                (_json(next_spec), generation + 1, bar, key))
+    if on_adopt is not None:
+        on_adopt(next_spec, active, probability, samples)
     return next_spec, generation + 1
 
 
 def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float, *,
          fetch: Callable | None = None, clock: Callable[[], float] = time.time,
-         stop: Event | None = None, code: str | None = None) -> dict:
-    """Record only fresh calls, resolving past calls before computing the next forecast."""
+         stop: Event | None = None, code: str | None = None, tune: bool = True) -> dict:
+    """Record only fresh calls, resolving past calls before computing the next forecast.
+
+    With `tune` (auto-optimize) a trial whose newest call missed may move to a neighbouring
+    setting that tested superior on paired calls, and that setting is saved as the trial's
+    default (`save_default`). Without it settings stay fixed; calls are still recorded and scored.
+    """
     fetch = fetch or compound.fetch_closed_candles
     stop = stop if stop is not None else Event()
     def check_stop() -> None:
@@ -235,22 +306,30 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     forecasts: dict[tuple, int | None] = {}
     staged = []
     active_keys = {}
+    defaults = load_defaults()
     with closing(_db()) as db, db:
         db.execute("BEGIN IMMEDIATE")
         for trial in trials:
             seed, mode, label = trial["members"], trial["mode"], trial["label"]
             for h in horizons:
+                # The key stays the configured seed; a saved default only sets where a new trial starts.
                 key = hashlib.sha256(_json([code, asset, label, h, cost, mode, seed]).encode()).hexdigest()
                 active_keys[key] = h
+                start_spec = _usable_default(saved_default(asset, label, h, defaults), seed, mode)
                 db.execute("INSERT OR IGNORE INTO trial(id,asset,label,mode,minutes,cost,active) VALUES (?,?,?,?,?,?,?)",
-                           (key, asset, label, mode, h, cost, _json(seed)))
+                           (key, asset, label, mode, h, cost, _json(start_spec)))
         # Settle all existing trials for the asset, including a horizon no longer selected.
-        for key, raw_spec, mode, gen, moved, h, trial_cost in db.execute(
-            "SELECT id,active,mode,generation,moved,minutes,cost FROM trial WHERE asset=?", (asset,)
+        for key, raw_spec, mode, gen, moved, h, trial_cost, label in db.execute(
+            "SELECT id,active,mode,generation,moved,minutes,cost,label FROM trial WHERE asset=?", (asset,)
         ).fetchall():
             check_stop()
+
+            def adopt(spec: Spec, previous: Spec, probability: float, samples: int,
+                      label: str = label, h: int = h) -> None:
+                save_default(asset, label, h, spec, previous, probability=probability, samples=samples, bar=bar)
+
             active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
-                                   h, key in active_keys)
+                                   h, tune and key in active_keys, adopt)
             if key not in active_keys or not bar + 60 <= observed < start:
                 continue
             previous = db.execute("SELECT finish FROM call WHERE trial=? ORDER BY bar DESC LIMIT 1",
@@ -296,9 +375,12 @@ def status(asset: str) -> list[dict]:
     if not (config.CONFIG_DIR / "forwardtest" / "trials.sqlite3").exists():
         return []
     path = config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
+    defaults = load_defaults()
     with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
         return [
-            {"id": key, "label": label, "minutes": minutes, "settings": json.loads(active), "changes": gen,
+            {"id": key, "asset": asset, "label": label, "minutes": minutes, "settings": json.loads(active),
+             "saved_default": saved_default(asset, label, minutes, defaults) == json.loads(active),
+             "changes": gen,
              "note": note, "resolved": resolved, "correct": hits or 0, "pending": pending or 0,
              "expired": expired or 0, "last_call": last_call, "last_issued": last_issued,
              "cost_bps": cost, "last_outcome": last_outcome}

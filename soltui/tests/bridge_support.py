@@ -65,6 +65,8 @@ HEAVY = {
                       "beat_hold": 0, "ran": 0},
     "bots.forward_start": {"forward": {"id": "stub", "bot": "grid"}, "recorder": {"started": False}},
     "bots.optimize": {"bot": "grid", "verdict": {"reliable": False, "adopted": False}, "table": []},
+    # Starts the background Forwardtest thread, which reads public Coinbase candles every minute.
+    "forwardtest.run": {"running": True, "assets": ["SOL"], "since": 0},
     # Experiment creation fingerprints local evidence; starts/finalization spawn an explicit process.
     "experiments.create": {"id": "stub", "status": "created"},
     "experiments.start": {"id": "stub", "status": "running"},

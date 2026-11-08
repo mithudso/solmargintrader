@@ -140,6 +140,7 @@ HEADER_GLOSSARY = {
 # Define the unit and an example before the statistical qualification. A green
 # closed trade, a high ranking and a wallet deposit are three different facts.
 HEADER_GLOSSARY.update({
+    "saved default": "yes when this trial's active setting is the one saved as its default: auto-optimize adopted it after it tested superior, and the next forward test of this coin, strategy and horizon starts from it.",
     "candidate": "Index of a configuration in this auto-optimize run; 0 is your current settings, the rest are what the run tries against them.",
     "from": "First bar of this coin's backtest: the bar whose close the bot set itself up from.",
     "to": "Last bar of this coin's backtest: the end of the data, the requested days, or a gap longer than 48 hours.",
@@ -416,9 +417,11 @@ CONTROL_HELP = {
     "strategy-card-scope": "Show all active cards, only registered strategies, specification cards, or retained TradingView cards. A specification documents rules but has no runnable repository implementation.",
     "strategy-cards-refresh": "Reload the active card files and registered-strategy history. This does not start a backtest or add a card to the roster.",
     "btn-roster-all": "Add every registered strategy missing from the roster. Existing custom versions stay as they are.",
-    "forward-start": "Start prospective paper tests for the Settings asset. The scope, horizons, cost threshold and initial parameters are fixed until you stop and start again.",
+    "forward-start": "Start prospective paper tests for the chosen coins. It runs in the background on its own thread: it keeps checking every closed minute whatever tab is open, until Stop or the console closes. The scope, coins, horizons, auto-optimize choice and cost threshold are fixed until you stop and start again.",
+    "forward-coins": "Coins to forward test: one coin, or All coins (every Coinbase USD market of the cached coins). Each coin keeps its own trials, settings and accuracy; one check covers every chosen coin, about 1.5 s each.",
+    "forward-optimize": "Auto-optimize on: after a wrong call, a trial may move to a neighbouring setting that tested superior on the same past calls (at least 300 paired calls and a 95% posterior probability, Compound's comparison), and that setting is saved as the trial's default for its coin and horizon, so later runs start from it. Off: settings stay fixed and calls are only scored. Saved defaults never change the roster or the Signals tab.",
     "forward-stop": "Stop scheduling predictions. The current market read may take a moment to drain. Saved predictions and settings remain available for the next run.",
-    "forward-refresh": "Read saved predictions and accuracy for the current Settings asset without fetching prices.",
+    "forward-refresh": "Read saved predictions and accuracy for the chosen coins without fetching prices.",
     "forward-scope": "Use every registered strategy, only the roster, or only the combinations entered below. Each standalone strategy and each combination is scored independently.",
     "forward-horizon": "Predict 1, 5, 10 or 30 minutes, or choose All four to predict and track every horizon separately.",
     "forward-combos": "Use comma-separated names or roster labels per combination; separate combinations with semicolons. Each combination learns separately from its members' standalone trials.",
