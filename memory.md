@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 72
-Delta: v71 to v72; record installed hook repairs, regression results and delivery checkpoints.
+Version: 73
+Delta: v72 to v73; independent installed-hook acceptance passed without changing shared-session state.
 
 ## v1 - 2026-11-06
 
@@ -746,3 +746,11 @@ Validation: 70 setup tests pass (including 8 new adapter cases); 65 hook-enforce
 Delivery: Stop https://github.com/mithudso/claude-config/pull/33; adapter https://github.com/mithudso/codex-local-ai-setup/pull/11; repository workflow records https://github.com/mithudso/solmargintrader/pull/88. This repository changes only prompts, continuation records, and their offline retrieval indexes. Its documentation drift check passes; the offline index was rebuilt without inference/embeddings.
 
 At checkpoint: independent installed acceptance and final CI/merges are in progress. TASK-895 tracks final receipts and completion; check its current state before resuming. Preserve unrelated staged herdr/context7 changes in /Users/mitch/.claude and all original solmargintrader work.
+
+## v73 - 2026-11-08 (installed acceptance passed)
+
+Independent acceptance: exact enabled memory-central launcher exits 0 and emits 1,814 bytes of valid SessionStart JSON with original context. Installed Stop subprocesses in disposable repositories allow inherited dirt/ahead commits, preserve snapshots on resume, block a new own edit, allow an unchanged repeat, block a later distinct edit, and block a new own commit while excluding inherited commits. A late baseline still checks ahead commits. Installed hashes match the guarded receipt.
+
+Actual Codex 0.167.0 daemon retains enabled/trusted adapter and both Stop/snapshot registrations with no warnings/errors. config.toml, hooks.json, settings.json, parent baseline and parent hook counters remain unchanged. A subsequent ordinary UI turn has not been observed; exact installed command/runtime checks passed. No restart is needed.
+
+Remaining at delivery checkpoint: merge the three linked PRs after final-head CI, confirm remote default-branch content, remove only clean task worktrees/branches, and complete TASK-895 with final merge receipts. The installed behavior is verified. No user decision is pending.
