@@ -1,7 +1,7 @@
 {
   "schema": "task808-benchmark-scope-review/v1",
-  "version": 2,
-  "delta": "v1 to v2; independent archive/function audit and frozen documentation correction accepted.",
+  "version": 3,
+  "delta": "v2 to v3; preserve original audit and verify unchanged metric after upstream trend-filter integration.",
   "reviewed_as_of": "2026-11-08",
   "reviewer": "independent explorer, read-only source inspection and real-function synthetic check",
   "source_revision": "5cf5918e9f7a7d46a1aae7ae09995ba994ecdc07",
@@ -83,6 +83,24 @@
       "docs/COMPOUND-5M.md": "c6a734b4211a19e51f7ec8ed5e098f306e1ed148ef79a99f09b29b42371076f9",
       "docs/COMPOUND-5M-PAPER.md": "cf93ddd184fd36b0c84615ec76928fc80be51e418cdce611f923d6e44f745f94"
     },
-    "historical_numbers_unchanged": true
+    "historical_numbers_unchanged": true,
+    "document_revision": "944cce0",
+    "document_hash_scope": "Frozen task patch before upstream trend-filter documentation was merged; historical audit hashes remain unchanged."
+  },
+  "source_locators_revision": "5cf5918e9f7a7d46a1aae7ae09995ba994ecdc07",
+  "integration_verification": {
+    "source_revision": "20dcc37a3cab06157b856d59b76c09d77e7a43fc",
+    "upstream_revision": "55c1dd4",
+    "forecast_stats_ast_identical_to_original_review": true,
+    "forecast_stats_ast_sha256": "e00005b65a01e0bf9c70e85893c0b31e74afe65fe5eca1ecee024f0f0d6598ca",
+    "original_function_line": 1904,
+    "current_function_line": 1935,
+    "current_source_sha256": {
+      "backtester/core/scorecard.py": "d4b67701b2070804a9f2b69b25d7bb76c678d32b96275a74883a4b3afe7aed61",
+      "backtester/core/compound.py": "d367a28565076bf3f381943c1c1ff435cb7d2a8524ec7c435cab2ad0a37c1f6f",
+      "backtester/core/engine.py": "292e2b41fc6e127f00bfec099c16201b969b32dadf683fd6529ee9f8c2a0f78b"
+    },
+    "unchanged_next_open_and_engine_source_files": true,
+    "scope": "Deterministic function AST/source comparison; original synthetic and independent audit retained, no new market backtest."
   }
 }

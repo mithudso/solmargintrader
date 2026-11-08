@@ -2,12 +2,12 @@
   "schema": "cfe-run-state/v1",
   "subject": "Five-minute high-leverage SOL perpetual signals",
   "started": "2026-11-07T12:29:11.874709+00:00",
-  "updated": "2026-11-07T12:39:25.933482+00:00",
+  "updated": "2026-11-08T08:11:28.224247+00:00",
   "budget": {
     "maxRounds": 3,
     "threshold": 3.2
   },
-  "round": 0,
+  "round": 2,
   "scored": [
     {
       "concept": "Jupiter dynamic-fee-aware short-horizon feasibility",
@@ -550,7 +550,57 @@
       ]
     }
   ],
-  "researched": [],
+  "researched": [
+    {
+      "concept": "Jupiter dynamic-fee-aware short-horizon feasibility",
+      "slug": "jupiter-dynamic-fee-aware-short-horizon-feasibility",
+      "skillId": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+      "native_status": "COMPLETED",
+      "gate": "Current accepted research-gate/v4"
+    },
+    {
+      "concept": "SOL cross-venue lead-lag after executable latency",
+      "slug": "sol-cross-venue-lead-lag-after-executable-latency",
+      "skillId": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+      "native_status": "COMPLETED",
+      "gate": "Current accepted research-gate/v4"
+    },
+    {
+      "concept": "Five-minute selective prediction and probability calibration",
+      "slug": "five-minute-selective-prediction-and-probability-calibration",
+      "skillId": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+      "native_status": "COMPLETED",
+      "gate": "Current accepted research-gate/v4"
+    },
+    {
+      "concept": "Five-minute first-passage labels with liquidation and costs",
+      "slug": "five-minute-first-passage-labels-with-liquidation-and-costs",
+      "skillId": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+      "native_status": "COMPLETED",
+      "gate": "Current accepted research-gate/v4"
+    },
+    {
+      "concept": "Five-minute volatility-regime-conditioned signal selection",
+      "slug": "five-minute-volatility-regime-conditioned-signal-selection",
+      "skillId": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+      "native_status": "COMPLETED",
+      "gate": "Current accepted research-gate/v4"
+    },
+    {
+      "concept": "Cross-asset hierarchical transfer at five-minute horizon",
+      "slug": "cross-asset-hierarchical-transfer-at-five-minute-horizon",
+      "skillId": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+      "native_status": "COMPLETED",
+      "gate": "Current accepted research-gate/v4"
+    },
+    {
+      "concept": "Uncertainty-aware nonlinear crypto lead-lag",
+      "slug": "uncertainty-aware-nonlinear-crypto-lead-lag",
+      "skillId": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+      "native_status": "COMPLETED",
+      "gate": "Current accepted research-gate/v4"
+    }
+  ],
   "skipped": [
     {
       "concept": "Statistical learning and overfitting in trading",
@@ -669,23 +719,9 @@
     }
   ],
   "failed": [],
-  "queue": [
-    "Jupiter dynamic-fee-aware short-horizon feasibility",
-    "SOL cross-venue lead-lag after executable latency",
-    "Five-minute selective prediction and probability calibration",
-    "Five-minute first-passage labels with liquidation and costs",
-    "Five-minute volatility-regime-conditioned signal selection",
-    "Cross-asset hierarchical transfer at five-minute horizon",
-    "Uncertainty-aware nonlinear crypto lead-lag"
-  ],
-  "status": "in-progress",
-  "blocker": {
-    "stage": "pre-/dr runtime preflight",
-    "command": "python3 /Users/mitch/.global-ai-hub/scripts/dr_run.py check",
-    "exit_code": 1,
-    "error": "retired research sink still present: /Users/mitch/.research",
-    "resolution": "Root awaits explicit owner choice on intact archival. Do not bypass or delete source."
-  },
+  "queue": [],
+  "status": "optimizing",
+  "blocker": null,
   "inventory": {
     "path": "/Users/mitch/dev/solmargintrader-wt-01a1b5ef/research/five-minute-perps-suite/inventory.json",
     "tree_sha256": "ab5649954fece41730f93c37a5ce0cdd8a65d330f5375914cf1bed4ce527d08c",
@@ -694,20 +730,18 @@
   "competency_questions": "/Users/mitch/dev/solmargintrader-wt-01a1b5ef/research/five-minute-perps-suite/competency-questions.md",
   "inherited_claims_receipt": "/Users/mitch/dev/solmargintrader-wt-01a1b5ef/research/five-minute-perps-suite/inherited-evidence-receipt.json",
   "completed_work": [
-    "Full canonical hub-tree inventory and installed-owner routing.",
-    "Five-neighborhood map with six candidates per neighborhood.",
-    "Canonical CVS checker passed all 30 rows.",
-    "47 inherited SUPPORTED assertions and their 114 pinned evidence spans passed structural verification.",
-    "Seven preliminary scout missions completed.",
-    "Private compilation of unchanged inherited assertions and a 47-row SQLite FTS5 index. All 47 compiled units retain exact canonical bindings."
+    "Preserved prior discovery, seven scouts and47 supported inherited assertions without redoing them.",
+    "Executed seven native standard-depth research probes and seven escalated followups.",
+    "Accepted all165 v4 assertions after exact bounded repairs; reused159 judgments and newly judged6.",
+    "Delivered and activated the compact task reference with seven lossless topic guides.",
+    "Compiled seven current-v3 private packs from110 unique accepted claims plus54 shared context rows; indexed164 rows in both local vector and FTS layers.",
+    "Independently adjudicated all70 reader responses and118 exact excerpts; preserved35 full,30 partial and5 absent knowledge answers.",
+    "Built and independently tested the categorical rollup.",
+    "Completed two evidence-grounded empty expansions, an independent blind saturation gate and both final tree score merges.",
+    "Completed supported project routing placement while retaining the prior broad Solana family."
   ],
   "not_completed": [
-    "New /dr initialization, research, evidence gate and finish.",
-    "New skill installation, quality optimization and registration.",
-    "New per-concept research packs and categorical rollup.",
-    "Semantic indexing and full pack acceptance tests.",
-    "Concept-tree and website registration.",
-    "Evidence-grounded frontier re-expansion, saturation and independent final gates."
+    "Root final post-sync verification, required CI and remote default-branch delivery."
   ],
   "private_reuse_compilation": {
     "private_path": "/Users/mitch/.global-ai-hub/llms-concepts/five-minute-perps-inherited-v4.llms",
@@ -831,5 +865,198 @@
     "url_library_seeds": 0,
     "mirrors": 0,
     "leads_file": "/Users/mitch/dev/solmargintrader-wt-01a1b5ef/research/five-minute-perps-suite/source-leads.json"
-  }
+  },
+  "authorization_note": "Owner explicitly approved intact archival. Root verified the preserved archive at the requested destination and completed lifecycle/prompt records before this run.",
+  "active_stage": "Root final verification and remote delivery",
+  "seed_plan": "/Users/mitch/.claude/skill-consolidation/run-state/cfe-five-minute-high-leverage-sol-perpetual-signals.seed-plan.json",
+  "active_run": {
+    "slug": "five-minute-high-leverage-sol-perps-task808",
+    "directory": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808",
+    "adapter": "/Users/mitch/dev/llms-explorer/scripts/codex_dr_run.py",
+    "depth": "standard",
+    "max_parallel": 3,
+    "model_overrides": false,
+    "effort_overrides": false,
+    "research_session_id": 81513
+  },
+  "native_probe_returns": [
+    {
+      "concept": "Jupiter dynamic-fee-aware short-horizon feasibility",
+      "claims": 11,
+      "sources": 9,
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/passes/jupiter-dynamic-fee-aware-short-horizon-feasibility-probe.json",
+      "status": "Probe returned. Adaptive follow-up and independent review remain pending."
+    },
+    {
+      "concept": "Five-minute first-passage labels with liquidation and costs",
+      "claims": 7,
+      "sources": 8,
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/passes/five-minute-first-passage-labels-with-liquidation-and-costs-probe.json",
+      "status": "Probe returned. Adaptive follow-up and independent review remain pending."
+    },
+    {
+      "concept": "Uncertainty-aware nonlinear crypto lead-lag",
+      "claims": 8,
+      "sources": 7,
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/passes/uncertainty-aware-nonlinear-crypto-lead-lag-probe.json",
+      "status": "Probe returned. Adaptive follow-up and independent review remain pending."
+    },
+    {
+      "concept": "Five-minute volatility-regime-conditioned signal selection",
+      "claims": 8,
+      "sources": 5,
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/passes/five-minute-volatility-regime-conditioned-signal-selection-probe.json",
+      "status": "Probe returned. Adaptive follow-up and independent review remain pending."
+    },
+    {
+      "concept": "Cross-asset hierarchical transfer at five-minute horizon",
+      "claims": 9,
+      "sources": 7,
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/passes/cross-asset-hierarchical-transfer-at-five-minute-horizon-probe.json",
+      "status": "Probe returned. Adaptive follow-up and independent review remain pending."
+    },
+    {
+      "concept": "Five-minute selective prediction and probability calibration",
+      "claims": 7,
+      "sources": 9,
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/passes/five-minute-selective-prediction-and-probability-calibration-probe.json",
+      "status": "Probe returned. Adaptive follow-up and independent review remain pending."
+    },
+    {
+      "concept": "SOL cross-venue lead-lag after executable latency",
+      "claims": 7,
+      "sources": 6,
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/passes/sol-cross-venue-lead-lag-after-executable-latency-probe.json",
+      "status": "Probe returned. Adaptive follow-up and independent review remain pending."
+    }
+  ],
+  "scope_corrections": [
+    "A negative all-transitions average of absolute close-to-close log return minus a fixed toll does not rule out profitable selective rare triggers. Do not interpret it as a universal one-bar strategy ceiling.",
+    "Leverage multiplies price P&L and proportional notional costs together. It does not lower their underlying price-move break-even; fixed-dollar costs are a distinct term.",
+    "Empirical claim documents must declare research_domain=scientific before adapter concept-done and gates. Independently enforce three commissioned research origins; publisher hosts are not independent research teams."
+  ],
+  "record_version": 6,
+  "delta": "Completed actual research, bounded v4 gate repairs, qualified installation, current-LCA compilation and reader adjudication, categorical rollup, two evidence-grounded expansions, blind gate and both tree score writes. Root owns final delivery.",
+  "semantic_authorization": {
+    "scope": "On-demand indexing of this task's packs only, using the already running local Ollama endpoint.",
+    "endpoint": "http://127.0.0.1:11434",
+    "model": "mxbai-embed-large:latest",
+    "basis": "Root verified the later November 7 explicit semantic-indexing request and current comments-only paused-services record.",
+    "excluded": "No LAN/eGPU embedding window, global queue restart, background pipeline, service change or model download."
+  },
+  "site_target": {
+    "repo": "/Users/mitch/dev/worktrees/llms-explorer-perps-task808",
+    "branch": "research/perps-task808",
+    "base": "2a440c5a98d388b60bdcf47f46782accde26a811",
+    "workflow_records": "Root saved prompts version 117 and memory version 0.22.136 before persistence writes."
+  },
+  "native_research_returns": [
+    {
+      "concept": "Jupiter dynamic-fee-aware short-horizon feasibility",
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/jupiter-dynamic-fee-aware-short-horizon-feasibility.json",
+      "claims": 20,
+      "status": "Native research complete. Semantic acceptance and persistence remain pending."
+    },
+    {
+      "concept": "SOL cross-venue lead-lag after executable latency",
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/sol-cross-venue-lead-lag-after-executable-latency.json",
+      "claims": 12,
+      "status": "Native research complete. Semantic acceptance and persistence remain pending."
+    },
+    {
+      "concept": "Five-minute selective prediction and probability calibration",
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/five-minute-selective-prediction-and-probability-calibration.json",
+      "claims": 15,
+      "status": "Native research complete. Semantic acceptance and persistence remain pending."
+    },
+    {
+      "concept": "Five-minute first-passage labels with liquidation and costs",
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/five-minute-first-passage-labels-with-liquidation-and-costs.json",
+      "claims": 17,
+      "status": "Native research complete. Semantic acceptance and persistence remain pending."
+    },
+    {
+      "concept": "Five-minute volatility-regime-conditioned signal selection",
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/five-minute-volatility-regime-conditioned-signal-selection.json",
+      "claims": 12,
+      "status": "Native research complete. Semantic acceptance and persistence remain pending."
+    },
+    {
+      "concept": "Cross-asset hierarchical transfer at five-minute horizon",
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/cross-asset-hierarchical-transfer-at-five-minute-horizon.json",
+      "claims": 17,
+      "status": "Native research complete. Semantic acceptance and persistence remain pending."
+    },
+    {
+      "concept": "Uncertainty-aware nonlinear crypto lead-lag",
+      "path": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/claims/uncertainty-aware-nonlinear-crypto-lead-lag.json",
+      "claims": 17,
+      "status": "Native research complete. Semantic acceptance and persistence remain pending."
+    }
+  ],
+  "installation_hold": {
+    "resolved": true,
+    "canonical_skill_id": "trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+    "loaded_discovery": "Accepted by root parity audit."
+  },
+  "semantic_gate": {
+    "gate_schema": "research-gate/v4",
+    "validated": true,
+    "all_supported": true,
+    "packet_sha256": "53f1e45fae9cc0570ca7ba4085ad120785c3928beef135a4809ed0261191023c",
+    "review_binding": "774fab9ef04e9e014cc3585c0fc37c9515d6c359387b47af4bf202b619354e86",
+    "counts": {
+      "SUPPORTED": 125,
+      "NO-FACTUAL-ASSERTION": 40
+    },
+    "coverage": {
+      "total_claims": 165,
+      "selected_claims": 165,
+      "structured_claims": 110,
+      "auxiliary_assertions": 55,
+      "risky_claims": 99,
+      "sampled_ordinary_claims": 66
+    },
+    "reused_exact_judgments": 159,
+    "newly_judged_assertions": 6,
+    "attempt": "gate/attempts/20261108T071503.072906Z-fe9b6245"
+  },
+  "source_floor_receipt": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/authority-review.json",
+  "question_bank_receipt": "/Users/mitch/.global-ai-hub/research/five-minute-high-leverage-sol-perps-task808/evals/question-bank-receipt.json",
+  "rendered_reference": "/Users/mitch/dev/worktrees/skills-perps-task808/trading-and-investing/references/five-minute-high-leverage-sol-perps-task808.md",
+  "saturation_verdict": "SATURATED",
+  "full_suite_receipt": "full-suite-receipt.json",
+  "knowledge_coverage": {
+    "questions_reviewed": 70,
+    "source_grounded_response_correctness": {
+      "numerator": 70,
+      "denominator": 70
+    },
+    "affirmative_in_scope_answer_accuracy": {
+      "numerator": 65,
+      "denominator": 70
+    },
+    "knowledge_coverage_counts": {
+      "full": 35,
+      "partial": 30,
+      "absent": 5
+    },
+    "exact_excerpts_checked": 118,
+    "exact_excerpts_valid": 118,
+    "unsupported_factual_answers": 0,
+    "missed_available_answers": 0,
+    "wholly_absent_scope_gaps": 5,
+    "complete_knowledge_coverage": false,
+    "qualification": "All seven meet 9/10 response correctness after the bounded excerpt repair. Five meet 9/10 affirmative/in-scope answer accuracy; regime is 8/10 and uncertainty is 7/10 because their five wholly absent questions supply no affirmative answer. These are genuine scope gaps and correctly disclosed, not fabricated facts. Thirty other questions have partial knowledge coverage. This adjudication establishes no new market-fact gate or trading result."
+  },
+  "private_output_roots": [
+    "/Users/mitch/.global-ai-hub/llms-concepts/cross-asset-hierarchical-transfer-at-five-minute-horizon-task808-v3.llms",
+    "/Users/mitch/.global-ai-hub/llms-concepts/five-minute-first-passage-labels-with-liquidation-and-costs-task808-v3.llms",
+    "/Users/mitch/.global-ai-hub/llms-concepts/five-minute-selective-prediction-and-probability-calibration-task808-v3.llms",
+    "/Users/mitch/.global-ai-hub/llms-concepts/five-minute-volatility-regime-conditioned-signal-selection-task808-v3.llms",
+    "/Users/mitch/.global-ai-hub/llms-concepts/jupiter-dynamic-fee-aware-short-horizon-feasibility-task808-v3.llms",
+    "/Users/mitch/.global-ai-hub/llms-concepts/sol-cross-venue-lead-lag-after-executable-latency-task808-v3.llms",
+    "/Users/mitch/.global-ai-hub/llms-concepts/uncertainty-aware-nonlinear-crypto-lead-lag-task808-v3.llms",
+    "/Users/mitch/.global-ai-hub/llms-concepts/five-minute-sol-perps-task808-suite.family"
+  ]
 }

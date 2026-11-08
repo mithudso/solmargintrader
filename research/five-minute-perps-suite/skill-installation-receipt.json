@@ -1,0 +1,38 @@
+{
+  "schema": "task808-skill-installation/v1",
+  "version": 2,
+  "delta": "v1 to v2; stable supported rerender/partition and canonical finish accepted.",
+  "reviewed": "2026-11-08",
+  "source_pr": "https://github.com/mithudso/skills/pull/91",
+  "source_merge_commit": "5765c8d755322292b6076d116a7b8e3a4526567b",
+  "final_source_tip": "f986579772de0d41f761cd1df4b208a3113d1b33",
+  "ci": "offline-safety passed on final source tip",
+  "source_content_vs_remote": "exact match for task-owned paths",
+  "qualified_parent_sha256": "39f307bc7bf949c6637a50cab90c83a7150595544f5f1acd184a125ec002ec96",
+  "nested_guides": 7,
+  "canonical_hub_version": "1.7.1",
+  "loaded_hub_version": "1.6.1",
+  "loaded_direct_guides": 59,
+  "guarded_activation_files": 24,
+  "subsequent_guarded_index_metadata_files": 4,
+  "canonical_index_rows": 947,
+  "canonical_index_bytes_preserved": true,
+  "loaded_index_rows_before": 970,
+  "loaded_index_rows_after": 971,
+  "unrelated_loaded_index_rows_preserved": 969,
+  "loaded_discovery_stable_samples": 3,
+  "loaded_discovery": "Enabled .agents owning hub exposes the qualified parent and all seven children; cohort stays folded.",
+  "catalog_route_and_enablement_preserved": true,
+  "mechanical_validation": "Both installed hubs have no High or Medium offline findings; both cohort structural validators have zero findings.",
+  "private_proofs": {
+    "checkpoints/activation/20261108T073707Z-receipt.json": "5d4fa8a1049bb1ac6866310eaec5364a4143e22e3f088923d942f68272dee453",
+    "checkpoints/activation/20261108T073707Z-validation.json": "695f5571e1cc88ee6c186c88d329daacec74677bf2e7c358957638ca3cb1a829",
+    "checkpoints/activation/20261108T073952Z-index-receipt.json": "8817b7b966a220606f1d14b326421db69291b965b3a86e0d7abc4007b85e679d",
+    "checkpoints/activation/20261108T073952Z-index-loaded-discovery.json": "e0155a29aaffa1105e9c6f51ca9efa00622a28df0a4d4f65bd4fc01722c95d76"
+  },
+  "remaining": [
+    "Final remote delivery is tracked separately."
+  ],
+  "stable_rerender_qualified": true,
+  "canonical_finish": "COMPLETED, no warnings"
+}
