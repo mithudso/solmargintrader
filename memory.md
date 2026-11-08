@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 31
-Delta: v30 to v31; pushed draft recovery PR and preserved private research limits.
+Version: 55
+Delta: v54 to v55; approved archival and resumed perps full-suite with preserved upstream records.
 
 ## v1 - 2026-11-06
 
@@ -289,7 +289,246 @@ Verification: backtester 734, soltui 712 pass. Caveat: the worker refuses rows w
 
 Remaining: PR, CI, merge. Next request (TASK-807): keyword/semantic/hybrid search over all repo files with mxbai-embed-large, ollama auto-start, idle indexing, lazy-loaded Docs-tab search.
 
-## v28 - 2026-11-07 (Five-minute leveraged perps full-suite)
+## v28 - 2026-11-07 (Repo index tooling and Docs-tab search)
+
+Target: keyword + semantic indexing of all repo files with mxbai-embed-large:latest, ollama reachable-or-started when semantic search is chosen, an idle index check that starts its own rebuild, and keyword/semantic/hybrid search in the Docs tab, lazy-loaded. Stele TASK-807, worktree /Users/mitch/dev/solmargintrader-wt-repo-search, branch feat/repo-search-lazy.
+
+Found: index/build.py already built BM25, concept and mxbai-embed-large semantic indexes over tracked files; the committed semantic manifest was stale (246 files vs about 620). Not covered before: .mjs, .sh, .toml, .example (now indexed); .csv bodies stay excluded by design (header only); untracked files are outside "the repo" by the existing definition (git ls-files).
+
+Completed: index/ollama_ensure.py (localhost only, starts the Ollama app or `ollama serve`, never pulls unless --pull); index/idle.py (rebuild only when stale AND idle AND unlocked AND model installed, nice 19, 10 minute throttle, writes only gitignored semantic-local.npz/json, INDEX_NO_AUTO=1 disables); search.py run_query() library API with lazy cache and unload(); build.py shared model constant, atomic writes, --local, --pull; registry commands docs.search and docs.search_unload; Docs-tab search box, mode select, Search and Free search memory buttons, nothing loaded until first search; CSS fix for the clipped Docs kind selector; removed four stray *.md-E files. A real local semantic build embedded 7,446 chunks in 187 s.
+
+Decision: the committed keyword index is not rebuilt by the idle job (a 12 MB tracked file on a timer would keep every checkout dirty); search reports when it is behind and `build.py all` plus CI `--check` remain its gate.
+
+Tests: test_index_search_tooling.py (32), test_docs_search.py (10). Verification: see PR.
+
+Remaining: PR, CI, merge; build the semantic index in the main checkout after merge.
+
+## v29 - 2026-11-07 (Prediction markets card)
+
+Target: "Add looking at the prediction markets as another item to consider." Read as an addition to the strategy catalogue. Stele TASK-817. Added backtester/strategy_cards/prediction_markets.md: spec-only, family event, very-low a-priori, two ideas kept apart (odds as a signal for SOL; the markets as a venue: cross-venue mispricing and calibration bias), data gap named (price history and resolution outcomes, including the resolution-time lookahead trap), legal and venue access flagged as open questions. No code, not queued. soltui coverage test lists it as an extra card.
+
+Also recorded: a side note that the five new strategy cards rest on one SOL daily 70/30 split, which RANKED_LISTS.md calls structurally hostile to long-only rules. The cards are implemented/very-low, not measured; use the soltui queue's sweep output, not the card numbers.
+
+## v28 - 2026-11-07 (compound five-minute scorecard)
+
+Target: score every metric in 5minleveragestrategies.json (plus higher timeframe, positioning, BTC lead, lifecycle, news/event/cost/liquidation gates) for the next 5m bar, aggregate to UP/DOWN/FLAT, and test any selection backward (engine, IS/OOS) and forward (live ledger) from a soltui tab with every item toggleable and every number editable. Stele TASK-815 (decision KNOW-816). Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616, branch feat/compound-5m-signal.
+
+Completed: backtester/core/scorecard.py (30 components, family dedupe, regime weights, gates, forecast stats, prefix-invariance tested); backtester/core/compound.py (5m loader, segments at gaps, PrecomputedTargets through run_backtest, variants grid, leaderboard with evidence floor); soltui/compound.py (config, Coinbase/Hyperliquid/RSS public reads, forward ledger, sweeps, CLI signal/forward/status/backtest/results/sweep/catalog); nine compound.* registry commands; Compound 5m tab; research/full_suite.py; skills/five-minute-signal (live copy ~/.claude/skills/five-minute-signal); docs/COMPOUND-5M.md.
+
+Verification: backtester 802, soltui 742 pass (index gate rebuilt after commit). Independent review: 1 high (errored gate failed open), 6 medium (news partial outage, sweep crash loses rows, OOS reuse denominator, reset dropped events, resolution across gaps, full suite sweeping after a failed fetch); all fixed with regressions. Fee and funding-timestamp questions checked: no double fee (engine.py:200), funding time is the payment time. Sweep run 20261107T130441Z-f7fea5b2368e: 1,420 configurations over BTC/DOGE/ETH/SOL/ZEC 30d; none profitable OOS beyond luck; oracle (perfect one-bar call) nets -7 to -10 bps on four coins; reversion metrics >50% hit on all five, trend metrics <50% on nearly all.
+
+Remaining: user runs research/full_suite.py for a year of 5m data; consider reversion-leaning defaults only after that out-of-sample year; prediction-markets component (prompt v17) not wired into the compound.
+
+## v31 - 2026-11-07 (Hourly index sweep)
+
+Target: "Set the idle indexer to do an index sweep once an hour even if not idle." Stele TASK-821. Reason: this Mac's load runs 8 to 12, so the load-under-2.0 rule never fired. index/idle.py: when the semantic index is stale and the machine is busy, a rebuild now starts anyway if an hour has passed since the last one started (state key last_build_at; INDEX_FORCE_INTERVAL seconds, 0 disables; never-rebuilt counts as due). A fresh index is never rebuilt; the lock and nice 19 still apply. `--install-schedule` writes ~/Library/LaunchAgents/com.mitchhudson.solmargintrader.index.plist (StartInterval 3600, runs `idle.py --once`, RunAtLoad false) and bootstraps it; `--uninstall-schedule` removes it. Tests: 9 added to test_index_search_tooling.py.
+
+## v32 - 2026-11-07 (adaptive compound weights and tuning)
+
+Target: user asked to multiply each compound metric by how often it is right, updated after every prediction; then to apply Bayes to each miss and move settings toward what would have been right; then to cap the counted record at two weeks ("we can dial it back"). Stele TASK-822. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-adapt, branch feat/compound-adaptive-weights, PR #62. Previous work (PR #60, 41fa9e3) merged.
+
+Completed: scorecard adaptive_counts (one-bar-lagged hit/call counts over a capped record: only the last adaptive_window bars count, default 4032 = two weeks; optional half-life fade inside it, default off), adaptive_multiplier (Beta-prior posterior, edge 2p-1, mute or flip), beta_posterior, p_better_than, neighbours and tune_component (shadow settings at x(1-step)/x(1+step), move only when P(better) > tune_confidence with tune_min_calls, re-centre, cooldown). adaptive defaults ON, tune OFF. soltui: live window up to 4,032 bars when adaptive, ledger_seed passes earlier resolved calls (k, hit, call) still inside the window with matching component_sig; call rows record sigs and multipliers; tab columns learned hit (n) and tuned to, Adopt tuned settings button (46 buttons). Docs COMPOUND-5M.md, skill v1.1.0.
+
+Verification: backtester 817, soltui 745 pass. OOS hit rate of the default compound, static vs learned (two-week window): BTC 48.5/46.5, DOGE 44.0/55.6, ETH 45.6/52.0, SOL 46.3/50.2, ZEC 48.9/51.6; the window and the earlier one-week fade agree within 0.6 points. Tuning at 0.95 moved once in five coins; looser bars add a little inside noise. All returns still negative (16 bps round trip vs 6-9 bps moves). Live SOL: only reversion metrics earn weight.
+
+Remaining: user may shorten or lengthen adaptive_window after watching it; per-regime learned weights not built; a year of 5m data via research/full_suite.py before trusting any of it.
+
+## v33 - 2026-11-07 (Compound 5m paper)
+
+Target: "Write a paper detailing the metrics, what they check, why they're included, what the tunable parameters are, and performance so far." Read as the compound five-minute scorecard. Stele TASK-823. Wrote docs/COMPOUND-5M-PAPER.md: scope, method, all 35 components (28 scores, 7 gates) with what each checks, why included, formula, works/fails and parameters, the four parameter layers, the evaluation protocol, and results recomputed from ~/.config/soltui/compound/backtests.jsonl run 20261107T130441Z-f7fea5b2368e (the file holds the same sweep twice). Headline: no configuration made money in a way that survives scrutiny (10 of 1,420 positive OOS, all within about 1.2 standard errors of a coin flip, 7 of 10 lost in-sample); default compound lost 17 to 63 percent OOS (mean -43 percent at 5x); oracle one-bar net is negative on all five coins; weak reversion pattern in rsi/zscore/bollinger/stochastic; no forward ledger exists and the year-long full suite has not completed. The paper's tables are generated from the catalog and saved rows by a scratch script (not committed); re-derive from the sweep file if the numbers must be refreshed.
+
+## v34 - 2026-11-07 (compound: wallet, clicks, unattended training, inversion, new metrics)
+
+Target: user asked (1) where wallet information should come from and to read it; (2) click a metric to toggle it; (3) a button for fully unattended forward training; (4) invert metrics that score badly; (5) a status bar for the backtest table; (6) add Volume, Balance of Power, ZigZag and EMA; (7) which signals are mutually exclusive. Stele TASK-824. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-wallet, branch feat/compound-wallet-sizing.
+
+Completed: wallet read from soltui Settings solana_address via wallet.scan_solana (public; SOL/USDC/USDT by mint; unpriced = unknown), size_call (min of usable x leverage and risk_pct to the stop incl. costs; engine liquidation formula), paper $ at wallet size in forward status, use_wallet/risk_pct execution settings. CompoundTable subclass: click on on/off or name cell toggles (Textual 8.2.8 only posts Selected on a second click), Space toggles. Unattended trainer: start/stop/status commands, detached `forward --loop --unattended` under taskpolicy -b, per-asset flock, stop file + SIGTERM, errors logged not fatal; tab buttons (48 total) and 60 s result refresh. adaptive_flip default 1. New metrics ema_trend, volume, bop, zigzag (non-repainting). Families regrouped by measured correlation: stretch (rsi, stochastic, cci, bollinger, zscore), ma-trend (+ichimoku), momentum (macd, roc). scorecard.relations + tab warning line. standalone_config now turns adaptive/tune off (bug: standalone rows were muted). run_summary status bar above the backtest table; CLI `results` prints it.
+
+Verification: live wallet scan of the Settings address read $2.29 SOL and sized a call; live unattended start -> one recorded tick -> stop released the lock. Default compound OOS hit static vs learned+invert: BTC 50.3/49.5, DOGE 44.9/55.8, ETH 45.6/52.6, SOL 47.3/51.1, ZEC 48.3/51.1; returns still negative on all five.
+
+Remaining: open Jupiter Perps positions are not read (no documented endpoint); per-regime learned weights; a year of 5m data via research/full_suite.py.
+
+## v35 - 2026-11-07 (grid holdout)
+
+Target: profitability review of the repo (prompts.md v28). Review verdict: strong safety/tests/docs, no measured edge, no realized profit, about $1 idle on the LP wallet; every tested strategy lost out of sample (PBO 0.70). Recommended: hurdle rule (beat jupSOL staking net of costs over 90 forward days), holdout rerun, forward shadow ledger, Trigger transaction verifier then one tiny live round trip, carry/yield backtest, regime-gated grid with a cancel path, monitoring (unified equity vs HODL, dead-man heartbeat, cache freshness, realized-vs-modelled costs).
+
+Completed: PR #55 gitignored the two CDP credential files (merged c01412a; never read). Holdout: fetched SOL 1d to the scratchpad (not the shared cache), added research/grid_holdout.py and research/results/grid_holdout_20261107.json, section in research/GRID-REVIEW.md. Predeclared ladder on 94 finished bars 2026-08-05..2026-11-06: +0.83% (about 3% a year) vs hold +21.6%; price above the ladder 80 of 94 bars; double costs +0.81%. Worktree /Users/mitch/dev/solmargintrader-wt-97230e9e, branch agent-97230e9e.
+
+Remaining: forward shadow ledger (dry-run against live prices, log modelled vs real fills); Trigger semantic verifier; carry/yield backtest; monitoring items above. grid_holdout.py has no unit test (thin glue over tested gridsim); add one with the counts update if it grows.
+
+
+## v36 - 2026-11-07
+
+Target: extend the existing triangular_arbitrage card, not add a duplicate strategy. Stele TASK-826; steps TASK-827 (feasibility), TASK-828 (design), TASK-829 (verify/deliver).
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1b691; branch agent-01a1b691; base db3a3d9. Shared checkout has active sessions and unrelated untracked work; preserve it.
+
+Completed: instructions, data/engine/card contracts, prior KNOW-522, and source abstracts inspected. The example multiplies to 0.99; reciprocal rates are hypothetical until reverse bid/ask is available. Existing card is spec-only.
+
+Decisions: one venue, independent cross pairs, timestamped event replay; use bid for base sales and reciprocal ask for base purchases; include depth, latency, partial fills, dust and costs. KNOW-830 records this design; KNOW-831 records the data gap. Existing USD OHLCV cannot measure capture profitability. Scope is a card design, not a new runner.
+
+Evidence: original abstracts at https://arxiv.org/abs/2105.02784 and https://arxiv.org/abs/0812.0913; crypto study at https://doi.org/10.1016/j.frl.2024.106508 and University of Bamberg repository. Read via Parallel on 2026-11-07 (cached source acquisitions disclosed by provider). Stele search agent failed because gpt-5.4-mini is unsupported on this account; direct MCP reads used.
+
+Remaining: write card; verify arithmetic, card suite and docs/index freshness; regenerate offline retrieval artifacts as required; review/commit/push/PR/CI/merge; preserve other sessions. Missing historical books and a runner are future implementation requirements, not unfinished deliverables for this design request.
+
+
+## v37 - 2026-11-07
+
+Completed on /Users/mitch/dev/solmargintrader-wt-01a1b691: existing backtester/strategy_cards/triangular_arbitrage.md is design v2.0. It contains the corrected worked example, reciprocal-ask conversion, exact fee hurdle, independent-book requirements, delayed three-leg replay, partial-fill/unwind accounting, capital/depth reservations, holdout and stress protocol, acceptance gates, required future fixtures, and original source links. No runner, registry, or live execution changed. Prompt v29 preserves the verbatim request.
+
+Verification: 40 strategy-card tests pass. Full backtester suite: 829 tests pass. scripts/check_docs.py passes (829 backtester, 313 extension, 33 mongo, 756 soltui discovered; only the backtester suite was run locally for this documentation change). research/verify_numbers.py passes its 1,084 existing research-figure checks; it does not validate literature figures in this card. Card arithmetic independently checked with decimal arithmetic. The first full-suite run failed only because index hashes were stale; offline index/build.py all repaired them and the next full run passed. No semantic indexing, model startup, data collection or live trading ran.
+
+Delivery: commit and PR cover the card, these workflow records, and the three offline retrieval indexes. TASK-829 holds the final PR/check/merge receipt after remote delivery. The shared master checkout and unrelated branches/worktrees remain owned by their active sessions.
+
+Remaining design work: none. Before any measured arbitrage result, a later implementation must audit venue/pair availability, obtain sequence-valid independent cross-pair books and fee/latency metadata, and implement/test the offline replay. The card deliberately remains spec-only with data_available false; profitability is unmeasured.
+
+Integration: preserved the concurrent grid-holdout merge d991ec5 (PR #65), including its prompt v28 and memory v35. This task's records are now prompt v29 and memory v36/v37. Regenerated offline retrieval indexes after combining both histories; final checks run on the integrated tree.
+
+## v38 - 2026-11-07 (every coin in parallel, own numbers, full minute history)
+
+Target: user asked for data as detailed and as far back as possible, backtesting and forward testing on all coins at once in parallel, each coin with its own set of numbers. Stele TASK-825 (Stele MCP disconnected mid-session; writes queued in the outbox). Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-coins, branch feat/compound-all-coins (stacked on PR #64).
+
+Completed: 1m history fetch started for BTC ETH SOL DOGE ZEC XRP BNB HYPE (`fetch_minutes --all --years 7`, main checkout data/). compound state gains per-coin overrides (state["assets"]) stacked on the base; save/reset take asset and scope (all, coin, everything); adopt tuned saves to the coin. materialize_bars caches 5m bars per coin (.npz keyed by source mtimes); workers hold at most two coins. backtest_all and the sweep use each coin's own config. Candle cache per coin (closed bars only) so a tick costs one request; 429/5xx retried. start/stop_unattended_all (staggered 6 s per coin, --offset). overview(); tab coin picker, scope switch, Backtest all coins, Start/Stop all coins, overview table (52 buttons). full_suite fetches 1m history instead of 365 days of 5m.
+
+Remaining: run Backtest all coins once the minute download finishes and report per-coin results; open Jupiter Perps positions still unread.
+
+## v39 - 2026-11-07 (compound data quality)
+
+Target: before backtesting every coin on the full minute history, act on KNOW-523 (research/CANDLE-GAP-AUDIT.md): Coinbase drops minutes that traded, so the earlier claim that a missing minute means no trade (resample_complete docstring, KNOW-819) was wrong. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-quality, branch feat/compound-data-quality. PR #66 (all coins) merged 2bb24f6.
+
+Completed: resample_complete counts minutes per 5m bar; incomplete_pct per coin in prepare and every report; run_summary warns above 1%; overview shows it; bar cache format v2. KNOW-819 corrected and linked to KNOW-523; KNOW-531 updated for soltui's compound network/process exceptions.
+
+Verification: minute history so far: BTC 2019-11.. 0.03% incomplete, ETH 0.50%, SOL 2021-06.. 1.04%, DOGE 4.49%, ZEC 60.3% (64% minute coverage). XRP, BNB, HYPE downloading.
+
+Remaining: run Backtest all coins on the full history and report per-coin results.
+
+## v40 - 2026-11-07 (top 50 coins, 1m history)
+
+Target: 1-minute history for all 50 of the top 50 coins (pegged tokens left out), and the compound tester over every coin with data. PR #69 (data quality) merged 64cacbe. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-quality, branch feat/top50-minute-history.
+
+Completed: research/results/top50-nonpegged-2026-11-07.json (CoinGecko ranking; 36 on Coinbase USD, 14 not). backtester/core/fetch_minutes_alt.py fetches the 14 from OKX/KuCoin/Bitget/WhiteBIT against USDT, reorders KuCoin/WhiteBIT [t,o,c,h,l] rows, aborts on more than 1% impossible OHLC, writes a source.json sidecar the loader puts in the label. fetch_minutes takes --assets for any Coinbase USD product and merges the coverage manifest. soltui: coins() is every coin with data; non-Coinbase coins are backtest only; one unattended process ticks all live coins with per-coin locks and stop files. full_suite defaults to the top-50 record and sends only Coinbase coins to Coinbase steps.
+
+Verification: test_fetch_minutes_alt, test_full_suite, test_compound pass; all four venues parsed live with 0 rejected rows. Downloads running in the background from the main checkout's data/.
+
+Remaining: finish the downloads; deliver research/results/minute_coverage.json; run Backtest all coins on the full history and report per-coin results with data-quality caveats.
+
+## v41 - 2026-11-07 (extension redesign, TASK-836)
+
+Target: redesign `extension/` so holdings, P&L and alerts come first and the grid moves to its own last tab.
+Worktree: /Users/mitch/dev/solmargintrader-wt-extui. Branch: feat/extension-redesign from origin/master 2bb24f6.
+Decisions: swaps are quote-only with hand-off to the venue to sign (KNOW-837); pool alerts use measured scout APR, quoted DefiLlama APY is a labelled lead only (KNOW-838).
+Data sources: Base JSON-RPC (mainnet.base.org, base-rpc.publicnode.com; chain 8453; `latest` tag since Denim), Solana JSON-RPC, DefiLlama coins + yields, Jupiter lite-api price and quote, soltui bridge for pnl.*, portfolio.*, liquidity.*, strategies/backtest/roster/top5.
+Completed: tabbed dashboard (Overview first, Grid last) and new popup; registry commands holdings, pools, swapTokens, swapQuote, getPrefs, setPrefs, overview, scanAlerts, ackAlerts; src/market (read-only reads, Slipstream CL quote with range refusal, Jupiter Metis quote); src/core/alerts.js; alert alarm + notifications + badge; soltui liquidity.data; attribution names Metis (quotes) and Ultra (holdings); manifest 0.3.0 with notifications and read-only market hosts. Independent review fixed: scout gate (fresh, medium/high, unflagged, gauged, break-even), modelled label, scan/ack serialisation, lead baseline, hex validation, null APY, pool cache, manual-scan notifications, badge P&L, slippage refusal, stale quote panel, Solana mint validation.
+Verification: npm test 351 pass; dry run net +$0.3492; npm run e2e 21/21; verify-endpoints pass; check_docs agree; soltui 767 run with 1 pre-existing Textual timing flake (#compound-unattended NoMatches in test_kill_and_resume_buttons_write_only_the_kill_file), module re-run 50/50.
+Lessons: public Solana RPC 403s extension origins (KNOW for Jupiter holdings path).
+Remaining: commit, PR, CI, merge.
+
+## v42 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+
+Target: prompt v33. Autopilot keeps master's one-trainer design (#71): autopilot_ensure starts one process for every live-capable coin not running. Stele TASK-833; decisions KNOW-834 (autopilot) and KNOW-835 (double-click toggle). Worktree /Users/mitch/dev/solmargintrader-wt-splitpane, branch feat/soltui-split-preview-autotune.
+
+Completed: `EditorBar` replaces the editor's orange border-top: drag to resize (clamped 3..screen-12), double-click resets to 16, "x close" hides the editor, a click / drag up / ctrl+e shows it, ctrl+up/down resize; height and open state persist in ~/.config/soltui/tui.json (only main() passes the path; test apps keep layout in memory). Selecting a compound metric, coin, backtest row or forward call shows a read-only markdown preview in the shared editor (`compound.metric_preview`, `coin_preview`, `record_preview`); a preview never replaces unsaved edits and never fires from a background refresh while another tab is active. CompoundTable toggles on double-click (Click.chain == 2) or Space; a single click only selects. Autopilot: top-level `autopilot` flag in compound config.json (missing = on); on overlays aggregate.tune=1; forward_tick adopts tuned_params as the coin's own settings via `auto_adopt` with a per-metric tune_cooldown read from `adopt` ledger rows; save_state holds an flock (config.json.lock). `autopilot_ensure` starts any coin's unattended loop not running; registry `compound.autopilot` (set), `compound.autopilot_status`, `compound.autopilot_ensure`; CLI `python -m soltui.compound autopilot`; LaunchAgent `com.mitchhudson.soltui.compound-autopilot` via `python -m soltui.compound_agent install` (refuses a worktree). The console's main() also runs ensure once at start. 53 buttons.
+
+Honesty: tuning at the 0.95 bar rarely moves (docs/COMPOUND-5M.md: one move in five coins over 30 days) and backtested returns stayed negative; autopilot automates the evidence-gated search, it does not make the compound profitable. Paper calls only; no order path.
+
+Remaining: none in code; install the LaunchAgent from the main checkout after merge.
+
+## v43 - 2026-11-07 (ten-coin compound universe)
+
+Target: the owner asked which top-50 coins fail before testing, then chose BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX. Stele TASK-844. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-quality, branch feat/compound-ten-coin-universe.
+
+Completed: research/results/top50-screen-2026-11-07.json (live CoinGecko turnover, Hyperliquid perp leverage, Coinbase status; verdict and reason per coin; 13 disqualified, 8 caution). COMPOUND_5M_UNIVERSE in backtester/core/universe.py; soltui compound COINS and coins() use it, so cached data for other coins no longer joins Backtest all or unattended training; full_suite defaults to it. Docs and the five-minute-signal skill (1.5.0) say so. The 36-coin and 14-coin downloads were stopped (SIGINT, kill-safe) and a 10-coin Coinbase fetch restarted.
+
+Verification: test_universe (screen matches code), test_full_suite, test_compound pass.
+
+Remaining: finish the 10-coin download (NEAR, SUI, AVAX are new); deliver minute_coverage.json; Backtest all coins on the full history; report per-coin results.
+
+## v44 - 2026-11-07 (Backtest tab, wallet, key files, table titles)
+
+Target: prompts v35, v36, v37. PR #68 (editor bar, previews, toggle, autopilot) merged as 288502d. Branch feat/backtest-tab-titles-wallet from that master.
+
+Backtest tab: a "Strategy to backtest" Select (whole roster or one roster label) and a line listing the roster; `backtest.run` takes optional `labels` and refuses labels outside the roster. The old "Run Untested Sweep" ran research/sweep_untested.py, which printed the untested names and then backtested a fixed handful on one horizon. The button is now "Backtest untested + little-tested": `queue.backtest` scope `undertested` (never tested, or fewer than `min_runs`=3 recorded configurations) with `max_tier=1`, started at once in the background worker; progress shows in `#backtest-bg-status`.
+
+Wallet: soltui settings already kept the addresses (~/.config/soltui/config.yaml). The scan lived only in the Wallet tab's widgets. `portfolio.scan` now keeps its result in `~/Library/Application Support/soltui/portfolio/last-scan.json` (mode 600); `portfolio.last` returns it; the real console (main() passes refresh_wallet=True) shows it at start and re-scans in the background. Test apps never read it.
+
+Key files: verified by running the loaders, never printing key material: `aero_lp.wallet.load_signer` with ~/.ssh/wallet.private controls 0x901a89cEC0608eB5435A915f006b45bD46405314; ~/.ssh/solana.private is a 64-byte keypair for EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV; both mode 600. CLAUDE.md rule 4 and liquidity/CLAUDE.md now say agents run the programs that load the keys to sign and move money (KNOW-840). Not changed: the extension's FULL_AUTO passphrase stays unpersisted, and extension live signing stays blocked without a semantic transaction verifier.
+
+Table titles: every DataTable has a `.table-title` Static above it (bold, accent colour); the compound titles name the selected coin. `TableTitleTests` fails if a table lacks one.
+
+Remaining: install the autopilot LaunchAgent from the main checkout; restart the running console so it loads the new code.
+
+## v45 - 2026-11-07 (Hyperliquid costs)
+
+Target: the owner confirmed Hyperliquid access, so all ten coins are live candidates and their backtests should pay Hyperliquid's costs. Branch feat/compound-hyperliquid-costs. Stele TASK-844.
+
+Completed: research/results/hyperliquid-costs-2026-11-07.json (live userFees base schedule: taker 0.045%, maker 0.015%; one l2Book walk per coin at $2k/$10k/$50k). scorecard EXECUTION_SPECS fee_bps default 6.0 -> 4.5, so the default round trip is 13 bps (16 on Jupiter). Docs and the five-minute-signal skill (1.6.0) updated. The owner's saved shared config still holds fee_bps 6.0; set it to 4.5 after merge with soltui.compound.save_state.
+
+Also: Hyperliquid maintenance margin per coin (HYPERLIQUID_MAX_LEVERAGE in backtester/core/compound.py; 1/(2 x max leverage)) now drives engine liquidation, the sized call's liquidation price and gate_liquidation. Jupiter's 0.2% stays for other coins. The owner's saved shared config fee_bps was set to 4.5 (backup in the session scratchpad).
+
+Verification: test_compound_backtest expects 13 bps; new tests cover the margin table against the screen, earlier liquidation, the gate and the sized liquidation price.
+
+Remaining: wallet sizing still reads the Solana wallet (Jupiter collateral); a Hyperliquid account balance read needs the owner's Hyperliquid address. Then the ten-coin full-history backtest (TASK-844).
+
+## v46 - 2026-11-07 (Hyperliquid account sizing, ten-coin backtest)
+
+Target: the owner confirmed their Hyperliquid account is 0x901a89cEC0608eB5435A915f006b45bD46405314 (the Base address). Branch feat/compound-hyperliquid-wallet (on top of feat/compound-hyperliquid-costs, PR #75).
+
+Completed: Settings field hyperliquid_address (default the owner's address; EVM-validated; refuses private material; Settings tab, help, wallet.addresses). soltui.compound.hyperliquid_balances reads clearinghouseState and spotClearinghouseState read-only: usable = perp withdrawable, spot USDC shown not counted, positions listed, a failed read is unavailable. signal, forward_tick, unattended and the commands size from it when set; the Solana wallet is the fallback. Live read on 2026-11-07: account value $0, no positions, no spot balances.
+
+Verification: new tests for an empty account, funded account, failed/malformed read, and preference over the Solana wallet.
+
+Ten-coin full-history backtest done: run 20261107T192614Z, 300 configurations, Hyperliquid costs and margins. All 300 lost the stake out of sample at 5x. Reversion metrics beat a coin flip on every coin (RSI z 13-23) but earned at most 0.6 bps per call against 13 bps. A perfect one-bar call nets positive on 8 of 10 coins at 13 bps. NEAR/AVAX/HYPE/SUI/LINK have 11-38% incomplete bars. Results: research/results/compound-10coin-fullhistory-2026-11-07.json; docs/COMPOUND-5M.md findings section. Coverage: research/results/minute_coverage.json.
+
+Remaining: the owner must deposit USDC to Hyperliquid before any call can be sized. Untested ideas: multi-bar holds, maker entries, fewer stronger calls.
+
+## v47 - 2026-11-07 (SOL one-sided calls)
+
+Target: the owner saw only UP calls and composites of at least 0.5 in the SOL forward test. Stele TASK-850. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-vwap, branch fix/compound-vwap-saturation.
+
+Found: the composite arithmetic is right (recomputed 0.5009 = logged). vwap_reversion scaled the session-VWAP distance by one 5m ATR and sat at +1.00 on every SOL bar 17:25-20:05 UTC (57% of the last 60 days). Its family weight added about +0.35. Only reversion metrics had learned weight. Three stale unattended processes plus the TUI wrote some bars twice (no lock between the ledger read and the append).
+
+Completed: _vwap_distance divides by the RMS of the distance over spread_window (288) bars, floored at ATR, which leaves about 8% saturated. FORMULA_VERSIONS goes into component_sig, so the two VWAP metrics' learned records restart while other metrics keep their signatures. _append(unique=True) re-checks ids under a per-coin flock. ledger_seed counts one call per bar.
+
+Verification: replaying live SOL bars, vwap_rev saturation fell from 92% to about 0% over the last 4h; the last-4h calls went from 26 UP / 0 DOWN to 22 UP / 1 DOWN with more FLAT; all bars are balanced (616 UP / 544 DOWN).
+
+Remaining: after merge, restart the unattended trainers for the ten coins only (the stale ones still train ZEC, BNB, ADA and XLM on old code). The owner must restart the soltui console to load the fix.
+
+## v48 - 2026-11-07 (TradingView docs distillation)
+
+Target: the owner dropped `tradingview/` (TradingView Advanced Charts docs bundle, three `.d.ts` files, agentskills.io llms-full) and asked for every indicator, signal, script and equation distilled into one Markdown file. Stele TASK-853 (dev-y3seh, COMP-320); decision KNOW-854. Worktree /Users/mitch/dev/solmargintrader-wt-tradingview, branch docs/tradingview-reference.
+
+Completed: `docs/TRADINGVIEW-REFERENCE.md` (13 sections): indicator parity table (repo `indicators.py` vs TradingView built-in defaults), licensing limits, 114 built-in studies with inputs/defaults from `StudyOverrides`, 114 `PineJS.Std` entries and custom-indicator metainfo, datafeed/UDF/marks contracts with a zero-dependency datafeed sketch, chart/drawings API with on-chart recipes, 193 featuresets and widget options, Broker API concepts mapped to the extension's rails, release notes to v33.0.0, Agent Skills spec, repo findings. Seven parallel readers produced fragments; spot checks of `getBars`, `OrderStatus`, `Std.atr`/`Std.stdev` matched the `.d.ts`.
+
+Constraints found: Advanced Charts is free only for public, attributed deployments ("not for private use"); any part of the library is prohibited in public repos. The repo is public, so `tradingview/` is gitignored and nothing from the library is committed. Lightweight Charts is the only TradingView product that fits a private tool, and it conflicts with the extension's zero-dependency rule.
+
+Verification: `scripts/check_docs.py` (venv) passes; `index/build.py --check` passes after `build.py all`, `make_files_doc.py`, `make_concepts_doc.py`.
+
+Remaining: repo findings listed at the end of the reference (z-score ddof mismatch between card and Compound 5m; skills frontmatter violations; no ledger-to-chart exporter) are recorded, not fixed.
+
+## v49 - 2026-11-07 (research landed; frontier; fees; Base wallet via CDP)
+
+Target: prompts v42 and v43. Branch research/land-and-frontier, PR #78 (https://github.com/mithudso/solmargintrader/pull/78).
+
+Landed: the untracked research in the main checkout (research/*.json, *.md, docs/profitable-crypto-strategies-analysis.md, curated llms/ notes). Gitignored: auth/ (CDP API key and wallet secret, never committed), .codex/, llms/ doc mirrors. Other worktrees were all pushed; fix/compound-vwap-saturation belonged to a live session (merged as #77); PR #58 (draft research checkpoint) and #46 (executor, money-moving) were left for their owners.
+
+Built: scorecard `hold` and `entry_quantile` (both off by default), forecast `horizons` (net bps by holding period), six research metrics off by default (keltner, mom_skip, vr_regime, ou_reversion, consec_run, pairs_spread); compound frontier variants (every metric alone, top 2%, held 1/4/24 h, 1x), buy-and-hold per window, re-lever on 10% drift (trade counts had counted every bar's drift); Compound tab in four sections with a What-is-tested paragraph, readable row names, buy & hold and net bps 1h/24h, Frontier button; research/frontier_tune.py (in-sample-only tuning plus related search).
+
+Findings (research/COMPOUND-FRONTIER.md): reversion metrics' 52% hit is about 0 bps gross at every hold; only htf_trend survived the frontier (top 2%, 1-4 h, 1x: OOS positive 8/10, beat B&H 7/10, in-sample Sharpe about 0, OOS mostly falling); in-sample tuning made things worse out-of-sample; mom_skip at top 0.5% held 48 h, 1x: OOS +0.75 median Sharpe, positive 8/10, beat B&H 6/10, chosen after 1,227 configurations per coin — a forward-paper-test candidate, not a funded strategy. Leverage: SOL htf_trend same calls +20% at 1x, -53% at 5x.
+
+Base wallet: docs/BASE-WALLET-QUERIES.md (CDP MCP recipe); gtUSDCp (Gauntlet USDC Prime, about $86.64) added to KNOWN_BASE_TOKENS; KNOW-852; auto-memory base-wallet-cdp-queries.md.
+
+Remaining: forward paper test of mom_skip top 0.5% 48 h (not built); maker-fill modelling (no fill-rate data).
+
+## v50 - 2026-11-07 (Lightweight Charts; /dso v2)
+
+Target: owner chose Lightweight Charts (KNOW-859, TASK-860, dev-y3seh) and asked for every evaluation method plus a one-pass-per-method /dso. Worktree /Users/mitch/dev/solmargintrader-wt-lwc, branch feat/lightweight-charts.
+
+Completed (this repo): vendored lightweight-charts 5.2.1 standalone ESM in extension/vendor/lightweight-charts/ (LICENSE, NOTICE, README with npm integrity and file sha256); src/ui/charts.js lazily imports it, draws the grid view's equity curve with the attribution logo on, and falls back to the SVG; test/charts.test.js pins the sha256 and tests the data mapping; CLAUDE.md House style and docs name it as the one runtime library.
+
+Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithudso/skills#90 (45903ec52): 400 evaluation methods, 273 passes in 9 families, legacy mapping, evals, /dso command. docs/dso-skill here is now a stale v1.1.1 copy (Stele KNOW-344, skills project).
+
+Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
+
+## v51 - 2026-11-07 (Five-minute leveraged perps full-suite)
 
 Target: research five-minute SOL Jupiter Perps directional signals and adverse-path survival. Task TASK-808. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef, branch agent-01a1b5ef at c01412a. Preserve all shared checkout and other worktree changes.
 
@@ -299,7 +538,7 @@ Constraints: research only, no trading or execution/config changes. No keys, sig
 
 Remaining: map coverage and scored gaps; research current venue and short-horizon predictive evidence; compile source packs and rollup; independent audit; offline indexes/docs checks; commit/PR/CI/merge and remote verification.
 
-## v29 - 2026-11-07 (Full-suite preparation and audited private draft)
+## v52 - 2026-11-07 (Full-suite preparation and audited private draft)
 
 Completed: full canonical-tree inventory, 30 scored candidates across five neighborhoods, 23 HAVE and seven distinct above-threshold gaps. Canonical CVS checker passed all 30 rows. Verified 47 prior canonical SUPPORTED claims against 114 bound snapshot spans with zero missing/hash/offset failures. Seven preliminary scouts preserve leads, not evidence. TASK-810 complete; research TASK-811 and parent TASK-808 remain unfinished.
 
@@ -311,13 +550,13 @@ Blocker: python3 /Users/mitch/.global-ai-hub/scripts/dr_run.py check exits 1: re
 
 Verification: system Python lacked pandas; existing /Users/mitch/.venvs/soltui/bin/python ran research/verify_numbers.py successfully (1084 archived figures; not a new performance test). scripts/check_docs.py passed with counts 734/313/33/682. No product code changed; new scenario invariants and independent recomputation passed. Private reuse-only pack: /Users/mitch/.global-ai-hub/llms-concepts/five-minute-perps-inherited-v4.llms/. It retains 47 exact inherited supported assertions and 47 FTS5 rows. It is a private draft, not a new researched family: semantic/agent tests are absent, and facts-format lint conflicts with exact-proof reuse. The run-state receipt records all limitations. Remaining: on approved archive, run adapter research/gates on seven gaps, quality audits, final packs/rollup/index/tree steps and saturation gates. Preserve inventory and successful source reads. Repository recovery delivery is tracked in TASK-808; verify its PR status rather than assuming merge.
 
-## v30 - 2026-11-07 (Private reuse pack and recovery checkpoint)
+## v53 - 2026-11-07 (Private reuse pack and recovery checkpoint)
 
 Completed: private source-bound reuse pack retains all 47 unchanged supported assertions. Keyword FTS5 has 47 rows and four nonzero query checks. Vocabulary and digest repairs pass their relevant checks; exact long assertion formatting still conflicts with facts lint and remains an explicit qualification limit. Semantic indexing and agent tests were not run. No source-derived new research draft is staged for the public repository.
 
 Current recovery task: integrate origin/master 3cc9b44 without losing the other session's continuation records, refresh three offline indexes, commit and push the task branch and open a draft PR. Parent TASK-808 remains unfinished. User archive decision remains pending. Do not run new /dr work or alter /Users/mitch/.research before the answer. Delivery receipt belongs in TASK-808; all research stages after preparation remain owed.
 
-## v31 - 2026-11-07 (Draft recovery delivery)
+## v54 - 2026-11-07 (Draft recovery delivery)
 
 Recovery PR: https://github.com/mithudso/solmargintrader/pull/58 (draft; unfinished research checkpoint). Branch agent-01a1b5ef, private worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef. The branch includes origin/master 3cc9b44. Rebase conflicts in prompts.md and memory.md were resolved by retaining the upstream session's records and appending this task with unique version numbers. The shared dirty checkout was preserved.
 
@@ -326,3 +565,10 @@ Checks after integration: documentation drift passed with 734 backtester, 313 ex
 Private reuse compilation: vocabulary check passes, digest fits 1603 estimated tokens and 6443 bytes, and FTS5 has 47 rows with four successful queries. Two facts-format Medium findings remain (facts/full ratio and 44 long assertions). The exact inherited assertions were preserved; no CLEAN label or new full-suite completion is claimed. Semantic indexing, agent tests, new per-concept research, rollup, skill audits/install/sync, tree registration and saturation gates remain owed.
 
 Current blocker: archive decision for /Users/mitch/.research is still pending. Preserve its approximately 23 MB of older local-model work and do not run dependent /dr stages before the owner answers. The independently audited unpromoted report, calculations and audit receipt remain private under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-task808-unpromoted/. Canonical CFE checkpoint and the public run-state copy preserve the seven queued gaps. No session-owned agents, services or inference jobs remain running. Parent TASK-808 and research child TASK-811 stay unfinished.
+## v55 - 2026-11-08 (Approved archival and full-suite continuation)
+
+Target: user approved intact archival and continuation of TASK-808. Refreshed instructions, current master, PR58 and accepted checkpoints. Reclaimed own stale TASK-808/TASK-811 records. Original source and requested target are absent. TASK-832 records the earlier user archive /Users/mitch/.research-archived-2026-11-07, which exists. Record complete before/after relative-path, type, permission and file-content inventories while relocating that preserved archive to the approved exact destination. No pre-November-7 manifest exists, so only this move can be verified.
+
+Current /dr preflight passes. All seven queued gaps retain missing five-minute/executable/survival/calibration deltas. New Jupiter and microstructure packs provide source leads but their heuristic/legacy sampled receipts do not establish v4 verification. Preserve 47 previously supported assertions and successful reads. Root owns workflow records, archive, synthesis and Git delivery; coordinator owns actual seven-gap research, gates and compilation. Worktree /Users/mitch/dev/solmargintrader-wt-01a1b5ef; branch agent-01a1b5ef.
+
+Remaining: archive verification; reconcile resolved blocker; actual adapter research/gates, quality audits, private packs and rollup, authorized index/tree placement, independent review and final repository delivery. No trading, signing, wallet changes or service startup belongs to this task.

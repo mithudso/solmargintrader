@@ -40,8 +40,10 @@ import argparse
 import ast
 import hashlib
 import json
+import os
 import re
 import subprocess
+import sys
 import urllib.error
 import urllib.request
 from collections import Counter, defaultdict
@@ -51,6 +53,10 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "index"
+if str(OUT) not in sys.path:  # sibling modules when imported rather than run as a script
+    sys.path.insert(0, str(OUT))
+
+import ollama_ensure  # noqa: E402 - needs the path line above
 SCHEMA_VERSION = 1
 
 INDEX_JSON = OUT / "INDEX.json"
@@ -58,12 +64,16 @@ TEXT_JSON = OUT / "TEXT-INDEX.json"
 CONCEPT_JSON = OUT / "CONCEPT-INDEX.json"
 SEMANTIC_NPZ = OUT / "semantic-embeddings.npz"
 SEMANTIC_MANIFEST = OUT / "SEMANTIC-MANIFEST.json"
+# The idle job's output. Gitignored pair, so a background rebuild never dirties a tracked file.
+# `search.py` prefers it over the committed pair when both exist.
+LOCAL_NPZ = OUT / "semantic-local.npz"
+LOCAL_MANIFEST = OUT / "semantic-local.json"
 
 # Extensions worth reading as text. Anything else is recorded in INDEX.json with
 # metadata but contributes no tokens and no embedding — an .icns file has a size
 # and a purpose but no searchable content.
-TEXT_EXT = {".py", ".md", ".js", ".json", ".txt", ".csv", ".yml", ".yaml",
-            ".html", ".css", ".editorconfig", ".gitignore", ""}
+TEXT_EXT = {".py", ".md", ".js", ".mjs", ".json", ".txt", ".csv", ".yml", ".yaml",
+            ".html", ".css", ".editorconfig", ".gitignore", ".sh", ".toml", ".example", ""}
 
 # CSV bodies are excluded from the text and semantic indexes on purpose. A
 # 2,000-row price file would dominate every token count with numerals and teach
@@ -90,8 +100,8 @@ DERIVED_TRACKED = {
     "docs/CONCEPTS.md",
 }
 
-EMBED_MODEL = "mxbai-embed-large"
-EMBED_URL = "http://localhost:11434/api/embed"
+EMBED_MODEL = ollama_ensure.EMBED_MODEL   # mxbai-embed-large:latest, like every other semantic index here
+EMBED_URL = f"{ollama_ensure.OLLAMA_BASE}/api/embed"
 CHUNK_CHARS = 1200
 CHUNK_OVERLAP = 200
 
@@ -154,13 +164,15 @@ def classify(rel: str) -> str:
         return "ci"
     if ext == ".py":
         return "code-python"
-    if ext == ".js":
+    if ext in {".js", ".mjs"}:
         return "code-js"
+    if ext == ".sh":
+        return "code-shell"
     if ext in {".html", ".css"}:
         return "code-web"
     if ext == ".md":
         return "doc"
-    if ext in {".json", ".yml", ".yaml", ".editorconfig", ".gitignore"}:
+    if ext in {".json", ".yml", ".yaml", ".toml", ".example", ".editorconfig", ".gitignore"}:
         return "config"
     if ext in {".csv", ".txt"}:
         return "data"
@@ -325,7 +337,7 @@ def build_meta() -> dict[str, Any]:
         raw = read_text(p) if ext in TEXT_EXT else ""
         fm = parse_frontmatter(raw) if ext == ".md" else {}
         doc, syms, imports = python_facts(raw) if ext == ".py" else ("", [], [])
-        if ext == ".js":
+        if ext in {".js", ".mjs"}:
             syms = js_symbols(raw)
             doc = js_docstring(raw)
         summary = summarise(rel, raw, fm, doc)
@@ -660,8 +672,10 @@ def chunks_of(text: str) -> list[str]:
     return out
 
 
-def embed(inputs: list[str]) -> list[list[float]]:
-    body = json.dumps({"model": EMBED_MODEL, "input": inputs}).encode()
+def embed(inputs: list[str], keep_alive: str = "5m") -> list[list[float]]:
+    # keep_alive bounds how long the ~670 MB model stays resident after the last request:
+    # long enough to finish a build, short enough not to hold memory for the day.
+    body = json.dumps({"model": EMBED_MODEL, "input": inputs, "keep_alive": keep_alive}).encode()
     req = urllib.request.Request(EMBED_URL, data=body,
                                 headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=300) as r:
@@ -669,13 +683,8 @@ def embed(inputs: list[str]) -> list[list[float]]:
     return d.get("embeddings") or [d["embedding"]]
 
 
-def build_semantic(meta: dict[str, Any]) -> int:
-    try:
-        import numpy as np
-    except ImportError:
-        print("SEMANTIC BUILD SKIPPED: numpy is required.")
-        return 1
-
+def semantic_corpus(meta: dict[str, Any]) -> tuple[list[str], list[str]]:
+    """(texts, owner path per text) for every chunk the semantic index covers."""
     texts: list[str] = []
     owners: list[str] = []
     for e in meta["files"]:
@@ -686,8 +695,42 @@ def build_semantic(meta: dict[str, Any]) -> int:
         for c in chunks_of(raw):
             texts.append(header + c)
             owners.append(e["path"])
+    return texts, owners
+
+
+def _atomic_write(path: Path, data: bytes) -> None:
+    """tmp + rename, so a search running during a rebuild never reads a half-written file."""
+    tmp = path.with_name(path.name + f".tmp{os.getpid()}")
+    try:
+        tmp.write_bytes(data)
+        os.replace(tmp, path)
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def build_semantic(meta: dict[str, Any], *, local: bool = False, pull: bool = False) -> int:
+    """Embed every chunk and write the array plus its manifest.
+
+    `local=True` writes the gitignored pair (`semantic-local.*`) instead of the committed
+    manifest: that is what the idle job uses, so a background rebuild leaves `git status`
+    clean. A manual `build.py semantic` still refreshes the committed manifest.
+    """
+    try:
+        import io
+
+        import numpy as np
+    except ImportError:
+        print("SEMANTIC BUILD SKIPPED: numpy is required.")
+        return 1
+
+    texts, owners = semantic_corpus(meta)
     if not texts:
         print("SEMANTIC BUILD SKIPPED: nothing to embed.")
+        return 1
+
+    status = ollama_ensure.ensure(EMBED_MODEL, ollama_ensure.base_of(EMBED_URL), pull=pull)
+    print(f"ollama: {status.message}")
+    if not status.ok:
         return 1
 
     print(f"Embedding {len(texts)} chunks from "
@@ -710,14 +753,22 @@ def build_semantic(meta: dict[str, Any]) -> int:
     norms = np.linalg.norm(arr, axis=1, keepdims=True)
     norms[norms == 0] = 1.0
     arr = (arr / norms).astype("float16")   # pre-normalised: cosine becomes a dot product
+    npz_path = LOCAL_NPZ if local else SEMANTIC_NPZ
+    manifest_path = LOCAL_MANIFEST if local else SEMANTIC_MANIFEST
     # Only the float matrix goes in the .npz. The chunk-to-file mapping lives in the
-    # committed manifest instead, which means `np.load` never needs
-    # `allow_pickle=True` — loading a pickled object array is arbitrary code
-    # execution, and an index that a reader may fetch or regenerate is exactly the
-    # wrong place for that. It also makes the mapping inspectable without numpy.
-    np.savez_compressed(SEMANTIC_NPZ, embeddings=arr)
+    # manifest instead, which means `np.load` never needs `allow_pickle=True` --
+    # loading a pickled object array is arbitrary code execution, and an index that a
+    # reader may fetch or regenerate is exactly the wrong place for that. It also makes
+    # the mapping inspectable without numpy.
+    buffer = io.BytesIO()
+    np.savez_compressed(buffer, embeddings=arr)
+    _atomic_write(npz_path, buffer.getvalue())
 
-    SEMANTIC_MANIFEST.write_text(json.dumps({
+    note = ("Local, gitignored copy built by the idle job (`index/idle.py`)." if local else
+            "The array is gitignored: derived, a few MB, and it re-diffs on every "
+            "content change. This manifest records what the index was; rebuild with "
+            "`python3 index/build.py semantic`.")
+    _atomic_write(manifest_path, (json.dumps({
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "schemaVersion": SCHEMA_VERSION,
         "model": EMBED_MODEL,
@@ -728,18 +779,17 @@ def build_semantic(meta: dict[str, Any]) -> int:
         "chunkChars": CHUNK_CHARS,
         "chunkOverlap": CHUNK_OVERLAP,
         "dtype": "float16, L2-normalised (cosine == dot product)",
-        "arrayFile": SEMANTIC_NPZ.name,
+        "arrayFile": npz_path.name,
         "arrayCommitted": False,
+        "local": local,
         "chunkOwners": owners,
-        "note": "The array is gitignored: derived, a few MB, and it re-diffs on every "
-                "content change. This manifest records what the index was; rebuild with "
-                "`python3 index/build.py semantic`.",
+        "note": note,
         "sourceSha1": {e["path"]: e["sha1"] for e in meta["files"]
                        if e["path"] in set(owners)},
-    }, indent=2) + "\n")
-    print(f"Wrote {SEMANTIC_NPZ.relative_to(REPO)} "
-          f"({SEMANTIC_NPZ.stat().st_size / 1e6:.1f} MB, gitignored) "
-          f"and {SEMANTIC_MANIFEST.relative_to(REPO)}")
+    }, indent=2) + "\n").encode())
+    print(f"Wrote {npz_path.relative_to(REPO)} "
+          f"({npz_path.stat().st_size / 1e6:.1f} MB, gitignored) "
+          f"and {manifest_path.relative_to(REPO)}")
     return 0
 
 
@@ -790,6 +840,10 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("command", nargs="?", default="all",
                     choices=["all", "meta", "text", "concepts", "semantic"])
+    ap.add_argument("--local", action="store_true",
+                    help="semantic: write the gitignored semantic-local.* pair, not the committed manifest")
+    ap.add_argument("--pull", action="store_true",
+                    help="semantic: download the embedding model first if it is not installed")
     ap.add_argument("--check", action="store_true",
                     help="verify the committed index matches the tree; exit 1 if stale")
     args = ap.parse_args(argv)
@@ -801,7 +855,7 @@ def main(argv: list[str] | None = None) -> int:
     meta = build_meta()
 
     if args.command == "semantic":
-        return build_semantic(meta)
+        return build_semantic(meta, local=args.local, pull=args.pull)
 
     if args.command in {"all", "meta"}:
         INDEX_JSON.write_text(json.dumps(meta, indent=2) + "\n")

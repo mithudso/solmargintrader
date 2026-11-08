@@ -41,6 +41,8 @@ STRATEGIES = {
     "Arbitrage": ["triangular_arbitrage", "dex_cex_dislocation"],
     "Event-driven trading": ["event_driven"],
 }
+# Not in the catalogue file: added by the owner's request as another item to consider.
+EXTRA_CARDS = ["prediction_markets"]
 INDICATORS = {
     "Simple moving average (SMA)": ["ma_crossover", "sma_regime"],
     "Exponential moving average (EMA)": ["ema_crossover"],
@@ -78,7 +80,7 @@ def _all_card_ids() -> list[str]:
     for table in (STRATEGIES, INDICATORS):
         for cards in table.values():
             ids.extend(cards)
-    return sorted(set(ids))
+    return sorted(set(ids) | set(EXTRA_CARDS))
 
 
 class TestCatalogueCoverage(unittest.TestCase):

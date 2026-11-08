@@ -34,7 +34,7 @@ backtester/            research/              extension/
 | `src/storage/store.js` | IndexedDB journal + `chrome.storage` config |
 | `src/storage/fileStore.js` | The same interfaces on JSON files, for CLI and API |
 | `src/bg/service-worker.js` | Alarms, badge, message plumbing. No strategy logic |
-| `src/ui/` | Popup and dashboard. Hand-built SVG charts, CSP-safe |
+| `src/ui/` | Popup and dashboard. Equity chart via vendored Lightweight Charts (`charts.js`, SVG fallback); ladder chart hand-built SVG; CSP-safe |
 
 `core/grid.js`, `risk.js` and `pnl.js` take no I/O and no `chrome.*`. That is what makes the strategy
 unit-testable and lets the same code run under `node --test`, in the CLI, and in the browser.
@@ -121,7 +121,7 @@ backtest and the live strategy agree on what a round trip earns. Keeping them se
 folding the ladder into the exposure engine would imply the two are comparable on the same axis.
 
 Its correctness priorities — no lookahead, costs always applied, honest reporting of a losing
-strategy — are documented in `backtester/README.md` and enforced by 734 tests.
+strategy — are documented in `backtester/README.md` and enforced by 853 tests.
 
 
 ## Companion components

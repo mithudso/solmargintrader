@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 16
-Delta: v15 to v16; five-minute leveraged-perps full-suite request.
+Version: 46
+Delta: v45 to v46; approved archival and resumed perps full-suite with preserved upstream records.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -111,8 +111,207 @@ Look at this file and determine if all of the strategies, signals, and indicator
 In the strategies tab make it indicate whether or not that strategy has already been tested or not, how many times, when, and what the results were. Also add 3 buttons, 1) Backtest selected, 2) Backtest all untested and 3) Backtest all.
 ```
 
-## v16 - 2026-11-07 (Five-minute leveraged perps full-suite)
+## v16 - 2026-11-07
+
+```text
+Add keyword and symantic indexing to all of the files in the repo, use the mxbai-embed-large:latest model like all the other symantic indexes, and use the same mechanisms etc. Add to the helper script that if a symantic search is chosen to make sure the ollama server is reachable and if not then start it, and also add an idle index check so it can kick off its own indexing. Add the keyword, symantic, and hybrid searching to the docs tab. I would lazy load it though because it is almost 600MB to always have on.
+```
+
+## v17 - 2026-11-07
+
+```text
+Add looking at the prediction markets as another item to consider.
+```
+
+## v18 - 2026-11-07 (compound five-minute scorecard)
+
+```text
+Read this file /Users/mitch/dev/solmargintrader/5minleveragestrategies.json and create a skill which can check each metric, assign a score to it, and incorporate it into a larger aggregated up/down indication for the next 5 minutes. What else should be checked? The entire technicals arsenal? recent news? An analysis of what lifecycle stage they are at? Implement all of it as a compound strategy tester, where in this tab we will be choosing more than one strategy to test going forward as well as back testing. SO I will need to be able to toggle each choosable item as well as adjust the numbers associated with it. Also tell me what command I need to run to pull new backtesting data, and run a new full suite of back tests on all coins all strategies with all configurationsl
+```
+
+## v19 - 2026-11-07
+
+```text
+Set the idle indexer to do an index sweep once an hour even if not idle.
+```
+
+## v20 - 2026-11-07 (adaptive compound weights)
+
+```text
+What if we set each metric in the compound set and then multiplied it by the percent number of times it's right. And then every time it makes a prediction that percentage count is updated so over time it will naturally favor the metrics that are most often correct without a large number of manual steps.
+```
+
+## v21 - 2026-11-07 (Bayes and moving settings)
+
+```text
+And then every time a metric is wrong you could apply bayes theorem to it and reduce its priors if necessary, but also do a calculation to see what it would have to be to be correct and move the settings in that direction.
+```
+
+## v22 - 2026-11-07 (cap the counted record)
+
+```text
+ The number of counted responses will need to have a cap so that in 5 months a wrong  choice doesn't change its weights so small an amount it's meaningless. I'm not sure how long to make it though. Let's set it for 2 weeks and then we can dial it back
+```
+
+## v23 - 2026-11-07
+
+```text
+Write a paper detailing the metrics, what they check, why they're included, what the tunable parameters are, and perforamnce so far.
+```
+
+## v24 - 2026-11-07 (wallet source for the compound tester)
+
+```text
+Make it so that it reads my wallet information from somewhere, where should that be?
+```
+
+## v25 - 2026-11-07 (compound tab clicks and unattended training)
+
+```text
+In the compound tab, make it so that I can click a sstrategy to turn it on or off. Right now nothing happens when I click. Also add a button to kick off a fully unattended forward moving training.
+```
+
+## v26 - 2026-11-07 (invert poorly scoring metrics)
+
+```text
+The metrics that score extremely poorly, can you just invert whatever decision makes and see if that works?
+```
+
+## v27 - 2026-11-07 (status bar, four indicators, exclusive signals)
+
+```text
+This backtesting table is difficult to understand what's going on. Add a status bar somewhere. But also Add just Volume, Balance of power, zig zag, and exponential moving average to the strategies. Are there any indicators or signals that are mutually exclusive or dont work together?
+```
+
+## v28 - 2026-11-07 (profitability review)
+
+```text
+look at this repo and identify how it can be improved, what features, tests, functionality, monitoring, etc would make this a truly profitable venture?
+```
+
+
+## v29 - 2026-11-07
+
+```text
+There is a type of multi-coin trade that can only happen every now and then using arbitrage percentages across multiple coins. So like if the eth/zec ratio was 1, and the zec/btc ratio was 1.1, and then the btc/eth ratio was .9 then looping in a circle would generate a profit. Explore the feasibility of that and if it could work design a card for this repo to do backtesting.
+```
+
+Target: existing `backtester/strategy_cards/triangular_arbitrage.md`; Stele TASK-826. Design only; no live trading or fabricated backtest results.
+```
+
+## v30 - 2026-11-07 (full history, every coin in parallel)
+
+```text
+Can you download as detailed as possible numbers for as far back as you can go? We also need to test it on all of the coins, so make it do the back testing against all of the coins all at once in parallel, as well as the forward testing. Which means each of the coins will need its own set of numbers.
+```
+
+## v31 - 2026-11-07 (top 50 coins, 1m history)
+
+```text
+Download 1 min data for all 50 of the top 50 coins
+```
+
+## v32 - 2026-11-07 (extension redesign)
+
+```text
+Do a complete redesign of the chrome extension in this repo. THe grid strategy doesn't work as of now so deprioritize that as the first screen. The things I want access to the most are holdings, profit and loss, new lease discovery, easy back testing and strategy changes, and coin exchanges, and alert me to more profitable strategies or pools. Use the coinbase and base skills and llms files to learn how to access and read the base network
+```
+
+Target: `extension/` (UI, registry commands, service worker) plus one read-only soltui command; Stele TASK-836. "New lease discovery" read as new liquidity-pool (LP) discovery.
+
+## v33 - 2026-11-07 (editor bar, compound preview, toggle, autopilot)
+
+```text
+in the soltui there is an orange line which delineates the curser portion above from the editor below, make that orange line adjustable by dragging it with the mouse, and give me the option of closing that window altogether, also whenever I select something like a strategy in the compound tab, it should show a detailed preview of that in the editor window below. Right now it's stuck on one page and won't move. Also let me toggle on/off a strategy by double clicking on it or pressing the space bar with it selected. ALso have it automatically adopt tuned settings, I want this to be a fully automated completely independent hands off self-optimizing system that does not require my input.
+```
+
+Target: soltui/tui.py, soltui/compound.py, soltui/commands.py, new soltui/compound_agent.py; Stele TASK-833.
+
+## v34 - 2026-11-07 (coin screen, ten-coin compound universe)
+
+```text
+Are there any coins which are immediately disqualified before even starting? Ones changing or shutting down soon, have had major incidence, have high fees or inaccessible chain, something like that
+```
+
+```text
+I like that, let's stick to BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX.
+```
+
+## v35 - 2026-11-07 (Backtest tab picker, untested button)
+
+```text
+It is not clear how to select a strategy that will be backtested in the backtest tab. Also after clicking run untested sweep it finds things that need testing and then proceeds to do nothing about it. If I click that button I want it to immediately start backtesting anything and everything not tested or with little testing. Also I still cannot reside that bvottom window,
+```
+
+Target: soltui Backtest tab, `queue.backtest`, `backtest.run`. The resize request is prompt v33's editor bar, which was not merged yet when this arrived.
+
+## v36 - 2026-11-07 (wallet across restarts, key-file access)
+
+```text
+Also it forgets my wallet every time I restart the app. If you have a rule telling you to do that on purpose delete it right now. Make my wallet pertsistent across restarts, and also make sure you have access to my private key file, since I DO want you to move money around on my behalf and take care of things.
+```
+
+Target: soltui Wallet tab (scan kept on disk, shown at start), CLAUDE.md and liquidity/CLAUDE.md key-file rule.
+
+## v37 - 2026-11-07 (table titles)
+
+```text
+There are all of these rows of tables, but none of the tables have any title or description so it's hard to determine what they're telling me. [Image #1]
+```
+
+The screenshot showed the Compound 5m tab: the coin overview, the backtest results and the forward-test table with no heading. Target: a title line above every table in soltui.
+
+## v38 - 2026-11-07 (Hyperliquid access)
+
+```text
+ Yes, I can use hyperliquid
+```
+
+## v39 - 2026-11-07 (Hyperliquid account)
+
+```text
+Yes it is 0x901a89cEC0608eB5435A915f006b45bD46405314
+```
+
+## v40 - 2026-11-07 (SOL forward test only UP)
+
+```text
+This doesn't seem right in the forward test for SOL the indicators are only choosing up, and there haasnt' been a number lower than .5, which tells me the calculations are wrong.
+```
+
+## v41 - 2026-11-07 (TradingView docs distillation)
+
+```text
+Look at all the files in this folder and extract all of the technicals, indicators, signals, scripts, equations, and anything else that would be helpful for this repo export the distilled useful data to a markdown file. /Users/mitch/dev/solmargintrader/tradingview
+```
+
+## v42 - 2026-11-07 (land research; frontier; fees; full suite on the promising)
+
+```text
+There was just an absolute ton of research done for this repo, 1) make sure that everything is commited merged and permanent, 2) Use all this new research and information to improve the backtest and forwardtest setup. Right now the compound tab is very busy and it's difficult to tell what's being tested and by what, but there are also far more technicals and indicators than is what's represented here. [Image #2] these are doing ok in testing, expand the frontier of the strategies, also it says that my profit is eaten up by fees, well how do I get around that? For the strategies that show promise run a full-suite skill on them and see if we can either learn more about how to tune it better, or else find a related and more successful strategy.
+```
+
+The screenshot showed the SOL compound backtest: RSI, Bollinger, CCI, z-score, liquidity sweep, stochastic and VWAP reversion alone at 51.3-52.4% out-of-sample hit, about 0 gross bps, -100% return and 300-380% fees.
+
+## v43 - 2026-11-07 (Base wallet via the CDP MCP)
+
+```text
+Expand the wallet, for the base wallet, use the base mcp server to query my wallet address and also to give you exactly how you should queery for it in the futurte.
+```
+
+## v44 - 2026-11-07 (Lightweight Charts; evaluation methods and /dso)
+
+```text
+Use lightweight charts, run the deep prompt optimizer on the rest of this prompt and then run it:  What are all of the ways a strategy or indicator can be evaluated? List all of them and then create a deep strategy optimizer skill that evaluates, and optimizes the strategy in multiple passes one per method just like the other deep optimizers.
+```
+
+## v45 - 2026-11-07 (Five-minute leveraged perps full-suite)
 
 ```text
 Run the full-suite skill on high margin leveraged perps trading strategies like exists here https://jup.ag/perps/long/SOL-SOL. Effectively betting on how the price will move in the next 5 minutes. What signals, indicators, and technicals best predict an extremely short timeframe, but that also cannot withstand a big swing in the wrong direction.
+```
+## v46 - 2026-11-08 (Approved archival and full-suite continuation)
+
+```text
+Yes, Approve moving /Users/mitch/.research intact to /Users/mitch/.global-ai-hub/research/.legacy-archives/research-20261107-task808 so the workflow can continue
 ```

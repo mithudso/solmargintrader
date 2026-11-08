@@ -1,0 +1,5555 @@
+{
+  "run_id": "20261107T202943Z",
+  "coins": [
+    "AVAX",
+    "BTC",
+    "DOGE",
+    "ETH",
+    "HYPE",
+    "LINK",
+    "NEAR",
+    "SOL",
+    "SUI",
+    "XRP"
+  ],
+  "configurations_tried_per_coin": 1227,
+  "note": "Selection and tuning used in-sample Sharpe only; out-of-sample is reported, never used to choose.",
+  "candidates": [
+    {
+      "metric": "mom_skip",
+      "hold": 288,
+      "is_median_sharpe": 0.522,
+      "is_positive_coins": 8,
+      "coins": 10
+    },
+    {
+      "metric": "htf_trend",
+      "hold": 288,
+      "is_median_sharpe": 0.105,
+      "is_positive_coins": 6,
+      "coins": 10
+    }
+  ],
+  "chosen": [
+    {
+      "metric": "mom_skip",
+      "hold": 288,
+      "is_median_sharpe": 0.522,
+      "is_positive_coins": 8,
+      "coins": 10,
+      "tuned_label": "tune:mom_skip hold=144 q=0.98 x1.0",
+      "hold_tuned": 144,
+      "q_tuned": 0.98,
+      "factor": 1.0,
+      "tuned": {
+        "label": "tune:mom_skip hold=144 q=0.98 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.641,
+        "oos_median_sharpe": -0.614,
+        "oos_positive_coins": 2,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.284419,
+            "sharpe": -0.509,
+            "trades": 133,
+            "max_dd": -0.506225,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.614642,
+            "sharpe": -1.86,
+            "trades": 344,
+            "max_dd": -0.643107,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.236854,
+            "sharpe": -0.215,
+            "trades": 246,
+            "max_dd": -0.425427,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.219126,
+            "sharpe": -0.194,
+            "trades": 302,
+            "max_dd": -0.486726,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.080178,
+            "sharpe": -1.154,
+            "trades": 29,
+            "max_dd": -0.137952,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": 0.310875,
+            "sharpe": 0.509,
+            "trades": 341,
+            "max_dd": -0.515266,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.605459,
+            "sharpe": 1.053,
+            "trades": 142,
+            "max_dd": -0.33285,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.397753,
+            "sharpe": -0.719,
+            "trades": 274,
+            "max_dd": -0.45644,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.377104,
+            "sharpe": -1.047,
+            "trades": 156,
+            "max_dd": -0.528999,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.484777,
+            "sharpe": -1.048,
+            "trades": 232,
+            "max_dd": -0.569155,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      "untuned": {
+        "label": "tune:mom_skip hold=288 q=0.98 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.522,
+        "oos_median_sharpe": -0.558,
+        "oos_positive_coins": 3,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.263354,
+            "sharpe": -0.297,
+            "trades": 130,
+            "max_dd": -0.528224,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.770289,
+            "sharpe": -2.221,
+            "trades": 318,
+            "max_dd": -0.794448,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.094421,
+            "sharpe": 0.358,
+            "trades": 227,
+            "max_dd": -0.393407,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.527169,
+            "sharpe": -0.657,
+            "trades": 288,
+            "max_dd": -0.584221,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.181148,
+            "sharpe": -2.123,
+            "trades": 28,
+            "max_dd": -0.199384,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": 0.491924,
+            "sharpe": 0.619,
+            "trades": 325,
+            "max_dd": -0.58866,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 1.143433,
+            "sharpe": 1.325,
+            "trades": 136,
+            "max_dd": -0.44621,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.37783,
+            "sharpe": -0.46,
+            "trades": 253,
+            "max_dd": -0.483479,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.582501,
+            "sharpe": -1.48,
+            "trades": 151,
+            "max_dd": -0.692679,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.547892,
+            "sharpe": -1.015,
+            "trades": 218,
+            "max_dd": -0.700376,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      }
+    },
+    {
+      "metric": "htf_trend",
+      "hold": 288,
+      "is_median_sharpe": 0.105,
+      "is_positive_coins": 6,
+      "coins": 10,
+      "tuned_label": "tune:htf_trend hold=576 q=0.995 x1.0",
+      "hold_tuned": 576,
+      "q_tuned": 0.995,
+      "factor": 1.0,
+      "tuned": {
+        "label": "tune:htf_trend hold=576 q=0.995 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.438,
+        "oos_median_sharpe": 0.311,
+        "oos_positive_coins": 6,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.099754,
+            "sharpe": 0.405,
+            "trades": 44,
+            "max_dd": -0.402574,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": 0.110416,
+            "sharpe": 0.35,
+            "trades": 74,
+            "max_dd": -0.178727,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.332753,
+            "sharpe": -0.41,
+            "trades": 83,
+            "max_dd": -0.570171,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.079426,
+            "sharpe": 0.273,
+            "trades": 82,
+            "max_dd": -0.367272,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": 0.017307,
+            "sharpe": 0.399,
+            "trades": 12,
+            "max_dd": -0.124599,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.028857,
+            "sharpe": 0.202,
+            "trades": 102,
+            "max_dd": -0.546279,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": -0.027222,
+            "sharpe": 0.219,
+            "trades": 58,
+            "max_dd": -0.413568,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.263064,
+            "sharpe": 0.592,
+            "trades": 70,
+            "max_dd": -0.329345,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.011707,
+            "sharpe": 0.18,
+            "trades": 48,
+            "max_dd": -0.285205,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.232395,
+            "sharpe": 0.605,
+            "trades": 63,
+            "max_dd": -0.307421,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      "untuned": {
+        "label": "tune:htf_trend hold=288 q=0.98 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.105,
+        "oos_median_sharpe": 0.493,
+        "oos_positive_coins": 6,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.147747,
+            "sharpe": 0.496,
+            "trades": 75,
+            "max_dd": -0.339712,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.28992,
+            "sharpe": -0.584,
+            "trades": 156,
+            "max_dd": -0.470067,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.652202,
+            "sharpe": 0.941,
+            "trades": 125,
+            "max_dd": -0.505115,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.111111,
+            "sharpe": -0.006,
+            "trades": 142,
+            "max_dd": -0.434591,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": 0.038026,
+            "sharpe": 0.671,
+            "trades": 15,
+            "max_dd": -0.120866,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.343307,
+            "sharpe": -0.198,
+            "trades": 165,
+            "max_dd": -0.645431,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.217714,
+            "sharpe": 0.598,
+            "trades": 77,
+            "max_dd": -0.359478,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.197974,
+            "sharpe": 0.49,
+            "trades": 111,
+            "max_dd": -0.340563,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.049154,
+            "sharpe": 0.079,
+            "trades": 69,
+            "max_dd": -0.349827,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.229853,
+            "sharpe": 0.592,
+            "trades": 112,
+            "max_dd": -0.390724,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      }
+    }
+  ],
+  "related": [
+    {
+      "label": "related:mom_skip like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.603,
+      "oos_median_sharpe": 0.75,
+      "oos_positive_coins": 8,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.5206,
+          "sharpe": 1.013,
+          "trades": 57,
+          "max_dd": -0.305352,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": 0.1943,
+          "sharpe": 0.456,
+          "trades": 124,
+          "max_dd": -0.191486,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.341894,
+          "sharpe": 0.625,
+          "trades": 100,
+          "max_dd": -0.493433,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 1.880334,
+          "sharpe": 1.585,
+          "trades": 118,
+          "max_dd": -0.268839,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.230132,
+          "sharpe": -3.696,
+          "trades": 13,
+          "max_dd": -0.245931,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.478125,
+          "sharpe": -0.331,
+          "trades": 142,
+          "max_dd": -0.531027,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.41431,
+          "sharpe": 0.802,
+          "trades": 69,
+          "max_dd": -0.491398,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.605416,
+          "sharpe": 0.944,
+          "trades": 98,
+          "max_dd": -0.251381,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": 0.233845,
+          "sharpe": 0.699,
+          "trades": 61,
+          "max_dd": -0.301459,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": 0.814092,
+          "sharpe": 1.277,
+          "trades": 84,
+          "max_dd": -0.215156,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:mom_skip scale=2 hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": 0.587,
+      "oos_median_sharpe": -0.677,
+      "oos_positive_coins": 2,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.328271,
+          "sharpe": -0.651,
+          "trades": 133,
+          "max_dd": -0.531121,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.612548,
+          "sharpe": -1.86,
+          "trades": 344,
+          "max_dd": -0.638457,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.227727,
+          "sharpe": -0.199,
+          "trades": 246,
+          "max_dd": -0.41702,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.253891,
+          "sharpe": -0.263,
+          "trades": 302,
+          "max_dd": -0.495626,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.086255,
+          "sharpe": -1.259,
+          "trades": 29,
+          "max_dd": -0.143001,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": 0.29053,
+          "sharpe": 0.493,
+          "trades": 341,
+          "max_dd": -0.525079,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.597339,
+          "sharpe": 1.048,
+          "trades": 142,
+          "max_dd": -0.337601,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.389594,
+          "sharpe": -0.703,
+          "trades": 274,
+          "max_dd": -0.44982,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.375246,
+          "sharpe": -1.043,
+          "trades": 156,
+          "max_dd": -0.524223,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.453316,
+          "sharpe": -0.94,
+          "trades": 232,
+          "max_dd": -0.540902,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:mom_skip scale=0.5 hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": 0.583,
+      "oos_median_sharpe": -0.641,
+      "oos_positive_coins": 2,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.288252,
+          "sharpe": -0.519,
+          "trades": 133,
+          "max_dd": -0.504459,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.619127,
+          "sharpe": -1.88,
+          "trades": 344,
+          "max_dd": -0.646856,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.240432,
+          "sharpe": -0.221,
+          "trades": 246,
+          "max_dd": -0.427517,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.16817,
+          "sharpe": -0.102,
+          "trades": 301,
+          "max_dd": -0.486207,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.073496,
+          "sharpe": -1.04,
+          "trades": 29,
+          "max_dd": -0.13169,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": 0.325748,
+          "sharpe": 0.521,
+          "trades": 340,
+          "max_dd": -0.529536,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.685813,
+          "sharpe": 1.13,
+          "trades": 142,
+          "max_dd": -0.340454,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.412998,
+          "sharpe": -0.763,
+          "trades": 274,
+          "max_dd": -0.470619,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.369764,
+          "sharpe": -1.012,
+          "trades": 156,
+          "max_dd": -0.522309,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.450689,
+          "sharpe": -0.922,
+          "trades": 232,
+          "max_dd": -0.541728,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:mom_skip lookback=96 hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": 0.481,
+      "oos_median_sharpe": -0.233,
+      "oos_positive_coins": 3,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.132344,
+          "sharpe": -0.144,
+          "trades": 91,
+          "max_dd": -0.40271,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.39418,
+          "sharpe": -1.169,
+          "trades": 218,
+          "max_dd": -0.464869,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.242924,
+          "sharpe": 0.553,
+          "trades": 156,
+          "max_dd": -0.298489,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.238169,
+          "sharpe": -0.322,
+          "trades": 195,
+          "max_dd": -0.359123,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.069743,
+          "sharpe": -1.068,
+          "trades": 23,
+          "max_dd": -0.170727,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.236732,
+          "sharpe": -0.137,
+          "trades": 221,
+          "max_dd": -0.496182,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.759301,
+          "sharpe": 1.277,
+          "trades": 93,
+          "max_dd": -0.265228,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.283214,
+          "sharpe": -0.569,
+          "trades": 173,
+          "max_dd": -0.470361,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.226485,
+          "sharpe": -0.479,
+          "trades": 106,
+          "max_dd": -0.454265,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": 0.134929,
+          "sharpe": 0.436,
+          "trades": 160,
+          "max_dd": -0.360874,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:mom_skip skip=12 hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": 0.435,
+      "oos_median_sharpe": -0.299,
+      "oos_positive_coins": 3,
+      "oos_beat_buy_hold_coins": 5,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.350611,
+          "sharpe": -0.67,
+          "trades": 157,
+          "max_dd": -0.542177,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.586505,
+          "sharpe": -1.648,
+          "trades": 370,
+          "max_dd": -0.631921,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.024949,
+          "sharpe": 0.246,
+          "trades": 281,
+          "max_dd": -0.371047,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.035102,
+          "sharpe": 0.219,
+          "trades": 354,
+          "max_dd": -0.476512,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.047864,
+          "sharpe": -0.54,
+          "trades": 37,
+          "max_dd": -0.125049,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": 0.171606,
+          "sharpe": 0.396,
+          "trades": 368,
+          "max_dd": -0.529602,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.184708,
+          "sharpe": -0.057,
+          "trades": 165,
+          "max_dd": -0.51882,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.553524,
+          "sharpe": -1.183,
+          "trades": 315,
+          "max_dd": -0.607753,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.601277,
+          "sharpe": -2.147,
+          "trades": 169,
+          "max_dd": -0.639317,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.079283,
+          "sharpe": 0.044,
+          "trades": 254,
+          "max_dd": -0.417017,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:htf_trend scale=0.5 hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.419,
+      "oos_median_sharpe": 0.268,
+      "oos_positive_coins": 7,
+      "oos_beat_buy_hold_coins": 7,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.120442,
+          "sharpe": 0.448,
+          "trades": 44,
+          "max_dd": -0.391335,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": 0.10255,
+          "sharpe": 0.333,
+          "trades": 74,
+          "max_dd": -0.182157,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.354364,
+          "sharpe": -0.464,
+          "trades": 82,
+          "max_dd": -0.584092,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.07854,
+          "sharpe": 0.271,
+          "trades": 82,
+          "max_dd": -0.367272,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": 0.007238,
+          "sharpe": 0.264,
+          "trades": 12,
+          "max_dd": -0.124599,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": 0.011586,
+          "sharpe": 0.244,
+          "trades": 101,
+          "max_dd": -0.529958,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.064228,
+          "sharpe": 0.154,
+          "trades": 58,
+          "max_dd": -0.413568,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.3441,
+          "sharpe": 0.701,
+          "trades": 70,
+          "max_dd": -0.337054,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.030995,
+          "sharpe": 0.132,
+          "trades": 48,
+          "max_dd": -0.30515,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": 0.291199,
+          "sharpe": 0.695,
+          "trades": 63,
+          "max_dd": -0.307421,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:mom_skip vol_window=576 hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": 0.395,
+      "oos_median_sharpe": -0.708,
+      "oos_positive_coins": 2,
+      "oos_beat_buy_hold_coins": 7,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.344315,
+          "sharpe": -0.717,
+          "trades": 118,
+          "max_dd": -0.409458,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.641493,
+          "sharpe": -2.026,
+          "trades": 303,
+          "max_dd": -0.664233,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.543539,
+          "sharpe": -1.038,
+          "trades": 235,
+          "max_dd": -0.631995,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.016378,
+          "sharpe": 0.135,
+          "trades": 286,
+          "max_dd": -0.391945,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.063239,
+          "sharpe": -0.872,
+          "trades": 28,
+          "max_dd": -0.160406,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": 0.148439,
+          "sharpe": 0.372,
+          "trades": 315,
+          "max_dd": -0.471016,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.671295,
+          "sharpe": 1.124,
+          "trades": 129,
+          "max_dd": -0.466485,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.378772,
+          "sharpe": -0.7,
+          "trades": 249,
+          "max_dd": -0.501444,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.521594,
+          "sharpe": -1.577,
+          "trades": 151,
+          "max_dd": -0.641628,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.212427,
+          "sharpe": -0.256,
+          "trades": 210,
+          "max_dd": -0.495427,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:htf_trend scale=2 hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.39,
+      "oos_median_sharpe": 0.241,
+      "oos_positive_coins": 7,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.084431,
+          "sharpe": 0.373,
+          "trades": 44,
+          "max_dd": -0.406603,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": 0.030208,
+          "sharpe": 0.171,
+          "trades": 76,
+          "max_dd": -0.194955,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.319086,
+          "sharpe": -0.381,
+          "trades": 83,
+          "max_dd": -0.561367,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.072032,
+          "sharpe": 0.262,
+          "trades": 83,
+          "max_dd": -0.367272,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.030179,
+          "sharpe": -0.28,
+          "trades": 12,
+          "max_dd": -0.124599,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.03085,
+          "sharpe": 0.2,
+          "trades": 102,
+          "max_dd": -0.55153,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.004644,
+          "sharpe": 0.273,
+          "trades": 58,
+          "max_dd": -0.404099,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.273817,
+          "sharpe": 0.608,
+          "trades": 71,
+          "max_dd": -0.328842,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": 0.005229,
+          "sharpe": 0.221,
+          "trades": 48,
+          "max_dd": -0.289535,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": 0.261956,
+          "sharpe": 0.654,
+          "trades": 63,
+          "max_dd": -0.306427,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:mom_skip vol_window=144 hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": 0.346,
+      "oos_median_sharpe": -0.572,
+      "oos_positive_coins": 1,
+      "oos_beat_buy_hold_coins": 3,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.27206,
+          "sharpe": -0.393,
+          "trades": 163,
+          "max_dd": -0.543129,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.567365,
+          "sharpe": -1.492,
+          "trades": 388,
+          "max_dd": -0.600065,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.412051,
+          "sharpe": -0.521,
+          "trades": 299,
+          "max_dd": -0.518309,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.156514,
+          "sharpe": -0.049,
+          "trades": 367,
+          "max_dd": -0.534975,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.133947,
+          "sharpe": -1.465,
+          "trades": 39,
+          "max_dd": -0.2021,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.292168,
+          "sharpe": -0.083,
+          "trades": 408,
+          "max_dd": -0.589746,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.335437,
+          "sharpe": 0.74,
+          "trades": 163,
+          "max_dd": -0.366623,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.728884,
+          "sharpe": -1.883,
+          "trades": 328,
+          "max_dd": -0.752093,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.311636,
+          "sharpe": -0.623,
+          "trades": 170,
+          "max_dd": -0.555733,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.663382,
+          "sharpe": -1.627,
+          "trades": 279,
+          "max_dd": -0.721525,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:mom_skip skip=3 hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": 0.295,
+      "oos_median_sharpe": -1.012,
+      "oos_positive_coins": 3,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.486657,
+          "sharpe": -1.183,
+          "trades": 134,
+          "max_dd": -0.559088,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.506365,
+          "sharpe": -1.378,
+          "trades": 318,
+          "max_dd": -0.539368,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.497917,
+          "sharpe": -0.842,
+          "trades": 240,
+          "max_dd": -0.596463,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.023568,
+          "sharpe": 0.198,
+          "trades": 285,
+          "max_dd": -0.321021,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.135187,
+          "sharpe": -1.984,
+          "trades": 32,
+          "max_dd": -0.194375,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": 0.329641,
+          "sharpe": 0.524,
+          "trades": 318,
+          "max_dd": -0.44792,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.27491,
+          "sharpe": 0.671,
+          "trades": 141,
+          "max_dd": -0.373572,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.563455,
+          "sharpe": -1.305,
+          "trades": 260,
+          "max_dd": -0.609887,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.577638,
+          "sharpe": -1.997,
+          "trades": 150,
+          "max_dd": -0.671818,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.183308,
+          "sharpe": -0.193,
+          "trades": 210,
+          "max_dd": -0.462771,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:ema_cross like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.277,
+      "oos_median_sharpe": -0.15,
+      "oos_positive_coins": 3,
+      "oos_beat_buy_hold_coins": 5,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.051003,
+          "sharpe": 0.133,
+          "trades": 88,
+          "max_dd": -0.369128,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.526321,
+          "sharpe": -1.049,
+          "trades": 184,
+          "max_dd": -0.651112,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.149655,
+          "sharpe": 0.422,
+          "trades": 145,
+          "max_dd": -0.484495,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.290793,
+          "sharpe": -0.156,
+          "trades": 193,
+          "max_dd": -0.485997,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.040499,
+          "sharpe": -0.145,
+          "trades": 21,
+          "max_dd": -0.152255,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.705419,
+          "sharpe": -0.725,
+          "trades": 219,
+          "max_dd": -0.769945,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.05068,
+          "sharpe": 0.381,
+          "trades": 75,
+          "max_dd": -0.379233,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.345459,
+          "sharpe": -0.335,
+          "trades": 157,
+          "max_dd": -0.562653,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": 0.460678,
+          "sharpe": 0.971,
+          "trades": 90,
+          "max_dd": -0.472614,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.216205,
+          "sharpe": -0.211,
+          "trades": 119,
+          "max_dd": -0.423184,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:htf_trend atr=28 hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.271,
+      "oos_median_sharpe": 0.3,
+      "oos_positive_coins": 6,
+      "oos_beat_buy_hold_coins": 7,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.039616,
+          "sharpe": 0.278,
+          "trades": 47,
+          "max_dd": -0.302835,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.097417,
+          "sharpe": -0.109,
+          "trades": 80,
+          "max_dd": -0.298189,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.580322,
+          "sharpe": 0.914,
+          "trades": 67,
+          "max_dd": -0.305948,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.115298,
+          "sharpe": 0.323,
+          "trades": 78,
+          "max_dd": -0.444879,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.019404,
+          "sharpe": -0.095,
+          "trades": 13,
+          "max_dd": -0.125186,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.125748,
+          "sharpe": 0.089,
+          "trades": 105,
+          "max_dd": -0.527163,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.749195,
+          "sharpe": 1.264,
+          "trades": 49,
+          "max_dd": -0.287946,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.26837,
+          "sharpe": 0.593,
+          "trades": 69,
+          "max_dd": -0.36623,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": 0.387762,
+          "sharpe": 1.018,
+          "trades": 40,
+          "max_dd": -0.205595,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.39294,
+          "sharpe": -0.599,
+          "trades": 71,
+          "max_dd": -0.657334,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:htf_trend span=40 hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.234,
+      "oos_median_sharpe": 0.331,
+      "oos_positive_coins": 6,
+      "oos_beat_buy_hold_coins": 5,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.286067,
+          "sharpe": 0.825,
+          "trades": 33,
+          "max_dd": -0.34205,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.173157,
+          "sharpe": -0.346,
+          "trades": 69,
+          "max_dd": -0.307834,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.011694,
+          "sharpe": 0.205,
+          "trades": 62,
+          "max_dd": -0.451207,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.188056,
+          "sharpe": -0.168,
+          "trades": 74,
+          "max_dd": -0.397038,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": 0.047478,
+          "sharpe": 0.936,
+          "trades": 5,
+          "max_dd": -0.10108,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.457717,
+          "sharpe": -0.448,
+          "trades": 97,
+          "max_dd": -0.665422,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.120385,
+          "sharpe": 0.456,
+          "trades": 40,
+          "max_dd": -0.351203,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.439822,
+          "sharpe": 0.918,
+          "trades": 46,
+          "max_dd": -0.185897,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.190036,
+          "sharpe": -0.476,
+          "trades": 34,
+          "max_dd": -0.316545,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": 0.197685,
+          "sharpe": 0.548,
+          "trades": 57,
+          "max_dd": -0.433268,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:htf_trend atr=7 hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.206,
+      "oos_median_sharpe": 0.058,
+      "oos_positive_coins": 4,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.536182,
+          "sharpe": 1.153,
+          "trades": 44,
+          "max_dd": -0.292241,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.033807,
+          "sharpe": 0.04,
+          "trades": 100,
+          "max_dd": -0.171531,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.303947,
+          "sharpe": -0.316,
+          "trades": 94,
+          "max_dd": -0.563098,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.188254,
+          "sharpe": 0.416,
+          "trades": 90,
+          "max_dd": -0.374252,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.058487,
+          "sharpe": -0.543,
+          "trades": 14,
+          "max_dd": -0.143633,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.151199,
+          "sharpe": 0.077,
+          "trades": 115,
+          "max_dd": -0.547662,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.164206,
+          "sharpe": 0.02,
+          "trades": 69,
+          "max_dd": -0.457713,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.085376,
+          "sharpe": 0.321,
+          "trades": 80,
+          "max_dd": -0.26505,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.119738,
+          "sharpe": -0.136,
+          "trades": 52,
+          "max_dd": -0.355211,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": 0.303793,
+          "sharpe": 0.694,
+          "trades": 81,
+          "max_dd": -0.350852,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:htf_trend tf_minutes=120 hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.18,
+      "oos_median_sharpe": 0.38,
+      "oos_positive_coins": 7,
+      "oos_beat_buy_hold_coins": 7,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.235377,
+          "sharpe": 0.705,
+          "trades": 35,
+          "max_dd": -0.344786,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.059363,
+          "sharpe": -0.036,
+          "trades": 71,
+          "max_dd": -0.26209,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.246836,
+          "sharpe": -0.269,
+          "trades": 66,
+          "max_dd": -0.534071,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.124154,
+          "sharpe": 0.334,
+          "trades": 75,
+          "max_dd": -0.341079,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": 0.010854,
+          "sharpe": 0.318,
+          "trades": 5,
+          "max_dd": -0.118095,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": 0.208646,
+          "sharpe": 0.425,
+          "trades": 82,
+          "max_dd": -0.411567,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.193204,
+          "sharpe": 0.566,
+          "trades": 45,
+          "max_dd": -0.338048,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.65185,
+          "sharpe": 1.193,
+          "trades": 49,
+          "max_dd": -0.190995,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.156771,
+          "sharpe": -0.355,
+          "trades": 31,
+          "max_dd": -0.296056,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": 0.209414,
+          "sharpe": 0.58,
+          "trades": 55,
+          "max_dd": -0.420534,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:htf_trend tf_minutes=30 hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.146,
+      "oos_median_sharpe": 0.119,
+      "oos_positive_coins": 2,
+      "oos_beat_buy_hold_coins": 7,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.001102,
+          "sharpe": 0.231,
+          "trades": 62,
+          "max_dd": -0.404286,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.194883,
+          "sharpe": -0.301,
+          "trades": 112,
+          "max_dd": -0.439903,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.204546,
+          "sharpe": -0.091,
+          "trades": 90,
+          "max_dd": -0.47191,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.026469,
+          "sharpe": 0.139,
+          "trades": 109,
+          "max_dd": -0.485957,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.059962,
+          "sharpe": -0.502,
+          "trades": 15,
+          "max_dd": -0.145846,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.059754,
+          "sharpe": 0.195,
+          "trades": 131,
+          "max_dd": -0.490541,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.97534,
+          "sharpe": 1.363,
+          "trades": 60,
+          "max_dd": -0.328009,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.063699,
+          "sharpe": 0.099,
+          "trades": 99,
+          "max_dd": -0.378955,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": 0.324919,
+          "sharpe": 0.843,
+          "trades": 52,
+          "max_dd": -0.285191,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.409776,
+          "sharpe": -0.592,
+          "trades": 102,
+          "max_dd": -0.646929,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:htf_trend span=10 hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.132,
+      "oos_median_sharpe": 0.146,
+      "oos_positive_coins": 5,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.156448,
+          "sharpe": -0.154,
+          "trades": 62,
+          "max_dd": -0.421247,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.127646,
+          "sharpe": -0.151,
+          "trades": 112,
+          "max_dd": -0.324656,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.072835,
+          "sharpe": 0.321,
+          "trades": 93,
+          "max_dd": -0.387691,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.03604,
+          "sharpe": 0.226,
+          "trades": 116,
+          "max_dd": -0.508406,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.026066,
+          "sharpe": -0.161,
+          "trades": 11,
+          "max_dd": -0.120184,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.158072,
+          "sharpe": 0.065,
+          "trades": 128,
+          "max_dd": -0.617845,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.232601,
+          "sharpe": 0.617,
+          "trades": 64,
+          "max_dd": -0.283598,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.996182,
+          "sharpe": 1.366,
+          "trades": 84,
+          "max_dd": -0.258773,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": 0.205786,
+          "sharpe": 0.639,
+          "trades": 55,
+          "max_dd": -0.256887,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.226063,
+          "sharpe": -0.256,
+          "trades": 98,
+          "max_dd": -0.515188,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:roc like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": 0.031,
+      "oos_median_sharpe": -0.356,
+      "oos_positive_coins": 1,
+      "oos_beat_buy_hold_coins": 3,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.006215,
+          "sharpe": 0.269,
+          "trades": 120,
+          "max_dd": -0.515486,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.546242,
+          "sharpe": -0.947,
+          "trades": 240,
+          "max_dd": -0.69025,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.502153,
+          "sharpe": -0.439,
+          "trades": 198,
+          "max_dd": -0.584698,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.417423,
+          "sharpe": -0.273,
+          "trades": 260,
+          "max_dd": -0.632618,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": 0.137778,
+          "sharpe": 1.44,
+          "trades": 22,
+          "max_dd": -0.191706,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.752841,
+          "sharpe": -0.629,
+          "trades": 289,
+          "max_dd": -0.7848,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.100708,
+          "sharpe": 0.266,
+          "trades": 119,
+          "max_dd": -0.482754,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.61224,
+          "sharpe": -0.854,
+          "trades": 216,
+          "max_dd": -0.74855,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.16222,
+          "sharpe": 0.002,
+          "trades": 119,
+          "max_dd": -0.609576,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.574366,
+          "sharpe": -0.927,
+          "trades": 172,
+          "max_dd": -0.651704,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "blend:mom_skip+htf_trend hold=360 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": -0.013,
+      "oos_median_sharpe": -0.099,
+      "oos_positive_coins": 1,
+      "oos_beat_buy_hold_coins": 4,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.179514,
+          "sharpe": -0.079,
+          "trades": 112,
+          "max_dd": -0.333234,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.529151,
+          "sharpe": -1.137,
+          "trades": 210,
+          "max_dd": -0.589085,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.088251,
+          "sharpe": 0.135,
+          "trades": 177,
+          "max_dd": -0.528578,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.207814,
+          "sharpe": -0.071,
+          "trades": 217,
+          "max_dd": -0.481558,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.149026,
+          "sharpe": -1.727,
+          "trades": 23,
+          "max_dd": -0.189028,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.378868,
+          "sharpe": -0.118,
+          "trades": 241,
+          "max_dd": -0.606384,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.078835,
+          "sharpe": 0.455,
+          "trades": 108,
+          "max_dd": -0.456392,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.44227,
+          "sharpe": -0.633,
+          "trades": 173,
+          "max_dd": -0.540415,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.397014,
+          "sharpe": -0.716,
+          "trades": 109,
+          "max_dd": -0.651284,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.102929,
+          "sharpe": 0.06,
+          "trades": 152,
+          "max_dd": -0.534096,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:vwap_side like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -0.041,
+      "oos_median_sharpe": -0.172,
+      "oos_positive_coins": 3,
+      "oos_beat_buy_hold_coins": 5,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.131954,
+          "sharpe": 0.46,
+          "trades": 74,
+          "max_dd": -0.49834,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.336331,
+          "sharpe": -0.46,
+          "trades": 190,
+          "max_dd": -0.396913,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.319985,
+          "sharpe": -0.212,
+          "trades": 149,
+          "max_dd": -0.679161,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.487668,
+          "sharpe": -0.462,
+          "trades": 212,
+          "max_dd": -0.598318,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": 0.176084,
+          "sharpe": 2.128,
+          "trades": 12,
+          "max_dd": -0.115579,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.540675,
+          "sharpe": -0.333,
+          "trades": 203,
+          "max_dd": -0.613892,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.135409,
+          "sharpe": 0.16,
+          "trades": 71,
+          "max_dd": -0.449224,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": 0.056165,
+          "sharpe": 0.313,
+          "trades": 160,
+          "max_dd": -0.458566,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.383312,
+          "sharpe": -0.661,
+          "trades": 88,
+          "max_dd": -0.583248,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.219425,
+          "sharpe": -0.133,
+          "trades": 130,
+          "max_dd": -0.545451,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "variant:mom_skip lookback=24 hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": -0.045,
+      "oos_median_sharpe": -0.735,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 3,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.142131,
+          "sharpe": -0.054,
+          "trades": 226,
+          "max_dd": -0.408292,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.688447,
+          "sharpe": -1.744,
+          "trades": 574,
+          "max_dd": -0.724261,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.284848,
+          "sharpe": -0.162,
+          "trades": 437,
+          "max_dd": -0.575807,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.357712,
+          "sharpe": -0.313,
+          "trades": 546,
+          "max_dd": -0.561053,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.149248,
+          "sharpe": -1.716,
+          "trades": 48,
+          "max_dd": -0.208552,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.763666,
+          "sharpe": -0.905,
+          "trades": 586,
+          "max_dd": -0.78209,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.086854,
+          "sharpe": 0.217,
+          "trades": 237,
+          "max_dd": -0.556753,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.673798,
+          "sharpe": -1.313,
+          "trades": 475,
+          "max_dd": -0.703194,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.706272,
+          "sharpe": -2.244,
+          "trades": 268,
+          "max_dd": -0.75369,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.390092,
+          "sharpe": -0.565,
+          "trades": 380,
+          "max_dd": -0.476909,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:ema_trend like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -0.22,
+      "oos_median_sharpe": -0.186,
+      "oos_positive_coins": 4,
+      "oos_beat_buy_hold_coins": 4,
+      "per_coin": {
+        "AVAX": {
+          "return": 0.43401,
+          "sharpe": 0.837,
+          "trades": 115,
+          "max_dd": -0.424719,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.463643,
+          "sharpe": -0.708,
+          "trades": 246,
+          "max_dd": -0.667298,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.073608,
+          "sharpe": 0.368,
+          "trades": 211,
+          "max_dd": -0.535361,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.399782,
+          "sharpe": -0.235,
+          "trades": 267,
+          "max_dd": -0.58961,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.205623,
+          "sharpe": -1.829,
+          "trades": 23,
+          "max_dd": -0.291096,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.571471,
+          "sharpe": -0.304,
+          "trades": 265,
+          "max_dd": -0.74264,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.276896,
+          "sharpe": 0.672,
+          "trades": 117,
+          "max_dd": -0.430997,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.287264,
+          "sharpe": -0.137,
+          "trades": 200,
+          "max_dd": -0.49167,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": 0.578197,
+          "sharpe": 1.042,
+          "trades": 114,
+          "max_dd": -0.560291,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.499926,
+          "sharpe": -0.651,
+          "trades": 172,
+          "max_dd": -0.676605,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:macd like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -0.248,
+      "oos_median_sharpe": -0.954,
+      "oos_positive_coins": 1,
+      "oos_beat_buy_hold_coins": 3,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.410469,
+          "sharpe": -0.524,
+          "trades": 133,
+          "max_dd": -0.566004,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.906739,
+          "sharpe": -3.122,
+          "trades": 303,
+          "max_dd": -0.909376,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.625348,
+          "sharpe": -0.787,
+          "trades": 233,
+          "max_dd": -0.731888,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.815909,
+          "sharpe": -1.342,
+          "trades": 307,
+          "max_dd": -0.861592,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.174256,
+          "sharpe": -1.558,
+          "trades": 21,
+          "max_dd": -0.322127,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.875113,
+          "sharpe": -1.157,
+          "trades": 323,
+          "max_dd": -0.883512,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.634259,
+          "sharpe": 0.956,
+          "trades": 142,
+          "max_dd": -0.433184,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.619788,
+          "sharpe": -0.864,
+          "trades": 237,
+          "max_dd": -0.710456,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.558067,
+          "sharpe": -1.043,
+          "trades": 127,
+          "max_dd": -0.678864,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.513913,
+          "sharpe": -0.723,
+          "trades": 203,
+          "max_dd": -0.678577,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:adx_dmi like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -0.31,
+      "oos_median_sharpe": 0.144,
+      "oos_positive_coins": 3,
+      "oos_beat_buy_hold_coins": 6,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.141671,
+          "sharpe": 0.026,
+          "trades": 99,
+          "max_dd": -0.499524,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.142153,
+          "sharpe": -0.074,
+          "trades": 214,
+          "max_dd": -0.486737,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": 0.845489,
+          "sharpe": 0.967,
+          "trades": 177,
+          "max_dd": -0.356211,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": 0.052211,
+          "sharpe": 0.283,
+          "trades": 215,
+          "max_dd": -0.345844,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.106369,
+          "sharpe": -0.761,
+          "trades": 23,
+          "max_dd": -0.2089,
+          "buy_hold": 0.313259,
+          "ranked": false
+        },
+        "LINK": {
+          "return": -0.755388,
+          "sharpe": -0.705,
+          "trades": 269,
+          "max_dd": -0.807773,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": 0.030965,
+          "sharpe": 0.414,
+          "trades": 101,
+          "max_dd": -0.541912,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.059041,
+          "sharpe": 0.159,
+          "trades": 173,
+          "max_dd": -0.452103,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.057589,
+          "sharpe": 0.171,
+          "trades": 91,
+          "max_dd": -0.571489,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.086446,
+          "sharpe": 0.128,
+          "trades": 156,
+          "max_dd": -0.424437,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:roc like mom_skip hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": -0.625,
+      "oos_median_sharpe": -1.333,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 1,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.471857,
+          "sharpe": -0.711,
+          "trades": 349,
+          "max_dd": -0.542158,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.825932,
+          "sharpe": -2.214,
+          "trades": 844,
+          "max_dd": -0.835927,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.773712,
+          "sharpe": -1.288,
+          "trades": 627,
+          "max_dd": -0.795762,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.49837,
+          "sharpe": -0.447,
+          "trades": 796,
+          "max_dd": -0.685776,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.063103,
+          "sharpe": -0.322,
+          "trades": 72,
+          "max_dd": -0.194499,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.91224,
+          "sharpe": -1.379,
+          "trades": 889,
+          "max_dd": -0.931385,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.637653,
+          "sharpe": -0.768,
+          "trades": 351,
+          "max_dd": -0.813068,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.840635,
+          "sharpe": -1.902,
+          "trades": 652,
+          "max_dd": -0.862602,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.83582,
+          "sharpe": -2.561,
+          "trades": 386,
+          "max_dd": -0.888933,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.767925,
+          "sharpe": -1.723,
+          "trades": 563,
+          "max_dd": -0.815267,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:macd like mom_skip hold=144 q=0.98",
+      "coins": 10,
+      "is_median_sharpe": -0.925,
+      "oos_median_sharpe": -1.964,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 1,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.275666,
+          "sharpe": -0.23,
+          "trades": 404,
+          "max_dd": -0.521957,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.853959,
+          "sharpe": -2.433,
+          "trades": 997,
+          "max_dd": -0.876828,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.874858,
+          "sharpe": -1.897,
+          "trades": 776,
+          "max_dd": -0.879984,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.901359,
+          "sharpe": -1.97,
+          "trades": 981,
+          "max_dd": -0.912774,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.181783,
+          "sharpe": -1.608,
+          "trades": 79,
+          "max_dd": -0.301668,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.831553,
+          "sharpe": -0.952,
+          "trades": 998,
+          "max_dd": -0.874469,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.863071,
+          "sharpe": -1.966,
+          "trades": 404,
+          "max_dd": -0.881799,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.88032,
+          "sharpe": -2.256,
+          "trades": 776,
+          "max_dd": -0.902825,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.9014,
+          "sharpe": -3.463,
+          "trades": 455,
+          "max_dd": -0.921315,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.789243,
+          "sharpe": -1.961,
+          "trades": 636,
+          "max_dd": -0.824063,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:squeeze like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -1.354,
+      "oos_median_sharpe": -1.57,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 0,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.804989,
+          "sharpe": -1.651,
+          "trades": 604,
+          "max_dd": -0.887178,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.980473,
+          "sharpe": -4.048,
+          "trades": 1487,
+          "max_dd": -0.98294,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.900379,
+          "sharpe": -1.482,
+          "trades": 1180,
+          "max_dd": -0.910986,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.916631,
+          "sharpe": -1.55,
+          "trades": 1624,
+          "max_dd": -0.928557,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.278458,
+          "sharpe": -1.887,
+          "trades": 139,
+          "max_dd": -0.355345,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.98412,
+          "sharpe": -1.846,
+          "trades": 1498,
+          "max_dd": -0.985062,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.820772,
+          "sharpe": -1.006,
+          "trades": 616,
+          "max_dd": -0.828461,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.688502,
+          "sharpe": -0.719,
+          "trades": 1184,
+          "max_dd": -0.793169,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.794485,
+          "sharpe": -1.526,
+          "trades": 702,
+          "max_dd": -0.834863,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.828172,
+          "sharpe": -1.59,
+          "trades": 971,
+          "max_dd": -0.847693,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:trend_continuation like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -2.558,
+      "oos_median_sharpe": -4.399,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 0,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.879126,
+          "sharpe": -2.162,
+          "trades": 1719,
+          "max_dd": -0.910182,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.997755,
+          "sharpe": -6.304,
+          "trades": 4056,
+          "max_dd": -0.997839,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.997231,
+          "sharpe": -4.403,
+          "trades": 3205,
+          "max_dd": -0.998084,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.995422,
+          "sharpe": -3.681,
+          "trades": 4121,
+          "max_dd": -0.995737,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.540758,
+          "sharpe": -4.564,
+          "trades": 382,
+          "max_dd": -0.579189,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.999834,
+          "sharpe": -4.408,
+          "trades": 4166,
+          "max_dd": -0.999849,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.83715,
+          "sharpe": -1.095,
+          "trades": 1581,
+          "max_dd": -0.916028,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.995027,
+          "sharpe": -4.396,
+          "trades": 3165,
+          "max_dd": -0.996373,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.986086,
+          "sharpe": -4.809,
+          "trades": 1927,
+          "max_dd": -0.987901,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.986176,
+          "sharpe": -4.336,
+          "trades": 2666,
+          "max_dd": -0.988801,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:keltner like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -2.702,
+      "oos_median_sharpe": -2.487,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 0,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.833487,
+          "sharpe": -1.773,
+          "trades": 1319,
+          "max_dd": -0.857792,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.994763,
+          "sharpe": -5.403,
+          "trades": 2749,
+          "max_dd": -0.995023,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.970213,
+          "sharpe": -2.481,
+          "trades": 2145,
+          "max_dd": -0.976547,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.966111,
+          "sharpe": -2.195,
+          "trades": 2473,
+          "max_dd": -0.969907,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.323233,
+          "sharpe": -2.112,
+          "trades": 277,
+          "max_dd": -0.379211,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.998319,
+          "sharpe": -3.108,
+          "trades": 2887,
+          "max_dd": -0.998423,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.957844,
+          "sharpe": -2.274,
+          "trades": 1267,
+          "max_dd": -0.971063,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.977347,
+          "sharpe": -3.039,
+          "trades": 2035,
+          "max_dd": -0.983231,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.983407,
+          "sharpe": -4.563,
+          "trades": 1383,
+          "max_dd": -0.98462,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.925405,
+          "sharpe": -2.494,
+          "trades": 1659,
+          "max_dd": -0.936106,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:ichimoku like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -3.047,
+      "oos_median_sharpe": -4.092,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 0,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.947035,
+          "sharpe": -3.138,
+          "trades": 1765,
+          "max_dd": -0.950772,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.998476,
+          "sharpe": -6.687,
+          "trades": 4236,
+          "max_dd": -0.998542,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.996643,
+          "sharpe": -4.222,
+          "trades": 3356,
+          "max_dd": -0.996851,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.996893,
+          "sharpe": -3.948,
+          "trades": 4367,
+          "max_dd": -0.997075,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.421639,
+          "sharpe": -3.108,
+          "trades": 370,
+          "max_dd": -0.457556,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.999749,
+          "sharpe": -4.155,
+          "trades": 4305,
+          "max_dd": -0.999763,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.989316,
+          "sharpe": -3.48,
+          "trades": 1707,
+          "max_dd": -0.99116,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.992688,
+          "sharpe": -4.029,
+          "trades": 3275,
+          "max_dd": -0.994366,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.989122,
+          "sharpe": -5.082,
+          "trades": 1971,
+          "max_dd": -0.990017,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.990418,
+          "sharpe": -4.706,
+          "trades": 2833,
+          "max_dd": -0.991424,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:donchian like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -4.007,
+      "oos_median_sharpe": -5.43,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 0,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.960255,
+          "sharpe": -3.389,
+          "trades": 2067,
+          "max_dd": -0.964656,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.99987,
+          "sharpe": -9.272,
+          "trades": 5256,
+          "max_dd": -0.999876,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.998845,
+          "sharpe": -5.062,
+          "trades": 3874,
+          "max_dd": -0.999097,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.999676,
+          "sharpe": -5.596,
+          "trades": 4984,
+          "max_dd": -0.999687,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.530286,
+          "sharpe": -4.405,
+          "trades": 463,
+          "max_dd": -0.604397,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.999969,
+          "sharpe": -5.264,
+          "trades": 5161,
+          "max_dd": -0.99997,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.99538,
+          "sharpe": -4.195,
+          "trades": 1988,
+          "max_dd": -0.996273,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.998961,
+          "sharpe": -5.727,
+          "trades": 3906,
+          "max_dd": -0.999261,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.993934,
+          "sharpe": -5.756,
+          "trades": 2279,
+          "max_dd": -0.994163,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.995988,
+          "sharpe": -5.617,
+          "trades": 3234,
+          "max_dd": -0.996441,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:fib_pullback like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -4.946,
+      "oos_median_sharpe": -7.562,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 0,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.992775,
+          "sharpe": -5.468,
+          "trades": 3441,
+          "max_dd": -0.99289,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.999996,
+          "sharpe": -12.935,
+          "trades": 8276,
+          "max_dd": -0.999996,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.999976,
+          "sharpe": -8.054,
+          "trades": 6450,
+          "max_dd": -0.999979,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.999984,
+          "sharpe": -7.762,
+          "trades": 8149,
+          "max_dd": -0.999985,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.570659,
+          "sharpe": -4.939,
+          "trades": 788,
+          "max_dd": -0.602845,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.999999,
+          "sharpe": -6.982,
+          "trades": 8792,
+          "max_dd": -0.999999,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.965765,
+          "sharpe": -2.448,
+          "trades": 3381,
+          "max_dd": -0.967467,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.999896,
+          "sharpe": -7.723,
+          "trades": 6262,
+          "max_dd": -0.999901,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.998473,
+          "sharpe": -7.401,
+          "trades": 4000,
+          "max_dd": -0.998558,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.999906,
+          "sharpe": -9.65,
+          "trades": 5666,
+          "max_dd": -0.999907,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    },
+    {
+      "label": "related:zigzag like htf_trend hold=576 q=0.995",
+      "coins": 10,
+      "is_median_sharpe": -4.967,
+      "oos_median_sharpe": -4.829,
+      "oos_positive_coins": 0,
+      "oos_beat_buy_hold_coins": 0,
+      "per_coin": {
+        "AVAX": {
+          "return": -0.984374,
+          "sharpe": -4.377,
+          "trades": 2790,
+          "max_dd": -0.986161,
+          "buy_hold": -0.621821,
+          "ranked": true
+        },
+        "BTC": {
+          "return": -0.991451,
+          "sharpe": -4.845,
+          "trades": 2389,
+          "max_dd": -0.992338,
+          "buy_hold": 0.247699,
+          "ranked": true
+        },
+        "DOGE": {
+          "return": -0.997957,
+          "sharpe": -4.523,
+          "trades": 4302,
+          "max_dd": -0.99834,
+          "buy_hold": -0.575179,
+          "ranked": true
+        },
+        "ETH": {
+          "return": -0.998662,
+          "sharpe": -4.495,
+          "trades": 4247,
+          "max_dd": -0.998807,
+          "buy_hold": -0.083507,
+          "ranked": true
+        },
+        "HYPE": {
+          "return": -0.680835,
+          "sharpe": -6.813,
+          "trades": 542,
+          "max_dd": -0.693863,
+          "buy_hold": 0.313259,
+          "ranked": true
+        },
+        "LINK": {
+          "return": -0.999976,
+          "sharpe": -5.3,
+          "trades": 6915,
+          "max_dd": -0.999976,
+          "buy_hold": -0.019394,
+          "ranked": true
+        },
+        "NEAR": {
+          "return": -0.999847,
+          "sharpe": -7.053,
+          "trades": 4521,
+          "max_dd": -0.999866,
+          "buy_hold": 0.489848,
+          "ranked": true
+        },
+        "SOL": {
+          "return": -0.995716,
+          "sharpe": -4.434,
+          "trades": 3822,
+          "max_dd": -0.995964,
+          "buy_hold": -0.355899,
+          "ranked": true
+        },
+        "SUI": {
+          "return": -0.998031,
+          "sharpe": -7.056,
+          "trades": 3092,
+          "max_dd": -0.998035,
+          "buy_hold": -0.589867,
+          "ranked": true
+        },
+        "XRP": {
+          "return": -0.992798,
+          "sharpe": -4.814,
+          "trades": 2823,
+          "max_dd": -0.993635,
+          "buy_hold": -0.463763,
+          "ranked": true
+        }
+      }
+    }
+  ],
+  "grid_oos_stability": {
+    "mom_skip": [
+      {
+        "label": "tune:mom_skip hold=144 q=0.98 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.641,
+        "oos_median_sharpe": -0.614,
+        "oos_positive_coins": 2,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.284419,
+            "sharpe": -0.509,
+            "trades": 133,
+            "max_dd": -0.506225,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.614642,
+            "sharpe": -1.86,
+            "trades": 344,
+            "max_dd": -0.643107,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.236854,
+            "sharpe": -0.215,
+            "trades": 246,
+            "max_dd": -0.425427,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.219126,
+            "sharpe": -0.194,
+            "trades": 302,
+            "max_dd": -0.486726,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.080178,
+            "sharpe": -1.154,
+            "trades": 29,
+            "max_dd": -0.137952,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": 0.310875,
+            "sharpe": 0.509,
+            "trades": 341,
+            "max_dd": -0.515266,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.605459,
+            "sharpe": 1.053,
+            "trades": 142,
+            "max_dd": -0.33285,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.397753,
+            "sharpe": -0.719,
+            "trades": 274,
+            "max_dd": -0.45644,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.377104,
+            "sharpe": -1.047,
+            "trades": 156,
+            "max_dd": -0.528999,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.484777,
+            "sharpe": -1.048,
+            "trades": 232,
+            "max_dd": -0.569155,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=288 q=0.995 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.625,
+        "oos_median_sharpe": 0.601,
+        "oos_positive_coins": 7,
+        "oos_beat_buy_hold_coins": 7,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.237648,
+            "sharpe": 0.666,
+            "trades": 59,
+            "max_dd": -0.32692,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.041245,
+            "sharpe": -0.005,
+            "trades": 128,
+            "max_dd": -0.190753,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.232833,
+            "sharpe": 0.535,
+            "trades": 100,
+            "max_dd": -0.315784,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.440094,
+            "sharpe": 0.763,
+            "trades": 124,
+            "max_dd": -0.254651,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.187531,
+            "sharpe": -3.667,
+            "trades": 13,
+            "max_dd": -0.200119,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": 0.075923,
+            "sharpe": 0.29,
+            "trades": 138,
+            "max_dd": -0.374586,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.305277,
+            "sharpe": 0.709,
+            "trades": 75,
+            "max_dd": -0.327048,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.348929,
+            "sharpe": 0.764,
+            "trades": 106,
+            "max_dd": -0.272791,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.1537,
+            "sharpe": -0.298,
+            "trades": 61,
+            "max_dd": -0.388047,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.284247,
+            "sharpe": 0.705,
+            "trades": 90,
+            "max_dd": -0.265019,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=576 q=0.995 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.603,
+        "oos_median_sharpe": 0.75,
+        "oos_positive_coins": 8,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.5206,
+            "sharpe": 1.013,
+            "trades": 57,
+            "max_dd": -0.305352,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": 0.1943,
+            "sharpe": 0.456,
+            "trades": 124,
+            "max_dd": -0.191486,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.341894,
+            "sharpe": 0.625,
+            "trades": 100,
+            "max_dd": -0.493433,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 1.880334,
+            "sharpe": 1.585,
+            "trades": 118,
+            "max_dd": -0.268839,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.230132,
+            "sharpe": -3.696,
+            "trades": 13,
+            "max_dd": -0.245931,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.478125,
+            "sharpe": -0.331,
+            "trades": 142,
+            "max_dd": -0.531027,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.41431,
+            "sharpe": 0.802,
+            "trades": 69,
+            "max_dd": -0.491398,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.605416,
+            "sharpe": 0.944,
+            "trades": 98,
+            "max_dd": -0.251381,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": 0.233845,
+            "sharpe": 0.699,
+            "trades": 61,
+            "max_dd": -0.301459,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.814092,
+            "sharpe": 1.277,
+            "trades": 84,
+            "max_dd": -0.215156,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=576 q=0.98 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.588,
+        "oos_median_sharpe": 0.197,
+        "oos_positive_coins": 3,
+        "oos_beat_buy_hold_coins": 7,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.672481,
+            "sharpe": 1.054,
+            "trades": 112,
+            "max_dd": -0.437127,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.674399,
+            "sharpe": -1.352,
+            "trades": 274,
+            "max_dd": -0.702083,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.901097,
+            "sharpe": 0.962,
+            "trades": 207,
+            "max_dd": -0.354259,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.001505,
+            "sharpe": 0.244,
+            "trades": 254,
+            "max_dd": -0.512705,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.289889,
+            "sharpe": -3.071,
+            "trades": 28,
+            "max_dd": -0.308321,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.173011,
+            "sharpe": 0.198,
+            "trades": 297,
+            "max_dd": -0.743952,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.722079,
+            "sharpe": 1.007,
+            "trades": 123,
+            "max_dd": -0.537324,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.055154,
+            "sharpe": 0.196,
+            "trades": 224,
+            "max_dd": -0.424128,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.363645,
+            "sharpe": -0.425,
+            "trades": 139,
+            "max_dd": -0.611491,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.098099,
+            "sharpe": 0.118,
+            "trades": 184,
+            "max_dd": -0.487805,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=576 q=0.98 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.576,
+        "oos_median_sharpe": -0.067,
+        "oos_positive_coins": 3,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.102716,
+            "sharpe": 0.085,
+            "trades": 89,
+            "max_dd": -0.440802,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.275791,
+            "sharpe": -0.359,
+            "trades": 185,
+            "max_dd": -0.42515,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.176788,
+            "sharpe": 0.454,
+            "trades": 147,
+            "max_dd": -0.480923,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.254219,
+            "sharpe": 0.466,
+            "trades": 175,
+            "max_dd": -0.415484,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.136184,
+            "sharpe": -1.267,
+            "trades": 21,
+            "max_dd": -0.185525,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.504252,
+            "sharpe": -0.253,
+            "trades": 210,
+            "max_dd": -0.698263,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.249566,
+            "sharpe": 0.644,
+            "trades": 87,
+            "max_dd": -0.39046,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.293619,
+            "sharpe": -0.218,
+            "trades": 152,
+            "max_dd": -0.495307,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.438331,
+            "sharpe": -0.769,
+            "trades": 93,
+            "max_dd": -0.546049,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.001955,
+            "sharpe": 0.258,
+            "trades": 138,
+            "max_dd": -0.531272,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=144 q=0.995 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.566,
+        "oos_median_sharpe": 0.117,
+        "oos_positive_coins": 4,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.086036,
+            "sharpe": 0.378,
+            "trades": 50,
+            "max_dd": -0.265904,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": 0.043123,
+            "sharpe": 0.214,
+            "trades": 107,
+            "max_dd": -0.139681,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.351055,
+            "sharpe": 0.849,
+            "trades": 81,
+            "max_dd": -0.192953,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.193705,
+            "sharpe": -0.417,
+            "trades": 101,
+            "max_dd": -0.254761,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.012779,
+            "sharpe": -0.243,
+            "trades": 9,
+            "max_dd": -0.092745,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": 0.479558,
+            "sharpe": 0.787,
+            "trades": 107,
+            "max_dd": -0.199854,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": -0.007261,
+            "sharpe": 0.164,
+            "trades": 53,
+            "max_dd": -0.281877,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.012873,
+            "sharpe": 0.069,
+            "trades": 80,
+            "max_dd": -0.253569,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.048218,
+            "sharpe": -0.059,
+            "trades": 50,
+            "max_dd": -0.263371,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.168715,
+            "sharpe": -0.326,
+            "trades": 77,
+            "max_dd": -0.381452,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=576 q=0.995 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.554,
+        "oos_median_sharpe": 0.203,
+        "oos_positive_coins": 5,
+        "oos_beat_buy_hold_coins": 7,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.233226,
+            "sharpe": -0.301,
+            "trades": 51,
+            "max_dd": -0.501816,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": 0.308044,
+            "sharpe": 0.667,
+            "trades": 94,
+            "max_dd": -0.1903,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.195049,
+            "sharpe": 0.471,
+            "trades": 81,
+            "max_dd": -0.543917,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.443052,
+            "sharpe": 0.697,
+            "trades": 96,
+            "max_dd": -0.27748,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.137059,
+            "sharpe": -1.961,
+            "trades": 12,
+            "max_dd": -0.229431,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.267516,
+            "sharpe": -0.064,
+            "trades": 114,
+            "max_dd": -0.507575,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": -0.231468,
+            "sharpe": -0.128,
+            "trades": 54,
+            "max_dd": -0.430456,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.546608,
+            "sharpe": 0.927,
+            "trades": 73,
+            "max_dd": -0.300351,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.275621,
+            "sharpe": -0.624,
+            "trades": 49,
+            "max_dd": -0.396424,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.547515,
+            "sharpe": 1.014,
+            "trades": 72,
+            "max_dd": -0.4072,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=288 q=0.98 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.522,
+        "oos_median_sharpe": -0.558,
+        "oos_positive_coins": 3,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.263354,
+            "sharpe": -0.297,
+            "trades": 130,
+            "max_dd": -0.528224,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.770289,
+            "sharpe": -2.221,
+            "trades": 318,
+            "max_dd": -0.794448,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.094421,
+            "sharpe": 0.358,
+            "trades": 227,
+            "max_dd": -0.393407,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.527169,
+            "sharpe": -0.657,
+            "trades": 288,
+            "max_dd": -0.584221,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.181148,
+            "sharpe": -2.123,
+            "trades": 28,
+            "max_dd": -0.199384,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": 0.491924,
+            "sharpe": 0.619,
+            "trades": 325,
+            "max_dd": -0.58866,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 1.143433,
+            "sharpe": 1.325,
+            "trades": 136,
+            "max_dd": -0.44621,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.37783,
+            "sharpe": -0.46,
+            "trades": 253,
+            "max_dd": -0.483479,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.582501,
+            "sharpe": -1.48,
+            "trades": 151,
+            "max_dd": -0.692679,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.547892,
+            "sharpe": -1.015,
+            "trades": 218,
+            "max_dd": -0.700376,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=144 q=0.995 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.507,
+        "oos_median_sharpe": 0.196,
+        "oos_positive_coins": 5,
+        "oos_beat_buy_hold_coins": 7,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.013522,
+            "sharpe": 0.121,
+            "trades": 62,
+            "max_dd": -0.238824,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": 0.05833,
+            "sharpe": 0.255,
+            "trades": 138,
+            "max_dd": -0.146476,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.280016,
+            "sharpe": 0.666,
+            "trades": 99,
+            "max_dd": -0.289724,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.246255,
+            "sharpe": 0.584,
+            "trades": 130,
+            "max_dd": -0.165089,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.121536,
+            "sharpe": -2.981,
+            "trades": 13,
+            "max_dd": -0.131694,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": 0.372628,
+            "sharpe": 0.639,
+            "trades": 134,
+            "max_dd": -0.225224,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.42211,
+            "sharpe": 0.974,
+            "trades": 75,
+            "max_dd": -0.238128,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.074636,
+            "sharpe": -0.087,
+            "trades": 110,
+            "max_dd": -0.276451,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.168725,
+            "sharpe": -0.56,
+            "trades": 65,
+            "max_dd": -0.356569,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.004112,
+            "sharpe": 0.137,
+            "trades": 94,
+            "max_dd": -0.272776,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=96 q=0.995 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.494,
+        "oos_median_sharpe": 0.473,
+        "oos_positive_coins": 6,
+        "oos_beat_buy_hold_coins": 7,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.119012,
+            "sharpe": 0.471,
+            "trades": 59,
+            "max_dd": -0.195118,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.112871,
+            "sharpe": -0.369,
+            "trades": 139,
+            "max_dd": -0.216348,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.415571,
+            "sharpe": 0.948,
+            "trades": 100,
+            "max_dd": -0.225989,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.243694,
+            "sharpe": 0.627,
+            "trades": 129,
+            "max_dd": -0.195795,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.160203,
+            "sharpe": -4.846,
+            "trades": 13,
+            "max_dd": -0.163413,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": 0.338972,
+            "sharpe": 0.653,
+            "trades": 132,
+            "max_dd": -0.204239,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.48355,
+            "sharpe": 1.139,
+            "trades": 76,
+            "max_dd": -0.270652,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.166405,
+            "sharpe": -0.444,
+            "trades": 111,
+            "max_dd": -0.294138,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.231747,
+            "sharpe": -1.015,
+            "trades": 64,
+            "max_dd": -0.333638,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.13516,
+            "sharpe": 0.476,
+            "trades": 95,
+            "max_dd": -0.210959,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=144 q=0.98 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.481,
+        "oos_median_sharpe": -0.233,
+        "oos_positive_coins": 3,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.132344,
+            "sharpe": -0.144,
+            "trades": 91,
+            "max_dd": -0.40271,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.39418,
+            "sharpe": -1.169,
+            "trades": 218,
+            "max_dd": -0.464869,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.242924,
+            "sharpe": 0.553,
+            "trades": 156,
+            "max_dd": -0.298489,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.238169,
+            "sharpe": -0.322,
+            "trades": 195,
+            "max_dd": -0.359123,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.069743,
+            "sharpe": -1.068,
+            "trades": 23,
+            "max_dd": -0.170727,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.236732,
+            "sharpe": -0.137,
+            "trades": 221,
+            "max_dd": -0.496182,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.759301,
+            "sharpe": 1.277,
+            "trades": 93,
+            "max_dd": -0.265228,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.283214,
+            "sharpe": -0.569,
+            "trades": 173,
+            "max_dd": -0.470361,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.226485,
+            "sharpe": -0.479,
+            "trades": 106,
+            "max_dd": -0.454265,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.134929,
+            "sharpe": 0.436,
+            "trades": 160,
+            "max_dd": -0.360874,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:mom_skip hold=576 q=0.995 x0.5",
+        "coins": 10,
+        "is_median_sharpe": 0.476,
+        "oos_median_sharpe": -0.239,
+        "oos_positive_coins": 2,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.606536,
+            "sharpe": 1.057,
+            "trades": 81,
+            "max_dd": -0.474382,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.009928,
+            "sharpe": 0.13,
+            "trades": 178,
+            "max_dd": -0.41151,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.536124,
+            "sharpe": -0.583,
+            "trades": 147,
+            "max_dd": -0.659748,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 1.289161,
+            "sharpe": 1.116,
+            "trades": 173,
+            "max_dd": -0.334596,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.145301,
+            "sharpe": -1.824,
+            "trades": 18,
+            "max_dd": -0.22586,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.604491,
+            "sharpe": -0.391,
+            "trades": 214,
+            "max_dd": -0.650686,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": -0.060724,
+            "sharpe": 0.263,
+            "trades": 91,
+            "max_dd": -0.522782,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.217308,
+            "sharpe": -0.087,
+            "trades": 156,
+            "max_dd": -0.620271,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.453967,
+            "sharpe": -0.84,
+            "trades": 86,
+            "max_dd": -0.635592,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.406995,
+            "sharpe": -0.571,
+            "trades": 122,
+            "max_dd": -0.638721,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      }
+    ],
+    "htf_trend": [
+      {
+        "label": "tune:htf_trend hold=576 q=0.995 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.438,
+        "oos_median_sharpe": 0.311,
+        "oos_positive_coins": 6,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.099754,
+            "sharpe": 0.405,
+            "trades": 44,
+            "max_dd": -0.402574,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": 0.110416,
+            "sharpe": 0.35,
+            "trades": 74,
+            "max_dd": -0.178727,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.332753,
+            "sharpe": -0.41,
+            "trades": 83,
+            "max_dd": -0.570171,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.079426,
+            "sharpe": 0.273,
+            "trades": 82,
+            "max_dd": -0.367272,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": 0.017307,
+            "sharpe": 0.399,
+            "trades": 12,
+            "max_dd": -0.124599,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.028857,
+            "sharpe": 0.202,
+            "trades": 102,
+            "max_dd": -0.546279,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": -0.027222,
+            "sharpe": 0.219,
+            "trades": 58,
+            "max_dd": -0.413568,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.263064,
+            "sharpe": 0.592,
+            "trades": 70,
+            "max_dd": -0.329345,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.011707,
+            "sharpe": 0.18,
+            "trades": 48,
+            "max_dd": -0.285205,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.232395,
+            "sharpe": 0.605,
+            "trades": 63,
+            "max_dd": -0.307421,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=576 q=0.98 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.424,
+        "oos_median_sharpe": 0.277,
+        "oos_positive_coins": 6,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.054644,
+            "sharpe": 0.313,
+            "trades": 49,
+            "max_dd": -0.429969,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.39605,
+            "sharpe": -0.814,
+            "trades": 106,
+            "max_dd": -0.444477,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.075093,
+            "sharpe": 0.33,
+            "trades": 94,
+            "max_dd": -0.506327,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.041592,
+            "sharpe": 0.242,
+            "trades": 107,
+            "max_dd": -0.4817,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.032529,
+            "sharpe": -0.298,
+            "trades": 10,
+            "max_dd": -0.18346,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.095577,
+            "sharpe": 0.163,
+            "trades": 126,
+            "max_dd": -0.552685,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.397888,
+            "sharpe": 0.809,
+            "trades": 59,
+            "max_dd": -0.355006,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.701909,
+            "sharpe": 1.029,
+            "trades": 81,
+            "max_dd": -0.203373,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.221533,
+            "sharpe": -0.358,
+            "trades": 55,
+            "max_dd": -0.486127,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.274592,
+            "sharpe": 0.652,
+            "trades": 75,
+            "max_dd": -0.327154,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=144 q=0.95 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.323,
+        "oos_median_sharpe": -0.079,
+        "oos_positive_coins": 4,
+        "oos_beat_buy_hold_coins": 4,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.135833,
+            "sharpe": 0.466,
+            "trades": 66,
+            "max_dd": -0.371331,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.272068,
+            "sharpe": -0.468,
+            "trades": 177,
+            "max_dd": -0.370124,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.089388,
+            "sharpe": 0.346,
+            "trades": 129,
+            "max_dd": -0.506988,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.109826,
+            "sharpe": 0.042,
+            "trades": 156,
+            "max_dd": -0.490738,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.032816,
+            "sharpe": -0.337,
+            "trades": 14,
+            "max_dd": -0.154335,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.384152,
+            "sharpe": -0.2,
+            "trades": 182,
+            "max_dd": -0.671173,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.215346,
+            "sharpe": 0.594,
+            "trades": 75,
+            "max_dd": -0.361366,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.520134,
+            "sharpe": -0.927,
+            "trades": 145,
+            "max_dd": -0.57628,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.373209,
+            "sharpe": -0.942,
+            "trades": 74,
+            "max_dd": -0.474528,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.131625,
+            "sharpe": 0.428,
+            "trades": 118,
+            "max_dd": -0.347662,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=576 q=0.95 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.322,
+        "oos_median_sharpe": -0.215,
+        "oos_positive_coins": 2,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": -0.076021,
+            "sharpe": 0.114,
+            "trades": 70,
+            "max_dd": -0.433751,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.380947,
+            "sharpe": -0.605,
+            "trades": 156,
+            "max_dd": -0.465801,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.074505,
+            "sharpe": 0.182,
+            "trades": 131,
+            "max_dd": -0.472655,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": 0.017237,
+            "sharpe": 0.236,
+            "trades": 145,
+            "max_dd": -0.563431,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.052976,
+            "sharpe": -0.446,
+            "trades": 13,
+            "max_dd": -0.185489,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.614013,
+            "sharpe": -0.455,
+            "trades": 186,
+            "max_dd": -0.841343,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.189796,
+            "sharpe": 0.567,
+            "trades": 77,
+            "max_dd": -0.429253,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.398601,
+            "sharpe": -0.399,
+            "trades": 143,
+            "max_dd": -0.531449,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.314592,
+            "sharpe": -0.491,
+            "trades": 79,
+            "max_dd": -0.483311,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.162027,
+            "sharpe": -0.03,
+            "trades": 120,
+            "max_dd": -0.434783,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=288 q=0.95 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.293,
+        "oos_median_sharpe": -0.057,
+        "oos_positive_coins": 2,
+        "oos_beat_buy_hold_coins": 4,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.080754,
+            "sharpe": 0.371,
+            "trades": 66,
+            "max_dd": -0.419993,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.341046,
+            "sharpe": -0.596,
+            "trades": 171,
+            "max_dd": -0.39886,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.009515,
+            "sharpe": 0.229,
+            "trades": 131,
+            "max_dd": -0.513547,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.160367,
+            "sharpe": -0.012,
+            "trades": 156,
+            "max_dd": -0.551102,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.019169,
+            "sharpe": -0.102,
+            "trades": 13,
+            "max_dd": -0.162924,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.577804,
+            "sharpe": -0.502,
+            "trades": 187,
+            "max_dd": -0.768097,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.320814,
+            "sharpe": 0.722,
+            "trades": 77,
+            "max_dd": -0.356958,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.55125,
+            "sharpe": -0.944,
+            "trades": 147,
+            "max_dd": -0.628003,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.273846,
+            "sharpe": -0.532,
+            "trades": 75,
+            "max_dd": -0.503408,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.02656,
+            "sharpe": 0.173,
+            "trades": 119,
+            "max_dd": -0.436628,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=96 q=0.95 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.28,
+        "oos_median_sharpe": -0.083,
+        "oos_positive_coins": 3,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.238238,
+            "sharpe": 0.637,
+            "trades": 65,
+            "max_dd": -0.342642,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.278103,
+            "sharpe": -0.492,
+            "trades": 177,
+            "max_dd": -0.36383,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.043447,
+            "sharpe": 0.288,
+            "trades": 130,
+            "max_dd": -0.517432,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.047215,
+            "sharpe": 0.125,
+            "trades": 157,
+            "max_dd": -0.435305,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.029324,
+            "sharpe": -0.29,
+            "trades": 14,
+            "max_dd": -0.151282,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.537331,
+            "sharpe": -0.49,
+            "trades": 184,
+            "max_dd": -0.673172,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.10914,
+            "sharpe": 0.445,
+            "trades": 76,
+            "max_dd": -0.361467,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.467816,
+            "sharpe": -0.777,
+            "trades": 143,
+            "max_dd": -0.523273,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.31712,
+            "sharpe": -0.738,
+            "trades": 74,
+            "max_dd": -0.449516,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.045542,
+            "sharpe": 0.124,
+            "trades": 120,
+            "max_dd": -0.393922,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=576 q=0.98 x1.0",
+        "coins": 10,
+        "is_median_sharpe": 0.277,
+        "oos_median_sharpe": 0.284,
+        "oos_positive_coins": 5,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.204273,
+            "sharpe": 0.575,
+            "trades": 73,
+            "max_dd": -0.388562,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.322251,
+            "sharpe": -0.527,
+            "trades": 148,
+            "max_dd": -0.447373,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.195107,
+            "sharpe": 0.47,
+            "trades": 127,
+            "max_dd": -0.581343,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.30499,
+            "sharpe": -0.252,
+            "trades": 137,
+            "max_dd": -0.515879,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.061763,
+            "sharpe": -0.535,
+            "trades": 16,
+            "max_dd": -0.161275,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.366085,
+            "sharpe": -0.109,
+            "trades": 168,
+            "max_dd": -0.78999,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.110345,
+            "sharpe": 0.468,
+            "trades": 79,
+            "max_dd": -0.344691,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.279317,
+            "sharpe": 0.567,
+            "trades": 108,
+            "max_dd": -0.331457,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": 0.140129,
+            "sharpe": 0.518,
+            "trades": 67,
+            "max_dd": -0.273422,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.075795,
+            "sharpe": 0.099,
+            "trades": 112,
+            "max_dd": -0.573796,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=24 q=0.95 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.261,
+        "oos_median_sharpe": -0.083,
+        "oos_positive_coins": 3,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.240489,
+            "sharpe": 0.641,
+            "trades": 65,
+            "max_dd": -0.347145,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.28555,
+            "sharpe": -0.514,
+            "trades": 178,
+            "max_dd": -0.373178,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.043358,
+            "sharpe": 0.288,
+            "trades": 130,
+            "max_dd": -0.518455,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.046778,
+            "sharpe": 0.124,
+            "trades": 156,
+            "max_dd": -0.438292,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.029324,
+            "sharpe": -0.29,
+            "trades": 14,
+            "max_dd": -0.151282,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.480775,
+            "sharpe": -0.391,
+            "trades": 183,
+            "max_dd": -0.633221,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.083863,
+            "sharpe": 0.406,
+            "trades": 77,
+            "max_dd": -0.374337,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.449048,
+            "sharpe": -0.727,
+            "trades": 142,
+            "max_dd": -0.506461,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.330331,
+            "sharpe": -0.792,
+            "trades": 74,
+            "max_dd": -0.450388,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.016684,
+            "sharpe": 0.177,
+            "trades": 120,
+            "max_dd": -0.383174,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=48 q=0.95 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.26,
+        "oos_median_sharpe": -0.095,
+        "oos_positive_coins": 3,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.240489,
+            "sharpe": 0.641,
+            "trades": 65,
+            "max_dd": -0.347145,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.285837,
+            "sharpe": -0.514,
+            "trades": 178,
+            "max_dd": -0.371792,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.035142,
+            "sharpe": 0.277,
+            "trades": 130,
+            "max_dd": -0.522247,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.065711,
+            "sharpe": 0.099,
+            "trades": 156,
+            "max_dd": -0.448752,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.029324,
+            "sharpe": -0.29,
+            "trades": 14,
+            "max_dd": -0.151282,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.479086,
+            "sharpe": -0.382,
+            "trades": 183,
+            "max_dd": -0.632029,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.084985,
+            "sharpe": 0.408,
+            "trades": 77,
+            "max_dd": -0.372887,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.451842,
+            "sharpe": -0.735,
+            "trades": 142,
+            "max_dd": -0.508964,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.326631,
+            "sharpe": -0.778,
+            "trades": 74,
+            "max_dd": -0.450388,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.016684,
+            "sharpe": 0.177,
+            "trades": 120,
+            "max_dd": -0.383174,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=144 q=0.98 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.229,
+        "oos_median_sharpe": 0.149,
+        "oos_positive_coins": 5,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.094158,
+            "sharpe": 0.399,
+            "trades": 44,
+            "max_dd": -0.393268,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.249729,
+            "sharpe": -0.545,
+            "trades": 119,
+            "max_dd": -0.355504,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": 0.048061,
+            "sharpe": 0.272,
+            "trades": 91,
+            "max_dd": -0.467253,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.143942,
+            "sharpe": -0.06,
+            "trades": 109,
+            "max_dd": -0.431789,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.055644,
+            "sharpe": -0.896,
+            "trades": 11,
+            "max_dd": -0.163157,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.160247,
+            "sharpe": 0.026,
+            "trades": 123,
+            "max_dd": -0.461272,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.164684,
+            "sharpe": 0.525,
+            "trades": 57,
+            "max_dd": -0.326276,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.08378,
+            "sharpe": 0.316,
+            "trades": 85,
+            "max_dd": -0.311698,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.093588,
+            "sharpe": -0.1,
+            "trades": 49,
+            "max_dd": -0.346138,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.205666,
+            "sharpe": 0.569,
+            "trades": 73,
+            "max_dd": -0.330869,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=24 q=0.98 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.216,
+        "oos_median_sharpe": 0.102,
+        "oos_positive_coins": 4,
+        "oos_beat_buy_hold_coins": 6,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.08011,
+            "sharpe": 0.366,
+            "trades": 44,
+            "max_dd": -0.400282,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.212387,
+            "sharpe": -0.44,
+            "trades": 119,
+            "max_dd": -0.33102,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.064854,
+            "sharpe": 0.092,
+            "trades": 92,
+            "max_dd": -0.514556,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.06407,
+            "sharpe": 0.066,
+            "trades": 109,
+            "max_dd": -0.386723,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": -0.055956,
+            "sharpe": -0.929,
+            "trades": 11,
+            "max_dd": -0.163434,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.090848,
+            "sharpe": 0.111,
+            "trades": 123,
+            "max_dd": -0.421997,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": 0.051107,
+            "sharpe": 0.339,
+            "trades": 58,
+            "max_dd": -0.31767,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": 0.159372,
+            "sharpe": 0.442,
+            "trades": 85,
+            "max_dd": -0.251915,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.048356,
+            "sharpe": 0.035,
+            "trades": 49,
+            "max_dd": -0.313509,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": 0.22991,
+            "sharpe": 0.614,
+            "trades": 73,
+            "max_dd": -0.340315,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      },
+      {
+        "label": "tune:htf_trend hold=576 q=0.9 x2.0",
+        "coins": 10,
+        "is_median_sharpe": 0.213,
+        "oos_median_sharpe": -0.144,
+        "oos_positive_coins": 2,
+        "oos_beat_buy_hold_coins": 5,
+        "per_coin": {
+          "AVAX": {
+            "return": 0.236133,
+            "sharpe": 0.604,
+            "trades": 82,
+            "max_dd": -0.411339,
+            "buy_hold": -0.621821,
+            "ranked": true
+          },
+          "BTC": {
+            "return": -0.317409,
+            "sharpe": -0.372,
+            "trades": 194,
+            "max_dd": -0.479541,
+            "buy_hold": 0.247699,
+            "ranked": true
+          },
+          "DOGE": {
+            "return": -0.527506,
+            "sharpe": -0.486,
+            "trades": 177,
+            "max_dd": -0.680617,
+            "buy_hold": -0.575179,
+            "ranked": true
+          },
+          "ETH": {
+            "return": -0.486858,
+            "sharpe": -0.396,
+            "trades": 208,
+            "max_dd": -0.658835,
+            "buy_hold": -0.083507,
+            "ranked": true
+          },
+          "HYPE": {
+            "return": 0.032981,
+            "sharpe": 0.557,
+            "trades": 17,
+            "max_dd": -0.135259,
+            "buy_hold": 0.313259,
+            "ranked": false
+          },
+          "LINK": {
+            "return": -0.446181,
+            "sharpe": -0.082,
+            "trades": 225,
+            "max_dd": -0.836537,
+            "buy_hold": -0.019394,
+            "ranked": true
+          },
+          "NEAR": {
+            "return": -0.095471,
+            "sharpe": 0.251,
+            "trades": 97,
+            "max_dd": -0.468638,
+            "buy_hold": 0.489848,
+            "ranked": true
+          },
+          "SOL": {
+            "return": -0.342539,
+            "sharpe": -0.206,
+            "trades": 176,
+            "max_dd": -0.60915,
+            "buy_hold": -0.355899,
+            "ranked": true
+          },
+          "SUI": {
+            "return": -0.297013,
+            "sharpe": -0.305,
+            "trades": 101,
+            "max_dd": -0.475938,
+            "buy_hold": -0.589867,
+            "ranked": true
+          },
+          "XRP": {
+            "return": -0.087002,
+            "sharpe": 0.13,
+            "trades": 143,
+            "max_dd": -0.543005,
+            "buy_hold": -0.463763,
+            "ranked": true
+          }
+        }
+      }
+    ]
+  }
+}

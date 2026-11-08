@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T12:41:51+00:00",
+  "generatedAt": "2026-11-08T06:37:55+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 299,
+      "matchingFiles": 314,
       "shown": 30,
       "files": [
         {
@@ -38,28 +38,32 @@
           "hits": 67
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 56
+        },
+        {
           "path": "skills/trading-and-investing/references/strategies-and-risk.md",
           "hits": 54
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 52
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
           "hits": 51
         },
         {
-          "path": "soltui/commands.py",
-          "hits": 41
+          "path": "soltui/tui.py",
+          "hits": 43
         },
         {
-          "path": "soltui/tui.py",
+          "path": "soltui/commands.py",
           "hits": 41
         },
         {
           "path": "skills/trading-and-investing/references/options-trading-and-strategies.md",
           "hits": 38
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 36
         },
         {
           "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
@@ -70,16 +74,16 @@
           "hits": 31
         },
         {
+          "path": "soltui/help.py",
+          "hits": 30
+        },
+        {
           "path": "soltui/tests/test_liquidity.py",
           "hits": 30
         },
         {
-          "path": "soltui/help.py",
-          "hits": 28
-        },
-        {
           "path": "extension/README.md",
-          "hits": 26
+          "hits": 25
         },
         {
           "path": "soltui/live_run.py",
@@ -140,10 +144,6 @@
         {
           "path": "index/build.py",
           "hits": 16
-        },
-        {
-          "path": "skills/trading-and-investing/references/ai-and-ml-for-trading.md",
-          "hits": 16
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 255,
+      "matchingFiles": 290,
       "shown": 30,
       "files": [
         {
@@ -179,6 +179,10 @@
         {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
           "hits": 124
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 112
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -205,16 +209,20 @@
           "hits": 72
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 71
-        },
-        {
           "path": "research/coin-intelligence/hype-hyperliquid.md",
           "hits": 68
         },
         {
+          "path": "research/5minleveragestrategies.json",
+          "hits": 66
+        },
+        {
           "path": "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md",
           "hits": 66
+        },
+        {
+          "path": "extension/README.md",
+          "hits": 63
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
@@ -233,8 +241,12 @@
           "hits": 48
         },
         {
-          "path": "extension/README.md",
-          "hits": 44
+          "path": "memory.md",
+          "hits": 40
+        },
+        {
+          "path": "extension/src/market/holdings.js",
+          "hits": 37
         },
         {
           "path": "backtester/core/gridsim.py",
@@ -249,40 +261,28 @@
           "hits": 31
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 29
+        },
+        {
           "path": "docs/CONCEPTS.md",
-          "hits": 30
+          "hits": 29
         },
         {
           "path": "research/five-minute-perps-suite/run-state.json",
           "hits": 28
         },
         {
+          "path": "soltui/compound.py",
+          "hits": 28
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 28
+        },
+        {
           "path": "extension/src/venues/index.js",
           "hits": 27
-        },
-        {
-          "path": "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
-          "hits": 26
-        },
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 24
-        },
-        {
-          "path": "skills/trading-and-investing/manifest.yaml",
-          "hits": 23
-        },
-        {
-          "path": "skills/trading-and-investing/references/leverage-cost-arithmetic-and-the-viable-region.md",
-          "hits": 23
-        },
-        {
-          "path": "backtester/README.md",
-          "hits": 22
-        },
-        {
-          "path": "docs/code-deep-optimizer-2026-11-06.md",
-          "hits": 21
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 188,
+      "matchingFiles": 212,
       "shown": 30,
       "files": [
         {
@@ -319,12 +319,20 @@
           "hits": 102
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 73
+        },
+        {
           "path": "extension/src/core/grid.js",
           "hits": 66
         },
         {
           "path": "backtester/strategy_cards/ladder_grid.md",
           "hits": 57
+        },
+        {
+          "path": "extension/README.md",
+          "hits": 56
         },
         {
           "path": "extension/test/core.test.js",
@@ -335,16 +343,12 @@
           "hits": 53
         },
         {
-          "path": "extension/README.md",
-          "hits": 52
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 49
-        },
-        {
           "path": "backtester/gridcli.py",
           "hits": 43
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 36
         },
         {
           "path": "backtester/README.md",
@@ -367,12 +371,36 @@
           "hits": 26
         },
         {
+          "path": "extension/src/ui/dashboard.html",
+          "hits": 26
+        },
+        {
+          "path": "memory.md",
+          "hits": 26
+        },
+        {
+          "path": "research/GRID-REVIEW.md",
+          "hits": 26
+        },
+        {
           "path": "backtester/tests/test_engine_audit.py",
           "hits": 25
         },
         {
           "path": "docs/code-deep-optimizer-2026-11-06.md",
           "hits": 25
+        },
+        {
+          "path": "extension/src/ui/ui.css",
+          "hits": 25
+        },
+        {
+          "path": "extension/src/core/commands.js",
+          "hits": 22
+        },
+        {
+          "path": "extension/src/ui/view-grid.js",
+          "hits": 22
         },
         {
           "path": "soltui/signals.py",
@@ -383,47 +411,432 @@
           "hits": 20
         },
         {
-          "path": "extension/src/core/commands.js",
-          "hits": 20
+          "path": "docs/codebase-overview.md",
+          "hits": 19
         },
         {
           "path": "backtester/tests/test_strategy_cards.py",
           "hits": 18
         },
         {
-          "path": "research/GRID-REVIEW.md",
+          "path": "research/frontier_tune.py",
           "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 18
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/references/cross-asset-generalisation-testing.md",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md",
-          "hits": 17
-        },
-        {
-          "path": ".remember/remember.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/ARCHITECTURE.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/codebase-overview.md",
-          "hits": 15
         }
       ],
       "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "costs",
+      "label": "Cost model",
+      "why": "Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.",
+      "terms": [
+        "fee_bps",
+        "slippage",
+        "slippage_bps",
+        "costconfig",
+        "break-even",
+        "borrow",
+        "financing"
+      ],
+      "matchingFiles": 194,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 89
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
+          "hits": 61
+        },
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 58
+        },
+        {
+          "path": "backtester/core/gridsim.py",
+          "hits": 55
+        },
+        {
+          "path": "backtester/core/engine.py",
+          "hits": 54
+        },
+        {
+          "path": "llms-full.txt",
+          "hits": 46
+        },
+        {
+          "path": "backtester/tests/test_engine_audit.py",
+          "hits": 34
+        },
+        {
+          "path": "research/minute_sweep.py",
+          "hits": 31
+        },
+        {
+          "path": "backtester/README.md",
+          "hits": 31
+        },
+        {
+          "path": "backtester/tests/test_gridsim.py",
+          "hits": 28
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 27
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 22
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
+          "hits": 22
+        },
+        {
+          "path": "backtester/core/perps.py",
+          "hits": 22
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 21
+        },
+        {
+          "path": "backtester/core/types.py",
+          "hits": 21
+        },
+        {
+          "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
+          "hits": 21
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
+          "hits": 21
+        },
+        {
+          "path": "soltui/pnl.py",
+          "hits": 21
+        },
+        {
+          "path": "backtester/cli.py",
+          "hits": 20
+        },
+        {
+          "path": "backtester/core/leverage.py",
+          "hits": 20
+        },
+        {
+          "path": "backtester/gridcli.py",
+          "hits": 19
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/PROMPT.md",
+          "hits": 18
+        },
+        {
+          "path": "research/5minleveragestrategies.json",
+          "hits": 18
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 17
+        },
+        {
+          "path": "skills/trading-and-investing/SKILL.md",
+          "hits": 16
+        },
+        {
+          "path": "backtester/tests/test_ratio_rotation.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/compound.py",
+          "hits": 14
+        },
+        {
+          "path": "backtester/core/report.py",
+          "hits": 14
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "data-integrity",
+      "label": "Data integrity",
+      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
+      "terms": [
+        "validate_bars",
+        "strict_gaps",
+        "allow_gaps",
+        "datavalidationerror",
+        "monotone",
+        "gap"
+      ],
+      "matchingFiles": 193,
+      "shown": 30,
+      "files": [
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 34
+        },
+        {
+          "path": "backtester/core/data.py",
+          "hits": 33
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 32
+        },
+        {
+          "path": "extension/src/ui/ui.css",
+          "hits": 28
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 24
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 24
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 23
+        },
+        {
+          "path": "research/candle_gap_audit.py",
+          "hits": 20
+        },
+        {
+          "path": "soltui/utxo_scan.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/tests/test_candle_gap_audit.py",
+          "hits": 16
+        },
+        {
+          "path": "pagesource",
+          "hits": 16
+        },
+        {
+          "path": "research/results/minute_coverage.json",
+          "hits": 12
+        },
+        {
+          "path": "backtester/core/universe.py",
+          "hits": 11
+        },
+        {
+          "path": "research/tick_backfill.py",
+          "hits": 11
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 11
+        },
+        {
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/xrp-ripple.md",
+          "hits": 10
+        },
+        {
+          "path": "backtester/core/trigger_conditions.py",
+          "hits": 9
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 9
+        },
+        {
+          "path": "research/five-minute-perps-suite/run-state.json",
+          "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
+        },
+        {
+          "path": "research/five-minute-perps-suite/scored-concepts.json",
+          "hits": 8
+        },
+        {
+          "path": "index/build.py",
+          "hits": 7
+        },
+        {
+          "path": "research/five-minute-perps-suite/coverage-resolution.json",
+          "hits": 7
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 6
+        },
+        {
+          "path": "liquidity/src/aero_lp/ledger.py",
+          "hits": 6
+        },
+        {
+          "path": "memory.md",
+          "hits": 6
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 6
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "family:trend",
+      "label": "Strategy family: trend",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "trend",
+        "ma_crossover",
+        "macd",
+        "ichimoku"
+      ],
+      "matchingFiles": 190,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 132
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 114
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 114
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 96
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 89
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 82
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 72
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 67
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis.md",
+          "hits": 55
+        },
+        {
+          "path": "backtester/core/strategies/advanced.py",
+          "hits": 52
+        },
+        {
+          "path": "research/results/frontier-2026-11-07.json",
+          "hits": 46
+        },
+        {
+          "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 44
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 44
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 41
+        },
+        {
+          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
+          "hits": 41
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 40
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 38
+        },
+        {
+          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
+          "hits": 38
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 37
+        },
+        {
+          "path": "skills/trading-and-investing/references/empirical-backtest-findings-log.md",
+          "hits": 37
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 31
+        },
+        {
+          "path": "backtester/core/trigger_conditions.py",
+          "hits": 31
+        },
+        {
+          "path": "research/RELIABLE_SIGNALS.md",
+          "hits": 30
+        },
+        {
+          "path": "research/5minleveragestrategies.json",
+          "hits": 29
+        },
+        {
+          "path": "research/tradingstrategyresults.json",
+          "hits": 25
+        },
+        {
+          "path": "research/results/cpcv_tables.md",
+          "hits": 24
+        },
+        {
+          "path": "backtester/strategy_cards/macd.md",
+          "hits": 23
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 23
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
+          "hits": 23
+        },
+        {
+          "path": "backtester/core/strategies/signals.py",
+          "hits": 21
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
       "id": "lookahead",
@@ -438,7 +851,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 183,
+      "matchingFiles": 189,
       "shown": 30,
       "files": [
         {
@@ -448,6 +861,10 @@
         {
           "path": "backtester/core/strategies/advanced.py",
           "hits": 32
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 31
         },
         {
           "path": "backtester/core/strategies/signals.py",
@@ -556,423 +973,6 @@
         {
           "path": "docs/dso-skill/SKILL.md",
           "hits": 7
-        },
-        {
-          "path": "backtester/core/indicators.py",
-          "hits": 7
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "data-integrity",
-      "label": "Data integrity",
-      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
-      "terms": [
-        "validate_bars",
-        "strict_gaps",
-        "allow_gaps",
-        "datavalidationerror",
-        "monotone",
-        "gap"
-      ],
-      "matchingFiles": 180,
-      "shown": 30,
-      "files": [
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 34
-        },
-        {
-          "path": "backtester/core/data.py",
-          "hits": 33
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 32
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "research/CANDLE-GAP-AUDIT.md",
-          "hits": 23
-        },
-        {
-          "path": "research/candle_gap_audit.py",
-          "hits": 20
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 19
-        },
-        {
-          "path": "soltui/utxo_scan.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/tests/test_candle_gap_audit.py",
-          "hits": 16
-        },
-        {
-          "path": "pagesource",
-          "hits": 16
-        },
-        {
-          "path": "backtester/core/universe.py",
-          "hits": 11
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 11
-        },
-        {
-          "path": "research/tick_backfill.py",
-          "hits": 11
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 11
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 11
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 10
-        },
-        {
-          "path": "research/coin-intelligence/xrp-ripple.md",
-          "hits": 10
-        },
-        {
-          "path": "backtester/core/trigger_conditions.py",
-          "hits": 9
-        },
-        {
-          "path": "research/five-minute-perps-suite/run-state.json",
-          "hits": 9
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 8
-        },
-        {
-          "path": "research/five-minute-perps-suite/scored-concepts.json",
-          "hits": 8
-        },
-        {
-          "path": "research/results/minute_coverage.json",
-          "hits": 8
-        },
-        {
-          "path": "index/build.py",
-          "hits": 7
-        },
-        {
-          "path": "research/five-minute-perps-suite/coverage-resolution.json",
-          "hits": 7
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 6
-        },
-        {
-          "path": "liquidity/src/aero_lp/ledger.py",
-          "hits": 6
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 6
-        },
-        {
-          "path": "soltui/tests/test_utxo_scan.py",
-          "hits": 6
-        },
-        {
-          "path": "backtester/core/fetch.py",
-          "hits": 5
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 5
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "family:trend",
-      "label": "Strategy family: trend",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "trend",
-        "ma_crossover",
-        "macd",
-        "ichimoku"
-      ],
-      "matchingFiles": 177,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 132
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 114
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 89
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 67
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 66
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis.md",
-          "hits": 55
-        },
-        {
-          "path": "backtester/core/strategies/advanced.py",
-          "hits": 52
-        },
-        {
-          "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 44
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 41
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 41
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 41
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 40
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 38
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 38
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 37
-        },
-        {
-          "path": "skills/trading-and-investing/references/empirical-backtest-findings-log.md",
-          "hits": 37
-        },
-        {
-          "path": "backtester/core/trigger_conditions.py",
-          "hits": 31
-        },
-        {
-          "path": "research/RELIABLE_SIGNALS.md",
-          "hits": 30
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 24
-        },
-        {
-          "path": "backtester/strategy_cards/macd.md",
-          "hits": 23
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 23
-        },
-        {
-          "path": "backtester/core/strategies/signals.py",
-          "hits": 21
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 19
-        },
-        {
-          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
-          "hits": 19
-        },
-        {
-          "path": "backtester/strategy_cards/adx_filtered_trend.md",
-          "hits": 18
-        },
-        {
-          "path": "backtester/strategy_cards/ppo.md",
-          "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
-          "hits": 17
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "costs",
-      "label": "Cost model",
-      "why": "Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.",
-      "terms": [
-        "fee_bps",
-        "slippage",
-        "slippage_bps",
-        "costconfig",
-        "break-even",
-        "borrow",
-        "financing"
-      ],
-      "matchingFiles": 174,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 89
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
-          "hits": 61
-        },
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 58
-        },
-        {
-          "path": "backtester/core/gridsim.py",
-          "hits": 55
-        },
-        {
-          "path": "backtester/core/engine.py",
-          "hits": 54
-        },
-        {
-          "path": "llms-full.txt",
-          "hits": 46
-        },
-        {
-          "path": "backtester/tests/test_engine_audit.py",
-          "hits": 34
-        },
-        {
-          "path": "research/minute_sweep.py",
-          "hits": 31
-        },
-        {
-          "path": "backtester/README.md",
-          "hits": 31
-        },
-        {
-          "path": "backtester/tests/test_gridsim.py",
-          "hits": 28
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
-          "hits": 22
-        },
-        {
-          "path": "backtester/core/perps.py",
-          "hits": 22
-        },
-        {
-          "path": "backtester/core/types.py",
-          "hits": 21
-        },
-        {
-          "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
-          "hits": 21
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
-          "hits": 21
-        },
-        {
-          "path": "soltui/pnl.py",
-          "hits": 21
-        },
-        {
-          "path": "backtester/cli.py",
-          "hits": 20
-        },
-        {
-          "path": "backtester/core/leverage.py",
-          "hits": 20
-        },
-        {
-          "path": "backtester/gridcli.py",
-          "hits": 19
-        },
-        {
-          "path": "backtester/PROMPT.md",
-          "hits": 18
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 17
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 16
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 16
-        },
-        {
-          "path": "backtester/tests/test_ratio_rotation.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/report.py",
-          "hits": 14
-        },
-        {
-          "path": "skills/trading-and-investing/references/stock-and-equity-trading.md",
-          "hits": 14
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 13
-        },
-        {
-          "path": "research/results/grid_review_20261107.json",
-          "hits": 13
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 12
-        },
-        {
-          "path": "index/build.py",
-          "hits": 12
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -988,7 +988,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 171,
+      "matchingFiles": 188,
       "shown": 30,
       "files": [
         {
@@ -1008,16 +1008,20 @@
           "hits": 78
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 63
+        },
+        {
           "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
           "hits": 63
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 61
-        },
-        {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 48
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 43
         },
         {
           "path": "backtester/tests/test_signal_redundancy.py",
@@ -1030,6 +1034,10 @@
         {
           "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
           "hits": 34
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 32
         },
         {
           "path": "soltui/signals.py",
@@ -1049,6 +1057,10 @@
         },
         {
           "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
+          "hits": 28
+        },
+        {
+          "path": "soltui/help.py",
           "hits": 28
         },
         {
@@ -1072,8 +1084,8 @@
           "hits": 22
         },
         {
-          "path": "soltui/help.py",
-          "hits": 22
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 19
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",
@@ -1098,18 +1110,6 @@
         {
           "path": "research/CROSS-ASSET-TRANSFER.md",
           "hits": 18
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 16
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 15
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1126,7 +1126,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 152,
+      "matchingFiles": 163,
       "shown": 30,
       "files": [
         {
@@ -1166,16 +1166,16 @@
           "hits": 17
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 16
+        },
+        {
           "path": "docs/CONCEPTS.md",
           "hits": 14
         },
         {
           "path": "index/make_concepts_doc.py",
           "hits": 14
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 13
         },
         {
           "path": "research/decide.py",
@@ -1234,6 +1234,10 @@
           "hits": 5
         },
         {
+          "path": "backtester/core/compound.py",
+          "hits": 5
+        },
+        {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 5
         },
@@ -1244,10 +1248,145 @@
         {
           "path": "research/coin-intelligence/sol-solana.md",
           "hits": 4
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "transfer",
+      "label": "Cross-asset and cross-timeframe transfer",
+      "why": "The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.",
+      "terms": [
+        "cross_asset",
+        "cross-asset",
+        "transfer",
+        "doge",
+        "zec",
+        "universe",
+        "top_coins"
+      ],
+      "matchingFiles": 157,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/coin-intelligence/zec-zcash.md",
+          "hits": 196
         },
         {
-          "path": "backtester/tests/test_signal_redundancy.py",
-          "hits": 4
+          "path": "research/coin-intelligence/doge-dogecoin.md",
+          "hits": 147
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 64
+        },
+        {
+          "path": "research/results/frontier-2026-11-07.json",
+          "hits": 62
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 60
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 54
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 50
+        },
+        {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 47
+        },
+        {
+          "path": "backtester/tests/test_cross_asset_cpcv.py",
+          "hits": 46
+        },
+        {
+          "path": "backtester/tests/test_universe.py",
+          "hits": 44
+        },
+        {
+          "path": "backtester/core/universe.py",
+          "hits": 38
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 34
+        },
+        {
+          "path": "research/coin-intelligence/README.md",
+          "hits": 33
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 28
+        },
+        {
+          "path": "research/RATIO-ROTATION.md",
+          "hits": 27
+        },
+        {
+          "path": "research/coin-intelligence/trx-tron.md",
+          "hits": 21
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 21
+        },
+        {
+          "path": "backtester/core/funding.py",
+          "hits": 20
+        },
+        {
+          "path": "memory.md",
+          "hits": 19
+        },
+        {
+          "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 19
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 18
+        },
+        {
+          "path": "liquidity/tests/test_executor.py",
+          "hits": 17
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 17
+        },
+        {
+          "path": "backtester/strategy_cards/adx_filtered_trend.md",
+          "hits": 16
+        },
+        {
+          "path": "research/TOP_COINS.md",
+          "hits": 16
+        },
+        {
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 15
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 15
+        },
+        {
+          "path": "soltui/tests/test_compound.py",
+          "hits": 15
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 14
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 14
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1261,12 +1400,12 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 137,
+      "matchingFiles": 150,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 31
+          "hits": 32
         },
         {
           "path": "research/perturb.py",
@@ -1295,6 +1434,10 @@
         {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 12
+        },
+        {
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -1361,6 +1504,10 @@
           "hits": 5
         },
         {
+          "path": "memory.md",
+          "hits": 5
+        },
+        {
           "path": "research/coin-intelligence/sol-solana.md",
           "hits": 5
         },
@@ -1375,153 +1522,6 @@
         {
           "path": "skills/trading-and-investing/references/ai-and-ml-for-trading.md",
           "hits": 5
-        },
-        {
-          "path": "skills/trading-and-investing/references/market-microstructure-and-execution.md",
-          "hits": 5
-        },
-        {
-          "path": "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md",
-          "hits": 5
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "transfer",
-      "label": "Cross-asset and cross-timeframe transfer",
-      "why": "The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.",
-      "terms": [
-        "cross_asset",
-        "cross-asset",
-        "transfer",
-        "doge",
-        "zec",
-        "universe",
-        "top_coins"
-      ],
-      "matchingFiles": 135,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/coin-intelligence/zec-zcash.md",
-          "hits": 196
-        },
-        {
-          "path": "research/coin-intelligence/doge-dogecoin.md",
-          "hits": 147
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 60
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 56
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 54
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 50
-        },
-        {
-          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
-          "hits": 47
-        },
-        {
-          "path": "backtester/tests/test_cross_asset_cpcv.py",
-          "hits": 46
-        },
-        {
-          "path": "backtester/tests/test_universe.py",
-          "hits": 40
-        },
-        {
-          "path": "backtester/core/universe.py",
-          "hits": 35
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 34
-        },
-        {
-          "path": "research/coin-intelligence/README.md",
-          "hits": 33
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 28
-        },
-        {
-          "path": "research/RATIO-ROTATION.md",
-          "hits": 27
-        },
-        {
-          "path": "research/coin-intelligence/trx-tron.md",
-          "hits": 21
-        },
-        {
-          "path": "backtester/core/funding.py",
-          "hits": 20
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 19
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 18
-        },
-        {
-          "path": "liquidity/tests/test_executor.py",
-          "hits": 17
-        },
-        {
-          "path": "backtester/strategy_cards/adx_filtered_trend.md",
-          "hits": 16
-        },
-        {
-          "path": "research/TOP_COINS.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 15
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 15
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 15
-        },
-        {
-          "path": "research/CANDLE-GAP-AUDIT.md",
-          "hits": 14
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 11
-        },
-        {
-          "path": "soltui/tests/test_utxo_scan.py",
-          "hits": 10
-        },
-        {
-          "path": "index/build.py",
-          "hits": 9
-        },
-        {
-          "path": "liquidity/src/aero_lp/executor.py",
-          "hits": 9
-        },
-        {
-          "path": "soltui/top5.py",
-          "hits": 9
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1538,12 +1538,12 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 125,
+      "matchingFiles": 129,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 69
+          "hits": 77
         },
         {
           "path": "research/verify_numbers.py",
@@ -1602,6 +1602,10 @@
           "hits": 17
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 16
+        },
+        {
           "path": "research/coin-intelligence/btc-bitcoin.md",
           "hits": 15
         },
@@ -1611,10 +1615,6 @@
         },
         {
           "path": "index/build.py",
-          "hits": 14
-        },
-        {
-          "path": "soltui/tui.py",
           "hits": 14
         },
         {
@@ -1672,12 +1672,12 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 117,
+      "matchingFiles": 128,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 30
+          "hits": 31
         },
         {
           "path": "research/perturb.py",
@@ -1694,6 +1694,10 @@
         {
           "path": "backtester/core/report.py",
           "hits": 13
+        },
+        {
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
         },
         {
           "path": "docs/CONCEPTS.md",
@@ -1768,6 +1772,10 @@
           "hits": 4
         },
         {
+          "path": "memory.md",
+          "hits": 4
+        },
+        {
           "path": "research/results/tables.md",
           "hits": 4
         },
@@ -1780,20 +1788,147 @@
           "hits": 4
         },
         {
+          "path": "backtester/core/scorecard.py",
+          "hits": 4
+        },
+        {
           "path": "backtester/tests/test_gridsim.py",
           "hits": 4
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
+      "id": "family:oscillator-reversion",
+      "label": "Strategy family: oscillator-reversion",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "rsi",
+        "stochastic",
+        "oscillator"
+      ],
+      "matchingFiles": 112,
+      "shown": 30,
+      "files": [
+        {
+          "path": "soltui/tests/test_compound.py",
+          "hits": 99
         },
         {
-          "path": "docs/dso-skill/SKILL.md",
-          "hits": 4
+          "path": "research/RANKED_LISTS.md",
+          "hits": 72
         },
         {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.json",
-          "hits": 4
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 70
         },
         {
-          "path": "research/results/perturb_long_all_macd_vol_regime.json",
-          "hits": 4
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 52
+        },
+        {
+          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
+          "hits": 52
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 48
+        },
+        {
+          "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 40
+        },
+        {
+          "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
+          "hits": 31
+        },
+        {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 29
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 29
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 28
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 26
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
+          "hits": 26
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis.md",
+          "hits": 25
+        },
+        {
+          "path": "backtester/core/trigger_conditions.py",
+          "hits": 23
+        },
+        {
+          "path": "backtester/strategy_cards/rsi.md",
+          "hits": 23
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 22
+        },
+        {
+          "path": "soltui/tests/test_strategy_history.py",
+          "hits": 22
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 20
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 20
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 19
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 18
+        },
+        {
+          "path": "soltui/tests/test_signals.py",
+          "hits": 18
+        },
+        {
+          "path": "research/5minleveragestrategies.json",
+          "hits": 16
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 16
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
+          "hits": 16
+        },
+        {
+          "path": "soltui/tests/test_tui.py",
+          "hits": 16
+        },
+        {
+          "path": "backtester/core/strategies/rsi.py",
+          "hits": 15
+        },
+        {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/strategy_cards/stochastic.md",
+          "hits": 14
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1810,7 +1945,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 108,
+      "matchingFiles": 110,
       "shown": 30,
       "files": [
         {
@@ -1937,141 +2072,6 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
-      "id": "family:oscillator-reversion",
-      "label": "Strategy family: oscillator-reversion",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "rsi",
-        "stochastic",
-        "oscillator"
-      ],
-      "matchingFiles": 97,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 72
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 52
-        },
-        {
-          "path": "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md",
-          "hits": 52
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 48
-        },
-        {
-          "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 40
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 28
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 26
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
-          "hits": 26
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis.md",
-          "hits": 25
-        },
-        {
-          "path": "backtester/core/trigger_conditions.py",
-          "hits": 23
-        },
-        {
-          "path": "backtester/strategy_cards/rsi.md",
-          "hits": 23
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 20
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 19
-        },
-        {
-          "path": "soltui/tests/test_signals.py",
-          "hits": 18
-        },
-        {
-          "path": "soltui/tests/test_strategy_history.py",
-          "hits": 18
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 17
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 16
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 16
-        },
-        {
-          "path": "soltui/tests/test_tui.py",
-          "hits": 16
-        },
-        {
-          "path": "backtester/core/strategies/rsi.py",
-          "hits": 15
-        },
-        {
-          "path": "soltui/tests/test_bgqueue.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/strategy_cards/stochastic.md",
-          "hits": 14
-        },
-        {
-          "path": "soltui/tests/test_strategies_tab_history.py",
-          "hits": 14
-        },
-        {
-          "path": "soltui/tests/test_tradingstrategyresults_coverage.py",
-          "hits": 12
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 11
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 10
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 9
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 9
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 9
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 8
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
       "id": "family:breakout",
       "label": "Strategy family: breakout",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -2080,7 +2080,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 84,
+      "matchingFiles": 98,
       "shown": 30,
       "files": [
         {
@@ -2100,7 +2100,11 @@
           "hits": 32
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "backtester/core/scorecard.py",
+          "hits": 24
+        },
+        {
+          "path": "docs/FILES.md",
           "hits": 23
         },
         {
@@ -2108,8 +2112,8 @@
           "hits": 23
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 20
+          "path": "docs/CONCEPTS.md",
+          "hits": 22
         },
         {
           "path": "soltui/signals.py",
@@ -2132,7 +2136,15 @@
           "hits": 17
         },
         {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 17
+        },
+        {
           "path": "research/sweep.py",
+          "hits": 17
+        },
+        {
+          "path": "soltui/help.py",
           "hits": 17
         },
         {
@@ -2140,7 +2152,7 @@
           "hits": 16
         },
         {
-          "path": "soltui/help.py",
+          "path": "research/5minleveragestrategies.json",
           "hits": 16
         },
         {
@@ -2162,6 +2174,10 @@
         {
           "path": "backtester/core/strategies/textbook.py",
           "hits": 14
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 13
         },
         {
           "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
@@ -2186,294 +2202,6 @@
         {
           "path": "research/results/geometry_medium_k2.txt",
           "hits": 8
-        },
-        {
-          "path": "backtester/core/strategies/breakout.py",
-          "hits": 7
-        },
-        {
-          "path": "backtester/tests/test_textbook_strategies.py",
-          "hits": 7
-        },
-        {
-          "path": "research/coin-intelligence/zec-zcash.md",
-          "hits": 7
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 7
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "family:mean-reversion",
-      "label": "Strategy family: mean-reversion",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "mean-reversion",
-        "zscore",
-        "bb_reversion",
-        "vwap_reversion",
-        "ou_reversion"
-      ],
-      "matchingFiles": 81,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 101
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 55
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 49
-        },
-        {
-          "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 41
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 35
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 21
-        },
-        {
-          "path": "backtester/tests/test_strategy_duplication.py",
-          "hits": 20
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 18
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 16
-        },
-        {
-          "path": "backtester/strategy_cards/ou_half_life_sizing.md",
-          "hits": 13
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 11
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 11
-        },
-        {
-          "path": "backtester/strategy_cards/bb_reversion.md",
-          "hits": 10
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 10
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 10
-        },
-        {
-          "path": "backtester/strategy_cards/zscore.md",
-          "hits": 9
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 8
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 8
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 8
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 8
-        },
-        {
-          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.txt",
-          "hits": 8
-        },
-        {
-          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.txt",
-          "hits": 8
-        },
-        {
-          "path": "research/results/perturb_long_any_ou_reversion_obv_trend.txt",
-          "hits": 8
-        },
-        {
-          "path": "backtester/strategy_cards/discount_to_anchor.md",
-          "hits": 7
-        },
-        {
-          "path": "backtester/strategy_cards/pairs_cointegration.md",
-          "hits": 6
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 6
-        },
-        {
-          "path": "research/dso_audit.py",
-          "hits": 6
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/geometry_medium_k2.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/geometry_short_k2.txt",
-          "hits": 6
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
-      "id": "family:momentum",
-      "label": "Strategy family: momentum",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "momentum",
-        "ts_momentum",
-        "dual_momentum"
-      ],
-      "matchingFiles": 81,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 80
-        },
-        {
-          "path": "research/results/cpcv_combos_tables.md",
-          "hits": 69
-        },
-        {
-          "path": "research/results/tables.md",
-          "hits": 50
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 41
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 32
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 26
-        },
-        {
-          "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",
-          "hits": 20
-        },
-        {
-          "path": "backtester/strategy_cards/ts_momentum.md",
-          "hits": 19
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 19
-        },
-        {
-          "path": "backtester/tests/test_decide.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/strategy_cards/dual_momentum_12_1.md",
-          "hits": 17
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 17
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
-          "hits": 16
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 15
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis.md",
-          "hits": 14
-        },
-        {
-          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
-          "hits": 13
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 12
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 12
-        },
-        {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
-          "hits": 12
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 12
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 10
-        },
-        {
-          "path": "backtester/strategy_cards/xs_momentum.md",
-          "hits": 9
-        },
-        {
-          "path": "backtester/tests/test_ratio_rotation.py",
-          "hits": 9
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 9
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 8
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_presets_netpct.py",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_top5.py",
-          "hits": 8
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 7
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2489,12 +2217,12 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 79,
+      "matchingFiles": 92,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 96
+          "hits": 98
         },
         {
           "path": "research/perturb.py",
@@ -2509,12 +2237,12 @@
           "hits": 25
         },
         {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 11
+          "path": "soltui/compound.py",
+          "hits": 16
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 10
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 11
         },
         {
           "path": "research/triggers.py",
@@ -2531,6 +2259,10 @@
         {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 9
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 8
         },
         {
           "path": "research/results/perturb_all_singles_short.txt",
@@ -2607,13 +2339,281 @@
         {
           "path": "research/results/perturb_long_all_macd_vol_regime.json",
           "hits": 5
-        },
-        {
-          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.json",
-          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "family:mean-reversion",
+      "label": "Strategy family: mean-reversion",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "mean-reversion",
+        "zscore",
+        "bb_reversion",
+        "vwap_reversion",
+        "ou_reversion"
+      ],
+      "matchingFiles": 91,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 101
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 55
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 49
+        },
+        {
+          "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 41
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 35
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 21
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 21
+        },
+        {
+          "path": "backtester/tests/test_strategy_duplication.py",
+          "hits": 20
+        },
+        {
+          "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
+          "hits": 18
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 18
+        },
+        {
+          "path": "soltui/signals.py",
+          "hits": 16
+        },
+        {
+          "path": "backtester/strategy_cards/ou_half_life_sizing.md",
+          "hits": 13
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 11
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 11
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 11
+        },
+        {
+          "path": "backtester/strategy_cards/bb_reversion.md",
+          "hits": 10
+        },
+        {
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 10
+        },
+        {
+          "path": "research/COMPOUND-FRONTIER.md",
+          "hits": 10
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 10
+        },
+        {
+          "path": "backtester/strategy_cards/zscore.md",
+          "hits": 9
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 8
+        },
+        {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 8
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 8
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 8
+        },
+        {
+          "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 8
+        },
+        {
+          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.txt",
+          "hits": 8
+        },
+        {
+          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.txt",
+          "hits": 8
+        },
+        {
+          "path": "research/results/perturb_long_any_ou_reversion_obv_trend.txt",
+          "hits": 8
+        },
+        {
+          "path": "backtester/strategy_cards/discount_to_anchor.md",
+          "hits": 7
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 7
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
+      "id": "family:momentum",
+      "label": "Strategy family: momentum",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "momentum",
+        "ts_momentum",
+        "dual_momentum"
+      ],
+      "matchingFiles": 89,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 80
+        },
+        {
+          "path": "research/results/cpcv_combos_tables.md",
+          "hits": 69
+        },
+        {
+          "path": "research/results/tables.md",
+          "hits": 50
+        },
+        {
+          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
+          "hits": 41
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 34
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 32
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 26
+        },
+        {
+          "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",
+          "hits": 20
+        },
+        {
+          "path": "backtester/core/scorecard.py",
+          "hits": 19
+        },
+        {
+          "path": "backtester/strategy_cards/ts_momentum.md",
+          "hits": 19
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
+          "hits": 19
+        },
+        {
+          "path": "backtester/tests/test_decide.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/strategy_cards/dual_momentum_12_1.md",
+          "hits": 17
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 17
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 17
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
+          "hits": 16
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 15
+        },
+        {
+          "path": "skills/trading-and-investing/references/technical-analysis.md",
+          "hits": 14
+        },
+        {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 13
+        },
+        {
+          "path": "soltui/help.py",
+          "hits": 13
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 12
+        },
+        {
+          "path": "research/results/cpcv_tables.md",
+          "hits": 12
+        },
+        {
+          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
+          "hits": 12
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 10
+        },
+        {
+          "path": "backtester/strategy_cards/xs_momentum.md",
+          "hits": 9
+        },
+        {
+          "path": "backtester/tests/test_ratio_rotation.py",
+          "hits": 9
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 9
+        },
+        {
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
+        },
+        {
+          "path": "research/results/geometry_long_k2.txt",
+          "hits": 8
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
       "id": "family:volume-flow",
@@ -2623,7 +2623,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 66,
+      "matchingFiles": 72,
       "shown": 30,
       "files": [
         {
@@ -2640,11 +2640,15 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 15
+          "hits": 16
         },
         {
           "path": "backtester/strategy_cards/obv_trend.md",
           "hits": 14
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 13
         },
         {
           "path": "research/results/tables.md",
@@ -2667,6 +2671,10 @@
           "hits": 11
         },
         {
+          "path": "backtester/core/scorecard.py",
+          "hits": 9
+        },
+        {
           "path": "soltui/tests/test_top5.py",
           "hits": 9
         },
@@ -2677,6 +2685,14 @@
         {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 8
+        },
+        {
+          "path": "research/5minleveragestrategies.json",
+          "hits": 7
+        },
+        {
+          "path": "docs/COMPOUND-5M-PAPER.md",
+          "hits": 6
         },
         {
           "path": "research/results/perturb_long_any_ou_reversion_obv_trend.txt",
@@ -2723,28 +2739,12 @@
           "hits": 4
         },
         {
-          "path": "soltui/tests/test_tradingstrategyresults_coverage.py",
+          "path": "research/tradingstrategyresults.json",
           "hits": 4
         },
         {
-          "path": "backtester/tests/test_indicators.py",
-          "hits": 3
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 3
-        },
-        {
-          "path": "research/results/cpcv_pbo.json",
-          "hits": 3
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 3
-        },
-        {
-          "path": "research/results/geometry_long_k2.txt",
-          "hits": 3
+          "path": "soltui/tests/test_tradingstrategyresults_coverage.py",
+          "hits": 4
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 37,
+      "matchingFiles": 38,
       "shown": 30,
       "files": [
         {
@@ -2875,12 +2875,12 @@
           "hits": 3
         },
         {
-          "path": "index/build.py",
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
           "hits": 3
         },
         {
-          "path": "backtester/core/indicators.py",
-          "hits": 2
+          "path": "index/build.py",
+          "hits": 3
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2902,6 +2902,7 @@
         "backtester/strategy_cards/mvrv_nupl_valuation.md",
         "backtester/strategy_cards/open_interest_divergence.md",
         "backtester/strategy_cards/order_book_imbalance.md",
+        "backtester/strategy_cards/prediction_markets.md",
         "backtester/strategy_cards/scalping.md",
         "backtester/strategy_cards/social_sentiment.md",
         "backtester/strategy_cards/staking_ratio_flow.md",
@@ -2975,7 +2976,8 @@
         "backtester/strategy_cards/staking_ratio_flow.md"
       ],
       "event": [
-        "backtester/strategy_cards/event_driven.md"
+        "backtester/strategy_cards/event_driven.md",
+        "backtester/strategy_cards/prediction_markets.md"
       ],
       "intraday": [
         "backtester/strategy_cards/day_trading.md"
@@ -3100,6 +3102,7 @@
         "backtester/strategy_cards/mvrv_nupl_valuation.md",
         "backtester/strategy_cards/open_interest_divergence.md",
         "backtester/strategy_cards/order_book_imbalance.md",
+        "backtester/strategy_cards/prediction_markets.md",
         "backtester/strategy_cards/scalping.md",
         "backtester/strategy_cards/social_sentiment.md",
         "backtester/strategy_cards/staking_ratio_flow.md",
@@ -3158,6 +3161,7 @@
         "backtester/strategy_cards/macd.md",
         "backtester/strategy_cards/mvrv_nupl_valuation.md",
         "backtester/strategy_cards/ppo.md",
+        "backtester/strategy_cards/prediction_markets.md",
         "backtester/strategy_cards/rsi.md",
         "backtester/strategy_cards/scalping.md",
         "backtester/strategy_cards/social_sentiment.md",

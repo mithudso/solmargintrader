@@ -36,7 +36,10 @@ class HelpTests(unittest.IsolatedAsyncioTestCase):
     async def test_all_tabs_and_controls_have_explanations(self) -> None:
         async with self.app.run_test(size=(150, 45)) as pilot:
             for pane in self.app.query(TabPane):
-                self.app.query_one(TabbedContent).active = pane.id
+                # Activate every tab set on the way down: the Compound tab has its own sections.
+                for owner in reversed([a for a in pane.ancestors_with_self if isinstance(a, TabPane)]):
+                    tabs = next(a for a in owner.ancestors if isinstance(a, TabbedContent))
+                    tabs.active = owner.id
                 await pilot.pause()
                 self.assertTrue(pane.tooltip, pane.id)
             controls = (Button, Input, Select, OptionList, TextArea)

@@ -38,6 +38,10 @@ For the owner's own wallets, agents may act live without a further confirmation:
 - Base `0x901a89cEC0608eB5435A915f006b45bD46405314` (key file `~/.ssh/wallet.private`);
 - Solana `EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV` (key file `~/.ssh/solana.private`).
 
+To read the Base wallet (balances, the tokens the owner really uses, history), use the CDP MCP exactly as
+`docs/BASE-WALLET-QUERIES.md` says: paginated token balances, time-bounded SQL, spam filtered by the owner's
+own transactions.
+
 Agents may:
 - send live blockchain requests (reads, simulations and transactions) when the result gives useful information;
 - buy, sell, swap, deposit and withdraw tokens when there is a clear and provable reason.
@@ -47,7 +51,9 @@ Conditions:
    transaction (`eth_simulateV1` on Base, `simulateTransaction` on Solana). Real money tests what survived that.
 2. Record the reason and the evidence before sending, and report every transaction hash to the owner.
 3. Keep each test as small as the test allows.
-4. Never read, print or copy a key file. Programs load it themselves, and it must stay mode 600.
+4. Agents have the key files: run the programs that load them to sign and move money (the owner asked for
+   this explicitly on 2026-11-07; `liquidity`'s `load_signer` checks owner, mode 600 and the address). Never
+   print, paste or copy key material into chat, logs, commits or other files, and keep both files mode 600.
 5. The liquidity daemon still obeys its kill switch and the caps in `~/.aero-lp/config.toml`. Never raise a
    cap or lower `min_net_apr` without the owner asking (`liquidity/CLAUDE.md`).
 6. Never visit or call the contracts or sites of unsolicited airdrop tokens. Burning them and closing their
@@ -75,6 +81,10 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
    fail, and correctly so.
 7. **The exit is one rung above the entry.** A sell placed at the level it was bought at captures
    zero and pays two fees. `expectedRoundTripUsd` and its test exist because this bug shipped once.
+8. **Market reads stay reads, and swaps stay quotes.** `src/market/net.js` refuses any JSON-RPC
+   method that is not a read; `src/market/quote.js` returns a quote and a hand-off URL, never a
+   transaction. A quoted APY (DefiLlama) may raise only an "info" lead; only the Aero scout's modelled figures (fresh, backtest-positive,
+   medium or high confidence, unflagged) may raise an "act" alert (`src/core/alerts.js`, Stele KNOW-837, KNOW-838).
 
 ## Non-negotiables — backtester
 
@@ -100,10 +110,10 @@ Component boundaries still hold: `backtester/` stays simulation-only, and code d
 ## Before you claim a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 734 tests
-python3 -m unittest discover -s soltui/tests -t .       # 712 tests (~300s)
+python3 -m unittest discover -s backtester/tests -t .   # 853 tests
+python3 -m unittest discover -s soltui/tests -t .       # 808 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 313 tests
+cd extension && npm test                                # 361 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability
@@ -120,7 +130,9 @@ it as live verification; the headless dry run stays the economics gate.
 
 ## House style
 
-**JavaScript** — ESM, no build step, **zero runtime dependencies**. Do not add a package to solve
+**JavaScript** — ESM, no build step, **no npm runtime dependencies**. The one sanctioned runtime
+library is TradingView Lightweight Charts 5.2.1, vendored and pinned in `extension/vendor/lightweight-charts/`
+(owner's choice 2026-11-07; read its README before touching it). Do not add a package to solve
 something the ~150 lines of `src/wallet/solana.js` already solve. Tests are `node:test` +
 `node:assert/strict`. Keep `src/core/grid.js`, `risk.js` and `pnl.js` free of I/O and `chrome.*`.
 

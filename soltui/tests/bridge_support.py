@@ -30,9 +30,24 @@ HEAVY = {
     "queue.stop": {"stopping": False},
     "queue.backtest": {"started": True, "scope": "all", "strategies": [], "jobs": 0, "asset": "SOL",
                        "message": "stub"},
+    # These start ollama and the idle indexer; the parity suite must not.
+    "docs.search": {"query": "x", "mode": "keyword", "mode_used": "keyword", "hits": [], "notes": []},
+    "docs.search_unload": {"message": "stub"},
     "queue.fetch": {"fetching": [], "log": None},
     "analyze.run": {"headline": "stub", "truncated": False, "decisions": [], "actions": {}},
     "docs.write": {"path": "x", "bytes": 1, "file": "x"},
+    # Compound: live reads hit public market-data endpoints; backtests read the real 5m cache.
+    "compound.signal": {"call": "FLAT", "composite": None, "components": []},
+    "compound.forward_tick": {"asset": "SOL", "recorded": False, "call": "FLAT", "resolved": 0},
+    "compound.unattended_start": {"started": True, "asset": "SOL", "pid": 1, "log": "x"},
+    "compound.unattended_stop": {"stopping": False, "asset": "SOL", "message": "not running"},
+    # Autopilot starts a detached training loop per coin; a real call here once left 32 of them running.
+    "compound.autopilot": {"autopilot": False, "running": [], "agent": {"loaded": False}, "adoptions": [],
+                           "ensure": None},
+    "compound.autopilot_status": {"autopilot": True, "running": [], "agent": {"loaded": False}, "adoptions": []},
+    "compound.autopilot_ensure": {"autopilot": True, "started": [], "already_running": [], "skipped": {}},
+    "compound.backtest": {"run_id": "stub", "configurations": 0, "assets": [], "skipped": {},
+                          "errors": [], "rows": []},
     # The P&L commands run the roster's backtests, which need a cached price series.
     "portfolio.scan": {"label": "wallet (live)", "chains": {}, "total_usd": 0.0, "skipped": [],
                        "partial": False, "counts": {}},
@@ -62,6 +77,8 @@ def default_params() -> dict[str, dict]:
         "docs.write": {"path": "scratch.txt", "text": "x"},
         "liquidity.resume": {"confirm": True},
         "queue.backtest": {"scope": "all"},
+        "docs.search": {"query": "slippage"},
+        "compound.autopilot": {"enabled": False},
     }
 
 

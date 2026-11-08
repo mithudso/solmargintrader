@@ -1,6 +1,6 @@
 # soltui — SOL strategy console
 
-A fifteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
+A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 wiring shell.
 
@@ -17,7 +17,7 @@ uv venv ~/.venvs/soltui -p 3.13
 uv pip install -p ~/.venvs/soltui/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
 ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui    # once; ~/.local/bin must be on PATH
 
-soltui          # the fifteen-tab console, from any directory
+soltui          # the sixteen-tab console, from any directory
 soltui app      # the macOS menu-bar indicator (needs rumps)
 soltui serve    # the console in a browser window
 ```
@@ -83,6 +83,12 @@ The definitions explain the unit, give an example and name the main limitation.
 This includes the Queue and Liquidity tables, signal parameters and public-wallet
 settings. Indicator and strategy rows also explain their trading hypothesis.
 
+The shared editor sits under every tab below an orange bar. Drag the bar to resize the
+editor (ctrl+up / ctrl+down from the keyboard), double-click it for the default size, and
+click **x close** at its right end to hide the editor; click the bar, drag it up or press
+ctrl+e to bring it back. The size and open state are remembered in
+`~/.config/soltui/tui.json`.
+
 Press **F1** anywhere, including inside an input or the source editor, to open
 the searchable glossary with help for the current control or selected column.
 Search for terms such as **grid**, **Sharpe**, **CPCV**, **bps**, **APR** or **LVR**.
@@ -99,7 +105,8 @@ larger open losses; read total net account equity as well as realized P&L.
 | **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry, and the wallets to watch: public Solana, Base and Ethereum addresses, and extended **public** keys (`btc_xpub`, `ltc_xpub`, `doge_xpub`) for Bitcoin, Litecoin and Dogecoin. Each is validated (Base58Check and version bytes for an xpub); an `xprv`, a WIF key, a raw 64-hex string or a Solana secret-key array is refused with a message that private keys do not belong in settings, and the message never repeats the value. An xpub is shown as a short prefix everywhere (`settings.get`, the TUI, the API) and the config file is mode 600. A read-only *signing key source* row shows whether `~/.ssh/wallet.private` (the EVM, Ethereum/Base, key) and `~/.ssh/solana.private` (the Solana key) exist and are mode 600, by `stat` alone. **There is no field that accepts a private key.** Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
 | **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. The left table also shows each strategy's **test history** from the background sweep's results file: tested yes/no/n/a, times tested (distinct configurations), when last tested, and the card-preset result (median Sharpe, net return, trades) — never the best of many variations. Three buttons start the background worker at each card's own parameters: **Backtest selected**, **Backtest all untested**, **Backtest all**. Already-recorded configurations are skipped, and only one background sweep runs at a time. Results written before dates were recorded read `date not recorded`. |
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
-| **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. |
+| **Compound 5m** | Four sections: **Call & metrics**, **Backtest** (a *What is tested* paragraph, readable row names, buy & hold, net bps 1h/24h, and a **Frontier** button that tests every metric's strongest 2% of readings held 1 h-24 h), **Forward test**, **All coins**. Scores every metric from `5minleveragestrategies.json` (and the ones it lacked: higher timeframe, funding/premium/OI, order book, BTC lead, trend lifecycle, market-cycle phase) for the **next 5-minute bar**, -1 down to +1 up; families vote once, the regime reweights trend vs reversion styles, and cost / liquidation / shock / thin-market / event / news gates force FLAT. Double-click a metric to switch it on or off (or select it and press Space); a single click selects it and shows its full detail (formula, parameters, evidence, adoptions) in the editor below, as do coin, backtest and forward rows; **Autopilot** (on by default) runs tuning, adopts tuned settings per coin by itself and keeps every coin training (with `python -m soltui.compound_agent install` for a LaunchAgent); **Toggle on/off**, edit `weight=` and parameters, and aggregate settings (`entry`, `exit`, `leverage`, `fee_bps`…). **Signal now** scores the latest closed bar from public data; **Backtest selected** runs the compound and each enabled metric alone on cached 5m data (OOS hit rate, z, oracle net bps, engine return after fees); **Forward tick** / **Auto-forward** record a call per closed bar and resolve it when the next bar closes; **Start unattended training** runs that in a detached background process that keeps going after the console closes. Calls are sized to the Settings Solana wallet (`wallet (live)`), and a status line under the buttons summarises each backtest run in plain words. No order path. See `docs/COMPOUND-5M.md`. |
+| **Backtest** | **Strategy to backtest** picks the whole roster or one roster strategy (the roster is the right-hand list on the Strategies tab, shown on the line beside the picker); **Run backtest** runs that pick through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. **Backtest untested + little-tested** starts the background worker at once on every strategy never tested or with fewer than three recorded configurations (card parameters plus near variations, every horizon); its progress shows under the buttons and on the Queue tab. |
 | **Top 5** | The five recommended configurations with their evidence and off-asset transfer tests. |
 | **Live Run** | Launches the extension's dry-run tool. A Top 5 preset list fills the strategy; the result shows `dry-run net %`. |
 | **Execute** | Dry-run replay. Step a simulation bar by bar and see the fills a strategy *would* have made. A Top 5 preset list selects a configuration (its composite replays on the series it was fitted on); every figure says `paper net %`. |
@@ -108,6 +115,22 @@ larger open losses; read total net account equity as well as realized P&L.
 | **P&L** | Profit and loss over 24h, 7d, 30d, 90d, YTD, all or a custom start/end. One section per source (`backtest`, `paper`, `dry-run`, `dry-run LP`, `live LP`, and the separate `wallet (live)` value-change section) with net and gross P&L, fees, slippage, borrow/funding, realized vs unrealized, win rate, expectancy, daily series with cumulative curve, max drawdown and recovery, best and worst day/week/month, and a by-strategy / by-asset attribution. See [The P&L tab](#the-pl-tab). |
 | **Queue** | Starts and reads the low-priority background sweep. Start/Stop/Refresh, a live status line, a ranked table and a below-the-floor table. |
 | **Liquidity** | Read-only view of the Aero (aero.xyz) liquidity daemon's state files (`$AERO_LP_HOME`, default `~/.aero-lp/`): mode badge (LIVE is red, dry-run is yellow), kill-switch banner ("Kill switch ON — bot paused"), idle vs deployed USD, totals; Positions, Scout (top pools by modelled net APR), Experiments (arms side by side, winner marked) and Recent actions (newest first, basescan tx links) tables. Refresh / Kill / Resume buttons (`F5` refresh, `F8` kill-resume toggle while the tab is open); re-reads every 15 s. |
+
+### Searching the repo from the Docs tab
+
+The Docs tab lists every file in the committed index. Its search box queries that index three ways:
+**keyword** (BM25: exact terms, offline), **semantic** (meaning, using `mxbai-embed-large:latest` through the
+local Ollama) and **hybrid** (both, rank-fused). Press Enter or **Search**; it never searches per keystroke.
+An empty box and Search restores the file list.
+
+Nothing is loaded until the first search: the keyword postings, the embedding matrix and the ~670 MB model
+all stay out of memory until then. **Free search memory** drops them and asks Ollama to unload the model
+immediately. A semantic or hybrid search starts Ollama if it is not running, and if it cannot, falls back to
+keyword and says why. The model is never downloaded for you: `ollama pull mxbai-embed-large:latest`.
+
+Each search also runs the idle index check (`index/idle.py`), which rebuilds an out-of-date semantic index in the
+background when the machine is idle, writing only gitignored files. See `index/README.md`. The same search is
+the registry command `docs.search`, so the CLI, API and extension get it too.
 
 ### Top 5 presets and net %
 

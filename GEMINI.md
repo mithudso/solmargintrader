@@ -37,10 +37,10 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 ## Before claiming a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 734 tests
-python3 -m unittest discover -s soltui/tests -t .       # 712 tests (~300s)
+python3 -m unittest discover -s backtester/tests -t .   # 853 tests
+python3 -m unittest discover -s soltui/tests -t .       # 808 tests (~610s)
 python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 313 tests
+cd extension && npm test                                # 361 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
@@ -53,7 +53,8 @@ verified — the headless dry run is the economics gate.
 
 Python 3.13, stdlib-first, `from __future__ import annotations`. Backtester, soltui and
 mongo use `unittest`; liquidity uses `pytest` and Ruff in its own virtualenv.
-JavaScript ESM with **zero runtime dependencies** and `node:test`. Comments explain *why*,
+JavaScript ESM with **no npm runtime dependencies** (one vendored, pinned charting library:
+`extension/vendor/lightweight-charts/`) and `node:test`. Comments explain *why*,
 especially where the obvious implementation is wrong. Do not narrate *what*.
 
 ## Orientation

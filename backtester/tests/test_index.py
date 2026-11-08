@@ -52,8 +52,9 @@ class IsolationTests(unittest.TestCase):
                     # This test file legitimately reaches the tooling to test it;
                     # nothing that ships in the engine may.
                     if m.split(".")[0] in {"build", "search", "make_files_doc",
-                                           "make_concepts_doc", "index"}:
-                        if py.name != "test_index.py":
+                                           "make_concepts_doc", "index", "idle",
+                                           "ollama_ensure"}:
+                        if py.name not in {"test_index.py", "test_index_search_tooling.py"}:
                             offenders.append(f"{py.relative_to(REPO)} imports {m}")
         self.assertEqual(offenders, [], "engine code must not import index tooling")
 
@@ -64,7 +65,8 @@ class IsolationTests(unittest.TestCase):
         the thing it is meant to be describing, and a broken engine would then
         break the index that a reader is using to understand why.
         """
-        for name in ("build.py", "search.py", "make_files_doc.py", "make_concepts_doc.py"):
+        for name in ("build.py", "search.py", "make_files_doc.py", "make_concepts_doc.py",
+                     "idle.py", "ollama_ensure.py"):
             tree = ast.parse((INDEX_DIR / name).read_text(encoding="utf-8"))
             for node in ast.walk(tree):
                 mods = []
