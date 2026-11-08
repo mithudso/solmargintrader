@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 99
-Delta: preserve incoming catalogue history and append sanitized task continuation through v99.
+Version: 102
+Delta: v101 to v102; implementations pass focused tests; independent review and loaded acceptance active.
 
 ## v1 - 2026-11-06
 
@@ -1018,3 +1018,29 @@ The complete root CI run 42471525856 passed on source 8265776, including the cur
 PR 91 independently landed the same mirror-capable executor installer already validated on this branch. Retain its workflow byte for byte, including the new card coverage check; this research PR now has no CI workflow behavior delta. The earlier installer investigation remains historical evidence in KNOW-935. Regenerate only offline retrieval artifacts for the combined source and run the catalogue coverage check, documentation check and targeted index/UI tests. Final pushed combined-tree CI remains required.
 
 Website PR 307 merged as 26ed830f8255428a9406e6270be82be55194ae97 after its final checks passed. Production acceptance is separate and continues against that actual merge. All accepted scientific statements, canonical IDs, source bindings, installed reference bytes and public metadata privacy corrections remain unchanged. Resume only remaining delivery actions from the private run's final-delivery checkpoint.
+
+## v100 - 2026-11-08: optimization experiment workbench
+
+Request: prompts.md v58. Tracking: EPIC-952; contracts TASK-953, implementation TASK-961, verification/delivery TASK-962.
+Base: origin/master 0b46a88. Branch: feat/experiment-workbench-20261108. The shared checkout has 819 unrelated dirty paths and is held by other sessions. All changes stay in this task-owned worktree.
+
+Plan and acceptance: docs/optimization-workbench-plan.md. Before code, recorded decisions in Stele: full immutable experiment/cell identity; spent final temporal intervals survive changed search settings; preserve all other active work, paused services and dry-run defaults. No live orders, daemon restarts, or research/index jobs.
+
+Completed: source comparison, current architecture inspection, skill routing, clean private worktree, plan and common interfaces.
+Remaining: implement foundation, native runner and UI/job controls; test failure/restart/holdout boundaries and import provenance; verify actual UI; refresh docs/indexes; commit, push, passing PR checks, merge and verify remote content.
+
+## v101 - 2026-11-08: implementation active
+
+Plan v2 adds exploration-exposure reservations before simulation. Changed window geometry must not turn explored dates into final holdout. Legacy optimizer history must be conservatively migrated or final validation refused; freshness is limited to tracked local evidence.
+
+Workers share only this private worktree: foundation owns new experiments store/space/import/heatmap and tests; runner owns Bots integration/native runner and tests; interface specialist owns job lifecycle, screens, registry/UI/help and tests. Runner owns per-run and bot-finalization file locks. Root handles workflow/docs/indexes/release. TASK-953 complete; TASK-961 claimed; TASK-962 pending. Context bundle written with p helper.
+
+Remaining: worker implementations, independent correctness and loaded-UI checks, full relevant suites, docs/index refresh, remote delivery.
+
+## v102 - 2026-11-08: integration review
+
+All six source capabilities implemented in experiments.py, experiment_runner.py, experiment_jobs.py and experiment_screens.py, with thin Bots/registry/UI integration. Foundation initially25tests passed; runner now27regressions passed pluslegacy tests. Interface/process/registry tests passing; final combined counts pending final source freeze. New Python modules pass Ruff after scoped cleanup.
+
+Independent review found and sent fixes for undated contributing import rows escaping comparison coverage, launch/failure transitions overwriting pause/cancel, and native negative vsTradingView positive drawdown. Canonical summaries/maps/comparison use loss magnitude while raw evidence stays intact. Runtime versions are frozen and checked on resume. True subprocess death/restart, config-save/report-crash recovery, historical edit with unchanged stat metadata and legacy-report-after-prepare were tested. Live verifier found a clipped adoption label at80columns; responsive fix in progress.
+
+Remaining: verify final review fixes and loaded UI; full relevant suite, accurate doc counts and regenerated indexes; integrate current remote default preserving other work; commit/push, required checks, merge, remote content and cleanup receipts. No real data optimization, live orders, paused research or services were run.

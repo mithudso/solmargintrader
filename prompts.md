@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 57
-Delta: preserve incoming catalogue history and append sanitized task continuation through v57.
+Version: 58
+Delta: v57 to v58; implement all six optimization comparison recommendations.
 
 ## v1 - 2026-11-06
 
@@ -434,3 +434,11 @@ Directed graph preservation (frontier, viability 3.60 / 5)
 
 Target: solmargintrader, isolated branch agent-01a1b5ef. Stele TASK-905.
 Metadata v57: operator-neutral continuation reference; user request unchanged.
+
+## v58 - 2026-11-08
+
+```text
+turn all of your suggestions into an implementation plan and execute it
+```
+
+Scope: all six recommendations from the TradingView comparison: experiment explorer, sparse stability heatmaps, typed search spaces, resumable Bots runs, read-only TradingView import/comparison, and untouched final holdout safeguards.

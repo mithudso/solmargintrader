@@ -29,3 +29,13 @@ One declarative fact per line, each tagged with the repo-relative file it came f
 - The kill command is latching: it disarms and blocks every rail until clearKill is run [src: docs/OPERATIONS.md]
 - Kill does not cancel resting venue orders; they are removed with cancelOrder [src: docs/OPERATIONS.md]
 - The README states grid trading is short volatility: it earns in a range and loses in a trend [src: README.md]
+
+## 2026-11-08 [gen: p/2.1.0]
+
+- Native optimization freezes full baseline/candidate configurations, exact windows, code/data/cost fingerprints and numerical runtime; each evaluation commits rich metrics or an explicit failure. [src: soltui/experiment_runner.py]
+- ExperimentStore preserves immutable completed cells and transactional exploration/final temporal reservations; changing search context cannot refresh used dates. [src: soltui/experiments.py]
+- Explicit experiment workers use inherited process leases and durable cooperative pause/cancel controls; source/config changes refuse stale resume. [src: soltui/experiment_jobs.py]
+- The Bots experiment workbench exposes bounded typed spaces, candidate/window evidence, conditioned sparse heatmaps, read-only TradingView import/comparison and separate final validation. [src: soltui/experiment_screens.py]
+- Experiment drawdown summaries use nonnegative loss magnitude while raw simulator and external signed values remain in evidence; unknown units remain unknown. [src: soltui/experiments.py]
+- Imports never promote native settings; comparable runs require explicit matching assumptions and actual coin/date coverage for every contributing row. [src: soltui/experiments.py]
+- Final native adoption keeps the existing evidence/sign-test thresholds and uses baseline comparison plus durable recovery of an interrupted configuration write. [src: soltui/experiment_runner.py]
