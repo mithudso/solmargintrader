@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 50
-Delta: v49 to v50; integrate PR 58 against landed PR 46 and retain both workflow histories.
+Version: 51
+Delta: v50 to v51; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields.
 
 ## v1 - 2026-11-06
 
@@ -369,3 +369,11 @@ Resolve the pr conflicts in https://github.com/mithudso/solmargintrader/pull/46 
 ```text
 resume
 ```
+
+## v51 - 2026-11-08 (Bots tab v2)
+
+```text
+WHen I'm in teh Bots tab and click Auto-optimize (all coins), it should open the configuration window and start the test. If I run it again it should increase the diversity of the configurations it tries. Also the default backtest start should be from the beginning of the data available, not 90 days. Also the auto-optimize doesn't give per coin stats so it's impossible to know if it was actually run on any but sol. For the backtest I should be able to select more than one coin to test it against. With the auto-optimize it's not clear if the new optimized configuration options were saved or not, have a popup describing which changes were made. Also the price stream is great, but it should automatically start the price recording as that's data that's going to be used for backtesting and training, why would I ever not want it recorded? Also the text fields at the top, move them so they're all on the same horizontal plane as each other to free up screen realestate.
+```
+
+Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch feat/bots-tab-v2).

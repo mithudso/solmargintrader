@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 68
-Delta: v67 to v68; integrate PR 58 against landed PR 46 and retain both workflow histories.
+Version: 69
+Delta: v68 to v69; Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder).
 
 ## v1 - 2026-11-06
 
@@ -706,3 +706,14 @@ Completed: PR 46 merged by a concurrent session as 06a1f95347a835cdb2951bf2f0434
 Current: merged origin/master 06a1f95 into latest PR 58 head b899458 in private worktree /Users/mitch/dev/solmargintrader-wt-01a1ba3b on agent-01a1ba3b-pr58. Conflicts affect generated indexes and workflow records only. Both histories are retained. No source or research receipt is rewritten.
 
 Remaining: regenerate derived indexes after staging resolutions, verify docs and index checks, commit and push HEAD to agent-01a1b5ef without force. Wait for all final-head CI jobs, merge PR 58, verify both merge receipts and source/receipt preservation, then remove only our clean private branches and worktree. Shared checkout and original PR worktrees remain untouched.
+
+## v69 - 2026-11-08 (Bots tab v2)
+
+Target: prompts.md Bots tab v2 entry. Stele TASK-884. Branch feat/bots-tab-v2 in /Users/mitch/dev/solmargintrader-wt-39e8bf11.
+Delivered before this: PR #84 (merged by another session while CI was red) and follow-up PR #86 (index regeneration), both on master.
+
+Completed: `soltui/bots_screens.py` (coin picker, auto-optimize window with the SAVED / NOT SAVED popup and per-coin table); optimize run numbering with growing, non-repeating candidate lists (`candidates(bot, current, run, tried)`, history in `bots/optimize-history-<bot>.json`); per-coin stats; `hourly()` splices 1m-resampled history before the 1h file; `bridged()` fills gaps of up to 48 h; default backtest start is the start of usable data; `backtest_many`; `pricefeed.ensure_recorder` + LaunchAgent `com.mitchhudson.soltui.pricefeed` (KeepAlive, `record --wait-lock`); `prices.start`/`prices.stop` replaced by `prices.ensure`; one-row top fields.
+
+Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backtest from the start of data runs 2021-06-17 (SOL) and 2019-11-09 (BTC).
+
+Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.

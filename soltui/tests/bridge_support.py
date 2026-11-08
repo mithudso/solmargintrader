@@ -61,11 +61,12 @@ HEAVY = {
     "pnl.breakdown": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
     # Bots: backtests carry an id and a time, forward_start and prices.start spawn the detached price
     # recorder (a real call would leave it running), and optimize sweeps every cached coin.
-    "bots.backtest": {"id": "stub", "kind": "backtest", "bot": "grid", "asset": "SOL", "set": {},
-                      "results": {}, "equity": []},
+    "bots.backtest": {"bot": "grid", "coins": ["SOL"], "runs": [], "errors": {}, "summary": [],
+                      "beat_hold": 0, "ran": 0},
     "bots.forward_start": {"forward": {"id": "stub", "bot": "grid"}, "recorder": {"started": False}},
     "bots.optimize": {"bot": "grid", "verdict": {"reliable": False, "adopted": False}, "table": []},
-    "prices.start": {"started": False, "already_running": True, "log": "x"},
+    # Installs a LaunchAgent and starts the recorder; a real call would leave both behind.
+    "prices.ensure": {"running": True, "agent": {"installed": True, "loaded": True}},
 }
 
 
@@ -97,6 +98,7 @@ def default_params() -> dict[str, dict]:
         "bots.forward_status": {"bot": "grid"},
         "bots.optimize": {"bot": "grid"},
         "bots.optimize_result": {"bot": "grid"},
+        "bots.progress": {"bot": "grid"},
     }
 
 
