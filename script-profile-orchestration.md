@@ -73,3 +73,5 @@ Final source QA:all742 publications accounted for,691 source cards,51 evidenced 
 
 9 llms:ok — own family backed up;5 sourced facts and1 sourced index entry appended.
 10 selfcheck:executed,8/8,zero invalid artifacts. Stage8 actual continuations exceeded the optional default cap to finish owner scope;22 dispatches across7 distinct agents, no external research. Final Git checks/delivery remain pending.
+
+Concurrent delivery integration preserves the incoming root context bundle; this source run bundle is retained as research/tradingview-script-context-bundle.json. Both run-log entries and all llms/prompt/memory histories are preserved. No runtime feature from PR93/98/99 is reverted. [src: research/tradingview-script-context-bundle.json]

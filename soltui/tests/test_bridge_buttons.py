@@ -25,8 +25,8 @@ def pressed_selectors() -> list[str]:
 
 
 class ButtonRegistryTests(unittest.TestCase):
-    def test_there_are_sixty_six_button_handlers(self) -> None:
-        self.assertEqual(len(pressed_selectors()), 66)
+    def test_there_are_sixty_eight_button_handlers(self) -> None:
+        self.assertEqual(len(pressed_selectors()), 68)
 
     def test_every_button_handler_maps_to_a_registered_command(self) -> None:
         for selector in pressed_selectors():
@@ -43,7 +43,7 @@ class ButtonRegistryTests(unittest.TestCase):
         self.assertEqual(ids - handled, set(), "button without a Button.Pressed handler")
 
     def test_the_tui_holds_no_direct_action_calls(self) -> None:
-        code = "\n".join(l for l in SRC.splitlines() if not l.lstrip().startswith("#"))
+        code = "\n".join(line for line in SRC.splitlines() if not line.lstrip().startswith("#"))
         for forbidden in ("save_settings(", "bgcontrol.start(", "bgcontrol.stop(", "liq.set_kill(",
                           "write_document(", "subprocess.run("):
             self.assertNotIn(forbidden, code, f"tui.py must go through the registry, not {forbidden}")

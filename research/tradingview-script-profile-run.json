@@ -61,7 +61,7 @@
       "path": "script-profile-orchestration.md"
     },
     {
-      "path": "context-bundle.json"
+      "path": "research/tradingview-script-context-bundle.json"
     },
     {
       "path": "llms.txt"
@@ -127,7 +127,7 @@
     "research/tradingview-script-profile-work.json",
     "research/tradingview-strategy-card-locations.json",
     "script-profile-orchestration.md",
-    "context-bundle.json",
+    "research/tradingview-script-context-bundle.json",
     "llms.txt",
     "llms-facts.txt",
     "scripts/build_tradingview_script_profiles.py",

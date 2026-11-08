@@ -1,37 +1,27 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-08T11:06:26Z",
+  "generated_at": "2026-11-08T12:03:41Z",
   "project_key": "git@github.com:mithudso/solmargintrader.git",
   "paths": [
-    "CLAUDE.md",
-    "backtester/strategy_cards/README.md",
-    "research/tradingview-card-coverage.json",
-    "research/tradingview-strategy-understanding.json",
-    "research/tradingview-script-profile-work.json",
-    "scripts/build_tradingview_script_profiles.py",
-    "scripts/check_tradingview_strategy_profiles.py"
+    "soltui/experiments.py",
+    "soltui/experiment_runner.py",
+    "soltui/experiment_jobs.py",
+    "soltui/experiment_screens.py",
+    "soltui/commands.py",
+    "docs/optimization-workbench.md",
+    "docs/optimization-workbench-plan.md"
   ],
   "indexes": [
-    "index/INDEX.json",
+    "docs/FILES.md",
     "index/TEXT-INDEX.json",
-    "index/CONCEPT-INDEX.json"
+    "docs/high_signal_file_index.json"
   ],
-  "links": [
-    {
-      "from": "research/tradingview-strategy-understanding.json",
-      "to": "research/tradingview-script-profile-work.json",
-      "relation": "protect accepted21 while expanding721 publications"
-    }
-  ],
+  "links": [],
   "config": {
-    "max_agents": 8,
-    "max_concurrent": 3,
-    "max_research": 0,
-    "source_scope": "all742 local HTML publications;21 protected and721 remaining",
-    "model_mapping": "sonnet synthesis tier maps to native gpt-6.1-sol; no Anthropic-labelled runtime is available"
+    "task": "optimization workbench",
+    "pipeline": "full",
+    "run_id": "20261108-063425"
   },
-  "open_questions": [
-    "Exact algorithms remain unknown when the saved script source or numerical definition is missing; preserve that gap rather than research or invent it."
-  ],
+  "open_questions": [],
   "generator": "p/2.1.0"
 }

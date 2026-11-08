@@ -1,6 +1,7 @@
 # soltui — SOL strategy console
 
-A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
+A Textual TUI plus a macOS menu-bar indicator over the backtester. Its panes are grouped into five
+destinations (Now, Signal, Research, Money, Library) plus Settings; see [Navigation](#navigation).
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 wiring shell.
 
@@ -17,7 +18,8 @@ uv venv ~/.venvs/soltui -p 3.13
 uv pip install -p ~/.venvs/soltui/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
 ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui    # once; ~/.local/bin must be on PATH
 
-soltui          # the sixteen-tab console, from any directory
+soltui          # the console, from any directory (opens on Now)
+soltui --classic  # the same console with the original tab bar
 soltui app      # the macOS menu-bar indicator (needs rumps)
 soltui serve    # the console in a browser window
 ```
@@ -76,6 +78,34 @@ Long titles clip from the **head**, never the tail, because the figure is at the
 end — an earlier version clipped the tail and silently ate the number the
 indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_label`.
 
+## Navigation
+
+The console groups its panes by the question you bring, not as eighteen peer tabs. The design is in
+`docs/design/soltui-v2/DESIGN.md`. The shell is `soltui/shell.py`.
+
+| Key | Destination | Sub-views (the classic tab each one is) |
+| --- | --- | --- |
+| `1` | **Now** | Overview: Needs you (everything stale, failed or unseen, worst first), every coin, money tiles, activity, live prices |
+| `2` | **Signal** | Call & metrics · Backtest · Forward test · All coins (the four Compound 5m sections) |
+| `3` | **Research** | Backtest · Roster (Strategies) · Sweep (Queue) · Cumulative · Top 5 · Decide (Analyze) · Forward (Forwardtest) · Bots · Replay (Execute) · Dry run (Live Run) · Indicators (Signals) |
+| `4` | **Money** | Aero LP (Liquidity) · P&L · Wallet, under a LIVE MONEY band |
+| `5` | **Library** | Docs · Findings (Research) |
+| `,` | **Settings** | Settings |
+
+- `[` and `]` step through a destination's sub-views. Clicking a destination or a sub-view works too.
+- `?` opens Explain for the focused field: the same text as F1, in a drawer that does not reflow the
+  screen.
+- `ctrl+p` opens the palette. It lists every view, the app's actions and all registry commands by
+  name. A read-only command with no required parameters runs from the palette and shows a one-line
+  result. Any other command (every write, including the LP Kill and Resume) opens the view that owns
+  its button and focuses it, so confirm steps stay where they are.
+- The strip under the top bar shows every background process: sweep, trainers, autopilot, LP daemon,
+  price recorder, forward test and wallet scan. It refreshes every 5 s.
+
+Every classic pane is still a pane of the one `#main-tabs` TabbedContent. A tab added later is filed
+under Research automatically (`shell.with_extra_views`). `soltui --classic` shows the original tab bar.
+The pre-v2 console is also preserved as the git tag `soltui-ui-v1` (branch `backup/soltui-ui-v1`).
+
 ## The tabs
 
 Hover any field, button, table heading or table value for plain-language help.
@@ -103,11 +133,11 @@ larger open losses; read total net account equity as well as realized P&L.
 | Tab | What it does |
 |---|---|
 | **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry, and the wallets to watch: public Solana, Base and Ethereum addresses, and extended **public** keys (`btc_xpub`, `ltc_xpub`, `doge_xpub`) for Bitcoin, Litecoin and Dogecoin. Each is validated (Base58Check and version bytes for an xpub); an `xprv`, a WIF key, a raw 64-hex string or a Solana secret-key array is refused with a message that private keys do not belong in settings, and the message never repeats the value. An xpub is shown as a short prefix everywhere (`settings.get`, the TUI, the API) and the config file is mode 600. A read-only *signing key source* row shows whether `~/.ssh/wallet.private` (the EVM, Ethereum/Base, key) and `~/.ssh/solana.private` (the Solana key) exist and are mode 600, by `stat` alone. **There is no field that accepts a private key.** Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
-| **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. The left table also shows each strategy's **test history** from the background sweep's results file: tested yes/no/n/a, times tested (distinct configurations), when last tested, and the card-preset result (median Sharpe, net return, trades) — never the best of many variations. Three buttons start the background worker at each card's own parameters: **Backtest selected**, **Backtest all untested**, **Backtest all**. Already-recorded configurations are skipped, and only one background sweep runs at a time. Results written before dates were recorded read `date not recorded`. |
+| **Strategies** | The left table shows all active strategy and indicator cards, including retained TradingView specifications; incomplete research stays excluded. Filter by title, ID, family or description, and choose All active cards, Registered strategies, Specifications or TradingView cards. Status distinguishes specification, implemented and measured cards; missing data is labeled. Selecting a specification opens its card in the shared editor. Specifications have no repository implementation, so Add and Backtest selected are disabled and keyboard/programmatic actions refuse them. Registered strategies keep their existing roster, parameter, code-opening and test-history behavior. Backtest all/untested still select only runnable strategies. Refresh cards reloads the catalog. |
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
 | **Forwardtest** | Paper-test every strategy, the roster or custom combinations. Forecast 1, 5, 10 and 30 minutes separately; inspect accuracy, unresolved calls and settings changes. |
 | **Compound 5m** | Four sections: **Call & metrics**, **Backtest** (a *What is tested* paragraph, readable row names, buy & hold, net bps 1h/24h, and a **Frontier** button that tests every metric's strongest 2% of readings held 1 h-24 h), **Forward test**, **All coins**. Scores every metric from `5minleveragestrategies.json` (and the ones it lacked: higher timeframe, funding/premium/OI, order book, BTC lead, trend lifecycle, market-cycle phase) for the **next 5-minute bar**, -1 down to +1 up; families vote once, the regime reweights trend vs reversion styles, and cost / liquidation / shock / thin-market / event / news gates force FLAT. Double-click a metric to switch it on or off (or select it and press Space); a single click selects it and shows its full detail (formula, parameters, evidence, adoptions) in the editor below, as do coin, backtest and forward rows; **Autopilot** (on by default) runs tuning, adopts tuned settings per coin by itself and keeps every coin training (with `python -m soltui.compound_agent install` for a LaunchAgent); **Toggle on/off**, edit `weight=` and parameters, and aggregate settings (`entry`, `exit`, `leverage`, `fee_bps`…). **Signal now** scores the latest closed bar from public data; **Backtest selected** runs the compound and each enabled metric alone on cached 5m data (OOS hit rate, z, oracle net bps, engine return after fees); **Forward tick** / **Auto-forward** record a call per closed bar and resolve it when the next bar closes; **Start unattended training** runs that in a detached background process that keeps going after the console closes. Calls are sized to the Settings Solana wallet (`wallet (live)`), and a status line under the buttons summarises each backtest run in plain words. No order path. See `docs/COMPOUND-5M.md`. |
-| **Bots** | The **grid bot** (the resting ladder the extension trades, `backtester/core/gridsim.py`), the **triangle arbitrage bot** (three-leg USD cycles through Coinbase cross pairs, `core/trianglesim.py`) and the **DCA bot** (base order, deeper safety orders, one take-profit above the average entry, `core/dcasim.py`). **Backtest** starts the selected bot on one or several ticked **Coins** (default: from the beginning of the cached data) and shows a per-coin table, what it set from the price at the start (ladder levels, safety orders, watched triangles) and what it made, beside buy-and-hold. **Start forward test** runs it in dry-run from now on the live recorded price stream; **Auto-optimize (all coins)** opens a window listing the configurations under test with live progress, runs them on every cached coin, adopts one only if it beats the current settings out of sample by a sign test, and then says exactly which settings changed and whether they were saved, with per-coin results. Each re-run searches wider. A **Live prices** section shows every streamed market's bid, ask and spread; prices record automatically. All simulation; no order path. See [The Bots tab](#the-bots-tab-and-the-price-stream). |
+| **Bots** | The **grid bot** (the resting ladder the extension trades, `backtester/core/gridsim.py`), the **triangle arbitrage bot** (three-leg USD cycles through Coinbase cross pairs, `core/trianglesim.py`) and the **DCA bot** (base order, deeper safety orders, one take-profit above the average entry, `core/dcasim.py`). **Backtest** starts the selected bot on one or several ticked **Coins** (default: from the beginning of the cached data) and shows a per-coin table, what it set from the price at the start (ladder levels, safety orders, watched triangles) and what it made, beside buy-and-hold. **Start forward test** runs it in dry-run from now on the live recorded price stream; **Auto-optimize (all coins)** uses durable checkpoints and fresh final holdout safeguards before it can save a significant improvement. **Experiment workbench** opens the typed search editor, evidence explorer, sparse heatmaps, resumable worker controls and read-only TradingView comparison. Each adaptive re-run searches wider. A **Live prices** section shows every streamed market's bid, ask and spread; prices record automatically. All simulation; no order path. See [The Bots tab](#the-bots-tab-and-the-price-stream). |
 | **Backtest** | **Strategy to backtest** picks the whole roster or one roster strategy (the roster is the right-hand list on the Strategies tab, shown on the line beside the picker); **Run backtest** runs that pick through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. **Backtest untested + little-tested** starts the background worker at once on every strategy never tested or with fewer than three recorded configurations (card parameters plus near variations, every horizon); its progress shows under the buttons and on the Queue tab. |
 | **Top 5** | The five recommended configurations with their evidence and off-asset transfer tests. |
 | **Live Run** | Launches the extension's dry-run tool. A Top 5 preset list fills the strategy; the result shows `dry-run net %`. |
@@ -194,22 +224,24 @@ new gzip members are read). Grid and DCA run on one-minute mid-price bars built 
 snapshots; a gap of up to two minutes is bridged with flat bars, and a longer one ends the
 coverage at the gap because what the market did unseen is unknown.
 
-**Auto-optimize.** Pressing it opens a window listing every configuration under test, with live
-progress. Run 1 tests a fixed, small grid of settings per bot (12 grid, 36 DCA, 12 triangle
-configurations plus the current one); **each later run tests 12 more configurations than the first,
-skips every configuration an earlier run tried, adds the one-setting neighbours of the current
-settings and samples further from them** (the reach grows with the run number until it spans each
-setting's whole range; the sampler is seeded by bot and run, so a run is reproducible). They run on
-every cached coin over six 30-day windows of hourly bars (every recorded triangle over hour windows,
-for the triangle bot). The older three windows rank the candidates; the newer three decide. The
-train winner is adopted only when it beats the current settings in significantly more test cells
-than it loses (one-sided sign test, p < 0.05, at least ten decided cells) with a positive median
-gain. When the run ends the window says **SAVED** with every changed setting (`before -> after`)
-and the file it was saved to, or **NOT SAVED** and why, and lists per coin the windows it ran and
-the pick against the current settings; a toast says the same. The run history is in
-`~/.config/soltui/bots/optimize-history-<bot>.json`. On 2026-11-08, over 23
-coins, neither the grid (p = 0.78) nor the DCA bot (p = 0.45) had a reliable winner, so both kept
-their defaults. That is the expected answer in this repo (Stele KNOW-561, KNOW-871).
+**Auto-optimize and Experiments.** The existing action now uses the durable experiment runner.
+It still searches the representative grid on its first run and expands later searches, but stores
+complete candidate/coin/window evidence instead of only a final aggregate. The older half of the
+available windows supplies train/validation evidence; the newer half remains final holdout until
+one training-selected candidate is frozen. Saving still requires a one-sided sign test with
+p < 0.05, at least ten decided final cells and a positive median improvement. Used or stale final
+dates cannot be reopened by changing search settings. A refusal explains why settings were kept.
+
+The **Experiment workbench** adds a typed search editor and workload preview, sortable candidate
+and per-window evidence, sparse observed heatmaps, explicit pause/cancel/resume, reported TradingView
+CSV import/comparison and separate final validation. Exploration does not save settings. Launched
+workers survive closing the window; controls take effect after the current cell commits. Imported
+results never promote native settings. See [the workbench guide](../docs/optimization-workbench.md)
+for commands, units, provenance and the limits of locally tracked holdout freshness.
+
+Legacy aggregate reports remain in `~/.config/soltui/bots/optimize-history-<bot>.json` and the
+latest-report files. The new experiment store lives under `~/.config/soltui/experiments/`. Preserve
+that evidence when moving the configuration directory; deleting the ledger erases its history.
 
 ### Searching the repo from the Docs tab
 
@@ -493,6 +525,10 @@ soltui/
   liquidity.py pure: read/validate/format the liquidity daemon's state files; KILL toggle
   bots.py      the Bots tab: grid / triangle / DCA bot configs, backtest, forward test, auto-optimize
   bots_screens.py the Bots tab's coin picker and auto-optimize window (presentation only)
+  experiments.py immutable experiment/cell store, typed spaces, sparse maps, TradingView evidence
+  experiment_runner.py frozen native evaluation, checkpoints and fresh final holdout guards
+  experiment_jobs.py explicit process launch, durable controls, leases and recovery
+  experiment_screens.py experiment workbench over the command registry
   pricefeed.py the streaming price recorder: stdlib WebSocket, Coinbase level2_batch + ticker, gzip JSONL
   app.py       rumps menu-bar shell (wiring only, lazy rumps import)
   commands.py  the command registry: dispatch, envelope, confirm gate, call log (every action lives here)
