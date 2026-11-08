@@ -54,10 +54,38 @@ python3 research/cross_asset_cpcv.py --self-test     # the harness reproduces th
 | `python3 index/build.py` | build the four repo indexes | localhost only |
 | `python3 index/search.py` | search the repo three ways | localhost only |
 | `python3 scripts/check_docs.py` | **gate:** doc drift, test counts, dead index paths | no |
+| `python3 scripts/html_to_markdown.py SOURCE` | saved HTML tree to text-only Markdown | no |
 | `node --test` (in `extension/`) | extension unit + parity tests | no |
 | `node tools/dryrun.js` | headless grid dry run, no orders | optional |
 
 ---
+
+## Saved HTML to Markdown
+
+`python3 scripts/html_to_markdown.py SOURCE` recursively converts `.html` and `.htm`
+files (case insensitive). With no source argument it uses the current directory.
+It writes UTF-8 `.md` files into a sibling directory named `SOURCE-markdown`, keeping
+each relative subfolder and filename. Source HTML remains unchanged.
+
+```bash
+python3 scripts/html_to_markdown.py /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com --output /Users/mitch/dev/tradingview-markdown
+python3 -m unittest scripts.test_html_to_markdown
+```
+
+It preserves headings, lists, fenced code, link labels and table cell text. Scripts,
+styles, images, embedded objects and explicitly hidden elements are omitted. Tables
+become rows of text separated by ` | `; links keep their labels without URLs.
+It reads UTF-8, UTF-16 with a BOM, declared HTML charsets, and Windows-1252 fallback.
+It does not run JavaScript, fetch resources, or reconstruct content absent from the
+saved HTML. Stylesheet-based visibility is not evaluated.
+
+Use `--dry-run` to count planned outputs. Existing Markdown is skipped; rerun the
+same command to resume. Use `--overwrite` to regenerate existing files after a source
+change. Name collisions such as `page.html` and `page.htm` abort before any output.
+Symlinked source files and directories are excluded. Each output is published
+atomically. A failed file is reported while others continue, and failures produce
+a nonzero exit status. The summary reports converted, skipped, failed and empty pages.
+Keep the source mirror and generated text outside Git.
 
 ## Backtesting
 

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 71
-Delta: v70 to v71; four-child evidence gate accepted and independent source review completed.
+Version: 80
+Delta: v78 to v80; append four-child research records after concurrent hook and converter delivery.
 
 ## v1 - 2026-11-06
 
@@ -718,7 +718,87 @@ Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backt
 
 Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.
 
-## v70 - 2026-11-08 (Four-child /dr start)
+## v70 - 2026-11-08 (SessionStart hook JSON repair)
+
+Target: identify and repair the Codex error "hook returned invalid session start JSON output". Stele TASK-892 (diagnosis), TASK-893 (repair), TASK-895 (verification and delivery).
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba64; branch agent-01a1ba64; base origin/master 4d0f027. Original checkout has live concurrent sessions and unrelated dirty files. Preserve them.
+
+Completed: read project instructions and prior hook failure records; isolate workflow records. The prior TASK-127 exit 126 issue is a different failure and does not establish the current cause. The hook specialist owns canonical implementation/config and test edits outside this repository. This repository changes only its required workflow records.
+
+Constraints: reproduce actual registered SessionStart stdout; preserve enabled hooks and trust metadata; avoid restarting the shared daemon. Do not touch trading runtime, signing, services, research jobs, or unrelated work.
+
+Remaining: finish diagnosis, repair canonical producer, install and verify output, run relevant checks, commit and merge task-owned changes, record delivery evidence.
+
+## v71 - 2026-11-08 (Stop hook ownership repair)
+
+Target: extend the hook repair to the recurring Stop block counting 336 shared-checkout paths. TASK-893 now includes both fixes. Keep legitimate checks on this session's own unshipped work. Preserve unrelated dirty files and active sessions. The canonical-hook specialist owns both implementation fixes; a separate read-only verifier inspects loaded daemon evidence.
+
+Verification: workflow-only diff passes git diff --check and scripts/check_docs.py (2,155 discovered tests). index/build.py --check correctly detects changed workflow records; rebuild the offline index after finalizing these records. No trading code changed.
+
+Remaining: diagnose/repair both hooks, verify installed behavior, deliver canonical source and these workflow records through passing PRs.
+
+## v72 - 2026-11-08 (hook diagnosis confirmed)
+
+Root cause: actual Codex 0.167.0 daemon registry enables adapter74c6161da6b220bd for memory-central-session-brief.py. That adapter exits 0 with 1,671 bytes of plaintext beginning "[memory-central] STALE:". Parsing stdout as JSON fails at line 1 column 2. The installed adapter /Users/mitch/.codex/hooks/claude_hook_adapter.py passes a single command output through without normalization. Canonical source is /Users/mitch/dev/codex-local-ai-setup/scripts/claude_hook_adapter.py. Preserve valid JSON and wrap plaintext SessionStart output in hookSpecificOutput.additionalContext with hookEventName SessionStart. Lesson KNOW-903 records this trigger.
+
+Stop diagnosis: /Users/mitch/.claude/hooks/ship-it-stop.py attributes inherited dirty paths when a snapshot is absent, overwrites baseline on resume, and repeats identical blocks across turns. Lesson KNOW-902 anchors the concrete symbols. The current parent baseline already matches 337 paths, so preserve it; no blanket sweep or counter reset.
+
+Implementation worktrees: /Users/mitch/dev/codex-local-ai-setup-wt-hook-json-20261108 (adapter) and /Users/mitch/dev/claude-wt-hook-json-20261108 (Stop hook). The specialist owns those source changes. A separate verifier captured actual loaded registry and reproduced the offending output.
+
+Remaining: focused regression checks, install both canonical repairs, verify exact launcher and disposable ownership scenarios, deliver all task-owned changes through passing PRs, and complete TASK-893/TASK-895.
+
+## v73 - 2026-11-08 (both hook repairs installed)
+
+Installed: adapter v1.1.0 from canonical commit 757e2f7; Stop hook v1.1.0 from canonical commit 88d6933. Adapter wraps plain SessionStart context and preserves valid JSON. Stop preserves the original session baseline, excludes inherited ahead commits from a real SessionStart baseline, adopts unknown dirty paths without claiming them, and suppresses identical pending-work signatures across turns. New paths, changed files, and new commits still block.
+
+Validation: 70 setup tests pass (including 8 new adapter cases); 65 hook-enforcement tests and installer checks pass. Guarded install with preimage backups/readback preserved config.toml, hooks.json and settings.json bytes; no daemon restart. Receipt: /Users/mitch/.codex/claude-migration/hook-repairs/session-json-20261108T090919255187Z/receipt.json. Installed adapter SHA256 5559368361c3fb3ad29d8dbb94db664d4f46f97786fc3d24ae7f7e0e054da5ff; installed Stop SHA256 af401be680327064ea4ef93573ba5c63526f3e1c2b30af7c5c220277123b4c40.
+
+Delivery: Stop https://github.com/mithudso/claude-config/pull/33; adapter https://github.com/mithudso/codex-local-ai-setup/pull/11; repository workflow records https://github.com/mithudso/solmargintrader/pull/88. This repository changes only prompts, continuation records, and their offline retrieval indexes. Its documentation drift check passes; the offline index was rebuilt without inference/embeddings.
+
+At checkpoint: independent installed acceptance and final CI/merges are in progress. TASK-895 tracks final receipts and completion; check its current state before resuming. Preserve unrelated staged herdr/context7 changes in /Users/mitch/.claude and all original solmargintrader work.
+
+## v74 - 2026-11-08 (installed acceptance passed)
+
+Independent acceptance: exact enabled memory-central launcher exits 0 and emits 1,814 bytes of valid SessionStart JSON with original context. Installed Stop subprocesses in disposable repositories allow inherited dirt/ahead commits, preserve snapshots on resume, block a new own edit, allow an unchanged repeat, block a later distinct edit, and block a new own commit while excluding inherited commits. A late baseline still checks ahead commits. Installed hashes match the guarded receipt.
+
+Actual Codex 0.167.0 daemon retains enabled/trusted adapter and both Stop/snapshot registrations with no warnings/errors. config.toml, hooks.json, settings.json, parent baseline and parent hook counters remain unchanged. A subsequent ordinary UI turn has not been observed; exact installed command/runtime checks passed. No restart is needed.
+
+Remaining at delivery checkpoint: merge the three linked PRs after final-head CI, confirm remote default-branch content, remove only clean task worktrees/branches, and complete TASK-895 with final merge receipts. The installed behavior is verified. No user decision is pending.
+
+## v75 - 2026-11-08 (concurrent workflow-record integration)
+
+Merged origin/master afaa03a after another active session delivered Bots tab v2 in PR 87. Preserved its prompt and continuation entry verbatim and retained every hook-repair record. Renumbered these hook entries after the incoming history. Rebuilt only offline retrieval indexes for the combined tree. No Bots or trading source was edited by this hook repair.
+
+Canonical repairs are merged: Stop PR 33 as 79bc183c99a171d7221813724bbc10d6a85df7cd; adapter PR 11 as 4d385318438647bcddad9f368da927b5e9c9ada9. Installed acceptance already passed. Remaining: wait for final PR 88 checks, merge, verify remote content, clean only this task's worktree/branch, and complete TASK-895.
+
+## v76 - 2026-11-08 (HTML mirror conversion; TASK-894)
+
+Target: recursively convert HTML/HTM below /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com to text-only Markdown. Inventory: 31,880 HTML files, 9,371,462,657 bytes. Keep original HTML and generated mirror artifacts out of Git. Use Python stdlib and no network. Preserve headings, lists, code and table text. Remove scripts, styles, images and hidden markup; link labels remain text. Default output is a sibling tree; skip existing Markdown unless overwrite is requested. This extracts saved HTML, not content that requires JavaScript execution.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63. Shared checkout has other sessions and unowned changes. Base updated from a75f5b6 to origin/master 4d0f027 in the private worktree only.
+
+Remaining: implement converter and documentation; verify regression fixtures and representative local mirror files; refresh offline indexes; commit/push PR, pass checks, merge and verify remote default branch. Do not change the shared checkout or other worktrees.
+
+## v77 - 2026-11-08 (HTML mirror converter verification; TASK-894)
+
+Completed: scripts/html_to_markdown.py uses Python stdlib, preserves subfolders and textual Markdown structure, filters hidden/embedded payloads, detects encoding, preflights name collisions, publishes atomically, and supports skip/overwrite/dry-run. scripts/test_html_to_markdown.py has 11 passing behavior checks on Python 3.13 and system Python 3.15. Ruff lint/format, scripts/check_docs.py and offline index checks pass. CI runs the converter suite in its docs job. docs/SCRIPTS.md documents the command. Incoming Bots tab history from origin/master afaa03a is retained; no Bots code was changed by this task.
+
+Execution: converted 31,880 files into /Users/mitch/dev/tradingview-markdown with zero errors; 11 outputs are empty (10 meta-refresh redirect stubs and the JavaScript-only chart page). A rerun skipped all 31,880 outputs. /Users/mitch/dev/tradingview-markdown/conversion-manifest.json lists every source/output, output hash, empty source and the final rerun summary. /Users/mitch/.local/bin/tradingview-html-to-markdown.py is an executable copy matching the repository script. Source HTML and the shared dirty checkout remain untouched.
+
+Stele transport closed after initial lifecycle writes. Queued outbox operation IDs: 5c1ebafe, 8c704dd2, 9462ad7b, 56faab7b, 976096d2.
+
+Remaining: finish merge/index commit, push task branch, create PR, pass final-head CI, merge and verify remote contents, record delivery receipt and remove only this task's clean worktree/branch. No source-conversion work remains.
+
+## v78 - 2026-11-08 (HTML converter acceptance and concurrent delivery)
+
+Independent live-acceptance-verifier confirmed all 31,880 output hashes, sizes, path mappings and UTF-8 decodes. The installed executable matches committed source SHA-256 c814d3e40f17a69d3c7f3a780a532b924f503b43774532ae6bab120a90a3e074. Actual --help and --dry-run succeed. The receipt is /Users/mitch/dev/tradingview-markdown/acceptance-receipt.json. Stele transport recovered; all five queued operation IDs in v77 were replayed.
+
+PR 90: https://github.com/mithudso/solmargintrader/pull/90. Concurrent PR 88 merged as d355b694f3d56d7ab4ee0456691bf51c54352298 while CI ran. Retain all hook records, renumber converter entries after them, and rebuild offline indexes. Converter code and installed script stay unchanged. Current delivery checkpoint is /Users/mitch/dev/tradingview-markdown/conversion-memory.json.
+
+Remaining: pass checks on the updated final head, merge PR 90, verify remote contents and clean only the converter worktree/branch.
+
+## v79 - 2026-11-08 (Four-child /dr start)
 
 Active: TASK-905; research stage TASK-907, install stage TASK-908, publication/delivery stage TASK-909.
 Worktree: /Users/mitch/dev/solmargintrader-wt-01a1b5ef; branch agent-01a1b5ef; base afaa03a.
@@ -727,7 +807,7 @@ Constraints: research only; no trades, keys, services, broad source rewrites or 
 Completed: read routing and /dr instructions; semantic hub lookup found parent claims and reference; verified shared checkout contains unrelated work; created isolated worktree from fresh origin/master. Research worker owns only canonical new run and its evidence; root owns project records, installation, audit and Git delivery.
 Remaining: actual research/gate; qualified installed skill; finish tree/site projections; independent audit; tests, exact owned commits, PRs, CI, final merges and owned cleanup.
 
-## v71 - 2026-11-08 (Four-child evidence accepted)
+## v80 - 2026-11-08 (Four-child evidence accepted)
 
 Completed: actual standard-depth native adapter adaptive research on all four named children. Forty-nine structured claim records (13 conditional, 13 finite-sample, 7 lag-selection, 16 graph) and 24 auxiliary assertions passed the final research-gate/v4: 56 SUPPORTED and 17 nonassertions. Packet SHA: 80027ebbee91025d1506d54460828fdc6d1a6e22d079d8ad735a12055803d8db. Validation SHA: 3edae8b09ac3f75c47e8ffaed95d898bb817db75ee8bf3f3e0b95c81f845c30c.
 
