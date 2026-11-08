@@ -641,6 +641,10 @@ TAB_HELP["tab-paper-experiments"] = (
 )
 
 CONTROL_HELP.update({
+    "batch-status": "Open the saved all-market batch's progress, problem cells and paper forward-test status in the console.",
+    "batch-resume": "Resume the saved all-market batch without replacing its recorded results.",
+    "batch-stop": "Ask only the selected all-market batch to stop after its current work.",
+    "batch-fresh": "Create a separate all-market batch, preserving saved batches. Refuses while another batch runs.",
     **{key: "Open the console with this operation's current status and activity."
        for key in ("status-strategies", "status-compound-backtest", "status-compound-forward",
                    "status-forwardtest", "status-bots", "status-backtest", "status-top5",

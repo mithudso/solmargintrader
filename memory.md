@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 199
-Delta: v198 to v199; record the owner's parameter-relative adjustment decision.
+Version: 200
+Delta: v199 to v200; record F5 delivery.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1798,3 +1798,7 @@ ExperimentScreen now derives range defaults from the selected parameter baseline
 
 The owner confirmed that percentage controls should adjust the selected parameter relative to its current value. The separate verified coin price is a reference and does not populate non-price parameters.
 The Stele decision is queued in outbox 609e92e4 after the transport closed.
+
+## v200 - 2026-11-08
+
+F5 batch PR 127 merged as bb18a64fd2f52feae435680a22d0e8e1f81c3655 after required CI. It uses eligible Coinbase USD spot markets and cached history, reports missing and unsupported cells, and records separate interval-specific forward results. Leveraged tiers and full-universe throughput remain unverified. No production batch was started in testing.
