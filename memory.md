@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 69
-Delta: v68 to v69; begin offline HTML mirror converter; preserve concurrent work.
+Version: 71
+Delta: v70 to v71; complete 31,880-file conversion, verify rerun safety and prepare delivery.
 
 ## v1 - 2026-11-06
 
@@ -707,10 +707,31 @@ Current: merged origin/master 06a1f95 into latest PR 58 head b899458 in private 
 
 Remaining: regenerate derived indexes after staging resolutions, verify docs and index checks, commit and push HEAD to agent-01a1b5ef without force. Wait for all final-head CI jobs, merge PR 58, verify both merge receipts and source/receipt preservation, then remove only our clean private branches and worktree. Shared checkout and original PR worktrees remain untouched.
 
-## v69 - 2026-11-08 (HTML mirror conversion; TASK-894)
+## v69 - 2026-11-08 (Bots tab v2)
+
+Target: prompts.md Bots tab v2 entry. Stele TASK-884. Branch feat/bots-tab-v2 in /Users/mitch/dev/solmargintrader-wt-39e8bf11.
+Delivered before this: PR #84 (merged by another session while CI was red) and follow-up PR #86 (index regeneration), both on master.
+
+Completed: `soltui/bots_screens.py` (coin picker, auto-optimize window with the SAVED / NOT SAVED popup and per-coin table); optimize run numbering with growing, non-repeating candidate lists (`candidates(bot, current, run, tried)`, history in `bots/optimize-history-<bot>.json`); per-coin stats; `hourly()` splices 1m-resampled history before the 1h file; `bridged()` fills gaps of up to 48 h; default backtest start is the start of usable data; `backtest_many`; `pricefeed.ensure_recorder` + LaunchAgent `com.mitchhudson.soltui.pricefeed` (KeepAlive, `record --wait-lock`); `prices.start`/`prices.stop` replaced by `prices.ensure`; one-row top fields.
+
+Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backtest from the start of data runs 2021-06-17 (SOL) and 2019-11-09 (BTC).
+
+Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.
+
+## v70 - 2026-11-08 (HTML mirror conversion; TASK-894)
 
 Target: recursively convert HTML/HTM below /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com to text-only Markdown. Inventory: 31,880 HTML files, 9,371,462,657 bytes. Keep original HTML and generated mirror artifacts out of Git. Use Python stdlib and no network. Preserve headings, lists, code and table text. Remove scripts, styles, images and hidden markup; link labels remain text. Default output is a sibling tree; skip existing Markdown unless overwrite is requested. This extracts saved HTML, not content that requires JavaScript execution.
 
 Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63. Shared checkout has other sessions and unowned changes. Base updated from a75f5b6 to origin/master 4d0f027 in the private worktree only.
 
 Remaining: implement converter and documentation; verify regression fixtures and representative local mirror files; refresh offline indexes; commit/push PR, pass checks, merge and verify remote default branch. Do not change the shared checkout or other worktrees.
+
+## v71 - 2026-11-08 (HTML mirror converter verification; TASK-894)
+
+Completed: scripts/html_to_markdown.py uses Python stdlib, preserves subfolders and textual Markdown structure, filters hidden/embedded payloads, detects encoding, preflights name collisions, publishes atomically, and supports skip/overwrite/dry-run. scripts/test_html_to_markdown.py has 11 passing behavior checks on Python 3.13 and system Python 3.15. Ruff lint/format, scripts/check_docs.py and offline index checks pass. CI runs the converter suite in its docs job. docs/SCRIPTS.md documents the command. Incoming Bots tab history from origin/master afaa03a is retained; no Bots code was changed by this task.
+
+Execution: converted 31,880 files into /Users/mitch/dev/tradingview-markdown with zero errors; 11 outputs are empty (10 meta-refresh redirect stubs and the JavaScript-only chart page). A rerun skipped all 31,880 outputs. /Users/mitch/dev/tradingview-markdown/conversion-manifest.json lists every source/output, output hash, empty source and the final rerun summary. /Users/mitch/.local/bin/tradingview-html-to-markdown.py is an executable copy matching the repository script. Source HTML and the shared dirty checkout remain untouched.
+
+Stele transport closed after initial lifecycle writes. Queued outbox operation IDs: 5c1ebafe, 8c704dd2, 9462ad7b, 56faab7b, 976096d2.
+
+Remaining: finish merge/index commit, push task branch, create PR, pass final-head CI, merge and verify remote contents, record delivery receipt and remove only this task's clean worktree/branch. No source-conversion work remains.
