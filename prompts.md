@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 52
-Delta: v51 to v52; add HTML converter and preserve concurrent Bots tab history.
+Version: 53
+Delta: v52 to v53; retain hook history and add HTML converter request.
 
 ## v1 - 2026-11-06
 
@@ -378,7 +378,29 @@ WHen I'm in teh Bots tab and click Auto-optimize (all coins), it should open the
 
 Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch feat/bots-tab-v2).
 
-## v52 - 2026-11-08 (HTML mirror conversion)
+## v52 - 2026-11-08 (SessionStart hook JSON repair)
+
+```text
+fix this hook error: • Hook failed
+  └ hook returned invalid session start JSON output
+```
+
+## v53 - 2026-11-08 (Stop hook ownership repair)
+
+```text
+Also fix this hook error at the end of every turn: • Blocked by hook
+  └ Unshipped work in the user's repo: 336 uncommitted/untracked path(s) in /Users/mitch/dev/solmargintrader.
+    The user is the only developer and does not want unmerged code left behind. Finish now, in order:
+    1. Run the repo's tests/lint (per its CLAUDE.md). Fix failures.
+    2. Commit your own files (check git status first; do not sweep in another session's changes).
+    3. Push the branch and open a PR (`gh pr create`, body ends with the attribution line).
+    4. Wait for CI (`gh pr checks --watch`), fix and push if red.
+    5. Merge LAST, only after the final push: `gh pr merge --squash --delete-branch`. A squash merge takes the branch tip at that moment, so a commit pushed afterwards is silently left out. After merging, confirm `git log origin/main..HEAD` is empty or open a follow-up PR.
+    6. Sync main (`git pull --ff-only`), delete the local branch, remove the worktree. Leave no stale branch, PR or dead code.
+    If the pending changes are not yours (another session's work, or this session changed nothing), say so in one line and stop.
+```
+
+## v53 - 2026-11-08 (HTML mirror conversion)
 
 ```text
 Write a script to convert all of the html files in the subfolders here into text only markdown files.
