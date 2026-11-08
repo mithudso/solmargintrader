@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 69
-Delta: v68 to v69; Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder).
+Version: 71
+Delta: v70 to v71; four-child evidence gate accepted and independent source review completed.
 
 ## v1 - 2026-11-06
 
@@ -717,3 +717,26 @@ Completed: `soltui/bots_screens.py` (coin picker, auto-optimize window with the 
 Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backtest from the start of data runs 2021-06-17 (SOL) and 2019-11-09 (BTC).
 
 Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.
+
+## v70 - 2026-11-08 (Four-child /dr start)
+
+Active: TASK-905; research stage TASK-907, install stage TASK-908, publication/delivery stage TASK-909.
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1b5ef; branch agent-01a1b5ef; base afaa03a.
+Scope: standard-depth /dr on Conditional nonlinear information transfer; Finite-sample dependency uncertainty; Lag-selection multiplicity; Directed graph preservation. Parent: Uncertainty-aware nonlinear crypto lead-lag. Prior TASK-808 is complete; reuse exact parent evidence without claiming this explicit child depth was already done.
+Constraints: research only; no trades, keys, services, broad source rewrites or shared-checkout edits. Three independent source origins per concept; negative searches; exact readable source spans; deterministic and semantic research-gate/v4 checks for all assertions; preserve paid supported judgments. Do not infer executable SOL profitability from dependence, significance or graph stability.
+Completed: read routing and /dr instructions; semantic hub lookup found parent claims and reference; verified shared checkout contains unrelated work; created isolated worktree from fresh origin/master. Research worker owns only canonical new run and its evidence; root owns project records, installation, audit and Git delivery.
+Remaining: actual research/gate; qualified installed skill; finish tree/site projections; independent audit; tests, exact owned commits, PRs, CI, final merges and owned cleanup.
+
+## v71 - 2026-11-08 (Four-child evidence accepted)
+
+Completed: actual standard-depth native adapter adaptive research on all four named children. Forty-nine structured claim records (13 conditional, 13 finite-sample, 7 lag-selection, 16 graph) and 24 auxiliary assertions passed the final research-gate/v4: 56 SUPPORTED and 17 nonassertions. Packet SHA: 80027ebbee91025d1506d54460828fdc6d1a6e22d079d8ad735a12055803d8db. Validation SHA: 3edae8b09ac3f75c47e8ffaed95d898bb817db75ee8bf3f3e0b95c81f845c30c.
+
+Independent source review: three original research groups per child, negative searches, 81 structured evidence spans and 32 bound snapshots. One bounded combined repair fixed seven first-review failures and six context gaps, with overlap between them; 60 judgments reused and only 13 changed pairs reviewed. Scientific statements and sources remain scoped to their actual studies. No measured five-minute SOL strategy is established.
+
+Root report reproduces ten exact accepted assertions and labels the experiment proposal. Its identifiers were rebound to the final packet after two source-span repairs changed canonical IDs. Public-safe selected claim index and gate receipt are in research/nonlinear-lead-lag-children/. Raw sources and judge transcripts remain private in the canonical run /Users/mitch/.global-ai-hub/research/nonlinear-lead-lag-four-children-task905.
+
+Checks: 872 SolTUI tests ran (870 passed, 2 skipped); 34 Mongo tests ran (17 passed, 17 server/driver skips); 361 extension tests passed; offline oscillating dry run closed one positive round trip. Archived figure check passed 1084 transcription/recomputation checks, not a new market experiment. Initial 900-test backtester run had only the expected index-staleness failure from changed workflow records; regenerate the offline index and rerun after final documentation.
+
+Stele transport closed after stage creation. Exact lifecycle writes queued: claim TASK-907 in 5e16424f; complete TASK-907 in 5532828f; claim TASK-908 in 509bdd0d. These identifiers are recovery receipts, not confirmed graph closure.
+
+Remaining: finish supported skill render/metadata qualification and delivery; exact stable runtime activation; adapter finish and four child projections; independent publication audit; final root records/index checks, PRs/CI/merges and owned cleanup. Preserve original dirty checkouts, shared index differences and paused services.

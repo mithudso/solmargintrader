@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 51
-Delta: v50 to v51; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields.
+Version: 52
+Delta: v51 to v52; direct /dr request for four nonlinear lead-lag frontier children.
 
 ## v1 - 2026-11-06
 
@@ -377,3 +377,14 @@ WHen I'm in teh Bots tab and click Auto-optimize (all coins), it should open the
 ```
 
 Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch feat/bots-tab-v2).
+
+## v52 - 2026-11-08 (Four nonlinear lead-lag children)
+
+````text
+Do a /dr on the 4 unresearched child concepts: Conditional nonlinear information transfer (frontier, viability 3.60 / 5)
+Finite-sample dependency uncertainty (frontier, viability 3.60 / 5)
+Lag-selection multiplicity (frontier, viability 3.60 / 5)
+Directed graph preservation (frontier, viability 3.60 / 5)
+````
+
+Target: /Users/mitch/dev/solmargintrader-wt-01a1b5ef. Stele TASK-905.
