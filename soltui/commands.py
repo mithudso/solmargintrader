@@ -2075,13 +2075,15 @@ def coinbase_account(ctx: Context, p: dict[str, Any]) -> Any:
     return cb.last_account()
 
 
-@command("coinbase.sync", "Refresh Coinbase balances using the separately authenticated Coinbase CLI.")
+@command("coinbase.sync", "Refresh Coinbase balances using the separately authenticated Coinbase CLI.",
+         read_only=False, long_running=True)
 def coinbase_sync(ctx: Context, p: dict[str, Any]) -> Any:
     from . import coinbase_account as cb
     return cb.sync_account()
 
 
-@command("coinbase.markets", "Download the public Coinbase market catalog, reporting incomplete scopes.")
+@command("coinbase.markets", "Download the public Coinbase market catalog, reporting incomplete scopes.",
+         read_only=False, long_running=True)
 def coinbase_markets(ctx: Context, p: dict[str, Any]) -> Any:
     from . import coinbase_account as cb
     return cb.download_markets()

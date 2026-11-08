@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 180
-Delta: v179 to v180; record cross-interface and Coinbase fixtures.
+Version: 181
+Delta: v180 to v181; record Coinbase command mutation metadata.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1718,3 +1718,7 @@ The Coinbase snapshot now includes the authorized portfolio breakdown, including
 ## v180 - 2026-11-08
 
 PR 120's macOS CI exposed an invalid paper_experiment command namespace and missing parity fixtures. The integrated Coinbase branch includes the paperexperiment rename and safe fixtures for both paper and Coinbase commands. PR 119's unchanged extension browser smoke also failed two startup checks once, while the same checks passed on PR 118 and PR 120; rerun on the final head and investigate any repeat. Rebuild offline indexes and wait for final CI before merging.
+
+## v181 - 2026-11-08
+
+Coinbase sync and market download write local snapshots, so their registry entries set read_only=False. The last-snapshot command remains read-only. This prevents read-only command surfaces from treating downloads or refreshes as passive actions. The registry metadata has a focused regression test.

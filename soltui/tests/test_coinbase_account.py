@@ -50,6 +50,12 @@ class CoinbaseAccountTests(unittest.TestCase):
         result = cb.sync_account(call)
         self.assertEqual([r['currency'] for r in result['accounts']], ['USD', 'SOL'])
 
+    def test_snapshot_writers_are_not_registered_as_read_only(self):
+        from soltui import commands
+        self.assertTrue(commands.COMMANDS['coinbase.account'].read_only)
+        self.assertFalse(commands.COMMANDS['coinbase.sync'].read_only)
+        self.assertFalse(commands.COMMANDS['coinbase.markets'].read_only)
+
 
 class CoinbasePaneTests(unittest.IsolatedAsyncioTestCase):
     async def test_wallet_displays_trading_and_staked_positions_separately(self):
