@@ -1967,8 +1967,10 @@ class SolTuiApp(App):
         card = getattr(self, "_strategy_cards", {}).get(key, {})
         if card.get("registered", False):
             return True
-        self.query_one("#roster-status", Static).update(
-            "This card is not a registered strategy. Read its specification below; an implementation is required before backtesting.")
+        message = ("This specification needs an implementation before backtesting. Read its card below."
+                   if card.get("status") == "spec-only" else
+                   "This card uses a separate runner. Read its card below; this roster accepts registered strategies only.")
+        self.query_one("#roster-status", Static).update(message)
         return False
 
     def _refresh_strategy_history(self) -> None:

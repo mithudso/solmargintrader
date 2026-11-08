@@ -385,6 +385,14 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             await pilot.press("space")
             self.assertEqual(app.roster.to_list(), before)
 
+            separate = next(card for card in cards.values()
+                            if card.status != "spec-only" and card.registry_key is None)
+            app.query_one("#strategy-card-filter", Input).value = separate.id
+            await pilot.pause()
+            app._add()
+            self.assertIn("separate runner", text_of(app, "#roster-status"))
+            self.assertEqual(app.roster.to_list(), before)
+
             app.query_one("#strategy-card-filter", Input).value = ""
             app.query_one("#strategy-card-scope", Select).value = "registered"
             await pilot.pause()
