@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `776aedb` (2026-11-08T09:31:21+00:00). 1835 tracked files, 28.9 MB.
+**Generated** from `index/INDEX.json` at commit `67b2e5d` (2026-11-08T09:35:06+00:00). 1835 tracked files, 29.5 MB.
 
 Regenerate with:
 
@@ -184,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 843 lines · 126,963 B · description: **extracted**
+`doc` · 856 lines · 128,811 B · description: **extracted**
 
-**Purpose.** Version: 80 Delta: v79 to v80; integrate concurrent histories and TradingView card coverage. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 81 Delta: v80 to v81; final integrated verification and PR 91 continuation receipt. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -264,7 +264,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 320 lines · 18,677 B · description: **extracted**
+`doc` · 320 lines · 18,659 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -280,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 7144 lines · 357,482 B · description: **extracted**
+`doc` · 18008 lines · 885,975 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -344,7 +344,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-CARD-FILES.md`
 
-`doc` · 1104 lines · 281,905 B · description: **extracted**
+`doc` · 1105 lines · 282,077 B · description: **extracted**
 
 **Purpose.** Version: 1.0.0 (2026-11-08). Delta: first complete path receipt. Canonical checkout paths for every file created or modified by this task. The coverage report and JSON ledger explain the matches and source limitations.
 

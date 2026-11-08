@@ -1101,3 +1101,4 @@ Canonical checkout paths for every file created or modified by this task. The co
 - [/Users/mitch/dev/solmargintrader/prompts.md](/Users/mitch/dev/solmargintrader/prompts.md) — updated retrieval or continuation record.
 - [/Users/mitch/dev/solmargintrader/research/tradingview-card-coverage.json](/Users/mitch/dev/solmargintrader/research/tradingview-card-coverage.json) — source coverage and verification artifact.
 - [/Users/mitch/dev/solmargintrader/scripts/check_tradingview_cards.py](/Users/mitch/dev/solmargintrader/scripts/check_tradingview_cards.py) — source coverage and verification artifact.
+- [/Users/mitch/dev/solmargintrader/docs/high_signal_file_index.json](/Users/mitch/dev/solmargintrader/docs/high_signal_file_index.json) — updated retrieval line counts.

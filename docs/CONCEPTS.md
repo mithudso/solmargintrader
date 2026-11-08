@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T09:31:21+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T09:35:06+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -47,9 +47,9 @@ The extension can place real orders. Dry-run is the default, rails live in code 
 Strongest files:
 
 - `research/tradingview-card-coverage.json` (1637 hits)
+- `docs/FILES.md` (87 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 - `skills/trading-and-investing/references/trading-risk-management.md` (84 hits)
-- `docs/FILES.md` (69 hits)
 - `llms-full.txt` (62 hits)
 - `skills/trading-and-investing/references/strategies-and-risk.md` (54 hits)
 - `skills/trading-and-investing/SKILL.md` (51 hits)
@@ -70,7 +70,7 @@ Strongest files:
 - `llms-full.txt` (129 hits)
 - `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
 - `backtester/core/gridsim.py` (102 hits)
-- `docs/FILES.md` (75 hits)
+- `docs/FILES.md` (102 hits)
 - `extension/src/core/grid.js` (66 hits)
 - `backtester/strategy_cards/ladder_grid.md` (57 hits)
 
@@ -85,7 +85,7 @@ Oracle-priced perps, priority fees as a product, per-account fee markets, droppe
 Strongest files:
 
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
-- `docs/FILES.md` (150 hits)
+- `docs/FILES.md` (152 hits)
 - `skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md` (127 hits)
 - `skills/trading-and-investing/references/jupiter-perps-trading.md` (125 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (124 hits)
@@ -104,13 +104,13 @@ Gaps refused rather than filled, columns resolved by name, timestamps monotone. 
 Strongest files:
 
 - `research/tradingview-card-coverage.json` (267 hits)
+- `docs/FILES.md` (52 hits)
 - `soltui/bots.py` (39 hits)
 - `backtester/tests/test_engine.py` (34 hits)
 - `backtester/core/data.py` (33 hits)
 - `research/STRATEGIES.md` (32 hits)
 - `docs/TRADINGVIEW-CARD-FILES.md` (28 hits)
 - `extension/src/ui/ui.css` (28 hits)
-- `docs/FILES.md` (26 hits)
 
 Full list: `python3 index/search.py --concept data-integrity -n 258`
 

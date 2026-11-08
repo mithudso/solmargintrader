@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 80
-Delta: v79 to v80; integrate concurrent histories and TradingView card coverage.
+Version: 81
+Delta: v80 to v81; final integrated verification and PR 91 continuation receipt.
 
 ## v1 - 2026-11-06
 
@@ -840,3 +840,16 @@ PR: https://github.com/mithudso/solmargintrader/pull/91 ; branch feat/tradingvie
 Final card content is 1,083 new specs, 1,142 total cards, 114 built-ins and 4,770 canonical sources. The final raw-source checker verified 4,890 physical sources. Independent targeted audit passed and its formatting follow-up confirmed all corrected source spans. Ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca. No executable trading entry changed.
 
 No further card implementation is required for this request. For delivery/resume, inspect PR 91: if it is still open, finish final-head CI and merge; if merged, use its merge receipt and complete TASK-888 if needed. TASK-888 holds the authoritative final delivery receipt. Recheck conditional remaining actions rather than replaying completed inventory or card extraction. Source-limited definitions are documented product limitations, not a pending permission request.
+
+
+## v81 - 2026-11-08 (TradingView final integration checks)
+
+Version: 81. Delta: v80 to v81; confirm merged-tree checks without changing card content.
+
+Integrated upstream d355b69 in merge commit 67b2e5d. All 59 pre-existing cards match origin/master byte for byte. The task diff contains no SolTUI runtime, backtester/core, backtester/tests, liquidity, executor, extension or Mongo changes. The catalog source ledger remains SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca.
+
+Integrated checks: 97 SolTUI queue/Docs integration tests pass (29.510 seconds). The 900-test backtester run under INDEX_NO_AUTO=1 had 8 failures and 2 errors, all in the 20 mocked IdleTests whose purpose is to test enabled auto-indexing. The other 880 tests passed. Reran all 20 IdleTests with INDEX_NO_AUTO unset; all passed in 0.023 seconds, with process launch/network methods mocked and temporary paths. No background index process started. This is a test-environment interaction, not a product failure. The earlier complete 900-test run also passed before upstream integration. CI runs the full suite under its normal mocked-test environment.
+
+Documentation discovery now agrees with the concurrent Bots changes: backtester 900, extension 361, Mongo 34, SolTUI 872; total 2,167. Default card integrity checker and full raw-source binding checker pass; source inventory is 4,770 canonical records over 4,890 verified physical files. All four negative integrity probes are refused.
+
+Delivery continuation is conditional on https://github.com/mithudso/solmargintrader/pull/91 : if open, wait for final-head required checks and merge; if merged, verify its default-branch files and use the merge receipt in TASK-888. No more card implementation is required. Preserve the original checkout's unrelated changes and all other active PRs/worktrees.
