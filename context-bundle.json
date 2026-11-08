@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-08T12:03:41Z",
+  "project_key": "git@github.com:mithudso/solmargintrader.git",
+  "paths": [
+    "soltui/experiments.py",
+    "soltui/experiment_runner.py",
+    "soltui/experiment_jobs.py",
+    "soltui/experiment_screens.py",
+    "soltui/commands.py",
+    "docs/optimization-workbench.md",
+    "docs/optimization-workbench-plan.md"
+  ],
+  "indexes": [
+    "docs/FILES.md",
+    "index/TEXT-INDEX.json",
+    "docs/high_signal_file_index.json"
+  ],
+  "links": [],
+  "config": {
+    "task": "optimization workbench",
+    "pipeline": "full",
+    "run_id": "20261108-063425"
+  },
+  "open_questions": [],
+  "generator": "p/2.1.0"
+}

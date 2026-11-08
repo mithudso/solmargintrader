@@ -62,6 +62,7 @@ from backtester.core import scorecard as sc
 from . import bgcontrol
 from . import bots as bots_mod
 from .bots_screens import CoinPickerScreen, OptimizeScreen
+from .experiment_screens import ExperimentScreen
 from . import compound as compound_mod
 from . import cumulative as cumulative_mod
 from . import bgqueue
@@ -208,6 +209,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#bots-fit-rank": "bots.rank_coins",
     "#bots-fit-audit": "bots.audit_coin",
     "#bots-fit-cancel": "bots.fit_cancel",
+    "#bots-workbench": "experiments.list",
     "#bots-coins": "bots.overview",
 }
 
@@ -1236,6 +1238,7 @@ class SolTuiApp(App):
                 yield Button("Stop forward test", variant="error", id="bots-forward-stop")
                 yield Button("Refresh forward", id="bots-forward-refresh")
                 yield Button("Auto-optimize (all coins)", variant="warning", id="bots-optimize")
+                yield Button("Experiment workbench", id="bots-workbench")
             with Horizontal(classes="form-row", id="bots-fit-controls"):
                 yield Button("Rank all coins (quick)", variant="primary", id="bots-fit-rank")
                 yield Button("Audit selected coin", id="bots-fit-audit", disabled=True)
@@ -1658,6 +1661,12 @@ class SolTuiApp(App):
     @on(Button.Pressed, "#bots-forward-refresh")
     def _bots_forward_refresh_pressed(self) -> None:
         self._bots_forward_refresh()
+
+    @on(Button.Pressed, "#bots-workbench")
+    def _bots_workbench(self) -> None:
+        self.push_screen(ExperimentScreen(self._bots_bot,
+                         lambda name, params: self._call(name, params, quiet=True),
+                         list(self._bots_selected)))
 
     @on(Button.Pressed, "#bots-optimize")
     def _bots_optimize(self) -> None:

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 61
-Delta: v60 to v61; coin suitability skill/CLI and Bots quick/audit ranking.
+Version: 62
+Delta: v61 to v62; preserve workbench and append coin-fit skill, backtests and Bots request.
 
 ## v1 - 2026-11-06
 
@@ -459,7 +459,15 @@ I told you to move the incomplete cards to the incomplete directory, you never d
 When I launch the soltui I don't see any of the new strategies.
 ```
 
-## v61 - Coin suitability and Bots ranking
+## v61 - 2026-11-08
+
+```text
+turn all of your suggestions into an implementation plan and execute it
+```
+
+Scope: all six recommendations from the TradingView comparison: experiment explorer, sparse stability heatmaps, typed search spaces, resumable Bots runs, read-only TradingView import/comparison, and untouched final holdout safeguards.
+
+## v62 - Coin suitability and Bots ranking
 
 ```text
 Create a skill that applies the template to a coin and determines if it's a good fit or not, and then explains its reasoning. Also have a bulk mode where it applies the template to a group of coins and outputs a table. And then write a script that does the same thing

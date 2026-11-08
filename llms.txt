@@ -38,3 +38,7 @@
 - [llms-full.txt](llms-full.txt): concatenated key docs
 - [llms-small.txt](llms-small.txt): condensed summary
 - [llms-facts.txt](llms-facts.txt): sourced one-line facts
+
+## 2026-11-08 [gen: p/2.1.0]
+
+- [docs/optimization-workbench.md](docs/optimization-workbench.md): bounded search, durable experiment evidence, observed maps, CSV provenance and fresh final validation. [src: docs/optimization-workbench.md]

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 115
-Delta: v114 to v115; fix full-suite table-title regression and record final local verification.
+Version: 123
+Delta: v117 to v123; preserve workbench delivery and integrate coin-fit screening and audits.
 
 ## v1 - 2026-11-06
 
@@ -1099,7 +1099,65 @@ PR99: https://github.com/mithudso/solmargintrader/pull/99 ; final delivery TASK-
 
 The local full-suite arithmetic is884cases:878passed,4failed,2skipped. The four integration assertions are corrected and all6targeted reruns pass. Final requiredCI will run the complete884cases. Product source is final; only this verification-count correction changes the next branch tip. PR99/TASK-974 hold final delivery receipts. Canonical3sourcefiles are bound by /tmp/solmargin-card-ui/canonical-install.json; preserve all337unrelated paths when reconciling them with the merged tree.
 
-## v111 - Coin suitability implementation
+## v111 - 2026-11-08: optimization experiment workbench
+
+Request: prompts.md v61. Tracking: EPIC-952; contracts TASK-953, implementation TASK-961, verification/delivery TASK-962.
+Base: origin/master 0b46a88. Branch: feat/experiment-workbench-20261108. The shared checkout has 819 unrelated dirty paths and is held by other sessions. All changes stay in this task-owned worktree.
+
+Plan and acceptance: docs/optimization-workbench-plan.md. Before code, recorded decisions in Stele: full immutable experiment/cell identity; spent final temporal intervals survive changed search settings; preserve all other active work, paused services and dry-run defaults. No live orders, daemon restarts, or research/index jobs.
+
+Completed: source comparison, current architecture inspection, skill routing, clean private worktree, plan and common interfaces.
+Remaining: implement foundation, native runner and UI/job controls; test failure/restart/holdout boundaries and import provenance; verify actual UI; refresh docs/indexes; commit, push, passing PR checks, merge and verify remote content.
+
+## v112 - 2026-11-08: implementation active
+
+Plan v2 adds exploration-exposure reservations before simulation. Changed window geometry must not turn explored dates into final holdout. Legacy optimizer history must be conservatively migrated or final validation refused; freshness is limited to tracked local evidence.
+
+Workers share only this private worktree: foundation owns new experiments store/space/import/heatmap and tests; runner owns Bots integration/native runner and tests; interface specialist owns job lifecycle, screens, registry/UI/help and tests. Runner owns per-run and bot-finalization file locks. Root handles workflow/docs/indexes/release. TASK-953 complete; TASK-961 was claimed; TASK-962 was pending at this checkpoint. Context bundle written with p helper.
+
+Remaining: worker implementations, independent correctness and loaded-UI checks, full relevant suites, docs/index refresh, remote delivery.
+
+## v113 - 2026-11-08: integration review
+
+All six source capabilities implemented in experiments.py, experiment_runner.py, experiment_jobs.py and experiment_screens.py, with thin Bots/registry/UI integration. Foundation initially25tests passed; runner now27regressions passed pluslegacy tests. Interface/process/registry tests passing; final combined counts pending final source freeze. New Python modules pass Ruff after scoped cleanup.
+
+Independent review found and sent fixes for undated contributing import rows escaping comparison coverage, launch/failure transitions overwriting pause/cancel, and native negative vsTradingView positive drawdown. Canonical summaries/maps/comparison use loss magnitude while raw evidence stays intact. Runtime versions are frozen and checked on resume. True subprocess death/restart, config-save/report-crash recovery, historical edit with unchanged stat metadata and legacy-report-after-prepare were tested. Live verifier found a clipped adoption label at80columns; responsive fix in progress.
+
+Remaining: verify final review fixes and loaded UI; full relevant suite, accurate doc counts and regenerated indexes; integrate current remote default preserving other work; commit/push, required checks, merge, remote content and cleanup receipts. No real data optimization, live orders, paused research or services were run.
+
+## v114 - 2026-11-08: final source and acceptance checkpoint
+
+The source was committed as 8726780 and the current default integrated as 1f72841. Concurrent incoming prompt/memory histories were retained. The task prompt is now v61; task continuation entries are v111 onward. Other sessions' working files were preserved.
+
+All six features are implemented. Independent review reproduced and cleared three findings. Actual native CLI, detached worker controls, simulator results, CSV comparison and 80x24/160x55 headless UI passed. The actual Bots entry opened the workbench. The installed wrapper originally exposed 91 commands; verified feature code exposes 105, including 14 experiment actions. Synchronize installation only after final merge and preservation/overlap checks. No service restart is required.
+
+The orchestration helper passed 8/8. The root llms facts/index received sourced additions and helper backups were removed. Consult TASK-962 for subsequent delivery receipts before repeating work. Preserve unrelated research JSON and untracked application files during default-branch sync.
+
+## v115 - 2026-11-08: full verification passed
+
+The complete SolTUI suite passed: 947 tests in 721.036 seconds, with two expected skips. Resource warnings were treated as errors. This includes 63 additional test cases. New Python modules and dedicated tests pass Ruff. Documentation counts agree: 900 backtester, 947 SolTUI, 34 mongo, 361 extension; total 2242. Offline repository index hashes agree. The card coverage validator and 11 HTML converter tests pass.
+
+All six implementation capabilities, independent review fixes and actual loaded private-worktree acceptance are complete. Remaining delivery actions are required final-commit CI, merge, remote-content verification, safe default-checkout synchronization, installed-command parity and task-owned cleanup. TASK-962 holds the canonical live delivery receipt; this pre-merge record deliberately does not invent its own future merge SHA.
+
+## v116 - 2026-11-08: sealed-history continuity verified
+
+A final continuity check found that treating every old final reservation as permanently hidden blocked later rolling searches. The store now seals reservations atomically with the final verdict. Later exploration can use sealed periods as training history, while every other final test still refuses those spent dates. Active/paused/unsealed reservations remain protected. Exact own sealed reuse requires complete unchanged baseline/pick cells; new or replaced final evaluations are refused. Existing completed reservations migrate to the sealed state.
+
+Six additional regressions include a five-coin rolling run, fresh later final validation, adoption with zero simulation calls, and historical mutation refusal. Final focused gate: 79 tests passed in 27.137 seconds; Ruff passes. Actual CLI, real simulator, detached controls and headless workbench acceptance were rerun successfully on the final store source, with stable hashes and no remaining fixture workers. The earlier 947-case full run passed before this bounded refinement; final CI covers the current 953 cases (69 additions). Documentation total is 2248.
+
+PR: https://github.com/mithudso/solmargintrader/pull/98 . TASK-962 remains the canonical live receipt for final pushed SHA/checks, merge, remote content, safe installed-checkout parity and cleanup. Other active source edits were detected in the shared checkout; synchronization must preserve them and refuse overlapping changes. No services or live settings were restarted or changed.
+
+## v117 - 2026-11-08: concurrent strategy-card integration
+
+The final 880e188 CI passed all eight checks, including 953 SolTUI tests in 838.722 seconds with 14 expected optional-dependency skips. GitHub then refused the merge because PR 99 had concurrently advanced master to 3e5a9f3. That published Strategies browser work is preserved.
+
+The private branch merged current master. Application hunks merged automatically. Generated indexes were reset only as intermediate regeneration inputs; both prompt/memory histories were combined and versioned. This task's prompt is now v61. A semantic test-count collision was corrected: the combined interface has 68 button handlers, rather than the 67 independently expected by each branch.
+
+The integration specialist verified 45 targeted tests, the incoming strategy-card browser UI, and the actual combined app's Bots button, real workbench preview and dismissal. The combined registry has 106 commands, including 14 experiment actions; test discovery remains 953. The repeated full workbench acceptance binds the combined source hashes.
+
+Remaining: regenerated metadata, checks on the final combined pushed tip, merge, remote content, safe default-checkout synchronization, installed command parity and cleanup. The shared checkout is now clean apart from its unrelated research/results/minute_coverage.json change. Consult TASK-962 for final receipts.
+
+## v118 - Coin suitability implementation
 
 The user requested a reusable skill/CLI for one or many coins, then added quick heuristic and detailed audit backtests plus a Bots-tab rank/sort button. Canonical implementation belongs here so all surfaces reuse the existing grid/DCA economics. The earlier independent stdlib prototype in the research worktree is archived, not installed or advertised as production code.
 
@@ -1111,7 +1169,7 @@ Parent owns soltui/coin_fit.py, backtest computations, CLI/skill, tests/docs/wor
 
 Remaining: backend+CLI/skill, UI, synthetic invariants/no-lookahead tests, audit and live cached-data smoke, installed UI acceptance, full required checks and merged delivery.
 
-## v112 - Verification checkpoint
+## v119 - Verification checkpoint
 
 Implemented the shared offline coin-fit backend, direct/skill script entrypoints,22-field evidence output, deterministic single/bulk ranking, quick development-only scoring and10audit scenarios. Existing grid/DCA economics remain unchanged. Scheduled accumulation uses a separate explicit prefunded next-open schedule. The TUI freezes config, capital, policy, dates, costs and input hash; its selected audit preserves the quick order. Threaded jobs support cancellation, stale/context guards and teardown. No live order or config adoption exists.
 
@@ -1119,11 +1177,11 @@ Independent forward review hand-reconciled60grid/DCA scenarios and a scheduled-a
 
 Next: commit tracked source so deterministic index/test counts can refresh; run full checks and CI, then merge. Install the skill by symlink to the maintained checkout after delivery. Verify actual installed TUI entrypoint and click flow. Keep the maintained checkout's dirty files untouched. Context recall small-model agent could not run; direct MCP recall was read-only and no project binding was created.
 
-## v113 - Concurrent catalog integration
+## v120 - Concurrent catalog integration
 
 Merged source master3e5a9f3(PR99) with the coin-fit feature. Both Strategies catalog behavior and Bots ranking survive. Preserved incoming logs verbatim; own unpublished sections now111/112 and prompt61. Help tables combine both contexts; button registry has70handlers(67incoming plus3coin-fit). Rebuild only offline retrieval indexes after final tracked source changes.
 
-## v114 - Reviewed feature and verification gates
+## v121 - Reviewed feature and verification gates
 
 The independent review rechecked all findings and reports no residual issues. Economic tests hand-check next-open, full-capital and terminal-cost accounting. Quick scoring ignores the reserved newest window; audit refuses changed data and preserves frozen config/costs/capital/policy. All22 template fields distinguish simulation evidence from unknown current depth and eligibility. Scheduled accumulation needs a supplied ownership thesis for a positive screen. Source and methodology documentation are complete; skill validation passes.
 
@@ -1131,8 +1189,12 @@ Thirty-eight focused economic/screener/UI tests pass, plus registry/help/bridge 
 
 Candidate branchfeat/bot-coin-fit remains recoverable; finish final-head gates, merge, safe canonical fast-forward, installed skill symlink and actual installed click flow. Preserve unrelated source and current consoles. Final Git/install/cleanup identities will be stored in a private receipt outside tracked source to avoid a post-merge bookkeeping commit loop.
 
-## v115 - coin-fit final local verification
+## v122 - coin-fit final local verification
 
 Backtester909 tests pass after the offline index refresh. Full SolTUI913 ran with one failure: test_every_table_has_a_title_above_it reported bots-fit-table. An explicit table title fixes that failure; the affected title and coin-fit UI suites pass14 tests. Final CI must verify the complete integrated head. Two new test import-order findings were fixed; scoped Ruff passes. No existing unrelated UI lint is claimed clean.
 
 Cached23-coin quick smoke retained11 complete and12 insufficient-data rows without bridging missing candles. A separate SOL/BTC/ETH audit exercised all three supported bot types and ten scenarios each. These are operation checks, not an investment recommendation or calibrated edge. PR: https://github.com/mithudso/solmargintrader/pull/102 . Final merge/install acceptance remains pending; the final private receipt will be /Users/mitch/dev/crypto-grid-dca-research/evidence/coin-fit-final-delivery.json . Existing native consoles, WIP and paused services must remain preserved.
+
+## v123 - Workbench integration
+
+Merged published optimization workbench PR98 at bc5c701 into the coin-fit branch. Preserve its experiment lifecycle, sealed holdout safeguards and Strategies browser. Both new and existing Bots controls remain. Combined suite discovery is expected to be982SolTUI and909backtester; final checks verify actual counts. No live configuration, service or order changes.

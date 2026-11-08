@@ -2326,6 +2326,187 @@ def bots_optimize_result(ctx: Context, p: dict[str, Any]) -> Any:
     return _bots(bots_mod.latest_optimize, _bot_param(p))
 
 
+# -- durable optimization experiments ------------------------------------------------------------
+
+EXPERIMENT_ID = P("run_id", "string", "Saved experiment identifier.", required=True)
+EXPERIMENT_SPACE = (
+    BOT_PARAM,
+    P("space", "json", "Typed parameter specifications (fixed, enum, linear/log range)."),
+    P("coins", "json", "Coin symbols; defaults to every cached coin."),
+    P("windows", "number", "Chronological windows per coin, including untouched final holdout."),
+    P("window_days", "number", "Days per bar window."),
+    P("max_candidates", "number", "Hard valid-configuration budget (at most 97)."),
+    P("max_evaluations", "number", "Hard candidate × coin × window evaluation budget."),
+)
+
+
+def _experiment(fn: Callable, *args: Any, **kwargs: Any) -> Any:
+    from .experiments import ExperimentError
+    try:
+        return fn(*args, **kwargs)
+    except (ExperimentError, ValueError, OSError) as exc:
+        raise CommandError("experiment_refused", str(exc)) from None
+
+
+def _experiment_options(p: dict[str, Any]) -> dict[str, Any]:
+    out = {}
+    for name in ("space", "coins", "windows", "window_days", "max_candidates", "max_evaluations"):
+        if name not in p:
+            continue
+        value = p[name]
+        if name == "space" and not isinstance(value, dict):
+            raise CommandError("bad_params", "space must be an object of typed parameter specifications")
+        if name == "coins" and (not isinstance(value, list) or not value or
+                                not all(isinstance(c, str) and c for c in value)):
+            raise CommandError("bad_params", "coins must be a nonempty list of symbols")
+        if name not in {"space", "coins"} and (isinstance(value, bool) or not math.isfinite(value)
+                                                or int(value) != value):
+            raise CommandError("bad_params", f"{name} must be an integer")
+        out[name] = value if name in {"space", "coins"} else int(value)
+    return out
+
+
+@command("experiments.schema", "Current bot configuration and typed search parameter domains.", (BOT_PARAM,))
+def experiments_schema(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots
+    bot = _bot_param(p)
+    return _experiment(lambda: {"bot": bot, "baseline": bots.get_config(bot), "domains": bots.DOMAINS[bot]})
+
+
+@command("experiments.preview", "Validate a bounded search and preview actual cached-data workload; no evaluations.",
+         EXPERIMENT_SPACE, long_running=True)
+def experiments_preview(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_runner import preview_experiment
+    return _experiment(preview_experiment, _bot_param(p), ctx.settings, **_experiment_options(p))
+
+
+@command("experiments.create", "Freeze a native experiment specification without starting its worker.",
+         EXPERIMENT_SPACE, read_only=False, long_running=True)
+def experiments_create(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_runner import prepare_experiment
+    return _experiment(prepare_experiment, _bot_param(p), ctx.settings, **_experiment_options(p))
+
+
+@command("experiments.list", "Saved native and imported experiments, newest first.",
+         (P("bot", "string", "Filter by bot."), P("source", "string", "native or tradingview."),
+          P("limit", "number", "Maximum rows, 1 to 200 (default 100).")))
+def experiments_list(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore
+    limit = p.get("limit", 100)
+    if isinstance(limit, bool) or not 1 <= limit <= 200 or int(limit) != limit:
+        raise CommandError("bad_params", "limit must be an integer in [1, 200]")
+    return _experiment(lambda: ExperimentStore().list_runs(bot=p.get("bot"), source=p.get("source"), limit=int(limit)))
+
+
+@command("experiments.get", "Experiment specification, decision, progress, worker state and diagnostic log tail.",
+         (EXPERIMENT_ID,))
+def experiments_get(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import status
+    from .experiments import ExperimentStore
+    return _experiment(lambda: status(ExperimentStore(), p["run_id"]))
+
+
+@command("experiments.start", "Start or resume the saved experiment; completed evidence is reused only after verification.",
+         (EXPERIMENT_ID,), read_only=False)
+def experiments_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import launch
+    from .experiments import ExperimentStore
+    return _experiment(lambda: launch(ExperimentStore(), p["run_id"], ctx.settings))
+
+
+@command("experiments.pause", "Request pause after the current evaluation cell commits.",
+         (EXPERIMENT_ID,), read_only=False)
+def experiments_pause(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import request
+    from .experiments import ExperimentStore
+    return _experiment(lambda: request(ExperimentStore(), p["run_id"], "pause"))
+
+
+@command("experiments.cancel", "Request cancellation at the next durable evaluation boundary; keep completed evidence.",
+         (EXPERIMENT_ID,), read_only=False)
+def experiments_cancel(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import request
+    from .experiments import ExperimentStore
+    return _experiment(lambda: request(ExperimentStore(), p["run_id"], "cancel"))
+
+
+@command("experiments.finalize", "Freeze the training-selected candidate and validate on fresh reserved final holdout dates.",
+         (EXPERIMENT_ID, P("adopt", "bool", "Save native settings only if all existing evidence gates pass (default false).")),
+         read_only=False)
+def experiments_finalize(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiment_jobs import launch
+    from .experiments import ExperimentStore
+    return _experiment(lambda: launch(ExperimentStore(), p["run_id"], ctx.settings, final=True,
+                                      adopt=p.get("adopt", False)))
+
+
+@command("experiments.candidates", "Full configurations, observed train/validation metrics, coverage and failures.",
+         (EXPERIMENT_ID,))
+def experiments_candidates(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore, candidate_summary
+    return _experiment(lambda: candidate_summary(ExperimentStore(), p["run_id"]))
+
+
+@command("experiments.cells", "Individual coin/window evaluation metrics and failures; final evidence stays sealed until finalization.",
+         (EXPERIMENT_ID, P("coin", "string", "Coin filter."), P("split", "string", "train, validation or holdout."),
+          P("candidate_id", "string", "Candidate filter.")))
+def experiments_cells(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore
+    def read() -> Any:
+        store = ExperimentStore()
+        run = store.get_run(p["run_id"])
+        return store.cells(p["run_id"], coin=p.get("coin") or None, split=p.get("split") or None,
+                           candidate_id=p.get("candidate_id") or None,
+                           include_holdout=run["status"] == "completed")
+    return _experiment(read)
+
+
+@command("experiments.heatmap", "Observed two-parameter return/risk map and stability; missing points remain missing.",
+         (EXPERIMENT_ID, P("x", "string", "First parameter.", True), P("y", "string", "Second parameter.", True),
+          P("metric", "string", "Metric (default total_return)."), P("fixed", "json", "Values of all other varied parameters."),
+          P("coin", "string", "Coin filter."), P("split", "string", "train or validation only.")))
+def experiments_heatmap(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore, sparse_heatmap
+    if p.get("fixed") is not None and not isinstance(p["fixed"], dict):
+        raise CommandError("bad_params", "fixed must be an object")
+    return _experiment(lambda: sparse_heatmap(ExperimentStore(), p["run_id"], p["x"], p["y"],
+                        metric=p.get("metric") or "total_return", fixed=p.get("fixed"),
+                        coin=p.get("coin") or None, split=p.get("split") or None))
+
+
+@command("experiments.import", "Import read-only TradingView CSV evidence with explicit units and provenance; never adopts.",
+         (P("csv", "string", "CSV text (use this or path)."), P("path", "string", "Local CSV file, at most 10 MB."),
+          P("metadata", "json", "Explicit bot, coin, dates, units, costs, fill timing and script provenance.")),
+         read_only=False, long_running=True)
+def experiments_import(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore, import_tradingview
+    if bool(p.get("csv")) == bool(p.get("path")):
+        raise CommandError("bad_params", "supply exactly one of csv or path")
+    if p.get("metadata") is not None and not isinstance(p["metadata"], dict):
+        raise CommandError("bad_params", "metadata must be an object")
+    def read() -> Any:
+        if p.get("path"):
+            path = Path(p["path"]).expanduser()
+            with path.open("rb") as fh:
+                raw = fh.read(10_000_001)
+            if len(raw) > 10_000_000:
+                raise ValueError("CSV exceeds 10 MB import budget")
+            content = raw.decode("utf-8-sig")
+        else:
+            content = p["csv"]
+            if len(content.encode("utf-8")) > 10_000_000:
+                raise ValueError("CSV exceeds 10 MB import budget")
+        return import_tradingview(ExperimentStore(), content, p.get("metadata"))
+    return _experiment(read)
+
+
+@command("experiments.compare", "Compare experiment provenance and metrics only when units, dates and evaluation assumptions match.",
+         (P("left", "string", "First experiment ID.", True), P("right", "string", "Second experiment ID.", True)))
+def experiments_compare(ctx: Context, p: dict[str, Any]) -> Any:
+    from .experiments import ExperimentStore, compare_runs
+    return _experiment(lambda: compare_runs(ExperimentStore(), p["left"], p["right"]))
+
+
 @command("prices.status", "The streaming price recorder: running or not, what it has recorded, and the "
          "newest bid, ask and spread of every streamed market.")
 def prices_status(ctx: Context, p: dict[str, Any]) -> Any:
