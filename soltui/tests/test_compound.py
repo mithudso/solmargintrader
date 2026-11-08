@@ -1293,3 +1293,14 @@ class HorizonForwardTests(TempConfig):
         self.assertEqual(status["horizons"][1]["resolved"], 1)
         self.assertEqual(status["horizons"][5]["pending"], 1)
         self.assertEqual(status["horizons"][30]["pending"], 1)
+        btc = {"type": "call", "id": "BTC:source", "call": "UP", "config_hash": "b",
+               "bar_ts": T0 - 300, "recorded_at": stamp}
+        compound._append("BTC", [btc])
+        with mock.patch.object(compound, "_resolve_horizons", return_value=0):
+            self.assertTrue(compound._horizon_tick("BTC", now=stamp)["horizon_recorded"])
+            self.assertTrue(compound._horizon_tick("BTC", now=stamp + 60)["horizon_recorded"])
+            self.assertTrue(compound._horizon_tick("BTC", now=stamp + 300)["stale_signal"])
+        btc_calls = [r for r in compound.read_ledger("BTC") if r["type"] == "horizon_call"]
+        self.assertEqual([r["minutes"] for r in btc_calls].count(1), 2)
+        self.assertEqual([r["minutes"] for r in btc_calls].count(5), 1)
+        self.assertEqual([r["minutes"] for r in btc_calls].count(30), 1)
