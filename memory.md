@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 152
-Delta: v151 to v152; retain the sweep investigation and liquidity archival histories.
+Version: 153
+Delta: v152 to v153; track metric editor selection mismatch repair.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1602,3 +1602,7 @@ Target: liquidity, Aero LP, positions and liquidity scout. Stele task TASK-1011.
 ## v151 - 2026-11-08
 
 Owner confirmed Archive navigation and withdrawal of any remaining Aero LP positions to the wallet. Archive navigation is implemented in the isolated worktree. CDP history found three known Aero NFTs; each was burned on 2026-11-06, and Base RPC found zero manager balance and no stake in the known gauge. No withdrawal was needed or sent. This does not rule out all third-party staking paths. Keep the daemon disabled and KILL set. Verify navigation, finish PR 108, and verify delivery.
+
+## v153 - 2026-11-08
+
+Task: Fix Signal Call and Metrics edit error, Stele TASK-1018. Worktree: /Users/mitch/dev/solmargintrader-wt-metric-weekend; base origin/master 788d5a8. Sorting changes the displayed row order, but Apply and Toggle used the original component order. The editor correctly follows the displayed row key, so gate_session weekend could be sent to vwap_side. Updated both actions to use displayed row keys. The sorted edit and toggle regression passes in a Textual test with temporary settings. Eight Compound tab and click tests pass. Remaining: verify loaded app and deliver.

@@ -2974,8 +2974,7 @@ class SolTuiApp(App):
 
     def _compound_selected(self) -> str:
         table = self.query_one("#compound-table", GlossaryTable)
-        row = table.cursor_row if table.row_count else 0
-        return self._COMPOUND_IDS[max(0, min(row, len(self._COMPOUND_IDS) - 1))]
+        return self._strategy_table_key(table) if table.row_count else self._COMPOUND_IDS[0]
 
     def _compound_titles(self) -> None:
         coin = self._compound_coin
@@ -3110,8 +3109,9 @@ class SolTuiApp(App):
 
     @on(CompoundTable.Toggle)
     def _compound_click_toggle(self, event: CompoundTable.Toggle) -> None:
-        if 0 <= event.row < len(self._COMPOUND_IDS):
-            self._compound_toggle(self._COMPOUND_IDS[event.row])
+        table = self.query_one("#compound-table", CompoundTable)
+        if 0 <= event.row < table.row_count:
+            self._compound_toggle(str(table.ordered_rows[event.row].key.value))
 
     @on(Button.Pressed, "#compound-toggle")
     def _compound_toggle(self, cid: str | None = None) -> None:

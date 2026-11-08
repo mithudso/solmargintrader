@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 84
-Delta: v83 to v84; retain the sweep investigation and liquidity archival requests.
+Version: 85
+Delta: v84 to v85; record the metric edit validation request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -707,3 +707,9 @@ Liquidity and so the Aero LP and the positions, and liquidity scout are all unpr
 ```
 
 Confirmation: move liquidity views into an Archive section and withdraw any remaining Aero LP funds to the wallet.
+
+## v85 - 2026-11-08
+
+```text
+In the signal call and metrics tab when I try and apply edits, I get this error: vwap_side: unknown parameter 'weekend'; known: mode, window, spread_window, scale, atr
+```
