@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T20:32:41+00:00",
+  "generatedAt": "2026-11-08T20:27:04+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1346,
+      "matchingFiles": 1347,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1327,
+      "matchingFiles": 1328,
       "shown": 30,
       "files": [
         {
@@ -507,12 +507,12 @@
           "hits": 32
         },
         {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 30
+          "path": "memory.md",
+          "hits": 31
         },
         {
-          "path": "memory.md",
-          "hits": 29
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 30
         },
         {
           "path": "research/cross_asset_cpcv.py",
@@ -555,12 +555,12 @@
           "hits": 17
         },
         {
-          "path": "research/tradingview-script-profile-audits/shard-c.jsonl",
+          "path": "soltui/tui.py",
           "hits": 17
         },
         {
-          "path": "backtester/strategy_cards/adx_filtered_trend.md",
-          "hits": 16
+          "path": "research/tradingview-script-profile-audits/shard-c.jsonl",
+          "hits": 17
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 559,
+      "matchingFiles": 558,
       "shown": 30,
       "files": [
         {
@@ -765,10 +765,6 @@
           "hits": 79
         },
         {
-          "path": "soltui/tests/test_bots.py",
-          "hits": 76
-        },
-        {
           "path": "extension/src/core/grid.js",
           "hits": 66
         },
@@ -789,12 +785,12 @@
           "hits": 53
         },
         {
-          "path": "soltui/bots.py",
-          "hits": 52
-        },
-        {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
           "hits": 51
+        },
+        {
+          "path": "soltui/bots.py",
+          "hits": 50
         },
         {
           "path": "research/tradingview-strategy-understanding.json",
@@ -809,12 +805,16 @@
           "hits": 38
         },
         {
+          "path": "soltui/tests/test_bots.py",
+          "hits": 37
+        },
+        {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
           "hits": 36
         },
         {
-          "path": "soltui/tests/test_experiment_runner.py",
-          "hits": 36
+          "path": "soltui/help.py",
+          "hits": 32
         },
         {
           "path": "backtester/README.md",
@@ -829,11 +829,11 @@
           "hits": 30
         },
         {
-          "path": "soltui/help.py",
-          "hits": 30
+          "path": "docs/CONCEPTS.md",
+          "hits": 27
         },
         {
-          "path": "docs/CONCEPTS.md",
+          "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 27
         }
       ],
@@ -986,7 +986,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 438,
+      "matchingFiles": 439,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 393,
+      "matchingFiles": 394,
       "shown": 30,
       "files": [
         {
@@ -1162,7 +1162,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 83
+          "hits": 82
         },
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
@@ -1580,15 +1580,15 @@
           "hits": 21
         },
         {
-          "path": "soltui/experiment_runner.py",
-          "hits": 17
-        },
-        {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md",
           "hits": 16
         },
         {
           "path": "backtester/core/dcasim.py",
+          "hits": 15
+        },
+        {
+          "path": "soltui/experiment_runner.py",
           "hits": 15
         },
         {
@@ -1805,7 +1805,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 217,
+      "matchingFiles": 216,
       "shown": 30,
       "files": [
         {
@@ -1979,11 +1979,11 @@
           "hits": 19
         },
         {
-          "path": "soltui/experiment_runner.py",
-          "hits": 17
+          "path": "backtester/core/dcasim.py",
+          "hits": 15
         },
         {
-          "path": "backtester/core/dcasim.py",
+          "path": "soltui/experiment_runner.py",
           "hits": 15
         },
         {
@@ -2023,11 +2023,11 @@
           "hits": 8
         },
         {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md",
+          "path": "soltui/tests/test_f5_batch.py",
           "hits": 8
         },
         {
-          "path": "soltui/tests/test_experiment_runner.py",
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md",
           "hits": 8
         },
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 136,
+      "matchingFiles": 137,
       "shown": 30,
       "files": [
         {

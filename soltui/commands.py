@@ -965,6 +965,58 @@ def research_get(ctx: Context, p: dict[str, Any]) -> Any:
 
 # -- backtest ------------------------------------------------------------------------------------
 
+@command("batch.list", "List saved all-market backtest and forward-test batches.", long_running=True)
+def batch_list(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    runs = f5_batch.list_runs()
+    def changed(run: dict[str, Any]) -> float:
+        try:
+            return Path(run["log"]).parent.stat().st_mtime
+        except (KeyError, OSError):
+            return 0.0
+    return {"runs": sorted(runs, key=changed, reverse=True)}
+
+
+@command("batch.create", "Create a frozen all-market batch without starting it.",
+         read_only=False, long_running=True)
+def batch_create(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return f5_batch.create(ctx.settings)
+
+
+BATCH_ID = P("run_id", "string", "Saved batch identifier.", required=True)
+
+
+@command("batch.start", "Start or resume the specified saved batch.", (BATCH_ID,), read_only=False,
+         long_running=True)
+def batch_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return f5_batch.start(str(p["run_id"]))
+
+
+@command("batch.status", "Read progress, unresolved issues and forward-test status for a batch.",
+         (BATCH_ID,), long_running=True)
+def batch_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return f5_batch.status(str(p["run_id"]))
+
+
+@command("batch.cells", "Read a page of batch cells, optionally filtered by state.",
+         (BATCH_ID, P("state", "string", "Optional cell state such as failed, missing or unsupported."),
+          P("limit", "number", "Maximum rows to return."), P("offset", "number", "Number of rows to skip.")),
+         long_running=True)
+def batch_cells(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return {"rows": f5_batch.cells(str(p["run_id"]), state=p.get("state"),
+                                   limit=int(p.get("limit", 100)), offset=int(p.get("offset", 0)))}
+
+
+@command("batch.stop", "Request a cooperative stop for the specified batch only.", (BATCH_ID,),
+         read_only=False, long_running=True)
+def batch_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return f5_batch.stop(str(p["run_id"]))
+
 
 def _backtest_status(ctx: Context) -> dict[str, Any]:
     s = ctx.state
