@@ -214,8 +214,9 @@ class UITests(BackendFixture, unittest.IsolatedAsyncioTestCase):
             self.assertFalse(self.app.query_one("#bots-fit-rank", Button).disabled)
 
     async def test_actual_cached_backend_quick_then_audit_populates_windows(self):
-        from backtester.core.data import SyntheticLoader
         from textual.widgets import Input
+
+        from backtester.core.data import SyntheticLoader
 
         data = Path(self.tmp.name) / "data"
         data.mkdir()
@@ -245,8 +246,9 @@ class UITests(BackendFixture, unittest.IsolatedAsyncioTestCase):
 
     async def test_actual_poor_fit_shows_failures_before_successful_checks(self):
         import numpy as np
-        from backtester.core.data import SyntheticLoader
         from textual.widgets import Input
+
+        from backtester.core.data import SyntheticLoader
 
         data = Path(self.tmp.name) / "data"
         data.mkdir()

@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "delta": "Backend, skill/CLI and Bots controls complete; full verification in progress.",
+  "version": "1.2.0",
+  "delta": "Local accounting, full backtester and corrected UI checks pass; final CI and installed acceptance in progress.",
   "steps": [
     {
       "id": 1,
@@ -27,5 +27,6 @@
       "title": "Merge verified delivery and preserve unrelated WIP",
       "status": "pending"
     }
-  ]
+  ],
+  "final_receipt": "/Users/mitch/dev/crypto-grid-dca-research/evidence/coin-fit-final-delivery.json"
 }
