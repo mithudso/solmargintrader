@@ -452,9 +452,12 @@ run's count, is the multiple-testing denominator. A fresh fetch moves the window
 # Backtest the saved config: the compound plus each enabled metric alone
 /Users/mitch/.venvs/soltui/bin/python -m soltui.compound backtest --asset SOL
 
-# Everything: fresh data for the universe, then every registry and compound backtest
+# Everything: fresh data, registry tiers 0–2, compound perturbations, grid and frontier
 /Users/mitch/.venvs/soltui/bin/python research/full_suite.py --plan
 /Users/mitch/.venvs/soltui/bin/python research/full_suite.py
+
+# After a successful --fetch-only run, start a fresh sweep without downloading twice
+/Users/mitch/.venvs/soltui/bin/python research/full_suite.py --skip-fetch --archive-results
 ```
 
 Files: config `~/.config/soltui/compound/config.json`; backtest rows

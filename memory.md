@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 50
-Delta: v49 to v50; equity chart on vendored Lightweight Charts; /dso v2.0.0 shipped in the skills repo.
+Version: 51
+Delta: v50 to v51; resume the Compound 5m full-suite run.
 
 ## v1 - 2026-11-06
 
@@ -528,3 +528,10 @@ Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithud
 
 Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
 
+## v51 - 2026-11-08 (resume Compound 5m)
+
+Target (Stele TASK-862): run a fresh combined registry and compound sweep across the owner-selected ten coins. The tester and skill shipped in PR #60 and subsequent improvements through PR #78. The recorded ten-coin full-history result covers 300 compound configurations, not the full registry plus compound sweep.
+
+Checkpoint: started the data refresh from the isolated agent-01a1b61a worktree; the fetch log is in the main checkout at data/logs/full-suite-resume-fetch.log. The full suite now includes frontier variants and passes the absolute refresh cache to registry workers. The new --archive-results flag allows --skip-fetch to start a new registry ledger after a successful standalone refresh. A detached continuation waits for a successful fetch before running both sweeps; see data/logs/full-suite-resume-sweeps.log.
+
+Verified: 60 focused tests and check_docs pass. Remaining: verify per-asset fetch coverage, completed registry and compound rows, skips and errors before interpreting the new run. Keep the worktree while the continuation uses it.
