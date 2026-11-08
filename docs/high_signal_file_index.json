@@ -753,7 +753,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 4783
+      "lines": 4874
     },
     {
       "path": "soltui/shell.py",
@@ -833,6 +833,30 @@
       "lines": 1393
     },
     {
+      "path": "soltui/experiments.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison"
+    },
+    {
+      "path": "soltui/experiment_runner.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Frozen native bar/recorded-triangle evaluation, per-cell checkpoints, exploration exposure and fresh final holdout guards"
+    },
+    {
+      "path": "soltui/experiment_jobs.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Explicit background experiment processes, inherited leases, pause/cancel requests and interrupted-worker recovery"
+    },
+    {
+      "path": "soltui/experiment_screens.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Experiment workbench: typed search editor, explorer, observed maps, worker controls and CSV comparison"
+    },
+    {
       "path": "soltui/pricefeed.py",
       "component": "soltui",
       "kind": "python",
@@ -893,6 +917,24 @@
       "component": "soltui",
       "kind": "directory",
       "summary": "Unittest suites for models, rendering, workers, launchers and local controls"
+    },
+    {
+      "path": "soltui/tests/test_experiments.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Experiment store, search-space, sparse-map and external evidence regression tests"
+    },
+    {
+      "path": "soltui/tests/test_experiment_runner.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Frozen native evidence, holdout freshness, pause/cancel/resume and promotion recovery tests"
+    },
+    {
+      "path": "soltui/tests/test_experiment_interface.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Process leases/control races, registry refusals and live headless workbench interactions"
     },
     {
       "path": "mongo/README.md",
@@ -1403,6 +1445,18 @@
       "kind": "markdown",
       "summary": "Bounded code audit, regressions, review dissent and verification limits",
       "lines": 903
+    },
+    {
+      "path": "docs/optimization-workbench.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Use the optimization workbench, understand provenance and final holdout limitations"
+    },
+    {
+      "path": "docs/optimization-workbench-plan.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Six-feature implementation plan, interfaces, ownership and acceptance criteria"
     },
     {
       "path": "docs/code-optimizer-scope-2026-11-06.json",

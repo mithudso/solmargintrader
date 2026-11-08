@@ -216,6 +216,13 @@ class ShellAppTests(unittest.IsolatedAsyncioTestCase):
                 self.assertNotIn("liquidity.resume", calls)
                 self.assertNotIn("liquidity.kill", calls)
                 self.assertEqual(app.query_one("#main-tabs", TabbedContent).active, "tab-liquidity")
+                for name in COMMANDS:
+                    if name.startswith("experiments.") and not COMMANDS[name].read_only:
+                        entries[name].run()
+                        self.assertNotIn(name, calls)
+                        self.assertEqual(app._v2_command_home(name), ("tab-bots", "bots-workbench"))
+                await pilot.pause()
+                self.assertEqual(app.query_one("#main-tabs", TabbedContent).active, "tab-bots")
                 entries["queue.progress"].run()
                 self.assertIn("queue.progress", calls)
 
