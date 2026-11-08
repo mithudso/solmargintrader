@@ -979,3 +979,9 @@ In the /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_reference.md file is
 ```text
 In the money add a clear border and title to the coinbase order form. Also add a new advanced order form in the money tab with limit, market, stop-loss, take-profit, percent ordering, market graphs, what the top rated strategies say the price is going to do, the option to buy in units of dollars or the coin, market routing through either coinbase or jupiter, and any other useful trading features you think would be helpful.
 ```
+
+## v116 - 2026-11-08
+
+```text
+Run the repo-bootstrapper skill on this repo.
+```

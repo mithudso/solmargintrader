@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T23:31:18+00:00",
+  "generatedAt": "2026-11-08T23:47:14+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1592,
+      "matchingFiles": 1595,
       "shown": 30,
       "files": [
         {
@@ -102,8 +102,8 @@
           "hits": 38
         },
         {
-          "path": "memory.md",
-          "hits": 37
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 35
         },
         {
           "path": "executor/src/executor/registry.py",
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1320,
+      "matchingFiles": 1321,
       "shown": 30,
       "files": [
         {
@@ -507,12 +507,12 @@
           "hits": 32
         },
         {
-          "path": "memory.md",
-          "hits": 31
-        },
-        {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 30
+        },
+        {
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 29
         },
         {
           "path": "research/cross_asset_cpcv.py",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 561,
+      "matchingFiles": 562,
       "shown": 30,
       "files": [
         {
@@ -805,8 +805,8 @@
           "hits": 43
         },
         {
-          "path": "memory.md",
-          "hits": 39
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 37
         },
         {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 525,
+      "matchingFiles": 526,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 401,
+      "matchingFiles": 403,
       "shown": 30,
       "files": [
         {
@@ -1161,8 +1161,8 @@
           "hits": 98
         },
         {
-          "path": "memory.md",
-          "hits": 95
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 81
         },
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 260,
+      "matchingFiles": 261,
       "shown": 30,
       "files": [
         {
@@ -1568,8 +1568,8 @@
           "hits": 25
         },
         {
-          "path": "memory.md",
-          "hits": 24
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 23
         },
         {
           "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
@@ -1786,7 +1786,7 @@
           "hits": 5
         },
         {
-          "path": "memory.md",
+          "path": "docs/archive/memory-2026-11-08.md",
           "hits": 5
         },
         {
@@ -1939,7 +1939,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 211,
+      "matchingFiles": 212,
       "shown": 30,
       "files": [
         {
@@ -1963,10 +1963,6 @@
           "hits": 25
         },
         {
-          "path": "memory.md",
-          "hits": 21
-        },
-        {
           "path": "research/RANKED_LISTS.md",
           "hits": 21
         },
@@ -1977,6 +1973,10 @@
         {
           "path": "soltui/experiment_screens.py",
           "hits": 21
+        },
+        {
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 20
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
