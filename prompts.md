@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 85
-Delta: v84 to v85; retain the renewed sweep report and liquidity archival requests.
+Version: 86
+Delta: v85 to v86; retain the sweep and metric editor requests.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -713,4 +713,10 @@ Confirmation: move liquidity views into an Archive section and withdraw any rema
 ```text
 In the soltui IO get this error: error: ValueError: evaluation proof is missing or differs for SOL at /Users/mitch/.config/soltui/bg/results.jsonl; preserve this history and use --results-path for a fresh file · 361 rankable, 253 with positive median Sharpe · 224
 below the 10-trade floor
+```
+
+## v86 - 2026-11-08
+
+```text
+In the signal call and metrics tab when I try and apply edits, I get this error: vwap_side: unknown parameter 'weekend'; known: mode, window, spread_window, scale, atr
 ```
