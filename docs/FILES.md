@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `05db44b` (2026-11-08T13:21:12+00:00). 1911 tracked files, 32.9 MB.
+**Generated** from `index/INDEX.json` at commit `adad94a` (2026-11-08T13:25:51+00:00). 1911 tracked files, 32.9 MB.
 
 Regenerate with:
 
@@ -113,7 +113,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 193 lines · 13,836 B · description: **curated**
+`doc` · 193 lines · 13,846 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -137,7 +137,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `GEMINI.md`
 
-`doc` · 64 lines · 3,485 B · description: **extracted**
+`doc` · 64 lines · 3,495 B · description: **extracted**
 
 **Purpose.** Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file first — it is the single source of truth, and this file only points at it. Save requests in `prompts.md` and versioned continuation records in `memory.md`, as
 
@@ -145,7 +145,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 139 lines · 8,946 B · description: **curated**
+`doc` · 139 lines · 8,956 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -193,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1309 lines · 198,998 B · description: **extracted**
+`doc` · 1313 lines · 199,558 B · description: **extracted**
 
-**Purpose.** Version: 135 Delta: v128 to v135; preserve v2 shell delivery and add coin-fit screening and audits. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 136 Delta: v135 to v136; make the full SolTUI suite opt-in and skip it at the owner's request. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 519 lines · 29,666 B · description: **extracted**
+`doc` · 525 lines · 29,771 B · description: **extracted**
 
-**Purpose.** Version: 67 Delta: v66 to v67; preserve v2 history and append coin-fit skill, audits and Bots request. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 68 Delta: v67 to v68; preserve explicit optional-suite and skip instruction. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -281,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 320 lines · 18,922 B · description: **extracted**
+`doc` · 320 lines · 18,923 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -289,7 +289,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/DEVELOPMENT.md`
 
-`doc` · 187 lines · 8,864 B · description: **extracted**
+`doc` · 187 lines · 8,874 B · description: **extracted**
 
 **Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18585 lines · 922,328 B · description: **extracted**
+`doc` · 18691 lines · 926,362 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -345,9 +345,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 222 lines · 17,376 B · description: **extracted**
+`doc` · 228 lines · 17,777 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 999 tests (~840s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 999 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
 **Use.** Read it.
 
@@ -587,7 +587,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/coin-fit/tasks.json`
 
-`doc` · 33 lines · 884 B · description: **derived**
+`doc` · 33 lines · 889 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys (version, delta, steps, final_receipt).
 
@@ -16541,7 +16541,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/copilot-instructions.md`
 
-`ci` · 93 lines · 5,115 B · description: **extracted**
+`ci` · 93 lines · 5,125 B · description: **extracted**
 
 **Purpose.** Read [CLAUDE.md](../CLAUDE.md) before proposing a change. It is the source of truth for this repository; this file is a pointer plus the rules that get broken most often. 1. Read relevant source before editing; never invent a command or path.
 
@@ -16577,7 +16577,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 307 lines · 13,056 B · description: **curated**
+`ci` · 316 lines · 13,476 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
