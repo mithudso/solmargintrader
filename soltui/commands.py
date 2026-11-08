@@ -2683,7 +2683,7 @@ def bots_progress(ctx: Context, p: dict[str, Any]) -> Any:
     return bots_mod.runtime().progress.get(_bot_param(p))
 
 
-@command("paper_experiment.start", "Start a prospective, paper-only strategy experiment.",
+@command("paperexperiment.start", "Start a prospective, paper-only strategy experiment.",
          (P("strategy", "string", "Registered strategy name.", required=True),
           P("asset", "string", "Coin symbol; defaults to Settings asset."),
           P("minutes", "number", "Forecast horizon: 1, 5 or 30 minutes."),
@@ -2702,21 +2702,21 @@ def experiments_start(ctx: Context, p: dict[str, Any]) -> Any:
                                    2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps), params)
 
 
-@command("paper_experiment.resume", "Resume a stopped paper experiment without changing its evidence.",
+@command("paperexperiment.resume", "Resume a stopped paper experiment without changing its evidence.",
          (P("id", "string", "Experiment id.", required=True),), read_only=False)
 def paper_experiment_resume(ctx: Context, p: dict[str, Any]) -> Any:
     from . import paper_experiments
     return paper_experiments.resume(str(p["id"]))
 
 
-@command("paper_experiment.stop", "Stop an active paper experiment.",
+@command("paperexperiment.stop", "Stop an active paper experiment.",
          (P("id", "string", "Experiment id.", required=True),), read_only=False)
 def experiments_stop(ctx: Context, p: dict[str, Any]) -> Any:
     from . import paper_experiments
     return paper_experiments.stop(str(p["id"]))
 
 
-@command("paper_experiment.status", "List prospective paper experiments and recorded calls.")
+@command("paperexperiment.status", "List prospective paper experiments and recorded calls.")
 def experiments_status(ctx: Context, p: dict[str, Any]) -> Any:
     from . import paper_experiments
     return {"experiments": paper_experiments.list_experiments()}

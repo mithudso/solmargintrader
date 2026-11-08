@@ -36,7 +36,7 @@ class PaperExperimentTests(unittest.TestCase):
         from soltui.tests.test_tui import make_settings
         ctx = commands.Context.from_settings(make_settings())
         with mock.patch.object(pe, 'start', return_value={'id': 'ok'}) as called:
-            env = commands.dispatch('paper_experiment.start',
+            env = commands.dispatch('paperexperiment.start',
                                     {'strategy': 'rsi', 'asset': 'SOL', 'minutes': 5,
                                      'capital': 1000.0, 'params': {}}, ctx=ctx, quiet=True)
         self.assertTrue(env['ok'], env)
