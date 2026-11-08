@@ -888,8 +888,8 @@ class SolTuiApp(App):
                 yield Input(placeholder="Combinations: rsi,macd; breakout,obv_trend", id="forward-combos")
                 yield Select([(m, m) for m in ("all", "any", "vote", "mean")],
                              id="forward-mode", value="all", allow_blank=False)
-            yield Static("Stopped. Start keeps testing while this console is open.",
-                         id="forward-status", markup=False)
+            yield Static("Forward results by strategy and horizon · Stopped",
+                         id="forward-status", classes="table-title", markup=False)
             table = GlossaryTable(id="forward-table")
             table.cursor_type = "row"
             table.add_columns("trial", "minutes", "resolved", "accuracy", "pending", "expired",

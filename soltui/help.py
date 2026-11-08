@@ -3,6 +3,18 @@
 from __future__ import annotations
 
 HEADER_GLOSSARY = {
+    "trial": "Strategy or combination as configured when this trial began.",
+    "minutes": "Forecast length, independent of the one-minute input candles.",
+    "resolved": "Predictions matched to a complete future candle window.",
+    "accuracy": "Correct calls divided by resolved calls. Flat is correct inside the cost threshold. This is a classification score.",
+    "pending": "Predictions awaiting a complete outcome window.",
+    "expired": "Predictions that could not be scored because candles were missing and the window aged out.",
+    "changes": "Evidence-gated parameter changes made for this trial and horizon.",
+    "last call": "Most recent recorded paper prediction: up, down or flat.",
+    "last outcome": "Observed direction of the last complete forecast window, which may be older than the most recent call.",
+    "issued utc": "When the most recent prediction was recorded, in UTC.",
+    "cost bps": "Round-trip fees and slippage from Settings, used as the minimum meaningful move.",
+    "active settings": "Parameters used for the next prediction, or the reason a signal could not be computed.",
     "median sharpe": (
         "Sharpe ratio = mean return / volatility of returns (annualised): "
         "risk-adjusted performance, >0 means paid for the risk taken. This is "
@@ -512,21 +524,6 @@ for _name, _leverage in (("lev_low", 2), ("lev_medium", 5), ("lev_high", 20)):
 def column_help(label: str, table_id: str | None = None) -> str | None:
     """Resolve overloaded labels using the actual table, not a global guess."""
     key = label.strip().casefold()
-    if table_id == "forward-table":
-        return {
-            "trial": "Strategy or combination as configured when this trial began.",
-            "minutes": "Forecast length, independent of the one-minute input candles.",
-            "resolved": "Predictions matched to a complete future candle window.",
-            "accuracy": "Correct calls divided by resolved calls. Flat is correct inside the cost threshold. This is a classification score.",
-            "pending": "Predictions awaiting a complete outcome window.",
-            "expired": "Predictions that could not be scored because candles were missing and the window aged out.",
-            "changes": "Evidence-gated parameter changes made for this trial and horizon.",
-            "last call": "Most recent recorded paper prediction: up, down or flat.",
-            "last outcome": "Observed direction of the last complete forecast window, which may be older than the most recent call.",
-            "issued utc": "When the most recent prediction was recorded, in UTC.",
-            "cost bps": "Round-trip fees and slippage from Settings, used as the minimum meaningful move.",
-            "active settings": "Parameters used for the next prediction, or the reason a signal could not be computed.",
-        }.get(key)
     if key == "kind":
         if table_id == "wallet-contracts":
             return "Type of on-chain account: a token mint defines an asset; a token account holds units; a stake account delegates SOL; a position NFT identifies an LP position. This is not a file classification."
