@@ -1050,12 +1050,12 @@ HORIZON_MINUTES = (1, 5, 30)
 
 def _record_horizon_calls(asset: str, call: Mapping[str, Any], stamp: int, *,
                           clock: Callable[[], float] = time.time) -> None:
-    """Record separate forward horizons against the first safely future minute open.
+    """Record separate forward horizons against the next future minute open.
 
     The same five-minute signal is evaluated at three horizons; these are not three
     independently trained predictors. Historical calls are deliberately not backfilled.
     """
-    start = (stamp // 60 + 2) * 60
+    start = (stamp // 60 + 1) * 60
     rows = [{"type": "horizon_call", "id": f"{call['id']}:{h}m", "source_id": call["id"],
              "asset": asset, "minutes": h, "start": start, "finish": start + h * 60,
              "issued_at": stamp, "call": call["call"], "config_hash": call["config_hash"]}
