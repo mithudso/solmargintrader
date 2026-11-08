@@ -42,7 +42,7 @@ Source gaps stay explicit. No external research is requested or required. The sk
 
 ## Agents
 
-B1-B3:running disjoint semantic authors (TASK948-TASK950). B4-B6:pending independent reviewers (TASK954-TASK956). B7:accepted21 completeness/location review (TASK957), added by the user completeness refinement. Runtime concurrency limit is3 child agents.
+B1-B3:done source authors (TASK948-TASK950). B4-B6:running independent reviewers (TASK954-TASK956). B7:21 completeness/location review done; parent must apply moves (TASK957). Runtime concurrency limit is3 child agents.
 
 ## Artifacts written
 
@@ -64,3 +64,5 @@ scripts/build_tradingview_script_profiles.py; research/tradingview-script-profil
 Architecture decision: The expanded cards live under research/tradingview-script-cards and link prior catalog entries. They do not alter the executable roster, earlier catalog decisions or frozen21 cards. [src: stele:KNOW-951]
 
 Completeness refinement: Each in-scope source record includes readiness.status, reason and blocking gaps. Incomplete expanded companion cards go beneath backtester/strategy_cards/incomplete/publication-profiles. Preserve the accepted21 semantic manifest and card bytes while binding physical moves through a separately reviewed location receipt. [src: prompts.md] [src: stele:KNOW-951]
+
+Continuation accounting: Actual complete-source review exceeds one context per shard. Continue existing assignments from saved exact receipts. The user-required complete goal and added completeness refinement override the optional default eight-dispatch cap; log real counts and stage8 degradation instead of truncating source coverage. Root integrates only landed PR97, not its former unfinished branch. [src: prompts.md] [src: research/tradingview-script-profile-audit-prompts.md]

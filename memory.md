@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 99
-Delta: v98 to v99; apply user-requested incomplete-card relocation to expanded profiles.
+Version: 100
+Delta: v99 to v100; finish all source drafts and begin full independent semantic/readiness review.
 
 ## v1 - 2026-11-06
 
@@ -1015,3 +1015,18 @@ The user now requires every newly created incomplete card under backtester/strat
 Separate TASK941/PR97 is actively moving791 older generic cards while retaining292 usable specifications and59 originals. Do not merge or modify its unfinished branch. Once it lands, integrate its loader/coverage changes and preserve its readiness evidence. The13 accepted native-strategy enrichments overlap its baseline files; preserve their enriched text, update readiness bindings after review, and resolve locations without invalidating prior semantic approval. Accepted21 manifest/card-byte hashes remain the prior source-reading receipt; a separate location receipt can bind relocated unchanged bytes. No original checkout edits are authorized while the other live session holds it.
 
 Remaining: complete all721 original explanations and readiness decisions; independently audit new profiles plus21-card readiness/locations; integrate landed PR97; implement correct incomplete placement and source/profile/review/path gates; final delivery remains conditional on full scope. Draft helper checkpoint9e84032 is pushed to PR96.
+
+
+## v100 - 2026-11-08 (all742 source decisions drafted; reviews active)
+
+All721 new profiles are individually authored and helper-valid, plus the21 accepted native-strategy subset. Authors TASK948/TASK949/TASK950 are done. Their initial scope decisions are227/218/227 in-scope and13/23/13 exclusions; these are draft counts, subject to independent corrections. All742 saved script.content fields are empty. Source descriptions may still disclose complete formulas or snippets. The first author checkpoint is pushed as d88802f on draft PR96. Root has already repaired seven shard-a records after independent findings; exact new hashes were re-reviewed and passed.
+
+Independent research-contract-auditors own only research/tradingview-script-profile-audits/shard-a.jsonl (TASK954), shard-b.jsonl (TASK955), shard-c.jsonl (TASK956). Every full source/profile pair, including exclusions, requires review. The JSONL receipts are the authority for exact covered IDs, full read ranges, pending findings and stale hashes. These audits are still partial. Resume existing reviewers from their saved unread IDs after context limits; never mark unread sources accepted or stop the user goal at a sample. The complete-source requirement and owner-required completeness refinement take precedence over p's default dispatch cap; record actual continuations and degraded/capped stage accounting honestly.
+
+A key correction is KNOW972: do not mechanically copy missing_information into blocking readiness.gaps. Missing feeds/cache, current compatibility, full code parity or portfolio trade rules alone do not invalidate a disclosed independent indicator/output calculation. Conversely hidden core inputs/algorithms stay incomplete. Parent has read and repaired4KIgeLGo FINRA,XUX5VVN0 event decoding,EtM15SgP MA3D,Rhj1nNLH absolute drawdown,SWWMsMQw panel,ygNO2G1V tick candles,vdzfb2WA quality fields. Auditor passed their exact updated records. Other pending revisions are enumerated in the audit JSONLs; read those rather than reconstructing queue messages. Parent may apply concrete independent-review corrections, verify relevant source facts, then obtain a fresh exact-hash review. Do not bulk relabel from keywords.
+
+TASK957 native21 completeness review is authored and mechanically corrected: research/tradingview-strategy-card-locations.json SHA25608568f361f90dfdc9ab12b116246ac64e237b170c785b70c449ddb10d2a68ecf,10 narrowly usable principal outputs and11 incomplete. All source/card bytes, full-read ranges and evidence offsets were reviewed. card_location() resolves21/21 after changing the reviewer's enum usable to usable-specification. Physical moves are NOT applied yet. The receipt is untracked until integration. Its existence makes the old file gate expect the final paths; apply moves before claiming that gate passes. Preserve accepted manifest1d40b13a and card bytes; location receipt is the overlay.
+
+PR97 independently merged as8ed41ad61c731f52a157054790520e3dfc7f23a1 at11:46UTC. Fetch/integrate origin/master, preserve its791 relocations/readiness work and all other sessions. Preserve this task's13 enriched card bodies during rename/modify resolution. Apply the separately reviewed native21 final paths, reconcile affected global readiness rows/hashes/dispositions/counts and retain both validators. Incomplete new documentation cards live beneath backtester/strategy_cards/incomplete/publication-profiles; incomplete native companion tools beneath incomplete/native-strategy-profiles. Usable companion documentation remains under research.
+
+Remaining: finish all three source audits and repair/re-review every finding; integrate landed PR97 and native moves; render all final cards; bind and verify full coverage/source/profile/review/card/path hashes; p sourced llms append and executed selfcheck; final CI/merge/default-branch receipts; refresh the portable collection and remove only owned branch/worktree. Portable README/memory now explicitly say expanded work in progress, not21-card task completion. Never touch the shared dirty original checkout while another live session owns it.
