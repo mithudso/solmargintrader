@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T13:49:22+00:00",
+  "generatedAt": "2026-11-08T14:10:35+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -130,12 +130,12 @@
           "hits": 30
         },
         {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md",
+          "path": "memory.md",
           "hits": 29
         },
         {
-          "path": "memory.md",
-          "hits": 27
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md",
+          "hits": 29
         },
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md",
@@ -1805,7 +1805,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 214,
+      "matchingFiles": 215,
       "shown": 30,
       "files": [
         {
