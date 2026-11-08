@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 158
-Delta: v157 to v158; record authorized synthetic proof-of-concept sweep.
+Version: 160
+Delta: v159 to v160; implement and verify archived LP home suppression.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1630,3 +1630,11 @@ The active SOL sweep uses a new proof-bound results file; 1d jobs succeed and 1h
 ## v158 - 2026-11-08
 
 Owner authorized synthetic bars for the proof of concept. Three gaps contain 15 missing hourly bars in total. Stopped prior worker at its job boundary. Original price cache and prior results remain untouched. Created separate /Users/mitch/.config/soltui/poc-data/sol-hourly-synthetic-epsmf8t9 with original copy, a 15-bar flat previous-close zero-volume hourly series and SOL_1h.synthetic.json provenance. New worker PID 26985 uses that directory and writes separate results /Users/mitch/.config/soltui/bg/results-8f615318bd7af7168ba68c0469d43b7c.jsonl. These outputs use synthetic data and are not real-market evidence. CLI overrides data-dir for this run; ordinary UI Start does not retain that override and will refuse proof mismatch rather than mix data. Verification: multiple 1h jobs finished successfully in the running worker. Remaining: deliver records and retain the worker and historical files.
+
+## v159 - 2026-11-08
+
+TASK-1024 in /Users/mitch/dev/solmargintrader-wt-archived-alerts: user reports archived Aero LP kill alert on the home page. The needs list, health strip and Aero LP tile still project liquidity.status after archival. Remove those home projections and their polling, retain Archive and KILL safety state, verify other alerts and mounted UI, and deliver.
+
+## v160 - 2026-11-08
+
+TASK-1024: removed archived LP from home needs, health, tiles, and recurring home polling; Archive remains accessible and KILL is unchanged. Isolated home regression and mounted startup passed 11 tests. A broader UI run using the live configuration failed with NoMatches for #queue-status; no broader pass is claimed. Remaining: final verification, index refresh, CI, delivery and loaded launcher acceptance.

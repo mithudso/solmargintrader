@@ -396,7 +396,7 @@ SIGNAL_HELP = {
 }
 
 CONTROL_HELP = {
-    "now-needs": "Everything that is stale, failed or unseen, worst first: a stopped sweep or trainer, a killed or silent LP daemon, a stopped price recorder, a partial wallet scan, a wallet change you have not looked at. Select an item and press Enter to open the view that fixes it. All clear means nothing needs you.",
+    "now-needs": "Everything that is stale, failed or unseen, worst first: a stopped sweep or trainer, a stopped price recorder, a partial wallet scan, a wallet change you have not looked at. Select an item and press Enter to open the view that fixes it. All clear means nothing needs you.",
     "bots-bot": "Which bot the tab shows and the buttons act on: Grid bot, Triangle arbitrage bot or DCA bot. Each keeps its own settings, backtests, forward test and optimize report.",
     "bots-coins": "Coins the grid and DCA bots backtest on: click to tick one, several or all of them (every coin with cached bars is listed). A backtest runs once per ticked coin and lists each in the per-coin table. A forward test runs on the first ticked coin and needs its Coinbase USD market in the price stream. The triangle bot watches every triangle at once, so this is disabled for it.",
     "bots-start": "UTC date (or epoch seconds) at which the backtest starts the bot. The bot sets itself up from the price at that bar's close, as it would have then. Empty means the beginning of the data: the oldest cached hour (1m history resampled where it reaches further back than the 1h file), or the first hour after the last gap longer than 48 hours. For the triangle bot, the start of the recording.",

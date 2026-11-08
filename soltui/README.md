@@ -100,7 +100,7 @@ The console groups its panes by the question you bring, not as eighteen peer tab
   name. A read-only command with no required parameters runs from the palette and shows a one-line
   result. Any other command (every write, including the LP Kill and Resume) opens the view that owns
   its button and focuses it, so confirm steps stay where they are.
-- The strip under the top bar shows every background process: sweep, trainers, autopilot, LP daemon,
+- The strip under the top bar shows every background process: sweep, trainers, autopilot,
   price recorder, forward test and wallet scan. It refreshes every 5 s.
 
 Every classic pane is still a pane of the one `#main-tabs` TabbedContent. A tab added later is filed
