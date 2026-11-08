@@ -84,7 +84,7 @@ from . import config as config_mod
 from .config import INTERVALS, XPUB_FIELDS, Settings, load_settings
 from .hdwallet import redact
 from .paper import MODE_LABEL
-from .roster import RosterError
+from .roster import RosterError, available_strategies
 from .signals import SIGNAL_GROUPS, SignalDefaults
 from .status import build_title, format_pct
 
@@ -163,6 +163,11 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#btn-save": "settings.save",
     "#btn-add": "roster.add",
     "#btn-roster-all": "roster.add_all",
+    "#paper-exp-start": "paper_experiment.start",
+    "#paper-exp-resume": "paper_experiment.resume",
+    "#paper-exp-stop": "paper_experiment.stop",
+    "#paper-exp-refresh": "paper_experiment.status",
+    "#paper-exp-activity": "paper_experiment.status",
     "#forward-start": "forwardtest.start",
     "#forward-stop": "forwardtest.stop",
     "#forward-refresh": "forwardtest.status",
@@ -919,6 +924,8 @@ class SolTuiApp(App):
                 yield from self._compound_pane()
             with TabPane("Forwardtest", id="tab-forwardtest"):
                 yield from self._forward_pane()
+            with TabPane("Experiments", id="tab-paper-experiments"):
+                yield from self._paper_experiments_pane()
             with TabPane("Bots", id="tab-bots"):
                 yield from self._bots_pane()
             with TabPane("Backtest", id="tab-backtest"):
@@ -1080,6 +1087,158 @@ class SolTuiApp(App):
                 yield Button("Backtest all", variant="warning", id="btn-bt-all")
             yield Static("", id="history-status")
             yield Static("", id="roster-status")
+
+    def _paper_experiments_pane(self) -> ComposeResult:
+        strategies = available_strategies()
+        with VerticalScroll():
+            yield Static("Prospective paper experiments: the strategy makes predictions on closed 1m candles. "
+                         "Directional calls simulate a 1x trade from a future candle open to the chosen "
+                         "horizon close, less the Settings round-trip costs. P&L covers settled calls only; "
+                         "pending calls are not marked to market. No real orders are placed.", classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Select([(name, name) for name, _ in strategies], id="paper-exp-strategy",
+                             value=strategies[0][0], allow_blank=False)
+                yield Input(value=self.settings.asset.upper(), placeholder="Coin", id="paper-exp-asset")
+                yield Select([(f"{h} min", h) for h in (1, 5, 30)], value=5,
+                             id="paper-exp-horizon", allow_blank=False)
+                yield Input(value="1000", placeholder="Paper dollars", id="paper-exp-capital")
+            with Horizontal(classes="form-row"):
+                yield Input(value="{}", placeholder="Strategy parameters as JSON", id="paper-exp-params")
+                yield Button("Start experiment", id="paper-exp-start", variant="success")
+                yield Button("Resume selected", id="paper-exp-resume")
+                yield Button("Stop selected", id="paper-exp-stop")
+                yield Button("Refresh", id="paper-exp-refresh")
+                yield Button("Status / activity", id="paper-exp-activity")
+            yield Static("No paper experiments yet.", id="paper-exp-status", markup=False)
+            table = GlossaryTable(id="paper-exp-table")
+            table.cursor_type = "row"
+            table.add_columns("strategy", "coin", "horizon", "state", "calls", "resolved", "trades", "paper $", "P&L $", "message")
+            yield table
+            yield Static("Select a run to inspect its recent predictions and results.", id="paper-exp-detail", markup=False)
+            events = GlossaryTable(id="paper-exp-events")
+            events.add_columns("issued UTC", "starts UTC", "prediction", "outcome", "move bps", "paper P&L")
+            yield events
+
+    @on(Button.Pressed, "#paper-exp-start")
+    def _paper_exp_start(self) -> None:
+        try:
+            params = json.loads(self.query_one("#paper-exp-params", Input).value or "{}")
+            payload = {"strategy": str(self.query_one("#paper-exp-strategy", Select).value),
+                       "asset": self.query_one("#paper-exp-asset", Input).value,
+                       "minutes": int(self.query_one("#paper-exp-horizon", Select).value),
+                       "capital": float(self.query_one("#paper-exp-capital", Input).value), "params": params}
+        except (ValueError, TypeError) as exc:
+            self.query_one("#paper-exp-status", Static).update(f"Invalid experiment: {exc}")
+            return
+        env = self._call("paper_experiment.start", payload)
+        if not env["ok"]:
+            self.query_one("#paper-exp-status", Static).update(self._msg(env))
+            return
+        self._paper_exp_refresh()
+
+    @on(Button.Pressed, "#paper-exp-resume")
+    def _paper_exp_resume(self) -> None:
+        table = self.query_one("#paper-exp-table", GlossaryTable)
+        if not table.row_count:
+            return
+        key = self._strategy_table_key(table)
+        env = self._call("paper_experiment.resume", {"id": str(key)})
+        if not env["ok"]:
+            self.query_one("#paper-exp-status", Static).update(self._msg(env))
+        else:
+            self._paper_exp_refresh()
+
+    @on(Button.Pressed, "#paper-exp-stop")
+    def _paper_exp_stop(self) -> None:
+        table = self.query_one("#paper-exp-table", GlossaryTable)
+        if not table.row_count:
+            return
+        key = self._strategy_table_key(table)
+        env = self._call("paper_experiment.stop", {"id": str(key)})
+        if not env["ok"]:
+            self.query_one("#paper-exp-status", Static).update(self._msg(env))
+        else:
+            self.query_one("#paper-exp-status", Static).update("Stop requested; waiting for the current check.")
+
+    @on(Button.Pressed, "#paper-exp-activity")
+    def _paper_exp_activity(self) -> None:
+        table = self.query_one("#paper-exp-table", GlossaryTable)
+        if not table.row_count:
+            self._start_log("Paper experiment", "No experiment selected.")
+            return
+        key = self._strategy_table_key(table)
+        row = getattr(self, "_paper_exp_rows", {}).get(key)
+        if not row:
+            return
+        self._paper_exp_watched = key
+        self._paper_exp_watch_state = None
+        self._start_log(f"Paper experiment {key}", self._paper_exp_activity_line(row))
+
+    @staticmethod
+    def _paper_exp_activity_line(row: dict[str, Any]) -> str:
+        trial = row.get("trial") or {}
+        return (f"{row['asset']} {row['strategy']} · {row['minutes']}m · {row['phase']} · "
+                f"{row['calls_recorded']} predictions, {trial.get('resolved', 0)} resolved, "
+                f"{row['trades']} paper trades · P&L ${row['pnl']:+.2f} · "
+                f"{trial.get('note') or row['message']}")
+
+    @on(Button.Pressed, "#paper-exp-refresh")
+    def _paper_exp_refresh_pressed(self) -> None:
+        self._paper_exp_refresh()
+
+    def _paper_exp_tick(self) -> None:
+        if self.query("#main-tabs") and self.query_one("#main-tabs", TabbedContent).active == "tab-paper-experiments":
+            self._paper_exp_refresh()
+
+    def _paper_exp_refresh(self) -> None:
+        env = self._call("paper_experiment.status", quiet=True)
+        if not env["ok"]:
+            self.query_one("#paper-exp-status", Static).update(self._msg(env))
+            return
+        runs = env["result"]["experiments"]
+        self._paper_exp_rows = {r["id"]: r for r in runs}
+        table = self.query_one("#paper-exp-table", GlossaryTable)
+        selected = self._strategy_table_key(table) if table.row_count else None
+        table.clear()
+        for r in runs:
+            trial = r.get("trial") or {}
+            table.add_row(r["strategy"], r["asset"], str(r["minutes"]), r["phase"],
+                          str(r["calls_recorded"]), str(trial.get("resolved", 0)), str(r["trades"]),
+                          f"{r['equity']:.2f}", f"{r['pnl']:+.2f}", trial.get("note") or r["message"], key=r["id"])
+        self.query_one("#paper-exp-status", Static).update(
+            f"{len(runs)} paper experiment(s); {sum(bool(r['running']) for r in runs)} running. "
+            "Results are simulated; no order was placed.")
+        watched = self._paper_exp_rows.get(getattr(self, "_paper_exp_watched", ""))
+        if watched:
+            line = self._paper_exp_activity_line(watched)
+            if line != getattr(self, "_paper_exp_watch_state", None):
+                self._paper_exp_watch_state = line
+                self._append_log(f"Paper experiment {watched['id']}", line)
+        if runs:
+            chosen = self._paper_exp_rows.get(selected, runs[0])
+            table.move_cursor(row=table.get_row_index(chosen["id"]))
+            self._paper_exp_show(chosen)
+
+    @on(DataTable.RowHighlighted, "#paper-exp-table")
+    def _paper_exp_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        row = getattr(self, "_paper_exp_rows", {}).get(str(event.row_key.value)) if event.row_key else None
+        if row:
+            self._paper_exp_show(row)
+
+    def _paper_exp_show(self, row: dict[str, Any]) -> None:
+        self.query_one("#paper-exp-detail", Static).update(
+            f"{row['asset']} {row['strategy']} · {row['minutes']}m · "
+            f"round-trip cost {row['cost_bps']:g} bps · "
+            f"{(row.get('trial') or {}).get('note') or row['message']}")
+        table = self.query_one("#paper-exp-events", GlossaryTable)
+        table.clear()
+        dirs = {1: "UP", -1: "DOWN", 0: "FLAT", None: "pending"}
+        for call in reversed(row["calls"]):
+            table.add_row(time.strftime("%m-%d %H:%M", time.gmtime(call["issued"])),
+                          time.strftime("%m-%d %H:%M", time.gmtime(call["start"])),
+                          dirs.get(call["prediction"], "?"),
+                          "expired" if call["expired"] else dirs.get(call["outcome"], "?"),
+                          _num(call["bps"]), _num(call["paper_pnl"]))
 
     def _forward_pane(self) -> ComposeResult:
         with Vertical():
@@ -2344,6 +2503,7 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self.set_interval(5, self._forward_schedule)
+        self.set_interval(15, self._paper_exp_tick)
         self._refresh_liquidity(force=True)
         self._compound_setup()
         self.set_interval(5, self._bots_tick)
@@ -3667,6 +3827,8 @@ class SolTuiApp(App):
             self._refresh_docs()
         elif pane == "tab-forwardtest":
             self._forward_refresh()
+        elif pane == "tab-paper-experiments":
+            self._paper_exp_refresh()
         elif pane == "tab-queue" and self.query("#queue-status"):
             # No once-only guard: unlike Cumulative and Docs, this tab's source
             # is being written by another process right now, so re-reading on

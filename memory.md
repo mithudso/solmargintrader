@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 166
-Delta: v165 to v166; record live sweep and Signal trainer activation.
+Version: 168
+Delta: v167 to v168; record dry-run usability investigation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1662,3 +1662,15 @@ Sweep recovery TASK-1029 implemented by textual-job-lifecycle-specialist in bran
 ## v166 - 2026-11-08
 
 The SOL sweep resumed in a new proof-isolated results segment /Users/mitch/.config/soltui/bg/results-b97fdfd3748763c996ba74a0ddb12fde.jsonl. The old results and proof remain in place. As of 17:38 UTC it had completed 554 of 1,059 evaluations without an error; process 83636 runs from /Users/mitch/dev/solmargintrader-wt-01a1bc24, whose data symlink points to the original checkout. The ten-coin Signal trainer was gracefully replaced with PID 91333 from the same worktree. Each coin has separate 1-, 5- and 30-minute prediction records; initial one-minute outcomes resolved for BTC and SOL. The console PID 74766 still uses /Users/mitch/dev/solmargintrader and has not loaded the updated UI. Computer-use access to Terminal was denied. The active autopilot still points to the original checkout, so a future automatic restart can reload its older code until that checkout is safely updated. Preserve the active worktree and processes. PR 117 delivery and the five- and thirty-minute live outcomes remain to verify.
+
+## v167 - 2026-11-08
+
+Active TASK-1033: user requests an Experiments tab for prospective paper trading of any strategy, with live-time predictions, simulated actions and outcomes. This is distinct from the existing optimization experiment workbench. Preserve current sweep and trainer and all simulated-only boundaries. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments, branch agent-01a1bc24-experiments; base PR 117 head 8f4cdbb. The textual-job-lifecycle-specialist owns the separate status-button task in a different worktree. Stele knowledge create for the prospective/paper-only decision is queued as outbox 30def738 after transport closed. Remaining: inspect current prospective forwardtest and paper execution engines; design and implement durable experiments, accessible UI/status, causal and cost tests; integrate concurrent work, delivery, live acceptance.
+
+## v168 - 2026-11-08
+
+Owner also reports the Dry run tab lacks an understandable start control and activity, appears limited to top five presets, and recommends an unproven MACD strategy that cannot be selected. The textual-job-lifecycle-specialist owns Dry Run UI and status in its isolated worktree; preserve live trading defaults and avoid claiming backtest success without evidence. Integrate its work with TASK-1033 prospective paper experiments and the pending sweep recovery PR.
+
+## v169 - 2026-11-08
+
+The prospective Experiments tab and detached paper runner are implemented in /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments. The runner records causal 1, 5 or 30 minute calls under a unique experiment and frozen code fingerprint; it simulates non-overlapping 1x positions with configured round-trip costs and $1000 default paper capital. It never sends orders. An isolated real-feed smoke run recorded three calls and one resolved result, then stopped cleanly. Eleven targeted tests pass. No user-selected strategy has been specified, so no persistent user experiment has been started. Remaining: integrate PR 118, update indexes and documentation counts, rerun checks, deliver and verify the installed console.
