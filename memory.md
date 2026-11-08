@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 149
-Delta: v148 to v149; investigate background sweep proof mismatch.
+Version: 152
+Delta: v151 to v152; retain the sweep investigation and liquidity archival histories.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1594,3 +1594,11 @@ Diagnosis: persisted SOL proof differs from current code in 26 Python paths and 
 Verification: the live checkout fresh-path --plan succeeded with 1,059 pending jobs and did not run evaluations. The running TUI still reads the old default history.
 
 Remaining: implement safe Queue recovery with archive and lock semantics, verify with isolated data, deliver the code, and verify loaded behavior without disrupting the active session. No new sweep was started.
+
+## v150 - 2026-11-08: liquidity archival
+
+Target: liquidity, Aero LP, positions and liquidity scout. Stele task TASK-1011. Owner describes these as unprofitable. The live Aero LP launch agent was disabled and unloaded and /Users/mitch/.aero-lp/KILL was set. The standalone GitHub repository mithudso/aero-liquidity was archived. The managed exit-to-safe dry run reports no managed positions. The existing status snapshot reports no positions; a live unstaked NFT scan found none but cannot exclude gauge-staked positions. Preserve wallet data and records. User clarification is pending on whether to withdraw any remaining on-chain positions. The archive notice is recorded in the component documentation and overrides older live-operation guidance. The draft delivery is PR 108. Remaining: settle navigation handling and whether any independently staked positions should be withdrawn, then verify and deliver. Worktree: /Users/mitch/dev/solmargintrader-archive-liquidity.
+
+## v151 - 2026-11-08
+
+Owner confirmed Archive navigation and withdrawal of any remaining Aero LP positions to the wallet. Archive navigation is implemented in the isolated worktree. CDP history found three known Aero NFTs; each was burned on 2026-11-06, and Base RPC found zero manager balance and no stake in the known gauge. No withdrawal was needed or sent. This does not rule out all third-party staking paths. Keep the daemon disabled and KILL set. Verify navigation, finish PR 108, and verify delivery.

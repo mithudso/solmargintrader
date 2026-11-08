@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 82
-Delta: v81 to v82; record the background sweep proof error.
+Version: 84
+Delta: v83 to v84; retain the sweep investigation and liquidity archival requests.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -693,3 +693,17 @@ Yes it's abandonedd
 I'm getting this error in the sweep: error: ValueError: evaluation proof is missing or differs for SOL at /Users/mitch/.config/soltui/bg/results.jsonl; preserve this history and use --results-path for a fresh file · 361 rankable, 253 with positive median Sharpe · 224
 below the 10-trade floor
 ```
+
+## v83 - 2026-11-08
+
+```text
+Liquidity and so the Aero LP and the positions, and liquidity scout are all unprofitable and should be archived.
+```
+
+## v84 - 2026-11-08
+
+```text
+1. yes. 2. yes
+```
+
+Confirmation: move liquidity views into an Archive section and withdraw any remaining Aero LP funds to the wallet.

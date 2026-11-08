@@ -1,5 +1,7 @@
 # liquidity — agent rules
 
+**Archived 2026-11-08:** The owner discontinued this unprofitable component. Keep the daemon disabled and its kill switch set. Do not restart or resume it unless the owner later requests reactivation. The former live-operation authorization below is historical. Archiving does not withdraw positions.
+
 The Aero Slipstream LP manager. See README.md. **It can move real money.**
 
 ## Live operation (owner authorization)

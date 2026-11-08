@@ -1,5 +1,7 @@
 # liquidity — Aero Slipstream LP manager
 
+> **Archived 2026-11-08:** The owner discontinued the liquidity manager and scout as unprofitable. The live service is disabled and its kill switch is set. The material below is retained as historical documentation, not an instruction to restart it. Stopping the service does not withdraw on-chain positions.
+
 The **liquidity** component of solmargintrader. It manages concentrated-liquidity positions on **Aero**
 (aero.xyz) **Slipstream** on **Base**, in one daemon:
 

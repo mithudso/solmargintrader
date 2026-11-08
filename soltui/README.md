@@ -88,8 +88,9 @@ The console groups its panes by the question you bring, not as eighteen peer tab
 | `1` | **Now** | Overview: Needs you (everything stale, failed or unseen, worst first), every coin, money tiles, activity, live prices |
 | `2` | **Signal** | Call & metrics · Backtest · Forward test · All coins (the four Compound 5m sections) |
 | `3` | **Research** | Backtest · Roster (Strategies) · Sweep (Queue) · Cumulative · Top 5 · Decide (Analyze) · Forward (Forwardtest) · Bots · Replay (Execute) · Dry run (Live Run) · Indicators (Signals) |
-| `4` | **Money** | Aero LP (Liquidity) · P&L · Wallet, under a LIVE MONEY band |
+| `4` | **Money** | P&L · Wallet, under a LIVE MONEY band |
 | `5` | **Library** | Docs · Findings (Research) |
+| `6` | **Archive** | Aero LP (Liquidity), including historical Positions and Scout |
 | `,` | **Settings** | Settings |
 
 - `[` and `]` step through a destination's sub-views. Clicking a destination or a sub-view works too.
@@ -146,7 +147,7 @@ larger open losses; read total net account equity as well as realized P&L.
 | **Wallet** | Read-only discovery of what the two Settings addresses hold: native SOL/ETH, SPL tokens (Token and Token-2022), stake accounts, ERC-20 balances, LP position NFTs, and the contract or account each holding lives in, with explorer links. Per-chain and total USD, every figure `wallet (live)`. Airdrop-looking tokens are flagged and excluded from totals. See [The Wallet tab](#the-wallet-tab). |
 | **P&L** | Profit and loss over 24h, 7d, 30d, 90d, YTD, all or a custom start/end. One section per source (`backtest`, `paper`, `dry-run`, `dry-run LP`, `live LP`, and the separate `wallet (live)` value-change section) with net and gross P&L, fees, slippage, borrow/funding, realized vs unrealized, win rate, expectancy, daily series with cumulative curve, max drawdown and recovery, best and worst day/week/month, and a by-strategy / by-asset attribution. See [The P&L tab](#the-pl-tab). |
 | **Queue** | Starts and reads the low-priority background sweep. Start/Stop/Refresh, a live status line, a ranked table and a below-the-floor table. |
-| **Liquidity** | Read-only view of the Aero (aero.xyz) liquidity daemon's state files (`$AERO_LP_HOME`, default `~/.aero-lp/`): mode badge (LIVE is red, dry-run is yellow), kill-switch banner ("Kill switch ON — bot paused"), idle vs deployed USD, totals; Positions, Scout (top pools by modelled net APR), Experiments (arms side by side, winner marked) and Recent actions (newest first, basescan tx links) tables. Refresh / Kill / Resume buttons (`F5` refresh, `F8` kill-resume toggle while the tab is open); re-reads every 15 s. |
+| **Liquidity (archived)** | Historical view of the retired Aero (aero.xyz) liquidity daemon's state files (`$AERO_LP_HOME`, default `~/.aero-lp/`): mode badge (LIVE is red, dry-run is yellow), kill-switch banner ("Kill switch ON — bot paused"), idle vs deployed USD, totals; Positions, Scout (top pools by modelled net APR), Experiments (arms side by side, winner marked) and Recent actions (newest first, basescan tx links) tables. Refresh / Kill / Resume buttons (`F5` refresh, `F8` kill-resume toggle while the tab is open); re-reads every 15 s. |
 
 ### Strategy roster and Forwardtest
 
