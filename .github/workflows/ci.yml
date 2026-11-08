@@ -249,6 +249,9 @@ jobs:
       - name: Script interpretation review gate refuses stale evidence
         run: python3 -m unittest scripts.test_tradingview_script_profiles
 
+      - name: Incomplete card separation integrity
+        run: python3 -m unittest scripts.test_card_readiness
+
       # The exhaustive index under index/ is a separate artifact from
       # docs/high_signal_file_index.json above, and it goes stale the same way: it
       # looks authoritative, and nothing notices when a file moves. --check

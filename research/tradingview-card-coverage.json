@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "version": "1.1.0",
-  "delta": "v1.0.0 to v1.1.0; preserve21 detailed strategy-publication interpretations and correct the martingale data prerequisites.",
+  "version": "1.2.0",
+  "delta": "v1.1.0 to v1.2.0; combine reviewed active/incomplete catalog locations with preserved21 native-strategy interpretations and corrected martingale input prerequisites.",
   "source_root": "tradingview/ (gitignored local source directory)",
   "source_publication_counts": {
     "script": 747,
@@ -225062,5 +225062,6 @@
       "reason": "No publication ssrIdeaData; navigation or unavailable page",
       "sha256": "adef575b51680b61e00b271baf9e2cd9a0512a04b202fedef1d8385ab825948f"
     }
-  ]
+  ],
+  "readiness_manifest": "research/tradingview-card-readiness.json"
 }

@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 58
-Delta: v57 to v58; place newly created incomplete cards in the requested directory.
+Version: 61
+Delta: v60 to v61; preserve the status question during ongoing full-script review.
 
 ## v1 - 2026-11-06
 
@@ -448,3 +448,42 @@ If a card you create is incomplete, in that it is not a fully useable strategy o
 ```
 
 Applies to the active expanded script-understanding pass and its accepted21-card subset. Preserve source interpretations and review usable computation separately from runtime implementation status. Coordinate with the independent PR97 card-relocation work rather than overwriting it.
+
+## v56 - 2026-11-08 (Four nonlinear lead-lag children)
+
+````text
+Do a /dr on the 4 unresearched child concepts: Conditional nonlinear information transfer (frontier, viability 3.60 / 5)
+Finite-sample dependency uncertainty (frontier, viability 3.60 / 5)
+Lag-selection multiplicity (frontier, viability 3.60 / 5)
+Directed graph preservation (frontier, viability 3.60 / 5)
+````
+
+Target: solmargintrader, isolated branch agent-01a1b5ef. Stele TASK-905.
+Metadata v57: operator-neutral continuation reference; user request unchanged.
+
+## v57 - 2026-11-08 (incomplete TradingView cards)
+
+```text
+create an incomplete directory and put all the cards you just created that cannot actually be run into it for further research, keep any cards that contain an equation, script, and/or parameters that make it a functional strategy
+```
+
+## v58 - 2026-11-08 (card readiness clarification)
+
+```text
+Keep complete indicator specifications too (Recommended)
+```
+
+## v59 - 2026-11-08 (canonical incomplete directory correction)
+
+```text
+I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
+```
+
+
+## v61 - 2026-11-08 (status during expanded source review)
+
+```text
+So what're you doing now?
+```
+
+Answered that all742 publications have a draft explanation or exclusion, the21 native-strategy cards are reviewed/sorted, and556 of the721 expanded profiles had completed source review at that moment. Continue the original task; this is not a pause or replacement objective.

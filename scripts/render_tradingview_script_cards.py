@@ -202,7 +202,7 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
         "runner: null",
         "evaluation: null",
         "---",
-        "# " + source["name"],
+        "# " + source["name"].strip(),
         "Version: 1.0.0. Delta: individual explanation of the complete saved publication.",
         f"**Classification:** {profile['classification']}. Native publication type: {source['native_type']}. Review: {status}.",
         "## Idea and objective",
