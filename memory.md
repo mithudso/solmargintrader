@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 200
-Delta: v199 to v200; record F5 delivery.
+Version: 203
+Delta: v202 to v203; record delivered parameter range controls.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1788,17 +1788,28 @@ The owner requests independent bot optimization and configuration for every coin
 
 ## v197 - 2026-11-08
 
-The experiment range fields are candidate parameter values, not necessarily prices. Worktree /Users/mitch/dev/solmargintrader-wt-experiment-range owns experiment_screens.py and focused tests. Populate selected-parameter defaults, label actual units, implement adjacent relative percentage controls, and preserve numeric, integer and choice semantics. A coin price must never populate unrelated parameter fields. Show a live price separately only if a verified quote is available without blocking the UI. Preserve active jobs. Stele task creation queued as ba7f78e0 after transport closed; parent integrates before merge.
+The owner wants frequent, incremental per-coin auto-optimization and reports that any failed evaluation can block progress. Isolate unrelated failed candidate evaluations from the actual candidate comparison; keep negative valid results and require matched evidence for the candidate being adopted. Do not confuse a failed execution with a losing valid result. Retain the owner's ability to choose manual mode. Stele task creation is queued as outbox 5897ce13.
 
 ## v198 - 2026-11-08
 
-ExperimentScreen now derives range defaults from the selected parameter baseline, labels real parameter units, and applies adjacent percentage adjustments relative to that baseline. Integer parameters round to whole values; choice fields disable ranges, logarithmic count is a whole number, out-of-domain and zero-baseline percent adjustments are refused. A separate on-demand recorder status check runs off the UI thread and shows a single coin midpoint only with a fresh live bid/ask and timestamp. It never writes the price into a parameter. Forty-three focused tests passed. No active jobs or services were touched. Parent owns integration and clarification; the branch is not to be merged independently.
+PR 126 merged as 14c04d0f07e383bf4aeea2e8e77a3190dc4dfcf2 after required CI passed. It preserves Forward Test sorting, adds F8 strategy handoff, and documents Jupiter spot/perpetual cost differences. The complete SolTUI suite passed 1085 tests with two skips after the catalogue, help, glossary and table-title fixes. Two additional F8 Forward Test interaction tests also passed. The per-coin bot controls and optimizer remain under active implementation in this worktree.
 
 ## v199 - 2026-11-08
 
-The owner confirmed that percentage controls should adjust the selected parameter relative to its current value. The separate verified coin price is a reference and does not populate non-price parameters.
-The Stele decision is queued in outbox 609e92e4 after the transport closed.
+The owner asks the Experiments workbench Range, Stop and Step inputs to show defaults, clarify whether values are percentages, and offer percent adjustments beside the fields. These inputs describe the selected parameter's candidate values, not generally coin prices. The user was asked whether percentages should be relative to the current parameter value. Do not put a market price into a rung count or other non-price parameter. Stele task creation is queued as outbox baf0d624.
 
 ## v200 - 2026-11-08
 
-F5 batch PR 127 merged as bb18a64fd2f52feae435680a22d0e8e1f81c3655 after required CI. It uses eligible Coinbase USD spot markets and cached history, reports missing and unsupported cells, and records separate interval-specific forward results. Leveraged tiers and full-universe throughput remain unverified. No production batch was started in testing.
+F5 batch PR 127 merged as bb18a64fd2f52feae435680a22d0e8e1f81c3655 after required CI. Its detached runner freezes the eligible Coinbase USD spot universe and per-series proof, records missing, failed and unsupported cells, and starts independent forward trials using matching closed candle intervals. Existing cached histories may be incomplete; leveraged tiers remain unsupported and full-universe throughput is not measured. No production batch was started during testing. TASK-1046 remains to be closed after live acceptance.
+
+## v201 - 2026-11-08
+
+Per-coin bot tuning now separates confirmed results from tentative incremental adoption. Tentative adoption requires at least three matched holdout decisions, at least 80 percent matched coverage, a positive median and more wins than losses. Reports disclose that small samples are not statistically confirmed. Manual mode prevents automatic adoption. These bot workflows are simulation-only; a future live runner needs its own explicit risk policy. Stele decision queued as outbox a989c01c. Review identified aggregate skipped-coin reporting, holdout provenance and persistent confidence display issues; fixes and regression tests are in progress.
+
+## v202 - 2026-11-08
+
+The owner provided /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_reference.md for Jupiter lending, fees and leverage. It lists perps base and variable fees, positions, liquidation and program identifiers. Its section 2.1 describes price-impact fees, while section 3.1 says standard fills have zero price impact. Current Jupiter documentation describes linear and additive impact fees, and Stele KNOW-813 flags a one-basis-point floor. Do not assume zero impact or trust program and fee constants without current venue verification. The owner also confirmed that experiment percentage controls should adjust the selected parameter's current value; display market price separately.
+
+## v203 - 2026-11-08
+
+Experiment range PR 130 merged as 514edb0651c5ba2c0c25e10f4dc44f6971c085ad after required CI. It shows selected parameter units, baseline defaults and relative percentage controls, with a separate fresh recorder quote when available. The owner confirmed parameter-relative adjustments. Headless installed-entrypoint acceptance passed; the existing console predates delivery. Stele decision queued as outbox 609e92e4.

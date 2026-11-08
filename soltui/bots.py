@@ -68,6 +68,9 @@ from . import config as config_mod
 from . import pricefeed
 
 BOTS = ("grid", "triangle", "dca")
+# The recurring scheduler may promote grid/DCA only when this capability is present.
+# Per-coin adoption uses an atomic mode and baseline check in save_config.
+PER_COIN_OPTIMIZE_ADOPTION_SAFE = True
 LABELS = {"grid": "Grid bot", "triangle": "Triangle arbitrage bot", "dca": "DCA bot"}
 ABOUT = {
     "grid": "Resting ladder of limit buys below the price and paired sells one rung above each fill "
@@ -94,7 +97,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
 # The representative grids auto-optimize searches. Small on purpose: every extra configuration is
 # another trial, and more trials make a lucky winner likelier, not a better one.
 SPACE: dict[str, dict[str, list[Any]]] = {
-    "grid": {"range_pct": [5.0, 10.0, 15.0, 25.0], "rungs": [5, 9, 15]},
+    "grid": {"range_pct": [5.0, 10.0, 15.0, 25.0], "rungs": [5, 9, 15], "spacing": ["geom", "arith"]},
     "triangle": {"min_edge_bps": [5.0, 15.0, 35.0, 60.0], "latency_s": [0.5, 1.0, 2.0]},
     "dca": {"price_deviation_pct": [1.0, 2.0, 3.5], "take_profit_pct": [1.0, 2.0, 4.0],
             "max_safety_orders": [3, 6], "volume_scale": [1.0, 1.5]},
@@ -108,7 +111,10 @@ MIN_BACKTEST_BARS = 24
 MIN_HOUR_MINUTES = 30  # an hour resampled from 1m needs this many minutes, or it counts as missing
 MAX_FORWARD_GAP_MIN = 2
 OPTIMIZE_WINDOWS = 6
+PER_COIN_OPTIMIZE_WINDOWS = 6  # half are holdout; incremental decisions are labeled tentative
+PER_COIN_MIN_DECIDED_CELLS = 3
 OPTIMIZE_WINDOW_DAYS = 30
+PER_COIN_OPTIMIZE_WINDOW_DAYS = 3  # incremental tuning; reports small-sample confidence
 SIGN_TEST_ALPHA = 0.05
 MIN_DECIDED_CELLS = 10
 TRIANGLE_MIN_SNAPSHOTS = 60
@@ -255,9 +261,13 @@ def _all_configs() -> dict[str, Any]:
     return raw if isinstance(raw, dict) else {}
 
 
-def get_config(bot: str) -> dict[str, Any]:
+def get_config(bot: str, coin: str | None = None) -> dict[str, Any]:
     bot = _bot(bot)
-    saved = _all_configs().get(bot) or {}
+    all_configs = _all_configs()
+    saved = all_configs.get(bot) or {}
+    if coin is not None and bot != "triangle":
+        symbol = _config_coin(coin)
+        saved = (all_configs.get("per_coin", {}).get(bot, {}).get(symbol) or saved)
     try:
         return validate(bot, {k: v for k, v in saved.items() if k in DEFAULTS[bot]})
     except BotError:
@@ -275,28 +285,74 @@ def _config_lock():
             fcntl.flock(handle, fcntl.LOCK_UN)
 
 
+def _config_coin(coin: str) -> str:
+    symbol = str(coin).strip().upper()
+    if not symbol or not symbol.isalnum() or len(symbol) > 20:
+        raise BotError("coin must be a valid asset symbol")
+    return symbol
+
+
+def config_mode(bot: str, coin: str | None = None) -> str:
+    bot = _bot(bot)
+    raw = _all_configs()
+    global_mode = raw.get("modes", {}).get(bot, "auto")
+    mode = (raw.get("per_coin_modes", {}).get(bot, {}).get(_config_coin(coin), global_mode)
+            if coin is not None and bot != "triangle" else global_mode)
+    if mode not in ("auto", "manual"):
+        raise BotError("saved bot mode is invalid")
+    return mode
+
+
 def save_config(bot: str, values: dict[str, Any], *, merge: bool = True, reason: str = "edited",
-                expected: dict[str, Any] | None = None) -> dict[str, Any]:
+                expected: dict[str, Any] | None = None, coin: str | None = None,
+                mode: str | None = None) -> dict[str, Any]:
     """Atomically save one bot without losing another process's settings edit."""
     bot = _bot(bot)
+    if mode is not None and mode not in ("auto", "manual"):
+        raise BotError("mode must be auto or manual")
     with _config_lock():
-        current = get_config(bot)
+        coin = _config_coin(coin) if coin is not None and bot != "triangle" else None
+        current = get_config(bot, coin)
+        if reason.startswith("experiment ") and config_mode(bot, coin) == "manual":
+            raise BotError("manual mode is enabled; automatic adoption refused")
         if expected is not None and current != expected:
             raise BotError("baseline changed since this experiment; adoption refused")
         base = current if merge else {}
         cfg = validate(bot, {**base, **values})
         raw = _all_configs()
-        raw[bot] = cfg
+        if coin is None:
+            if values or not merge:
+                raw[bot] = cfg
+            if mode is not None:
+                raw.setdefault("modes", {})[bot] = mode
+        else:
+            if values or not merge:
+                raw.setdefault("per_coin", {}).setdefault(bot, {})[coin] = cfg
+            if mode is not None:
+                raw.setdefault("per_coin_modes", {}).setdefault(bot, {})[coin] = mode
         history = raw.setdefault("history", [])
-        history.append({"at": time.time(), "bot": bot, "reason": reason, "config": cfg})
+        history.append({"at": time.time(), "bot": bot, "coin": coin, "reason": reason, "config": cfg})
         raw["history"] = history[-50:]
         _write_json(config_path(), raw)
         return cfg
 
 
-def reset_config(bot: str) -> dict[str, Any]:
+def reset_config(bot: str, coin: str | None = None) -> dict[str, Any]:
     bot = _bot(bot)
-    return save_config(bot, DEFAULTS[bot], merge=False, reason="reset to defaults")
+    if coin is not None and bot != "triangle":
+        coin = _config_coin(coin)
+        with _config_lock():
+            raw = _all_configs()
+            raw.get("per_coin", {}).get(bot, {}).pop(coin, None)
+            raw.get("per_coin_modes", {}).get(bot, {}).pop(coin, None)
+            inherited = validate(bot, raw.get(bot) or {})
+            history = raw.setdefault("history", [])
+            history.append({"at": time.time(), "bot": bot, "coin": coin,
+                            "reason": "reset to global settings", "config": inherited})
+            raw["history"] = history[-50:]
+            _write_json(config_path(), raw)
+            return inherited
+    return save_config(bot, DEFAULTS[bot], merge=False, reason="reset to defaults", coin=coin, mode="auto")
 
 
 def parse_kv(text: str) -> dict[str, str]:
@@ -550,7 +606,7 @@ def backtest(bot: str, asset: str, settings: Any = None, *, start: Any = None, d
     """Start the bot at `start` (UTC date or epoch) and run it `days` days; default from the
     beginning of the usable data to its end."""
     bot = _bot(bot)
-    cfg = validate(bot, config) if config else get_config(bot)
+    cfg = validate(bot, config) if config else get_config(bot, asset)
     days_n = None if days in (None, "", 0) else float(days)
     if days_n is not None and not days_n > 0:
         raise BotError("days must be positive")
@@ -943,7 +999,7 @@ def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder
         raise BotError(f"{a}-USD is not in the recorded stream; forward tests need a Coinbase USD market")
     recorder = pricefeed.ensure_recorder() if ensure_recorder else {"running": None}
     raw = _forward_all()
-    raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot),
+    raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot, a),
                 "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
                 "slippage_bps": _costs(settings).slippage_bps}
     _write_json(forward_path(), raw)
@@ -1037,12 +1093,13 @@ def _cfg_key(cfg: dict[str, Any]) -> str:
     return json.dumps(cfg, sort_keys=True)
 
 
-def history_path(bot: str) -> Path:
-    return home() / f"optimize-history-{bot}.json"
+def history_path(bot: str, coin: str | None = None) -> Path:
+    suffix = f"-{_config_coin(coin)}" if coin else ""
+    return home() / f"optimize-history-{bot}{suffix}.json"
 
 
-def optimize_history(bot: str) -> dict[str, Any]:
-    raw = _read_json(history_path(_bot(bot)), {})
+def optimize_history(bot: str, coin: str | None = None) -> dict[str, Any]:
+    raw = _read_json(history_path(_bot(bot), coin), {})
     if not isinstance(raw, dict):
         raw = {}
     return {"runs": int(raw.get("runs") or 0), "tried": list(raw.get("tried") or []), "log": list(raw.get("log") or [])}
@@ -1195,8 +1252,47 @@ def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = No
     """
     from .experiment_runner import optimize as run_optimize
 
-    return run_optimize(bot, settings, coins=coins, windows=windows, window_days=window_days,
-                        adopt=adopt, progress=progress)
+    bot = _bot(bot)
+    if bot == "triangle":
+        return run_optimize(bot, settings, coins=coins, windows=windows, window_days=window_days,
+                            adopt=adopt, progress=progress)
+    names = _coin_list(coins if coins is not None else "all", settings)
+    reports: dict[str, dict[str, Any]] = {}
+    errors: dict[str, str] = {}
+    for index, coin in enumerate(names):
+        def coin_progress(fraction: float, message: str) -> None:
+            if progress:
+                progress((index + fraction) / max(1, len(names)), f"{coin}: {message}")
+        try:
+            reports[coin] = run_optimize(bot, settings, coins=[coin], windows=windows, window_days=window_days,
+                                         adopt=adopt, progress=coin_progress, config_coin=coin)
+            report = reports[coin]
+            if coin not in (report.get("coins_used") or []):
+                skipped = report.get("skipped") or {}
+                errors[coin] = str(skipped.get(coin) or "No usable evaluation windows for this coin")
+        except Exception as exc:  # one failed coin must not silently cancel the others
+            errors[coin] = f"{type(exc).__name__}: {exc}"[:300]
+    per_coin = [row | {"verdict": report.get("verdict", {})} for report in reports.values()
+                for row in report.get("per_coin", [])]
+    saved = sum(bool(report.get("verdict", {}).get("saved")) for report in reports.values())
+    complete = bool(names) and not errors and len(reports) == len(names) and all(
+        r.get("status") in ("completed", "explored") for r in reports.values())
+    used = [coin for coin, report in reports.items() if coin in (report.get("coins_used") or [])]
+    result = {"bot": bot, "source": "per_coin_ledger_v1", "status": "completed" if complete else "partial", "at": time.time(),
+              "run": max((int(r.get("run", 1)) for r in reports.values()), default=1), "coins_requested": names,
+              "coins_used": used, "skipped": errors, "reports": reports, "per_coin": per_coin,
+              "candidates": sum(int(r.get("candidates", 0)) for r in reports.values()),
+              "train_cells": sum(int(r.get("train_cells", 0)) for r in reports.values()),
+              "validation_cells": sum(int(r.get("validation_cells", 0)) for r in reports.values()),
+              "test_cells": sum(int(r.get("test_cells", 0)) for r in reports.values()),
+              "seconds": sum(float(r.get("seconds", 0)) for r in reports.values()),
+              "universe": "independent searches and holdouts per coin", "table": [],
+              "verdict": {"saved": bool(saved), "adopted": bool(saved),
+                          "reliable": any(bool(r.get("verdict", {}).get("reliable")) for r in reports.values()), "changes": [],
+                          "reason": f"{saved} coin-specific setting(s) saved; {len(errors)} coin(s) failed. "
+                                    "Each coin must independently pass the evidence floor."}}
+    _write_json(optimize_path(bot), result)
+    return result
 
 
 def latest_optimize(bot: str) -> dict[str, Any] | None:

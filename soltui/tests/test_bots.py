@@ -66,6 +66,50 @@ class Isolated(unittest.TestCase):
 
 
 class Configs(Isolated):
+    def test_manual_mode_blocks_automatic_adoption_until_reenabled(self) -> None:
+        self.assertEqual(bots.config_mode("grid", "SOL"), "auto")
+        bots.save_config("grid", {"range_pct": 10}, coin="SOL", mode="manual")
+        with self.assertRaisesRegex(bots.BotError, "manual mode"):
+            bots.save_config("grid", {"range_pct": 25}, coin="SOL", reason="experiment run: improvement")
+        self.assertEqual(bots.get_config("grid", "SOL")["range_pct"], 10)
+        bots.save_config("grid", {}, coin="SOL", mode="auto")
+        bots.save_config("grid", {"range_pct": 25}, coin="SOL", reason="experiment run: improvement")
+        self.assertEqual(bots.get_config("grid", "SOL")["range_pct"], 25)
+        self.assertEqual(bots.config_mode("grid", "BTC"), "auto")
+        bots.save_config("grid", {}, coin="ETH", mode="manual")
+        bots.save_config("grid", {"range_pct": 20})
+        self.assertEqual(bots.get_config("grid", "ETH")["range_pct"], 20)
+        self.assertEqual(bots.config_mode("grid", "ETH"), "manual")
+
+    def test_single_coin_experiment_uses_that_coins_current_settings(self) -> None:
+        from soltui import commands, experiment_runner
+        bots.save_config("grid", {"range_pct": 25}, coin="SOL")
+        ctx = commands.Context.from_settings(self.settings)
+        schema = commands.dispatch("experiments.schema", {"bot": "grid", "asset": "SOL"}, ctx=ctx, quiet=True)
+        self.assertEqual(schema["result"]["baseline"]["range_pct"], 25)
+        options = commands._experiment_options({"bot": "grid", "coins": ["SOL"]})
+        self.assertEqual(options["config_coin"], "SOL")
+        preview = experiment_runner.preview_experiment("grid", self.settings, **options)
+        self.assertEqual(preview["baseline"]["range_pct"], 25)
+
+    def test_coin_settings_are_independent_and_feed_backtests(self) -> None:
+        bots.save_config("grid", {"spacing": "arith", "range_pct": 10}, coin="SOL")
+        bots.save_config("grid", {"spacing": "geom", "range_pct": 25}, coin="BTC")
+        self.assertEqual(bots.get_config("grid")["range_pct"], 15)
+        self.assertEqual(bots.get_config("grid", "SOL")["spacing"], "arith")
+        self.assertEqual(bots.get_config("grid", "BTC")["range_pct"], 25)
+        self.assertEqual(bots.get_config("grid", "ETH"), bots.get_config("grid"))
+        for coin in ("SOL", "BTC"):
+            write_hourly(self.data, coin, n=48)
+        self.assertEqual(bots.backtest("grid", "SOL", self.settings)["config"]["spacing"], "arith")
+        self.assertEqual(bots.backtest("grid", "BTC", self.settings)["config"]["range_pct"], 25)
+        with mock.patch.object(bots, "_triangle_products", return_value=["SOL-USD"]):
+            bots.forward_start("grid", "SOL", self.settings, ensure_recorder=False)
+        self.assertEqual(bots._forward_all()["grid"]["config"]["spacing"], "arith")
+        bots.reset_config("grid", "SOL")
+        self.assertEqual(bots.get_config("grid", "SOL"), bots.get_config("grid"))
+        self.assertEqual(bots.get_config("grid", "BTC")["range_pct"], 25)
+
     def test_defaults_validate_and_unknown_names_are_refused(self) -> None:
         for bot in bots.BOTS:
             self.assertEqual(bots.get_config(bot), bots.DEFAULTS[bot])
@@ -340,6 +384,58 @@ class Forward(Isolated):
 
 
 class Optimize(Isolated):
+    def test_initial_grid_candidates_compare_both_spacing_modes(self) -> None:
+        configs = bots.candidates("grid", bots.get_config("grid"))
+        matching = [c for c in configs if c["range_pct"] == 15 and c["rungs"] == 9]
+        self.assertEqual({c["spacing"] for c in matching}, {"geom", "arith"})
+
+    def test_each_coin_has_its_own_search_and_adoption_scope(self) -> None:
+        from soltui import experiment_runner
+        calls = []
+        def fake_optimize(bot, settings, **kw):
+            coin = kw["config_coin"]
+            calls.append((kw["coins"], coin))
+            bots.save_config(bot, {"range_pct": 10 if coin == "SOL" else 25}, coin=coin)
+            return {"status": "completed", "verdict": {"saved": True}, "per_coin": [{"coin": coin}], "coins_used": [coin]}
+        with mock.patch.object(experiment_runner, "optimize", side_effect=fake_optimize):
+            result = bots.optimize("grid", self.settings, coins=["SOL", "BTC"])
+        self.assertEqual(calls, [(["SOL"], "SOL"), (["BTC"], "BTC")])
+        self.assertEqual(bots.get_config("grid", "SOL")["range_pct"], 10)
+        self.assertEqual(bots.get_config("grid", "BTC")["range_pct"], 25)
+        self.assertEqual(bots.get_config("grid")["range_pct"], 15)
+        self.assertIn("independent", result["universe"])
+        self.assertEqual(result["status"], "completed")
+
+    def test_distinct_coin_winners_are_adopted_independently(self) -> None:
+        import pandas as pd
+        for coin, multiplier in (("AAA", 1), ("BBB", 10000)):
+            write_hourly(self.data, coin, n=24 * 200)
+            path = self.data / f"{coin}_1h.csv"
+            df = pd.read_csv(path)
+            for col in ("open", "high", "low", "close"):
+                df[col] *= multiplier
+            df.to_csv(path, index=False)
+        def different_winners(bot, cfg, seg, interval, costs):
+            target = 25 if float(seg["close"][0]) > 10000 else 5
+            return {"results": {"total_return": 0.02 if cfg["range_pct"] == target else 0.0}}
+        with mock.patch.object(bots, "run_bars", side_effect=different_winners):
+            result = bots.optimize("grid", self.settings, coins=["AAA", "BBB"], windows=20, window_days=8)
+        self.assertTrue(result["reports"]["AAA"]["verdict"]["adopted"])
+        self.assertTrue(result["reports"]["BBB"]["verdict"]["adopted"])
+        self.assertEqual(bots.get_config("grid", "AAA")["range_pct"], 5)
+        self.assertEqual(bots.get_config("grid", "BBB")["range_pct"], 25)
+        self.assertEqual(bots.get_config("grid")["range_pct"], 15)
+
+    def test_coin_with_no_usable_windows_is_reported_as_partial(self) -> None:
+        from soltui import experiment_runner
+        missing = {"status": "explored", "coins_used": [], "skipped": {"SOL": "not enough data"},
+                   "verdict": {"saved": False}, "per_coin": []}
+        with mock.patch.object(experiment_runner, "optimize", return_value=missing):
+            result = bots.optimize("grid", self.settings, coins=["SOL"])
+        self.assertEqual(result["status"], "partial")
+        self.assertEqual(result["coins_used"], [])
+        self.assertEqual(result["skipped"]["SOL"], "not enough data")
+
     def test_sign_test_and_ranks(self) -> None:
         self.assertAlmostEqual(bots.sign_test_p(5, 0), 1 / 32)
         self.assertAlmostEqual(bots.sign_test_p(0, 0), 1.0)
@@ -363,12 +459,14 @@ class Optimize(Isolated):
         for coin, seed in (("AAA", 1), ("BBB", 2), ("CCC", 3)):
             write_hourly(self.data, coin, n=24 * 200, seed=seed)
         with mock.patch.object(bots, "run_bars", self._fake_run_bars({"range_pct": 5.0, "rungs": 9})):
-            r = bots.optimize("grid", self.settings, windows=8, window_days=20)
-        v = r["verdict"]
-        self.assertTrue(v["reliable"], v)
-        self.assertTrue(v["adopted"])
-        self.assertEqual(v["wins"], 12)
-        self.assertEqual(bots.get_config("grid")["range_pct"], 5.0)
+            r = bots.optimize("grid", self.settings, windows=20, window_days=8)
+        for coin, report in r["reports"].items():
+            v = report["verdict"]
+            self.assertTrue(v["reliable"], v)
+            self.assertTrue(v["adopted"])
+            self.assertEqual(v["wins"], 10)
+            self.assertEqual(bots.get_config("grid", coin)["range_pct"], 5.0)
+        self.assertEqual(bots.get_config("grid")["range_pct"], 15.0)
         self.assertEqual(bots.latest_optimize("grid")["verdict"]["adopted"], True)
         self.assertEqual(bots.runtime().progress["grid"]["fraction"], 1.0)
 
@@ -452,21 +550,20 @@ class OptimizeRuns(Isolated):
             return {"results": {"total_return": float(np.sin(seg["ts"][0] / 7919.0)) * 0.01 + edge}}
 
         with mock.patch.object(bots, "run_bars", run_bars):
-            first = bots.optimize("grid", self.settings, windows=8, window_days=20)
+            first = bots.optimize("grid", self.settings, windows=20, window_days=8)
             self.assertEqual(first["run"], 1)
             self.assertTrue(first["verdict"]["saved"])
-            self.assertEqual({c["setting"]: (c["before"], c["after"]) for c in first["verdict"]["changes"]},
-                             {"range_pct": (15.0, 5.0), "rungs": (7, 9)})
+            self.assertEqual(first["verdict"]["changes"], [])
             self.assertEqual(first["coins_used"], ["AAA", "BBB", "CCC"])
             per = {row["coin"]: row for row in first["per_coin"]}
-            self.assertEqual(per["AAA"]["test_windows"], 4)
-            self.assertEqual(per["AAA"]["pick_wins"], 4)
-            second = bots.optimize("grid", self.settings, windows=8, window_days=20)
+            self.assertEqual(per["AAA"]["test_windows"], 10)
+            self.assertEqual(per["AAA"]["pick_wins"], 10)
+            second = bots.optimize("grid", self.settings, windows=20, window_days=8)
         self.assertEqual(second["run"], 2)
         self.assertGreater(second["candidates"], first["candidates"])
         self.assertFalse(second["verdict"]["saved"])  # the winner is now the current settings
         self.assertEqual(second["verdict"]["changes"], [])
-        hist = bots.optimize_history("grid")
+        hist = bots.optimize_history("grid", "AAA")
         self.assertEqual(hist["runs"], 2)
         self.assertEqual([e["adopted"] for e in hist["log"]], [True, False])
         progress = bots.runtime().progress["grid"]

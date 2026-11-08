@@ -10,8 +10,8 @@ All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`,
 logic be tested without driving a terminal, and it mirrors how
 `netdnsmonitor/app.py` stays thin over tested modules.
 
-The Execute tab remains **dry-run only**. The Wallet tab also has a separately
-armed, explicitly confirmed Coinbase manual-order workflow.
+The Execute tab remains **dry-run only**. The Wallet tab has separately armed
+Coinbase live orders, with review by default and an optional quick mode.
 """
 
 from __future__ import annotations
@@ -36,6 +36,7 @@ from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.css.query import NoMatches
 from textual.message import Message
+from textual.screen import ModalScreen
 from textual.widget import Widget
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets.option_list import Option
@@ -249,6 +250,9 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#compound-unattended-stop-all": "compound.unattended_stop",
     "#compound-autopilot": "compound.autopilot",
     "#bots-apply": "bots.save",
+    "#bots-edit": "bots.config",
+    "#bot-settings-apply": "bots.save",
+    "#bot-settings-inherit": "bots.save",
     "#bots-reset": "bots.save",
     "#bots-backtest": "bots.backtest",
     "#bots-forward-start": "bots.forward_start",
@@ -601,6 +605,173 @@ class CoinFitFinished(Message):
         self.token, self.bot, self.signature, self.envelope = token, bot, signature, envelope
 
 
+class BotSettingsScreen(ModalScreen[dict[str, Any] | None]):
+    """Edit all settings from the selected bot's current registry configuration."""
+
+    DEFAULT_CSS = """
+    BotSettingsScreen { align: center middle; }
+    #bot-settings-dialog { width: 80%; max-width: 90; height: 90%; background: $surface;
+                           border: thick $accent; padding: 1 2; }
+    #bot-settings-fields { height: 1fr; }
+    .bot-setting-row { height: 3; }
+    .bot-setting-name { width: 32; }
+    .bot-setting-value { width: 1fr; }
+    #bot-settings-message { height: auto; }
+    #bot-settings-buttons { height: 3; }
+    """
+    BINDINGS = [("escape", "cancel", "Cancel")]
+
+    def __init__(self, bot: str, current: dict[str, Any], defaults: dict[str, Any],
+                 coins: list[str], asset: str, fetch: Callable[[str], dict[str, Any]], mode: str = "auto") -> None:
+        super().__init__()
+        self.bot = bot
+        self.current = dict(current)
+        self.defaults = dict(defaults)
+        self.coins = list(dict.fromkeys(coins))
+        self.asset = asset
+        self.fetch = fetch
+        self.drafts: dict[str, dict[str, Any]] = {}
+        self.mode = mode
+        self.draft_modes: dict[str, str] = {}
+        self.baselines = {asset: (dict(current), mode)}
+        self._discard_ack: str | None = None
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="bot-settings-dialog"):
+            yield Static(f"{bots_mod.LABELS[self.bot]} settings — edit fields, then Apply", markup=False)
+            yield Static("Current values are shown. Load built-in defaults edits this form; Apply saves them."
+                         + (" Triangle settings are global." if self.bot == "triangle" else ""))
+            if self.bot != "triangle":
+                yield Static("Inherit global immediately removes this coin's settings and mode overrides.")
+            with Horizontal(classes="bot-setting-row"):
+                yield Label("Settings for", classes="bot-setting-name")
+                yield Select([("Global defaults", ""), *((coin, coin) for coin in self.coins)],
+                             value=self.asset, allow_blank=False, id="bot-settings-asset",
+                             classes="bot-setting-value")
+            with Horizontal(classes="bot-setting-row"):
+                yield Label("Optimization mode", classes="bot-setting-name")
+                yield Select([("Auto — may adopt better settings", "auto"),
+                              ("Manual — keep saved settings", "manual")], value=self.mode,
+                             allow_blank=False, id="bot-settings-mode", classes="bot-setting-value")
+            with VerticalScroll(id="bot-settings-fields"):
+                for key, value in self.current.items():
+                    with Horizontal(classes="bot-setting-row"):
+                        yield Label(key.replace("_", " "), classes="bot-setting-name")
+                        if key == "spacing":
+                            yield Select([("Geometric", "geom"), ("Arithmetic", "arith")], value=value,
+                                         allow_blank=False, id=f"bot-setting-{key}", classes="bot-setting-value")
+                        elif isinstance(value, bool):
+                            yield Select([("On", True), ("Off", False)], value=value, allow_blank=False,
+                                         id=f"bot-setting-{key}", classes="bot-setting-value")
+                        else:
+                            yield Input(value=str(value), id=f"bot-setting-{key}", classes="bot-setting-value")
+            yield Static("", id="bot-settings-message", markup=False)
+            with Horizontal(id="bot-settings-buttons"):
+                yield Button("Apply settings", id="bot-settings-apply", variant="primary")
+                yield Button("Built-in defaults", id="bot-settings-defaults")
+                yield Button("Inherit global", id="bot-settings-inherit", disabled=not bool(self.asset))
+                yield Button("Cancel", id="bot-settings-cancel")
+
+    def on_mount(self) -> None:
+        self.query_one("#bot-settings-asset").tooltip = "Choose global settings or one coin's effective configuration."
+        self.query_one("#bot-settings-mode").tooltip = "Auto may adopt validated improvements. Manual keeps the saved settings while allowing candidate reports."
+        self.query_one("#bot-settings-apply").tooltip = "Save changed fields for the selected scope."
+        self.query_one("#bot-settings-defaults").tooltip = "Load shipped defaults into the form; Apply saves them."
+        self.query_one("#bot-settings-inherit").tooltip = "Remove this coin's settings and mode overrides so it inherits both from global."
+        self.query_one("#bot-settings-cancel").tooltip = "Discard edits and close this form."
+        for key in self.current:
+            self.query_one(f"#bot-setting-{key}").tooltip = f"Edit {key.replace('_', ' ')} for the selected scope."
+
+    @on(Select.Changed, "#bot-settings-asset")
+    def _asset_changed(self, event: Select.Changed) -> None:
+        asset = str(event.value)
+        if asset == self.asset:
+            return
+        self.drafts[self.asset] = {key: self.query_one(f"#bot-setting-{key}").value for key in self.current}
+        self.draft_modes[self.asset] = str(self.query_one("#bot-settings-mode", Select).value)
+        env = self.fetch(asset)
+        if not env.get("ok"):
+            self.query_one("#bot-settings-message", Static).update("Could not load settings for that coin.")
+            self.query_one("#bot-settings-asset", Select).value = self.asset
+            return
+        self.asset = asset
+        self._discard_ack = None
+        self.query_one("#bot-settings-inherit", Button).disabled = not bool(asset)
+        self.current = dict(env["result"]["config"])
+        self.mode = env["result"].get("mode", "auto")
+        self.baselines.setdefault(asset, (dict(self.current), self.mode))
+        self.query_one("#bot-settings-mode", Select).value = self.draft_modes.get(asset, self.mode)
+        values = self.drafts.get(asset, self.current)
+        for key, value in values.items():
+            field = self.query_one(f"#bot-setting-{key}")
+            field.value = value if isinstance(field, Select) else str(value)
+        self.query_one("#bot-settings-message", Static).update(
+            f"Editing {asset or 'global defaults'}; unsaved edits stay in this form.")
+
+    @on(Button.Pressed, "#bot-settings-defaults")
+    def _defaults(self) -> None:
+        for key, value in self.defaults.items():
+            field = self.query_one(f"#bot-setting-{key}")
+            field.value = value if isinstance(field, Select) else str(value)
+        self.query_one("#bot-settings-message", Static).update("Built-in defaults loaded in the form; press Apply to save them.")
+
+    @on(Button.Pressed, "#bot-settings-inherit")
+    def _inherit(self) -> None:
+        if self.asset and self._confirm_discard_other_drafts("inherit"):
+            self.dismiss({"asset": self.asset, "reset": True})
+
+    def _confirm_discard_other_drafts(self, action: str) -> bool:
+        dirty = []
+        for asset, values in self.drafts.items():
+            if asset == self.asset or asset not in self.baselines:
+                continue
+            baseline, mode = self.baselines[asset]
+            if (any(str(values.get(key)) != str(value) for key, value in baseline.items())
+                    or self.draft_modes.get(asset, mode) != mode):
+                dirty.append(asset or "global defaults")
+        if dirty and self._discard_ack != action:
+            self._discard_ack = action
+            verb = "Apply" if action == "apply" else "Inherit global"
+            self.query_one("#bot-settings-message", Static).update(
+                f"Unsaved edits for {', '.join(dirty)} will be discarded. Return to those scopes, "
+                f"or press {verb} again to discard them and continue.")
+            return False
+        return True
+
+    @on(Button.Pressed, "#bot-settings-apply")
+    def _apply(self) -> None:
+        changes: dict[str, Any] = {}
+        try:
+            for key, old in self.current.items():
+                value = self.query_one(f"#bot-setting-{key}").value
+                if isinstance(old, bool):
+                    if type(value) is not bool:
+                        raise ValueError(f"{key} must be On or Off")
+                elif isinstance(old, int):
+                    value = int(value)
+                elif isinstance(old, float):
+                    value = float(value)
+                    if not math.isfinite(value):
+                        raise ValueError(f"{key} must be finite")
+                if value != old:
+                    changes[key] = value
+        except (TypeError, ValueError) as exc:
+            self.query_one("#bot-settings-message", Static).update(f"Invalid value: {exc}")
+            return
+        mode = self.query_one("#bot-settings-mode", Select).value
+        result: dict[str, Any] = {"asset": self.asset}
+        if changes:
+            result["values"] = changes
+        if mode != self.mode:
+            result["mode"] = mode
+        if self._confirm_discard_other_drafts("apply"):
+            self.dismiss(result if len(result) > 1 else None)
+
+    @on(Button.Pressed, "#bot-settings-cancel")
+    def action_cancel(self) -> None:
+        self.dismiss(None)
+
+
 class SolTuiApp(App):
     """The console over the tested modules.
 
@@ -612,7 +783,7 @@ class SolTuiApp(App):
     """
 
     TITLE = "soltui — SOL strategy console"
-    SUB_TITLE = "paper by default · Coinbase manual orders require review"
+    SUB_TITLE = "paper by default · Coinbase manual orders can be live"
     COMMANDS = App.COMMANDS | {shell.SolCommands}
     CSS = """
     #execute-banner, #live-run-banner {
@@ -1631,6 +1802,9 @@ class SolTuiApp(App):
                 yield Input(placeholder="range_pct=10 rungs=9", id="bots-config")
                 yield Button("Apply", variant="primary", id="bots-apply")
                 yield Button("Defaults", id="bots-reset")
+            with Horizontal(classes="form-row"):
+                yield Button("Edit all settings", id="bots-edit")
+                yield Static("Choose a coin and automatic or manual settings.", classes="hint")
             yield Static("", id="bots-about")
             with Horizontal(classes="form-row"):
                 yield Button("Test status", id="status-bots")
@@ -1705,7 +1879,7 @@ class SolTuiApp(App):
         for table_id, cols in (("#bots-bt-coins", ("coin", "from", "to", "hours", "bot return", "hold return",
                                                    "vs hold", "bot max dd", "fills", "bridged h", "history")),
                                ("#bots-opt-coins", ("coin", "history", "windows", "current test median",
-                                                    "pick test median", "pick wins", "pick losses")),
+                                                    "pick test median", "pick wins", "pick losses", "coin verdict")),
                                ("#bots-set", ("setting", "value")), ("#bots-bt-table", ("metric", "value")),
                                ("#bots-fwd-table", ("metric", "value")),
                                ("#bots-opt-table", ("config change", "train rank", "train median return",
@@ -1745,16 +1919,33 @@ class SolTuiApp(App):
                  f"{len(chosen)} coins")
         self.query_one("#bots-coins", Button).label = label
 
-    def _bots_render_selected(self) -> None:
+    def _bots_render_config(self) -> bool:
         env = self._call("bots.config", {"bot": self._bots_bot}, quiet=True)
         about = self.query_one("#bots-about", Static)
         if not env["ok"]:
             about.update(Text(self._msg(env)))
-            return
+            return False
         r = env["result"]
         cfg = " ".join(f"{k}={v}" for k, v in r["config"].items())
-        about.update(Text(f"{r['about']}\nCurrent settings: {cfg}"))
+        lines = [r["about"], f"Global defaults ({r.get('mode', 'auto')}): {cfg}"]
+        selected = [] if self._bots_bot == "triangle" else (self._bots_selected or [self._bots_coin()])
+        for coin in selected[:3]:
+            coin_env = self._call("bots.config", {"bot": self._bots_bot, "asset": coin}, quiet=True)
+            if coin_env.get("ok"):
+                values = " ".join(f"{k}={v}" for k, v in coin_env["result"]["config"].items())
+                lines.append(f"{coin} effective settings ({coin_env['result'].get('mode', 'auto')}; "
+                             f"coin override or global fallback): {values}")
+            else:
+                lines.append(f"{coin} effective settings unavailable: {self._msg(coin_env)}")
+        if len(selected) > 3:
+            lines.append(f"{len(selected) - 3} more selected coins; use Edit all settings to inspect each.")
+        about.update(Text("\n".join(lines)))
         self.query_one("#bots-config", Input).placeholder = cfg
+        return True
+
+    def _bots_render_selected(self) -> None:
+        if not self._bots_render_config():
+            return
         self.query_one("#bots-coins", Button).disabled = self._bots_bot == "triangle"
         self._bots_fit_controls()
         results = self._call("bots.results", {"bot": self._bots_bot, "limit": 1}, quiet=True)
@@ -1843,12 +2034,17 @@ class SolTuiApp(App):
 
     def _bots_render_optimize(self, r: dict[str, Any]) -> None:
         v = r["verdict"]
-        if v.get("saved"):
+        if isinstance(r.get("reports"), dict):
+            head = "Independent coin-specific searches; global defaults unchanged"
+        elif v.get("saved"):
             head = "SAVED new settings: " + ", ".join(f"{c['setting']} {c['before']} -> {c['after']}"
                                                       for c in v.get("changes") or [])
         else:
             head = "NOT SAVED: your settings are unchanged"
-        skipped = f" Skipped: {', '.join(r['skipped'])}." if r.get("skipped") else ""
+        skipped_rows = r.get("skipped") or []
+        skipped_text = "; ".join(f"{coin}: {reason}" for coin, reason in skipped_rows.items()) if isinstance(
+            skipped_rows, dict) else ", ".join(skipped_rows)
+        skipped = f" Skipped: {skipped_text}." if skipped_text else ""
         used = r.get("coins_used") or []
         self.query_one("#bots-opt-verdict", Static).update(Text(
             f"Run {r.get('run', 1)}. {head}.\nWhy: {v.get('reason', '-')}\n{r['candidates']} configurations on "
@@ -1857,11 +2053,17 @@ class SolTuiApp(App):
         coins = self.query_one("#bots-opt-coins", DataTable)
         coins.clear()
         for row in r.get("per_coin") or []:
+            verdict = row.get("verdict") or {}
+            changes = ", ".join(f"{c['setting']} {c['before']} → {c['after']}"
+                                for c in verdict.get("changes") or [])
+            coin_verdict = ((f"saved [{verdict.get('confidence', 'unreported')}]: " +
+                             (changes or "coin-specific settings") + " — " + str(verdict.get("reason") or "no reason reported")) if verdict.get("saved")
+                            else ("not saved: " + str(verdict.get("reason") or "no adoption"))) if verdict else "-"
             coins.add_row(row["coin"], row.get("data_source") or "-",
                           f"{row['train_windows']} train / {row['test_windows']} test",
                           self._bots_pct(row["current_test_median"]) if row["current_test_median"] is not None else "-",
                           self._bots_pct(row["pick_test_median"]) if row["pick_test_median"] is not None else "-",
-                          str(row["pick_wins"]), str(row["pick_losses"]))
+                          str(row["pick_wins"]), str(row["pick_losses"]), coin_verdict)
         table = self.query_one("#bots-opt-table", DataTable)
         table.clear()
         for row in r["table"]:
@@ -1948,7 +2150,8 @@ class SolTuiApp(App):
             self.query_one("#bots-sections", TabbedContent).active = "bots-sec-backtest"
         elif name == "bots.optimize":
             v = r["verdict"]
-            msg = ("SAVED: " + ", ".join(f"{c['setting']} {c['before']} -> {c['after']}" for c in v.get("changes") or [])
+            msg = (str(v.get("reason")) if isinstance(r.get("reports"), dict) else
+                   "SAVED: " + ", ".join(f"{c['setting']} {c['before']} -> {c['after']}" for c in v.get("changes") or [])
                    if v.get("saved") else "not saved: no configuration reliably beat your settings")
             self._bots_status(f"auto-optimize run {r.get('run', 1)}: {msg}")
             self.notify(f"{bots_mod.LABELS[r['bot']]} auto-optimize run {r.get('run', 1)}: {msg}",
@@ -1967,7 +2170,12 @@ class SolTuiApp(App):
             self._bots_forward_running = bool(r.get("running"))
             self._bots_render_forward(r)
         elif name == "bots.save":
-            self._bots_status("settings saved: " + " ".join(f"{k}={v}" for k, v in r["config"].items()))
+            scope = f"{r['asset']} coin settings" if r.get("asset") else "global defaults"
+            if log_key == "inherit-global" and r.get("asset"):
+                self._bots_status(f"{r['asset']} overrides removed; this coin now inherits global settings and mode.")
+            else:
+                mode = f" ({r['mode']})" if r.get("mode") else ""
+                self._bots_status(f"{scope}{mode} saved: " + " ".join(f"{k}={v}" for k, v in r["config"].items()))
             self.query_one("#bots-config", Input).value = ""
             self._bots_render_selected()
         elif name == "prices.ensure":
@@ -2025,6 +2233,45 @@ class SolTuiApp(App):
                     "Stopping the previous bot's suitability job…" if self._bots_fit_busy else
                     "Coin suitability: rank this bot's coins, then audit a selected row.")
                 self._bots_render_selected()
+
+    @on(Button.Pressed, "#bots-edit")
+    def _bots_edit_settings(self) -> None:
+        if self._bots_fit_busy:
+            self._bots_status("Wait for the current suitability job before changing settings.")
+            return
+        bot = self._bots_bot
+        coins = ([] if bot == "triangle" else
+                 list(dict.fromkeys([*(self._bots_coins or []), *(self._bots_selected or []), self._bots_coin()])))
+        asset = self._bots_coin() if bot != "triangle" and len(self._bots_selected) <= 1 else ""
+
+        def fetch(coin: str) -> dict[str, Any]:
+            return self._call("bots.config", {"bot": bot, **({"asset": coin} if coin else {})}, quiet=True)
+
+        env = fetch(asset)
+        if not env["ok"]:
+            self._bots_status(self._msg(env))
+            return
+        config = env["result"]
+
+        def finished(result: dict[str, Any] | None) -> None:
+            if not result:
+                return
+            if self._bots_bot != bot or self._bots_fit_busy:
+                self._bots_status("The bot changed or a suitability job started; no settings were saved.")
+                return
+            coin = result["asset"]
+            payload = {"bot": bot, **({"asset": coin} if coin else {})}
+            if result.get("reset"):
+                payload["reset"] = True
+            else:
+                payload.update({key: result[key] for key in ("values", "mode") if key in result})
+            if result.get("reset"):
+                self._bots_job("bots.save", payload, "restoring global inheritance", "inherit-global")
+            else:
+                self._bots_job("bots.save", payload, "saving settings")
+
+        self.push_screen(BotSettingsScreen(bot, config["config"], config["defaults"], coins, asset, fetch,
+                                           config.get("mode", "auto")), finished)
 
     @on(Button.Pressed, "#bots-apply")
     def _bots_apply(self) -> None:
@@ -2103,6 +2350,7 @@ class SolTuiApp(App):
             if coins:
                 self._bots_selected = coins
                 self._bots_show_coins()
+                self._bots_render_config()
             elif coins == []:
                 self._bots_status("no coin ticked: the previous choice stays")
 
@@ -2152,7 +2400,7 @@ class SolTuiApp(App):
         self.query_one("#bots-fit-cancel", Button).disabled = (
             not self._bots_fit_busy or self._bots_fit_cancelling)
         # A suitability result must correspond to the settings visible when it began.
-        for wid in ("#bots-apply", "#bots-reset", "#bots-backtest", "#bots-optimize",
+        for wid in ("#bots-apply", "#bots-edit", "#bots-reset", "#bots-backtest", "#bots-optimize",
                     "#bots-start", "#bots-days", "#bots-config"):
             self.query_one(wid).disabled = self._bots_fit_busy
         if unsupported and not self._bots_fit_busy:

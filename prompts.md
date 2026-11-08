@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 113
-Delta: v112 to v113; reconcile optimizer and parameter-adjustment requests.
+Version: 114
+Delta: v112 to v114; retain the range clarification and Jupiter reference path.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -920,10 +920,18 @@ And with the auto-optimizer I think you've been denying any new configuration if
 
 ## v112 - 2026-11-08
 
-“In the experiments tab, it has Range, stop, and step, it's not clear if the range and stop are asking for whole values or percentages, so pre-populate the fields with the current price and defaults for each with a percentage change to the right of the text field that lets you adjust the number by the percent shown.”
+```text
+In the experiments tab, it has Range, stop, and step, it's not clear if the range and stop are asking for whole values or percentages, so pre-populate the fields with the current price and defaults for each with a percentage change to the right of the text field that lets you adjust the number by the percent shown.
+```
 
 ## v113 - 2026-11-08
 
 ```text
 Yes, use the current parameter value (Recommended)
+```
+
+## v114 - 2026-11-08
+
+```text
+In the /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_reference.md file is a complete list of all of the information you wanted about jupiter's lending, fees, leveraging, etc.
 ```
