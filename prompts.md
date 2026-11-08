@@ -458,3 +458,9 @@ I told you to move the incomplete cards to the incomplete directory, you never d
 ```text
 When I launch the soltui I don't see any of the new strategies.
 ```
+
+## v61 - 2026-11-08 (separate guides and non-testable cards)
+
+```text
+move out the cards that are actually just a how to guide, like "A Quick Guide to Multi-Timeframe Scaling" is not a testable strategy. Move them to a guides directory. If it is not testeable strategy it should not be in the strategy folder.
+```

@@ -1098,3 +1098,8 @@ PR99: https://github.com/mithudso/solmargintrader/pull/99 ; final delivery TASK-
 ## v110 - 2026-11-08 (final visibility delivery checkpoint)
 
 The local full-suite arithmetic is884cases:878passed,4failed,2skipped. The four integration assertions are corrected and all6targeted reruns pass. Final requiredCI will run the complete884cases. Product source is final; only this verification-count correction changes the next branch tip. PR99/TASK-974 hold final delivery receipts. Canonical3sourcefiles are bound by /tmp/solmargin-card-ui/canonical-install.json; preserve all337unrelated paths when reconciling them with the merged tree.
+
+
+## v111 - 2026-11-08 (guide and strategy separation)
+
+Version: 111. Delta: v110 to v111; user supersedes the earlier policy that allowed indicator-only specifications in the active strategy folder. Preserve content and move guides to a guides directory and other untestable material outside the active strategy folder. The loader reads only flat cards; 312 of 351 lack runners. Verify actual strategy capability, coverage manifests, UI, and paths; do not infer that all missing-data runners lack implementations. Task TASK-992; worktree /Users/mitch/dev/solmargintrader-wt-guides, branch feat/strategy-guides. Preserve concurrent sessions. Remaining: classify each card, move content, adapt coverage, validate, deliver, and safely synchronize canonical checkout.
