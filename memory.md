@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 148
-Delta: v147 to v148; incorporate PR 106 while resolving PR 96.
+Version: 149
+Delta: v148 to v149; investigate background sweep proof mismatch.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1584,3 +1584,13 @@ Integrated upstream guide separation and targeted CI. After catalog integration,
 ## v147 - 2026-11-08
 
 PR 105 was merged externally as 2d9e27b while its CI was still running. The docs check reported stale test counts caused by five added tests. PR 106 corrects counts to 1015 SolTUI and 2319 total; scripts/check_docs.py passes locally. PR 106 also scrolls the log to the latest lines. Browser e2e failure from PR 105 awaits CI logs. Live process remains on the shared dirty checkout and has not loaded these changes.
+
+## v149 - 2026-11-08
+
+Target: resolve SOL background sweep proof mismatch; Stele TASK-1009. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb71. Preserve the shared checkout and active processes.
+
+Diagnosis: persisted SOL proof differs from current code in 26 Python paths and from both current SOL candle files; settings match. Existing results and proof remain untouched. Queue uses the default results file; the CLI fresh-path workaround is not visible in Queue. A fresh sweep must not merge old and new evidence.
+
+Verification: the live checkout fresh-path --plan succeeded with 1,059 pending jobs and did not run evaluations. The running TUI still reads the old default history.
+
+Remaining: implement safe Queue recovery with archive and lock semantics, verify with isolated data, deliver the code, and verify loaded behavior without disrupting the active session. No new sweep was started.
