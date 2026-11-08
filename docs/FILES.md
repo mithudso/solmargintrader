@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5898f07` (2026-11-08T13:37:26+00:00). 1916 tracked files, 32.9 MB.
+**Generated** from `index/INDEX.json` at commit `7dd2913` (2026-11-08T13:40:15+00:00). 1916 tracked files, 32.9 MB.
 
 Regenerate with:
 
@@ -193,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1433 lines · 216,323 B · description: **extracted**
+`doc` · 1445 lines · 217,245 B · description: **extracted**
 
-**Purpose.** Version: 106 Delta: v105 to v106; start EPIC-980 research tracks. Version: 128
+**Purpose.** Version: 144 Delta: v143 to v144; preserve PR 100 records and resolve PR 104. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 615 lines · 33,315 B · description: **extracted**
+`doc` · 616 lines · 33,227 B · description: **extracted**
 
-**Purpose.** Version: 60 Delta: v59 to v60; start EPIC-980 research tracks. Version: 66
+**Purpose.** Version: 76 Delta: v75 to v76; preserve PR 100 records and resolve PR 104. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -281,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 320 lines · 18,923 B · description: **extracted**
+`doc` · 320 lines · 19,493 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18739 lines · 903,060 B · description: **extracted**
+`doc` · 18739 lines · 902,854 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -345,7 +345,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 228 lines · 17,779 B · description: **extracted**
+`doc` · 230 lines · 18,031 B · description: **extracted**
 
 **Purpose.** python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1010 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
@@ -16605,7 +16605,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 336 lines · 14,177 B · description: **curated**
+`ci` · 366 lines · 15,467 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -17887,11 +17887,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/soltui_ci.py`
 
-`code-python` · 87 lines · 3,353 B · description: **extracted**
+`code-python` · 119 lines · 5,029 B · description: **extracted**
 
 **Purpose.** Select and shard SolTUI tests without silently omitting shared-code coverage.
 
-**Contents.** Defines `selected_modules()`, `flatten()`, `class TimedResult`, `main()`.
+**Contents.** Defines `selected_modules()`, `SMOKE`, `DEPENDENCIES`, `targeted_modules()`, `flatten()`, `class TimedResult`, `main()`.
 
 **Use.** `python3 scripts/soltui_ci.py --help`
 
@@ -17917,11 +17917,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_soltui_ci.py`
 
-`test` · 29 lines · 1,282 B · description: **none**
+`test` · 42 lines · 2,065 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `class SelectionTests`, `class TimingTests`.
+**Contents.** Defines `class SelectionTests`, `class TimingTests`, `class TargetedTests`.
 
 **Use.** `python3 -m pytest scripts/test_soltui_ci.py -q`
 

@@ -1,11 +1,7 @@
 # Work continuation
 
-Version: 106
-Delta: v105 to v106; start EPIC-980 research tracks.
-Version: 128
-Delta: v127 to v128; finish delivery without repeating full CI, as instructed.
-Version: 142
-Delta: v141 to v142; preserve activation and concurrent delivery records.
+Version: 144
+Delta: v143 to v144; preserve PR 100 records and resolve PR 104.
 
 ## v1 - 2026-11-06
 
@@ -1430,3 +1426,19 @@ Version: 147. Delta: v146 to v147; moved 348 files byte-for-byte in canonical an
 ## v148 - 2026-11-08 (concurrent upstream integration)
 
 Version: 148. Delta: v147 to v148; owner asked whether all newly created cards were moved. Verified all1083 extracted cards are outside the active folder. The canonical checkout has34 registered active,42 guides/templates,306 research and760 incomplete. PR101 is integrating four upstream commits; preserve their v2 UI, forwardtest, workbench and bots changes. Fresh canonical mounted acceptance previously passed. Finish conflict resolution, update generated indexes, validate the merged v2 UI, push, check and merge without overwriting other work.
+
+## v139 - 2026-11-08: targeted SolTUI gate
+
+PR 89 merged as fedde2a while CI ran. PR 102 made the full suite manual-only at the owner request. Add a bounded changed-area gate for PRs and pushes with bridge smoke and explicit mappings; unknown paths keep smoke. Full sharded coverage stays opt-in. TASK-1001 tracks final validation and delivery.
+
+## v143 - 2026-11-08: PR 104 conflict resolution
+
+PR 104 passed targeted CI at 609882b, but PR 103 advanced master to 15b9a2e. Preserve both continuation histories and regenerate offline indexes. Remaining: push resolution, check final CI and merge. TASK-1001 tracks delivery.
+
+## v144 - 2026-11-08: second PR 104 integration
+
+PR 100 advanced master to 98b92c1 after PR 104 final checks passed. Preserve its research and continuation records, regenerate indexes, then verify and merge PR 104. TASK-1001 remains active.
+
+## v145 - 2026-11-08: PR 104 and PR 101 integration
+
+PR 101 advanced master to 69140b8. Preserve guide separation and both continuation histories. Regenerate the indexes, verify and merge PR 104. TASK-1001 remains active.
