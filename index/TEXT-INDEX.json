@@ -2483,7 +2483,7 @@
     "skills/trading-and-investing/references/volatility-and-pricing.md": 1770,
     "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 1319,
     "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 759,
-    "soltui/README.md": 4945,
+    "soltui/README.md": 4947,
     "soltui/SolTUI.icns": 2731,
     "soltui/__init__.py": 4,
     "soltui/analyze.py": 1103,
@@ -2508,7 +2508,7 @@
     "soltui/docs_browser.py": 990,
     "soltui/eth_scan.py": 517,
     "soltui/experiment_jobs.py": 1174,
-    "soltui/experiment_runner.py": 4238,
+    "soltui/experiment_runner.py": 4325,
     "soltui/experiment_screens.py": 3382,
     "soltui/experiments.py": 4914,
     "soltui/forwardtest.py": 1826,
@@ -2570,7 +2570,7 @@
     "soltui/tests/test_editor_backtest.py": 251,
     "soltui/tests/test_eth_scan.py": 304,
     "soltui/tests/test_experiment_interface.py": 1384,
-    "soltui/tests/test_experiment_runner.py": 2713,
+    "soltui/tests/test_experiment_runner.py": 2826,
     "soltui/tests/test_experiments.py": 2805,
     "soltui/tests/test_forward_sort_refresh.py": 266,
     "soltui/tests/test_forwardtest.py": 1370,
@@ -2636,7 +2636,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T20:24:02+00:00",
+  "generatedAt": "2026-11-08T20:28:56+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -26086,7 +26086,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_compound.py": 15,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 18,
+      "soltui/tests/test_experiment_runner.py": 19,
       "soltui/tests/test_experiments.py": 5,
       "soltui/tui.py": 9
     },
@@ -26153,7 +26153,7 @@
       "soltui/tests/test_bgworker_audit.py": 2,
       "soltui/tests/test_bots.py": 11,
       "soltui/tests/test_compound.py": 6,
-      "soltui/tests/test_experiment_runner.py": 18,
+      "soltui/tests/test_experiment_runner.py": 19,
       "soltui/tests/test_experiments.py": 5,
       "soltui/tests/test_forwardtest.py": 3,
       "soltui/tui.py": 10
@@ -53970,7 +53970,7 @@
       "soltui/tests/test_editor_backtest.py": 2,
       "soltui/tests/test_eth_scan.py": 4,
       "soltui/tests/test_experiment_interface.py": 17,
-      "soltui/tests/test_experiment_runner.py": 51,
+      "soltui/tests/test_experiment_runner.py": 52,
       "soltui/tests/test_experiments.py": 56,
       "soltui/tests/test_forward_sort_refresh.py": 6,
       "soltui/tests/test_forwardtest.py": 47,
@@ -54175,7 +54175,7 @@
       "soltui/tests/test_editor_backtest.py": 2,
       "soltui/tests/test_eth_scan.py": 1,
       "soltui/tests/test_experiment_interface.py": 6,
-      "soltui/tests/test_experiment_runner.py": 10,
+      "soltui/tests/test_experiment_runner.py": 11,
       "soltui/tests/test_experiments.py": 3,
       "soltui/tests/test_forwardtest.py": 2,
       "soltui/tests/test_hdwallet.py": 2,
@@ -54752,7 +54752,7 @@
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_eth_scan.py": 2,
       "soltui/tests/test_experiment_interface.py": 6,
-      "soltui/tests/test_experiment_runner.py": 18,
+      "soltui/tests/test_experiment_runner.py": 19,
       "soltui/tests/test_experiments.py": 9,
       "soltui/tests/test_forwardtest.py": 9,
       "soltui/tests/test_hdwallet.py": 3,
@@ -89042,7 +89042,7 @@
       "soltui/commands.py": 13,
       "soltui/compound.py": 15,
       "soltui/cumulative.py": 2,
-      "soltui/experiment_runner.py": 20,
+      "soltui/experiment_runner.py": 21,
       "soltui/forwardtest.py": 5,
       "soltui/help.py": 12,
       "soltui/liquidity.py": 7,
@@ -89123,7 +89123,7 @@
       "soltui/tests/test_liquidity.py": 1
     },
     "best_index": {
-      "soltui/experiment_runner.py": 10
+      "soltui/experiment_runner.py": 11
     },
     "best_j": {
       "backtester/core/scorecard.py": 4
@@ -96414,7 +96414,7 @@
       "soltui/cumulative.py": 1,
       "soltui/docs_browser.py": 2,
       "soltui/experiment_jobs.py": 3,
-      "soltui/experiment_runner.py": 17,
+      "soltui/experiment_runner.py": 18,
       "soltui/experiment_screens.py": 4,
       "soltui/experiments.py": 9,
       "soltui/forwardtest.py": 2,
@@ -97251,7 +97251,7 @@
       "soltui/tests/test_coin_fit_ui.py": 37,
       "soltui/tests/test_editor_backtest.py": 1,
       "soltui/tests/test_experiment_interface.py": 4,
-      "soltui/tests/test_experiment_runner.py": 9,
+      "soltui/tests/test_experiment_runner.py": 11,
       "soltui/tests/test_experiments.py": 5,
       "soltui/tests/test_strategy_history.py": 1,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 1,
@@ -97419,7 +97419,7 @@
       "soltui/tests/test_coin_fit.py": 9,
       "soltui/tests/test_coin_fit_ui.py": 95,
       "soltui/tests/test_editor_backtest.py": 5,
-      "soltui/tests/test_experiment_runner.py": 51,
+      "soltui/tests/test_experiment_runner.py": 52,
       "soltui/tests/test_experiments.py": 7,
       "soltui/tests/test_v2_shell.py": 4,
       "soltui/tui.py": 649
@@ -108722,7 +108722,7 @@
     "by_key": {
       "backtester/tests/test_decide.py": 3,
       "backtester/tests/test_strategy_cards.py": 8,
-      "soltui/experiment_runner.py": 6
+      "soltui/experiment_runner.py": 8
     },
     "by_label": {
       "soltui/tests/test_v2_shell.py": 5
@@ -121910,7 +121910,7 @@
       "soltui/tests/test_bots_manual_editor.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_compound.py": 1,
-      "soltui/tests/test_experiment_runner.py": 2,
+      "soltui/tests/test_experiment_runner.py": 3,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_tui.py": 1
@@ -133661,7 +133661,8 @@
       "liquidity/src/aero_lp/strategy.py": 1,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 1,
-      "soltui/coin_fit.py": 1
+      "soltui/coin_fit.py": 1,
+      "soltui/experiment_runner.py": 3
     },
     "ceil_tick": {
       "liquidity/src/aero_lp/cli.py": 1,
@@ -135402,7 +135403,7 @@
       "soltui/tests/test_bots.py": 19,
       "soltui/tests/test_bots_manual_editor.py": 3,
       "soltui/tests/test_compound.py": 33,
-      "soltui/tests/test_experiment_runner.py": 10,
+      "soltui/tests/test_experiment_runner.py": 13,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_top5.py": 11,
       "soltui/top5.py": 4,
@@ -159778,7 +159779,7 @@
       "soltui/compound.py": 78,
       "soltui/compound_agent.py": 2,
       "soltui/config.py": 2,
-      "soltui/experiment_runner.py": 64,
+      "soltui/experiment_runner.py": 67,
       "soltui/experiment_screens.py": 15,
       "soltui/experiments.py": 84,
       "soltui/forwardtest.py": 2,
@@ -159796,7 +159797,7 @@
       "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 25,
       "soltui/tests/test_editor_backtest.py": 1,
-      "soltui/tests/test_experiment_runner.py": 13,
+      "soltui/tests/test_experiment_runner.py": 14,
       "soltui/tests/test_experiments.py": 31,
       "soltui/tests/test_forwardtest.py": 2,
       "soltui/tests/test_hdwallet.py": 4,
@@ -161192,7 +161193,7 @@
       "soltui/tests/test_compound.py": 15,
       "soltui/tests/test_editor_backtest.py": 1,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 16,
+      "soltui/tests/test_experiment_runner.py": 17,
       "soltui/tests/test_experiments.py": 9,
       "soltui/tests/test_forwardtest.py": 6,
       "soltui/tests/test_liquidity.py": 1,
@@ -169221,7 +169222,7 @@
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 2,
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 1,
-      "soltui/README.md": 2,
+      "soltui/README.md": 3,
       "soltui/bgqueue.py": 1,
       "soltui/experiments.py": 2
     },
@@ -178803,7 +178804,7 @@
       "soltui/help.py": 4,
       "soltui/liquidity.py": 2,
       "soltui/tests/fixtures/wallet/base_recorded.json": 2,
-      "soltui/tests/test_experiment_runner.py": 1,
+      "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_wallet.py": 3,
@@ -179045,7 +179046,7 @@
       "soltui/config.py": 32,
       "soltui/docs_browser.py": 2,
       "soltui/experiment_jobs.py": 5,
-      "soltui/experiment_runner.py": 31,
+      "soltui/experiment_runner.py": 34,
       "soltui/experiment_screens.py": 17,
       "soltui/experiments.py": 9,
       "soltui/forwardtest.py": 10,
@@ -179078,7 +179079,7 @@
       "soltui/tests/test_compound.py": 67,
       "soltui/tests/test_compound_pool_capture.py": 4,
       "soltui/tests/test_experiment_interface.py": 17,
-      "soltui/tests/test_experiment_runner.py": 31,
+      "soltui/tests/test_experiment_runner.py": 32,
       "soltui/tests/test_experiments.py": 6,
       "soltui/tests/test_forwardtest.py": 9,
       "soltui/tests/test_help.py": 1,
@@ -179099,9 +179100,9 @@
     },
     "config_coin": {
       "soltui/bots.py": 7,
-      "soltui/experiment_runner.py": 16,
+      "soltui/experiment_runner.py": 19,
       "soltui/tests/test_bots.py": 1,
-      "soltui/tests/test_experiment_runner.py": 2
+      "soltui/tests/test_experiment_runner.py": 3
     },
     "config_dir": {
       "docs/FILES.md": 1,
@@ -198905,7 +198906,7 @@
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 2,
       "soltui/tests/test_compound.py": 2,
-      "soltui/tests/test_experiment_runner.py": 9,
+      "soltui/tests/test_experiment_runner.py": 11,
       "soltui/tests/test_experiments.py": 6,
       "soltui/tests/test_pnl.py": 4,
       "soltui/tests/test_status_roster.py": 1,
@@ -220492,7 +220493,7 @@
       "soltui/tests/test_bots.py": 11,
       "soltui/tests/test_coin_fit.py": 7,
       "soltui/tests/test_coin_fit_ui.py": 3,
-      "soltui/tests/test_experiment_runner.py": 11,
+      "soltui/tests/test_experiment_runner.py": 12,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_pnl.py": 32,
       "soltui/tests/test_presets_netpct.py": 10,
@@ -248032,7 +248033,7 @@
       "llms-full.txt": 1,
       "research/CANDLE-GAP-AUDIT.md": 2,
       "research/candle_gap_audit.py": 11,
-      "soltui/experiment_runner.py": 15
+      "soltui/experiment_runner.py": 16
     },
     "difftests": {
       "docs/FILES.md": 1,
@@ -252773,7 +252774,8 @@
       "skills/trading-and-investing/references/options-fundamentals.md": 2,
       "soltui/README.md": 1,
       "soltui/analyze.py": 1,
-      "soltui/help.py": 1
+      "soltui/help.py": 1,
+      "soltui/tests/test_experiment_runner.py": 1
     },
     "discloses": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_49yiv1jw_machine_learning_logistic_regression.md": 1,
@@ -285118,7 +285120,7 @@
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 2,
       "soltui/tests/test_experiment_interface.py": 4,
-      "soltui/tests/test_experiment_runner.py": 12,
+      "soltui/tests/test_experiment_runner.py": 13,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_forwardtest.py": 4,
       "soltui/tests/test_paper_experiments.py": 1,
@@ -287301,7 +287303,7 @@
       "soltui/docs_browser.py": 2,
       "soltui/eth_scan.py": 5,
       "soltui/experiment_jobs.py": 4,
-      "soltui/experiment_runner.py": 34,
+      "soltui/experiment_runner.py": 35,
       "soltui/experiment_screens.py": 24,
       "soltui/experiments.py": 37,
       "soltui/forwardtest.py": 12,
@@ -321995,7 +321997,7 @@
       "soltui/commands.py": 7,
       "soltui/compound.py": 3,
       "soltui/experiment_jobs.py": 2,
-      "soltui/experiment_runner.py": 11,
+      "soltui/experiment_runner.py": 12,
       "soltui/experiment_screens.py": 7,
       "soltui/experiments.py": 4,
       "soltui/help.py": 3,
@@ -323541,7 +323543,7 @@
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bots.py": 4,
       "soltui/tests/test_experiment_interface.py": 4,
-      "soltui/tests/test_experiment_runner.py": 42,
+      "soltui/tests/test_experiment_runner.py": 44,
       "soltui/tests/test_experiments.py": 7,
       "soltui/tests/test_liquidity.py": 4,
       "soltui/tests/test_paper_experiments.py": 4,
@@ -325862,7 +325864,7 @@
       "skills/trading-and-investing/references/ml-backtesting-pitfalls-and-production-systems.md": 1,
       "soltui/README.md": 1,
       "soltui/bots.py": 1,
-      "soltui/experiment_runner.py": 24,
+      "soltui/experiment_runner.py": 37,
       "soltui/experiment_screens.py": 4,
       "soltui/experiments.py": 7,
       "soltui/tests/test_experiment_runner.py": 4,
@@ -338044,7 +338046,7 @@
       "soltui/tests/test_coin_fit_ui.py": 8,
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_experiment_interface.py": 3,
-      "soltui/tests/test_experiment_runner.py": 9,
+      "soltui/tests/test_experiment_runner.py": 10,
       "soltui/tests/test_experiments.py": 10,
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_strategy_history.py": 2,
@@ -338704,7 +338706,7 @@
       "soltui/tests/test_coin_fit_ui.py": 24,
       "soltui/tests/test_compound.py": 13,
       "soltui/tests/test_experiment_interface.py": 5,
-      "soltui/tests/test_experiment_runner.py": 9,
+      "soltui/tests/test_experiment_runner.py": 10,
       "soltui/tests/test_forwardtest.py": 2,
       "soltui/tests/test_launcher.py": 9,
       "soltui/tests/test_portfolio.py": 3,
@@ -353363,7 +353365,7 @@
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 37,
+      "soltui/tests/test_experiment_runner.py": 38,
       "soltui/tests/test_experiments.py": 46,
       "soltui/tests/test_pnl.py": 5,
       "soltui/tests/test_presets_netpct.py": 1,
@@ -386190,7 +386192,7 @@
       "soltui/docs_browser.py": 10,
       "soltui/eth_scan.py": 3,
       "soltui/experiment_jobs.py": 15,
-      "soltui/experiment_runner.py": 51,
+      "soltui/experiment_runner.py": 56,
       "soltui/experiment_screens.py": 76,
       "soltui/experiments.py": 87,
       "soltui/forwardtest.py": 9,
@@ -392577,7 +392579,7 @@
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_editor_backtest.py": 1,
       "soltui/tests/test_experiment_interface.py": 5,
-      "soltui/tests/test_experiment_runner.py": 35,
+      "soltui/tests/test_experiment_runner.py": 36,
       "soltui/tests/test_experiments.py": 17,
       "soltui/tests/test_help.py": 3,
       "soltui/tests/test_presets_netpct.py": 1,
@@ -410650,7 +410652,7 @@
       "soltui/tests/test_bots_manual_editor.py": 1,
       "soltui/tests/test_coin_fit.py": 2,
       "soltui/tests/test_coin_fit_ui.py": 1,
-      "soltui/tests/test_experiment_runner.py": 18,
+      "soltui/tests/test_experiment_runner.py": 21,
       "soltui/tests/test_experiments.py": 21
     },
     "holdout_cells": {
@@ -413878,7 +413880,7 @@
       "soltui/tests/test_bg_fresh_results.py": 1,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bots.py": 27,
-      "soltui/tests/test_experiment_runner.py": 7,
+      "soltui/tests/test_experiment_runner.py": 8,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_portfolio.py": 3,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 1
@@ -426351,10 +426353,10 @@
       "skills/trading-and-investing/references/technical-analysis.md": 3,
       "soltui/README.md": 1,
       "soltui/bots.py": 2,
-      "soltui/experiment_runner.py": 5,
+      "soltui/experiment_runner.py": 6,
       "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_bots.py": 1,
-      "soltui/tests/test_experiment_runner.py": 1
+      "soltui/tests/test_experiment_runner.py": 2
     },
     "incrementally": {
       "backtester/core/engine.py": 1,
@@ -427101,7 +427103,7 @@
       "soltui/commands.py": 21,
       "soltui/compound.py": 2,
       "soltui/docs_browser.py": 18,
-      "soltui/experiment_runner.py": 25,
+      "soltui/experiment_runner.py": 26,
       "soltui/experiment_screens.py": 4,
       "soltui/experiments.py": 5,
       "soltui/forwardtest.py": 2,
@@ -440369,7 +440371,7 @@
       "soltui/tests/test_compound.py": 7,
       "soltui/tests/test_docs_browser.py": 1,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 1,
+      "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_forwardtest.py": 4,
       "soltui/tests/test_hdwallet.py": 2,
@@ -444585,7 +444587,7 @@
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_compound_pool_capture.py": 1,
-      "soltui/tests/test_experiment_runner.py": 6,
+      "soltui/tests/test_experiment_runner.py": 8,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_forwardtest.py": 2,
       "soltui/tests/test_help.py": 1,
@@ -450165,6 +450167,7 @@
     },
     "issubset": {
       "mongo/load.py": 3,
+      "soltui/experiment_runner.py": 2,
       "soltui/experiments.py": 1
     },
     "issue": {
@@ -472278,7 +472281,7 @@
       "soltui/cumulative.py": 5,
       "soltui/docs_browser.py": 1,
       "soltui/eth_scan.py": 4,
-      "soltui/experiment_runner.py": 39,
+      "soltui/experiment_runner.py": 49,
       "soltui/experiment_screens.py": 2,
       "soltui/experiments.py": 19,
       "soltui/forwardtest.py": 8,
@@ -494374,7 +494377,7 @@
       "soltui/README.md": 2,
       "soltui/bots.py": 3,
       "soltui/bots_screens.py": 2,
-      "soltui/experiment_runner.py": 15,
+      "soltui/experiment_runner.py": 14,
       "soltui/help.py": 13,
       "soltui/pnl.py": 4,
       "soltui/tests/test_bots.py": 1,
@@ -507908,7 +507911,7 @@
       "soltui/experiment_runner.py": 1,
       "soltui/help.py": 3,
       "soltui/tests/test_compound.py": 1,
-      "soltui/tests/test_experiment_runner.py": 1,
+      "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tui.py": 2
     },
     "matched_hold": {
@@ -509629,7 +509632,7 @@
       "soltui/coin_fit.py": 5,
       "soltui/commands.py": 8,
       "soltui/compound.py": 12,
-      "soltui/experiment_runner.py": 6,
+      "soltui/experiment_runner.py": 9,
       "soltui/experiments.py": 8,
       "soltui/forwardtest.py": 5,
       "soltui/liquidity.py": 2,
@@ -519124,7 +519127,7 @@
       "soltui/coin_fit.py": 4,
       "soltui/commands.py": 6,
       "soltui/compound.py": 27,
-      "soltui/experiment_runner.py": 17,
+      "soltui/experiment_runner.py": 19,
       "soltui/experiment_screens.py": 9,
       "soltui/experiments.py": 20,
       "soltui/help.py": 29,
@@ -523441,6 +523444,9 @@
       "soltui/commands.py": 4,
       "soltui/tests/test_bgqueue.py": 6
     },
+    "missing_start": {
+      "soltui/tests/test_experiment_runner.py": 2
+    },
     "missingfields": {
       "extension/src/venues/triggerVenue.js": 11,
       "extension/test/core.test.js": 5,
@@ -524461,7 +524467,7 @@
       "soltui/tests/test_dryrun_strategy.py": 8,
       "soltui/tests/test_editor_backtest.py": 1,
       "soltui/tests/test_experiment_interface.py": 9,
-      "soltui/tests/test_experiment_runner.py": 26,
+      "soltui/tests/test_experiment_runner.py": 27,
       "soltui/tests/test_experiments.py": 7,
       "soltui/tests/test_forward_sort_refresh.py": 2,
       "soltui/tests/test_forwardtest.py": 1,
@@ -547505,6 +547511,7 @@
       "soltui/tests/test_coinbase_manual.py": 3,
       "soltui/tests/test_coinbase_manual_ui.py": 1,
       "soltui/tests/test_compound.py": 9,
+      "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_forwardtest.py": 4,
       "soltui/tests/test_help.py": 1,
@@ -559599,7 +559606,7 @@
       "soltui/tests/test_docs_search.py": 6,
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_experiment_interface.py": 6,
-      "soltui/tests/test_experiment_runner.py": 25,
+      "soltui/tests/test_experiment_runner.py": 26,
       "soltui/tests/test_experiments.py": 6,
       "soltui/tests/test_forward_sort_refresh.py": 1,
       "soltui/tests/test_forwardtest.py": 8,
@@ -565519,7 +565526,7 @@
       "soltui/tests/test_dryrun_strategy.py": 6,
       "soltui/tests/test_editor_backtest.py": 1,
       "soltui/tests/test_experiment_interface.py": 17,
-      "soltui/tests/test_experiment_runner.py": 1,
+      "soltui/tests/test_experiment_runner.py": 4,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_forward_sort_refresh.py": 2,
       "soltui/tests/test_forwardtest.py": 10,
@@ -565546,6 +565553,9 @@
     "one_bar_roc": {
       "backtester/strategy_research/tv_builtin_connors_rsi.md": 1,
       "research/tradingview-card-readiness.json": 1
+    },
+    "one_failure": {
+      "soltui/tests/test_experiment_runner.py": 2
     },
     "one_minute": {
       "soltui/tests/test_compound.py": 2
@@ -582108,13 +582118,16 @@
       "soltui/bots.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/commands.py": 1,
-      "soltui/experiment_runner.py": 2,
+      "soltui/experiment_runner.py": 6,
       "soltui/forwardtest.py": 3,
       "soltui/help.py": 1
     },
     "paired_exit_level": {
       "backtester/core/gridsim.py": 5,
       "backtester/tests/test_gridsim.py": 4
+    },
+    "paired_exploration": {
+      "soltui/experiment_runner.py": 4
     },
     "pairedexitlevel": {
       "backtester/core/gridsim.py": 1,
@@ -591425,7 +591438,7 @@
       "soltui/tests/test_dryrun_strategy.py": 7,
       "soltui/tests/test_editor_backtest.py": 3,
       "soltui/tests/test_experiment_interface.py": 18,
-      "soltui/tests/test_experiment_runner.py": 31,
+      "soltui/tests/test_experiment_runner.py": 32,
       "soltui/tests/test_experiments.py": 6,
       "soltui/tests/test_forward_sort_refresh.py": 1,
       "soltui/tests/test_forwardtest.py": 13,
@@ -593927,7 +593940,7 @@
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_experiment_interface.py": 4,
-      "soltui/tests/test_experiment_runner.py": 16,
+      "soltui/tests/test_experiment_runner.py": 17,
       "soltui/tests/test_experiments.py": 7,
       "soltui/tests/test_liquidity.py": 9,
       "soltui/tests/test_pnl.py": 21,
@@ -618684,7 +618697,7 @@
       "soltui/compound.py": 2,
       "soltui/experiment_runner.py": 3,
       "soltui/tests/test_compound.py": 2,
-      "soltui/tests/test_experiment_runner.py": 32,
+      "soltui/tests/test_experiment_runner.py": 33,
       "soltui/tests/test_experiments.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1
     },
@@ -618694,7 +618707,7 @@
     "prepare_experiment": {
       "soltui/commands.py": 2,
       "soltui/experiment_runner.py": 3,
-      "soltui/tests/test_experiment_runner.py": 10,
+      "soltui/tests/test_experiment_runner.py": 11,
       "soltui/tests/test_experiments.py": 2
     },
     "prepared": {
@@ -619035,6 +619048,7 @@
       "soltui/coin_fit.py": 2,
       "soltui/commands.py": 9,
       "soltui/docs_browser.py": 1,
+      "soltui/experiment_runner.py": 4,
       "soltui/help.py": 1,
       "soltui/liquidity.py": 2,
       "soltui/roster.py": 1,
@@ -649238,7 +649252,7 @@
       "soltui/tests/test_compound.py": 9,
       "soltui/tests/test_eth_scan.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 3,
+      "soltui/tests/test_experiment_runner.py": 4,
       "soltui/tests/test_experiments.py": 1,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_liquidity.py": 1,
@@ -650461,7 +650475,7 @@
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_experiment_interface.py": 4,
-      "soltui/tests/test_experiment_runner.py": 18,
+      "soltui/tests/test_experiment_runner.py": 19,
       "soltui/tests/test_experiments.py": 12,
       "soltui/tests/test_forward_sort_refresh.py": 5,
       "soltui/tests/test_forwardtest.py": 5,
@@ -650528,7 +650542,7 @@
       "soltui/tests/test_bots_manual_editor.py": 5,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_experiment_interface.py": 4,
-      "soltui/tests/test_experiment_runner.py": 16,
+      "soltui/tests/test_experiment_runner.py": 17,
       "soltui/tests/test_experiments.py": 7,
       "soltui/tui.py": 1
     },
@@ -659770,7 +659784,7 @@
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_compound.py": 5,
       "soltui/tests/test_docs_search.py": 1,
-      "soltui/tests/test_experiment_runner.py": 10,
+      "soltui/tests/test_experiment_runner.py": 11,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_liquidity.py": 11,
       "soltui/tests/test_portfolio.py": 1,
@@ -684840,6 +684854,9 @@
       "scripts/build_tradingview_script_profiles.py": 1,
       "scripts/render_tradingview_script_cards.py": 2
     },
+    "required_exploration": {
+      "soltui/experiment_runner.py": 2
+    },
     "required_fields": {
       "backtester/core/strategy_cards.py": 4,
       "docs/FILES.md": 1
@@ -708385,7 +708402,7 @@
       "soltui/tests/test_dryrun_strategy.py": 20,
       "soltui/tests/test_editor_backtest.py": 3,
       "soltui/tests/test_experiment_interface.py": 37,
-      "soltui/tests/test_experiment_runner.py": 187,
+      "soltui/tests/test_experiment_runner.py": 192,
       "soltui/tests/test_experiments.py": 137,
       "soltui/tests/test_forward_sort_refresh.py": 1,
       "soltui/tests/test_forwardtest.py": 7,
@@ -708505,7 +708522,7 @@
       "soltui/bots.py": 3,
       "soltui/experiment_runner.py": 1,
       "soltui/tests/test_bots.py": 6,
-      "soltui/tests/test_experiment_runner.py": 19,
+      "soltui/tests/test_experiment_runner.py": 20,
       "soltui/tests/test_experiments.py": 4
     },
     "run_book_sweep": {
@@ -708575,7 +708592,7 @@
     "run_experiment": {
       "soltui/experiment_jobs.py": 2,
       "soltui/experiment_runner.py": 3,
-      "soltui/tests/test_experiment_runner.py": 24,
+      "soltui/tests/test_experiment_runner.py": 25,
       "soltui/tests/test_experiments.py": 4
     },
     "run_experiments": {
@@ -718120,7 +718137,7 @@
       "soltui/coin_fit.py": 19,
       "soltui/commands.py": 5,
       "soltui/compound.py": 10,
-      "soltui/experiment_runner.py": 11,
+      "soltui/experiment_runner.py": 13,
       "soltui/help.py": 14,
       "soltui/reference.py": 2,
       "soltui/shell.py": 3,
@@ -739176,7 +739193,7 @@
       "soltui/tests/test_dryrun_strategy.py": 11,
       "soltui/tests/test_editor_backtest.py": 4,
       "soltui/tests/test_experiment_interface.py": 14,
-      "soltui/tests/test_experiment_runner.py": 40,
+      "soltui/tests/test_experiment_runner.py": 42,
       "soltui/tests/test_experiments.py": 9,
       "soltui/tests/test_forward_sort_refresh.py": 3,
       "soltui/tests/test_forwardtest.py": 17,
@@ -745975,7 +745992,7 @@
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 2,
       "soltui/tests/test_experiment_interface.py": 4,
-      "soltui/tests/test_experiment_runner.py": 12,
+      "soltui/tests/test_experiment_runner.py": 13,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_forwardtest.py": 4,
       "soltui/tests/test_liquidity.py": 2,
@@ -746024,7 +746041,7 @@
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 2,
       "soltui/tests/test_experiment_interface.py": 4,
-      "soltui/tests/test_experiment_runner.py": 12,
+      "soltui/tests/test_experiment_runner.py": 13,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_forwardtest.py": 4,
       "soltui/tests/test_paper_experiments.py": 1,
@@ -759742,7 +759759,6 @@
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
       "skills/trading-and-investing/references/trading-risk-management.md": 2,
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 1,
-      "soltui/README.md": 1,
       "soltui/compound.py": 1,
       "soltui/experiments.py": 1,
       "soltui/help.py": 5,
@@ -764858,7 +764874,7 @@
       "soltui/tests/test_dryrun_strategy.py": 4,
       "soltui/tests/test_editor_backtest.py": 5,
       "soltui/tests/test_experiment_interface.py": 2,
-      "soltui/tests/test_experiment_runner.py": 21,
+      "soltui/tests/test_experiment_runner.py": 24,
       "soltui/tests/test_experiments.py": 19,
       "soltui/tests/test_forward_sort_refresh.py": 1,
       "soltui/tests/test_forwardtest.py": 17,
@@ -769329,7 +769345,7 @@
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_compound.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 22,
+      "soltui/tests/test_experiment_runner.py": 24,
       "soltui/tests/test_experiments.py": 21,
       "soltui/tests/test_forwardtest.py": 4,
       "soltui/tests/test_utxo_scan.py": 2,
@@ -772039,7 +772055,7 @@
       "soltui/commands.py": 10,
       "soltui/compound.py": 7,
       "soltui/experiment_jobs.py": 2,
-      "soltui/experiment_runner.py": 81,
+      "soltui/experiment_runner.py": 84,
       "soltui/experiment_screens.py": 19,
       "soltui/experiments.py": 69,
       "soltui/forwardtest.py": 49,
@@ -772049,7 +772065,7 @@
       "soltui/signals.py": 3,
       "soltui/soltui-service": 6,
       "soltui/tests/test_experiment_interface.py": 3,
-      "soltui/tests/test_experiment_runner.py": 8,
+      "soltui/tests/test_experiment_runner.py": 9,
       "soltui/tests/test_experiments.py": 32,
       "soltui/tests/test_forwardtest.py": 4,
       "soltui/tests/test_paper_experiments.py": 4,
@@ -777008,7 +777024,7 @@
       "soltui/commands.py": 7,
       "soltui/compound.py": 17,
       "soltui/docs_browser.py": 2,
-      "soltui/experiment_runner.py": 24,
+      "soltui/experiment_runner.py": 26,
       "soltui/experiment_screens.py": 12,
       "soltui/experiments.py": 25,
       "soltui/help.py": 4,
@@ -777023,7 +777039,7 @@
       "soltui/tests/test_compound.py": 8,
       "soltui/tests/test_eth_scan.py": 2,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 7,
+      "soltui/tests/test_experiment_runner.py": 8,
       "soltui/tests/test_experiments.py": 16,
       "soltui/tests/test_liquidity.py": 4,
       "soltui/tests/test_panes.py": 2,
@@ -782562,7 +782578,7 @@
       "soltui/tests/test_dryrun_strategy.py": 1,
       "soltui/tests/test_editor_backtest.py": 1,
       "soltui/tests/test_experiment_interface.py": 7,
-      "soltui/tests/test_experiment_runner.py": 3,
+      "soltui/tests/test_experiment_runner.py": 6,
       "soltui/tests/test_experiments.py": 50,
       "soltui/tests/test_forwardtest.py": 10,
       "soltui/tests/test_liquidity.py": 2,
@@ -789407,7 +789423,7 @@
       "soltui/tests/test_coinbase_account.py": 5,
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_experiment_interface.py": 53,
-      "soltui/tests/test_experiment_runner.py": 107,
+      "soltui/tests/test_experiment_runner.py": 111,
       "soltui/tests/test_experiments.py": 132,
       "soltui/tui.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 2,
@@ -789906,7 +789922,7 @@
       "soltui/docs_browser.py": 20,
       "soltui/eth_scan.py": 7,
       "soltui/experiment_jobs.py": 18,
-      "soltui/experiment_runner.py": 70,
+      "soltui/experiment_runner.py": 71,
       "soltui/experiment_screens.py": 64,
       "soltui/experiments.py": 121,
       "soltui/forwardtest.py": 27,
@@ -808369,6 +808385,7 @@
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 1,
       "soltui/README.md": 1,
       "soltui/tests/test_bgqueue.py": 1,
+      "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_forward_sort_refresh.py": 1,
       "soltui/tui.py": 1
     },
@@ -819525,7 +819542,7 @@
       "soltui/README.md": 1,
       "soltui/bots.py": 1,
       "soltui/experiment_runner.py": 2,
-      "soltui/tests/test_experiment_runner.py": 1
+      "soltui/tests/test_experiment_runner.py": 2
     },
     "tentatively": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_tcwijygr_sigma_spike_filtered_binned_opr_adam_h_grimes.md": 1,
@@ -824130,6 +824147,9 @@
     },
     "test_increased_fee_requires_new_review": {
       "soltui/tests/test_coinbase_manual.py": 1
+    },
+    "test_incremental_winner_can_survive_one_missing_holdout_with_coverage_disclosed": {
+      "soltui/tests/test_experiment_runner.py": 1
     },
     "test_increments_modes_and_cap_fail_closed": {
       "soltui/tests/test_coinbase_manual.py": 1
@@ -853698,7 +853718,7 @@
       "soltui/bots_screens.py": 4,
       "soltui/commands.py": 5,
       "soltui/compound.py": 1,
-      "soltui/experiment_runner.py": 23,
+      "soltui/experiment_runner.py": 25,
       "soltui/experiment_screens.py": 8,
       "soltui/experiments.py": 7,
       "soltui/help.py": 11,
@@ -904912,7 +904932,7 @@
       "soltui/coin_fit.py": 1,
       "soltui/commands.py": 4,
       "soltui/experiment_jobs.py": 1,
-      "soltui/experiment_runner.py": 11,
+      "soltui/experiment_runner.py": 13,
       "soltui/experiment_screens.py": 9,
       "soltui/experiments.py": 9,
       "soltui/help.py": 5,
@@ -905556,7 +905576,7 @@
       "soltui/tests/test_coinbase_account.py": 3,
       "soltui/tests/test_coinbase_manual.py": 9,
       "soltui/tests/test_dryrun_strategy.py": 1,
-      "soltui/tests/test_experiment_runner.py": 4,
+      "soltui/tests/test_experiment_runner.py": 5,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_paper_experiments.py": 4,
@@ -910354,7 +910374,7 @@
       "soltui/tests/test_bots.py": 14,
       "soltui/tests/test_bots_manual_editor.py": 7,
       "soltui/tests/test_compound.py": 1,
-      "soltui/tests/test_experiment_runner.py": 34,
+      "soltui/tests/test_experiment_runner.py": 37,
       "soltui/tests/test_experiments.py": 5,
       "soltui/tui.py": 21
     },
@@ -914697,7 +914717,7 @@
       "skills/trading-and-investing/references/jupiter-jlp-pool.md": 1,
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 1,
       "skills/trading-and-investing/references/sampling-frequency-and-bar-aggregation.md": 1,
-      "soltui/README.md": 1,
+      "soltui/README.md": 2,
       "soltui/coin_fit.py": 3,
       "soltui/experiment_screens.py": 1,
       "soltui/forwardtest.py": 1,
@@ -931529,7 +931549,7 @@
       "soltui/tests/test_coin_fit.py": 1,
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 12,
+      "soltui/tests/test_experiment_runner.py": 13,
       "soltui/tests/test_experiments.py": 10,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_pnl.py": 45,
@@ -931576,7 +931596,7 @@
       "soltui/experiment_runner.py": 11,
       "soltui/experiment_screens.py": 1,
       "soltui/tests/test_bots.py": 6,
-      "soltui/tests/test_experiment_runner.py": 11,
+      "soltui/tests/test_experiment_runner.py": 12,
       "soltui/tests/test_experiments.py": 2
     },
     "window_frame": {
@@ -931807,7 +931827,7 @@
       "soltui/tests/test_coin_fit.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 8,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 16,
+      "soltui/tests/test_experiment_runner.py": 18,
       "soltui/tests/test_experiments.py": 7,
       "soltui/tests/test_pnl.py": 1,
       "soltui/tests/test_portfolio.py": 1,
@@ -931904,7 +931924,7 @@
       "soltui/help.py": 8,
       "soltui/liquidity.py": 9,
       "soltui/tests/test_bots.py": 2,
-      "soltui/tests/test_experiment_runner.py": 2,
+      "soltui/tests/test_experiment_runner.py": 3,
       "soltui/tests/test_forwardtest.py": 1,
       "soltui/tests/test_liquidity.py": 7
     },
@@ -932065,7 +932085,7 @@
       "soltui/bots.py": 8,
       "soltui/bots_screens.py": 2,
       "soltui/compound.py": 3,
-      "soltui/experiment_runner.py": 17,
+      "soltui/experiment_runner.py": 16,
       "soltui/help.py": 3,
       "soltui/pnl.py": 6,
       "soltui/signals.py": 2,
@@ -932388,7 +932408,7 @@
       "soltui/tests/test_compound.py": 6,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tests/test_dryrun_strategy.py": 1,
-      "soltui/tests/test_experiment_runner.py": 3,
+      "soltui/tests/test_experiment_runner.py": 4,
       "soltui/tests/test_hdwallet.py": 1,
       "soltui/tests/test_help.py": 1,
       "soltui/tests/test_liquidity.py": 4,
@@ -937310,7 +937330,7 @@
       "soltui/tests/test_docs_browser.py": 10,
       "soltui/tests/test_editor_backtest.py": 3,
       "soltui/tests/test_experiment_interface.py": 1,
-      "soltui/tests/test_experiment_runner.py": 14,
+      "soltui/tests/test_experiment_runner.py": 15,
       "soltui/tests/test_experiments.py": 3,
       "soltui/tests/test_launcher.py": 1,
       "soltui/tests/test_liquidity.py": 23,
@@ -937377,7 +937397,7 @@
     "write_hourly": {
       "docs/FILES.md": 1,
       "soltui/tests/test_bots.py": 19,
-      "soltui/tests/test_experiment_runner.py": 6,
+      "soltui/tests/test_experiment_runner.py": 7,
       "soltui/tests/test_experiments.py": 2
     },
     "write_index": {
@@ -947658,10 +947678,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1442.2,
+    "avgDocLength": 1442.3,
     "documents": 2635,
-    "terms": 68611,
-    "termsBeforePrune": 68685,
-    "totalTokens": 3800175
+    "terms": 68616,
+    "termsBeforePrune": 68690,
+    "totalTokens": 3800377
   }
 }

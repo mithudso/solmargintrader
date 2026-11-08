@@ -469,8 +469,11 @@ def _report(store: ExperimentStore, run_id: str, *, unseal: bool = False) -> dic
                       "failed_cells": failures, "completed_cells": sum(len(v) for v in values.values())})
     exploration = [w for w in spec["windows"] if w["split"] != "holdout"]
     def has_exploration(candidate_id: str) -> bool:
-        return bool(exploration) and all(_score(by_key.get((w["key"], candidate_id)), metric) is not None
-                                         for w in exploration)
+        present = [w for w in exploration if _score(by_key.get((w["key"], candidate_id)), metric) is not None]
+        if spec.get("config_coin"):
+            return (bool(exploration) and len(present) >= math.ceil(len(exploration) * 0.8)
+                    and {"train", "validation"}.issubset({w["split"] for w in present}))
+        return bool(exploration) and len(present) == len(exploration)
     eligible = [row for row in table if row["train_mean_rank"] is not None and row["train_median"] is not None
                 and has_exploration(row["id"])]
     winner = min(eligible, key=lambda r: (r["train_mean_rank"], r["index"])) if eligible else table[0]
@@ -501,27 +504,34 @@ def _report(store: ExperimentStore, run_id: str, *, unseal: bool = False) -> dic
     p = bots.sign_test_p(wins, losses)
     improvement = _median(diffs)
     expected = sum(w["split"] == "holdout" for w in spec["windows"])
-    exploration_complete = has_exploration("0") and has_exploration(str(best_index))
+    paired_exploration = [w for w in exploration
+                          if _score(by_key.get((w["key"], "0")), metric) is not None
+                          and _score(by_key.get((w["key"], str(best_index))), metric) is not None]
+    required_exploration = math.ceil(len(exploration) * 0.8) if spec.get("config_coin") else len(exploration)
+    exploration_complete = (has_exploration("0") and has_exploration(str(best_index))
+                            and len(paired_exploration) >= required_exploration
+                            and (not spec.get("config_coin") or {"train", "validation"}.issubset(
+                                {w["split"] for w in paired_exploration})))
     failed = any(c["status"] != "completed" for c in cells)
     reliable = bool(best_index != 0 and run.get("frozen_candidate") is not None and expected > 0
-                    and len(diffs) == expected and exploration_complete
+                    and len(diffs) == expected and exploration_complete and len(paired_exploration) == len(exploration)
                     and wins + losses >= bots.MIN_DECIDED_CELLS and p < bots.SIGN_TEST_ALPHA
                     and improvement is not None and improvement > 0)
     incremental = bool(spec.get("config_coin") and best_index != 0 and run.get("frozen_candidate") is not None
-                       and expected > 0 and len(diffs) == expected and exploration_complete
+                       and expected > 0 and len(diffs) >= math.ceil(expected * 0.8) and exploration_complete
                        and wins + losses >= bots.PER_COIN_MIN_DECIDED_CELLS and wins > losses
                        and improvement is not None and improvement > 0)
     reason = "exploration only: final holdout has not been evaluated"
     if run.get("frozen_candidate") is not None:
         if best_index == 0:
             reason = "the current configuration ranks best on the train windows"
-        elif len(diffs) != expected:
+        elif len(diffs) != expected and not incremental:
             reason = "final holdout is incomplete or failed; keep the baseline"
         elif not exploration_complete:
             reason = "the baseline or selected candidate has incomplete exploration evidence"
         elif incremental and not reliable:
             reason = (f"tentative incremental improvement: {wins} wins, {losses} losses across "
-                      f"{wins + losses} matched holdout cells (p = {p:.4f}); not statistically confirmed")
+                      f"{len(diffs)}/{expected} matched holdout cells (p = {p:.4f}); not statistically confirmed")
         elif wins + losses < bots.MIN_DECIDED_CELLS:
             reason = f"only {wins + losses} test cells differ (need {bots.MIN_DECIDED_CELLS})"
         else:

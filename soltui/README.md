@@ -252,11 +252,11 @@ It still searches the representative grid on its first run and expands later sea
 complete candidate/coin/window evidence instead of only a final aggregate. The older half of the
 available windows supplies train/validation evidence; the newer half remains final holdout until
 one training-selected candidate is frozen. Grid and DCA searches run separately for each coin and
-save separate settings. For an incremental per-coin change, at least three complete paired holdout
-comparisons must show a positive median and more wins than losses; these smaller samples are
+save separate settings. For an incremental per-coin change, at least three paired holdout
+comparisons and 80% coverage must show a positive median and more wins than losses; these samples are
 explicitly labeled tentative and not statistically confirmed. The stronger result requires ten
 decided comparisons and a one-sided sign test with p < 0.05. A failed unrelated candidate does
-not veto a complete baseline and winner. Used or stale final dates cannot be reopened by changing
+not veto the baseline and winner. Missing comparisons remain visible. Used or stale final dates cannot be reopened by changing
 search settings. Manual mode prevents automatic adoption; a refusal explains why settings were kept.
 
 **Bot settings.** The settings editor exposes each bot's fields. Grid and DCA can inherit global

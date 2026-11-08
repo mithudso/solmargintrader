@@ -367,6 +367,21 @@ class NativeExperiments(unittest.TestCase):
                          "reports": {"SOL": {"experiment_id": "known-run"}}})
         self.assertIsNone(runner._legacy_cutoff(self.store, "grid"))
 
+    def test_incremental_winner_can_survive_one_missing_holdout_with_coverage_disclosed(self):
+        write_hourly(self.data, "SOL", n=24 * 60)
+        run = runner.prepare_experiment("grid", self.settings, space=SPACE, coins=["SOL"],
+                                        config_coin="SOL", windows=20, window_days=3, store=self.store)
+        missing_start = next(w["start"] for w in run["spec"]["windows"] if w["split"] == "holdout")
+        def one_failure(bot, cfg, data, interval, costs):
+            if cfg["range_pct"] == 5 and int(data["ts"][0]) == missing_start:
+                raise ValueError("one failed holdout")
+            return self.fake(bot, cfg, data, interval, costs)
+        with mock.patch.object(bots, "run_bars", side_effect=one_failure):
+            result = runner.run_experiment(run["id"], self.settings, final=True, adopt=True, store=self.store)
+        self.assertTrue(result["verdict"]["adopted"])
+        self.assertEqual(result["verdict"]["confidence"], "tentative")
+        self.assertIn("9/10 matched", result["verdict"]["reason"])
+
     def test_last_boundary_pause_wins_over_adoption_and_seals_report(self):
         run = self._reliable_run()
         finalize = self.store.finalize_run
