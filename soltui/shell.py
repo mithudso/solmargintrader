@@ -192,6 +192,7 @@ DESTINATIONS: tuple[Destination, ...] = (
         View("tab-top5", "Top 5"),
         View("tab-analyze", "Decide", was="Analyze"),
         View("tab-forwardtest", "Forward", was="Forwardtest"),
+        View("tab-paper-experiments", "Experiments"),
         View("tab-bots", "Bots"),
         View("tab-execute", "Replay", was="Execute"),
         View("tab-liverun", "Dry run", was="Live Run"),
@@ -220,7 +221,7 @@ COVERED_TABS: frozenset[str] = frozenset(v.tab for d in DESTINATIONS for v in d.
 # command directly (BUTTON_COMMANDS in tui.py is checked first).
 COMMAND_HOME: dict[str, str] = {
     "settings": "tab-settings", "strategies": "tab-strategies", "roster": "tab-strategies",
-    "forwardtest": "tab-forwardtest", "signals": "tab-signals", "research": "tab-research",
+    "paper_experiment": "tab-paper-experiments", "forwardtest": "tab-forwardtest", "signals": "tab-signals", "research": "tab-research",
     "backtest": "tab-backtest", "paper": "tab-execute", "live": "tab-liverun", "top5": "tab-top5",
     "analyze": "tab-analyze", "cumulative": "tab-cumulative", "queue": "tab-queue",
     "compound": "tab-compound", "liquidity": "tab-liquidity", "docs": "tab-docs", "pnl": "tab-pnl",

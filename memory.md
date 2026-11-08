@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 174
-Delta: v171 to v174; preserve Coinbase connector continuation.
+Version: 179
+Delta: v176 to v179; preserve Coinbase connector continuation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1685,12 +1685,32 @@ PR 118 CI at head 26d4ec5 reported the backtester and docs checks failed because
 
 ## v172 - 2026-11-08
 
-Coinbase connector work in /Users/mitch/dev/solmargintrader-wt-coinbase-01a1bc24, branch agent-coinbase-01a1bc24. Stele task creation queued as outbox 2af4599e because transport closed. The user supplied /Users/mitch/dev/solmargintrader/llms/docs.cdp.coinbase.com.llms-full, asked to sync Coinbase alongside existing wallets, download markets, and ultimately test a real SOL/USDC buy. The intended live test was initially $0.03, but Coinbase reports a 1 USDC minimum. The owner then requested transferring around $5 of native SOL from another wallet to Coinbase. Coinbase UI explicitly showed a Solana-network native SOL receive address and 0.001 SOL minimum. The saved Solana wallet has only 0.025544731 SOL, roughly $2.27 at the observed quote, plus JUPSOL; it cannot supply $5 of native SOL while reserving fees. No transfer or order was submitted. Await source wallet/permission to convert JUPSOL; never guess or reuse an ambiguous submission. The $1000 is only simulated experiment starting capital. The connected Coinbase MCP has read access to the default portfolio but does not by itself provide reusable app authentication; determine a secure supported app-level connector without copying OAuth tokens. Market public API supports cursor pagination. Preserve existing wallets, no secret output, and no surprise funding trades.
+Active TASK-1033: user requests an Experiments tab for prospective paper trading of any strategy, with live-time predictions, simulated actions and outcomes. This is distinct from the existing optimization experiment workbench. Preserve current sweep and trainer and all simulated-only boundaries. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments, branch agent-01a1bc24-experiments; base PR 117 head 8f4cdbb. The textual-job-lifecycle-specialist owns the separate status-button task in a different worktree. Stele knowledge create for the prospective/paper-only decision is queued as outbox 30def738 after transport closed. Remaining: inspect current prospective forwardtest and paper execution engines; design and implement durable experiments, accessible UI/status, causal and cost tests; integrate concurrent work, delivery, live acceptance.
 
 ## v173 - 2026-11-08
 
-The owner authorized converting JUPSOL to SOL. The Jupiter UI has a 0.03 JUPSOL to SOL quote prepared and awaits the owner's wallet approval; no swap, transfer or order has been confirmed. Verify the resulting chain transaction before continuing. The connected Coinbase MCP provided a complete 38-account read snapshot, saved separately in mode 600 under the user's SolTUI config; future refresh requires separate app authentication. Public Coinbase market retrieval produced 929 spot, 100 future, 1,873 equity and 5,665 global derivative entries. Equity pagination stalled, so the catalog is explicitly incomplete and saved separately from the prior snapshot. Staked Coinbase holdings may be excluded. The requested 0.03 SOL/USDC buy is below the reported 1 USDC minimum; do not increase the order without authorization. The received SOL is not USDC.
+Owner also reports the Dry run tab lacks an understandable start control and activity, appears limited to top five presets, and recommends an unproven MACD strategy that cannot be selected. The textual-job-lifecycle-specialist owns Dry Run UI and status in its isolated worktree; preserve live trading defaults and avoid claiming backtest success without evidence. Integrate its work with TASK-1033 prospective paper experiments and the pending sweep recovery PR.
 
 ## v174 - 2026-11-08
+
+The prospective Experiments tab and detached paper runner are implemented in /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments. The runner records causal 1, 5 or 30 minute calls under a unique experiment and frozen code fingerprint; it simulates non-overlapping 1x positions with configured round-trip costs and $1000 default paper capital. It never sends orders. An isolated real-feed smoke run recorded three calls and one resolved result, then stopped cleanly. Eleven targeted tests pass. No user-selected strategy has been specified, so no persistent user experiment has been started. Remaining: integrate PR 118, update indexes and documentation counts, rerun checks, deliver and verify the installed console.
+
+## v175 - 2026-11-08
+
+PR 118 merged at 259005c30976a0e9cce45cd2c8135586ce755f81 after its CI passed. The paper experiment branch has integrated the status and historical Dry Run changes and preserves both continuation records. The original SOL sweep segment contains no rankable positive hourly candidate because the hourly candles have gaps; its highest positive rankable daily strategy is vol_regime, which is not evidence that it will work on minute candles. Remaining: validate the combined branch, refresh its offline indexes, finish delivery, and verify the loaded UI before starting a prospective paper run.
+
+## v176 - 2026-11-08
+
+Started prospective paper experiment 7f7057972ebb32c82fcadf75 from /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments as PID 44729. It uses SOL, vol_regime with the highest eligible daily-sweep parameters, a five-minute horizon and $1000 paper capital. It runs on minute candles, so the daily result does not establish minute profitability. Its first prediction was recorded and its balance remained $1000. No real order was sent. Preserve the worktree while this detached process runs, and check its current lock and status before asserting it remains active.
+
+## v177 - 2026-11-08
+
+Coinbase connector work in /Users/mitch/dev/solmargintrader-wt-coinbase-01a1bc24, branch agent-coinbase-01a1bc24. Stele task creation queued as outbox 2af4599e because transport closed. The user supplied /Users/mitch/dev/solmargintrader/llms/docs.cdp.coinbase.com.llms-full, asked to sync Coinbase alongside existing wallets, download markets, and ultimately test a real SOL/USDC buy. The intended live test was initially $0.03, but Coinbase reports a 1 USDC minimum. The owner then requested transferring around $5 of native SOL from another wallet to Coinbase. Coinbase UI explicitly showed a Solana-network native SOL receive address and 0.001 SOL minimum. The saved Solana wallet has only 0.025544731 SOL, roughly $2.27 at the observed quote, plus JUPSOL; it cannot supply $5 of native SOL while reserving fees. No transfer or order was submitted. Await source wallet/permission to convert JUPSOL; never guess or reuse an ambiguous submission. The $1000 is only simulated experiment starting capital. The connected Coinbase MCP has read access to the default portfolio but does not by itself provide reusable app authentication; determine a secure supported app-level connector without copying OAuth tokens. Market public API supports cursor pagination. Preserve existing wallets, no secret output, and no surprise funding trades.
+
+## v178 - 2026-11-08
+
+The owner authorized converting JUPSOL to SOL. The Jupiter UI has a 0.03 JUPSOL to SOL quote prepared and awaits the owner's wallet approval; no swap, transfer or order has been confirmed. Verify the resulting chain transaction before continuing. The connected Coinbase MCP provided a complete 38-account read snapshot, saved separately in mode 600 under the user's SolTUI config; future refresh requires separate app authentication. Public Coinbase market retrieval produced 929 spot, 100 future, 1,873 equity and 5,665 global derivative entries. Equity pagination stalled, so the catalog is explicitly incomplete and saved separately from the prior snapshot. Staked Coinbase holdings may be excluded. The requested 0.03 SOL/USDC buy is below the reported 1 USDC minimum; do not increase the order without authorization. The received SOL is not USDC.
+
+## v179 - 2026-11-08
 
 The Coinbase snapshot now includes the authorized portfolio breakdown, including separately identified staked spot positions, in addition to trading balances. The app refresh uses the official CLI and requires a separate read-enabled API key. The current connected MCP authorization does not provide app credentials. Focused connector and button-registry tests pass. Code is a checkpoint in draft PR 119; integrate concurrent UI work, add installed acceptance and finish delivery after CI.
