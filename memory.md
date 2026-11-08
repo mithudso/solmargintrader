@@ -1,9 +1,9 @@
 # Work continuation
 
-Version: 77
-Delta: v76 to v77; SolTUI v2 interface implemented, classic UI backed up.
-Delta: v75 to v76; SolTUI v2 layout-blind redesign and Textual mockup.
-Delta: v74 to v75; retain Bots tab v2 history and hook acceptance while resolving concurrent workflow-record merges.
+Version: 80
+Delta: v79 to v80; SolTUI v2 interface implemented, classic UI backed up.
+Delta: v78 to v79; SolTUI v2 layout-blind redesign and Textual mockup.
+Delta: v77 to v78; retain concurrent hook history and record converter acceptance.
 
 ## v1 - 2026-11-06
 
@@ -774,9 +774,35 @@ Merged origin/master afaa03a after another active session delivered Bots tab v2 
 
 Canonical repairs are merged: Stop PR 33 as 79bc183c99a171d7221813724bbc10d6a85df7cd; adapter PR 11 as 4d385318438647bcddad9f368da927b5e9c9ada9. Installed acceptance already passed. Remaining: wait for final PR 88 checks, merge, verify remote content, clean only this task's worktree/branch, and complete TASK-895.
 
-## v76 - 2026-11-08 (SolTUI v2 redesign mockup)
+## v76 - 2026-11-08 (HTML mirror conversion; TASK-894)
 
-Target: prompts v52, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
+Target: recursively convert HTML/HTM below /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com to text-only Markdown. Inventory: 31,880 HTML files, 9,371,462,657 bytes. Keep original HTML and generated mirror artifacts out of Git. Use Python stdlib and no network. Preserve headings, lists, code and table text. Remove scripts, styles, images and hidden markup; link labels remain text. Default output is a sibling tree; skip existing Markdown unless overwrite is requested. This extracts saved HTML, not content that requires JavaScript execution.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba63; branch agent-01a1ba63. Shared checkout has other sessions and unowned changes. Base updated from a75f5b6 to origin/master 4d0f027 in the private worktree only.
+
+Remaining: implement converter and documentation; verify regression fixtures and representative local mirror files; refresh offline indexes; commit/push PR, pass checks, merge and verify remote default branch. Do not change the shared checkout or other worktrees.
+
+## v77 - 2026-11-08 (HTML mirror converter verification; TASK-894)
+
+Completed: scripts/html_to_markdown.py uses Python stdlib, preserves subfolders and textual Markdown structure, filters hidden/embedded payloads, detects encoding, preflights name collisions, publishes atomically, and supports skip/overwrite/dry-run. scripts/test_html_to_markdown.py has 11 passing behavior checks on Python 3.13 and system Python 3.15. Ruff lint/format, scripts/check_docs.py and offline index checks pass. CI runs the converter suite in its docs job. docs/SCRIPTS.md documents the command. Incoming Bots tab history from origin/master afaa03a is retained; no Bots code was changed by this task.
+
+Execution: converted 31,880 files into /Users/mitch/dev/tradingview-markdown with zero errors; 11 outputs are empty (10 meta-refresh redirect stubs and the JavaScript-only chart page). A rerun skipped all 31,880 outputs. /Users/mitch/dev/tradingview-markdown/conversion-manifest.json lists every source/output, output hash, empty source and the final rerun summary. /Users/mitch/.local/bin/tradingview-html-to-markdown.py is an executable copy matching the repository script. Source HTML and the shared dirty checkout remain untouched.
+
+Stele transport closed after initial lifecycle writes. Queued outbox operation IDs: 5c1ebafe, 8c704dd2, 9462ad7b, 56faab7b, 976096d2.
+
+Remaining: finish merge/index commit, push task branch, create PR, pass final-head CI, merge and verify remote contents, record delivery receipt and remove only this task's clean worktree/branch. No source-conversion work remains.
+
+## v78 - 2026-11-08 (HTML converter acceptance and concurrent delivery)
+
+Independent live-acceptance-verifier confirmed all 31,880 output hashes, sizes, path mappings and UTF-8 decodes. The installed executable matches committed source SHA-256 c814d3e40f17a69d3c7f3a780a532b924f503b43774532ae6bab120a90a3e074. Actual --help and --dry-run succeed. The receipt is /Users/mitch/dev/tradingview-markdown/acceptance-receipt.json. Stele transport recovered; all five queued operation IDs in v77 were replayed.
+
+PR 90: https://github.com/mithudso/solmargintrader/pull/90. Concurrent PR 88 merged as d355b694f3d56d7ab4ee0456691bf51c54352298 while CI ran. Retain all hook records, renumber converter entries after them, and rebuild offline indexes. Converter code and installed script stay unchanged. Current delivery checkpoint is /Users/mitch/dev/tradingview-markdown/conversion-memory.json.
+
+Remaining: pass checks on the updated final head, merge PR 90, verify remote contents and clean only the converter worktree/branch.
+
+## v79 - 2026-11-08 (SolTUI v2 redesign mockup)
+
+Target: prompts v54, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
 
 Completed: a read-only subagent inventoried soltui's functions and data surfaces without reporting layout. docs/design/soltui-v2/DESIGN.md lists 16 primary functions and groups them into five question-led destinations (Now, Signal, Research, Money, Library), with a health strip, a registry command palette and an Explain overlay. docs/design/soltui-v2/mockup.py is a standalone Textual 8.2.8 + textual-plotext app on fixture data; it imports nothing from soltui/. screens/ holds 7 SVGs rendered by `mockup.py --shots`. soltui/README.md points to the proposal.
 
@@ -784,9 +810,9 @@ Verification: headless render of all 7 screens at 160x48; pilot smoke run (5 des
 
 Remaining: merge PR 85 (the background-job harness forbids this session from merging). Migration steps are listed in DESIGN.md section 11 and are not started.
 
-## v77 - 2026-11-08 (SolTUI v2 implemented)
+## v80 - 2026-11-08 (SolTUI v2 implemented)
 
-Target: prompts v53, Stele TASK-904, KNOW-916 (architecture), KNOW-918 (focus lesson). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch feat/soltui-v2-ui.
+Target: prompts v55, Stele TASK-904, KNOW-916 (architecture), KNOW-918 (focus lesson). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch feat/soltui-v2-ui.
 
 Backup: annotated tag soltui-ui-v1 and branch backup/soltui-ui-v1 at master 4d0f027 (classic 18-tab console), both pushed. `soltui --classic` shows the original tab bar in the new build.
 

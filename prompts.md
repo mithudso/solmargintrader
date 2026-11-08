@@ -1,9 +1,9 @@
 # Prompt history
 
-Version: 53
-Delta: v52 to v53; implement the SolTUI v2 interface after backing up the classic UI.
-Delta: v51 to v52; SolTUI redesign mockup request.
-Delta: v50 to v51; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields.
+Version: 55
+Delta: v54 to v55; implement the SolTUI v2 interface after backing up the classic UI.
+Delta: v53 to v54; SolTUI redesign mockup request.
+Delta: v52 to v53; retain hook history and add HTML converter request.
 
 ## v1 - 2026-11-06
 
@@ -402,7 +402,16 @@ Also fix this hook error at the end of every turn: • Blocked by hook
     If the pending changes are not yours (another session's work, or this session changed nothing), say so in one line and stop.
 ```
 
-## v52 - 2026-11-08 (SolTUI redesign mockup)
+## v53 - 2026-11-08 (HTML mirror conversion)
+
+```text
+Write a script to convert all of the html files in the subfolders here into text only markdown files.
+```
+
+Target: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com.
+Implementation: /Users/mitch/dev/solmargintrader-wt-01a1ba63/scripts/html_to_markdown.py.
+
+## v54 - 2026-11-08 (SolTUI redesign mockup)
 
 ```text
 Create a list of the primary functions of the TUI in this repo and without looking at its current layout use the design, ui, data viewing, and frontend skills to design an ideal UI interface that provides the same rich data it does now but in an easily accessible, intuitive, and scannable format. Do a simple mockup of it in TUI format using the best TUI tools you can find.
@@ -410,7 +419,7 @@ Create a list of the primary functions of the TUI in this repo and without looki
 
 Context: Stele TASK-877. Output under docs/design/soltui-v2/.
 
-## v53 - 2026-11-08 (implement SolTUI v2)
+## v55 - 2026-11-08 (implement SolTUI v2)
 
 ```text
 I like that interface a lot, make a backup of the current UI, then implement this new one, make sure all of the functionality of the current setup is represented.
