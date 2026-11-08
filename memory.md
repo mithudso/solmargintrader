@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 163
-Delta: v162 to v163; implement and test separate causal horizon records.
+Version: 166
+Delta: v165 to v166; record live sweep and Signal trainer activation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1650,3 +1650,15 @@ Active: Stele TASK-1027; branch agent-01a1bc24, worktree /Users/mitch/dev/solmar
 ## v163 - 2026-11-08
 
 In /Users/mitch/dev/solmargintrader-wt-01a1bc24, added separate forward records and settlement for 1, 5 and 30 minute horizons using future one-minute opens and closes. All three evaluate the same five-minute Signal forecast; the code does not generate new forecasts every minute or train separate horizon-specific models. Missing candle data stays pending, old five-minute records remain intact. The Signal screen shows horizon counts, calls, outcomes and coin coverage. At inspection process 74947 in /Users/mitch/dev/solmargintrader held trainer locks for BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI and AVAX; their logs showed recent checks. That old process does not load the new code. Focused forward tests: 12 pass; full soltui.tests.test_compound: 77 pass; scripts/check_docs.py passes after count updates. Remaining: review exact diff, deliver with CI, preserve other active worktrees and existing trainer, then verify the loaded app and running trainer on the delivered revision.
+
+## v164 - 2026-11-08
+
+Owner also reports a stopped SOL sweep because the evaluation proof is missing or differs for /Users/mitch/.config/soltui/bg/results-8f615318bd7af7168ba68c0469d43b7c.jsonl. Preserve the existing history, diagnose the actual proof mismatch, and continue in isolated compatible evidence rather than accepting unproven old results. The textual-job-lifecycle-specialist owns sweep implementation and tests in this worktree; do not overwrite its changes. The Signal horizon branch now samples the latest closed-five-minute forecast separately on 1-, 5- and 30-minute cadences; it does not train independent horizon-specific models. Focused horizon and runner tests pass. PR 115 is a draft pending CI and live acceptance. The current console and trainer both run old code from the shared main checkout; do not claim the changes are active.
+
+## v165 - 2026-11-08
+
+Sweep recovery TASK-1029 implemented by textual-job-lifecycle-specialist in branch agent-01a1bc24-sweep. The affected SOL proof bound its hourly input to /Users/mitch/.config/soltui/poc-data/sol-hourly-synthetic-epsmf8t9/SOL_1h.csv; current data path differs. On a selected UI sweep proof mismatch, reserve and select a separate fresh results segment while holding the worker lock, persist provenance and a synthetic-input notice, and retain the old history and proof unchanged. Explicit CLI paths still fail closed. Strategy cards now enter the evaluation fingerprint. Focused specialist tests: 152 passed, one skipped; reproduction used a temporary copy of the actual 1,059-row file and proof with a mocked evaluation, leaving both byte-identical. The Signal in-app Auto-forward timer also samples each minute and records horizon calls even when the five-minute source bar is unchanged. Focused Signal ledger/cadence and runner checks pass. Remaining: deliver both PRs, verify actual loaded app/trainer and safe recovery of the live sweep without mixing proof contexts.
+
+## v166 - 2026-11-08
+
+The SOL sweep resumed in a new proof-isolated results segment /Users/mitch/.config/soltui/bg/results-b97fdfd3748763c996ba74a0ddb12fde.jsonl. The old results and proof remain in place. As of 17:38 UTC it had completed 554 of 1,059 evaluations without an error; process 83636 runs from /Users/mitch/dev/solmargintrader-wt-01a1bc24, whose data symlink points to the original checkout. The ten-coin Signal trainer was gracefully replaced with PID 91333 from the same worktree. Each coin has separate 1-, 5- and 30-minute prediction records; initial one-minute outcomes resolved for BTC and SOL. The console PID 74766 still uses /Users/mitch/dev/solmargintrader and has not loaded the updated UI. Computer-use access to Terminal was denied. The active autopilot still points to the original checkout, so a future automatic restart can reload its older code until that checkout is safely updated. Preserve the active worktree and processes. PR 117 delivery and the five- and thirty-minute live outcomes remain to verify.

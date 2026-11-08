@@ -277,6 +277,8 @@ class QueueState:
     updated_at: float = 0.0
     error: str = ""
     results_path: str = ""
+    recovered_from: str = ""
+    recovery_note: str = ""
 
     @property
     def remaining(self) -> int:
@@ -699,7 +701,7 @@ def read_state(path: Path | None = None) -> QueueState:
     for name in ("started_at", "updated_at"):
         if name in clean:
             clean[name] = _as_float(clean[name])
-    for name in ("phase", "current", "asset", "interval", "error", "results_path"):
+    for name in ("phase", "current", "asset", "interval", "error", "results_path", "recovered_from", "recovery_note"):
         if name in clean and not isinstance(clean[name], str):
             clean[name] = str(clean[name])
     try:
@@ -926,6 +928,10 @@ def summarise(
         # every 1h configuration silently absent and nothing saying why.
         if state.error:
             bits.append(f"incomplete — {state.error}")
+    if state.recovered_from:
+        bits.append(f"previous results preserved at {state.recovered_from}; testing a separate evaluation context")
+    if state.recovery_note:
+        bits.append(state.recovery_note)
     bits.append(f"{len(ranked)} rankable, {positive} with positive median Sharpe")
     if floor:
         bits.append(f"{len(floor)} below the {MIN_TRADES}-trade floor")

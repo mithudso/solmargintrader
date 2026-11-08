@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 92
-Delta: v91 to v92; record Signal forward horizon and coin coverage request.
+Version: 93
+Delta: v92 to v93; record sweep proof recovery request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -758,4 +758,12 @@ I had asked for the Aero LP, liquidity tasks, and errors about the LP daemon be 
 
 ```text
 In the forward test, I had asked that to be done at 1, 5, and 30 min intervals each result and prediction recorded and tracked separately.  I see only the 5 min. Do all 3, and I can't tell if all coins are being tested or just one.
+```
+
+## v93 - 2026-11-08
+
+```text
+For the sweep I'm getting the error again
+previous sweep stopped: its evaluation proof is missing or differs; press Start fresh to start a separate sweep and preserve these results · previous error: ValueError: evaluation proof is missing or differs for SOL at
+/Users/mitch/.config/soltui/bg/results-8f615318bd7af7168ba68c0469d43b7c.jsonl; preserve this history and use --results-path for a fresh file · 972 rankable, 579 with positive median Sharpe · 87 below the 10-trade floor. Make it not completely fail on data like that,
 ```
