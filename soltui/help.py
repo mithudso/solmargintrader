@@ -241,6 +241,7 @@ for _source in ("live", "dry-run", "reported"):
 
 TAB_HELP = {
     "tab-settings": "Settings choose the historical data, starting capital, trading costs and test splits. They also hold public wallet identifiers. Save settings to apply edits. These choices affect the simulation; they do not enable live orders.",
+    "tab-forwardtest": "Paper-test all registered strategies, the roster, or custom combinations on new one-minute candles. By default each trial predicts 1, 5, 10 and 30 minutes ahead and learns separately at each horizon.",
     "tab-strategies": "Build the roster, the list of strategy configurations to test. A strategy is a trading rule; its parameters specify the exact version. Adding one does not make it profitable. Explicit roster parameters take precedence over signal defaults.",
     "tab-signals": "Signals measure price or volume; strategies turn them into position decisions. Edit their default lookbacks and thresholds here. A 20-bar lookback means 20 observations, not always 20 days. Existing explicit roster settings are preserved.",
     "tab-backtest": "A backtest simulates a rule on cached history after modelled costs. CPCV tests it on several held-out periods. Read net return, risk, path consistency and trade count together; compare with buying and holding. A top rank alone is not evidence of skill.",
@@ -351,6 +352,14 @@ CONTROL_HELP = {
     "help-hint": "Move the pointer over a control, table header or value to read its definition. Press F1 for the full searchable help; use Tab and Page Up/Down to read it, then Esc to return without changing the current input.",
     "btn-save": "Save the edited Settings and apply them to later actions. This persists configuration; it does not start a backtest, background sweep or live trading.",
     "strategy-params": "Explicit strategy parameters in name=value form, for example fast=20 slow=50. These override signal defaults for the added roster entry. An empty field uses the saved defaults.",
+    "btn-roster-all": "Add every registered strategy missing from the roster. Existing custom versions stay as they are.",
+    "forward-start": "Start prospective paper tests for the Settings asset. The scope, horizons, cost threshold and initial parameters are fixed until you stop and start again.",
+    "forward-stop": "Stop scheduling predictions. The current market read may take a moment to drain. Saved predictions and settings remain available for the next run.",
+    "forward-refresh": "Read saved predictions and accuracy for the current Settings asset without fetching prices.",
+    "forward-scope": "Use every registered strategy, only the roster, or only the combinations entered below. Each standalone strategy and each combination is scored independently.",
+    "forward-horizon": "Predict 1, 5, 10 or 30 minutes, or choose All four to predict and track every horizon separately.",
+    "forward-combos": "Use comma-separated names or roster labels per combination; separate combinations with semicolons. Each combination learns separately from its members' standalone trials.",
+    "forward-mode": "Combine member targets by minimum (all), maximum (any), share long (vote) or average (mean). The sign becomes the paper prediction.",
     "btn-add": "Add the selected available strategy and these parameters to the test roster. The roster is a list of experiments; adding a rule does not place an order.",
     "btn-remove": "Remove the selected configuration from the test roster. This does not close positions or delete saved research results.",
     "btn-reset-roster": "Restore the default test roster, replacing its current entries. Saved backtest results remain separate. This changes which configurations the next roster backtest tests.",
@@ -503,6 +512,21 @@ for _name, _leverage in (("lev_low", 2), ("lev_medium", 5), ("lev_high", 20)):
 def column_help(label: str, table_id: str | None = None) -> str | None:
     """Resolve overloaded labels using the actual table, not a global guess."""
     key = label.strip().casefold()
+    if table_id == "forward-table":
+        return {
+            "trial": "Strategy or combination as configured when this trial began.",
+            "minutes": "Forecast length, independent of the one-minute input candles.",
+            "resolved": "Predictions matched to a complete future candle window.",
+            "accuracy": "Correct calls divided by resolved calls. Flat is correct inside the cost threshold. This is a classification score.",
+            "pending": "Predictions awaiting a complete outcome window.",
+            "expired": "Predictions that could not be scored because candles were missing and the window aged out.",
+            "changes": "Evidence-gated parameter changes made for this trial and horizon.",
+            "last call": "Most recent recorded paper prediction: up, down or flat.",
+            "last outcome": "Observed direction of the last complete forecast window, which may be older than the most recent call.",
+            "issued utc": "When the most recent prediction was recorded, in UTC.",
+            "cost bps": "Round-trip fees and slippage from Settings, used as the minimum meaningful move.",
+            "active settings": "Parameters used for the next prediction, or the reason a signal could not be computed.",
+        }.get(key)
     if key == "kind":
         if table_id == "wallet-contracts":
             return "Type of on-chain account: a token mint defines an asset; a token account holds units; a stake account delegates SOL; a position NFT identifies an LP position. This is not a file classification."

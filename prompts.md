@@ -305,3 +305,12 @@ Expand the wallet, for the base wallet, use the base mcp server to query my wall
 Use lightweight charts, run the deep prompt optimizer on the rest of this prompt and then run it:  What are all of the ways a strategy or indicator can be evaluated? List all of them and then create a deep strategy optimizer skill that evaluates, and optimizes the strategy in multiple passes one per method just like the other deep optimizers.
 ```
 
+## v45 - 2026-11-08 (Adaptive Forwardtest)
+
+```text
+In the strategies tab, you can click on a strategy and then click the "add selected" button which adds that strategy to the roster for later testing. Make it so if I have a strategy highlighted and then I press the spacebar it will add or remove that strategy from the roster. Also create an "add all strategies to the roster" button. Then create a Forwardtest tab, this will be a dedicated tab for forward testing all stratgies or strategy combinations, use the same self-optimizing process we used with the compound test, but each of these test are going to be testing each stratgy individually so every strategy is self-optimizing in that if it gets a prediction wrong then it should change its settings in the direction of the configuration that would have made it right if that information is available.
+```
+
+```text
+Also in the forwardtest tab, make the time forward the strategy is asked to predict configurable so it can be 1, 5, 10, or 30 min. And ask it to predict all of them, and track the success of each individually.
+```

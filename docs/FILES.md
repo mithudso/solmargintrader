@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `882458d` (2026-11-07T22:23:25+00:00). 681 tracked files, 12.1 MB.
+**Generated** from `index/INDEX.json` at commit `1f90856` (2026-11-08T07:06:23+00:00). 683 tracked files, 12.1 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (486 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 230/241 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (488 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 232/243 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (101 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -39,7 +39,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`backtester`](#backtester) — 138 files
 - [`research`](#research) — 140 files
 - [`extension`](#extension) — 92 files
-- [`soltui`](#soltui) — 86 files
+- [`soltui`](#soltui) — 88 files
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
@@ -183,9 +183,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 531 lines · 77,734 B · description: **extracted**
+`doc` · 535 lines · 78,370 B · description: **extracted**
 
-**Purpose.** Version: 50 Delta: v49 to v50; equity chart on vendored Lightweight Charts; /dso v2.0.0 shipped in the skills repo. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 51 Delta: v50 to v51; adaptive strategy Forwardtest and roster shortcuts. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -199,7 +199,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 308 lines · 18,315 B · description: **extracted**
+`doc` · 317 lines · 19,403 B · description: **extracted**
 
 **Purpose.** Version: 44 Delta: v43 to v44; Lightweight Charts chosen; deep prompt optimizer, then rebuild /dso as one pass per evaluation method. Delta: added the leverage-tier and reliable-trigger request.
 
@@ -263,7 +263,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,302 B · description: **extracted**
+`doc` · 316 lines · 15,273 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -329,7 +329,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 216 lines · 16,924 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 853 tests python3 -m unittest discover -s soltui/tests -t . # 808 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 33 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 853 tests python3 -m unittest discover -s soltui/tests -t . # 817 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 33 tests
 
 **Use.** Read it.
 
@@ -383,7 +383,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1255 lines · 37,068 B · description: **derived**
+`doc` · 1256 lines · 37,089 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -4163,11 +4163,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
 
-86 files.
+88 files.
 
 #### `soltui/README.md`
 
-`doc` · 400 lines · 31,218 B · description: **extracted**
+`doc` · 433 lines · 33,579 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -4261,7 +4261,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 1884 lines · 88,024 B · description: **extracted**
+`code-python` · 2013 lines · 94,614 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -4271,7 +4271,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/compound.py`
 
-`code-python` · 1962 lines · 96,316 B · description: **extracted**
+`code-python` · 1973 lines · 96,950 B · description: **extracted**
 
 **Purpose.** Compound five-minute tester: saved configuration, live reads, forward ledger, sweeps. python3 -m soltui.compound signal --asset SOL # score now, explain every metric python3 -m soltui.compound forward --asset SOL --loop # record a call per closed 5m bar python3 -m soltui.compound status --asset SOL # forward-test hit rates python3 -m soltui.compound backtest --asset SOL # compound + each component
 
@@ -4329,6 +4329,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `import soltui.eth_scan`
 
+#### `soltui/forwardtest.py`
+
+`code-python` · 317 lines · 14,607 B · description: **extracted**
+
+**Purpose.** Prospective, paper-only trials of registered strategies on closed Coinbase minutes.
+
+**Contents.** Defines `HORIZONS`, `HISTORY`, `WARM_REPLAY`, `KNOBS`, `revision()`, `_json()`, `_db()`, `_factory()`, `member()`, `neighbours()` and 5 more. Depends on `backtester`.
+
+**Use.** `import soltui.forwardtest`
+
 #### `soltui/hdwallet.py`
 
 `code-python` · 370 lines · 14,784 B · description: **extracted**
@@ -4341,7 +4351,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 537 lines · 78,507 B · description: **extracted**
+`code-python` · 561 lines · 81,266 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -4587,7 +4597,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 3578 lines · 178,628 B · description: **extracted**
+`code-python` · 3774 lines · 188,207 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -4639,7 +4649,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 216 lines · 10,018 B · description: **extracted**
+`test` · 219 lines · 10,217 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
@@ -4699,7 +4709,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bridge_buttons.py`
 
-`test` · 54 lines · 2,154 B · description: **extracted**
+`test` · 54 lines · 2,155 B · description: **extracted**
 
 **Purpose.** Every TUI button is a registry command: a new button cannot skip the registry.
 
@@ -4766,6 +4776,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `ADDR`, `class FakeEth`, `class EthScanTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_eth_scan.py -q`
+
+#### `soltui/tests/test_forwardtest.py`
+
+`test` · 187 lines · 8,863 B · description: **extracted**
+
+**Purpose.** Prospective evidence, horizon isolation, and the roster keyboard workflow.
+
+**Contents.** Defines `BASE`, `candles()`, `class ForwardEvidence`, `class ForwardPlan`, `class RosterForwardUI`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_forwardtest.py -q`
 
 #### `soltui/tests/test_hdwallet.py`
 

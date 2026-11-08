@@ -44,6 +44,7 @@ import json
 import math
 import os
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -377,12 +378,13 @@ def http_text(url: str) -> str:
         return resp.read().decode("utf-8", "replace")
 
 
-def candle_cache_path(asset: str) -> Path:
-    return home() / "candles" / f"{_asset(asset)}.npz"
+def candle_cache_path(asset: str, seconds: int = 300) -> Path:
+    suffix = "-1m" if seconds == 60 else ""
+    return home() / "candles" / f"{_asset(asset)}{suffix}.npz"
 
 
-def _load_candle_cache(asset: str) -> dict[int, list[float]]:
-    path = candle_cache_path(asset)
+def _load_candle_cache(asset: str, seconds: int = 300) -> dict[int, list[float]]:
+    path = candle_cache_path(asset, seconds)
     if not path.exists():
         return {}
     try:
@@ -392,13 +394,18 @@ def _load_candle_cache(asset: str) -> dict[int, list[float]]:
         return {}
 
 
-def _save_candle_cache(asset: str, rows: Mapping[int, list[float]], keep: int) -> None:
+def _save_candle_cache(asset: str, rows: Mapping[int, list[float]], keep: int, seconds: int = 300) -> None:
     ts = np.array(sorted(rows)[-keep:], dtype="int64")
-    path = candle_cache_path(asset)
+    path = candle_cache_path(asset, seconds)
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.stem + ".tmp.npz")
-    np.savez(tmp, ts=ts, rows=np.array([rows[int(t)] for t in ts], dtype="float64").reshape(-1, 5))
-    os.replace(tmp, path)
+    with tempfile.NamedTemporaryFile(dir=path.parent, suffix=".npz", delete=False) as handle:
+        tmp = Path(handle.name)
+        try:
+            np.savez(handle, ts=ts, rows=np.array([rows[int(t)] for t in ts], dtype="float64").reshape(-1, 5))
+            handle.close()
+            os.replace(tmp, path)
+        finally:
+            tmp.unlink(missing_ok=True)
 
 
 def _get_with_retry(get: Fetcher, url: str, sleep: Callable[[float], None] = time.sleep) -> Any:
@@ -417,7 +424,7 @@ def _get_with_retry(get: Fetcher, url: str, sleep: Callable[[float], None] = tim
 
 
 def fetch_closed_candles(asset: str, *, now: float | None = None, bars: int = LIVE_BARS,
-                         get: Fetcher = http_json, cache: bool = True,
+                         get: Fetcher = http_json, cache: bool = True, seconds: int = 300,
                          sleep: Callable[[float], None] = time.sleep) -> dict[str, np.ndarray]:
     """The last `bars` CLOSED 5m candles from Coinbase, oldest first, with gaps preserved.
 
@@ -425,19 +432,24 @@ def fetch_closed_candles(asset: str, *, now: float | None = None, bars: int = LI
     cached one are requested: a tick then costs one request instead of fourteen, which is what
     lets every coin forward-test at once inside the venue's rate limit.
     """
+    if seconds not in (60, 300):
+        raise ValueError("only one-minute and five-minute candles are supported")
     now = time.time() if now is None else now
     product = f"{_asset(asset)}-USD"
-    last_closed_start = (int(now) // 300) * 300 - 300
-    need_from = last_closed_start - 300 * (bars - 1)
+    last_closed_start = (int(now) // seconds) * seconds - seconds
+    need_from = last_closed_start - seconds * (bars - 1)
     rows: dict[int, list[float]] = {}
     if cache:
-        rows = {t: r for t, r in _load_candle_cache(asset).items() if t >= need_from and t <= last_closed_start}
-    stop_at = max(rows) if rows else need_from - 300
-    end = last_closed_start + 300
+        rows = {t: r for t, r in _load_candle_cache(asset, seconds).items()
+                if need_from <= t <= last_closed_start}
+    # Revisit recent minutes so a temporary publication gap can settle on a later tick.
+    overlap = 32 * seconds if seconds == 60 else 0
+    stop_at = max(need_from - seconds, max(rows) - overlap) if rows else need_from - seconds
+    end = last_closed_start + seconds
     while end > stop_at:
-        start = max(end - 300 * 300, stop_at)
+        start = max(end - 299 * seconds, stop_at)
         url = (COINBASE_CANDLES.format(product=product)
-               + f"?granularity=300&start={_iso(start)}&end={_iso(end)}")
+               + f"?granularity={seconds}&start={_iso(start)}&end={_iso(end)}")
         try:
             payload = _get_with_retry(get, url, sleep)
         except (urllib.error.URLError, OSError, ValueError) as exc:
@@ -445,17 +457,16 @@ def fetch_closed_candles(asset: str, *, now: float | None = None, bars: int = LI
         if not isinstance(payload, list):
             raise CompoundError(f"coinbase candles for {product}: unexpected reply {str(payload)[:120]}")
         for row in payload:
-            # Coinbase row order is [time, low, high, open, close, volume] -- not OHLCV.
             t, lo, hi, op, cl, vol = (float(x) for x in row[:6])
-            if t + 300 <= now and need_from <= t <= last_closed_start:
+            if t + seconds <= now and need_from <= t <= last_closed_start:
                 rows[int(t)] = [op, hi, lo, cl, vol]
         if not payload and not rows:
             break
         end = start
     if len(rows) < 50:
-        raise CompoundError(f"coinbase returned only {len(rows)} closed 5m bars for {product}")
+        raise CompoundError(f"coinbase returned only {len(rows)} closed {seconds}s bars for {product}")
     if cache:
-        _save_candle_cache(asset, rows, max(bars, ADAPTIVE_LIVE_BARS))
+        _save_candle_cache(asset, rows, max(bars, ADAPTIVE_LIVE_BARS), seconds)
     ts = np.array(sorted(rows)[-bars:], dtype="int64")
     vals = np.array([rows[t] for t in ts], dtype="float64")
     return {"ts": ts, "open": vals[:, 0], "high": vals[:, 1], "low": vals[:, 2],

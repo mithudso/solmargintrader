@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 50
-Delta: v49 to v50; equity chart on vendored Lightweight Charts; /dso v2.0.0 shipped in the skills repo.
+Version: 51
+Delta: v50 to v51; adaptive strategy Forwardtest and roster shortcuts.
 
 ## v1 - 2026-11-06
 
@@ -528,3 +528,7 @@ Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithud
 
 Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
 
+
+## v51 - 2026-11-08 (Adaptive Forwardtest)
+
+Target: prompts v45, Stele TASK-863 and KNOW-864. Worktree /Users/mitch/dev/solmargintrader-wt-forwardtest. Reuse compound tuning gates on prospective shadow predictions. Isolate each trial and each of four horizons. Implemented Space toggle and bulk roster add. Added a console-owned paper Forwardtest worker, closed 1m Coinbase feed, SQLite prediction history, separate 1/5/10/30-minute trials and shadow learning gated by paired resolved observations. Focused tests cover independent outcomes, pre-window timing, missing data, adoption, roster and worker stop. Remaining: complete integration checks and verify delivery.

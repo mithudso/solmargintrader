@@ -453,7 +453,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 610
+      "lines": 612
     },
     {
       "path": "extension/src/core/commands.js",
@@ -642,7 +642,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The experimental grid's forms, charts and journal",
-      "lines": 362
+      "lines": 374
     },
     {
       "path": "extension/src/ui/popup.js",
@@ -942,7 +942,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 178
+      "lines": 180
     },
     {
       "path": "AGENTS.md",
@@ -956,7 +956,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 62
+      "lines": 63
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -1248,7 +1248,8 @@
       "path": "docs/TRADINGVIEW-REFERENCE.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format"
+      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format",
+      "lines": 3647
     }
   ]
 }
