@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 207
-Delta: v206 to v207; begin SolTUI table CSV exports and editor save verification.
+Version: 208
+Delta: v207 to v208; update suite counts for CSV export tests.
 
 ## v207 - 2026-11-08
 
