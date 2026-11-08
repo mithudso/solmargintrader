@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T09:12:07+00:00",
+  "generatedAt": "2026-11-08T09:13:44+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 334,
+      "matchingFiles": 335,
       "shown": 30,
       "files": [
         {
@@ -34,12 +34,12 @@
           "hits": 84
         },
         {
-          "path": "llms-full.txt",
-          "hits": 67
+          "path": "docs/FILES.md",
+          "hits": 73
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 57
+          "path": "llms-full.txt",
+          "hits": 67
         },
         {
           "path": "skills/trading-and-investing/references/strategies-and-risk.md",
@@ -169,6 +169,10 @@
           "hits": 163
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 150
+        },
+        {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
           "hits": 127
         },
@@ -179,10 +183,6 @@
         {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
           "hits": 124
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 112
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -262,7 +262,7 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 31
+          "hits": 32
         },
         {
           "path": "soltui/tests/test_wallet.py",
@@ -320,7 +320,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 76
+          "hits": 75
         },
         {
           "path": "extension/src/core/grid.js",
@@ -343,12 +343,16 @@
           "hits": 53
         },
         {
+          "path": "soltui/bots.py",
+          "hits": 52
+        },
+        {
           "path": "backtester/gridcli.py",
           "hits": 43
         },
         {
-          "path": "soltui/bots.py",
-          "hits": 39
+          "path": "soltui/tests/test_bots.py",
+          "hits": 37
         },
         {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
@@ -368,11 +372,11 @@
         },
         {
           "path": "soltui/help.py",
-          "hits": 30
+          "hits": 29
         },
         {
-          "path": "soltui/tests/test_bots.py",
-          "hits": 29
+          "path": "memory.md",
+          "hits": 27
         },
         {
           "path": "backtester/strategy_cards/grid.md",
@@ -384,10 +388,6 @@
         },
         {
           "path": "extension/src/ui/dashboard.html",
-          "hits": 26
-        },
-        {
-          "path": "memory.md",
           "hits": 26
         },
         {
@@ -482,12 +482,12 @@
           "hits": 31
         },
         {
-          "path": "backtester/README.md",
+          "path": "soltui/help.py",
           "hits": 31
         },
         {
-          "path": "soltui/help.py",
-          "hits": 30
+          "path": "backtester/README.md",
+          "hits": 31
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -495,7 +495,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 22
+          "hits": 24
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -576,15 +576,15 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 207,
+      "matchingFiles": 206,
       "shown": 30,
       "files": [
         {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 34
+          "path": "soltui/bots.py",
+          "hits": 39
         },
         {
-          "path": "soltui/bots.py",
+          "path": "backtester/tests/test_engine.py",
           "hits": 34
         },
         {
@@ -601,7 +601,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 25
+          "hits": 26
         },
         {
           "path": "docs/SCRIPTS.md",
@@ -628,6 +628,10 @@
           "hits": 16
         },
         {
+          "path": "soltui/tests/test_bots.py",
+          "hits": 15
+        },
+        {
           "path": "research/results/minute_coverage.json",
           "hits": 12
         },
@@ -645,6 +649,10 @@
         },
         {
           "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
+        },
+        {
+          "path": "soltui/tui.py",
           "hits": 11
         },
         {
@@ -681,14 +689,6 @@
         },
         {
           "path": "research/five-minute-perps-suite/scored-concepts.json",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_bots.py",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tui.py",
           "hits": 8
         },
         {
@@ -1265,7 +1265,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 164,
+      "matchingFiles": 165,
       "shown": 30,
       "files": [
         {
@@ -1405,7 +1405,7 @@
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 33
+          "hits": 34
         },
         {
           "path": "research/perturb.py",

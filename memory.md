@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 73
-Delta: v72 to v73; independent installed-hook acceptance passed without changing shared-session state.
+Version: 75
+Delta: v74 to v75; retain Bots tab v2 history and hook acceptance while resolving concurrent workflow-record merges.
 
 ## v1 - 2026-11-06
 
@@ -707,7 +707,18 @@ Current: merged origin/master 06a1f95 into latest PR 58 head b899458 in private 
 
 Remaining: regenerate derived indexes after staging resolutions, verify docs and index checks, commit and push HEAD to agent-01a1b5ef without force. Wait for all final-head CI jobs, merge PR 58, verify both merge receipts and source/receipt preservation, then remove only our clean private branches and worktree. Shared checkout and original PR worktrees remain untouched.
 
-## v69 - 2026-11-08 (SessionStart hook JSON repair)
+## v69 - 2026-11-08 (Bots tab v2)
+
+Target: prompts.md Bots tab v2 entry. Stele TASK-884. Branch feat/bots-tab-v2 in /Users/mitch/dev/solmargintrader-wt-39e8bf11.
+Delivered before this: PR #84 (merged by another session while CI was red) and follow-up PR #86 (index regeneration), both on master.
+
+Completed: `soltui/bots_screens.py` (coin picker, auto-optimize window with the SAVED / NOT SAVED popup and per-coin table); optimize run numbering with growing, non-repeating candidate lists (`candidates(bot, current, run, tried)`, history in `bots/optimize-history-<bot>.json`); per-coin stats; `hourly()` splices 1m-resampled history before the 1h file; `bridged()` fills gaps of up to 48 h; default backtest start is the start of usable data; `backtest_many`; `pricefeed.ensure_recorder` + LaunchAgent `com.mitchhudson.soltui.pricefeed` (KeepAlive, `record --wait-lock`); `prices.start`/`prices.stop` replaced by `prices.ensure`; one-row top fields.
+
+Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backtest from the start of data runs 2021-06-17 (SOL) and 2019-11-09 (BTC).
+
+Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.
+
+## v70 - 2026-11-08 (SessionStart hook JSON repair)
 
 Target: identify and repair the Codex error "hook returned invalid session start JSON output". Stele TASK-892 (diagnosis), TASK-893 (repair), TASK-895 (verification and delivery).
 
@@ -719,7 +730,7 @@ Constraints: reproduce actual registered SessionStart stdout; preserve enabled h
 
 Remaining: finish diagnosis, repair canonical producer, install and verify output, run relevant checks, commit and merge task-owned changes, record delivery evidence.
 
-## v70 - 2026-11-08 (Stop hook ownership repair)
+## v71 - 2026-11-08 (Stop hook ownership repair)
 
 Target: extend the hook repair to the recurring Stop block counting 336 shared-checkout paths. TASK-893 now includes both fixes. Keep legitimate checks on this session's own unshipped work. Preserve unrelated dirty files and active sessions. The canonical-hook specialist owns both implementation fixes; a separate read-only verifier inspects loaded daemon evidence.
 
@@ -727,7 +738,7 @@ Verification: workflow-only diff passes git diff --check and scripts/check_docs.
 
 Remaining: diagnose/repair both hooks, verify installed behavior, deliver canonical source and these workflow records through passing PRs.
 
-## v71 - 2026-11-08 (hook diagnosis confirmed)
+## v72 - 2026-11-08 (hook diagnosis confirmed)
 
 Root cause: actual Codex 0.167.0 daemon registry enables adapter74c6161da6b220bd for memory-central-session-brief.py. That adapter exits 0 with 1,671 bytes of plaintext beginning "[memory-central] STALE:". Parsing stdout as JSON fails at line 1 column 2. The installed adapter /Users/mitch/.codex/hooks/claude_hook_adapter.py passes a single command output through without normalization. Canonical source is /Users/mitch/dev/codex-local-ai-setup/scripts/claude_hook_adapter.py. Preserve valid JSON and wrap plaintext SessionStart output in hookSpecificOutput.additionalContext with hookEventName SessionStart. Lesson KNOW-903 records this trigger.
 
@@ -737,7 +748,7 @@ Implementation worktrees: /Users/mitch/dev/codex-local-ai-setup-wt-hook-json-202
 
 Remaining: focused regression checks, install both canonical repairs, verify exact launcher and disposable ownership scenarios, deliver all task-owned changes through passing PRs, and complete TASK-893/TASK-895.
 
-## v72 - 2026-11-08 (both hook repairs installed)
+## v73 - 2026-11-08 (both hook repairs installed)
 
 Installed: adapter v1.1.0 from canonical commit 757e2f7; Stop hook v1.1.0 from canonical commit 88d6933. Adapter wraps plain SessionStart context and preserves valid JSON. Stop preserves the original session baseline, excludes inherited ahead commits from a real SessionStart baseline, adopts unknown dirty paths without claiming them, and suppresses identical pending-work signatures across turns. New paths, changed files, and new commits still block.
 
@@ -747,10 +758,16 @@ Delivery: Stop https://github.com/mithudso/claude-config/pull/33; adapter https:
 
 At checkpoint: independent installed acceptance and final CI/merges are in progress. TASK-895 tracks final receipts and completion; check its current state before resuming. Preserve unrelated staged herdr/context7 changes in /Users/mitch/.claude and all original solmargintrader work.
 
-## v73 - 2026-11-08 (installed acceptance passed)
+## v74 - 2026-11-08 (installed acceptance passed)
 
 Independent acceptance: exact enabled memory-central launcher exits 0 and emits 1,814 bytes of valid SessionStart JSON with original context. Installed Stop subprocesses in disposable repositories allow inherited dirt/ahead commits, preserve snapshots on resume, block a new own edit, allow an unchanged repeat, block a later distinct edit, and block a new own commit while excluding inherited commits. A late baseline still checks ahead commits. Installed hashes match the guarded receipt.
 
 Actual Codex 0.167.0 daemon retains enabled/trusted adapter and both Stop/snapshot registrations with no warnings/errors. config.toml, hooks.json, settings.json, parent baseline and parent hook counters remain unchanged. A subsequent ordinary UI turn has not been observed; exact installed command/runtime checks passed. No restart is needed.
 
 Remaining at delivery checkpoint: merge the three linked PRs after final-head CI, confirm remote default-branch content, remove only clean task worktrees/branches, and complete TASK-895 with final merge receipts. The installed behavior is verified. No user decision is pending.
+
+## v75 - 2026-11-08 (concurrent workflow-record integration)
+
+Merged origin/master afaa03a after another active session delivered Bots tab v2 in PR 87. Preserved its prompt and continuation entry verbatim and retained every hook-repair record. Renumbered these hook entries after the incoming history. Rebuilt only offline retrieval indexes for the combined tree. No Bots or trading source was edited by this hook repair.
+
+Canonical repairs are merged: Stop PR 33 as 79bc183c99a171d7221813724bbc10d6a85df7cd; adapter PR 11 as 4d385318438647bcddad9f368da927b5e9c9ada9. Installed acceptance already passed. Remaining: wait for final PR 88 checks, merge, verify remote content, clean only this task's worktree/branch, and complete TASK-895.

@@ -2016,8 +2016,8 @@ def portfolio_notice(ctx: Context, p: dict[str, Any]) -> Any:
 #
 # The Bots tab's grid, triangle-arbitrage and DCA bots (`bots.py`) are simulations: backtests over
 # cached bars, dry-run forward tests over the recorded Coinbase stream (`pricefeed.py`), and an
-# auto-optimizer. None places an order. `prices.start` spawns the detached recorder; it reads public
-# market data only and writes only under <config dir>/prices/.
+# auto-optimizer. None places an order. `prices.ensure` keeps the recorder running (LaunchAgent or a
+# detached process); it reads public market data only and writes only under <config dir>/prices/.
 
 
 def _bots(fn, *args, **kwargs) -> Any:
@@ -2079,16 +2079,23 @@ def bots_save(ctx: Context, p: dict[str, Any]) -> Any:
 
 
 @command("bots.backtest", "Start a bot at a past moment (what it would have set from the price then) and "
-         "simulate it forward with fees and slippage; grid and DCA on cached 1h bars, triangle on recorded "
-         "quotes or, failing those, a labelled 1m candle proxy (fetched from Coinbase).",
-         (BOT_PARAM, P("asset", "string", "Coin for grid and DCA; default the configured asset."),
-          P("start", "string", "UTC date or epoch seconds; default 90 days ago (triangle: the recording's start)."),
-          P("days", "number", "How long to run; default to the end of the data or the next gap.")),
+         "simulate it forward with fees and slippage, on one or several coins; grid and DCA on cached hourly "
+         "bars from the beginning of the usable data by default, triangle on recorded quotes or, failing "
+         "those, a labelled 1m candle proxy (fetched from Coinbase). Returns every run and a per-coin summary.",
+         (BOT_PARAM, P("asset", "string", "One coin for grid and DCA; default the configured asset."),
+          P("coins", "json", "Several coins, e.g. [\"SOL\", \"BTC\"], or \"all\"; overrides asset."),
+          P("start", "string", "UTC date or epoch seconds; default the beginning of the usable data."),
+          P("days", "number", "How long to run; default to the end of the data.")),
          read_only=False, long_running=True)
 def bots_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
-    return _bots(bots_mod.backtest, _bot_param(p), str(p.get("asset") or ctx.settings.asset), ctx.settings,
-                 start=p.get("start"), days=p.get("days"))
+    coins = p.get("coins")
+    if coins is not None and not (coins == "all" or (isinstance(coins, list) and all(isinstance(c, str) for c in coins))):
+        raise CommandError("bad_params", 'parameter "coins" must be a list of coin symbols or "all"')
+    if coins is None:
+        coins = [str(p.get("asset") or ctx.settings.asset)]
+    return _bots(bots_mod.backtest_many, _bot_param(p), coins, ctx.settings, start=p.get("start"),
+                 days=p.get("days"))
 
 
 @command("bots.results", "Saved bot backtests, newest first.",
@@ -2157,16 +2164,17 @@ def prices_status(ctx: Context, p: dict[str, Any]) -> Any:
     return _bots(pricefeed.status)
 
 
-@command("prices.start", "Start the detached price recorder (public Coinbase ticker and level-2 batch "
-         "channels; writes <config dir>/prices/). It keeps recording after the console closes.",
+@command("prices.ensure", "Keep the price recorder on (public Coinbase level-2 batch and ticker channels; "
+         "writes <config dir>/prices/): install its LaunchAgent if missing so it survives a closed console "
+         "and a reboot, else start a detached recorder. Idempotent; the console calls it every minute.",
          read_only=False)
-def prices_start(ctx: Context, p: dict[str, Any]) -> Any:
+def prices_ensure(ctx: Context, p: dict[str, Any]) -> Any:
     from . import pricefeed
-    return _bots(pricefeed.start_recorder)
+    return _bots(pricefeed.ensure_recorder)
 
 
-@command("prices.stop", "Stop the price recorder. Forward tests stop gaining coverage until it restarts.",
-         read_only=False)
-def prices_stop(ctx: Context, p: dict[str, Any]) -> Any:
-    from . import pricefeed
-    return _bots(pricefeed.stop_recorder)
+@command("bots.progress", "A running auto-optimize: run number, fraction done, the configurations it is "
+         "testing; null when none ran in this process.", (BOT_PARAM,))
+def bots_progress(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return bots_mod.runtime().progress.get(_bot_param(p))
