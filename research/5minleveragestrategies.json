@@ -1,0 +1,473 @@
+{
+  "as_of": "2026-11-07",
+  "scope_note": "No finite source can enumerate literally every crypto strategy ever created. This is a source-linked catalog of the principal strategy families and the short-horizon signals most relevant to a five-minute leveraged-perps decision. None is a guaranteed-profit method; the useful/not-useful fields describe regimes to test, not promises.",
+  "answer_summary": {
+    "best_candidates_for_testing": "For a five-minute SOL-perp horizon, test only regime-conditional setups: (1) trend continuation after VWAP/EMA/volume alignment, (2) volatility-squeeze breakout with confirmation, and (3) range mean-reversion or failed-breakout reversal when trend strength is low. RSI, MACD, Bollinger Bands, ATR, VWAP, volume/flow and ADX are filters/confluence—not standalone forecasts.",
+    "summary_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+    "main_limit": "A signal can be conditionally useful when market state is stable and liquid, but no indicator reliably predicts the next five-minute candle across all regimes. Leverage changes the loss distribution; it does not improve forecast accuracy.",
+    "main_limit_citation": "https://docs.jup.ag/user-docs/trade/perps/liquidation"
+  },
+  "jupiter_perps_context": {
+    "market_url": "https://jup.ag/perps/long/SOL-SOL",
+    "execution_model": "Jupiter SOL JLP Perps use oracle-priced execution rather than an order book; trades are processed by a keeper within slippage tolerance, and a price-impact fee compensates liquidity providers for large or imbalanced trades.",
+    "execution_model_citation": "https://docs.jup.ag/user-docs/trade/perps",
+    "max_leverage_shown": "250x",
+    "max_leverage_shown_citation": "https://jup.ag/perps/long/SOL-SOL",
+    "base_fee": "0.06% of trade size when opening or closing",
+    "base_fee_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+    "borrow_fee": "Accrues continuously on the full position size; it counts against collateral and moves liquidation closer over time.",
+    "borrow_fee_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+    "liquidation_penalty": "All remaining collateral is taken as a liquidation fee after loss, close fee and borrow fees.",
+    "liquidation_penalty_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+    "live_page_snapshot": {
+      "mark_price": "$89.89",
+      "mark_price_citation": "https://jup.ag/perps/long/SOL-SOL",
+      "24h_change": "-0.67%",
+      "24h_change_citation": "https://jup.ag/perps/long/SOL-SOL",
+      "24h_high": "$91.48",
+      "24h_high_citation": "https://jup.ag/perps/long/SOL-SOL",
+      "24h_low": "$89.54",
+      "24h_low_citation": "https://jup.ag/perps/long/SOL-SOL",
+      "borrow_rate": "0.0016% / hr",
+      "borrow_rate_citation": "https://jup.ag/perps/long/SOL-SOL",
+      "available_liquidity": "$10.00M",
+      "available_liquidity_citation": "https://jup.ag/perps/long/SOL-SOL"
+    }
+  },
+  "current_cross_venue_observation": {
+    "venue": "Hyperliquid SOL perpetual (used as a live cross-venue reference, not as Jupiter execution data)",
+    "observed_at": "2026-11-07T12:21:23Z",
+    "mark_price": "89.953",
+    "mark_price_citation": "https://app.hyperliquid.xyz/trade/SOL",
+    "oracle_price": "89.995",
+    "oracle_price_citation": "https://app.hyperliquid.xyz/trade/SOL",
+    "premium": "-0.0004666926",
+    "premium_citation": "https://app.hyperliquid.xyz/trade/SOL",
+    "funding": "-0.0000001501",
+    "funding_citation": "https://app.hyperliquid.xyz/trade/SOL",
+    "open_interest": "5621362.34 SOL",
+    "open_interest_citation": "https://app.hyperliquid.xyz/trade/SOL",
+    "five_minute_window": "The fetched five-minute candles moved from 89.937 open to 89.953 close across the displayed window; the five displayed candles ranged from 89.849 to 89.988.",
+    "five_minute_window_citation": "https://app.hyperliquid.xyz/trade/SOL",
+    "interpretation": "This snapshot alone is not a trade signal: it shows why a trader should combine price structure with live flow, volatility and execution costs rather than infer direction from one print.",
+    "interpretation_citation": "https://docs.jup.ag/user-docs/trade/perps"
+  },
+  "regime_identification": [
+    {
+      "context": "Directional trend / continuation",
+      "how_to_identify": "Price holds one side of VWAP; fast and slow EMA slope/stack in the same direction; ADX is rising rather than flat; pullbacks hold prior breakout structure; volume expands on impulse and contracts on pullback. Favor continuation, not countertrend RSI fades.",
+      "signals_to_use": [
+        "VWAP",
+        "moving-average crossover",
+        "ADX",
+        "ATR",
+        "OBV/volume",
+        "breakout confirmation"
+      ],
+      "citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "context": "Range / mean reversion",
+      "how_to_identify": "VWAP is relatively flat; price repeatedly rejects established support/resistance; ADX is weak; Bollinger Bands are not expanding; RSI/Stochastic reaches extremes and then turns while price remains inside the range.",
+      "signals_to_use": [
+        "RSI",
+        "Stochastic oscillator",
+        "Bollinger Bands",
+        "VWAP",
+        "ATR"
+      ],
+      "citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "context": "Compression-to-breakout",
+      "how_to_identify": "Bollinger bandwidth/realized ATR contracts, the range becomes obvious, then a candle closes outside it with above-average volume and the next bar accepts outside rather than immediately reclaiming the range.",
+      "signals_to_use": [
+        "Bollinger Bands",
+        "ATR",
+        "volume/OBV",
+        "breakout structure"
+      ],
+      "citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "context": "Crowded or unstable / no-trade",
+      "how_to_identify": "Large candle relative to ATR, rapidly widening spreads or order-book imbalance, price-impact/flow fee rising, immediate event/news risk, or price near liquidation. Reduce size or do not trade; do not convert an overbought/oversold reading into an automatic reversal.",
+      "signals_to_use": [
+        "ATR",
+        "live Jupiter price-impact/fee estimate",
+        "recent flow imbalance",
+        "liquidation distance"
+      ],
+      "citation": "https://docs.jup.ag/user-docs/trade/perps/fees"
+    }
+  ],
+  "execution_checklist": [
+    {
+      "step": 1,
+      "rule": "Define the invalidation price before entry; size from the stop and account-risk budget, not from the maximum leverage slider.",
+      "citation": "https://docs.jup.ag/user-docs/trade/perps/liquidation"
+    },
+    {
+      "step": 2,
+      "rule": "Require expected gross move to exceed round-trip base fees, price impact, borrow cost, spread/slippage and a safety buffer.",
+      "citation": "https://docs.jup.ag/user-docs/trade/perps/fees"
+    },
+    {
+      "step": 3,
+      "rule": "Use a higher-timeframe regime filter (for example 15m/1h structure) and a 1m/5m trigger; do not let a single five-minute indicator decide direction.",
+      "citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "step": 4,
+      "rule": "Prefer limit/conditional orders only when their trigger and execution behavior are understood; Jupiter documents that fast movement can make triggered orders fail on slippage and that stop execution is not guaranteed near liquidation.",
+      "citation": "https://docs.jup.ag/user-docs/trade/perps"
+    },
+    {
+      "step": 5,
+      "rule": "Backtest with fees, latency, failed/partial execution and adverse selection; paper trade or use minimal size until the edge survives out-of-sample data.",
+      "citation": "https://docs.jup.ag/user-docs/trade/perps/fees"
+    }
+  ],
+  "strategies": [
+    {
+      "name": "Trend following / moving-average crossover",
+      "type": "strategy",
+      "source_url": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "formula": "SMA_n = (sum of the last n closes)/n; enter long when a fast MA crosses above a slow MA (for example, 50 above 200), and exit/reverse on the opposite cross.",
+      "description": "Follows an established directional move rather than forecasting a reversal; the golden cross is a commonly named bullish version.",
+      "useful_when": "Sustained bull or bear trends; the MA smooths noise and confirms direction.",
+      "not_useful_when": "Sideways/choppy markets or immediately after a move has already matured; lag can create late entries and whipsaws.",
+      "formula_citation": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "description_citation": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Mean reversion",
+      "type": "strategy",
+      "source_url": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide",
+      "formula": "z = (P - MA_n)/SD_n; buy when price is sufficiently below its mean and sell/short when sufficiently above it, with an exit near the mean.",
+      "description": "Bets that an unusually stretched price returns toward its historical average; common implementations use RSI or Bollinger Bands.",
+      "useful_when": "Range-bound markets with repeated oscillation around a stable mean.",
+      "not_useful_when": "Strong trends, where an oversold/overbought condition can persist and losses compound without a hard stop.",
+      "formula_citation": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide",
+      "description_citation": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide",
+      "useful_when_citation": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide",
+      "not_useful_when_citation": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide"
+    },
+    {
+      "name": "Breakout / momentum",
+      "type": "strategy",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "Long when close_t > highest high of the prior n bars (or above resistance); short when close_t < lowest low of prior n bars; stop back inside the range.",
+      "description": "Attempts to capture the expansion that follows a consolidation range, ideally confirmed by volume and volatility expansion.",
+      "useful_when": "A tight range, triangle, or volatility squeeze resolves with a decisive close and strong volume.",
+      "not_useful_when": "Low-liquidity markets or false breakouts that quickly return inside the prior range.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Range / grid trading",
+      "type": "strategy",
+      "source_url": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide",
+      "formula": "Place staggered buy orders at levels P0 - kΔ and sell orders at P0 + kΔ within a defined range; realized gross profit per completed grid interval is approximately Δ × quantity, before fees and slippage.",
+      "description": "Systematically buys lower and sells higher inside an assumed trading range.",
+      "useful_when": "A liquid asset oscillates repeatedly between well-defined support and resistance.",
+      "not_useful_when": "A one-way breakout or gap leaves inventory trapped while price trends outside the grid.",
+      "formula_citation": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide",
+      "description_citation": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide",
+      "useful_when_citation": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide",
+      "not_useful_when_citation": "https://www.coinquant.ai/blog/crypto-trading-strategies-every-type-explained-2026-guide"
+    },
+    {
+      "name": "Scalping",
+      "type": "strategy",
+      "source_url": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "formula": "Expected net trade = target move - fees - spread - slippage; take many short-duration trades with small targets and stops.",
+      "description": "Seeks many small intraday gains, often on 1–15 minute charts, using rapid momentum or pullback signals.",
+      "useful_when": "Highly liquid, tight-spread pairs with sufficient intraday movement and reliable execution/automation.",
+      "not_useful_when": "Thin markets, high fees, latency, or volatile spikes; costs can consume the small target and leverage magnifies losses.",
+      "formula_citation": "https://www.investopedia.com/articles/active-trading/012815/top-technical-indicators-scalping-trading-strategy.asp",
+      "description_citation": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "useful_when_citation": "https://www.investopedia.com/articles/active-trading/012815/top-technical-indicators-scalping-trading-strategy.asp",
+      "not_useful_when_citation": "https://www.investopedia.com/articles/active-trading/012815/top-technical-indicators-scalping-trading-strategy.asp"
+    },
+    {
+      "name": "Swing trading",
+      "type": "strategy",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "No single formula; a typical rule combines a trend filter (e.g., SMA/EMA), a retracement level, and a predefined stop/target over multi-day moves.",
+      "description": "Holds positions for a portion of a larger move, commonly using moving averages, Fibonacci retracements, and volume breakouts.",
+      "useful_when": "Multi-day trends or clearly defined pullbacks provide room for a move without constant monitoring.",
+      "not_useful_when": "Very short horizons, news-driven gaps, or directionless chop that repeatedly reverses before the target.",
+      "formula_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "description_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "not_useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Dollar-cost averaging (DCA)",
+      "type": "strategy",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "Invest a fixed cash amount A at each interval; units bought each interval = A/P_t; average cost = total cash invested / total units acquired.",
+      "description": "Builds exposure in equal cash installments regardless of price rather than attempting to time one entry.",
+      "useful_when": "Long-term accumulation, regular income, and a desire to reduce timing/emotional risk in a volatile asset.",
+      "not_useful_when": "Short-term profit objectives, a permanently declining asset, or when the investor cannot tolerate drawdowns.",
+      "formula_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "description_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "not_useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Cross-exchange arbitrage",
+      "type": "strategy",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "Net profit ≈ (sell price on expensive venue - buy price on cheap venue) × quantity - trading fees - transfer/borrow costs - slippage.",
+      "description": "Buys the same crypto where it is cheaper and sells where it is more expensive; spatial arbitrage is the cross-exchange form.",
+      "useful_when": "A simultaneous executable spread exceeds all costs and both venues have sufficient liquidity and operational access.",
+      "not_useful_when": "Spreads vanish, transfers are slow, withdrawals are halted, liquidity is thin, or counterparty/settlement risk dominates.",
+      "formula_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "description_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "not_useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Funding-rate arbitrage / cash-and-carry",
+      "type": "strategy",
+      "source_url": "https://arxiv.org/html/2212.06888v5",
+      "formula": "Long spot and short perpetual when perp premium is attractive; approximate funding income = notional × funding rate per funding interval, less spot/perp costs and hedge slippage.",
+      "description": "Pairs a spot position with the opposite perpetual-futures position to collect funding and/or profit from futures–spot convergence.",
+      "useful_when": "The funding/spread is large enough to cover fees, financing, basis risk, and margin; the paper describes trading beyond a cost-adjusted no-arbitrage bound.",
+      "not_useful_when": "Funding turns adverse, the spread widens before convergence, margin/liquidation risk is high, or there is no defined unwind date; the paper explicitly notes it is not risk-free.",
+      "formula_citation": "https://arxiv.org/html/2212.06888v5",
+      "description_citation": "https://arxiv.org/html/2212.06888v5",
+      "useful_when_citation": "https://arxiv.org/html/2212.06888v5",
+      "not_useful_when_citation": "https://arxiv.org/html/2212.06888v5"
+    },
+    {
+      "name": "Triangular arbitrage",
+      "type": "strategy",
+      "source_url": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "formula": "Execute A→B→C→A when (rate_AB × rate_BC × rate_CA) × (1-fee)^3 > 1; profit is the excess after all fees and slippage.",
+      "description": "Exploits inconsistent exchange rates among three trading pairs on the same venue.",
+      "useful_when": "The price-cycle discrepancy is larger than three legs of transaction costs and orders can be executed atomically enough.",
+      "not_useful_when": "Latency, partial fills, order-book depth, or fees erase the discrepancy before the cycle completes.",
+      "formula_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "description_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "not_useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/"
+    },
+    {
+      "name": "Five-minute trend continuation (VWAP + momentum + volume)",
+      "type": "strategy",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "Long only when price > session VWAP, fast EMA > slow EMA, and breakout-bar volume > its rolling average; short under the mirrored conditions. Exit at a volatility-scaled target/stop or when price closes back through VWAP.",
+      "description": "A rules-based continuation scalp: it does not try to call every turn; it waits for alignment between direction, intraday value, and participation.",
+      "useful_when": "A directional, liquid session is already underway and the breakout/pullback is accompanied by expanding volume.",
+      "not_useful_when": "Flat ranges, late-stage extensions, thin liquidity, or headline-driven reversals; signals lag and a five-minute target can be smaller than fees and slippage.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Liquidity-sweep / failed-breakout reversal",
+      "type": "strategy",
+      "source_url": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "formula": "For a long: price briefly breaks a prior low, then closes back inside the range while sell pressure fails to continue; enter only after reclaim, with stop beyond the sweep extreme. Mirror for a short.",
+      "description": "Attempts to trade a failed move through an obvious prior high/low rather than blindly buying the first breakout.",
+      "useful_when": "A well-defined range has repeated equal highs/lows, price briefly pierces the level, and the reclaim occurs with enough liquidity to exit.",
+      "not_useful_when": "The move is a genuine news or liquidation breakout, the market is thin, or the stop is too close to Jupiter liquidation.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://docs.jup.ag/user-docs/trade/perps/liquidation"
+    },
+    {
+      "name": "Jupiter long/short-flow imbalance filter",
+      "type": "signal",
+      "source_url": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "formula": "Recent imbalance = net long-minus-short flow over roughly the last minute; opening a long or closing a short adds to it, while opening a short or closing a long subtracts. Prefer trades that reduce an existing extreme imbalance; be cautious when your trade would increase it.",
+      "description": "A venue-specific positioning/flow filter. Jupiter documents that additive price impact depends on whether a trade worsens the recent imbalance and whether it is above the asset threshold.",
+      "useful_when": "You can observe the live fee/price-impact estimate and want to avoid entering on the crowded side or paying an imbalance-driven fee.",
+      "not_useful_when": "The flow window changes abruptly, the imbalance is not predictive of price direction, or the apparent edge is smaller than fees and execution risk.",
+      "formula_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "description_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "useful_when_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "not_useful_when_citation": "https://docs.jup.ag/user-docs/trade/perps/fees"
+    },
+    {
+      "name": "Volatility-squeeze breakout",
+      "type": "strategy",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "Compute Bollinger bandwidth = (upper band - lower band) / middle band. Watch for unusually low bandwidth, then trade only a confirmed close outside the range with rising volume; stop back inside the range.",
+      "description": "Uses compressed realized volatility as a setup and direction/volume confirmation as the trigger.",
+      "useful_when": "The market has compressed into a liquid range and a decisive expansion begins.",
+      "not_useful_when": "The market remains compressed, a breakout has no participation, or a headline creates a gap that bypasses a controlled stop.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Risk-first leveraged scalp / liquidation-distance gating",
+      "type": "risk control",
+      "source_url": "https://docs.jup.ag/user-docs/trade/perps/liquidation",
+      "formula": "Position notional = collateral × leverage; approximate unlevered PnL = notional × price_return. Size so the planned stop is reached well before the liquidation price, and require expected move > round-trip fees + spread + slippage + safety buffer.",
+      "description": "Not a directional predictor; it is the gate that determines whether a five-minute signal is tradable at all.",
+      "useful_when": "Every leveraged trade, especially when volatility expands or the position is above 10x leverage.",
+      "not_useful_when": "It is treated as a substitute for an entry edge, or when a fast market can jump through the stop before execution.",
+      "formula_citation": "https://docs.jup.ag/user-docs/trade/perps/liquidation",
+      "description_citation": "https://docs.jup.ag/user-docs/trade/perps/liquidation",
+      "useful_when_citation": "https://docs.jup.ag/user-docs/trade/perps/liquidation",
+      "not_useful_when_citation": "https://docs.jup.ag/user-docs/trade/perps/liquidation"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Relative Strength Index (RSI)",
+      "type": "indicator/signal",
+      "source_url": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "formula": "RSI = 100 - 100/(1+RS), where RS = average gain over n periods / average loss over n periods (commonly n=14).",
+      "description": "A 0–100 momentum oscillator; readings below 30 are commonly called oversold and above 70 overbought, while divergences compare price highs/lows with RSI highs/lows.",
+      "useful_when": "Range trading, pullback timing, and divergence/confluence with support or resistance.",
+      "not_useful_when": "Strong trends, where RSI can remain overbought or oversold and premature reversal trades lose.",
+      "formula_citation": "https://www.ig.com/en-ch/trading-strategies/the-5-crypto-trading-strategies-that-every-trader-needs-to-know-221123",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "MACD",
+      "type": "indicator/signal",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "MACD line = EMA_fast - EMA_slow; signal line = EMA_m(MACD); histogram = MACD - signal (standard settings often 12, 26, 9).",
+      "description": "Trend/momentum indicator using a MACD line, signal line, and histogram; crossovers and zero-line moves are common signals.",
+      "useful_when": "Trend confirmation, momentum shifts, and divergence analysis with price or RSI.",
+      "not_useful_when": "Flat, noisy markets where repeated crossovers whipsaw, or fast reversals where the EMA signal lags.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Bollinger Bands",
+      "type": "indicator/signal",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "Middle = SMA_n; upper = SMA_n + k·SD_n; lower = SMA_n - k·SD_n, commonly n=20 and k=2.",
+      "description": "A moving-average centerline with volatility bands that widen and contract with standard deviation.",
+      "useful_when": "Mean reversion at extreme bands, trend riding between middle/outer bands, and spotting volatility compression before breakouts.",
+      "not_useful_when": "A strong trend that walks a band, or low-liquidity/one-off spikes where a band touch is not a reversal signal.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Stochastic oscillator",
+      "type": "indicator/signal",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "%K = 100·(C - L_n)/(H_n - L_n); %D = moving average of %K.",
+      "description": "Measures the close relative to the recent high-low range; overbought is commonly above 80 and oversold below 20.",
+      "useful_when": "Timing pullbacks within an existing trend and identifying potential reversals via %K/%D crossovers or divergence.",
+      "not_useful_when": "Strong one-way trends, when it can stay overbought/oversold and signal too early.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "On-Balance Volume (OBV)",
+      "type": "indicator/signal",
+      "source_url": "https://www.investopedia.com/terms/o/onbalancevolume.asp",
+      "formula": "OBV_t = OBV_{t-1}+V_t if close_t>close_{t-1}; OBV_{t-1}-V_t if close_t<close_{t-1}; unchanged if equal.",
+      "description": "Cumulative directional volume measure used to assess whether volume is confirming price direction.",
+      "useful_when": "Breakout confirmation, accumulation/distribution clues, and divergence where OBV leads or contradicts price.",
+      "not_useful_when": "Volume is fragmented or anomalous, or a single large print dominates cumulative history.",
+      "formula_citation": "https://www.investopedia.com/terms/o/onbalancevolume.asp",
+      "description_citation": "https://www.investopedia.com/terms/o/onbalancevolume.asp",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Average Directional Index (ADX)",
+      "type": "indicator/signal",
+      "source_url": "https://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp",
+      "formula": "ADX_n = smoothed average of DX, where DX = 100·|+DI - -DI|/(+DI + -DI); +DI and -DI derive from smoothed directional movement divided by ATR.",
+      "description": "Measures trend strength on a 0–100 scale rather than direction; the cited guide treats readings above 25 as a strong trend indication.",
+      "useful_when": "Selecting trend-following versus range strategies and filtering weak breakouts.",
+      "not_useful_when": "Determining long versus short by itself, or during abrupt regime changes before smoothing catches up.",
+      "formula_citation": "https://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp",
+      "description_citation": "https://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp",
+      "useful_when_citation": "https://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp",
+      "not_useful_when_citation": "https://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp"
+    },
+    {
+      "name": "Average True Range (ATR)",
+      "type": "indicator/signal",
+      "source_url": "https://www.investopedia.com/articles/trading/08/atr.asp",
+      "formula": "TR_t = max(H_t-L_t, |H_t-C_{t-1}|, |L_t-C_{t-1}|); ATR is a moving average of TR, commonly 14 periods.",
+      "description": "Measures realized price volatility, not direction.",
+      "useful_when": "Setting volatility-scaled stops/targets, position sizing, and checking whether a market has enough movement for scalping.",
+      "not_useful_when": "As a directional buy/sell signal by itself, or when a sudden event makes historical volatility unrepresentative.",
+      "formula_citation": "https://www.investopedia.com/articles/trading/08/atr.asp",
+      "description_citation": "https://www.investopedia.com/articles/trading/08/atr.asp",
+      "useful_when_citation": "https://www.investopedia.com/articles/active-trading/012815/top-technical-indicators-scalping-trading-strategy.asp",
+      "not_useful_when_citation": "https://www.investopedia.com/articles/trading/08/atr.asp"
+    },
+    {
+      "name": "Fibonacci retracement",
+      "type": "indicator/signal",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "Retracement level = swing high - r·(swing high - swing low) for an up move (or the mirrored form for a down move), commonly r ∈ {0.236, 0.382, 0.5, 0.618, 0.786}.",
+      "description": "Projects percentage pullback levels from a selected swing high and low to identify possible support/resistance.",
+      "useful_when": "Planning entries, stops, or targets during a pullback that respects a clear prior swing.",
+      "not_useful_when": "The swing anchors are subjective, the market is news-driven, or levels are treated as guarantees rather than zones.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://changelly.com/blog/cryptocurrency-trading-strategies/",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "VWAP",
+      "type": "indicator/signal",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "VWAP = sum(price_t × volume_t) / sum(volume_t), usually calculated cumulatively over the chosen session/window.",
+      "description": "Volume-weighted average traded price used as an execution benchmark and contextual support/resistance reference.",
+      "useful_when": "Intraday mean-reversion or trend context, especially when price is materially above/below VWAP and other evidence agrees.",
+      "not_useful_when": "Across incompatible sessions, in very thin markets, or as a stand-alone prediction of future price.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Ichimoku Cloud",
+      "type": "indicator/signal",
+      "source_url": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "formula": "Tenkan=(9-period high+low)/2; Kijun=(26-period high+low)/2; Senkou A=(Tenkan+Kijun)/2 shifted 26; Senkou B=(52-period high+low)/2 shifted 26; Chikou=close shifted back 26.",
+      "description": "Multi-line trend, momentum, and support/resistance framework whose cloud compares projected ranges.",
+      "useful_when": "A multi-timeframe trend filter and for locating dynamic support/resistance in orderly markets.",
+      "not_useful_when": "Very short-term scalping, abrupt regime changes, or when many overlapping lines create false precision.",
+      "formula_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "description_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators",
+      "not_useful_when_citation": "https://www.kraken.com/learn/crypto-technical-indicators"
+    },
+    {
+      "name": "Order-flow imbalance / aggressive-volume delta",
+      "type": "indicator/signal",
+      "source_url": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "formula": "OFI_window = aggressive buy volume - aggressive sell volume over a short window; normalize by total volume or recent average. A positive value means buy aggression dominated in that window.",
+      "description": "Measures who is crossing the spread now. On Jupiter, the documented recent long/short flow imbalance is also used in additive price-impact fees, so flow can matter both for signal context and execution cost.",
+      "useful_when": "A liquid market is moving with persistent one-sided prints and price accepts above/below a level.",
+      "not_useful_when": "Large isolated prints, fragmented venue flow, spoofing, or a market where the oracle/keeper execution is not synchronized with the observed order book.",
+      "formula_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "description_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "useful_when_citation": "https://docs.jup.ag/user-docs/trade/perps/fees",
+      "not_useful_when_citation": "https://docs.jup.ag/user-docs/trade/perps"
+    }
+  ]
+}

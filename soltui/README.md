@@ -1,6 +1,6 @@
 # soltui — SOL strategy console
 
-A fourteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
+A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester.
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 wiring shell.
 
@@ -17,7 +17,7 @@ uv venv ~/.venvs/soltui -p 3.13
 uv pip install -p ~/.venvs/soltui/bin/python -r backtester/requirements.txt -r soltui/requirements.txt
 ln -sf "$PWD/soltui/bin/soltui" ~/.local/bin/soltui    # once; ~/.local/bin must be on PATH
 
-soltui          # the fourteen-tab console, from any directory
+soltui          # the sixteen-tab console, from any directory
 soltui app      # the macOS menu-bar indicator (needs rumps)
 soltui serve    # the console in a browser window
 ```
@@ -78,19 +78,134 @@ indicator exists to show. Its test is `test_clip_preserves_the_number_not_the_la
 
 ## The tabs
 
+Hover any field, button, table heading or table value for plain-language help.
+The definitions explain the unit, give an example and name the main limitation.
+This includes the Queue and Liquidity tables, signal parameters and public-wallet
+settings. Indicator and strategy rows also explain their trading hypothesis.
+
+The shared editor sits under every tab below an orange bar. Drag the bar to resize the
+editor (ctrl+up / ctrl+down from the keyboard), double-click it for the default size, and
+click **x close** at its right end to hide the editor; click the bar, drag it up or press
+ctrl+e to bring it back. The size and open state are remembered in
+`~/.config/soltui/tui.json`.
+
+Press **F1** anywhere, including inside an input or the source editor, to open
+the searchable glossary with help for the current control or selected column.
+Search for terms such as **grid**, **Sharpe**, **CPCV**, **bps**, **APR** or **LVR**.
+Use Tab to move to the help text, Page Up/Page Down or the mouse wheel to scroll,
+and Esc to close it and return to the same control. Long explanations remain
+available here even when a hover tooltip is clipped by a small terminal.
+
+The glossary distinguishes the registered `grid` exposure staircase from the
+extension's resting-order ladder. Closed winning grid cycles can coexist with
+larger open losses; read total net account equity as well as realized P&L.
+
 | Tab | What it does |
 |---|---|
-| **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry. Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
-| **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. |
+| **Settings** | Asset, interval, date range, capital, fees, fill delay, CPCV geometry, and the wallets to watch: public Solana, Base and Ethereum addresses, and extended **public** keys (`btc_xpub`, `ltc_xpub`, `doge_xpub`) for Bitcoin, Litecoin and Dogecoin. Each is validated (Base58Check and version bytes for an xpub); an `xprv`, a WIF key, a raw 64-hex string or a Solana secret-key array is refused with a message that private keys do not belong in settings, and the message never repeats the value. An xpub is shown as a short prefix everywhere (`settings.get`, the TUI, the API) and the config file is mode 600. A read-only *signing key source* row shows whether `~/.ssh/wallet.private` (the EVM, Ethereum/Base, key) and `~/.ssh/solana.private` (the Solana key) exist and are mode 600, by `stat` alone. **There is no field that accepts a private key.** Saved to `~/.config/soltui/`. Validation refuses look-ahead (`fill_delay < 0`), a `k >= blocks` split, and any non-dry-run mode. |
+| **Strategies** | Every registered strategy on the left, your roster on the right. Add with params (`fast=20 slow=50`). Validation happens **on add** — an unknown name fails with the valid list, bad params fail at the form, not mid-sweep. The left table also shows each strategy's **test history** from the background sweep's results file: tested yes/no/n/a, times tested (distinct configurations), when last tested, and the card-preset result (median Sharpe, net return, trades) — never the best of many variations. Three buttons start the background worker at each card's own parameters: **Backtest selected**, **Backtest all untested**, **Backtest all**. Already-recorded configurations are skipped, and only one background sweep runs at a time. Results written before dates were recorded read `date not recorded`. |
 | **Signals** | Read-only reference: each indicator's actual equation as implemented in `backtester/core/indicators.py`, plus what each family is for and *when it fails*. |
-| **Backtest** | Runs the roster through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. |
+| **Forwardtest** | Paper-test every strategy, the roster or custom combinations. Forecast 1, 5, 10 and 30 minutes separately; inspect accuracy, unresolved calls and settings changes. |
+| **Compound 5m** | Four sections: **Call & metrics**, **Backtest** (a *What is tested* paragraph, readable row names, buy & hold, net bps 1h/24h, and a **Frontier** button that tests every metric's strongest 2% of readings held 1 h-24 h), **Forward test**, **All coins**. Scores every metric from `5minleveragestrategies.json` (and the ones it lacked: higher timeframe, funding/premium/OI, order book, BTC lead, trend lifecycle, market-cycle phase) for the **next 5-minute bar**, -1 down to +1 up; families vote once, the regime reweights trend vs reversion styles, and cost / liquidation / shock / thin-market / event / news gates force FLAT. Double-click a metric to switch it on or off (or select it and press Space); a single click selects it and shows its full detail (formula, parameters, evidence, adoptions) in the editor below, as do coin, backtest and forward rows; **Autopilot** (on by default) runs tuning, adopts tuned settings per coin by itself and keeps every coin training (with `python -m soltui.compound_agent install` for a LaunchAgent); **Toggle on/off**, edit `weight=` and parameters, and aggregate settings (`entry`, `exit`, `leverage`, `fee_bps`…). **Signal now** scores the latest closed bar from public data; **Backtest selected** runs the compound and each enabled metric alone on cached 5m data (OOS hit rate, z, oracle net bps, engine return after fees); **Forward tick** / **Auto-forward** record a call per closed bar and resolve it when the next bar closes; **Start unattended training** runs that in a detached background process that keeps going after the console closes. Calls are sized to the Settings Solana wallet (`wallet (live)`), and a status line under the buttons summarises each backtest run in plain words. No order path. See `docs/COMPOUND-5M.md`. |
+| **Bots** | The **grid bot** (the resting ladder the extension trades, `backtester/core/gridsim.py`), the **triangle arbitrage bot** (three-leg USD cycles through Coinbase cross pairs, `core/trianglesim.py`) and the **DCA bot** (base order, deeper safety orders, one take-profit above the average entry, `core/dcasim.py`). **Backtest** starts the selected bot at a chosen UTC date and shows what it set from the price then (ladder levels, safety orders, watched triangles) and what it made, beside buy-and-hold. **Start forward test** runs it in dry-run from now on the live recorded price stream; **Auto-optimize (all coins)** tests a fixed grid of settings on every cached coin and adopts one only if it beats the current settings out of sample by a sign test. A **Live prices** section shows every streamed market's bid, ask and spread. All simulation; no order path. See [The Bots tab](#the-bots-tab-and-the-price-stream). |
+| **Backtest** | **Strategy to backtest** picks the whole roster or one roster strategy (the roster is the right-hand list on the Strategies tab, shown on the line beside the picker); **Run backtest** runs that pick through CPCV on a worker thread. Shows median path Sharpe, **IQR**, **% paths positive**, **backtest median net %**, trades. Cancellable. **Backtest untested + little-tested** starts the background worker at once on every strategy never tested or with fewer than three recorded configurations (card parameters plus near variations, every horizon); its progress shows under the buttons and on the Queue tab. |
 | **Top 5** | The five recommended configurations with their evidence and off-asset transfer tests. |
 | **Live Run** | Launches the extension's dry-run tool. A Top 5 preset list fills the strategy; the result shows `dry-run net %`. |
 | **Execute** | Dry-run replay. Step a simulation bar by bar and see the fills a strategy *would* have made. A Top 5 preset list selects a configuration (its composite replays on the series it was fitted on); every figure says `paper net %`. |
 | **Analyze** | What every strategy would decide for one coin at one moment. A Top 5 preset judges only that configuration with its parameters. The headline carries the asset's `backtest data price change`. |
-| **P&L** | Profit and loss over 24h, 7d, 30d, 90d, YTD, all or a custom start/end. One section per source (`backtest`, `paper`, `dry-run`, `dry-run LP`, `live LP`) with net and gross P&L, fees, slippage, borrow/funding, realized vs unrealized, win rate, expectancy, daily series with cumulative curve, max drawdown and recovery, best and worst day/week/month, and a by-strategy / by-asset attribution. See [The P&L tab](#the-pl-tab). |
+| **Wallet** | Read-only discovery of what the two Settings addresses hold: native SOL/ETH, SPL tokens (Token and Token-2022), stake accounts, ERC-20 balances, LP position NFTs, and the contract or account each holding lives in, with explorer links. Per-chain and total USD, every figure `wallet (live)`. Airdrop-looking tokens are flagged and excluded from totals. See [The Wallet tab](#the-wallet-tab). |
+| **P&L** | Profit and loss over 24h, 7d, 30d, 90d, YTD, all or a custom start/end. One section per source (`backtest`, `paper`, `dry-run`, `dry-run LP`, `live LP`, and the separate `wallet (live)` value-change section) with net and gross P&L, fees, slippage, borrow/funding, realized vs unrealized, win rate, expectancy, daily series with cumulative curve, max drawdown and recovery, best and worst day/week/month, and a by-strategy / by-asset attribution. See [The P&L tab](#the-pl-tab). |
 | **Queue** | Starts and reads the low-priority background sweep. Start/Stop/Refresh, a live status line, a ranked table and a below-the-floor table. |
 | **Liquidity** | Read-only view of the Aero (aero.xyz) liquidity daemon's state files (`$AERO_LP_HOME`, default `~/.aero-lp/`): mode badge (LIVE is red, dry-run is yellow), kill-switch banner ("Kill switch ON — bot paused"), idle vs deployed USD, totals; Positions, Scout (top pools by modelled net APR), Experiments (arms side by side, winner marked) and Recent actions (newest first, basescan tx links) tables. Refresh / Kill / Resume buttons (`F5` refresh, `F8` kill-resume toggle while the tab is open); re-reads every 15 s. |
+
+### Strategy roster and Forwardtest
+
+On **Strategies**, focus a row in the left table and press **Space** to add it or remove its
+matching roster configuration. With multiple custom versions, use the right table and press
+**Space** on the version to remove. **Add all to roster** fills in missing
+strategies with the Signal defaults and keeps custom entries.
+
+On **Forwardtest**, choose **All strategies**, **Roster only**, or **Combinations only**. Enter
+a combination such as `rsi,macd; breakout,obv_trend` and select its rule. Each group separated
+by a semicolon is a separate trial. Use exact roster labels to distinguish custom versions.
+**All four** forecasts 1, 5, 10 and 30 minutes; choose a single duration to issue only that
+forecast. Start uses the asset and round-trip fee/slippage threshold from Settings. Edits take
+effect after stopping and starting again. Press Ctrl+E to make more room for the results
+when the shared editor is open.
+
+Each trial reads closed Coinbase one-minute candles and records UP, DOWN or FLAT before
+the next unopened minute. It scores that window from its first open to its last close,
+marks moves within the cost threshold FLAT, and waits if any candle is missing. For each
+horizon, only one window is predicted at a time. Accuracy is a directional classification
+score. A rule that always stays flat or always holds can serve as a comparison.
+
+Each strategy or combination and horizon has its own active settings. When it misses, the
+trainer considers nearby settings that made the correct call at the same time. It uses the
+Compound Beta comparison: at least 300 paired observations, probability above 95%, and a
+two-day cooldown after each change. Parameters without a usable alternative stay unchanged.
+Learning only changes that paper trial's future calls.
+
+The app checks prices while the session is running, including when another tab is open.
+Stop or close the console to stop checking. The SQLite file in the local SolTUI configuration
+directory retains predictions, shadow calls, outcomes and adoptions. Restarting with the same
+trial and evaluation code resumes that record. Old pending calls can settle only if their exact
+candles are still available. No wallet or order is involved.
+
+### The Bots tab and the price stream
+
+**The price stream.** `soltui/pricefeed.py` is a standard-library WebSocket client (RFC 6455; no
+new dependency) on Coinbase Exchange's public feed, `wss://ws-feed.exchange.coinbase.com`. It
+subscribes to every USD market of the cached coins that Coinbase lists plus every cross pair
+among them (24 markets on 2026-11-08), on two keyless channels: `level2_batch`, from which it keeps
+each market's book and so its true best bid and ask with sizes, and `ticker`, for the last trade.
+The ticker's own bid/ask changes only on a trade; on 2026-11-08 the SOL-BTC ticker quote was 89
+minutes old while the book had moved, which is why books are used where they exist. Once a second
+it writes a snapshot of every market to `~/.config/soltui/prices/YYYY-MM-DD.jsonl.gz` (one gzip member
+per flush, so a crash loses at most ten seconds) and replaces `prices/latest.json`. The console
+starts it as a detached background process (`python -m soltui.pricefeed record`) that keeps
+recording after the console closes; **Start recorder** / **Stop recorder** control it, and one
+`flock` on `prices/recorder.lock` keeps it to one. About 50-200 KB/s of public market data, and
+about 15 MB a day on disk (measured 2026-11-08; nothing prunes it).
+
+**Backtest = "had I started it then".** At the chosen start the bot reads the price at that
+bar's close and sets itself up from it; the simulator then runs it over the following hourly
+bars with the backtester's pessimistic rules (nothing fills on the bar that placed it, buys
+before sells, adverse slippage, fees on every fill). A backtest stops at the first gap in the
+cached bars and says so. The triangle bot backtests on recorded bid/ask snapshots; for a time
+before the recording it falls back to a **candle proxy** (Coinbase 1m closes with an assumed
+half-spread, labelled `candle-proxy`, executed a minute later), which bounds noise rather than
+measuring an opportunity.
+
+**Forward test = the same bot on the future, in dry-run.** It starts now on the current
+settings and, on every refresh, replays what the recorder captured since (incrementally: only
+new gzip members are read). Grid and DCA run on one-minute mid-price bars built from the
+snapshots; a gap of up to two minutes is bridged with flat bars, and a longer one ends the
+coverage at the gap because what the market did unseen is unknown.
+
+**Auto-optimize.** A fixed, small grid of settings per bot (12 grid, 36 DCA, 12 triangle
+configurations plus the current one) runs on every cached coin over six 30-day windows of
+hourly bars (every recorded triangle over hour windows, for the triangle bot). The older three
+windows rank the candidates; the newer three decide. The train winner is adopted only when it
+beats the current settings in significantly more test cells than it loses (one-sided sign
+test, p < 0.05, at least ten decided cells) with a positive median gain. On 2026-11-08, over 23
+coins, neither the grid (p = 0.78) nor the DCA bot (p = 0.45) had a reliable winner, so both kept
+their defaults. That is the expected answer in this repo (Stele KNOW-561, KNOW-871).
+
+### Searching the repo from the Docs tab
+
+The Docs tab lists every file in the committed index. Its search box queries that index three ways:
+**keyword** (BM25: exact terms, offline), **semantic** (meaning, using `mxbai-embed-large:latest` through the
+local Ollama) and **hybrid** (both, rank-fused). Press Enter or **Search**; it never searches per keystroke.
+An empty box and Search restores the file list.
+
+Nothing is loaded until the first search: the keyword postings, the embedding matrix and the ~670 MB model
+all stay out of memory until then. **Free search memory** drops them and asks Ollama to unload the model
+immediately. A semantic or hybrid search starts Ollama if it is not running, and if it cannot, falls back to
+keyword and says why. The model is never downloaded for you: `ollama pull mxbai-embed-large:latest`.
+
+Each search also runs the idle index check (`index/idle.py`), which rebuilds an out-of-date semantic index in the
+background when the machine is idle, writing only gitignored files. See `index/README.md`. The same search is
+the registry command `docs.search`, so the CLI, API and extension get it too.
 
 ### Top 5 presets and net %
 
@@ -124,6 +239,56 @@ series add up to the window's net P&L because the first day is measured against 
   percentage points of the section's net %; a section's rows sum to it exactly.
 * **A backtest has historical dates.** A `30d` window ending today finds no backtest data when the cached series
   ended earlier; the section says where its data is (`its data covers ... to ...`) instead of showing zeros.
+
+### The Wallet tab
+
+`portfolio.scan` (`chain`, `tokens`, `record`) reads the Settings addresses from public endpoints only; no API key
+is in the code or sent anywhere, and there is no key, signature or transaction. It never calls a contract
+function other than the standard views (`balanceOf`, `symbol`, `decimals`, `name`) and never visits a token's site.
+
+* **Solana.** `getBalance`; `getTokenAccountsByOwner` under both the Token and Token-2022 programs; stake accounts
+  via `getProgramAccounts` (as staker or withdrawer); names and USD prices from Jupiter's keyless token and price
+  APIs.
+* **Base.** `eth_getBalance`; `balanceOf` by `eth_call` on a built-in token list, the tokens the liquidity daemon
+  watches (`ledger.sqlite`, opened read-only) and any `tokens=[...]` you pass; Blockscout's token list when it
+  answers; prices from DefiLlama, then DexScreener; position NFTs in the Aero, Uniswap v3 and PancakeSwap v3
+  position managers; the Aero positions in the daemon's `status.json` (valued from that file, noted as not live
+  when the daemon is in dry-run).
+* **Honest limits.** Blockscout is behind a Cloudflare challenge and usually answers 403 to a script; the scan then
+  says so and checks only the known set, and adds that a token sent to the address that is in none of them cannot
+  be discovered without an indexer. A failing endpoint gives a *partial* result with its name and error, never an
+  exception or a quietly smaller total. Each host is paced, a 429 or 5xx is retried twice with a capped back-off,
+  and the whole scan stops asking after 60 s (420 s for the all-chain scan, which makes many small requests).
+* **Airdrops.** A token is flagged when its name or symbol reads like spam (a URL, "claim", "reward", an amount),
+  or when it is unknown, unverified and has no price or under $5,000 of liquidity. Flagged tokens are listed with
+  the reason and left out of every total.
+* **Ethereum.** `eth_address` is read on mainnet: `eth_getBalance` plus `balanceOf` for 12 well-known tokens
+  (no indexer, so a token outside the list is not found; the scan says so). Prices come from Coinbase's public
+  spot endpoint.
+* **Bitcoin, Litecoin, Dogecoin from an xpub** (`soltui/hdwallet.py`, `soltui/utxo_scan.py`). Addresses are derived
+  on this machine by BIP32 public derivation (stdlib only; chain 0 receive and chain 1 change, gap limit 20) and
+  only addresses are sent to the explorers: mempool.space then blockstream.info for Bitcoin, litecoinspace.org for
+  Litecoin, BlockCypher for Dogecoin (20 addresses a request). A plain `xpub` does not say which address style the
+  wallet used, so Bitcoin and Litecoin try P2PKH, P2SH-P2WPKH and P2WPKH and keep each style that has history; a
+  `ypub`/`zpub` tries only its own; Dogecoin is P2PKH. Results carry per-chain balances, the script types found
+  and the number of addresses derived, never the addresses. A failed explorer call stops that branch and the
+  result is `partial` (the balance is then a lower bound). A balance with no USD price is unknown, not zero: it
+  stays out of the total and `unpriced` names it.
+* **History and monitoring.** `portfolio.snapshot` (and an all-chain `portfolio.scan`) appends one timestamped
+  per-chain snapshot to `~/Library/Application Support/soltui/portfolio/snapshots.jsonl` (mode 600; balances by
+  symbol, prices and USD, no addresses or xpubs). `portfolio.changes` reports balance changes between snapshots (a
+  chain that read partially or failed in either one is skipped, because a failed read looks like a balance falling
+  to zero). The hourly LaunchAgent `com.mitchhudson.soltui.portfolio` runs `portfolio.snapshot`
+  (`python -m soltui.portfolio_agent install|uninstall|status`; the plist lives in `~/Library/LaunchAgents`, where
+  the automation watchdog finds it). The TUI and the menu bar show one line when a balance changed since the
+  wallet was last viewed (`portfolio.notice`). The P&L tab shows the snapshots as a separate `wallet (live)`
+  section: the *change in wallet value between complete snapshots of the same set of wallets*, which includes
+  deposits, withdrawals and price moves and is not a trading P&L (gross, realized and unrealized are blank for it).
+  It is never combined with a simulated figure.
+* **Extension.** `wallet.addresses` returns the public Solana and EVM addresses only; the extension dashboard's
+  "Use soltui Solana address" button fills the Wallet pubkey field from it and the owner still clicks Save.
+
+Tests use recorded replies (`soltui/tests/fixtures/wallet/`), never the network.
 
 ### The Liquidity tab — a window onto a daemon, not a controller
 
@@ -265,6 +430,12 @@ order."* This package holds to that:
   tested engine once and exposes a cursor over the result.
 - `summary()["live_orders_placed"]` is structurally always `0`, and a test asserts
   it so a regression is loud.
+- **The Bots tab simulates.** Its grid, triangle and DCA bots run the backtester's simulators
+  over cached bars or the recorded stream; `test_bots.py` and `test_pricefeed.py` assert that
+  neither module names a key file, a signer or an order call. The price recorder reads public
+  Coinbase market data only and writes only under `~/.config/soltui/prices/`; the bots write only
+  under `~/.config/soltui/bots/` (settings, results, forward-test state, optimize reports, and the
+  candle-proxy cache).
 
 Adding live execution later means routing through
 `extension/src/core/commands.js` and its risk rails as separate, explicit work —
@@ -296,6 +467,8 @@ soltui/
   bgworker.py  the background sweep process itself (python3 -m soltui.bgworker)
   bgcontrol.py spawn/stop the worker; the liveness lock
   liquidity.py pure: read/validate/format the liquidity daemon's state files; KILL toggle
+  bots.py      the Bots tab: grid / triangle / DCA bot configs, backtest, forward test, auto-optimize
+  pricefeed.py the streaming price recorder: stdlib WebSocket, Coinbase level2_batch + ticker, gzip JSONL
   app.py       rumps menu-bar shell (wiring only, lazy rumps import)
   commands.py  the command registry: dispatch, envelope, confirm gate, call log (every action lives here)
   reference.py static Research/Signals tab content, served by research.get / signals.reference

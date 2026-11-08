@@ -33,6 +33,7 @@ root, so an abbreviated one fails the build.
 | --- | --- |
 | `backtester/cli.py` | Entry point: `python3 -m backtester.cli` |
 | `backtester/gridcli.py` | Entry point for the ladder-grid simulator, which owns its own bar loop |
+| `backtester/botcli.py` | Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes |
 | `backtester/paircli.py` | Entry point for pairs/cointegration runs |
 | `backtester/requirements.txt` | Declared deps, kept minimal on purpose |
 | `backtester/README.md` | Scope, correctness priorities, usage |
@@ -50,9 +51,12 @@ root, so an abbreviated one fails the build.
 | `backtester/core/metrics.py` | Sharpe, drawdown, CAGR, with the conventions stated in the manifest |
 | `backtester/core/perps.py` | Borrow-fee accrual and liquidation price for the perp mode |
 | `backtester/core/gridsim.py` | Ladder-grid simulator; a port of `extension/src/core/grid.js` that must agree with it |
+| `backtester/core/dcasim.py` | DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism |
+| `backtester/core/trianglesim.py` | Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes `latency_s` later; reads recorded snapshot files |
 | `backtester/core/data.py` | `CsvLoader`, `SyntheticLoader`, bar validation, checksums |
 | `backtester/core/fetch.py` | Explicit Coinbase OHLCV fetch into a local CSV cache; the engine stays offline |
 | `backtester/core/fetch_minutes.py` | Resumable minute-bar cache fetch with rate limiting and coverage |
+| `backtester/core/fetch_minutes_alt.py` | Minute bars from OKX/KuCoin/Bitget/WhiteBIT for coins Coinbase does not list |
 | `backtester/core/ticks.py` | Explicit Coinbase trade-tick fetch and bar aggregation |
 | `backtester/core/funding.py` | Signed Hyperliquid funding history, optional OKX cross-check |
 | `backtester/core/archive_price.py` | Jupiter spot-price snapshot (this is what `data/JLP_spot.csv` is) |
@@ -63,6 +67,8 @@ root, so an abbreviated one fails the build.
 | `backtester/core/report.py` | Run reports, walk-forward splits and manifest-last artifact hashes |
 | `backtester/core/plotting.py` | Chart output |
 | `backtester/core/strategy_cards.py` | Parses the cards and is checked against the registry both ways |
+| `backtester/core/scorecard.py` | Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics |
+| `backtester/core/compound.py` | Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments |
 
 ### `backtester/core/strategies/` — the registry
 
@@ -71,6 +77,7 @@ root, so an abbreviated one fails the build.
 | `backtester/core/strategies/__init__.py` | `REGISTRY` (25 strategies), `FAMILY` taxonomy, `build()` |
 | `backtester/core/strategies/signals.py` | Indicator-driven strategies, one screen each |
 | `backtester/core/strategies/advanced.py` | The nine implemented from spec-only cards, incl. the Ichimoku displacement trap |
+| `backtester/core/strategies/textbook.py` | DCA, EMA crossover, PPO, Fibonacci retracement and swing-confluence: the mechanisms the cited trading guides name (`tradingstrategyresults.json`) |
 | `backtester/core/strategies/breakout.py` | Donchian channel breakout; the channel excludes the current bar |
 | `backtester/core/strategies/ma_crossover.py` | The only strategy that can emit a short, and only when asked |
 | `backtester/core/strategies/rsi.py` | RSI mean reversion |
@@ -91,6 +98,7 @@ The danger here is overstating a result, so the honesty machinery is the point.
 | `research/cross_asset_cpcv.py` | Whether a result on one coin transfers to another |
 | `research/turnover_table.py` | One turnover pull shared by all ten coin spokes |
 | `research/verify_numbers.py` | Re-derives every figure quoted in the research docs; exit 0 means they all check out |
+| `research/full_suite.py` | One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset |
 | `research/geometry.py` | Grid geometry helpers |
 | `research/perturb.py` | Parameter perturbation for robustness |
 | `research/STRATEGIES.md` | The strategy survey |
@@ -107,7 +115,8 @@ The danger here is overstating a result, so the honesty machinery is the point.
 ## `extension/` — the part that can place real orders
 
 Chrome MV3 extension plus a CLI and a local HTTP API, all three thin adapters over one
-command registry. Zero runtime dependencies by design.
+command registry. No npm runtime dependencies by design; one vendored charting library
+(`extension/vendor/lightweight-charts/`).
 
 | Path | What it is |
 | --- | --- |
@@ -131,8 +140,17 @@ command registry. Zero runtime dependencies by design.
 | `extension/src/storage/store.js` | Storage interface |
 | `extension/src/storage/fileStore.js` | Mode-0600 file store for secret material |
 | `extension/src/storage/memoryStore.js` | In-memory store for tests |
-| `extension/src/ui/dashboard.js` | Dashboard view |
-| `extension/src/ui/popup.js` | Popup view |
+| `extension/src/core/alerts.js` | Pure alert rules: only fresh, gated scout figures may say "act", backtest says "review", quoted APY is only a lead |
+| `extension/src/market/holdings.js` | Read-only Base and Solana balances in USD; partial failures named, never zeroed |
+| `extension/src/market/quote.js` | Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range |
+| `extension/src/market/pools.js` | DefiLlama yields, ranked by 30-day mean; every APY labelled quoted |
+| `extension/src/market/net.js` | Read-only fetch and JSON-RPC; refuses any non-read method |
+| `extension/src/ui/dashboard.js` | Dashboard shell and hash router; Overview first, Grid last |
+| `extension/src/ui/view-overview.js` | Overview and Alerts views |
+| `extension/src/ui/view-markets.js` | Holdings, Profit & loss and Discover views |
+| `extension/src/ui/view-trade.js` | Backtest & strategies and Swap views |
+| `extension/src/ui/view-grid.js` | The experimental grid's forms, charts and journal |
+| `extension/src/ui/popup.js` | Popup: holdings, alerts, shortcuts; grid controls collapsed |
 | `extension/tools/cli.js` | CLI surface over the registry |
 | `extension/tools/api-server.js` | Local HTTP surface; reads `SMT_API_PORT`, `SMT_API_TOKEN`, `SMT_PASSPHRASE` |
 | `extension/tools/dryrun.js` | The headless integration gate — a round trip must close positive |
@@ -161,7 +179,10 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/runner.py` | The loop that refreshes state |
 | `soltui/bgcontrol.py` | Explicit worker/fetch processes, lock handoff and nonce-bound socket Stop |
 | `soltui/bgworker.py` | Detached offline sweep worker and per-process array cache |
+| `soltui/compound.py` | Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI `python3 -m soltui.compound` |
 | `soltui/liquidity.py` | Reads daemon state; creates/removes only the KILL flag |
+| `soltui/bots.py` | Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test |
+| `soltui/pricefeed.py` | Streaming price recorder: stdlib WebSocket to Coinbase `level2_batch` + `ticker`, one-second gzip JSONL snapshots, detached process |
 | `soltui/serve.py` | Optional loopback browser console |
 | `soltui/bin/soltui` | Shell launcher with interpreter override |
 | `soltui/config.py` | Configuration |
@@ -302,6 +323,9 @@ place of them. In live mode it signs real transactions. Full detail: `liquidity/
 | `docs/code-deep-optimizer-2026-11-06.md` | Bounded code audit, regressions, review dissent and verification limits |
 | `docs/code-optimizer-scope-2026-11-06.json` | Primary/dependency source scope and every remaining source path |
 | `docs/jupiter-trigger-contract.md` | Public API contract fixtures and blocked live-signing boundary |
+| `docs/COMPOUND-5M.md` | Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings |
+| `docs/COMPOUND-5M-PAPER.md` | Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity |
+| `docs/TRADINGVIEW-REFERENCE.md` | TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format |
 
 ### Not source
 

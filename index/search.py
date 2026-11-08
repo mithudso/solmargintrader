@@ -20,6 +20,16 @@ Three retrieval modes, because they fail differently:
 
 Semantic requires the gitignored array. If it is absent, hybrid degrades to text
 and says so rather than silently returning worse results.
+
+**Semantic and hybrid make sure ollama is up.** Before embedding the query, a local ollama
+is reached (started if it is not running) and the model checked; if that fails the search
+says why and falls back to keyword. **Every query also runs the idle check**
+(`idle.py`): if the semantic index is missing or stale and the machine is idle, a
+low-priority background rebuild starts by itself and writes only gitignored files.
+
+**Library use.** `run_query()` returns structured hits and never prints; the soltui Docs tab
+uses it. The big structures (the 12 MB keyword postings, the embedding matrix) are read on
+first use and held in `_CACHE`; `unload()` drops them.
 """
 
 from __future__ import annotations
@@ -29,15 +39,29 @@ import json
 import math
 import re
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "index"
+if str(OUT) not in sys.path:  # sibling modules, whether run as a script or imported
+    sys.path.insert(0, str(OUT))
+
+import idle  # noqa: E402
+import ollama_ensure  # noqa: E402
 INDEX_JSON = OUT / "INDEX.json"
 TEXT_JSON = OUT / "TEXT-INDEX.json"
 CONCEPT_JSON = OUT / "CONCEPT-INDEX.json"
 SEMANTIC_NPZ = OUT / "semantic-embeddings.npz"
 SEMANTIC_MANIFEST = OUT / "SEMANTIC-MANIFEST.json"
+LOCAL_NPZ = OUT / "semantic-local.npz"
+LOCAL_MANIFEST = OUT / "semantic-local.json"
+# How long ollama keeps the embedding model resident after a query. The model is ~670 MB, so
+# this is deliberately short: a burst of searches reuses it, an idle console does not hold it.
+QUERY_KEEP_ALIVE = "2m"
+
+# Loaded on first use, never at import. Keyed by file; cleared by unload().
+_CACHE: dict[str, object] = {}
 
 BM25_K1 = 1.2
 BM25_B = 0.75
@@ -88,49 +112,88 @@ def bm25(query: str, text: dict) -> list[tuple[str, float]]:
     return sorted(scores.items(), key=lambda x: -x[1])
 
 
-def semantic(query: str, limit: int = 40) -> list[tuple[str, float]] | None:
+def _say(notes: list[str] | None, message: str) -> None:
+    """Print for the CLI; collect for library callers (which must not write to stdout)."""
+    if notes is None:
+        print(f"  ({message})")
+    else:
+        notes.append(message)
+
+
+def semantic_pair() -> tuple[Path, Path] | None:
+    """(manifest, array) to search: the idle job's local pair if present, else the committed one."""
+    for manifest, npz in ((LOCAL_MANIFEST, LOCAL_NPZ), (SEMANTIC_MANIFEST, SEMANTIC_NPZ)):
+        if manifest.exists() and npz.exists():
+            return manifest, npz
+    return None
+
+
+def _semantic_matrix(pair: tuple[Path, Path]):
+    """(manifest, embeddings float32, owners), read once and cached by file and mtime."""
+    import numpy as np
+
+    key = f"semantic:{pair[1]}:{pair[1].stat().st_mtime_ns}:{pair[0].stat().st_mtime_ns}"
+    hit = _CACHE.get(key)
+    if hit is not None:
+        return hit
+    for stale in [k for k in _CACHE if k.startswith("semantic:")]:
+        del _CACHE[stale]
+    manifest = json.loads(pair[0].read_text())
+    # No `allow_pickle`: the array holds only floats, and the chunk-to-file mapping comes
+    # from the manifest. Unpickling an array is arbitrary code execution, which is not a
+    # risk an index should carry.
+    z = np.load(pair[1])
+    emb = z["embeddings"].astype("float32")   # already L2-normalised at build time
+    _CACHE[key] = (manifest, emb, manifest.get("chunkOwners") or [])
+    return _CACHE[key]
+
+
+def semantic(query: str, limit: int = 40, notes: list[str] | None = None,
+             *, start_ollama: bool = True) -> list[tuple[str, float]] | None:
     """Cosine similarity over chunk embeddings, best chunk per file.
 
-    Returns None (rather than raising) when the array is absent, so hybrid can
-    degrade to text and say so. Per-file score is the max over its chunks: a long
-    document that answers the query in one paragraph should rank on that
+    Returns None (rather than raising) when the array is absent or ollama cannot be
+    reached, so hybrid can degrade to text and say so. Per-file score is the max over its
+    chunks: a long document that answers the query in one paragraph should rank on that
     paragraph, not be diluted by the rest of itself.
     """
-    if not SEMANTIC_NPZ.exists():
+    pair = semantic_pair()
+    if pair is None:
         return None
     try:
         import numpy as np
         import urllib.request
     except ImportError:
         return None
-    man = json.loads(SEMANTIC_MANIFEST.read_text()) if SEMANTIC_MANIFEST.exists() else {}
-    model = man.get("model", "mxbai-embed-large")
-    url = man.get("endpoint", "http://localhost:11434/api/embed")
+    man = json.loads(pair[0].read_text())
+    model = man.get("model", ollama_ensure.EMBED_MODEL)
+    url = man.get("endpoint", f"{ollama_ensure.OLLAMA_BASE}/api/embed")
+    status = ollama_ensure.ensure(model, ollama_ensure.base_of(url), start=start_ollama)
+    if status.started:
+        _say(notes, "ollama was not running; started it")
+    if not status.ok:
+        _say(notes, f"semantic unavailable: {status.message}")
+        return None
     try:
-        body = json.dumps({"model": model, "input": [query]}).encode()
+        body = json.dumps({"model": model, "input": [query],
+                           "keep_alive": QUERY_KEEP_ALIVE}).encode()
         req = urllib.request.Request(url, data=body,
                                     headers={"Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=120) as r:
             d = json.loads(r.read())
         q = np.asarray((d.get("embeddings") or [d["embedding"]])[0], dtype="float32")
     except Exception as exc:  # noqa: BLE001 - any transport failure degrades to text
-        print(f"  (semantic unavailable: {type(exc).__name__}; is ollama running?)")
+        _say(notes, f"semantic unavailable: {type(exc).__name__}: {exc}")
         return None
     q /= (np.linalg.norm(q) or 1.0)
 
-    owners = man.get("chunkOwners") or []
+    _, emb, owners = _semantic_matrix(pair)
     if not owners:
-        print("  (semantic manifest has no chunkOwners; rebuild: "
-              "python3 index/build.py semantic)")
+        _say(notes, "semantic manifest has no chunkOwners; rebuild: python3 index/build.py semantic")
         return None
-    # No `allow_pickle`: the array holds only floats, and the chunk-to-file mapping
-    # comes from the committed manifest. Unpickling an array is arbitrary code
-    # execution, which is not a risk an index should carry.
-    z = np.load(SEMANTIC_NPZ)
-    emb = z["embeddings"].astype("float32")   # already L2-normalised at build time
     if len(owners) != emb.shape[0]:
-        print(f"  (semantic index is stale: {emb.shape[0]} vectors vs "
-              f"{len(owners)} owners; rebuild: python3 index/build.py semantic)")
+        _say(notes, f"semantic index is stale: {emb.shape[0]} vectors vs {len(owners)} owners; "
+                    "rebuild: python3 index/build.py semantic")
         return None
     sims = emb @ q
     best: dict[str, float] = {}
@@ -152,6 +215,105 @@ def fuse(a: list[tuple[str, float]], b: list[tuple[str, float]]) -> list[tuple[s
         for i, (fid, _) in enumerate(lst):
             out[fid] = out.get(fid, 0.0) + 1.0 / (RRF_K + i + 1)
     return sorted(out.items(), key=lambda x: -x[1])
+
+
+@dataclass
+class Hit:
+    path: str
+    score: float
+    kind: str
+    lines: int
+    summary: str
+
+
+@dataclass
+class QueryResult:
+    """What a library caller gets: ranked hits, the mode that actually ran, and why."""
+
+    hits: list[Hit] = field(default_factory=list)
+    mode_used: str = "keyword"
+    notes: list[str] = field(default_factory=list)
+
+
+MODES = ("keyword", "semantic", "hybrid")
+
+
+def unload(model: bool = True) -> str:
+    """Drop the cached postings and embedding matrix, and tell ollama to release the model.
+
+    The embedding model is ~670 MB and ollama otherwise keeps it for `QUERY_KEEP_ALIVE`
+    after the last query. `keep_alive: 0` asks for an immediate unload. This never starts a
+    server: if ollama is not running there is nothing to release.
+    """
+    _CACHE.clear()
+    if not model:
+        return "cleared the in-process index cache"
+    import urllib.request
+
+    base = ollama_ensure.OLLAMA_BASE
+    if not ollama_ensure.reachable(base, timeout=1.0):
+        return "cleared the in-process index cache; ollama is not running"
+    try:
+        body = json.dumps({"model": ollama_ensure.EMBED_MODEL, "input": [""],
+                           "keep_alive": 0}).encode()
+        req = urllib.request.Request(f"{base}/api/embed", data=body,
+                                     headers={"Content-Type": "application/json"})
+        urllib.request.urlopen(req, timeout=10).read()  # noqa: S310 - local only
+    except Exception as exc:  # noqa: BLE001 - best effort; the cache is already cleared
+        return f"cleared the in-process index cache; could not unload the model ({type(exc).__name__})"
+    return "cleared the in-process index cache and asked ollama to unload the embedding model"
+
+
+def _cached_json(path: Path, what: str) -> dict:
+    key = f"json:{path}:{path.stat().st_mtime_ns if path.exists() else 0}"
+    hit = _CACHE.get(key)
+    if hit is None:
+        for stale in [k for k in _CACHE if k.startswith(f"json:{path}:")]:
+            del _CACHE[stale]
+        hit = _CACHE[key] = load(path, what)
+    return hit  # type: ignore[return-value]
+
+
+def run_query(query: str, mode: str = "hybrid", limit: int = 20, kind: str | None = None,
+              *, start_ollama: bool = True, auto_index: bool = True) -> QueryResult:
+    """Search without printing. `mode` is keyword, semantic or hybrid.
+
+    Nothing is read until this is called, so importing the module costs nothing. Keyword
+    never touches ollama. Semantic and hybrid make sure it is up (see `semantic`) and fall
+    back to keyword with a note when it cannot be. `auto_index` runs the idle check.
+    """
+    if mode not in MODES:
+        raise ValueError(f"mode must be one of {', '.join(MODES)}")
+    result = QueryResult()
+    meta = _cached_json(INDEX_JSON, "the file metadata index")
+    if auto_index:
+        result.notes.append(idle.maybe_start())
+    tx: list[tuple[str, float]] = []
+    if mode in ("keyword", "hybrid"):
+        tx = bm25(query, _cached_json(TEXT_JSON, "the text index"))
+    sm = None
+    if mode in ("semantic", "hybrid"):
+        sm = semantic(query, notes=result.notes, start_ollama=start_ollama)
+        if sm is None:
+            result.notes.append("no semantic result; "
+                                + ("showing keyword results" if mode == "hybrid"
+                                   else "nothing to show for semantic-only"))
+    if mode == "keyword" or (mode == "hybrid" and sm is None):
+        ranked, result.mode_used = tx, "keyword"
+    elif mode == "semantic":
+        ranked, result.mode_used = sm or [], "semantic"
+    else:
+        ranked, result.mode_used = fuse(tx, sm or []), "hybrid"
+    by_id = {e["id"]: e for e in meta["files"]}
+    for fid, score in ranked:
+        e = by_id.get(fid)
+        if not e or (kind and e.get("kind") != kind):
+            continue
+        result.hits.append(Hit(e["path"], float(score), e["kind"], int(e["lines"]),
+                               e.get("summary") or ""))
+        if len(result.hits) >= limit:
+            break
+    return result
 
 
 def show(hits: list[tuple[str, float]], meta: dict, limit: int, label: str,
@@ -227,6 +389,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     q = " ".join(args.query).strip()
+    if q:
+        print(f"  [{idle.maybe_start()}]")
     if not q:
         c = meta["counts"]
         print(f"Index: {c['files']} files, {c['bytes'] / 1e6:.1f} MB, "

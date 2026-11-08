@@ -25,6 +25,8 @@ import { createNodeSoltuiTransport } from './soltui-transport.js';
  * @param {boolean} [opts.quiet]
  * @param {object} [opts.soltui] transport override; default spawns the soltui native host
  */
+const nodeFetch = (...a) => globalThis.fetch(...a);
+
 export async function createNodeDeps(opts = {}) {
   const {
     ephemeral = false,
@@ -47,6 +49,9 @@ export async function createNodeDeps(opts = {}) {
     configStore,
     budget,
     soltui: soltui ?? createNodeSoltuiTransport(),
+    // Market reads (holdings, pools, swapQuote, scanAlerts) use the platform fetch.
+    // One function per process, so the pool cache (keyed on it) can hit.
+    fetch: nodeFetch,
     paths: ephemeral ? { store: '(memory)', config: '(memory)' } : { store: storePath, config: configPath },
 
     /**

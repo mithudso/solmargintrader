@@ -1,385 +1,192 @@
 /**
- * Dashboard: configuration, risk rails, journal, and P&L.
+ * Dashboard shell: hash routing between views, the top bar, the stored scan,
+ * and Settings.
  *
- * Charts are hand-built SVG rather than a charting library, because the
- * extension CSP forbids remote script and bundling one for two charts is not
- * worth the weight. Both carry text alternatives so the numbers are reachable
- * without reading the picture.
+ * Views load on first visit and on their own Refresh buttons; Overview paints
+ * from the stored scan first so the page is useful before any network answers.
+ * Every action goes through a registry command (src/core/commands.js) — this
+ * page holds no trading or alert logic of its own.
  */
 
-import { snapshot, equityCurve, maxDrawdown, fillsToCsv } from '../core/pnl.js';
-import { gridLevels, capitalRequirement } from '../core/grid.js';
-import {
-  validateSessionKeyInputs,
-  buildCreateSessionKeyMessage,
-  describeCreateResult,
-} from './session-key-form.js';
 import { attributionLine, attributionDetail } from '../jupiter/attribution.js';
 import { mountSoltuiPanel } from './soltui-panel.js';
+import { mountWalletPubkeyButton } from './wallet-pubkey.js';
+import { call, soltui, $, ago } from './ui-kit.js';
+import { renderOverview, renderAlerts, mountAlertPrefs } from './view-overview.js';
+import { renderHoldings, refreshHoldings, mountHoldings, refreshPnl, mountPnl, refreshScout, refreshPools, mountDiscover } from './view-markets.js';
+import { refreshStrategies, mountStrategies, refreshSwap, mountSwap } from './view-trade.js';
+import { refreshGrid, mountGrid } from './view-grid.js';
+
+const send = (msg) => chrome.runtime.sendMessage(msg);
 
 // The version is the only visible sign that a reload picked up new code.
 document.getElementById('version').textContent = `v${chrome.runtime.getManifest().version}`;
 
-const $ = (sel) => document.querySelector(sel);
-const send = (msg) => chrome.runtime.sendMessage(msg);
-const usd = (n) => (n == null ? '—' : `${n < 0 ? '−' : ''}$${Math.abs(n).toFixed(2)}`);
+const state = { overview: null, holdings: null, loaded: new Set() };
 
-let cache = { config: null, limits: null, fills: [], intents: [], carry: [], events: [], price: null };
+/* --------------------------------------------------------------- shared -- */
 
-/* ------------------------------------------------------------------- charts -- */
-
-function svg(children, { width, height, label }) {
-  return `<svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}" role="img" aria-label="${escapeAttr(label)}">${children}</svg>`;
+async function loadOverview() {
+  state.overview = await call({ type: 'overview' });
+  const scan = state.overview?.scan;
+  $('#scanInfo').textContent = scan ? `Last scan ${ago(scan.scannedAtMs)}` : 'No scan yet';
+  const open = (scan?.alerts ?? []).filter((a) => !a.acked && a.severity !== 'info').length;
+  $('#navAlertCount').hidden = open === 0;
+  $('#navAlertCount').textContent = String(open);
 }
 
-function equitySvg(points) {
-  const W = 720;
-  const H = 200;
-  const PAD = 28;
-  if (points.length < 2) return '<p class="note">No closed round trips yet.</p>';
-
-  const xs = points.map((p) => p.tsMs);
-  const ys = points.map((p) => p.equityUsd);
-  const [x0, x1] = [Math.min(...xs), Math.max(...xs)];
-  const [y0, y1] = [Math.min(...ys), Math.max(...ys)];
-  const spanX = x1 - x0 || 1;
-  const spanY = y1 - y0 || 1;
-
-  const sx = (x) => PAD + ((x - x0) / spanX) * (W - PAD * 2);
-  const sy = (y) => H - PAD - ((y - y0) / spanY) * (H - PAD * 2);
-
-  const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${sx(p.tsMs).toFixed(1)},${sy(p.equityUsd).toFixed(1)}`).join(' ');
-  const last = points.at(-1).equityUsd;
-  const stroke = last >= points[0].equityUsd ? '#15803d' : '#b91c1c';
-
-  // Zero line only when the curve actually crosses it.
-  const zero = y0 < 0 && y1 > 0 ? `<line x1="${PAD}" y1="${sy(0)}" x2="${W - PAD}" y2="${sy(0)}" stroke="#9ca3af" stroke-dasharray="3 3"/>` : '';
-
-  return svg(
-    `${zero}<path d="${path}" fill="none" stroke="${stroke}" stroke-width="2"/>
-     <text x="${PAD}" y="16" class="axis">${usd(y1)}</text>
-     <text x="${PAD}" y="${H - 8}" class="axis">${usd(y0)}</text>`,
-    { width: W, height: H, label: `Equity curve, ${points.length} points, ending at ${usd(last)}` },
-  );
+async function ack(id) {
+  await call({ type: 'ackAlerts', id });
+  await loadOverview();
+  repaint();
 }
 
-function ladderSvg({ levels, intents, fills, price }) {
-  const W = 720;
-  const rowH = 22;
-  const H = levels.length * rowH + 20;
-  const maxLevel = Math.max(...levels, price ?? 0);
-  const minLevel = Math.min(...levels, price ?? Infinity);
-  const span = maxLevel - minLevel || 1;
-  const sx = (v) => 60 + ((v - minLevel) / span) * (W - 140);
+const onAck = (id) => ack(id).catch((err) => { $('#scanInfo').textContent = `Could not acknowledge: ${err.message}`; });
 
-  const restingByLevel = new Map();
-  for (const i of intents) {
-    if (i.status === 'resting') restingByLevel.set(round4(i.level), i.side);
+/* --------------------------------------------------------------- routing -- */
+
+// Old links (popup's "SolTUI console", bookmarks) land on the view holding them.
+const ALIASES = { soltui: 'settings' };
+const VIEWS = {
+  overview: { load: () => renderOverview(state, { onAck }) },
+  holdings: { load: () => refreshHoldings(state) },
+  pnl: { load: refreshPnl },
+  discover: { load: () => Promise.all([refreshScout(), refreshPools()]) },
+  strategies: { load: () => refreshStrategies(state) },
+  swap: { load: () => refreshSwap(state) },
+  alerts: { load: () => renderAlerts(state, { onAck }) },
+  settings: { load: loadSettings },
+  grid: { load: refreshGrid },
+};
+
+function current() {
+  const raw = location.hash.slice(1);
+  const name = ALIASES[raw] ?? raw;
+  return Object.hasOwn(VIEWS, name) ? name : 'overview';
+}
+
+function show() {
+  const name = current();
+  for (const section of document.querySelectorAll('[data-view]')) section.hidden = section.dataset.view !== name;
+  for (const link of document.querySelectorAll('.nav-link')) {
+    if (link.getAttribute('href') === `#${name}`) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
   }
-  const fillsByLevel = new Map();
-  for (const f of fills) {
-    if (f.level == null) continue;
-    const k = round4(f.level);
-    fillsByLevel.set(k, (fillsByLevel.get(k) ?? 0) + 1);
+  if (location.hash === '#soltui') $('#soltui').scrollIntoView();
+  // Overview and Alerts repaint every visit (they are cheap); the rest load once.
+  if (!state.loaded.has(name) || name === 'overview' || name === 'alerts') {
+    state.loaded.add(name);
+    Promise.resolve(VIEWS[name].load()).catch((err) => console.warn('[smt] view failed', name, err));
   }
+}
 
-  const rows = levels
-    .slice()
-    .reverse()
-    .map((level, idx) => {
-      const y = 12 + idx * rowH;
-      const k = round4(level);
-      const side = restingByLevel.get(k);
-      const nFills = fillsByLevel.get(k) ?? 0;
-      const colour = side === 'buy' ? '#2563eb' : side === 'sell' ? '#b45309' : '#d1d5db';
-      const dot = side
-        ? `<circle cx="${sx(level).toFixed(1)}" cy="${y}" r="5" fill="${colour}"/>`
-        : `<circle cx="${sx(level).toFixed(1)}" cy="${y}" r="3" fill="${colour}"/>`;
-      const fillMark = nFills
-        ? `<text x="${(sx(level) + 10).toFixed(1)}" y="${y + 4}" class="axis">${nFills}×</text>`
-        : '';
-      return `<text x="4" y="${y + 4}" class="axis">$${level.toFixed(2)}</text>
-              <line x1="60" y1="${y}" x2="${W - 80}" y2="${y}" stroke="#f3f4f6"/>${dot}${fillMark}`;
-    })
-    .join('');
+function repaint() {
+  const name = current();
+  if (name === 'overview') renderOverview(state, { onAck });
+  if (name === 'alerts') renderAlerts(state, { onAck });
+  if (name === 'holdings') renderHoldings(state);
+}
 
-  const marker =
-    price != null
-      ? `<line x1="${sx(price).toFixed(1)}" y1="6" x2="${sx(price).toFixed(1)}" y2="${H - 6}" stroke="#111827" stroke-dasharray="4 2"/>
-         <text x="${(sx(price) + 4).toFixed(1)}" y="${H - 6}" class="axis">mark $${price.toFixed(2)}</text>`
-      : '';
+/* -------------------------------------------------------------- settings -- */
 
-  return svg(`${rows}${marker}`, {
-    width: W,
-    height: H,
-    label: `Grid ladder with ${restingByLevel.size} resting orders across ${levels.length} rungs`,
+async function loadSettings() {
+  const prefs = state.overview?.prefs ?? (await call({ type: 'getPrefs' }));
+  const f = $('#walletForm').elements;
+  f.baseAddress.value = prefs.baseAddress ?? '';
+  f.solanaAddress.value = prefs.solanaAddress ?? '';
+}
+
+function mountSettings() {
+  $('#walletForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.target.elements;
+    const patch = {
+      baseAddress: f.baseAddress.value.trim() || null,
+      solanaAddress: f.solanaAddress.value.trim() || null,
+    };
+    try {
+      await call({ type: 'setPrefs', patch });
+      $('#walletStatus').textContent = 'Saved. Holdings now read these addresses.';
+      state.holdings = null;
+      await loadOverview();
+    } catch (err) {
+      $('#walletStatus').textContent = `Not saved: ${err.message}`;
+    }
+  });
+  $('#walletFromSoltui').addEventListener('click', async () => {
+    try {
+      const r = await soltui('wallet.addresses');
+      const f = $('#walletForm').elements;
+      if (r.base_address) f.baseAddress.value = r.base_address;
+      if (r.solana_address) f.solanaAddress.value = r.solana_address;
+      $('#walletStatus').textContent = 'Filled from soltui. Check them, then Save.';
+    } catch (err) {
+      $('#walletStatus').textContent = `soltui: ${err.message}`;
+    }
+  });
+  $('#keyForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = $('#keyForm input[name="apiKey"]');
+    await send({ type: 'setApiKey', apiKey: input.value });
+    input.value = ''; // do not leave the key sitting in the DOM
   });
 }
 
-const round4 = (n) => Number(Number(n).toFixed(4));
-const escapeAttr = (s) => String(s).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;');
+/* ------------------------------------------------------------------ boot -- */
 
-/* -------------------------------------------------------------------- render -- */
-
-function fillForm(form, values) {
-  for (const el of form.elements) {
-    if (!el.name || values[el.name] == null) continue;
-    el.value = values[el.name];
-  }
-}
-
-function readForm(form) {
-  const out = {};
-  for (const el of form.elements) {
-    if (!el.name) continue;
-    if (el.type === 'number') {
-      // A blank numeric field must be omitted, not sent as 0. `Number('')` is 0,
-      // which would silently set notionalPerRungUsd or a risk cap to zero.
-      const raw = el.value.trim();
-      if (raw === '') continue;
-      const n = Number(raw);
-      if (!Number.isFinite(n)) continue;
-      out[el.name] = n;
-    } else {
-      out[el.name] = el.value;
-    }
-  }
-  return out;
-}
-
-function renderBanner() {
-  const el = $('#banner');
-  const { config } = cache;
-  if (!config) return;
-  if (config.mode === 'dry-run') {
-    el.textContent = 'Dry run — real prices, simulated fills, nothing placed on chain.';
-    el.className = 'banner ok';
-  } else {
-    el.textContent = `LIVE (${config.mode}) — orders are real and spend real funds.`;
-    el.className = 'banner warn';
-  }
-}
-
-function renderPnl() {
-  const { fills, carry, price } = cache;
-  if (!fills.length) {
-    $('#equityChart').innerHTML = '<p class="note">No fills yet.</p>';
-    return;
-  }
-  // Without a mark price, open inventory would be valued at zero and the page
-  // would show a catastrophic fake unrealized loss. Say so instead.
-  if (!(price > 0)) {
-    $('#equityChart').innerHTML =
-      '<p class="note">Waiting for the first price tick — P&amp;L needs a mark to value open inventory.</p>';
-    return;
-  }
-  const pnl = snapshot({ fills, markPriceUsd: price, carryEntries: carry });
-  const curve = equityCurve({ roundTrips: pnl.roundTrips, carryEntries: carry });
-  const dd = maxDrawdown(curve);
-
-  $('#net').textContent = usd(pnl.totalNetUsd);
-  $('#realized').textContent = usd(pnl.realizedNetUsd);
-  $('#unrealized').textContent = usd(pnl.unrealizedNetUsd);
-  $('#fees').textContent = usd(pnl.feeTotalUsd);
-  $('#trips').textContent = String(pnl.roundTripCount);
-  $('#winRate').textContent = `${(pnl.winRate * 100).toFixed(0)}%`;
-  $('#drawdown').textContent = `${usd(dd.drawdownUsd)} (${dd.drawdownPct.toFixed(1)}%)`;
-  $('#inventory').textContent = `${pnl.openBaseQty.toFixed(4)} @ ${usd(pnl.avgEntryUsd)} avg`;
-
-  $('#equityChart').innerHTML = equitySvg(curve);
-
-  if (cache.config) {
-    const levels = gridLevels(cache.config);
-    $('#ladderChart').innerHTML = ladderSvg({
-      levels,
-      intents: cache.intents,
-      fills,
-      price: cache.price,
-    });
-  }
-}
-
-/**
- * Build a row with DOM APIs, never innerHTML.
- *
- * Order IDs and error strings come from the venue, and this page holds
- * extension privileges (chrome.storage, runtime messaging) — so a single missed
- * escape would be XSS with real reach. textContent removes the question.
- */
-function appendRow(tbody, cells, className) {
-  const tr = document.createElement('tr');
-  if (className) tr.className = className;
-  for (const cell of cells) {
-    const td = document.createElement('td');
-    td.textContent = cell == null || cell === '' ? '—' : String(cell);
-    tr.append(td);
-  }
-  tbody.append(tr);
-}
-
-function emptyRow(tbody, span, text) {
-  const tr = document.createElement('tr');
-  const td = document.createElement('td');
-  td.colSpan = span;
-  td.textContent = text;
-  tr.append(td);
-  tbody.append(tr);
-}
-
-function renderTables() {
-  const intentBody = $('#intents tbody');
-  intentBody.replaceChildren();
-  const intents = cache.intents.slice().sort((a, b) => (b.level ?? 0) - (a.level ?? 0));
-  if (!intents.length) {
-    emptyRow(intentBody, 6, 'No orders yet.');
-  } else {
-    for (const i of intents) {
-      appendRow(
-        intentBody,
-        [
-          i.intentKey,
-          i.side,
-          i.level != null ? `$${Number(i.level).toFixed(4)}` : null,
-          i.status,
-          i.venueOrderId,
-          i.error ?? (i.adoptedFromVenue ? 'adopted from venue' : ''),
-        ],
-        `status-${String(i.status ?? '').replace(/[^a-z-]/gi, '')}`,
-      );
-    }
-  }
-
-  const fillBody = $('#fills tbody');
-  fillBody.replaceChildren();
-  const fills = cache.fills.slice().sort((a, b) => b.tsMs - a.tsMs);
-  if (!fills.length) {
-    emptyRow(fillBody, 5, 'No fills yet.');
-  } else {
-    for (const f of fills) {
-      appendRow(fillBody, [
-        new Date(f.tsMs).toLocaleString(),
-        f.side,
-        f.baseQty.toFixed(6),
-        `$${f.priceUsd.toFixed(4)}`,
-        // "$0.00?" reads as "unknown", where a bare "$0.00" would claim the
-        // venue told us this trade was free.
-        f.feeUnknown ? `${usd(f.feeUsd)}?` : usd(f.feeUsd),
-      ]);
-    }
-  }
-
-  // Licence-required attribution (agreement 8.4 and 2.3), rendered from the
-  // module that imports the real base URLs so it cannot drift from what we call.
-  $('#attribution').textContent = attributionLine();
-  $('#attributionDetail').textContent = attributionDetail();
-
-  $('#events').textContent = cache.events
-    .map((e) => `${new Date(e.tsMs).toISOString()}  ${e.type}  ${JSON.stringify(e.summary ?? e.reason ?? '')}`)
-    .join('\n');
-}
-
-function renderCapital() {
-  const { config, price } = cache;
-  if (!config || !price) return;
-  const req = capitalRequirement({ config, price });
-  $('#capital').textContent =
-    `At $${price.toFixed(2)} this grid needs about $${req.quoteUsd.toFixed(2)} of ${config.quoteSymbol} ` +
-    `plus ${req.baseQty.toFixed(4)} ${config.baseSymbol} ($${req.baseValueUsd.toFixed(2)}) — ` +
-    `$${req.totalUsd.toFixed(2)} total. Trigger V2 rejects any order under $10.`;
-}
-
-/* --------------------------------------------------------------------- wiring -- */
-
-async function refresh() {
-  const status = await send({ type: 'status' });
-  if (!status?.ok) return;
-  const data = await send({ type: 'data' });
-
-  cache = {
-    config: status.config,
-    limits: status.limits,
-    price: status.lastTick?.price ?? null,
-    fills: data?.fills ?? [],
-    intents: data?.intents ?? [],
-    carry: data?.carry ?? [],
-    events: data?.events ?? [],
-  };
-
-  fillForm($('#configForm'), cache.config);
-  fillForm($('#limitsForm'), cache.limits);
-  renderBanner();
-  renderPnl();
-  renderTables();
-  renderCapital();
-}
-
-$('#configForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  await send({ type: 'setConfig', patch: readForm($('#configForm')) });
-  await refresh();
-});
-
-$('#limitsForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  await send({ type: 'setLimits', patch: readForm($('#limitsForm')) });
-  await refresh();
-});
-
-$('#keyForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const input = $('#keyForm input[name="apiKey"]');
-  await send({ type: 'setApiKey', apiKey: input.value });
-  input.value = ''; // do not leave the key sitting in the DOM
-  await refresh();
-});
-
-$('#sessionKeyForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const form = $('#sessionKeyForm');
-  const out = $('#sessionKeyResult');
-  const clear = () => {
-    // Success or failure, never leave the passphrase sitting in the DOM.
-    form.elements.passphrase.value = '';
-    form.elements.confirmPassphrase.value = '';
-    form.elements.acknowledged.checked = false;
-  };
-  const problem = validateSessionKeyInputs({
-    passphrase: form.elements.passphrase.value,
-    confirmPassphrase: form.elements.confirmPassphrase.value,
-    acknowledged: form.elements.acknowledged.checked,
-  });
-  if (problem) {
-    clear();
-    out.textContent = problem;
-    return;
-  }
-  const message = buildCreateSessionKeyMessage(form.elements.passphrase.value);
-  clear();
+$('#scanNow').addEventListener('click', async () => {
+  const button = $('#scanNow');
+  button.disabled = true;
+  $('#scanInfo').textContent = 'Scanning holdings, the Aero scout, Top 5 and pools…';
   try {
-    out.textContent = describeCreateResult(await send(message)).text;
+    const r = await call({ type: 'scanAlerts' });
+    state.holdings = r.scan.holdings ? { ...r.scan.holdings, addressSource: state.holdings?.addressSource } : state.holdings;
+    await loadOverview();
+    repaint();
   } catch (err) {
-    // err.message comes from the runtime, not from our inputs; it holds no passphrase.
-    out.textContent = `Failed: ${err.message}`;
+    $('#scanInfo').textContent = `Scan failed: ${err.message}`;
+  } finally {
+    button.disabled = false;
   }
 });
 
-$('#exportCsv').addEventListener('click', () => {
-  const csv = fillsToCsv(cache.fills);
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `solmargintrader-fills-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+$('#ackAll').addEventListener('click', async () => {
+  await call({ type: 'ackAlerts', all: true }).catch(() => null);
+  await loadOverview();
+  repaint();
 });
 
-// Independent of the grid data: a missing soltui host must not stop the rest of
-// the dashboard from loading.
+// Licence-required attribution (agreement 8.4 and 2.3), rendered from the
+// module that imports the real base URLs so it cannot drift from what we call.
+$('#attribution').textContent = attributionLine();
+$('#attributionDetail').textContent = attributionDetail();
+
+mountGrid();
+mountSettings();
+mountHoldings(state);
+mountPnl();
+mountDiscover();
+mountStrategies(state);
+mountSwap(state);
+mountAlertPrefs(async () => { await loadOverview(); repaint(); });
+
+// Fills the grid's Wallet pubkey field from soltui; the owner still clicks Save.
+mountWalletPubkeyButton(document, send);
+
+// Independent of everything else: a missing soltui host must not stop the
+// rest of the dashboard from loading.
 mountSoltuiPanel().catch((err) => {
   $('#soltuiStatus').textContent = `SolTUI panel failed to load: ${err.message}`;
 });
 
-refresh().catch((err) => {
-  $('#banner').textContent = `Dashboard failed to load: ${err.message}`;
+// The grid's status feeds the mode pill and the Grid tab's forms.
+refreshGrid().then(async () => {
+  const status = await send({ type: 'status' });
+  if (status?.ok) $('#gridModePill').textContent = `${status.config.mode}${status.runtime.armed ? ' · armed' : ''}${status.runtime.killSwitch ? ' · KILLED' : ''}`;
+}).catch((err) => {
+  $('#banner').textContent = `Grid failed to load: ${err.message}`;
   $('#banner').className = 'banner danger';
 });
+
+window.addEventListener('hashchange', show);
+loadOverview().catch(() => null).finally(show);

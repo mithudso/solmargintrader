@@ -105,6 +105,31 @@ watchdog.unref();
 
 /** Every request any extension target made, so the checks can audit them. */
 const requests = [];
+
+/** The JSON-RPC method names in a POST body (one call or a batch); null when it is not JSON-RPC. */
+function rpcMethodsOf(postData) {
+  if (!postData) return null;
+  try {
+    const body = JSON.parse(postData);
+    const calls = Array.isArray(body) ? body : [body];
+    return calls.every((c) => typeof c?.method === 'string') ? calls.map((c) => c.method) : null;
+  } catch {
+    return null;
+  }
+}
+
+// The read-only market reads the redesigned pages make (src/market). They are
+// blocked like everything else; the audit proves they were reads.
+const MARKET_GETS = [
+  (u) => u === 'https://lite-api.jup.ag/price/v3',
+  (u) => u === 'https://lite-api.jup.ag/swap/v1/quote',
+  // Ultra's holdings READ only; /ultra/v1/order and /execute stay unexpected.
+  (u) => /^https:\/\/lite-api\.jup\.ag\/ultra\/v1\/holdings\/[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(u),
+  (u) => u.startsWith('https://coins.llama.fi/prices/current/'),
+  (u) => u === 'https://yields.llama.fi/pools',
+];
+const RPC_ORIGINS = ['https://base-rpc.publicnode.com', 'https://mainnet.base.org', 'https://api.mainnet-beta.solana.com'];
+const READ_RPC = /^(eth_(call|chainId|getBalance|blockNumber)|get[A-Z][A-Za-z]*)$/;
 const pageErrors = [];
 
 const priceBody = JSON.stringify({
@@ -120,7 +145,7 @@ browser.on((m) => {
   if (m.method !== 'Fetch.requestPaused') return;
   const { requestId, request } = m.params;
   const url = new URL(request.url);
-  requests.push({ method: request.method, url: `${url.origin}${url.pathname}` });
+  requests.push({ method: request.method, url: `${url.origin}${url.pathname}`, rpcMethods: rpcMethodsOf(request.postData) });
   // Only the keyless price read is allowed, and it is answered locally: nothing
   // leaves the machine, so no order endpoint is reachable even by mistake.
   const isPriceRead =
@@ -308,6 +333,39 @@ try {
     eq([out.batch.admitted.length, out.batch.rejected.length], [0, 1], 'batch with missing state');
   });
 
+  /* --------------------------------------------------------- equity chart -- */
+
+  // The vendored Lightweight Charts must load under the extension CSP and draw
+  // in a real MV3 page; a node test cannot see either (no DOM, no CSP).
+  await check('equity chart draws with the vendored Lightweight Charts under the extension CSP', async () => {
+    const out = await dash.ev(`(async () => {
+      const { renderEquityChart, disposeChart } = await import(chrome.runtime.getURL('src/ui/charts.js'));
+      const el = document.createElement('div');
+      el.style.width = '600px';
+      document.body.append(el);
+      const points = [
+        { tsMs: Date.UTC(2026, 10, 1), equityUsd: 100 },
+        { tsMs: Date.UTC(2026, 10, 2), equityUsd: 103.5 },
+        { tsMs: Date.UTC(2026, 10, 3), equityUsd: 101.25 },
+      ];
+      const drawnBy = await renderEquityChart(el, points, { label: 'e2e equity', fallbackHtml: () => '<p>fallback</p>' });
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const res = {
+        drawnBy,
+        canvases: el.querySelectorAll('canvas').length,
+        attribution: !!el.querySelector('a[href*="tradingview.com"]'),
+        ariaLabel: el.getAttribute('aria-label'),
+      };
+      disposeChart(el);
+      el.remove();
+      return res;
+    })()`);
+    eq(out.drawnBy, 'lightweight-charts', 'chart renderer (fallback means the vendored library did not load)');
+    assert(out.canvases > 0, 'no canvas drawn');
+    assert(out.attribution, 'TradingView attribution link missing (licence requires it)');
+    eq(out.ariaLabel, 'e2e equity', 'accessible label');
+  });
+
   /* ------------------------------------------------------------------ secrets -- */
 
   await check('no secret material in the DOM, storage.sync or any command response', async () => {
@@ -463,11 +521,15 @@ try {
 
   /* ------------------------------------------------------------ network audit -- */
 
-  await check('network: only keyless GET price reads were attempted; no order endpoint was touched', async () => {
+  await check('network: only keyless reads were attempted (prices, quotes, yields, read-only JSON-RPC); no order endpoint was touched', async () => {
     assert(requests.length > 0, 'no requests observed: the interception never ran');
-    const bad = requests.filter(
-      (r) => !(r.method === 'GET' && r.url === 'https://lite-api.jup.ag/price/v3'),
-    );
+    const bad = requests.filter((r) => {
+      if (r.method === 'GET') return !MARKET_GETS.some((ok) => ok(r.url));
+      if (r.method === 'POST' && RPC_ORIGINS.some((o) => r.url === o || r.url === `${o}/`)) {
+        return !(r.rpcMethods?.length && r.rpcMethods.every((name) => READ_RPC.test(name)));
+      }
+      return true;
+    });
     eq(bad, [], 'unexpected requests');
   });
 

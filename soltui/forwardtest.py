@@ -1,0 +1,316 @@
+"""Prospective, paper-only trials of registered strategies on closed Coinbase minutes."""
+
+from __future__ import annotations
+
+import hashlib
+import inspect
+import json
+import math
+import sqlite3
+import time
+from collections.abc import Callable
+from contextlib import closing
+from pathlib import Path
+from threading import Event
+from typing import Any
+
+import numpy as np
+
+from backtester.core import scorecard
+from backtester.core.strategies import REGISTRY, build, build_composite
+from backtester.core.types import BarWindow, validate_bar_arrays
+
+from . import compound, config
+
+HORIZONS = (1, 5, 10, 30)
+HISTORY = 600
+WARM_REPLAY = 128
+KNOBS = scorecard.default_config()["aggregate"]
+Spec = list[dict[str, Any]]
+
+
+def revision() -> str:
+    """Partition evidence if strategy code or the forecast/scoring contract changes."""
+    core = Path(scorecard.__file__).parent
+    files = [Path(__file__), Path(compound.__file__), *sorted(core.glob("*.py")),
+             *sorted((core / "strategies").glob("*.py"))]
+    return hashlib.sha256(b"".join(hashlib.sha256(p.read_bytes()).digest() for p in files)).hexdigest()
+
+
+def _json(value: Any) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+
+def _db() -> sqlite3.Connection:
+    root = config.CONFIG_DIR / "forwardtest"
+    root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    db = sqlite3.connect(root / "trials.sqlite3")
+    db.executescript("""
+        CREATE TABLE IF NOT EXISTS trial (
+            id TEXT PRIMARY KEY, asset TEXT, label TEXT, mode TEXT, minutes INTEGER,
+            cost REAL, active TEXT, generation INTEGER DEFAULT 0, moved INTEGER DEFAULT 0,
+            note TEXT DEFAULT ''
+        );
+        CREATE TABLE IF NOT EXISTS call (
+            trial TEXT, bar INTEGER, issued REAL, start INTEGER, finish INTEGER,
+            generation INTEGER, guesses TEXT, prediction INTEGER, outcome INTEGER,
+            bps REAL, expired INTEGER DEFAULT 0, PRIMARY KEY(trial, bar)
+        );
+        CREATE INDEX IF NOT EXISTS call_pending ON call(trial, finish)
+            WHERE outcome IS NULL AND expired = 0;
+        CREATE INDEX IF NOT EXISTS call_training ON call(trial, generation, bar)
+            WHERE outcome IS NOT NULL;
+        CREATE TABLE IF NOT EXISTS adoption (
+            trial TEXT, at INTEGER, previous TEXT, next TEXT, confidence REAL,
+            samples INTEGER, PRIMARY KEY(trial, at)
+        );
+    """)
+    return db
+
+
+def _factory(spec: Spec, mode: str):
+    if len(spec) == 1:
+        return build(spec[0]["name"], **spec[0]["params"])
+    return build_composite([(m["name"], m["params"]) for m in spec], mode=mode)
+
+
+def member(name: str, params: dict[str, Any]) -> dict[str, Any]:
+    """Fill constructor defaults so untweaked numeric parameters are eligible too."""
+    if name.startswith("lev_"):
+        wrapped = build(name, **params)
+        return member(wrapped.base, json.loads(wrapped.params["base_params"] or "{}"))
+    sig = inspect.signature(REGISTRY[name])
+    bound = sig.bind_partial(**params)
+    bound.apply_defaults()
+    build(name, **params)
+    return {"name": name, "params": dict(bound.arguments)}
+
+
+def neighbours(spec: Spec, mode: str) -> list[Spec]:
+    """A move changes one numeric parameter on one member. Constructor checks still apply."""
+    out = [spec]
+    for i, m in enumerate(spec):
+        for key, value in sorted(m["params"].items()):
+            # Leverage controls execution, not the forecast. Boolean flags are not numeric knobs.
+            if type(value) not in (int, float) or not value or key in {"leverage", "direction"}:
+                continue
+            for sign in (-1, 1):
+                v = value * (1 + sign * KNOBS["tune_step"])
+                if type(value) is int:
+                    v = round(v)
+                    if v == value:
+                        v += sign
+                if value > 0 and v <= 0:
+                    continue
+                cand = [*spec]
+                cand[i] = {**m, "params": {**m["params"], key: v}}
+                try:
+                    _factory(cand, mode)
+                except (ValueError, TypeError, OverflowError):
+                    continue
+                if cand not in out:
+                    out.append(cand)
+    return out
+
+
+def _predict(spec: Spec, mode: str, bars: dict[str, np.ndarray]) -> int | None:
+    strategy = _factory(spec, mode)
+    n = len(bars["ts"])
+    warm = int(strategy.warmup_bars())
+    if n <= warm:
+        return None
+    # Give stateful rules the same replay policy for the active and shadow settings.
+    start = max(0, n - warm - WARM_REPLAY)
+    arrays = [bars[k][start:] for k in ("ts", "open", "high", "low", "close", "volume")]
+    for i in range(warm, len(arrays[0])):
+        value = float(strategy.on_bar(BarWindow(*arrays, i)))
+    if not math.isfinite(value):
+        return None
+    return int(value > 0) - int(value < 0)
+
+
+def _choose(history: list[tuple], corrected: list, current: Spec) -> tuple | None:
+    """Only a neighbor that fixed the newest miss can move, using paired prior calls."""
+    best = None
+    rows = [(start, finish, actual, {_json(spec): call for spec, call in guesses})
+            for start, finish, actual, guesses in history]
+    active_key = _json(current)
+    for candidate, _ in corrected:
+        if candidate == current:
+            continue
+        hits = [0, 0]
+        samples = 0
+        end = 0
+        candidate_key = _json(candidate)
+        for start, finish, actual, calls in rows:
+            if start < end:
+                continue
+            a, b = calls.get(active_key), calls.get(candidate_key)
+            if a is None or b is None:
+                continue
+            end = finish
+            samples += 1
+            hits[0] += a == actual
+            hits[1] += b == actual
+        if samples < KNOBS["tune_min_calls"]:
+            continue
+        means, variances = scorecard.beta_posterior(
+            np.array(hits), np.full(2, samples), KNOBS["adaptive_prior"])
+        probability = float(scorecard.p_better_than(means[1], variances[1], means[0], variances[0]))
+        if probability > KNOBS["tune_confidence"] and (best is None or probability > best[1]):
+            best = candidate, probability, samples
+    return best
+
+
+def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, moved: int,
+             cost: float, candles: dict[int, tuple[float, float]], bar: int, minutes: int, tune: bool) -> tuple[Spec, int]:
+    misses: list = []
+    latest = None
+    for origin, start, finish, gen, raw, prediction in db.execute(
+        """SELECT bar,start,finish,generation,guesses,prediction FROM call
+           WHERE trial=? AND outcome IS NULL AND expired=0 AND finish<=? ORDER BY bar""",
+        (key, bar + 60),
+    ).fetchall():
+        if not all(t in candles for t in range(start, finish, 60)):
+            if start < min(candles):
+                db.execute("UPDATE call SET expired=1 WHERE trial=? AND bar=?", (key, origin))
+            continue
+        bps = 10000 * math.log(candles[finish - 60][1] / candles[start][0])
+        outcome = int(bps > cost) - int(bps < -cost)
+        db.execute("UPDATE call SET outcome=?,bps=? WHERE trial=? AND bar=?", (outcome, bps, key, origin))
+        if gen == generation:
+            latest = origin
+            misses = [(s, p) for s, p in json.loads(raw) if p == outcome] if outcome != prediction else []
+    if not tune or latest is None or not misses or bar - moved < KNOBS["tune_cooldown"] * 300:
+        return active, generation
+    history = [(s, f, y, json.loads(g)) for s, f, y, g in db.execute(
+        """SELECT start,finish,outcome,guesses FROM call
+           WHERE trial=? AND generation=? AND outcome IS NOT NULL AND bar BETWEEN ? AND ?
+           ORDER BY bar""", (key, generation, bar - KNOBS["adaptive_window"] * minutes * 60, latest))]
+    choice = _choose(history, misses, active)
+    if choice is None:
+        return active, generation
+    next_spec, probability, samples = choice
+    db.execute("INSERT INTO adoption VALUES (?,?,?,?,?,?)",
+               (key, bar, _json(active), _json(next_spec), probability, samples))
+    db.execute("UPDATE trial SET active=?, generation=?, moved=? WHERE id=?",
+               (_json(next_spec), generation + 1, bar, key))
+    return next_spec, generation + 1
+
+
+def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float, *,
+         fetch: Callable | None = None, clock: Callable[[], float] = time.time,
+         stop: Event | None = None, code: str | None = None) -> dict:
+    """Record only fresh calls, resolving past calls before computing the next forecast."""
+    fetch = fetch or compound.fetch_closed_candles
+    stop = stop if stop is not None else Event()
+    def check_stop() -> None:
+        if stop.is_set():
+            raise RuntimeError("Forwardtest stopped")
+
+    def get(url: str):
+        check_stop()
+        return compound.http_json(url)
+
+    check_stop()
+    code = code or revision()
+    observed = clock()
+    raw = fetch(asset, now=observed, bars=HISTORY, seconds=60, get=get, sleep=stop.wait)
+    check_stop()
+    mask = raw["ts"] + 60 <= observed
+    raw = {k: v[mask] for k, v in raw.items()}
+    ts = raw["ts"]
+    if len(ts) == 0 or np.any(np.diff(ts) <= 0) or np.any(ts % 60):
+        raise ValueError("No ordered closed one-minute candles")
+    # Keep gaps visible for settlement. The signal itself sees only the latest contiguous segment.
+    candles = {int(t): (float(o), float(c)) for t, o, c in zip(ts, raw["open"], raw["close"], strict=True)
+               if math.isfinite(o) and math.isfinite(c) and o > 0 and c > 0}
+    if not candles:
+        raise ValueError("No valid one-minute prices")
+    breaks = np.flatnonzero(np.diff(ts) != 60)
+    tail = int(breaks[-1] + 1) if len(breaks) else 0
+    bars = validate_bar_arrays({k: v[tail:] for k, v in raw.items()}, "1m")
+    bar = int(ts[-1])
+    start = bar + 120  # next minute that has not opened yet
+    forecasts: dict[tuple, int | None] = {}
+    staged = []
+    active_keys = {}
+    with closing(_db()) as db, db:
+        db.execute("BEGIN IMMEDIATE")
+        for trial in trials:
+            seed, mode, label = trial["members"], trial["mode"], trial["label"]
+            for h in horizons:
+                key = hashlib.sha256(_json([code, asset, label, h, cost, mode, seed]).encode()).hexdigest()
+                active_keys[key] = h
+                db.execute("INSERT OR IGNORE INTO trial(id,asset,label,mode,minutes,cost,active) VALUES (?,?,?,?,?,?,?)",
+                           (key, asset, label, mode, h, cost, _json(seed)))
+        # Settle all existing trials for the asset, including a horizon no longer selected.
+        for key, raw_spec, mode, gen, moved, h, trial_cost in db.execute(
+            "SELECT id,active,mode,generation,moved,minutes,cost FROM trial WHERE asset=?", (asset,)
+        ).fetchall():
+            check_stop()
+            active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
+                                   h, key in active_keys)
+            if key not in active_keys or not bar + 60 <= observed < start:
+                continue
+            previous = db.execute("SELECT finish FROM call WHERE trial=? ORDER BY bar DESC LIMIT 1",
+                                  (key,)).fetchone()
+            # One call per non-overlapping window. A 30m move is one observation, not 30.
+            if previous and start < previous[0]:
+                continue
+            guesses = []
+            note = ""
+            for spec in neighbours(active, mode):
+                check_stop()
+                ck = mode, _json(spec)
+                try:
+                    if ck not in forecasts:
+                        forecasts[ck] = _predict(spec, mode, bars)
+                    call = forecasts[ck]
+                except (ValueError, RuntimeError, TypeError, ArithmeticError) as exc:
+                    if spec == active:
+                        note = str(exc)
+                    call = None
+                guesses.append((spec, call))
+            prediction = guesses[0][1]
+            if prediction is None:
+                note = note or "Waiting for contiguous warm-up bars"
+            else:
+                staged.append((key, bar, start, start + h * 60, gen, _json(guesses), prediction))
+            db.execute("UPDATE trial SET note=? WHERE id=?", (note, key))
+        check_stop()
+        issued = clock()
+        fresh = bar + 60 <= observed < start and issued < start - 1
+        if fresh:
+            db.executemany("""INSERT OR IGNORE INTO call
+                (trial,bar,start,finish,generation,guesses,prediction,issued) VALUES (?,?,?,?,?,?,?,?)""",
+                ((*r, issued) for r in staged))
+    return {"bar": bar if fresh else None, "recorded": len(staged) if fresh else 0,
+            "message": ("Waiting for a fresh candle" if not bar + 60 <= observed < start
+                        else "Forecast window elapsed during calculation" if not fresh
+                        else "Checked the latest closed minute"),
+            "rows": status(asset)}
+
+
+def status(asset: str) -> list[dict]:
+    if not (config.CONFIG_DIR / "forwardtest" / "trials.sqlite3").exists():
+        return []
+    path = config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
+    with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
+        return [
+            {"id": key, "label": label, "minutes": minutes, "settings": json.loads(active), "changes": gen,
+             "note": note, "resolved": resolved, "correct": hits or 0, "pending": pending or 0,
+             "expired": expired or 0, "last_call": last_call, "last_issued": last_issued,
+             "cost_bps": cost, "last_outcome": last_outcome}
+            for key, label, minutes, active, gen, note, resolved, hits, pending, expired, last_call, last_issued, cost, last_outcome
+            in db.execute("""
+              SELECT t.id,t.label,t.minutes,t.active,t.generation,t.note,count(c.outcome),
+                sum(c.outcome=c.prediction),sum(c.outcome IS NULL AND c.expired=0 AND c.bar IS NOT NULL),
+                sum(c.expired),
+                (SELECT prediction FROM call WHERE trial=t.id ORDER BY bar DESC LIMIT 1),
+                max(c.issued), t.cost,
+                (SELECT outcome FROM call WHERE trial=t.id AND outcome IS NOT NULL ORDER BY bar DESC LIMIT 1)
+              FROM trial t LEFT JOIN call c ON t.id=c.trial WHERE t.asset=?
+              GROUP BY t.id ORDER BY t.label,t.minutes,t.id
+            """, (asset,))
+        ]

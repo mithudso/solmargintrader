@@ -28,13 +28,44 @@ HEAVY = {
     "live.spawn_dryrun": {"command": ["node"], "returncode": 0, "stdout": "stub"},
     "queue.start": {"started": True, "asset": "SOL"},
     "queue.stop": {"stopping": False},
+    "queue.backtest": {"started": True, "scope": "all", "strategies": [], "jobs": 0, "asset": "SOL",
+                       "message": "stub"},
+    # These start ollama and the idle indexer; the parity suite must not.
+    "docs.search": {"query": "x", "mode": "keyword", "mode_used": "keyword", "hits": [], "notes": []},
+    "docs.search_unload": {"message": "stub"},
     "queue.fetch": {"fetching": [], "log": None},
     "analyze.run": {"headline": "stub", "truncated": False, "decisions": [], "actions": {}},
     "docs.write": {"path": "x", "bytes": 1, "file": "x"},
+    # Compound: live reads hit public market-data endpoints; backtests read the real 5m cache.
+    "forwardtest.tick": {"asset": "SOL", "bar": None, "recorded": 0, "rows": [], "message": "stub"},
+    "forwardtest.status": {"asset": "SOL", "rows": []},
+    "compound.signal": {"call": "FLAT", "composite": None, "components": []},
+    "compound.forward_tick": {"asset": "SOL", "recorded": False, "call": "FLAT", "resolved": 0},
+    "compound.unattended_start": {"started": True, "asset": "SOL", "pid": 1, "log": "x"},
+    "compound.unattended_stop": {"stopping": False, "asset": "SOL", "message": "not running"},
+    # Autopilot starts a detached training loop per coin; a real call here once left 32 of them running.
+    "compound.autopilot": {"autopilot": False, "running": [], "agent": {"loaded": False}, "adoptions": [],
+                           "ensure": None},
+    "compound.autopilot_status": {"autopilot": True, "running": [], "agent": {"loaded": False}, "adoptions": []},
+    "compound.autopilot_ensure": {"autopilot": True, "started": [], "already_running": [], "skipped": {}},
+    "compound.backtest": {"run_id": "stub", "configurations": 0, "assets": [], "skipped": {},
+                          "errors": [], "rows": []},
     # The P&L commands run the roster's backtests, which need a cached price series.
+    "portfolio.scan": {"label": "wallet (live)", "chains": {}, "total_usd": 0.0, "skipped": [],
+                       "partial": False, "counts": {}},
+    "portfolio.snapshot": {"label": "wallet (live)", "at": "2026-11-07T00:00:00+00:00", "partial": False,
+                           "total_usd": 0.0, "total_complete": True, "skipped": [], "chains": {},
+                           "snapshot_file": "stub"},
     "pnl.summary": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
     "pnl.series": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
     "pnl.breakdown": {"window": {"label": "stub"}, "sections": [], "notice": "stub", "groups": {}},
+    # Bots: backtests carry an id and a time, forward_start and prices.start spawn the detached price
+    # recorder (a real call would leave it running), and optimize sweeps every cached coin.
+    "bots.backtest": {"id": "stub", "kind": "backtest", "bot": "grid", "asset": "SOL", "set": {},
+                      "results": {}, "equity": []},
+    "bots.forward_start": {"forward": {"id": "stub", "bot": "grid"}, "recorder": {"started": False}},
+    "bots.optimize": {"bot": "grid", "verdict": {"reliable": False, "adopted": False}, "table": []},
+    "prices.start": {"started": False, "already_running": True, "log": "x"},
 }
 
 
@@ -46,6 +77,7 @@ def default_params() -> dict[str, dict]:
     return {
         "strategies.source": {"name": "rsi"},
         "roster.add": {"name": fresh},
+        "roster.toggle": {"name": fresh},
         "roster.remove": {"label": "rsi_14_30_50"},
         "signals.save": {"values": {"rsi_period": 9}},
         "paper.start": {"label": "rsi_14_30_50"},
@@ -54,6 +86,17 @@ def default_params() -> dict[str, dict]:
         "docs.read": {"path": "soltui/commands.py"},
         "docs.write": {"path": "scratch.txt", "text": "x"},
         "liquidity.resume": {"confirm": True},
+        "queue.backtest": {"scope": "all"},
+        "docs.search": {"query": "slippage"},
+        "compound.autopilot": {"enabled": False},
+        "bots.config": {"bot": "grid"},
+        "bots.save": {"bot": "dca", "text": "take_profit_pct=3"},
+        "bots.backtest": {"bot": "grid"},
+        "bots.forward_start": {"bot": "grid"},
+        "bots.forward_stop": {"bot": "grid"},
+        "bots.forward_status": {"bot": "grid"},
+        "bots.optimize": {"bot": "grid"},
+        "bots.optimize_result": {"bot": "grid"},
     }
 
 
@@ -68,6 +111,7 @@ class World:
         env = {
             "SOLTUI_CONFIG_DIR": self.root / "config", "SOLTUI_LOG_DIR": self.root / "logs",
             "SOLTUI_SUPPORT_DIR": self.root / "support", "AERO_LP_HOME": self.root / "aero",
+            "SOLTUI_KEY_DIR": self.root / "keys",
         }
         self.stack.enter_context(mock.patch.dict(os.environ, {k: str(v) for k, v in env.items()}))
         for mod, attr, value in (

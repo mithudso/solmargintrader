@@ -22,7 +22,24 @@ curl -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
 
 ## Commands
 
-`*` marks a required argument. 25 commands as of this writing.
+`*` marks a required argument. 34 commands as of this writing.
+
+### Portfolio, discovery, swaps and alerts
+
+Read-only unless marked. Network reads go to public Base/Solana JSON-RPC, DefiLlama and Jupiter; no
+key is used and nothing is signed.
+
+| Command | Arguments | What it does |
+| --- | --- | --- |
+| `holdings` | `chain`:string | Live balances and USD values at the Base and Solana addresses (preferences, then the grid pubkey, then soltui settings) |
+| `pools` | `chain`, `minTvlUsd`, `stableOnly`, `singleOnly`, `includeOutliers`, `search`, `sort`, `limit` | Base and Solana pools from DefiLlama, ranked by 30-day mean APY. Every APY is **quoted** |
+| `swapTokens` | — | Tokens the swap quote accepts on each chain |
+| `swapQuote` | `chain`*, `from`*, `to`*, `amount`*:string, `slippageBps` | Quote only: Jupiter Metis (Solana) or Slipstream on-chain math (Base); returns a hand-off URL to sign on the venue |
+| `getPrefs` | — | Wallet addresses and alert thresholds |
+| `setPrefs` (writes) | `patch`:json and named fields | Merge preferences; validates addresses and thresholds |
+| `overview` | — | The stored scan with acknowledgements; reads storage only |
+| `scanAlerts` (writes its own storage) | — | Holdings + `liquidity.data` + `top5.list` + pool leads → alerts; stores the scan |
+| `ackAlerts` (writes) | `id` or `all` | Acknowledge one or every current alert |
 
 ### Inspection — read-only, safe to poll
 

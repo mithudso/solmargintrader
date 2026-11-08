@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "SolMarginTrader — Jupiter Grid",
-  "version": "0.2.0",
-  "description": "Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking. Dry-run by default.",
+  "name": "SolMarginTrader",
+  "version": "0.3.1",
+  "description": "Holdings, P&L, pool discovery, backtests, swap quotes and alerts for Base and Solana. The experimental grid stays dry-run by default.",
   "minimum_chrome_version": "120",
   "background": {
     "service_worker": "src/bg/service-worker.js",
@@ -10,16 +10,37 @@
   },
   "action": {
     "default_title": "SolMarginTrader",
-    "default_popup": "src/ui/popup.html"
+    "default_popup": "src/ui/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    }
   },
   "options_page": "src/ui/dashboard.html",
-  "permissions": ["storage", "alarms", "nativeMessaging"],
+  "permissions": [
+    "storage",
+    "alarms",
+    "nativeMessaging",
+    "notifications"
+  ],
   "host_permissions": [
     "https://api.jup.ag/*",
     "https://lite-api.jup.ag/*",
-    "https://tx.jup.ag/*"
+    "https://tx.jup.ag/*",
+    "https://mainnet.base.org/*",
+    "https://base-rpc.publicnode.com/*",
+    "https://api.mainnet-beta.solana.com/*",
+    "https://coins.llama.fi/*",
+    "https://yields.llama.fi/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'none'"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
   }
 }

@@ -1,0 +1,122 @@
+{
+ "token": {
+  "jsonrpc": "2.0",
+  "result": {
+   "context": {
+    "slot": 466436460,
+    "apiVersion": "4.3.0-beta.2"
+   },
+   "value": [
+    {
+     "pubkey": "3nDN5v2KyNuvnMtP4hd3GBvtkgKiMpbvEGUACcPt1fUs",
+     "account": {
+      "lamports": 2039280,
+      "data": {
+       "program": "spl-token",
+       "parsed": {
+        "info": {
+         "isNative": false,
+         "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+         "owner": "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV",
+         "state": "initialized",
+         "tokenAmount": {
+          "amount": "0",
+          "decimals": 6,
+          "uiAmount": 0.0,
+          "uiAmountString": "0"
+         }
+        },
+        "type": "account"
+       },
+       "space": 165
+      },
+      "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "executable": false,
+      "rentEpoch": 18446744073709551615,
+      "space": 165
+     }
+    },
+    {
+     "pubkey": "8DXdqDcBxcnRTqLmkmCB8iZYASxS68ZzcVW1B6wP3KVP",
+     "account": {
+      "lamports": 2039280,
+      "data": {
+       "program": "spl-token",
+       "parsed": {
+        "info": {
+         "isNative": false,
+         "mint": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+         "owner": "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV",
+         "state": "initialized",
+         "tokenAmount": {
+          "amount": "0",
+          "decimals": 6,
+          "uiAmount": 0.0,
+          "uiAmountString": "0"
+         }
+        },
+        "type": "account"
+       },
+       "space": 165
+      },
+      "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "executable": false,
+      "rentEpoch": 18446744073709551615,
+      "space": 165
+     }
+    },
+    {
+     "pubkey": "HtpHtYv4KMvcetpAypkPdp6mbx2Z5FA5hLGSz58oVsco",
+     "account": {
+      "lamports": 1488440,
+      "data": {
+       "program": "spl-token",
+       "parsed": {
+        "info": {
+         "isNative": false,
+         "mint": "jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v",
+         "owner": "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV",
+         "state": "initialized",
+         "tokenAmount": {
+          "amount": "449534819",
+          "decimals": 9,
+          "uiAmount": 0.449534819,
+          "uiAmountString": "0.449534819"
+         }
+        },
+        "type": "account"
+       },
+       "space": 165
+      },
+      "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "executable": false,
+      "rentEpoch": 18446744073709551615,
+      "space": 165
+     }
+    }
+   ]
+  },
+  "id": 1
+ },
+ "token2022": {
+  "jsonrpc": "2.0",
+  "result": {
+   "context": {
+    "slot": 466436461,
+    "apiVersion": "4.3.0-beta.2"
+   },
+   "value": []
+  },
+  "id": 1
+ },
+ "stake_staker": {
+  "jsonrpc": "2.0",
+  "result": [],
+  "id": 1
+ },
+ "stake_withdrawer": {
+  "jsonrpc": "2.0",
+  "result": [],
+  "id": 1
+ }
+}

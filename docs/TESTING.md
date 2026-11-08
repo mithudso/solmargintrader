@@ -1,24 +1,25 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 703 tests
-python3 -m unittest discover -s soltui/tests -t .       # 536 tests (~300s)
-python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 305 tests
+python3 -m unittest discover -s backtester/tests -t .   # 900 tests
+python3 -m unittest discover -s soltui/tests -t .       # 860 tests (~610s)
+python3 -m unittest discover -s mongo/tests -t .        # 34 tests
+cd extension && npm test                                # 361 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
-1577 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2155 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 305 tests cover
+## Extension — what the 361 tests cover
 
 | Area | Examples |
 | --- | --- |
+| Charts | the vendored Lightweight Charts file is the pinned 5.2.1 build (sha256), ships LICENSE and NOTICE; equity points map to ascending second-resolution line data (`test/charts.test.js`); `npm run e2e` draws it under the real extension CSP with the attribution link |
 | Grid math | Arithmetic and geometric ladders against hand-computed values; endpoint pinning; degenerate configs rejected |
 | **Round-trip economics** | An exit rests one rung above its lot, never at the same level; `gross === notional × rungWidth` |
 | Planning | Lot aggregation (two lots on one rung produce **one** order, not a duplicate key); venue minimum; deadband; already-resting suppression |
@@ -30,9 +31,11 @@ nothing caught it.
 | Crypto | Sealed-seed round trip; wrong passphrase fails closed; fresh salt and IV per seal; Ed25519 signing |
 | **Surface parity** | Every command routable over the API; `GET` restricted to read-only; CLI help lists all commands and every argument; UI messages all map to real commands |
 | **soltui bridge** | `soltuiCall` returns the identical envelope through the extension message, the CLI and the API; a refusal, an unknown command and a missing host are the same clean envelope everywhere; the confirm flag is forwarded untouched; a running soltui command does not hold the engine lock; transports (port and child process) time out, ignore other ids and reject junk frames |
+| **Market reads** | ABI decoding against the live `tickSpacings()` answer; non-read RPC methods refused; endpoint fallback; wrong-chain endpoint refused; low-confidence prices unused; unpriced unknown mints listed but not counted; Jupiter holdings first, RPC fallback; exact CL output inside the active range and refusal past it; Jupiter replies that do not match the request refused |
+| **Alerts** | Only fresh, backtest-positive, medium/high-confidence, unflagged, gauged scout pools above break-even may say "act"; a stale or undated scout cannot; an active strategy with no Top 5 record has no baseline; today's all-negative scout raises nothing; idle capital counts Base stablecoins only; quoted leads are info and do not notify by default; first scan records leads silently, and an empty read still counts as the baseline; acks survive re-scans; scans and acks run one at a time |
 | **Auto-reload gate** | First observation only stores the hash; no reload while a tick is queued or running (the change is retried, not forgotten); the reload runs inside the engine lock and holds it; an unreachable host never reloads and is logged once; a failed `reload()` restores the old hash |
 
-The parity suite probes all 25 commands with a deliberately invalid argument, which proves the route
+The parity suite probes all 34 commands with a deliberately invalid argument, which proves the route
 resolved **without executing the handler** — no side effects, no network calls.
 
 ## What is NOT covered
@@ -96,12 +99,23 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 703 tests
+## Backtester — 900 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
 signal generation or fill timing needs a test that would catch a one-bar leak. See
 `backtester/README.md`.
+
+`test_scorecard.py` holds that test for the compound five-minute scorecard: every historical
+component, the composite, the regime label and the target path must give the same value at bar t
+whether or not the bars after t exist (prefix invariance), and a deliberately leaky component is
+shown to fail the check. `test_compound_backtest.py` covers the 5m loader (traded-minute
+aggregation, gaps split into segments, stale funding refused), the engine fill at bar t+1's open,
+and that fees reach the P&L. The same prefix-invariance check runs with adaptive weighting on and with tuning forced to move, so a learned weight or an adopted setting at bar t never uses the outcome of bar t.
+`test_fetch_minutes_alt.py` runs the other-venue minute fetcher against canned replies: KuCoin and
+WhiteBIT's `[t, open, close, high, low]` rows land in OHLC order, OKX's unconfirmed candle is
+dropped, a page with swapped columns stops the fetch before anything is written, and a resumed
+fetch neither repeats nor skips minutes.
 
 32 of those cover the ladder-grid simulator (`core/gridsim.py`), and they exist because that module
 has to agree with `extension/src/core/grid.js` about what a round trip earns. Three groups matter
@@ -137,7 +151,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 536 tests
+## soltui — 860 tests
 
 Slower than the others (~70s) because the TUI tests drive real render cycles. Three
 files: `test_signals.py` (signal derivation), `test_status_roster.py` (status and roster
@@ -145,13 +159,16 @@ state) and `test_tui.py` (rendering). Run them with
 `python3 -m unittest discover -s soltui/tests -t .`.
 
 soltui is read-only over the research side and places no orders, so its tests are about
-display correctness, not money. `test_launcher.py` drives the `soltui` shell command
+display correctness, not money. `test_compound.py` covers the Compound 5m tab end to end
+(toggle, edit, refused values, a stubbed live signal) plus the forward ledger with stub venues:
+the still-forming bar is dropped, a call is recorded once per bar and resolved by the next close,
+and an enabled news gate blocks when its feeds are unreachable. `test_launcher.py` drives the `soltui` shell command
 (`soltui/bin/soltui`) through a symlink with a fake interpreter, so it checks the repo
 lookup, the module choice and argument pass-through without starting Textual. The
 packaging paths — the py2app alias bundle and the launchd agent — are **not** covered by
 any test; see `soltui/README.md` for the manual checks that stand in for them.
 
-## mongo — 33 tests
+## mongo — 34 tests
 
 Split between pure helpers that need nothing and integration tests that **skip cleanly
 when no mongod is listening**, so a checkout without a database runs the suite green

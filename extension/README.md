@@ -1,8 +1,30 @@
 # SolMarginTrader
 
-A Chrome MV3 extension that runs a **grid trading strategy on Jupiter (Solana)** with hard risk
-rails and full P&L tracking. **Dry-run by default** — it will not place an order until you change
-the mode and type a confirmation.
+A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool
+discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or
+strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
+hard risk rails, on its own tab, **dry-run by default** — it will not place an order until you
+change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
+which is why 0.3.0 moved it off the front page.
+
+## What each tab reads (0.3.0)
+
+| Tab | Source | Label it carries |
+| --- | --- | --- |
+| Overview | The stored alert scan, then a live holdings read | — |
+| Holdings | Base: JSON-RPC `eth_getBalance` + ERC-20 `balanceOf` in one batch (chain id checked, 8453), prices from DefiLlama. Solana: Jupiter's holdings read (`lite-api.jup.ag/ultra/v1/holdings`), Solana RPC as fallback, prices from Jupiter Price v3. LP positions from the aero-lp daemon via soltui `liquidity.data` | `live`, `partial`, `failed` per chain |
+| Profit & loss | soltui `pnl.summary` / `pnl.series`; simulated and real sections are never summed | `real money` / `simulated` |
+| Discover pools | Aero scout (`liquidity.data`: modelled net APR from measured fee growth and gauge share) first; DefiLlama yields (`yields.llama.fi/pools`) second | `modelled` / `quoted` |
+| Backtest & strategies | soltui `top5.list`, `roster.*`, `backtest.run`, `strategies.history`, `signals.*` | `backtest` |
+| Swap | Solana: Jupiter Metis quote. Base: Aero Slipstream pools read on chain (exact CL math inside the active tick range; refused past it) | quote only — you sign on jup.ag or aerodrome.finance |
+| Alerts | `scanAlerts` (periodic alarm, default hourly): a scouted pool beating a position or idle Base stablecoins above its break-even deposit, a new Top 5 leader or one beating the active strategy, quoted pool leads | `modelled` → worth acting on (only when the scout is under 48 h old, backtest-positive, medium/high confidence and unflagged), `backtest` → review, `quoted` → lead (no notification unless asked) |
+| Grid | Unchanged engine, rails and journal | `experimental` |
+
+**Swaps are quote-only.** The extension builds and signs no swap transaction; the bundled signer has
+no semantic transaction verifier (Stele KNOW-837). **Quoted APYs never raise an "act" alert**:
+`liquidity/CLAUDE.md` forbids treating a quoted APR as income (Stele KNOW-838). The public Solana RPC
+answers HTTP 403 to any request carrying a `chrome-extension://` Origin, which is why Solana balances
+come from Jupiter's holdings read in the browser; the CLI and API fall back to RPC when Jupiter fails.
 
 **Live signing gate:** the bundled signer does not yet verify the economic intent of
 remote-crafted deposit/withdrawal transactions. Trigger live writes therefore refuse
@@ -66,7 +88,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.2.0`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.2.1`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is on the dashboard (popup → **SolTUI console**), not in the popup itself.
@@ -278,7 +300,7 @@ gross $10.00, fees $1.05, **net $8.95**; with $2.00 carry, **realized $6.95**.
 
 ## Three surfaces, one registry
 
-Every action lives in `src/core/commands.js` (25 commands). The Chrome message handler, the CLI and
+Every action lives in `src/core/commands.js` (34 commands). The Chrome message handler, the CLI and
 the HTTP API are thin adapters over it, so anything you can do in the UI you can script — and
 `test/surfaces.test.js` fails the build if any surface drifts.
 
@@ -342,6 +364,11 @@ curl -s -X POST -H "Authorization: Bearer $SMT_API_TOKEN" -H 'content-type: appl
 - **Dashboard.** The SolTUI panel (`src/ui/soltui-panel.js`) lists `soltuiCommands`, builds the form from
   each command's param types, gates `requires_confirm` behind a checkbox, sends only listed names, and
   renders results with `textContent` only.
+- **Wallet pubkey button.** Next to the dashboard's Wallet pubkey field, **Use soltui Solana address**
+  (`src/ui/wallet-pubkey.js`) sends `soltuiCall` for the read-only soltui command `wallet.addresses`, which returns the
+  public Solana and EVM addresses saved in soltui Settings and never an xpub or key material. The page checks the
+  reply is a Solana public key (32 bytes of Base58), fills the field and says so; the owner still clicks Save. The
+  page writes no `chrome.storage` itself.
 - **Auto-reload on update.** A 1-minute `chrome.alarms` job asks the host for `buildHash`, a SHA-256 over
   `manifest.json` and everything under `src/` in the extension directory. When the hash differs from the
   one stored in `chrome.storage.local` (`soltuiBuild`) it calls `chrome.runtime.reload()`, under these rules
@@ -361,7 +388,7 @@ curl -s -X POST -H "Authorization: Bearer $SMT_API_TOKEN" -H 'content-type: appl
 ## Layout
 
 ```
-manifest.json              MV3 manifest, minimal permissions (storage, alarms, nativeMessaging + 3 Jupiter hosts)
+manifest.json              MV3 manifest: storage, alarms, nativeMessaging, notifications; Jupiter, Base/Solana RPC and DefiLlama hosts
 src/core/grid.js           Pure grid engine — levels, side selection, planning, capital needs
 src/core/risk.js           Risk rails and batch admission
 src/core/pnl.js            FIFO matching, snapshots, equity curve, drawdown, CSV
@@ -369,6 +396,13 @@ src/core/engine.js         The tick: reconcile -> ingest fills -> plan -> admit 
 src/core/commands.js       The command registry — every action, transport-agnostic
 src/core/soltui.js         soltui bridge: envelope passthrough, timeouts, clean errors (transport injected)
 src/core/autoreload.js     Auto-reload gate: first observation, idle check, host-down logging
+src/core/alerts.js         Pure alert rules: modelled / backtest / quoted, merge, acks, notify filter
+src/market/net.js          Read-only fetch + JSON-RPC (refuses any non-read method), endpoint fallback
+src/market/evm.js          Hand-rolled ABI slice: selectors, words, int24, strings, exact unit conversion
+src/market/tokens.js       Chains, endpoints, known Base and Solana tokens
+src/market/holdings.js     Base and Solana balances in USD; partial failures named, never zeroed
+src/market/pools.js        DefiLlama yields: normalise, rank by 30-day mean, 10-minute cache
+src/market/quote.js        Swap quotes: Jupiter Metis; Slipstream on-chain CL math with range refusal
 src/jupiter/http.js        Retry/backoff, Retry-After, request budget, per-attempt timeout
 src/jupiter/price.js       Price API, tolerant of both response shapes
 src/jupiter/trigger.js     Trigger V2: auth, vault, deposit craft, create, manage
@@ -380,22 +414,33 @@ src/storage/store.js       IndexedDB journal + chrome.storage config
 src/storage/fileStore.js   The same interfaces on JSON files, for the CLI and API
 src/bg/service-worker.js   Alarm scheduling, message plumbing, badge, build-hash probe
 src/bg/soltui-transport.js connectNative transport to the soltui host
-src/ui/                    Popup and dashboard (hand-built SVG charts, CSP-safe; dashboard has a "Create session key" section)
+src/ui/dashboard.*         Tabbed dashboard shell and router; views in src/ui/view-*.js, helpers in ui-kit.js
+src/ui/popup.*             Holdings, alerts, shortcuts; grid controls collapsed under "Grid"
+icons/                     Toolbar and notification icons (generated, no external asset)
 tools/cli.js               CLI surface, generated from the registry
 tools/api-server.js        Local HTTP API surface, generated from the registry
 tools/soltui-transport.js  Node transport to the same soltui host (CLI and API)
 tools/dryrun.js            Headless end-to-end tick
 tools/e2e.mjs              Real-browser e2e (Chrome for Testing, DevTools pipe); helpers in e2e/
-test/                      303 tests, zero dependencies (node:test)
+test/                      361 tests, no npm dependencies (node:test)
 ```
 
-No build step and no dependencies. Plain ESM modules load directly as an unpacked extension —
+No build step and no npm dependencies. The one runtime library is Lightweight Charts 5.2.1, vendored
+and pinned in `vendor/lightweight-charts/` (see its README; loaded lazily by `src/ui/charts.js`).
+Plain ESM modules load directly as an unpacked extension —
 `@solana/web3.js` would have added a megabyte to a service worker for base58 and one signature
 insertion, so those are ~150 lines in `src/wallet/solana.js` instead, with tests against real mints.
 
 ---
 
 ## Verification status
+
+**Redesign gate (2026-11-07, 0.3.0):** 351 tests pass; the oscillating dry run still nets +$0.3492;
+`npm run e2e` passes 21/21 in Chrome for Testing, with the network audit widened to the read-only
+market calls and every JSON-RPC body checked for read methods. A live, read-only run against the
+owner's public addresses read Base $2.25 and Solana $51.33, quoted 0.01 ETH → 22.32 USDC through
+Slipstream and 0.5 SOL → 44.75 USDC through Jupiter, refused a 5,000 WETH Base quote past the active
+range, and listed 5,403 Base and Solana pools. No transaction was built or signed.
 
 **Current offline gate (2026-11-07):** 303 tests pass. The deterministic oscillating
 dry run closes one round trip: gross $0.3738, fees $0.0246, net +$0.3492, with no

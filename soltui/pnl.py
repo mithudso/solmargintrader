@@ -41,13 +41,15 @@ PRESETS = ("24h", "7d", "30d", "90d", "ytd", "all")
 DEFAULT_PRESET = "30d"
 _PRESET_SECONDS = {"24h": 86400.0, "7d": 7 * 86400.0, "30d": 30 * 86400.0, "90d": 90 * 86400.0}
 
-SOURCES = ("backtest", "paper", "dry-run", "dry-run LP", "live LP", "reported LP")
+SOURCES = ("backtest", "paper", "dry-run", "dry-run LP", "live LP", "reported LP", "wallet (live)")
 # Which sources are simulations and which are real money. A dry-run liquidity daemon is simulated;
 # the adapter picks the source word from the daemon's own mode, and `group_of` follows it.
 GROUPS = {"backtest": "simulated", "paper": "simulated", "dry-run": "simulated",
-          "dry-run LP": "simulated", "live LP": "real", "reported LP": "unclassified"}
+          "dry-run LP": "simulated", "live LP": "real", "reported LP": "unclassified",
+          "wallet (live)": "real"}
 SOURCE_ALIASES = {"live-lp": "live LP", "live_lp": "live LP", "live lp": "live LP",
-                  "dry-run-lp": "dry-run LP", "dry_run_lp": "dry-run LP", "lp": "live LP"}
+                  "dry-run-lp": "dry-run LP", "dry_run_lp": "dry-run LP", "lp": "live LP",
+                  "wallet": "wallet (live)", "wallet-live": "wallet (live)"}
 
 NOTICE = ("Simulated and real money are never summed: backtest, paper and dry-run figures are "
           "simulations; live LP and the wallet scan are real. Each section is its own number.")
@@ -189,6 +191,9 @@ class Curve:
     windowed: bool = True
     # False when the fills are cash events, not round trips (win rate and expectancy mean nothing).
     has_trades: bool = True
+    # True when the points are a *value*, not a P&L (a wallet balance): gross, realized and unrealized
+    # have no meaning there and are reported as None rather than computed from it.
+    value_only: bool = False
 
     def __post_init__(self) -> None:
         self.points = sorted((float(t), float(v)) for t, v in self.points
@@ -209,6 +214,7 @@ class RunStats:
     realized: float
     closes: list[float]
     pct_ok: bool
+    value_only: bool = False
 
     @property
     def gross(self) -> float:
@@ -243,7 +249,8 @@ def run_stats(curve: Curve, window: Window) -> RunStats | None:
         net=final - base,
         costs={"fees": sum(f.fee for f in fills), "slippage": sum(f.slippage for f in fills),
                "borrow": sum(f.borrow for f in fills)},
-        realized=sum(closes), closes=closes if curve.has_trades else [], pct_ok=curve.pct_ok)
+        realized=sum(closes), closes=closes if curve.has_trades else [], pct_ok=curve.pct_ok,
+        value_only=curve.value_only)
 
 
 def daily_equity(curve: Curve, window: Window) -> tuple[float, dict[date, float]] | None:
@@ -413,9 +420,11 @@ def _run_row(r: RunStats, section_net: float, section_base: float) -> dict[str, 
     word = r.source
     return {
         "strategy": r.strategy, "asset": r.asset, "base": r.base, "final": r.final,
-        "net_usd": r.net, "gross_usd": r.gross, "costs_usd": sum(r.costs.values()),
+        "net_usd": r.net, "gross_usd": None if r.value_only else r.gross,
+        "costs_usd": sum(r.costs.values()),
         "net_pct": r.net_pct, "net_pct_text": labelled(r.net_pct, word),
-        "realized_usd": r.realized, "unrealized_usd": r.unrealized,
+        "realized_usd": None if r.value_only else r.realized,
+        "unrealized_usd": None if r.value_only else r.unrealized,
         # Percentage points this run adds to the section's net %: they sum to it exactly.
         "contribution_pts": (r.net / section_base) if section_base > 0 and r.pct_ok else None,
         "share_of_net": (r.net / section_net) if abs(section_net) > 1e-9 else None,
@@ -436,7 +445,7 @@ def _group_by(rows: Sequence[RunStats], key, section_net: float, section_base: f
         pct = net_pct(base + net, base) if pct_ok else None
         out.append({"name": name, "runs": len(rs), "net_usd": net, "base": base,
                     "net_pct": pct, "net_pct_text": labelled(pct, word),
-                    "gross_usd": sum(r.gross for r in rs),
+                    "gross_usd": None if all(r.value_only for r in rs) else sum(r.gross for r in rs),
                     "costs_usd": sum(sum(r.costs.values()) for r in rs),
                     "contribution_pts": (net / section_base) if section_base > 0 and pct_ok else None,
                     "share_of_net": (net / section_net) if abs(section_net) > 1e-9 else None})
@@ -461,6 +470,7 @@ def build_section(source: str, curves: Sequence[Curve], window: Window,
     pct_ok = all(r.pct_ok for r in runs)
     pct = net_pct(base + net, base) if pct_ok else None
     costs = {k: sum(r.costs[k] for r in runs) for k in ("fees", "slippage", "borrow")}
+    value_only = all(r.value_only for r in runs)
     combined = combine_daily([c for c in curves if run_stats(c, window) is not None], window)
     days = combined[1] if combined else []
     closes = [x for r in runs for x in r.closes]
@@ -473,11 +483,11 @@ def build_section(source: str, curves: Sequence[Curve], window: Window,
         **head, "status": "ok", "runs": len(runs), "windowed": windowed,
         "totals": {
             "initial": base, "final": base + net, "net_usd": net,
-            "gross_usd": net + sum(costs.values()), "fees_usd": costs["fees"],
+            "gross_usd": None if value_only else net + sum(costs.values()), "fees_usd": costs["fees"],
             "slippage_usd": costs["slippage"], "borrow_funding_usd": costs["borrow"],
             "costs_usd": sum(costs.values()), "net_pct": pct, "net_pct_text": labelled(pct, source),
-            "realized_usd": sum(r.realized for r in runs),
-            "unrealized_usd": sum(r.unrealized for r in runs),
+            "realized_usd": None if value_only else sum(r.realized for r in runs),
+            "unrealized_usd": None if value_only else sum(r.unrealized for r in runs),
             **trade_stats(closes),
         },
         "drawdown": drawdown_report(combined[0], days) if combined else None,
@@ -653,3 +663,25 @@ def curve_from_lp_ledger(conn: Any, mode: Any) -> Curve | None:
     return Curve(lp_source(mode), "aero-lp (all positions)", "LP pairs", basis, points, fills,
                  pct_ok=basis > 0, has_trades=False,
                  note="history from ledger.sqlite snapshots; fees column is gas")
+
+
+# -- wallet scans --------------------------------------------------------------------------------------
+
+
+def curve_from_wallet_history(rows: Sequence[dict[str, Any]]) -> Curve | None:
+    """The wallet's value at each recorded scan, as a curve. None when no scan has been recorded.
+
+    This is a *value change*, not a trading P&L: deposits, withdrawals and price moves are all in it,
+    and nothing in a scan can tell them apart. It is shown only in the `wallet (live)` section (real
+    money), never beside a simulation, and the section's note says what it is. The first scan is the
+    starting value, so a single scan has no change to report.
+    """
+    pts = [(float(r["ts"]), float(r["total_usd"])) for r in rows
+           if _num(r.get("ts")) is not None and _num(r.get("total_usd")) is not None]
+    if not pts:
+        return None
+    pts.sort()
+    return Curve("wallet (live)", "all holdings", "wallet", pts[0][1], pts, [], pct_ok=pts[0][1] > 0,
+                 has_trades=False, value_only=True,
+                 note="value change between scans: includes deposits, withdrawals and price moves; "
+                      "it is not trading P&L")

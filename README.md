@@ -1,12 +1,12 @@
 # solmargintrader
 
-SOL trading research and execution tooling, in six parts:
+SOL trading research and execution tooling, in seven parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |
 | [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
 | [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
-| [`extension/`](extension/README.md) | Grid trading on Jupiter (Solana) with hard risk rails and P&L tracking — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **This is the part that can place real orders.** | JavaScript (ESM, no deps) |
+| [`extension/`](extension/README.md) | Holdings, P&L, pool discovery, backtests and strategy changes, swap quotes and alerts for Base and Solana, plus an experimental grid on Jupiter (Solana) with hard risk rails — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **The grid is the part that can place real orders.** | JavaScript (ESM, no deps) |
 | [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI that surfaces signals and paper positions, supervised by launchd. Read-only over the research side. | Python 3.13 |
 | [`mongo/`](mongo/README.md) | Local MongoDB copy of everything measured — bars, strategies, readouts, backtests, CPCV results — plus a runnable query reference. Derived; the files stay the source of truth. | Python 3.13 + pymongo |
 | [`executor/`](executor/README.md) | **Guarded live swaps.** Jupiter spot swaps on Solana behind a semantic transaction verifier, hard rails, a research gate, a dry-run soak and an append-only journal. CLI and loopback API share one JSON envelope. Dry-run by default. | Python 3.13 (own venv) |
@@ -33,7 +33,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 305 tests
+npm test                                               # 361 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -44,10 +44,10 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 703 tests
-python3 -m unittest discover -s soltui/tests -t .       # 536 tests (~300s)
-python3 -m unittest discover -s mongo/tests -t .        # 33 tests
-cd extension && npm test                                # 305 tests
+python3 -m unittest discover -s backtester/tests -t .   # 900 tests
+python3 -m unittest discover -s soltui/tests -t .       # 860 tests (~610s)
+python3 -m unittest discover -s mongo/tests -t .        # 34 tests
+cd extension && npm test                                # 361 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than
@@ -115,6 +115,7 @@ ships.
 - [docs/API.md](docs/API.md) — every command across all three surfaces
 - [docs/integrations-and-assumptions.md](docs/integrations-and-assumptions.md) — external services and the assumptions baked in
 - [docs/external-calls.md](docs/external-calls.md) — every call that leaves the machine
+- [docs/TRADINGVIEW-REFERENCE.md](docs/TRADINGVIEW-REFERENCE.md) — TradingView charting docs distilled: indicator parity, PineJS, datafeed, drawings, Broker API, licensing
 - [docs/caching-and-optimization.md](docs/caching-and-optimization.md) — cache ownership and invalidation
 - [docs/logging.md](docs/logging.md) — what is recorded, and which paths record nothing
 

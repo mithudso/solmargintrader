@@ -324,6 +324,7 @@ def worker_command(
     horizons: Sequence[str] | None = None,
     max_tier: int = 2,
     limit: int | None = None,
+    strategies: Sequence[str] | None = None,
     python: str | None = None,
 ) -> list[str]:
     """The argv that runs the worker, wrapped in the background-QoS launcher.
@@ -338,6 +339,8 @@ def worker_command(
     cmd += ["--max-tier", str(max_tier)]
     if limit is not None:
         cmd += ["--limit", str(limit)]
+    if strategies:
+        cmd += ["--strategies", *strategies]
     launcher = taskpolicy_path()
     return [launcher, "-b", *cmd] if launcher else cmd
 
@@ -348,6 +351,7 @@ def start(
     horizons: Sequence[str] | None = None,
     max_tier: int = 2,
     limit: int | None = None,
+    strategies: Sequence[str] | None = None,
     cwd: Path | None = None,
     log_path: Path | None = None,
 ) -> subprocess.Popen[bytes]:
@@ -387,7 +391,8 @@ def start(
     try:
         control = create_control(lock_fd)
         proc = subprocess.Popen(  # noqa: S603 - argv list, no shell
-            worker_command(asset, horizons=horizons, max_tier=max_tier, limit=limit),
+            worker_command(asset, horizons=horizons, max_tier=max_tier, limit=limit,
+                           strategies=strategies),
             cwd=str(repo),
             stdout=handle,
             stderr=subprocess.STDOUT,

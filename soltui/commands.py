@@ -42,16 +42,18 @@ from pathlib import Path
 from typing import Any, Callable
 
 from . import analyze as analyze_mod
-from . import bgcontrol, bgqueue
+from . import compound as compound_mod
+from . import bgcontrol, bgqueue, forwardtest
 from . import cumulative as cumulative_mod
-from . import docs_browser, live_run, pnl as pnl_mod, presets as presets_mod
+from . import docs_browser, live_run, pnl as pnl_mod, presets as presets_mod, wallet as wallet_mod
+from . import portfolio as portfolio_mod
 from . import liquidity as liq
 from . import top5 as top5_mod
 from .config import INTERVALS, Settings, load_settings, save_settings
 from .netpct import labelled, net_pct
 from .paper import MODE_LABEL, PaperSession, start_session
 from .reference import FAMILY_NOTES, RESEARCH_DRIVERS, RESEARCH_FINDINGS, SIGNAL_REFERENCE
-from .roster import Roster, RosterError, available_strategies
+from .roster import Roster, RosterEntry, RosterError, available_strategies
 from .runner import SweepRunner, engine_config, load_arrays
 from .signals import (
     SIGNAL_GROUPS,
@@ -185,6 +187,9 @@ class Runtime:
         self.queue_results: list[bgqueue.JobResult] = []
         self.queue_cursor = bgqueue.ResultsCursor()
         self.lock = threading.RLock()
+        self.forward_plan: dict[str, Any] | None = None
+        self.forward_stop = threading.Event()
+        self.forward_busy = False
         self._catalog: list[docs_browser.DocEntry] | None = None
         self._catalog_key: tuple | None = None
 
@@ -235,7 +240,7 @@ class Context:
     @classmethod
     def from_settings(cls, settings: Settings, runtime: Runtime | None = None) -> "Context":
         roster = Roster.from_list(settings.roster or [{"name": n} for n in settings.enabled_strategies])
-        if len(roster) == 0:
+        if len(roster) == 0 and settings.enabled_strategies:
             roster = Roster.default()
         return cls(settings, roster, from_dict(settings.signal_defaults), runtime)
 
@@ -484,17 +489,21 @@ def dispatch(name: str, params: dict[str, Any] | None = None, surface: str = "ap
 _SETTING_CASTS = {
     "asset": str, "start": str, "end": str, "interval": str, "capital": float,
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,
+    "solana_address": str, "base_address": str, "eth_address": str, "hyperliquid_address": str,
+    "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
 }
 
 
-@command("settings.get", "The saved settings (asset, interval, dates, costs, CPCV geometry).")
+@command("settings.get", "The saved settings (asset, interval, dates, costs, CPCV geometry, public wallet "
+         "addresses). Extended public keys are shown as a short prefix and a *_set flag, never in full.")
 def settings_get(ctx: Context, p: dict[str, Any]) -> Any:
-    return {"settings": ctx.settings.to_dict(), "intervals": list(INTERVALS)}
+    return {"settings": ctx.settings.public_dict(), "intervals": list(INTERVALS)}
 
 
 @command(
     "settings.save",
-    "Validate and save settings. Only the parameters you pass change.",
+    "Validate and save settings. Only the parameters you pass change. An empty string clears a wallet "
+    "field. Private keys are refused: settings take public addresses and extended public keys only.",
     tuple(P(n, "number" if c in (int, float) else "string", f"Setting {n}.")
           for n, c in _SETTING_CASTS.items()),
     read_only=False,
@@ -517,7 +526,7 @@ def settings_save(ctx: Context, p: dict[str, Any]) -> Any:
                       "roster": ctx.roster.to_list()})
     path = save_settings(new)
     ctx.settings = new
-    return {"path": str(path), "settings": new.to_dict()}
+    return {"path": str(path), "settings": new.public_dict()}
 
 
 # -- strategies and roster -----------------------------------------------------------------------
@@ -531,6 +540,34 @@ def _entry(e) -> dict[str, Any]:
 @command("strategies.list", "Every registered strategy and its family.")
 def strategies_list(ctx: Context, p: dict[str, Any]) -> Any:
     return [{"name": n, "family": f} for n, f in available_strategies()]
+
+
+def _testable_strategies() -> set[str]:
+    """Registry names the background sweep can run: a buildable card with its data on hand."""
+    from backtester.core.strategy_cards import load_all
+
+    return {c.registry_key or c.id for c in load_all().values() if c.buildable and c.data_available}
+
+
+@command("strategies.history",
+         "Per registered strategy: tested or not, how many runs, when last, and the card-preset result.")
+def strategies_history(ctx: Context, p: dict[str, Any]) -> Any:
+    history = bgqueue.strategy_history(_queue_results(ctx), ctx.settings.asset)
+    testable = _testable_strategies()
+    rows = []
+    for name, family in available_strategies():
+        h = history.get(name, bgqueue.StrategyHistory(name))
+        rows.append({
+            "name": name, "family": family, "testable": name in testable, "tested": h.tested,
+            "runs": h.runs, "evaluable": h.evaluable, "ranked": h.ranked, "positive": h.positive,
+            "last_at": h.last_at,
+            "last_tested": bgqueue.format_when(h.last_at) if h.tested else "never",
+            "result": h.result_text if (h.tested or name in testable) else "no card or data to test it",
+            "preset": dataclasses.asdict(h.preset) if h.preset else None,
+        })
+    return {"asset": ctx.settings.asset, "rows": rows,
+            "tested": sum(1 for r in rows if r["tested"]),
+            "untested": sum(1 for r in rows if not r["tested"] and r["testable"])}
 
 
 @command("strategies.source", "Catalogue path of the file that defines a strategy, or null.",
@@ -575,6 +612,132 @@ def roster_remove(ctx: Context, p: dict[str, Any]) -> Any:
     removed = ctx.roster.remove(p["label"])
     ctx.persist_roster()
     return {"removed": _entry(removed), "count": len(ctx.roster)}
+
+
+@command("roster.toggle", "Toggle the highlighted strategy configuration in the roster.",
+         (P("name", "string", "Registered strategy name.", True),
+          P("params", "json", "Explicit parameters (optional).")), read_only=False)
+def roster_toggle(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core.strategies import build
+
+    name, params = p["name"], p.get("params") or {}
+    if not isinstance(params, dict):
+        raise CommandError("bad_params", "params must be an object")
+    matching = [e for e in ctx.roster if e.name == name]
+    if not params and len(matching) == 1:
+        return roster_remove(ctx, {"label": matching[0].label})
+    merged = merged_params(name, ctx.signals, params)
+    if name not in dict(available_strategies()):
+        raise CommandError("bad_params", f"Unknown strategy {name!r}")
+    label = build(name, **merged).name
+    if any(e.label == label for e in matching):
+        return roster_remove(ctx, {"label": label})
+    if matching and not params:
+        raise CommandError("bad_params", "Several versions are in the roster; highlight one on the right to remove it")
+    return roster_add(ctx, {"name": name, "params": params})
+
+
+@command("roster.add_all", "Add every missing registered strategy using the signal defaults.", read_only=False)
+def roster_add_all(ctx: Context, p: dict[str, Any]) -> Any:
+    present = {e.name for e in ctx.roster}
+    # Validate all additions before replacing the roster or saving anything.
+    roster = Roster(ctx.roster.entries)
+    added = [_entry(roster.add(name, **merged_params(name, ctx.signals)))
+             for name, _ in available_strategies() if name not in present]
+    ctx.roster = roster
+    ctx.persist_roster()
+    return {"added": added, "count": len(roster)}
+
+
+@command("forwardtest.start", "Prepare an in-session adaptive paper forward test.",
+         (P("scope", "string", "all, roster, or combinations."),
+          P("horizons", "json", "Subset of 1, 5, 10 and 30 minutes. Default: all four."),
+          P("combinations", "json", "Lists of strategy names or roster labels."),
+          P("mode", "string", "Combination rule: all, any, vote or mean.")), read_only=False)
+def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core.strategies import COMBINE_MODES
+
+    scope = p.get("scope", "all")
+    horizons = p.get("horizons", list(forwardtest.HORIZONS))
+    combos = p.get("combinations", [])
+    mode = p.get("mode", "all")
+    if scope not in ("all", "roster", "combinations") or mode not in COMBINE_MODES:
+        raise CommandError("bad_params", "Choose a valid trial scope and combination rule")
+    if (not isinstance(horizons, list) or not horizons
+            or any(type(h) is not int or h not in forwardtest.HORIZONS for h in horizons)):
+        raise CommandError("bad_params", "Horizons must be chosen from 1, 5, 10 and 30")
+    if (not isinstance(combos, list) or len(combos) > 8
+            or any(not isinstance(c, list) or not 2 <= len(c) <= 8
+                   or any(not isinstance(v, str) for v in c) or len(set(c)) != len(c) for c in combos)):
+        raise CommandError("bad_params", "Enter up to 8 combinations of 2–8 distinct names or roster labels")
+
+    roster = {e.label: e for e in ctx.roster}
+    entries = list(roster.values())
+    if scope != "roster":
+        present = {e.name for e in entries}
+        entries.extend(RosterEntry(n, merged_params(n, ctx.signals))
+                       for n, _ in available_strategies() if n not in present)
+    labels = {e.label: e for e in entries}
+    for e in entries:
+        labels.setdefault(e.name, e)
+
+    def spec(e: RosterEntry) -> dict:
+        return forwardtest.member(e.name, e.params)
+
+    trials = [{"label": e.label, "mode": "all", "members": [spec(e)]}
+              for e in entries] if scope != "combinations" else []
+    for combo in combos:
+        unknown = next((name for name in combo if name not in labels), None)
+        if unknown is not None:
+            raise CommandError("bad_params", f"Unknown combination member: {unknown}")
+        members = sorted((labels[n] for n in combo), key=lambda e: e.label)
+        if len({e.label for e in members}) != len(members):
+            raise CommandError("bad_params", "A combination cannot include the same configuration twice")
+        trials.append({"label": f"{mode}({', '.join(e.label for e in members)})",
+                       "mode": mode, "members": [spec(e) for e in members]})
+    if not trials:
+        raise CommandError("bad_params", "Add a strategy or enter a combination first")
+    asset = bgqueue.validate_asset(ctx.settings.asset)
+    cost = 2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps)
+    rt = ctx.runtime
+    with rt.lock:
+        if rt.forward_plan or rt.forward_busy:
+            raise CommandError("failed", "A forward test is running or stopping")
+        rt.forward_stop.clear()
+        rt.forward_plan = {"asset": asset, "trials": trials, "horizons": tuple(sorted(set(horizons))),
+                           "cost": cost, "code": forwardtest.revision()}
+    return {"asset": asset, "trials": len(trials), "horizons": sorted(set(horizons)), "cost_bps": cost}
+
+
+@command("forwardtest.stop", "Stop issuing forward predictions in this session.", read_only=False)
+def forwardtest_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        rt.forward_stop.set()
+        rt.forward_plan = None
+        return {"stopping": rt.forward_busy}
+
+
+@command("forwardtest.tick", "Settle due predictions and record the next paper calls.",
+         read_only=False, long_running=True)
+def forwardtest_tick(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        plan = rt.forward_plan
+        if plan is None or rt.forward_busy:
+            raise CommandError("failed", "Forwardtest is stopped or already checking prices")
+        rt.forward_busy = True
+    try:
+        return {"asset": plan["asset"], **forwardtest.tick(**plan, stop=rt.forward_stop)}
+    finally:
+        with rt.lock:
+            rt.forward_busy = False
+
+
+@command("forwardtest.status", "Read saved forward results, separately for each forecast horizon.")
+def forwardtest_status(ctx: Context, p: dict[str, Any]) -> Any:
+    asset = bgqueue.validate_asset(ctx.settings.asset)
+    return {"asset": asset, "rows": forwardtest.status(asset)}
 
 
 @command("roster.reset", "Restore the backtester's default comparison set.", read_only=False)
@@ -660,10 +823,24 @@ def backtest_cancel(ctx: Context, p: dict[str, Any]) -> Any:
     return {"cancelling": True}
 
 
-@command("backtest.run", "CPCV sweep over the roster, ranked by median Sharpe. Blocks until done.",
+@command("backtest.run", "CPCV sweep over the roster (or the listed roster labels), ranked by median "
+         "Sharpe. Blocks until done.",
+         (P("labels", "json", "Roster labels to test; default the whole roster."),),
          read_only=False, long_running=True)
 def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
-    ctx.runner.start(ctx.roster, ctx.settings)
+    roster = ctx.roster
+    labels = p.get("labels")
+    if labels is not None:
+        if not isinstance(labels, list) or not labels or not all(isinstance(x, str) for x in labels):
+            raise CommandError("bad_params", "labels must be a non-empty list of roster labels")
+        unknown = [x for x in labels if x not in roster.labels]
+        if unknown:
+            raise CommandError("bad_params", f"not in the roster: {', '.join(unknown)}")
+        roster = Roster([e for e in roster if e.label in labels])
+    try:
+        ctx.runner.start(roster, ctx.settings)
+    except (RuntimeError, ValueError) as exc:
+        raise CommandError("failed", str(exc)) from exc
     ctx.runner.join()
     outcome = ctx.runner.outcome
     if outcome is None:
@@ -944,6 +1121,22 @@ def _queue_progress(ctx: Context, state: bgqueue.QueueState) -> dict[str, Any]:
             "percent": state.percent, "remaining": state.remaining}
 
 
+def _queue_results(ctx: Context) -> list[bgqueue.JobResult]:
+    """Every result so far, reading only what the worker appended since the last call.
+
+    The results file grows without bound, so re-reading it whole on each poll would make watching
+    a sweep quadratic in its length.
+    """
+    rt = ctx.runtime
+    with rt.lock:
+        fresh, cursor, restarted = bgqueue.read_results_since(rt.queue_cursor)
+        if restarted:
+            rt.queue_results = []  # truncated or replaced: what we hold belongs to a dead sweep
+        rt.queue_results.extend(fresh)
+        rt.queue_cursor = cursor
+        return list(rt.queue_results)
+
+
 @command("queue.progress", "Background sweep progress line (cheap; no results re-read).")
 def queue_progress(ctx: Context, p: dict[str, Any]) -> Any:
     return _queue_progress(ctx, bgqueue.read_state())
@@ -951,15 +1144,7 @@ def queue_progress(ctx: Context, p: dict[str, Any]) -> Any:
 
 @command("queue.status", "Background sweep: progress, missing price data and the ranked leaderboard.")
 def queue_status(ctx: Context, p: dict[str, Any]) -> Any:
-    rt = ctx.runtime
-    with rt.lock:
-        # Only what the worker appended since last time: the results file grows without bound.
-        fresh, cursor, restarted = bgqueue.read_results_since(rt.queue_cursor)
-        if restarted:
-            rt.queue_results = []  # truncated or replaced: what we hold belongs to a dead sweep
-        rt.queue_results.extend(fresh)
-        rt.queue_cursor = cursor
-        results = list(rt.queue_results)
+    results = _queue_results(ctx)
     ranked, floor = bgqueue.leaderboard(results, ctx.settings.asset)
     missing = _missing_series(ctx)
     fetch_log = bgqueue.BG_DIR / "fetch.log"
@@ -988,6 +1173,75 @@ def queue_start(ctx: Context, p: dict[str, Any]) -> Any:
     return {"started": True, "asset": ctx.settings.asset}
 
 
+BACKTEST_SCOPES = ("selected", "untested", "undertested", "all")
+# "Little testing": fewer recorded configurations than this for the asset.
+UNDERTESTED_MIN_RUNS = 3
+
+
+@command("queue.backtest",
+         "Backtest strategies in the background at each card's own parameters (all horizons). "
+         "Scope selected, untested, undertested (never tested, or fewer than min_runs recorded "
+         "configurations; also runs the near variations so each gets several) or all; skips "
+         "configurations already recorded for this code and data.",
+         (P("scope", "string", "selected, untested, undertested or all.", True),
+          P("names", "json", "List of registered strategy names; required when scope is selected."),
+          P("min_runs", "number", f"undertested only: fewer recorded runs than this counts as little "
+                                  f"testing (default {UNDERTESTED_MIN_RUNS}).")),
+         read_only=False)
+def queue_backtest(ctx: Context, p: dict[str, Any]) -> Any:
+    scope = p["scope"]
+    if scope not in BACKTEST_SCOPES:
+        raise CommandError("bad_params", f"scope must be one of {', '.join(BACKTEST_SCOPES)}")
+    testable = _testable_strategies()
+    max_tier = 0
+    note = ""
+    if scope == "selected":
+        names = p.get("names")
+        if not isinstance(names, list) or not names or not all(isinstance(n, str) for n in names):
+            raise CommandError("bad_params", 'scope "selected" needs "names" as a non-empty list')
+        untestable = [n for n in names if n not in testable]
+        if untestable:
+            raise CommandError(
+                "failed", f"cannot backtest {', '.join(untestable)}: no buildable card with data")
+    elif scope == "untested":
+        history = bgqueue.strategy_history(_queue_results(ctx), ctx.settings.asset)
+        names = sorted(n for n in testable if n not in history)
+    elif scope == "undertested":
+        min_runs = int(UNDERTESTED_MIN_RUNS if p.get("min_runs") is None else p["min_runs"])
+        if min_runs < 1:
+            raise CommandError("bad_params", "min_runs must be at least 1")
+        history = bgqueue.strategy_history(_queue_results(ctx), ctx.settings.asset)
+        never = sorted(n for n in testable if n not in history)
+        thin = sorted(n for n in testable if n in history and history[n].runs < min_runs)
+        names = never + thin
+        # The card's own parameters are one configuration per horizon; a strategy with little
+        # testing needs more than that, so the near variations run too.
+        max_tier = 1
+        note = f" ({len(never)} never tested, {len(thin)} with fewer than {min_runs} runs)"
+    else:
+        names = sorted(testable)
+    asset = ctx.settings.asset
+    if not names:
+        return {"started": False, "scope": scope, "strategies": [], "jobs": 0,
+                "message": "nothing to backtest: every strategy already has a recorded run"
+                + (" and enough testing" if scope == "undertested" else "")}
+    jobs = bgqueue.build_queue(asset, max_tier=max_tier, strategies=names)
+    todo = bgqueue.pending(jobs, bgqueue.completed_ids(bgqueue.read_results()))
+    if not todo:
+        return {"started": False, "scope": scope, "strategies": names, "jobs": 0,
+                "message": f"already tested: all {len(jobs)} configuration(s) have recorded results"}
+    try:
+        bgcontrol.start(asset, max_tier=max_tier, strategies=names)
+    except RuntimeError as exc:
+        raise CommandError(
+            "failed", f"{exc}; stop it on the Queue tab first, or wait for it to finish") from exc
+    except Exception as exc:  # noqa: BLE001
+        raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
+    return {"started": True, "scope": scope, "strategies": names, "jobs": len(todo), "asset": asset,
+            "message": f"started: {len(todo)} configuration(s) across {len(names)} strategy(ies){note}, "
+                       "results appear in the table as they finish"}
+
+
 @command("queue.stop", "Ask the background sweep to stop at the next job boundary.", read_only=False)
 def queue_stop(ctx: Context, p: dict[str, Any]) -> Any:
     return {"stopping": bool(bgcontrol.stop())}
@@ -1006,6 +1260,214 @@ def queue_fetch(ctx: Context, p: dict[str, Any]) -> Any:
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
     return {"fetching": [{"asset": m.asset, "interval": m.interval} for m in missing],
             "log": str(bgqueue.BG_DIR / "fetch.log")}
+
+
+# -- compound five-minute scorecard (backtester/core/scorecard.py; soltui/compound.py) ----------
+
+
+def _compound_asset(ctx: Context, p: dict[str, Any]) -> str:
+    return str(p.get("asset") or ctx.settings.asset)
+
+
+def _compound(fn, *args, **kwargs) -> Any:
+    """Run a compound helper, mapping its user-facing errors onto the `failed` envelope."""
+    from backtester.core import compound as cbt
+    from backtester.core import scorecard as sc
+    try:
+        return fn(*args, **kwargs)
+    except (compound_mod.CompoundError, cbt.CompoundDataError, sc.ScorecardError) as exc:
+        raise CommandError("failed", str(exc)) from exc
+
+
+@command("compound.catalog", "Every five-minute scorecard component and gate: formula, parameters, "
+         "when it works and when it fails; plus catalogue entries that are not direction calls.")
+def compound_catalog(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    return sc.catalog()
+
+
+@command("compound.config", "The compound configuration for a coin (the shared base with that coin's "
+         "own settings on top), its hash, the coin's own overrides, and the scheduled-event list.",
+         (P("asset", "string", "Coin; default the configured asset."),))
+def compound_config(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    asset = _compound_asset(ctx, p)
+    state = _compound(compound_mod.load_state, asset)
+    return {"config": state["config"], "config_hash": sc.config_hash(state["config"]),
+            "events": state["events"], "asset": state["asset"],
+            "own_settings": state["overrides"].get(state["asset"], {}),
+            "coins_with_own_settings": sorted(state["overrides"])}
+
+
+@command("compound.save",
+         "Update the compound configuration: a partial patch {components: {id: {enabled, weight, "
+         "params}}, aggregate, execution, blocked_hours}, and/or replace the event list.",
+         (P("patch", "json", "Partial configuration to merge."),
+          P("events", "json", "Scheduled events [{ts: epoch seconds, title}] (replaces the list)."),
+          P("asset", "string", "With scope coin: the coin whose own settings change."),
+          P("scope", "string", "all (default: the shared base every coin starts from) or coin.")),
+         read_only=False)
+def compound_save(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    patch, events = p.get("patch"), p.get("events")
+    scope = p.get("scope") or "all"
+    if scope not in ("all", "coin"):
+        raise CommandError("bad_params", "scope must be all or coin")
+    if patch is not None and not isinstance(patch, dict):
+        raise CommandError("bad_params", "patch must be an object")
+    if events is not None and not isinstance(events, list):
+        raise CommandError("bad_params", "events must be a list")
+    if patch is None and events is None:
+        raise CommandError("bad_params", "give a patch, events, or both")
+    asset = _compound_asset(ctx, p) if scope == "coin" else None
+    state = _compound(compound_mod.save_state, patch, events, asset=asset)
+    if asset is None and p.get("asset"):
+        state = _compound(compound_mod.load_state, p["asset"])  # show the asked-for coin's view
+    return {"config": state["config"], "config_hash": sc.config_hash(state["config"]),
+            "events": state["events"], "asset": state["asset"], "scope": scope}
+
+
+@command("compound.reset", "Restore defaults: scope coin clears one coin's own settings; scope all resets "
+         "the shared base; scope everything also clears every coin's own settings.",
+         (P("asset", "string", "With scope coin: the coin to clear."),
+          P("scope", "string", "all (default), coin or everything.")),
+         read_only=False)
+def compound_reset(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    scope = p.get("scope") or "all"
+    if scope not in ("all", "coin", "everything"):
+        raise CommandError("bad_params", "scope must be all, coin or everything")
+    asset = _compound_asset(ctx, p) if scope == "coin" else None
+    state = _compound(compound_mod.save_state, None, None, reset=True, asset=asset,
+                      reset_all=scope == "everything")
+    if asset is None and p.get("asset"):
+        state = _compound(compound_mod.load_state, p["asset"])
+    return {"config": state["config"], "config_hash": sc.config_hash(state["config"]), "scope": scope}
+
+
+@command("compound.signal",
+         "Score the latest CLOSED 5m bar live (public Coinbase candles; Hyperliquid and RSS only for "
+         "components that need them) and explain every metric's score, weight and vote. No order path.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),),
+         long_running=True)
+def compound_signal(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.signal, _compound_asset(ctx, p), wallet_address=ctx.settings.solana_address,
+                     hyperliquid_address=ctx.settings.hyperliquid_address)
+
+
+@command("compound.backtest",
+         "Backtest the saved compound and each enabled component alone on cached 5m data: next-bar hit "
+         "rate and engine P&L net of fees, in-sample vs out-of-sample. Appends to the results file.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("all", "bool", "Every coin with cached data, in parallel processes, each with its own settings."),
+          P("perturb", "bool", "Also run one-at-a-time parameter variations."),
+          P("aggregate_grid", "bool", "Also run threshold, gate, regime and leverage variations."),
+          P("frontier", "bool", "Also run every metric alone (on or off): its strongest 2% of readings, "
+                                "held 1 h, 4 h and 24 h.")),
+         read_only=False, long_running=True)
+def compound_backtest(ctx: Context, p: dict[str, Any]) -> Any:
+    if p.get("all"):
+        return _compound(compound_mod.backtest_all, perturb=bool(p.get("perturb")),
+                         aggregate_grid=bool(p.get("aggregate_grid")), frontier=bool(p.get("frontier")))
+    return _compound(compound_mod.backtest, _compound_asset(ctx, p), perturb=bool(p.get("perturb")),
+                     aggregate_grid=bool(p.get("aggregate_grid")), frontier=bool(p.get("frontier")))
+
+
+@command("compound.results", "The latest compound backtest run and the all-time OOS leaderboard "
+         "(evidence floor applied: thin rows are listed, never ranked).",
+         (P("asset", "string", "Limit to one asset; default every asset."),))
+def compound_results(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.latest_results, p.get("asset") or None)
+
+
+@command("compound.forward_tick",
+         "Forward test: record the call for the latest closed 5m bar (once per configuration) and "
+         "resolve earlier calls whose next bar has closed. Read-only market data; no orders.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),),
+         read_only=False, long_running=True)
+def compound_forward_tick(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.forward_tick, _compound_asset(ctx, p),
+                     wallet_address=ctx.settings.solana_address,
+                     hyperliquid_address=ctx.settings.hyperliquid_address)
+
+
+@command("compound.unattended_start",
+         "Start fully unattended forward training: a detached background process that records and "
+         "resolves one call per closed 5m bar (learning from each) until stopped. Survives closing the "
+         "console. Read-only market data; no orders.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("all", "bool", "Every coin: one process each, staggered a few seconds apart.")),
+         read_only=False)
+def compound_unattended_start(ctx: Context, p: dict[str, Any]) -> Any:
+    if p.get("all"):
+        return _compound(compound_mod.start_unattended_all)
+    return _compound(compound_mod.start_unattended, _compound_asset(ctx, p))
+
+
+@command("compound.unattended_stop", "Stop the unattended forward training for an asset (it finishes "
+         "the current tick, then exits).",
+         (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("all", "bool", "Stop every coin's unattended run.")),
+         read_only=False)
+def compound_unattended_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    if p.get("all"):
+        return _compound(compound_mod.stop_unattended_all)
+    return _compound(compound_mod.stop_unattended, _compound_asset(ctx, p))
+
+
+@command("compound.autopilot",
+         "Turn autopilot for the compound 5m trainer on or off. On: tuning runs, each forward tick "
+         "adopts evidence-gated tuned settings as the coin's own, and every coin's unattended loop is "
+         "kept running (any coin not running starts now). Off: no automatic adoption or restarts; "
+         "running loops keep going. Read-only market data; no orders.",
+         (P("enabled", "bool", "true turns autopilot on, false turns it off.", required=True),),
+         read_only=False)
+def compound_autopilot(ctx: Context, p: dict[str, Any]) -> Any:
+    on = bool(p["enabled"])
+    _compound(compound_mod.set_autopilot, on)
+    started = _compound(compound_mod.autopilot_ensure) if on else None
+    return {**_compound(compound_mod.autopilot_status), "ensure": started}
+
+
+@command("compound.autopilot_status",
+         "Autopilot for the compound 5m trainer: the switch, which coins train now, the LaunchAgent "
+         "that keeps them training, and the most recent automatic adoptions of tuned settings.")
+def compound_autopilot_status(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.autopilot_status)
+
+
+@command("compound.autopilot_ensure",
+         "With autopilot on, start every coin's unattended forward-training loop that is not running "
+         "(what the autopilot LaunchAgent runs every five minutes). Does nothing when autopilot is off.",
+         read_only=False)
+def compound_autopilot_ensure(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.autopilot_ensure)
+
+
+@command("compound.overview", "One row per coin: its own settings, cached data, latest backtest verdict, "
+         "forward-test calls and hit rate, paper dollars, and whether unattended training runs.")
+def compound_overview(ctx: Context, p: dict[str, Any]) -> Any:
+    return {"coins": _compound(compound_mod.overview)}
+
+
+@command("compound.unattended_status", "Whether unattended forward training is running for an asset, "
+         "since when, and its last log line.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),))
+def compound_unattended_status(ctx: Context, p: dict[str, Any]) -> Any:
+    return _compound(compound_mod.unattended_status, _compound_asset(ctx, p))
+
+
+@command("compound.forward_status",
+         "Forward-test hit rates for the compound, the compound without gates, and each component "
+         "alone, plus the most recent calls.",
+         (P("asset", "string", "Asset symbol; default the configured asset."),
+          P("current_only", "bool", "Only calls made under the current configuration.")))
+def compound_forward_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from backtester.core import scorecard as sc
+    h = None
+    if p.get("current_only"):
+        h = sc.config_hash(_compound(compound_mod.load_state)["config"])
+    return _compound(compound_mod.forward_status, _compound_asset(ctx, p), h)
 
 
 # -- liquidity (read-only view of the aero-lp daemon, plus its KILL file) ------------------------
@@ -1056,6 +1518,51 @@ def liquidity_status(ctx: Context, p: dict[str, Any]) -> Any:
     return out
 
 
+_SCOUT_FIELDS = ("pool", "pair", "token0", "token1", "tick_spacing", "fee_pct", "tvl_usd", "volume_24h_usd",
+                 "expected_net_apr", "backtest_net_apr", "backtest_days", "best_mode", "best_half_width_pct",
+                 "confidence", "flags", "gauge_active", "history_days", "break_even_deposit_usd")
+# Every APR here is in percent: apr_realized (STATE_FILES.md) and the scout's *_net_apr (scout.format_report).
+_POSITION_FIELDS = ("slot", "token_id", "pool", "pair", "tick_spacing", "in_range", "value_usd", "deposited_usd",
+                    "pnl_usd", "pnl_vs_hodl_usd", "apr_realized", "opened_at", "decision")
+_WALLET_TOKEN_FIELDS = ("symbol", "address", "amount", "usd", "idle")
+
+
+def _pick(row: Any, fields: tuple[str, ...]) -> dict[str, Any]:
+    return {k: row[k] for k in fields if isinstance(row, dict) and k in row}
+
+
+@command("liquidity.data",
+         "Machine-readable aero-lp state for the extension's alerts: the scout's measured pools (expected and "
+         "backtest net APR, in percent), the daemon's positions and its idle wallet balances. Read-only.",
+         (P("top", "number", "Scout pools to return, best first (default 25, at most 100)."),))
+def liquidity_data(ctx: Context, p: dict[str, Any]) -> Any:
+    top = p.get("top", 25)
+    if not math.isfinite(float(top)) or int(top) < 1:
+        raise CommandError("bad_params", 'parameter "top" must be a positive number')
+    home = liq.state_dir()
+    status = liq.load_status(home)
+    scout = liq.load_scout(home)
+    sdoc = scout.data or {}
+    st = status.data or {}
+    wallet = st.get("wallet") if isinstance(st.get("wallet"), dict) else {}
+    return {
+        "status_ok": status.data is not None, "status_reason": status.reason,
+        "scout_ok": scout.data is not None, "scout_reason": scout.reason,
+        "killed": liq.is_killed(home) or bool(st.get("killed")),
+        "mode": st.get("mode"),
+        "scout": {
+            "generated_at": sdoc.get("generated_at"), "deposit_usd": sdoc.get("deposit_usd"),
+            "pools": [_pick(r, _SCOUT_FIELDS) for r in (sdoc.get("pools") or [])[:min(100, int(top))]
+                      if isinstance(r, dict)],
+            "measured": True,
+        },
+        "positions": [_pick(r, _POSITION_FIELDS) for r in liq.positions_of(st)],
+        "wallet": {"idle_usd": wallet.get("idle_usd"), "deployed_usd": wallet.get("deployed_usd"),
+                   "tokens": [_pick(t, _WALLET_TOKEN_FIELDS) for t in (wallet.get("tokens") or [])
+                              if isinstance(t, dict)]},
+    }
+
+
 def _liq_write(on: bool) -> dict[str, Any]:
     try:
         liq.set_kill(on)
@@ -1101,6 +1608,77 @@ def docs_list(ctx: Context, p: dict[str, Any]) -> Any:
         "shown": len(shown), "kinds": docs_browser.kinds_of(entries),
         "headline": docs_browser.summarise_catalog(entries),
     }
+
+
+DOCS_SEARCH_MODES = ("keyword", "semantic", "hybrid")
+
+
+def _repo_search():
+    """The index/search.py module, imported on first use and never before.
+
+    The keyword postings (12 MB of JSON), the embedding matrix and the ~670 MB embedding model
+    are only worth holding while someone is searching, so nothing here runs at import time and
+    `docs.search_unload` can give it all back.
+    """
+    import importlib.util
+
+    module = sys.modules.get("repo_index_search")
+    if module is None:
+        path = REPO / "index" / "search.py"
+        spec = importlib.util.spec_from_file_location("repo_index_search", path)
+        if spec is None or spec.loader is None:
+            raise CommandError("failed", f"cannot load {path}")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules["repo_index_search"] = module
+        try:
+            spec.loader.exec_module(module)
+        except BaseException:
+            sys.modules.pop("repo_index_search", None)
+            raise
+    return module
+
+
+@command("docs.search",
+         "Search the repo index: keyword (BM25), semantic (mxbai-embed-large via local ollama, "
+         "started if needed) or hybrid. Loads the index on first use.",
+         (P("query", "string", "What to look for.", True),
+          P("mode", "string", "keyword, semantic or hybrid (default hybrid)."),
+          P("kind", "string", "Restrict to a file kind, e.g. code-python."),
+          P("limit", "number", "Max hits (default 30).")),
+         read_only=False, long_running=True)
+def docs_search(ctx: Context, p: dict[str, Any]) -> Any:
+    query = str(p["query"]).strip()
+    mode = p.get("mode") or "hybrid"
+    if not query:
+        raise CommandError("bad_params", "query must not be empty")
+    if mode not in DOCS_SEARCH_MODES:
+        raise CommandError("bad_params", f"mode must be one of {', '.join(DOCS_SEARCH_MODES)}")
+    try:
+        limit = max(1, min(int(p.get("limit", 30)), 200))
+    except (TypeError, ValueError) as exc:
+        raise CommandError("bad_params", 'parameter "limit" must be a number') from exc
+    search = _repo_search()
+    try:
+        result = search.run_query(query, mode, limit, p.get("kind") or None)
+    except SystemExit as exc:  # search.load() exits with the rebuild command when an index is missing
+        raise CommandError("failed", str(exc)) from exc
+    # The Docs tab only opens catalogued files, so only catalogued files are listed.
+    editable = {e.path: docs_browser.is_editable(e) for e in ctx.catalog()}
+    hits = [{"path": h.path, "kind": h.kind, "lines": h.lines, "summary": h.summary,
+             "score": round(h.score, 4), "editable": editable[h.path]}
+            for h in result.hits if h.path in editable]
+    return {"query": query, "mode": mode, "mode_used": result.mode_used, "hits": hits,
+            "notes": result.notes}
+
+
+@command("docs.search_unload",
+         "Free the search index from memory and ask ollama to unload the embedding model.",
+         read_only=False)
+def docs_search_unload(ctx: Context, p: dict[str, Any]) -> Any:
+    module = sys.modules.get("repo_index_search")
+    if module is None:
+        return {"message": "search was never loaded in this process; nothing to free"}
+    return {"message": module.unload()}
 
 
 @command("docs.read", "Read one catalogued file.", (P("path", "string", "Catalogue path.", True),))
@@ -1225,6 +1803,24 @@ def _lp_curves() -> list[tuple[str, list[pnl_mod.Curve], list[str]]]:
     return [(source, [curve] if curve else [], notes)]
 
 
+def _wallet_curves() -> tuple[list[pnl_mod.Curve], list[str]]:
+    """Wallet value at each complete portfolio snapshot (the hourly job and portfolio.scan append them)."""
+    snaps = portfolio_mod.load_snapshots()
+    rows, left_out = portfolio_mod.value_rows(snaps)
+    if not snaps:  # snapshots began after the single-scan history; use that only when there are none
+        rows = [r for r in wallet_mod.load_history() if not r.get("partial")]
+    curve = pnl_mod.curve_from_wallet_history(rows)
+    if curve is None:
+        return [], ["no wallet snapshot recorded yet: run portfolio.snapshot (the hourly job does) to add a point"]
+    notes = [curve.note, f"{len(rows)} snapshot(s) used"]
+    if left_out:
+        notes.append(f"{left_out} snapshot(s) left out: a chain read partially, had no USD price, or the set of "
+                     "wallets was different")
+    if len(rows) == 1:
+        notes.append("history starts with the first snapshot; a second snapshot is needed to show a change")
+    return [curve], notes
+
+
 def _pnl_report(ctx: Context, p: dict[str, Any]) -> dict[str, Any]:
     try:
         window = pnl_mod.resolve_window(p.get("window"), p.get("start"), p.get("end"))
@@ -1242,6 +1838,9 @@ def _pnl_report(ctx: Context, p: dict[str, Any]) -> dict[str, Any]:
     if wanted("dry-run"):
         c, n = _journal_curves()
         inputs.append(("dry-run", c, n))
+    if wanted("wallet (live)"):
+        c, n = _wallet_curves()
+        inputs.append(("wallet (live)", c, n))
     if wanted("dry-run LP", "live LP", "reported LP"):
         for src, c, n in _lp_curves():
             if only is None or only == src or (only == "live LP" and src == "reported LP"):
@@ -1282,3 +1881,292 @@ def pnl_series(ctx: Context, p: dict[str, Any]) -> Any:
          PNL_PARAMS)
 def pnl_breakdown(ctx: Context, p: dict[str, Any]) -> Any:
     return _pnl_slice(_pnl_report(ctx, p), _BREAKDOWN_KEYS)
+
+
+# -- wallet (read-only) --------------------------------------------------------------------------
+
+
+def _daemon_context() -> dict[str, Any]:
+    """What the liquidity daemon's own files say about tokens and positions (read-only)."""
+    import sqlite3
+
+    home = liq.state_dir()
+    status = liq.load_status(home).data
+    tokens: list[str] = []
+    ledger = home / "ledger.sqlite"
+    if ledger.exists():
+        try:
+            conn = sqlite3.connect(f"file:{ledger}?mode=ro", uri=True, timeout=2)
+            try:
+                tokens = [r[0] for r in conn.execute("SELECT DISTINCT token FROM wallet_balances")]
+            finally:
+                conn.close()
+        except sqlite3.Error:
+            tokens = []
+    return wallet_mod.daemon_context(status, tokens)
+
+
+@command("wallet.key_sources",
+         "Whether the signing-key files exist and are mode 600, by stat only. Never opens them.")
+def wallet_key_sources(ctx: Context, p: dict[str, Any]) -> Any:
+    return wallet_mod.key_sources()
+
+
+@command("wallet.addresses",
+         "The public Solana and EVM addresses saved in Settings, and nothing else. Extended public keys "
+         "and any key material are never returned. The extension's Wallet pubkey button reads this.")
+def wallet_addresses(ctx: Context, p: dict[str, Any]) -> Any:
+    st = ctx.settings
+    return {"solana_address": st.solana_address, "base_address": st.base_address, "eth_address": st.eth_address,
+            "hyperliquid_address": st.hyperliquid_address,
+            "note": "Public addresses only. Signing keys live in separate files this console never opens."}
+
+
+def _portfolio_scan(ctx: Context, chain: str, extra: list[str] | None = None) -> dict[str, Any]:
+    st = ctx.settings
+    return wallet_mod.scan_wallet(
+        st.solana_address, st.base_address, portfolio_mod.make_fetcher(), chain=chain,
+        daemon=_daemon_context(), extra_tokens=extra, eth_address=st.eth_address,
+        xpubs={"btc": st.btc_xpub, "ltc": st.ltc_xpub, "doge": st.doge_xpub})
+
+
+@command("portfolio.scan",
+         "Find the coins, token contracts, stake accounts, LP positions and UTXO balances at the wallets in "
+         "Settings (Solana, Base, Ethereum, and Bitcoin, Litecoin and Dogecoin from their extended public "
+         "keys), from public endpoints only. Appends a snapshot the P&L tab and portfolio.changes read. "
+         "Derived addresses are counted, never listed.",
+         (P("chain", "string", "all (default), solana, base, ethereum, bitcoin, litecoin or dogecoin."),
+          P("tokens", "json", "Extra Base token contract addresses to check, as a list."),
+          P("record", "bool", "Append this scan as a snapshot (default true; only an all-chain scan is kept).")),
+         read_only=False, long_running=True)
+def portfolio_scan(ctx: Context, p: dict[str, Any]) -> Any:
+    chain = wallet_mod.normalise_chain(p.get("chain") or "all")
+    if chain is None:
+        raise CommandError("bad_params", f'parameter "chain" must be all or one of {", ".join(wallet_mod.CHAINS)}')
+    extra = p.get("tokens")
+    if extra is not None and (not isinstance(extra, list) or not all(isinstance(t, str) for t in extra)):
+        raise CommandError("bad_params", 'parameter "tokens" must be a list of addresses')
+    result = _portfolio_scan(ctx, chain, extra)
+    try:
+        portfolio_mod.save_last_scan(result, chain)
+    except OSError as exc:
+        result.setdefault("notes", []).append(f"scan not kept for the next start: {exc}")
+    # A one-chain scan is not a snapshot of the whole portfolio; recording it would read as the others
+    # having gone to zero.
+    if p.get("record", True) and result["chains"] and chain == "all":
+        try:
+            portfolio_mod.append_snapshot(portfolio_mod.build_snapshot(result))
+        except OSError as exc:
+            result["notes"] = [f"scan not recorded: {exc}"]
+    return result
+
+
+@command("portfolio.last",
+         "The newest wallet scan kept on disk ({chain, saved_at, result}, or result null), so a console "
+         "shows the wallet at once after a restart. No network.")
+def portfolio_last(ctx: Context, p: dict[str, Any]) -> Any:
+    return portfolio_mod.load_last_scan() or {"chain": None, "saved_at": None, "result": None}
+
+
+@command("portfolio.snapshot",
+         "Scan every configured wallet and append one timestamped snapshot to the portfolio history "
+         "(mode 600). Returns counts and USD totals per chain: no addresses. The hourly LaunchAgent runs this.",
+         read_only=False, long_running=True)
+def portfolio_snapshot(ctx: Context, p: dict[str, Any]) -> Any:
+    result = _portfolio_scan(ctx, "all")
+    snap = portfolio_mod.build_snapshot(result)
+    if not snap["chains"]:
+        raise CommandError("failed", "nothing to snapshot: no wallet address or extended public key in Settings")
+    path = portfolio_mod.append_snapshot(snap)
+    chains = {}
+    for name, ch in snap["chains"].items():
+        full = result["chains"][name]
+        chains[name] = {"status": ch["status"], "total_usd": ch["usd"], "usd_complete": ch["usd_complete"],
+                        "unpriced": ch["unpriced"], "holdings": full["counts"]["holdings"],
+                        "balances": ch["balances"],
+                        **({"script_types": ch["script_types"], "derived_addresses": ch["derived_addresses"]}
+                           if "script_types" in ch else {}),
+                        "errors": [f"{e['source']}: {e['message']}" for e in full["errors"]]}
+    return {"label": snap["label"], "at": snap["at"], "partial": result["partial"],
+            "total_usd": snap["total_usd"], "total_complete": snap["total_complete"],
+            "skipped": result["skipped"], "chains": chains, "snapshot_file": str(path)}
+
+
+@command("portfolio.changes",
+         "Balance changes between the latest portfolio snapshot and the previous one (or the newest one at "
+         "least `hours` older). A chain that was partial or failed in either snapshot is skipped, not "
+         "reported as a change.",
+         (P("hours", "number", "Compare against the newest snapshot at least this many hours older."),))
+def portfolio_changes(ctx: Context, p: dict[str, Any]) -> Any:
+    hours = p.get("hours")
+    if hours is not None and (not math.isfinite(float(hours)) or float(hours) <= 0):
+        raise CommandError("bad_params", 'parameter "hours" must be a positive number')
+    return portfolio_mod.changes_report(portfolio_mod.load_snapshots(), None if hours is None else float(hours))
+
+
+@command("portfolio.notice",
+         "One line saying a balance changed since the wallet was last viewed, or null. With mark_seen the "
+         "last-view marker moves to the latest snapshot. The TUI and menu bar show this line.",
+         (P("mark_seen", "bool", "Record that the changes were seen (default false)."),), read_only=False)
+def portfolio_notice(ctx: Context, p: dict[str, Any]) -> Any:
+    return portfolio_mod.notice(mark_seen=bool(p.get("mark_seen", False)))
+
+
+# -- bots and the price stream -------------------------------------------------------------------
+#
+# The Bots tab's grid, triangle-arbitrage and DCA bots (`bots.py`) are simulations: backtests over
+# cached bars, dry-run forward tests over the recorded Coinbase stream (`pricefeed.py`), and an
+# auto-optimizer. None places an order. `prices.start` spawns the detached recorder; it reads public
+# market data only and writes only under <config dir>/prices/.
+
+
+def _bots(fn, *args, **kwargs) -> Any:
+    from . import bots as bots_mod
+    from . import pricefeed
+
+    try:
+        return fn(*args, **kwargs)
+    except (bots_mod.BotError, pricefeed.PriceFeedError) as exc:
+        raise CommandError("failed", str(exc)) from exc
+
+
+def _bot_param(p: dict[str, Any]) -> str:
+    from . import bots as bots_mod
+
+    name = str(p.get("bot") or "").strip().lower()
+    if name not in bots_mod.BOTS:
+        raise CommandError("bad_params", f'parameter "bot" must be one of {", ".join(bots_mod.BOTS)}')
+    return name
+
+
+BOT_PARAM = P("bot", "string", "grid, triangle or dca.", required=True)
+
+
+@command("bots.overview", "Every bot: what it does, its saved configuration, the latest backtest, its forward "
+         "test and the latest auto-optimize verdict; and the coins with cached data.")
+def bots_overview(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.overview, ctx.settings)
+
+
+@command("bots.config", "One bot's configuration, its defaults and the grid auto-optimize searches.",
+         (BOT_PARAM,))
+def bots_config(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    bot = _bot_param(p)
+    return {"bot": bot, "config": _bots(bots_mod.get_config, bot), "defaults": bots_mod.DEFAULTS[bot],
+            "space": bots_mod.SPACE[bot], "about": bots_mod.ABOUT[bot]}
+
+
+@command("bots.save", "Change a bot's configuration: values as a JSON object or text as name=value pairs; "
+         "reset restores the defaults. Unknown names and unbuildable values are refused.",
+         (BOT_PARAM, P("values", "json", "Settings to change, e.g. {\"range_pct\": 10}."),
+          P("text", "string", "Settings as name=value pairs, e.g. range_pct=10 rungs=9."),
+          P("reset", "bool", "Restore the defaults instead.")), read_only=False)
+def bots_save(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    bot = _bot_param(p)
+    if p.get("reset"):
+        return {"bot": bot, "config": _bots(bots_mod.reset_config, bot)}
+    values = p.get("values") or {}
+    if not isinstance(values, dict):
+        raise CommandError("bad_params", 'parameter "values" must be a JSON object')
+    if p.get("text"):
+        values = {**values, **_bots(bots_mod.parse_kv, p["text"])}
+    if not values:
+        raise CommandError("bad_params", "nothing to save: pass values, text or reset")
+    return {"bot": bot, "config": _bots(bots_mod.save_config, bot, values)}
+
+
+@command("bots.backtest", "Start a bot at a past moment (what it would have set from the price then) and "
+         "simulate it forward with fees and slippage; grid and DCA on cached 1h bars, triangle on recorded "
+         "quotes or, failing those, a labelled 1m candle proxy (fetched from Coinbase).",
+         (BOT_PARAM, P("asset", "string", "Coin for grid and DCA; default the configured asset."),
+          P("start", "string", "UTC date or epoch seconds; default 90 days ago (triangle: the recording's start)."),
+          P("days", "number", "How long to run; default to the end of the data or the next gap.")),
+         read_only=False, long_running=True)
+def bots_backtest(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.backtest, _bot_param(p), str(p.get("asset") or ctx.settings.asset), ctx.settings,
+                 start=p.get("start"), days=p.get("days"))
+
+
+@command("bots.results", "Saved bot backtests, newest first.",
+         (P("bot", "string", "Limit to one bot."), P("limit", "number", "How many (default 10).")))
+def bots_results(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    bot = _bot_param(p) if p.get("bot") else None
+    limit = int(p.get("limit") or 10)
+    if not 1 <= limit <= 200:
+        raise CommandError("bad_params", 'parameter "limit" must be in [1, 200]')
+    return _bots(bots_mod.latest_results, bot, limit)
+
+
+@command("bots.forward_start", "Start (or restart) a bot's dry-run forward test now, on its current "
+         "configuration, replaying the recorded price stream as it arrives. Starts the recorder if needed.",
+         (BOT_PARAM, P("asset", "string", "Coin for grid and DCA; default the configured asset.")),
+         read_only=False)
+def bots_forward_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.forward_start, _bot_param(p), str(p.get("asset") or ctx.settings.asset), ctx.settings)
+
+
+@command("bots.forward_stop", "Stop a bot's forward test; its results freeze at the stop time.",
+         (BOT_PARAM,), read_only=False)
+def bots_forward_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.forward_stop, _bot_param(p))
+
+
+@command("bots.forward_status", "A bot's forward test so far: everything recorded since it started, replayed "
+         "through the bot in dry-run.", (BOT_PARAM,), long_running=True)
+def bots_forward_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.forward_status, _bot_param(p), ctx.settings)
+
+
+@command("bots.optimize", "Auto-optimize a bot: its representative configuration grid on every cached coin "
+         "(every recorded triangle) over chronological windows. Picks on the older windows, then adopts the "
+         "pick only if it beats the current config on the newer windows by a sign test (p < 0.05).",
+         (BOT_PARAM, P("coins", "json", "List of coins; default every coin with cached data."),
+          P("windows", "number", "Windows per coin (default 6; half train, half test)."),
+          P("window_days", "number", "Days per window (default 30)."),
+          P("adopt", "bool", "Adopt a reliable winner (default true).")),
+         read_only=False, long_running=True)
+def bots_optimize(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    coins = p.get("coins")
+    if coins is not None and (not isinstance(coins, list) or not all(isinstance(c, str) for c in coins)):
+        raise CommandError("bad_params", 'parameter "coins" must be a list of coin symbols')
+    return _bots(bots_mod.optimize, _bot_param(p), ctx.settings, coins=coins,
+                 windows=int(p.get("windows") or bots_mod.OPTIMIZE_WINDOWS),
+                 window_days=int(p.get("window_days") or bots_mod.OPTIMIZE_WINDOW_DAYS),
+                 adopt=bool(p.get("adopt", True)))
+
+
+@command("bots.optimize_result", "The latest auto-optimize report for a bot, or null.", (BOT_PARAM,))
+def bots_optimize_result(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.latest_optimize, _bot_param(p))
+
+
+@command("prices.status", "The streaming price recorder: running or not, what it has recorded, and the "
+         "newest bid, ask and spread of every streamed market.")
+def prices_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import pricefeed
+    return _bots(pricefeed.status)
+
+
+@command("prices.start", "Start the detached price recorder (public Coinbase ticker and level-2 batch "
+         "channels; writes <config dir>/prices/). It keeps recording after the console closes.",
+         read_only=False)
+def prices_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import pricefeed
+    return _bots(pricefeed.start_recorder)
+
+
+@command("prices.stop", "Stop the price recorder. Forward tests stop gaining coverage until it restarts.",
+         read_only=False)
+def prices_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import pricefeed
+    return _bots(pricefeed.stop_recorder)

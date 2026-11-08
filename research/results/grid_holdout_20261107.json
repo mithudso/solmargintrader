@@ -1,0 +1,33 @@
+{
+  "bars": 94,
+  "data_sha256": "844c2394054aa731e1896d642489b09edd8bb6b4541b8186b555c8be4398ec6b",
+  "first_close": 73.97,
+  "first_ts": 1785888000,
+  "last_close": 90.02,
+  "last_ts": 1793923200,
+  "runs": {
+    "double_costs": {
+      "bars_above_ladder": 80,
+      "bars_below_ladder": 0,
+      "fees_usd": 0.0590875240262782,
+      "grid_return": 0.008064693272261003,
+      "hold_return": 0.21503579941959017,
+      "max_drawdown": -0.0007066467569786363,
+      "realized_pnl_usd": 1.1613158312055578,
+      "round_trips": 2,
+      "slippage_usd": 0.01969603975799359
+    },
+    "review_costs": {
+      "bars_above_ladder": 80,
+      "bars_below_ladder": 0,
+      "fees_usd": 0.0295439108250665,
+      "grid_return": 0.008338246279762096,
+      "hold_return": 0.2160070510578156,
+      "max_drawdown": -0.0006399500903120111,
+      "realized_pnl_usd": 1.2007074642857667,
+      "round_trips": 2,
+      "slippage_usd": 0.00984801987899663
+    }
+  },
+  "schema": "grid-holdout/1"
+}

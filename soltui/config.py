@@ -32,6 +32,7 @@ CONFIG_PATH_JSON = CONFIG_DIR / "config.json"
 # Bar intervals the backtester understands. Kept here so the Settings tab can
 # offer a closed list rather than a free-text field that fails at load time.
 INTERVALS = ("1m", "5m", "15m", "1h", "6h", "1d")
+XPUB_FIELDS = {"btc_xpub": "btc", "ltc_xpub": "ltc", "doge_xpub": "doge"}
 MODES = ("dry-run",)  # live execution is deliberately absent, see module docstring
 
 
@@ -72,10 +73,34 @@ class Settings:
     # names, which loses pinned params across a restart; the command registry persists every roster
     # change here so a CLI/API/extension call and the TUI see the same roster. Empty = use the names.
     roster: list[dict[str, Any]] = field(default_factory=list)
+    # PUBLIC addresses the read-only wallet scan looks at. These are not secrets: they are the owner's
+    # two wallets as already written in CLAUDE.md. There is deliberately no field for a private key.
+    solana_address: str = "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+    base_address: str = "0x901a89cEC0608eB5435A915f006b45bD46405314"
+    # Ethereum mainnet. The same EVM key as `base_address`, seen on L1.
+    eth_address: str = ""
+    # The Hyperliquid account the compound 5m tab sizes calls from (read-only `info` calls). The owner
+    # confirmed on 2026-11-07 that it is the same EVM address as `base_address`.
+    hyperliquid_address: str = "0x901a89cEC0608eB5435A915f006b45bD46405314"
+    # EXTENDED PUBLIC keys for the UTXO chains. They derive every address of a wallet but cannot spend,
+    # yet they expose its whole history, so the surfaces redact them (`public_dict`) and the file is 0600.
+    btc_xpub: str = ""
+    ltc_xpub: str = ""
+    doge_xpub: str = ""
 
     def to_dict(self) -> dict[str, Any]:
-        """Plain dict for serialisation."""
+        """Plain dict for serialisation to the config file. Holds the full xpubs."""
         return asdict(self)
+
+    def public_dict(self) -> dict[str, Any]:
+        """The dict every surface returns: xpubs replaced by a short prefix and a `*_set` flag."""
+        from .hdwallet import redact
+
+        out = asdict(self)
+        for name in XPUB_FIELDS:
+            out[f"{name}_set"] = bool(out[name])
+            out[name] = redact(out[name])
+        return out
 
 
 def default_settings() -> Settings:
@@ -106,6 +131,27 @@ def validate(settings: Settings) -> Settings:
         raise ConfigError("cpcv_k must be at least 1 and fewer than cpcv_groups")
     if settings.poll_interval_seconds <= 0:
         raise ConfigError("poll_interval_seconds must be positive")
+    # Wallet addresses may be blank (no scan for that chain) but not malformed: a typo would otherwise
+    # scan, or show an empty balance for, the wrong account.
+    # Messages never echo the value: a private key pasted here must not be repeated into a log or screen.
+    from . import hdwallet
+
+    checks = [("solana_address", hdwallet.validate_solana_address), ("base_address", hdwallet.validate_evm_address),
+              ("eth_address", hdwallet.validate_evm_address), ("hyperliquid_address", hdwallet.validate_evm_address)]
+    for name, check in checks:
+        value = getattr(settings, name)
+        if value:
+            try:
+                check(value)
+            except hdwallet.ExtKeyError as exc:
+                raise ConfigError(f"{name}: {exc}") from None
+    for name, coin in XPUB_FIELDS.items():
+        value = getattr(settings, name)
+        if value:
+            try:
+                hdwallet.parse_extended_key(value, coin)
+            except hdwallet.ExtKeyError as exc:
+                raise ConfigError(f"{name}: {exc}") from None
     # The arming gate. Both flags must be set together, and even then this build
     # has nothing to arm -- the check exists so a future live surface cannot
     # inherit an armed default from an old config file.
@@ -155,9 +201,15 @@ def save_settings(settings: Settings, path: Path | None = None) -> Path:
     payload = settings.to_dict()
     yaml = _yaml()
     if yaml and target.suffix in (".yaml", ".yml"):
-        target.write_text(yaml.safe_dump(payload, sort_keys=True))
+        text = yaml.safe_dump(payload, sort_keys=True)
     else:
-        target.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+        text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    # The file can hold extended public keys, which expose a wallet's whole history: owner-only, and
+    # created that way (not chmod-ed afterwards) so there is no window where it is world-readable.
+    fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    os.chmod(target, 0o600)
     return target
 
 

@@ -1,0 +1,187 @@
+{
+ "as_of": "2026-11-07T18:52:34Z",
+ "source": "https://api.hyperliquid.xyz/info (userFees for the zero address = base schedule; l2Book per coin)",
+ "perp_fee_schedule_base": {
+  "taker": 0.00045,
+  "maker": 0.00015
+ },
+ "vip_tiers": [
+  {
+   "14d_volume_over_usd": 5000000.0,
+   "taker": 0.0004,
+   "maker": 0.00012
+  },
+  {
+   "14d_volume_over_usd": 25000000.0,
+   "taker": 0.00035,
+   "maker": 8e-05
+  },
+  {
+   "14d_volume_over_usd": 100000000.0,
+   "taker": 0.0003,
+   "maker": 4e-05
+  },
+  {
+   "14d_volume_over_usd": 500000000.0,
+   "taker": 0.00028,
+   "maker": 0.0
+  },
+  {
+   "14d_volume_over_usd": 2000000000.0,
+   "taker": 0.00026,
+   "maker": 0.0
+  },
+  {
+   "14d_volume_over_usd": 7000000000.0,
+   "taker": 0.00024,
+   "maker": 0.0
+  }
+ ],
+ "referral_discount": 0.04,
+ "book_cost_definition": "cost from mid of a market order of that USD notional walked through one l2Book snapshot (half-spread included)",
+ "single_snapshot": true,
+ "coins": {
+  "BTC": {
+   "mid": 75806.5,
+   "half_spread_bps": 0.066,
+   "buy_cost_bps": {
+    "2000": 0.07,
+    "10000": 0.07,
+    "50000": 0.07
+   },
+   "sell_cost_bps": {
+    "2000": 0.07,
+    "10000": 0.07,
+    "50000": 0.07
+   }
+  },
+  "ETH": {
+   "mid": 2235.6499999999996,
+   "half_spread_bps": 0.224,
+   "buy_cost_bps": {
+    "2000": 0.22,
+    "10000": 0.22,
+    "50000": 0.22
+   },
+   "sell_cost_bps": {
+    "2000": 0.22,
+    "10000": 0.22,
+    "50000": 0.22
+   }
+  },
+  "SOL": {
+   "mid": 89.6865,
+   "half_spread_bps": 0.056,
+   "buy_cost_bps": {
+    "2000": 0.06,
+    "10000": 0.11,
+    "50000": 0.78
+   },
+   "sell_cost_bps": {
+    "2000": 0.06,
+    "10000": 0.06,
+    "50000": 0.06
+   }
+  },
+  "XRP": {
+   "mid": 1.16235,
+   "half_spread_bps": 0.43,
+   "buy_cost_bps": {
+    "2000": 0.86,
+    "10000": 1.46,
+    "50000": 2.08
+   },
+   "sell_cost_bps": {
+    "2000": 0.43,
+    "10000": 0.43,
+    "50000": 0.43
+   }
+  },
+  "HYPE": {
+   "mid": 77.7525,
+   "half_spread_bps": 0.064,
+   "buy_cost_bps": {
+    "2000": 0.06,
+    "10000": 0.06,
+    "50000": 0.22
+   },
+   "sell_cost_bps": {
+    "2000": 0.06,
+    "10000": 1.05,
+    "50000": null
+   }
+  },
+  "DOGE": {
+   "mid": 0.071907,
+   "half_spread_bps": 0.139,
+   "buy_cost_bps": {
+    "2000": 0.17,
+    "10000": 0.32,
+    "50000": 0.62
+   },
+   "sell_cost_bps": {
+    "2000": 0.76,
+    "10000": 1.28,
+    "50000": 1.73
+   }
+  },
+  "LINK": {
+   "mid": 10.881499999999999,
+   "half_spread_bps": 0.459,
+   "buy_cost_bps": {
+    "2000": 1.68,
+    "10000": 2.17,
+    "50000": 3.79
+   },
+   "sell_cost_bps": {
+    "2000": 2.18,
+    "10000": 2.35,
+    "50000": 4.81
+   }
+  },
+  "NEAR": {
+   "mid": 3.66725,
+   "half_spread_bps": 0.136,
+   "buy_cost_bps": {
+    "2000": 0.14,
+    "10000": 1.14,
+    "50000": 3.45
+   },
+   "sell_cost_bps": {
+    "2000": 0.14,
+    "10000": 0.57,
+    "50000": 1.6
+   }
+  },
+  "SUI": {
+   "mid": 0.8606400000000001,
+   "half_spread_bps": 0.349,
+   "buy_cost_bps": {
+    "2000": 0.41,
+    "10000": 1.13,
+    "50000": 2.08
+   },
+   "sell_cost_bps": {
+    "2000": 1.16,
+    "10000": 2.79,
+    "50000": 4.14
+   }
+  },
+  "AVAX": {
+   "mid": 8.24255,
+   "half_spread_bps": 0.061,
+   "buy_cost_bps": {
+    "2000": 0.1,
+    "10000": 0.52,
+    "50000": 1.7
+   },
+   "sell_cost_bps": {
+    "2000": 1.36,
+    "10000": 4.16,
+    "50000": 5.6
+   }
+  }
+ },
+ "null_means": "the l2Book snapshot (top 20 levels) did not hold that much size",
+ "reading": "At $2k every coin cost at most 2.2 bps per side (LINK); the compound's 2 bps slippage holds for small size. At $10k-$50k LINK, SUI and AVAX reached 2-6 bps on one side, so a larger position needs a per-coin slippage override."
+}
