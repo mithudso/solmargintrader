@@ -65,6 +65,10 @@ HEAVY = {
                       "beat_hold": 0, "ran": 0},
     "bots.forward_start": {"forward": {"id": "stub", "bot": "grid"}, "recorder": {"started": False}},
     "bots.optimize": {"bot": "grid", "verdict": {"reliable": False, "adopted": False}, "table": []},
+    # Experiment creation fingerprints local evidence; starts/finalization spawn an explicit process.
+    "experiments.create": {"id": "stub", "status": "created"},
+    "experiments.start": {"id": "stub", "status": "running"},
+    "experiments.finalize": {"id": "stub", "status": "completed"},
     # Installs a LaunchAgent and starts the recorder; a real call would leave both behind.
     "prices.ensure": {"running": True, "agent": {"installed": True, "loaded": True}},
 }
@@ -99,6 +103,18 @@ def default_params() -> dict[str, dict]:
         "bots.optimize": {"bot": "grid"},
         "bots.optimize_result": {"bot": "grid"},
         "bots.progress": {"bot": "grid"},
+        "experiments.schema": {"bot": "grid"},
+        "experiments.preview": {"bot": "grid"},
+        "experiments.create": {"bot": "grid"},
+        "experiments.get": {"run_id": "fixture"},
+        "experiments.start": {"run_id": "fixture"},
+        "experiments.pause": {"run_id": "fixture"},
+        "experiments.cancel": {"run_id": "fixture"},
+        "experiments.finalize": {"run_id": "fixture"},
+        "experiments.candidates": {"run_id": "fixture"},
+        "experiments.cells": {"run_id": "fixture"},
+        "experiments.heatmap": {"run_id": "fixture", "x": "rungs", "y": "range_pct"},
+        "experiments.compare": {"left": "fixture", "right": "fixture"},
     }
 
 

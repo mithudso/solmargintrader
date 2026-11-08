@@ -2,6 +2,8 @@
 
 Version: 60
 Delta: v59 to v60; start EPIC-980 research tracks.
+Version: 66
+Delta: v65 to v66; stop repeating full CI at the owner's instruction.
 
 ## v1 - 2026-11-06
 
@@ -460,3 +462,56 @@ Run the /dr skill on all of the frontier children concepts of https://llmsx.org/
 ```
 
 Scope: all 18 run-start nonlinear frontier labels plus the full crypto trading-bot family. Preserve accepted TASK-905 research and other active work.
+## v60 - 2026-11-08 (SolTUI card visibility)
+
+```text
+When I launch the soltui I don't see any of the new strategies.
+```
+
+## v61 - 2026-11-08
+
+```text
+turn all of your suggestions into an implementation plan and execute it
+```
+
+Scope: all six recommendations from the TradingView comparison: experiment explorer, sparse stability heatmaps, typed search spaces, resumable Bots runs, read-only TradingView import/comparison, and untouched final holdout safeguards.
+
+## v62 - 2026-11-08 (SolTUI redesign mockup)
+
+```text
+Create a list of the primary functions of the TUI in this repo and without looking at its current layout use the design, ui, data viewing, and frontend skills to design an ideal UI interface that provides the same rich data it does now but in an easily accessible, intuitive, and scannable format. Do a simple mockup of it in TUI format using the best TUI tools you can find.
+```
+
+Context: Stele TASK-877. Output under docs/design/soltui-v2/.
+
+## v63 - 2026-11-08 (implement SolTUI v2)
+
+```text
+I like that interface a lot, make a backup of the current UI, then implement this new one, make sure all of the functionality of the current setup is represented.
+```
+
+Context: Stele TASK-904. Backup: tag soltui-ui-v1 and branch backup/soltui-ui-v1 at 4d0f027. Branch feat/soltui-v2-ui.
+
+## v64 - 2026-11-08 (resume SolTUI redesign)
+
+Version: 64. Delta: v63 to v64; preserve the recovery request.
+
+```text
+claude ran out of tokens redesigning the UI for the TUI, see if you can resume where it left off.
+```
+
+## v65 - 2026-11-08 (CI status question)
+
+Version: 65. Delta: v64 to v65; preserve the owner's status question during delivery.
+
+```text
+Is the CI run optional? Is this the first one you've run? What are you doing that's left?
+```
+
+## v66 - 2026-11-08 (stop repeating full CI)
+
+Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
+
+```text
+So you don't have to run this, you've already passed the CI 3 times.
+```
