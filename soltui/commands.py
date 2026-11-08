@@ -965,6 +965,58 @@ def research_get(ctx: Context, p: dict[str, Any]) -> Any:
 
 # -- backtest ------------------------------------------------------------------------------------
 
+@command("batch.list", "List saved all-market backtest and forward-test batches.", long_running=True)
+def batch_list(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    runs = f5_batch.list_runs()
+    def changed(run: dict[str, Any]) -> float:
+        try:
+            return Path(run["log"]).parent.stat().st_mtime
+        except (KeyError, OSError):
+            return 0.0
+    return {"runs": sorted(runs, key=changed, reverse=True)}
+
+
+@command("batch.create", "Create a frozen all-market batch without starting it.",
+         read_only=False, long_running=True)
+def batch_create(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return f5_batch.create(ctx.settings)
+
+
+BATCH_ID = P("run_id", "string", "Saved batch identifier.", required=True)
+
+
+@command("batch.start", "Start or resume the specified saved batch.", (BATCH_ID,), read_only=False,
+         long_running=True)
+def batch_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return f5_batch.start(str(p["run_id"]))
+
+
+@command("batch.status", "Read progress, unresolved issues and forward-test status for a batch.",
+         (BATCH_ID,), long_running=True)
+def batch_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return f5_batch.status(str(p["run_id"]))
+
+
+@command("batch.cells", "Read a page of batch cells, optionally filtered by state.",
+         (BATCH_ID, P("state", "string", "Optional cell state such as failed, missing or unsupported."),
+          P("limit", "number", "Maximum rows to return."), P("offset", "number", "Number of rows to skip.")),
+         long_running=True)
+def batch_cells(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return {"rows": f5_batch.cells(str(p["run_id"]), state=p.get("state"),
+                                   limit=int(p.get("limit", 100)), offset=int(p.get("offset", 0)))}
+
+
+@command("batch.stop", "Request a cooperative stop for the specified batch only.", (BATCH_ID,),
+         read_only=False, long_running=True)
+def batch_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch
+    return f5_batch.stop(str(p["run_id"]))
+
 
 def _backtest_status(ctx: Context) -> dict[str, Any]:
     s = ctx.state
@@ -2310,11 +2362,12 @@ def bots_overview(ctx: Context, p: dict[str, Any]) -> Any:
 
 
 @command("bots.config", "One bot's configuration, its defaults and the grid auto-optimize searches.",
-         (BOT_PARAM,))
+         (BOT_PARAM, P("asset", "string", "Optional coin; omit for the global default.")))
 def bots_config(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
     bot = _bot_param(p)
-    return {"bot": bot, "config": _bots(bots_mod.get_config, bot), "defaults": bots_mod.DEFAULTS[bot],
+    return {"bot": bot, "asset": p.get("asset"), "mode": _bots(bots_mod.config_mode, bot, p.get("asset")),
+            "config": _bots(bots_mod.get_config, bot, p.get("asset")), "defaults": bots_mod.DEFAULTS[bot],
             "space": bots_mod.SPACE[bot], "about": bots_mod.ABOUT[bot]}
 
 
@@ -2322,20 +2375,24 @@ def bots_config(ctx: Context, p: dict[str, Any]) -> Any:
          "reset restores the defaults. Unknown names and unbuildable values are refused.",
          (BOT_PARAM, P("values", "json", "Settings to change, e.g. {\"range_pct\": 10}."),
           P("text", "string", "Settings as name=value pairs, e.g. range_pct=10 rungs=9."),
+          P("asset", "string", "Optional coin; omit for the global default."),
+          P("mode", "string", "auto or manual; manual prevents automatic adoption."),
           P("reset", "bool", "Restore the defaults instead.")), read_only=False)
 def bots_save(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
     bot = _bot_param(p)
     if p.get("reset"):
-        return {"bot": bot, "config": _bots(bots_mod.reset_config, bot)}
+        result = _bots(bots_mod.reset_config, bot, p.get("asset"))
+        return {"bot": bot, "asset": p.get("asset"), "mode": _bots(bots_mod.config_mode, bot, p.get("asset")), "config": result}
     values = p.get("values") or {}
     if not isinstance(values, dict):
         raise CommandError("bad_params", 'parameter "values" must be a JSON object')
     if p.get("text"):
         values = {**values, **_bots(bots_mod.parse_kv, p["text"])}
-    if not values:
+    if not values and p.get("mode") is None:
         raise CommandError("bad_params", "nothing to save: pass values, text or reset")
-    return {"bot": bot, "config": _bots(bots_mod.save_config, bot, values)}
+    result = _bots(bots_mod.save_config, bot, values, coin=p.get("asset"), mode=p.get("mode"))
+    return {"bot": bot, "asset": p.get("asset"), "mode": _bots(bots_mod.config_mode, bot, p.get("asset")), "config": result}
 
 
 @command("bots.backtest", "Start a bot at a past moment (what it would have set from the price then) and "
@@ -2531,22 +2588,26 @@ def bots_forward_status(ctx: Context, p: dict[str, Any]) -> Any:
     return _bots(bots_mod.forward_status, _bot_param(p), ctx.settings)
 
 
-@command("bots.optimize", "Auto-optimize a bot: its representative configuration grid on every cached coin "
-         "(every recorded triangle) over chronological windows. Picks on the older windows, then adopts the "
-         "pick only if it beats the current config on the newer windows by a sign test (p < 0.05).",
+@command("bots.optimize", "Independently optimize grid or DCA per cached coin; triangle remains global. "
+         "A tentative per-coin improvement may be adopted from at least three matched holdouts with 80% "
+         "coverage, a positive median and more wins than losses; it is not statistically confirmed. "
+         "The stronger tier requires ten decisions and sign-test p < 0.05. Manual mode blocks adoption.",
          (BOT_PARAM, P("coins", "json", "List of coins; default every coin with cached data."),
           P("windows", "number", "Windows per coin (default 6; half train, half test)."),
-          P("window_days", "number", "Days per window (default 30)."),
-          P("adopt", "bool", "Adopt a reliable winner (default true).")),
+          P("window_days", "number", "Days per window (default 3 per coin; 30 for triangle)."),
+          P("adopt", "bool", "Adopt an eligible winner, including tentative per-coin improvements (default true).")),
          read_only=False, long_running=True)
 def bots_optimize(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
     coins = p.get("coins")
     if coins is not None and (not isinstance(coins, list) or not all(isinstance(c, str) for c in coins)):
         raise CommandError("bad_params", 'parameter "coins" must be a list of coin symbols')
-    return _bots(bots_mod.optimize, _bot_param(p), ctx.settings, coins=coins,
-                 windows=int(p.get("windows") or bots_mod.OPTIMIZE_WINDOWS),
-                 window_days=int(p.get("window_days") or bots_mod.OPTIMIZE_WINDOW_DAYS),
+    bot = _bot_param(p)
+    default_windows = bots_mod.OPTIMIZE_WINDOWS if bot == "triangle" else bots_mod.PER_COIN_OPTIMIZE_WINDOWS
+    default_days = bots_mod.OPTIMIZE_WINDOW_DAYS if bot == "triangle" else bots_mod.PER_COIN_OPTIMIZE_WINDOW_DAYS
+    return _bots(bots_mod.optimize, bot, ctx.settings, coins=coins,
+                 windows=int(p.get("windows") or default_windows),
+                 window_days=int(p.get("window_days") or default_days),
                  adopt=bool(p.get("adopt", True)))
 
 
@@ -2620,14 +2681,17 @@ def _experiment_options(p: dict[str, Any]) -> dict[str, Any]:
                                                 or int(value) != value):
             raise CommandError("bad_params", f"{name} must be an integer")
         out[name] = value if name in {"space", "coins"} else int(value)
+    if str(p.get("bot") or "").strip().lower() != "triangle" and len(out.get("coins", [])) == 1:
+        out["config_coin"] = out["coins"][0]
     return out
 
 
-@command("experiments.schema", "Current bot configuration and typed search parameter domains.", (BOT_PARAM,))
+@command("experiments.schema", "Current bot configuration and typed search parameter domains.",
+         (BOT_PARAM, P("asset", "string", "Optional single coin for its effective settings.")))
 def experiments_schema(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots
     bot = _bot_param(p)
-    return _experiment(lambda: {"bot": bot, "baseline": bots.get_config(bot), "domains": bots.DOMAINS[bot]})
+    return _experiment(lambda: {"bot": bot, "baseline": bots.get_config(bot, p.get("asset")), "domains": bots.DOMAINS[bot]})
 
 
 @command("experiments.preview", "Validate a bounded search and preview actual cached-data workload; no evaluations.",

@@ -140,6 +140,7 @@ HEADER_GLOSSARY = {
 # Define the unit and an example before the statistical qualification. A green
 # closed trade, a high ranking and a wallet deposit are three different facts.
 HEADER_GLOSSARY.update({
+    "coin verdict": "The independently tested coin's adoption decision and saved setting changes, or the reason no setting was saved.",
     "saved default": "yes when this trial's active setting is the one saved as its default: auto-optimize adopted it after it tested superior, and the next forward test of this coin, strategy and horizon starts from it.",
     "candidate": "Index of a configuration in this auto-optimize run; 0 is your current settings, the rest are what the run tries against them.",
     "from": "First bar of this coin's backtest: the bar whose close the bot set itself up from.",
@@ -286,7 +287,7 @@ TAB_HELP = {
     "bots-sec-backtest": "The latest backtest of the selected bot: what it set at its start (the ladder, the safety orders, or the watched triangles) and the result, beside buy-and-hold of the same capital. One backtest is one path through history, not evidence that the bot is profitable.",
     "bots-sec-fit": "Coin suitability uses the selected grid or DCA bot's saved settings and the cached universe. Quick ranking is a provisional heuristic screen, not a profitability forecast. Select a row for its reasons and full-account equity, then audit that coin across chronological windows and stressed costs. Error and insufficient-data rows remain visible. No settings are adopted and no orders are placed.",
     "bots-sec-forward": "The selected bot's dry-run forward test: everything the price recorder captured since it started, replayed through the bot as it arrives, with the same fill rules and costs as the backtest. A recorder gap longer than two minutes ends the coverage there, because what the market did unseen is unknown.",
-    "bots-sec-optimize": "The latest auto-optimize report. Each row is one configuration of the searched grid: its mean rank across the older (train) windows, and its median return in the train and newer (test) windows. The bot adopts the train winner only when it beats the current settings in significantly more test cells than it loses (sign test, p < 0.05) with a positive median gain.",
+    "bots-sec-optimize": "The latest auto-optimize report. Grid and DCA use separate searches for each coin. A tentative improvement may be saved with three matched holdouts, at least 80% coverage, a positive median and more wins than losses; it is not statistically confirmed. A stronger result requires ten decisions and sign-test p < 0.05. Manual mode blocks adoption.",
     "bots-sec-prices": "The newest bid and ask of every streamed Coinbase market, from the recorder's level-2 books (ticker quotes for any market without a synced book). Quote age is seconds since that quote was last confirmed; a stale leg cannot be used by the triangle bot.",
     "tab-settings": "Settings choose the historical data, starting capital, trading costs and test splits. They also hold public wallet identifiers. Save settings to apply edits. These choices affect the simulation; they do not enable live orders.",
     "tab-forwardtest": "Paper-test all registered strategies, the roster, or custom combinations on new one-minute candles. By default each trial predicts 1, 5, 10 and 30 minutes ahead and learns separately at each horizon.",
@@ -401,7 +402,8 @@ CONTROL_HELP = {
     "bots-coins": "Coins the grid and DCA bots backtest on: click to tick one, several or all of them (every coin with cached bars is listed). A backtest runs once per ticked coin and lists each in the per-coin table. A forward test runs on the first ticked coin and needs its Coinbase USD market in the price stream. The triangle bot watches every triangle at once, so this is disabled for it.",
     "bots-start": "UTC date (or epoch seconds) at which the backtest starts the bot. The bot sets itself up from the price at that bar's close, as it would have then. Empty means the beginning of the data: the oldest cached hour (1m history resampled where it reaches further back than the 1h file), or the first hour after the last gap longer than 48 hours. For the triangle bot, the start of the recording.",
     "bots-days": "How many days the backtest runs from its start. Empty runs to the end of the data. Gaps of up to 48 missing hours are bridged with flat bars and reported; a longer gap ends the run there.",
-    "bots-config": "Settings for the selected bot in name=value form; the placeholder shows the current values. Grid: range_pct (ladder half-width around the start price), rungs, capital_usd, spacing (geom or arith), deadband_bps. DCA: base_order_usd, safety_order_usd, max_safety_orders, price_deviation_pct, step_scale, volume_scale, take_profit_pct, stop_loss_pct (0 = none), cooldown_bars. Triangle: min_edge_bps (net of three fees), taker_fee_bps, latency_s, notional_usd, max_quote_age_s, cooldown_s, use_displayed_size. Apply saves them.",
+    "bots-config": "Optional settings in name=value form. Use Edit all settings for labeled fields and per-coin settings; Apply saves values typed here to the global settings.",
+    "bots-edit": "Open all editable settings for this bot. Choose a coin or global settings, edit fields, then Apply. Existing forward tests keep their original settings.",
     "bots-apply": "Save the settings typed in the field to the selected bot. Unknown names and values the simulator cannot build are refused with the reason. A running forward test keeps the settings it started with; restart it to use the new ones.",
     "bots-reset": "Restore the selected bot's default settings.",
     "bots-backtest": "Start the selected bot at the chosen start and simulate it forward: grid and DCA on cached hourly bars with fees and adverse slippage; the triangle bot on recorded bid/ask quotes, or on a labelled one-minute candle proxy fetched from Coinbase when nothing is recorded for that time. Saved to the bot's results.",
@@ -412,7 +414,7 @@ CONTROL_HELP = {
     "bots-forward-stop": "Stop the selected bot's forward test. Its results freeze at the stop time and stay visible.",
     "bots-forward-refresh": "Replay what the recorder captured since the last refresh through the forward test now (the tab also does this when you switch bots).",
     "bots-workbench": "Inspect full optimization evidence, edit bounded typed search spaces, explore sparse stability slices, pause/cancel/resume durable workers, import TradingView CSVs and compare provenance. Final holdout validation is explicit and requires fresh reserved dates; imported evidence never adopts settings.",
-    "bots-optimize": "Open the auto-optimize window and run: the selected bot's configurations on every cached coin (every recorded triangle for the triangle bot) over six 30-day windows. The older windows pick a candidate; the newer windows decide. It is adopted only if it beats the current settings out of sample by a sign test (p < 0.05); the window then says exactly which settings changed and that they were saved, or that nothing was. Each new run tests more configurations, further from the current settings, and skips ones already tried.",
+    "bots-optimize": "Run separate grid or DCA searches per cached coin, normally using six three-day windows; triangle remains a global search. Older windows pick a candidate and newer holdouts assess it. A small-sample improvement can be saved as tentative, not statistically confirmed; the report gives the evidence. Manual mode blocks automatic adoption. Used holdout dates are not reused as fresh evidence.",
     "bots-schedule-start": "Start daily recurring optimization of every cached coin and enable login recovery. A single-coin optimizer must support safe per-coin adoption before scheduled settings can be saved; the legacy optimizer only records evidence.",
     "bots-schedule-stop": "Disable daily optimization and login recovery. The active optimization finishes before the worker stops; no process is killed.",
     "bots-schedule-status": "Show the recurring optimizer's last and next runs, current coin, individual failures and worker log path in the editor. Reopening this tab reloads the saved status.",
@@ -644,6 +646,10 @@ TAB_HELP["tab-paper-experiments"] = (
 )
 
 CONTROL_HELP.update({
+    "batch-status": "Open the saved all-market batch's progress, problem cells and paper forward-test status in the console.",
+    "batch-resume": "Resume the saved all-market batch without replacing its recorded results.",
+    "batch-stop": "Ask only the selected all-market batch to stop after its current work.",
+    "batch-fresh": "Create a separate all-market batch, preserving saved batches. Refuses while another batch runs.",
     **{key: "Open the console with this operation's current status and activity."
        for key in ("status-strategies", "status-compound-backtest", "status-compound-forward",
                    "status-forwardtest", "status-bots", "status-backtest", "status-top5",

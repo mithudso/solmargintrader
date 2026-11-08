@@ -216,7 +216,11 @@ def _legacy_cutoff(store: ExperimentStore, bot: str) -> float | None:
         hist = bots.optimize_history(bot)
         report = bots.latest_optimize(bot)
         legacy = [row for row in hist.get("log", []) if not row.get("experiment_id")]
-        if report and not report.get("experiment_id"):
+        child_reports = report.get("reports") if isinstance(report, dict) else None
+        ledger_batch = (isinstance(child_reports, dict) and report.get("source") == "per_coin_ledger_v1"
+                        and all(isinstance(child, dict) and child.get("experiment_id")
+                                for child in child_reports.values()))
+        if report and not report.get("experiment_id") and not ledger_batch:
             legacy.append(report)
         if hist.get("runs", 0) and not hist.get("log"):
             legacy.append({})
@@ -235,12 +239,16 @@ def _legacy_cutoff(store: ExperimentStore, bot: str) -> float | None:
 def preview_experiment(bot: str, settings: Any = None, *, space: dict | None = None,
                        coins: Sequence[str] | None = None, windows: int = bots.OPTIMIZE_WINDOWS,
                        window_days: int = bots.OPTIMIZE_WINDOW_DAYS, max_candidates: int = bots.MAX_CANDIDATES,
-                       max_evaluations: int = MAX_EVALUATIONS, store: ExperimentStore | None = None) -> dict[str, Any]:
+                       max_evaluations: int = MAX_EVALUATIONS, store: ExperimentStore | None = None,
+                       config_coin: str | None = None) -> dict[str, Any]:
     """Read local inputs and return the exact workload; never run a simulator."""
     bot = bots._bot(bot)
     windows, window_days, max_candidates, max_evaluations = _limits(windows, window_days, max_candidates, max_evaluations)
-    baseline = bots.get_config(bot)
-    hist = bots.optimize_history(bot)
+    if config_coin is not None and (bot == "triangle" or not coins or len(coins) != 1
+                                    or bots._config_coin(config_coin) != bots._config_coin(coins[0])):
+        raise ExperimentError("per-coin optimization must target exactly that coin")
+    baseline = bots.get_config(bot, config_coin)
+    hist = bots.optimize_history(bot, config_coin)
     run_no = hist["runs"] + 1
     if space is None:
         configs = bots.candidates(bot, baseline, run_no, hist["tried"])
@@ -265,7 +273,7 @@ def preview_experiment(bot: str, settings: Any = None, *, space: dict | None = N
     evaluations = explore * len(configs) + holdout * min(2, len(configs))
     if evaluations > max_evaluations:
         raise ExperimentError(f"{evaluations} evaluations exceed budget {max_evaluations}")
-    return {"bot": bot, "run": run_no, "baseline": baseline, "candidates": configs,
+    return {"bot": bot, "config_coin": config_coin, "run": run_no, "baseline": baseline, "candidates": configs,
             "candidate_count": len(configs), "configs": len(configs), "windows": descriptors,
             "coins_requested": selected, "coins_used": list(sources), "sources": sources, "skipped": skipped,
             "products": products, "search": search, "settings": _settings(settings),
@@ -459,8 +467,15 @@ def _report(store: ExperimentStore, run_id: str, *, unseal: bool = False) -> dic
                       "train_median": _median(values["train"]), "validation_median": _median(values["validation"]),
                       "test_median": _median(values["holdout"]), "holdout_median": _median(values["holdout"]),
                       "failed_cells": failures, "completed_cells": sum(len(v) for v in values.values())})
+    exploration = [w for w in spec["windows"] if w["split"] != "holdout"]
+    def has_exploration(candidate_id: str) -> bool:
+        present = [w for w in exploration if _score(by_key.get((w["key"], candidate_id)), metric) is not None]
+        if spec.get("config_coin"):
+            return (bool(exploration) and len(present) >= math.ceil(len(exploration) * 0.8)
+                    and {"train", "validation"}.issubset({w["split"] for w in present}))
+        return bool(exploration) and len(present) == len(exploration)
     eligible = [row for row in table if row["train_mean_rank"] is not None and row["train_median"] is not None
-                and not any(c["status"] == "failed" and c["split"] == "train" and c["candidate_id"] == row["id"] for c in cells)]
+                and has_exploration(row["id"])]
     winner = min(eligible, key=lambda r: (r["train_mean_rank"], r["index"])) if eligible else table[0]
     best_index = int(run.get("frozen_candidate") or winner["id"])
     best = table[best_index]
@@ -489,30 +504,45 @@ def _report(store: ExperimentStore, run_id: str, *, unseal: bool = False) -> dic
     p = bots.sign_test_p(wins, losses)
     improvement = _median(diffs)
     expected = sum(w["split"] == "holdout" for w in spec["windows"])
-    exploration_complete = all((w["key"], str(i)) in by_key for w in spec["windows"] if w["split"] != "holdout"
-                               for i in range(len(spec["candidates"])))
+    paired_exploration = [w for w in exploration
+                          if _score(by_key.get((w["key"], "0")), metric) is not None
+                          and _score(by_key.get((w["key"], str(best_index))), metric) is not None]
+    required_exploration = math.ceil(len(exploration) * 0.8) if spec.get("config_coin") else len(exploration)
+    exploration_complete = (has_exploration("0") and has_exploration(str(best_index))
+                            and len(paired_exploration) >= required_exploration
+                            and (not spec.get("config_coin") or {"train", "validation"}.issubset(
+                                {w["split"] for w in paired_exploration})))
     failed = any(c["status"] != "completed" for c in cells)
     reliable = bool(best_index != 0 and run.get("frozen_candidate") is not None and expected > 0
-                    and len(diffs) == expected and exploration_complete and not failed
+                    and len(diffs) == expected and exploration_complete and len(paired_exploration) == len(exploration)
                     and wins + losses >= bots.MIN_DECIDED_CELLS and p < bots.SIGN_TEST_ALPHA
                     and improvement is not None and improvement > 0)
+    incremental = bool(spec.get("config_coin") and best_index != 0 and run.get("frozen_candidate") is not None
+                       and expected > 0 and len(diffs) >= math.ceil(expected * 0.8) and exploration_complete
+                       and wins + losses >= bots.PER_COIN_MIN_DECIDED_CELLS and wins > losses
+                       and improvement is not None and improvement > 0)
     reason = "exploration only: final holdout has not been evaluated"
     if run.get("frozen_candidate") is not None:
         if best_index == 0:
             reason = "the current configuration ranks best on the train windows"
-        elif len(diffs) != expected:
+        elif len(diffs) != expected and not incremental:
             reason = "final holdout is incomplete or failed; keep the baseline"
-        elif failed:
-            reason = "an evaluation failed; incomplete evidence cannot be adopted"
+        elif not exploration_complete:
+            reason = "the baseline or selected candidate has incomplete exploration evidence"
+        elif incremental and not reliable:
+            reason = (f"tentative incremental improvement: {wins} wins, {losses} losses across "
+                      f"{len(diffs)}/{expected} matched holdout cells (p = {p:.4f}); not statistically confirmed")
         elif wins + losses < bots.MIN_DECIDED_CELLS:
             reason = f"only {wins + losses} test cells differ (need {bots.MIN_DECIDED_CELLS})"
         else:
             reason = f"frozen train winner won {wins}/{wins + losses} final cells (p = {p:.4f}, median {improvement:+.4f})"
-    if failed and run.get("frozen_candidate") is None:
-        reason = "exploration contains failed evaluations; retry this exact experiment before final validation"
+    if failed and run.get("frozen_candidate") is None and not exploration_complete:
+        reason = "the baseline or selected candidate has incomplete exploration evidence"
     if not spec["windows"]:
         reason = "not enough data to split into train, validation and final holdout windows"
-    verdict = {"reliable": reliable, "adopted": False, "saved": False, "changes": [], "best_index": best_index,
+    verdict = {"reliable": reliable, "promotion_eligible": reliable or incremental,
+               "confidence": "statistically supported" if reliable else "tentative" if incremental else "insufficient",
+               "adopted": False, "saved": False, "changes": [], "best_index": best_index,
                "best_config": best["config"], "best_changes": best["changes"], "test_cells": len(diffs),
                "wins": wins, "losses": losses, "ties": len(diffs) - wins - losses, "p_value": p,
                "median_improvement": improvement, "reason": reason}
@@ -531,6 +561,7 @@ def _report(store: ExperimentStore, run_id: str, *, unseal: bool = False) -> dic
             "current": spec["baseline"], "verdict": verdict, "per_coin": per_coin,
             "table": sorted(table, key=lambda r: (r["train_mean_rank"] is None, r["train_mean_rank"] or 0, r["index"])),
             "fingerprint": spec["fingerprint"], "source": "native", "metric": metric, "metric_units": spec["metric_units"],
+            "promotion_ready": exploration_complete,
             "failed_cells": sum(c["status"] == "failed" for c in cells), "completed_cells": sum(c["status"] == "completed" for c in cells)}
 
 
@@ -575,7 +606,7 @@ def run_experiment(run_id: str, settings: Any = None, *, final: bool = False, ad
                 _halt(store, run_id)
                 return _publish(store, run_id, _report(store, run_id))
             report = _report(store, run_id)
-            if not final or not spec["windows"] or report["failed_cells"]:
+            if not final or not spec["windows"] or not report["promotion_ready"]:
                 return _publish(store, run_id, report)
             with _lock(store, "finalization:" + spec["bot"]):
                 if _halt(store, run_id):
@@ -608,11 +639,12 @@ def run_experiment(run_id: str, settings: Any = None, *, final: bool = False, ad
 
                 def apply_final(candidate: dict) -> dict:
                     verdict = candidate["verdict"]
-                    if verdict["reliable"] and adopt and not verdict["adopted"]:
+                    if verdict.get("promotion_eligible", verdict["reliable"]) and adopt and not verdict["adopted"]:
                         token = "experiment " + run_id
-                        current = bots.get_config(spec["bot"])
+                        coin = spec.get("config_coin")
+                        current = bots.get_config(spec["bot"], coin)
                         recovered = current == verdict["best_config"] and any(
-                            row.get("bot") == spec["bot"] and str(row.get("reason", "")).startswith(token + ":")
+                            row.get("bot") == spec["bot"] and row.get("coin") == coin and str(row.get("reason", "")).startswith(token + ":")
                             and row.get("config") == current for row in bots._all_configs().get("history", []))
                         if recovered:
                             verdict.update(adopted=True, saved=True, changes=bots._changes(spec["baseline"], current),
@@ -622,13 +654,13 @@ def run_experiment(run_id: str, settings: Any = None, *, final: bool = False, ad
                         else:
                             try:
                                 saved = bots.save_config(spec["bot"], verdict["best_config"], merge=False,
-                                                         expected=spec["baseline"], reason=token + ": " + verdict["reason"])
+                                                         expected=spec["baseline"], reason=token + ": " + verdict["reason"], coin=coin)
                             except bots.BotError as exc:
                                 verdict.update(reliable=False, reason=str(exc))
                             else:
                                 verdict.update(adopted=True, saved=True, changes=bots._changes(spec["baseline"], saved),
                                                saved_to=str(bots.config_path()))
-                    elif verdict["reliable"] and not verdict["adopted"]:
+                    elif verdict.get("promotion_eligible", verdict["reliable"]) and not verdict["adopted"]:
                         verdict["changes_not_saved"] = bots._changes(spec["baseline"], verdict["best_config"])
                     candidate["status"] = "completed"
                     return candidate
@@ -649,13 +681,15 @@ def run_experiment(run_id: str, settings: Any = None, *, final: bool = False, ad
 
 def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = None,
              windows: int = bots.OPTIMIZE_WINDOWS, window_days: int = bots.OPTIMIZE_WINDOW_DAYS,
-             adopt: bool = True, progress: Callable[[float, str], None] | None = None) -> dict[str, Any]:
+             adopt: bool = True, progress: Callable[[float, str], None] | None = None,
+             config_coin: str | None = None) -> dict[str, Any]:
     """Compatibility entry point: every legacy search uses the durable guard."""
     store = ExperimentStore()
     bot = bots._bot(bot)
     # Serialize legacy history numbering without holding the finalization lock.
     with _lock(store, "legacy-optimization:" + bot):
-        run = prepare_experiment(bot, settings, coins=coins, windows=windows, window_days=window_days, store=store)
+        run = prepare_experiment(bot, settings, coins=coins, windows=windows, window_days=window_days, store=store,
+                                 config_coin=config_coin)
         run_id = run["id"]
         spec = run["spec"]
         started = time.time()
@@ -675,12 +709,12 @@ def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = No
         report(1.0 if finished else 0.0, out["verdict"]["reason"])
         bots.runtime().progress[bot]["done"] = finished
         if finished:
-            hist = bots.optimize_history(bot)
+            hist = bots.optimize_history(bot, config_coin)
             hist["runs"] = spec["run"]
             hist["tried"] = list(dict.fromkeys(hist["tried"] + [bots._cfg_key(c) for c in spec["candidates"]]))[-5000:]
             hist["log"] = (hist["log"] + [{"run": spec["run"], "at": time.time(), "experiment_id": run_id,
                                            "candidates": len(cand_rows), "adopted": out["verdict"]["adopted"],
                                            "changes": out["verdict"]["changes"]}])[-100:]
-            bots._write_json(bots.history_path(bot), hist)
+            bots._write_json(bots.history_path(bot, config_coin), hist)
         bots._write_json(bots.optimize_path(bot), out)
         return out

@@ -379,7 +379,7 @@ def http_text(url: str) -> str:
 
 
 def candle_cache_path(asset: str, seconds: int = 300) -> Path:
-    suffix = "-1m" if seconds == 60 else ""
+    suffix = "-1m" if seconds == 60 else "" if seconds == 300 else f"-{seconds}s"
     return home() / "candles" / f"{_asset(asset)}{suffix}.npz"
 
 
@@ -426,14 +426,14 @@ def _get_with_retry(get: Fetcher, url: str, sleep: Callable[[float], None] = tim
 def fetch_closed_candles(asset: str, *, now: float | None = None, bars: int = LIVE_BARS,
                          get: Fetcher = http_json, cache: bool = True, seconds: int = 300,
                          sleep: Callable[[float], None] = time.sleep) -> dict[str, np.ndarray]:
-    """The last `bars` CLOSED 5m candles from Coinbase, oldest first, with gaps preserved.
+    """The last `bars` CLOSED Coinbase candles, oldest first, with gaps preserved.
 
     Closed candles never change, so they are cached per coin and only the bars after the newest
     cached one are requested: a tick then costs one request instead of fourteen, which is what
     lets every coin forward-test at once inside the venue's rate limit.
     """
-    if seconds not in (60, 300):
-        raise ValueError("only one-minute and five-minute candles are supported")
+    if seconds not in (60, 300, 900, 3600, 21600, 86400):
+        raise ValueError("unsupported Coinbase candle granularity")
     now = time.time() if now is None else now
     product = f"{_asset(asset)}-USD"
     last_closed_start = (int(now) // seconds) * seconds - seconds

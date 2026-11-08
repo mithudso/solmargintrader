@@ -21,6 +21,12 @@ TOKEN = "test-token-not-a-secret"
 # Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite
 # replaces their handlers with fixed answers; the registry, validation, envelope and surfaces are real.
 HEAVY = {
+    "batch.list": {"runs": []},
+    "batch.create": {"run_id": "a" * 32, "phase": "planned"},
+    "batch.start": {"run_id": "a" * 32, "pid": 1},
+    "batch.status": {"run_id": "a" * 32, "phase": "planned", "running": False, "counts": {}},
+    "batch.cells": {"rows": []},
+    "batch.stop": {"run_id": "a" * 32, "stopping": False},
     "backtest.run": {"rows": [], "evaluable": 0, "positive": 0, "skipped": [], "cancelled": False,
                      "message": "stub"},
     "backtest.untested_sweep": {"output": "stub"},
@@ -103,6 +109,10 @@ def default_params() -> dict[str, dict]:
 
     fresh = next(n for n in sorted(REGISTRY) if n not in ("buy_and_hold", "ma_crossover", "rsi", "breakout"))
     return {
+        "batch.start": {"run_id": "a" * 32},
+        "batch.status": {"run_id": "a" * 32},
+        "batch.cells": {"run_id": "a" * 32},
+        "batch.stop": {"run_id": "a" * 32},
         "strategies.source": {"name": "rsi"},
         "roster.add": {"name": fresh},
         "roster.toggle": {"name": fresh},

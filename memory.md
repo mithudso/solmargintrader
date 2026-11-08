@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 200
-Delta: v199 to v200; record scheduler UI integration and tests.
+Version: 204
+Delta: v203 to v204; preserve recurring optimizer scheduler handoff.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1788,16 +1788,32 @@ The owner requests independent bot optimization and configuration for every coin
 
 ## v197 - 2026-11-08
 
-Stele TASK-1049 tracks a separate recurring bot scheduler in /Users/mitch/dev/solmargintrader-wt-bot-scheduler. Default cadence is 24 hours. Reuse bots.optimize per cached coin and bot, checkpoint progress, report errors and avoid overlapping workers. Do not change manual settings or start a production service as a test. Legacy adopt=True writes bot-wide config, so schedule adopt=False until the independent per-coin implementation exposes a verified safe capability. Parent owns UI integration and the separate per-coin work.
+The owner wants frequent, incremental per-coin auto-optimization and reports that any failed evaluation can block progress. Isolate unrelated failed candidate evaluations from the actual candidate comparison; keep negative valid results and require matched evidence for the candidate being adopted. Do not confuse a failed execution with a losing valid result. Retain the owner's ability to choose manual mode. Stele task creation is queued as outbox 5897ce13.
 
 ## v198 - 2026-11-08
 
-Implemented detached recurring bot scheduler in /Users/mitch/dev/solmargintrader-wt-bot-scheduler/soltui/bot_scheduler.py. It checkpoints each grid and DCA coin plus the triangle job, avoids overlapping scheduler workers, reports per-item failures, and resumes an interrupted cycle. A dedicated macOS launchd watchdog checks every five minutes and resumes an enabled worker after login or a crash. User Stop clears enabled and waits for the active optimizer call to finish; it never kills a PID. Existing optimizer locks arbitrate against manual runs. The scheduler uses adopt=False unless bots.PER_COIN_OPTIMIZE_ADOPTION_SAFE is exactly True; triangle always uses adopt=False. Without that separate per-coin backend, it records evidence but does not promote improvements. Tests never installed or ran the production service. Forty-one scheduler and existing bots tests passed; the existing metrics test emitted an overflow RuntimeWarning. Parent must integrate the UI, per-coin capability and full verification before delivery.
+PR 126 merged as 14c04d0f07e383bf4aeea2e8e77a3190dc4dfcf2 after required CI passed. It preserves Forward Test sorting, adds F8 strategy handoff, and documents Jupiter spot/perpetual cost differences. The complete SolTUI suite passed 1085 tests with two skips after the catalogue, help, glossary and table-title fixes. Two additional F8 Forward Test interaction tests also passed. The per-coin bot controls and optimizer remain under active implementation in this worktree.
 
 ## v199 - 2026-11-08
 
-Continue TASK-1049 in /Users/mitch/dev/solmargintrader-wt-bot-scheduler. Parent requested registry commands and discoverable Bots-tab start, stop and status controls. Do not start the production service during tests. Use per-coin optimization defaults of six three-day windows when the safe per-coin capability is present; retain adopt=False on the legacy backend. Surface last/next/errors and restore status when the tab reopens. Parent integrates with PR 129 and owns the final merge. Stele MCP remained disconnected.
+The owner asks the Experiments workbench Range, Stop and Step inputs to show defaults, clarify whether values are percentages, and offer percent adjustments beside the fields. These inputs describe the selected parameter's candidate values, not generally coin prices. The user was asked whether percentages should be relative to the current parameter value. Do not put a market price into a rung count or other non-price parameter. Stele task creation is queued as outbox baf0d624.
 
 ## v200 - 2026-11-08
 
-Scheduler integration adds registry-backed start, stop and status controls in the Bots tab, nonblocking status refresh on tab return, an editor detail view, and a queue for user actions while status is loading. Scheduler status does not create files when no schedule exists. The safe per-coin capability uses bots.PER_COIN_OPTIMIZE_WINDOWS=6 and bots.PER_COIN_OPTIMIZE_WINDOW_DAYS=3; absent capability retains legacy adopt=False. Partial aggregate results retain skipped/child error details and count as partial, never completed. Ninety integration tests passed before the final aggregate regression; sixteen focused tests passed after it. Existing metrics tests emitted an overflow RuntimeWarning. Service start/stop were mocked; no production service was started. Parent integrates PR 129 and owns final combined verification and merge.
+F5 batch PR 127 merged as bb18a64fd2f52feae435680a22d0e8e1f81c3655 after required CI. Its detached runner freezes the eligible Coinbase USD spot universe and per-series proof, records missing, failed and unsupported cells, and starts independent forward trials using matching closed candle intervals. Existing cached histories may be incomplete; leveraged tiers remain unsupported and full-universe throughput is not measured. No production batch was started during testing. TASK-1046 remains to be closed after live acceptance.
+
+## v201 - 2026-11-08
+
+Per-coin bot tuning now separates confirmed results from tentative incremental adoption. Tentative adoption requires at least three matched holdout decisions, at least 80 percent matched coverage, a positive median and more wins than losses. Reports disclose that small samples are not statistically confirmed. Manual mode prevents automatic adoption. These bot workflows are simulation-only; a future live runner needs its own explicit risk policy. Stele decision queued as outbox a989c01c. Review identified aggregate skipped-coin reporting, holdout provenance and persistent confidence display issues; fixes and regression tests are in progress.
+
+## v202 - 2026-11-08
+
+The owner provided /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_reference.md for Jupiter lending, fees and leverage. It lists perps base and variable fees, positions, liquidation and program identifiers. Its section 2.1 describes price-impact fees, while section 3.1 says standard fills have zero price impact. Current Jupiter documentation describes linear and additive impact fees, and Stele KNOW-813 flags a one-basis-point floor. Do not assume zero impact or trust program and fee constants without current venue verification. The owner also confirmed that experiment percentage controls should adjust the selected parameter's current value; display market price separately.
+
+## v203 - 2026-11-08
+
+Experiment range PR 130 merged as 514edb0651c5ba2c0c25e10f4dc44f6971c085ad after required CI. It shows selected parameter units, baseline defaults and relative percentage controls, with a separate fresh recorder quote when available. The owner confirmed parameter-relative adjustments. Headless installed-entrypoint acceptance passed; the existing console predates delivery. Stele decision queued as outbox 609e92e4.
+
+## v204 - 2026-11-08
+
+TASK-1049 adds a daily recurring bot optimizer, a detached worker and dedicated launchd recovery watchdog. Stop disables recovery and completes the current optimizer call without killing other workers. The scheduler only enables per-coin adoption when the integrated backend declares its safe capability; triangle remains evidence-only. Status exposes last and next runs, partial results and errors. Tests used mocked service calls; the production scheduler has not been started. Integrate with the per-coin backend and verify launchd before claiming it is running.

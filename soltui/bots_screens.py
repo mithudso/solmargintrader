@@ -112,8 +112,8 @@ class OptimizeScreen(ModalScreen[None]):
         with Vertical(id="opt-dialog"):
             yield Static(Text(f"Auto-optimize: {self.label}. Starting…"), id="opt-head")
             yield Static("", id="opt-progress")
-            yield Static("", id="opt-result")
             with VerticalScroll(id="opt-scroll"):
+                yield Static("", id="opt-result")
                 yield Static("Configurations under test (the first row is your current settings):",
                              classes="table-title")
                 yield self.table_cls(id="opt-candidates")
@@ -169,7 +169,15 @@ class OptimizeScreen(ModalScreen[None]):
             box.update(Text(f"Auto-optimize failed: {error or 'no result'}\nNo settings were changed."))
             return
         v = r["verdict"]
-        if v.get("saved"):
+        if isinstance(r.get("reports"), dict):
+            lines = ["Independent coin-specific results; global defaults were not changed."]
+            for coin, report in r["reports"].items():
+                verdict = report.get("verdict") or {}
+                changes = ", ".join(f"{c['setting']} {c['before']} -> {c['after']}"
+                                    for c in verdict.get("changes") or [])
+                decision = "saved " + (changes or "coin settings") if verdict.get("saved") else "not saved"
+                lines.append(f"  {coin}: {decision}. {verdict.get('reason', '')}")
+        elif v.get("saved"):
             lines = [f"SAVED. Run {r['run']} adopted new settings for this bot ({v.get('saved_to', '')}):"]
             lines += [f"  {c['setting']}: {c['before']} -> {c['after']}" for c in v.get("changes") or []]
         else:
@@ -179,9 +187,10 @@ class OptimizeScreen(ModalScreen[None]):
                     f"{c['setting']} {c['before']} -> {c['after']}" for c in v["changes_not_saved"]))
         lines.append(f"Why: {v.get('reason', '-')}")
         used, skipped = r.get("coins_used") or [], r.get("skipped") or {}
+        skipped_text = ("; ".join(f"{k} ({m})" for k, m in skipped.items()) if isinstance(skipped, dict)
+                        else ", ".join(skipped))
         lines.append(f"Ran on {len(used)} coin(s): {', '.join(used) or '-'}"
-                     + (f"; skipped {len(skipped)}: " + "; ".join(f"{k} ({m})" for k, m in skipped.items())
-                        if skipped else ""))
+                     + (f"; skipped {len(skipped)}: {skipped_text}" if skipped else ""))
         lines.append(f"{r['candidates']} configurations, {r['train_cells']} train and {r['test_cells']} test "
                      f"cells, {r['seconds']} s. Run it again to search wider.")
         box.update(Text("\n".join(lines)))
