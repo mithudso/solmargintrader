@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 149
-Delta: v148 to v149; record liquidity archival and service shutdown.
+Version: 150
+Delta: v149 to v150; record draft delivery and superseded live guidance.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1587,4 +1587,4 @@ PR 105 was merged externally as 2d9e27b while its CI was still running. The docs
 
 ## v149 - 2026-11-08: liquidity archival
 
-Target: liquidity, Aero LP, positions and liquidity scout. Stele task TASK-1011. Owner describes these as unprofitable. The live Aero LP launch agent was disabled and unloaded and /Users/mitch/.aero-lp/KILL was set. The standalone GitHub repository mithudso/aero-liquidity was archived. The managed exit-to-safe dry run reports no managed positions. The existing status snapshot reports no positions; a live unstaked NFT scan found none but cannot exclude gauge-staked positions. Preserve wallet data and records. User clarification is pending on whether to withdraw any remaining on-chain positions. Remaining: identify the archive mechanism and exact scope, archive the requested tools, verify, and deliver. Worktree: /Users/mitch/dev/solmargintrader-archive-liquidity.
+Target: liquidity, Aero LP, positions and liquidity scout. Stele task TASK-1011. Owner describes these as unprofitable. The live Aero LP launch agent was disabled and unloaded and /Users/mitch/.aero-lp/KILL was set. The standalone GitHub repository mithudso/aero-liquidity was archived. The managed exit-to-safe dry run reports no managed positions. The existing status snapshot reports no positions; a live unstaked NFT scan found none but cannot exclude gauge-staked positions. Preserve wallet data and records. User clarification is pending on whether to withdraw any remaining on-chain positions. The archive notice is recorded in the component documentation and overrides older live-operation guidance. The draft delivery is PR 108. Remaining: settle navigation handling and whether any independently staked positions should be withdrawn, then verify and deliver. Worktree: /Users/mitch/dev/solmargintrader-archive-liquidity.
