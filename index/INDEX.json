@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T20:55:05+00:00",
+  "generatedAt": "2026-11-08T21:00:15+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "7973fb0",
+  "commit": "c9ea448",
   "counts": {
     "files": 2638,
-    "bytes": 43772476,
+    "bytes": 43772865,
     "byKind": {
       "strategy-card": 1478,
       "doc": 547,
@@ -81295,9 +81295,9 @@
       "title": "test_experiment_interface",
       "summary": "The workbench's lifecycle and presentation, isolated from personal evidence.",
       "summarySource": "docstring",
-      "bytes": 18688,
-      "lines": 343,
-      "sha1": "655cb634f3a7763d57f6bbabc4c7c010ed5f936e",
+      "bytes": 19077,
+      "lines": 348,
+      "sha1": "391ce63a9fc01ebf53c6d958c4a3e3af33a577ee",
       "symbols": [
         "class Isolated",
         "class JobLifecycle",
