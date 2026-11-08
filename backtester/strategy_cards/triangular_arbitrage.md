@@ -1,14 +1,14 @@
 ---
 id: triangular_arbitrage
 name: Triangular Arbitrage
-kind: exposure-strategy
-status: spec-only
+kind: bot
+status: implemented
 family: arbitrage
-summary: Three-leg spot cycle with executable bid/ask rates. Event-replay design only; independent cross-pair books and a dedicated runner are missing.
+summary: Three-leg spot cycle at executable bid/ask. An L1 screening replay over quotes recorded from the live Coinbase ticker stream exists (core/trianglesim.py); the size-aware L2 replay and a measured result do not.
 registry_key: null
-runner: null
+runner: backtester.botcli
 warmup_bars: null
-evaluation: None
+evaluation: null
 data_required: [l1-order-book, l2-order-book, cross-pair-quotes, single-venue-simultaneous]
 data_available: false
 success_likelihood: very-low
@@ -16,13 +16,42 @@ success_basis: a-priori
 params:
   min_edge_bps: {default: 35.0, type: float, desc: "net edge required after all three legs' fees and spreads"}
   taker_fee_bps: {default: 10.0, type: float, desc: "per-leg taker fee assumption"}
+  latency_s: {default: 1.0, type: float, desc: "seconds between detecting a cycle and executing all three legs at the later quotes"}
+  notional_usd: {default: 100.0, type: float, desc: "USD per cycle before the displayed-size cap"}
+  max_quote_age_s: {default: 5.0, type: float, desc: "a leg quoted longer ago than this is stale and blocks the cycle"}
+  cooldown_s: {default: 5.0, type: float, desc: "seconds after an execution before the same triangle may fire again"}
+  use_displayed_size: {default: true, type: bool, desc: "cap the cycle at the smallest top-of-book size of its legs"}
 presets: {}
 ---
 # Triangular Arbitrage
 
-Design version: 2.0 (2026-11-07).
-Delta: replace categorical feasibility claims with a bounded evidence assessment;
-correct rate direction; specify an offline event-replay experiment.
+Design version: 2.1 (2026-11-08).
+Delta: 2.0 to 2.1; an L1 screening replay and a live quote recorder now exist, so the
+status moves from `spec-only` to `implemented`. Nothing is measured yet.
+
+## What exists now (2026-11-08)
+
+- **Recorder.** `soltui/pricefeed.py` subscribes to the public Coinbase Exchange `ticker`
+  channel for every USD market and cross pair among the cached coins and writes one
+  bid/ask/size snapshot per second to `<config dir>/prices/YYYY-MM-DD.jsonl.gz`. The
+  available crosses on 2026-11-08 were ETH-BTC, SOL-BTC, SOL-ETH, ADA-BTC, ADA-ETH,
+  AVAX-BTC, DOGE-BTC, LINK-BTC, LINK-ETH and XLM-BTC, which give ten USD triangles.
+- **L1 screening replay.** `core/trianglesim.py` evaluates both directions of every
+  triangle at the touch, detects at time *t* and executes all three legs at the first
+  snapshot at or after `t + latency_s`, caps size at the displayed top-of-book size, and
+  refuses quotes older than `max_quote_age_s`. Run it with
+  `python -m backtester.botcli triangle --snapshots <files>` or from the soltui **Bots** tab.
+- **Candle proxy.** The Bots tab can also replay one-minute closes with an assumed
+  half-spread. It is labelled `candle-proxy` everywhere: closes are not synchronous and
+  carry no bid or ask, so its edge is an upper bound on noise.
+
+The replay implements this subset of the fixtures listed below: the 0.99 cycle loses and
+the 1.012 illustration matches; synthetic ratios cancel; reciprocal ask and bid differ;
+adverse change during the delay erases an edge; stale or missing legs cannot trade; the
+displayed size caps the notional. It does **not** walk depth, round quantities, model
+sequential legs with acknowledgements, partial fills or unwinds. Its realized edge is
+therefore an upper bound on what a real three-order execution would capture, and the
+status stays `implemented`, never `measured`, until the size-aware replay below exists.
 
 ## Feasibility and current state
 
@@ -33,9 +62,10 @@ not need any coin to rise in USD. Competition, spread, depth and execution delay
 can remove the apparent profit before a participant completes the cycle.
 
 This is the existing card for this mechanism, not a new trial in the strategy
-count. It stays `spec-only`, `data_available: false`, `registry_key: null`, and
-`runner: null`. This revision designs a backtest; it neither implements nor runs
-one. The current USD OHLCV cache cannot support it. `success_likelihood: very-low`
+count. Version 2.0 designed the backtest; version 2.1 records the L1 screening
+replay above. `data_available` stays `false` until the recorder has accumulated
+enough quotes for the 60/20/20 split described below. The USD OHLCV cache still
+cannot support it. `success_likelihood: very-low`
 is a qualitative prior for this project's current data and infrastructure, not a
 measured probability or a proof that every venue is unprofitable.
 
