@@ -160,7 +160,7 @@ Signal Threshold (0.5-10.0, default 5.0)
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_market_structure](../tv_method_market_structure.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 - [tv_rxrafvef_langlands_operadic_mobius_vortex_lomv](../tv_rxrafvef_langlands_operadic_mobius_vortex_lomv.md)
 

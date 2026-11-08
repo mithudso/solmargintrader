@@ -157,7 +157,7 @@ Bear Correction: BPI is on a P&F sell signal, but currently rising (column of X'
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_x2y6hyok_bitcoin_bullish_percent_index](../../tv_x2y6hyok_bitcoin_bullish_percent_index.md)
+- [tv_x2y6hyok_bitcoin_bullish_percent_index](../../../strategy_research/tv_x2y6hyok_bitcoin_bullish_percent_index.md)
 
 ## Source
 

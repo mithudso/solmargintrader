@@ -107,7 +107,7 @@ When the MCD line crosses above the Signal line, it's a bullish crossover.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_oscillator_divergence](../tv_method_oscillator_divergence.md)
-- [tv_odyzzlzu_median_convergence_divergence](../../tv_odyzzlzu_median_convergence_divergence.md)
+- [tv_odyzzlzu_median_convergence_divergence](../../../strategy_research/tv_odyzzlzu_median_convergence_divergence.md)
 
 ## Source
 

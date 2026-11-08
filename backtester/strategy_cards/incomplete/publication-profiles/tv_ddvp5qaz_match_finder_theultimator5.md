@@ -122,7 +122,7 @@ Default: 30
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_ddvp5qaz_match_finder_theultimator5](../../tv_ddvp5qaz_match_finder_theultimator5.md)
+- [tv_ddvp5qaz_match_finder_theultimator5](../../../strategy_research/tv_ddvp5qaz_match_finder_theultimator5.md)
 
 ## Source
 

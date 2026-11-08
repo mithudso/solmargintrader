@@ -145,13 +145,13 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_bzgubzri_smart_trader_episode_03_by_ata_sabanci_candles_and_tradelines](../tv_bzgubzri_smart_trader_episode_03_by_ata_sabanci_candles_and_tradelines.md)
 - [tv_method_candlestick_patterns](../tv_method_candlestick_patterns.md)
-- [tv_method_doji](../../tv_method_doji.md)
-- [tv_method_engulfing](../../tv_method_engulfing.md)
+- [tv_method_doji](../../../strategy_research/tv_method_doji.md)
+- [tv_method_engulfing](../../../strategy_research/tv_method_engulfing.md)
 - [tv_method_hammer](../tv_method_hammer.md)
-- [tv_method_inside_bar](../../tv_method_inside_bar.md)
+- [tv_method_inside_bar](../../../strategy_research/tv_method_inside_bar.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

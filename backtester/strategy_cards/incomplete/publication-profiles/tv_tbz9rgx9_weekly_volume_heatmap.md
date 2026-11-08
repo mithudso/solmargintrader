@@ -107,7 +107,7 @@ Finally, the result is displayed as a percentage in each cell.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_tbz9rgx9_weekly_volume_heatmap](../../tv_tbz9rgx9_weekly_volume_heatmap.md)
+- [tv_tbz9rgx9_weekly_volume_heatmap](../../../strategy_research/tv_tbz9rgx9_weekly_volume_heatmap.md)
 
 ## Source
 

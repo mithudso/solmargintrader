@@ -112,7 +112,7 @@ divergence exceeds +5%
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_udti2iuw_central_bank_liquidity_gap_indicator](../../tv_udti2iuw_central_bank_liquidity_gap_indicator.md)
+- [tv_udti2iuw_central_bank_liquidity_gap_indicator](../../../strategy_research/tv_udti2iuw_central_bank_liquidity_gap_indicator.md)
 
 ## Source
 

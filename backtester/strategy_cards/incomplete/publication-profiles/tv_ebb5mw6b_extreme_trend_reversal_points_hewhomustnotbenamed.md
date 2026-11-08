@@ -124,7 +124,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_ebb5mw6b_extreme_trend_reversal_points_hewhomustnotbenamed](../tv_ebb5mw6b_extreme_trend_reversal_points_hewhomustnotbenamed.md)
 - [tv_method_candlestick_patterns](../tv_method_candlestick_patterns.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 
 ## Source

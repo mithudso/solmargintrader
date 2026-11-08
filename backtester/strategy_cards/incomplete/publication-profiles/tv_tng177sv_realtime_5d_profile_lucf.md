@@ -150,7 +150,7 @@ the profile will reset on each new chart bar.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_market_profile](../tv_method_market_profile.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_tng177sv_realtime_5d_profile_lucf](../tv_tng177sv_realtime_5d_profile_lucf.md)
 
 ## Source

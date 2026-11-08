@@ -101,7 +101,7 @@ Prefer the usage of the 30-minute timeframe when your market starts at 9:30 AM.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_seasonality](../tv_method_seasonality.md)
-- [tv_ucux0rjl_tops_bottoms_time_of_day_report](../../tv_ucux0rjl_tops_bottoms_time_of_day_report.md)
+- [tv_ucux0rjl_tops_bottoms_time_of_day_report](../../../strategy_research/tv_ucux0rjl_tops_bottoms_time_of_day_report.md)
 
 ## Source
 

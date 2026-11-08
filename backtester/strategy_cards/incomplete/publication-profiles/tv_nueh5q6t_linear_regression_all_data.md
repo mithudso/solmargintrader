@@ -88,7 +88,7 @@ The tool plots a linear regression line using the entire history of an instrumen
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_nueh5q6t_linear_regression_all_data](../../tv_nueh5q6t_linear_regression_all_data.md)
+- [tv_nueh5q6t_linear_regression_all_data](../../../strategy_research/tv_nueh5q6t_linear_regression_all_data.md)
 
 ## Source
 

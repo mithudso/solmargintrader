@@ -101,7 +101,7 @@ The script shows current, minimum, maximum and average volumes. it also shows OH
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_renko](../tv_method_renko.md)
-- [tv_ygno2g1v_tick_chart](../../tv_ygno2g1v_tick_chart.md)
+- [tv_ygno2g1v_tick_chart](../../../strategy_research/tv_ygno2g1v_tick_chart.md)
 
 ## Source
 

@@ -115,7 +115,7 @@ The script also divides volume and open interest if a one-minute bar violates mu
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_xp9odtfm_volume_profile_volume_delta_oi_delta_kioseff_trading](../tv_xp9odtfm_volume_profile_volume_delta_oi_delta_kioseff_trading.md)
 
 ## Source

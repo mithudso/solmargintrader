@@ -96,7 +96,7 @@ price hits the upper/lower band and then closes back inside it
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_h4xuu8kn_dynamic_rsi_regression_bands_zeiierman](../tv_h4xuu8kn_dynamic_rsi_regression_bands_zeiierman.md)
-- [tv_method_liquidity_sweep](../../tv_method_liquidity_sweep.md)
+- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
 - [tv_method_volume_footprint](../tv_method_volume_footprint.md)
 
 ## Source

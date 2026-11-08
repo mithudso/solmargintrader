@@ -198,8 +198,8 @@ gap down and no overlap in the real bodies of the current candle and the precedi
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_candlestick_patterns](../tv_method_candlestick_patterns.md)
-- [tv_method_doji](../../tv_method_doji.md)
-- [tv_method_engulfing](../../tv_method_engulfing.md)
+- [tv_method_doji](../../../strategy_research/tv_method_doji.md)
+- [tv_method_engulfing](../../../strategy_research/tv_method_engulfing.md)
 - [tv_method_hammer](../tv_method_hammer.md)
 - [tv_method_harami](../tv_method_harami.md)
 - [tv_method_morning_evening_star](../tv_method_morning_evening_star.md)

@@ -111,8 +111,8 @@ reduce stop loss distance and exit slightly quicker.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_8ezad3cw_supertrend_ladder_atr](../tv_8ezad3cw_supertrend_ladder_atr.md)
-- [tv_method_atr_trailing](../../tv_method_atr_trailing.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_atr_trailing](../../../strategy_research/tv_method_atr_trailing.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 
 ## Source
 

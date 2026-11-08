@@ -104,7 +104,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_in9ftv45_divergence_for_many_indicator_v3](../tv_in9ftv45_divergence_for_many_indicator_v3.md)
 - [tv_method_oscillator_divergence](../tv_method_oscillator_divergence.md)
-- [tv_method_rsi_divergence](../../tv_method_rsi_divergence.md)
+- [tv_method_rsi_divergence](../../../strategy_research/tv_method_rsi_divergence.md)
 
 ## Source
 

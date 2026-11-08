@@ -1,7 +1,14 @@
 # Prompt history
 
+Version: 81
+Delta: v80 to v81; record PR 96 request and takeover confirmation.
+
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
+Version: 76
+Delta: v75 to v76; retain CI changes and editor request.
+Version: 76
+Delta: v75 to v76; preserve PR 100 records and resolve PR 104.
 
 ## v1 - 2026-11-06
 
@@ -503,6 +510,13 @@ Are each of these cards complete in that by itself can be used to run calculatio
 
 Answered No. Source-component disclosure was too loose a standard. No new card has qualified a standalone coin test; file all current source-profile documentation as incomplete and label it explicitly. Preserve the source interpretations and their independent evidence.
 
+## v60 - 2026-11-08 (EPIC-980 research request)
+
+```text
+Run the /dr skill on all of the frontier children concepts of https://llmsx.org/tree/nonlinear-lead-lag-inference-conditional-information-transfer-finite-sample-uncertainty-lag-selection-multiplicity-and-directed-graph-preservation/ and run the full-suite skill on crypto trading bots: trend-following, mean-reversion, signal-based, arbitrage, loop, combo, TWAP, geographic, statistical, dip-buying, martingale, rebalancing, moon  https://www.tradingview.com/chart/GOLD/CvDZ1ttE-The-5-Types-of-Trading-Bots-Every-Trader-Should-Know/
+```
+
+Scope: all 18 run-start nonlinear frontier labels plus the full crypto trading-bot family. Preserve accepted TASK-905 research and other active work.
 ## v60 - 2026-11-08 (SolTUI card visibility)
 
 ```text
@@ -557,6 +571,13 @@ Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
 So you don't have to run this, you've already passed the CI 3 times.
 ```
 
+## v67 - 2026-11-08 (Firecrawl usage check)
+
+```text
+Are you using the firecrawl skills and mcp server?
+```
+
+Confirmed Firecrawl skills, MCP and worker CLI collection are active. Existing two-track request continues.
 ## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
 
 ```text
@@ -607,4 +628,61 @@ Version: 74. Delta: v73 to v74; preserve the loaded-UI report.
 
 ```text
 I dopn't see the new ui when loading the soltui
+```
+
+## v75 - 2026-11-08 (separate guides and non-testable cards)
+
+```text
+move out the cards that are actually just a how to guide, like "A Quick Guide to Multi-Timeframe Scaling" is not a testable strategy. Move them to a guides directory. If it is not testeable strategy it should not be in the strategy folder.
+```
+
+## v76 - 2026-11-08 (move cards immediately)
+
+```text
+I literally told you to move them. Why did you not move them?
+```
+
+## v77 - 2026-11-08 (update SolTUI list)
+
+```text
+Make sure the soltui's list is updated
+```
+
+## v78 - 2026-11-08 (exclude pair and bot templates)
+
+```text
+The rest of these are also guides, like jlp_vs_sol_relative_value.md is literally just a stub article saying to look at a coin pair.  same with BTC or ETH, the Resting-ladder grid is a grid bot template, not a strategy.
+```
+
+## v79 - 2026-11-08 (correction)
+
+```text
+You have now spenot 136M tokens to be wrong every time you have said you came to a conclusion with zero productive work as a result.
+```
+
+## v80 - 2026-11-08 (status check)
+
+```text
+So now what's up? Haven't you moved literally everything you created?
+
+## v75 - 2026-11-08
+
+```text
+no 104 hasd conflicts, resolve them
+```
+
+## v73 - 2026-11-08
+
+```text
+I'm in the soltui, as far as I can tell the Editor does nothing but display one file forever without changing. Whenever I click on a stratgy I want it to show me the strategy card and all the details about that strategy in the edit window, also true of coins, and if I click a backtest button I want the editor to show me the logs of it running,
+```
+
+## v81 - 2026-11-08: PR 96
+
+```text
+resolve the conflicts in https://github.com/mithudso/solmargintrader/pull/96 and merge, commit, pr
+```
+
+```text
+Yes it's abandonedd
 ```

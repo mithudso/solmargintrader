@@ -124,8 +124,8 @@ Maximum 500 lines
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_pitchfork](../../tv_method_pitchfork.md)
-- [tv_sq5xt0ez_hyperfork_matrix](../../tv_sq5xt0ez_hyperfork_matrix.md)
+- [tv_method_pitchfork](../../../strategy_research/tv_method_pitchfork.md)
+- [tv_sq5xt0ez_hyperfork_matrix](../../../strategy_research/tv_sq5xt0ez_hyperfork_matrix.md)
 
 ## Source
 

@@ -107,7 +107,7 @@ not necessarily to manage your portfolio.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_enc8rzn0_modern_portfolio_management_indicator](../../tv_enc8rzn0_modern_portfolio_management_indicator.md)
+- [tv_enc8rzn0_modern_portfolio_management_indicator](../../../strategy_research/tv_enc8rzn0_modern_portfolio_management_indicator.md)
 
 ## Source
 

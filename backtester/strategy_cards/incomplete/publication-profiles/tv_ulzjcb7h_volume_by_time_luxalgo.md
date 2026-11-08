@@ -116,7 +116,7 @@ Set to 0 for full data (Default 0).
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_ulzjcb7h_volume_by_time_luxalgo](../../tv_ulzjcb7h_volume_by_time_luxalgo.md)
+- [tv_ulzjcb7h_volume_by_time_luxalgo](../../../strategy_research/tv_ulzjcb7h_volume_by_time_luxalgo.md)
 
 ## Source
 

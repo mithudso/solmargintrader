@@ -188,8 +188,8 @@ relative to prior NY session
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_hjxrfmmg_session_candles_reversals_flowly_indicators](../../tv_hjxrfmmg_session_candles_reversals_flowly_indicators.md)
-- [tv_method_engulfing](../../tv_method_engulfing.md)
+- [tv_hjxrfmmg_session_candles_reversals_flowly_indicators](../../../strategy_research/tv_hjxrfmmg_session_candles_reversals_flowly_indicators.md)
+- [tv_method_engulfing](../../../strategy_research/tv_method_engulfing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 
 ## Source

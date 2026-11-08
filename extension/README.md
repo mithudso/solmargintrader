@@ -516,7 +516,7 @@ permission.
 
 **Measured on real SOL for the first time (2026-08-04).** The ladder economics were run
 against the real daily and hourly series, not just synthetic bars —
-`backtester/strategy_cards/ladder_grid.md` and `research/results/ladder_grid_sol.csv`.
+`backtester/guides/ladder_grid.md` and `research/results/ladder_grid_sol.csv`.
 Two results matter here:
 
 - **A static ladder is out of range 86–93% of the time.** Using this extension's own

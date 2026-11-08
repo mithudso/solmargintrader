@@ -135,7 +135,7 @@ body size setting, with higher values increasing the body amplitude.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_heikin_ashi](../../tv_method_heikin_ashi.md)
+- [tv_method_heikin_ashi](../../../strategy_research/tv_method_heikin_ashi.md)
 - [tv_method_renko](../tv_method_renko.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 - [tv_qeqcsffc_dekidaka_ashi_candles_and_volume_teaming_up_again](../tv_qeqcsffc_dekidaka_ashi_candles_and_volume_teaming_up_again.md)

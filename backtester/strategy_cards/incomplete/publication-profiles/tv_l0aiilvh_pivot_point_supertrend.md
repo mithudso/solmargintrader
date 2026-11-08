@@ -124,7 +124,7 @@ Once Per Bar Close
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_l0aiilvh_pivot_point_supertrend](../tv_l0aiilvh_pivot_point_supertrend.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 
 ## Source

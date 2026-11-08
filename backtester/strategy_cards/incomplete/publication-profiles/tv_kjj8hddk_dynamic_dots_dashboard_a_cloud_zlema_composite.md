@@ -117,7 +117,7 @@ above the current price and acting as a resistance
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_kjj8hddk_dynamic_dots_dashboard_a_cloud_zlema_composite](../tv_kjj8hddk_dynamic_dots_dashboard_a_cloud_zlema_composite.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 
 ## Source

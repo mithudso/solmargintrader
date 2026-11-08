@@ -110,7 +110,7 @@ Once an alert is triggered, a new trail is to be set up.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_efbdipvs_bjorgum_autotrail](../tv_efbdipvs_bjorgum_autotrail.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 
 ## Source
 

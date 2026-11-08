@@ -101,7 +101,7 @@ My ema() will also accept a floating point number for the period
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_qhncxbml_relative_strength_rsmk_perks_markos_katsanos](../tv_qhncxbml_relative_strength_rsmk_perks_markos_katsanos.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

@@ -109,7 +109,7 @@ Position Sizing: Inversely modulated based on normalized EVAR
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_c2fzxjii_evar_indicator_and_position_sizing](../tv_c2fzxjii_evar_indicator_and_position_sizing.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 
 ## Source
 

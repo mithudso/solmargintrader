@@ -121,7 +121,7 @@ The script also calculates the highest high and lowest low following an earnings
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_okuj0d2n_earnings_price_move_cheat_sheet_kt](../../tv_okuj0d2n_earnings_price_move_cheat_sheet_kt.md)
+- [tv_okuj0d2n_earnings_price_move_cheat_sheet_kt](../../../strategy_research/tv_okuj0d2n_earnings_price_move_cheat_sheet_kt.md)
 
 ## Source
 

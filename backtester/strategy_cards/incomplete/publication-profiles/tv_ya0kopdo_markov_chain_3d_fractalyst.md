@@ -145,8 +145,8 @@ automatically exports a [b]bias value (+1 for Bullish, -1 for Bearish, 0 for Neu
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_megaphone](../tv_method_megaphone.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 - [tv_ya0kopdo_markov_chain_3d_fractalyst](../tv_ya0kopdo_markov_chain_3d_fractalyst.md)
 
 ## Source

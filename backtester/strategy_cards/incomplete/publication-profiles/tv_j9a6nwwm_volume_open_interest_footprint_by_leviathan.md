@@ -109,7 +109,7 @@ These levels can serve as significant points of interest, S/R, targets
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_j9a6nwwm_volume_open_interest_footprint_by_leviathan](../tv_j9a6nwwm_volume_open_interest_footprint_by_leviathan.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_method_volume_footprint](../tv_method_volume_footprint.md)
 
 ## Source

@@ -126,7 +126,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_edel00bp_risk_adjusted_momentum_oscillator](../tv_edel00bp_risk_adjusted_momentum_oscillator.md)
 - [tv_method_elliott_wave](../tv_method_elliott_wave.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 
 ## Source
 

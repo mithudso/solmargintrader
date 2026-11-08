@@ -167,7 +167,7 @@ current market value of the investment based on the closing price
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_hxxk64fl_sip_evaluator_and_screener_trendoscope](../../tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md)
+- [tv_hxxk64fl_sip_evaluator_and_screener_trendoscope](../../../strategy_research/tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md)
 
 ## Source
 

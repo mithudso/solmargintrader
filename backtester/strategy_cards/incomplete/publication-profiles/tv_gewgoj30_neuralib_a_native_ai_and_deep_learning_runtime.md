@@ -155,7 +155,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_method_kalman_filter](../tv_method_kalman_filter.md)
 - [tv_method_knn_prediction](../tv_method_knn_prediction.md)
-- [tv_method_logistic_prediction](../../tv_method_logistic_prediction.md)
+- [tv_method_logistic_prediction](../../../strategy_research/tv_method_logistic_prediction.md)
 - [tv_method_neural_prediction](../tv_method_neural_prediction.md)
 
 ## Source

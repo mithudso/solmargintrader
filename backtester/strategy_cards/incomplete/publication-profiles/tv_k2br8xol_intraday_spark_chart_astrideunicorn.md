@@ -114,8 +114,8 @@ Final daily % change (updated at session close).
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_k2br8xol_intraday_spark_chart_astrideunicorn](../../tv_k2br8xol_intraday_spark_chart_astrideunicorn.md)
-- [tv_method_intermarket_correlation](../../tv_method_intermarket_correlation.md)
+- [tv_k2br8xol_intraday_spark_chart_astrideunicorn](../../../strategy_research/tv_k2br8xol_intraday_spark_chart_astrideunicorn.md)
+- [tv_method_intermarket_correlation](../../../strategy_research/tv_method_intermarket_correlation.md)
 - [tv_method_opening_range](../tv_method_opening_range.md)
 
 ## Source

@@ -130,7 +130,7 @@ our volume delta calculations will remain a mere proxy.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_h0yzptis_delta_volume_candles_lucf](../tv_h0yzptis_delta_volume_candles_lucf.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

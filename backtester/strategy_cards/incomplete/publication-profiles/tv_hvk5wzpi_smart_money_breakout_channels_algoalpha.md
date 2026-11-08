@@ -101,7 +101,7 @@ Three volume visualization modes: raw volume, comparative up/down volume, and de
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_hvk5wzpi_smart_money_breakout_channels_algoalpha](../tv_hvk5wzpi_smart_money_breakout_channels_algoalpha.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

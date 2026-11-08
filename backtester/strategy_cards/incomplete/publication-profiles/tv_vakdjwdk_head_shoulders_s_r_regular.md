@@ -133,7 +133,7 @@ between 1.4 & 1.5
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_head_shoulders](../../tv_method_head_shoulders.md)
+- [tv_method_head_shoulders](../../../strategy_research/tv_method_head_shoulders.md)
 - [tv_vakdjwdk_head_shoulders_s_r_regular](../tv_vakdjwdk_head_shoulders_s_r_regular.md)
 
 ## Source

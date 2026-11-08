@@ -96,7 +96,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_method_fourier_cycle](../tv_method_fourier_cycle.md)
 - [tv_tmqir1jp_rsi_cyclic_smoothed_v2](../tv_tmqir1jp_rsi_cyclic_smoothed_v2.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

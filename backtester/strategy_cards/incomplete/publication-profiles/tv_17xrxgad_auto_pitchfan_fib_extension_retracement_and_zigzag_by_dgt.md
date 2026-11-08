@@ -109,9 +109,9 @@ Ability to set [b]ALERTs[/b] for each PitchFan Ray Level
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_17xrxgad_auto_pitchfan_fib_extension_retracement_and_zigzag_by_dgt](../tv_17xrxgad_auto_pitchfan_fib_extension_retracement_and_zigzag_by_dgt.md)
-- [tv_method_fib_extensions](../../tv_method_fib_extensions.md)
+- [tv_method_fib_extensions](../../../strategy_research/tv_method_fib_extensions.md)
 - [tv_method_linear_regression_channel](../tv_method_linear_regression_channel.md)
-- [tv_method_pitchfork](../../tv_method_pitchfork.md)
+- [tv_method_pitchfork](../../../strategy_research/tv_method_pitchfork.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 
 ## Source

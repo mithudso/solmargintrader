@@ -130,7 +130,7 @@ two
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_seasonality](../tv_method_seasonality.md)
-- [tv_y3pnzg2q_correlation_heatmap](../../tv_y3pnzg2q_correlation_heatmap.md)
+- [tv_y3pnzg2q_correlation_heatmap](../../../strategy_research/tv_y3pnzg2q_correlation_heatmap.md)
 
 ## Source
 

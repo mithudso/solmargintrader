@@ -107,7 +107,7 @@ divided by the price at bar [i]End[/i]
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_xlv4mwjk_time_range_statistics](../../tv_xlv4mwjk_time_range_statistics.md)
+- [tv_xlv4mwjk_time_range_statistics](../../../strategy_research/tv_xlv4mwjk_time_range_statistics.md)
 
 ## Source
 

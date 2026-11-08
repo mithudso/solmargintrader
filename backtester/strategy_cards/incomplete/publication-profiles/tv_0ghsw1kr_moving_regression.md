@@ -105,7 +105,7 @@ When the degree of the local polynomial is set to 0 (i.e., fitting data to a con
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_0ghsw1kr_moving_regression](../../tv_0ghsw1kr_moving_regression.md)
+- [tv_0ghsw1kr_moving_regression](../../../strategy_research/tv_0ghsw1kr_moving_regression.md)
 - [tv_method_polynomial_regression](../tv_method_polynomial_regression.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 

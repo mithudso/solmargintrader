@@ -108,7 +108,7 @@ Custom Timeframe currently accept only Daily and Weekly.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_b3almahh_indices_sector_sigmaspikes](../../tv_b3almahh_indices_sector_sigmaspikes.md)
+- [tv_b3almahh_indices_sector_sigmaspikes](../../../strategy_research/tv_b3almahh_indices_sector_sigmaspikes.md)
 
 ## Source
 

@@ -110,7 +110,7 @@ only possible after the required number of subsequent candles has closed
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_order_blocks](../tv_method_order_blocks.md)
-- [tv_r8g2yhdg_order_block_finder_experimental](../../tv_r8g2yhdg_order_block_finder_experimental.md)
+- [tv_r8g2yhdg_order_block_finder_experimental](../../../strategy_research/tv_r8g2yhdg_order_block_finder_experimental.md)
 
 ## Source
 

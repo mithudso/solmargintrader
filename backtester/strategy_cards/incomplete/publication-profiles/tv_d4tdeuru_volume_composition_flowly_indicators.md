@@ -127,8 +127,8 @@ move up with volume higher than previous bar volume = active buy volume
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_d4tdeuru_volume_composition_flowly_indicators](../../tv_d4tdeuru_volume_composition_flowly_indicators.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_d4tdeuru_volume_composition_flowly_indicators](../../../strategy_research/tv_d4tdeuru_volume_composition_flowly_indicators.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_method_volume_footprint](../tv_method_volume_footprint.md)
 
 ## Source

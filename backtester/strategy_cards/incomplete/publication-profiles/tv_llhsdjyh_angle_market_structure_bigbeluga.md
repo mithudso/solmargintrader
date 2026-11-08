@@ -103,7 +103,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_llhsdjyh_angle_market_structure_bigbeluga](../tv_llhsdjyh_angle_market_structure_bigbeluga.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 
 ## Source
 

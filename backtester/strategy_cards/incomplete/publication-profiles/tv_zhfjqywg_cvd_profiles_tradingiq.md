@@ -116,7 +116,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_method_market_profile](../tv_method_market_profile.md)
 - [tv_method_opening_range](../tv_method_opening_range.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_zhfjqywg_cvd_profiles_tradingiq](../tv_zhfjqywg_cvd_profiles_tradingiq.md)
 
 ## Source

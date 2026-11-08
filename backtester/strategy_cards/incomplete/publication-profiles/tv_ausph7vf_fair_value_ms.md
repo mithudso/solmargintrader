@@ -109,7 +109,7 @@ By Default, the indicator uses "America/New_York" Timezone.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_ausph7vf_fair_value_ms](../tv_ausph7vf_fair_value_ms.md)
-- [tv_method_fair_value_gap](../../tv_method_fair_value_gap.md)
+- [tv_method_fair_value_gap](../../../strategy_research/tv_method_fair_value_gap.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 

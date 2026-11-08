@@ -102,7 +102,7 @@ Body Size (the absolute difference between the open and close price of the candl
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_logistic_prediction](../../tv_method_logistic_prediction.md)
+- [tv_method_logistic_prediction](../../../strategy_research/tv_method_logistic_prediction.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 - [tv_rs3xqwyx_support_and_resistance_logistic_regression_flux_charts](../tv_rs3xqwyx_support_and_resistance_logistic_regression_flux_charts.md)

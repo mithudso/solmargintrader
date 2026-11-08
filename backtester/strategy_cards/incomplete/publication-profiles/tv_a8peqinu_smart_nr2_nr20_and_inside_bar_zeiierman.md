@@ -113,7 +113,7 @@ Stop below the opposite side of the range
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_a8peqinu_smart_nr2_nr20_and_inside_bar_zeiierman](../tv_a8peqinu_smart_nr2_nr20_and_inside_bar_zeiierman.md)
-- [tv_method_inside_bar](../../tv_method_inside_bar.md)
+- [tv_method_inside_bar](../../../strategy_research/tv_method_inside_bar.md)
 
 ## Source
 

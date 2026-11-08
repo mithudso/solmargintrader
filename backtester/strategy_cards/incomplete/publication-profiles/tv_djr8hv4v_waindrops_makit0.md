@@ -142,7 +142,7 @@ for each tick in it stores the price and volume
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_djr8hv4v_waindrops_makit0](../../tv_djr8hv4v_waindrops_makit0.md)
+- [tv_djr8hv4v_waindrops_makit0](../../../strategy_research/tv_djr8hv4v_waindrops_makit0.md)
 
 ## Source
 

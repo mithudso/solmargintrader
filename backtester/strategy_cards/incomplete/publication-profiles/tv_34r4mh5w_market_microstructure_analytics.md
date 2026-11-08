@@ -176,7 +176,7 @@ carrying the previous sign forward when the price is unchanged.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_34r4mh5w_market_microstructure_analytics](../../tv_34r4mh5w_market_microstructure_analytics.md)
+- [tv_34r4mh5w_market_microstructure_analytics](../../../strategy_research/tv_34r4mh5w_market_microstructure_analytics.md)
 
 ## Source
 

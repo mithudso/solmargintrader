@@ -115,7 +115,7 @@ Each profile is built from lower timeframe data
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_market_structure](../tv_method_market_structure.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_shy8kacw_market_structure_volume_profiles_kioseff_trading](../tv_shy8kacw_market_structure_volume_profiles_kioseff_trading.md)
 
 ## Source

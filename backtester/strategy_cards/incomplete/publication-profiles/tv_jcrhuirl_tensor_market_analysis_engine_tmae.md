@@ -197,12 +197,12 @@ H = log(R/S) / log(n)
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_jcrhuirl_tensor_market_analysis_engine_tmae](../tv_jcrhuirl_tensor_market_analysis_engine_tmae.md)
-- [tv_method_intermarket_correlation](../../tv_method_intermarket_correlation.md)
-- [tv_method_liquidity_sweep](../../tv_method_liquidity_sweep.md)
+- [tv_method_intermarket_correlation](../../../strategy_research/tv_method_intermarket_correlation.md)
+- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 
 ## Source
 

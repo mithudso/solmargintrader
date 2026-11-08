@@ -114,7 +114,7 @@ normalizes the RS value into a range from 1 to 99
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_5nsvcovp_industry_group_strength](../tv_5nsvcovp_industry_group_strength.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

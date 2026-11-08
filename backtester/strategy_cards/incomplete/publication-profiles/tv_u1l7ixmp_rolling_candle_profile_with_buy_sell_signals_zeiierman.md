@@ -127,7 +127,7 @@ Default: 6.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_u1l7ixmp_rolling_candle_profile_with_buy_sell_signals_zeiierman](../tv_u1l7ixmp_rolling_candle_profile_with_buy_sell_signals_zeiierman.md)
 
 ## Source

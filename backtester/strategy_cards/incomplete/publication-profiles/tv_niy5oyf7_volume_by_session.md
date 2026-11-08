@@ -94,7 +94,7 @@ The indicator goes as high as 1H timeframe and the average line does not functio
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_niy5oyf7_volume_by_session](../../tv_niy5oyf7_volume_by_session.md)
+- [tv_niy5oyf7_volume_by_session](../../../strategy_research/tv_niy5oyf7_volume_by_session.md)
 
 ## Source
 

@@ -111,7 +111,7 @@ Choose the output data whether adjusted or not.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_2vec0xzu_annual_returns_comparison_by_muqwishi](../../tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md)
+- [tv_2vec0xzu_annual_returns_comparison_by_muqwishi](../../../strategy_research/tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md)
 
 ## Source
 

@@ -126,7 +126,7 @@ a green line (short interest ratio < 20%) connects the 2-year high to the curren
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_nlygzrmb_short_volume_stamper](../../tv_nlygzrmb_short_volume_stamper.md)
+- [tv_nlygzrmb_short_volume_stamper](../../../strategy_research/tv_nlygzrmb_short_volume_stamper.md)
 
 ## Source
 

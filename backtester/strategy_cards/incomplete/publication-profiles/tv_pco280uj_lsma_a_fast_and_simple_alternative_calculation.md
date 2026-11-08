@@ -95,7 +95,7 @@ such forecast is rarely accurate and the LSMA is mostly used as a smoother.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_builtin_least_squares_moving_average](../../tv_builtin_least_squares_moving_average.md)
+- [tv_builtin_least_squares_moving_average](../../../strategy_research/tv_builtin_least_squares_moving_average.md)
 
 ## Source
 

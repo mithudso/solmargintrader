@@ -142,7 +142,7 @@ logarithmic price difference
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_liquidity_sweep](../../tv_method_liquidity_sweep.md)
+- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 - [tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines](../tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines.md)
 

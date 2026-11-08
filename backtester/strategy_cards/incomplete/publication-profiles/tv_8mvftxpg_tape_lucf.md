@@ -118,8 +118,8 @@ There are three types of markers
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_8mvftxpg_tape_lucf](../../tv_8mvftxpg_tape_lucf.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_8mvftxpg_tape_lucf](../../../strategy_research/tv_8mvftxpg_tape_lucf.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

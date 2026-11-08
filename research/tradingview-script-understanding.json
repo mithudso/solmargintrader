@@ -7875,7 +7875,7 @@
       ],
       "purpose": "Moving Regression creates a rolling smooth representation of chart data while allowing the trader to tune how closely the line follows recent curvature. It combines a local polynomial fit with a moving window, so its role is broader than a fixed moving average. The author proposes using the resulting curve to judge momentum and trend direction, identify possible reversals, and locate contextual support or resistance.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_0ghsw1kr_moving_regression.md",
-      "card_sha256": "cd3117c41cb2986ba4815b91554f62ae326189836073b1324e395ac3b6a81ee7",
+      "card_sha256": "c67ce419da7e425acf528a575258b71ead1d25eff7b972f2a9b16ed588956197",
       "readiness": {
         "status": "incomplete",
         "reason": "The prose defines a rolling polynomial concept but does not resolve the fitting criterion or input series for a reproducible line.",
@@ -8129,7 +8129,7 @@
       ],
       "purpose": "Nasan estimates a trade risk percentage and position size by combining the stock’s return relative to a benchmark, its historical volatility and drawdown, and the trader’s own performance assumptions. It attempts to refine a generic capital-risk allowance for the particular stock and trader. The result is a sizing aid rather than a signal to buy the stock, and the description restricts its risk and size calculations to daily charts.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md",
-      "card_sha256": "19b356a90bcbf258192c42320044193e8d621dc0d0c08655b015198c272d2a50",
+      "card_sha256": "5a18264a9b3c616105f006de12ea731c6bf1b7a68ae08c1a398a7a15b49046c6",
       "readiness": {
         "status": "incomplete",
         "reason": "Annual weighting, ATR adaptation and ambiguous sizing parentheses prevent reproducible risk and quantity outputs.",
@@ -8975,7 +8975,7 @@
       ],
       "purpose": "Provide callable ratio and tolerance helpers for recognizing named harmonic and repeated-top/bottom patterns from supplied pivot values.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_12ferxal_harmonicpattern.md",
-      "card_sha256": "4fc8c01cb6cb29bd37dbf037c4004319299c5d306f776b3242c87d7a46d265b8",
+      "card_sha256": "81db0e79a836c4a534735572b0e3e2536ecd8907ad42a86df70503fcbc43bad0",
       "readiness": {
         "status": "incomplete",
         "reason": "The function signatures and tolerance default do not disclose the core pattern acceptance tables.",
@@ -9301,7 +9301,7 @@
       ],
       "purpose": "Automate a shared swing-based framework for pitchfan rays, Fibonacci retracement/extension levels and connecting zigzag structure.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_17xrxgad_auto_pitchfan_fib_extension_retracement_and_zigzag_by_dgt.md",
-      "card_sha256": "412f544269c007b5e5dca19b13ecfead021cbc866b6b290f3f2b3f3f2322858d",
+      "card_sha256": "6a268d4fc871e408a42b6545910fb11f1934b862f64b3c88fdbd100219463c87",
       "readiness": {
         "status": "incomplete",
         "reason": "Core swing and pitchfan/extension anchoring remain insufficiently defined despite the feature-level workflow.",
@@ -9484,7 +9484,7 @@
       ],
       "purpose": "Visualize Fibonacci relationships jointly in elapsed chart time and price. The tool offers curved and straight constructions from manually selected anchors, helping a trader compare potential interaction zones rather than producing a predictive entry signal.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_1nhvl40i_fibonacci_time_price_zones.md",
-      "card_sha256": "2b87f1c6a25e48a15a8111e24dafe050b9930afcc2a06a87ae4f2f67d82c6948",
+      "card_sha256": "7f80c9e369b8d74d79e9e685e18ca35826aa20e7556a50e1f3d7feb24fcf32ec",
       "readiness": {
         "status": "incomplete",
         "reason": "Exact radial/logarithmic and aspect-ratio equations, straight projection coordinates and C/D derivation are absent.",
@@ -9596,7 +9596,7 @@
       ],
       "purpose": "Keep historical price extremes visible and show how the current market relates to those extremes, with notifications when an extreme is exceeded.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_1uw4irtx_all_time_high_low_widget.md",
-      "card_sha256": "8be962c4f7b766554537ffee45d218ae9162ad719cf37e9646aac453b15ceb5d",
+      "card_sha256": "057d006220cd9bd4c6e4695b301ac31393a68b36240bd126b9b457f80ae64819",
       "readiness": {
         "status": "incomplete",
         "reason": "The described computation retains a blocking specification gap: The source does not state whether extremes use wicks or closes, how distance is scaled, whether alerts wait for the close, or how incomplete history is handled.",
@@ -10194,7 +10194,7 @@
       ],
       "purpose": "Periodic Activity Tracker summarizes the balance of attributed buying and selling volume within calendar aggregation periods. It is intended to help a discretionary trader compare activity across periods and see when the difference between the two sides expands or contracts. The author interprets the upper line and signed delta as relative aggressiveness, while acknowledging that every liquid-market trade has both a buyer and seller. The display is an activity comparison rather than a standalone entry or exit rule. Its paired lines and bars express the same period totals in different visual forms.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2gaiphlg_periodic_activity_tracker_luxalgo.md",
-      "card_sha256": "0d69fe9654202b80a5b7627baa0cf9a01ac74a80558b413fb6ba2a383faa3684",
+      "card_sha256": "c7a57beeb0902d23416428a75e4715c889438519308f7f4cdb2adfe45867dbe5",
       "readiness": {
         "status": "incomplete",
         "reason": "The core buy-versus-sell volume attribution rule is absent.",
@@ -10377,7 +10377,7 @@
       ],
       "purpose": "This ETF scanner expresses Katsanos’s short-term relative-strength method as screener columns and chart annotations. It seeks comparatively strong non-leveraged ETFs that have recovered from a recent oversold pullback without becoming excessively stretched. Benchmark correlation changes the market-risk gate, so a falling benchmark favors sufficiently negatively correlated candidates. The aim is improved downside behavior relative to buy-and-hold, an objective rather than demonstrated performance here. Although the publication describes explicit position conditions, its native implementation is an indicator for scanning a watchlist, not a broker-executed strategy.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md",
-      "card_sha256": "629c993e2837f326f06760a39008bbdccba01dd15f0407ba4111c2cc9220fa77",
+      "card_sha256": "d2866c79573e900db621e27d6a579e8556b3f29070797b3a0f5d9fd2c345a627",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for the independently displayed RSMK series: explicit log-ratio change and four-period EMA define it for a chosen lookback and benchmark. Missing correlation/volume gates limit full screener reproduction, not RSMK.",
@@ -10451,7 +10451,7 @@
       ],
       "purpose": "Annual Returns % Comparison provides a visual history of how two chosen instruments changed from year to year. Its purpose is comparative performance inspection: the reader can see which symbol led in a given year and how the pattern changes across the chosen date range. The output is constructed as a table-based paired column display, rather than an entry signal on the price chart. Adjusted-versus-unadjusted data selection is particularly relevant to comparison, because that choice can change the economic interpretation of the reported returns. The source does not establish whether the adjustment constitutes a full total-return calculation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md",
-      "card_sha256": "61a0d56d3ed7917b8cfc562d731d2702ab8792c20826e507f40b1b0e483c0cca",
+      "card_sha256": "1f2b4a4f182ecf69ce8f04a4c62d46c3379ba4dd4a45647862303068a288a89d",
       "readiness": {
         "status": "incomplete",
         "reason": "Annual return endpoints and partial-year calculation are not defined.",
@@ -10959,7 +10959,7 @@
       ],
       "purpose": "Market Microstructure Analytics estimates spread and liquidity stress from ordinary chart bars, helping users compare execution conditions with their own recent history. Its outputs are statistical proxies for transaction mechanics rather than observations of the exchange order book.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_34r4mh5w_market_microstructure_analytics.md",
-      "card_sha256": "c523b83c23743cd4636c0c4ccbecc9db0ad76fef1b2ac2883b5bfb4b49a36194",
+      "card_sha256": "60ecca0d636be2c2b5d50f27330407e017b95dddd23d04743ade50c1c5746cd9",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for disclosed individual Roll, Parkinson and Amihud component computations, and signed-change OLS Kyle outline with supplied windows/edge conventions; exact composite, streaming MAD and tanh regime model remain outside scope.",
@@ -11493,7 +11493,7 @@
       ],
       "purpose": "Compare estimated buying and selling participation across selected intraday ranges by separating volume-at-price distributions and their important price levels.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_3mkewfnn_10x_bull_vs_bear_vp_intraday_sessions_kioseff_trading.md",
-      "card_sha256": "ce51e505344c263e832c41fa7501f6bd8e1cdf6523d7525a55ec5fabe3044c33",
+      "card_sha256": "53fad071526157477923e3c7962cb0d2433f2acb893f64891eb84198f1daacd2",
       "readiness": {
         "status": "incomplete",
         "reason": "The described computation retains a blocking specification gap: The prose omits volume allocation, delta classification, lower-timeframe requirements, value-area expansion and tie-breaking rules.",
@@ -11668,7 +11668,7 @@
       ],
       "purpose": "This publication applies logistic classification to chart data to generate long-versus-short indications. Despite the author calling it a strategy, the saved publication is an indicator and the prose chiefly explains its model rather than a complete order lifecycle. It repeatedly trains a sigmoid-based classifier on each arriving bar, aiming to distinguish directional classes instead of forecasting a continuous price. The intended style is trend following across multiple timeframes. The author explicitly warns that signals repaint, making the display unsuitable as evidence of historically available signals without a causal replay and an exact training reconstruction.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_49yiv1jw_machine_learning_logistic_regression.md",
-      "card_sha256": "4e30f34ae68c82abc5ceb88ba2d69b461e29b8d68e46f939749eee0400ceb706",
+      "card_sha256": "41cfc99f60ba610e82501a76e5569c2d6b8d68645638c51fd824ba840a480f36",
       "readiness": {
         "status": "incomplete",
         "reason": "Classifier features, targets, training updates and decision threshold are missing.",
@@ -11911,7 +11911,7 @@
       ],
       "purpose": "Relative Currency Strength supplies context about whether a currency pair’s movement comes from strength in its base currency, weakness in its quote currency, or both. It compares major currencies and crosses from a chosen intraday reference point. A reader considering a EURUSD long can therefore inspect broader EUR and USD behavior before deciding whether the pair-level idea is coherent. The author explicitly describes the result as summary market context that cannot be traded in isolation. The financial objective is cross-market situational awareness, not a mechanical strongest-versus-weakest allocation rule.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_4odvb8q4_relative_currency_strength.md",
-      "card_sha256": "d37e2bb64efeeb56fee1de0464b04bb7a90ae173414fb79cf86a177d72fa384e",
+      "card_sha256": "19b8d8abeb9d64de13c9be5edcacca280efc40e946f2895007eba8285eb28cea",
       "readiness": {
         "status": "incomplete",
         "reason": "Currency-strength normalization and cross-pair aggregation are unspecified.",
@@ -12417,7 +12417,7 @@
       ],
       "purpose": "Recognize configurable candlestick formations and summarize their subsequent returns by market-range location. Adaptive label colors communicate historical pattern behavior rather than assigning textbook bullish/bearish labels unconditionally.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_5fqgmcio_adaptive_candlestick_pattern_recognition_system.md",
-      "card_sha256": "85cf43c1b8e2feac0b6ae3370393b4310711083226addf19f6219265c982fdfe",
+      "card_sha256": "0137ad5c2721906875dc0cbf5dbfa4c22c4bc7e9d7cf2400b167009c54db6ff7",
       "readiness": {
         "status": "usable-specification",
         "reason": "Elementary candle predicates/classic event returns is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -12493,7 +12493,7 @@
       ],
       "purpose": "Industry Group Strength helps a trader locate leadership among peers rather than judging a stock solely against the broad market. It recognizes the charted stock’s industry, requests the predefined peer list, and ranks the group using a selected performance measure. This can reveal whether a candidate is leading a strong cohort or lagging its immediate competitors. A benchmark-relative measure and raw-return alternatives answer different questions, so the ranking mode matters. The result is a research and screening table, with no disclosed requirement to buy the highest-ranked stock or rebalance on a particular schedule.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_5nsvcovp_industry_group_strength.md",
-      "card_sha256": "53a526c000aaafe79ec6be75e8e16db34a0c82c6bf2f3e43e68771a718e67159",
+      "card_sha256": "8cf0a8490252df9cc8820e649de119f94a550acb598b74b40e3723be9021191c",
       "readiness": {
         "status": "incomplete",
         "reason": "Relative-strength normalization and the industry-peer selection contract are missing.",
@@ -13189,7 +13189,7 @@
       ],
       "purpose": "Reconstruct stylized volatility-targeting equity exposure and prospective mechanical rebalancing from public risk-control rules.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_5ghqjxjj_vol_control_fund_positioning.md",
-      "card_sha256": "2abecd239490824c8644f7772d04c9412a08c1b6f445058607f0aca68e912700",
+      "card_sha256": "537d95d704ccacc0d458991c90e51a977bf514938ec7c26a66678e1fec359787",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for explicit S&P dual-EWMA preset, capped target ratio, two-day lag and five-year rank with supplied seeds/daily data; other blend/bond/scenario mechanics remain outside scope.",
@@ -13281,7 +13281,7 @@
       ],
       "purpose": "Track unmitigated fair-value gaps from a selected timeframe and add approximate volume pressure and a smoothed directional context. The indicator organizes candidate reaction zones rather than proving that institutions caused the price move.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_5js51rsp_multitimeframe_fair_value_gap_fvg_zeiierman.md",
-      "card_sha256": "cbdbb21ee5e7e3a41bba3cab6dd8b7a83dbcb6e4f1d34d0258245fc014badde0",
+      "card_sha256": "4436e2f1b86868f6065e3c36c546d5144fcf8b424815dedea4d7ab9ba5a8b2e6",
       "readiness": {
         "status": "incomplete",
         "reason": "Wick averaging and strength equations, exact Butterworth coefficients and the average-gap input definition are absent.",
@@ -13501,7 +13501,7 @@
       ],
       "purpose": "Separated Moving Average splits the price history into positive-candle and negative-candle streams instead of letting every candle update the same average. The aim is to display two directional references that represent different candle populations. Its brief description emphasizes how a side retains information when the current candle belongs to the other side, making this a stateful smoothing comparison rather than a normal fast/slow crossover pair.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_66gsofej_separated_moving_average_evo.md",
-      "card_sha256": "6ea279d6147003ada33e41382676d347a4c386cbf04a0863a83c848c9193bc62",
+      "card_sha256": "1562a24debbebf3ef4e3794c3e9a7fa92d7ea7e911177465fe81f50ba312d625",
       "readiness": {
         "status": "incomplete",
         "reason": "The average formula, value stream and opposite-side state updates are unspecified.",
@@ -13672,7 +13672,7 @@
       ],
       "purpose": "Rank price/indicator divergences by a weighted magnitude score and summarize agreement across multiple technical indicators.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_680r1i3z_strength_of_divergence_across_multiple_indicators.md",
-      "card_sha256": "ff5e4c3fc35732dc9dfb72e5e090e99424863cd71280d2b2b05f0ebf5c7b89b6",
+      "card_sha256": "bd1292c58731227b95fb8c1fa41863243b559055014e8ac93b592dd76c9ce44f",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Correct normalization parentheses, total component combination, zero-variance treatment, pivot confirmation and execution rules require code clarification.",
@@ -14390,7 +14390,7 @@
       ],
       "purpose": "Separate smoothed price behavior into cycle-like and trend-like deviation oscillators with adaptable extreme bands.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_6tsfpe3w_reflex_trendflex.md",
-      "card_sha256": "5798ccf69b614011cebf48fabd3c58298f91b4671533057b4ca806215438f203",
+      "card_sha256": "499b817d6a4c3d1570e847b8e07680c408738dc86d145659c07b3b249522840f",
       "readiness": {
         "status": "incomplete",
         "reason": "Important normalization/defaults are given, but the core filter and Reflex slope/deviation contract are not fully specified.",
@@ -14949,7 +14949,7 @@
       ],
       "purpose": "Yelober Sector Rotation Detector monitors a fixed sector-ETF panel to highlight relative daily leadership, defensive conditions and unusual volume. It interprets a large spread between the strongest and weakest sectors as rotation and offers associated stock ideas. The risk-off label is more specific: defensive staples and utilities must be positive while technology is negative. This is a market-context dashboard with qualitative suggestions, not evidence that money actually flowed between funds or a complete long/short strategy. Its daily focus matters because configurable intraday or weekly sampling may change how the advertised daily comparisons behave.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_7jm5ebze_yelober_sector_rotation_detector.md",
-      "card_sha256": "2299aae80f00330e632c6c7d4dda37d5aa3d5166170b9e257d8f034a3f239660",
+      "card_sha256": "fbcabc1d6fd4987503a1161b2a06a63f9dce63b088c6a8cb173dbf0663078246",
       "readiness": {
         "status": "usable-specification",
         "reason": "Daily sector diagnostics are reproducible from the named ETF set, daily close comparisons, RSI period, relative-volume lookback and explicit rotation/risk-off thresholds. Stock recommendations and alternate-timeframe alignment remain outside that usable scope.",
@@ -15367,7 +15367,7 @@
       ],
       "purpose": "Volume Delta Footprint Map estimates directional activity within chart candles and spreads that activity across price stripes. Its aim is to reveal where buying- or selling-associated volume concentrated and how those concentrations persist over time. A trader can inspect clusters for possible support, resistance, continuation or absorption, then interpret subsequent price behavior. The description carefully distinguishes this footprint-style approximation from exchange bid/ask transactions. Claims about trapped buyers or sellers are interpretive scenarios, not direct observations of positions or forced liquidation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_7vcb6m4j_volume_delta_footprint_map_zeiierman.md",
-      "card_sha256": "d81ed1f4204fc173e167058607c6861edb1fd83772cfbcb891916c25ba631449",
+      "card_sha256": "796bc3a72b58969382adac450c509c9da6dc632b9fb6d7221b3019c29316de32",
       "readiness": {
         "status": "incomplete",
         "reason": "Stripe-volume allocation, decay and dominance normalization equations are missing.",
@@ -15747,7 +15747,7 @@
       ],
       "purpose": "Supertrend - Ladder ATR modifies volatility-based trailing stops to avoid widening their distance during an active trend. It argues that favorable large candles should not determine how far a protective stop sits: long positions use volatility from negative candles, while shorts use positive candles. A second restriction accepts a new ATR distance only when it is smaller, producing a tightening ladder. The intended benefit is a closer stop and earlier exit in strong trends. That is a design aim illustrated by the author, not measured improvement or a guarantee against drawdown.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_8ezad3cw_supertrend_ladder_atr.md",
-      "card_sha256": "73b2a0be57f3b8396f4f3933023b7024db9da927e89093ac26371c272c3771a2",
+      "card_sha256": "c33772186d0849abc7eed70f1412bcdc915d3e02c9d0fcd11df42f2b8714a808",
       "readiness": {
         "status": "incomplete",
         "reason": "Directional ATR sampling/smoothing and the supertrend trail recurrence are unspecified.",
@@ -16174,7 +16174,7 @@
       ],
       "purpose": "Combine macroeconomic,technical,sentiment and breadth stress proxies into a weighted systemic-risk score labeled bear-market probability.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_8jahmkxs_bear_market_probability_model.md",
-      "card_sha256": "3755e04b904ac9e4ccde90cf854021f05badedd1ad67c6f5e053be670b360088",
+      "card_sha256": "0d483179f3f040982c81754b39907d8fdcd6a8662cb62517cee7e97ffca9fed5",
       "readiness": {
         "status": "incomplete",
         "reason": "The composite skeleton lacks factor scoring/weights and its required external-series contracts; probability calibration is not defined.",
@@ -16339,7 +16339,7 @@
       ],
       "purpose": "Tape reproduces a trading-console-style stream of chart-feed updates and estimates cumulative volume delta within the live bar. It is specifically a realtime tool: historical bars cannot reconstruct its update sequence. The author distinguishes chart updates from individual exchange ticks because multiple transactions may be aggregated before Pine receives them. The intended use is observation of live price/volume activity and configurable event alerts. Its signed volume is based on price-update direction, so it should not be interpreted as directly measured bid/ask aggressor volume.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_8mvftxpg_tape_lucf.md",
-      "card_sha256": "02ee8e96d6cc97f6a5b2754399888e0c1961d2a501149eba16c7f098ab4628f6",
+      "card_sha256": "7f6d31a1a473f7c1e9e8612c131323048d61a1528c495f8a01a9a494afee3a53",
       "readiness": {
         "status": "usable-specification",
         "reason": "Live price-change polarity, unchanged-price carry, bar-reset delta and marker conditions define the tape/delta output. A missing historical live feed affects data availability rather than specification completeness.",
@@ -16467,7 +16467,7 @@
       ],
       "purpose": "Volume Rotor Clock combines an ornamental clock with a financial volume dashboard and multi-symbol scanner. The current chart’s volume dominance appears on clock-hand tips, while scanned assets occupy bullish or bearish halves according to their attributed buy/sell totals. An additional watchlist highlights bullish assets whose volume persistently exceeds its moving average. Its financial purpose is therefore genuine despite the elaborate clock artwork. The author interprets sustained high-volume dominance as accumulation, but this should remain a hypothesis because the buy/sell assignment method is undisclosed.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_8njgasbv_volume_rotor_clock_hapharmonic.md",
-      "card_sha256": "253ca3fae344096f10f2827c7cb45a56a728235c13cda0e0aae05a9edc56f180",
+      "card_sha256": "733ba6ea844d77c59e39e7aaa270c7e7fb8e96cbc79345678c7eed22ec8ea0e8",
       "readiness": {
         "status": "incomplete",
         "reason": "The buy/sell volume attribution underlying dominance is missing.",
@@ -17478,7 +17478,7 @@
       ],
       "purpose": "Display a family of modified RSI calculations across lookbacks as a heatmap to reveal how momentum interpretation varies with horizon.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_9pd60gmz_blackcat_l2_ehlers_swamicharts_rsi.md",
-      "card_sha256": "0d2023c139a34445bc5651062daf86ee64d3303b2923815aeeb0f045a51ed401",
+      "card_sha256": "46853e97ad79e9e65431fe19759e1f9f85aa0944f7b5bb18700f567482606a06",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Roofing coefficients, RSI ratio construction, period range, color mapping and trade/risk rules are missing.",
@@ -18060,7 +18060,7 @@
       ],
       "purpose": "Define market swings from opposite-direction fair-value-gap events and form support/resistance areas only after additional structural confirmation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ausph7vf_fair_value_ms.md",
-      "card_sha256": "6b883cd0c3d98b3aa4e8242fb8622b75fcdba5084a31967032c81396d58fe9fa",
+      "card_sha256": "5fe37934ff4912aa20c17f7ebc8161ebe54f735666885a691c3766d319aa3d6e",
       "readiness": {
         "status": "incomplete",
         "reason": "The event sequence is described, but core gap/state/AOI lifecycle rules remain ambiguous for reproducible output.",
@@ -18829,7 +18829,7 @@
       ],
       "purpose": "Indices Sector SigmaSpikes compares sector moves in units of their own recent return variability. The aim is to make cross-market daily changes meaningful: the same point or percentage move can be ordinary in one market and unusual in another. The screener helps locate sectors with outsized positive or negative movement, without specifying that those moves should be faded or followed.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_b3almahh_indices_sector_sigmaspikes.md",
-      "card_sha256": "6bb5699f31d621abee58ede71efdc7c8251cab60d185f02be32032f18eed8cda",
+      "card_sha256": "ad98536608ae3ed194b37acd598269cf2b98383707394e35f67f2b6b9380261e",
       "readiness": {
         "status": "usable-specification",
         "reason": "Daily percentage return divided by prior-window return standard deviation defines the sector spike output with configurable lookback and threshold.",
@@ -19272,7 +19272,7 @@
       ],
       "purpose": "Oscillator Workbench translates oscillator behavior into price-chart channels so traders can explore configurations in market context. It normalizes an oscillator’s position above or below its centerline, weights a price source with that percentage, and compares a weighted average with an unweighted reference. Separate divergence channels mark transition/consolidation regions without assigning an immediate bullish or bearish prediction. Direction follows later price breaches. The author suggests aligned strong states as one possible use, while emphasizing that settings must fit the reader’s methodology and that a neutral divergence region is generally a no-trade area.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_by9maioc_oscillator_workbench_chart_lucf.md",
-      "card_sha256": "ef02762f357c90777af22a98095e81ad704d9ca9d93e01192bbee10fe69ee0c1",
+      "card_sha256": "fbe7c3a5deb60753d94fdcd99aa675f9980542428cb17e0e9fced21828900905",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for alternate close-RSI20 versus close-change divergence channels, including high/low expansion and whole-bar breaches. Default weighted-price channel, cap, strong-state labels and complex oscillator modes remain underspecified.",
@@ -19438,7 +19438,7 @@
       ],
       "purpose": "Describe market structure through aggregated candle blocks,volume-pressure estimates and a rule-generated narrative while keeping chart levels sparse.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_bzgubzri_smart_trader_episode_03_by_ata_sabanci_candles_and_tradelines.md",
-      "card_sha256": "fb285ee78d4a4656c4c8c2d9c0a72dea65a91f4cac46dce0c6d0f43bb2a2ce7d",
+      "card_sha256": "35e8ad2e8c425cf2ccb433255c513e86bc417e77062423525535503c31394998",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for supplied-block composite candles, nonzero-range geometric volume and maximum-buy-high/maximum-sell-low levels; intrabar, POC, quality and narrative remain outside scope.",
@@ -19874,7 +19874,7 @@
       ],
       "purpose": "Assess participation inside a swing-level breakout candle using lower-timeframe candle-direction volume and a split-color body overlay.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_bswaptez_breakout_volume_delta_flux_charts.md",
-      "card_sha256": "810e2f74714eaa53e7b646bd6fb654fe30e71ddcc2a8ecca263cd62fdcf9f518",
+      "card_sha256": "6c6fde0cbe58e474e1880e1215b52ef8bbabef7733752e771d3bbc97d11fc70e",
       "readiness": {
         "status": "usable-specification",
         "reason": "The principal pivot-break and sub-candle dominance rules are sufficiently explicit for a parameterized indicator; edge conventions must be documented during implementation.",
@@ -19940,7 +19940,7 @@
       ],
       "purpose": "Relative Crypto Dominance Polar Chart compares selected instruments using a custom activity-and-volatility notion of dominance. It is not conventional market-cap dominance: radius represents volatility and arc length represents traded dollar volume. Larger polar regions therefore identify assets with greater combined activity on those dimensions. The display is intended to make cross-asset comparisons immediate and can be applied to tickers beyond the default cryptocurrencies. It does not supply an allocation rule or claim that a larger region forecasts superior returns.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_c8rargoe_relative_crypto_dominance_polar_chart_luxalgo.md",
-      "card_sha256": "a0a82b1f625e885de0c406e5eda2f4835239eea016bbba34e2bc40276b7bd6c7",
+      "card_sha256": "5cdd67fb2c8c7460c927e0e55dac6e76cca85be7eb64694967e75f44853f3b42",
       "readiness": {
         "status": "incomplete",
         "reason": "Volatility estimator and dollar-volume normalization defining dominance are missing.",
@@ -20433,7 +20433,7 @@
       ],
       "purpose": "Kinetic Slippage Index compares large price ranges with the amount of reported volume supporting them. The author interprets high readings as hollow movement and low readings as absorption, then suggests using extremes to inspect false breakouts, exhaustion or compression. These are hypotheses from bar-level range and volume; the indicator does not observe an actual order book, institutional identities or execution slippage.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_cujanbts_kinetic_slippage_index_ksi.md",
-      "card_sha256": "82b2523ac44d2ab4b3c851bb04223d33e6f7743dedee16b25c1250ce7871a0d8",
+      "card_sha256": "5352b499bf6946c3183d63e67a98298c41fa15bbf3a5afed9bc90198ca625b60",
       "readiness": {
         "status": "incomplete",
         "reason": "Range/volume denominator grouping and smoothing are ambiguous.",
@@ -20504,7 +20504,7 @@
       ],
       "purpose": "Bjorgum Key Levels identifies three related price-action situations around important levels: an initial breakout, a breakout that fails, and a later pullback to a flipped level. The idea is to help a trader distinguish momentum entries from trap reversals and trend pullback entries, each with a different balance between entry price and directional support. The source describes their rationale and visual alerts but does not disclose the actual detection algorithm.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_capg3ivf_bjorgum_key_levels.md",
-      "card_sha256": "495db59390274dc18b1e3aded80699db893ccab40206797c826664c09326ceb7",
+      "card_sha256": "2086e7610b166bb2a0e19472aff3196ddfa43837122b9e2ab549f709ef4d5e63",
       "readiness": {
         "status": "incomplete",
         "reason": "Key-level construction and event confirmation conditions are undisclosed.",
@@ -20612,7 +20612,7 @@
       ],
       "purpose": "Highlight unusually large total-volume or estimated directional-delta events using percentile agreement across several history windows.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_cjnk8au1_volume_bubbles_quantalgo.md",
-      "card_sha256": "3bde996fa4c854cfb7dfed01b5500176c69837513261f3dbab6f1301182e1711",
+      "card_sha256": "40c625a0919e110dc7638c33f6961d35f5172bf2be38d0fcafb857bb2dcaa1ec",
       "readiness": {
         "status": "usable-specification",
         "reason": "Source code excerpts define percentile thresholds and consensus; mode/direction contracts are explicitly described and configurable, sufficient for the principal event detector.",
@@ -21222,7 +21222,7 @@
       ],
       "purpose": "Compare momentum in a fixed group of large technology companies with an equal-weight market benchmark. The publication combines absolute momentum, relative leadership and breadth to help assess concentration and rotation; cited academic research does not validate this particular implementation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_cztmlgfy_magnificent_7_oscillator.md",
-      "card_sha256": "daf4fd0c824cc55afbef6e2b3e3b757a1e8e1496171cf5e37727192f58d37203",
+      "card_sha256": "dae92f8b88e249cfe18b20315b9511ae2b49c85ed3b26a604ce46a4142ab3bdf",
       "readiness": {
         "status": "usable-specification",
         "reason": "Raw ROC/equal-weight momentum and breadth is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -21879,7 +21879,7 @@
       ],
       "purpose": "SwingArm provides a simple color-based confirmation of a perceived trend change, designed to make directional interpretation accessible to a novice. The description establishes the intended bullish/bearish display, but does not explain the actual trend calculation. The ATR language in the title is insufficient evidence for an ATR length, trailing formula or reversal threshold.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_dxc0pi3n_swingarm_atr_trend_indicator.md",
-      "card_sha256": "e4feb19d9942724d550762e4a40b1d2454048e1de4668eb2e0b0cf9f21902f67",
+      "card_sha256": "c2ae5f457cb6c7dceeaac6ec25af7135059b20248e5daeca7b6257778269d112",
       "readiness": {
         "status": "incomplete",
         "reason": "No trend-state computation is disclosed.",
@@ -22181,7 +22181,7 @@
       ],
       "purpose": "Dynamic Gap Probability Tool estimates the historical next-candle color associated with the current percentage distance from a selected moving average. It tries to avoid presenting a tiny exact-match sample as reliable by broadening the deviation sample when occurrences are scarce. The table is an empirical conditional-frequency summary, not a calibrated forecast or a rule that resolves whether the trader should favor reversal or continuation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ejmwjmdf_dynamic_gap_probability_tool.md",
-      "card_sha256": "ddd029b0f5c44b8d80634d95c1a8ba9235c5071517b1f40ad61c2af56adb0a08",
+      "card_sha256": "c1619200f1d9bce6f071a82e94efe4f71608d3e657c5acf53cd7bc63bb13b357",
       "readiness": {
         "status": "incomplete",
         "reason": "Exact-bucket versus cumulative tail counting and deduplication are ambiguous in the principal probability estimator.",
@@ -22258,7 +22258,7 @@
       ],
       "purpose": "Modern Portfolio Management Indicator is a scenario planner for periodically buying selected equities. It combines historical DCA returns, allocation views, pairwise relationships and basic fundamentals, while adding a simple extrapolated portfolio projection. Despite its MPT framing, the description does not claim to solve a covariance-constrained efficient-frontier optimization; it helps explore a user-chosen basket and contribution schedule.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_enc8rzn0_modern_portfolio_management_indicator.md",
-      "card_sha256": "78bf6c2cc564b722c0b9dc41b266631db2ed3c2a4d5d2c8d075bba76dea39bfc",
+      "card_sha256": "b6bcff38a50b4fb56bc1b45f776f6bea121e698ea5562650c20fc8fa413c6a2c",
       "readiness": {
         "status": "incomplete",
         "reason": "Purchase execution prices, fees/dividends, corporate actions, cash-flow-adjusted returns, forecast equation and correlation window are missing.",
@@ -22521,7 +22521,7 @@
       ],
       "purpose": "Dampen momentum according to a drawdown-based risk context, then combine normalization, adaptive smoothing and leading-style components. RAMO aims to make momentum signals risk-aware; its broad literature claims do not establish the indicator’s own empirical advantages.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_edel00bp_risk_adjusted_momentum_oscillator.md",
-      "card_sha256": "6d1e4c35e42db1143fdcf16df5c9b14a614078a5dc193886ec8340ad822aa6f6",
+      "card_sha256": "ba5fa25c680027efff917a71d91f77ef85933be0967d15344b68e99eef013492",
       "readiness": {
         "status": "incomplete",
         "reason": "Drawdown source/window, normalization order, volatility definition, parameter defaults and exact layered signal conditions are unspecified.",
@@ -22598,7 +22598,7 @@
       ],
       "purpose": "Bjorgum AutoTrail manages a single existing position with an interactively anchored trailing stop. The user places crosshairs to establish an initial reference, and the script infers a long trail when placed below price or a short trail when above. Its aim is to monitor positional risk when the trader cannot continually watch the chart. It supports several distance models and alert building blocks, but actual exchange automation requires separate provider-specific integration. The source’s one-shot alert behavior is particularly important: a triggered trail must be recreated rather than assumed to manage future trades automatically.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_efbdipvs_bjorgum_autotrail.md",
-      "card_sha256": "ed9741bc59afe80d0d799d0eabf6c407429693f3ccad86525ddf0ed3bd45a24e",
+      "card_sha256": "bee90b7b9e72d4ced9363beeb5aaef9ff619ddae3038cd9cb61d73a15125738b",
       "readiness": {
         "status": "incomplete",
         "reason": "Price-offset trail recurrence and triggered-stop transition predicates are incomplete.",
@@ -22838,7 +22838,7 @@
       ],
       "purpose": "Delta Ladder renders per-price volume differences as a ladder or colored blocks around each candle. Its purpose is to make localized directional-volume imbalance and point-of-control structure visible. A configurable assumption can fill the absent side when only buy or sell volume is recorded; the author calls that assumption arbitrary, so this is an inferred visualization rather than a guaranteed exchange footprint.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ekbuz93v_delta_ladder_kioseff_trading.md",
-      "card_sha256": "54fda444ac5399eb782af4e25aa2d64de5b40e8d0f9ad015f2712e4fbb1b91e2",
+      "card_sha256": "bc71c37435317e5dece853bec69c0a6ffe703806a07d27d233e13cc3d72d2c39",
       "readiness": {
         "status": "incomplete",
         "reason": "Underlying price-level volume construction and attribution are unspecified.",
@@ -23307,7 +23307,7 @@
       ],
       "purpose": "Inspect estimated directional volume through five balance models, with configurable columns, signal lines, divergence context and alerts. Crucially, the publication uses different historical and realtime methods and explicitly warns that refreshed elapsed realtime bars change.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_f2yleyoo_delta_volume_columns_pro_lucf.md",
-      "card_sha256": "dbdb35ace7566814cb449e31c807536c51fa75665e1e9553a424702a221e1c8a",
+      "card_sha256": "6f983ce9a6a969324e76d480d28f603ad18d71feeda17e8208446fed9a8d0fd7",
       "readiness": {
         "status": "usable-specification",
         "reason": "Historical directional-volume raw/EMA balances is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -23455,7 +23455,7 @@
       ],
       "purpose": "Separate price history into calendar-time intervals and fit a regression channel within each interval to compare local trends and residual variation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_fgvtpifr_tf_segmented_linear_regression.md",
-      "card_sha256": "ddad001aaeb305e5ba04e3b118d3a2240fde7b7bf6b1245449d747f48e23fb7d",
+      "card_sha256": "a6809e87586c62cd75cd7b64a42180984a721ae45b3c6da4c88466b85256b625",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for the segmented linear-regression centerline on supplied Src and interval partitions; exact WMA/SMA implementation and optional RMSE-channel parity are outside this narrow scope.",
@@ -23910,7 +23910,7 @@
       ],
       "purpose": "Auto Pitchfork, Fib Retracement and Zig Zag automates three related chart-annotation tools around detected turning points. The main goal is identifying possible support/resistance with a pitchfork placed at prior trend endpoints. Fibonacci retracement and zigzag overlays share the pivot framework. The source gives conventional discretionary use—buying near support and selling near resistance—while also warning against relying on the indicator alone. The chosen pitchfork variant changes geometry, so its suggested regime suitability should be treated as an author guideline rather than a validated selection rule.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_fnxxrrpg_auto_pitchfork_fib_retracement_and_zig_zag_by_dgt.md",
-      "card_sha256": "9a134f8251f489e4def97311028bdc3057ace6b4a2e59b4e5d05301271e13c8a",
+      "card_sha256": "0d5dc4a3761ff60d323dba6d502457ded5ed284b37007339df5fdf94bce76255",
       "readiness": {
         "status": "incomplete",
         "reason": "Pivot selection and pitchfork variant geometry are unspecified.",
@@ -24039,7 +24039,7 @@
       ],
       "purpose": "Project a next swing from recent completed-leg statistics and maintain volatility-sized reaction zones at confirmed pivot extremes.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ft4zyo1f_swing_structure_forecast_boswaves.md",
-      "card_sha256": "0b2497ae10ae2db4b570986661ee59b11496f20ebfb1bfe312fab0a49d4a58f3",
+      "card_sha256": "e858282a3fdab622e260290b35a7bfbb1d91d930e8d4c42d50f514e3c1a227eb",
       "readiness": {
         "status": "incomplete",
         "reason": "The processing outline is detailed but pivot confirmation,weights and forecast/zone equations are not reproducible.",
@@ -24148,7 +24148,7 @@
       ],
       "purpose": "Cluster historical price behavior into candidate support/resistance centers and characterize each cluster with density and dispersion.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_fwb6gwpc_support_resistance_ai_k_means_median_thinklogicai.md",
-      "card_sha256": "a9a09ce6026a3cabd89837911fadd8826b88942258cfff0187c6a506dd37c78f",
+      "card_sha256": "35e9c3a88a0e8a3afd5ea716e1a1d248df14640c6edeb139d527d8dacb488e86",
       "readiness": {
         "status": "incomplete",
         "reason": "The general iterative method is given, but source features, initialization and convergence/dispersion contracts are unresolved.",
@@ -24619,7 +24619,7 @@
       ],
       "purpose": "Provide a native neural-network research runtime for financial indicators and strategies. NeuraLib packages tensor operations, automatic differentiation, training, validation and scaling, leaving the caller to define a model, target and trading interpretation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_gewgoj30_neuralib_a_native_ai_and_deep_learning_runtime.md",
-      "card_sha256": "479f1e8e97256f192fb10b2469b4cf9964967100c68f581fa3d0cec1921fd580",
+      "card_sha256": "468406f0b1ca2f1aae15bda0536340417c3806c83ccd6a2aa47b9c26793f94bd",
       "readiness": {
         "status": "incomplete",
         "reason": "The financial runtime API and example workflow are extensive, but core tensor/training and custom-loss behavior remains undisclosed for an independent reproduction.",
@@ -25198,7 +25198,7 @@
       ],
       "purpose": "This Ichimoku extension aims to make a complex multi-component framework easier to interpret while exposing extensive filtering and display options. It combines configurable Ichimoku relationships with volume and volatility context, then summarizes selected conditions through a help panel, colored bars and support/resistance drawings. The description calls its feature list options to implement, so it does not independently establish that every advertised option is present in executable code.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hg385dby_ichimoku_kink_hy.md",
-      "card_sha256": "09ae39cdd7cf1244af172257277e164c139b62f5223bace17796ddaa1647fec6",
+      "card_sha256": "2613983a1c707668a31796776d45bfde52857cd76b3dde9cb11df6b79ae1f49f",
       "readiness": {
         "status": "incomplete",
         "reason": "Adaptive lengths and filter aggregation into panel/alert states are absent.",
@@ -25359,7 +25359,7 @@
       ],
       "purpose": "Place a current risk statistic inside its historical distribution so relative risk conditions and tails can be reviewed.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_haxmmjon_risk_distribution_histogram.md",
-      "card_sha256": "1a453fa11539a77a5af8838b793dc866e329d39a070927e0f1d0aa3977aaf8a9",
+      "card_sha256": "a17646b5b13013948bc3a1e3e801fe5f6b2f30b130a2d7b4c25b175bf856b06b",
       "readiness": {
         "status": "incomplete",
         "reason": "The histogram concept is specified, but most underlying risk metrics and distribution/bin contracts lack reproducible equations.",
@@ -25448,7 +25448,7 @@
       ],
       "purpose": "LTF Volume Microburst Bubbles identifies unusually large, directionally efficient lower-timeframe candles inside each chart candle. It aims to distinguish concentrated bursts of participation from ordinary total-bar volume. A signed aggregate score reflects whether bullish or bearish qualifying bursts dominate. The author suggests interpreting those bursts in market context: they may confirm continuation or appear near a reversal. The source explicitly says a burst alone cannot determine which outcome follows. It therefore acts as an intrabar participation cue rather than a standalone directional trading system.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hdskv6q5_ltf_volume_microburst_bubbles_zeiierman.md",
-      "card_sha256": "d587cbf41765eceb08888ad58e42bd680227269259f518e8478529db2020513e",
+      "card_sha256": "5330bd82f63ada22e626852aaf6af509870bbe4d40936737ab2d64e8f53b9bb0",
       "readiness": {
         "status": "incomplete",
         "reason": "Burst concentration and signed score aggregation equations are undisclosed.",
@@ -25684,7 +25684,7 @@
       ],
       "purpose": "Session Candles & Reversals rebuilds candles around trading sessions, detects wick/engulfing reversals relative to the previous corresponding session, and reports historical conditional outcomes. It aims to reveal session-specific directional changes obscured by ordinary daily bars. Its statistics measure next-corresponding-session behavior, not a complete executable strategy. The author recommends using reversals with support/resistance and broader context, while checking sample size. Overlapping sessions and differing market hours make careful session alignment central to the interpretation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hjxrfmmg_session_candles_reversals_flowly_indicators.md",
-      "card_sha256": "ae02921ea4fcaa1d83165a7a9b4cefe72b8bb0bddd042face8587da2b03b9328",
+      "card_sha256": "4cbc3ece06eac2c1fa9915d02035b2428271373e356cb816f39b918fc4fa29e2",
       "readiness": {
         "status": "usable-specification",
         "reason": "Session OHLC aggregation, four reversal inequalities, next-corresponding-session success and magnitude denominators are explicitly defined. Missing portfolio trade rules are irrelevant to this indicator/statistics specification.",
@@ -26180,7 +26180,7 @@
       ],
       "purpose": "DEAM recommends a changing US-equity versus cash allocation by combining market regime, risk capacity, valuation, sentiment and macro conditions. It is a tactical exposure model with a separate crisis override, not a documented executed portfolio or verified return record.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md",
-      "card_sha256": "66436a796e0fcde3754f7a80e7d0f893728e7fd2957b00d79e8ba0f3f1900d14",
+      "card_sha256": "98cb87c4aa66c646168f05766e5b056d3eabc04e01ccf77c65fb1facbea1d011",
       "readiness": {
         "status": "incomplete",
         "reason": "Numerous equations and thresholds are disclosed, but missing scoring maps, contradictory conventions and external-data contracts prevent a reproducible complete allocation.",
@@ -26575,7 +26575,7 @@
       ],
       "purpose": "Identify compressed price ranges and monitor their subsequent breakouts with a visual participation overlay.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hvk5wzpi_smart_money_breakout_channels_algoalpha.md",
-      "card_sha256": "9333e8487f1505fbcc63c6e2eb3046a2d86d6f415a4c81b75744eec1072c247a",
+      "card_sha256": "13e56783bfec322de7428ad604117198ca46c8798b1577586dd4c5b6066c0f24",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Normalization details, local-low detection, box anchoring, volume allocation and strong-close rule are missing.",
@@ -26786,7 +26786,7 @@
       ],
       "purpose": "Simulate recurring investment outcomes with commissions, fractional-unit rules and delayed dividend reinvestment, including screener-friendly output metrics.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md",
-      "card_sha256": "c3f536b6f74cf063d483571b0853d1f705b80b47340ce69e1a140bf4827ee217",
+      "card_sha256": "cb4ca55950bffa3f1bfd2686a4873a22bc33d8f2bab3fd8793f47873843da9d8",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for caller-scheduled basic contributions, commission deduction, fractional/whole-unit purchases, remainder and close-valued holdings; dividend-aware and corporate-action parity remain outside scope.",
@@ -26989,7 +26989,7 @@
       ],
       "purpose": "Pine3D is a general rendering engine with explicit financial-analysis applications, including option-volatility surfaces, market-depth grids, oscillator-pair trails, asset/sector dashboards and signed PnL or momentum bars. It therefore remains in scope as financial visualization infrastructure despite its many purely graphical examples. The library builds and updates a scene graph, then projects it to Pine drawings; it does not supply a market model or trading signal. Its performance/capacity claims describe the author’s implementation and are not independently benchmarked here.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_i2k4hidp_pine3d_a_native_3d_graphical_rendering_engine.md",
-      "card_sha256": "aefb7b167a5e8a00a724fc262a17aac1694c9023edc463a18025a49b7072e3ac",
+      "card_sha256": "57ab5254a6eb1b5c62b1432ad8c539d83608043c8f96c8b6bb1818a1051eb5a6",
       "readiness": {
         "status": "incomplete",
         "reason": "Full renderer geometry/projection algorithms and cache internals are not reproduced, and each financial visualization still requires a caller-defined data-to-geometry mapping.",
@@ -27982,7 +27982,7 @@
       ],
       "purpose": "This footprint-style display summarizes volume or open-interest behavior across the chart’s visible range into a single profile at the screen edge. Panning or zooming changes the sample, so it is a viewport-conditioned research view rather than a fixed historical signal. The author proposes positive-delta zones as possible support/resistance or target references, while retaining choices between total activity, opposing components and their difference.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_j9a6nwwm_volume_open_interest_footprint_by_leviathan.md",
-      "card_sha256": "32c402992c73482cd2f47dbc4b2bf5a0242b808812ed53a7d4ac145630531403",
+      "card_sha256": "84b09daaaa428ea89ec14bf9b9bd97cce73165183a4cda6e97b1b926fda4d18e",
       "readiness": {
         "status": "incomplete",
         "reason": "Footprint row allocation and directional activity estimation are undisclosed.",
@@ -28153,7 +28153,7 @@
       ],
       "purpose": "Order Chain turns live chart-feed volume changes into price-level boxes and cumulative signed-volume readings. It aims to expose the sequence and relative size of recent activity rather than summarize only finished candles. The author calls the observations orders/ticks but acknowledges aggregation, so they should be understood as feed updates rather than individually verified exchange transactions. Its financial use is live order-flow-style observation; the source does not describe actual order placement or a deterministic trade strategy.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_jncgedj7_order_chain_kioseff_trading.md",
-      "card_sha256": "d28f911f67e2d44158ef40af46d424898b0adf9ab7502fed31d485e2fdbe0992",
+      "card_sha256": "e07bdbf8f22cd037b3abfa2f30e4a783b7fe02d1f593cbe88413db517a21e2aa",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for live update volume differences and changing-price per-tick-level signed CVD. Equal-price treatment, initialization/reset policy and unavailable historical live updates remain explicit limitations.",
@@ -28245,7 +28245,7 @@
       ],
       "purpose": "Search stop-loss and take-profit parameter combinations and inspect simulated outcomes for built-in examples or connected signals. The engine offers batch exploration and recommendations, rather than establishing that the selected historical optimum will generalize.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_jqoxsbq8_auto_backtest_optimize_engine.md",
-      "card_sha256": "5049c06336d6fa6a7b6bb93134a5e5e534fb0c0c1925558ac756eb2d7f876874",
+      "card_sha256": "4a5c1a8ba5cf1d1c655ed62c8c3dafc47374b0f502979fe21aa2dbf445c49d85",
       "readiness": {
         "status": "incomplete",
         "reason": "Stop equations, genetic update rules, LCG constants/seed, score weights, fill sequencing and trading-cost assumptions are absent.",
@@ -28353,7 +28353,7 @@
       ],
       "purpose": "Relative Strength of Volume Indicators applies RSI-style momentum analysis to several volume-derived series and displays the result beside ordinary price RSI. It aims to reveal whether price momentum is supported or contradicted by volume-related behavior. The author combines multiple familiar tools rather than proposing a wholly new predictor. MFI is used directly instead of applying RSI to it again, while other selected volume indicators receive the relative-strength transformation. Additional volume displays and bar colors provide participation context for discretionary interpretation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_jqrhr1xy_relative_strength_of_volume_indicators_by_dgt.md",
-      "card_sha256": "febe2e90b9483e30380ef32954058382be7ff1f90a0e4fe8ee93928a2628000a",
+      "card_sha256": "d554abbbbc3ef53c8c5dcbad4c9c34862766de304c119572dbcc491a48a2f695",
       "readiness": {
         "status": "incomplete",
         "reason": "The selected volume-source transformations and smoothing parameter contract are incomplete.",
@@ -28491,7 +28491,7 @@
       ],
       "purpose": "Williams Fractal Trailing Stops uses confirmed high and low fractals as moving protective references. Unlike a fixed confirmation convention, the user can choose how many bars establish a fractal. The indicator then trails those structural points and can switch between long and short orientation when price crosses the trail. Its purpose is stop monitoring rather than the broader Williams Alligator system, which the source explicitly excludes. Whether a stop reacts to an intrabar touch or a completed close is an important configurable difference for both timing and historical interpretation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_jzxkmci2_williams_fractal_trailing_stops.md",
-      "card_sha256": "3a43af0a618a49aff7d87769de57c8605e993790e7d7bf9be6b72ca56548609e",
+      "card_sha256": "c56926221df1dcc9567b11ce874987b4bfff8fc99b8c61180257be30d56f055a",
       "readiness": {
         "status": "incomplete",
         "reason": "Fractal-to-stop update/reset recurrence and crossing orientation are missing.",
@@ -29538,7 +29538,7 @@
       ],
       "purpose": "Pivot Point Supertrend replaces an ordinary price center with a smoothed average of pivots, then builds ATR bands around it. The intended benefit is holding trends longer by reducing sensitivity to minor price noise. Optional centerline and pivot-derived support/resistance add context, and the author suggests the centerline as an earlier partial-exit reference. Those examples express possible use rather than measured improvement. Buy/sell and reversal alerts are available, with an explicit recommendation to use bar-close alert frequency.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_l0aiilvh_pivot_point_supertrend.md",
-      "card_sha256": "79e57858e8e3a296f831cca11a1e4b0b2eca53b0f8f0e85977dabe7f1e75450e",
+      "card_sha256": "10150222eab3595f0bc6088dba80985d6469e73858c9c5593437b11f47084c08",
       "readiness": {
         "status": "incomplete",
         "reason": "Pivot-center weighting recurrence and supertrend reversal computation are absent.",
@@ -29687,7 +29687,7 @@
       ],
       "purpose": "Compare estimated bullish and bearish volume-at-price distributions within individual zigzag-defined market legs.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_l2lxyays_zig_zag_volume_profile_bull_vs_bear_kioseff_trading.md",
-      "card_sha256": "6494ec2415fd7cf9d05492f345e0580f16c54ec7292696fdc8fd5742d23a8496",
+      "card_sha256": "fad074d595f66e297a22f6b45ca35f16f50661db02969f17d8ebf53e373789b4",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Volume-sign classification, distribution within candles, value-area percentage, pivot confirmation and delta calculation are absent.",
@@ -30037,7 +30037,7 @@
       ],
       "purpose": "Volume Profile 3D adds perspective and shading to a price-binned volume distribution. It maps each bar’s volume by average price, optionally splitting up-bar and down-bar contributions, then tilts and scales blocks to make concentration visually prominent. The dimensional effect is a rendering choice; it does not add a third measured market variable or reveal actual resting liquidity.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_lx3zlt9l_volume_profile_3d_zeiierman.md",
-      "card_sha256": "b93515a28d546b8ebf74ae469e19c861e5793900b06a9c47538eb15d4bc3654d",
+      "card_sha256": "0eb814685f4d50f79809fb54df1f02da841b57ec2284521e0ce7521416f22836",
       "readiness": {
         "status": "incomplete",
         "reason": "The average-price allocation formula and price-bin geometry are not fully defined.",
@@ -30115,7 +30115,7 @@
       ],
       "purpose": "Show several lower-timeframe views of the current asset together so the reader can compare local price behavior without switching the main chart.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_lbobwukj_sync_frame_mtf_charts_kioseff_trading.md",
-      "card_sha256": "3fa8b6b78c707fa98ba088db5337d209f309347806487d7e16305fd254c730cf",
+      "card_sha256": "be3cf6d14484f20d3d42b2f40de29c5cacde73939179b2727294bb2d6f0cc68c",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Lower-timeframe aggregation, alignment, missing bars, lookahead behavior and automatic-resolution formula are not disclosed.",
@@ -30361,7 +30361,7 @@
       ],
       "purpose": "Volume Surprise compares observed volume with the activity historically typical for the same calendar grouping. It distinguishes unusual participation from an ordinary recurring busy or quiet period, then extrapolates the expected pattern into future bars. Its usefulness depends on genuine periodicity; the author warns that weakly periodic assets such as cryptocurrencies may support less valid forecasts.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_lvqopkkp_volume_surprise_luxalgo.md",
-      "card_sha256": "b345ba0eb4c71d2240ad7e5791e724e8998638f54e890efb417d5f5a8edd8de5",
+      "card_sha256": "329b2d6cd62943c50d7be405becb3e7d7aea3530b656d125c9981cc09b9838c1",
       "readiness": {
         "status": "usable-specification",
         "reason": "Custom calendar groups, bounded recent observations and mean/percentile summaries define expected volume and actual-minus-expected surprise; auto selection and session defaults remain optional caveats.",
@@ -30546,7 +30546,7 @@
       ],
       "purpose": "BASS overlays several familiar momentum histograms and a volume-weighted price bias to give a quick visual view of directional agreement. It is not a weighted composite score: positive blue and negative red components can coexist, which the author calls a battle between bulls and bears. Purple volume-bias bars supply a separate conviction check, including warnings when bullish momentum lacks positive volume-weighted bias.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab.md",
-      "card_sha256": "41bbb4a9fde11af07d7629a1b234c8c2a41808903f99f8ebb40a0dbbfdbd406c",
+      "card_sha256": "4e291185d2ca168bf8b3c4d57441c64abadde68305c49d688ec7092fd07decf3",
       "readiness": {
         "status": "usable-specification",
         "reason": "The independent volume-bias output is explicitly same-length VWMA minus SMA with length30; additional standard-indicator overlays require their own parameters.",
@@ -30639,7 +30639,7 @@
       ],
       "purpose": "Monitor cross-venue prices/volumes and classify the largest observed spread relative to its own historical distribution.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mfupuzwd_arbitrage_detector_luxalgo.md",
-      "card_sha256": "f2243bf8c96a39ebc8636d182a2f728a29d847d8f84cffb8f1d9e6f7e461e1dc",
+      "card_sha256": "cab2d3bdfc61a8e1c4ccb4835aa6628b91ad30c1c2703cfa09c2f0c62377f5d4",
       "readiness": {
         "status": "incomplete",
         "reason": "The dashboard concept is clear but the venue/data and spread/smoothing contracts are not sufficiently defined.",
@@ -31463,7 +31463,7 @@
       ],
       "purpose": "Control moving-average lag and overshoot through a custom weighting kernel, then display alternating extremes or synthetic candles derived from that average.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mk7uyofu_adjustable_ma_alternating_extremities_luxalgo.md",
-      "card_sha256": "c2d0b7f449c180142d7d156fb4f4812c87991fdac153fc096b1cbf309e9f796f",
+      "card_sha256": "f8f6ee777f999e3695e0526e0e4036b85968c93898dd1b6e9ff1ceb40369f914",
       "readiness": {
         "status": "incomplete",
         "reason": "The kernel is printed but conflicts with its stated special case, and extremity calculation/discretization are not supplied.",
@@ -32232,7 +32232,7 @@
       ],
       "purpose": "Show a single broad price trend by fitting a regression line across the instrument history available on the chart.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_nueh5q6t_linear_regression_all_data.md",
-      "card_sha256": "1abc2017cc682f9286d4a8806a6098260b0e6c57a0e897ed9d9bbd3ac5490315",
+      "card_sha256": "5d6c5b88b26461eb5a25824b7f516f028c7cde8a533780fe5c6c5fed8032267e",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Regression coordinates, treatment of gaps, fit residuals, extension behavior and any actionable thresholds are unspecified.",
@@ -32329,7 +32329,7 @@
       ],
       "purpose": "First Passage Time Distribution Analysis simulates when price might first reach user-defined upper or lower percentage targets. It separates time-to-target summaries from which boundary is reached first, making it a scenario tool for holding-period and risk planning. Its estimates are conditional on a geometric-Brownian-motion model fitted to recent history; the source expressly notes that it runs only on the last bar and does not provide historical signals.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_nwjy3xpv_first_passage_time_distribution_analysis.md",
-      "card_sha256": "cfe51da399662e14db429c935e6b32d847a8be0c4cec0a3daf8bef26bbf120db",
+      "card_sha256": "bc20cfae0f0055decf8455d7ba76c40d3547d557d2303488b21f5fa4bb76bd49",
       "readiness": {
         "status": "incomplete",
         "reason": "First-passage censoring/non-hit denominator and path/annualization rules are missing.",
@@ -32791,7 +32791,7 @@
       ],
       "purpose": "Cumulative Volume Delta Candles approximates directional volume from intrabars and displays its accumulated path as candles. It aims to expose within-bar pressure and longer reset-period progression more precisely than assigning each whole chart candle a single sign. Users can compare CVD direction, wicks and price disagreement, while choosing a precision/history tradeoff. The method remains an approximation rather than bid/ask transaction classification. Reset choices define independent analysis chunks, so a trend across a reset cannot be interpreted as uninterrupted accumulated flow.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_nlm312nk_cvd_cumulative_volume_delta_candles.md",
-      "card_sha256": "14539a9f8f647bc7518af783675c666db5973f7c6a2adfe1130f90fb7c2a5042",
+      "card_sha256": "c81935c4b462f336111da8fb6f05d2c13e4a112f62d1757db24b5b0e6097999c",
       "readiness": {
         "status": "usable-specification",
         "reason": "Intrabar direction and flat-bar fallback, signed-volume aggregation, candle open/close and configurable reset modes define the principal CVD computation. Exact automatic precision selection is an optional data-selection caveat.",
@@ -33378,7 +33378,7 @@
       ],
       "purpose": "Track price-gap regions across chart, higher and lower timeframes and show how subsequent price movement interacts with each region.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_onab2fve_fair_value_gaps_by_dgt.md",
-      "card_sha256": "1b02bf62373a95008e59677b6e5716723aefeb98ac33db0c5aa6b3192f5fac3e",
+      "card_sha256": "791d9f3913c0c4c868d22620566d61255addccbbfcf350b5c91b66e4ec2b8acd",
       "readiness": {
         "status": "incomplete",
         "reason": "The core computation or input contract is not completely specified: The exact gap candle test, size filters, fill-percentage formula, state retirement and auto-timeframe mapping are omitted.",
@@ -33458,7 +33458,7 @@
       ],
       "purpose": "All Candlestick Patterns on Backtest compares historical return percentages for multiple candle-pattern methods in a table. It is intended as a starting point for research, with configurable execution assumptions and risk/reward geometry. Its native study output and educational framing should not be mistaken for independently reproduced strategy performance; the source supplies no actual measured results in prose.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ostukg4q_all_candlestick_patterns_on_backtest_by_muqwishi.md",
-      "card_sha256": "c7c1ae4580b458c581db2cd5629a5fd65702fb0e8880a365821b28c6c8e6d952",
+      "card_sha256": "8b7f6652782a8ce8f7279f097683cba79a238f16a3636d2f35dd1d83f607800f",
       "readiness": {
         "status": "incomplete",
         "reason": "Pattern definitions and simulated trade sizing/fill sequencing are unspecified.",
@@ -33895,7 +33895,7 @@
       ],
       "purpose": "This publication derives a simpler calculation for the least-squares moving average by expressing its linear-filter weights as a combination of WMA and SMA. The purpose is computational simplification of a familiar trend smoother, rather than a new forecast signal. The author notes that regression extrapolation is rarely accurate and favors smoothing use; the claimed numerical match is described from source examples and is not independently benchmarked here.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_pco280uj_lsma_a_fast_and_simple_alternative_calculation.md",
-      "card_sha256": "53772ceaaecdf53d7aa77456f8a450a5d18a9580909842e448c72ec294703632",
+      "card_sha256": "09dd809224ab970be9dbbee729ab40b5b263fb838da690eb6a8d28154ed80242",
       "readiness": {
         "status": "usable-specification",
         "reason": "The equal-period identity 3WMA minus2SMA explicitly defines the LSMA output.",
@@ -34123,7 +34123,7 @@
       ],
       "purpose": "MFCV combines a Hurst-based regime estimate, ATR-spaced bands, price-centered sinusoidal curves and Fibonacci retracement context. It aims to describe persistence, complexity and confluence across several visual components. Its fractal and sacred-geometry narrative is motivational language; the disclosed mechanics are finite-window statistics and deterministic oscillations, not proof of hidden market structure or predictive probability.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_pkflcpyi_mandelbrot_fibonacci_cascade_vortex_mfcv.md",
-      "card_sha256": "b2d3322e14f8d2487f5a0daf73910e0182a08dab77329522f36468099b8750e6",
+      "card_sha256": "85b946040cc7417ac30b42ec6914c17c0565f48f72bce2c83920698970ec5f67",
       "readiness": {
         "status": "usable-specification",
         "reason": "Vortex and ATR cascade numeric components is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -34432,7 +34432,7 @@
       ],
       "purpose": "VWAP Price Channel replaces the flat corners of a Donchian channel with VWAP-derived paths anchored at new channel extremes. It is explicitly a thought experiment, implemented as a trend-flipping trail rather than a proven predictive model. The idea is to let price and volume update a reference while the underlying Donchian boundary remains flat. New opposite-side VWAPs during a trend may be read as continuation-breakout references, but they are not themselves trend changes. The author warns higher-timeframe live and historical calculations naturally differ.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_psnjpa2y_vwap_price_channel.md",
-      "card_sha256": "76ee59420cbd98ae8e4df8050b19fedc6239ce12fbc5b59fc8fdfd1c38086a56",
+      "card_sha256": "d167be778a2aa7a36cf5bce90ddda3db4c6d63a296d76b6a00fdd4481506bce6",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for raw high/low-source anchored VWAP references reset at new Donchian extrema for a selected window. The adjusted trail, simultaneous-extreme state ordering and HTF live/historical parity remain outside this scope.",
@@ -34662,7 +34662,7 @@
       ],
       "purpose": "Map sampled volume into price rows and show directional candle-volume imbalance by row and larger vertical sector.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_q7yqqq7g_volume_gaps_imbalances_zeiierman.md",
-      "card_sha256": "49968f3217e38a349a8324baf007211ba5d19f5a6f8e4c974bee69518ed6f83f",
+      "card_sha256": "b0c60ceccfcd68722c41e66bc7a876631a231dc4868e7e321498e27d3ac39dbf",
       "readiness": {
         "status": "usable-specification",
         "reason": "The principal profile allocation, direction split and delta ratio are explicit and parameterized; choose/document source and boundary conventions for a reproduction.",
@@ -34853,7 +34853,7 @@
       ],
       "purpose": "Calculate viewport-anchored averages and extremes so the displayed chart segment becomes the explicit analysis interval.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_qe4dq4zm_chart_vwap.md",
-      "card_sha256": "ae50c7624d158200e7813fab7913ea21675fd4606c426b3182806d004c97b2b3",
+      "card_sha256": "21e794afe4e963fd8b0fce197ecc2c4b2fb37357c4f05b6b5a9f03830fe74ffd",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for visible-close arithmetic mean and visible-range OHLC/extrema with caller viewport boundaries; exact VWAP source and plotting parity remain outside this narrow scope.",
@@ -35215,7 +35215,7 @@
       ],
       "purpose": "Correlation HeatMap tracks how each selected asset relates to a central reference through time, rather than showing only a static correlation table. Session overlays align relationship changes with market opens, helping users investigate intermarket shifts or portfolio exposure. The source describes color magnitude and sign but does not establish a specific causal interpretation or an executable hedge model.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_qnqbqiex_correlation_heatmap_tradingfinder_sessions_data_science_stats.md",
-      "card_sha256": "a877a9b8a68ec5f27f0cb76a1befddda996fc8686cb1a1d4efc2c332e63bafe3",
+      "card_sha256": "79eb6695a5b67aee3ff21d8a6f529ce708cff006bc951452c53f3e7f9657e98b",
       "readiness": {
         "status": "incomplete",
         "reason": "Whether correlation operates on prices or returns is unspecified.",
@@ -35509,7 +35509,7 @@
       ],
       "purpose": "Dekidaka-Ashi overlays volume-sensitive price envelopes without replacing the underlying candle shape. It aims to combine candle body movement and relative volume in a price-scaled display, enabling derived bands and experimental breakout labels. The author explicitly doubts signal accuracy and observes that signals often occur in low-volume/low-volatility conditions. This is a financial visualization and research concept, not a validated predictor. Its volume scaling depends only on current and preceding volume rather than a rolling maximum, although that design choice alone does not prove all non-repainting behavior.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_qeqcsffc_dekidaka_ashi_candles_and_volume_teaming_up_again.md",
-      "card_sha256": "00a80fdae4d4f92d09b9c972191247994686810b73ce626d70cdf209cc5ebf8e",
+      "card_sha256": "d7c0f1abaa4af0de789837f8d342f449c0c9bac8e917991829786b775068047a",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for the unsmoothed high/low envelope from current/(current+previous) volume, absolute candle body and chosen amplitude multiplier. Zero-volume policy, optional smoothing and breakout reference indexing remain limitations.",
@@ -35987,7 +35987,7 @@
       ],
       "purpose": "Order Block Finder marks the final opposite-direction candle before a qualifying consecutive move. It aims to locate price regions that might later be revisited and used for discretionary limit-order planning. The author describes these as institutional order blocks, but candle sequences do not directly establish institutional participation. Detection necessarily occurs after the following candles close, so the original marked candle must not be treated as a contemporaneously known signal. The source explicitly calls this repainting by definition.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_r8g2yhdg_order_block_finder_experimental.md",
-      "card_sha256": "369de286e91742a51460afd65c5925999f05e87bbc20c245dbbe5459bb986c71",
+      "card_sha256": "3892033b90f3a7e75fba677a5d16d0014c7fab7f45dab0a6fee9571940fc4c3e",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -36110,7 +36110,7 @@
       ],
       "purpose": "ABC on Recursive Zigzag detects corrective patterns across nested swing scales and adds configurable trade levels and historical summaries. Its aim is to let users experiment with entry, target and stop ratios rather than accept a fixed pattern-only display. The source’s wave narrative is internally inconsistent: it calls A and C opposite to the larger trend, then describes C as aligned with that trend. The actual recognition criteria must therefore come from missing code rather than this prose. Reported win ratio/risk reward is an indicator summary, not evidence of realistic execution.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_rgnbiicd_abc_on_recursive_zigzag_trendoscope.md",
-      "card_sha256": "da8f81b4ce65add515402cf11750383e2bade86b8e91c4f280c301d0c61520e3",
+      "card_sha256": "1e0db3b02e08c87f2a45d30fb244110ff23c4ab74030babbb3d8295e7cc1796a",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -36203,7 +36203,7 @@
       ],
       "purpose": "Retain a Heikin-Ashi-like trend view while keeping synthetic candle bodies inside actual price extremes and marking the true close.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_rddlqjfh_berlin_candles.md",
-      "card_sha256": "56ba26f13ed20a30a948a50c20868b235f44ab0fe310d2b409af33b3cf3eabb6",
+      "card_sha256": "e9a23bde4325fa781643e9985d9173d843b1157234b95afee521f0064197c4a3",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Open smoothing formula, baseline settings, color rules and exact initialization are missing.",
@@ -36904,7 +36904,7 @@
       ],
       "purpose": "Tick Data Detailed accumulates realtime price-update volume into size buckets and compares current-bar detail with cumulative observations. It aims to distinguish large and small activity and flag disagreement between candle direction and classified buy/sell volume. The author’s whale/small-trader interpretation is speculative: update size does not identify a participant, and the source explicitly limits the tool to realtime bars.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_sg5cvyr9_tick_data_detailed.md",
-      "card_sha256": "896b346db8a3388060e7e021e11bee9c7e08024e31221c77183d058f8ab28668",
+      "card_sha256": "703113c493fb8d211154efec163fd910435054e342193913d6c327d6c783a53e",
       "readiness": {
         "status": "incomplete",
         "reason": "Realtime buy/sell classification and update-volume/reset behavior are undefined.",
@@ -37085,7 +37085,7 @@
       ],
       "purpose": "Expected Value Monte Carlo contrasts historical holding-period returns with a forward GBM projection fitted to recent behavior. It expresses both in return and dollar terms, with win-rate and Sharpe summaries, so the user can inspect assumptions about horizon and recent trend. Its cone is a simulation summary, not a guaranteed realized-price interval; the source’s no-repainting assertion is not verified from description alone.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_su8qcnj3_expected_value_monte_carlo.md",
-      "card_sha256": "12baf20e9b9abc8c73f067fda8a3095443da5bcda7cb59054de7087be8a378c2",
+      "card_sha256": "e4a782ea478f36d88ad88c5685e3106b44e9186f0cdc8efe665acfe10aca9f55",
       "readiness": {
         "status": "incomplete",
         "reason": "Historical trade sampling, GBM estimator and exit-ordering rules are unspecified.",
@@ -37186,7 +37186,7 @@
       ],
       "purpose": "Compare selected technical-indicator values across several symbols in a dynamic table and highlight whether each value has risen or fallen.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_swwmsmqw_indicator_panel.md",
-      "card_sha256": "e02fbf38cb244bbc9da077c75bbaf4f3b7eebf41999f81c46933e56c6c2f90e1",
+      "card_sha256": "0de15cc3ddd39b62e8874e51dd75cde2d209310760c7292cc483d4bb17ef1a95",
       "readiness": {
         "status": "usable-specification",
         "reason": "Given the selected indicator readings, the per-symbol table and current-versus-prior green/red/gray rule define a reproducible principal reporting output. This usable scope does not certify numerical parity of unprinted underlying indicator implementations.",
@@ -37544,7 +37544,7 @@
       ],
       "purpose": "Build a manually anchored pitchfork and propagate action/reaction geometry into a price-time lattice for discretionary chart study.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_sq5xt0ez_hyperfork_matrix.md",
-      "card_sha256": "78ca7b9e531f254b8803a7db7b8e430bcdadb270a03e9ea43ee2c2e85fdf68ec",
+      "card_sha256": "2f30dd19b4bb72d3e68359e52e80fba3e11cac793676ecd03e5b458b76168770",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source provides a stepwise parameterized construction for manual pitchforks,propagation,lattice intersections and close-cross alerts.",
@@ -37819,7 +37819,7 @@
       ],
       "purpose": "Session Edge Profiler measures completed-session behavior and compares the developing session with its own weekday-filtered history. It aims to replace generic claims about Asia, London or New York with instrument-specific evidence. The dashboard covers range, volume, directional persistence, daily extremes and explicitly defined structural counts. Its alert identifies unusually large range rather than a directional trade. The source provides enough parameterized lifecycle and metric rules to reproduce a substantive session-statistics specification, while realistic execution and future profitability remain outside its purpose.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_t1v41bl5_session_edge_profiler_flux_charts.md",
-      "card_sha256": "304f8e18b4d6c3dbb127b3a674e87a915458b8b2301a50d9cdfa7264ecbccd76",
+      "card_sha256": "0c6d923693aab25623f26faefec0aab5cf271e80abe4581616e4c8b3ba74fea1",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source defines the financial computation and parameterized inputs sufficiently for a reproducible specification.",
@@ -37987,7 +37987,7 @@
       ],
       "purpose": "Map typical weekly trading-volume patterns to identify relatively active and quiet hourly slots.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_tbz9rgx9_weekly_volume_heatmap.md",
-      "card_sha256": "5342b16b751489fb38c01fd4c86a128c0c52262232ee0b84ca3fdeba42df3966",
+      "card_sha256": "39fcf9ca19992f73d1e8a8401662e7b0846027dc5341a40af0934d26a96f6a72",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for slot-average volume divided by average weekly volume on caller-supplied hourly history and weekly/session partitions; calendar and incomplete-week policies must be chosen explicitly.",
@@ -38120,7 +38120,7 @@
       ],
       "purpose": "Sticky Notes, Checklist, To-do, Journal puts a trader’s own notes and plans directly on the chart. Its financial purpose is workflow support rather than price analysis: the user can record market insights, trade plans, tasks and deadlines near the chart being monitored. Generic advice about confirming indicators in the latter description does not imply this note tool computes technical signals. The useful artifact is a visible user-maintained checklist/journal. No automatic trading inference should be drawn from overdue colors or checked tasks.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_tlz0mxsj_sticky_notes_checklist_to_do_journal_algoat.md",
-      "card_sha256": "dd72e84ee3a118d1a1d930746263db36734e13b8cdfb016958e5f8e9b52d97d3",
+      "card_sha256": "341af9b0ae21da6d8d541b833b60f32e03323f9eef28a22ee9b0f829c853250d",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -38183,7 +38183,7 @@
       ],
       "purpose": "Cyclic Smoothed RSI adapts RSI smoothing and overbought/oversold bands to a dominant-cycle input. The aim is to reflect the market’s current rhythm rather than use fixed responsiveness and static extremes. The author proposes signal-line crossings of adaptive bands as trading cues, but the provided historical anecdote does not establish improved forecasting or measured performance.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_tmqir1jp_rsi_cyclic_smoothed_v2.md",
-      "card_sha256": "dc4ce28bb908ab65c60e8fe49a8f926f6fe8e823f7d621266b2424eb8517d9f9",
+      "card_sha256": "2029c201797b6b1be81019107e25f47f43299950f3dc0506ae6146de8c43a656",
       "readiness": {
         "status": "incomplete",
         "reason": "Cyclic RSI smoothing and adaptive-band equations are undisclosed.",
@@ -38356,7 +38356,7 @@
       ],
       "purpose": "Peak Trading Activity Graphs groups volume or volatility by calendar periods to reveal when activity has historically been relatively high or low. It is intended for choosing execution times and adjusting exposure to recurring conditions, rather than predicting the next price direction. Raw group medians and normalized median differences offer alternative visual contrast, while exchange time anchors the hourly examples.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_tstsp9sk_peak_trading_activity_graphs_luxalgo.md",
-      "card_sha256": "2660eaab02201d98702585e7ef18a3162cb0c1b1c20f29839722a34ccba70e44",
+      "card_sha256": "a669b5cc39249c4a32db8fe3d18bf650a496bb88656d75b94fb67b89f774db5d",
       "readiness": {
         "status": "usable-specification",
         "reason": "Calendar-group median volume and its min-to-max rescaling define an independent principal output; unspecified volatility mode remains outside this usable scope.",
@@ -38625,7 +38625,7 @@
       ],
       "purpose": "Volatility Risk Premium compares VIX-implied volatility with trailing realized volatility to describe the market’s apparent insurance premium. It aims to contextualize equity risk and option strategy selection, with regime labels, historical standardization and momentum. This is a backward-looking realized-versus-forward-looking implied comparison, not an ex-post matched-horizon variance premium. The source discusses academic evidence but does not validate this implementation or make its illustrative options applications risk-free. It is calibrated for S&P 500 context and explicitly warns that other assets require recalibration.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ujgvguvt_volatility_risk_premium.md",
-      "card_sha256": "42ff76f9ff2d4e7e1d7667cb8caa9f4fc1c07f082b078f8a9271370e1e943eb0",
+      "card_sha256": "f87a2c303e5be00bc5699c8e8225f861859e149bd13edb73b15b30447b83b9bd",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for chosen-lookback daily log-return realized volatility annualized by √252, VIX-minus-RV and default EMA5 smoothing. Missing N default, variance convention, other estimators and regime/reversal rules remain caveats.",
@@ -39352,7 +39352,7 @@
       ],
       "purpose": "Head & Shoulders S/R Regular searches a particular pivot/line geometry and monitors price inside a projected right-shoulder trigger region. It aims to make potential regular head-and-shoulders structures visible while distinguishing upside, downside and unresolved trigger behavior. The method first waits for aligned baseline points, then finds the intervening head and left shoulder. It is more specific than merely matching a familiar silhouette, but the coordinate equations for its trigger area are not present. Colored patterns are contextual states, not a fully described trading strategy.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_vakdjwdk_head_shoulders_s_r_regular.md",
-      "card_sha256": "68b9b1425f6d8fae12b053d4da383bbb4d73e79a8bde2d149225549602331aa5",
+      "card_sha256": "b8825d871b0f0668ba98633fb70293489a5cdd1f67a4248b5390c34b29aa3f9e",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -39830,7 +39830,7 @@
       ],
       "purpose": "Make volume-driven directional trends easier to read by combining a Heikin-Ashi-based OBV variation with several visual moving averages.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_vozihfu9_obv_traffic_lights.md",
-      "card_sha256": "4e642ce48deccb5082355abc3f0efc6f929d94e0bcd60ef20d7df2b9827e6106",
+      "card_sha256": "b390aaeb4e2955b3d3638c024ecbcf22376cd1680e38ab79b8bc904db3dd3971",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Exact volume signing, average configuration, state transitions and handling of equal Heikin Ashi closes are missing.",
@@ -39969,7 +39969,7 @@
       ],
       "purpose": "Machine Learning RSI classifies the current momentum environment by matching a multidimensional RSI fingerprint to historical labeled analogs. It aims to replace a simple threshold interpretation with adaptive feature importance, distance-weighted votes and quality gates. The learned conviction also changes Supertrend width. The source clarifies this is an online analog classifier, not a neural network. It provides several component equations, but ranking/confidence functions and causal label maturation are not fully specified. Confirmed-bar signals alone do not prove absence of future-label leakage.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_vrtl3vwf_machine_learning_rsi_ai_classification_ranking_zeiierman.md",
-      "card_sha256": "6a4943d5ee57a1d86ed43235c4d5db47cc3b2b75bce3a7da3b8965ebd08139fa",
+      "card_sha256": "d00a47b546e2f62535d5cc186162fa2c3044b48c3a73e208fb048a17a659ffed",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -40842,7 +40842,7 @@
       ],
       "purpose": "Select a historically favorable simple-moving-average length using a composite backtest ranking rather than manual trial and error.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_wlsrg7cx_best_sma_finder.md",
-      "card_sha256": "0c572fc9db216d58754f7654fe6505ed710012e428df49935cc39f368f66cd5c",
+      "card_sha256": "02c338393aa59036dd50e34365ebb887c32bf6670576eef931951c7b371ac329",
       "readiness": {
         "status": "incomplete",
         "reason": "The core computation or input contract is not completely specified: Exact entry/exit triggers, robustness weights, transaction costs, fill timing, sample split and zero-loss profit-factor treatment are missing.",
@@ -41807,7 +41807,7 @@
       ],
       "purpose": "Apply session-specific candle styling to emphasize selected market hours and distinguish bullish, bearish or neutral candles.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_wspypw8w_session_bar_candle_coloring.md",
-      "card_sha256": "57cbbe1ed8f34c6011fc5529196df85dd51b7cd96523868073a7914a2ccc0ec0",
+      "card_sha256": "d92884ded1b33466e863076f9c6db631d333a887039750d63ff59c7c3069e1c2",
       "readiness": {
         "status": "incomplete",
         "reason": "The main styling workflow is clear, but session/partial-bar membership and neutral-state definitions are missing for exact reproduction.",
@@ -42232,7 +42232,7 @@
       ],
       "purpose": "Bitcoin Bullish Percent Index measures breadth across a manually chosen crypto basket by counting point-and-figure buy states, then applies another point-and-figure representation to that breadth series. It asks whether strength is broad among assets the author regards as BTC-correlated, rather than measuring Bitcoin alone. The selected basket and dual P&F transformations are central to interpreting the result.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_x2y6hyok_bitcoin_bullish_percent_index.md",
-      "card_sha256": "065a0b5ee5d52426b608af32efcf05238cc9b95fd860aeaad017e95ca87d7a22",
+      "card_sha256": "05733cc033a33f08ce638d5abf5cf89891e2ed3a09e68badb4c68ae7cd32ca82",
       "readiness": {
         "status": "incomplete",
         "reason": "Automatic P&F box scaling and constituent/breadth P&F sequencing are undisclosed.",
@@ -42447,7 +42447,7 @@
       ],
       "purpose": "Time Range Statistics summarizes a manually selected chart interval, combining familiar price statistics with volume, gaps and intermarket correlation. It lets the user study a specific episode instead of a fixed rolling window. The panel includes directional context based on higher-high versus lower-low counts, while chart lines expose the interval’s mean and extremes. These are descriptive statistics and do not establish a forecast.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_xlv4mwjk_time_range_statistics.md",
-      "card_sha256": "889aadf38d2ecab8c3bcbee436d8a5dd51d435d2153b220c1023d727deed073f",
+      "card_sha256": "1155af7bb9a525be017c1bce7af94ec492a60d3e58ce7e2e41540d96d10856b4",
       "readiness": {
         "status": "usable-specification",
         "reason": "Selected-range arithmetic mean, extrema, average volume and explicit gap tests are independently reproducible; normalized range and directional-count extras need further definition.",
@@ -42738,7 +42738,7 @@
       ],
       "purpose": "Realtime Delta Volume Action builds a custom live candle view from incoming price/volume updates. It supplements price action with signed update counts, signed volume, relative deltas and a volume-weighted update-price reference. The author emphasizes that the accumulated detail cannot be reconstructed from historical bars and disappears on reload, so this is live observational tooling rather than a replayable historical signal model.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_xh8tldte_realtime_delta_volume_action_lucf.md",
-      "card_sha256": "361c6d188f3223ea1f183450d470e2535696da14b589ff1dcbaa603aeafcea36",
+      "card_sha256": "3c25d820ab7be6ea667f2098c1ac73c207ca787f064d5c6b1c8c9a3aed22cabd",
       "readiness": {
         "status": "usable-specification",
         "reason": "Live update-count delta/share is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -42945,7 +42945,7 @@
       ],
       "purpose": "Correlation Heatmap compares aligned weekly or monthly arithmetic returns across a selected asset list. It aims to support diversification and relationship research while avoiding misleading comparisons caused by different session closing times. The distinctive alignment method reconstructs each other symbol’s price from sum/difference spread series sampled in chart context. All matrix pairs share one common history window, so adding a shorter-lived asset can change correlations even between existing names. Correlation remains descriptive and cannot establish causality or guarantee future diversification.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_y3pnzg2q_correlation_heatmap.md",
-      "card_sha256": "dbd978b070648f49488239144cf96571e6da627112bd25a751dfcd7cf1555651",
+      "card_sha256": "1c18cceef0a2e2edc284ac4f91ef37834182f470f4d888ba8cd185b8421ad372",
       "readiness": {
         "status": "usable-specification",
         "reason": "Source defines substantive parameterized calculations sufficient for reproduction.",
@@ -43417,7 +43417,7 @@
       ],
       "purpose": "Separate movement beyond an ATR-sized tolerance from smaller noise and preserve reference zones formed while the filtered center stays flat.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_yyrxrhi9_atr_rope.md",
-      "card_sha256": "463e0b757d884f948cbe7230122acf41ed13ee904a7292eecc33ffe491473f13",
+      "card_sha256": "f3e88846b8954c057516d075aea6901ff6cae3a535a2dcea23613ae18ab13a46",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for the excess-distance rope-center recurrence with caller-supplied ATR tolerance, source and starting rope; exact published initialization and consolidation-zone lifecycle remain outside scope.",
@@ -43649,7 +43649,7 @@
       ],
       "purpose": "Intrabar Analyzer displays lower-timeframe prices and technical calculations within a higher-timeframe chart context. It aims to make hidden intrabar structure inspectable through alternate candle constructions, overlays, volume/price graphics and technical ratings. Users can compare traditional prices with synthetic forms such as Renko or Heikin-Ashi, but those representations do not share identical execution meaning. The publication chiefly lists capabilities and screenshots rather than explaining the many underlying calculations. Its intended use is exploratory drill-down, not a defined signal combination.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_yqkwbg4m_intrabar_analyzer_kioseff_trading.md",
-      "card_sha256": "27a9604da58e8c5f277e8b0bc8ad04c199ae9d668d75def43d8b5bd86ad763a9",
+      "card_sha256": "a66120a05e894e20fa347783d73c4ed9f6ebdfad75d947bd99ce3be19d684eef",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -43787,7 +43787,7 @@
       ],
       "purpose": "Time-of-Day/Session Performance Stats ranks historical activity by hour and session to help traders focus on appropriate market windows. It separately measures range, volume, directional frequency and average open-to-close drift, avoiding the assumption that a high bullish bar count necessarily means positive average return. Session overlaps count in every involved session. The focus-hour plans are allocations of attention derived from rankings, not verified portfolio weights or a complete trading system. The author claims trailing-window overlays avoid repainting, but that implementation behavior is not independently established here.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md",
-      "card_sha256": "d14b03653cbb50db6283930927f6f1dc4b057d11bae7c58d264a44b53948b61c",
+      "card_sha256": "a4f0a75f6d6e5a2d75a88a5ee30c1f70217668a9c8210c4780a0103bae5e63ed",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for raw-range Activity, mean Volume, directional-bar Bias and mean open-to-close Drift by chosen hour/session buckets, plus their individual rankings. Aggregated edge/percentile ties, focus allocations and overlay timing remain outside this scope.",
@@ -44036,7 +44036,7 @@
       ],
       "purpose": "Volume Footprint Voids builds a separate lower-timeframe profile within each chart candle, emphasizing concentrations and sparse areas. The author calls the largest block a time point of control and interprets black voids as potential imbalance-fill zones. The description alternates volume and close counts, so the output is best understood as a configurable intrabar-occupancy/profile view whose exact weighting remains unresolved.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zmxb93wd_volume_footprint_voids_bigbeluga.md",
-      "card_sha256": "26245554114289863fe0e62618158cb955ee2f432005495b070f5894b9f1dfc2",
+      "card_sha256": "e42fb0e7daa0aca7d7cad66aff8cd9be65823b1ed86100fd846b3400e2eee7b2",
       "readiness": {
         "status": "incomplete",
         "reason": "Price-level spacing, volume versus close-count weighting, average threshold, delta attribution and void definition are not fully specified.",
@@ -44157,7 +44157,7 @@
       ],
       "purpose": "Isotropic Trend Lines measures structural trend slope in log-price units normalized by realized volatility, aiming to make steepness less dependent on display scaling. It reduces non-overlapping blocks to range midpoints, finds a monotonic sequence, fits boundary lines through selected extremes and compares multiple scales. A state machine describes channel exits, returns and failures. This is contextual channel analysis rather than buy/sell advice. Volatility normalization helps comparability but cannot make different sampling intervals economically identical or make correlated prime-length analyses independent.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines.md",
-      "card_sha256": "ffae58a997dada0542dafc622e73cce816ea020e38996eec415227915539ebef",
+      "card_sha256": "135d7ca08ec92b6c1051ef0c3385602a7226c7586d401c6c8840d1a557bab2b8",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -44237,7 +44237,7 @@
       ],
       "purpose": "Mawreez RSI Divergence Detector represents divergence strength continuously instead of marking only a few selected pivot pairs. It sums valid divergences of regular and hidden types, using opposite slopes between price and RSI and requiring connecting lines not to cross their underlying series. The author explicitly distinguishes larger divergence magnitude from a higher chance of a successful reversal.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zvct18wt_mawreez_rsi_divergence_detector.md",
-      "card_sha256": "f2bb7a9eaba35e4d355bff227a41433140f56d681dcb39e3abf79c49a799f08a",
+      "card_sha256": "9446e6679fd01b6069eca323c74815e2b0efa1effe93976b1a3b64cc80249918",
       "readiness": {
         "status": "incomplete",
         "reason": "The exact magnitude metric, handling of overlapping/types with opposing signs and line-intersection tolerance are not supplied.",
@@ -44461,7 +44461,7 @@
       ],
       "purpose": "Adaptive Volume Delta Map chooses available data granularity and displays directional-volume imbalance plus an optional per-price distribution. It aims to adapt an order-flow-style view to feed/subscription capabilities, from fine updates to coarse candles. The source advertises bid/ask midpoint classification, but it does not disclose the exact classification algorithm or distinguish actual exchange prints from estimates. Its overload safeguard disables the distribution when too many levels appear. This is a monitoring visualization, not an execution engine or a proven microstructure reconstruction.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zxxjiyij_adaptive_volume_delta_map.md",
-      "card_sha256": "00e08e711a9749dda8697ad85d437ae56f644329a2b79ee43f1789bfcf35a450",
+      "card_sha256": "699bbb8218ac564980d9f7353888b86a35f12546157e8eff3179907a531ae689",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -44626,7 +44626,7 @@
       ],
       "purpose": "RedK Multi-Modal TrailingStop places several common stop-distance models behind one visual and alert interface. It aims to support management of an existing position, letting the trader change the stop method without changing how proximity and risk states are presented. A separate ATR-based distance gauge labels price as safe, watch or critical regardless of the selected stop model. The introductory claim of realizing maximum profit is aspirational: no trailing stop guarantees that outcome, and the indicator itself does not execute a broker order.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zxcxrnij_redk_multi_modal_trailingstop_redk_mmtstop.md",
-      "card_sha256": "8f1754a6753422ed44859c894dd766d3d1b5cffaa4d5efbc25369db66822ceaa",
+      "card_sha256": "7f51a7a9796ccad0d1c13f835eed96ca54b8648600e7f095c499d626af37b614",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -45055,7 +45055,7 @@
       ],
       "purpose": "Find unusually compressed price ranges and mark their first breakout, optionally constrained by trend and accompanied by exit annotations.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_a8peqinu_smart_nr2_nr20_and_inside_bar_zeiierman.md",
-      "card_sha256": "4667f84427705624ce0622b201cf79a65a79aab3d2df4b90a42e9750e5526716",
+      "card_sha256": "3a90c399e2f70ae64dc02b87f79b19ed0b30a9f4fdb6b691e79c22caa97b811f",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Tightness rank formula, setup replacement, breach confirmation, target multiple, timeout and exit ordering are missing.",
@@ -45517,7 +45517,7 @@
       ],
       "purpose": "FVG Profile + Rolling POC profiles where candle-gap formations concentrate, rather than simply where volume traded. It separates bullish and bearish gap counts and associated volume to describe directional imbalance by price region. A rolling peak/average and optional moving average add temporal context. The financial purpose is identifying repeated gap-formation zones for discretionary reaction analysis. Calling them inefficiencies does not prove an arbitrage opportunity or that price must revisit them. Several important mapping and rolling calculations remain conceptual rather than fully defined.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md",
-      "card_sha256": "73b9313a687c7248f30f704d60dcc66d718b3e520e64a939326103805584231c",
+      "card_sha256": "90bc5c4e9d3270de24e68abe311e1b528553ea20a231f60fe1de16f64c7190a5",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for raw bullish/bearish three-bar FVG events and their gap boundaries, supporting optional live boxes. Mitigation, profile mapping/volume, Rolling POC and Auto-MA equations remain outside this scope.",
@@ -46805,7 +46805,7 @@
       ],
       "purpose": "Draw pivot-anchored trendlines whose slopes reflect volatility at the moment the pivot is detected.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_bugfwu53_atr_based_trendlines_jd.md",
-      "card_sha256": "3da2da579744463a5b30938adabff797a3c580d9bbd04f7d6fbce384c7fe6a13",
+      "card_sha256": "8513ac1c82308735b6532cbb8c78f96adb5f0410f115e28a688b0ec259fddced",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: The pivot confirmation rule, ATR formula, direction sign, line lifetime and alert behavior are absent.",
@@ -47182,7 +47182,7 @@
       ],
       "purpose": "Explore a Tsallis/q-exponential tail-risk proxy and use its normalized level to vary suggested exposure and stop references.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_c2fzxjii_evar_indicator_and_position_sizing.md",
-      "card_sha256": "77e0396fec2a3cfdbce9ca5bff652de736300ac4816fb30d8566929ff61a1b0b",
+      "card_sha256": "ef1a8cddb73c1b78302ee6d8104a277782fff8cb23a1ae6f0418d5aaaa012c4e",
       "readiness": {
         "status": "incomplete",
         "reason": "The displayed variational form does not specify the altered q-MGF, numerical optimization, normalization or sizing/stop rules.",
@@ -48441,7 +48441,7 @@
       ],
       "purpose": "Volume Composition decomposes lower-timeframe candle volume into directional and rising/falling-volume subsets. It aims to reveal whether total attributed pressure agrees with the subset labeled active. Here active means volume increased from the preceding intrabar, not directly observed market-order aggression. Disagreement can flag a context worth inspecting, while volume spikes can be interpreted as continuation or absorption only with additional price evidence. The method supplies a more detailed activity proxy than one signed parent-candle total.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_d4tdeuru_volume_composition_flowly_indicators.md",
-      "card_sha256": "1735c16d97a30473c8577d27208cb241fd4c47573fde461720b52bd398157f49",
+      "card_sha256": "7c2bc18c7f7336bb59f130bff64e8545669dd623e386dbcac4c9617260557416",
       "readiness": {
         "status": "usable-specification",
         "reason": "Source defines a reproducible parameterized computation.",
@@ -48532,7 +48532,7 @@
       ],
       "purpose": "Intraday Volume Swings records price extremes reached during stretches of rising volume, then carries the day’s final selected high and low into the following session. It aims to distinguish participation-supported swings from arbitrary daily extremes, providing possible retracement or support/resistance references. Current-day candidates can also be displayed but may later be replaced by more extreme qualifying swings.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_dfy6orqi_intraday_volume_swings.md",
-      "card_sha256": "252256b2a19361dc2b9e283e287067d8f489da958904a3d751d617e554e1a245",
+      "card_sha256": "059e2b9a70806aa1efbd41784d55a5e889e63532f8a3081b81b63a775a8e8641",
       "readiness": {
         "status": "usable-specification",
         "reason": "Volume/price runs and next-day extrema is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -48644,7 +48644,7 @@
       ],
       "purpose": "Waindrops splits user-defined periods into two portions and draws separate price-volume distributions and VWAPs for each. It aims to make intraperiod migration of value visible, with color based on whether the later VWAP rises, falls or matches the earlier one. Custom unbalanced/session settings support overnight-versus-cash comparison. The publication also teaches drawing-array techniques, but its financial purpose is explicit. The histogram is derived by iterating price ticks within candles, which can become computationally expensive and is not transaction-level volume reconstruction.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_djr8hv4v_waindrops_makit0.md",
-      "card_sha256": "f98b4f749fbaffd4e3d0d757e49fd4cbc84286589c8cb39c89d56d7b32fddf85",
+      "card_sha256": "9fd4ca3e69804323d0039b4dd09c3f83dd7ad0f63b2a6c2359809553aa657586",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -48815,7 +48815,7 @@
       ],
       "purpose": "Match Finder searches a chosen comparison list for the asset whose recent price shape most closely tracks the active chart. It is explicitly about current compatibility, not forecasting continued correlation. After selecting the strongest positive Pearson relationship, it rescales the matched segment for visual comparison, optionally displaying every candidate’s coefficient.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ddvp5qaz_match_finder_theultimator5.md",
-      "card_sha256": "740670a1a6d3b3c4a843ce5cf7e079c0f6b6a4f33e3c6a4b655fc3a4b08f7a35",
+      "card_sha256": "0bbfae1c08cf14e2c65b37c4de9cc055cf638c529c35c590a9975a6818d5deda",
       "readiness": {
         "status": "usable-specification",
         "reason": "Pearson table/strongest-positive match is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -49147,7 +49147,7 @@
       ],
       "purpose": "Smooth candle geometry to reduce visual noise and emphasize trends while retaining a separate line for current market price.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_dyb13ida_hull_candles_bigbitsio.md",
-      "card_sha256": "546bcee9c5c112c98ee08b425a6852f8ef7ed4b2a5201cc60347a2997023edaf",
+      "card_sha256": "f0dd1dc146c5c155a28b52fc70fa6bda38527867e49e5a85b7ada0b3bde2c7cf",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source explicitly applies standard HMA to each OHLC series, defines the comparison driving colors and specifies the close SMA, including defaults.",
@@ -49333,7 +49333,7 @@
       ],
       "purpose": "Compare repeated equal-cash purchases with investing the corresponding capital at the start of a chosen historical period.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_e5azkgtc_best_dollar_cost_average.md",
-      "card_sha256": "2319ce6cb72a8da5bbd20319d7b6e5fe6f07a9a4c52522854abcd15aecc12a32",
+      "card_sha256": "9aebd44ffe1803f15e107bcb9019ad8449c970e6a7405ce7ae6cafd2888c37e7",
       "readiness": {
         "status": "incomplete",
         "reason": "The core computation or input contract is not completely specified: Purchase-price selection, fractional units, holidays, currency conversion, costs and fair-capital matching are not disclosed.",
@@ -49436,7 +49436,7 @@
       ],
       "purpose": "Extreme Trend Reversal Points restricts moving-average reversal candidates to strongly ordered multi-level smoothing states. It recursively smooths an average repeatedly, measures their relative ordering and highlights price crosses only when the averages are fully aligned. The author emphasizes that such a cross can be a pullback or a reversal, then offers discretionary confirmation and breakout-box examples rather than a guaranteed reversal system.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ebb5mw6b_extreme_trend_reversal_points_hewhomustnotbenamed.md",
-      "card_sha256": "78ff3aa05687c21f0cbfbbc0080464588e8f2148351874fa9274c2b6f0f20080",
+      "card_sha256": "b4cfeac9fb5ba94d854424a249137a752cd1c7657ec7d9bf2a60568421b1eae9",
       "readiness": {
         "status": "usable-specification",
         "reason": "Recursive SMA references is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -49755,7 +49755,7 @@
       ],
       "purpose": "analytics_tables supplies reusable strategy-performance tables rather than a standalone market signal. It separates caller-provided win/loss statistics from table presentation and also maintains seasonality data for calendar performance views. The intended integration is a trailing-strategy framework, while the exposed objects let other strategy scripts reuse the reporting layer.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_eqk0bwy4_analytics_tables.md",
-      "card_sha256": "e95d8c473a1f96a2d73ea6fccc1c57f408b0f6c4678c4a9a2a87e0ee0c01f8bb",
+      "card_sha256": "aac9dee1cd99940c9b03117b463f306a3a022c128b366ba1cfb4593216b7ffbd",
       "readiness": {
         "status": "incomplete",
         "reason": "Metric equations, trade-return definitions, risk-free assumptions, seasonal/eon semantics and caller data aggregation are not fully documented.",
@@ -50204,7 +50204,7 @@
       ],
       "purpose": "Fair Value Gap displays current-timeframe and optional higher-timeframe gaps as possible future price targets. It aims to make imbalance references and cross-timeframe confluence easy to monitor. The user can remove a gap at its midpoint instead of waiting for full fill, optionally deleting filled historical drawings. The description does not define the underlying gap predicate, so a familiar three-candle definition cannot be assumed merely from the title. Its claim that gaps are often filled is qualitative and does not establish timing or profitability.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_erbzovy8_fair_value_gap.md",
-      "card_sha256": "57dc8a0e67254c9689e61574fe2b08955c5a3cb049c26710865d33239b18eb5f",
+      "card_sha256": "6f0a124b50785dbff95554fd20e67df0e24d6fa5b3d4c18cac63664261547a30",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -50308,7 +50308,7 @@
       ],
       "purpose": "Combine several fractal-dimension estimates with momentum and volatility context to distinguish relatively trend-like from reversal-prone market behavior.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ertrxbpf_musashi_fractal_dimension.md",
-      "card_sha256": "bdd67978c0e7a7492b0cf776d6f8dc608705d42355d08590fc643c3072b62112",
+      "card_sha256": "80c2231ff47d26c9a557402a28ede350251f71834440fbe058d71d90d85f4da2",
       "readiness": {
         "status": "incomplete",
         "reason": "The principal FDI transform is explicit but its Hurst estimator and contradictory reversal band prevent reproducible regime output.",
@@ -50865,7 +50865,7 @@
       ],
       "purpose": "Deeptest extends strategy reporting with trade statistics, risk-adjusted metrics, drawdowns, distribution diagnostics, benchmark comparison and robustness-style summaries. It reads closed trades from an existing Pine strategy, so it evaluates supplied simulated outcomes rather than creating a strategy. The documentation includes many heuristic quality labels; those labels are not statistical guarantees and its screenshots are explicitly illustrative.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_fq7ig92h_deeptest.md",
-      "card_sha256": "6e27d43bdabc4ee41c95c1a96d0dcd3123940b2f86f3ac015ad8992ad6edcfb7",
+      "card_sha256": "277e37a14e009788ae71fed308fd828c468712b49f6cf817f9c64630850a5142",
       "readiness": {
         "status": "usable-specification",
         "reason": "Supplied-equity and closed-trade basic metrics is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -51609,7 +51609,7 @@
       ],
       "purpose": "Draw a manually anchored ATR trailing exit and optional fixed profit target to monitor a trade from a chosen starting point.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_guxndiot_interactive_atr_stop_loss_tanhef.md",
-      "card_sha256": "4f8b837d2e01b4d43e4eec05635da430ae2e9be2ddcfb3aeb7c0167a27080b59",
+      "card_sha256": "1634320319b5499f487c0e586eb2c8e5ae9151069465febd3cffeddcec3842f4",
       "readiness": {
         "status": "incomplete",
         "reason": "The core computation or input contract is not completely specified: The trailing ratchet equation, trigger comparison, reset behavior, target units and intrabar event ordering are absent.",
@@ -51805,7 +51805,7 @@
       ],
       "purpose": "Logarithmic Moving Average converts a logarithmically weighted price average into a trend-quality-adjusted slope oscillator. Its aim is to favor recent data while distinguishing cleaner directional movement from weaker drift. Optional log-return momentum further amplifies agreement; this is a designed weighting rule rather than evidence of statistical significance or higher continuation probability.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_gamszeig_logarithmic_moving_average_lma_quantalgo.md",
-      "card_sha256": "ca28d99a48349304b70b96f7035a5d8bb58de0977a9f7d74a65e16558c0e35b7",
+      "card_sha256": "409988ae55131776d054e1453ebc6784f85b34b8bbc97ee68d9103b8765a5238",
       "readiness": {
         "status": "usable-specification",
         "reason": "LMA/ten-bar slope is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -51936,7 +51936,7 @@
       ],
       "purpose": "Recursive Reversal Chart Patterns scans nested zigzag structures for common reversal formations. It aims to find both smaller and larger structures and optionally require supporting indicator divergence. The categories include double/triple tops and bottoms, cup variants and head-and-shoulders variants. The description is architectural rather than algorithmic: recognition resides in referenced libraries and the settings are largely screenshot-only. It warns that the workload can time out, so a missing pattern may reflect computational limits rather than absence of a setup.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_gdgxyl8b_recursive_reversal_chart_patterns_trendoscope.md",
-      "card_sha256": "4f48c2baae40ed11cacfede1f9c04961404ded17eb1cd8dc0123a768f19fbe12",
+      "card_sha256": "865ee29eeaaf70d18339cc012fa901cf401a1f05dc8ca9ef1564e32ad27e7633",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -52175,7 +52175,7 @@
       ],
       "purpose": "Delta Volume Candles augments or replaces price candles with intrabar-derived volume-pressure information. It separates up/down intrabar volume, constructs several balance measures and uses them for candle additions, moving-average channels, divergence regions, colors and configurable alerts. The author presents delta as a proxy for participation convergence with price, explicitly warning against rigid reversal inference from declining delta.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_h0yzptis_delta_volume_candles_lucf.md",
-      "card_sha256": "d097124a24f2eed55312cab48e2077b4a0bbd2cbd249eadf59d3cb6dd758867d",
+      "card_sha256": "57941f392bdf5f60a81e7b7f05213279b29a78e1305d9e35d6ab31712c2b066a",
       "readiness": {
         "status": "usable-specification",
         "reason": "Historical raw/EMA directional-volume balances is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -52236,7 +52236,7 @@
       ],
       "purpose": "Dynamic RSI Regression Bands re-anchors its regression window when RSI enters an overbought or oversold zone. It treats an extreme-momentum event as a reason to reconsider the current trend model, then grows the fitted sample until a maximum length. The purpose is event-driven channel context and rejection monitoring, not a proof that RSI extremes always introduce a new regime.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_h4xuu8kn_dynamic_rsi_regression_bands_zeiierman.md",
-      "card_sha256": "3a90e69167f085a5f436bd2ce29e9cbfd4cb93fea89221d4e1628babcfc09078",
+      "card_sha256": "8c49d955c996f43b20a535a16754600cf7000589bfaff467c4fd044833450956",
       "readiness": {
         "status": "incomplete",
         "reason": "Regression source, raw-versus-residual deviation, minimum-sample behavior, cap-anchor semantics and exact rejection inequalities are unspecified.",
@@ -52348,7 +52348,7 @@
       ],
       "purpose": "CVD Chart maps cumulative or raw intrabar volume delta onto the price pane in reset-defined zones. It preserves volume-pressure context alongside price while offering multiple reset schedules, including trend-change events. The visual scale is a display transform based on zone price ranges and delta extrema, so the plotted vertical position is not itself a tradeable price or unchanged absolute delta scale.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hfcy7ciq_cvd_cumulative_volume_delta_chart.md",
-      "card_sha256": "b12ff4828ec9045f65d504aa4c8cb645d88679b8bbcafd3ee67367d3579db52a",
+      "card_sha256": "09fe2930caed501394c9a067463047ec472512ba674be41fbfd823c992f6b445",
       "readiness": {
         "status": "usable-specification",
         "reason": "Raw delta/none-or-fixed-reset CVD is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -52661,7 +52661,7 @@
       ],
       "purpose": "Market Sessions marks customizable trading windows and summarizes their price range or open-to-close movement. It aims to keep session context visible in boxes, zones, timelines or colored candles. Optional overlap merging truncates each session at the next session’s start, changing the effective measurement windows rather than merely hiding graphics. An open-to-current/close line and midpoint support directional and equilibrium inspection. The source promises correct default timezone behavior, but actual seasonal/session rules are not reproduced.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hnpilzeg_market_sessions_by_leviathan.md",
-      "card_sha256": "0714cfd946bb4f707de07937e118934a1a8ed2b5a50bb1ffa11228f8757df5dc",
+      "card_sha256": "3875217b3ab612debb31954cbc4be1ba02b41c85626551ee5664fd95ed698a0c",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for explicitly configured UTC session OHLC geometry, midpoint and open/close line. Missing default market windows and optional movement-label conventions do not block chosen sessions.",
@@ -52886,7 +52886,7 @@
       ],
       "purpose": "Place the current asset-price drawdown within its historical distribution and add return/risk summaries. DDA supports contextual risk monitoring and allocation research; it does not establish a portfolio’s realized drawdown unless the supplied price series represents that portfolio.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hto2ol8g_drawdown_distribution_analysis_dda.md",
-      "card_sha256": "488254a62666c6ab752f4d25d55b59015244b48935dff19cf4819f42a04dcc01",
+      "card_sha256": "b22ee89e0e930a9a2959618de14fb37d890778d99baf56250dad15f34c579ac0",
       "readiness": {
         "status": "usable-specification",
         "reason": "Raw running-maximum drawdown/nearest-rank distribution is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -53254,7 +53254,7 @@
       ],
       "purpose": "SMA Directional Matrix shows whether simple moving averages across a chosen period range are rising or falling. It aims to reveal agreement between short-, medium- and long-horizon trend readings without overlaying many lines. Divergence between short and long averages can show a recent retracement against a broader direction. The source suggests balanced rising/falling counts during ranges, but does not define that as a formal regime threshold. The financial calculation is straightforward and parameterized; layout is the principal extra feature.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hefekydl_sma_directional_matrix_luxalgo.md",
-      "card_sha256": "99d2aa36886854d4c478451883ad9a76e7c54ac89bb99549948e7c008938042e",
+      "card_sha256": "86344607a7bb0a4d05191d9381874195caa4c88cffcc23e687aff6f88c2b0231",
       "readiness": {
         "status": "usable-specification",
         "reason": "Source defines a reproducible parameterized computation.",
@@ -53866,7 +53866,7 @@
       ],
       "purpose": "Automatically draw pitchforks across a hierarchy of zigzag scales while demonstrating reusable financial drawing objects.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_hv8ghojp_recursive_auto_pitchfork_trendoscope.md",
-      "card_sha256": "c4566af450222ef23eed0ca1377a3e1d28ebd0b697b67121aa843035c38279e4",
+      "card_sha256": "e31147b3c671d0d199d41c3dbb129505c3508a0e7d23abca71de9847203143fc",
       "readiness": {
         "status": "incomplete",
         "reason": "The hierarchy outline is clear, but its pivot reduction and fork selection rules are not disclosed.",
@@ -54542,7 +54542,7 @@
       ],
       "purpose": "Divergence for Many Indicators compares the latest pivot with the developing current bar across several familiar technical measures. It aims to show potential momentum disagreement earlier than a prior higher-timeframe-completion approach. On finding a new divergence it draws a line and removes the previous one. The author’s no-latency claim therefore means ongoing evaluation, not that pivots are known instantly or that marks never change. Red/lime signals are possible reversal context, not demonstrated forecasts.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_in9ftv45_divergence_for_many_indicator_v3.md",
-      "card_sha256": "bb821b79b58d7a42d84e4a0ced5fd550296d552e157372d9ce6d82bf0f61a999",
+      "card_sha256": "d310b8ca5fb3deb701d0ebb365764acb9052c7fab3dceaf832bf71ed67dc788f",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -54644,7 +54644,7 @@
       ],
       "purpose": "Place economic growth and inflation in a quadrant-based investment-clock chart to frame broad asset-allocation hypotheses.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ifjxxalc_the_investment_clock_orbital_graph.md",
-      "card_sha256": "41cb2f207006cf4a07b9bf826d09c49a66eaa7a13f3d62effa3cf375efcd352c",
+      "card_sha256": "06a224c85fe04774515ac98619e2de5dc8b13344e6ef0576eca5ec2e5d207995",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for four-quadrant classification of supplied growth/inflation rates against caller thresholds; obtaining those rates and exact orbital rendering remain outside scope.",
@@ -55056,7 +55056,7 @@
       ],
       "purpose": "Overlay several assets in a common session-relative price coordinate system so different nominal price scales can be compared visually.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ipvs7b7x_multi_ticker_anchored_candles.md",
-      "card_sha256": "577304a9ad269b7cdb9dc5b05e05bed80f6acc3c0a14406806f8facfc2cfa609",
+      "card_sha256": "776121347d105764d6584122af10451db3908dac0b648a2d18d7329c4df6b985",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for session-open percentage scaling and main-open anchoring when aligned OHLC/open series are supplied; actual comparison feeds and session alignment remain unavailable inputs.",
@@ -55412,7 +55412,7 @@
       ],
       "purpose": "Tensor Market Analysis Engine proposes a composite of multidimensional volatility jumps, Hurst-style regime detection and transfer-entropy-like information flow. It aims to choose context-dependent signals and express them through a heavily decorated dashboard and chart layers. Long/short confirmation uses momentum, while voting modes change how many components must agree. The long description includes mathematical sketches and many suggested tunings, but no complete estimator implementation. Quantum/tensor/category-theory branding and first-ever assertions do not establish mathematical validity or trading performance. Estimated win-rate labels are explicitly estimates, not demonstrated trade outcomes.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_jcrhuirl_tensor_market_analysis_engine_tmae.md",
-      "card_sha256": "72dc42f18a4c3b626b793a2ee7f8e6c01a2725e7e7f5987d08188bcd961f546c",
+      "card_sha256": "96a6abdee5918636a6e4fd7bc5a64caf383f6e26edbd19c030e125173386ef48",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -55888,7 +55888,7 @@
       ],
       "purpose": "Show intraday performance relative to the session's opening price through a compact percentage-change sparkline.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_k2br8xol_intraday_spark_chart_astrideunicorn.md",
-      "card_sha256": "cea3a3fe6da5e40d33214ee8961795bcba651b3d19125d39b4f983a1c5a85d9e",
+      "card_sha256": "1b18b120e5aff4db8c3aedec296d64fad274442125dd7b0459d6a7a2ef7a5a1e",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for daily-open percentage change and sign coloring on supplied session-labelled prices; exact exchange-calendar and plotting parity remain caveats.",
@@ -56394,7 +56394,7 @@
       ],
       "purpose": "Supertrend Parameter Sensitivity evaluates a grid of ATR lengths and multipliers to reveal parameter robustness. It aims to distinguish an isolated best historical result from a neighborhood of comparatively strong results, reducing reliance on a single optimized peak. Each grid cell maintains an independent always-in-market long/short Supertrend simulation. The tool visualizes historical diagnostics rather than delivering a deployable optimization guarantee. Even a broad good-performing region can be an artifact of the selected market period.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ksmls0hh_supertrend_parameter_sensitivity_3d_luxalgo.md",
-      "card_sha256": "6ea0a18ec99845c33454150e0c4d1df162657b8944c3b796e8a502465b855be2",
+      "card_sha256": "08cadd38633f2532c214573475b86e01573ddf7cc51ebbab5d4abb57733cac1d",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -56643,7 +56643,7 @@
       ],
       "purpose": "Dynamic Dots Dashboard summarizes whether price sits above or below several cloud and moving-average references. It aims to declutter the chart while preserving a quick view of dynamic support/resistance density. Each reference above price is shown in the resistance region and each below in support; an optional histogram sums the relationship. The author interprets a broad migration of dots as a cycle shift, but that is a qualitative market reading rather than a defined entry system. Some prose mistakenly calls the support section red after correctly identifying it as green.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_kjj8hddk_dynamic_dots_dashboard_a_cloud_zlema_composite.md",
-      "card_sha256": "2639e713aafb9b292bedd7eab0844c2edea3c6719cf1bf3a680249d717eba132",
+      "card_sha256": "a13a591194e9c64c1271a651dd44c2a6d9a248a5d7bbba1e38598e106d54e25e",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -57580,7 +57580,7 @@
       ],
       "purpose": "Volume Analysis combines a lower-timeframe volume heatmap with a volume profile and column statistics. The user chooses the grid dimensions and history depth, and the script examines lower-timeframe price movement and volume inside chart candles. The resulting display is intended to expose where activity concentrates and how buying and selling estimates differ across time columns. It can draw in a separate pane or on the main chart and can compress non-trading gaps so adjacent activity columns remain visually continuous.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_lper4qca_volume_analysis_heatmap_and_volume_profile.md",
-      "card_sha256": "50791208154b86e54f41c3aa3b997d8ff27391fdb8b642c81c12977fcb678fec",
+      "card_sha256": "b674f0226342d9b894e2d11be4bebd13941e50b8c9c698e0f1c09165541caa40",
       "readiness": {
         "status": "incomplete",
         "reason": "Core source rules need the listed gaps resolved.",
@@ -57808,7 +57808,7 @@
       ],
       "purpose": "Count bullish,bearish and unchanged lower-timeframe candles inside historical parent bars and summarize their relative balance as participation-strength context.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_lcgcwwwi_bar_balance_lucf.md",
-      "card_sha256": "9b8da96c568ac9213d216d095350248344c4deec2e5a27754b2caec278463299",
+      "card_sha256": "4ab020a456a78dd17674894f4ab8575991e47389bcc95312bc451557649d1e8d",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for raw up/down/neutral intrabar counts and stacked columns on supplied partitions; historical-only behavior, auto-resolution and derived balances remain limitations.",
@@ -57877,7 +57877,7 @@
       ],
       "purpose": "Angle Market Structure gradually moves pivot-derived resistance downward and support upward, making potential breaks occur sooner than static pivot levels. It then marks extension zones and sequential break counts. Its purpose is a more reactive structure view; the acceleration is an intentional moving threshold rather than evidence that a static historical structure was actually broken.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_llhsdjyh_angle_market_structure_bigbeluga.md",
-      "card_sha256": "e045104957644c37b009c88d1132635e7f2b4c52592f7cb9ab4c1a38a893904c",
+      "card_sha256": "12cae978b7494aeabbd8022d68166ef5edc1c0eedb112618d1b978cc957bebcb",
       "readiness": {
         "status": "incomplete",
         "reason": "Angle step equation, ATR period, deviation-distance formula, count reset and precise confirmation rules are missing.",
@@ -58212,7 +58212,7 @@
       ],
       "purpose": "Earnings Snapshot organizes historical stock EPS releases, future estimates and associated price growth into a chart table and release-date labels. It replaces manual comparisons of quarterly reports with a compact view of growth and price reaction. Revenue is expressly excluded because the author had not resolved its data presentation. This is fundamental-event visualization rather than an alerting or backtesting system; a favorable color should not be treated as an independently verified earnings beat or trading recommendation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_lu0mtsud_earnings_snapshot_trendoscope.md",
-      "card_sha256": "26a03bcc52e5c844668e648357a8d9cd65c96df8a31fc2625c47677afa0ea7d2",
+      "card_sha256": "cc698e2ba17ecd79ff6898c48ff9eb764f1035cc26cb86393555b9b79b37fcee",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for positive-base actual-EPS quarter-over-quarter and four-quarter growth. Event-price sampling, future estimates and the complete seven-factor score remain outside scope.",
@@ -58357,7 +58357,7 @@
       ],
       "purpose": "Range Volume Change compares cumulative volume in a user-selected daily time interval with the prior day’s corresponding interval. It was motivated by premarket-volume monitoring but supports any selected range and continuous markets. Its growing columns show accumulation within the range rather than only completed-day totals, providing context for whether current participation is ahead of or behind the previous session.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_lwoxh0vh_range_volume_change.md",
-      "card_sha256": "3f1e6daf168b2d209c603ae866f1583320d5e1dd2857b4e1b3a9a90038e7bdb9",
+      "card_sha256": "d1b371681dd700f26c9cf05967968bc853c9e52d6158282b9839a425a5c04d14",
       "readiness": {
         "status": "usable-specification",
         "reason": "Completed daily interval volume/change is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -58594,7 +58594,7 @@
       ],
       "purpose": "R:R Trading System Framework provides educational scaffolding for running and visualizing several trade-management ideas concurrently. It tracks entries, stops, targets, excursions and time-to-level expectations so users can study risk/reward during trades. The author explicitly says it is not a finished product and requires custom triggers, making its default examples demonstration material rather than an authorized executable strategy.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ma35whu5_r_r_trading_system_framework.md",
-      "card_sha256": "db0bd566323e7bdaa557dd161ef26678c0e61172a70ee038b33601d29100ee88",
+      "card_sha256": "94f71bb96005adc86876c4ebfb2903599f31ae0183baf3d834246acd830f6f66",
       "readiness": {
         "status": "incomplete",
         "reason": "Default strategy identities, stop/target equations, sizing, fill sequencing, excursion calculations and historical timing denominators are missing.",
@@ -58744,7 +58744,7 @@
       ],
       "purpose": "Provide strategy programmers with unit conversions, direction-aware exit levels, risk-based size helpers and a percentage-exit wrapper. These functions support a caller’s existing strategy and do not define an entry edge.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mcogjc67_strategy.md",
-      "card_sha256": "5f864f7ec21d4498cc82e74fc9dbfba1b8cfd6a96736e8c4fc742c5525c2b852",
+      "card_sha256": "981cecd6d516493412d78b30bbb5adfaec5cdc47f74c569ce793cca7a1fe4795",
       "readiness": {
         "status": "usable-specification",
         "reason": "Percent-of-price and signed tick exit-level helpers is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -58889,7 +58889,7 @@
       ],
       "purpose": "Periodic Linear Regressions fits price from a period anchor to the current observation and optionally resets at each selected interval. It offers a refitted straight-line view or a causal sequence of fitted endpoints, plus residual-error envelopes. The distinction matters: the static line redraws the past fit as the sample grows, while rolling mode retains the endpoint observed on each bar.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mketjg7e_periodic_linear_regressions_luxalgo.md",
-      "card_sha256": "37556df8f8f99c381895cc2dff13448c25204c330996628f69faaa0c1ab01261",
+      "card_sha256": "4de45832e22a892b40d013ba0bd1d4405d65736672807cad17dfa709ba5b3bc6",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source defines anchor boundaries, regression endpoints and RMSE bands with caller-selected parameters.",
@@ -59535,7 +59535,7 @@
       ],
       "purpose": "Accumulate a live tick-rule estimate of cumulative volume delta alongside a tick-oriented price display.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mombnm8e_tick_cvd_kioseff_trading.md",
-      "card_sha256": "d4559f2cfb22f0e90c3f843cc3e017d7f364cf5fe7b6d72343b1a0e948c18542",
+      "card_sha256": "0c021d47bf5530b122f4fab73371a44e622f2d315a83e7395fe6042d2595ac8e",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Unchanged-tick handling, volume increments, reset/persistence, peak detection and event deduplication are missing. Historical tick entitlement claims are dated prose, not verified current access.",
@@ -59644,7 +59644,7 @@
       ],
       "purpose": "Build candle-level footprint displays with volume/delta metrics, imbalance flags and selected historical price-level references.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mxdttwh8_footprint_iq_pro_tradingiq.md",
-      "card_sha256": "b289ce1ffe06fdb61bf5795a933eb46cafcac2bf7d4f3608b38ec4110c1a361c",
+      "card_sha256": "799924a266e8cb888ccfdabce6a285458b2d0bf8f6fe4dc057c765a7b36883bd",
       "readiness": {
         "status": "incomplete",
         "reason": "The output ratios are defined, but the core buy/sell/price-level allocation is not reproducible.",
@@ -59745,7 +59745,7 @@
       ],
       "purpose": "Relative Volume at Time compares current participation with historical participation at the same offset inside a chosen time unit. It addresses recurring intraday or weekly volume cycles that an ordinary rolling average can obscure. Users can compare either cumulative activity since the anchor or a single matched-offset bar. The normalized result supports comparisons across markets, while the directional variant signs volume by bar direction rather than claiming to observe actual buying and selling.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_n0f50jkv_relative_volume_at_time.md",
-      "card_sha256": "b3b73af0f77e39862286075b5822edae8c324ecc0f22026ee1aa002ac9a8617b",
+      "card_sha256": "5b559cd494f9b23699c3ea68038d1fd1a98db26edfee92de798e526df7be6d34",
       "readiness": {
         "status": "usable-specification",
         "reason": "The main relative-volume calculation and parameterized variants are explicitly defined.",
@@ -60088,7 +60088,7 @@
       ],
       "purpose": "Annotate unusual short-sale-volume episodes and summarize short-volume participation around historical highs.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_nlygzrmb_short_volume_stamper.md",
-      "card_sha256": "16ace0a7feb52ba3797624f162e352671350c93890f2eff337609c80b75085ca",
+      "card_sha256": "c5d7c0bad3bb66972be2d9570982d4ac4c63f19be06b25f9f0955b757be50a51",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for the disclosed anchored short/total-volume ratio, threshold colors and retrospective event-window aggregation when the separate volume feed is supplied; VWAP dollar estimates are outside this narrow scope.",
@@ -60262,7 +60262,7 @@
       ],
       "purpose": "ICT Killzones + Pivots preserves the price extremes established during configurable session windows. It is designed to keep potentially relevant session highs and lows visible after the session has ended, rather than requiring the user to redraw them. Optional opening-price references and timestamps add temporal context. This is a chart organization tool: the description does not claim that a session extreme predicts a reversal or prescribe a trade when price reaches it.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_nw5ogfdo_ict_killzones_pivots_tfo.md",
-      "card_sha256": "a5a5620b758298ce9a7d0e33ee46a4517baabb29aca24e6f36301a67060ac1f5",
+      "card_sha256": "90306a17c2b5605612672a2ca373637d56d87b9b22572e1ab9bb992f8e5fca89",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for high/low tracking of chosen sessions under an explicit caller time contract. Optional opening lines and level-extension/invalidation parity remain outside scope.",
@@ -60362,7 +60362,7 @@
       ],
       "purpose": "Show where each candle's strongest time occupancy and volume concentration occurred using lower-timeframe approximations.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ny63myd9_time_volume_point_of_control_flowly_indicators.md",
-      "card_sha256": "39e3474fde4200613353f0b85783220907c18074483cc8bb859eca3c8fcfc882",
+      "card_sha256": "8cfbbcb0206658eb6b73becadaa279edd3dd9c50d071edf636957e4a4aa339e4",
       "readiness": {
         "status": "usable-specification",
         "reason": "The lower-timeframe selection map, maximum-volume source-price rule and ten-bracket close-count TPOC rule are explicitly stated. Tie handling is a nonblocking edge convention.",
@@ -60426,7 +60426,7 @@
       ],
       "purpose": "Judge session volume against comparable sessions instead of mixing sessions with structurally different activity levels.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_niy5oyf7_volume_by_session.md",
-      "card_sha256": "7ce260a88d12bfed7a9e624a6dffdbb0cdc4b4fff868c1be3321514cd3f325d3",
+      "card_sha256": "236f25e925fd858d0e4991b36bd5dc9a05e865bc30013df9bb01ba13e118f3e2",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Exact sessions/timezone, average weighting, overlap allocation and partial-session comparison rules are missing.",
@@ -60672,7 +60672,7 @@
       ],
       "purpose": "Summarize Bitcoin performance by calendar month to compare historical seasonal tendencies and their consistency.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract.md",
-      "card_sha256": "d4d4403ad76459c8072f8379fbf4e31b7589a5ea8535211a5637c5c101c7c63c",
+      "card_sha256": "43316b0d12954fa7406fdecb5e42603753ef015429157e48466ea09cad110a26",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source gives explicit return equations, a parameterized lookback and positive-return counting code sufficient for the principal discrete monthly statistics. Optional cumulative/display boundaries need implementation choices.",
@@ -60991,7 +60991,7 @@
       ],
       "purpose": "Earnings Price Move Cheat Sheet summarizes historical price behavior around earnings, separating surprises, misses and all releases. It aims to help users inspect repeatability and event risk, with average returns, post-release range and historical-tail metrics. These are retrospective event statistics; the source explicitly warns that sparse earnings categories can make apparent relationships misleading.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_okuj0d2n_earnings_price_move_cheat_sheet_kt.md",
-      "card_sha256": "7134715335bca4b4dc8d6d72da4e04d17835a7c324b5409910923397e33c4345",
+      "card_sha256": "e1b45476e4d56d4ffc5f42e588124e7b7d1f4892df52c1b0d4f96a4c110a053c",
       "readiness": {
         "status": "usable-specification",
         "reason": "Post-event high-low range is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -61185,7 +61185,7 @@
       ],
       "purpose": "Create curved support/resistance shapes from swing pairs, mark their first breakout and derive a conditional trailing reference from broken shapes.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_oyazawb9_d_shape_breakout_signals_luxalgo.md",
-      "card_sha256": "e9cf6f5f2643bfa4046099f8517022dcfcf814558118fcb0b012a13e1b439810",
+      "card_sha256": "d98feb835290babeea3cdd5943c90f7deef7fa00fdfb790326b9c88542231f0d",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Arc coordinate formula, exact breach test, pivot timing, trend reversal of the stop and execution assumptions are missing.",
@@ -61277,7 +61277,7 @@
       ],
       "purpose": "Replace the central-tendency component of MACD with rolling medians to reduce the influence of extreme observations.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_odyzzlzu_median_convergence_divergence.md",
-      "card_sha256": "263ca97f6cdb19ac5b8f4a13934759475fc61897fceb1415a4f9a6f91257c552",
+      "card_sha256": "adfd9139d1fc20c255edf8ba2c74ad5320640f08e1b422a9768d4873664e0cb4",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Median window parity convention, exact signal calculation, input price, divergence confirmation and execution timing are absent.",
@@ -61595,7 +61595,7 @@
       ],
       "purpose": "Visualize hypothetical trailing exits and the reward/risk relationship needed for a strategy to break even at the current price.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_p5ggwhl5_trailing_management_zeiierman.md",
-      "card_sha256": "a52c1f2189e0091467a86722cbbc52e2d59e168e6d6562ec76edfc5387822606",
+      "card_sha256": "5603a569276eb28f00ee261bac576f0e2f3c136bdfeb4c7be983c7699ee53fbf",
       "readiness": {
         "status": "incomplete",
         "reason": "The central stop/target/curve computation and a potentially contradictory pivot-stop convention are unresolved.",
@@ -62375,7 +62375,7 @@
       ],
       "purpose": "Liquidity Void Detector emphasizes unusually large recent returns when volume is weak relative to its own baseline. It explicitly offers a practical OHLCV proxy, not measured order-book emptiness. The narrative associates upward low-volume moves with potential downside refill and downward moves with upside refill, but its settings section reverses those buy/sell labels, so consumers must preserve that contradiction rather than wire labels into orders.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_q1hxs0v6_liquidity_void_detector_zeiierman.md",
-      "card_sha256": "a69a3731d417774e18ae31cf1bc3cf1531e3747e22e6f07253895167867ceeb5",
+      "card_sha256": "7ea15e3541863e8aefc3755bea1700b0eef1f4abb4cda27f661aa0c69b4220f6",
       "readiness": {
         "status": "usable-specification",
         "reason": "Parameterized numerical void oscillator is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -62511,7 +62511,7 @@
       ],
       "purpose": "Draw automatically detected pitchfork structures with volume-profile levels aligned to the fork direction instead of fixed Fibonacci offsets.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_qamnmxzi_volume_forks_trendoscope.md",
-      "card_sha256": "3a28b9067286546bd22d306a83a8f3e272bdfbd9fcd6b6301c5cc66e29888112",
+      "card_sha256": "a0a76c6b4f359c36acffe5ab0cd225a92054d06e4f828238cf5b744f58372329",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Recursive swing settings, angled-volume allocation, bin width, geometry selection defaults and trading/invalidation rules are missing.",
@@ -62830,7 +62830,7 @@
       ],
       "purpose": "Compare an asset's performance with a chosen market benchmark using RSMK and an optional companion comparative-strength formulation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_qhncxbml_relative_strength_rsmk_perks_markos_katsanos.md",
-      "card_sha256": "731259bf7a2ec55259a265516b4d556ac831c547b9e6ea22cdad8c1d01eaec2b",
+      "card_sha256": "109da5ea550c73035663fbe1dc438b9c96d6771b30218f328541e99cc941acc4",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: RSMK formula, companion equation, price adjustments, timeframe synchronization and crossover/trading rules are missing.",
@@ -63460,7 +63460,7 @@
       ],
       "purpose": "Estimated Time At Price estimates how long price occupies individual price blocks or levels. It substitutes a time-at-price perspective for the related author volume-delta study, using lower-timeframe observations to build the estimates. The resulting highlighted level and extended reference line identify the greatest estimated duration, not necessarily the largest volume. The author repeatedly calls these estimates, which is important because bar observations do not supply an exact continuous history of every traded price.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_r7o3zulh_estimated_time_at_price_kioseff_trading.md",
-      "card_sha256": "020886affbe4984a92da3bbc6be91095a6e9e908eb59c0bc1501018b66b75c49",
+      "card_sha256": "8035437a4b2e637ee9355e9ecc1f1dd7f340c56fd4f3f343943387069cc010fd",
       "readiness": {
         "status": "incomplete",
         "reason": "Core computation needs the listed definitions.",
@@ -63750,7 +63750,7 @@
       ],
       "purpose": "Learn which historical pivot conditions tend to produce repeatedly respected levels, then score and monitor new support/resistance candidates.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_rs3xqwyx_support_and_resistance_logistic_regression_flux_charts.md",
-      "card_sha256": "f84ce7b5da77ee30766b7b7cda146225e48da151bbb70672ff22442da8cb3af2",
+      "card_sha256": "e8e4623074f9311ded8be62ef196d9e3f82f3a3b56e0ad44e76d3fc586a35897",
       "readiness": {
         "status": "incomplete",
         "reason": "The model features and purpose are disclosed, but training, outcome labeling and level-interaction rules are not defined enough to reproduce the classifier.",
@@ -63893,7 +63893,7 @@
       ],
       "purpose": "LOMV proposes a composite market score combining a Möbius-weighted return sum, several familiar technical components and higher-timeframe agreement. It surrounds the score with bands, projected levels, flow graphics and a performance dashboard. The mathematical branding and claims of improved win rates are author assertions without validation in the description. In particular, the source does not establish that its named constructs implement the broader mathematical theories invoked or that its volume proxy observes real order flow.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_rxrafvef_langlands_operadic_m_bius_vortex_lomv.md",
-      "card_sha256": "f97c9ed219e0fc723bac0a28c9bc09d71cf1188fe67983b2ade68fb83b7a0e66",
+      "card_sha256": "17abdc6ceb59732164e8448601581061f917e85ea95a86f2745a0eea6fd1354a",
       "readiness": {
         "status": "incomplete",
         "reason": "Core computation needs the listed definitions.",
@@ -64071,7 +64071,7 @@
       ],
       "purpose": "Rolling Z-Score Trend standardizes closing price around a rolling mean and displays the smoothed deviation together with its bar-to-bar change. It supports both momentum and mean-reversion interpretation: an extreme can indicate a strong ongoing move or a possible reversal context, so direction alone does not decide the trade. The source says signals use confirmed bars, which is an implementation claim rather than an independently verified live guarantee.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_rbeervr5_rolling_z_score_trend_quantalgo.md",
-      "card_sha256": "b22b394269de96707f00bfcc1e08d0fa9bfb521a75a8f0da536ba5ebd1065afe",
+      "card_sha256": "5425dceba07bc5586b5a7ae32f90271bedfb2631470ec63113ac562121cde838",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source specifies rolling Z-score, EMA smoothing, differences and threshold interpretation; the user can select the lookback.",
@@ -64785,7 +64785,7 @@
       ],
       "purpose": "Market Structure Volume Profiles divides activity into structural price legs rather than arbitrary sessions. Each completed break-of-structure or change-of-character event triggers a profile for that leg, and cumulative delta adds a participation view. The intended use is to compare continuation, reversal and balanced legs by their internal volume distribution. These displays describe estimated activity and structure; the description does not establish actual buyer identities or a predictive advantage.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_shy8kacw_market_structure_volume_profiles_kioseff_trading.md",
-      "card_sha256": "12b1436ce9af403c4e9cdf62dbff33b4f9c7ad6571ac4edc88b91ebfd15ae938",
+      "card_sha256": "16481650c5e3a0489226ce48a88ac66ac0d604bbb2d476baf3592e651cbd650b",
       "readiness": {
         "status": "incomplete",
         "reason": "Core computation needs the listed definitions.",
@@ -64877,7 +64877,7 @@
       ],
       "purpose": "Modified Mannarino Market Risk Indicator displays a dollar-strength/interest-rate risk heuristic and a debt-to-GDP-adjusted variant. It aims to provide broad market-risk context, with customizable source symbols and scale factors. The score is a formula-based research proxy rather than a calibrated probability of loss or a complete trading strategy, as the source itself emphasizes.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md",
-      "card_sha256": "f59d796bef5c20ca626e550e7a8f079c9004b670ba5e31623d49913f548cfff0",
+      "card_sha256": "3ac96a72736e4275bb8921d7f6f33058110aae422a2cec149b54e40355c95403",
       "readiness": {
         "status": "usable-specification",
         "reason": "MMRI/MMMRI arithmetic is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -65514,7 +65514,7 @@
       ],
       "purpose": "Realtime 5D Profile accumulates live chart updates into price-level distributions of volume or update counts. It encodes level activity, directional imbalance and age, offering an evolving view of where observed participation occurred. Unlike a historical profile, it starts when loaded and loses its accumulated state when refreshed or re-executed. The source carefully distinguishes chart updates from exchange transactions, so its tick label must not be interpreted as a complete trade tape on aggregated charts.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_tng177sv_realtime_5d_profile_lucf.md",
-      "card_sha256": "f6fe30aaf572e0fedf57c49827b860bb65150f880122b8079e401ea5b2351d5c",
+      "card_sha256": "62c36d4250c00d16f88cdaabe9051112e1f662dc98a25b714f08713a5133d4b2",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for up/down update-count totals/delta on supplied ordered updates with explicit first-update convention and timeframe reset. Volume extraction, level rebinning, age rendering and trend-reset parity remain incomplete.",
@@ -65615,7 +65615,7 @@
       ],
       "purpose": "Diagnose differences between historical intraday and end-of-day volume reporting. Volume X-ray helps identify instruments whose feeds deserve investigation; the author explicitly leaves the reporting cause and interpretation to the user.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_tpseizhp_volume_x_ray_lucf.md",
-      "card_sha256": "6c3d0b30a809d3315d36d13269cea0121982589830cab9ca44c0450da9deb1c1",
+      "card_sha256": "15e61b60c51e8891d5aefb5f2ef19cdf1189be8c579ae9470c6f2b545dc3dd36",
       "readiness": {
         "status": "usable-specification",
         "reason": "The historical feed-volume ratio is defined by the disclosed aggregation and division; no trading rule is required for this diagnostic.",
@@ -65701,7 +65701,7 @@
       ],
       "purpose": "Volatility Stop MTF displays an ATR-based trend/stop reference from a selected higher timeframe and optionally detects chart-timeframe breaches before the higher trend changes. Early Breach distinguishes an exit warning from a trend reversal by marking a limbo state. This faster reaction can reduce waiting but can also leave the user out of much of a continuing trend, as the author explicitly explains.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_tt0t369u_volatility_stop_mtf.md",
-      "card_sha256": "00d10614e26632e5e9b9a570c704b33b58ac063ab5bef60b4de23d55367ac20e",
+      "card_sha256": "61cb974905064801263c9bfb747cc5984eeffba6c656fa23f21d6ee60fe735f5",
       "readiness": {
         "status": "incomplete",
         "reason": "Underlying ATR-stop recursion, length/multiplier defaults, comparison price and HTF confirmation rules are not reproduced.",
@@ -66021,7 +66021,7 @@
       ],
       "purpose": "Trend Target Ribbon combines ALMA trend confirmation with a chart-based position plan. A directional flip creates an entry reference, structural risk distance and staged reward levels, while a gradient ribbon conveys the strength of the existing trend.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_tnq7fvvw_trend_target_ribbon_boswaves.md",
-      "card_sha256": "b43314885b4e9bc280ed9da5166ed26b499f031f068da518bf2d6d3a43f2d849",
+      "card_sha256": "641a36a0c5f22579dae191d2c82326c03030be617c725c15ccf0043de2a894c7",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for configured trend-state flips and ATR-clamped structural risk with caller calculation settings/initial state; ribbon conviction, target spacing and intrabar event ordering remain outside scope.",
@@ -66265,7 +66265,7 @@
       ],
       "purpose": "real_time_candles builds candle objects from live samples of prices or other financial series. It supports chart-synchronized candles and independently sampled time/count candles, exposing both their OHLC state and drawing helpers. Its financial uses include watching an oscillator change within a bar or examining short-lived price structures. This is not merely a graphics utility: its central output is sampled financial-series candles, although the claimed trading edge is not validated by the description.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ttq7bdk2_real_time_candles.md",
-      "card_sha256": "e5c95437908341ec62f0e141e0c06f7d803fd35bdaf69353a3bc99d5dbaa4abd",
+      "card_sha256": "be5d53cf94a464cb02cb058d7e775364baca896ab457d8e017f563d0828d72b8",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for synchronized ordinary sampled-source OHLC under the documented current/history state and carried-close reset. Custom-time units/overshoot, Heikin-Ashi and EMA implementations remain outside scope.",
@@ -66562,7 +66562,7 @@
       ],
       "purpose": "Show localized directional pressure between price and an adaptive reference line, then mark fresh agreement of profile, price position and anchor slope.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_u1l7ixmp_rolling_candle_profile_with_buy_sell_signals_zeiierman.md",
-      "card_sha256": "cfc3c4111ab02a2620ccfe138ed0354f811e3c89a6b911d1528f08cf8cdcc69a",
+      "card_sha256": "277bdb96e03fe12360ca870afa322d97eb3dba3c7cde10d64be9c676ba6aba1b",
       "readiness": {
         "status": "incomplete",
         "reason": "The normalized ratio and defaults are supplied, but its buying/selling inputs and signal-state gates are not reproducible.",
@@ -66767,7 +66767,7 @@
       ],
       "purpose": "Volume by Time compares each bar with historical volume observed at the same time of day. It aims to distinguish an unusually active interval from a routine seasonal volume peak, instead of comparing all intraday bars indiscriminately. The historical benchmark can use a mean or median and either the whole available chart history or a selected number of days. The plotted relationship is contextual participation analysis and does not itself assign a trade direction.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ulzjcb7h_volume_by_time_luxalgo.md",
-      "card_sha256": "af9c6a4ad26a296f4e60e09be1d6c3d7b5bdb44694eeaf273b1822e22ae32bfa",
+      "card_sha256": "f620ee92f8c47932e1011f7cab381894fbeb13ab51c2d22c623c35481e68cc97",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source defines a parameterized aggregation without requiring trade rules.",
@@ -67023,7 +67023,7 @@
       ],
       "purpose": "Describe when daily highs and lows have historically occurred to help readers understand intraday timing tendencies for a market.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ucux0rjl_tops_bottoms_time_of_day_report.md",
-      "card_sha256": "890aeeeee3c340a00e3cea4fb34186863f385bd5cbd043e5cf040a7e2919f1a3",
+      "card_sha256": "783a89f7001aa9a09215e5092b31aa5342fd52e4ada722b8c746856730e80517",
       "readiness": {
         "status": "incomplete",
         "reason": "A core specification remains unresolved: Day boundary, ties between equal extremes, sample denominators and treatment of partial sessions are not specified.",
@@ -67097,7 +67097,7 @@
       ],
       "purpose": "Central Bank Liquidity Gap compares growth in a global liquidity aggregate with growth in the S&P 500. The author interprets positive divergence as potential long-term accumulation context, particularly when liquidity growth materially exceeds market growth. It is expressly aimed at daily/weekly investment analysis rather than precise bottoms or day trading. Claims that liquidity must eventually flow into stocks or that historical buy zones are effective are hypotheses, not validated findings in this source.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_udti2iuw_central_bank_liquidity_gap_indicator.md",
-      "card_sha256": "147a0c23cfb942020a0047bfb0e72bfeab2ce470d86a952aa25ed6f2d4344f40",
+      "card_sha256": "ea20e095d6162e499a4574e360e817a63e2f7f1657b746b763ec457a2b074886",
       "readiness": {
         "status": "incomplete",
         "reason": "The listed core definitions remain missing.",
@@ -67593,7 +67593,7 @@
       ],
       "purpose": "Fit a local parabola to price and optionally extend it to explore curved trends that a straight regression cannot represent.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_uudeajsi_quadratic_regression.md",
-      "card_sha256": "dd0fc9c44cf21370e42a0ad4583ea38b3588bd40b5bc82ed6e63a40e3a8894b9",
+      "card_sha256": "8b768331aff7dd860f73fb5eafd0a750ec7efc46722111ca91a42d7c295a2696",
       "readiness": {
         "status": "usable-specification",
         "reason": "Least-squares fitting of a quadratic to the last caller-selected length of observations defines a reproducible computation; missing coefficient code and display edge behavior are nonblocking.",
@@ -68012,7 +68012,7 @@
       ],
       "purpose": "Market Structure Dashboard integrates trend, confirmed pivots, price zones, participation and session context across multiple timeframes. It exposes individual components and a weighted directional summary to distinguish agreement from conflict. Many components have substantive rules, but the combined publication remains incomplete because fair-value-gap indexing contradicts its introductory definition and higher-timeframe confirmation is unstated. Institutional-order language interprets price patterns rather than observing account activity.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_vxui7vrm_market_structure_dashboard_flux_charts.md",
-      "card_sha256": "59d7fb8bb5ccdf6aaf854b6672c2be195ffd7e6b178ba391259427592305b951",
+      "card_sha256": "de535a5ac4ece96c0d5eca78d318781c9c33e494cc4225039c61b35a3ef92833",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for current-timeframe EMA trend and relative-volume tiers, with confirmed symmetric pivot procedure also explicit. FVG contradictions, HTF confirmation, session DST and composite parity remain caveats.",
@@ -68883,7 +68883,7 @@
       ],
       "purpose": "SuperTrend AI evaluates several SuperTrend factor settings with a smoothed directional-performance proxy, clusters their scores and uses the average factor from a selected performance group. It adapts a trailing reference according to recent fit rather than training a supervised forecast. The displayed score is not a win probability, and the author says it cannot predict every signal reliably.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_wp7wwjll_supertrend_ai_clustering_luxalgo.md",
-      "card_sha256": "c4b18848bf1bad3b6f845ab1f8df6f53114402b48fab555822053985d47b85f8",
+      "card_sha256": "bd1bf3303e3c6f186b9fb3df92052619291f3ebc4a6f696de4cd3ab18df12355",
       "readiness": {
         "status": "incomplete",
         "reason": "SuperTrend recursion, memory-to-alpha mapping, empty-cluster handling, stop-average adaptation and signal-label scaling are missing.",
@@ -69106,7 +69106,7 @@
       ],
       "purpose": "Seasonality TFO estimates typical daily, monthly and quarterly performance by trading-day position within the year. It deliberately uses a fixed trading-day calendar rather than actual calendar month boundaries. This makes it an approximate seasonal alignment model particularly intended for US stocks and indices. Its seasonal pivots and histograms describe historical tendencies, not known future high/low dates or a complete trading strategy.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_wixmhdwt_seasonality_tfo.md",
-      "card_sha256": "2c7b5f034dd0da80bfa27ecd11f7c54a6ae801ccf269e21fd691e6f1f6d940c8",
+      "card_sha256": "d2dc805007e8a4895a4829e4b641a91221cb160de6bf23ebfa6c0b7cfb50da21",
       "readiness": {
         "status": "incomplete",
         "reason": "The listed calculation or data contract is unresolved.",
@@ -69341,7 +69341,7 @@
       ],
       "purpose": "Higher Order Pivots recursively identifies turning points among already confirmed turning points. It is intended for retrospective market-structure analysis, where broader inflections can be distinguished from local candle noise. The author strongly warns that higher levels require variable and potentially substantial future confirmation, so their historical positions must not be mistaken for live entry availability.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_x2llrvbe_higher_order_pivots.md",
-      "card_sha256": "816b622634884aa0b2c2341888838184c1a6779d4790ad06966f91f825073a7d",
+      "card_sha256": "eb2e6128301bd7cb1f2ce1066a56adf6603bafca9da30dab1ddcaa964b924f85",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source defines local pivot geometry and recursive higher-order construction with explicit availability caveats.",
@@ -69627,7 +69627,7 @@
       ],
       "purpose": "BjCandlePatterns supplies reusable Japanese-candlestick predicates, helper measurements and optional labels for financial scripts. It spans single-bar shapes, engulfing and harami formations, gaps, stars, multi-bar continuation structures and soldiers/crows. The author intentionally omits trend and average-size filters in some patterns so callers can apply their own context. Consequently, a true predicate indicates a geometric candidate, not a complete setup or demonstrated reversal probability.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_x8mujqgt_bjcandlepatterns.md",
-      "card_sha256": "f935c2f9a8e7d017d51d6afdc61282d93cdaa08eb5d3ef5e41a96e958f12595e",
+      "card_sha256": "eadbd7b022be1e29bc7b9c78fc4b8cea28879cc0b405d4d533de8fec5671450e",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for explicit wick/body/range/percentage/midpoint and strict real-body gap helpers. Full pattern catalog and contradictory lowestBody/gapUp semantics remain outside scope.",
@@ -69883,7 +69883,7 @@
       ],
       "purpose": "Auto Trendline connects recently detected fractals to make trendline placement systematic. Its aim is to reduce discretionary drawing bias by using a consistent pivot-selection process. Crossing markers can highlight price interaction with the resulting lines, but the author explicitly treats the lines as references rather than evidence that slope predicts future direction. The publication describes the broad fractal confirmation concept while leaving the exact line and crossing predicates incomplete.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals.md",
-      "card_sha256": "c85fe01ee9204824d746cafa59fce1d38860a5fd8a0781708513355f6dfe2d16",
+      "card_sha256": "f68985e9fa802e58559ff111b34681ed050fbfaf1b9dee772fe9229861ef676a",
       "readiness": {
         "status": "incomplete",
         "reason": "The listed core definitions remain unresolved.",
@@ -70074,7 +70074,7 @@
       ],
       "purpose": "TTrades Daily Bias assigns a next-period target toward a previous high or low from the latest completed period’s relationship to its own prior range. It then measures how often those target levels are reached and closed through. Daily and weekly modes share the same scenario logic, making the tool a directional-target heuristic plus historical reporting rather than a complete entry/stop strategy.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_xdwgv3fx_ttrades_daily_bias_tfo.md",
-      "card_sha256": "59d5fff4fb95190c60ef54aa1f61131d0761c470b24f6a77ed19d2f3e9ed94fb",
+      "card_sha256": "b7c48c8cc72c49d997519aa2bfcd8e1cb7cc98d1ccd778bdd5351f791bf7c075",
       "readiness": {
         "status": "usable-specification",
         "reason": "The source supplies explicit prior-period high/low scenario rules and target-hit accounting; residual edge cases are nonblocking.",
@@ -70165,7 +70165,7 @@
       ],
       "purpose": "This profile estimates per-level volume delta and, for supported Binance perpetuals, open-interest delta. It distributes minute-bar activity across crossed price levels and optionally imposes a two-sided split when only one component appears. The goal is footprint-like visualization under limited data, with assumptions made explicit rather than a claim of true trade-by-trade aggressor volume.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_xp9odtfm_volume_profile_volume_delta_oi_delta_kioseff_trading.md",
-      "card_sha256": "301937cde56e74220954fa756a3ac573ee6f6405a31314b0b7b5667ff38dbc87",
+      "card_sha256": "bdf4078ce4fa4069fdcefb6c9747e426f94fbf87002005c61aa7d3b28466a59a",
       "readiness": {
         "status": "usable-specification",
         "reason": "Unsigned equal-allocation minute-volume profile is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -70322,7 +70322,7 @@
       ],
       "purpose": "Market Sessions and TPO combines session boundaries, time-price-opportunity profiles and an unspecified remainder-of-session forecast. It adds participation and range statistics so the user can inspect session structure in one view. Profiles and naked PoC references provide descriptive context; the forecast’s method is not given and must not be inferred from the presence of ATR augmentation.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_y6jyas39_market_sessions_and_tpo_forecast.md",
-      "card_sha256": "145d54d5a98b75d605a2e8b412cbb5a00267b77b0698239b3f139fc918663cc7",
+      "card_sha256": "a8b4b6255acf7710257d717649fa0f0f6cc8e1dc1d930e6e9774fd05cb8d6957",
       "readiness": {
         "status": "usable-specification",
         "reason": "Supplied-session total volume and range is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -70483,7 +70483,7 @@
       ],
       "purpose": "Markov Chain [3D] summarizes recent transitions among detected bullish, bearish and neutral regimes. Its animated state diagram is paired with a numeric bias output intended for connecting regime filters to separately specified systematic trading rules.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ya0kopdo_markov_chain_3d_fractalyst.md",
-      "card_sha256": "27cf3148d9bc2d2db75fb788ea27b964d3c634b6dab6fc586e312dba323d6704",
+      "card_sha256": "940286e8513547fc90e627975c7d348bab9eba213e771944f4303bdc3955e009",
       "readiness": {
         "status": "incomplete",
         "reason": "The detected-state-to-bias mapping is explicit, but the core regime boundaries, normalization/smoothing and transition pseudocount remain undisclosed.",
@@ -70672,7 +70672,7 @@
       ],
       "purpose": "Explore an intentionally overreactive fractional-length recursive transform as a visual carrier of rapid changes in RSI or price.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_yhpgau7a_carrier_volatility_pumori.md",
-      "card_sha256": "703916946ec3f5f1a9c08796e2861ac32f49ace0893a53511f9e2e35adf6a23d",
+      "card_sha256": "59a4d71e4ebaa5ca1aef91a13eb86e28da6a79d2ddb9ccfb6de71489964b1c7d",
       "readiness": {
         "status": "incomplete",
         "reason": "The named fractional EMA transform lacks the recurrence and stability controls needed for reproducible safe numerical behavior.",
@@ -70810,7 +70810,7 @@
       ],
       "purpose": "Monitor relative performance across a caller-selected asset group using price, open interest or on-balance volume. The spaghetti display emphasizes leaders, laggards and changes around an anchor, with auxiliary relationship statistics for rotation or pair-research ideas.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan.md",
-      "card_sha256": "2351b11c5b3551a389964b4ec026512e2949ec220449c71df7b300c2a2da9dd7",
+      "card_sha256": "ef3ce5a6f7e44e5961100c5d1adcf383b40236ccd5d175f7a138727fb8445a79",
       "readiness": {
         "status": "usable-specification",
         "reason": "Anchored Price return/group mean is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -70989,7 +70989,7 @@
       ],
       "purpose": "Build a live candle chart organized by count of price updates rather than fixed elapsed time.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ygno2g1v_tick_chart.md",
-      "card_sha256": "78290fd1e62bb7f31f8c8cd6a4b4bc04750ae845a3e7e1bef4e6178f408727ae",
+      "card_sha256": "f2574c802688cd37475890955152e425e5ff347ceb4ed3b4c0a94e8a1d74a39a",
       "readiness": {
         "status": "usable-specification",
         "reason": "Grouping an ordered live price-update stream into consecutive blocks of the selected tick count defines the principal tick-candle construction. This usable scope excludes exact volume reporting, persistence and platform-feed parity.",
@@ -71507,7 +71507,7 @@
       ],
       "purpose": "Minervini Qualifier colors a moving-average envelope according to a stock trend-template qualification and exposes individual condition states. It aims to make progress toward the referenced stock-selection conditions visible over time. A separate relative-strength display compares the stock with a chosen index. The author explicitly says that relative strength may differ from the book method, so the indicator should not be represented as an exact implementation of the published template.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zdqq3mfb_minervini_qualifier.md",
-      "card_sha256": "19dfc17744598b151144b6905efdd2c7475115a34b12592f7038f88424845e2e",
+      "card_sha256": "baa9efa8a20b57f336f2b03c0f3be8a7e93f3d8e7b662a54eb265fdef0880e9c",
       "readiness": {
         "status": "usable-specification",
         "reason": "Usable for daily close versus SMA20 direction only. Full qualification/fill, envelope geometry, SMA200 duration and reference-index strength remain outside scope.",
@@ -71615,7 +71615,7 @@
       ],
       "purpose": "Map estimated cumulative directional participation into session price profiles and contrast it with activity, notional and imbalance views.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zhfjqywg_cvd_profiles_tradingiq.md",
-      "card_sha256": "fa3a5f645638229a972e140e794c1b1a0089ca487fede0082c5f9cce36cbcb79",
+      "card_sha256": "711812d9f64594a37ef7a52d5c84bb4fb70dc7607e2c8a08733717c39746f9a9",
       "readiness": {
         "status": "incomplete",
         "reason": "The model list describes intended outputs but does not specify core directional allocation or session/value-area contracts.",
@@ -72073,7 +72073,7 @@
       ],
       "purpose": "Translate lower-timeframe directional-volume estimates into price-chart channels and configurable condition markers. The design emphasizes visual pressure and consolidation context rather than raw flow values or verified exchange aggressor volume.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zkbuifk7_delta_volume_channels_lucf.md",
-      "card_sha256": "74a30009477323b9c365156438c2c4c76916645c5947ed88fc18f43d68151804",
+      "card_sha256": "ba4c11d1975febb1fa672974051fb5b5d08c8d2eff29965ac2fcfd8b5023d830",
       "readiness": {
         "status": "usable-specification",
         "reason": "Intrabar DV/DVpercent is independently defined by the disclosed procedure; other missing outputs do not qualify.",
@@ -72243,7 +72243,7 @@
       ],
       "purpose": "Volume Delta Compare contrasts live-update and lower-timeframe estimates of directional volume. Its purpose is to show why the same chart candle can yield different delta values depending on observation granularity. It preserves a neutral category instead of forcing unchanged-price volume into a directional side. The outputs describe price-direction-classified volume rather than verified exchange aggressor flow, and the live path loses accumulated information when re-executed.",
       "card_path": "backtester/strategy_cards/incomplete/publication-profiles/tv_zn9dhlps_volume_delta_compare_ticks_ltf_data.md",
-      "card_sha256": "e27c08921b4e03deb5d2ed1563d35fe7ff8ef9c7583895c64a907ec254517547",
+      "card_sha256": "6702d9e216843af7824e7ce1799aae73d740a5d06fec6dd1297cf861c2e2e998",
       "readiness": {
         "status": "usable-specification",
         "reason": "The directional allocation and delta computation are explicitly defined.",

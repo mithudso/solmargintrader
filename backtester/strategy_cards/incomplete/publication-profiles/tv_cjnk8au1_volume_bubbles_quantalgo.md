@@ -113,7 +113,7 @@ taLib.requestVolumeDelta(lowerTimeframe)
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_cjnk8au1_volume_bubbles_quantalgo](../tv_cjnk8au1_volume_bubbles_quantalgo.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

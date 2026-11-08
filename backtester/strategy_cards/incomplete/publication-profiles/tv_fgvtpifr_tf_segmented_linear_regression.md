@@ -119,7 +119,7 @@ Src : Input data for the indicator
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_fgvtpifr_tf_segmented_linear_regression](../../tv_fgvtpifr_tf_segmented_linear_regression.md)
+- [tv_fgvtpifr_tf_segmented_linear_regression](../../../strategy_research/tv_fgvtpifr_tf_segmented_linear_regression.md)
 
 ## Source
 

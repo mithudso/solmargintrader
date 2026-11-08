@@ -102,7 +102,7 @@ generally inadvisable to use higher order pivots for live trading!
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_market_structure](../tv_method_market_structure.md)
-- [tv_x2llrvbe_higher_order_pivots](../../tv_x2llrvbe_higher_order_pivots.md)
+- [tv_x2llrvbe_higher_order_pivots](../../../strategy_research/tv_x2llrvbe_higher_order_pivots.md)
 
 ## Source
 

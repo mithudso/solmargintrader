@@ -127,7 +127,7 @@ Fib Extensions[/i]: 1.0, 1.272, 1.618 active
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_ft4zyo1f_swing_structure_forecast_boswaves](../tv_ft4zyo1f_swing_structure_forecast_boswaves.md)
-- [tv_method_fib_extensions](../../tv_method_fib_extensions.md)
+- [tv_method_fib_extensions](../../../strategy_research/tv_method_fib_extensions.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 

@@ -125,7 +125,7 @@ number of contained candles should be more than 1
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_lper4qca_volume_analysis_heatmap_and_volume_profile](../tv_lper4qca_volume_analysis_heatmap_and_volume_profile.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

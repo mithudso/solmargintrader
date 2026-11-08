@@ -128,7 +128,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_6tsfpe3w_reflex_trendflex](../tv_6tsfpe3w_reflex_trendflex.md)
 - [tv_method_fourier_cycle](../tv_method_fourier_cycle.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 
 ## Source
 

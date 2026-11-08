@@ -115,7 +115,7 @@ This script tracks volume swings over an intraday chart and stores the final low
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_dfy6orqi_intraday_volume_swings](../../tv_dfy6orqi_intraday_volume_swings.md)
+- [tv_dfy6orqi_intraday_volume_swings](../../../strategy_research/tv_dfy6orqi_intraday_volume_swings.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 
 ## Source

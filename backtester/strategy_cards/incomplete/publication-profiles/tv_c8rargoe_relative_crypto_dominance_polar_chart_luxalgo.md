@@ -111,7 +111,7 @@ timeframes up to 2m:  Hourly
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_c8rargoe_relative_crypto_dominance_polar_chart_luxalgo](../tv_c8rargoe_relative_crypto_dominance_polar_chart_luxalgo.md)
-- [tv_method_dominance_rotation](../../tv_method_dominance_rotation.md)
+- [tv_method_dominance_rotation](../../../strategy_research/tv_method_dominance_rotation.md)
 
 ## Source
 

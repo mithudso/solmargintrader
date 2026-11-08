@@ -3,12 +3,16 @@
 from __future__ import annotations
 
 import copy
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
 from scripts.render_tradingview_script_cards import (
     INCOMPLETE_DIR,
     REVIEW_FIELDS,
     card_path,
+    catalog_link,
     check_readiness,
     check_review,
     identity,
@@ -18,6 +22,20 @@ from scripts.render_tradingview_script_cards import (
 
 
 class SourceReviewTests(unittest.TestCase):
+    def test_catalog_link_follows_relocated_cards_and_rejects_duplicates(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = root / "backtester/strategy_research/example.md"
+            target.parent.mkdir(parents=True)
+            target.write_text("example")
+            with patch("scripts.render_tradingview_script_cards.ROOT", root):
+                self.assertIn("strategy_research/example.md", catalog_link("example", Path("research")))
+                duplicate = root / "backtester/guides/example.md"
+                duplicate.parent.mkdir(parents=True)
+                duplicate.write_text("example")
+                with self.assertRaises(ValueError):
+                    catalog_link("example", Path("research"))
+
     def setUp(self) -> None:
         self.profile = {
             "publication_id": "demo",

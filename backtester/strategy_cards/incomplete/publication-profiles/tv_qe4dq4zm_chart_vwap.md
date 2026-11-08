@@ -119,7 +119,7 @@ You may also use the script's settings to enable the display of the chart's OHLC
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_qe4dq4zm_chart_vwap](../../tv_qe4dq4zm_chart_vwap.md)
+- [tv_qe4dq4zm_chart_vwap](../../../strategy_research/tv_qe4dq4zm_chart_vwap.md)
 
 ## Source
 

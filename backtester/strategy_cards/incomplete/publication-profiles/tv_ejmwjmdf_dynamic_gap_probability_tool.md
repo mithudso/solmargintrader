@@ -114,7 +114,7 @@ Historical probabilities do not guarantee future performance.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_ejmwjmdf_dynamic_gap_probability_tool](../../tv_ejmwjmdf_dynamic_gap_probability_tool.md)
+- [tv_ejmwjmdf_dynamic_gap_probability_tool](../../../strategy_research/tv_ejmwjmdf_dynamic_gap_probability_tool.md)
 
 ## Source
 

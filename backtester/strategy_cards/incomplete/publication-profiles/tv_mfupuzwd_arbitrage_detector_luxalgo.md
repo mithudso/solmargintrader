@@ -108,7 +108,7 @@ data percent rank as the efficiency ratio.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_mfupuzwd_arbitrage_detector_luxalgo](../tv_mfupuzwd_arbitrage_detector_luxalgo.md)
 
 ## Source

@@ -104,7 +104,7 @@ providing visual signals and alerts for when they occur.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_capg3ivf_bjorgum_key_levels](../tv_capg3ivf_bjorgum_key_levels.md)
-- [tv_method_liquidity_sweep](../../tv_method_liquidity_sweep.md)
+- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
 
 ## Source
 

@@ -163,7 +163,7 @@ osc    = retZ * weight[/pine]
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_fair_value_gap](../../tv_method_fair_value_gap.md)
+- [tv_method_fair_value_gap](../../../strategy_research/tv_method_fair_value_gap.md)
 - [tv_q1hxs0v6_liquidity_void_detector_zeiierman](../tv_q1hxs0v6_liquidity_void_detector_zeiierman.md)
 
 ## Source

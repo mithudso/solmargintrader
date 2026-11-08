@@ -692,7 +692,7 @@ time someone proposes routing through an intermediate asset to capture a better 
 
 **When *not* to use it.** As evidence about triangular arbitrage. All series here are
 USD-quoted, so cross rates are consistent by construction and no parity deviation can
-exist to trade — see `backtester/strategy_cards/triangular_arbitrage.md`, which explains
+exist to trade — see `backtester/guides/triangular_arbitrage.md`, which explains
 at length why measuring it on this data would manufacture a spurious equity curve.
 
 **The result worth knowing even if you never run it.** Cross rates derived from a common

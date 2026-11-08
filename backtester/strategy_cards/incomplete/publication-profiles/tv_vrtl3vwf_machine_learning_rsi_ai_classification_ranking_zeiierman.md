@@ -158,7 +158,7 @@ The earlier catalog associated this publication with the entries below. These li
 - [tv_method_knn_prediction](../tv_method_knn_prediction.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_method_neural_prediction](../tv_method_neural_prediction.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 - [tv_vrtl3vwf_machine_learning_rsi_ai_classification_ranking_zeiierman](../tv_vrtl3vwf_machine_learning_rsi_ai_classification_ranking_zeiierman.md)
 
 ## Source

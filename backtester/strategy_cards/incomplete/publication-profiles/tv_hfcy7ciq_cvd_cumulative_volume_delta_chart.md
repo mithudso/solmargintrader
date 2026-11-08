@@ -134,7 +134,7 @@ This indicator displays cumulative ​volume delta (​CVD) as an on-chart oscil
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_hfcy7ciq_cvd_cumulative_volume_delta_chart](../tv_hfcy7ciq_cvd_cumulative_volume_delta_chart.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

@@ -117,7 +117,7 @@ MMMRI = (Debt / GDP) * (USD Strength * USD Interest Rate) / 1.61
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri](../../tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md)
+- [tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri](../../../strategy_research/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md)
 
 ## Source
 

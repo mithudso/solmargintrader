@@ -115,7 +115,7 @@ two RSI’s (9 and a 7 periods)
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_ertrxbpf_musashi_fractal_dimension](../tv_ertrxbpf_musashi_fractal_dimension.md)
-- [tv_method_rsi_divergence](../../tv_method_rsi_divergence.md)
+- [tv_method_rsi_divergence](../../../strategy_research/tv_method_rsi_divergence.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 
 ## Source

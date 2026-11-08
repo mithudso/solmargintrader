@@ -107,7 +107,7 @@ This will happen when applying the indicator to symbols with session breaks
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_polynomial_regression](../tv_method_polynomial_regression.md)
-- [tv_uudeajsi_quadratic_regression](../../tv_uudeajsi_quadratic_regression.md)
+- [tv_uudeajsi_quadratic_regression](../../../strategy_research/tv_uudeajsi_quadratic_regression.md)
 
 ## Source
 

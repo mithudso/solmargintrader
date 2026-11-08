@@ -101,10 +101,10 @@ Warm colors (e.g. red, orange) suggest strong negative correlation
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_intermarket_correlation](../../tv_method_intermarket_correlation.md)
+- [tv_method_intermarket_correlation](../../../strategy_research/tv_method_intermarket_correlation.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_qnqbqiex_correlation_heatmap_tradingfinder_sessions_data_science_stats](../tv_qnqbqiex_correlation_heatmap_tradingfinder_sessions_data_science_stats.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

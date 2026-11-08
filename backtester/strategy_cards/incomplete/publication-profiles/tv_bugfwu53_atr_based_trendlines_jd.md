@@ -95,7 +95,7 @@ The atr percentage determines if the trendline follows the rate of change of the
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_bugfwu53_atr_based_trendlines_jd](../tv_bugfwu53_atr_based_trendlines_jd.md)
-- [tv_method_atr_trailing](../../tv_method_atr_trailing.md)
+- [tv_method_atr_trailing](../../../strategy_research/tv_method_atr_trailing.md)
 
 ## Source
 

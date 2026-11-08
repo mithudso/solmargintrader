@@ -109,7 +109,7 @@ displays the Fair Value Gap
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_erbzovy8_fair_value_gap](../tv_erbzovy8_fair_value_gap.md)
-- [tv_method_fair_value_gap](../../tv_method_fair_value_gap.md)
+- [tv_method_fair_value_gap](../../../strategy_research/tv_method_fair_value_gap.md)
 
 ## Source
 

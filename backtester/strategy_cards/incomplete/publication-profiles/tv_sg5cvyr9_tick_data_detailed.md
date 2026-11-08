@@ -113,7 +113,7 @@ volume is multiplied by close price
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_sg5cvyr9_tick_data_detailed](../../tv_sg5cvyr9_tick_data_detailed.md)
+- [tv_sg5cvyr9_tick_data_detailed](../../../strategy_research/tv_sg5cvyr9_tick_data_detailed.md)
 
 ## Source
 

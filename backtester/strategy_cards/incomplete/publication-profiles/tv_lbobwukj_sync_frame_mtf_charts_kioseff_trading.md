@@ -103,7 +103,7 @@ The saved script.content field is empty. Description snippets do not establish t
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_heikin_ashi](../../tv_method_heikin_ashi.md)
+- [tv_method_heikin_ashi](../../../strategy_research/tv_method_heikin_ashi.md)
 
 ## Source
 

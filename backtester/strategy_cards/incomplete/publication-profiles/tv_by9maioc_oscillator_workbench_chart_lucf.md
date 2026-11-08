@@ -145,7 +145,7 @@ Breaches of the channel require a bar's [url=https://www.tradingview.com/pine-sc
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_by9maioc_oscillator_workbench_chart_lucf](../tv_by9maioc_oscillator_workbench_chart_lucf.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

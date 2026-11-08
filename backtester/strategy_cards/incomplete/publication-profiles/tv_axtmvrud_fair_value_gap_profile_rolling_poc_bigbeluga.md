@@ -129,8 +129,8 @@ Optionally plots individual bullish and bearish FVG boxes on the chart.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga](../tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md)
-- [tv_method_fair_value_gap](../../tv_method_fair_value_gap.md)
-- [xs_momentum](../../xs_momentum.md)
+- [tv_method_fair_value_gap](../../../strategy_research/tv_method_fair_value_gap.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

@@ -131,10 +131,11 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(len(cards), len(load_all()))
         self.assertEqual({key for key, card in cards.items() if card["registered"]}, set(rows))
         self.assertTrue(cards["rsi"]["testable"])
-        self.assertFalse(cards["tv_builtin_average_price"]["registered"])
-        self.assertFalse(cards["tv_builtin_average_price"]["testable"])
-        self.assertEqual(cards["tv_builtin_average_price"]["status"], "spec-only")
+        self.assertNotIn("tv_builtin_average_price", cards)
+        self.assertNotIn("tv_gbc8qoy8_a_quick_guide_to_multi_timeframe_scaling", cards)
         self.assertNotIn("tv_builtin_supertrend", cards)
+        for key in ("jlp_vs_sol_relative_value", "pairs_cointegration", "ladder_grid", "dca_bot", "triangular_arbitrage"):
+            self.assertNotIn(key, cards)
 
     def test_a_recorded_result_shows_count_date_and_numbers(self) -> None:
         q.append_result(row("a", strategy="rsi", sharpe=0.42), q.RESULTS_PATH)

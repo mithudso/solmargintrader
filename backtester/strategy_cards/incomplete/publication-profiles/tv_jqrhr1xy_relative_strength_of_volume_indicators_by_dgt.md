@@ -135,7 +135,7 @@ Money Flow Index (MFI)
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_jqrhr1xy_relative_strength_of_volume_indicators_by_dgt](../tv_jqrhr1xy_relative_strength_of_volume_indicators_by_dgt.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

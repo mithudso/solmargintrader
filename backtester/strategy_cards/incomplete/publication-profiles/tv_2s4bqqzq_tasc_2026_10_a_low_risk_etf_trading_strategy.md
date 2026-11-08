@@ -194,7 +194,7 @@ apply it to a selected watchlist.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy](../tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

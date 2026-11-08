@@ -117,7 +117,7 @@ Overheating (High Growth, High Inflation)
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_ifjxxalc_the_investment_clock_orbital_graph](../tv_ifjxxalc_the_investment_clock_orbital_graph.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

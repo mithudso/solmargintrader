@@ -352,7 +352,7 @@ A specialized alert triggers when actual portfolio risk utilization exceeds targ
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_hjgcuw6g_dynamic_equity_allocation_model](../tv_hjgcuw6g_dynamic_equity_allocation_model.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 - [tv_method_value_investing](../tv_method_value_investing.md)
 - [tv_method_vix_timing](../tv_method_vix_timing.md)

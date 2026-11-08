@@ -102,8 +102,8 @@ trailing stop-loss will continue to be plotted until it has been hit regardless 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_guxndiot_interactive_atr_stop_loss_tanhef](../tv_guxndiot_interactive_atr_stop_loss_tanhef.md)
-- [tv_method_atr_trailing](../../tv_method_atr_trailing.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_atr_trailing](../../../strategy_research/tv_method_atr_trailing.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 
 ## Source
 

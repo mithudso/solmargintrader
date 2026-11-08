@@ -141,7 +141,7 @@ render() deletes non Pine3D drawings too.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_inside_bar](../../tv_method_inside_bar.md)
+- [tv_method_inside_bar](../../../strategy_research/tv_method_inside_bar.md)
 
 ## Source
 

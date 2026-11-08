@@ -157,8 +157,8 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_5fqgmcio_adaptive_candlestick_pattern_recognition_system](../tv_5fqgmcio_adaptive_candlestick_pattern_recognition_system.md)
 - [tv_method_candlestick_patterns](../tv_method_candlestick_patterns.md)
-- [tv_method_doji](../../tv_method_doji.md)
-- [tv_method_engulfing](../../tv_method_engulfing.md)
+- [tv_method_doji](../../../strategy_research/tv_method_doji.md)
+- [tv_method_engulfing](../../../strategy_research/tv_method_engulfing.md)
 - [tv_method_hammer](../tv_method_hammer.md)
 - [tv_method_morning_evening_star](../tv_method_morning_evening_star.md)
 - [tv_method_shooting_star](../tv_method_shooting_star.md)

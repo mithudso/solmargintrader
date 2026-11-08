@@ -107,7 +107,7 @@ initially be colored green when a Swing Low is followed by a Swing High, and red
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 - [tv_oyazawb9_d_shape_breakout_signals_luxalgo](../tv_oyazawb9_d_shape_breakout_signals_luxalgo.md)
 
 ## Source

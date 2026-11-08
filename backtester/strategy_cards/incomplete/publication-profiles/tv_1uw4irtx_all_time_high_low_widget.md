@@ -100,7 +100,7 @@ Also, you can create alerts to get notified on ATH/ATL breakout.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_1uw4irtx_all_time_high_low_widget](../../tv_1uw4irtx_all_time_high_low_widget.md)
+- [tv_1uw4irtx_all_time_high_low_widget](../../../strategy_research/tv_1uw4irtx_all_time_high_low_widget.md)
 
 ## Source
 

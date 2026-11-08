@@ -112,7 +112,7 @@ REMEMBER, THIS GIVES SUMMARY DATA.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_4odvb8q4_relative_currency_strength](../tv_4odvb8q4_relative_currency_strength.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

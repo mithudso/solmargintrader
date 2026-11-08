@@ -119,7 +119,7 @@ By adding the scaled ticker data to the main chart's daily open, each of our res
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_ipvs7b7x_multi_ticker_anchored_candles](../../tv_ipvs7b7x_multi_ticker_anchored_candles.md)
+- [tv_ipvs7b7x_multi_ticker_anchored_candles](../../../strategy_research/tv_ipvs7b7x_multi_ticker_anchored_candles.md)
 
 ## Source
 

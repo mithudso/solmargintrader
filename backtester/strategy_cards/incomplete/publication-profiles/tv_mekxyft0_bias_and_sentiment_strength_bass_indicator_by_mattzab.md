@@ -107,7 +107,7 @@ The saved script.content field is empty. Description snippets do not establish t
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab](../../tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab.md)
+- [tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab](../../../strategy_research/tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab.md)
 
 ## Source
 

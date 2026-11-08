@@ -186,8 +186,8 @@ A swing high is confirmed when a candle's high is higher than the specified numb
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_candlestick_patterns](../tv_method_candlestick_patterns.md)
-- [tv_method_fair_value_gap](../../tv_method_fair_value_gap.md)
-- [tv_method_liquidity_sweep](../../tv_method_liquidity_sweep.md)
+- [tv_method_fair_value_gap](../../../strategy_research/tv_method_fair_value_gap.md)
+- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_method_order_blocks](../tv_method_order_blocks.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)

@@ -138,7 +138,7 @@ Historical bars on TradingView charts contain OHLCV data only, which is insuffic
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_f2yleyoo_delta_volume_columns_pro_lucf](../tv_f2yleyoo_delta_volume_columns_pro_lucf.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

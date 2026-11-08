@@ -156,10 +156,10 @@ It calculates the standard deviation of logarithmic daily returns over a specifi
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_covered_call](../../tv_method_covered_call.md)
-- [tv_method_iron_condor](../../tv_method_iron_condor.md)
+- [tv_method_covered_call](../../../strategy_research/tv_method_covered_call.md)
+- [tv_method_iron_condor](../../../strategy_research/tv_method_iron_condor.md)
 - [tv_method_vix_timing](../tv_method_vix_timing.md)
-- [tv_ujgvguvt_volatility_risk_premium](../../tv_ujgvguvt_volatility_risk_premium.md)
+- [tv_ujgvguvt_volatility_risk_premium](../../../strategy_research/tv_ujgvguvt_volatility_risk_premium.md)
 
 ## Source
 

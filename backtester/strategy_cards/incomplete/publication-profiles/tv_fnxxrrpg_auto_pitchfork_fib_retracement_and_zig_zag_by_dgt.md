@@ -111,7 +111,7 @@ ALERTs[/b] for the Pitchfork Levels
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_fnxxrrpg_auto_pitchfork_fib_retracement_and_zig_zag_by_dgt](../tv_fnxxrrpg_auto_pitchfork_fib_retracement_and_zig_zag_by_dgt.md)
-- [tv_method_pitchfork](../../tv_method_pitchfork.md)
+- [tv_method_pitchfork](../../../strategy_research/tv_method_pitchfork.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 
 ## Source

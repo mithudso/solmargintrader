@@ -110,7 +110,7 @@ it will take more bars to confirm the printed fractal.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals](../../tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals.md)
+- [tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals](../../../strategy_research/tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals.md)
 
 ## Source
 

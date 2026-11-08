@@ -128,8 +128,8 @@ sum of all intrabar ​​volume rather than the ​volume of the bar
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_doji](../../tv_method_doji.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_doji](../../../strategy_research/tv_method_doji.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_nlm312nk_cvd_cumulative_volume_delta_candles](../tv_nlm312nk_cvd_cumulative_volume_delta_candles.md)
 
 ## Source

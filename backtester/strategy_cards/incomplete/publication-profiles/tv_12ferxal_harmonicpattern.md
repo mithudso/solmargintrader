@@ -110,8 +110,8 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_method_double_top_bottom](../tv_method_double_top_bottom.md)
 - [tv_method_harmonic_xabcd](../tv_method_harmonic_xabcd.md)
-- [tv_method_head_shoulders](../../tv_method_head_shoulders.md)
-- [tv_method_triple_top_bottom](../../tv_method_triple_top_bottom.md)
+- [tv_method_head_shoulders](../../../strategy_research/tv_method_head_shoulders.md)
+- [tv_method_triple_top_bottom](../../../strategy_research/tv_method_triple_top_bottom.md)
 
 ## Source
 

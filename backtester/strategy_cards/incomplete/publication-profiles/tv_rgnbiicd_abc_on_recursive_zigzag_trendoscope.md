@@ -109,7 +109,7 @@ same direction as the prevailing trend.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_elliott_wave](../tv_method_elliott_wave.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_rgnbiicd_abc_on_recursive_zigzag_trendoscope](../tv_rgnbiicd_abc_on_recursive_zigzag_trendoscope.md)
 
 ## Source

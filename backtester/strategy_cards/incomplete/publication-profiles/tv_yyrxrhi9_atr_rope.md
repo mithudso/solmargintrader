@@ -119,9 +119,9 @@ When the rope's value moves up, it changes to green (uptrend), when down, red (d
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_atr_trailing](../../tv_method_atr_trailing.md)
+- [tv_method_atr_trailing](../../../strategy_research/tv_method_atr_trailing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [tv_yyrxrhi9_atr_rope](../../tv_yyrxrhi9_atr_rope.md)
+- [tv_yyrxrhi9_atr_rope](../../../strategy_research/tv_yyrxrhi9_atr_rope.md)
 
 ## Source
 

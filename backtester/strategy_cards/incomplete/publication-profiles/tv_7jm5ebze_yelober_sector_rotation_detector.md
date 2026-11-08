@@ -148,8 +148,8 @@ Values above 1.5x
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_7jm5ebze_yelober_sector_rotation_detector](../../tv_7jm5ebze_yelober_sector_rotation_detector.md)
-- [xs_momentum](../../xs_momentum.md)
+- [tv_7jm5ebze_yelober_sector_rotation_detector](../../../strategy_research/tv_7jm5ebze_yelober_sector_rotation_detector.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

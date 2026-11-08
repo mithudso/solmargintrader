@@ -102,7 +102,7 @@ String is too long
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_hefekydl_sma_directional_matrix_luxalgo](../../tv_hefekydl_sma_directional_matrix_luxalgo.md)
+- [tv_hefekydl_sma_directional_matrix_luxalgo](../../../strategy_research/tv_hefekydl_sma_directional_matrix_luxalgo.md)
 
 ## Source
 

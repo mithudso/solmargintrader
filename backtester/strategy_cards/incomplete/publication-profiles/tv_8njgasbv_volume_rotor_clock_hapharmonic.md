@@ -126,7 +126,7 @@ Consecutive Days Above MA
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_8njgasbv_volume_rotor_clock_hapharmonic](../tv_8njgasbv_volume_rotor_clock_hapharmonic.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

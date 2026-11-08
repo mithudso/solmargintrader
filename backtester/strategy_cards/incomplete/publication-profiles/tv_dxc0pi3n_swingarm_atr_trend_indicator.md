@@ -101,7 +101,7 @@ Red for bearish (SELL)
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_dxc0pi3n_swingarm_atr_trend_indicator](../tv_dxc0pi3n_swingarm_atr_trend_indicator.md)
-- [tv_method_atr_trailing](../../tv_method_atr_trailing.md)
+- [tv_method_atr_trailing](../../../strategy_research/tv_method_atr_trailing.md)
 
 ## Source
 

@@ -113,7 +113,7 @@ state of [b]limbo
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_atr_trailing](../../tv_method_atr_trailing.md)
+- [tv_method_atr_trailing](../../../strategy_research/tv_method_atr_trailing.md)
 - [tv_tt0t369u_volatility_stop_mtf](../tv_tt0t369u_volatility_stop_mtf.md)
 
 ## Source

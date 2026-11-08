@@ -113,7 +113,7 @@ It is not intended as a predictive or standalone trading signal indicator.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_1nhvl40i_fibonacci_time_price_zones](../tv_1nhvl40i_fibonacci_time_price_zones.md)
-- [tv_method_fib_extensions](../../tv_method_fib_extensions.md)
+- [tv_method_fib_extensions](../../../strategy_research/tv_method_fib_extensions.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 

@@ -116,7 +116,7 @@ gap between price and the stop in ATR units
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 - [tv_zxcxrnij_redk_multi_modal_trailingstop_redk_mmtstop](../tv_zxcxrnij_redk_multi_modal_trailingstop_redk_mmtstop.md)
 
 ## Source

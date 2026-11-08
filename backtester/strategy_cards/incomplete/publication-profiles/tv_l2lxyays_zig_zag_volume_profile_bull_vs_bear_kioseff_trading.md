@@ -101,7 +101,7 @@ Aggregate volume delta for the identified trend is displayed over the profile!
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_l2lxyays_zig_zag_volume_profile_bull_vs_bear_kioseff_trading](../tv_l2lxyays_zig_zag_volume_profile_bull_vs_bear_kioseff_trading.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

@@ -142,7 +142,7 @@ It gives only useful information on daily timeframe
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_zdqq3mfb_minervini_qualifier](../tv_zdqq3mfb_minervini_qualifier.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

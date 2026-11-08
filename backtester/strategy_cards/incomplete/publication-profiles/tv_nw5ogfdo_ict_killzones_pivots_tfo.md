@@ -124,7 +124,7 @@ keep track of the highs and lows made during their respective times
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_nw5ogfdo_ict_killzones_pivots_tfo](../../tv_nw5ogfdo_ict_killzones_pivots_tfo.md)
+- [tv_nw5ogfdo_ict_killzones_pivots_tfo](../../../strategy_research/tv_nw5ogfdo_ict_killzones_pivots_tfo.md)
 
 ## Source
 

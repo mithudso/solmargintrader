@@ -102,7 +102,7 @@ weekly timeframe is also an included option
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_inside_bar](../../tv_method_inside_bar.md)
+- [tv_method_inside_bar](../../../strategy_research/tv_method_inside_bar.md)
 - [tv_xdwgv3fx_ttrades_daily_bias_tfo](../tv_xdwgv3fx_ttrades_daily_bias_tfo.md)
 
 ## Source

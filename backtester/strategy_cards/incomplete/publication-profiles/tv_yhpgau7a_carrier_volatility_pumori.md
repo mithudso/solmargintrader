@@ -105,7 +105,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_method_kalman_filter](../tv_method_kalman_filter.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
-- [tv_yhpgau7a_carrier_volatility_pumori](../../tv_yhpgau7a_carrier_volatility_pumori.md)
+- [tv_yhpgau7a_carrier_volatility_pumori](../../../strategy_research/tv_yhpgau7a_carrier_volatility_pumori.md)
 
 ## Source
 

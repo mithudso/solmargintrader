@@ -108,8 +108,8 @@ highest high (long positions) or lowest low (short positions)
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 - [tv_p5ggwhl5_trailing_management_zeiierman](../tv_p5ggwhl5_trailing_management_zeiierman.md)
 
 ## Source

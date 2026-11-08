@@ -113,7 +113,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_680r1i3z_strength_of_divergence_across_multiple_indicators](../tv_680r1i3z_strength_of_divergence_across_multiple_indicators.md)
 - [tv_method_oscillator_divergence](../tv_method_oscillator_divergence.md)
-- [tv_method_rsi_divergence](../../tv_method_rsi_divergence.md)
+- [tv_method_rsi_divergence](../../../strategy_research/tv_method_rsi_divergence.md)
 
 ## Source
 

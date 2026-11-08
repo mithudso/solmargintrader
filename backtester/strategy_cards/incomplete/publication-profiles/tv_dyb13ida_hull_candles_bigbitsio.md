@@ -100,8 +100,8 @@ The current price is plotted with the default blue line with an SMA calculation 
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_dyb13ida_hull_candles_bigbitsio](../../tv_dyb13ida_hull_candles_bigbitsio.md)
-- [tv_method_heikin_ashi](../../tv_method_heikin_ashi.md)
+- [tv_dyb13ida_hull_candles_bigbitsio](../../../strategy_research/tv_dyb13ida_hull_candles_bigbitsio.md)
+- [tv_method_heikin_ashi](../../../strategy_research/tv_method_heikin_ashi.md)
 
 ## Source
 

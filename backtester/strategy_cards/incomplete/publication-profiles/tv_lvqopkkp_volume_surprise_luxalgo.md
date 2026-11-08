@@ -108,7 +108,7 @@ enabling a lot of periods will, on the other hand, lead to a lot of groups
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_lvqopkkp_volume_surprise_luxalgo](../../tv_lvqopkkp_volume_surprise_luxalgo.md)
+- [tv_lvqopkkp_volume_surprise_luxalgo](../../../strategy_research/tv_lvqopkkp_volume_surprise_luxalgo.md)
 - [tv_method_seasonality](../tv_method_seasonality.md)
 
 ## Source

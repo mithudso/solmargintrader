@@ -123,7 +123,7 @@ appended to its relevant tick level and added (buy order) or subtracted (sell or
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_jncgedj7_order_chain_kioseff_trading](../tv_jncgedj7_order_chain_kioseff_trading.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

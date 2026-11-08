@@ -133,10 +133,10 @@ Bounds: ±10-20 points
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_8jahmkxs_bear_market_probability_model](../tv_8jahmkxs_bear_market_probability_model.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_seasonality](../tv_method_seasonality.md)
 - [tv_method_vix_timing](../tv_method_vix_timing.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

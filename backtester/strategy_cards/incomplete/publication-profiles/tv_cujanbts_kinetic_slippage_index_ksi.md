@@ -115,8 +115,8 @@ Spike Signal Level (Default: 50000)
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_cujanbts_kinetic_slippage_index_ksi](../tv_cujanbts_kinetic_slippage_index_ksi.md)
-- [tv_method_liquidity_sweep](../../tv_method_liquidity_sweep.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 - [tv_method_volume_footprint](../tv_method_volume_footprint.md)
 
 ## Source

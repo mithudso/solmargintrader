@@ -103,7 +103,7 @@ within a candle or on candle close.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_jzxkmci2_williams_fractal_trailing_stops](../tv_jzxkmci2_williams_fractal_trailing_stops.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 
 ## Source
 

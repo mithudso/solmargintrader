@@ -136,8 +136,8 @@ This script monitors each realtime update of the chart's feed. It first determin
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
-- [tv_xh8tldte_realtime_delta_volume_action_lucf](../../tv_xh8tldte_realtime_delta_volume_action_lucf.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
+- [tv_xh8tldte_realtime_delta_volume_action_lucf](../../../strategy_research/tv_xh8tldte_realtime_delta_volume_action_lucf.md)
 
 ## Source
 

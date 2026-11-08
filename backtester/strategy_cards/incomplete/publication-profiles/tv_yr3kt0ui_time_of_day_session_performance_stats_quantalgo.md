@@ -157,7 +157,7 @@ Hours that do not meet a minimum bar-count threshold are dropped from every rank
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_seasonality](../tv_method_seasonality.md)
-- [tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo](../../tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md)
+- [tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo](../../../strategy_research/tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md)
 
 ## Source
 

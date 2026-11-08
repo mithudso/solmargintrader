@@ -119,7 +119,7 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_7vcb6m4j_volume_delta_footprint_map_zeiierman](../tv_7vcb6m4j_volume_delta_footprint_map_zeiierman.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_method_volume_footprint](../tv_method_volume_footprint.md)
 
 ## Source

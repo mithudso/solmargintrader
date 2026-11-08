@@ -109,7 +109,7 @@ if array.get(arr, i) > 0
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_seasonality](../tv_method_seasonality.md)
-- [tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract](../../tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract.md)
+- [tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract](../../../strategy_research/tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract.md)
 
 ## Source
 

@@ -113,7 +113,7 @@ default -1.5
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_rbeervr5_rolling_z_score_trend_quantalgo](../../tv_rbeervr5_rolling_z_score_trend_quantalgo.md)
+- [tv_rbeervr5_rolling_z_score_trend_quantalgo](../../../strategy_research/tv_rbeervr5_rolling_z_score_trend_quantalgo.md)
 
 ## Source
 

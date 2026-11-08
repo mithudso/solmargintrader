@@ -108,7 +108,7 @@ Said lines may not cross their respective series.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_oscillator_divergence](../tv_method_oscillator_divergence.md)
-- [tv_method_rsi_divergence](../../tv_method_rsi_divergence.md)
+- [tv_method_rsi_divergence](../../../strategy_research/tv_method_rsi_divergence.md)
 - [tv_zvct18wt_mawreez_rsi_divergence_detector](../tv_zvct18wt_mawreez_rsi_divergence_detector.md)
 
 ## Source

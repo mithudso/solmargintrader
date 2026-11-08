@@ -130,7 +130,7 @@ realtime bars must be complete for the relative volume value to be confirmed.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_seasonality](../tv_method_seasonality.md)
-- [tv_n0f50jkv_relative_volume_at_time](../../tv_n0f50jkv_relative_volume_at_time.md)
+- [tv_n0f50jkv_relative_volume_at_time](../../../strategy_research/tv_n0f50jkv_relative_volume_at_time.md)
 
 ## Source
 

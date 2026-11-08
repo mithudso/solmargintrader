@@ -101,7 +101,7 @@ Gray areas are closes above the average
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_fair_value_gap](../../tv_method_fair_value_gap.md)
+- [tv_method_fair_value_gap](../../../strategy_research/tv_method_fair_value_gap.md)
 - [tv_method_volume_footprint](../tv_method_volume_footprint.md)
 - [tv_zmxb93wd_volume_footprint_voids_bigbeluga](../tv_zmxb93wd_volume_footprint_voids_bigbeluga.md)
 

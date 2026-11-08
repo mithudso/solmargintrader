@@ -96,7 +96,7 @@ check the last 3 pivots and draw pitchfork based on the retracement ratio.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_hv8ghojp_recursive_auto_pitchfork_trendoscope](../tv_hv8ghojp_recursive_auto_pitchfork_trendoscope.md)
-- [tv_method_pitchfork](../../tv_method_pitchfork.md)
+- [tv_method_pitchfork](../../../strategy_research/tv_method_pitchfork.md)
 
 ## Source
 

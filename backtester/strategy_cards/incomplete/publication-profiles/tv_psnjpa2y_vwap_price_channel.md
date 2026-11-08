@@ -123,7 +123,7 @@ So each time a new high or low is made based on DC, the VWAP function re-anchors
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 - [tv_psnjpa2y_vwap_price_channel](../tv_psnjpa2y_vwap_price_channel.md)
 
 ## Source

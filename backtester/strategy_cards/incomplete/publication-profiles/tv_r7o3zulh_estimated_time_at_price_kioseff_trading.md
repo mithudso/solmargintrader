@@ -109,7 +109,7 @@ POC line is extended right until violated.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_r7o3zulh_estimated_time_at_price_kioseff_trading](../tv_r7o3zulh_estimated_time_at_price_kioseff_trading.md)
 
 ## Source

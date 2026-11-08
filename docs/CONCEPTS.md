@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T13:28:05+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T13:37:26+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -59,7 +59,7 @@ Full list: `python3 index/search.py --concept risk-rails -n 485`
 
 ### Grid trading
 
-`grid` · **389 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **391 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
@@ -74,11 +74,11 @@ Strongest files:
 - `extension/src/core/grid.js` (66 hits)
 - `research/tradingview-card-readiness.json` (63 hits)
 
-Full list: `python3 index/search.py --concept grid -n 389`
+Full list: `python3 index/search.py --concept grid -n 391`
 
 ### On-chain execution reality
 
-`execution-onchain` · **362 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **364 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -93,7 +93,7 @@ Strongest files:
 - `llms-full.txt` (102 hits)
 - `pagesource` (98 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 362`
+Full list: `python3 index/search.py --concept execution-onchain -n 364`
 
 ### Data integrity
 
@@ -275,23 +275,23 @@ Facts already written in the 46 cards' frontmatter, inverted so a value points b
 
 ### `evaluation`
 
-- **null** (1086) — `dca_bot`, `tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator`, `tv_0enoetmo_smartphase_analyzer`, `tv_0j7owdat_flowscope_hapharmonic`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_0nz4m9e7_holographic_market_microstructure_alphanatt`, `tv_0s4usqeb_nasan_risk_score_postion_size_estimator`, `tv_0sbntaqj_trading_abc`, `tv_0x1dgqjw_xabcd_harmonic_pattern_custom_range_interactive`, `tv_10xmhfge_volume_per_point`, `tv_12m8jqu6_function_polynomial_regression`, `tv_15kb0kgb_rsi_buy_sell_force_ver_1` and 1074 more
+- **null** (1086) — `dca_bot`, `jlp_vs_sol_relative_value`, `triangular_arbitrage`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest` and 1074 more
 - **None** (20) — `avellaneda_stoikov_mm`, `day_trading`, `dex_cex_dislocation`, `discount_to_anchor`, `event_driven`, `exchange_net_flow`, `funding_utilization_extremes`, `implied_vs_realised_vol`, `kalman_hedge_ratio`, `liquidation_cascade_proximity`, `mvrv_nupl_valuation`, `open_interest_divergence` and 8 more
-- **single-split-70-30** (18) — `atr_position_sizing`, `bb_reversion`, `breakout`, `buy_and_hold`, `garch_vol_forecast`, `grid`, `ichimoku_cloud`, `keltner`, `ma_crossover`, `ma_ribbon`, `macd`, `pairs_cointegration` and 6 more
+- **single-split-70-30** (18) — `pairs_cointegration`, `atr_position_sizing`, `bb_reversion`, `breakout`, `buy_and_hold`, `garch_vol_forecast`, `grid`, `ichimoku_cloud`, `keltner`, `ma_crossover`, `ma_ribbon`, `macd` and 6 more
 - **cpcv-8-groups-k2** (6) — `adx_filtered_trend`, `bb_breakout`, `dual_momentum_12_1`, `obv_trend`, `vol_regime_hmm`, `zscore`
 - **cpcv-8-groups-k2-sol-btc-eth** (2) — `hurst_regime_test`, `ou_half_life_sizing`
 - **real-sol-daily-and-hourly-recentred-blocks** (1) — `ladder_grid`
 
 ### `family`
 
-- **source-defined** (934) — `tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator`, `tv_0enoetmo_smartphase_analyzer`, `tv_0j7owdat_flowscope_hapharmonic`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_0nz4m9e7_holographic_market_microstructure_alphanatt`, `tv_0s4usqeb_nasan_risk_score_postion_size_estimator`, `tv_0sbntaqj_trading_abc`, `tv_0x1dgqjw_xabcd_harmonic_pattern_custom_range_interactive`, `tv_10xmhfge_volume_per_point`, `tv_12m8jqu6_function_polynomial_regression`, `tv_15kb0kgb_rsi_buy_sell_force_ver_1`, `tv_17xrxgad_auto_pitchfan_fib_extension_retracement_and_zigzag_by_dgt` and 922 more
+- **source-defined** (934) — `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest`, `tv_43000762390_funding_rate_a_guide_to_market_sentiment`, `tv_4psxdoyc_a_technique_from_1202_really`, `tv_7biqbrfz_how_to_utilize_multi_time_frame_analysis_in_your_trading` and 922 more
 - **research-method** (65) — `tv_method_bump_run`, `tv_method_candlestick_patterns`, `tv_method_cup_handle`, `tv_method_double_top_bottom`, `tv_method_elliott_wave`, `tv_method_flag_pennant`, `tv_method_fourier_cycle`, `tv_method_gann`, `tv_method_gap_fill`, `tv_method_hammer`, `tv_method_harami`, `tv_method_harmonic_xabcd` and 53 more
 - **trend** (32) — `ema_crossover`, `ichimoku_cloud`, `tv_builtin_accumulative_swing_index`, `tv_builtin_chop_zone`, `tv_builtin_moving_average_adaptive`, `tv_builtin_moving_average_channel`, `tv_builtin_parabolic_sar`, `tv_builtin_supertrend`, `tv_builtin_williams_alligator`, `ma_crossover`, `ma_ribbon`, `macd` and 20 more
 - **momentum** (20) — `dual_momentum_12_1`, `tv_builtin_fisher_transform`, `ts_momentum`, `tv_builtin_accelerator_oscillator`, `tv_builtin_awesome_oscillator`, `tv_builtin_chande_momentum_oscillator`, `tv_builtin_connors_rsi`, `tv_builtin_coppock_curve`, `tv_builtin_detrended_price_oscillator`, `tv_builtin_know_sure_thing`, `tv_builtin_momentum`, `tv_builtin_rank_correlation_index` and 8 more
 - **other** (16) — `tv_builtin_compare`, `tv_builtin_overlay`, `tv_builtin_52_week_high_low`, `tv_builtin_advance_decline`, `tv_builtin_average_price`, `tv_builtin_correlation_coefficient`, `tv_builtin_correlation_log`, `tv_builtin_majority_rule`, `tv_builtin_median_price`, `tv_builtin_pivot_points_standard`, `tv_builtin_ratio`, `tv_builtin_regression_trend` and 4 more
-- **volatility** (14) — `implied_vs_realised_vol`, `tv_builtin_relative_volatility_index`, `tv_builtin_standard_error_bands`, `tv_builtin_volatility_index`, `tv_builtin_bollinger_bands_b`, `tv_builtin_bollinger_bands_width`, `tv_builtin_chaikin_volatility`, `tv_builtin_chande_kroll_stop`, `tv_builtin_envelopes`, `tv_builtin_mass_index`, `tv_builtin_standard_error`, `tv_builtin_volatility_o_h_l_c` and 2 more
+- **volatility** (14) — `tv_builtin_relative_volatility_index`, `tv_builtin_standard_error_bands`, `tv_builtin_volatility_index`, `implied_vs_realised_vol`, `tv_builtin_bollinger_bands_b`, `tv_builtin_bollinger_bands_width`, `tv_builtin_chaikin_volatility`, `tv_builtin_chande_kroll_stop`, `tv_builtin_envelopes`, `tv_builtin_mass_index`, `tv_builtin_standard_error`, `tv_builtin_volatility_o_h_l_c` and 2 more
 - **volume** (13) — `tv_builtin_klinger_oscillator`, `tv_builtin_session_volume_profile`, `tv_builtin_volume_profile_fixed_range`, `tv_builtin_volume_profile_visible_range`, `tv_builtin_accumulation_distribution`, `tv_builtin_anchored_vwap`, `tv_builtin_chaikin_oscillator`, `tv_builtin_ease_of_movement`, `tv_builtin_elder_s_force_index`, `tv_builtin_money_flow_index`, `tv_builtin_net_volume`, `tv_builtin_price_volume_trend` and 1 more
-- **mean-reversion** (12) — `bb_reversion`, `dca_bot`, `discount_to_anchor`, `fib_retracement`, `grid`, `jlp_vs_sol_relative_value`, `kalman_hedge_ratio`, `ladder_grid`, `ou_half_life_sizing`, `pairs_cointegration`, `vwap_reversion`, `zscore`
+- **mean-reversion** (12) — `dca_bot`, `jlp_vs_sol_relative_value`, `ladder_grid`, `pairs_cointegration`, `bb_reversion`, `fib_retracement`, `grid`, `ou_half_life_sizing`, `vwap_reversion`, `zscore`, `discount_to_anchor`, `kalman_hedge_ratio`
 - **crypto-native** (6) — `exchange_net_flow`, `funding_utilization_extremes`, `liquidation_cascade_proximity`, `mvrv_nupl_valuation`, `open_interest_divergence`, `staking_ratio_flow`
 - **microstructure** (5) — `avellaneda_stoikov_mm`, `dex_cex_dislocation`, `order_book_imbalance`, `scalping`, `trade_flow_imbalance`
 - **breakout** (4) — `bb_breakout`, `breakout`, `keltner`, `swing_confluence`
@@ -309,11 +309,11 @@ Facts already written in the 46 cards' frontmatter, inverted so a value points b
 
 ### `status`
 
-- **spec-only** (1103) — `avellaneda_stoikov_mm`, `day_trading`, `dex_cex_dislocation`, `discount_to_anchor`, `event_driven`, `exchange_net_flow`, `funding_utilization_extremes`, `implied_vs_realised_vol`, `tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator`, `tv_0enoetmo_smartphase_analyzer`, `tv_0j7owdat_flowscope_hapharmonic`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc` and 1091 more
-- **measured** (27) — `adx_filtered_trend`, `atr_position_sizing`, `bb_breakout`, `bb_reversion`, `breakout`, `buy_and_hold`, `dual_momentum_12_1`, `garch_vol_forecast`, `grid`, `hurst_regime_test`, `ichimoku_cloud`, `keltner` and 15 more
-- **implemented** (12) — `dca`, `dca_bot`, `ema_crossover`, `fib_retracement`, `jlp_vs_sol_relative_value`, `lev_high`, `lev_low`, `lev_medium`, `ppo`, `swing_confluence`, `triangular_arbitrage`, `trigger_trade`
+- **spec-only** (1103) — `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest`, `tv_43000762390_funding_rate_a_guide_to_market_sentiment`, `tv_4psxdoyc_a_technique_from_1202_really`, `tv_7biqbrfz_how_to_utilize_multi_time_frame_analysis_in_your_trading` and 1091 more
+- **measured** (27) — `ladder_grid`, `pairs_cointegration`, `adx_filtered_trend`, `atr_position_sizing`, `bb_breakout`, `bb_reversion`, `breakout`, `buy_and_hold`, `dual_momentum_12_1`, `garch_vol_forecast`, `grid`, `hurst_regime_test` and 15 more
+- **implemented** (12) — `dca_bot`, `jlp_vs_sol_relative_value`, `triangular_arbitrage`, `dca`, `ema_crossover`, `fib_retracement`, `lev_high`, `lev_low`, `lev_medium`, `ppo`, `swing_confluence`, `trigger_trade`
 
 ### `success_likelihood`
 
-- **low** (1108) — `adx_filtered_trend`, `atr_position_sizing`, `bb_breakout`, `bb_reversion`, `breakout`, `buy_and_hold`, `dca_bot`, `funding_utilization_extremes`, `hurst_regime_test`, `ichimoku_cloud`, `implied_vs_realised_vol`, `tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator` and 1096 more
-- **very-low** (34) — `avellaneda_stoikov_mm`, `day_trading`, `dca`, `dex_cex_dislocation`, `discount_to_anchor`, `dual_momentum_12_1`, `ema_crossover`, `event_driven`, `exchange_net_flow`, `fib_retracement`, `garch_vol_forecast`, `grid` and 22 more
+- **low** (1108) — `dca_bot`, `jlp_vs_sol_relative_value`, `ladder_grid`, `pairs_cointegration`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained` and 1096 more
+- **very-low** (34) — `triangular_arbitrage`, `dca`, `dual_momentum_12_1`, `ema_crossover`, `fib_retracement`, `garch_vol_forecast`, `grid`, `keltner`, `lev_high`, `lev_low`, `lev_medium`, `ma_ribbon` and 22 more

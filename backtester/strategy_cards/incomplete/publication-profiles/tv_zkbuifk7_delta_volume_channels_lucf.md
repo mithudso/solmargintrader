@@ -137,7 +137,7 @@ This value is the proportion that delta ​volume represents of the total intrab
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_zkbuifk7_delta_volume_channels_lucf](../tv_zkbuifk7_delta_volume_channels_lucf.md)
 
 ## Source

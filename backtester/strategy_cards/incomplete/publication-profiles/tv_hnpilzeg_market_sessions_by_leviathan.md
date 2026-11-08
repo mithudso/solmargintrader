@@ -130,7 +130,7 @@ this will draw a horizontal line halfway between the session’s high and the se
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_hnpilzeg_market_sessions_by_leviathan](../../tv_hnpilzeg_market_sessions_by_leviathan.md)
+- [tv_hnpilzeg_market_sessions_by_leviathan](../../../strategy_research/tv_hnpilzeg_market_sessions_by_leviathan.md)
 
 ## Source
 

@@ -130,7 +130,7 @@ Assumes quarterly earnings; irregular reporting schedules may affect Y2Y accurac
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_lu0mtsud_earnings_snapshot_trendoscope](../../tv_lu0mtsud_earnings_snapshot_trendoscope.md)
+- [tv_lu0mtsud_earnings_snapshot_trendoscope](../../../strategy_research/tv_lu0mtsud_earnings_snapshot_trendoscope.md)
 - [tv_method_value_investing](../tv_method_value_investing.md)
 
 ## Source

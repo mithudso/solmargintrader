@@ -101,9 +101,9 @@ Use Active Chart –[/b] Profile updates with visible candles.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_lx3zlt9l_volume_profile_3d_zeiierman](../../tv_lx3zlt9l_volume_profile_3d_zeiierman.md)
+- [tv_lx3zlt9l_volume_profile_3d_zeiierman](../../../strategy_research/tv_lx3zlt9l_volume_profile_3d_zeiierman.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [xs_momentum](../../xs_momentum.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

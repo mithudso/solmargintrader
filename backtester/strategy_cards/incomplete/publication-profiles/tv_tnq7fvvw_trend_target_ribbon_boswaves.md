@@ -128,9 +128,9 @@ The swing low over the stop lookback for long positions and swing high for short
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [tv_tnq7fvvw_trend_target_ribbon_boswaves](../../tv_tnq7fvvw_trend_target_ribbon_boswaves.md)
+- [tv_tnq7fvvw_trend_target_ribbon_boswaves](../../../strategy_research/tv_tnq7fvvw_trend_target_ribbon_boswaves.md)
 
 ## Source
 

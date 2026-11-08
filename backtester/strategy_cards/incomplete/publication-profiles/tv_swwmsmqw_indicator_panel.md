@@ -114,7 +114,7 @@ You can choose 5 different Symbols, 6 Indicators and 2 Simple or Exponential Mov
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_swwmsmqw_indicator_panel](../../tv_swwmsmqw_indicator_panel.md)
+- [tv_swwmsmqw_indicator_panel](../../../strategy_research/tv_swwmsmqw_indicator_panel.md)
 
 ## Source
 

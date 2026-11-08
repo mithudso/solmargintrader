@@ -156,7 +156,7 @@ A reading of 85 means that exposure was at or below today's level on 85 per cent
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_5ghqjxjj_vol_control_fund_positioning](../../tv_5ghqjxjj_vol_control_fund_positioning.md)
+- [tv_5ghqjxjj_vol_control_fund_positioning](../../../strategy_research/tv_5ghqjxjj_vol_control_fund_positioning.md)
 
 ## Source
 

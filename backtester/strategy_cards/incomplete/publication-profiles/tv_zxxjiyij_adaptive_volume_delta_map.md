@@ -110,7 +110,7 @@ Uses bid/ask midpoint logic to classify trades.
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_method_volume_footprint](../tv_method_volume_footprint.md)
 - [tv_zxxjiyij_adaptive_volume_delta_map](../tv_zxxjiyij_adaptive_volume_delta_map.md)
 

@@ -117,7 +117,7 @@ New Level Cooldown
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_hdskv6q5_ltf_volume_microburst_bubbles_zeiierman](../tv_hdskv6q5_ltf_volume_microburst_bubbles_zeiierman.md)
-- [tv_method_liquidity_sweep](../../tv_method_liquidity_sweep.md)
+- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
 - [tv_method_market_structure](../tv_method_market_structure.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 

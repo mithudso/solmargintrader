@@ -116,8 +116,8 @@ The earlier catalog associated this publication with the entries below. These li
 
 - [tv_fwb6gwpc_support_resistance_ai_k_means_median_thinklogicai](../tv_fwb6gwpc_support_resistance_ai_k_means_median_thinklogicai.md)
 - [tv_method_double_top_bottom](../tv_method_double_top_bottom.md)
-- [tv_method_head_shoulders](../../tv_method_head_shoulders.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_head_shoulders](../../../strategy_research/tv_method_head_shoulders.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_round_number_levels](../tv_method_round_number_levels.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
 

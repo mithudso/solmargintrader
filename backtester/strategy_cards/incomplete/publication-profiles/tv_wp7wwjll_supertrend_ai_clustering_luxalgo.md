@@ -103,7 +103,7 @@ average of the factors associated with the best-performing cluster
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [tv_method_trailing_stop](../../tv_method_trailing_stop.md)
+- [tv_method_trailing_stop](../../../strategy_research/tv_method_trailing_stop.md)
 - [tv_wp7wwjll_supertrend_ai_clustering_luxalgo](../tv_wp7wwjll_supertrend_ai_clustering_luxalgo.md)
 
 ## Source

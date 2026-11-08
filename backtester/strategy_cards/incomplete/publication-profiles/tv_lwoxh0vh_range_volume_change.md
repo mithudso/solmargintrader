@@ -109,7 +109,7 @@ RVC visualizes the incremental of the volume using increasing size columns givin
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_lwoxh0vh_range_volume_change](../../tv_lwoxh0vh_range_volume_change.md)
+- [tv_lwoxh0vh_range_volume_change](../../../strategy_research/tv_lwoxh0vh_range_volume_change.md)
 
 ## Source
 

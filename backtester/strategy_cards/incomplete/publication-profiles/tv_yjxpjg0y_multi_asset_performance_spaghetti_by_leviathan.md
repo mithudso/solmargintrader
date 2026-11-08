@@ -137,8 +137,8 @@ Periodic inputs (e.g. daily, monthly, etc.) determine when the values are reset 
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan](../../tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan.md)
-- [xs_momentum](../../xs_momentum.md)
+- [tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan](../../../strategy_research/tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

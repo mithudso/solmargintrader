@@ -170,8 +170,8 @@ Formula: Relative Performance = MAG7_Momentum - SP500EW_Momentum
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_cztmlgfy_magnificent_7_oscillator](../tv_cztmlgfy_magnificent_7_oscillator.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
-- [xs_momentum](../../xs_momentum.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
+- [xs_momentum](../../../strategy_research/xs_momentum.md)
 
 ## Source
 

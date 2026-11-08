@@ -349,11 +349,9 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
 
     async def test_available_table_lists_every_registered_strategy(self) -> None:
         """All active cards are visible, while only implemented strategies can run."""
-        from unittest.mock import patch
-
         from backtester.core.strategies import REGISTRY
         from backtester.core.strategy_cards import load_all
-        from textual.widgets import Button, Input, Select, TabbedContent, TextArea
+        from textual.widgets import Button, Input, Select, TabbedContent
 
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
@@ -363,34 +361,17 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             cards = load_all()
             self.assertEqual(table.row_count, len(cards))
             self.assertTrue(set(REGISTRY) <= {key.value for key in table.rows})
-            self.assertIn("tv_builtin_average_price", {key.value for key in table.rows})
+            self.assertNotIn("tv_builtin_average_price", {key.value for key in table.rows})
+            self.assertNotIn("tv_gbc8qoy8_a_quick_guide_to_multi_timeframe_scaling", {key.value for key in table.rows})
             self.assertNotIn("tv_builtin_supertrend", {key.value for key in table.rows})
-
+            self.assertTrue(all(card.runner for card in cards.values()))
             app.query_one("#strategy-card-filter", Input).value = "tv_builtin_average_price"
             await pilot.pause()
-            self.assertEqual(table.row_count, 1)
-            self.assertEqual(str(table.get_row_at(0)[0]), "Average Price")
-            self.assertEqual(app._docs_current_path,
-                             "backtester/strategy_cards/tv_builtin_average_price.md")
-            self.assertIn("AveragePrice = (O+H+L+C)/4", app.query_one("#docs-view", TextArea).text)
-            self.assertTrue(app.query_one("#btn-add", Button).disabled)
-            self.assertTrue(app.query_one("#btn-bt-selected", Button).disabled)
+            self.assertEqual(table.row_count, 0)
             before = app.roster.to_list()
-            app._add()  # Programmatic calls must obey the same boundary as disabled buttons.
-            self.assertEqual(app.roster.to_list(), before)
-            with patch.object(app, "_start_backtest") as start:
-                app._backtest_selected()
-                start.assert_not_called()
-            table.focus()
-            await pilot.press("space")
-            self.assertEqual(app.roster.to_list(), before)
 
-            separate = next(card for card in cards.values()
-                            if card.status != "spec-only" and card.registry_key is None)
-            app.query_one("#strategy-card-filter", Input).value = separate.id
-            await pilot.pause()
-            app._add()
-            self.assertIn("separate runner", text_of(app, "#roster-status"))
+            for excluded in ("jlp_vs_sol_relative_value", "pairs_cointegration", "ladder_grid", "dca_bot", "triangular_arbitrage"):
+                self.assertNotIn(excluded, {key.value for key in table.rows})
             self.assertEqual(app.roster.to_list(), before)
 
             app.query_one("#strategy-card-filter", Input).value = ""
@@ -427,8 +408,8 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             status = text_of(app, "#roster-status")
             self.assertIn("expected key=value", status)
 
-    async def test_clicking_an_available_strategy_opens_its_source_file(self) -> None:
-        """The strategy list is a shortcut into the code that defines it."""
+    async def test_clicking_an_available_strategy_opens_its_card(self) -> None:
+        """The strategy list opens the full strategy card."""
         from textual.widgets import DataTable, TabbedContent, TextArea
 
         app = SolTuiApp(make_settings())
@@ -442,8 +423,8 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
 
             self.assertEqual(app._docs_current_path,
-                              "backtester/core/strategies/rsi.py")
-            self.assertIn("RSI mean-reversion",
+                              "backtester/strategy_cards/rsi.md")
+            self.assertIn("RSI Mean-Reversion",
                           app.query_one("#docs-view", TextArea).text)
 
     async def test_unknown_strategy_name_reports_instead_of_crashing(self) -> None:
@@ -455,7 +436,7 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             self.assertIn("not in the Docs catalogue",
                           text_of(app, "#docs-view-status"))
 
-    async def test_clicking_a_roster_entry_opens_its_source_file(self) -> None:
+    async def test_clicking_a_roster_entry_opens_its_card(self) -> None:
         """The roster table's first column is a label, not a REGISTRY name --
         this pins that the lookup goes through the roster entry, not the
         display text, to find the right file."""
@@ -472,8 +453,8 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
 
             self.assertEqual(app._docs_current_path,
-                              "backtester/core/strategies/rsi.py")
-            self.assertIn("RSI mean-reversion",
+                              "backtester/strategy_cards/rsi.md")
+            self.assertIn("RSI Mean-Reversion",
                           app.query_one("#docs-view", TextArea).text)
 
 

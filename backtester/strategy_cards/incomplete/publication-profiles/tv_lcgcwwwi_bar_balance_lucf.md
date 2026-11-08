@@ -180,7 +180,7 @@ chart resolutions must be divisible by the lower resolution used for intrabars
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_lcgcwwwi_bar_balance_lucf](../../tv_lcgcwwwi_bar_balance_lucf.md)
+- [tv_lcgcwwwi_bar_balance_lucf](../../../strategy_research/tv_lcgcwwwi_bar_balance_lucf.md)
 - [tv_method_oscillator_divergence](../tv_method_oscillator_divergence.md)
 
 ## Source

@@ -119,7 +119,7 @@ Charts > 3D: 4 hour timeframe
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_market_profile](../tv_method_market_profile.md)
-- [tv_ny63myd9_time_volume_point_of_control_flowly_indicators](../../tv_ny63myd9_time_volume_point_of_control_flowly_indicators.md)
+- [tv_ny63myd9_time_volume_point_of_control_flowly_indicators](../../../strategy_research/tv_ny63myd9_time_volume_point_of_control_flowly_indicators.md)
 
 ## Source
 

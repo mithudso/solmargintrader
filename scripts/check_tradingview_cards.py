@@ -25,6 +25,12 @@ def load_catalog(repo: Path) -> tuple[dict, dict]:
     directory = repo / "backtester/strategy_cards"
     active = load_all(directory)
     incomplete = load_all(directory / "incomplete")
+    for extra in (repo / "backtester/guides", repo / "backtester/strategy_research"):
+        more = load_all(extra) if extra.is_dir() else {}
+        duplicates = (active.keys() | incomplete.keys()) & more.keys()
+        if duplicates:
+            raise ValueError(f"card exists in multiple locations: {sorted(duplicates)}")
+        incomplete.update(more)
     overlap = active.keys() & incomplete.keys()
     if overlap:
         raise ValueError(f"card exists in both active and incomplete: {sorted(overlap)}")
@@ -42,17 +48,20 @@ def validate_readiness(review: dict, created: set[str], active: dict,
     ids = [row["id"] for row in rows]
     if len(ids) != len(set(ids)) or set(ids) != created:
         raise ValueError("readiness review must cover every created card exactly once")
-    if set(incomplete) - created:
+    if {key for key, card in incomplete.items() if card.path.parent.name == "incomplete"} - created:
         raise ValueError("incomplete directory contains a card outside the reviewed extraction")
     for row in rows:
         key = row["id"]
         disposition = row["disposition"]
-        if disposition not in {"keep", "incomplete"}:
+        if disposition not in {"keep", "incomplete", "guide", "research"}:
             raise ValueError(f"{key}: unknown readiness disposition")
         location = active if disposition == "keep" else incomplete
         if key not in location:
             raise ValueError(f"{key}: readiness disposition disagrees with card location")
         card = location[key]
+        expected_folder = {"guide": "guides", "research": "strategy_research", "incomplete": "incomplete"}.get(disposition)
+        if expected_folder and card.path.parent.name != expected_folder:
+            raise ValueError(f"{key}: readiness disposition disagrees with card location")
         if row["path"] != card.path.relative_to(repo).as_posix():
             raise ValueError(f"{key}: readiness path does not match card")
         if hashlib.sha256(card.path.read_bytes()).hexdigest() != row["sha256"]:
@@ -110,8 +119,8 @@ def validate(data: dict, repo: Path = REPO, source_root: Path | None = None) -> 
         raise ValueError("duplicate created card id")
     if created & set(data["existing_card_ids"]):
         raise ValueError("new card overwrites an existing card")
-    if not set(data["existing_card_ids"]) <= active.keys():
-        raise ValueError("pre-existing card missing from active catalog")
+    if not set(data["existing_card_ids"]) <= cards.keys():
+        raise ValueError("pre-existing card missing from audited catalog")
     if not created <= cards.keys():
         raise ValueError("created card missing from card directory")
     if {key for key in cards if key.startswith("tv_")} != created:
@@ -243,7 +252,10 @@ def validate(data: dict, repo: Path = REPO, source_root: Path | None = None) -> 
             raise ValueError("physical source inventory differs from ledger")
     return {"builtins": len(builtin_rows), "publications": len(publications),
             "new_cards": len(created), "total_cards": len(cards),
-            "active_cards": len(active), "incomplete_cards": len(incomplete),
+            "active_cards": len(active),
+            "incomplete_cards": sum(c.path.parent.name == "incomplete" for c in incomplete.values()),
+            "guide_cards": sum(c.path.parent.name == "guides" for c in incomplete.values()),
+            "research_cards": sum(c.path.parent.name == "strategy_research" for c in incomplete.values()),
             "verified_source_files": len(verified_files)}
 
 

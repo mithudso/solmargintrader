@@ -115,7 +115,7 @@ CDF: Cumulative probability up to each level
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_haxmmjon_risk_distribution_histogram](../tv_haxmmjon_risk_distribution_histogram.md)
-- [tv_method_risk_based_sizing](../../tv_method_risk_based_sizing.md)
+- [tv_method_risk_based_sizing](../../../strategy_research/tv_method_risk_based_sizing.md)
 - [tv_method_vix_timing](../tv_method_vix_timing.md)
 
 ## Source

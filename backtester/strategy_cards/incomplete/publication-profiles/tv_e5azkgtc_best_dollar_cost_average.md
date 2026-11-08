@@ -100,7 +100,7 @@ The script screenshot shows a DCA with 100 USD invested daily from 01.01.2017 to
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_e5azkgtc_best_dollar_cost_average](../../tv_e5azkgtc_best_dollar_cost_average.md)
+- [tv_e5azkgtc_best_dollar_cost_average](../../../strategy_research/tv_e5azkgtc_best_dollar_cost_average.md)
 
 ## Source
 

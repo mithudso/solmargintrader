@@ -281,11 +281,14 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
 
 
 def catalog_link(cid: str, parent: Path) -> str:
-    target = Path("backtester/strategy_cards") / f"{cid}.md"
-    if not (ROOT / target).exists():
-        target = Path("backtester/strategy_cards/incomplete") / f"{cid}.md"
-    if not (ROOT / target).exists():
+    candidates = [Path(folder) / f"{cid}.md" for folder in (
+        "backtester/strategy_cards", "backtester/strategy_cards/incomplete",
+        "backtester/guides", "backtester/strategy_research",
+    )]
+    matches = [target for target in candidates if (ROOT / target).is_file()]
+    if len(matches) != 1:
         raise ValueError(f"Earlier catalog reference no longer resolves: {cid}")
+    target = matches[0]
     return f"- [{cid}]({posixpath.relpath(target.as_posix(), parent.as_posix())})"
 
 

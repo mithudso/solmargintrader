@@ -113,7 +113,7 @@ If the filter fails, the affected level is removed
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_bswaptez_breakout_volume_delta_flux_charts](../tv_bswaptez_breakout_volume_delta_flux_charts.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

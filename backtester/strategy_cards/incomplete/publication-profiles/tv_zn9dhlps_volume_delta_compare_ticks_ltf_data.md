@@ -128,7 +128,7 @@ string max_length = 4096 limit
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 - [tv_zn9dhlps_volume_delta_compare_ticks_ltf_data](../tv_zn9dhlps_volume_delta_compare_ticks_ltf_data.md)
 
 ## Source

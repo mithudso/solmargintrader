@@ -1,6 +1,6 @@
 import io
 import unittest
-from scripts.soltui_ci import TimedResult, selected_modules
+from scripts.soltui_ci import TimedResult, selected_modules, targeted_modules
 
 
 class SelectionTests(unittest.TestCase):
@@ -26,3 +26,16 @@ class TimingTests(unittest.TestCase):
         self.assertTrue(result.wasSuccessful())
         self.assertEqual(len(result.timings), 1)
         self.assertIn('MutatesId', result.timings[0][1])
+
+
+class TargetedTests(unittest.TestCase):
+    def test_forwardtest_and_ui_dependencies_are_included(self):
+        modules = targeted_modules(['soltui/forwardtest.py', 'soltui/tui.py'])
+        for name in ('test_forwardtest', 'test_coin_fit_ui', 'test_v2_shell', 'test_bridge_buttons'):
+            self.assertIn('soltui.tests.' + name, modules)
+
+    def test_changed_tests_and_unknown_paths_keep_smoke(self):
+        modules = targeted_modules(['soltui/tests/test_bots.py', 'new/unknown.py'], exists=lambda _: True)
+        self.assertIn('soltui.tests.test_bots', modules)
+        self.assertIn('soltui.tests.test_bridge_parity', modules)
+        self.assertNotIn('soltui.tests.test_bots', targeted_modules(['soltui/tests/test_bots.py'], exists=lambda _: False))

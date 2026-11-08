@@ -113,10 +113,10 @@ Only FVGs with wick sizes above a certain sensitivity threshold (user-controlled
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_5js51rsp_multitimeframe_fair_value_gap_fvg_zeiierman](../tv_5js51rsp_multitimeframe_fair_value_gap_fvg_zeiierman.md)
-- [tv_method_fair_value_gap](../../tv_method_fair_value_gap.md)
-- [tv_method_liquidity_sweep](../../tv_method_liquidity_sweep.md)
+- [tv_method_fair_value_gap](../../../strategy_research/tv_method_fair_value_gap.md)
+- [tv_method_liquidity_sweep](../../../strategy_research/tv_method_liquidity_sweep.md)
 - [tv_method_support_resistance](../tv_method_support_resistance.md)
-- [tv_method_volume_delta](../../tv_method_volume_delta.md)
+- [tv_method_volume_delta](../../../strategy_research/tv_method_volume_delta.md)
 
 ## Source
 

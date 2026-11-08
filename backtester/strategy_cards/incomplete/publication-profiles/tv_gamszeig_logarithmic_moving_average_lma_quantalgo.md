@@ -133,7 +133,7 @@ The LMA calculation combines multiple sophisticated components. First, it calcul
 
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
-- [tv_gamszeig_logarithmic_moving_average_lma_quantalgo](../../tv_gamszeig_logarithmic_moving_average_lma_quantalgo.md)
+- [tv_gamszeig_logarithmic_moving_average_lma_quantalgo](../../../strategy_research/tv_gamszeig_logarithmic_moving_average_lma_quantalgo.md)
 
 ## Source
 

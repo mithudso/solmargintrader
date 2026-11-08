@@ -123,7 +123,7 @@ Warning: Signals ARE repainting.
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_49yiv1jw_machine_learning_logistic_regression](../tv_49yiv1jw_machine_learning_logistic_regression.md)
-- [tv_method_logistic_prediction](../../tv_method_logistic_prediction.md)
+- [tv_method_logistic_prediction](../../../strategy_research/tv_method_logistic_prediction.md)
 
 ## Source
 

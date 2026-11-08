@@ -111,7 +111,7 @@ manually offset it by ~252
 The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.
 
 - [tv_method_seasonality](../tv_method_seasonality.md)
-- [tv_wixmhdwt_seasonality_tfo](../../tv_wixmhdwt_seasonality_tfo.md)
+- [tv_wixmhdwt_seasonality_tfo](../../../strategy_research/tv_wixmhdwt_seasonality_tfo.md)
 
 ## Source
 
