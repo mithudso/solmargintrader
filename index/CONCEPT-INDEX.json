@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T08:12:16+00:00",
+  "generatedAt": "2026-11-08T08:17:47+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -134,16 +134,16 @@
           "hits": 18
         },
         {
-          "path": "memory.md",
-          "hits": 17
-        },
-        {
           "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 17
         },
         {
           "path": "soltui/tests/test_bridge_surfaces.py",
           "hits": 17
+        },
+        {
+          "path": "index/build.py",
+          "hits": 16
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -375,10 +375,6 @@
           "hits": 29
         },
         {
-          "path": "memory.md",
-          "hits": 28
-        },
-        {
           "path": "backtester/strategy_cards/grid.md",
           "hits": 26
         },
@@ -388,6 +384,10 @@
         },
         {
           "path": "extension/src/ui/dashboard.html",
+          "hits": 26
+        },
+        {
+          "path": "memory.md",
           "hits": 26
         },
         {
@@ -1460,20 +1460,20 @@
           "hits": 27
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 22
-        },
-        {
           "path": "research/coin-intelligence/trx-tron.md",
           "hits": 21
         },
         {
-          "path": "memory.md",
-          "hits": 20
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 21
         },
         {
           "path": "backtester/core/funding.py",
           "hits": 20
+        },
+        {
+          "path": "memory.md",
+          "hits": 19
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",

@@ -385,7 +385,7 @@
       "component": "research",
       "kind": "python",
       "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 241
+      "lines": 244
     },
     {
       "path": "research/geometry.py",
@@ -796,7 +796,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Detached offline sweep worker and per-process array cache",
-      "lines": 578
+      "lines": 585
     },
     {
       "path": "soltui/compound.py",
@@ -1116,7 +1116,7 @@
       "component": "liquidity",
       "kind": "other",
       "summary": "Locked component dependencies",
-      "lines": 1714
+      "lines": 1700
     },
     {
       "path": "liquidity/src/aero_lp/chain.py",
@@ -1270,7 +1270,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 483
+      "lines": 486
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
