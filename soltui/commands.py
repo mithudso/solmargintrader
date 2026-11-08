@@ -2179,6 +2179,60 @@ def jupiter_tokens_search(ctx: Context, p: dict[str, Any]) -> Any:
     return {"tokens": jupiter_tokens.search(p["query"])}
 
 
+@command("jupiter.order_preview", "Review an estimated Jupiter spot swap; places no order.",
+         (P("product_id", "string", "Spot pair or token, for example SOL-USDC or BONK-USDC.", required=True),
+          P("side", "string", "BUY or SELL.", required=True),
+          P("size", "string", "Exact decimal size.", required=True),
+          P("size_currency", "string", "BUY: quote or base; SELL: base.", required=True)),
+         read_only=False, long_running=True)
+def jupiter_order_preview(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_manual
+    taker = ctx.settings.solana_address or "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+    return jupiter_manual.order_preview(p, taker_pubkey=taker)
+
+
+@command("jupiter.order_submit", "Submit one explicitly confirmed, reviewed live Jupiter swap.",
+         (P("preview_id", "string", "Unexpired reviewed preview ID.", required=True),),
+         read_only=False, long_running=True, requires_confirm=True)
+def jupiter_order_submit(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_manual
+    taker = ctx.settings.solana_address or "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+    key_path = os.environ.get("SOLANA_KEYPAIR_PATH", "~/.ssh/solana.private")
+    return jupiter_manual.order_submit(p["preview_id"], keypair_path=key_path, expected_pubkey=taker)
+
+
+@command("jupiter.order_quick", "Place a live Jupiter swap without second confirmation after opting in.",
+         (P("product_id", "string", "Spot pair or token.", required=True),
+          P("side", "string", "BUY or SELL.", required=True),
+          P("size", "string", "Exact decimal size.", required=True),
+          P("size_currency", "string", "BUY: quote or base; SELL: base.", required=True),
+          P("skip_confirm", "bool", "Explicitly opt in to placing this live order without review.", required=True)),
+         read_only=False, long_running=True)
+def jupiter_order_quick(ctx: Context, p: dict[str, Any]) -> Any:
+    if p.get("skip_confirm") is not True:
+        raise ValueError("Quick orders require skip_confirm=true; this places a live order")
+    reviewed = jupiter_order_preview(ctx, p)
+    from . import jupiter_manual
+    taker = ctx.settings.solana_address or "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+    key_path = os.environ.get("SOLANA_KEYPAIR_PATH", "~/.ssh/solana.private")
+    return jupiter_manual.order_submit(reviewed["preview_id"], keypair_path=key_path, expected_pubkey=taker)
+
+
+@command("jupiter.order_state", "Show unresolved manual Jupiter submissions after a restart.",
+         read_only=False, long_running=True)
+def jupiter_order_state(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_manual
+    return jupiter_manual.state()
+
+
+@command("jupiter.order_reconcile", "Check onchain status for a Jupiter swap and reconcile local state.",
+         (P("preview_id", "string", "Preview ID or transaction signature.", required=True),),
+         read_only=False, long_running=True)
+def jupiter_order_reconcile(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_manual
+    return jupiter_manual.order_reconcile(p["preview_id"])
+
+
 @command("coinbase.order_preview", "Review an estimated Coinbase spot market order; places no order.",
          (P("product_id", "string", "Spot pair, for example SOL-USDC.", required=True),
           P("side", "string", "BUY or SELL.", required=True),
