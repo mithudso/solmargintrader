@@ -229,6 +229,7 @@ class Screen(unittest.IsolatedAsyncioTestCase):
             screen = app.screen
             screen.query_one("#exp-param", Select).value = "rungs"
             screen.query_one("#exp-kind", Select).value = "enum"
+            await pilot.pause()
             screen.query_one("#exp-values", Input).value = "3,5"
             screen.query_one("#exp-add", Button).press()
             await pilot.pause()
@@ -272,3 +273,59 @@ class Screen(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(screen._workbench_closed)
             # Any delayed worker result after dismissal becomes a no-op.
             screen._received("late", {"ok": True, "result": run}, screen._loaded_run, False)
+
+    async def test_parameter_units_defaults_and_relative_adjustments(self):
+        from textual.app import App
+        from textual.widgets import Button, Input, Select, Static
+        from soltui.experiment_screens import ExperimentScreen
+
+        def call(name, params):
+            if name == "experiments.schema":
+                return {"ok": True, "result": {"baseline": {"range_pct": 10., "rungs": 10, "spacing": "geom", "stop_loss_pct": 0.},
+                        "domains": {"range_pct": ("float", 2., 60., "log"), "rungs": ("int", 3, 40, "log"),
+                                    "spacing": ("choice", ("geom", "arith")), "stop_loss_pct": ("float", 0., 40., "lin")}}}
+            return {"ok": True, "result": []}
+
+        class Harness(App):
+            def on_mount(self):
+                self.push_screen(ExperimentScreen("grid", call, ["SOL"]))
+
+        async with Harness().run_test(size=(160, 55)) as pilot:
+            await pilot.pause(.1)
+            await pilot.app.workers.wait_for_complete()
+            await pilot.pause()
+            screen = pilot.app.screen
+            self.assertIn("percent points", str(screen.query_one("#exp-units", Static).render()))
+            self.assertEqual(float(screen.query_one("#exp-start", Input).value), 9.)
+            live = {"live": True, "snapshot_age_s": 1, "prices": {"SOL-USD": {"bid": 99., "ask": 101., "quote_age_s": 2}}}
+            screen._show_live_price("SOL", live)
+            self.assertIn("$100", str(screen.query_one("#exp-live-price", Static).render()))
+            self.assertEqual(float(screen.query_one("#exp-start", Input).value), 9.)
+            live["prices"]["SOL-USD"]["quote_age_s"] = 20
+            screen._show_live_price("SOL", live)
+            self.assertIn("unavailable", str(screen.query_one("#exp-live-price", Static).render()))
+            screen.query_one("#exp-stop-pct", Input).value = "25"
+            screen.query_one("#exp-stop-adjust", Button).press()
+            await pilot.pause()
+            self.assertEqual(float(screen.query_one("#exp-stop", Input).value), 12.5)
+            screen.query_one("#exp-param", Select).value = "rungs"
+            await pilot.pause()
+            screen.query_one("#exp-start-pct", Input).value = "-15"
+            screen.query_one("#exp-start-adjust", Button).press()
+            await pilot.pause()
+            self.assertEqual(screen.query_one("#exp-start", Input).value, "8")
+            screen.query_one("#exp-kind", Select).value = "log"
+            await pilot.pause()
+            self.assertEqual(screen.query_one("#exp-step", Input).value, "5")
+            self.assertTrue(screen.query_one("#exp-step-adjust", Button).disabled)
+            screen.query_one("#exp-param", Select).value = "spacing"
+            await pilot.pause()
+            self.assertEqual(screen.query_one("#exp-values", Input).value, "geom")
+            self.assertTrue(screen.query_one("#exp-start", Input).disabled)
+            screen.query_one("#exp-param", Select).value = "stop_loss_pct"
+            await pilot.pause()
+            before = screen.query_one("#exp-stop", Input).value
+            screen.query_one("#exp-stop-adjust", Button).press()
+            await pilot.pause()
+            self.assertEqual(screen.query_one("#exp-stop", Input).value, before)
+            self.assertIn("nonzero baseline", str(screen.query_one("#exp-status", Static).render()))

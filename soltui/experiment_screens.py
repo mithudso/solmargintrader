@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+import math
+import time
 from typing import Any, ClassVar
 
 from rich.text import Text
@@ -93,11 +95,15 @@ class ExperimentScreen(ModalScreen[None]):
                     with Horizontal(classes="exp-row"):
                         yield Label("Value(s)")
                         yield Input(placeholder='Fixed value or comma-separated enum, e.g. 3,5,9 or geom,arith', id="exp-values")
+                    yield Static("", id="exp-units", classes="exp-detail", markup=False)
+                    for label, name, default in (("Start", "start", "-10"), ("Stop (inclusive)", "stop", "10"),
+                                                 ("Step / count", "step", "10")):
+                        with Horizontal(classes="exp-row"):
+                            yield Label(label)
+                            yield Input(placeholder=label.lower(), id=f"exp-{name}")
+                            yield Input(value=default, placeholder="% of baseline", id=f"exp-{name}-pct")
+                            yield Button("Apply %", id=f"exp-{name}-adjust")
                     with Horizontal(classes="exp-row"):
-                        yield Label("Range")
-                        yield Input(placeholder="start", id="exp-start")
-                        yield Input(placeholder="stop (inclusive)", id="exp-stop")
-                        yield Input(placeholder="step (linear) / count (log)", id="exp-step")
                         yield Button("Add/update", id="exp-add")
                         yield Button("Remove", id="exp-remove")
                     yield DataTable(id="exp-space-table", cursor_type="row")
@@ -105,6 +111,9 @@ class ExperimentScreen(ModalScreen[None]):
                     with Horizontal(classes="exp-row"):
                         yield Label("Coins")
                         yield Input(value=",".join(self.coins), placeholder="empty = every cached coin; ignored for triangle", id="exp-coins")
+                        yield Button("Refresh live price", id="exp-price-refresh")
+                    yield Static("Live price: not requested. Prices do not set parameter values.", id="exp-live-price",
+                                 classes="exp-detail", markup=False)
                     with Horizontal(classes="exp-row"):
                         yield Label("Windows / days")
                         yield Input(value="6", placeholder="windows", id="exp-windows")
@@ -234,6 +243,8 @@ class ExperimentScreen(ModalScreen[None]):
             return
         if not env.get("ok"):
             self._polling = False
+            if name == "prices.status":
+                self.query_one("#exp-live-price", Static).update(Text("Live price unavailable: recorder status failed."))
             self.query_one("#exp-status", Static).update(Text(f"{name}: {env.get('error', {}).get('message', 'unknown error')}"))
             return
         if not quiet:
@@ -250,6 +261,81 @@ class ExperimentScreen(ModalScreen[None]):
             self.query_one("#exp-param", Select).value = names[0]
         self._axes(list(self.baseline))
         self.query_one("#exp-baseline", Static).update(Text("Baseline: " + _config(self.baseline)))
+
+    @on(Select.Changed, "#exp-param")
+    def _parameter_changed(self, event: Select.Changed) -> None:
+        name = self._selected("exp-param")
+        if name not in self.domains or name not in self.baseline:
+            return
+        domain, baseline = self.domains[name], self.baseline[name]
+        self.query_one("#exp-values", Input).value = str(baseline)
+        choice = domain[0] == "choice"
+        if choice:
+            self.query_one("#exp-units", Static).update(Text("Choice values: " + ", ".join(map(str, domain[1])) +
+                                                               ". Use Fixed or Explicit values; ranges do not apply."))
+            for part in ("start", "stop", "step"):
+                self.query_one(f"#exp-{part}", Input).value = ""
+        else:
+            lo, hi = float(domain[1]), float(domain[2])
+            base = float(baseline)
+            span = abs(base) * .1 or (hi - lo) * .1
+            integer = domain[0] == "int"
+            low, high = max(lo, base - span), min(hi, base + span)
+            step = max(1., round(span)) if integer else span
+            if integer:
+                low, high = int(round(low)), int(round(high))
+            for part, val in (("start", low), ("stop", high), ("step", step)):
+                self.query_one(f"#exp-{part}", Input).value = str(int(val) if integer else float(val))
+            unit = ("percent points" if name.endswith("_pct") else "basis points" if name.endswith("_bps") else
+                    "seconds" if name.endswith("_s") else "bars" if name.endswith("_bars") else
+                    "whole number" if integer else "parameter units")
+            self.query_one("#exp-units", Static).update(Text(
+                f"{name}: {unit}; baseline {baseline}; allowed {domain[1]} to {domain[2]}. "
+                "Start/stop are actual values. Adjustments use the baseline; step % is its magnitude. "
+                "Whole numbers are rounded; zero baseline cannot use % adjustments."))
+        for part in ("start", "stop", "step"):
+            self.query_one(f"#exp-{part}", Input).disabled = choice
+            disabled = choice or (part == "step" and self._selected("exp-kind") == "log")
+            self.query_one(f"#exp-{part}-pct", Input).disabled = disabled
+            self.query_one(f"#exp-{part}-adjust", Button).disabled = disabled
+        if not choice and self._selected("exp-kind") == "log":
+            self.query_one("#exp-step", Input).value = "5"
+
+    @on(Select.Changed, "#exp-kind")
+    def _kind_changed(self, event: Select.Changed) -> None:
+        name = self._selected("exp-param")
+        choice = self.domains.get(name, ("choice",))[0] == "choice"
+        logarithmic = self._selected("exp-kind") == "log"
+        self.query_one("#exp-step-pct", Input).disabled = choice or logarithmic
+        self.query_one("#exp-step-adjust", Button).disabled = choice or logarithmic
+        self.query_one("#exp-step", Input).placeholder = "number of values (whole number)" if logarithmic else "step in parameter units"
+        if logarithmic and not choice:
+            self.query_one("#exp-step", Input).value = "5"
+
+    @on(Button.Pressed, "#exp-start-adjust, #exp-stop-adjust, #exp-step-adjust")
+    def adjust_parameter(self, event: Button.Pressed) -> None:
+        part = str(event.button.id).removeprefix("exp-").removesuffix("-adjust")
+        name = self._selected("exp-param")
+        domain = self.domains.get(name)
+        try:
+            if not domain or domain[0] == "choice":
+                raise ValueError("Choose a numeric parameter.")
+            if part == "step" and self._selected("exp-kind") == "log":
+                raise ValueError("Logarithmic count is a whole number, not a percentage.")
+            base = float(self.baseline[name])
+            percent = float(self._input(f"exp-{part}-pct"))
+            if not math.isfinite(percent) or not math.isfinite(base) or base == 0:
+                raise ValueError("Use a finite percentage and a nonzero baseline.")
+            value = abs(base) * abs(percent) / 100 if part == "step" else base * (1 + percent / 100)
+            if domain[0] == "int":
+                value = int(round(value))
+            if not math.isfinite(value) or (part == "step" and value <= 0):
+                raise ValueError("The adjusted step must be positive.")
+            if part != "step" and not domain[1] <= value <= domain[2]:
+                raise ValueError(f"Adjusted value must be within {domain[1]} to {domain[2]}.")
+            self.query_one(f"#exp-{part}", Input).value = str(value)
+        except (ValueError, OverflowError) as exc:
+            self.query_one("#exp-status", Static).update(Text(str(exc)))
 
     def _axes(self, names: list[str]) -> None:
         choices = [(name, name) for name in names]
@@ -275,8 +361,36 @@ class ExperimentScreen(ModalScreen[None]):
     def _input_changed(self, event: Input.Changed) -> None:
         if event.input.id in {"exp-coins", "exp-windows", "exp-days", "exp-max-candidates", "exp-max-evaluations"}:
             self._invalidate()
+        if event.input.id == "exp-coins":
+            self.query_one("#exp-live-price", Static).update(Text("Live price: refresh after changing the coin."))
         if event.input.id == "exp-run-filter":
             self._render_runs()
+
+    @on(Button.Pressed, "#exp-price-refresh")
+    def refresh_live_price(self) -> None:
+        coins = [part.strip().upper() for part in self._input("exp-coins").split(",") if part.strip()]
+        if len(coins) != 1:
+            self.query_one("#exp-live-price", Static).update(Text("Live price unavailable: choose exactly one coin."))
+            return
+        coin = coins[0]
+        self.query_one("#exp-live-price", Static).update(Text(f"Checking {coin} live price…"))
+        self._command("prices.status", {}, lambda result: self._show_live_price(coin, result), quiet=True)
+
+    def _show_live_price(self, coin: str, result: Any) -> None:
+        if self._input("exp-coins").strip().upper() != coin:
+            return
+        text = f"Live price unavailable for {coin}: no fresh verified recorder quote."
+        try:
+            quote = result["prices"][coin + "-USD"]
+            bid, ask, age = float(quote["bid"]), float(quote["ask"]), float(quote["quote_age_s"])
+            snapshot_age = float(result["snapshot_age_s"])
+            if (result["live"] is True and all(math.isfinite(x) for x in (bid, ask, age, snapshot_age)) and
+                    0 <= age < 10 and 0 <= snapshot_age < 10 and 0 < bid <= ask):
+                observed = time.strftime("%H:%M:%S UTC", time.gmtime(time.time() - age))
+                text = f"{coin}-USD recorder midpoint: ${(bid + ask) / 2:,.6g} (quote {observed}); parameter values are separate."
+        except (TypeError, ValueError, KeyError, OverflowError):
+            pass
+        self.query_one("#exp-live-price", Static).update(Text(text))
 
     @on(Button.Pressed, "#exp-add")
     def add_parameter(self) -> None:
@@ -290,6 +404,8 @@ class ExperimentScreen(ModalScreen[None]):
             return int(text) if domain[0] == "int" else float(text)
         kind = self._selected("exp-kind")
         try:
+            if domain[0] == "choice" and kind not in ("fixed", "enum"):
+                raise ValueError("choice parameters require fixed or explicit values")
             if kind == "fixed":
                 spec = {"kind": "fixed", "value": value(self._input("exp-values"))}
             elif kind == "enum":

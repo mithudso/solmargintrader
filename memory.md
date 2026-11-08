@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 196
-Delta: v195 to v196; record independent per-coin bot optimization.
+Version: 198
+Delta: v197 to v198; record experiment controls and verification.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1785,3 +1785,11 @@ The owner requested optional manual entry for every Bots tab variable while reta
 ## v196 - 2026-11-08
 
 The owner requests independent bot optimization and configuration for every coin instead of choosing one shared configuration for all coins. Preserve separate evidence, saved settings and forward behavior per coin; do not overwrite unrelated coin settings. Stele task creation is queued as outbox ae3e15a1. The existing optimizer and configuration storage need investigation.
+
+## v197 - 2026-11-08
+
+The experiment range fields are candidate parameter values, not necessarily prices. Worktree /Users/mitch/dev/solmargintrader-wt-experiment-range owns experiment_screens.py and focused tests. Populate selected-parameter defaults, label actual units, implement adjacent relative percentage controls, and preserve numeric, integer and choice semantics. A coin price must never populate unrelated parameter fields. Show a live price separately only if a verified quote is available without blocking the UI. Preserve active jobs. Stele task creation queued as ba7f78e0 after transport closed; parent integrates before merge.
+
+## v198 - 2026-11-08
+
+ExperimentScreen now derives range defaults from the selected parameter baseline, labels real parameter units, and applies adjacent percentage adjustments relative to that baseline. Integer parameters round to whole values; choice fields disable ranges, logarithmic count is a whole number, out-of-domain and zero-baseline percent adjustments are refused. A separate on-demand recorder status check runs off the UI thread and shows a single coin midpoint only with a fresh live bid/ask and timestamp. It never writes the price into a parameter. Forty-three focused tests passed. No active jobs or services were touched. Parent owns integration and clarification; the branch is not to be merged independently.
