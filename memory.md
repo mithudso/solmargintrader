@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 196
-Delta: v195 to v196; record independent per-coin bot optimization.
+Version: 198
+Delta: v197 to v198; record scheduler implementation and integration limits.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1785,3 +1785,11 @@ The owner requested optional manual entry for every Bots tab variable while reta
 ## v196 - 2026-11-08
 
 The owner requests independent bot optimization and configuration for every coin instead of choosing one shared configuration for all coins. Preserve separate evidence, saved settings and forward behavior per coin; do not overwrite unrelated coin settings. Stele task creation is queued as outbox ae3e15a1. The existing optimizer and configuration storage need investigation.
+
+## v197 - 2026-11-08
+
+Stele TASK-1049 tracks a separate recurring bot scheduler in /Users/mitch/dev/solmargintrader-wt-bot-scheduler. Default cadence is 24 hours. Reuse bots.optimize per cached coin and bot, checkpoint progress, report errors and avoid overlapping workers. Do not change manual settings or start a production service as a test. Legacy adopt=True writes bot-wide config, so schedule adopt=False until the independent per-coin implementation exposes a verified safe capability. Parent owns UI integration and the separate per-coin work.
+
+## v198 - 2026-11-08
+
+Implemented detached recurring bot scheduler in /Users/mitch/dev/solmargintrader-wt-bot-scheduler/soltui/bot_scheduler.py. It checkpoints each grid and DCA coin plus the triangle job, avoids overlapping scheduler workers, reports per-item failures, and resumes an interrupted cycle. A dedicated macOS launchd watchdog checks every five minutes and resumes an enabled worker after login or a crash. User Stop clears enabled and waits for the active optimizer call to finish; it never kills a PID. Existing optimizer locks arbitrate against manual runs. The scheduler uses adopt=False unless bots.PER_COIN_OPTIMIZE_ADOPTION_SAFE is exactly True; triangle always uses adopt=False. Without that separate per-coin backend, it records evidence but does not promote improvements. Tests never installed or ran the production service. Forty-one scheduler and existing bots tests passed; the existing metrics test emitted an overflow RuntimeWarning. Parent must integrate the UI, per-coin capability and full verification before delivery.
