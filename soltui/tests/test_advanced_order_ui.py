@@ -17,7 +17,7 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
     async def test_unsupported_choices_block_live_actions_and_preserve_manual_text(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            app.query_one(TabbedContent).active = "tab-wallet"
+            app.query_one(TabbedContent).active = "tab-advanced-order"
             await pilot.pause(.4)
             app._coinbase_order_unknown = False
             app.query_one("#coinbase-order-size", Input).value = "12.34"
@@ -46,7 +46,7 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
     async def test_buy_coin_preview_quick_and_shared_safety(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            app.query_one(TabbedContent).active = "tab-wallet"
+            app.query_one(TabbedContent).active = "tab-advanced-order"
             await pilot.pause(.4)
             app._coinbase_order_unknown = False
             app.query_one("#advanced-size", Input).value = "0.5"
@@ -91,7 +91,7 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
         from textual.widgets import Sparkline, Static
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            app.query_one(TabbedContent).active = "tab-wallet"
+            app.query_one(TabbedContent).active = "tab-advanced-order"
             await pilot.pause(.3)
             now = time.time()
             prices = env({"live": True, "prices": {"SOL-USDC": {"mid": 123.4, "quote_age_s": 2}}})
@@ -114,7 +114,7 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
     async def test_review_consumed_once_and_unknown_locks_both_tickets(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            app.query_one(TabbedContent).active = "tab-wallet"
+            app.query_one(TabbedContent).active = "tab-advanced-order"
             await pilot.pause(.4)
             app._coinbase_order_unknown = False
             app.query_one("#advanced-size", Input).value = "1"
@@ -147,7 +147,7 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
         from textual.widgets import Static
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            app.query_one(TabbedContent).active = "tab-wallet"
+            app.query_one(TabbedContent).active = "tab-advanced-order"
             await pilot.pause(.4)
             app._coinbase_order_unknown = False
             app.query_one("#advanced-unit", Select).value = "percent"
@@ -181,7 +181,7 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
         from textual.widgets import Static
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            app.query_one(TabbedContent).active = "tab-wallet"
+            app.query_one(TabbedContent).active = "tab-advanced-order"
             await pilot.pause(.4)
             app._coinbase_order_unknown = False
             app.query_one("#advanced-type", Select).value = "limit"
@@ -224,7 +224,7 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
     async def test_bracket_constraints_and_opted_in_quick_submit(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
-            app.query_one(TabbedContent).active = "tab-wallet"
+            app.query_one(TabbedContent).active = "tab-advanced-order"
             await pilot.pause(.4)
             app._coinbase_order_unknown = False
             app.query_one("#advanced-type", Select).value = "bracket"

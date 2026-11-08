@@ -201,6 +201,7 @@ DESTINATIONS: tuple[Destination, ...] = (
     Destination("money", "Money", "4", "What is my real money doing?", (
         View("tab-pnl", "P&L"),
         View("tab-wallet", "Wallet"),
+        View("tab-advanced-order", "Advanced order"),
     ), live_money=True),
     Destination("library", "Library", "5", "What does this word or number mean?", (
         View("tab-docs", "Docs"),

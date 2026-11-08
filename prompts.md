@@ -1,7 +1,15 @@
 # Prompt history
 
-Version: 118
-Delta: v117 to v118; record table export and editor save request.
+Version: 119
+Delta: v118 to v119; record Jupiter advanced order request.
+
+## v119 - 2026-11-08
+
+```text
+Use this jupiter guide to implementing an advanced order form to make the advanced order form that's currently on the money tab -> wallet card be able to choose coinbase or jupiter, and move the advanced order form to its own page inside of the money tab. /Users/mitch/dev/solmargintrader/soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md  Inspect the registered Stele decision node KNOW-1053 tracking this design under TASK-1044
+
+No one else is working on this, you need to implement it, you can do the safety corrections as well.
+```
 
 ## v118 - 2026-11-08
 
