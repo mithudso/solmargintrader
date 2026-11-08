@@ -1,7 +1,15 @@
 # Prompt history
 
-Version: 117
-Delta: v113 to v117; retain both venue references, advanced order request, and leveraged-order follow-up.
+Version: 118
+Delta: v117 to v118; record table export and editor save request.
+
+## v118 - 2026-11-08
+
+```text
+For all of the tables in the soltui, add an "export to csv" small export button at the top right of each table that exports the table to csv and saves it to Downloads. Also add a save function to the editor.
+
+So finish adding the csv export to tables and the save to the editor.
+```
 
 ## v117 - 2026-11-08
 

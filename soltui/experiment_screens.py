@@ -24,6 +24,8 @@ from textual.widgets import (
 )
 
 
+from .csv_table import ExportPanel, ExportTable
+
 def _number(value: Any) -> str:
     if value is None:
         return "unknown"
@@ -106,7 +108,7 @@ class ExperimentScreen(ModalScreen[None]):
                     with Horizontal(classes="exp-row"):
                         yield Button("Add/update", id="exp-add")
                         yield Button("Remove", id="exp-remove")
-                    yield DataTable(id="exp-space-table", cursor_type="row")
+                    yield ExportPanel(ExportTable(id="exp-space-table", cursor_type="row"))
                     yield Static("", id="exp-baseline", classes="exp-detail", markup=False)
                     with Horizontal(classes="exp-row"):
                         yield Label("Coins")
@@ -125,12 +127,12 @@ class ExperimentScreen(ModalScreen[None]):
                         yield Button("Create + explore", variant="success", id="exp-create", disabled=True)
                     yield Static("No preview yet. Final holdout values remain sealed during exploration.", id="exp-preview-summary",
                                  classes="exp-detail", markup=False)
-                    yield DataTable(id="exp-preview-table", cursor_type="row")
+                    yield ExportPanel(ExportTable(id="exp-preview-table", cursor_type="row"))
                 with TabPane("Experiments", id="exp-explorer"), VerticalScroll():
                     with Horizontal(classes="exp-row"):
                         yield Button("Refresh runs", id="exp-refresh")
                         yield Input(placeholder="Find run by ID or source", id="exp-run-filter")
-                    yield DataTable(id="exp-run-table", cursor_type="row")
+                    yield ExportPanel(ExportTable(id="exp-run-table", cursor_type="row"))
                     with Horizontal(classes="exp-row"):
                         yield Button("Resume explore", id="exp-resume")
                         yield Button("Pause", id="exp-pause")
@@ -145,7 +147,7 @@ class ExperimentScreen(ModalScreen[None]):
                         yield Select([("Return median ↓", "total_return"), ("Drawdown loss ↑", "max_drawdown"),
                                       ("Trades ↓", "trades"), ("Triangle P&L ↓", "pnl_usd"), ("Candidate ID", "candidate_id")],
                                      value="total_return", allow_blank=False, id="exp-sort")
-                    yield DataTable(id="exp-candidate-table", cursor_type="row")
+                    yield ExportPanel(ExportTable(id="exp-candidate-table", cursor_type="row"))
                     yield Static("Select a candidate for its full configuration and coin/window evidence.",
                                  id="exp-candidate-detail", classes="exp-detail", markup=False)
                     with Horizontal(classes="exp-row"):
@@ -156,7 +158,7 @@ class ExperimentScreen(ModalScreen[None]):
                         yield Select([("All statuses", ""), ("Completed", "completed"), ("Failed", "failed")],
                                      value="", allow_blank=False, id="exp-cell-status")
                         yield Button("Filter evidence", id="exp-filter-cells")
-                    yield DataTable(id="exp-cell-table", cursor_type="row")
+                    yield ExportPanel(ExportTable(id="exp-cell-table", cursor_type="row"))
                     yield Static("", id="exp-cell-detail", classes="exp-detail", markup=False)
                 with TabPane("Stability map", id="exp-stability"), VerticalScroll():
                     yield Static("Observed train/validation values only. Each slice fixes every other setting. "
@@ -174,8 +176,8 @@ class ExperimentScreen(ModalScreen[None]):
                         yield Button("Build observed map", variant="primary", id="exp-heatmap")
                     yield Select([], prompt="Conditioned configuration slice", id="exp-map-group")
                     yield Static("Select a native or imported experiment first.", id="exp-map-summary", classes="exp-detail", markup=False)
-                    yield DataTable(id="exp-map-table", cursor_type="row")
-                    yield DataTable(id="exp-map-points", cursor_type="row")
+                    yield ExportPanel(ExportTable(id="exp-map-table", cursor_type="row"))
+                    yield ExportPanel(ExportTable(id="exp-map-points", cursor_type="row"))
                 with TabPane("TradingView import / compare", id="exp-import-tab"), VerticalScroll():
                     yield Static("Import a result CSV, then compare explicit provenance. Imported evidence cannot adopt native settings. "
                                  "Missing units, dates, costs or fill timing remain unknown and prevent a comparable verdict.", markup=False)
@@ -202,7 +204,7 @@ class ExperimentScreen(ModalScreen[None]):
                         yield Input(placeholder="right experiment ID", id="exp-compare-right")
                         yield Button("Compare", id="exp-compare")
                     yield Static("", id="exp-compare-summary", classes="exp-detail", markup=False)
-                    yield DataTable(id="exp-compare-table", cursor_type="row")
+                    yield ExportPanel(ExportTable(id="exp-compare-table", cursor_type="row"))
                     yield Static("", id="exp-compare-detail", classes="exp-detail", markup=False)
             with Horizontal(id="exp-bottom"):
                 yield Button("Close", id="exp-close")

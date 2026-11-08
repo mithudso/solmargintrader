@@ -58,6 +58,7 @@ from textual.widgets import (
     TextArea,
 )
 
+from .csv_table import ExportPanel, ExportTable
 from .help import column_help, control_help, row_help, TAB_HELP
 from .help import HEADER_GLOSSARY as HEADER_GLOSSARY  # Preserve the existing public re-export.
 from .help_screen import HelpScreen
@@ -276,7 +277,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#bots-coins": "bots.overview",
 }
 
-class GlossaryTable(DataTable):
+class GlossaryTable(ExportTable):
     """Explain headers and values using their actual column and table context.
 
     Textual tooltips are per-widget, not per-cell, so a static tooltip could
@@ -844,7 +845,7 @@ class SolTuiApp(App):
     #compound-sections { height: 1fr; }
     #compound-tested { color: $text-muted; padding: 0 1; }
     #compound-results { height: 14; }
-    #compound-forward { height: 12; }
+    #compound-forward-table { height: 12; }
     #compound-overview { height: 11; }
     #compound-coin { width: 16; }
     #compound-call { padding: 0 1; border: round $accent; }
@@ -1199,7 +1200,7 @@ class SolTuiApp(App):
                 yield OptionList(id="now-needs")
                 yield Static("[b]Signal · every coin[/b]: latest backtest verdict, hit rates, paper dollars "
                              "and trainer state. Enter opens that coin's call.", classes="table-title")
-                yield GlossaryTable(id="now-coins")
+                yield ExportPanel(GlossaryTable(id="now-coins"))
                 yield Static("[b]Activity[/b]: recent dated events, newest first.", classes="table-title")
                 yield Static("Loading…", id="now-activity")
             with VerticalScroll(id="now-right"):
@@ -1305,8 +1306,8 @@ class SolTuiApp(App):
                 yield Button("Refresh cards", id="strategy-cards-refresh")
             yield Static("", id="strategy-card-count", classes="table-title", markup=False)
             with Horizontal():
-                yield GlossaryTable(id="available-table")
-                yield GlossaryTable(id="roster-table")
+                yield ExportPanel(GlossaryTable(id="available-table"))
+                yield ExportPanel(GlossaryTable(id="roster-table"))
             with Horizontal(classes="form-row"):
                 yield Label("Params (k=v):")
                 yield Input(placeholder="fast=20 slow=50", id="strategy-params")
@@ -1350,12 +1351,12 @@ class SolTuiApp(App):
             table = GlossaryTable(id="paper-exp-table")
             table.cursor_type = "row"
             table.add_columns("strategy", "coin", "horizon", "state", "calls", "resolved", "trades", "paper $", "P&L $", "message")
-            yield table
+            yield ExportPanel(table)
             yield Static("Select a run to inspect its recent predictions and results.", id="paper-exp-detail", markup=False)
             yield Static("Selected experiment — predictions and outcomes", classes="table-title")
             events = GlossaryTable(id="paper-exp-events")
             events.add_columns("issued UTC", "starts UTC", "prediction", "outcome", "move bps", "paper P&L")
-            yield events
+            yield ExportPanel(events)
 
     @on(Button.Pressed, "#paper-exp-start")
     def _paper_exp_start(self) -> None:
@@ -1509,7 +1510,7 @@ class SolTuiApp(App):
             table.add_columns("coin", "trial", "minutes", "resolved", "accuracy", "pending", "expired",
                               "changes", "saved default", "last call", "last outcome", "issued UTC", "cost bps",
                               "active settings")
-            yield table
+            yield ExportPanel(table)
 
     def _forward_coin_options(self) -> list[tuple[str, str]]:
         from .commands import forward_coins
@@ -1714,10 +1715,10 @@ class SolTuiApp(App):
             )
             yield Static("[b]Signal reference[/b]: each signal's equation as implemented and its family.",
                          classes="table-title")
-            yield GlossaryTable(id="signals-table")
+            yield ExportPanel(GlossaryTable(id="signals-table"))
             yield Static("[b]Family behaviour[/b]: what each kind of strategy is and when it fails.",
                          classes="table-title")
-            yield GlossaryTable(id="families-table")
+            yield ExportPanel(GlossaryTable(id="families-table"))
 
     def _compound_pane(self) -> ComposeResult:
         """Compound five-minute call in four sections: the live call and its metrics, the backtest,
@@ -1753,7 +1754,7 @@ class SolTuiApp(App):
                             yield Button("Adopt tuned settings now", id="compound-adopt")
                         yield Static("Press Signal now for the live call.", id="compound-call")
                         yield Static("", id="compound-table-title", classes="table-title")
-                        yield CompoundTable(id="compound-table")
+                        yield ExportPanel(CompoundTable(id="compound-table"))
                         yield Static("", id="compound-detail")
                         with Horizontal(classes="form-row"):
                             yield Label("Selected (k=v):")
@@ -1773,7 +1774,7 @@ class SolTuiApp(App):
                         yield Static("", id="compound-bt-status")
                         yield Static("", id="compound-relations")
                         yield Static("", id="compound-results-title", classes="table-title")
-                        yield GlossaryTable(id="compound-results")
+                        yield ExportPanel(GlossaryTable(id="compound-results"))
                 with TabPane("Forward test", id="cmp-forward"):
                     with VerticalScroll():
                         with Horizontal(classes="form-row"):
@@ -1789,9 +1790,9 @@ class SolTuiApp(App):
                         yield Static("", id="compound-forward-title", classes="table-title")
                         yield Static("", id="compound-fwd-summary")
                         yield Static("", id="compound-horizon-summary", markup=False)
-                        yield GlossaryTable(id="compound-horizons")
+                        yield ExportPanel(GlossaryTable(id="compound-horizons"))
                         yield Static("Signal forward calls and outcomes", classes="table-title")
-                        yield GlossaryTable(id="compound-forward")
+                        yield ExportPanel(GlossaryTable(id="compound-forward-table"))
                 with TabPane("All coins", id="cmp-coins"):
                     with VerticalScroll():
                         with Horizontal(classes="form-row"):
@@ -1803,7 +1804,7 @@ class SolTuiApp(App):
                                      "backtest verdict and hit rate, forward-test calls, hit rate and paper "
                                      "dollars, and whether its trainer runs. Select a coin to see it in full "
                                      "in the editor below.", classes="table-title")
-                        yield GlossaryTable(id="compound-overview")
+                        yield ExportPanel(GlossaryTable(id="compound-overview"))
 
     def _bots_pane(self) -> ComposeResult:
         """The grid, triangle-arbitrage and DCA bots: backtest, forward test, auto-optimize, live prices.
@@ -1857,7 +1858,7 @@ class SolTuiApp(App):
                         yield Static("Rank all cached coins, then select a row to inspect or audit it. "
                                      "These simulations neither adopt settings nor place orders.", markup=False)
                         yield Static("Coin suitability ranking and selected audit outcomes", classes="table-title")
-                        yield GlossaryTable(id="bots-fit-table")
+                        yield ExportPanel(GlossaryTable(id="bots-fit-table"))
                         yield Static("No coin selected.", id="bots-fit-selection-summary", markup=False)
                         yield Static("Select an audit window below to inspect its equity path. Sparklines show shape "
                                      "with independent vertical scales; compare numeric returns for magnitude.", markup=False)
@@ -1866,7 +1867,7 @@ class SolTuiApp(App):
                         yield Sparkline([], id="bots-fit-equity")
                         yield Static("Buy-and-hold equity over the same sample", classes="table-title")
                         yield Sparkline([], id="bots-fit-hold")
-                        yield GlossaryTable(id="bots-fit-windows")
+                        yield ExportPanel(GlossaryTable(id="bots-fit-windows"))
                         yield Static("Complete metrics, settings and template evidence", classes="table-title")
                         yield Static("No coin selected.", id="bots-fit-detail", markup=False)
                 with TabPane("Backtest", id="bots-sec-backtest"):
@@ -1874,32 +1875,32 @@ class SolTuiApp(App):
                         yield Static("No backtest yet for this bot: press Backtest.", id="bots-bt-title")
                         yield Static("[b]Every coin in the last backtest[/b]: select a row to show its detail "
                                      "below", classes="table-title")
-                        yield GlossaryTable(id="bots-bt-coins")
+                        yield ExportPanel(GlossaryTable(id="bots-bt-coins"))
                         yield Static("[b]What it set[/b] at its start, from the price at that moment",
                                      classes="table-title")
-                        yield GlossaryTable(id="bots-set")
+                        yield ExportPanel(GlossaryTable(id="bots-set"))
                         yield Static("[b]What it made[/b]: the bot beside buy-and-hold of the same capital, "
                                      "after fees and slippage", classes="table-title")
-                        yield GlossaryTable(id="bots-bt-table")
+                        yield ExportPanel(GlossaryTable(id="bots-bt-table"))
                 with TabPane("Forward test", id="bots-sec-forward"):
                     with VerticalScroll():
                         yield Static("No forward test yet.", id="bots-fwd-summary")
                         yield Static("[b]Forward test so far[/b]: the recorded stream since it started, "
                                      "replayed through the bot in dry-run", classes="table-title")
-                        yield GlossaryTable(id="bots-fwd-table")
+                        yield ExportPanel(GlossaryTable(id="bots-fwd-table"))
                 with TabPane("Auto-optimize", id="bots-sec-optimize"):
                     with VerticalScroll():
                         yield Static("Auto-optimize has not run for this bot.", id="bots-opt-verdict")
                         yield Static("[b]Per coin[/b]: the windows each coin ran and the pick against the "
                                      "current settings out of sample", classes="table-title")
-                        yield GlossaryTable(id="bots-opt-coins")
+                        yield ExportPanel(GlossaryTable(id="bots-opt-coins"))
                         yield Static("[b]Every configuration searched[/b], best train rank first; the test "
                                      "columns are out of sample", classes="table-title")
-                        yield GlossaryTable(id="bots-opt-table")
+                        yield ExportPanel(GlossaryTable(id="bots-opt-table"))
                 with TabPane("Live prices", id="bots-sec-prices"):
                     yield Static("[b]Streamed Coinbase markets[/b]: newest best bid and ask from the "
                                  "recorder", classes="table-title")
-                    yield GlossaryTable(id="bots-prices")
+                    yield ExportPanel(GlossaryTable(id="bots-prices"))
 
     # -- Bots tab ------------------------------------------------------------
 
@@ -2941,7 +2942,7 @@ class SolTuiApp(App):
             yield Static("[b]CPCV results[/b], latest Run backtest: one row per strategy, best median Sharpe "
                          "first. Sharpe, net return and trades are medians across the held-out paths; IQR is "
                          "their spread and % paths + the share that made money.", classes="table-title")
-            yield GlossaryTable(id="results-table")
+            yield ExportPanel(GlossaryTable(id="results-table"))
 
     def _live_run_pane(self) -> ComposeResult:
         """Choose a real registered strategy for a historical, no-order simulation."""
@@ -2988,7 +2989,7 @@ class SolTuiApp(App):
             yield Static("No dry run started.", id="exec-summary")
             yield Static("[b]Dry-run fills[/b]: every simulated fill so far, newest last: bar, time, side, "
                          "reason, price, units, cost and equity after. Nothing here was sent to a venue.", classes="table-title")
-            yield GlossaryTable(id="fills-table")
+            yield ExportPanel(GlossaryTable(id="fills-table"))
 
     # -- lifecycle -------------------------------------------------------
 
@@ -3614,7 +3615,7 @@ class SolTuiApp(App):
                             "rankable")
         hz = self.query_one("#compound-horizons", GlossaryTable)
         hz.add_columns("forecast UTC", "starts UTC", "minutes", "prediction", "return bps", "hit")
-        fwd = self.query_one("#compound-forward", GlossaryTable)
+        fwd = self.query_one("#compound-forward-table", GlossaryTable)
         fwd.cursor_type = "row"
         fwd.add_columns("time", "call", "composite", "regime", "price", "next 5m bps", "hit", "blocked by")
         ov = self.query_one("#compound-overview", GlossaryTable)
@@ -3809,7 +3810,7 @@ class SolTuiApp(App):
             "OOS = the last 30% of bars. Hit = next-bar direction; return = engine P&L after fees at the "
             "set leverage. A row is ranked only with enough out-of-sample calls."))
 
-    @on(DataTable.RowHighlighted, "#compound-forward")
+    @on(DataTable.RowHighlighted, "#compound-forward-table")
     def _compound_forward_highlighted(self, event: DataTable.RowHighlighted) -> None:
         if not self._on_compound_tab() or not 0 <= event.cursor_row < len(self._compound_forward_rows):
             return
@@ -3998,7 +3999,7 @@ class SolTuiApp(App):
                 elif row["label"] == "compound":
                     self._compound_bt["_compound"] = _pct(row["oos_hit"])
         fenv = self._call("compound.forward_status", {"asset": self._compound_coin}, quiet=True)
-        fwd = self.query_one("#compound-forward", GlossaryTable)
+        fwd = self.query_one("#compound-forward-table", GlossaryTable)
         fwd.clear()
         self._compound_fwd = {}
         self._compound_forward_rows = []
@@ -4476,7 +4477,7 @@ class SolTuiApp(App):
                                 "median Sharpe", "IQR", "% paths +",
                                 "backtest median net %", "trades", "paths")
             configs.cursor_type = "row"
-            yield configs
+            yield ExportPanel(configs)
             yield Static(
                 "[b]Transfer test — the same configurations off SOL[/b]  "
                 "(fitted on SOL; a recommendation that only works there is "
@@ -4487,7 +4488,7 @@ class SolTuiApp(App):
             transfers.add_columns("#", "configuration", "asset",
                                   "median Sharpe", "Δ vs SOL", "% paths +",
                                   "backtest median net %", "trades", "paths")
-            yield transfers
+            yield ExportPanel(transfers)
             yield Static(
                 "Benchmark that must stay in view: buy_and_hold, zero "
                 "parameters, medium/long median Sharpe +0.534, 68% of paths "
@@ -4679,7 +4680,7 @@ class SolTuiApp(App):
                 pairs = GlossaryTable(id="coinbase-pairs-table")
                 pairs.cursor_type = "row"
                 pairs.add_columns("Coinbase spot pair — select to use")
-                yield pairs
+                yield ExportPanel(pairs)
                 with Horizontal(classes="form-row"):
                     yield Input(value="SOL-USDC", placeholder="Pair, e.g. SOL-USDC", id="coinbase-order-product")
                     yield Select([("BUY", "BUY"), ("SELL", "SELL")], value="BUY", allow_blank=False,
@@ -4746,19 +4747,19 @@ class SolTuiApp(App):
             yield Static("Coinbase holdings — available and held balances", classes="table-title")
             cbhold = GlossaryTable(id="coinbase-holdings")
             cbhold.add_columns("portfolio", "asset", "available", "hold")
-            yield cbhold
+            yield ExportPanel(cbhold)
             yield Static("[b]Coinbase positions[/b] — totals are approximate; staking is shown separately.", classes="table-title")
             cbpositions = GlossaryTable(id="coinbase-positions")
             cbpositions.add_columns("portfolio", "asset", "account type", "quantity", "value $")
-            yield cbpositions
+            yield ExportPanel(cbpositions)
             yield Static("[b]Holdings[/b]", classes="table-title")
             holdings = GlossaryTable(id="wallet-holdings")
             holdings.add_columns("chain", "asset", "amount", "price $", "value $ (wallet (live))", "status")
-            yield holdings
+            yield ExportPanel(holdings)
             yield Static("[b]Contracts and accounts each holding lives in[/b]", classes="table-title")
             contracts = GlossaryTable(id="wallet-contracts")
             contracts.add_columns("chain", "holding", "kind", "address", "program", "explorer")
-            yield contracts
+            yield ExportPanel(contracts)
 
     def _coinbase_order_values(self) -> tuple[str, str, str, str]:
         product = self.query_one("#coinbase-order-product", Input).value.strip().upper()
@@ -5616,7 +5617,7 @@ class SolTuiApp(App):
             table = GlossaryTable(id="analyze-table")
             table.add_columns("strategy", "family", "action", "holding -> wants",
                               "warmup", "bars")
-            yield table
+            yield ExportPanel(table)
 
     @on(Button.Pressed, "#analyze-run")
     def _run_analysis(self) -> None:
@@ -5668,11 +5669,11 @@ class SolTuiApp(App):
             per_file.add_columns("file", "rankable", "below floor", "positive",
                                  "made money", "median Sharpe", "paths", "best (rankable)",
                                  "best backtest median net %")
-            yield per_file
+            yield ExportPanel(per_file)
             yield Static("[b]Below the floor — what a naive aggregate would rank first[/b]", classes="table-title")
             dropped = GlossaryTable(id="cumulative-dropped")
             dropped.add_columns("file", "configuration", "claims Sharpe", "trades", "paths")
-            yield dropped
+            yield ExportPanel(dropped)
 
     @on(Button.Pressed, "#cumulative-reload")
     def _reload_cumulative(self) -> None:
@@ -5745,13 +5746,13 @@ class SolTuiApp(App):
                 "configuration", "family", "median Sharpe", "IQR",
                 "% paths +", "backtest median net %", "trades",
             )
-            yield ranked
+            yield ExportPanel(ranked)
             yield Static(
                 "[b]Below the floor — listed, never ranked[/b]", classes="table-title"
             )
             floor = GlossaryTable(id="queue-floor")
             floor.add_columns("configuration", "family", "trades", "why")
-            yield floor
+            yield ExportPanel(floor)
 
     @on(Button.Pressed, "#queue-start")
     def _queue_start(self) -> None:
@@ -5946,21 +5947,21 @@ class SolTuiApp(App):
             by_strategy.add_columns("source", "strategy", "asset", "net $", "net % (source named)",
                                     "gross $", "costs $", "realized $", "unrealized $",
                                     "contribution (source named)")
-            yield by_strategy
+            yield ExportPanel(by_strategy)
             yield Static("[b]By asset[/b]", classes="table-title")
             by_asset = GlossaryTable(id="pnl-assets")
             by_asset.add_columns("source", "asset", "runs", "net $", "net % (source named)",
                                  "contribution (source named)")
-            yield by_asset
+            yield ExportPanel(by_asset)
             yield Static("[b]Best and worst periods[/b]", classes="table-title")
             periods = GlossaryTable(id="pnl-periods")
             periods.add_columns("source", "period", "best", "worst")
-            yield periods
+            yield ExportPanel(periods)
             yield Static("[b]Daily P&L, cumulative and drawdown[/b]", classes="table-title")
             daily = GlossaryTable(id="pnl-daily")
             daily.add_columns("source", "date", "P&L $", "cumulative $",
                               "cumulative % (source named)", "drawdown (source named)")
-            yield daily
+            yield ExportPanel(daily)
 
     @on(Button.Pressed, "#pnl-run")
     def _pnl_run(self) -> None:
@@ -6087,14 +6088,14 @@ class SolTuiApp(App):
                 yield Button("Resume", variant="success", id="liq-resume")
             yield Static("", id="liq-status", classes="hint")
             yield Static("[b]Positions[/b]", classes="table-title")
-            yield GlossaryTable(id="liq-positions")
+            yield ExportPanel(GlossaryTable(id="liq-positions"))
             yield Static("[b]Scout[/b] — top pools by modelled net APR", classes="table-title")
             yield Static("", id="liq-scout-note", classes="hint")
-            yield GlossaryTable(id="liq-scout")
+            yield ExportPanel(GlossaryTable(id="liq-scout"))
             yield Static("[b]Experiments[/b] — arms side by side", classes="table-title")
-            yield GlossaryTable(id="liq-experiments")
+            yield ExportPanel(GlossaryTable(id="liq-experiments"))
             yield Static("[b]Recent actions[/b] — newest first", classes="table-title")
-            yield GlossaryTable(id="liq-actions")
+            yield ExportPanel(GlossaryTable(id="liq-actions"))
 
     def _liq_tick(self) -> None:
         """Auto-refresh. A no-op until the pane exists (teardown-safe)."""
@@ -6218,7 +6219,7 @@ class SolTuiApp(App):
             research = self._call("research.get")["result"]
             for r in research["drivers"]:
                 table.add_row(r["driver"], r["answers"], r["established"])
-            yield table
+            yield ExportPanel(table)
             yield Static("[b]Findings that constrain every figure above[/b]", classes="table-title")
             for line in research["findings"]:
                 yield Static(f"• {line}")
@@ -6268,7 +6269,7 @@ class SolTuiApp(App):
                 # opening. Without this a click just moved a cell cursor and
                 # nothing happened -- the bug this pane shipped with.
                 listing.cursor_type = "row"
-                yield listing
+                yield ExportPanel(listing)
 
     def _refresh_docs(self) -> None:
         if not self._docs_listing:
