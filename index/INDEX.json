@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T17:26:41+00:00",
+  "generatedAt": "2026-11-08T17:27:18+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "b8052ce",
+  "commit": "7cfe480",
   "counts": {
     "files": 2622,
-    "bytes": 43426532,
+    "bytes": 43427378,
     "byKind": {
       "strategy-card": 1478,
       "doc": 546,
@@ -80643,9 +80643,9 @@
       "title": "test_compound",
       "summary": "Compound five-minute tester: saved config, live reads, forward ledger, and the tab.",
       "summarySource": "docstring",
-      "bytes": 71207,
-      "lines": 1296,
-      "sha1": "29077d9816b7cceeb49fb4b2e6995e8da6959aeb",
+      "bytes": 72053,
+      "lines": 1307,
+      "sha1": "6f45f63af282f737b6ed676bf1aea7aa72b0ed98",
       "symbols": [
         "T0",
         "candles()",
