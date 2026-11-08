@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 54
-Delta: v53 to v54; Bots tab v2 (optimize window, wider re-runs, per-coin stats, multi-coin backtest from the start of data, always-on recorder).
+Version: 55
+Delta: v54 to v55; Forwardtest coin dropdown, auto-optimize with saved defaults, background runner.
 
 ## v1 - 2026-11-06
 
@@ -546,3 +546,13 @@ Completed: `soltui/bots_screens.py` (coin picker, auto-optimize window with the 
 Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backtest from the start of data runs 2021-06-17 (SOL) and 2019-11-09 (BTC).
 
 Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.
+
+## v55 - 2026-11-08 (Forwardtest coins, auto-optimize, background runner)
+
+Target: prompts.md Forwardtest coins entry. Branch feat/forwardtest-coins-optimize in /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd.
+
+Completed: coin dropdown (one coin or All coins = every Coinbase USD market from `pricefeed.stream_products`); Auto-optimize on/off (`tick(tune=...)`); an adoption is saved as the trial's default (`forwardtest/defaults.json`, key coin|label|minutes) and seeds new trial rows (`_usable_default` refuses other members or unknown params); background runner thread on the Runtime (`forwardtest.run`, `forwardtest.state`), header shows it from every tab.
+
+Measured: one check is 1.5 s per coin with 34 strategies x 4 horizons; a live two-coin run recorded 136 calls per coin and the thread exited on Stop.
+
+Not reproduced: in-process, the old timer already kept ticking after a tab switch (pilot, 2026-11-08); the runner thread removes the UI from the loop either way.

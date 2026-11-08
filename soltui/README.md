@@ -125,7 +125,9 @@ matching roster configuration. With multiple custom versions, use the right tabl
 **Space** on the version to remove. **Add all to roster** fills in missing
 strategies with the Signal defaults and keeps custom entries.
 
-On **Forwardtest**, choose **All strategies**, **Roster only**, or **Combinations only**. Enter
+On **Forwardtest**, pick the **coins** (one coin, or **All coins**: every Coinbase USD market of
+the cached coins; each coin keeps its own trials, settings and accuracy) and **Auto-optimize**
+on or off. Choose **All strategies**, **Roster only**, or **Combinations only**. Enter
 a combination such as `rsi,macd; breakout,obv_trend` and select its rule. Each group separated
 by a semicolon is a separate trial. Use exact roster labels to distinguish custom versions.
 **All four** forecasts 1, 5, 10 and 30 minutes; choose a single duration to issue only that
@@ -139,14 +141,24 @@ marks moves within the cost threshold FLAT, and waits if any candle is missing. 
 horizon, only one window is predicted at a time. Accuracy is a directional classification
 score. A rule that always stays flat or always holds can serve as a comparison.
 
-Each strategy or combination and horizon has its own active settings. When it misses, the
-trainer considers nearby settings that made the correct call at the same time. It uses the
-Compound Beta comparison: at least 300 paired observations, probability above 95%, and a
-two-day cooldown after each change. Parameters without a usable alternative stay unchanged.
-Learning only changes that paper trial's future calls.
+Each coin, strategy or combination and horizon has its own active settings. With
+**Auto-optimize on**, when a trial misses, the trainer considers nearby settings that made the
+correct call at the same time. It uses the Compound Beta comparison: at least 300 paired
+observations, probability above 95%, and a two-day cooldown after each change. A setting that
+passes is adopted **and saved as that trial's default** in `~/.config/soltui/forwardtest/defaults.json`
+(keyed by coin, trial and horizon), so the next forward test starts from it, even after a code
+revision starts new trial rows; the **saved default** column says which trials run on one. A saved
+default that names other strategies or parameters the code no longer takes is ignored. Saved
+defaults never change the roster or the Signals tab: one coin's 5-minute adoption is not evidence
+for every other use of the strategy. With **Auto-optimize off** settings stay fixed and calls are
+only scored.
 
-The app checks prices while the session is running, including when another tab is open.
-Stop or close the console to stop checking. The SQLite file in the local SolTUI configuration
+**Start** prepares the plan (`forwardtest.start`) and starts a background runner thread
+(`forwardtest.run`) that checks every chosen coin once per closed minute, whatever tab is open; the
+console's header says "forwardtest running on N coin(s)" from every tab, and the tab only reads the
+runner's state (`forwardtest.state`). One coin's failed check is reported and retried next minute
+without stopping the others. A check takes about 1.5 s per coin with all strategies (measured
+2026-11-08), so All coins fits well inside a minute. Stop or close the console to stop checking. The SQLite file in the local SolTUI configuration
 directory retains predictions, shadow calls, outcomes and adoptions. Restarting with the same
 trial and evaluation code resumes that record. Old pending calls can settle only if their exact
 candles are still available. No wallet or order is involved.

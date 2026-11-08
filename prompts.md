@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 48
-Delta: v47 to v48; Bots tab v2: optimize window, diversity per run, per-coin stats, multi-coin backtest, always-on recorder, one-row fields.
+Version: 49
+Delta: v48 to v49; Forwardtest coin dropdown, auto-optimize with saved defaults, background runner.
 Version: 45
 Delta: v44 to v45; resume the Compound 5m full-suite run.
 Delta: v44 to v45; trend filter for the compound.
@@ -345,3 +345,11 @@ WHen I'm in teh Bots tab and click Auto-optimize (all coins), it should open the
 ```
 
 Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch feat/bots-tab-v2).
+
+## v49 - 2026-11-08 (Forwardtest coins and auto-optimize)
+
+```text
+For the forwardtest tab, add a dropdown to choose which coins are tested, including all coins, and also add an "auto-optimize" option which dynamically changes the strategies' settings when they get an answer wrong. If a new setting tests superior than an old setting then save it as the default. Also make the forwardtest keep running in the background if I change tabs.
+```
+
+Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11-fwd, branch feat/forwardtest-coins-optimize, stacked on PR #87).
