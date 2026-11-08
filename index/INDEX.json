@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-08T17:38:33+00:00",
+  "generatedAt": "2026-11-08T18:06:40+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "fe784ac",
+  "commit": "26d4ec5",
   "counts": {
-    "files": 2622,
-    "bytes": 43442664,
+    "files": 2624,
+    "bytes": 43468760,
     "byKind": {
       "strategy-card": 1478,
       "doc": 546,
       "code-python": 186,
-      "test": 135,
+      "test": 137,
       "code-js": 87,
       "result": 85,
       "config": 40,
@@ -24,7 +24,7 @@
     "byTopDir": {
       "backtester": 1911,
       "research": 178,
-      "soltui": 110,
+      "soltui": 112,
       "extension": 92,
       "skills": 67,
       "docs": 62,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2526
+    "withSummary": 2528
   },
   "files": [
     {
@@ -288,7 +288,7 @@
       "summarySource": "opening-prose",
       "bytes": 5126,
       "lines": 93,
-      "sha1": "b9a2138814f614c46b0d6058c263af2490bd9aba",
+      "sha1": "61b7fb92c53aa70ee20b8b486bef0c8387a6d5d1",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -468,7 +468,7 @@
       "summarySource": "opening-prose",
       "bytes": 14086,
       "lines": 195,
-      "sha1": "039c8830e9c6015fc79d19e6ff7ba452f6fe097d",
+      "sha1": "337ce3d2b2bdd07cef5f41cd02ffab0d87a40e5b",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -522,7 +522,7 @@
       "summarySource": "opening-prose",
       "bytes": 3496,
       "lines": 64,
-      "sha1": "ee60d2edb854059a6f6bd647047a00d8729f65a1",
+      "sha1": "935c7e41a3fa7d4d7f0fdf496d016bb1c0a46480",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -540,7 +540,7 @@
       "summarySource": "opening-prose",
       "bytes": 8957,
       "lines": 139,
-      "sha1": "fb1dc7e3947b95852f206ae4e5fe7707fbeeb653",
+      "sha1": "4b9214964323d5e82bf91c6c6eac3da9a395dc66",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63331,7 +63331,7 @@
       "summarySource": "opening-prose",
       "bytes": 8875,
       "lines": 187,
-      "sha1": "7926b552cfda11a13d88ae68bdb5f2c42af8dee1",
+      "sha1": "96f59493754ccf8efb72ff747db564b4d01ab2e2",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63453,11 +63453,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Testing",
-      "summary": "python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1034 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests",
+      "summary": "python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1046 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests",
       "summarySource": "opening-prose",
       "bytes": 18031,
       "lines": 230,
-      "sha1": "b23dfcbee12350027fa6a5854b24b715bcaa1cb1",
+      "sha1": "7d60f36eed36a6a0428d7b08a3885ce6af470f96",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -70611,11 +70611,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 166 Delta: v165 to v166; record live sweep and Signal trainer activation. Version: 146",
+      "summary": "Version: 170 Delta: v169 to v170; record actual cached-data dry-run validation. Version: 146",
       "summarySource": "opening-prose",
-      "bytes": 254849,
-      "lines": 1665,
-      "sha1": "ccfbf57fee62fd96c08393cee4ed4afefeb53aff",
+      "bytes": 257987,
+      "lines": 1681,
+      "sha1": "22c24ae268255798a6e498612e41f534f6d6de58",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -71080,11 +71080,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 93 Delta: v92 to v93; record sweep proof recovery request. Version: 75",
+      "summary": "Version: 95 Delta: v93 to v95; retain sweep, test status and dry-run requests. Version: 75",
       "summarySource": "opening-prose",
-      "bytes": 39473,
-      "lines": 770,
-      "sha1": "1db7cb4b273a7246b1fa43c220c50283d028ea85",
+      "bytes": 40183,
+      "lines": 782,
+      "sha1": "724a48e7c0fedda7b063226ac57061387c8fca88",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -77728,9 +77728,9 @@
       "title": "soltui \u2014 SOL strategy console",
       "summary": "A Textual TUI plus a macOS menu-bar indicator over the backtester. Its panes are grouped into five destinations (Now, Signal, Research, Money, Library) plus Settings; see [Navigation](#navigation). Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin",
       "summarySource": "opening-prose",
-      "bytes": 45670,
+      "bytes": 45935,
       "lines": 569,
-      "sha1": "58181994f7e43dc6de1bf74d38ca85beff4adbdc",
+      "sha1": "0309305a67c9a1de519bd08ff615027b88ae7b4b",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -78342,9 +78342,9 @@
       "title": "The research scripts import pandas and numpy, so they must run on the interpreter running this",
       "summary": "The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.",
       "summarySource": "docstring",
-      "bytes": 130663,
+      "bytes": 130676,
       "lines": 2684,
-      "sha1": "9329efeed96849935ba8b295679024fa9cc6d529",
+      "sha1": "8bebffba37d7bb5fd00f5ff5c16ce21cbb4e7a47",
       "symbols": [
         "REPO",
         "UNTESTED_SWEEP_TIMEOUT_S",
@@ -79037,9 +79037,9 @@
       "title": "Define the unit and an example before the statistical qualification. A green",
       "summary": "Plain-language help shared by hover tooltips and the F1 reference.",
       "summarySource": "docstring",
-      "bytes": 96271,
-      "lines": 638,
-      "sha1": "85a6bf113e5ed52862ab361033823ed767d067e4",
+      "bytes": 96190,
+      "lines": 639,
+      "sha1": "96a0aead59b0f6c00cf416a7c15994a3ce65fff2",
       "symbols": [
         "HEADER_GLOSSARY",
         "TAB_HELP",
@@ -79160,14 +79160,13 @@
       "name": "live_run.py",
       "ext": ".py",
       "kind": "code-python",
-      "title": "live_run",
-      "summary": "Live Run dashboard for SolTUI. Loads the best configuration from TOP5-RECOMMENDATION (or untested sweep) and provides a UI to launch the Node.js extension in dry-run mode.",
+      "title": "Legacy integration fixture; this file no longer determines the default strategy.",
+      "summary": "Historical, order-free strategy simulations for the Dry Run view.",
       "summarySource": "docstring",
-      "bytes": 4680,
-      "lines": 123,
-      "sha1": "e25f85232ed1c6130b86cdba8c96d970039a3295",
+      "bytes": 5451,
+      "lines": 116,
+      "sha1": "8e0adbf2bb8461d2303c5a2e15e99b72ada3b00d",
       "symbols": [
-        "REPO",
         "RECOMMENDATION_FILE",
         "get_best_strategy()",
         "run_dryrun()",
@@ -79179,10 +79178,14 @@
       "imports": [
         "__future__",
         "backtester",
-        "json",
+        "collections",
+        "config",
+        "numpy",
+        "paper",
         "pathlib",
         "re",
-        "subprocess"
+        "runner",
+        "time"
       ],
       "internalImports": [
         "backtester"
@@ -80470,9 +80473,9 @@
       "title": "test_bridge_buttons",
       "summary": "Every TUI button is a registry command: a new button cannot skip the registry.",
       "summarySource": "docstring",
-      "bytes": 2164,
+      "bytes": 2163,
       "lines": 54,
-      "sha1": "264e42a8418d57668c012ee991d86f04355e1599",
+      "sha1": "0c0b11b4757de60d31d9212b2c54b36fd3d26932",
       "symbols": [
         "SRC",
         "pressed_selectors()",
@@ -80796,6 +80799,36 @@
         "unittest"
       ],
       "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_dryrun_strategy.py",
+      "path": "soltui/tests/test_dryrun_strategy.py",
+      "dir": "soltui/tests",
+      "name": "test_dryrun_strategy.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_dryrun_strategy",
+      "summary": "Dry Run executes the selected registered strategy, not the extension grid.",
+      "summarySource": "docstring",
+      "bytes": 4945,
+      "lines": 93,
+      "sha1": "888a34ff253948992ac633a8eb5a673cf1993679",
+      "symbols": [
+        "class DryRunStrategyTests",
+        "class DryRunUiTests"
+      ],
+      "imports": [
+        "__future__",
+        "backtester",
+        "soltui",
+        "textual",
+        "unittest"
+      ],
+      "internalImports": [
+        "backtester",
         "soltui"
       ],
       "frontmatter": {}
@@ -81459,6 +81492,35 @@
       "frontmatter": {}
     },
     {
+      "id": "soltui/tests/test_status_console.py",
+      "path": "soltui/tests/test_status_console.py",
+      "dir": "soltui/tests",
+      "name": "test_status_console.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_status_console",
+      "summary": "Status views reconnect to each job without taking over unrelated editor work.",
+      "summarySource": "docstring",
+      "bytes": 5417,
+      "lines": 101,
+      "sha1": "fa3a54a0001ae43765e6d4569f51e6f2d3223217",
+      "symbols": [
+        "class StatusConsoleTests"
+      ],
+      "imports": [
+        "__future__",
+        "pathlib",
+        "soltui",
+        "tempfile",
+        "textual",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "soltui/tests/test_status_roster.py",
       "path": "soltui/tests/test_status_roster.py",
       "dir": "soltui/tests",
@@ -81959,9 +82021,9 @@
       "title": "Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.",
       "summary": "Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.",
       "summarySource": "docstring",
-      "bytes": 285423,
-      "lines": 5483,
-      "sha1": "b19442994e36ee22a6f685a3704bb9ee9eb459ba",
+      "bytes": 296342,
+      "lines": 5681,
+      "sha1": "40d529579a4f1615d0188794341eb4078098c4ce",
       "symbols": [
         "class _CaptureWithoutInvalidFd",
         "_mtime()",
