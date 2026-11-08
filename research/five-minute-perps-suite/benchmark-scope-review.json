@@ -1,7 +1,7 @@
 {
   "schema": "task808-benchmark-scope-review/v1",
-  "version": 4,
-  "delta": "v3 to v4; verify unchanged metric and fill sources after final upstream adaptive-roster integration.",
+  "version": 5,
+  "delta": "v4 to v5; retain unchanged metric/fill proof after concurrent frontier and bots integration.",
   "reviewed_as_of": "2026-11-08",
   "reviewer": "independent explorer, read-only source inspection and real-function synthetic check",
   "source_revision": "5cf5918e9f7a7d46a1aae7ae09995ba994ecdc07",
@@ -89,8 +89,8 @@
   },
   "source_locators_revision": "5cf5918e9f7a7d46a1aae7ae09995ba994ecdc07",
   "integration_verification": {
-    "source_revision": "a3e353842ac638ec7b62c37396a3f94f8fb01195",
-    "upstream_revision": "c9359c4",
+    "source_revision": "580a9d243638e6425da4396635a87340cbe3cba4",
+    "upstream_revision": "a75f5b6",
     "forecast_stats_ast_identical_to_original_review": true,
     "forecast_stats_ast_sha256": "e00005b65a01e0bf9c70e85893c0b31e74afe65fe5eca1ecee024f0f0d6598ca",
     "original_function_line": 1904,
