@@ -69,11 +69,14 @@ STATUSES = ("measured", "implemented", "spec-only")
 
 # How the thing is executed. An exposure strategy implements the `Strategy`
 # protocol in core/engine.py; a ladder is a resting-order grid run by
-# core/gridsim.py, which has a different execution model entirely.
-KINDS = ("exposure-strategy", "ladder")
+# core/gridsim.py, which has a different execution model entirely. A bot is an
+# order-lifecycle simulator of its own -- the DCA safety-order bot in
+# core/dcasim.py, or the triangular-arbitrage event replay in
+# core/trianglesim.py -- and runs through backtester.botcli.
+KINDS = ("exposure-strategy", "ladder", "bot")
 
 # Which entry point runs the card. `null` means nothing does yet (spec-only).
-RUNNERS = ("backtester.cli", "backtester.gridcli", "backtester.paircli")
+RUNNERS = ("backtester.cli", "backtester.gridcli", "backtester.paircli", "backtester.botcli")
 
 REQUIRED_FIELDS = (
     "id",
@@ -517,6 +520,14 @@ def load_card(path: str | Path) -> StrategyCard:
                 )
             if runner != "backtester.gridcli":
                 raise CardError(f"{path.name}: a ladder runs through backtester.gridcli")
+        elif data["kind"] == "bot":
+            if data.get("registry_key") is not None:
+                raise CardError(
+                    f"{path.name}: a bot is not a Strategy and has no registry_key; "
+                    "it runs through backtester.botcli"
+                )
+            if runner != "backtester.botcli":
+                raise CardError(f"{path.name}: a bot runs through backtester.botcli")
 
     return StrategyCard(
         id=data["id"],

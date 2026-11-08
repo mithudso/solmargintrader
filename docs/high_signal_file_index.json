@@ -61,6 +61,13 @@
       "lines": 307
     },
     {
+      "path": "backtester/botcli.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes",
+      "lines": 161
+    },
+    {
       "path": "backtester/paircli.py",
       "component": "backtester",
       "kind": "python",
@@ -79,7 +86,7 @@
       "component": "backtester",
       "kind": "markdown",
       "summary": "Scope, correctness priorities, usage",
-      "lines": 471
+      "lines": 473
     },
     {
       "path": "backtester/PROMPT.md",
@@ -141,6 +148,20 @@
       "kind": "python",
       "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
       "lines": 881
+    },
+    {
+      "path": "backtester/core/dcasim.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism",
+      "lines": 484
+    },
+    {
+      "path": "backtester/core/trianglesim.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes latency_s later; reads recorded snapshot files",
+      "lines": 408
     },
     {
       "path": "backtester/core/data.py",
@@ -238,14 +259,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Parses the cards and is checked against the registry both ways",
-      "lines": 652
+      "lines": 663
     },
     {
       "path": "backtester/core/scorecard.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 1996
+      "lines": 2027
     },
     {
       "path": "backtester/core/compound.py",
@@ -364,7 +385,7 @@
       "component": "research",
       "kind": "python",
       "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 241
+      "lines": 244
     },
     {
       "path": "research/geometry.py",
@@ -726,7 +747,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 3773
+      "lines": 4186
     },
     {
       "path": "soltui/signals.py",
@@ -775,7 +796,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Detached offline sweep worker and per-process array cache",
-      "lines": 578
+      "lines": 585
     },
     {
       "path": "soltui/compound.py",
@@ -790,6 +811,20 @@
       "kind": "python",
       "summary": "Reads daemon state; creates/removes only the KILL flag",
       "lines": 600
+    },
+    {
+      "path": "soltui/bots.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test",
+      "lines": 1122
+    },
+    {
+      "path": "soltui/pricefeed.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process",
+      "lines": 708
     },
     {
       "path": "soltui/serve.py",
@@ -838,7 +873,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 433
+      "lines": 482
     },
     {
       "path": "soltui/tests",
@@ -879,7 +914,7 @@
       "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 331
+      "lines": 345
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",
@@ -1081,7 +1116,7 @@
       "component": "liquidity",
       "kind": "other",
       "summary": "Locked component dependencies",
-      "lines": 1714
+      "lines": 1700
     },
     {
       "path": "liquidity/src/aero_lp/chain.py",
@@ -1235,14 +1270,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
-      "lines": 464
+      "lines": 486
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity",
-      "lines": 561
+      "lines": 564
     },
     {
       "path": "docs/TRADINGVIEW-REFERENCE.md",

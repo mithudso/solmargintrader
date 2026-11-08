@@ -154,6 +154,20 @@ class TestSchemaLayout(unittest.TestCase):
                 for field in ("source_path", "source_sha256", "loaded_at"):
                     self.assertIn(field, required)
 
+    def test_every_strategy_card_fits_the_validator_enums(self) -> None:
+        # Server-free: the strategies validator refused the first `kind: bot` card in CI
+        # ("Document failed validation", failingDocumentId dca_bot) because its enum lagged the
+        # card schema. Checking the enums against every card catches that without a mongod.
+        from backtester.core import strategy_cards as sc
+
+        props = schema.COLLECTIONS["strategies"]["validator"]["$jsonSchema"]["properties"]
+        for card in sc.load_all().values():
+            with self.subTest(card=card.id):
+                self.assertIn(card.kind, props["kind"]["enum"])
+                self.assertIn(card.status, props["status"]["enum"])
+                self.assertIn(card.success_basis, props["success_basis"]["enum"])
+        self.assertTrue(set(sc.KINDS) <= set(props["kind"]["enum"]), "card KINDS outgrew the validator")
+
     def test_time_series_collections_carry_no_validator(self) -> None:
         """MongoDB accepts neither $jsonSchema nor a unique index on a time series
         collection; asserting it here records *why* the loader must drop and reload."""

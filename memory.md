@@ -1,7 +1,8 @@
 # Work continuation
 
-Version: 53
-Delta: v52 to v53; SolTUI v2 layout-blind redesign and Textual mockup.
+Version: 54
+Delta: v53 to v54; SolTUI v2 layout-blind redesign and Textual mockup.
+Delta: v52 to v53; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder.
 
 ## v1 - 2026-11-06
 
@@ -528,6 +529,16 @@ Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithud
 
 Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
 
+## v51 - 2026-11-08 (resume Compound 5m)
+
+Target (Stele TASK-862): run a fresh combined registry and compound sweep across the owner-selected ten coins. The tester and skill shipped in PR #60 and subsequent improvements through PR #78. The recorded ten-coin full-history result covers 300 compound configurations, not the full registry plus compound sweep.
+
+Checkpoint: started the data refresh from the isolated agent-01a1b61a worktree; the fetch log is in the main checkout at data/logs/full-suite-resume-fetch.log. The full suite now includes frontier variants and passes the absolute refresh cache to registry workers. The new --archive-results flag allows --skip-fetch to start a new registry ledger after a successful standalone refresh. A detached continuation waits for a successful fetch before running both sweeps; see data/logs/full-suite-resume-sweeps.log.
+
+Verified: 60 focused tests and check_docs pass. Remaining: verify per-asset fetch coverage, completed registry and compound rows, skips and errors before interpreting the new run. Keep the worktree while the continuation uses it.
+
+Restored on 2026-11-08: the two sections below (v51 trend filter, v52 Adaptive Forwardtest) were present at 70807b8 but missing from master after #81/#84; they are copied back verbatim.
+
 ## v51 - 2026-11-08 (trend filter)
 
 Target: the owner asked for a filter that stops the compound fading a clear trend. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-trend, branch feat/compound-trend-gate.
@@ -542,9 +553,9 @@ Remaining: after merge, restart the unattended trainer so it runs gate_trend; th
 
 Target: prompts v46, Stele TASK-863 and KNOW-864. Worktree /Users/mitch/dev/solmargintrader-wt-forwardtest. Reuse compound tuning gates on prospective shadow predictions. Isolate each trial and each of four horizons. Implemented Space toggle and bulk roster add. Added a console-owned paper Forwardtest worker, closed 1m Coinbase feed, SQLite prediction history, separate 1/5/10/30-minute trials and shadow learning gated by paired resolved observations. Nine focused tests passed for separate outcomes, pre-window timing, missing data, adoption, roster and worker stop. The 853 backtester tests and documentation checks passed. An isolated SOL tick recorded all 140 calls for 34 standalone strategies and one combination across four horizons. Full local suite caught missing shared glossary entries and the Forwardtest table title; corrected both. Remaining: confirm full CI and merge PR 83 (https://github.com/mithudso/solmargintrader/pull/83).
 
-## v53 - 2026-11-08 (SolTUI v2 redesign mockup)
+## v54 - 2026-11-08 (SolTUI v2 redesign mockup)
 
-Target: prompts v47, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
+Target: prompts v48, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
 
 Completed: a read-only subagent inventoried soltui's functions and data surfaces without reporting layout. docs/design/soltui-v2/DESIGN.md lists 16 primary functions and groups them into five question-led destinations (Now, Signal, Research, Money, Library), with a health strip, a registry command palette and an Explain overlay. docs/design/soltui-v2/mockup.py is a standalone Textual 8.2.8 + textual-plotext app on fixture data; it imports nothing from soltui/. screens/ holds 7 SVGs rendered by `mockup.py --shots`. soltui/README.md points to the proposal.
 

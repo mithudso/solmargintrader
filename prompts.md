@@ -1,7 +1,11 @@
 # Prompt history
 
-Version: 47
-Delta: v46 to v47; SolTUI redesign mockup request.
+Version: 48
+Delta: v47 to v48; SolTUI redesign mockup request.
+Delta: v46 to v47; Bots tab (grid, triangle arbitrage, DCA) with backtest, forward test and auto-optimize; streaming price recorder.
+Version: 45
+Delta: v44 to v45; resume the Compound 5m full-suite run.
+Delta: v44 to v45; trend filter for the compound.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -305,6 +309,10 @@ Expand the wallet, for the base wallet, use the base mcp server to query my wall
 Use lightweight charts, run the deep prompt optimizer on the rest of this prompt and then run it:  What are all of the ways a strategy or indicator can be evaluated? List all of them and then create a deep strategy optimizer skill that evaluates, and optimizes the strategy in multiple passes one per method just like the other deep optimizers.
 ```
 
+## v45 - 2026-11-08 (resume Compound 5m)
+
+```text
+resume
 ## v45 - 2026-11-08 (trend filter)
 
 ```text
@@ -323,7 +331,15 @@ In the strategies tab, you can click on a strategy and then click the "add selec
 Also in the forwardtest tab, make the time forward the strategy is asked to predict configurable so it can be 1, 5, 10, or 30 min. And ask it to predict all of them, and track the success of each individually.
 ```
 
-## v47 - 2026-11-08 (SolTUI redesign mockup)
+## v47 - 2026-11-08 (Bots tab; DCA bot; streaming price feed)
+
+```text
+Similar to the grid trading bot strategy, create a DCA (dollar cost averaging) trading bot strategy. Create a bots tab and include there the grid bot, the triangle arbitrage bot, and the dca bot. In the bots tab create a backtest script for each one that simulates at a given point what it would have set and calculates the results, and then add a forwardtest which does a dryrun simluation going into the future using the streamed price data as a guide. Also create an auto-optimize button which back tests each bot with a representative range of different configurations to determine if one configuration reliably outperforms another, and then have it adopt the best configuration. Also have it test against all the coins. Also I don't believe there is a streaming coin price feed into the soltui, if I remember correctly that's not a difficult subscription so implement that and record the pricing data.
+```
+
+Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11). Stele TASK-870.
+
+## v48 - 2026-11-08 (SolTUI redesign mockup)
 
 ```text
 Create a list of the primary functions of the TUI in this repo and without looking at its current layout use the design, ui, data viewing, and frontend skills to design an ideal UI interface that provides the same rich data it does now but in an easily accessible, intuitive, and scannable format. Do a simple mockup of it in TUI format using the best TUI tools you can find.
