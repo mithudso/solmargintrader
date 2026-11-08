@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 97
-Delta: v96 to v97; expand understanding to all trading scripts including indicators.
+Version: 98
+Delta: v97 to v98; checkpoint all-script authoring and preserve accepted strategy cards.
 
 ## v1 - 2026-11-06
 
@@ -997,3 +997,12 @@ PR96 currently checkpoints the21-card subset at e9931f4 and must not be called c
 Use p2.1.0 orchestration for bounded, disjoint semantic-authoring batches and independent source audits. The user's standing commit/ship and exact prompt/memory-record requirements override the skill's generic no-git and output-format defaults. No external research, inference or indexing runtime is needed; source gaps remain gaps. Native Anthropic model labels are unavailable here; use the runtime Codex workhorse tier for synthesis and record the mapping. Keep raw readings in a gitignored task cache under the private worktree, with resumable per-publication checkpoints. Root owns helper/manifest/index integration; workers own their assigned semantic JSONL outputs and must not revert others.
 
 Remaining: extract complete source descriptions for remaining721 pages; balance authoring batches; create and review per-script explanations; expand manifests/cards and coverage; verify all source/card mappings; deliver only after the complete expanded goal is covered.
+
+
+## v98 - 2026-11-08 (expanded source authoring active)
+
+The private worktree merged optimizer docs a70d62f and committed4f011b0. PR96 is draft for the expanded goal. Prepared immutable gitignored source-corpus.json for742 publications,21 protected and721 remaining descriptions totaling3,807,108 characters. The authoritative disjoint assignments and corpus hash are research/tradingview-script-profile-work.json. Three source authors own only research/tradingview-script-profiles/shard-a.jsonl (240 sources,TASK948), shard-b.jsonl (241,TASK949) and shard-c.jsonl (240,TASK950). They save original per-publication synthesis, exact raw-source evidence and full read ranges after every item. Partial helper validation is a draft structural check, not independent semantic acceptance.
+
+The expanded interpretations will use separate documentation cards under research/tradingview-script-cards and an all-script index. Preserve the accepted21 files, manifest hash1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5 and prior source catalog. Existing executable/measured cards and registry are untouched. Existing catalog links do not claim exact publication equivalence. Full-source exclusions retain reasons/evidence in the manifest. Trading-session parsers and financial infrastructure stay in scope even without a market edge. See KNOW951 for this architecture.
+
+Remaining: finish all three authoring shards; independently read/review every new source/profile pair, including exclusions; repair findings; render all in-scope documentation cards; bind deterministic output to source/profile/reviewer hashes; validate source coverage and frozen21; run p stage9 sourced append and executed stage10 selfcheck; finish final-head CI, merge PR96 and verify remote delivery; refresh portable collection; clean only owned branch/worktree.

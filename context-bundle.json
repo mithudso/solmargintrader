@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-08T11:06:26Z",
+  "project_key": "git@github.com:mithudso/solmargintrader.git",
+  "paths": [
+    "CLAUDE.md",
+    "backtester/strategy_cards/README.md",
+    "research/tradingview-card-coverage.json",
+    "research/tradingview-strategy-understanding.json",
+    "research/tradingview-script-profile-work.json",
+    "scripts/build_tradingview_script_profiles.py",
+    "scripts/check_tradingview_strategy_profiles.py"
+  ],
+  "indexes": [
+    "index/INDEX.json",
+    "index/TEXT-INDEX.json",
+    "index/CONCEPT-INDEX.json"
+  ],
+  "links": [
+    {
+      "from": "research/tradingview-strategy-understanding.json",
+      "to": "research/tradingview-script-profile-work.json",
+      "relation": "protect accepted21 while expanding721 publications"
+    }
+  ],
+  "config": {
+    "max_agents": 8,
+    "max_concurrent": 3,
+    "max_research": 0,
+    "source_scope": "all742 local HTML publications;21 protected and721 remaining",
+    "model_mapping": "sonnet synthesis tier maps to native gpt-6.1-sol; no Anthropic-labelled runtime is available"
+  },
+  "open_questions": [
+    "Exact algorithms remain unknown when the saved script source or numerical definition is missing; preserve that gap rather than research or invent it."
+  ],
+  "generator": "p/2.1.0"
+}
