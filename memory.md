@@ -1,11 +1,11 @@
 # Work continuation
 
-Version: 209
-Delta: v208 to v209; record Jupiter advanced order work and safety constraints.
+Version: 210
+Delta: v209 to v210; record draft checkpoint and focused test result.
 
 ## v209 - 2026-11-08
 
-TASK-1044: Implement Jupiter and Coinbase advanced orders on a dedicated Money page. Worktree /Users/mitch/dev/solmargintrader-wt-jupiter, based on origin/master ee75ba4. Owner confirmed previous task claim is stale. Preserve original untracked guide and other work. Guide has unsafe default decimals, zero valuation fallback, and unverified signing. Require exact mint and decimals, independent valuation, balances, exact transaction verification and explicit review; no ambiguous retry or unsolicited live order. Checkpoint: moved the existing advanced Coinbase ticket to a Money navigation view and updated UI tests. Jupiter remains unavailable; no token search, Swap v2 quote, transaction verification, signing, execute, or reconciliation has been implemented. Focused tests are running; an error involving #docs-view was observed and needs investigation. Remaining: fix and rerun tests, implement and test the full Jupiter path with semantic verification and ambiguity handling, then deliver and verify the loaded app.
+TASK-1044: Implement Jupiter and Coinbase advanced orders on a dedicated Money page. Worktree /Users/mitch/dev/solmargintrader-wt-jupiter, based on origin/master ee75ba4. Owner confirmed previous task claim is stale. Preserve original untracked guide and other work. Guide has unsafe default decimals, zero valuation fallback, and unverified signing. Require exact mint and decimals, independent valuation, balances, exact transaction verification and explicit review; no ambiguous retry or unsolicited live order. Checkpoint: moved the existing advanced Coinbase ticket to a Money navigation view and updated UI tests. Jupiter remains unavailable; no token search, Swap v2 quote, transaction verification, signing, execute, or reconciliation has been implemented. Focused UI run completed: 23 passed and one errored during teardown in _docs_view_changed with NoMatches #docs-view; investigate. Draft PR https://github.com/mithudso/solmargintrader/pull/134. Remaining: fix and rerun tests, implement and test the full Jupiter path with semantic verification and ambiguity handling, then deliver and verify the loaded app.
 
 ## v207 - 2026-11-08
 
