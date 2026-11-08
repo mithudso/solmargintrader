@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 198
-Delta: v197 to v198; record scheduler implementation and integration limits.
+Version: 200
+Delta: v199 to v200; record scheduler UI integration and tests.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1793,3 +1793,11 @@ Stele TASK-1049 tracks a separate recurring bot scheduler in /Users/mitch/dev/so
 ## v198 - 2026-11-08
 
 Implemented detached recurring bot scheduler in /Users/mitch/dev/solmargintrader-wt-bot-scheduler/soltui/bot_scheduler.py. It checkpoints each grid and DCA coin plus the triangle job, avoids overlapping scheduler workers, reports per-item failures, and resumes an interrupted cycle. A dedicated macOS launchd watchdog checks every five minutes and resumes an enabled worker after login or a crash. User Stop clears enabled and waits for the active optimizer call to finish; it never kills a PID. Existing optimizer locks arbitrate against manual runs. The scheduler uses adopt=False unless bots.PER_COIN_OPTIMIZE_ADOPTION_SAFE is exactly True; triangle always uses adopt=False. Without that separate per-coin backend, it records evidence but does not promote improvements. Tests never installed or ran the production service. Forty-one scheduler and existing bots tests passed; the existing metrics test emitted an overflow RuntimeWarning. Parent must integrate the UI, per-coin capability and full verification before delivery.
+
+## v199 - 2026-11-08
+
+Continue TASK-1049 in /Users/mitch/dev/solmargintrader-wt-bot-scheduler. Parent requested registry commands and discoverable Bots-tab start, stop and status controls. Do not start the production service during tests. Use per-coin optimization defaults of six three-day windows when the safe per-coin capability is present; retain adopt=False on the legacy backend. Surface last/next/errors and restore status when the tab reopens. Parent integrates with PR 129 and owns the final merge. Stele MCP remained disconnected.
+
+## v200 - 2026-11-08
+
+Scheduler integration adds registry-backed start, stop and status controls in the Bots tab, nonblocking status refresh on tab return, an editor detail view, and a queue for user actions while status is loading. Scheduler status does not create files when no schedule exists. The safe per-coin capability uses bots.PER_COIN_OPTIMIZE_WINDOWS=6 and bots.PER_COIN_OPTIMIZE_WINDOW_DAYS=3; absent capability retains legacy adopt=False. Partial aggregate results retain skipped/child error details and count as partial, never completed. Ninety integration tests passed before the final aggregate regression; sixteen focused tests passed after it. Existing metrics tests emitted an overflow RuntimeWarning. Service start/stop were mocked; no production service was started. Parent integrates PR 129 and owns final combined verification and merge.

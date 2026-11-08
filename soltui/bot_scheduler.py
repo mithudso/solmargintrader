@@ -75,14 +75,25 @@ def _control(root: Path | None):
 
 
 def status(*, root: Path | None = None) -> dict[str, Any]:
-    with closing(_db(root)) as db:
-        state = {k: json.loads(v) for k, v in db.execute("SELECT key,value FROM state")}
-        state["items"] = [dict(zip(("bot", "coin", "state", "started", "finished", "error", "summary"), row))
-                          for row in db.execute("SELECT bot,coin,state,started,finished,error,summary FROM item ORDER BY bot,coin")]
-    fd = _lock(root)
-    state["running"] = fd is None
-    if fd is not None:
-        os.close(fd)
+    directory = _root(root)
+    path = directory / "schedule.sqlite3"
+    state: dict[str, Any] = {"items": []}
+    if path.exists():
+        with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True, timeout=30)) as db:
+            state = {k: json.loads(v) for k, v in db.execute("SELECT key,value FROM state")}
+            state["items"] = [dict(zip(("bot", "coin", "state", "started", "finished", "error", "summary"), row))
+                              for row in db.execute("SELECT bot,coin,state,started,finished,error,summary FROM item ORDER BY bot,coin")]
+    lock_path = directory / "worker.lock"
+    state["running"] = False
+    if lock_path.exists():
+        fd = os.open(lock_path, os.O_RDONLY)
+        try:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                state["running"] = True
+        finally:
+            os.close(fd)
     if not state["running"] and state.get("phase") in ("starting", "running", "waiting", "stopping"):
         state["phase"] = "interrupted"
     state.setdefault("phase", "stopped")
@@ -239,19 +250,27 @@ def run_cycle(*, root: Path | None = None, settings: Any = None,
             def progress(fraction: float, message: str) -> None:
                 with closing(_db(root)) as db, db:
                     _set(db, progress={"fraction": fraction, "message": str(message), "at": now()})
-            report = optimizer(bot, settings, coins=[coin] if coin else None, adopt=adopt, progress=progress)
-            summary = json.dumps({"status": report.get("status"), "verdict": report.get("verdict"), "adopt_enabled": adopt}, default=str)
+            options: dict[str, Any] = {"coins": [coin] if coin else None, "adopt": adopt, "progress": progress}
+            if adopt:
+                options.update(windows=bots.PER_COIN_OPTIMIZE_WINDOWS, window_days=bots.PER_COIN_OPTIMIZE_WINDOW_DAYS)
+            report = optimizer(bot, settings, **options)
+            children = {key: {"status": value.get("status"), "error": value.get("error"),
+                              "verdict": value.get("verdict")}
+                        for key, value in (report.get("reports") or {}).items() if isinstance(value, dict)}
+            summary = json.dumps({"status": report.get("status"), "verdict": report.get("verdict"),
+                                  "skipped": report.get("skipped"), "reports": children, "adopt_enabled": adopt}, default=str)
             error = ""
-            state = "completed" if report.get("status") in ("completed", "explored") else "failed"
-            if state == "failed":
-                error = f"optimizer returned {report.get('status')!r}"
+            outcome = report.get("status")
+            state = "completed" if outcome in ("completed", "explored") else ("partial" if outcome == "partial" else "failed")
+            if state != "completed":
+                error = f"optimizer returned {outcome!r}: {report.get('skipped') or report.get('error') or 'see item details'}"
         except Exception as exc:
             state, error, summary = "failed", f"{type(exc).__name__}: {exc}", ""
         with closing(_db(root)) as db, db:
             db.execute("UPDATE item SET state=?,finished=?,error=?,summary=? WHERE bot=? AND coin=?", (state, now(), error, summary, bot, coin))
     with closing(_db(root)) as db, db:
         pending = db.execute("SELECT count(*) FROM item WHERE state IN ('pending','running')").fetchone()[0]
-        failed = db.execute("SELECT count(*) FROM item WHERE state='failed'").fetchone()[0]
+        failed = db.execute("SELECT count(*) FROM item WHERE state IN ('failed','partial')").fetchone()[0]
         if not pending:
             missing = _get(db, "coin_count", 0) == 0
             error = f"{failed} optimization(s) failed" if failed else ("no cached coins" if missing else "")

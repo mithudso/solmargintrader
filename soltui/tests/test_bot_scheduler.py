@@ -36,11 +36,14 @@ class BotSchedulerTests(unittest.TestCase):
     def test_capability_limits_promotion_to_coin_bots(self):
         calls = []
         def optimize(bot, settings, **kw):
-            calls.append((bot, kw["adopt"]))
+            calls.append((bot, kw["adopt"], kw.get("windows"), kw.get("window_days")))
             return {"status": "completed"}
-        with patch.object(sched.bots, "PER_COIN_OPTIMIZE_ADOPTION_SAFE", True, create=True):
+        with patch.object(sched.bots, "PER_COIN_OPTIMIZE_ADOPTION_SAFE", True, create=True), \
+             patch.object(sched.bots, "PER_COIN_OPTIMIZE_WINDOWS", 6, create=True), \
+             patch.object(sched.bots, "PER_COIN_OPTIMIZE_WINDOW_DAYS", 3, create=True):
             sched.run_cycle(root=self.root, settings=object(), coins=["SOL"], optimizer=optimize)
-        self.assertEqual(dict(calls), {"dca": True, "grid": True, "triangle": False})
+        self.assertEqual({b: (a, w, d) for b, a, w, d in calls},
+                         {"dca": (True, 6, 3), "grid": (True, 6, 3), "triangle": (False, None, None)})
 
     def test_failure_does_not_abort_other_items(self):
         def optimize(bot, settings, **kw):
@@ -53,6 +56,22 @@ class BotSchedulerTests(unittest.TestCase):
         self.assertEqual(st["last_result"], "partial")
         self.assertIn("missing bars", next(x["error"] for x in st["items"] if x["bot"] == "grid"))
         self.assertEqual(sum(x["state"] == "completed" for x in st["items"]), 2)
+
+    def test_per_coin_aggregate_partial_keeps_child_errors_and_cycle_partial(self):
+        def optimize(bot, settings, **kw):
+            if bot == "grid":
+                return {"bot": "grid", "status": "partial", "coins_requested": ["SOL"], "coins_used": [],
+                        "skipped": {"SOL": "ValueError: no usable windows"}, "reports": {},
+                        "verdict": {"saved": False, "reason": "one coin failed"}}
+            return {"status": "completed", "reports": {"SOL": {"status": "completed"}}}
+        result = sched.run_cycle(root=self.root, settings=object(), coins=["SOL"], optimizer=optimize)
+        self.assertEqual(result["failed"], 1)
+        status = sched.status(root=self.root)
+        self.assertEqual(status["last_result"], "partial")
+        item = next(row for row in status["items"] if row["bot"] == "grid")
+        self.assertEqual(item["state"], "partial")
+        self.assertIn("no usable windows", item["error"])
+        self.assertIn("no usable windows", item["summary"])
 
     def test_stop_at_boundary_and_resume_remaining(self):
         calls = []
@@ -82,6 +101,9 @@ class BotSchedulerTests(unittest.TestCase):
             sched.start(root=self.root)
 
     def test_interrupted_and_invalid_interval(self):
+        missing = self.root / "not-created"
+        self.assertEqual(sched.status(root=missing)["phase"], "stopped")
+        self.assertFalse(missing.exists())
         with closing(sched._db(self.root)) as db, db:
             sched._set(db, phase="running")
         self.assertEqual(sched.status(root=self.root)["phase"], "interrupted")
