@@ -588,7 +588,7 @@ class TestCardsAreRunnable(unittest.TestCase):
         self.assertEqual(built.params["window"], 33)
 
     def test_a_spec_only_card_refuses_to_build_and_says_what_it_needs(self) -> None:
-        self.assertTrue(all(c.runner for c in self.cards.values()))
+        self.assertTrue(all(c.runner and c.registry_key in REGISTRY for c in self.cards.values()))
         research_dir = sc.CARD_DIR.parent / "strategy_research"
         spec_only = [c for c in sc.load_all(research_dir).values() if c.status == "spec-only"]
         self.assertTrue(spec_only, "expected preserved research cards")
