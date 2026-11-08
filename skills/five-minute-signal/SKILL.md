@@ -1,6 +1,6 @@
 ---
 name: five-minute-signal
-version: "1.7.0"
+version: "1.8.0"
 updated: "2026-11-07"
 description: >-
   Produce and explain an UP / DOWN / FLAT call for the next five-minute bar of a crypto asset

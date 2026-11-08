@@ -26,6 +26,9 @@
 >   hours. Both now divide the distance by its typical size: the RMS of the distance over
 >   `spread_window` bars (default 288), floored at one ATR. They saturate on about 8% of bars. Their
 >   learned records restart (formula version 2). The formulas and results below are the old ones.
+> * **Trend filter (`gate_trend`, default on).** An eighth gate blocks a call against the 1h trend
+>   (`htf_trend` at or beyond ±0.5). It is directional: a call with the trend passes. See
+>   `docs/COMPOUND-5M.md` for the measured trade-off.
 > * With all of this, the default compound's out-of-sample hit rate (static → learned + invert) was
 >   BTC 50.3 → 49.5%, DOGE 44.9 → 55.8%, ETH 45.6 → 52.6%, SOL 47.3 → 51.1%, ZEC 48.3 → 51.1%.
 >   **Returns stayed negative on every coin.**

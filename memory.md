@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 50
-Delta: v49 to v50; equity chart on vendored Lightweight Charts; /dso v2.0.0 shipped in the skills repo.
+Version: 51
+Delta: v50 to v51; gate_trend blocks compound calls against the 1h trend.
 
 ## v1 - 2026-11-06
 
@@ -528,3 +528,12 @@ Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithud
 
 Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
 
+## v51 - 2026-11-08 (trend filter)
+
+Target: the owner asked for a filter that stops the compound fading a clear trend. Worktree /Users/mitch/dev/solmargintrader-wt-e63b4616-trend, branch feat/compound-trend-gate.
+
+Completed: Component.directional; gate_trend (htf_trend formula; threshold 0.5; default on). A directional gate returns a direction per bar, and evaluate blocks only a call against it (NaN blocks all, failing closed), so blocked_by and target_path work unchanged. Docs and the five-minute-signal skill updated.
+
+Verification: tests cover blocking UP in a decline, keeping DOWN, explain blocked_by, warm-up failing closed, and prefix invariance. Last 120 days OOS: threshold 0.3 keeps 35-45% of calls and lowers the hit rate on 7 of 10 coins; 0.5 is about equal on SOL/ETH/XRP and about 1 point lower on BTC/DOGE; 0.7 is equal or higher on SOL/ETH/XRP. Live SOL, last 6h: 26 UP / 8 DOWN became 0 UP / 8 DOWN.
+
+Remaining: after merge, restart the unattended trainer so it runs gate_trend; the owner restarts soltui.
