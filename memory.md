@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 174
-Delta: v171 to v174; preserve and integrate paper experiment continuation.
+Version: 175
+Delta: v174 to v175; record paper experiment integration after status delivery.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1694,3 +1694,7 @@ Owner also reports the Dry run tab lacks an understandable start control and act
 ## v174 - 2026-11-08
 
 The prospective Experiments tab and detached paper runner are implemented in /Users/mitch/dev/solmargintrader-wt-01a1bc24-experiments. The runner records causal 1, 5 or 30 minute calls under a unique experiment and frozen code fingerprint; it simulates non-overlapping 1x positions with configured round-trip costs and $1000 default paper capital. It never sends orders. An isolated real-feed smoke run recorded three calls and one resolved result, then stopped cleanly. Eleven targeted tests pass. No user-selected strategy has been specified, so no persistent user experiment has been started. Remaining: integrate PR 118, update indexes and documentation counts, rerun checks, deliver and verify the installed console.
+
+## v175 - 2026-11-08
+
+PR 118 merged at 259005c30976a0e9cce45cd2c8135586ce755f81 after its CI passed. The paper experiment branch has integrated the status and historical Dry Run changes and preserves both continuation records. The original SOL sweep segment contains no rankable positive hourly candidate because the hourly candles have gaps; its highest positive rankable daily strategy is vol_regime, which is not evidence that it will work on minute candles. Remaining: validate the combined branch, refresh its offline indexes, finish delivery, and verify the loaded UI before starting a prospective paper run.
