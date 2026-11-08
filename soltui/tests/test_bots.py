@@ -415,6 +415,16 @@ class Optimize(Isolated):
         self.assertEqual(bots.get_config("grid", "BBB")["range_pct"], 25)
         self.assertEqual(bots.get_config("grid")["range_pct"], 15)
 
+    def test_coin_with_no_usable_windows_is_reported_as_partial(self) -> None:
+        from soltui import experiment_runner
+        missing = {"status": "explored", "coins_used": [], "skipped": {"SOL": "not enough data"},
+                   "verdict": {"saved": False}, "per_coin": []}
+        with mock.patch.object(experiment_runner, "optimize", return_value=missing):
+            result = bots.optimize("grid", self.settings, coins=["SOL"])
+        self.assertEqual(result["status"], "partial")
+        self.assertEqual(result["coins_used"], [])
+        self.assertEqual(result["skipped"]["SOL"], "not enough data")
+
     def test_sign_test_and_ranks(self) -> None:
         self.assertAlmostEqual(bots.sign_test_p(5, 0), 1 / 32)
         self.assertAlmostEqual(bots.sign_test_p(0, 0), 1.0)

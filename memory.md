@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 200
-Delta: v199 to v200; record F5 delivery and current limits.
+Version: 202
+Delta: v201 to v202; record Jupiter reference and conflicting impact statements.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1801,3 +1801,11 @@ The owner asks the Experiments workbench Range, Stop and Step inputs to show def
 ## v200 - 2026-11-08
 
 F5 batch PR 127 merged as bb18a64fd2f52feae435680a22d0e8e1f81c3655 after required CI. Its detached runner freezes the eligible Coinbase USD spot universe and per-series proof, records missing, failed and unsupported cells, and starts independent forward trials using matching closed candle intervals. Existing cached histories may be incomplete; leveraged tiers remain unsupported and full-universe throughput is not measured. No production batch was started during testing. TASK-1046 remains to be closed after live acceptance.
+
+## v201 - 2026-11-08
+
+Per-coin bot tuning now separates confirmed results from tentative incremental adoption. Tentative adoption requires at least three matched holdout decisions, at least 80 percent matched coverage, a positive median and more wins than losses. Reports disclose that small samples are not statistically confirmed. Manual mode prevents automatic adoption. These bot workflows are simulation-only; a future live runner needs its own explicit risk policy. Stele decision queued as outbox a989c01c. Review identified aggregate skipped-coin reporting, holdout provenance and persistent confidence display issues; fixes and regression tests are in progress.
+
+## v202 - 2026-11-08
+
+The owner provided /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_reference.md for Jupiter lending, fees and leverage. It lists perps base and variable fees, positions, liquidation and program identifiers. Its section 2.1 describes price-impact fees, while section 3.1 says standard fills have zero price impact. Current Jupiter documentation describes linear and additive impact fees, and Stele KNOW-813 flags a one-basis-point floor. Do not assume zero impact or trust program and fee constants without current venue verification. The owner also confirmed that experiment percentage controls should adjust the selected parameter's current value; display market price separately.

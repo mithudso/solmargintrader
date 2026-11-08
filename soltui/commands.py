@@ -2588,13 +2588,14 @@ def bots_forward_status(ctx: Context, p: dict[str, Any]) -> Any:
     return _bots(bots_mod.forward_status, _bot_param(p), ctx.settings)
 
 
-@command("bots.optimize", "Auto-optimize a bot: its representative configuration grid on every cached coin "
-         "(every recorded triangle) over chronological windows. Picks on the older windows, then adopts the "
-         "pick only if it beats the current config on the newer windows by a sign test (p < 0.05).",
+@command("bots.optimize", "Independently optimize grid or DCA per cached coin; triangle remains global. "
+         "A tentative per-coin improvement may be adopted from at least three matched holdouts with 80% "
+         "coverage, a positive median and more wins than losses; it is not statistically confirmed. "
+         "The stronger tier requires ten decisions and sign-test p < 0.05. Manual mode blocks adoption.",
          (BOT_PARAM, P("coins", "json", "List of coins; default every coin with cached data."),
           P("windows", "number", "Windows per coin (default 6; half train, half test)."),
-          P("window_days", "number", "Days per window (default 30)."),
-          P("adopt", "bool", "Adopt a reliable winner (default true).")),
+          P("window_days", "number", "Days per window (default 3 per coin; 30 for triangle)."),
+          P("adopt", "bool", "Adopt an eligible winner, including tentative per-coin improvements (default true).")),
          read_only=False, long_running=True)
 def bots_optimize(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod

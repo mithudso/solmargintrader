@@ -143,8 +143,8 @@ class BotManualEditorTests(unittest.IsolatedAsyncioTestCase):
         from soltui.bots_screens import OptimizeScreen
         from soltui.tui import GlossaryTable
         app = SolTuiApp(make_settings())
-        verdict = {"saved": True, "changes": [{"setting": "rungs", "before": 7, "after": 9}],
-                   "reason": "Passed holdout"}
+        verdict = {"saved": True, "confidence": "tentative", "changes": [{"setting": "rungs", "before": 7, "after": 9}],
+                   "reason": "Three wins, p = 0.25; not statistically confirmed"}
         row = {"coin": "SOL", "data_source": "cached", "train_windows": 2, "test_windows": 1,
                "current_test_median": 0.01, "pick_test_median": 0.02, "pick_wins": 1, "pick_losses": 0,
                "verdict": verdict}
@@ -159,7 +159,10 @@ class BotManualEditorTests(unittest.IsolatedAsyncioTestCase):
             text = str(app.query_one("#bots-opt-verdict", Static).render())
             self.assertIn("global defaults unchanged", text)
             self.assertIn("BTC: no data", text)
-            self.assertIn("rungs 7 → 9", str(app.query_one("#bots-opt-coins", DataTable).get_row_at(0)[7]))
+            cell = str(app.query_one("#bots-opt-coins", DataTable).get_row_at(0)[7])
+            self.assertIn("rungs 7 → 9", cell)
+            self.assertIn("tentative", cell)
+            self.assertIn("p = 0.25", cell)
             screen = OptimizeScreen("Grid", lambda: None, GlossaryTable)
             app.push_screen(screen)
             await pilot.pause()
@@ -225,3 +228,62 @@ class BotManualEditorTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(bots.get_config("grid", "SOL")["rungs"], 9)
                 self.assertEqual(bots.get_config("grid")["rungs"], bots.DEFAULTS["grid"]["rungs"])
                 self.assertEqual(app._call("bots.config", {"bot": "grid", "asset": "SOL"})["result"]["mode"], "manual")
+
+    async def test_apply_warns_before_discarding_another_coin_draft(self):
+        from textual.widgets import Static
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-bots"
+            await pilot.pause()
+            app._bots_selected, app._bots_coins = ["SOL"], ["SOL", "BTC"]
+            original = app._call
+            def call(name, params=None, **kwargs):
+                if name == "bots.config":
+                    cfg = dict(bots.DEFAULTS["grid"])
+                    return envelope({"bot": "grid", "config": cfg, "defaults": cfg, "mode": "auto"})
+                return original(name, params, **kwargs)
+            with mock.patch.object(app, "_call", side_effect=call), mock.patch.object(app, "_bots_job") as job:
+                app._bots_edit_settings()
+                await pilot.pause()
+                screen = app.screen
+                screen.query_one("#bot-setting-rungs", Input).value = "9"
+                screen.query_one("#bot-settings-asset", Select).value = "BTC"
+                await pilot.pause()
+                screen.query_one("#bot-setting-range_pct", Input).value = "20"
+                screen._apply()
+                self.assertIs(app.screen, screen)
+                job.assert_not_called()
+                self.assertIn("Unsaved edits for SOL", str(screen.query_one("#bot-settings-message", Static).render()))
+                screen._apply()
+                await pilot.pause()
+                job.assert_called_once_with("bots.save", {"bot": "grid", "asset": "BTC",
+                                            "values": {"range_pct": 20.0}}, "saving settings")
+
+    async def test_inherit_warns_before_discarding_another_coin_mode_draft(self):
+        from textual.widgets import Static
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-bots"
+            await pilot.pause()
+            app._bots_selected, app._bots_coins = ["SOL"], ["SOL", "BTC"]
+            original = app._call
+            def call(name, params=None, **kwargs):
+                if name == "bots.config":
+                    cfg = dict(bots.DEFAULTS["grid"])
+                    return envelope({"bot": "grid", "config": cfg, "defaults": cfg, "mode": "auto"})
+                return original(name, params, **kwargs)
+            with mock.patch.object(app, "_call", side_effect=call), mock.patch.object(app, "_bots_job") as job:
+                app._bots_edit_settings()
+                await pilot.pause()
+                screen = app.screen
+                screen.query_one("#bot-settings-mode", Select).value = "manual"
+                screen.query_one("#bot-settings-asset", Select).value = "BTC"
+                await pilot.pause()
+                screen._inherit()
+                self.assertIs(app.screen, screen)
+                job.assert_not_called()
+                self.assertIn("Unsaved edits for SOL", str(screen.query_one("#bot-settings-message", Static).render()))
+                screen._inherit()
+                await pilot.pause()
+                job.assert_called_once_with("bots.save", {"bot": "grid", "asset": "BTC", "reset": True},
+                                            "restoring global inheritance", "inherit-global")

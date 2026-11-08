@@ -15,6 +15,8 @@ return on collateral = net PnL / starting collateral
 
 For a position of $1,000, the base fees alone are approximately $1.20 round trip, assuming unchanged notional. At 10x leverage on $100 collateral, that is 1.2% of collateral. Entry and exit notional may differ. Borrow rates and price impact change; they cannot be reconstructed honestly from a fixed cost without saved venue observations. A leveraged simulation also needs intraperiod high/low or finer data and a liquidation model, including adverse fills and fees. Missing paths or costs should be marked unknown rather than presented as a precise return.
 
+The supplied Jupiter reference describes linear and additive impact charges, but elsewhere calls standard fills zero-impact. Current Jupiter fee documentation describes both impact components. Treat the charge as venue- and size-dependent and verify the live custody parameters; do not assume zero.
+
 The current paper-experiment default is 6 basis points of fees plus 2 basis points of slippage per side, or 16 basis points round trip. The published Jupiter Perps base fee alone is 12 basis points round trip, a difference of $0.40 on $1,000 notional. That comparison does not establish which total cost is lower: the default includes a slippage assumption, while the 12-basis-point figure excludes impact, borrowing, swaps, and network costs. Existing experiments freeze their selected cost assumptions when started.
 
 Jupiter documents a trader-selectable range of 1.1x to 250x for the JLP SOL, ETH, and wBTC markets. Its 500x protocol parameter is used in its liquidation formula and is not the trader's maximum. Beta markets have separate limits and funding mechanics; check the selected market at order time.

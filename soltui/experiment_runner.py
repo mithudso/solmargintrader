@@ -217,7 +217,7 @@ def _legacy_cutoff(store: ExperimentStore, bot: str) -> float | None:
         report = bots.latest_optimize(bot)
         legacy = [row for row in hist.get("log", []) if not row.get("experiment_id")]
         child_reports = report.get("reports") if isinstance(report, dict) else None
-        ledger_batch = (isinstance(child_reports, dict) and bool(child_reports) and not report.get("skipped")
+        ledger_batch = (isinstance(child_reports, dict) and report.get("source") == "per_coin_ledger_v1"
                         and all(isinstance(child, dict) and child.get("experiment_id")
                                 for child in child_reports.values()))
         if report and not report.get("experiment_id") and not ledger_batch:

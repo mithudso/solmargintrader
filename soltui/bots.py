@@ -1266,6 +1266,10 @@ def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = No
         try:
             reports[coin] = run_optimize(bot, settings, coins=[coin], windows=windows, window_days=window_days,
                                          adopt=adopt, progress=coin_progress, config_coin=coin)
+            report = reports[coin]
+            if coin not in (report.get("coins_used") or []):
+                skipped = report.get("skipped") or {}
+                errors[coin] = str(skipped.get(coin) or "No usable evaluation windows for this coin")
         except Exception as exc:  # one failed coin must not silently cancel the others
             errors[coin] = f"{type(exc).__name__}: {exc}"[:300]
     per_coin = [row | {"verdict": report.get("verdict", {})} for report in reports.values()
@@ -1273,9 +1277,10 @@ def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = No
     saved = sum(bool(report.get("verdict", {}).get("saved")) for report in reports.values())
     complete = bool(names) and not errors and len(reports) == len(names) and all(
         r.get("status") in ("completed", "explored") for r in reports.values())
-    result = {"bot": bot, "status": "completed" if complete else "partial", "at": time.time(),
+    used = [coin for coin, report in reports.items() if coin in (report.get("coins_used") or [])]
+    result = {"bot": bot, "source": "per_coin_ledger_v1", "status": "completed" if complete else "partial", "at": time.time(),
               "run": max((int(r.get("run", 1)) for r in reports.values()), default=1), "coins_requested": names,
-              "coins_used": list(reports), "skipped": errors, "reports": reports, "per_coin": per_coin,
+              "coins_used": used, "skipped": errors, "reports": reports, "per_coin": per_coin,
               "candidates": sum(int(r.get("candidates", 0)) for r in reports.values()),
               "train_cells": sum(int(r.get("train_cells", 0)) for r in reports.values()),
               "validation_cells": sum(int(r.get("validation_cells", 0)) for r in reports.values()),

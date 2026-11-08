@@ -251,6 +251,8 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#compound-autopilot": "compound.autopilot",
     "#bots-apply": "bots.save",
     "#bots-edit": "bots.config",
+    "#bot-settings-apply": "bots.save",
+    "#bot-settings-inherit": "bots.save",
     "#bots-reset": "bots.save",
     "#bots-backtest": "bots.backtest",
     "#bots-forward-start": "bots.forward_start",
@@ -631,6 +633,8 @@ class BotSettingsScreen(ModalScreen[dict[str, Any] | None]):
         self.drafts: dict[str, dict[str, Any]] = {}
         self.mode = mode
         self.draft_modes: dict[str, str] = {}
+        self.baselines = {asset: (dict(current), mode)}
+        self._discard_ack: str | None = None
 
     def compose(self) -> ComposeResult:
         with Vertical(id="bot-settings-dialog"):
@@ -691,9 +695,11 @@ class BotSettingsScreen(ModalScreen[dict[str, Any] | None]):
             self.query_one("#bot-settings-asset", Select).value = self.asset
             return
         self.asset = asset
+        self._discard_ack = None
         self.query_one("#bot-settings-inherit", Button).disabled = not bool(asset)
         self.current = dict(env["result"]["config"])
         self.mode = env["result"].get("mode", "auto")
+        self.baselines.setdefault(asset, (dict(self.current), self.mode))
         self.query_one("#bot-settings-mode", Select).value = self.draft_modes.get(asset, self.mode)
         values = self.drafts.get(asset, self.current)
         for key, value in values.items():
@@ -711,8 +717,26 @@ class BotSettingsScreen(ModalScreen[dict[str, Any] | None]):
 
     @on(Button.Pressed, "#bot-settings-inherit")
     def _inherit(self) -> None:
-        if self.asset:
+        if self.asset and self._confirm_discard_other_drafts("inherit"):
             self.dismiss({"asset": self.asset, "reset": True})
+
+    def _confirm_discard_other_drafts(self, action: str) -> bool:
+        dirty = []
+        for asset, values in self.drafts.items():
+            if asset == self.asset or asset not in self.baselines:
+                continue
+            baseline, mode = self.baselines[asset]
+            if (any(str(values.get(key)) != str(value) for key, value in baseline.items())
+                    or self.draft_modes.get(asset, mode) != mode):
+                dirty.append(asset or "global defaults")
+        if dirty and self._discard_ack != action:
+            self._discard_ack = action
+            verb = "Apply" if action == "apply" else "Inherit global"
+            self.query_one("#bot-settings-message", Static).update(
+                f"Unsaved edits for {', '.join(dirty)} will be discarded. Return to those scopes, "
+                f"or press {verb} again to discard them and continue.")
+            return False
+        return True
 
     @on(Button.Pressed, "#bot-settings-apply")
     def _apply(self) -> None:
@@ -740,7 +764,8 @@ class BotSettingsScreen(ModalScreen[dict[str, Any] | None]):
             result["values"] = changes
         if mode != self.mode:
             result["mode"] = mode
-        self.dismiss(result if len(result) > 1 else None)
+        if self._confirm_discard_other_drafts("apply"):
+            self.dismiss(result if len(result) > 1 else None)
 
     @on(Button.Pressed, "#bot-settings-cancel")
     def action_cancel(self) -> None:
@@ -2031,7 +2056,8 @@ class SolTuiApp(App):
             verdict = row.get("verdict") or {}
             changes = ", ".join(f"{c['setting']} {c['before']} → {c['after']}"
                                 for c in verdict.get("changes") or [])
-            coin_verdict = (("saved: " + (changes or "coin-specific settings")) if verdict.get("saved")
+            coin_verdict = ((f"saved [{verdict.get('confidence', 'unreported')}]: " +
+                             (changes or "coin-specific settings") + " — " + str(verdict.get("reason") or "no reason reported")) if verdict.get("saved")
                             else ("not saved: " + str(verdict.get("reason") or "no adoption"))) if verdict else "-"
             coins.add_row(row["coin"], row.get("data_source") or "-",
                           f"{row['train_windows']} train / {row['test_windows']} test",
