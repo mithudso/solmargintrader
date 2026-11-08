@@ -179,7 +179,8 @@ def _start(interval_seconds: int, root: Path | None) -> dict[str, Any]:
     try:
         with closing(_db(root)) as db, db:
             _set(db, phase="starting", stop_requested=False, interval_seconds=interval_seconds, error="")
-        with (directory / "worker.log").open("a", encoding="utf-8") as log:
+        log_fd = os.open(directory / "worker.log", os.O_CREAT | os.O_WRONLY | os.O_APPEND, 0o600)
+        with os.fdopen(log_fd, "a", encoding="utf-8") as log:
             proc = subprocess.Popen([sys.executable, "-m", "soltui.bot_scheduler", "--worker", str(fd), str(directory)],
                                     stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
                                     pass_fds=(fd,), start_new_session=True)
