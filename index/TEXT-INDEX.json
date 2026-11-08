@@ -2202,7 +2202,7 @@
     "llms/aero-lp-explained-2026-11-06.md": 678,
     "llms/defillama-llms-free.txt": 1332,
     "llms/defillama-llms.txt": 997,
-    "memory.md": 28018,
+    "memory.md": 28019,
     "mongo/README.md": 870,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3104,
@@ -2629,7 +2629,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T18:52:00+00:00",
+  "generatedAt": "2026-11-08T18:53:26+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -815493,7 +815493,7 @@
       "docs/runbooks/handoff.md": 5,
       "extension/test/service-worker.test.js": 2,
       "extension/test/venues.test.js": 2,
-      "memory.md": 267,
+      "memory.md": 268,
       "prompts.md": 9,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
@@ -891681,7 +891681,7 @@
       "extension/src/core/alerts.js": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1,
       "index/make_files_doc.py": 1,
-      "memory.md": 4,
+      "memory.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 15,
       "research/coin-intelligence/rain-rain.md": 2,
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 1,
@@ -934869,7 +934869,7 @@
       "liquidity/tests/test_safe_exit.py": 3,
       "llms-facts.txt": 2,
       "llms-full.txt": 12,
-      "memory.md": 14,
+      "memory.md": 13,
       "mongo/README.md": 4,
       "mongo/load.py": 2,
       "mongo/queries/07-documents-and-search.js": 3,
@@ -945321,6 +945321,6 @@
     "documents": 2628,
     "terms": 68393,
     "termsBeforePrune": 68467,
-    "totalTokens": 3785232
+    "totalTokens": 3785233
   }
 }

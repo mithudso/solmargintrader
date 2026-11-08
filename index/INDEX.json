@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T18:52:00+00:00",
+  "generatedAt": "2026-11-08T18:53:26+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "5158ec4",
+  "commit": "8852a49",
   "counts": {
     "files": 2628,
-    "bytes": 43526892,
+    "bytes": 43526920,
     "byKind": {
       "strategy-card": 1478,
       "doc": 546,
@@ -70613,9 +70613,9 @@
       "title": "Work continuation",
       "summary": "Version: 183 Delta: v182 to v183; record finalized Jupiter swap and Coinbase deposit. Version: 146",
       "summarySource": "opening-prose",
-      "bytes": 267593,
+      "bytes": 267621,
       "lines": 1733,
-      "sha1": "7cf6d0155813f74e9b7a429abe00169d76db7b91",
+      "sha1": "22a74bc223fc29885089bc0426fb669ed3f64187",
       "symbols": [],
       "imports": [],
       "internalImports": [],
