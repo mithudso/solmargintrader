@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T20:28:56+00:00",
+  "generatedAt": "2026-11-08T20:32:41+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "7a1a31a",
+  "commit": "cd5e594",
   "counts": {
     "files": 2635,
-    "bytes": 43675327,
+    "bytes": 43675632,
     "byKind": {
       "strategy-card": 1478,
       "doc": 547,
@@ -78161,9 +78161,9 @@
       "title": "The recurring scheduler may promote grid/DCA only when this capability is present.",
       "summary": "The Bots tab: grid, triangular-arbitrage and DCA bots. Backtest, forward test, auto-optimize. Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to a venue's trading API; the only network reads are public market data (the recorded Coinbase stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).",
       "summarySource": "docstring",
-      "bytes": 59767,
-      "lines": 1311,
-      "sha1": "929615183017252ac322f10e38ba474961c1d57c",
+      "bytes": 59993,
+      "lines": 1314,
+      "sha1": "ed5625a0131796b38bbd53b53bba31e787d6f143",
       "symbols": [
         "BOTS",
         "PER_COIN_OPTIMIZE_ADOPTION_SAFE",
@@ -80592,9 +80592,9 @@
       "title": "test_bots",
       "summary": "The Bots tab's engine: configs, data, backtests, forward tests and the auto-optimize gate. No network and no real price data: bars come from `SyntheticLoader` written to a temporary data directory, and recorded snapshots are written to a temporary prices directory.",
       "summarySource": "docstring",
-      "bytes": 34436,
-      "lines": 643,
-      "sha1": "f6ab6ffccd5117d36cab37d42ece5d77ae114849",
+      "bytes": 34515,
+      "lines": 644,
+      "sha1": "8dd175876cf5958d57811c30ff5d905ea5c76c29",
       "symbols": [
         "DAY",
         "write_hourly()",

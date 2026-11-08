@@ -385,7 +385,7 @@ class Optimize(Isolated):
             coin = kw["config_coin"]
             calls.append((kw["coins"], coin))
             bots.save_config(bot, {"range_pct": 10 if coin == "SOL" else 25}, coin=coin)
-            return {"verdict": {"saved": True}, "per_coin": [{"coin": coin}], "coins_used": [coin]}
+            return {"status": "completed", "verdict": {"saved": True}, "per_coin": [{"coin": coin}], "coins_used": [coin]}
         with mock.patch.object(experiment_runner, "optimize", side_effect=fake_optimize):
             result = bots.optimize("grid", self.settings, coins=["SOL", "BTC"])
         self.assertEqual(calls, [(["SOL"], "SOL"), (["BTC"], "BTC")])
@@ -393,6 +393,7 @@ class Optimize(Isolated):
         self.assertEqual(bots.get_config("grid", "BTC")["range_pct"], 25)
         self.assertEqual(bots.get_config("grid")["range_pct"], 15)
         self.assertIn("independent", result["universe"])
+        self.assertEqual(result["status"], "completed")
 
     def test_distinct_coin_winners_are_adopted_independently(self) -> None:
         import pandas as pd

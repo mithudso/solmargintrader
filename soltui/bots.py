@@ -1271,7 +1271,10 @@ def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = No
     per_coin = [row | {"verdict": report.get("verdict", {})} for report in reports.values()
                 for row in report.get("per_coin", [])]
     saved = sum(bool(report.get("verdict", {}).get("saved")) for report in reports.values())
-    result = {"bot": bot, "at": time.time(), "run": max((int(r.get("run", 1)) for r in reports.values()), default=1), "coins_requested": names,
+    complete = bool(names) and not errors and len(reports) == len(names) and all(
+        r.get("status") in ("completed", "explored") for r in reports.values())
+    result = {"bot": bot, "status": "completed" if complete else "partial", "at": time.time(),
+              "run": max((int(r.get("run", 1)) for r in reports.values()), default=1), "coins_requested": names,
               "coins_used": list(reports), "skipped": errors, "reports": reports, "per_coin": per_coin,
               "candidates": sum(int(r.get("candidates", 0)) for r in reports.values()),
               "train_cells": sum(int(r.get("train_cells", 0)) for r in reports.values()),
