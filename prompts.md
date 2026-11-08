@@ -763,7 +763,7 @@ In the forward test, I had asked that to be done at 1, 5, and 30 min intervals e
 ## v93 - 2026-11-08
 
 ```text
-For the sweep I'm getting the error again 
+For the sweep I'm getting the error again
 previous sweep stopped: its evaluation proof is missing or differs; press Start fresh to start a separate sweep and preserve these results · previous error: ValueError: evaluation proof is missing or differs for SOL at
 /Users/mitch/.config/soltui/bg/results-8f615318bd7af7168ba68c0469d43b7c.jsonl; preserve this history and use --results-path for a fresh file · 972 rankable, 579 with positive median Sharpe · 87 below the 10-trade floor. Make it not completely fail on data like that,
 ```
