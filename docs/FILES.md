@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `fe5a984` (2026-11-08T13:16:55+00:00). 1897 tracked files, 32.7 MB.
+**Generated** from `index/INDEX.json` at commit `2f389e6` (2026-11-08T13:22:07+00:00). 1897 tracked files, 32.7 MB.
 
 Regenerate with:
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18457 lines · 917,573 B · description: **extracted**
+`doc` · 18555 lines · 921,342 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -17757,7 +17757,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/soltui_ci.py`
 
-`code-python` · 86 lines · 3,315 B · description: **extracted**
+`code-python` · 87 lines · 3,353 B · description: **extracted**
 
 **Purpose.** Select and shard SolTUI tests without silently omitting shared-code coverage.
 
@@ -17787,11 +17787,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_soltui_ci.py`
 
-`test` · 16 lines · 779 B · description: **none**
+`test` · 29 lines · 1,282 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `class SelectionTests`.
+**Contents.** Defines `class SelectionTests`, `class TimingTests`.
 
 **Use.** `python3 -m pytest scripts/test_soltui_ci.py -q`
 

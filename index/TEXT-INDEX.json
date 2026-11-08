@@ -1265,7 +1265,7 @@
     "docs/COMPOUND-5M.md": 3435,
     "docs/CONCEPTS.md": 2187,
     "docs/DEVELOPMENT.md": 947,
-    "docs/FILES.md": 93471,
+    "docs/FILES.md": 93472,
     "docs/INSTALLATION.md": 821,
     "docs/MCP.md": 148,
     "docs/OPERATIONS.md": 502,
@@ -1699,10 +1699,10 @@
     "scripts/check_docs.py": 1466,
     "scripts/check_tradingview_cards.py": 1506,
     "scripts/html_to_markdown.py": 1005,
-    "scripts/soltui_ci.py": 344,
+    "scripts/soltui_ci.py": 348,
     "scripts/test_card_readiness.py": 400,
     "scripts/test_html_to_markdown.py": 569,
-    "scripts/test_soltui_ci.py": 91,
+    "scripts/test_soltui_ci.py": 129,
     "skills/README.md": 207,
     "skills/five-minute-signal/SKILL.md": 825,
     "skills/trading-and-investing/SCHEDULED-RESEARCH.md": 374,
@@ -1898,7 +1898,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T13:16:57+00:00",
+  "generatedAt": "2026-11-08T13:22:10+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -34885,6 +34885,7 @@
       "research/tradingview-card-coverage.json": 24,
       "research/tradingview-card-readiness.json": 4,
       "scripts/check_tradingview_cards.py": 1,
+      "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 2,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
@@ -39753,7 +39754,7 @@
       "mongo/tests/test_snapshot_audit.py": 9,
       "scripts/test_card_readiness.py": 2,
       "scripts/test_html_to_markdown.py": 16,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 2,
       "soltui/tests/test_bgcontrol.py": 8,
       "soltui/tests/test_bgcontrol_identity.py": 7,
       "soltui/tests/test_bgqueue.py": 72,
@@ -39934,6 +39935,7 @@
       "backtester/tests/test_universe.py": 24,
       "mongo/tests/test_load.py": 14,
       "scripts/test_html_to_markdown.py": 6,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/tests/test_bgcontrol.py": 8,
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgqueue.py": 14,
@@ -40434,6 +40436,7 @@
       "mongo/tests/test_load.py": 5,
       "mongo/tests/test_load_audit.py": 1,
       "mongo/tests/test_snapshot_audit.py": 1,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/tests/test_bgcontrol.py": 3,
       "soltui/tests/test_bgcontrol_identity.py": 12,
       "soltui/tests/test_bgqueue.py": 8,
@@ -43596,6 +43599,7 @@
       "llms/defillama-llms-free.txt": 3,
       "research/tradingview-card-coverage.json": 3,
       "research/tradingview-card-readiness.json": 1,
+      "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
       "soltui/runner.py": 1,
       "soltui/tests/test_signals.py": 1
@@ -220088,6 +220092,9 @@
     "f387b421cc730a3b9ec5050712ab382910d38cfb677a5b4b6b8e65d72d4c7ef": {
       "research/tradingview-card-coverage.json": 1
     },
+    "f389e6": {
+      "docs/FILES.md": 1
+    },
     "f38a70074041d3b7e138e452799f5174198bae5bd5ab2000917badf403908c5f": {
       "liquidity/uv.lock": 1
     },
@@ -228004,9 +228011,6 @@
     },
     "fe59e8ca45fd4025b32cb4b90ab692bb106e3c5b7d6728884430c36961a23a49": {
       "research/tradingview-card-coverage.json": 1
-    },
-    "fe5a984": {
-      "docs/FILES.md": 1
     },
     "fe5c74fca3e5d011b4ca7fbbd8cb6ec530febc040d704469e1c7605b01c533": {
       "research/tradingview-card-coverage.json": 1
@@ -275301,6 +275305,7 @@
       "research/five-minute-perps-suite/run-report.md": 1,
       "research/nonlinear-lead-lag-children/run-report.md": 2,
       "research/tradingview-card-coverage.json": 9,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/commands.py": 1,
       "soltui/experiment_jobs.py": 1,
       "soltui/help.py": 1,
@@ -297271,6 +297276,7 @@
       "liquidity/tests/test_metrics.py": 2,
       "liquidity/tests/test_providers.py": 1,
       "mongo/tests/test_load_audit.py": 1,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_compound.py": 2,
@@ -313357,6 +313363,7 @@
       "scripts/soltui_ci.py": 5,
       "scripts/test_card_readiness.py": 1,
       "scripts/test_html_to_markdown.py": 3,
+      "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 3,
       "soltui/analyze.py": 4,
       "soltui/api.py": 2,
@@ -338916,6 +338923,7 @@
     "may": {
       "backtester/tests/test_advanced_strategies.py": 1,
       "backtester/tests/test_strategy_cards.py": 2,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/tests/test_pnl.py": 1
     },
     "maya": {
@@ -353074,6 +353082,9 @@
     "mutates": {
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "extension/test/wallet-audit.test.js": 1
+    },
+    "mutatesid": {
+      "scripts/test_soltui_ci.py": 3
     },
     "mutating": {
       "backtester/tests/test_cross_asset_cpcv.py": 1,
@@ -451348,6 +451359,7 @@
       "research/verify_numbers.py": 7,
       "scripts/check_docs.py": 1,
       "scripts/html_to_markdown.py": 5,
+      "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1,
       "skills/trading-and-investing/references/market-microstructure-and-execution.md": 1,
@@ -456757,7 +456769,8 @@
       "soltui/tests/test_strategy_history.py": 5
     },
     "resultclass": {
-      "scripts/soltui_ci.py": 1
+      "scripts/soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 1
     },
     "resulted": {
       "backtester/strategy_cards/tv_builtin_mass_index.md": 1,
@@ -467767,7 +467780,7 @@
       "scripts/html_to_markdown.py": 4,
       "scripts/soltui_ci.py": 1,
       "scripts/test_html_to_markdown.py": 8,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 2,
       "skills/five-minute-signal/SKILL.md": 1,
       "skills/trading-and-investing/SCHEDULED-RESEARCH.md": 1,
       "skills/trading-and-investing/SKILL.md": 10,
@@ -468994,6 +469007,9 @@
     "runstatstests": {
       "docs/FILES.md": 1,
       "soltui/tests/test_pnl.py": 2
+    },
+    "runtest": {
+      "scripts/test_soltui_ci.py": 1
     },
     "runtests": {
       "backtester/tests/test_compound_backtest.py": 2,
@@ -522300,6 +522316,7 @@
       "research/tick_backfill.py": 2,
       "research/tradingview-card-coverage.json": 9,
       "scripts/html_to_markdown.py": 2,
+      "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/references/asset-classes-and-instruments.md": 1,
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 1,
       "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md": 1,
@@ -523129,6 +523146,7 @@
       "mongo/tests/test_load_audit.py": 2,
       "mongo/tests/test_snapshot_audit.py": 1,
       "scripts/test_html_to_markdown.py": 2,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/experiments.py": 1,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_bgworker_audit.py": 5,
@@ -543995,7 +544013,7 @@
       "backtester/tests/test_decide.py": 1
     },
     "test_id": {
-      "scripts/soltui_ci.py": 2
+      "scripts/soltui_ci.py": 4
     },
     "test_id_is_stable_across_dict_ordering": {
       "soltui/tests/test_bgqueue.py": 1
@@ -547349,6 +547367,9 @@
       "docs/FILES.md": 1,
       "liquidity/tests/test_strategy.py": 2
     },
+    "test_test_may_replace_its_id_attribute": {
+      "scripts/test_soltui_ci.py": 1
+    },
     "test_test_only_scores_and_trade_counts_never_change_triple_construction": {
       "backtester/tests/test_simulation_blind_audit.py": 1
     },
@@ -548691,7 +548712,7 @@
       "scripts/check_docs.py": 2,
       "scripts/test_card_readiness.py": 1,
       "scripts/test_html_to_markdown.py": 2,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 3,
       "soltui/tests/test_bgcontrol.py": 6,
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgqueue.py": 17,
@@ -550459,7 +550480,8 @@
       "scripts/soltui_ci.py": 1
     },
     "texttestrunner": {
-      "scripts/soltui_ci.py": 1
+      "scripts/soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 1
     },
     "texttransparency": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -556662,7 +556684,8 @@
     },
     "timedresult": {
       "docs/FILES.md": 1,
-      "scripts/soltui_ci.py": 3
+      "scripts/soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 2
     },
     "timefield": {
       "mongo/schema.py": 5,
@@ -559451,13 +559474,18 @@
     },
     "timings": {
       "research/tradingview-card-coverage.json": 2,
-      "scripts/soltui_ci.py": 3
+      "scripts/soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 2
     },
     "timingsafeequal": {
       "docs/SECURITY.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "extension/tools/api-server.js": 3,
       "llms-full.txt": 1
+    },
+    "timingtests": {
+      "docs/FILES.md": 1,
+      "scripts/test_soltui_ci.py": 2
     },
     "timmermann": {
       "skills/trading-and-investing/SKILL.md": 2,
@@ -588531,7 +588559,7 @@
       "scripts/soltui_ci.py": 6,
       "scripts/test_card_readiness.py": 3,
       "scripts/test_html_to_markdown.py": 4,
-      "scripts/test_soltui_ci.py": 2,
+      "scripts/test_soltui_ci.py": 5,
       "soltui/README.md": 2,
       "soltui/tests/__init__.py": 2,
       "soltui/tests/bridge_support.py": 1,
@@ -609693,7 +609721,8 @@
       "memory.md": 1
     },
     "wassuccessful": {
-      "scripts/soltui_ci.py": 1
+      "scripts/soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 1
     },
     "waste": {
       "research/tradingview-card-coverage.json": 1,
@@ -625765,10 +625794,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1455.1,
+    "avgDocLength": 1455.2,
     "documents": 1897,
-    "terms": 61510,
-    "termsBeforePrune": 61665,
-    "totalTokens": 2760402
+    "terms": 61514,
+    "termsBeforePrune": 61669,
+    "totalTokens": 2760445
   }
 }

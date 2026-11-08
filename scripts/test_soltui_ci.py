@@ -1,5 +1,6 @@
+import io
 import unittest
-from scripts.soltui_ci import selected_modules
+from scripts.soltui_ci import TimedResult, selected_modules
 
 
 class SelectionTests(unittest.TestCase):
@@ -13,3 +14,15 @@ class SelectionTests(unittest.TestCase):
                       ['docs/TESTING.md'], ['soltui/tests/fixtures/test_foo.py']):
             with self.subTest(paths=paths):
                 self.assertIsNone(selected_modules(paths))
+
+
+class TimingTests(unittest.TestCase):
+    def test_test_may_replace_its_id_attribute(self):
+        class MutatesId(unittest.TestCase):
+            def runTest(self):
+                self.id = "application identifier"
+
+        result = unittest.TextTestRunner(stream=io.StringIO(), resultclass=TimedResult).run(MutatesId())
+        self.assertTrue(result.wasSuccessful())
+        self.assertEqual(len(result.timings), 1)
+        self.assertIn('MutatesId', result.timings[0][1])

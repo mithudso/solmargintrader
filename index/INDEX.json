@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T13:16:57+00:00",
+  "generatedAt": "2026-11-08T13:22:10+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "fe5a984",
+  "commit": "2f389e6",
   "counts": {
     "files": 1897,
-    "bytes": 32749034,
+    "bytes": 32749598,
     "byKind": {
       "strategy-card": 1144,
       "doc": 186,
@@ -43597,9 +43597,9 @@
       "title": "Every file in this repository",
       "summary": "Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file",
       "summarySource": "opening-prose",
-      "bytes": 921342,
+      "bytes": 921365,
       "lines": 18555,
-      "sha1": "7c9a80b9a57d6b7c4a872b069f03a816974379e8",
+      "sha1": "5e335e25d2be2ef417d863d22f8faae1f0f0fbc7",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -55669,9 +55669,9 @@
       "title": "soltui_ci",
       "summary": "Select and shard SolTUI tests without silently omitting shared-code coverage.",
       "summarySource": "docstring",
-      "bytes": 3315,
-      "lines": 86,
-      "sha1": "d503f4652177ea557b3ad732219d4676c551fa7c",
+      "bytes": 3353,
+      "lines": 87,
+      "sha1": "8cc90c7e7dc4c98bc669859bd0f0d19a2b29a265",
       "symbols": [
         "selected_modules()",
         "flatten()",
@@ -55759,13 +55759,15 @@
       "title": "test_soltui_ci",
       "summary": "",
       "summarySource": "none",
-      "bytes": 779,
-      "lines": 16,
-      "sha1": "970a343c46084c62780c9ada0fcdcacf272c7367",
+      "bytes": 1282,
+      "lines": 29,
+      "sha1": "e728bd499251f1197b3a85f6da2c73b6d82bde38",
       "symbols": [
-        "class SelectionTests"
+        "class SelectionTests",
+        "class TimingTests"
       ],
       "imports": [
+        "io",
         "scripts",
         "unittest"
       ],

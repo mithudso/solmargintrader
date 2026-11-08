@@ -37,10 +37,11 @@ def flatten(suite):
 class TimedResult(unittest.TextTestResult):
     def startTest(self, test):
         self._start = time.monotonic()
+        self._test_id = test.id()
         super().startTest(test)
 
     def stopTest(self, test):
-        self.timings.append((time.monotonic() - self._start, test.id()))
+        self.timings.append((time.monotonic() - self._start, self._test_id))
         super().stopTest(test)
 
     def __init__(self, *args, **kwargs):
