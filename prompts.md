@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 111
-Delta: v110 to v111; retain experiment range clarity request.
+Version: 112
+Delta: v111 to v112; record the parameter-relative adjustment decision.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -915,3 +915,9 @@ When doing the auto-optimize for the bots, it's trying to apply the same configs
 ## v111 - 2026-11-08
 
 “In the experiments tab, it has Range, stop, and step, it's not clear if the range and stop are asking for whole values or percentages, so pre-populate the fields with the current price and defaults for each with a percentage change to the right of the text field that lets you adjust the number by the percent shown.”
+
+## v112 - 2026-11-08
+
+```text
+Yes, use the current parameter value (Recommended)
+```

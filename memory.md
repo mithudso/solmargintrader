@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 198
-Delta: v197 to v198; record experiment controls and verification.
+Version: 199
+Delta: v198 to v199; record the owner's parameter-relative adjustment decision.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1793,3 +1793,7 @@ The experiment range fields are candidate parameter values, not necessarily pric
 ## v198 - 2026-11-08
 
 ExperimentScreen now derives range defaults from the selected parameter baseline, labels real parameter units, and applies adjacent percentage adjustments relative to that baseline. Integer parameters round to whole values; choice fields disable ranges, logarithmic count is a whole number, out-of-domain and zero-baseline percent adjustments are refused. A separate on-demand recorder status check runs off the UI thread and shows a single coin midpoint only with a fresh live bid/ask and timestamp. It never writes the price into a parameter. Forty-three focused tests passed. No active jobs or services were touched. Parent owns integration and clarification; the branch is not to be merged independently.
+
+## v199 - 2026-11-08
+
+The owner confirmed that percentage controls should adjust the selected parameter relative to its current value. The separate verified coin price is a reference and does not populate non-price parameters.
