@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 55
-Delta: v54 to v55; remove private operator paths from task metadata, preserving the exact request.
+Version: 56
+Delta: integrate wallet fix history and retain this task's sanitized continuation records through v56.
 
 ## v1 - 2026-11-06
 
@@ -409,7 +409,13 @@ Write a script to convert all of the html files in the subfolders here into text
 Target: /Users/mitch/dev/solmargintrader/tradingview/www.tradingview.com.
 Implementation: /Users/mitch/dev/solmargintrader-wt-01a1ba63/scripts/html_to_markdown.py.
 
-## v54 - 2026-11-08 (Four nonlinear lead-lag children)
+## v54 - 2026-11-08
+
+```text
+Look at https://docs.base.org/llms-full.txt and determine how to check the coins in a wallet, and then implement that in this repo, the soltui cannot check my base chain accounts.
+```
+
+## v55 - 2026-11-08 (Four nonlinear lead-lag children)
 
 ````text
 Do a /dr on the 4 unresearched child concepts: Conditional nonlinear information transfer (frontier, viability 3.60 / 5)
@@ -419,4 +425,4 @@ Directed graph preservation (frontier, viability 3.60 / 5)
 ````
 
 Target: solmargintrader, isolated branch agent-01a1b5ef. Stele TASK-905.
-Metadata v55: operator-neutral continuation reference; user request unchanged.
+Metadata v56: operator-neutral continuation reference; user request unchanged.

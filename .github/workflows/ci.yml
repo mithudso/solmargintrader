@@ -293,7 +293,9 @@ jobs:
         working-directory: executor
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+      # Match liquidity's pinned installer: its official mirror avoided the GitHub
+      # release-asset HTTP 504 that prevented this job from reaching its tests.
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       - run: uv sync --extra dev -p 3.13 --frozen
       - run: uv run ruff check src tests
       - run: uv run ruff format --check src tests
