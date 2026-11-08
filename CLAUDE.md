@@ -33,6 +33,8 @@ Seven components with different risk profiles. Know which one you are in:
 
 ## Live on-chain actions (owner's standing authorization)
 
+**Liquidity archive, 2026-11-08:** The owner discontinued the liquidity manager and scout as unprofitable. Keep the Aero LP service disabled and the kill switch set unless the owner later requests reactivation. See `liquidity/CLAUDE.md`.
+
 The owner has given this instruction three times (last on 2026-11-06). Do not ask for it again.
 
 For the owner's own wallets, agents may act live without a further confirmation:

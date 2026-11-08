@@ -33,6 +33,9 @@ class PureBuilderTests(unittest.TestCase):
                    "tab-cumulative", "tab-queue", "tab-liquidity", "tab-pnl", "tab-wallet", "tab-research",
                    "tab-docs"}
         self.assertEqual(classic - shell.COVERED_TABS, set())
+        self.assertEqual(shell.locate("tab-liquidity")[0].key, "archive")
+        self.assertNotIn("tab-liquidity", {view.tab for view in shell.DEST_BY_KEY["money"].views})
+        self.assertEqual(shell.DEST_BY_KEY["archive"].hotkey, "6")
         # Each Compound section is its own Signal view, in the classic order.
         signal = shell.DEST_BY_KEY["signal"]
         self.assertEqual([v.inner for v in signal.views], ["cmp-call", "cmp-backtest", "cmp-forward", "cmp-coins"])
@@ -174,6 +177,11 @@ class ShellAppTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(tabs.active, "tab-backtest")
             await pilot.press("4")
             self.assertTrue(app.query_one("#v2-live-banner").has_class("on"))
+            await pilot.press("6")
+            self.assertEqual(tabs.active, "tab-liquidity")
+            self.assertEqual(app._v2_dest, "archive")
+            self.assertTrue(app.query_one("#liq-positions"))
+            self.assertTrue(app.query_one("#liq-scout"))
             await pilot.press("comma")
             self.assertEqual(tabs.active, "tab-settings")
             self.assertFalse(app.query_one("#v2-live-banner").has_class("on"))

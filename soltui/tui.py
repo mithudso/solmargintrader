@@ -3,7 +3,7 @@
     python3 -m soltui.tui
 
 The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are
-grouped by `shell.py` into five destinations; `--classic` shows the original tab bar.
+grouped by `shell.py` into six destinations; `--classic` shows the original tab bar.
 
 All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`,
 `status`); this file is presentation and wiring. That split is what lets the
@@ -558,7 +558,7 @@ class CoinFitFinished(Message):
 class SolTuiApp(App):
     """The console over the tested modules.
 
-    v2 (the default) groups the panes into five destinations (Now, Signal, Research, Money, Library)
+    v2 (the default) groups the panes into six destinations (Now, Signal, Research, Money, Library, Archive)
     plus Settings; see `shell.py` and docs/design/soltui-v2/DESIGN.md. Every classic tab is still a
     pane of the one `#main-tabs` TabbedContent, so `query_one(TabbedContent).active = "tab-…"` and every
     pane id keep working; v2 hides that tab bar and drives it from its own navigation. `classic=True`
@@ -682,6 +682,7 @@ class SolTuiApp(App):
         Binding("3", "v2_goto('research')", "Research", show=False),
         Binding("4", "v2_goto('money')", "Money", show=False),
         Binding("5", "v2_goto('library')", "Library", show=False),
+        Binding("6", "v2_goto('archive')", "Archive", show=False),
         Binding("comma", "v2_goto('settings')", "Settings", show=False),
         Binding("left_square_bracket", "v2_cycle(-1)", "Previous view", show=False),
         Binding("right_square_bracket", "v2_cycle(1)", "Next view", show=False),
@@ -4464,6 +4465,7 @@ class SolTuiApp(App):
         it writes is the `KILL` file, via the Kill/Resume buttons.
         """
         with VerticalScroll():
+            yield Static("Archived — the Aero LP manager and scout are retired. Historical position and scout records remain available.", classes="hint")
             yield Static("", id="liq-banner")
             yield Static("", id="liq-summary")
             yield Static("", id="liq-wallet", classes="hint")
@@ -4522,7 +4524,7 @@ class SolTuiApp(App):
         if r["killed"]:
             banner.update(Text(
                 " Kill switch ON — bot paused. It sends no transactions and leaves "
-                "positions as they are. Press Resume (F8) to restart it. ",
+                "positions as they are. The manager is archived; check the service state before acting. ",
                 style="bold white on red"))
         else:
             banner.update("")
@@ -5054,7 +5056,7 @@ class SolTuiApp(App):
         if self._start == "tab-now":
             self._v2_load_now()
             # Focus starts on the classic tab bar, which v2 hides; put it on the list that answers
-            # the screen's question instead. Not an input, so the 1-5 / ? keys still navigate.
+            # the screen's question instead. Not an input, so the 1-6 / ? keys still navigate.
             self.call_after_refresh(lambda: self.query_one("#now-needs", OptionList).focus())
 
     def _v2_destination(self, key: str) -> shell.Destination:
