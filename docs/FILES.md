@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `02c0bbb` (2026-11-08T12:27:05+00:00). 1884 tracked files, 31.1 MB.
+**Generated** from `index/INDEX.json` at commit `e81e677` (2026-11-08T12:50:16+00:00). 1884 tracked files, 31.1 MB.
 
 Regenerate with:
 
@@ -193,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1119 lines · 168,198 B · description: **extracted**
+`doc` · 1159 lines · 175,919 B · description: **extracted**
 
-**Purpose.** Version: 111 Delta: v110 to v111; preserve rolling-window continuity without reopening final evidence. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 117 Delta: v116 to v117; reconcile concurrent strategy-card delivery and verify combined UI. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 463 lines · 27,465 B · description: **extracted**
+`doc` · 469 lines · 27,580 B · description: **extracted**
 
-**Purpose.** Version: 60 Delta: preserve concurrent remote history and append optimization workbench continuation through v60. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 61 Delta: preserve incoming strategy-card history and append workbench continuation through v61. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18437 lines · 916,959 B · description: **extracted**
+`doc` · 18437 lines · 916,978 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -481,17 +481,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/optimization-workbench-plan.md`
 
-`doc` · 66 lines · 8,752 B · description: **extracted**
+`doc` · 70 lines · 9,228 B · description: **extracted**
 
-**Purpose.** Version: 4 Delta: v3 to v4; allow sealed final history in later exploration while retaining permanent final-date spend. Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
+**Purpose.** Version: 5 Delta: v4 to v5; preserve concurrent Strategies browser delivery and verify combined integration. Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
 
 **Use.** Read it.
 
 #### `docs/optimization-workbench-run.md`
 
-`doc` · 76 lines · 5,764 B · description: **extracted**
+`doc` · 78 lines · 6,412 B · description: **extracted**
 
-**Purpose.** Version: 1 Delta: initial implementation, review and acceptance record. Goal: implement all six accepted comparison recommendations.
+**Purpose.** Version: 2 Delta: v1 to v2; record concurrent strategy-browser delivery reconciliation. Goal: implement all six accepted comparison recommendations.
 
 **Use.** Read it.
 
@@ -15323,7 +15323,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/README.md`
 
-`doc` · 514 lines · 41,327 B · description: **extracted**
+`doc` · 514 lines · 41,293 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -15437,7 +15437,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 2362 lines · 113,411 B · description: **extracted**
+`code-python` · 2385 lines · 114,538 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -15567,7 +15567,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 604 lines · 90,534 B · description: **extracted**
+`code-python` · 614 lines · 91,813 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -15823,7 +15823,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 4290 lines · 216,984 B · description: **extracted**
+`code-python` · 4381 lines · 221,808 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -15945,7 +15945,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bridge_buttons.py`
 
-`test` · 54 lines · 2,155 B · description: **extracted**
+`test` · 54 lines · 2,164 B · description: **extracted**
 
 **Purpose.** Every TUI button is a registry command: a new button cannot skip the registry.
 
@@ -16195,11 +16195,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_strategy_history.py`
 
-`test` · 223 lines · 11,401 B · description: **extracted**
+`test` · 233 lines · 12,054 B · description: **extracted**
 
 **Purpose.** The Strategies tab's test history and its three Backtest buttons. History is derived from the background sweep's results file, so what it can get wrong is counting and choosing: a duplicate line counted as a second test, a best-of-many row shown as "the" result, an untestable strategy shown as merely untested, a button that starts a sweep that has nothing to do. Each test targets one of those.
 
-**Contents.** Defines `row()`, `class TestHistory`, `class TestQueueFilter`, `class TestCommands`. Depends on `soltui`.
+**Contents.** Defines `row()`, `class TestHistory`, `class TestQueueFilter`, `class TestCommands`. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_strategy_history.py -q`
 
@@ -16225,7 +16225,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tui.py`
 
-`test` · 1343 lines · 60,117 B · description: **extracted**
+`test` · 1384 lines · 62,567 B · description: **extracted**
 
 **Purpose.** Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.
 
@@ -16235,7 +16235,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tui_presets_pnl.py`
 
-`test` · 202 lines · 9,889 B · description: **extracted**
+`test` · 210 lines · 10,466 B · description: **extracted**
 
 **Purpose.** The Top 5 presets in three tabs, the P&L tab, and the "every percentage names its source" rule across every table in the app. Driven through Textual's headless harness.
 

@@ -753,7 +753,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 4289
+      "lines": 4380
     },
     {
       "path": "soltui/signals.py",
@@ -830,7 +830,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison",
-      "lines": 842
+      "lines": 881
     },
     {
       "path": "soltui/experiment_runner.py",
@@ -920,7 +920,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Experiment store, search-space, sparse-map and external evidence regression tests",
-      "lines": 377
+      "lines": 496
     },
     {
       "path": "soltui/tests/test_experiment_runner.py",
@@ -1458,7 +1458,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Six-feature implementation plan, interfaces, ownership and acceptance criteria",
-      "lines": 65
+      "lines": 69
     },
     {
       "path": "docs/code-optimizer-scope-2026-11-06.json",

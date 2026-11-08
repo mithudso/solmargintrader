@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T12:27:12+00:00",
+  "generatedAt": "2026-11-08T12:50:23+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -817,11 +817,11 @@
           "hits": 23
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 22
+          "path": "soltui/tests/test_strategy_history.py",
+          "hits": 23
         },
         {
-          "path": "soltui/tests/test_strategy_history.py",
+          "path": "docs/COMPOUND-5M.md",
           "hits": 22
         },
         {
@@ -1413,12 +1413,12 @@
           "hits": 25
         },
         {
-          "path": "backtester/core/deflated_sharpe.py",
+          "path": "memory.md",
           "hits": 21
         },
         {
-          "path": "memory.md",
-          "hits": 20
+          "path": "backtester/core/deflated_sharpe.py",
+          "hits": 21
         },
         {
           "path": "backtester/core/dcasim.py",
@@ -1686,7 +1686,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 17
+          "hits": 18
         },
         {
           "path": "backtester/core/dcasim.py",
