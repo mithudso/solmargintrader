@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 57
-Delta: v56 to v57; record confirmed indicator retention.
+Version: 58
+Delta: v57 to v58; preserve research and card-readiness histories.
 
 ## v1 - 2026-11-06
 
@@ -423,13 +423,25 @@ Version: 55. Delta: v54 to v55; preserve card-coverage request.
 For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.
 ```
 
-## v56 - 2026-11-08 (incomplete TradingView cards)
+## v56 - 2026-11-08 (Four nonlinear lead-lag children)
+
+````text
+Do a /dr on the 4 unresearched child concepts: Conditional nonlinear information transfer (frontier, viability 3.60 / 5)
+Finite-sample dependency uncertainty (frontier, viability 3.60 / 5)
+Lag-selection multiplicity (frontier, viability 3.60 / 5)
+Directed graph preservation (frontier, viability 3.60 / 5)
+````
+
+Target: solmargintrader, isolated branch agent-01a1b5ef. Stele TASK-905.
+Metadata v57: operator-neutral continuation reference; user request unchanged.
+
+## v57 - 2026-11-08 (incomplete TradingView cards)
 
 ```text
 create an incomplete directory and put all the cards you just created that cannot actually be run into it for further research, keep any cards that contain an equation, script, and/or parameters that make it a functional strategy
 ```
 
-## v57 - 2026-11-08 (card readiness clarification)
+## v58 - 2026-11-08 (card readiness clarification)
 
 ```text
 Keep complete indicator specifications too (Recommended)

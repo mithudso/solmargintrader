@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T11:17:18+00:00",
+  "generatedAt": "2026-11-08T11:19:49+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -574,7 +574,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 342,
+      "matchingFiles": 343,
       "shown": 30,
       "files": [
         {
@@ -1556,7 +1556,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 18
+          "hits": 19
         },
         {
           "path": "backtester/core/dcasim.py",
@@ -1686,7 +1686,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 15
+          "hits": 16
         },
         {
           "path": "backtester/core/dcasim.py",
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 105,
+      "matchingFiles": 107,
       "shown": 30,
       "files": [
         {

@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:35:36+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T11:00:36+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -78,7 +78,7 @@ Full list: `python3 index/search.py --concept grid -n 370`
 
 ### On-chain execution reality
 
-`execution-onchain` · **339 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **340 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -93,7 +93,7 @@ Strongest files:
 - `llms-full.txt` (102 hits)
 - `pagesource` (98 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 339`
+Full list: `python3 index/search.py --concept execution-onchain -n 340`
 
 ### Data integrity
 
@@ -165,7 +165,7 @@ Strongest files:
 - `research/perturb.py` (29 hits)
 - `research/RANKED_LISTS.md` (25 hits)
 - `backtester/core/deflated_sharpe.py` (21 hits)
-- `memory.md` (16 hits)
+- `memory.md` (17 hits)
 - `backtester/core/dcasim.py` (15 hits)
 - `docs/CONCEPTS.md` (14 hits)
 
@@ -230,7 +230,7 @@ Full list: `python3 index/search.py --concept overfitting-pbo -n 112`
 
 ### Perturbation and robustness
 
-`robustness` · **103 files** · matched on `perturb`, `perturbation`, `ratio_to_iqr`, `sign_flips`, `stability`
+`robustness` · **105 files** · matched on `perturb`, `perturbation`, `ratio_to_iqr`, `sign_flips`, `stability`
 
 Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.
 
@@ -245,7 +245,7 @@ Strongest files:
 - `research/coin-intelligence/sol-solana.md` (11 hits)
 - `research/triggers.py` (10 hits)
 
-Full list: `python3 index/search.py --concept robustness -n 103`
+Full list: `python3 index/search.py --concept robustness -n 105`
 
 ---
 
