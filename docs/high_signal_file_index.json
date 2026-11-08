@@ -747,7 +747,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 4176
+      "lines": 4186
     },
     {
       "path": "soltui/signals.py",
@@ -914,7 +914,7 @@
       "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 331
+      "lines": 345
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",

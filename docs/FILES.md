@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `d36d4a0` (2026-11-08T07:58:51+00:00). 694 tracked files, 12.4 MB.
+**Generated** from `index/INDEX.json` at commit `fff7725` (2026-11-08T08:12:09+00:00). 694 tracked files, 12.4 MB.
 
 Regenerate with:
 
@@ -4687,7 +4687,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 4177 lines · 209,655 B · description: **extracted**
+`code-python` · 4187 lines · 210,611 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -5961,7 +5961,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `mongo/schema.py`
 
-`code-python` · 473 lines · 19,535 B · description: **extracted**
+`code-python` · 473 lines · 19,542 B · description: **extracted**
 
 **Purpose.** Collection layout for the local research store: specs, validators, indexes. python3 mongo/schema.py --create # create everything (drops first) python3 mongo/schema.py --describe # print the layout, touch nothing Design notes, because the shape is the part worth arguing about: * **Bars are a native time series collection.** Per-bar, time-ordered, append-only measurements are what that collection ty
 
@@ -6047,7 +6047,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `mongo/tests/test_load.py`
 
-`test` · 332 lines · 14,034 B · description: **extracted**
+`test` · 346 lines · 14,942 B · description: **extracted**
 
 **Purpose.** Tests for the local MongoDB research store. The load is destructive by design, so the test that matters most asserts it is therefore *idempotent*: loading twice must leave identical counts. Without that, the time series collections would silently double on a second run -- they accept no unique index, so nothing else would catch it.
 

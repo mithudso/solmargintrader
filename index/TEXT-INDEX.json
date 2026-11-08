@@ -387,9 +387,9 @@
     "mongo/queries/07-documents-and-search.js": 266,
     "mongo/queries/08-provenance-and-health.js": 386,
     "mongo/requirements.txt": 50,
-    "mongo/schema.py": 1504,
+    "mongo/schema.py": 1505,
     "mongo/tests/__init__.py": 5,
-    "mongo/tests/test_load.py": 1295,
+    "mongo/tests/test_load.py": 1384,
     "mongo/tests/test_load_audit.py": 833,
     "mongo/tests/test_snapshot_audit.py": 501,
     "pagesource": 10495,
@@ -687,7 +687,7 @@
     "soltui/tests/test_wallet_integration.py": 1511,
     "soltui/tests/test_wallet_settings.py": 1073,
     "soltui/top5.py": 820,
-    "soltui/tui.py": 19280,
+    "soltui/tui.py": 19348,
     "soltui/utxo_scan.py": 1152,
     "soltui/wallet.py": 4200,
     "tools/gate.sh": 257,
@@ -695,7 +695,7 @@
     "tools/land.sh": 425,
     "tradingskilllist/trading-skills.md": 803
   },
-  "generatedAt": "2026-11-08T07:58:57+00:00",
+  "generatedAt": "2026-11-08T08:12:16+00:00",
   "postings": {
     "035928": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
@@ -9447,7 +9447,7 @@
       "memory.md": 2,
       "mongo/load.py": 6,
       "mongo/schema.py": 4,
-      "mongo/tests/test_load.py": 3,
+      "mongo/tests/test_load.py": 4,
       "mongo/tests/test_load_audit.py": 2,
       "mongo/tests/test_snapshot_audit.py": 1,
       "research/candle_gap_audit.py": 5,
@@ -17292,7 +17292,7 @@
       "soltui/pricefeed.py": 28,
       "soltui/runner.py": 1,
       "soltui/tests/test_pricefeed.py": 3,
-      "soltui/tui.py": 5
+      "soltui/tui.py": 6
     },
     "ask_size": {
       "backtester/core/trianglesim.py": 3,
@@ -17970,7 +17970,7 @@
       "backtester/tests/test_textbook_strategies.py": 2,
       "backtester/tests/test_triggers.py": 2,
       "backtester/tests/test_universe.py": 24,
-      "mongo/tests/test_load.py": 11,
+      "mongo/tests/test_load.py": 14,
       "soltui/tests/test_bgcontrol.py": 8,
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgqueue.py": 14,
@@ -18403,7 +18403,7 @@
       "backtester/tests/test_trianglesim.py": 1,
       "backtester/tests/test_triggers.py": 3,
       "backtester/tests/test_universe.py": 4,
-      "mongo/tests/test_load.py": 4,
+      "mongo/tests/test_load.py": 5,
       "mongo/tests/test_load_audit.py": 1,
       "mongo/tests/test_snapshot_audit.py": 1,
       "soltui/tests/test_bgcontrol.py": 3,
@@ -23569,7 +23569,7 @@
       "soltui/tests/test_strategy_history.py": 14,
       "soltui/tests/test_tui.py": 20,
       "soltui/tests/test_tui_presets_pnl.py": 6,
-      "soltui/tui.py": 136,
+      "soltui/tui.py": 138,
       "tradingskilllist/trading-skills.md": 5
     },
     "backtest_all": {
@@ -23941,7 +23941,7 @@
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/requirements.txt": 7,
       "mongo/schema.py": 1,
-      "mongo/tests/test_load.py": 3,
+      "mongo/tests/test_load.py": 4,
       "mongo/tests/test_snapshot_audit.py": 5,
       "prompts.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -27050,6 +27050,7 @@
       "memory.md": 2,
       "mongo/load.py": 2,
       "mongo/schema.py": 1,
+      "mongo/tests/test_load.py": 2,
       "research/5minleveragestrategies.json": 1,
       "research/GRID-REVIEW.md": 1,
       "research/RATIO-ROTATION.md": 2,
@@ -29083,7 +29084,8 @@
       "soltui/bgqueue.py": 1,
       "soltui/bots.py": 1,
       "soltui/help.py": 3,
-      "soltui/pnl.py": 2
+      "soltui/pnl.py": 2,
+      "soltui/tui.py": 1
     },
     "besides": {
       "backtester/core/gridsim.py": 1
@@ -29246,7 +29248,7 @@
       "soltui/tests/test_pnl.py": 5,
       "soltui/tests/test_pricefeed.py": 6,
       "soltui/tests/test_strategy_history.py": 3,
-      "soltui/tui.py": 31,
+      "soltui/tui.py": 33,
       "soltui/wallet.py": 4
     },
     "best_ask": {
@@ -30129,7 +30131,7 @@
       "soltui/help.py": 5,
       "soltui/pricefeed.py": 30,
       "soltui/tests/test_pricefeed.py": 4,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "bid_size": {
       "backtester/core/trianglesim.py": 3,
@@ -32991,6 +32993,8 @@
       "llms-full.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 14,
       "memory.md": 7,
+      "mongo/schema.py": 1,
+      "mongo/tests/test_load.py": 2,
       "prompts.md": 7,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
@@ -33012,7 +33016,7 @@
       "soltui/help.py": 41,
       "soltui/tests/bridge_support.py": 11,
       "soltui/tests/test_bots.py": 18,
-      "soltui/tui.py": 41,
+      "soltui/tui.py": 44,
       "tradingskilllist/trading-skills.md": 1
     },
     "bot_param": {
@@ -37092,7 +37096,7 @@
       "soltui/tests/test_top5.py": 2,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 3,
+      "soltui/tui.py": 4,
       "tradingskilllist/trading-skills.md": 1
     },
     "buy_and_hold": {
@@ -41465,7 +41469,7 @@
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_tui.py": 2,
       "soltui/tests/test_wallet_settings.py": 1,
-      "soltui/tui.py": 3,
+      "soltui/tui.py": 4,
       "tradingskilllist/trading-skills.md": 2
     },
     "capital_deployed": {
@@ -41995,7 +41999,7 @@
       "mongo/queries/02-strategies-and-cards.js": 19,
       "mongo/queries/07-documents-and-search.js": 3,
       "mongo/schema.py": 4,
-      "mongo/tests/test_load.py": 1,
+      "mongo/tests/test_load.py": 12,
       "pagesource": 19,
       "prompts.md": 1,
       "research/GRID-REVIEW.md": 1,
@@ -42158,7 +42162,7 @@
       "mongo/load.py": 6,
       "mongo/queries/02-strategies-and-cards.js": 8,
       "mongo/schema.py": 4,
-      "mongo/tests/test_load.py": 3,
+      "mongo/tests/test_load.py": 4,
       "pagesource": 1,
       "prompts.md": 1,
       "research/GRID-REVIEW.md": 2,
@@ -43185,6 +43189,7 @@
       "extension/src/ui/session-key-form.js": 2,
       "liquidity/tests/test_executor.py": 2,
       "llms-full.txt": 1,
+      "mongo/tests/test_load.py": 1,
       "research/5minleveragestrategies.json": 1,
       "research/decide.py": 2,
       "research/leverage_economics.py": 1,
@@ -46920,6 +46925,7 @@
       "extension/tools/verify-endpoints.js": 1,
       "llms-full.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "mongo/tests/test_load.py": 1,
       "research/5minleveragestrategies.json": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/verify_numbers.py": 1,
@@ -48761,7 +48767,7 @@
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 4,
       "soltui/SolTUI.icns": 1,
-      "soltui/tui.py": 105,
+      "soltui/tui.py": 109,
       "tradingskilllist/trading-skills.md": 1
     },
     "classic": {
@@ -51757,7 +51763,7 @@
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_eth_scan.py": 5,
       "soltui/tests/test_utxo_scan.py": 2,
-      "soltui/tui.py": 1,
+      "soltui/tui.py": 2,
       "soltui/utxo_scan.py": 1
     },
     "coinbase_base": {
@@ -52482,7 +52488,7 @@
       "mongo/queries/05-backtests.js": 2,
       "mongo/queries/06-experiments-and-pbo.js": 2,
       "mongo/schema.py": 19,
-      "mongo/tests/test_load.py": 9,
+      "mongo/tests/test_load.py": 10,
       "mongo/tests/test_load_audit.py": 1,
       "research/dso_audit.py": 1,
       "research/signal_redundancy.py": 1,
@@ -52889,7 +52895,7 @@
       "soltui/tests/test_strategies_tab_history.py": 4,
       "soltui/tests/test_tui.py": 5,
       "soltui/tests/test_tui_presets_pnl.py": 1,
-      "soltui/tui.py": 37
+      "soltui/tui.py": 38
     },
     "columnstyle": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -57646,7 +57652,7 @@
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 2,
       "soltui/top5.py": 4,
-      "soltui/tui.py": 13
+      "soltui/tui.py": 14
     },
     "configuration_counts": {
       "docs/FILES.md": 2,
@@ -62013,7 +62019,7 @@
       "mongo/queries/03-signals-and-indicators.js": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/schema.py": 1,
-      "mongo/tests/test_load.py": 3,
+      "mongo/tests/test_load.py": 4,
       "mongo/tests/test_snapshot_audit.py": 4,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/GRID-REVIEW.md": 1,
@@ -68642,9 +68648,6 @@
     "d369ed297e79b417766327ece16bb7e89306c588df63c364a85d90d4aeac843": {
       "liquidity/uv.lock": 1
     },
-    "d36d4a0": {
-      "docs/FILES.md": 1
-    },
     "d376bbd28b3a8999db1a103b3b388aee6f1ddeb3e51bc2172993efdcd86e064d": {
       "liquidity/uv.lock": 1
     },
@@ -71310,6 +71313,7 @@
       "docs/trading-signals-concept-family.md": 4,
       "extension/src/jupiter/trigger.js": 1,
       "memory.md": 8,
+      "mongo/tests/test_load.py": 1,
       "prompts.md": 5,
       "research/5minleveragestrategies.json": 1,
       "research/tradingstrategyresults.json": 1,
@@ -71344,7 +71348,8 @@
       "backtester/strategy_cards/dca_bot.md": 1,
       "backtester/tests/test_strategy_cards.py": 1,
       "docs/FILES.md": 1,
-      "memory.md": 1
+      "memory.md": 1,
+      "mongo/tests/test_load.py": 1
     },
     "dca_forced_exit": {
       "backtester/core/dcasim.py": 1
@@ -83497,7 +83502,7 @@
       "mongo/queries/07-documents-and-search.js": 3,
       "mongo/queries/08-provenance-and-health.js": 3,
       "mongo/schema.py": 6,
-      "mongo/tests/test_load.py": 4,
+      "mongo/tests/test_load.py": 5,
       "pagesource": 6,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/PROMPT_STRATEGIES.md": 5,
@@ -86204,7 +86209,7 @@
       "soltui/tests/test_tui.py": 4,
       "soltui/tests/test_tui_presets_pnl.py": 3,
       "soltui/tests/test_wallet.py": 2,
-      "soltui/tui.py": 21,
+      "soltui/tui.py": 22,
       "tools/gate.sh": 1
     },
     "dry_run": {
@@ -94462,6 +94467,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/src/aero_lp/strategy.py": 1,
       "mongo/schema.py": 7,
+      "mongo/tests/test_load.py": 5,
       "soltui/commands.py": 4,
       "soltui/status.py": 1,
       "soltui/tui.py": 3
@@ -94550,7 +94556,8 @@
       "research/sweep.py": 2
     },
     "enums": {
-      "docs/TRADINGVIEW-REFERENCE.md": 2
+      "docs/TRADINGVIEW-REFERENCE.md": 2,
+      "mongo/tests/test_load.py": 2
     },
     "env": {
       ".env.example": 3,
@@ -105949,6 +105956,7 @@
       "llms-full.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "memory.md": 13,
+      "mongo/tests/test_load.py": 1,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 4,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -106092,6 +106100,9 @@
       "soltui/tests/test_wallet.py": 1,
       "tools/gate.sh": 1,
       "tools/land.sh": 2
+    },
+    "failingdocumentid": {
+      "mongo/tests/test_load.py": 1
     },
     "failread": {
       "liquidity/tests/test_executor_audit.py": 2
@@ -107598,7 +107609,7 @@
       "soltui/paper.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker_audit.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "farm": {
       "docs/profitable-crypto-strategies-analysis.md": 2,
@@ -109294,7 +109305,7 @@
       "soltui/pnl.py": 8,
       "soltui/tests/test_pnl.py": 5,
       "soltui/tests/test_presets_netpct.py": 1,
-      "soltui/tui.py": 6
+      "soltui/tui.py": 7
     },
     "fees0": {
       "liquidity/src/aero_lp/chain.py": 5,
@@ -110193,6 +110204,9 @@
     },
     "fff459916aa0fab42215dc47b759586fd80f94aa56dfc4a7c15ba6e0dc": {
       "liquidity/uv.lock": 1
+    },
+    "fff7725": {
+      "docs/FILES.md": 1
     },
     "fffd": {
       "pagesource": 5
@@ -113934,7 +113948,7 @@
       "mongo/queries/08-provenance-and-health.js": 3,
       "mongo/requirements.txt": 2,
       "mongo/schema.py": 7,
-      "mongo/tests/test_load.py": 6,
+      "mongo/tests/test_load.py": 7,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 2,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -114079,7 +114093,7 @@
       "soltui/tests/test_tui_presets_pnl.py": 2,
       "soltui/tests/test_wallet.py": 3,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 37,
+      "soltui/tui.py": 38,
       "soltui/wallet.py": 1,
       "tools/land.sh": 2
     },
@@ -114288,6 +114302,7 @@
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "memory.md": 1,
+      "mongo/tests/test_load.py": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/coin-intelligence/rain-rain.md": 1,
       "skills/trading-and-investing/references/asset-specific-vs-universal-parameters.md": 2,
@@ -118025,7 +118040,7 @@
       "soltui/tests/test_forwardtest.py": 9,
       "soltui/tests/test_pnl.py": 1,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 184,
+      "soltui/tui.py": 185,
       "tools/install-hooks.sh": 1,
       "tools/land.sh": 7,
       "tradingskilllist/trading-skills.md": 1
@@ -119280,6 +119295,7 @@
       "llms/defillama-llms-free.txt": 6,
       "llms/defillama-llms.txt": 18,
       "memory.md": 3,
+      "mongo/tests/test_load.py": 1,
       "research/5minleveragestrategies.json": 1,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 2,
@@ -133747,7 +133763,7 @@
       "soltui/tests/test_tui.py": 1,
       "soltui/tests/test_wallet.py": 2,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 16,
+      "soltui/tui.py": 17,
       "soltui/wallet.py": 3
     },
     "hold_": {
@@ -150600,7 +150616,7 @@
       "docs/high_signal_file_index.json": 1,
       "mongo/README.md": 2,
       "mongo/schema.py": 5,
-      "mongo/tests/test_load.py": 2
+      "mongo/tests/test_load.py": 3
     },
     "jsr": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -153239,7 +153255,7 @@
       "mongo/queries/06-experiments-and-pbo.js": 9,
       "mongo/queries/07-documents-and-search.js": 6,
       "mongo/schema.py": 16,
-      "mongo/tests/test_load.py": 6,
+      "mongo/tests/test_load.py": 10,
       "mongo/tests/test_load_audit.py": 5,
       "research/RANKED_LISTS.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 4,
@@ -153321,6 +153337,7 @@
       "liquidity/tests/test_submission_audit.py": 2,
       "memory.md": 2,
       "mongo/load.py": 2,
+      "mongo/tests/test_load.py": 2,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/decide.py": 2,
       "scripts/check_docs.py": 2,
@@ -157796,6 +157813,7 @@
       "backtester/core/indicators.py": 3,
       "backtester/strategy_cards/ou_half_life_sizing.md": 1,
       "memory.md": 1,
+      "mongo/tests/test_load.py": 1,
       "research/coin-intelligence/btc-bitcoin.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 1,
       "skills/trading-and-investing/SKILL.md": 1,
@@ -166885,7 +166903,7 @@
       "mongo/README.md": 9,
       "mongo/load.py": 49,
       "mongo/schema.py": 3,
-      "mongo/tests/test_load.py": 37,
+      "mongo/tests/test_load.py": 38,
       "mongo/tests/test_load_audit.py": 33,
       "mongo/tests/test_snapshot_audit.py": 15,
       "prompts.md": 2,
@@ -166994,7 +167012,7 @@
       "backtester/strategy_cards/README.md": 1,
       "backtester/tests/test_strategy_cards.py": 9,
       "mongo/load.py": 1,
-      "mongo/tests/test_load.py": 1,
+      "mongo/tests/test_load.py": 2,
       "soltui/bgqueue.py": 3,
       "soltui/commands.py": 3,
       "soltui/cumulative.py": 2,
@@ -172533,7 +172551,7 @@
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1,
-      "soltui/tui.py": 7
+      "soltui/tui.py": 8
     },
     "made_money": {
       "research/cross_asset_cpcv.py": 2,
@@ -175599,7 +175617,7 @@
       "soltui/pricefeed.py": 3,
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 1,
-      "soltui/tui.py": 1,
+      "soltui/tui.py": 2,
       "tradingskilllist/trading-skills.md": 3
     },
     "marketstatus": {
@@ -185417,7 +185435,7 @@
       "soltui/soltui-service": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_wallet_integration.py": 11,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "moments": {
       "docs/strategy-optimization-concept-family.md": 1,
@@ -185820,7 +185838,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/INSTALLATION.md": 1,
       "docs/TESTING.md": 2,
-      "mongo/tests/test_load.py": 2
+      "mongo/tests/test_load.py": 3
     },
     "mongodb": {
       ".github/workflows/ci.yml": 2,
@@ -192261,7 +192279,7 @@
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_strategy_history.py": 1,
-      "soltui/tui.py": 3
+      "soltui/tui.py": 4
     },
     "newest_done": {
       "backtester/core/fetch_minutes_alt.py": 5
@@ -204380,6 +204398,9 @@
     },
     "outgoing": {
       "liquidity/tests/test_executor.py": 1
+    },
+    "outgrew": {
+      "mongo/tests/test_load.py": 1
     },
     "outlast": {
       "backtester/strategy_cards/ema_crossover.md": 1
@@ -221349,7 +221370,7 @@
       "soltui/tests/test_help.py": 6,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_tui.py": 38,
-      "soltui/tui.py": 18
+      "soltui/tui.py": 19
     },
     "pressed": {
       "docs/FILES.md": 1,
@@ -222011,7 +222032,7 @@
       "soltui/tests/test_utxo_scan.py": 6,
       "soltui/tests/test_wallet.py": 35,
       "soltui/tests/test_wallet_integration.py": 1,
-      "soltui/tui.py": 29,
+      "soltui/tui.py": 30,
       "soltui/utxo_scan.py": 10,
       "soltui/wallet.py": 58
     },
@@ -225313,6 +225334,7 @@
       "docs/strategy-optimization-concept-family.md": 1,
       "llms-full.txt": 1,
       "mongo/schema.py": 5,
+      "mongo/tests/test_load.py": 1,
       "research/CANDLE-GAP-AUDIT.md": 1,
       "research/signal_redundancy.py": 2,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
@@ -225582,7 +225604,8 @@
     "props": {
       "docs/TRADINGVIEW-REFERENCE.md": 5,
       "extension/src/ui/soltui-panel.js": 2,
-      "extension/src/ui/ui-kit.js": 2
+      "extension/src/ui/ui-kit.js": 2,
+      "mongo/tests/test_load.py": 5
     },
     "pros": {
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 2
@@ -231589,7 +231612,7 @@
       "soltui/tests/test_top5.py": 5,
       "soltui/tests/test_tui.py": 6,
       "soltui/top5.py": 7,
-      "soltui/tui.py": 12
+      "soltui/tui.py": 13
     },
     "rank_deltas": {
       "research/geometry.py": 6
@@ -237531,7 +237554,7 @@
       "soltui/tests/test_utxo_scan.py": 2,
       "soltui/tests/test_wallet.py": 9,
       "soltui/tests/test_wallet_integration.py": 4,
-      "soltui/tui.py": 11
+      "soltui/tui.py": 12
     },
     "recorded_at": {
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -237570,7 +237593,7 @@
       "soltui/tests/bridge_support.py": 2,
       "soltui/tests/test_bots.py": 4,
       "soltui/tests/test_pricefeed.py": 13,
-      "soltui/tui.py": 15
+      "soltui/tui.py": 16
     },
     "recorder_running": {
       "soltui/pricefeed.py": 7,
@@ -239368,7 +239391,7 @@
       "liquidity/tests/test_gates.py": 2,
       "liquidity/tests/test_safe_exit.py": 12,
       "llms-full.txt": 10,
-      "mongo/tests/test_load.py": 1,
+      "mongo/tests/test_load.py": 2,
       "prompts.md": 3,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -243235,7 +243258,7 @@
       "soltui/commands.py": 1,
       "soltui/help.py": 3,
       "soltui/tests/test_panes.py": 1,
-      "soltui/tui.py": 2
+      "soltui/tui.py": 3
     },
     "replaying": {
       "backtester/tests/test_decide.py": 1,
@@ -256084,7 +256107,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_compound.py": 1,
       "soltui/top5.py": 2,
-      "soltui/tui.py": 5
+      "soltui/tui.py": 6
     },
     "sample_doc": {
       "liquidity/tests/test_providers.py": 6
@@ -257662,7 +257685,7 @@
       "mongo/README.md": 3,
       "mongo/load.py": 4,
       "mongo/schema.py": 5,
-      "mongo/tests/test_load.py": 14,
+      "mongo/tests/test_load.py": 16,
       "mongo/tests/test_load_audit.py": 6,
       "pagesource": 2,
       "research/coin-intelligence/trx-tron.md": 1,
@@ -259075,7 +259098,8 @@
       "research/ratio_rotation.py": 1,
       "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md": 1,
       "skills/trading-and-investing/references/jupiter-jlp-pool.md": 1,
-      "soltui/help.py": 1
+      "soltui/help.py": 1,
+      "soltui/tui.py": 1
     },
     "searcher": {
       "backtester/tests/test_index.py": 1,
@@ -262658,7 +262682,7 @@
       "mongo/load.py": 2,
       "mongo/queries/07-documents-and-search.js": 2,
       "mongo/schema.py": 5,
-      "mongo/tests/test_load.py": 14,
+      "mongo/tests/test_load.py": 15,
       "prompts.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 3,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1,
@@ -263239,7 +263263,7 @@
       "mongo/load.py": 11,
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "mongo/schema.py": 6,
-      "mongo/tests/test_load.py": 1,
+      "mongo/tests/test_load.py": 3,
       "mongo/tests/test_load_audit.py": 1,
       "mongo/tests/test_snapshot_audit.py": 1,
       "prompts.md": 7,
@@ -263361,7 +263385,7 @@
       "soltui/tests/test_wallet.py": 5,
       "soltui/tests/test_wallet_integration.py": 3,
       "soltui/tests/test_wallet_settings.py": 6,
-      "soltui/tui.py": 56,
+      "soltui/tui.py": 57,
       "soltui/wallet.py": 6,
       "tools/gate.sh": 1,
       "tools/install-hooks.sh": 3,
@@ -269927,7 +269951,7 @@
       "soltui/status.py": 1,
       "soltui/tests/test_bgqueue.py": 16,
       "soltui/tests/test_compound.py": 1,
-      "soltui/tui.py": 9,
+      "soltui/tui.py": 10,
       "tools/land.sh": 1
     },
     "sine": {
@@ -272092,7 +272116,7 @@
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_docs_search.py": 4,
       "soltui/tests/test_pnl.py": 6,
-      "soltui/tui.py": 7
+      "soltui/tui.py": 8
     },
     "slippage2": {
       "research/results/grid_review_20261107.json": 1
@@ -280462,7 +280486,7 @@
       "soltui/tests/test_tui_presets_pnl.py": 4,
       "soltui/tests/test_wallet.py": 1,
       "soltui/tests/test_wallet_integration.py": 3,
-      "soltui/tui.py": 105
+      "soltui/tui.py": 106
     },
     "start_1h": {
       "research/full_suite.py": 1
@@ -280636,7 +280660,7 @@
       "soltui/tests/test_strategies_tab_history.py": 1,
       "soltui/tests/test_strategy_history.py": 5,
       "soltui/tests/test_tui.py": 3,
-      "soltui/tui.py": 16
+      "soltui/tui.py": 17
     },
     "started_at": {
       "liquidity/STATE_FILES.md": 2,
@@ -281553,7 +281577,7 @@
       "soltui/tests/test_tui.py": 3,
       "soltui/tests/test_tui_presets_pnl.py": 1,
       "soltui/tests/test_wallet_integration.py": 1,
-      "soltui/tui.py": 222
+      "soltui/tui.py": 227
     },
     "static_daily": {
       "research/results/grid_review_20261107.json": 1
@@ -282005,6 +282029,7 @@
       "mongo/load.py": 3,
       "mongo/queries/02-strategies-and-cards.js": 8,
       "mongo/schema.py": 5,
+      "mongo/tests/test_load.py": 2,
       "pagesource": 10,
       "prompts.md": 3,
       "research/RATIO-ROTATION.md": 1,
@@ -284644,7 +284669,7 @@
       "mongo/queries/06-experiments-and-pbo.js": 3,
       "mongo/queries/08-provenance-and-health.js": 2,
       "mongo/schema.py": 5,
-      "mongo/tests/test_load.py": 8,
+      "mongo/tests/test_load.py": 10,
       "mongo/tests/test_snapshot_audit.py": 3,
       "prompts.md": 10,
       "research/5minleveragestrategies.json": 47,
@@ -285000,7 +285025,7 @@
       "mongo/queries/06-experiments-and-pbo.js": 4,
       "mongo/queries/07-documents-and-search.js": 2,
       "mongo/schema.py": 21,
-      "mongo/tests/test_load.py": 5,
+      "mongo/tests/test_load.py": 7,
       "mongo/tests/test_snapshot_audit.py": 6,
       "pagesource": 1,
       "prompts.md": 29,
@@ -285182,7 +285207,7 @@
       "llms-small.txt": 1,
       "memory.md": 2,
       "mongo/load.py": 2,
-      "mongo/tests/test_load.py": 2,
+      "mongo/tests/test_load.py": 3,
       "prompts.md": 1,
       "research/GRID-REVIEW.md": 2,
       "research/RATIO-ROTATION.md": 1,
@@ -285337,7 +285362,7 @@
       "soltui/serve.py": 1,
       "soltui/tests/test_bridge_surfaces.py": 1,
       "soltui/tests/test_pricefeed.py": 4,
-      "soltui/tui.py": 18
+      "soltui/tui.py": 19
     },
     "stream_brief": {
       "soltui/bots.py": 5
@@ -285366,7 +285391,8 @@
       "soltui/bots.py": 1,
       "soltui/commands.py": 1,
       "soltui/help.py": 2,
-      "soltui/tests/test_bots.py": 1
+      "soltui/tests/test_bots.py": 1,
+      "soltui/tui.py": 1
     },
     "streamended": {
       "pagesource": 2
@@ -287598,7 +287624,7 @@
       "backtester/tests/test_trianglesim.py": 1,
       "backtester/tests/test_triggers.py": 1,
       "backtester/tests/test_universe.py": 1,
-      "mongo/tests/test_load.py": 4,
+      "mongo/tests/test_load.py": 5,
       "mongo/tests/test_load_audit.py": 1,
       "scripts/check_docs.py": 1,
       "soltui/tests/test_bgworker_audit.py": 2,
@@ -287789,6 +287815,7 @@
       "mongo/load.py": 4,
       "mongo/queries/02-strategies-and-cards.js": 4,
       "mongo/schema.py": 3,
+      "mongo/tests/test_load.py": 2,
       "pagesource": 13,
       "prompts.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -287880,7 +287907,8 @@
       "backtester/strategy_cards/zscore.md": 1,
       "backtester/tests/test_strategy_cards.py": 9,
       "mongo/load.py": 2,
-      "mongo/schema.py": 1
+      "mongo/schema.py": 1,
+      "mongo/tests/test_load.py": 2
     },
     "success_likelihood": {
       "backtester/core/strategy_cards.py": 9,
@@ -292202,12 +292230,12 @@
     },
     "t07": {
       "docs/CONCEPTS.md": 1,
-      "docs/FILES.md": 1,
       "liquidity/uv.lock": 92,
       "pagesource": 3,
       "soltui/tests/fixtures/wallet/jupiter_recorded.json": 1
     },
     "t08": {
+      "docs/FILES.md": 1,
       "liquidity/uv.lock": 6,
       "pagesource": 1,
       "soltui/tests/fixtures/wallet/jupiter_recorded.json": 6
@@ -292617,7 +292645,7 @@
       "soltui/tests/test_tui.py": 124,
       "soltui/tests/test_tui_presets_pnl.py": 15,
       "soltui/tests/test_utxo_scan.py": 2,
-      "soltui/tui.py": 270
+      "soltui/tui.py": 274
     },
     "table_columns": {
       "backtester/core/report.py": 3,
@@ -295183,7 +295211,7 @@
       "mongo/load.py": 14,
       "mongo/queries/08-provenance-and-health.js": 4,
       "mongo/schema.py": 1,
-      "mongo/tests/test_load.py": 29,
+      "mongo/tests/test_load.py": 30,
       "mongo/tests/test_load_audit.py": 11,
       "mongo/tests/test_snapshot_audit.py": 7,
       "prompts.md": 12,
@@ -295308,7 +295336,7 @@
       "soltui/tests/test_wallet_integration.py": 39,
       "soltui/tests/test_wallet_settings.py": 28,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 35,
+      "soltui/tui.py": 37,
       "tools/gate.sh": 3,
       "tools/land.sh": 1
     },
@@ -297891,6 +297919,9 @@
     },
     "test_every_start_is_on_the_window_grid": {
       "backtester/tests/test_fetch_minutes.py": 1
+    },
+    "test_every_strategy_card_fits_the_validator_enums": {
+      "mongo/tests/test_load.py": 1
     },
     "test_every_strategy_returns_a_bounded_exposure": {
       "backtester/tests/test_advanced_strategies.py": 1
@@ -304396,7 +304427,7 @@
       "liquidity/tests/test_strategy.py": 2,
       "llms-full.txt": 2,
       "memory.md": 1,
-      "mongo/tests/test_load.py": 4,
+      "mongo/tests/test_load.py": 5,
       "mongo/tests/test_load_audit.py": 1,
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 1,
       "soltui/README.md": 2,
@@ -306297,7 +306328,7 @@
       "soltui/tests/test_tui.py": 4,
       "soltui/tests/test_tui_presets_pnl.py": 3,
       "soltui/top5.py": 1,
-      "soltui/tui.py": 13,
+      "soltui/tui.py": 14,
       "tools/land.sh": 1
     },
     "throughout": {
@@ -308410,7 +308441,7 @@
       "soltui/tests/test_compound.py": 10,
       "soltui/tests/test_status_roster.py": 48,
       "soltui/tests/test_tui.py": 8,
-      "soltui/tui.py": 56
+      "soltui/tui.py": 60
     },
     "titled": {
       "research/TOP5-RECOMMENDATION.md": 1,
@@ -313021,7 +313052,7 @@
       "soltui/compound.py": 1,
       "soltui/help.py": 9,
       "soltui/tests/test_bots.py": 1,
-      "soltui/tui.py": 9
+      "soltui/tui.py": 10
     },
     "train_cells": {
       "soltui/bots.py": 1,
@@ -326274,7 +326305,7 @@
       "llms-full.txt": 5,
       "memory.md": 6,
       "mongo/README.md": 1,
-      "mongo/tests/test_load.py": 1,
+      "mongo/tests/test_load.py": 2,
       "prompts.md": 1,
       "research/PROMPT_STRATEGIES.md": 2,
       "research/RANKED_LISTS.md": 1,
@@ -326369,7 +326400,7 @@
       "docs/profitable-crypto-strategies-analysis.md": 2,
       "mongo/README.md": 1,
       "mongo/schema.py": 16,
-      "mongo/tests/test_load.py": 4,
+      "mongo/tests/test_load.py": 8,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 2,
@@ -327137,7 +327168,7 @@
       "llms/defillama-llms-free.txt": 1,
       "mongo/load.py": 5,
       "mongo/queries/02-strategies-and-cards.js": 1,
-      "mongo/tests/test_load.py": 1,
+      "mongo/tests/test_load.py": 2,
       "mongo/tests/test_load_audit.py": 1,
       "pagesource": 4,
       "prompts.md": 1,
@@ -336785,7 +336816,7 @@
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/queries/03-signals-and-indicators.js": 2,
       "mongo/schema.py": 1,
-      "mongo/tests/test_load.py": 6,
+      "mongo/tests/test_load.py": 7,
       "mongo/tests/test_snapshot_audit.py": 3,
       "pagesource": 2,
       "prompts.md": 1,
@@ -341462,7 +341493,7 @@
       "soltui/help.py": 3,
       "soltui/help_screen.py": 3,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 292
+      "soltui/tui.py": 297
     },
     "yield_curve": {
       "liquidity/src/aero_lp/cli.py": 2,
@@ -343027,10 +343058,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1372.6,
+    "avgDocLength": 1372.8,
     "documents": 694,
-    "terms": 35058,
-    "termsBeforePrune": 35062,
-    "totalTokens": 952599
+    "terms": 35061,
+    "termsBeforePrune": 35065,
+    "totalTokens": 952757
   }
 }
