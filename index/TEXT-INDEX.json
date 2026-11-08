@@ -14,7 +14,7 @@
     ".github/SECURITY.md": 248,
     ".github/copilot-instructions.md": 525,
     ".github/dependabot.yml": 137,
-    ".github/workflows/ci.yml": 1317,
+    ".github/workflows/ci.yml": 1447,
     ".gitignore": 479,
     ".nvmrc": 2,
     ".remember/remember.md": 541,
@@ -1267,13 +1267,13 @@
     "docs/COMPOUND-5M.md": 3435,
     "docs/CONCEPTS.md": 2188,
     "docs/DEVELOPMENT.md": 948,
-    "docs/FILES.md": 94007,
+    "docs/FILES.md": 94096,
     "docs/INSTALLATION.md": 821,
     "docs/MCP.md": 148,
     "docs/OPERATIONS.md": 502,
     "docs/SCRIPTS.md": 4879,
     "docs/SECURITY.md": 651,
-    "docs/TESTING.md": 1832,
+    "docs/TESTING.md": 1864,
     "docs/TRADINGVIEW-CARD-COVERAGE.md": 11897,
     "docs/TRADINGVIEW-CARD-FILES.md": 37276,
     "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 28209,
@@ -1521,7 +1521,7 @@
     "llms/aero-lp-explained-2026-11-06.md": 678,
     "llms/defillama-llms-free.txt": 1332,
     "llms/defillama-llms.txt": 997,
-    "memory.md": 21218,
+    "memory.md": 21244,
     "mongo/README.md": 870,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3104,
@@ -1540,7 +1540,7 @@
     "mongo/tests/test_load_audit.py": 833,
     "mongo/tests/test_snapshot_audit.py": 501,
     "pagesource": 10495,
-    "prompts.md": 2872,
+    "prompts.md": 2860,
     "research/5minleveragestrategies.json": 4184,
     "research/CANDLE-GAP-AUDIT.md": 634,
     "research/COMPOUND-FRONTIER.md": 883,
@@ -1708,10 +1708,10 @@
     "scripts/check_tradingview_cards.py": 1506,
     "scripts/coin_strategy_fit.py": 58,
     "scripts/html_to_markdown.py": 1005,
-    "scripts/soltui_ci.py": 348,
+    "scripts/soltui_ci.py": 562,
     "scripts/test_card_readiness.py": 400,
     "scripts/test_html_to_markdown.py": 569,
-    "scripts/test_soltui_ci.py": 129,
+    "scripts/test_soltui_ci.py": 224,
     "skills/README.md": 207,
     "skills/coin-strategy-fit/SKILL.md": 504,
     "skills/coin-strategy-fit/agents/openai.yaml": 45,
@@ -1915,7 +1915,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T13:28:05+00:00",
+  "generatedAt": "2026-11-08T13:32:46+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -16018,6 +16018,7 @@
       "research/turnover_table.py": 1,
       "scripts/check_docs.py": 1,
       "scripts/html_to_markdown.py": 2,
+      "scripts/soltui_ci.py": 1,
       "skills/coin-strategy-fit/references/method.md": 1,
       "skills/trading-and-investing/SKILL.md": 2,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 3,
@@ -16191,7 +16192,7 @@
     },
     "actions": {
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 17,
+      ".github/workflows/ci.yml": 19,
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
@@ -17483,9 +17484,6 @@
     "adabtc": {
       "research/tradingview-card-coverage.json": 7
     },
-    "adad94a": {
-      "docs/FILES.md": 1
-    },
     "adae49eae252c26f2b7a2fe89984533e0bdb0072f29023c1f2ad7588886e": {
       "liquidity/uv.lock": 1
     },
@@ -17950,7 +17948,7 @@
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 11,
+      "docs/FILES.md": 13,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 3,
       "docs/TESTING.md": 1,
@@ -18012,12 +18010,12 @@
       "liquidity/tests/test_submission_audit.py": 3,
       "llms-full.txt": 16,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 13,
+      "memory.md": 16,
       "mongo/README.md": 1,
       "mongo/load.py": 6,
       "mongo/queries/01-coins-and-bars.js": 2,
       "mongo/schema.py": 4,
-      "prompts.md": 24,
+      "prompts.md": 26,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/RANKED_LISTS.md": 2,
       "research/candle_crosscheck.py": 5,
@@ -18055,7 +18053,7 @@
       "scripts/check_docs.py": 1,
       "scripts/check_tradingview_cards.py": 4,
       "scripts/html_to_markdown.py": 4,
-      "scripts/soltui_ci.py": 3,
+      "scripts/soltui_ci.py": 5,
       "skills/five-minute-signal/SKILL.md": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/manifest.yaml": 1,
@@ -18201,7 +18199,7 @@
       "scripts/check_docs.py": 1,
       "scripts/check_tradingview_cards.py": 1,
       "scripts/html_to_markdown.py": 4,
-      "scripts/soltui_ci.py": 3,
+      "scripts/soltui_ci.py": 4,
       "soltui/api.py": 1,
       "soltui/bgworker.py": 8,
       "soltui/cli.py": 3,
@@ -32019,7 +32017,7 @@
       "research/verify_numbers.py": 1,
       "scripts/check_docs.py": 5,
       "scripts/test_html_to_markdown.py": 8,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 3,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1,
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1,
       "soltui/bgqueue.py": 1,
@@ -36727,7 +36725,7 @@
       "mongo/tests/test_load.py": 2,
       "mongo/tests/test_snapshot_audit.py": 1,
       "scripts/test_html_to_markdown.py": 2,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 2,
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgqueue.py": 9,
@@ -36757,6 +36755,7 @@
       "soltui/tests/test_wallet_settings.py": 4
     },
     "area": {
+      ".github/workflows/ci.yml": 2,
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
       "backtester/strategy_cards/incomplete/tv_2gaiphlg_periodic_activity_tracker_luxalgo.md": 1,
       "backtester/strategy_cards/incomplete/tv_3lzg4gmr_machine_learning_knn_new_approach.md": 1,
@@ -36804,6 +36803,7 @@
       "extension/tools/deps.js": 3,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 17,
       "llms-full.txt": 1,
+      "memory.md": 1,
       "pagesource": 6,
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/tradingview-card-coverage.json": 146,
@@ -36865,6 +36865,7 @@
       "backtester/strategy_cards/tv_mketjg7e_periodic_linear_regressions_luxalgo.md": 1,
       "backtester/strategy_cards/tv_yyrxrhi9_atr_rope.md": 4,
       "docs/FILES.md": 1,
+      "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "extension/src/market/quote.js": 2,
@@ -37113,7 +37114,7 @@
       "scripts/check_docs.py": 3,
       "scripts/check_tradingview_cards.py": 3,
       "scripts/html_to_markdown.py": 8,
-      "scripts/soltui_ci.py": 13,
+      "scripts/soltui_ci.py": 15,
       "soltui/api.py": 8,
       "soltui/bgworker.py": 18,
       "soltui/cli.py": 12,
@@ -37298,7 +37299,7 @@
       "scripts/check_docs.py": 1,
       "scripts/check_tradingview_cards.py": 1,
       "scripts/html_to_markdown.py": 4,
-      "scripts/soltui_ci.py": 3,
+      "scripts/soltui_ci.py": 4,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/asset-specific-vs-universal-parameters.md": 2,
       "skills/trading-and-investing/references/cross-asset-generalisation-testing.md": 2,
@@ -40130,7 +40131,7 @@
       "backtester/tests/test_universe.py": 24,
       "mongo/tests/test_load.py": 14,
       "scripts/test_html_to_markdown.py": 6,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 4,
       "soltui/tests/test_bgcontrol.py": 8,
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgqueue.py": 14,
@@ -40437,6 +40438,7 @@
       "backtester/tests/test_universe.py": 3,
       "mongo/tests/test_load.py": 2,
       "scripts/test_html_to_markdown.py": 2,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/tests/test_bgcontrol.py": 5,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_bots.py": 2,
@@ -46252,6 +46254,7 @@
       "research/tradingview-card-coverage.json": 3
     },
     "autooptimizeanddefaults": {
+      "docs/FILES.md": 1,
       "soltui/tests/test_forwardtest.py": 2
     },
     "autopilot": {
@@ -55967,7 +55970,7 @@
       "soltui/README.md": 1
     },
     "backups": {
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/code-deep-optimizer-2026-11-06.md": 5,
       "docs/coin-fit/merge-89-receipt.json": 2,
       "docs/coin-fit/merge-93-receipt.json": 2,
@@ -57821,7 +57824,7 @@
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 10,
+      ".github/workflows/ci.yml": 16,
       "AGENTS.md": 1,
       "CLAUDE.md": 5,
       "GEMINI.md": 1,
@@ -70272,7 +70275,7 @@
       "prompts.md": 9,
       "research/five-minute-perps-suite/benchmark-scope-review.json": 1,
       "research/tradingview-card-coverage.json": 2,
-      "scripts/test_soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 7,
       "skills/coin-strategy-fit/SKILL.md": 2,
       "skills/coin-strategy-fit/references/method.md": 4,
       "skills/trading-and-investing/SKILL.md": 1,
@@ -71133,6 +71136,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 3
     },
     "bounded": {
+      ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
@@ -72034,6 +72038,7 @@
       "docs/FILES.md": 8,
       "docs/SCRIPTS.md": 1,
       "docs/SECURITY.md": 2,
+      "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -72060,7 +72065,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 3,
       "llms.txt": 1,
-      "memory.md": 9,
+      "memory.md": 10,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/queries/05-backtests.js": 2,
       "mongo/schema.py": 1,
@@ -72078,6 +72083,7 @@
       "research/tradingview-card-coverage.json": 7,
       "research/tradingview-card-readiness.json": 1,
       "research/verify_numbers.py": 1,
+      "scripts/soltui_ci.py": 4,
       "skills/coin-strategy-fit/references/method.md": 1,
       "skills/trading-and-investing/SKILL.md": 2,
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 1,
@@ -73501,6 +73507,7 @@
       "research/tradingview-card-readiness.json": 1
     },
     "bridge": {
+      ".github/workflows/ci.yml": 1,
       "backtester/strategy_cards/exchange_net_flow.md": 2,
       "backtester/strategy_cards/incomplete/tv_mxn4pesd_htf_volume_spike_imbalance_projection_luxalgo.md": 1,
       "docs/API.md": 2,
@@ -73508,7 +73515,7 @@
       "docs/FILES.md": 19,
       "docs/SCRIPTS.md": 2,
       "docs/SECURITY.md": 1,
-      "docs/TESTING.md": 2,
+      "docs/TESTING.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/coin-fit/merge-98-receipt.json": 2,
@@ -73538,7 +73545,7 @@
       "extension/test/wallet-pubkey.test.js": 7,
       "extension/tools/e2e.mjs": 2,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 10,
+      "memory.md": 11,
       "prompts.md": 1,
       "research/TOP_COINS.md": 2,
       "research/coin-intelligence/README.md": 1,
@@ -73550,7 +73557,8 @@
       "research/defillama-llms-risk-analysis.md": 3,
       "research/tradingview-card-coverage.json": 2,
       "research/turnover_table.py": 3,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 6,
+      "scripts/test_soltui_ci.py": 3,
       "skills/trading-and-investing/SKILL.md": 3,
       "skills/trading-and-investing/manifest.yaml": 2,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 37,
@@ -77281,6 +77289,8 @@
       "memory.md": 9,
       "prompts.md": 1,
       "research/tradingview-card-coverage.json": 23,
+      "scripts/soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/README.md": 5,
       "soltui/bots_screens.py": 5,
       "soltui/help.py": 2,
@@ -81987,6 +81997,9 @@
     "c8949f0676f7ab811abdeb7f4d7f1cbc6e61ff20bef08b44edeb092bc8": {
       "liquidity/uv.lock": 1
     },
+    "c895": {
+      "docs/FILES.md": 1
+    },
     "c8959433d6c43132a8b77c22d0154260c497badf92aba9a7017d97d4": {
       "liquidity/uv.lock": 1
     },
@@ -83266,7 +83279,7 @@
     "cache": {
       ".env.example": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 6,
       ".gitignore": 2,
       ".remember/remember.md": 1,
       "CLAUDE.md": 2,
@@ -88567,6 +88580,7 @@
       "research/verify_numbers.py": 8,
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 2,
+      "scripts/soltui_ci.py": 1,
       "skills/coin-strategy-fit/SKILL.md": 1,
       "skills/coin-strategy-fit/references/method.md": 3,
       "skills/five-minute-signal/SKILL.md": 1,
@@ -91861,6 +91875,7 @@
       "soltui/tui.py": 1
     },
     "cat": {
+      ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
       "backtester/core/cpcv.py": 7,
       "docs/SCRIPTS.md": 1,
@@ -97093,7 +97108,7 @@
     },
     "changed": {
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 4,
       "backtester/core/report.py": 2,
       "backtester/core/scorecard.py": 2,
       "backtester/strategy_cards/garch_vol_forecast.md": 1,
@@ -97127,7 +97142,7 @@
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/FILES.md": 4,
       "docs/INSTALLATION.md": 2,
-      "docs/TESTING.md": 2,
+      "docs/TESTING.md": 3,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 50,
@@ -97168,7 +97183,7 @@
       "liquidity/tests/test_gates.py": 6,
       "llms-full.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 2,
-      "memory.md": 36,
+      "memory.md": 37,
       "mongo/tests/test_load_audit.py": 2,
       "mongo/tests/test_snapshot_audit.py": 4,
       "prompts.md": 2,
@@ -97187,6 +97202,7 @@
       "research/tradingview-card-coverage.json": 86,
       "research/tradingview-card-readiness.json": 1,
       "research/verify_numbers.py": 1,
+      "scripts/test_soltui_ci.py": 1,
       "skills/coin-strategy-fit/references/method.md": 2,
       "skills/trading-and-investing/references/asset-specific-vs-universal-parameters.md": 1,
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 1,
@@ -99472,7 +99488,7 @@
       "research/tradingview-card-coverage.json": 2
     },
     "checkout": {
-      ".github/workflows/ci.yml": 9,
+      ".github/workflows/ci.yml": 10,
       ".gitignore": 1,
       ".remember/remember.md": 3,
       "backtester/core/data.py": 2,
@@ -99582,6 +99598,7 @@
     },
     "checks": {
       ".claude/agents/aero-pool-scout.md": 2,
+      ".github/workflows/ci.yml": 1,
       ".gitignore": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 3,
@@ -99704,6 +99721,7 @@
       "research/tradingview-card-readiness.json": 5,
       "research/verify_numbers.py": 4,
       "scripts/check_tradingview_cards.py": 1,
+      "scripts/soltui_ci.py": 2,
       "scripts/test_html_to_markdown.py": 2,
       "skills/coin-strategy-fit/SKILL.md": 1,
       "skills/coin-strategy-fit/references/method.md": 1,
@@ -110536,7 +110554,7 @@
       "docs/COMPOUND-5M-PAPER.md": 24,
       "docs/COMPOUND-5M.md": 55,
       "docs/CONCEPTS.md": 5,
-      "docs/FILES.md": 77,
+      "docs/FILES.md": 78,
       "docs/SCRIPTS.md": 7,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -110580,7 +110598,7 @@
       "mongo/queries/07-documents-and-search.js": 8,
       "mongo/schema.py": 2,
       "pagesource": 7,
-      "prompts.md": 13,
+      "prompts.md": 11,
       "research/COMPOUND-FRONTIER.md": 8,
       "research/CROSS-ASSET-TRANSFER.md": 3,
       "research/RANKED_LISTS.md": 1,
@@ -110613,6 +110631,8 @@
       "research/tradingview-card-readiness.json": 2,
       "research/turnover_table.py": 9,
       "scripts/coin_strategy_fit.py": 5,
+      "scripts/soltui_ci.py": 4,
+      "scripts/test_soltui_ci.py": 1,
       "skills/coin-strategy-fit/SKILL.md": 19,
       "skills/coin-strategy-fit/agents/openai.yaml": 3,
       "skills/coin-strategy-fit/assets/screening-fields.csv": 1,
@@ -110676,6 +110696,7 @@
       "docs/FILES.md": 3,
       "memory.md": 1,
       "scripts/coin_strategy_fit.py": 1,
+      "scripts/soltui_ci.py": 1,
       "skills/coin-strategy-fit/references/method.md": 2,
       "skills/coin-strategy-fit/scripts/coin_strategy_fit.py": 2,
       "soltui/coin_fit.py": 1,
@@ -113694,6 +113715,7 @@
       "prompts.md": 2,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/tradingview-card-coverage.json": 10,
+      "scripts/soltui_ci.py": 1,
       "soltui/README.md": 8,
       "soltui/api.py": 29,
       "soltui/app.py": 4,
@@ -113933,7 +113955,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 1,
       ".github/dependabot.yml": 5,
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       ".gitignore": 1,
       ".remember/remember.md": 2,
       "CLAUDE.md": 2,
@@ -113942,7 +113964,7 @@
       "backtester/core/strategy_cards.py": 1,
       "docs/COMPONENTS.md": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 9,
+      "docs/FILES.md": 10,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/coin-fit/merge-89-receipt.json": 2,
@@ -121613,7 +121635,7 @@
     },
     "conflict": {
       ".githooks/pre-merge-commit": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/coin-fit/merge-89-receipt.json": 2,
       "docs/coin-fit/merge-93-receipt.json": 2,
@@ -121638,7 +121660,7 @@
       "tools/land.sh": 1
     },
     "conflict_backups": {
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/coin-fit/merge-89-receipt.json": 2,
       "docs/coin-fit/merge-93-receipt.json": 2,
       "docs/coin-fit/merge-98-receipt.json": 2
@@ -121647,13 +121669,13 @@
       "research/five-minute-perps-suite/accepted-gate-receipt.json": 1
     },
     "conflicted": {
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/coin-fit/merge-89-receipt.json": 2,
       "docs/coin-fit/merge-93-receipt.json": 2,
       "docs/coin-fit/merge-98-receipt.json": 2
     },
     "conflicted_files": {
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/coin-fit/merge-89-receipt.json": 2,
       "docs/coin-fit/merge-93-receipt.json": 2,
       "docs/coin-fit/merge-98-receipt.json": 2
@@ -122403,7 +122425,6 @@
       "research/tradingview-card-coverage.json": 12,
       "research/tradingview-card-readiness.json": 1,
       "research/verify_numbers.py": 1,
-      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 2,
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
       "skills/trading-and-investing/references/grid-trading-strategy.md": 3,
@@ -124240,7 +124261,7 @@
     "contents": {
       ".github/workflows/ci.yml": 1,
       "backtester/README.md": 1,
-      "docs/FILES.md": 1549,
+      "docs/FILES.md": 1551,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/logging.md": 1,
@@ -138262,7 +138283,7 @@
       "research/tradingview-card-readiness.json": 1
     },
     "d3c42e5aac5ba805825da76410c181273ba90b1": {
-      ".github/workflows/ci.yml": 9
+      ".github/workflows/ci.yml": 10
     },
     "d3c4d5663a78cc48b3ca1b18d969f5065d8f8660ee33c424468335cbfe7ea": {
       "research/tradingview-card-coverage.json": 1
@@ -138838,7 +138859,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "d4fd22b20465ccc0f7354476588e8df7c9ca0e0": {
-      ".github/workflows/ci.yml": 4
+      ".github/workflows/ci.yml": 5
     },
     "d4fed9123e6620cbf1706c0de8a1632e1a28e7774d94346d7de1bba2ca3": {
       "liquidity/uv.lock": 1
@@ -150374,6 +150395,7 @@
       "research/dso_audit.py": 2
     },
     "default_key": {
+      "docs/FILES.md": 1,
       "soltui/forwardtest.py": 4
     },
     "default_limits": {
@@ -150592,6 +150614,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
     "defaults_path": {
+      "docs/FILES.md": 1,
       "soltui/forwardtest.py": 4
     },
     "defaults_saved": {
@@ -153092,7 +153115,7 @@
       "backtester/strategy_cards/tv_43000591664_zigzag_indicator.md": 1,
       "backtester/strategy_cards/tv_43000705489_relative_volume_at_time.md": 1,
       "backtester/strategy_cards/tv_r8g2yhdg_order_block_finder_experimental.md": 1,
-      "docs/FILES.md": 365,
+      "docs/FILES.md": 367,
       "docs/TRADINGVIEW-CARD-READINESS.md": 134,
       "docs/logging.md": 2,
       "index/make_files_doc.py": 2,
@@ -156339,7 +156362,7 @@
       "docs/runbooks/handoff.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
-      "memory.md": 105,
+      "memory.md": 104,
       "prompts.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 3,
@@ -157094,14 +157117,14 @@
     "dependencies": {
       ".github/copilot-instructions.md": 2,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 7,
+      ".github/workflows/ci.yml": 8,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/requirements.txt": 3,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 12,
+      "docs/FILES.md": 13,
       "docs/INSTALLATION.md": 5,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
@@ -157131,6 +157154,8 @@
       "research/tradingview-card-readiness.json": 2,
       "scripts/check_docs.py": 1,
       "scripts/html_to_markdown.py": 2,
+      "scripts/soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 1,
       "skills/coin-strategy-fit/SKILL.md": 1,
       "skills/five-minute-signal/SKILL.md": 1,
       "skills/trading-and-investing/SKILL.md": 1,
@@ -157964,7 +157989,7 @@
       "extension/test/soltui-bridge.test.js": 8
     },
     "depth": {
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       ".gitignore": 1,
       "backtester/core/dcasim.py": 3,
       "backtester/core/funding.py": 1,
@@ -158350,7 +158375,7 @@
       "docs/ARCHITECTURE.md": 4,
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
-      "docs/FILES.md": 139,
+      "docs/FILES.md": 140,
       "docs/INSTALLATION.md": 1,
       "docs/SCRIPTS.md": 3,
       "docs/SECURITY.md": 2,
@@ -162417,7 +162442,7 @@
       ".claude/agents/aero-pool-scout.md": 1,
       ".githooks/pre-commit": 1,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 3,
+      ".github/workflows/ci.yml": 4,
       "backtester/README.md": 1,
       "backtester/core/dcasim.py": 5,
       "backtester/core/scorecard.py": 4,
@@ -166815,6 +166840,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "direct": {
+      ".github/workflows/ci.yml": 1,
       "backtester/strategy_cards/dex_cex_dislocation.md": 2,
       "backtester/strategy_cards/exchange_net_flow.md": 2,
       "backtester/strategy_cards/incomplete/tv_1nhvl40i_fibonacci_time_price_zones.md": 1,
@@ -170295,7 +170321,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 5,
-      "docs/TESTING.md": 2,
+      "docs/TESTING.md": 3,
       "docs/dso-skill/SKILL.md": 5,
       "docs/dso-skill/references/passes.md": 5,
       "docs/integrations-and-assumptions.md": 1,
@@ -170306,6 +170332,7 @@
       "executor/tests/test_surfaces.py": 14,
       "memory.md": 7,
       "research/PROMPT_STRATEGIES.md": 1,
+      "scripts/soltui_ci.py": 1,
       "soltui/README.md": 3,
       "soltui/api.py": 4,
       "soltui/app.py": 2,
@@ -172577,7 +172604,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/CONCEPTS.md": 2,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 211,
+      "docs/FILES.md": 212,
       "docs/SCRIPTS.md": 9,
       "docs/TRADINGVIEW-REFERENCE.md": 19,
       "docs/caching-and-optimization.md": 1,
@@ -172859,7 +172886,7 @@
       "docs/COMPOUND-5M.md": 1,
       "docs/CONCEPTS.md": 16,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 146,
+      "docs/FILES.md": 147,
       "docs/INSTALLATION.md": 3,
       "docs/MCP.md": 1,
       "docs/OPERATIONS.md": 1,
@@ -192394,6 +192421,7 @@
       "research/verify_numbers.py": 6,
       "scripts/check_docs.py": 4,
       "scripts/html_to_markdown.py": 13,
+      "scripts/soltui_ci.py": 1,
       "scripts/test_card_readiness.py": 3,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 2,
       "soltui/bgqueue.py": 2,
@@ -192629,7 +192657,7 @@
     "else": {
       ".githooks/pre-commit": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
@@ -192877,7 +192905,7 @@
       "scripts/check_docs.py": 2,
       "scripts/check_tradingview_cards.py": 4,
       "scripts/html_to_markdown.py": 12,
-      "scripts/soltui_ci.py": 4,
+      "scripts/soltui_ci.py": 5,
       "scripts/test_card_readiness.py": 1,
       "skills/five-minute-signal/SKILL.md": 1,
       "skills/trading-and-investing/SKILL.md": 1,
@@ -197393,7 +197421,7 @@
       ".githooks/pre-commit": 1,
       ".githooks/pre-merge-commit": 1,
       ".github/SECURITY.md": 3,
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       ".gitignore": 3,
       "README.md": 1,
       "backtester/strategy_cards/tv_builtin_envelopes.md": 2,
@@ -207711,7 +207739,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "event": {
-      ".github/workflows/ci.yml": 7,
+      ".github/workflows/ci.yml": 11,
       "README.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 2,
@@ -207861,7 +207889,7 @@
       "research/triggers.py": 3
     },
     "event_name": {
-      ".github/workflows/ci.yml": 5
+      ".github/workflows/ci.yml": 7
     },
     "event_signature": {
       "docs/BASE-WALLET-QUERIES.md": 1
@@ -215792,7 +215820,9 @@
       "scripts/check_docs.py": 7,
       "scripts/check_tradingview_cards.py": 1,
       "scripts/html_to_markdown.py": 1,
+      "scripts/soltui_ci.py": 2,
       "scripts/test_html_to_markdown.py": 3,
+      "scripts/test_soltui_ci.py": 2,
       "skills/README.md": 1,
       "skills/five-minute-signal/SKILL.md": 1,
       "skills/trading-and-investing/SKILL.md": 5,
@@ -217733,7 +217763,7 @@
       "docs/ARCHITECTURE.md": 7,
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 2,
-      "docs/FILES.md": 13,
+      "docs/FILES.md": 12,
       "docs/SCRIPTS.md": 1,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
@@ -217773,10 +217803,10 @@
       "liquidity/tests/test_gates.py": 2,
       "llms-facts.txt": 4,
       "llms-full.txt": 5,
-      "memory.md": 17,
+      "memory.md": 18,
       "mongo/load.py": 1,
       "mongo/queries/03-signals-and-indicators.js": 1,
-      "prompts.md": 4,
+      "prompts.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 2,
@@ -217890,7 +217920,7 @@
       "extension/tools/api-server.js": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "llms-full.txt": 3,
-      "memory.md": 8,
+      "memory.md": 6,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/schema.py": 1,
@@ -219587,7 +219617,7 @@
       "backtester/strategy_cards/dex_cex_dislocation.md": 1,
       "backtester/strategy_cards/incomplete/tv_gsrqnt8q_trend_line_methods_tlm.md": 1,
       "backtester/strategy_cards/incomplete/tv_gztrrvcd_distance_to_demand_vector.md": 1,
-      "docs/FILES.md": 1674,
+      "docs/FILES.md": 1675,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
       "index/README.md": 1,
       "index/make_files_doc.py": 5,
@@ -225185,7 +225215,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 6,
       "backtester/tests/test_strategy_cards.py": 2,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 4,
+      "docs/FILES.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 12,
       "docs/design/soltui-v2/mockup.py": 1,
       "docs/external-calls.md": 2,
@@ -230072,6 +230102,9 @@
     "fedbalancesheet": {
       "research/tradingview-card-coverage.json": 1
     },
+    "fedde2a": {
+      "memory.md": 1
+    },
     "fedde2a70a7ea09c4e74b6befc6a40d5657e93e4": {
       "docs/coin-fit/merge-89-receipt.json": 1
     },
@@ -231418,7 +231451,7 @@
     },
     "fetch": {
       ".github/SECURITY.md": 1,
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 6,
       ".gitignore": 2,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
@@ -233910,7 +233943,7 @@
       "docs/COMPOUND-5M.md": 2,
       "docs/CONCEPTS.md": 38,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 92,
+      "docs/FILES.md": 93,
       "docs/INSTALLATION.md": 1,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 12,
@@ -235390,7 +235423,7 @@
       "llms-facts.txt": 4,
       "llms-full.txt": 2,
       "llms.txt": 1,
-      "memory.md": 195,
+      "memory.md": 196,
       "mongo/queries/05-backtests.js": 1,
       "prompts.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -238564,7 +238597,7 @@
       "backtester/tests/test_ratio_rotation.py": 1,
       "backtester/tests/test_scorecard.py": 1,
       "docs/CONCEPTS.md": 1,
-      "docs/FILES.md": 35,
+      "docs/FILES.md": 36,
       "docs/SCRIPTS.md": 3,
       "docs/TRADINGVIEW-CARD-READINESS.md": 18,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
@@ -238583,7 +238616,7 @@
       "index/make_files_doc.py": 3,
       "memory.md": 13,
       "pagesource": 4,
-      "prompts.md": 3,
+      "prompts.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/STRATEGIES.md": 1,
@@ -238604,6 +238637,8 @@
       "research/tradingview-card-coverage.json": 36,
       "research/tradingview-card-readiness.json": 24,
       "scripts/coin_strategy_fit.py": 5,
+      "scripts/soltui_ci.py": 4,
+      "scripts/test_soltui_ci.py": 1,
       "skills/coin-strategy-fit/SKILL.md": 12,
       "skills/coin-strategy-fit/agents/openai.yaml": 3,
       "skills/coin-strategy-fit/assets/screening-fields.csv": 1,
@@ -240977,6 +241012,7 @@
     },
     "flatten": {
       "backtester/core/strategy_cards.py": 1,
+      "docs/FILES.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "extension/e2e/lib/cdp.mjs": 1,
       "research/tradingview-card-coverage.json": 4,
@@ -246306,9 +246342,10 @@
       "docs/FILES.md": 4,
       "docs/coin-fit/merge-89-receipt.json": 1,
       "docs/design/soltui-v2/mockup.py": 1,
-      "memory.md": 15,
+      "memory.md": 13,
       "prompts.md": 9,
-      "scripts/test_soltui_ci.py": 2,
+      "scripts/soltui_ci.py": 4,
+      "scripts/test_soltui_ci.py": 5,
       "soltui/README.md": 9,
       "soltui/commands.py": 27,
       "soltui/forwardtest.py": 6,
@@ -246678,6 +246715,7 @@
       "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 8,
       "docs/SCRIPTS.md": 2,
+      "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 7,
       "docs/TRADINGVIEW-REFERENCE.md": 6,
       "docs/design/soltui-v2/DESIGN.md": 1,
@@ -255184,7 +255222,7 @@
       "docs/DEVELOPMENT.md": 3,
       "docs/FILES.md": 34,
       "docs/SCRIPTS.md": 8,
-      "docs/TESTING.md": 4,
+      "docs/TESTING.md": 6,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
       "docs/code-deep-optimizer-2026-11-06.md": 19,
@@ -255249,7 +255287,7 @@
       "liquidity/tests/test_gates.py": 24,
       "liquidity/tests/test_safe_exit.py": 1,
       "llms-full.txt": 12,
-      "memory.md": 45,
+      "memory.md": 47,
       "prompts.md": 4,
       "research/5minleveragestrategies.json": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -255288,6 +255326,7 @@
       "research/triggers.py": 7,
       "research/verify_numbers.py": 3,
       "scripts/build_doc_index.py": 1,
+      "scripts/soltui_ci.py": 4,
       "skills/five-minute-signal/SKILL.md": 5,
       "skills/trading-and-investing/SKILL.md": 2,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 8,
@@ -256471,7 +256510,7 @@
       "context-bundle.json": 3,
       "docs/API.md": 1,
       "docs/CONCEPTS.md": 1,
-      "docs/FILES.md": 147,
+      "docs/FILES.md": 148,
       "docs/SCRIPTS.md": 3,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
@@ -257673,6 +257712,7 @@
       "scripts/check_docs.py": 1,
       "scripts/check_tradingview_cards.py": 22,
       "scripts/html_to_markdown.py": 3,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/manifest.yaml": 1,
       "skills/trading-and-investing/references/asset-specific-vs-universal-parameters.md": 1,
@@ -259016,7 +259056,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 1,
       ".github/dependabot.yml": 2,
-      ".github/workflows/ci.yml": 11,
+      ".github/workflows/ci.yml": 15,
       "CODE_OF_CONDUCT.md": 1,
       "CONTRIBUTING.md": 1,
       "context-bundle.json": 1,
@@ -261730,7 +261770,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "grep": {
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "liquidity/scripts/aero-lp-service": 1,
@@ -270235,7 +270275,7 @@
       "backtester/tests/test_gridcli.py": 1,
       "docs/API.md": 4,
       "docs/DEVELOPMENT.md": 2,
-      "docs/FILES.md": 81,
+      "docs/FILES.md": 82,
       "docs/SCRIPTS.md": 1,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 5,
@@ -270296,7 +270336,7 @@
       "research/turnover_table.py": 1,
       "scripts/check_docs.py": 1,
       "scripts/html_to_markdown.py": 3,
-      "scripts/soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 2,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 6,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 2,
       "skills/trading-and-investing/references/grid-trading-strategy.md": 1,
@@ -283054,6 +283094,7 @@
       "research/results/hyperliquid-costs-2026-11-07.json": 1,
       "research/tradingview-card-coverage.json": 94,
       "research/tradingview-card-readiness.json": 4,
+      "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 1,
       "skills/trading-and-investing/references/fixed-income-and-bond-markets.md": 1,
@@ -283593,7 +283634,7 @@
       "backtester/strategy_cards/incomplete/tv_c75af3t1_fractional_ema_kalman_filter_d7.md": 1,
       "backtester/strategy_cards/incomplete/tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines.md": 1,
       "backtester/strategy_cards/tv_yhpgau7a_carrier_volatility_pumori.md": 1,
-      "docs/FILES.md": 8,
+      "docs/FILES.md": 10,
       "docs/coin-fit/merge-89-receipt.json": 5,
       "docs/coin-fit/merge-93-receipt.json": 5,
       "docs/coin-fit/merge-98-receipt.json": 5,
@@ -283601,7 +283642,6 @@
       "docs/optimization-workbench-run.md": 1,
       "liquidity/tests/test_executor_audit.py": 8,
       "memory.md": 21,
-      "prompts.md": 2,
       "research/STRATEGIES.md": 1,
       "research/ratio_rotation.py": 1,
       "research/tradingview-card-coverage.json": 23,
@@ -283611,13 +283651,13 @@
       "memory.md": 1
     },
     "incoming_commit": {
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/coin-fit/merge-89-receipt.json": 2,
       "docs/coin-fit/merge-93-receipt.json": 2,
       "docs/coin-fit/merge-98-receipt.json": 2
     },
     "incoming_pr": {
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/coin-fit/merge-89-receipt.json": 2,
       "docs/coin-fit/merge-93-receipt.json": 2,
       "docs/coin-fit/merge-98-receipt.json": 2
@@ -287686,6 +287726,7 @@
       "memory.md": 2,
       "research/5minleveragestrategies.json": 1,
       "research/tradingview-card-coverage.json": 3,
+      "scripts/soltui_ci.py": 1,
       "skills/coin-strategy-fit/SKILL.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1,
       "skills/trading-and-investing/references/regime-detection-and-classification.md": 2,
@@ -291993,7 +292034,7 @@
     "install": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 15,
+      ".github/workflows/ci.yml": 18,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
       "README.md": 3,
@@ -292553,7 +292594,6 @@
       "backtester/strategy_cards/tv_119rqjou_potential_breakout_on_btcusd_to_the_upside.md": 1,
       "backtester/tests/test_fetch_minutes.py": 1,
       "backtester/tests/test_geometry.py": 1,
-      "docs/FILES.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -292568,7 +292608,7 @@
       "executor/tests/test_txverify.py": 9,
       "llms-full.txt": 1,
       "memory.md": 6,
-      "prompts.md": 3,
+      "prompts.md": 1,
       "research/ratio_rotation.py": 1,
       "research/tradingview-card-coverage.json": 2,
       "research/tradingview-card-readiness.json": 2,
@@ -293900,6 +293940,7 @@
       "index/make_files_doc.py": 1,
       "memory.md": 1,
       "research/tradingview-card-coverage.json": 3,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/asset-classes-and-instruments.md": 1,
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 1
@@ -294317,6 +294358,7 @@
       "research/ratio_rotation.py": 1,
       "research/tradingview-card-coverage.json": 10,
       "research/tradingview-card-readiness.json": 1,
+      "scripts/soltui_ci.py": 1,
       "skills/coin-strategy-fit/agents/openai.yaml": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "soltui/app.py": 2,
@@ -298650,6 +298692,7 @@
     "irrelevant": {
       "backtester/core/indicators.py": 1,
       "research/tradingview-card-coverage.json": 1,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/references/forex-and-currency-trading.md": 1,
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 1,
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1
@@ -298833,6 +298876,7 @@
       "index/build.py": 2,
       "index/idle.py": 2,
       "scripts/build_doc_index.py": 1,
+      "scripts/soltui_ci.py": 1,
       "skills/coin-strategy-fit/scripts/coin_strategy_fit.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/compound_agent.py": 1,
@@ -302766,7 +302810,7 @@
       "docs/COMPOUND-5M.md": 12,
       "docs/CONCEPTS.md": 13,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 337,
+      "docs/FILES.md": 339,
       "docs/MCP.md": 1,
       "docs/OPERATIONS.md": 5,
       "docs/SCRIPTS.md": 7,
@@ -304736,7 +304780,7 @@
       "liquidity/src/aero_lp/submissions.py": 1,
       "llms-full.txt": 6,
       "llms/aero-lp-explained-2026-11-06.md": 2,
-      "memory.md": 19,
+      "memory.md": 20,
       "mongo/README.md": 1,
       "mongo/load.py": 3,
       "mongo/schema.py": 4,
@@ -304766,7 +304810,9 @@
       "research/verify_numbers.py": 1,
       "scripts/check_tradingview_cards.py": 3,
       "scripts/html_to_markdown.py": 1,
+      "scripts/soltui_ci.py": 1,
       "scripts/test_card_readiness.py": 4,
+      "scripts/test_soltui_ci.py": 1,
       "skills/coin-strategy-fit/SKILL.md": 2,
       "skills/trading-and-investing/SCHEDULED-RESEARCH.md": 1,
       "skills/trading-and-investing/SKILL.md": 4,
@@ -305714,7 +305760,7 @@
       "context-bundle.json": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 2,
-      "docs/FILES.md": 71,
+      "docs/FILES.md": 72,
       "docs/SCRIPTS.md": 2,
       "docs/SECURITY.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 20,
@@ -312423,7 +312469,8 @@
       "research/trigger_backtest.py": 1,
       "research/triggers.py": 2,
       "research/verify_numbers.py": 1,
-      "scripts/soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 2,
+      "scripts/test_soltui_ci.py": 2,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 2,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 4,
@@ -313947,7 +313994,7 @@
       "extension/test/engine-command-audit.test.js": 2
     },
     "latest": {
-      ".github/workflows/ci.yml": 9,
+      ".github/workflows/ci.yml": 10,
       "backtester/core/indicators.py": 10,
       "backtester/core/scorecard.py": 1,
       "backtester/core/strategies/rsi.py": 1,
@@ -314302,7 +314349,7 @@
       "soltui/tui.py": 1
     },
     "launchd": {
-      ".github/workflows/ci.yml": 4,
+      ".github/workflows/ci.yml": 5,
       "README.md": 1,
       "backtester/core/archive_price.py": 1,
       "docs/COMPONENTS.md": 1,
@@ -316745,7 +316792,7 @@
       "scripts/check_docs.py": 5,
       "scripts/check_tradingview_cards.py": 16,
       "scripts/html_to_markdown.py": 5,
-      "scripts/soltui_ci.py": 5,
+      "scripts/soltui_ci.py": 6,
       "scripts/test_card_readiness.py": 1,
       "scripts/test_html_to_markdown.py": 3,
       "scripts/test_soltui_ci.py": 1,
@@ -321487,7 +321534,7 @@
       "backtester/tests/test_trianglesim.py": 1,
       "docs/API.md": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 1919,
+      "docs/FILES.md": 1922,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 7,
       "docs/TRADINGVIEW-CARD-FILES.md": 6,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 6,
@@ -323170,7 +323217,7 @@
       "scripts/check_docs.py": 10,
       "scripts/check_tradingview_cards.py": 1,
       "scripts/html_to_markdown.py": 10,
-      "scripts/soltui_ci.py": 2,
+      "scripts/soltui_ci.py": 4,
       "scripts/test_html_to_markdown.py": 3,
       "skills/five-minute-signal/SKILL.md": 1,
       "skills/trading-and-investing/SKILL.md": 3,
@@ -325079,7 +325126,7 @@
       "docs/BASE-WALLET-QUERIES.md": 1,
       "docs/COMPONENTS.md": 6,
       "docs/DEVELOPMENT.md": 7,
-      "docs/FILES.md": 84,
+      "docs/FILES.md": 85,
       "docs/INSTALLATION.md": 6,
       "docs/SCRIPTS.md": 3,
       "docs/TESTING.md": 4,
@@ -325341,6 +325388,7 @@
       "mongo/load.py": 3
     },
     "load_defaults": {
+      "docs/FILES.md": 1,
       "soltui/commands.py": 1,
       "soltui/forwardtest.py": 6,
       "soltui/tests/test_forwardtest.py": 2
@@ -332873,7 +332921,7 @@
     "macos": {
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 9,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
       "README.md": 1,
@@ -333176,7 +333224,7 @@
       "liquidity/src/aero_lp/allocator.py": 1,
       "liquidity/src/aero_lp/executor.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/README.md": 1,
       "prompts.md": 2,
       "research/COMPOUND-FRONTIER.md": 3,
@@ -333593,7 +333641,7 @@
       "backtester/tests/test_triggers.py": 2,
       "backtester/tests/test_universe.py": 4,
       "docs/COMPOUND-5M.md": 1,
-      "docs/FILES.md": 30,
+      "docs/FILES.md": 31,
       "docs/INSTALLATION.md": 2,
       "docs/SCRIPTS.md": 1,
       "docs/SECURITY.md": 1,
@@ -335140,7 +335188,7 @@
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 2,
       "docs/CONCEPTS.md": 2,
-      "docs/FILES.md": 33,
+      "docs/FILES.md": 32,
       "docs/SCRIPTS.md": 4,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 4,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
@@ -335196,7 +335244,7 @@
       "liquidity/tests/test_providers.py": 9,
       "liquidity/tests/test_submission_audit.py": 30,
       "llms-full.txt": 4,
-      "memory.md": 7,
+      "memory.md": 5,
       "mongo/load.py": 3,
       "mongo/queries/05-backtests.js": 1,
       "mongo/schema.py": 1,
@@ -336500,7 +336548,7 @@
       "backtester/tests/test_strategy_duplication.py": 3,
       "docs/FILES.md": 3,
       "docs/SCRIPTS.md": 2,
-      "docs/TESTING.md": 1,
+      "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
@@ -336518,10 +336566,11 @@
       "extension/test/core.test.js": 1,
       "index/build.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "prompts.md": 1,
       "research/tradingview-card-coverage.json": 47,
       "research/tradingview-card-readiness.json": 8,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 1,
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 1,
       "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 1,
@@ -337107,12 +337156,14 @@
       "backtester/strategy_cards/incomplete/tv_4rlnnl5e_polynomial_linear_regression_volume_profile_bigbeluga.md": 1,
       "backtester/strategy_cards/incomplete/tv_hvk5wzpi_smart_money_breakout_channels_algoalpha.md": 1,
       "docs/FILES.md": 2,
+      "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/design/soltui-v2/mockup.py": 1,
       "docs/design/soltui-v2/screens/03-signal-explain.svg": 1,
       "memory.md": 1,
       "research/five-minute-perps-suite/run-report.md": 2,
       "research/tradingview-card-coverage.json": 4,
+      "scripts/soltui_ci.py": 2,
       "soltui/commands.py": 2,
       "soltui/experiment_screens.py": 2,
       "soltui/signals.py": 2,
@@ -337183,7 +337234,7 @@
       "backtester/strategy_cards/README.md": 1,
       "docs/FILES.md": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/GEMINI.md": 2
     },
     "maps": {
@@ -345116,7 +345167,7 @@
       "docs/API.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 1,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 2,
       "docs/SCRIPTS.md": 1,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -345711,7 +345762,7 @@
       "backtester/tests/test_cross_asset_cpcv.py": 3,
       "backtester/tests/test_tick_backfill.py": 1,
       "docs/API.md": 1,
-      "docs/FILES.md": 7,
+      "docs/FILES.md": 8,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "docs/coin-fit/merge-89-receipt.json": 3,
@@ -345788,7 +345839,7 @@
       "extension/src/core/alerts.js": 4,
       "extension/src/core/commands.js": 16,
       "extension/src/core/risk.js": 14,
-      "memory.md": 55,
+      "memory.md": 56,
       "prompts.md": 2,
       "research/candle_gap_audit.py": 7,
       "research/coin-intelligence/doge-dogecoin.md": 3,
@@ -352244,8 +352295,8 @@
       "backtester/tests/test_triggers.py": 2,
       "docs/ARCHITECTURE.md": 2,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 10,
-      "docs/TESTING.md": 1,
+      "docs/FILES.md": 12,
+      "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -352263,8 +352314,8 @@
       "mongo/tests/test_load_audit.py": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "scripts/check_docs.py": 1,
-      "scripts/soltui_ci.py": 12,
-      "scripts/test_soltui_ci.py": 3,
+      "scripts/soltui_ci.py": 22,
+      "scripts/test_soltui_ci.py": 12,
       "soltui/README.md": 3,
       "soltui/app.py": 2,
       "soltui/commands.py": 4,
@@ -361469,7 +361520,6 @@
       "backtester/strategy_cards/incomplete/tv_gpct4m6t_machine_learning_knn_based_strategy.md": 1,
       "backtester/tests/test_scorecard.py": 3,
       "docs/COMPOUND-5M-PAPER.md": 1,
-      "docs/FILES.md": 1,
       "liquidity/src/aero_lp/ledger.py": 1,
       "memory.md": 1,
       "research/CANDLE-GAP-AUDIT.md": 1,
@@ -365662,7 +365712,7 @@
       "docs/COMPOUND-5M.md": 1,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 2,
-      "docs/TESTING.md": 1,
+      "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
       "docs/design/soltui-v2/DESIGN.md": 1,
       "docs/design/soltui-v2/screens/01-now.svg": 1,
@@ -372533,7 +372583,7 @@
       "backtester/tests/test_ticks.py": 2,
       "context-bundle.json": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 62,
+      "docs/FILES.md": 63,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 44,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -376789,6 +376839,7 @@
     "omitting": {
       "backtester/strategy_cards/incomplete/tv_lper4qca_volume_analysis_heatmap_and_volume_profile.md": 1,
       "backtester/tests/test_geometry.py": 1,
+      "docs/FILES.md": 1,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "extension/src/jupiter/attribution.js": 1,
       "research/RANKED_LISTS.md": 1,
@@ -379821,12 +379872,12 @@
       "skills/trading-and-investing/SKILL.md": 1
     },
     "opt": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
       "backtester/strategy_cards/incomplete/tv_cbnacnmq_volume_and_price_z_score_multi_asset_by_leviathan.md": 1,
       "backtester/strategy_cards/incomplete/tv_fwb6gwpc_support_resistance_ai_k_means_median_thinklogicai.md": 1,
       "backtester/strategy_cards/ladder_grid.md": 1,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 1,
       "docs/INSTALLATION.md": 2,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -379840,8 +379891,9 @@
       "index/make_files_doc.py": 1,
       "index/ollama_ensure.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 9,
+      "memory.md": 8,
       "research/tradingview-card-coverage.json": 8,
+      "scripts/soltui_ci.py": 2,
       "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 1,
       "soltui/README.md": 4,
       "soltui/bots.py": 6,
@@ -380504,7 +380556,7 @@
       "docs/COMPOUND-5M.md": 1,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 5,
-      "docs/FILES.md": 12,
+      "docs/FILES.md": 11,
       "docs/INSTALLATION.md": 5,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 1,
@@ -380543,7 +380595,7 @@
       "llms/defillama-llms-free.txt": 16,
       "llms/defillama-llms.txt": 1,
       "memory.md": 15,
-      "prompts.md": 6,
+      "prompts.md": 4,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/zec-zcash.md": 6,
@@ -385948,7 +386000,7 @@
       "docs/BASE-WALLET-QUERIES.md": 6,
       "docs/COMPOUND-5M.md": 11,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 34,
+      "docs/FILES.md": 33,
       "docs/SECURITY.md": 2,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
@@ -386032,7 +386084,7 @@
       "liquidity/tests/test_network.py": 3,
       "liquidity/tests/test_safe_exit.py": 6,
       "liquidity/tests/test_submission_audit.py": 23,
-      "memory.md": 46,
+      "memory.md": 47,
       "prompts.md": 5,
       "research/COMPOUND-FRONTIER.md": 2,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -389521,6 +389573,8 @@
       "research/five-minute-perps-suite/run-state.json": 1,
       "research/tradingview-card-coverage.json": 62,
       "research/tradingview-card-readiness.json": 20,
+      "scripts/soltui_ci.py": 2,
+      "scripts/test_soltui_ci.py": 1,
       "skills/coin-strategy-fit/references/method.md": 1,
       "skills/trading-and-investing/SKILL.md": 4,
       "skills/trading-and-investing/manifest.yaml": 1,
@@ -390005,7 +390059,7 @@
       "research/tradingview-card-coverage.json": 7,
       "scripts/check_tradingview_cards.py": 3,
       "scripts/html_to_markdown.py": 5,
-      "scripts/soltui_ci.py": 6,
+      "scripts/soltui_ci.py": 7,
       "soltui/api.py": 3,
       "soltui/bgworker.py": 3,
       "soltui/cli.py": 8,
@@ -390766,7 +390820,7 @@
       "research/triggers.py": 25,
       "scripts/check_tradingview_cards.py": 1,
       "scripts/html_to_markdown.py": 15,
-      "scripts/soltui_ci.py": 2,
+      "scripts/soltui_ci.py": 4,
       "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md": 1,
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1,
       "soltui/analyze.py": 2,
@@ -392781,7 +392835,7 @@
       "docs/COMPOUND-5M.md": 2,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 72,
+      "docs/FILES.md": 73,
       "docs/INSTALLATION.md": 2,
       "docs/SCRIPTS.md": 12,
       "docs/TESTING.md": 3,
@@ -392996,7 +393050,7 @@
       "scripts/check_tradingview_cards.py": 46,
       "scripts/coin_strategy_fit.py": 3,
       "scripts/html_to_markdown.py": 30,
-      "scripts/soltui_ci.py": 5,
+      "scripts/soltui_ci.py": 10,
       "scripts/test_card_readiness.py": 14,
       "scripts/test_html_to_markdown.py": 6,
       "skills/coin-strategy-fit/SKILL.md": 1,
@@ -393384,7 +393438,7 @@
       "docs/CONCEPTS.md": 2,
       "docs/FILES.md": 50,
       "docs/SCRIPTS.md": 13,
-      "docs/TESTING.md": 2,
+      "docs/TESTING.md": 3,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-CARD-FILES.md": 4,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
@@ -393429,7 +393483,7 @@
       "llms-full.txt": 10,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 27,
+      "memory.md": 28,
       "mongo/load.py": 3,
       "research/CROSS-ASSET-TRANSFER.md": 8,
       "research/FIVE-MINUTE-PERPS.md": 2,
@@ -393481,8 +393535,8 @@
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 1,
       "scripts/check_tradingview_cards.py": 7,
-      "scripts/soltui_ci.py": 3,
-      "scripts/test_soltui_ci.py": 4,
+      "scripts/soltui_ci.py": 9,
+      "scripts/test_soltui_ci.py": 5,
       "skills/coin-strategy-fit/references/method.md": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 2,
@@ -399602,7 +399656,7 @@
     },
     "pip": {
       ".github/dependabot.yml": 3,
-      ".github/workflows/ci.yml": 12,
+      ".github/workflows/ci.yml": 15,
       "README.md": 1,
       "backtester/README.md": 1,
       "docs/DEVELOPMENT.md": 3,
@@ -403996,7 +404050,7 @@
       "docs/INSTALLATION.md": 1,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 2,
-      "docs/TESTING.md": 2,
+      "docs/TESTING.md": 3,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 8,
       "docs/TRADINGVIEW-REFERENCE.md": 51,
@@ -404089,6 +404143,7 @@
       "research/tradingview-card-readiness.json": 9,
       "research/verify_numbers.py": 3,
       "scripts/build_doc_index.py": 1,
+      "scripts/soltui_ci.py": 1,
       "skills/README.md": 1,
       "skills/coin-strategy-fit/references/method.md": 2,
       "skills/five-minute-signal/SKILL.md": 1,
@@ -413676,7 +413731,7 @@
       "backtester/strategy_cards/tv_library_x8mujqgt_long_shadow.md": 1,
       "backtester/strategy_cards/tv_library_x8mujqgt_spinning_top.md": 1,
       "backtester/tests/test_decide_audit.py": 1,
-      "docs/FILES.md": 9,
+      "docs/FILES.md": 8,
       "docs/INSTALLATION.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 4,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
@@ -413699,7 +413754,7 @@
       "docs/runbooks/rollback.md": 2,
       "liquidity/tests/test_executor_audit.py": 2,
       "memory.md": 78,
-      "prompts.md": 6,
+      "prompts.md": 4,
       "research/GRID-REVIEW.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -425382,6 +425437,7 @@
       "research/tradingview-card-coverage.json": 8,
       "research/tradingview-card-readiness.json": 1,
       "research/verify_numbers.py": 3,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 2,
       "soltui/bgcontrol.py": 1,
       "soltui/coin_fit.py": 1,
@@ -426096,9 +426152,10 @@
       "soltui/SolTUI.icns": 2
     },
     "prs": {
+      ".github/workflows/ci.yml": 1,
       "docs/FILES.md": 1,
       "index/make_files_doc.py": 1,
-      "memory.md": 10,
+      "memory.md": 11,
       "prompts.md": 1,
       "research/tradingview-card-coverage.json": 1,
       "scripts/check_tradingview_cards.py": 1
@@ -427984,7 +428041,7 @@
     "pull": {
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/dependabot.yml": 4,
-      ".github/workflows/ci.yml": 6,
+      ".github/workflows/ci.yml": 8,
       "CODE_OF_CONDUCT.md": 2,
       "CONTRIBUTING.md": 1,
       "backtester/core/compound.py": 1,
@@ -428051,7 +428108,7 @@
       "index/ollama_ensure.py": 3
     },
     "pull_request": {
-      ".github/workflows/ci.yml": 6
+      ".github/workflows/ci.yml": 8
     },
     "pull_request_template": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
@@ -428461,7 +428518,7 @@
       "soltui/bgqueue.py": 1
     },
     "pureposixpath": {
-      "scripts/soltui_ci.py": 2
+      "scripts/soltui_ci.py": 3
     },
     "purest": {
       "docs/FILES.md": 1,
@@ -428594,7 +428651,7 @@
       "backtester/tests/test_index.py": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/DEVELOPMENT.md": 2,
-      "docs/FILES.md": 1916,
+      "docs/FILES.md": 1919,
       "docs/INSTALLATION.md": 1,
       "docs/SCRIPTS.md": 21,
       "docs/TRADINGVIEW-CARD-READINESS.md": 20,
@@ -428726,7 +428783,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "push": {
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       "backtester/core/gridsim.py": 1,
       "backtester/core/perps.py": 1,
       "backtester/strategy_cards/incomplete/tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc.md": 1,
@@ -428736,7 +428793,7 @@
       "backtester/strategy_cards/tv_tbz9rgx9_weekly_volume_heatmap.md": 1,
       "backtester/strategy_cards/tv_yyrxrhi9_atr_rope.md": 1,
       "docs/FILES.md": 4,
-      "docs/TESTING.md": 1,
+      "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
@@ -428832,11 +428889,13 @@
       "soltui/tui.py": 1
     },
     "pushes": {
+      ".github/workflows/ci.yml": 1,
       "backtester/strategy_cards/incomplete/tv_moaqapdw_advanced_how_to_aggressively_grow_a_small_10k_account.md": 1,
       "backtester/strategy_cards/tv_xh8tldte_realtime_delta_volume_action_lucf.md": 2,
       "backtester/tests/test_engine.py": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
+      "memory.md": 1,
       "research/tradingview-card-coverage.json": 47,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1,
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 1,
@@ -429468,7 +429527,7 @@
       "backtester/README.md": 1,
       "backtester/requirements.txt": 1,
       "docs/DEVELOPMENT.md": 3,
-      "docs/FILES.md": 131,
+      "docs/FILES.md": 132,
       "docs/INSTALLATION.md": 2,
       "docs/TESTING.md": 3,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -429560,7 +429619,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/copilot-instructions.md": 6,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 13,
+      ".github/workflows/ci.yml": 15,
       ".gitignore": 1,
       ".vscode/extensions.json": 3,
       ".vscode/settings.json": 2,
@@ -429594,7 +429653,7 @@
       "docs/COMPOUND-5M-PAPER.md": 5,
       "docs/COMPOUND-5M.md": 9,
       "docs/DEVELOPMENT.md": 8,
-      "docs/FILES.md": 220,
+      "docs/FILES.md": 221,
       "docs/INSTALLATION.md": 13,
       "docs/SCRIPTS.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
@@ -429686,7 +429745,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 3,
       ".github/copilot-instructions.md": 4,
-      ".github/workflows/ci.yml": 13,
+      ".github/workflows/ci.yml": 16,
       ".gitignore": 5,
       ".remember/remember.md": 2,
       "CLAUDE.md": 6,
@@ -429741,7 +429800,7 @@
       "docs/COMPOUND-5M.md": 7,
       "docs/CONCEPTS.md": 19,
       "docs/DEVELOPMENT.md": 20,
-      "docs/FILES.md": 289,
+      "docs/FILES.md": 291,
       "docs/INSTALLATION.md": 13,
       "docs/MCP.md": 3,
       "docs/SCRIPTS.md": 120,
@@ -434503,7 +434562,7 @@
       "extension/test/autoreload.test.js": 3,
       "extension/tools/e2e.mjs": 1,
       "index/search.py": 1,
-      "memory.md": 18,
+      "memory.md": 19,
       "mongo/load.py": 1,
       "mongo/queries/05-backtests.js": 2,
       "prompts.md": 2,
@@ -439057,7 +439116,7 @@
       "docs/COMPOUND-5M.md": 11,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 5,
-      "docs/FILES.md": 1515,
+      "docs/FILES.md": 1516,
       "docs/INSTALLATION.md": 5,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 10,
@@ -442423,7 +442482,7 @@
     },
     "receipt": {
       "backtester/strategy_cards/triangular_arbitrage.md": 2,
-      "docs/FILES.md": 22,
+      "docs/FILES.md": 23,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 10,
@@ -454079,6 +454138,7 @@
       "research/cross_asset_cpcv.py": 1,
       "research/tradingview-card-coverage.json": 42,
       "research/tradingview-card-readiness.json": 13,
+      "scripts/soltui_ci.py": 1,
       "skills/coin-strategy-fit/references/method.md": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
@@ -458660,7 +458720,7 @@
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1
     },
     "req": {
-      ".github/workflows/ci.yml": 4,
+      ".github/workflows/ci.yml": 6,
       "backtester/core/archive_price.py": 2,
       "backtester/core/fetch.py": 2,
       "backtester/core/fetch_minutes.py": 5,
@@ -458695,7 +458755,7 @@
     "request": {
       ".github/ISSUE_TEMPLATE/feature_request.md": 3,
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
-      ".github/workflows/ci.yml": 8,
+      ".github/workflows/ci.yml": 10,
       ".vscode/launch.json": 2,
       "AGENTS.md": 2,
       "CLAUDE.md": 1,
@@ -458722,7 +458782,7 @@
       "docs/BASE-WALLET-QUERIES.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M.md": 2,
-      "docs/FILES.md": 21,
+      "docs/FILES.md": 20,
       "docs/SCRIPTS.md": 2,
       "docs/SECURITY.md": 2,
       "docs/TESTING.md": 3,
@@ -458790,7 +458850,7 @@
       "liquidity/tests/test_providers.py": 14,
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-full.txt": 10,
-      "memory.md": 19,
+      "memory.md": 20,
       "pagesource": 1,
       "prompts.md": 5,
       "research/LEVERAGE-ECONOMICS.md": 1,
@@ -459326,7 +459386,7 @@
     },
     "requirements": {
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 10,
+      ".github/workflows/ci.yml": 12,
       "CLAUDE.md": 2,
       "README.md": 4,
       "backtester/PROMPT.md": 4,
@@ -459436,6 +459496,7 @@
       "docs/DEVELOPMENT.md": 2,
       "docs/FILES.md": 5,
       "docs/SCRIPTS.md": 1,
+      "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 71,
       "docs/TRADINGVIEW-REFERENCE.md": 7,
       "docs/coin-fit/merge-89-receipt.json": 1,
@@ -462742,6 +462803,7 @@
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 1,
       "docs/SECURITY.md": 1,
+      "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/caching-and-optimization.md": 4,
       "docs/code-deep-optimizer-2026-11-06.md": 3,
@@ -462758,7 +462820,7 @@
       "extension/src/venues/triggerVenue.js": 1,
       "extension/test/core.test.js": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
-      "memory.md": 14,
+      "memory.md": 12,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -473015,7 +473077,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 6,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 54,
+      ".github/workflows/ci.yml": 57,
       ".gitignore": 1,
       ".remember/remember.md": 1,
       ".vscode/launch.json": 1,
@@ -473178,7 +473240,7 @@
       "docs/OPERATIONS.md": 5,
       "docs/SCRIPTS.md": 31,
       "docs/SECURITY.md": 1,
-      "docs/TESTING.md": 22,
+      "docs/TESTING.md": 23,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 5,
       "docs/TRADINGVIEW-CARD-FILES.md": 4,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 4,
@@ -473385,7 +473447,7 @@
       "scripts/build_doc_index.py": 3,
       "scripts/check_docs.py": 8,
       "scripts/html_to_markdown.py": 4,
-      "scripts/soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 3,
       "scripts/test_html_to_markdown.py": 8,
       "scripts/test_soltui_ci.py": 2,
       "skills/coin-strategy-fit/SKILL.md": 1,
@@ -473795,7 +473857,7 @@
     },
     "run_soltui_suite": {
       ".github/workflows/ci.yml": 2,
-      "docs/TESTING.md": 1,
+      "docs/TESTING.md": 2,
       "memory.md": 2
     },
     "run_stats": {
@@ -474186,7 +474248,7 @@
       "liquidity/tests/test_daemon.py": 2
     },
     "runner_temp": {
-      ".github/workflows/ci.yml": 5
+      ".github/workflows/ci.yml": 7
     },
     "runner_tokens": {
       "docs/code-deep-optimizer-2026-11-06.md": 2,
@@ -474404,7 +474466,7 @@
     },
     "runs": {
       ".claude/agents/aero-pool-scout.md": 2,
-      ".github/workflows/ci.yml": 14,
+      ".github/workflows/ci.yml": 15,
       "CLAUDE.md": 1,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 8,
@@ -474459,7 +474521,7 @@
       "docs/FILES.md": 46,
       "docs/INSTALLATION.md": 1,
       "docs/SCRIPTS.md": 9,
-      "docs/TESTING.md": 9,
+      "docs/TESTING.md": 10,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 11,
       "docs/codebase-overview.md": 2,
@@ -482534,7 +482596,7 @@
     "scripts": {
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/copilot-instructions.md": 1,
-      ".github/workflows/ci.yml": 7,
+      ".github/workflows/ci.yml": 10,
       ".remember/remember.md": 4,
       "CLAUDE.md": 6,
       "GEMINI.md": 1,
@@ -482592,7 +482654,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 38,
+      "docs/FILES.md": 42,
       "docs/INSTALLATION.md": 4,
       "docs/SCRIPTS.md": 18,
       "docs/SECURITY.md": 1,
@@ -487619,7 +487681,7 @@
       "docs/BASE-WALLET-QUERIES.md": 2,
       "docs/COMPOUND-5M.md": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 1,
+      "docs/FILES.md": 2,
       "docs/INSTALLATION.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 16,
@@ -487847,7 +487909,7 @@
       "docs/COMPOUND-5M-PAPER.md": 4,
       "docs/COMPOUND-5M.md": 3,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 4,
       "docs/INSTALLATION.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 18,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
@@ -487953,6 +488015,7 @@
       "research/nonlinear-lead-lag-children/claim-index.json": 2
     },
     "selected_modules": {
+      "docs/FILES.md": 1,
       "scripts/soltui_ci.py": 3,
       "scripts/test_soltui_ci.py": 3
     },
@@ -488201,6 +488264,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "selectiontests": {
+      "docs/FILES.md": 1,
       "scripts/test_soltui_ci.py": 2
     },
     "selective": {
@@ -488228,7 +488292,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 3
     },
     "selector": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
       "backtester/strategy_cards/hurst_regime_test.md": 4,
       "docs/FILES.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 5,
@@ -492000,7 +492064,7 @@
       "scripts/build_doc_index.py": 2,
       "scripts/check_docs.py": 3,
       "scripts/check_tradingview_cards.py": 12,
-      "scripts/soltui_ci.py": 2,
+      "scripts/soltui_ci.py": 3,
       "scripts/test_card_readiness.py": 3,
       "skills/trading-and-investing/SKILL.md": 3,
       "skills/trading-and-investing/manifest.yaml": 2,
@@ -493347,7 +493411,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
     "setup": {
-      ".github/workflows/ci.yml": 10,
+      ".github/workflows/ci.yml": 11,
       "README.md": 1,
       "backtester/core/strategies/signals.py": 1,
       "backtester/strategy_cards/incomplete/tv_4psxdoyc_a_technique_from_1202_really.md": 1,
@@ -493923,7 +493987,7 @@
       "soltui/SolTUI.icns": 1
     },
     "sha": {
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       "backtester/core/data.py": 1,
       "docs/FILES.md": 1,
       "docs/runbooks/rollback.md": 1,
@@ -494467,12 +494531,15 @@
       "research/tradingview-card-coverage.json": 1
     },
     "shard": {
-      ".github/workflows/ci.yml": 7,
+      ".github/workflows/ci.yml": 9,
+      "docs/FILES.md": 1,
+      "docs/TESTING.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
       "scripts/soltui_ci.py": 9
     },
     "sharded": {
-      ".github/workflows/ci.yml": 1
+      ".github/workflows/ci.yml": 1,
+      "memory.md": 1
     },
     "sharding": {
       "docs/coin-fit/merge-89-receipt.json": 1,
@@ -494480,7 +494547,7 @@
       "scripts/soltui_ci.py": 1
     },
     "shards": {
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 4,
       "docs/coin-fit/merge-89-receipt.json": 1,
       "memory.md": 3,
       "scripts/soltui_ci.py": 6,
@@ -494685,7 +494752,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M.md": 3,
-      "docs/FILES.md": 13,
+      "docs/FILES.md": 14,
       "docs/SCRIPTS.md": 4,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
@@ -495381,6 +495448,8 @@
       "memory.md": 19,
       "research/run_backfill.sh": 1,
       "research/tradingview-card-coverage.json": 1,
+      "scripts/soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 1,
       "soltui/README.md": 5,
       "soltui/app.py": 3,
@@ -499888,7 +499957,7 @@
       "docs/API.md": 2,
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 3,
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 6,
       "docs/INSTALLATION.md": 2,
       "docs/SCRIPTS.md": 2,
       "docs/TESTING.md": 3,
@@ -505038,7 +505107,7 @@
       "backtester/tests/test_triggers.py": 1,
       "backtester/tests/test_universe.py": 1,
       "docs/COMPOUND-5M.md": 1,
-      "docs/FILES.md": 8,
+      "docs/FILES.md": 6,
       "docs/INSTALLATION.md": 1,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 1,
@@ -507597,6 +507666,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "smoke": {
+      ".github/workflows/ci.yml": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/strategy_cards/dca.md": 1,
       "backtester/strategy_cards/ema_crossover.md": 1,
@@ -507604,9 +507674,12 @@
       "backtester/strategy_cards/ppo.md": 1,
       "backtester/strategy_cards/swing_confluence.md": 1,
       "backtester/tests/test_engine.py": 2,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
+      "docs/TESTING.md": 2,
       "docs/design/soltui-v2/DESIGN.md": 1,
-      "memory.md": 5,
+      "memory.md": 7,
+      "scripts/soltui_ci.py": 6,
+      "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1,
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1,
       "soltui/tests/test_tui.py": 2
@@ -510708,7 +510781,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 3,
       ".github/dependabot.yml": 1,
-      ".github/workflows/ci.yml": 19,
+      ".github/workflows/ci.yml": 27,
       ".gitignore": 6,
       "CLAUDE.md": 3,
       "GEMINI.md": 3,
@@ -510736,11 +510809,11 @@
       "docs/COMPOUND-5M.md": 26,
       "docs/CONCEPTS.md": 5,
       "docs/DEVELOPMENT.md": 31,
-      "docs/FILES.md": 376,
+      "docs/FILES.md": 382,
       "docs/INSTALLATION.md": 33,
       "docs/SCRIPTS.md": 23,
       "docs/SECURITY.md": 1,
-      "docs/TESTING.md": 24,
+      "docs/TESTING.md": 26,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 8,
@@ -510828,12 +510901,12 @@
       "llms-full.txt": 31,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 185,
+      "memory.md": 186,
       "mongo/README.md": 1,
       "mongo/load.py": 5,
       "mongo/requirements.txt": 1,
       "mongo/schema.py": 1,
-      "prompts.md": 35,
+      "prompts.md": 37,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/frontier_tune.py": 6,
       "research/full_suite.py": 10,
@@ -510841,8 +510914,8 @@
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 10,
       "scripts/coin_strategy_fit.py": 3,
-      "scripts/soltui_ci.py": 8,
-      "scripts/test_soltui_ci.py": 11,
+      "scripts/soltui_ci.py": 28,
+      "scripts/test_soltui_ci.py": 19,
       "skills/README.md": 1,
       "skills/coin-strategy-fit/SKILL.md": 5,
       "skills/coin-strategy-fit/references/method.md": 2,
@@ -510985,8 +511058,8 @@
       "soltui/bgcontrol.py": 1
     },
     "soltui_ci": {
-      ".github/workflows/ci.yml": 2,
-      "scripts/soltui_ci.py": 1,
+      ".github/workflows/ci.yml": 4,
+      "docs/FILES.md": 2,
       "scripts/test_soltui_ci.py": 1
     },
     "soltui_config_dir": {
@@ -512194,7 +512267,7 @@
       "scripts/check_docs.py": 5,
       "scripts/check_tradingview_cards.py": 5,
       "scripts/html_to_markdown.py": 2,
-      "scripts/soltui_ci.py": 3,
+      "scripts/soltui_ci.py": 4,
       "soltui/README.md": 2,
       "soltui/analyze.py": 3,
       "soltui/bgqueue.py": 8,
@@ -522290,7 +522363,7 @@
       "scripts/check_docs.py": 1,
       "scripts/check_tradingview_cards.py": 1,
       "scripts/html_to_markdown.py": 2,
-      "scripts/soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 2,
       "scripts/test_card_readiness.py": 4,
       "soltui/api.py": 1,
       "soltui/commands.py": 1,
@@ -524922,7 +524995,7 @@
       "liquidity/tests/test_executor.py": 3,
       "liquidity/tests/test_executor_audit.py": 2,
       "llms-full.txt": 3,
-      "memory.md": 10,
+      "memory.md": 11,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/queries/05-backtests.js": 1,
       "research/LEVERAGE-ECONOMICS.md": 1,
@@ -525483,7 +525556,7 @@
       "research/triggers.py": 4,
       "research/turnover_table.py": 6,
       "research/verify_numbers.py": 1,
-      "scripts/soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 2,
       "soltui/analyze.py": 4,
       "soltui/compound.py": 1,
       "soltui/make_icon.py": 1
@@ -525784,7 +525857,7 @@
       "soltui/tests/test_tui.py": 1
     },
     "steps": {
-      ".github/workflows/ci.yml": 9,
+      ".github/workflows/ci.yml": 10,
       "CLAUDE.md": 1,
       "README.md": 1,
       "backtester/core/pairs.py": 1,
@@ -527072,6 +527145,7 @@
       "research/turnover_table.py": 1,
       "scripts/check_docs.py": 1,
       "scripts/html_to_markdown.py": 2,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/asset-classes-and-instruments.md": 1,
       "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 2,
@@ -527137,6 +527211,7 @@
       "research/turnover_table.py": 1,
       "scripts/check_docs.py": 1,
       "scripts/html_to_markdown.py": 2,
+      "scripts/soltui_ci.py": 1,
       "soltui/bgworker.py": 1,
       "soltui/coin_fit.py": 1,
       "soltui/compound.py": 10,
@@ -527522,7 +527597,7 @@
       "scripts/check_tradingview_cards.py": 10,
       "scripts/coin_strategy_fit.py": 1,
       "scripts/html_to_markdown.py": 17,
-      "scripts/soltui_ci.py": 3,
+      "scripts/soltui_ci.py": 5,
       "scripts/test_html_to_markdown.py": 3,
       "skills/coin-strategy-fit/scripts/coin_strategy_fit.py": 1,
       "soltui/analyze.py": 27,
@@ -532974,6 +533049,7 @@
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/five-minute-perps-suite/run-report.md": 1,
       "research/sweep.py": 1,
+      "scripts/soltui_ci.py": 2,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1,
       "soltui/coin_fit.py": 1,
@@ -533470,7 +533546,7 @@
       "scripts/build_doc_index.py": 4,
       "scripts/check_tradingview_cards.py": 1,
       "scripts/html_to_markdown.py": 2,
-      "scripts/soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 2,
       "soltui/bgqueue.py": 1,
       "soltui/compound.py": 6,
       "soltui/config.py": 4,
@@ -533699,9 +533775,9 @@
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 7,
-      "docs/FILES.md": 44,
+      "docs/FILES.md": 42,
       "docs/SCRIPTS.md": 1,
-      "docs/TESTING.md": 11,
+      "docs/TESTING.md": 14,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 4,
       "docs/TRADINGVIEW-CARD-FILES.md": 4,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 4,
@@ -533727,13 +533803,13 @@
       "llms-full.txt": 9,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 79,
+      "memory.md": 80,
       "mongo/README.md": 4,
       "mongo/load.py": 16,
       "mongo/queries/08-provenance-and-health.js": 2,
       "mongo/schema.py": 7,
       "mongo/tests/test_load.py": 2,
-      "prompts.md": 11,
+      "prompts.md": 9,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 6,
       "research/PROMPT_STRATEGIES.md": 2,
@@ -533759,7 +533835,7 @@
       "research/tradingview-card-coverage.json": 23,
       "research/tradingview-card-readiness.json": 6,
       "scripts/check_docs.py": 35,
-      "scripts/soltui_ci.py": 6,
+      "scripts/soltui_ci.py": 9,
       "scripts/test_soltui_ci.py": 1,
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
       "skills/trading-and-investing/references/market-sessions-and-venues.md": 1,
@@ -534610,7 +534686,7 @@
       "soltui/soltui-service": 1
     },
     "supervisor": {
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       "docs/FILES.md": 3,
       "docs/integrations-and-assumptions.md": 1,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
@@ -544192,6 +544268,7 @@
       "research/ratio_rotation.py": 16
     },
     "targeted": {
+      ".github/workflows/ci.yml": 4,
       "CLAUDE.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/core/strategies/advanced.py": 1,
@@ -544199,12 +544276,13 @@
       "backtester/strategy_cards/sma_regime.md": 1,
       "backtester/strategy_cards/voltarget.md": 5,
       "backtester/tests/test_signal_redundancy.py": 1,
-      "docs/FILES.md": 1,
+      "docs/FILES.md": 4,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/optimization-workbench-plan.md": 2,
       "docs/optimization-workbench-run.md": 1,
-      "memory.md": 11,
+      "memory.md": 14,
+      "prompts.md": 2,
       "research/PROMPT_STRATEGIES.md": 2,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
@@ -544212,12 +544290,23 @@
       "research/five-minute-perps-suite/source-leads.json": 1,
       "research/signal_redundancy.py": 1,
       "research/tradingview-card-coverage.json": 2,
+      "scripts/soltui_ci.py": 7,
+      "scripts/test_soltui_ci.py": 4,
       "skills/trading-and-investing/SKILL.md": 2,
       "skills/trading-and-investing/references/asset-specific-vs-universal-parameters.md": 2,
       "skills/trading-and-investing/references/market-sessions-and-venues.md": 1,
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "skills/trading-and-investing/references/volatility-and-pricing.md": 1
+    },
+    "targeted_modules": {
+      "docs/FILES.md": 1,
+      "scripts/soltui_ci.py": 4,
+      "scripts/test_soltui_ci.py": 4
+    },
+    "targetedtests": {
+      "docs/FILES.md": 1,
+      "scripts/test_soltui_ci.py": 2
     },
     "targetfield": {
       "docs/TRADINGVIEW-REFERENCE.md": 2
@@ -544392,7 +544481,7 @@
       "docs/runbooks/handoff.md": 5,
       "extension/test/service-worker.test.js": 2,
       "extension/test/venues.test.js": 2,
-      "memory.md": 206,
+      "memory.md": 207,
       "prompts.md": 7,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
@@ -545497,7 +545586,7 @@
       "research/tradingview-card-coverage.json": 3
     },
     "temp": {
-      ".github/workflows/ci.yml": 5,
+      ".github/workflows/ci.yml": 7,
       ".gitignore": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 4,
       "docs/FILES.md": 2,
@@ -546468,7 +546557,7 @@
     },
     "test_": {
       "index/build.py": 1,
-      "scripts/soltui_ci.py": 1
+      "scripts/soltui_ci.py": 2
     },
     "test_0_and_dollar_move_to_line_start_and_end": {
       "soltui/tests/test_tui.py": 1
@@ -547944,7 +548033,7 @@
     },
     "test_bots": {
       "docs/FILES.md": 2,
-      "scripts/test_soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 7,
       "soltui/README.md": 1,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_experiment_runner.py": 1,
@@ -547963,12 +548052,16 @@
       "docs/FILES.md": 2,
       "docs/coin-fit/merge-98-receipt.json": 1,
       "docs/coin-fit/merge-99-receipt.json": 1,
+      "scripts/soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/README.md": 1,
       "soltui/tests/test_bridge_buttons.py": 1,
       "soltui/tui.py": 1
     },
     "test_bridge_parity": {
       "docs/FILES.md": 2,
+      "scripts/soltui_ci.py": 2,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/README.md": 1,
       "soltui/commands.py": 1,
       "soltui/tests/test_bridge_parity.py": 1
@@ -548125,6 +548218,9 @@
     },
     "test_changed_settings_refuse_and_preserve_history": {
       "soltui/tests/test_bgworker_audit.py": 1
+    },
+    "test_changed_tests_and_unknown_paths_keep_smoke": {
+      "scripts/test_soltui_ci.py": 1
     },
     "test_changes_report_windows": {
       "soltui/tests/test_portfolio.py": 1
@@ -548283,11 +548379,14 @@
     "test_coin_fit": {
       "docs/FILES.md": 2,
       "docs/coin-fit/README.md": 1,
+      "scripts/soltui_ci.py": 1,
       "soltui/tests/test_coin_fit.py": 1
     },
     "test_coin_fit_ui": {
       "docs/FILES.md": 2,
       "docs/coin-fit/README.md": 1,
+      "scripts/soltui_ci.py": 2,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/tests/test_coin_fit_ui.py": 1
     },
     "test_coin_list_is_the_owners_ten_whatever_is_cached": {
@@ -549480,6 +549579,7 @@
       "docs/TESTING.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
+      "scripts/soltui_ci.py": 1,
       "soltui/tests/test_experiment_interface.py": 1
     },
     "test_experiment_kind_prefers_the_longest_prefix": {
@@ -549886,8 +549986,12 @@
     },
     "test_forwardtest": {
       "docs/FILES.md": 2,
-      "scripts/test_soltui_ci.py": 2,
+      "scripts/soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 3,
       "soltui/tests/test_forwardtest.py": 1
+    },
+    "test_forwardtest_and_ui_dependencies_are_included": {
+      "scripts/test_soltui_ci.py": 1
     },
     "test_frac_positive_is_a_fraction": {
       "backtester/tests/test_cpcv.py": 1
@@ -553269,7 +553373,8 @@
       "executor/tests/test_txverify.py": 2
     },
     "test_soltui_ci": {
-      ".github/workflows/ci.yml": 1,
+      ".github/workflows/ci.yml": 2,
+      "docs/FILES.md": 2,
       "scripts/test_soltui_ci.py": 1
     },
     "test_source_names": {
@@ -554552,6 +554657,8 @@
       "docs/FILES.md": 2,
       "docs/design/soltui-v2/DESIGN.md": 1,
       "memory.md": 1,
+      "scripts/soltui_ci.py": 2,
+      "scripts/test_soltui_ci.py": 1,
       "soltui/tests/test_v2_shell.py": 1
     },
     "test_v4_reader_detects_dynamic_fee_hooks_and_native_currency": {
@@ -554996,7 +555103,7 @@
       "scripts/check_docs.py": 2,
       "scripts/test_card_readiness.py": 1,
       "scripts/test_html_to_markdown.py": 2,
-      "scripts/test_soltui_ci.py": 3,
+      "scripts/test_soltui_ci.py": 4,
       "soltui/tests/test_bgcontrol.py": 6,
       "soltui/tests/test_bgcontrol_identity.py": 1,
       "soltui/tests/test_bgqueue.py": 17,
@@ -555825,7 +555932,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/copilot-instructions.md": 9,
-      ".github/workflows/ci.yml": 18,
+      ".github/workflows/ci.yml": 19,
       ".remember/remember.md": 8,
       "CLAUDE.md": 11,
       "CONTRIBUTING.md": 1,
@@ -555897,7 +556004,7 @@
       "docs/COMPOUND-5M-PAPER.md": 2,
       "docs/CONCEPTS.md": 9,
       "docs/DEVELOPMENT.md": 12,
-      "docs/FILES.md": 314,
+      "docs/FILES.md": 315,
       "docs/INSTALLATION.md": 9,
       "docs/SCRIPTS.md": 2,
       "docs/SECURITY.md": 1,
@@ -556022,8 +556129,8 @@
       "research/tradingview-card-readiness.json": 16,
       "run-log.jsonl": 1,
       "scripts/check_docs.py": 24,
-      "scripts/soltui_ci.py": 14,
-      "scripts/test_soltui_ci.py": 7,
+      "scripts/soltui_ci.py": 31,
+      "scripts/test_soltui_ci.py": 14,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 3,
       "skills/trading-and-investing/references/cross-asset-generalisation-testing.md": 1,
@@ -563027,6 +563134,7 @@
       "extension/src/jupiter/http.js": 5
     },
     "timedresult": {
+      "docs/FILES.md": 1,
       "scripts/soltui_ci.py": 3,
       "scripts/test_soltui_ci.py": 2
     },
@@ -565833,6 +565941,7 @@
       "llms-full.txt": 1
     },
     "timingtests": {
+      "docs/FILES.md": 1,
       "scripts/test_soltui_ci.py": 2
     },
     "timmermann": {
@@ -570977,7 +571086,7 @@
       "liquidity/src/aero_lp/state.py": 2,
       "liquidity/tests/test_daemon.py": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "mongo/load.py": 3,
       "mongo/queries/03-signals-and-indicators.js": 5,
       "mongo/schema.py": 3,
@@ -576738,6 +576847,7 @@
       "research/turnover_table.py": 1,
       "scripts/check_docs.py": 1,
       "scripts/html_to_markdown.py": 2,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 3,
       "soltui/bgworker.py": 1,
       "soltui/coin_fit.py": 1,
@@ -577816,7 +577926,8 @@
       "llms.txt": 2,
       "memory.md": 21,
       "prompts.md": 7,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 2,
       "soltui/README.md": 19,
       "soltui/app.py": 4,
       "soltui/bgcontrol.py": 4,
@@ -590590,7 +590701,7 @@
       "extension/src/venues/triggerVenue.js": 4
     },
     "txt": {
-      ".github/workflows/ci.yml": 13,
+      ".github/workflows/ci.yml": 17,
       ".gitignore": 3,
       "CLAUDE.md": 7,
       "README.md": 1,
@@ -594948,7 +595059,7 @@
       ".githooks/pre-commit": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/copilot-instructions.md": 4,
-      ".github/workflows/ci.yml": 7,
+      ".github/workflows/ci.yml": 8,
       "CLAUDE.md": 4,
       "GEMINI.md": 4,
       "README.md": 3,
@@ -595023,7 +595134,7 @@
       "scripts/soltui_ci.py": 6,
       "scripts/test_card_readiness.py": 3,
       "scripts/test_html_to_markdown.py": 4,
-      "scripts/test_soltui_ci.py": 5,
+      "scripts/test_soltui_ci.py": 6,
       "soltui/README.md": 2,
       "soltui/tests/__init__.py": 2,
       "soltui/tests/bridge_support.py": 1,
@@ -595378,7 +595489,7 @@
       "docs/COMPOUND-5M.md": 2,
       "docs/FILES.md": 17,
       "docs/OPERATIONS.md": 1,
-      "docs/TESTING.md": 6,
+      "docs/TESTING.md": 7,
       "docs/TRADINGVIEW-REFERENCE.md": 16,
       "docs/code-deep-optimizer-2026-11-06.md": 7,
       "docs/codebase-overview.md": 3,
@@ -595472,7 +595583,7 @@
       "llms-facts.txt": 2,
       "llms-full.txt": 10,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 12,
+      "memory.md": 13,
       "mongo/README.md": 1,
       "mongo/load.py": 6,
       "mongo/schema.py": 1,
@@ -595487,7 +595598,8 @@
       "research/tradingview-card-coverage.json": 13,
       "research/verify_numbers.py": 4,
       "scripts/check_tradingview_cards.py": 2,
-      "scripts/test_soltui_ci.py": 1,
+      "scripts/soltui_ci.py": 1,
+      "scripts/test_soltui_ci.py": 3,
       "skills/coin-strategy-fit/SKILL.md": 2,
       "skills/coin-strategy-fit/references/method.md": 4,
       "skills/trading-and-investing/references/market-participants-and-structure.md": 1,
@@ -597241,6 +597353,7 @@
       "research/ratio_rotation.py": 1,
       "research/sweep_untested.py": 18,
       "research/tradingview-card-coverage.json": 1,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 2,
       "soltui/README.md": 2,
       "soltui/commands.py": 18,
@@ -598057,6 +598170,7 @@
       "research/tradingview-card-readiness.json": 32,
       "research/verify_numbers.py": 2,
       "scripts/check_tradingview_cards.py": 3,
+      "scripts/soltui_ci.py": 1,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/crypto-and-digital-asset-trading.md": 1,
@@ -601964,7 +602078,7 @@
     },
     "uses": {
       ".env.example": 1,
-      ".github/workflows/ci.yml": 19,
+      ".github/workflows/ci.yml": 21,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
       "backtester/PROMPT.md": 2,
@@ -603662,7 +603776,7 @@
       "memory.md": 2
     },
     "v129": {
-      "memory.md": 3
+      "memory.md": 1
     },
     "v13": {
       "docs/TRADINGVIEW-REFERENCE.md": 3,
@@ -603685,17 +603799,20 @@
       "memory.md": 1
     },
     "v135": {
-      "docs/FILES.md": 1,
       "memory.md": 1
     },
     "v136": {
-      "docs/FILES.md": 1,
       "memory.md": 1
     },
     "v137": {
       "memory.md": 1
     },
     "v138": {
+      "docs/FILES.md": 1,
+      "memory.md": 3
+    },
+    "v139": {
+      "docs/FILES.md": 1,
       "memory.md": 3
     },
     "v14": {
@@ -604188,11 +604305,9 @@
       "soltui/SolTUI.icns": 1
     },
     "v67": {
-      "docs/FILES.md": 1,
       "memory.md": 1
     },
     "v68": {
-      "docs/FILES.md": 1,
       "memory.md": 1,
       "soltui/SolTUI.icns": 1
     },
@@ -604201,7 +604316,6 @@
     },
     "v70": {
       "memory.md": 2,
-      "prompts.md": 2,
       "soltui/SolTUI.icns": 2
     },
     "v71": {
@@ -604209,11 +604323,14 @@
       "prompts.md": 1
     },
     "v72": {
+      "docs/FILES.md": 1,
       "memory.md": 1,
       "prompts.md": 3
     },
     "v73": {
-      "memory.md": 1
+      "docs/FILES.md": 1,
+      "memory.md": 1,
+      "prompts.md": 2
     },
     "v74": {
       "memory.md": 1,
@@ -608324,7 +608441,7 @@
       ".githooks/pre-commit": 2,
       ".githooks/pre-merge-commit": 1,
       ".github/copilot-instructions.md": 2,
-      ".github/workflows/ci.yml": 2,
+      ".github/workflows/ci.yml": 3,
       ".gitignore": 2,
       "CLAUDE.md": 2,
       "README.md": 3,
@@ -622395,7 +622512,7 @@
       "docs/BASE-WALLET-QUERIES.md": 2,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 4,
-      "docs/FILES.md": 42,
+      "docs/FILES.md": 43,
       "docs/INSTALLATION.md": 1,
       "docs/MCP.md": 1,
       "docs/OPERATIONS.md": 1,
@@ -632465,10 +632582,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1451.4,
+    "avgDocLength": 1451.7,
     "documents": 1914,
-    "terms": 61843,
-    "termsBeforePrune": 61996,
-    "totalTokens": 2777993
+    "terms": 61849,
+    "termsBeforePrune": 62002,
+    "totalTokens": 2778567
   }
 }

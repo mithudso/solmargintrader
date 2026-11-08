@@ -26,6 +26,34 @@ def selected_modules(paths: list[str]) -> list[str] | None:
     return sorted(set(modules)) if modules else None
 
 
+# These checks are a bounded PR gate, not a substitute for the opt-in full suite.
+SMOKE = {'soltui.tests.test_bridge_buttons', 'soltui.tests.test_bridge_parity'}
+DEPENDENCIES = {
+    'soltui/forwardtest.py': {'soltui.tests.test_forwardtest'},
+    'soltui/coin_fit.py': {'soltui.tests.test_coin_fit', 'soltui.tests.test_coin_fit_ui'},
+    'soltui/shell.py': {'soltui.tests.test_v2_shell'},
+    'soltui/tui.py': {'soltui.tests.test_forwardtest', 'soltui.tests.test_coin_fit_ui',
+                      'soltui.tests.test_v2_shell', 'soltui.tests.test_bridge_buttons'},
+    'soltui/commands.py': {'soltui.tests.test_bridge_buttons', 'soltui.tests.test_bridge_parity',
+                           'soltui.tests.test_forwardtest', 'soltui.tests.test_experiment_interface'},
+}
+
+
+def targeted_modules(paths: list[str], exists=lambda p: Path(p).is_file()) -> list[str]:
+    """Run mapped tests plus bridge smoke; unknown paths keep the smoke gate.
+
+    This intentionally bounded gate cannot prove the full suite; manual dispatch
+    remains available. Never infer an untested source file is irrelevant.
+    """
+    modules = set(SMOKE)
+    for path in paths:
+        p = PurePosixPath(path)
+        if len(p.parts) == 3 and p.parts[:2] == ('soltui', 'tests') and p.name.startswith('test_') and p.suffix == '.py' and exists(path):
+            modules.add(f'soltui.tests.{p.stem}')
+        modules.update(DEPENDENCIES.get(path, ()))
+    return sorted(modules)
+
+
 def flatten(suite):
     for item in suite:
         if isinstance(item, unittest.TestSuite):
@@ -53,7 +81,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--shard', type=int, required=True)
     parser.add_argument('--shards', type=int, default=4)
-    parser.add_argument('--base', help='base commit for conservative PR selection')
+    parser.add_argument('--base', help='base commit for PR selection')
+    parser.add_argument('--targeted', action='store_true', help='run bounded PR smoke and mapped modules')
     args = parser.parse_args()
     if args.shards < 1 or not 0 <= args.shard < args.shards:
         parser.error('shard must be between 0 and shards - 1')
@@ -61,7 +90,10 @@ def main() -> int:
     if args.base:
         # Include both sides of renames and deleted paths; a failed diff fails closed.
         raw = subprocess.check_output(['git', 'diff', '--name-only', '--no-renames', '-z', args.base, 'HEAD'])
-        modules = selected_modules(raw.decode().split('\0')[:-1])
+        paths = raw.decode().split('\0')[:-1]
+        modules = targeted_modules(paths) if args.targeted else selected_modules(paths)
+    elif args.targeted:
+        modules = targeted_modules([])
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromNames(modules) if modules else loader.discover('soltui/tests', top_level_dir='.')
     tests = sorted(flatten(suite), key=lambda test: test.id())

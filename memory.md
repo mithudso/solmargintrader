@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 138
-Delta: v129 to v138; retain forwardtest delivery and make full SolTUI coverage explicitly opt-in.
+Version: 139
+Delta: v138 to v139; add targeted SolTUI CI after PR 102.
 
 ## v1 - 2026-11-06
 
@@ -1336,3 +1336,7 @@ The owner explicitly requested: make the999-case SolTUI suite optional, skip it 
 ## v138 - Forwardtest and optional CI integration
 
 Concurrent PR89 published forwardtest control changes and conservative timed CI shards atfedde2a. Preserve those functions and scripts. The owner's newer explicit optional-suite instruction controls the full SolTUI job: only workflow_dispatch with run_soltui_suite=true enables all four shards. PR, push and scheduled workflows skip this job; other jobs stay enabled. Combined discovery is1010cases after incoming11additional tests and this feature30tests. No full suite is run or claimed passed.
+
+## v139 - 2026-11-08: targeted SolTUI gate
+
+PR 89 merged as fedde2a while CI ran. PR 102 made the full suite manual-only at the owner request. Add a bounded changed-area gate for PRs and pushes with bridge smoke and explicit mappings; unknown paths keep smoke. Full sharded coverage stays opt-in. TASK-1001 tracks final validation and delivery.

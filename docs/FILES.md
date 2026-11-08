@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `42e726e` (2026-11-08T13:28:05+00:00). 1914 tracked files, 32.9 MB.
+**Generated** from `index/INDEX.json` at commit `078c895` (2026-11-08T13:32:43+00:00). 1914 tracked files, 32.9 MB.
 
 Regenerate with:
 
@@ -193,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1339 lines · 202,347 B · description: **extracted**
+`doc` · 1343 lines · 202,653 B · description: **extracted**
 
-**Purpose.** Version: 138 Delta: v129 to v138; retain forwardtest delivery and make full SolTUI coverage explicitly opt-in. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 139 Delta: v138 to v139; add targeted SolTUI CI after PR 102. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 544 lines · 30,787 B · description: **extracted**
+`doc` · 544 lines · 30,748 B · description: **extracted**
 
-**Purpose.** Version: 72 Delta: v70 to v72; preserve incoming history and explicit coin-fit optional-suite instruction. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 73 Delta: v72 to v73; add targeted SolTUI CI after PR 102. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
 
 **Use.** Read it.
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18691 lines · 926,359 B · description: **extracted**
+`doc` · 18719 lines · 927,272 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -345,7 +345,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 228 lines · 17,779 B · description: **extracted**
+`doc` · 230 lines · 18,031 B · description: **extracted**
 
 **Purpose.** python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1010 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
@@ -16585,7 +16585,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 336 lines · 14,177 B · description: **curated**
+`ci` · 366 lines · 15,467 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -17867,11 +17867,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/soltui_ci.py`
 
-`code-python` · 87 lines · 3,353 B · description: **extracted**
+`code-python` · 119 lines · 5,029 B · description: **extracted**
 
 **Purpose.** Select and shard SolTUI tests without silently omitting shared-code coverage.
 
-**Contents.** Defines `selected_modules()`, `flatten()`, `class TimedResult`, `main()`.
+**Contents.** Defines `selected_modules()`, `SMOKE`, `DEPENDENCIES`, `targeted_modules()`, `flatten()`, `class TimedResult`, `main()`.
 
 **Use.** `python3 scripts/soltui_ci.py --help`
 
@@ -17897,11 +17897,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_soltui_ci.py`
 
-`test` · 29 lines · 1,282 B · description: **none**
+`test` · 42 lines · 2,065 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `class SelectionTests`, `class TimingTests`.
+**Contents.** Defines `class SelectionTests`, `class TimingTests`, `class TargetedTests`.
 
 **Use.** `python3 -m pytest scripts/test_soltui_ci.py -q`
 

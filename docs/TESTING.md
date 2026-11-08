@@ -225,3 +225,5 @@ reachability is informational and runs on workflow dispatch, not on each PR.
 A green suite does not prove that the installed Chrome extension, macOS bundle, live
 liquidity daemon, or venue envelope matches the tested source. Record those acceptance
 gaps separately. Installed-service tests must not be replaced by process-liveness alone.
+
+Normal PR and push CI runs a bounded SolTUI bridge smoke gate plus modules mapped to changed areas. Unknown paths retain the smoke gate. This is not full-suite coverage. The four-shard full suite requires manual dispatch with `run_soltui_suite=true`.

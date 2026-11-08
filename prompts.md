@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 72
-Delta: v70 to v72; preserve incoming history and explicit coin-fit optional-suite instruction.
+Version: 73
+Delta: v72 to v73; add targeted SolTUI CI after PR 102.
 
 ## v1 - 2026-11-06
 
