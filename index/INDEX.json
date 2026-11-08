@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-08T14:48:33+00:00",
+  "generatedAt": "2026-11-08T14:49:18+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "36439f6",
+  "commit": "318219d",
   "counts": {
     "files": 2622,
-    "bytes": 43410276,
+    "bytes": 43410280,
     "byKind": {
       "strategy-card": 1478,
       "doc": 546,
@@ -77989,9 +77989,9 @@
       "title": "Where the worker and the TUI meet. Under the existing config dir rather than a",
       "summary": "Job queue for the background backtest sweep. Pure logic; no UI, no processes. The TUI's own sweep (`runner.py`) evaluates the roster and blocks a thread until it finishes.",
       "summarySource": "docstring",
-      "bytes": 36450,
+      "bytes": 36454,
       "lines": 933,
-      "sha1": "73a6806d75214dc96c85b162c174d0ae955e5aef",
+      "sha1": "2b1ab8b2be487affac6606ec9b00707da1d2ac41",
       "symbols": [
         "BG_DIR",
         "RESULTS_PATH",

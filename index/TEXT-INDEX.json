@@ -2623,7 +2623,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T14:48:33+00:00",
+  "generatedAt": "2026-11-08T14:49:18+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -246835,7 +246835,7 @@
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 2,
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1,
       "skills/trading-and-investing/references/technical-analysis.md": 1,
-      "soltui/bgqueue.py": 1,
+      "soltui/bgqueue.py": 2,
       "soltui/bgworker.py": 2,
       "soltui/experiment_screens.py": 1,
       "soltui/experiments.py": 5,
@@ -487434,7 +487434,7 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 4,
       "soltui/README.md": 4,
       "soltui/app.py": 2,
-      "soltui/bgqueue.py": 2,
+      "soltui/bgqueue.py": 1,
       "soltui/bots.py": 6,
       "soltui/experiment_jobs.py": 1,
       "soltui/forwardtest.py": 1,
@@ -505383,7 +505383,7 @@
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1,
       "soltui/README.md": 1,
       "soltui/api.py": 3,
-      "soltui/bgqueue.py": 3,
+      "soltui/bgqueue.py": 2,
       "soltui/compound.py": 1,
       "soltui/docs_browser.py": 3,
       "soltui/help.py": 1,
