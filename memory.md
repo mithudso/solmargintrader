@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 163
-Delta: v162 to v163; implement and test separate causal horizon records.
+Version: 166
+Delta: v165 to v166; record focused status and dry-run validation.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1650,3 +1650,15 @@ Active: Stele TASK-1027; branch agent-01a1bc24, worktree /Users/mitch/dev/solmar
 ## v163 - 2026-11-08
 
 In /Users/mitch/dev/solmargintrader-wt-01a1bc24, added separate forward records and settlement for 1, 5 and 30 minute horizons using future one-minute opens and closes. All three evaluate the same five-minute Signal forecast; the code does not generate new forecasts every minute or train separate horizon-specific models. Missing candle data stays pending, old five-minute records remain intact. The Signal screen shows horizon counts, calls, outcomes and coin coverage. At inspection process 74947 in /Users/mitch/dev/solmargintrader held trainer locks for BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI and AVAX; their logs showed recent checks. That old process does not load the new code. Focused forward tests: 12 pass; full soltui.tests.test_compound: 77 pass; scripts/check_docs.py passes after count updates. Remaining: review exact diff, deliver with CI, preserve other active worktrees and existing trainer, then verify the loaded app and running trainer on the delivered revision.
+
+## v164 - 2026-11-08
+
+Active: Stele TASK-1034. Worktree /Users/mitch/dev/solmargintrader-wt-status-1034, branch agent-status-1034 based on origin/master 4c4a4e7. Request: status button on every test tab, reopen the correct operation in the editor after navigation, show existing operation state and logs without starting or interrupting jobs. Stele decision write queued in outbox 2012e44c. Inventory test surfaces and their status/log sources, implement independent per-operation logs and reconnection, test missing logs, navigation and concurrent jobs; deliver after coordination with parent session. Parent owns separate paper experiment feature and active sweep worktree.
+
+## v165 - 2026-11-08
+
+The v2 Dry Run tab was passing a strategy string to extension/tools/dryrun.js, but that script ignores it and always simulates the grid. Removing the false strategy association, /Users/mitch/dev/solmargintrader-wt-status-1034 now routes registered strategies and selected Top 5 configurations to independent historical simulations using the existing backtest engine and cached candles. It labels the run as historical, not prospective, and keeps no order path. Adds a neutral baseline and strategy picker, Start dry run, progress logs, and test-status buttons. Test status retains separate simultaneous logs and reopens editor previews. Stele new task create queued in outbox 03b25b07. Remaining: full focused UI tests, resolve any failures, run documentation gate, commit and coordinate integration with parent; do not disturb active jobs.
+
+## v166 - 2026-11-08
+
+Implemented 10 test-status buttons with independent in-session operation logs, bounded detached-worker log retrieval, responsive status refresh, and unsaved-editor protection. Dry Run now runs the exact selected registry strategy or Top 5 composite on cached historical bars with the shared simulation engine. It does not run Node grid code, claim a profitable recommendation, use live prices, or place orders. Verified 36 bridge parity/surface tests, 39 preset/editor/handler tests, the 25-test initial UI subset, and targeted tests for narrow layout, actual selected strategy and detached log boundaries. Two additional focused UI tests passed after the thread-safe callback refactor. Stele TASK-1034 remains in progress; new Dry Run task and decision are queued in outbox IDs 03b25b07 and 2012e44c. Remaining: commit, update suite counts, push draft, coordinate parent integration and verify loaded app; preserve active trainer and sweep.

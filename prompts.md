@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 92
-Delta: v91 to v92; record Signal forward horizon and coin coverage request.
+Version: 94
+Delta: v93 to v94; record Dry Run usability and strategy selection request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -758,4 +758,16 @@ I had asked for the Aero LP, liquidity tasks, and errors about the LP daemon be 
 
 ```text
 In the forward test, I had asked that to be done at 1, 5, and 30 min intervals each result and prediction recorded and tracked separately.  I see only the 5 min. Do all 3, and I can't tell if all coins are being tested or just one.
+```
+
+## v93 - 2026-11-08
+
+```text
+For every tab that has a test on it make a status button which opens up the console in the editor and shows the current status of the running operation. If I click off the run button I can't get back to see where it is or what's going onn.
+```
+
+## v94 - 2026-11-08
+
+```text
+I can't tell what the dry run tab is supposed to be doing, there's no start button, it onlyh takes the top 5, but recommends an unproven unprofitable untested macd strategy that's not in the list and can't be chosen, there's no log, activitiy, it says "click one to fill this tab" which clicking on anything doesn't appear to do anything other than change the text in the Strategy text box.
 ```

@@ -1135,12 +1135,12 @@ def live_recommendation(ctx: Context, p: dict[str, Any]) -> Any:
     return live_run.get_best_strategy()
 
 
-@command("live.spawn_dryrun", "Run extension/tools/dryrun.js for a strategy (dry-run only).",
+@command("live.spawn_dryrun", "Run the chosen strategy as a historical simulation; no orders.",
          (P("strategy", "string", "Strategy name or Top 5 label.", True),),
          read_only=False, long_running=True)
 def live_spawn_dryrun(ctx: Context, p: dict[str, Any]) -> Any:
-    out = live_run.run_dryrun(p["strategy"].strip())
-    net = live_run.dryrun_net_pct(out["stdout"])
+    out = live_run.run_dryrun(p["strategy"].strip(), settings=ctx.settings, progress=ctx.progress)
+    net = out["net_pct"]
     out["net_pct"] = net
     out["net_pct_text"] = labelled(net, "dry-run", "net")
     return out
