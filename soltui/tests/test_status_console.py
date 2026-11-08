@@ -20,6 +20,12 @@ class StatusConsoleTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             for name in app._TEST_STATUS:
                 self.assertEqual(app.query_one(f"#{name}", Button).label.plain, "Test status")
+            with mock.patch.object(app, "_call", return_value={"ok": True, "result": {
+                    "running": True, "assets": ["SOL"],
+                    "last": {"SOL": {"recorded": 2, "at": 1794157800}}}}):
+                text = app._test_status_text("status-forwardtest")
+            self.assertIn("Forward test: running; coins: SOL", text)
+            self.assertIn("2 predictions recorded", text)
 
     async def test_reopen_after_navigation_keeps_concurrent_logs(self):
         app = SolTuiApp(make_settings())

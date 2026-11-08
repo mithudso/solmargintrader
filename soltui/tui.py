@@ -5071,13 +5071,38 @@ class SolTuiApp(App):
             found = True
         elif source == "forward":
             env = self._call("forwardtest.state", quiet=True)
-            lines.append(json.dumps(env["result"], indent=2, default=str) if env["ok"] else
-                         f"Forward status unavailable: {self._msg(env)}")
+            if env["ok"]:
+                state = env["result"]
+                assets = ", ".join(state.get("assets") or []) or "none"
+                lines.append(f"Forward test: {'running' if state.get('running') else 'stopped'}; coins: {assets}.")
+                for coin, latest in (state.get("last") or {}).items():
+                    checked = latest.get("at")
+                    when = time.strftime("%m-%d %H:%M:%S UTC", time.gmtime(checked)) if checked else "unknown time"
+                    detail = latest.get("error") or latest.get("message") or f"{latest.get('recorded', 0)} predictions recorded"
+                    lines.append(f"{coin}: {when} — {detail}")
+            else:
+                lines.append(f"Forward status unavailable: {self._msg(env)}")
             found = True
         elif source == "compound":
             env = self._call("compound.unattended_status", {"asset": self._compound_coin}, quiet=True)
-            lines.append(json.dumps(env["result"], indent=2, default=str) if env["ok"] else
-                         f"Trainer status unavailable: {self._msg(env)}")
+            if env["ok"]:
+                state = env["result"]
+                lines.append(f"{state['asset']} trainer: {'running' if state.get('running') else 'stopped'}.")
+                last = state.get("last_line") or "No recent trainer activity available."
+                try:
+                    item = json.loads(last)
+                except (TypeError, ValueError):
+                    lines.append(last)
+                else:
+                    if item.get("error"):
+                        lines.append(f"Last error: {item['error']}")
+                    else:
+                        lines.append(f"Last call: {item.get('call', 'unknown')}; "
+                                     f"recorded: {'yes' if item.get('recorded') else 'no'}; "
+                                     f"earlier calls resolved: {item.get('resolved', 0)}.")
+                lines.append(f"Log: {state.get('log') or 'unavailable'}")
+            else:
+                lines.append(f"Trainer status unavailable: {self._msg(env)}")
             found = True
         elif source == "live":
             matches = self.query("#live-run-output")
