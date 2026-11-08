@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 90
-Delta: v89 to v90; record authorization for synthetic proof-of-concept candles.
+Version: 91
+Delta: v90 to v91; record archived LP home-page alert report.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -745,4 +745,11 @@ Now I'm getting this error for everything:  ValueError: timestamp cadence must e
 
 ```text
 It's 6 hours and this is just a proof of concept, make up the data.
+```
+
+## v91 - 2026-11-08
+
+```text
+I had asked for the Aero LP, liquidity tasks, and errors about the LP daemon be archived. On the front page I see" ▊ ▲ LP daemon is killed   → 6 Archive › Aero LP                                                                   ▎│ 1 chains · 2h ago         ││ LIVE · killed             ││ ━━━━━━━━━━━━              ││ z +1.36 · ▼ -15.5         │
+▊   the KILL file is present: the daemon will not act until Resume"
 ```

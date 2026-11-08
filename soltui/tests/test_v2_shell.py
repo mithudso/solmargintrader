@@ -93,7 +93,7 @@ class PureBuilderTests(unittest.TestCase):
         kinds = [n.kind for n in items]
         self.assertEqual(kinds, sorted(kinds, key=lambda k: shell._SEVERITY[k]))
         titles = " | ".join(n.title for n in items)
-        for expected in ("Background sweep stopped with an error", "Trainer stopped: SOL", "LP daemon is killed",
+        for expected in ("Background sweep stopped with an error", "Trainer stopped: SOL",
                          "Price recorder is not running", "Last wallet scan was partial", "Wallet changed"):
             self.assertIn(expected, titles)
         self.assertEqual(items[0].kind, "err")
@@ -108,10 +108,22 @@ class PureBuilderTests(unittest.TestCase):
         by_label = {i.label: i for i in items}
         self.assertEqual(by_label["Sweep"].kind, "warn")
         self.assertEqual(by_label["Sweep"].detail, "stopped unexpectedly")
-        self.assertEqual(by_label["LP daemon"].detail, "stale")
+        self.assertNotIn("LP daemon", by_label)
         self.assertEqual(by_label["Fwd test"].kind, "run")
         text = shell.health_text(items).plain
         self.assertIn("▲ Sweep stopped unexpectedly", text)
+
+    def test_archived_lp_never_appears_on_home(self) -> None:
+        for state in ({"status_ok": True, "killed": True, "mode_badge": "LIVE"},
+                      {"status_ok": False, "status_reason": "STALE"},
+                      {"status_ok": True, "killed": False}):
+            with self.subTest(state=state):
+                reads = {"liquidity.status": ok(state)}
+                self.assertFalse(any("LP" in item.title for item in shell.needs(reads)))
+                self.assertFalse(any("LP" in item.label for item in shell.health_items(reads)))
+                self.assertFalse(any("LP" in label for label, _, _ in shell.tiles(reads)))
+        self.assertTrue(any(view.tab == "tab-liquidity" for dest in shell.DESTINATIONS
+                            if dest.key == "archive" for view in dest.views))
 
     def test_signal_hero_leads_with_the_call(self) -> None:
         hero = shell.signal_hero({

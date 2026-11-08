@@ -405,18 +405,6 @@ def health_items(reads: Mapping[str, Mapping[str, Any] | None], *, forward_runni
         out.append(Health("ok" if autopilot.get("autopilot") else "idle", "Autopilot",
                           "on" if autopilot.get("autopilot") else "off", "tab-compound", "cmp-coins"))
 
-    liq = _ok(reads.get("liquidity.status"))
-    if liq is not None:
-        reason = str(liq.get("status_reason") or "")
-        if not liq.get("status_ok"):
-            out.append(Health("warn", "LP daemon", "stale" if "STALE" in reason.upper() else "no data",
-                              "tab-liquidity"))
-        elif liq.get("killed"):
-            out.append(Health("warn", "LP daemon", f"killed · {liq.get('mode_badge', '')}".strip(" ·"),
-                              "tab-liquidity"))
-        else:
-            out.append(Health("ok", "LP daemon", str(liq.get("mode_badge") or "running"), "tab-liquidity"))
-
     pr = _ok(reads.get("prices.status"))
     if pr is not None:
         age = _num(pr.get("snapshot_age_s"))
@@ -512,15 +500,6 @@ def needs(reads: Mapping[str, Mapping[str, Any] | None], *, autopilot: Mapping[s
             out.append(Need("warn", "Autopilot launch agent is not loaded",
                             str(agent.get("label") or "compound autopilot"), "tab-compound", "cmp-coins"))
 
-    liq = _ok(reads.get("liquidity.status"))
-    if liq is not None:
-        if not liq.get("status_ok"):
-            out.append(Need("warn", "LP daemon state unreadable or stale",
-                            str(liq.get("status_reason") or "status.json missing")[:160], "tab-liquidity"))
-        elif liq.get("killed"):
-            out.append(Need("warn", "LP daemon is killed",
-                            "the KILL file is present: the daemon will not act until Resume", "tab-liquidity"))
-
     pr = _ok(reads.get("prices.status"))
     if pr is not None:
         age = _num(pr.get("snapshot_age_s"))
@@ -574,16 +553,6 @@ def tiles(reads: Mapping[str, Mapping[str, Any] | None], *, forward: Mapping[str
         out.append(("Wallets", value, Text(" · ".join(bits), TOK["muted"])))
     else:
         out.append(("Wallets", Text("—", f"bold {TOK['fg']}"), Text("no scan yet", TOK["muted"])))
-
-    liq = _ok(reads.get("liquidity.status"))
-    if liq is not None and liq.get("status_ok"):
-        summary = str(liq.get("summary") or "")
-        head = summary.split("|")[0].strip() if summary else "—"
-        sub = Text(f"{liq.get('mode_badge') or ''}{' · killed' if liq.get('killed') else ''}".strip(" ·"),
-                   TOK["warn"] if liq.get("killed") else TOK["muted"])
-        out.append(("Aero LP", Text(head, f"bold {TOK['fg']}"), sub))
-    else:
-        out.append(("Aero LP", Text("—", f"bold {TOK['fg']}"), Text("no daemon state", TOK["muted"])))
 
     q = _ok(reads.get("queue.progress"))
     if q is not None:

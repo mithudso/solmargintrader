@@ -3642,7 +3642,7 @@ class SolTuiApp(App):
             self._refresh_docs()
         elif pane == "tab-forwardtest":
             self._forward_refresh()
-        elif pane == "tab-queue":
+        elif pane == "tab-queue" and self.query("#queue-status"):
             # No once-only guard: unlike Cumulative and Docs, this tab's source
             # is being written by another process right now, so re-reading on
             # every activation is the correct behaviour rather than waste.
@@ -5056,7 +5056,7 @@ class SolTuiApp(App):
 
     # Status reads for the health strip and Now. All read-only and cheap (each well under 20 ms);
     # `compound.autopilot_status` shells out to launchctl, so it refreshes at most once a minute.
-    _V2_TICK_READS = ("backtest.status", "queue.progress", "liquidity.status", "prices.status",
+    _V2_TICK_READS = ("backtest.status", "queue.progress", "prices.status",
                       "portfolio.last")
 
     def _v2_setup(self) -> None:
