@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 109
-Delta: v108 to v109; correct full-suite catalog integration checks.
+Version: 110
+Delta: v109 to v110; clarify final verification counts.
 
 ## v1 - 2026-11-06
 
@@ -1091,6 +1091,10 @@ Delivery is through branch feat/soltui-card-catalog and TASK-974. If the PR is o
 
 ## v109 - 2026-11-08 (full-suite catalog corrections)
 
-The local full884-case suite completed in682.972s with880passes,4failures and2optional skips. Three failures were the new Refreshcards button missing BUTTON_COMMANDS and the old66-handler assertion; registered it as strategies.cards and updated the exactcount67. The fourth treated indicator titles such as1YearActiveSupply% as unlabelled return values. The safety check now binds only the strategy-title column to actual card labels; every result column retains its source-label checks. Six targeted bridge/percentage cases pass in5.021s. No trading/result-label protection was removed.
+The local full884-case suite completed in682.972s with878passes,4failures and2optional skips. Three failures were the new Refreshcards button missing BUTTON_COMMANDS and the old66-handler assertion; registered it as strategies.cards and updated the exactcount67. The fourth treated indicator titles such as1YearActiveSupply% as unlabelled return values. The safety check now binds only the strategy-title column to actual card labels; every result column retains its source-label checks. Six targeted bridge/percentage cases pass in5.021s. No trading/result-label protection was removed.
 
 PR99: https://github.com/mithudso/solmargintrader/pull/99 ; final delivery TASK-974. Push these corrections and await final-head CI; prior24c063 CI must not be treated as final. The actual canonical UI already renders351/292 via the three verifiedpre-applied sourcefiles. Update only canonicaltui.py under its recorded hash to carry the routing-map correction, update canonical-install.json to final source identity, and preserve337 unrelated paths. No new runtime feature remains. If PR99 is already merged, verify its receipt instead of repeating implementation.
+
+## v110 - 2026-11-08 (final visibility delivery checkpoint)
+
+The local full-suite arithmetic is884cases:878passed,4failed,2skipped. The four integration assertions are corrected and all6targeted reruns pass. Final requiredCI will run the complete884cases. Product source is final; only this verification-count correction changes the next branch tip. PR99/TASK-974 hold final delivery receipts. Canonical3sourcefiles are bound by /tmp/solmargin-card-ui/canonical-install.json; preserve all337unrelated paths when reconciling them with the merged tree.
