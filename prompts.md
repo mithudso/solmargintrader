@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 67
-Delta: v66 to v67; preserve v2 history and append coin-fit skill, audits and Bots request.
+Version: 68
+Delta: v67 to v68; preserve explicit optional-suite and skip instruction.
 
 ## v1 - 2026-11-06
 
@@ -515,4 +515,10 @@ Create a skill that applies the template to a coin and determines if it's a good
 
 ```text
 Add a heuristic backtesting mechanism to quickly test it, and a more detailed audit backtest. And then incorporate this into the soltui in the bots tab, so that I can click a button and it will ranksort the most suitable coins and do a backtest to show it.
+```
+
+## v68 - Optional full SolTUI suite
+
+```text
+make the 999-case SolTUI suite optional, then skip it and push the code
 ```

@@ -2,11 +2,17 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 909 tests
-python3 -m unittest discover -s soltui/tests -t .       # 999 tests (~840s)
+python3 -m unittest discover -s soltui/tests -t .       # 999 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 34 tests
 cd extension && npm test                                # 361 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
+
+The full SolTUI suite is optional and is skipped by normal PR/push CI. Run it
+locally with the command above, or manually dispatch CI with the boolean
+`run_soltui_suite` enabled. The other CI jobs and test-discovery count check stay
+enabled. This delivery skips the full suite at the owner's explicit request;
+focused UI, accounting and installed acceptance checks are recorded separately.
 
 2303 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 

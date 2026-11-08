@@ -5,6 +5,12 @@ on:
     branches: [master, main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      run_soltui_suite:
+        description: Run the optional full SolTUI suite (about 15 minutes)
+        required: false
+        type: boolean
+        default: false
 
 # Read-only by default; nothing here needs write access to the repo.
 permissions:
@@ -123,8 +129,11 @@ jobs:
   # equivalent), so this job runs on a macOS runner. It covers the unit suite
   # only: the packaging paths -- the alias bundle and the launchd agent -- are
   # verified by hand, per docs/known-issues.md.
+  # The owner made the full render/lifecycle suite opt-in. Keep its check name
+  # stable; normal PR/push runs skip it, and a manual dispatch can enable it.
   soltui:
     name: soltui (python, macos)
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_soltui_suite }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7

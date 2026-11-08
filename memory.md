@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 135
-Delta: v128 to v135; preserve v2 shell delivery and add coin-fit screening and audits.
+Version: 136
+Delta: v135 to v136; make the full SolTUI suite opt-in and skip it at the owner's request.
 
 ## v1 - 2026-11-06
 
@@ -1306,3 +1306,7 @@ Merged published optimization workbench PR98 at bc5c701 into the coin-fit branch
 ## v135 - v2 shell integration
 
 Concurrent PR93 published the v2 shell at9bd7067. Preserve Research→Bots and the classic Bots tab. Production source auto-merged; a regression exercises actual Rank/Audit clicks in both full shells. Recompute combined discovery and offline metadata. Final CI and installed acceptance remain the delivery gate for this feature; prior research and other owners' verification outcomes are historical scope, not proof of this combined revision.
+
+## v136 - Optional full SolTUI suite
+
+The owner explicitly requested: make the999-case SolTUI suite optional, skip it and push the code. Cancelled the running full-suite job. CI now runs it only for workflow_dispatch with run_soltui_suite=true; normal PR/push jobs skip it. Keep the existing check name stable. Other fast CI checks remain enabled. No full999-case pass is claimed. Local909backtester checks, focused36-case combined v2/classic UI checks and independent accounting/source preflight passed; installed-primary acceptance remains after merge.
