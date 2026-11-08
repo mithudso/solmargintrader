@@ -5,10 +5,10 @@ destinations (Now, Signal, Research, Money, Library) plus Settings; see [Navigat
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 wiring shell.
 
-> **No order path.** There is no order path in this package — no keys, no signing,
-> no venue client, not even unreachable code. Every figure it shows is a
-> historical simulation, a replay of one, or (Liquidity tab only) a figure read
-> from the liquidity daemon's state files. See [Safety](#safety).
+> **Manual Coinbase orders use real money.** The Wallet tab submits spot market orders
+> through the separately authenticated Coinbase CLI. Review is the default; the optional
+> session-only quick mode places orders without a separate confirmation.
+> Backtests, Dry Run and paper experiments remain simulations. See [Safety](#safety).
 
 The Signal forward test records the same five-minute signal separately for 1-, 5- and 30-minute
 outcomes. Each measurement begins at a future one-minute candle open after the forecast is recorded.
@@ -498,20 +498,28 @@ surfaces for every command; `test_bridge_buttons.py` fails when a TUI button is 
 disarmed, and *"never change a default so that a fresh install can place an
 order."* This package holds to that:
 
-- **No order path exists.** Not stubbed, not disabled — absent. `grep` the package
-  for a venue client and you will find none.
+- **Coinbase manual orders are live.** The Wallet tab starts disarmed. Normally a user reviews a
+  short-lived preview, explicitly arms the form and submits once. Orders use the default
+  portfolio, USD or USDC spot markets, a quote budget for buys or exact base quantity for
+  sells, and an estimated 100 USD/USDC maximum per order. A market fill can differ from its
+  preview. Before submission the app rechecks balances, market rules, estimated price and
+  fees. Unknown or pending submissions block later orders until reconciled. The app never
+  automatically retries a submission. The Coinbase CLI manages the API key.
+- **Quick orders skip the confirmation.** The optional Wallet checkbox starts off each
+  session. When enabled and armed, the quick-order button submits immediately after the
+  same venue and risk checks. Automation can call `coinbase.order_quick` with exact order
+  parameters and `skip_confirm=true`; that call can place a real order.
 - **`config.MODES` contains only `dry-run`.** A config selecting `live` is refused
   by `validate()` with an explanatory error.
-- **`armed` cannot be inherited.** Setting it requires an explicit second
-  acknowledgement flag, so an old config file cannot silently arm a future build.
-  Nothing in this build reads `armed` for anything.
+- **Manual order arming is session-only.** The Wallet form starts disarmed each time the
+  console starts; the simulation setting `armed` does not arm Coinbase orders.
 - **The Execute tab is a replay, not a live loop.** Stepping bars and computing
   fills would create a *second* order-execution path alongside
   `backtester/core/engine.py`, outside the coverage of the engine's known-answer
   tests, and the two could diverge into wrong money. Instead `paper.py` runs the
   tested engine once and exposes a cursor over the result.
-- `summary()["live_orders_placed"]` is structurally always `0`, and a test asserts
-  it so a regression is loud.
+- A paper replay's `summary()["live_orders_placed"]` remains `0`; it does not include
+  independent manual Coinbase orders.
 - **The Bots tab simulates.** Its grid, triangle and DCA bots run the backtester's simulators
   over cached bars or the recorded stream; `test_bots.py` and `test_pricefeed.py` assert that
   neither module names a key file, a signer or an order call. The price recorder reads public
@@ -519,9 +527,7 @@ order."* This package holds to that:
   under `~/.config/soltui/bots/` (settings, results, forward-test state, optimize reports, and the
   candle-proxy cache).
 
-Adding live execution later means routing through
-`extension/src/core/commands.js` and its risk rails as separate, explicit work —
-not extending this package.
+Automated strategies and the extension remain separate from manual Coinbase orders.
 
 ## Tests
 

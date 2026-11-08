@@ -6,9 +6,8 @@ tick, plus the state it reads.
 
 ## The one rule this module exists to enforce
 
-**A bare number in a menu bar implies a live account.** This project has no live
-position, no broker connection, and no order path -- only historical backtests
-and a paper simulator. So every money figure in the title carries its source as a
+**A bare number in a menu bar implies a live account.** This module shows historical
+backtests and paper simulations, not the separate manual Coinbase orders. Every money figure carries its source as a
 word: `last backtest +9.4%`, `paper +2.1%`. Never a naked `+9.4%`, which a glance
 would read as "my money is up 9.4% right now".
 

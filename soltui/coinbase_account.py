@@ -32,6 +32,10 @@ def markets_path() -> Path:
     return storage_dir() / 'markets.json'
 
 
+def spot_pairs_path() -> Path:
+    return storage_dir() / 'spot-pairs.json'
+
+
 def _store(path: Path, value: Any) -> None:
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     os.chmod(path.parent, 0o700)
@@ -60,6 +64,56 @@ def _global_instruments() -> dict[str, Any]:
                                           'Content-Type': 'application/json'})
     with urllib.request.urlopen(req, timeout=20) as response:
         return json.load(response)
+
+
+def download_spot_pairs(fetch: Callable[[str], dict[str, Any]] = _get) -> dict[str, Any]:
+    """Publish a spot-only catalog only after every Coinbase page succeeds."""
+    rows: list[dict[str, Any]] = []
+    ids: set[str] = set()
+    cursors: set[str] = set()
+    cursor = ''
+    for page in range(MAX_PAGES):
+        params = {'limit':250, 'get_all_products':'true', 'product_type':'SPOT'}
+        if cursor:
+            params['cursor'] = cursor
+        data = fetch(PUBLIC_PRODUCTS + '?' + urllib.parse.urlencode(params))
+        products, paging = data.get('products'), data.get('pagination')
+        if not isinstance(products,list) or not isinstance(paging,dict) or type(paging.get('has_next')) is not bool:
+            raise ValueError('Incomplete Coinbase spot page; prior pair catalog preserved')
+        for product in products:
+            if (not isinstance(product,dict) or not isinstance(product.get('product_id'),str)
+                    or not product['product_id'].strip() or product.get('product_type') != 'SPOT'):
+                raise ValueError('Invalid Coinbase spot pair; prior pair catalog preserved')
+            pid = product['product_id']
+            if pid not in ids:
+                ids.add(pid)
+                rows.append(product)
+        if not paging['has_next']:
+            if not rows:
+                raise ValueError('Empty Coinbase spot catalog; prior pair catalog preserved')
+            result = {'source':PUBLIC_PRODUCTS, 'scope':'SPOT', 'complete':True,
+                      'fetched_at':time.time(), 'pages':page + 1, 'count':len(rows), 'products':rows,
+                      'note':'Public spot products; account eligibility and trading availability are separate.'}
+            _store(spot_pairs_path(),result)
+            return {k:v for k,v in result.items() if k != 'products'} | {'path':str(spot_pairs_path())}
+        nxt = paging.get('next_cursor')
+        if not products or not isinstance(nxt,str) or not nxt or nxt in cursors:
+            raise ValueError('Coinbase spot pagination stalled; prior pair catalog preserved')
+        cursors.add(nxt)
+        cursor = nxt
+    raise ValueError('Coinbase spot page limit reached; prior pair catalog preserved')
+
+
+def spot_pairs(query: str = '') -> dict[str, Any]:
+    try:
+        result = json.loads(spot_pairs_path().read_text(encoding='utf-8'))
+    except FileNotFoundError:
+        return {'scope':'SPOT','complete':False,'count':0,'pairs':[],
+                'message':'Spot-pair catalog has not been downloaded'}
+    needle = query.strip().upper()
+    pairs = [p['product_id'] for p in result.get('products',[]) if needle in p.get('product_id','').upper()]
+    return {'scope':'SPOT','complete':result.get('complete') is True,'count':result.get('count',0),
+            'fetched_at':result.get('fetched_at'),'pairs':pairs}
 
 
 def download_markets(fetch: Callable[[str], dict[str, Any]] = _get,

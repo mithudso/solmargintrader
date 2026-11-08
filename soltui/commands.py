@@ -17,8 +17,9 @@ Nothing in `result` or `error` names a surface, a time or a request id.
 
 Boundaries this module keeps:
 
-* soltui has no order path (no keys, no signing, no venue client), so no command here moves funds.
-  `backtest.*`, `paper.*` and `live.spawn_dryrun` simulate historical data without orders.
+* `coinbase.order_submit` places a real, explicitly confirmed Coinbase spot order. It requires an
+  unexpired reviewed preview and refuses duplicate or unresolved submissions. `backtest.*`,
+  `paper.*` and `live.spawn_dryrun` remain simulations without venue orders.
 * `liquidity.resume` deletes the aero-lp `KILL` file, which removes a safety stop on a real-money
   daemon. It is `requires_confirm`: it refuses with `forbidden` unless `params.confirm is True`, on
   every surface, the TUI included. `liquidity.kill` only adds the stop, so it needs no confirm.
@@ -144,7 +145,7 @@ class Command:
 COMMANDS: dict[str, Command] = {}
 
 CONFIRM_PARAM = Param("confirm", "bool",
-                      "Must be true. This command removes a safety stop on a real-money system.")
+                      "Must be true. This command requires explicit confirmation.")
 
 
 def P(name: str, type_: str, describe: str, required: bool = False) -> Param:
@@ -465,7 +466,7 @@ def _execute(name: str, params: Any, ctx: Context | None) -> dict[str, Any]:
         if cmd.requires_confirm and clean.get("confirm") is not True:
             raise CommandError(
                 "forbidden",
-                f"{name} removes a safety stop on a real-money system; pass confirm=true to proceed")
+                f"{name} requires explicit confirmation; pass confirm=true to proceed")
         clean.pop("confirm", None)
         result = cmd.handler(ctx if ctx is not None else Context.load(), clean)
         return ok_envelope(name, jsonable(result))
@@ -2086,7 +2087,63 @@ def coinbase_sync(ctx: Context, p: dict[str, Any]) -> Any:
          read_only=False, long_running=True)
 def coinbase_markets(ctx: Context, p: dict[str, Any]) -> Any:
     from . import coinbase_account as cb
-    return cb.download_markets()
+    spot = cb.download_spot_pairs()
+    return cb.download_markets() | {'spot_pairs':spot}
+
+
+@command("coinbase.pairs", "List the downloaded Coinbase spot pairs; optional substring filter.",
+         (P("query", "string", "Optional pair substring."),))
+def coinbase_pairs(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_account as cb
+    return cb.spot_pairs(p.get('query') or '')
+
+
+@command("coinbase.order_preview", "Review an estimated Coinbase spot market order; places no order.",
+         (P("product_id", "string", "Spot pair, for example SOL-USDC.", required=True),
+          P("side", "string", "BUY or SELL.", required=True),
+          P("size", "string", "Exact decimal quote budget for BUY or base amount for SELL.", required=True),
+          P("size_currency", "string", "quote for BUY; base for SELL.", required=True)),
+         read_only=False, long_running=True)
+def coinbase_order_preview(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_manual
+    return coinbase_manual.preview(p['product_id'], p['side'], p['size'], p['size_currency'])
+
+
+@command("coinbase.order_submit", "Submit one explicitly confirmed, reviewed live Coinbase order.",
+         (P("preview_id", "string", "Unexpired reviewed preview ID.", required=True),),
+         read_only=False, long_running=True, requires_confirm=True)
+def coinbase_order_submit(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_manual
+    return coinbase_manual.submit(p['preview_id'])
+
+
+@command("coinbase.order_quick", "Place a live Coinbase order without a per-order confirmation after opting in.",
+         (P("product_id", "string", "Spot pair, for example SOL-USDC.", required=True),
+          P("side", "string", "BUY or SELL.", required=True),
+          P("size", "string", "Exact quote budget for BUY or base amount for SELL.", required=True),
+          P("size_currency", "string", "quote for BUY; base for SELL.", required=True),
+          P("skip_confirm", "bool", "Explicitly opt in to placing this live order without review.", required=True)),
+         read_only=False, long_running=True)
+def coinbase_order_quick(ctx: Context, p: dict[str, Any]) -> Any:
+    if p['skip_confirm'] is not True:
+        raise ValueError('Quick orders require skip_confirm=true; this places a live order')
+    from . import coinbase_manual
+    reviewed = coinbase_manual.preview(p['product_id'], p['side'], p['size'], p['size_currency'])
+    return coinbase_manual.submit(reviewed['preview_id'])
+
+
+@command("coinbase.order_status", "Retrieve a Coinbase order's status and fills.",
+         (P("order_id", "string", "Coinbase order ID.", required=True),),
+         read_only=False, long_running=True)
+def coinbase_order_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_manual
+    return coinbase_manual.status(p['order_id'])
+
+
+@command("coinbase.order_state", "Show unresolved manual Coinbase submissions after a restart.")
+def coinbase_order_state(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import coinbase_manual
+    return coinbase_manual.state()
 
 
 def _daemon_context() -> dict[str, Any]:

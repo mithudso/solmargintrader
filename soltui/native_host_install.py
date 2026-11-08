@@ -65,7 +65,7 @@ def wrapper_text(repo: Path, python: Path) -> str:
 def manifest(wrapper: Path, extra: list[str] | None = None) -> dict[str, Any]:
     return {
         "name": HOST_NAME,
-        "description": "soltui command bridge (read-only research console; no order path)",
+        "description": "soltui command bridge (manual Coinbase orders require explicit confirmation)",
         "path": str(wrapper),
         "type": "stdio",
         "allowed_origins": allowed_origins(extra),

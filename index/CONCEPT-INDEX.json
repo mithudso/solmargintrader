@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T19:22:54+00:00",
+  "generatedAt": "2026-11-08T19:48:17+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1588,
+      "matchingFiles": 1591,
       "shown": 30,
       "files": [
         {
@@ -91,11 +91,11 @@
         },
         {
           "path": "soltui/tui.py",
-          "hits": 46
+          "hits": 48
         },
         {
           "path": "soltui/commands.py",
-          "hits": 40
+          "hits": 44
         },
         {
           "path": "skills/trading-and-investing/references/options-trading-and-strategies.md",
@@ -1170,7 +1170,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 74
+          "hits": 77
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -1805,7 +1805,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 215,
+      "matchingFiles": 216,
       "shown": 30,
       "files": [
         {
