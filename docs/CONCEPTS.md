@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T09:28:46+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T09:31:21+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -47,9 +47,9 @@ The extension can place real orders. Dry-run is the default, rails live in code 
 Strongest files:
 
 - `research/tradingview-card-coverage.json` (1637 hits)
-- `docs/FILES.md` (87 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 - `skills/trading-and-investing/references/trading-risk-management.md` (84 hits)
+- `docs/FILES.md` (69 hits)
 - `llms-full.txt` (62 hits)
 - `skills/trading-and-investing/references/strategies-and-risk.md` (54 hits)
 - `skills/trading-and-investing/SKILL.md` (51 hits)
@@ -70,7 +70,7 @@ Strongest files:
 - `llms-full.txt` (129 hits)
 - `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
 - `backtester/core/gridsim.py` (102 hits)
-- `docs/FILES.md` (102 hits)
+- `docs/FILES.md` (75 hits)
 - `extension/src/core/grid.js` (66 hits)
 - `backtester/strategy_cards/ladder_grid.md` (57 hits)
 
@@ -85,7 +85,7 @@ Oracle-priced perps, priority fees as a product, per-account fee markets, droppe
 Strongest files:
 
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
-- `docs/FILES.md` (152 hits)
+- `docs/FILES.md` (150 hits)
 - `skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md` (127 hits)
 - `skills/trading-and-investing/references/jupiter-perps-trading.md` (125 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (124 hits)
@@ -97,26 +97,26 @@ Full list: `python3 index/search.py --concept execution-onchain -n 337`
 
 ### Data integrity
 
-`data-integrity` · **259 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **258 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
 Strongest files:
 
 - `research/tradingview-card-coverage.json` (267 hits)
-- `docs/FILES.md` (52 hits)
+- `soltui/bots.py` (39 hits)
 - `backtester/tests/test_engine.py` (34 hits)
-- `soltui/bots.py` (34 hits)
 - `backtester/core/data.py` (33 hits)
 - `research/STRATEGIES.md` (32 hits)
 - `docs/TRADINGVIEW-CARD-FILES.md` (28 hits)
 - `extension/src/ui/ui.css` (28 hits)
+- `docs/FILES.md` (26 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 259`
+Full list: `python3 index/search.py --concept data-integrity -n 258`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **222 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **223 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
@@ -131,7 +131,7 @@ Strongest files:
 - `docs/SCRIPTS.md` (45 hits)
 - `backtester/tests/test_universe.py` (44 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 222`
+Full list: `python3 index/search.py --concept transfer -n 223`
 
 ### Evidence floor
 
@@ -165,9 +165,9 @@ Strongest files:
 - `research/perturb.py` (29 hits)
 - `research/RANKED_LISTS.md` (25 hits)
 - `backtester/core/deflated_sharpe.py` (21 hits)
+- `memory.md` (15 hits)
 - `backtester/core/dcasim.py` (15 hits)
 - `docs/CONCEPTS.md` (14 hits)
-- `backtester/core/gridsim.py` (14 hits)
 
 Full list: `python3 index/search.py --concept benchmark -n 175`
 

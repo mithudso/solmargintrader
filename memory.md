@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 72
-Delta: v71 to v72; verified card catalog ready for remote delivery.
+Version: 80
+Delta: v79 to v80; integrate concurrent histories and TradingView card coverage.
 
 ## v1 - 2026-11-06
 
@@ -707,10 +707,75 @@ Current: merged origin/master 06a1f95 into latest PR 58 head b899458 in private 
 
 Remaining: regenerate derived indexes after staging resolutions, verify docs and index checks, commit and push HEAD to agent-01a1b5ef without force. Wait for all final-head CI jobs, merge PR 58, verify both merge receipts and source/receipt preservation, then remove only our clean private branches and worktree. Shared checkout and original PR worktrees remain untouched.
 
+## v69 - 2026-11-08 (Bots tab v2)
 
-## v69 - 2026-11-08 (TradingView card coverage, inventory)
+Target: prompts.md Bots tab v2 entry. Stele TASK-884. Branch feat/bots-tab-v2 in /Users/mitch/dev/solmargintrader-wt-39e8bf11.
+Delivered before this: PR #84 (merged by another session while CI was red) and follow-up PR #86 (index regeneration), both on master.
 
-Version: 69. Delta: 68 to 69; start TASK-886, TASK-887, TASK-888.
+Completed: `soltui/bots_screens.py` (coin picker, auto-optimize window with the SAVED / NOT SAVED popup and per-coin table); optimize run numbering with growing, non-repeating candidate lists (`candidates(bot, current, run, tried)`, history in `bots/optimize-history-<bot>.json`); per-coin stats; `hourly()` splices 1m-resampled history before the 1h file; `bridged()` fills gaps of up to 48 h; default backtest start is the start of usable data; `backtest_many`; `pricefeed.ensure_recorder` + LaunchAgent `com.mitchhudson.soltui.pricefeed` (KeepAlive, `record --wait-lock`); `prices.start`/`prices.stop` replaced by `prices.ensure`; one-row top fields.
+
+Measured: DCA optimize runs 1-3 over 23 coins took 7.8 / 4.0 / 2.8 s; grid backtest from the start of data runs 2021-06-17 (SOL) and 2019-11-09 (BTC).
+
+Remaining: after merge, fast-forward the main checkout and run `python -m soltui.pricefeed install` there so the agent runs the new code.
+
+## v70 - 2026-11-08 (SessionStart hook JSON repair)
+
+Target: identify and repair the Codex error "hook returned invalid session start JSON output". Stele TASK-892 (diagnosis), TASK-893 (repair), TASK-895 (verification and delivery).
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1ba64; branch agent-01a1ba64; base origin/master 4d0f027. Original checkout has live concurrent sessions and unrelated dirty files. Preserve them.
+
+Completed: read project instructions and prior hook failure records; isolate workflow records. The prior TASK-127 exit 126 issue is a different failure and does not establish the current cause. The hook specialist owns canonical implementation/config and test edits outside this repository. This repository changes only its required workflow records.
+
+Constraints: reproduce actual registered SessionStart stdout; preserve enabled hooks and trust metadata; avoid restarting the shared daemon. Do not touch trading runtime, signing, services, research jobs, or unrelated work.
+
+Remaining: finish diagnosis, repair canonical producer, install and verify output, run relevant checks, commit and merge task-owned changes, record delivery evidence.
+
+## v71 - 2026-11-08 (Stop hook ownership repair)
+
+Target: extend the hook repair to the recurring Stop block counting 336 shared-checkout paths. TASK-893 now includes both fixes. Keep legitimate checks on this session's own unshipped work. Preserve unrelated dirty files and active sessions. The canonical-hook specialist owns both implementation fixes; a separate read-only verifier inspects loaded daemon evidence.
+
+Verification: workflow-only diff passes git diff --check and scripts/check_docs.py (2,155 discovered tests). index/build.py --check correctly detects changed workflow records; rebuild the offline index after finalizing these records. No trading code changed.
+
+Remaining: diagnose/repair both hooks, verify installed behavior, deliver canonical source and these workflow records through passing PRs.
+
+## v72 - 2026-11-08 (hook diagnosis confirmed)
+
+Root cause: actual Codex 0.167.0 daemon registry enables adapter74c6161da6b220bd for memory-central-session-brief.py. That adapter exits 0 with 1,671 bytes of plaintext beginning "[memory-central] STALE:". Parsing stdout as JSON fails at line 1 column 2. The installed adapter /Users/mitch/.codex/hooks/claude_hook_adapter.py passes a single command output through without normalization. Canonical source is /Users/mitch/dev/codex-local-ai-setup/scripts/claude_hook_adapter.py. Preserve valid JSON and wrap plaintext SessionStart output in hookSpecificOutput.additionalContext with hookEventName SessionStart. Lesson KNOW-903 records this trigger.
+
+Stop diagnosis: /Users/mitch/.claude/hooks/ship-it-stop.py attributes inherited dirty paths when a snapshot is absent, overwrites baseline on resume, and repeats identical blocks across turns. Lesson KNOW-902 anchors the concrete symbols. The current parent baseline already matches 337 paths, so preserve it; no blanket sweep or counter reset.
+
+Implementation worktrees: /Users/mitch/dev/codex-local-ai-setup-wt-hook-json-20261108 (adapter) and /Users/mitch/dev/claude-wt-hook-json-20261108 (Stop hook). The specialist owns those source changes. A separate verifier captured actual loaded registry and reproduced the offending output.
+
+Remaining: focused regression checks, install both canonical repairs, verify exact launcher and disposable ownership scenarios, deliver all task-owned changes through passing PRs, and complete TASK-893/TASK-895.
+
+## v73 - 2026-11-08 (both hook repairs installed)
+
+Installed: adapter v1.1.0 from canonical commit 757e2f7; Stop hook v1.1.0 from canonical commit 88d6933. Adapter wraps plain SessionStart context and preserves valid JSON. Stop preserves the original session baseline, excludes inherited ahead commits from a real SessionStart baseline, adopts unknown dirty paths without claiming them, and suppresses identical pending-work signatures across turns. New paths, changed files, and new commits still block.
+
+Validation: 70 setup tests pass (including 8 new adapter cases); 65 hook-enforcement tests and installer checks pass. Guarded install with preimage backups/readback preserved config.toml, hooks.json and settings.json bytes; no daemon restart. Receipt: /Users/mitch/.codex/claude-migration/hook-repairs/session-json-20261108T090919255187Z/receipt.json. Installed adapter SHA256 5559368361c3fb3ad29d8dbb94db664d4f46f97786fc3d24ae7f7e0e054da5ff; installed Stop SHA256 af401be680327064ea4ef93573ba5c63526f3e1c2b30af7c5c220277123b4c40.
+
+Delivery: Stop https://github.com/mithudso/claude-config/pull/33; adapter https://github.com/mithudso/codex-local-ai-setup/pull/11; repository workflow records https://github.com/mithudso/solmargintrader/pull/88. This repository changes only prompts, continuation records, and their offline retrieval indexes. Its documentation drift check passes; the offline index was rebuilt without inference/embeddings.
+
+At checkpoint: independent installed acceptance and final CI/merges are in progress. TASK-895 tracks final receipts and completion; check its current state before resuming. Preserve unrelated staged herdr/context7 changes in /Users/mitch/.claude and all original solmargintrader work.
+
+## v74 - 2026-11-08 (installed acceptance passed)
+
+Independent acceptance: exact enabled memory-central launcher exits 0 and emits 1,814 bytes of valid SessionStart JSON with original context. Installed Stop subprocesses in disposable repositories allow inherited dirt/ahead commits, preserve snapshots on resume, block a new own edit, allow an unchanged repeat, block a later distinct edit, and block a new own commit while excluding inherited commits. A late baseline still checks ahead commits. Installed hashes match the guarded receipt.
+
+Actual Codex 0.167.0 daemon retains enabled/trusted adapter and both Stop/snapshot registrations with no warnings/errors. config.toml, hooks.json, settings.json, parent baseline and parent hook counters remain unchanged. A subsequent ordinary UI turn has not been observed; exact installed command/runtime checks passed. No restart is needed.
+
+Remaining at delivery checkpoint: merge the three linked PRs after final-head CI, confirm remote default-branch content, remove only clean task worktrees/branches, and complete TASK-895 with final merge receipts. The installed behavior is verified. No user decision is pending.
+
+## v75 - 2026-11-08 (concurrent workflow-record integration)
+
+Merged origin/master afaa03a after another active session delivered Bots tab v2 in PR 87. Preserved its prompt and continuation entry verbatim and retained every hook-repair record. Renumbered these hook entries after the incoming history. Rebuilt only offline retrieval indexes for the combined tree. No Bots or trading source was edited by this hook repair.
+
+Canonical repairs are merged: Stop PR 33 as 79bc183c99a171d7221813724bbc10d6a85df7cd; adapter PR 11 as 4d385318438647bcddad9f368da927b5e9c9ada9. Installed acceptance already passed. Remaining: wait for final PR 88 checks, merge, verify remote content, clean only this task's worktree/branch, and complete TASK-895.
+
+
+## v76 - 2026-11-08 (TradingView card coverage, inventory)
+
+Version: 76. Delta: v75 to v76; start TASK-886, TASK-887, TASK-888.
 
 Target: reconcile all 114 built-in studies and local TradingView script/idea sources against existing cards and code. Create missing cards as spec-only, with source provenance and explicit rule gaps. Do not change executable registry or invent performance.
 
@@ -721,9 +786,9 @@ Learned: prior PR 79 cataloged built-ins only. Local web mirror contains 742 scr
 Remaining: source inventory, semantic/exact existence reconciliation, new cards and coverage validation, owning tests and indexes, commit/push/PR/checks/merge, final receipts.
 
 
-## v70 - 2026-11-08 (TradingView cards, source review)
+## v77 - 2026-11-08 (TradingView cards, source review)
 
-Version: 70. Delta: v69 to v70; author specifications and complete expanded inventory.
+Version: 77. Delta: v76 to v77; author specifications and complete expanded inventory.
 
 Inventory includes 114 built-in studies and 4,770 canonical source records: 747 script publications, 1,610 chart/idea publications, 2,323 help solutions, and 90 other exports. The help review selects 313 financial definitions. Explicit existence matches preserve 59 original cards and all 34 registry entries. Created 1,082 spec-only cards: 84 built-in signals, 600 custom script descriptions, 70 source-specific chart methods, 202 support definitions, 64 reusable methods, 47 library-function/group specifications, 12 named custom MACD/PPO variants, and 3 named-but-undisclosed strategies. No execution or measured status was invented.
 
@@ -738,9 +803,9 @@ Continuation tooling is /tmp/solmargintrader-tv-cards: inventory.py, definitions
 Remaining: complete full raw-source verification and independent review, run owning/integration tests, regenerate offline retrieval indexes, commit/push/PR/CI/merge, synchronize safely and record receipts. Preserve original checkout dirty files and other live sessions.
 
 
-## v71 - 2026-11-08 (TradingView cards, final content)
+## v78 - 2026-11-08 (TradingView cards, final content)
 
-Version: 71. Delta: v70 to v71; close expanded inventory and finalize 1,083 new cards (1,142 total).
+Version: 78. Delta: v77 to v78; close expanded inventory and finalize 1,083 new cards (1,142 total).
 
 All 114 built-ins have a card/code/alias disposition. 4,770 canonical sources and 4,890 physical source files are bound to source hashes and selected excerpt offsets. Added the independently found short-strangle method and corrected 29 non-OHLCV input requirements. Eight detailed chart strategies now retain their disclosed entry, filter, stop and management rules with additional bound source passages. Fifty-four new built-in cards also include official help clarifications. Named-only methods remain explicit source-limited specifications.
 
@@ -751,9 +816,9 @@ The new offline validator refuses duplicate new-card ownership, missing built-in
 Remaining: final independent audit of the corrected content; refreshed offline retrieval artifacts; passing backtester and focused SolTUI integration; commit/push/PR/final CI/merge; safe default-checkout synchronization and final receipts. Original dirty paths remain untouched.
 
 
-## v72 - 2026-11-08 (TradingView cards, verified)
+## v79 - 2026-11-08 (TradingView cards, verified)
 
-Version: 72. Delta: v71 to v72; record final local checks and targeted review.
+Version: 79. Delta: v78 to v79; record final local checks and targeted review.
 
 Completed content: 1,083 new spec-only cards; 1,142 total cards; all 114 built-in study dispositions; all original 59 cards and 34 registry entries preserved. Complete source inventory has 4,770 canonical records and 4,890 verified physical sources including the reference and excluded captures. docs/TRADINGVIEW-CARD-FILES.md lists every changed canonical checkout path.
 
@@ -764,3 +829,14 @@ Formatting gate found trailing spaces at bounded excerpt cutoffs. Card lines/EOF
 Operational incident: index/search.py --text slippage also calls idle.maybe_start and spawned this task worktree index/idle.py --run-build worker PID 88605. Stopped that exact task-owned process with SIGTERM after matching its full command. Pre-existing Ollama servers were untouched. Use INDEX_NO_AUTO=1 on all remaining checks/commits. The query correctly returns 173 keyword hits after shared boilerplate rewording. No search implementation changed.
 
 Remaining delivery work only: commit/push current branch, open PR, record its URL, wait final CI, merge, verify remote content, and synchronize the default checkout only if unrelated active files remain intact. TASK-886 inventory and TASK-887 cards are done; TASK-888 owns delivery.
+
+
+## v80 - 2026-11-08 (TradingView card delivery checkpoint)
+
+Version: 80. Delta: v79 to v80; integrate concurrent upstream work and preserve both histories.
+
+PR: https://github.com/mithudso/solmargintrader/pull/91 ; branch feat/tradingview-card-coverage. Initial catalog commit 776aedb. Integrated upstream d355b69, including Bots tab v2 from PR 87 and hook-repair records from PR 88. Their code and history are preserved; only derived indexes are regenerated. This task owns the card catalog and related validation/docs, not those other sessions' live services or hook installations.
+
+Final card content is 1,083 new specs, 1,142 total cards, 114 built-ins and 4,770 canonical sources. The final raw-source checker verified 4,890 physical sources. Independent targeted audit passed and its formatting follow-up confirmed all corrected source spans. Ledger SHA256 b5a9049305179e6f69d7c591edb6c982c366129040215d6c6d176d07813ce9ca. No executable trading entry changed.
+
+No further card implementation is required for this request. For delivery/resume, inspect PR 91: if it is still open, finish final-head CI and merge; if merged, use its merge receipt and complete TASK-888 if needed. TASK-888 holds the authoritative final delivery receipt. Recheck conditional remaining actions rather than replaying completed inventory or card extraction. Source-limited definitions are documented product limitations, not a pending permission request.

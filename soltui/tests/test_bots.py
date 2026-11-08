@@ -155,14 +155,64 @@ class Backtests(Isolated):
         self.assertEqual(dca["set"]["orders"][0]["order"], "base")
         self.assertEqual(len(bots.latest_results(None, 10)), 2)
 
-    def test_a_start_past_the_data_or_before_a_gap_is_refused(self) -> None:
-        ts = write_hourly(self.data, "SOL", n=24 * 30, drop=(24 * 10 + 5,))
+    def test_a_start_past_the_data_or_right_before_a_long_gap_is_refused(self) -> None:
+        long_gap = tuple(range(24 * 10 + 5, 24 * 10 + 5 + 60))  # 60 missing hours: too long to bridge
+        ts = write_hourly(self.data, "SOL", n=24 * 30, drop=long_gap)
         with self.assertRaisesRegex(bots.BotError, "no cached bar"):
             bots.backtest("grid", "SOL", self.settings, start=int(ts[-1]) + 3600)
-        with self.assertRaisesRegex(bots.BotError, "gap"):
-            bots.backtest("grid", "SOL", self.settings, start=int(ts[24 * 10 + 2]))
+        with self.assertRaisesRegex(bots.BotError, "gap longer"):
+            bots.backtest("grid", "SOL", self.settings, start=int(ts[24 * 10]))
         with self.assertRaisesRegex(bots.BotError, "UTC date"):
             bots.backtest("grid", "SOL", self.settings, start="last tuesday")
+
+    def test_default_start_is_the_beginning_of_the_usable_data(self) -> None:
+        ts = write_hourly(self.data, "SOL", n=24 * 60, drop=(100, 101, 102))  # a 3-hour gap is bridged
+        r = bots.backtest("dca", "SOL", self.settings)
+        self.assertEqual(r["start_ts"], int(ts[0]))
+        self.assertEqual(r["end_ts"], int(ts[-1]))
+        self.assertEqual((r["bridged_bars"], r["bridged_gaps"]), (3, 1))
+        self.assertIsNone(r["start_note"])
+        # After a gap too long to bridge, the default start moves past it and says why.
+        long_gap = tuple(range(24 * 5, 24 * 5 + 72))
+        ts = write_hourly(self.data, "BTC", n=24 * 40, drop=long_gap)
+        r = bots.backtest("grid", "BTC", self.settings)
+        self.assertEqual(r["start_ts"], int(ts[24 * 5]))
+        self.assertIn("gaps longer than 48 h", r["start_note"])
+
+    def test_bridged_bars_are_flat_at_the_last_close(self) -> None:
+        h = {"ts": np.array([0, 3600, 4 * 3600, 5 * 3600]), "open": np.array([1.0, 2, 5, 6]),
+             "high": np.array([1.5, 2.5, 5.5, 6.5]), "low": np.array([0.5, 1.5, 4.5, 5.5]),
+             "close": np.array([1.2, 2.2, 5.2, 6.2])}
+        run = bots.bridged(h, 0)
+        self.assertEqual(list(run["bars"]["ts"] // 3600), [0, 1, 2, 3, 4, 5])
+        self.assertEqual(list(run["bars"]["close"]), [1.2, 2.2, 2.2, 2.2, 5.2, 6.2])
+        self.assertEqual(list(run["bars"]["high"][2:4]), [2.2, 2.2])
+        self.assertEqual(run["bridged_bars"], 2)
+        self.assertIsNone(run["stopped_at_gap"])
+        self.assertEqual(bots.bridged(h, 0, max_bars=3)["bars"]["ts"].size, 3)
+
+    def test_history_splices_minutes_before_the_hourly_file(self) -> None:
+        start = 1_700_000_000 // 3600 * 3600
+        minutes = SyntheticLoader(n_bars=60 * 48, seed=2, start_ts=start).load("SOL", None, None, "1m")
+        minutes.to_csv(self.data / "SOL_1m.csv", index=False)
+        write_hourly(self.data, "SOL", n=24, start_ts=start + 24 * 3600)
+        h = bots.hourly("SOL", self.settings)
+        self.assertEqual(h["source"], "1m->1h, then 1h")
+        self.assertEqual(int(h["ts"][0]), start)
+        self.assertEqual(h["ts"].size, 48)
+        self.assertTrue(np.all(np.diff(h["ts"]) == 3600))
+
+    def test_several_coins_in_one_backtest(self) -> None:
+        write_hourly(self.data, "SOL", n=24 * 40, seed=1)
+        write_hourly(self.data, "ETH", n=24 * 40, seed=2)
+        r = bots.backtest_many("grid", ["SOL", "ETH", "NOPE"], self.settings, days=20)
+        self.assertEqual([row["coin"] for row in r["summary"]], ["SOL", "ETH"])
+        self.assertIn("NOPE", r["errors"])
+        self.assertEqual(r["ran"], 2)
+        self.assertEqual(len(bots.latest_results("grid", 10)), 2)
+        every = bots.backtest_many("dca", "all", self.settings, days=10)
+        self.assertEqual(sorted(every["coins"]), ["ETH", "SOL"])
+
 
     def test_triangle_backtest_prefers_recorded_quotes(self) -> None:
         t0 = 1_794_000_000.0
@@ -362,6 +412,67 @@ class Overview(Isolated):
             self.assertNotIn(needle, src)
 
 
+class OptimizeRuns(Isolated):
+    def test_each_run_tests_more_configurations_and_skips_tried_ones(self) -> None:
+        for bot in ("grid", "dca", "triangle"):
+            cur = bots.get_config(bot)
+            tried: list[str] = []
+            sizes = []
+            for run in (1, 2, 3, 4):
+                cands = bots.candidates(bot, cur, run, tried)
+                self.assertEqual(cands[0], cur)
+                new = [bots._cfg_key(c) for c in cands[1:]]
+                if run > 1:
+                    self.assertFalse(set(new) & set(tried), f"{bot} run {run} repeated a tried config")
+                tried += new
+                sizes.append(len(cands))
+            with self.subTest(bot=bot):
+                self.assertEqual(sizes, sorted(sizes))
+                self.assertGreater(sizes[-1], sizes[0])
+        # Reproducible: the same run draws the same candidates.
+        cur = bots.get_config("dca")
+        self.assertEqual(bots.candidates("dca", cur, 3, []), bots.candidates("dca", cur, 3, []))
+
+    def test_later_runs_reach_further_from_the_current_settings(self) -> None:
+        cur = bots.get_config("dca")
+
+        def reach(run: int) -> float:
+            cands = bots.candidates("dca", cur, run, [])
+            return max(abs(c["take_profit_pct"] - cur["take_profit_pct"]) for c in cands)
+
+        self.assertGreater(reach(6), reach(2))
+
+    def test_report_numbers_runs_lists_coins_and_names_the_saved_changes(self) -> None:
+        for coin, seed in (("AAA", 1), ("BBB", 2), ("CCC", 3)):
+            write_hourly(self.data, coin, n=24 * 200, seed=seed)
+
+        def run_bars(bot, cfg, seg, interval, costs):
+            edge = 0.02 if cfg.get("range_pct") == 5.0 and cfg.get("rungs") == 9 else 0.0
+            return {"results": {"total_return": float(np.sin(seg["ts"][0] / 7919.0)) * 0.01 + edge}}
+
+        with mock.patch.object(bots, "run_bars", run_bars):
+            first = bots.optimize("grid", self.settings, windows=8, window_days=20)
+            self.assertEqual(first["run"], 1)
+            self.assertTrue(first["verdict"]["saved"])
+            self.assertEqual({c["setting"]: (c["before"], c["after"]) for c in first["verdict"]["changes"]},
+                             {"range_pct": (15.0, 5.0), "rungs": (7, 9)})
+            self.assertEqual(first["coins_used"], ["AAA", "BBB", "CCC"])
+            per = {row["coin"]: row for row in first["per_coin"]}
+            self.assertEqual(per["AAA"]["test_windows"], 4)
+            self.assertEqual(per["AAA"]["pick_wins"], 4)
+            second = bots.optimize("grid", self.settings, windows=8, window_days=20)
+        self.assertEqual(second["run"], 2)
+        self.assertGreater(second["candidates"], first["candidates"])
+        self.assertFalse(second["verdict"]["saved"])  # the winner is now the current settings
+        self.assertEqual(second["verdict"]["changes"], [])
+        hist = bots.optimize_history("grid")
+        self.assertEqual(hist["runs"], 2)
+        self.assertEqual([e["adopted"] for e in hist["log"]], [True, False])
+        progress = bots.runtime().progress["grid"]
+        self.assertTrue(progress["done"])
+        self.assertEqual(progress["run"], 2)
+
+
 class BotsTab(unittest.IsolatedAsyncioTestCase):
     """The tab itself: every action goes through the registry and renders its result."""
 
@@ -377,25 +488,43 @@ class BotsTab(unittest.IsolatedAsyncioTestCase):
         write_hourly(self.data, "SOL")
         bots._HOURLY_CACHE.clear()
 
-    async def test_backtest_apply_and_switch_bots(self) -> None:
+    async def test_one_row_of_fields_multi_coin_backtest_and_the_optimize_window(self) -> None:
         from textual.widgets import Button, DataTable, Input, Select, Static, TabbedContent
 
+        from soltui import commands
+        from soltui.bots_screens import CoinPickerScreen, OptimizeScreen
         from soltui.tui import SolTuiApp
 
+        write_hourly(self.data, "ETH", seed=7)
         app = SolTuiApp(Settings(data_dir=str(self.data), poll_interval_seconds=60))
-        async with app.run_test(size=(160, 50)) as pilot:
+        async with app.run_test(size=(170, 50)) as pilot:
             app.query_one(TabbedContent).active = "tab-bots"
             await pilot.pause()
-            self.assertEqual(app.query_one("#bots-coin", Select).value, "SOL")
-            self.assertIn("SIMULATION", str(app.query_one("#bots-scroll").children[0].render()))
+            top = app.query_one("#bots-top")
+            for wid in ("#bots-bot", "#bots-coins", "#bots-start", "#bots-days", "#bots-config", "#bots-apply"):
+                self.assertIs(app.query_one(wid).parent, top, f"{wid} is not on the top row")
+            self.assertEqual(len({app.query_one(w).region.y for w in ("#bots-bot", "#bots-start", "#bots-config")}), 1)
+            self.assertFalse(app.query("#bots-rec-stop"), "the recorder has no Stop button")
+            self.assertEqual(str(app.query_one("#bots-coins", Button).label), "SOL")
+
+            app.query_one("#bots-coins", Button).press()
+            await pilot.pause()
+            self.assertIsInstance(app.screen, CoinPickerScreen)
+            app.screen.query_one("#coins-all", Button).press()
+            await pilot.pause()
+            app.screen.query_one("#coins-ok", Button).press()
+            await pilot.pause()
+            self.assertEqual(str(app.query_one("#bots-coins", Button).label), "all 2")
+
             app.query_one("#bots-days", Input).value = "20"
             app.query_one("#bots-backtest", Button).press()
             await pilot.pause(0.2)
             await app.workers.wait_for_complete()
             await pilot.pause()
-            self.assertIn("backtest", str(app.query_one("#bots-status", Static).render()))
+            self.assertEqual(app.query_one("#bots-bt-coins", DataTable).row_count, 2)
+            self.assertIn("2 coin(s)", str(app.query_one("#bots-status", Static).render()))
             self.assertGreater(app.query_one("#bots-set", DataTable).row_count, 5)
-            self.assertGreater(app.query_one("#bots-bt-table", DataTable).row_count, 5)
+
             app.query_one("#bots-bot", Select).value = "dca"
             await pilot.pause()
             app.query_one("#bots-config", Input).value = "take_profit_pct=3.5"
@@ -404,14 +533,33 @@ class BotsTab(unittest.IsolatedAsyncioTestCase):
             await app.workers.wait_for_complete()
             await pilot.pause()
             self.assertEqual(bots.get_config("dca")["take_profit_pct"], 3.5)
-            self.assertIn("take_profit_pct=3.5", app.query_one("#bots-config", Input).placeholder)
-            app.query_one("#bots-config", Input).value = "take_profit_pct=-1"
-            app.query_one("#bots-apply", Button).press()
-            await pilot.pause(0.2)
-            await app.workers.wait_for_complete()
+
+            report = {"bot": "dca", "run": 2, "seconds": 1.0, "universe": "2 coins", "candidates": 49,
+                      "train_cells": 6, "test_cells": 6, "skipped": {}, "coins_used": ["ETH", "SOL"],
+                      "per_coin": [{"coin": "ETH", "data_source": "1h", "train_windows": 3, "test_windows": 3,
+                                    "current_test_median": 0.01, "pick_test_median": 0.02, "pick_wins": 3,
+                                    "pick_losses": 0}],
+                      "verdict": {"saved": True, "adopted": True, "reason": "won 12 of 12",
+                                  "changes": [{"setting": "take_profit_pct", "before": 3.5, "after": 4.0}],
+                                  "saved_to": "x"},
+                      "table": []}
+            real = commands.COMMANDS["bots.optimize"]
+            stub = commands.Command("bots.optimize", "stub", lambda ctx, p: report, real.params, False, True, False)
+            with mock.patch.dict(commands.COMMANDS, {"bots.optimize": stub}):
+                app.query_one("#bots-optimize", Button).press()
+                await pilot.pause(0.2)
+                await app.workers.wait_for_complete()
+                await pilot.pause()
+            self.assertIsInstance(app.screen, OptimizeScreen)
+            box = str(app.screen.query_one("#opt-result", Static).render())
+            self.assertIn("SAVED", box)
+            self.assertIn("take_profit_pct: 3.5 -> 4.0", box)
+            self.assertIn("ETH, SOL", box)
+            self.assertEqual(app.screen.query_one("#opt-coins", DataTable).row_count, 1)
+            app.screen.query_one("#opt-close", Button).press()
             await pilot.pause()
-            self.assertIn("take_profit_pct", str(app.query_one("#bots-status", Static).render()))
-            self.assertEqual(bots.get_config("dca")["take_profit_pct"], 3.5)
+            self.assertNotIsInstance(app.screen, OptimizeScreen)
+            self.assertIn("SAVED", str(app.query_one("#bots-opt-verdict", Static).render()))
 
 
 if __name__ == "__main__":

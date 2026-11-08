@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 50
-Delta: v49 to v50; TradingView source-to-card inventory and specification coverage.
+Version: 54
+Delta: v53 to v54; integrate concurrent histories and TradingView card coverage.
 
 ## v1 - 2026-11-06
 
@@ -370,10 +370,40 @@ Resolve the pr conflicts in https://github.com/mithudso/solmargintrader/pull/46 
 resume
 ```
 
+## v51 - 2026-11-08 (Bots tab v2)
 
-## v50 - 2026-11-08 (TradingView card coverage)
+```text
+WHen I'm in teh Bots tab and click Auto-optimize (all coins), it should open the configuration window and start the test. If I run it again it should increase the diversity of the configurations it tries. Also the default backtest start should be from the beginning of the data available, not 90 days. Also the auto-optimize doesn't give per coin stats so it's impossible to know if it was actually run on any but sol. For the backtest I should be able to select more than one coin to test it against. With the auto-optimize it's not clear if the new optimized configuration options were saved or not, have a popup describing which changes were made. Also the price stream is great, but it should automatically start the price recording as that's data that's going to be used for backtesting and training, why would I ever not want it recorded? Also the text fields at the top, move them so they're all on the same horizontal plane as each other to free up screen realestate.
+```
 
-Version: 50. Delta: 49 to 50; preserve card-coverage request.
+Target: /Users/mitch/dev/solmargintrader (worktree /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch feat/bots-tab-v2).
+
+## v52 - 2026-11-08 (SessionStart hook JSON repair)
+
+```text
+fix this hook error: • Hook failed
+  └ hook returned invalid session start JSON output
+```
+
+## v53 - 2026-11-08 (Stop hook ownership repair)
+
+```text
+Also fix this hook error at the end of every turn: • Blocked by hook
+  └ Unshipped work in the user's repo: 336 uncommitted/untracked path(s) in /Users/mitch/dev/solmargintrader.
+    The user is the only developer and does not want unmerged code left behind. Finish now, in order:
+    1. Run the repo's tests/lint (per its CLAUDE.md). Fix failures.
+    2. Commit your own files (check git status first; do not sweep in another session's changes).
+    3. Push the branch and open a PR (`gh pr create`, body ends with the attribution line).
+    4. Wait for CI (`gh pr checks --watch`), fix and push if red.
+    5. Merge LAST, only after the final push: `gh pr merge --squash --delete-branch`. A squash merge takes the branch tip at that moment, so a commit pushed afterwards is silently left out. After merging, confirm `git log origin/main..HEAD` is empty or open a follow-up PR.
+    6. Sync main (`git pull --ff-only`), delete the local branch, remove the worktree. Leave no stale branch, PR or dead code.
+    If the pending changes are not yours (another session's work, or this session changed nothing), say so in one line and stop.
+```
+
+
+## v54 - 2026-11-08 (TradingView card coverage)
+
+Version: 54. Delta: v53 to v54; preserve card-coverage request.
 
 ```text
 For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.

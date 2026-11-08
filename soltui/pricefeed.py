@@ -31,8 +31,12 @@ What it does:
   which is how the console shows live prices without holding the socket itself.
 
 Exactly one recorder runs: it holds `fcntl.flock` on `<config dir>/prices/recorder.lock`.
-The console starts it as a detached background process so recording (and so every forward
-test) continues after the console closes; `stop_recorder` ends it.
+Recording is always on, because the recording is the data the bots backtest and train on.
+`ensure_recorder` (the console calls it at start and every minute) installs a LaunchAgent,
+`com.mitchhudson.soltui.pricefeed` (RunAtLoad, KeepAlive), which keeps the recorder alive across
+a closed console, a crash or a reboot. Where it cannot install one (a git worktree, no launchctl)
+it starts a detached process instead. The agent's process waits on the lock (`--wait-lock`)
+rather than exiting, so a detached recorder and the agent never record twice and never thrash.
 
 Boundaries: public market data only. No key, no account, no order path. The WebSocket client
 is a minimal RFC 6455 implementation on the standard library; soltui deliberately adds no
@@ -659,12 +663,32 @@ def stop_recorder(root: Path | None = None) -> dict[str, Any]:
     return {"stopping": True, "pid": pid}
 
 
-def record_main(root: Path | None = None, max_seconds: float | None = None) -> int:
-    """The detached process: hold the lock, write the pid, record until SIGTERM."""
+def _wait_lock(path: Path) -> int:
+    """Block until the lock is free, then hold it (the LaunchAgent's mode)."""
+    import fcntl
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(path, os.O_CREAT | os.O_RDWR, 0o600)
+    fcntl.flock(fd, fcntl.LOCK_EX)
+    return fd
+
+
+def record_main(root: Path | None = None, max_seconds: float | None = None, *, wait_lock: bool = False) -> int:
+    """The recorder process: hold the lock, write the pid, record until SIGTERM.
+
+    With `wait_lock` it waits for another recorder to exit instead of giving up, which is what
+    the LaunchAgent runs: KeepAlive would otherwise relaunch an exiting process every ten seconds.
+    """
     import signal
 
     p = paths(root)
-    fd = _try_lock(p["lock"])
+    if wait_lock:
+        fd = _try_lock(p["lock"])
+        if fd is None:
+            print("another recorder holds the lock; waiting for it to exit", flush=True)
+            fd = _wait_lock(p["lock"])
+    else:
+        fd = _try_lock(p["lock"])
     if fd is None:
         print("another recorder holds the lock; exiting", flush=True)
         return 1
@@ -686,19 +710,143 @@ def record_main(root: Path | None = None, max_seconds: float | None = None) -> i
         os.close(fd)
 
 
+# -- the LaunchAgent: recording survives a closed console, a crash and a reboot -------------------
+
+AGENT_LABEL = "com.mitchhudson.soltui.pricefeed"
+
+
+def agents_dir() -> Path:
+    return Path(os.environ.get("SOLTUI_LAUNCHAGENTS_DIR") or Path.home() / "Library" / "LaunchAgents")
+
+
+def agent_plist_path() -> Path:
+    return agents_dir() / f"{AGENT_LABEL}.plist"
+
+
+def agent_log_path() -> Path:
+    return Path.home() / "Library" / "Logs" / "soltui" / "pricefeed.log"
+
+
+def is_worktree(repo: Path) -> bool:
+    """A linked git worktree has a `.git` FILE; the main checkout has a `.git` directory."""
+    return (repo / ".git").is_file()
+
+
+def agent_plist(python: Path, repo: Path = REPO) -> dict[str, Any]:
+    return {
+        "Label": AGENT_LABEL,
+        "ProgramArguments": [str(python), "-m", "soltui.pricefeed", "record", "--wait-lock"],
+        "WorkingDirectory": str(repo),
+        "RunAtLoad": True,
+        "KeepAlive": True,
+        "ThrottleInterval": 30,
+        "ProcessType": "Background",
+        "Nice": 10,
+        "StandardOutPath": str(agent_log_path()),
+        "StandardErrorPath": str(agent_log_path()),
+        # launchd starts with no LANG (US-ASCII) and no PYTHONPATH; the config dir is pinned so the
+        # agent records where the console reads.
+        "EnvironmentVariables": {"PYTHONUTF8": "1", "LANG": "en_US.UTF-8", "PYTHONPATH": str(repo),
+                                 "SOLTUI_CONFIG_DIR": str(config_mod.CONFIG_DIR)},
+    }
+
+
+def _launchctl(*args: str) -> Any:
+    import subprocess
+
+    return subprocess.run(["launchctl", *args], capture_output=True, text=True, timeout=30)
+
+
+def _domain() -> str:
+    return f"gui/{os.getuid()}"
+
+
+def install_agent(python: Path | None = None, repo: Path = REPO) -> dict[str, Any]:
+    """Write and load the LaunchAgent. Refuses a git worktree, which can be deleted at any time."""
+    import plistlib
+
+    python = Path(python or sys.executable)
+    if not python.exists():
+        raise PriceFeedError(f"interpreter not found: {python}")
+    if is_worktree(repo):
+        raise PriceFeedError(f"{repo} is a git worktree; the recorder agent must run from the main checkout")
+    path = agent_plist_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    agent_log_path().parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(plistlib.dumps(agent_plist(python, repo)))
+    path.chmod(0o644)
+    _launchctl("bootout", f"{_domain()}/{AGENT_LABEL}")
+    boot = _launchctl("bootstrap", _domain(), str(path))
+    out: dict[str, Any] = {"plist": str(path), "label": AGENT_LABEL, "bootstrap": boot.returncode}
+    if boot.returncode:
+        out["bootstrap_error"] = (boot.stderr or "").strip()[:200]
+    return out
+
+
+def uninstall_agent() -> dict[str, Any]:
+    _launchctl("bootout", f"{_domain()}/{AGENT_LABEL}")
+    path = agent_plist_path()
+    existed = path.exists()
+    path.unlink(missing_ok=True)
+    return {"plist": str(path), "removed": existed}
+
+
+def agent_status() -> dict[str, Any]:
+    info: dict[str, Any] = {"label": AGENT_LABEL, "installed": agent_plist_path().exists(), "loaded": False}
+    try:
+        printed = _launchctl("print", f"{_domain()}/{AGENT_LABEL}")
+    except Exception:  # noqa: BLE001 - no launchctl (Linux CI) or it hung: report not loaded
+        return info
+    info["loaded"] = printed.returncode == 0
+    return info
+
+
+def ensure_recorder(root: Path | None = None, *, repo: Path = REPO, install: bool = True) -> dict[str, Any]:
+    """Keep recording on: install the LaunchAgent if it is missing, else start a detached recorder.
+
+    Idempotent and cheap when a recorder already runs; the console calls it at start and every
+    minute, so a recorder that died comes back without anyone pressing anything.
+    """
+    out: dict[str, Any] = {"running": recorder_running(root)}
+    agent = agent_status()
+    out["agent"] = agent
+    if install and root is None and not (agent["installed"] and agent["loaded"]):
+        try:
+            out["installed"] = install_agent(repo=repo)
+        except PriceFeedError as exc:
+            out["agent_error"] = str(exc)
+    if not recorder_running(root):
+        for _ in range(30):  # the agent's process takes a moment to take the lock
+            if out.get("installed", {}).get("bootstrap") != 0:
+                break
+            time.sleep(0.1)
+            if recorder_running(root):
+                break
+    if not recorder_running(root):
+        out["started"] = start_recorder(root)
+    out["running"] = recorder_running(root)
+    return out
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     import argparse
 
     ap = argparse.ArgumentParser(prog="python -m soltui.pricefeed")
     sub = ap.add_subparsers(dest="cmd")
-    rec = sub.add_parser("record", help="record the ticker stream until SIGTERM")
+    rec = sub.add_parser("record", help="record the stream until SIGTERM")
     rec.add_argument("--seconds", type=float, default=None, help="stop after this long (testing)")
+    rec.add_argument("--wait-lock", action="store_true", help="wait for another recorder instead of exiting")
     sub.add_parser("status", help="recorder state and the newest prices")
+    sub.add_parser("install", help="install and load the always-on LaunchAgent")
+    sub.add_parser("uninstall", help="unload and remove the LaunchAgent")
+    sub.add_parser("ensure", help="install the agent if missing and make sure a recorder runs")
     args = ap.parse_args(list(sys.argv[1:] if argv is None else argv))
     if args.cmd == "record":
-        return record_main(max_seconds=args.seconds)
-    if args.cmd == "status":
-        print(json.dumps(status(), indent=2))
+        return record_main(max_seconds=args.seconds, wait_lock=args.wait_lock)
+    if args.cmd in ("status", "install", "uninstall", "ensure"):
+        fn = {"status": lambda: {**status(), "agent": agent_status()}, "install": install_agent,
+              "uninstall": uninstall_agent, "ensure": ensure_recorder}[args.cmd]
+        print(json.dumps(fn(), indent=2))
         return 0
     ap.print_help()
     return 2
