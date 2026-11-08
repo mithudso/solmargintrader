@@ -280,6 +280,7 @@ for _source in ("live", "dry-run", "reported"):
     HEADER_GLOSSARY[f"{_source} realized apr"] = "Annualized simple rate inferred from observed earnings over the elapsed time. A short observation can imply a very high APR that will not persist. It is not the account's total net return or a guaranteed future yield."
 
 TAB_HELP = {
+    "tab-now": "Now answers one question: does anything need you? Needs you lists everything stale, failed or unseen, worst first, and Enter opens the view that fixes it. The coin table is the latest backtest verdict and forward-test record per coin, the tiles are single facts (wallet value, LP state, sweep progress, forward hit rate after costs), and nothing simulated is summed with real money. The strip above every screen shows each background process.",
     "tab-bots": "Prices record automatically (a LaunchAgent keeps the recorder on). Three trading bots, all simulated: the grid bot (the resting ladder the extension trades), the triangle arbitrage bot (three-leg USD cycles through Coinbase cross pairs) and the DCA bot (base order, deeper safety orders, one take-profit). Backtest starts a bot at a past moment and shows what it set and what it made; Forward test runs it in dry-run on the live recorded price stream from now on; Auto-optimize tests a fixed grid of settings on every coin and adopts a new one only if it reliably beats the current one out of sample. No order is ever placed.",
     "bots-sec-backtest": "The latest backtest of the selected bot: what it set at its start (the ladder, the safety orders, or the watched triangles) and the result, beside buy-and-hold of the same capital. One backtest is one path through history, not evidence that the bot is profitable.",
     "bots-sec-forward": "The selected bot's dry-run forward test: everything the price recorder captured since it started, replayed through the bot as it arrives, with the same fill rules and costs as the backtest. A recorder gap longer than two minutes ends the coverage there, because what the market did unseen is unknown.",
@@ -393,6 +394,7 @@ SIGNAL_HELP = {
 }
 
 CONTROL_HELP = {
+    "now-needs": "Everything that is stale, failed or unseen, worst first: a stopped sweep or trainer, a killed or silent LP daemon, a stopped price recorder, a partial wallet scan, a wallet change you have not looked at. Select an item and press Enter to open the view that fixes it. All clear means nothing needs you.",
     "bots-bot": "Which bot the tab shows and the buttons act on: Grid bot, Triangle arbitrage bot or DCA bot. Each keeps its own settings, backtests, forward test and optimize report.",
     "bots-coins": "Coins the grid and DCA bots backtest on: click to tick one, several or all of them (every coin with cached bars is listed). A backtest runs once per ticked coin and lists each in the per-coin table. A forward test runs on the first ticked coin and needs its Coinbase USD market in the price stream. The triangle bot watches every triangle at once, so this is disabled for it.",
     "bots-start": "UTC date (or epoch seconds) at which the backtest starts the bot. The bot sets itself up from the price at that bar's close, as it would have then. Empty means the beginning of the data: the oldest cached hour (1m history resampled where it reaches further back than the 1h file), or the first hour after the last gap longer than 48 hours. For the triangle bot, the start of the recording.",
@@ -404,11 +406,15 @@ CONTROL_HELP = {
     "bots-forward-start": "Start (or restart) the selected bot's forward test now, on its current settings. It is a dry run on the future: the bot replays the live price stream as the recorder captures it. Starts the recorder if it is not running. No order is placed.",
     "bots-forward-stop": "Stop the selected bot's forward test. Its results freeze at the stop time and stay visible.",
     "bots-forward-refresh": "Replay what the recorder captured since the last refresh through the forward test now (the tab also does this when you switch bots).",
+    "bots-workbench": "Inspect full optimization evidence, edit bounded typed search spaces, explore sparse stability slices, pause/cancel/resume durable workers, import TradingView CSVs and compare provenance. Final holdout validation is explicit and requires fresh reserved dates; imported evidence never adopts settings.",
     "bots-optimize": "Open the auto-optimize window and run: the selected bot's configurations on every cached coin (every recorded triangle for the triangle bot) over six 30-day windows. The older windows pick a candidate; the newer windows decide. It is adopted only if it beats the current settings out of sample by a sign test (p < 0.05); the window then says exactly which settings changed and that they were saved, or that nothing was. Each new run tests more configurations, further from the current settings, and skips ones already tried.",
     "indicator": "Current console phase and its labelled result. Backtest and paper figures are simulations; a source label is part of the number. This indicator is not a combined real-wallet balance or proof of profitable live trading.",
     "help-hint": "Move the pointer over a control, table header or value to read its definition. Press F1 for the full searchable help; use Tab and Page Up/Down to read it, then Esc to return without changing the current input.",
     "btn-save": "Save the edited Settings and apply them to later actions. This persists configuration; it does not start a backtest, background sweep or live trading.",
     "strategy-params": "Explicit strategy parameters in name=value form, for example fast=20 slow=50. These override signal defaults for the added roster entry. An empty field uses the saved defaults.",
+    "strategy-card-filter": "Search active card titles, IDs, families and descriptions. Incomplete research cards remain in their separate directory and are excluded from this list.",
+    "strategy-card-scope": "Show all active cards, only registered strategies, specification cards, or retained TradingView cards. A specification documents rules but has no runnable repository implementation.",
+    "strategy-cards-refresh": "Reload the active card files and registered-strategy history. This does not start a backtest or add a card to the roster.",
     "btn-roster-all": "Add every registered strategy missing from the roster. Existing custom versions stay as they are.",
     "forward-start": "Start prospective paper tests for the Settings asset. The scope, horizons, cost threshold and initial parameters are fixed until you stop and start again.",
     "forward-stop": "Stop scheduling predictions. The current market read may take a moment to drain. Saved predictions and settings remain available for the next run.",
@@ -569,6 +575,13 @@ for _name, _leverage in (("lev_low", 2), ("lev_medium", 5), ("lev_high", 20)):
 def column_help(label: str, table_id: str | None = None) -> str | None:
     """Resolve overloaded labels using the actual table, not a global guess."""
     key = label.strip().casefold()
+    if table_id == "available-table":
+        if key == "strategy":
+            return "An active strategy or indicator card. Registered rows keep their executable ID; other rows show the card title. Select a specification to read its equations, inputs and limitations below."
+        if key == "status":
+            return "Specification means documented mechanics without a runnable repository implementation. Implemented means code exists; measured means results are recorded. Only registered strategies can enter this roster."
+        if key == "in roster":
+            return "Yes means the registered strategy is selected for backtesting. Specification cards cannot be added; they remain available to read and implement."
     if key == "kind":
         if table_id == "wallet-contracts":
             return "Type of on-chain account: a token mint defines an asset; a token account holds units; a stake account delegates SOL; a position NFT identifies an LP position. This is not a file classification."

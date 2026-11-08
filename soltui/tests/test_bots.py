@@ -394,7 +394,8 @@ class Optimize(Isolated):
     def test_real_simulators_run_end_to_end(self) -> None:
         write_hourly(self.data, "AAA", n=24 * 130, seed=9)
         r = bots.optimize("dca", self.settings, coins=["AAA"], windows=4, window_days=30, adopt=False)
-        self.assertEqual(r["train_cells"], 2)
+        self.assertEqual(r["train_cells"], 1)
+        self.assertEqual(r["validation_cells"], 1)
         self.assertEqual(r["test_cells"], 2)
         self.assertFalse(r["verdict"]["reliable"])  # two test cells can never pass the gate
 
