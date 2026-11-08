@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 44
-Delta: v43 to v44; Lightweight Charts chosen; deep prompt optimizer, then rebuild /dso as one pass per evaluation method.
+Version: 45
+Delta: v44 to v45; trend filter for the compound.
 
 Delta: added the leverage-tier and reliable-trigger request.
 
@@ -305,3 +305,10 @@ Expand the wallet, for the base wallet, use the base mcp server to query my wall
 Use lightweight charts, run the deep prompt optimizer on the rest of this prompt and then run it:  What are all of the ways a strategy or indicator can be evaluated? List all of them and then create a deep strategy optimizer skill that evaluates, and optimizes the strategy in multiple passes one per method just like the other deep optimizers.
 ```
 
+## v45 - 2026-11-08 (trend filter)
+
+```text
+1. ok 2. Yes add the trend filter
+```
+
+Context: answers to "restart soltui" (1) and "add a filter that blocks UP calls while the higher-timeframe trend points down" (2).
