@@ -1881,3 +1881,163 @@ def portfolio_changes(ctx: Context, p: dict[str, Any]) -> Any:
          (P("mark_seen", "bool", "Record that the changes were seen (default false)."),), read_only=False)
 def portfolio_notice(ctx: Context, p: dict[str, Any]) -> Any:
     return portfolio_mod.notice(mark_seen=bool(p.get("mark_seen", False)))
+
+
+# -- bots and the price stream -------------------------------------------------------------------
+#
+# The Bots tab's grid, triangle-arbitrage and DCA bots (`bots.py`) are simulations: backtests over
+# cached bars, dry-run forward tests over the recorded Coinbase stream (`pricefeed.py`), and an
+# auto-optimizer. None places an order. `prices.start` spawns the detached recorder; it reads public
+# market data only and writes only under <config dir>/prices/.
+
+
+def _bots(fn, *args, **kwargs) -> Any:
+    from . import bots as bots_mod
+    from . import pricefeed
+
+    try:
+        return fn(*args, **kwargs)
+    except (bots_mod.BotError, pricefeed.PriceFeedError) as exc:
+        raise CommandError("failed", str(exc)) from exc
+
+
+def _bot_param(p: dict[str, Any]) -> str:
+    from . import bots as bots_mod
+
+    name = str(p.get("bot") or "").strip().lower()
+    if name not in bots_mod.BOTS:
+        raise CommandError("bad_params", f'parameter "bot" must be one of {", ".join(bots_mod.BOTS)}')
+    return name
+
+
+BOT_PARAM = P("bot", "string", "grid, triangle or dca.", required=True)
+
+
+@command("bots.overview", "Every bot: what it does, its saved configuration, the latest backtest, its forward "
+         "test and the latest auto-optimize verdict; and the coins with cached data.")
+def bots_overview(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.overview, ctx.settings)
+
+
+@command("bots.config", "One bot's configuration, its defaults and the grid auto-optimize searches.",
+         (BOT_PARAM,))
+def bots_config(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    bot = _bot_param(p)
+    return {"bot": bot, "config": _bots(bots_mod.get_config, bot), "defaults": bots_mod.DEFAULTS[bot],
+            "space": bots_mod.SPACE[bot], "about": bots_mod.ABOUT[bot]}
+
+
+@command("bots.save", "Change a bot's configuration: values as a JSON object or text as name=value pairs; "
+         "reset restores the defaults. Unknown names and unbuildable values are refused.",
+         (BOT_PARAM, P("values", "json", "Settings to change, e.g. {\"range_pct\": 10}."),
+          P("text", "string", "Settings as name=value pairs, e.g. range_pct=10 rungs=9."),
+          P("reset", "bool", "Restore the defaults instead.")), read_only=False)
+def bots_save(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    bot = _bot_param(p)
+    if p.get("reset"):
+        return {"bot": bot, "config": _bots(bots_mod.reset_config, bot)}
+    values = p.get("values") or {}
+    if not isinstance(values, dict):
+        raise CommandError("bad_params", 'parameter "values" must be a JSON object')
+    if p.get("text"):
+        values = {**values, **_bots(bots_mod.parse_kv, p["text"])}
+    if not values:
+        raise CommandError("bad_params", "nothing to save: pass values, text or reset")
+    return {"bot": bot, "config": _bots(bots_mod.save_config, bot, values)}
+
+
+@command("bots.backtest", "Start a bot at a past moment (what it would have set from the price then) and "
+         "simulate it forward with fees and slippage; grid and DCA on cached 1h bars, triangle on recorded "
+         "quotes or, failing those, a labelled 1m candle proxy (fetched from Coinbase).",
+         (BOT_PARAM, P("asset", "string", "Coin for grid and DCA; default the configured asset."),
+          P("start", "string", "UTC date or epoch seconds; default 90 days ago (triangle: the recording's start)."),
+          P("days", "number", "How long to run; default to the end of the data or the next gap.")),
+         read_only=False, long_running=True)
+def bots_backtest(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.backtest, _bot_param(p), str(p.get("asset") or ctx.settings.asset), ctx.settings,
+                 start=p.get("start"), days=p.get("days"))
+
+
+@command("bots.results", "Saved bot backtests, newest first.",
+         (P("bot", "string", "Limit to one bot."), P("limit", "number", "How many (default 10).")))
+def bots_results(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    bot = _bot_param(p) if p.get("bot") else None
+    limit = int(p.get("limit") or 10)
+    if not 1 <= limit <= 200:
+        raise CommandError("bad_params", 'parameter "limit" must be in [1, 200]')
+    return _bots(bots_mod.latest_results, bot, limit)
+
+
+@command("bots.forward_start", "Start (or restart) a bot's dry-run forward test now, on its current "
+         "configuration, replaying the recorded price stream as it arrives. Starts the recorder if needed.",
+         (BOT_PARAM, P("asset", "string", "Coin for grid and DCA; default the configured asset.")),
+         read_only=False)
+def bots_forward_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.forward_start, _bot_param(p), str(p.get("asset") or ctx.settings.asset), ctx.settings)
+
+
+@command("bots.forward_stop", "Stop a bot's forward test; its results freeze at the stop time.",
+         (BOT_PARAM,), read_only=False)
+def bots_forward_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.forward_stop, _bot_param(p))
+
+
+@command("bots.forward_status", "A bot's forward test so far: everything recorded since it started, replayed "
+         "through the bot in dry-run.", (BOT_PARAM,), long_running=True)
+def bots_forward_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.forward_status, _bot_param(p), ctx.settings)
+
+
+@command("bots.optimize", "Auto-optimize a bot: its representative configuration grid on every cached coin "
+         "(every recorded triangle) over chronological windows. Picks on the older windows, then adopts the "
+         "pick only if it beats the current config on the newer windows by a sign test (p < 0.05).",
+         (BOT_PARAM, P("coins", "json", "List of coins; default every coin with cached data."),
+          P("windows", "number", "Windows per coin (default 6; half train, half test)."),
+          P("window_days", "number", "Days per window (default 30)."),
+          P("adopt", "bool", "Adopt a reliable winner (default true).")),
+         read_only=False, long_running=True)
+def bots_optimize(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    coins = p.get("coins")
+    if coins is not None and (not isinstance(coins, list) or not all(isinstance(c, str) for c in coins)):
+        raise CommandError("bad_params", 'parameter "coins" must be a list of coin symbols')
+    return _bots(bots_mod.optimize, _bot_param(p), ctx.settings, coins=coins,
+                 windows=int(p.get("windows") or bots_mod.OPTIMIZE_WINDOWS),
+                 window_days=int(p.get("window_days") or bots_mod.OPTIMIZE_WINDOW_DAYS),
+                 adopt=bool(p.get("adopt", True)))
+
+
+@command("bots.optimize_result", "The latest auto-optimize report for a bot, or null.", (BOT_PARAM,))
+def bots_optimize_result(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    return _bots(bots_mod.latest_optimize, _bot_param(p))
+
+
+@command("prices.status", "The streaming price recorder: running or not, what it has recorded, and the "
+         "newest bid, ask and spread of every streamed market.")
+def prices_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import pricefeed
+    return _bots(pricefeed.status)
+
+
+@command("prices.start", "Start the detached price recorder (public Coinbase ticker and level-2 batch "
+         "channels; writes <config dir>/prices/). It keeps recording after the console closes.",
+         read_only=False)
+def prices_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import pricefeed
+    return _bots(pricefeed.start_recorder)
+
+
+@command("prices.stop", "Stop the price recorder. Forward tests stop gaining coverage until it restarts.",
+         read_only=False)
+def prices_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import pricefeed
+    return _bots(pricefeed.stop_recorder)

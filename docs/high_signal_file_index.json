@@ -61,6 +61,12 @@
       "lines": 307
     },
     {
+      "path": "backtester/botcli.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes"
+    },
+    {
       "path": "backtester/paircli.py",
       "component": "backtester",
       "kind": "python",
@@ -141,6 +147,18 @@
       "kind": "python",
       "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
       "lines": 881
+    },
+    {
+      "path": "backtester/core/dcasim.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism"
+    },
+    {
+      "path": "backtester/core/trianglesim.py",
+      "component": "backtester",
+      "kind": "python",
+      "summary": "Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes latency_s later; reads recorded snapshot files"
     },
     {
       "path": "backtester/core/data.py",
@@ -453,7 +471,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 610
+      "lines": 612
     },
     {
       "path": "extension/src/core/commands.js",
@@ -642,7 +660,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The experimental grid's forms, charts and journal",
-      "lines": 362
+      "lines": 374
     },
     {
       "path": "extension/src/ui/popup.js",
@@ -790,6 +808,18 @@
       "kind": "python",
       "summary": "Reads daemon state; creates/removes only the KILL flag",
       "lines": 600
+    },
+    {
+      "path": "soltui/bots.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test"
+    },
+    {
+      "path": "soltui/pricefeed.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process"
     },
     {
       "path": "soltui/serve.py",
@@ -942,7 +972,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 178
+      "lines": 180
     },
     {
       "path": "AGENTS.md",
@@ -956,7 +986,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 62
+      "lines": 63
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -1248,7 +1278,8 @@
       "path": "docs/TRADINGVIEW-REFERENCE.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format"
+      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format",
+      "lines": 3647
     }
   ]
 }

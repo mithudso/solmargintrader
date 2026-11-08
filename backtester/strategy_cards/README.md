@@ -49,11 +49,11 @@ loader raises rather than accept it. The fields mean:
 | Field | Rule |
 |---|---|
 | `id` | stable slug; **must equal the filename stem** |
-| `kind` | `exposure-strategy` or `ladder` |
+| `kind` | `exposure-strategy`, `ladder` (runs through `backtester.gridcli`) or `bot` (runs through `backtester.botcli`) |
 | `status` | `measured`, `implemented` or `spec-only` — see below |
 | `family` | must match `FAMILY[]` in `core/strategies/__init__.py` |
 | `registry_key` | `null` unless the strategy is in `REGISTRY`; two cards may not claim one key |
-| `runner` | `backtester.cli`, `backtester.gridcli`, `backtester.paircli`, or `null` for spec-only |
+| `runner` | `backtester.cli`, `backtester.gridcli`, `backtester.paircli`, `backtester.botcli`, or `null` for spec-only |
 | `warmup_bars` | must match the instance's `warmup_bars()` |
 | `evaluation` | how any number in the body was produced; required on `measured` cards |
 | `params` | each entry needs **either** `default:` **or** `required: true`, never both. `type:` is enforced against the default |

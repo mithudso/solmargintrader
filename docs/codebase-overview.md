@@ -32,6 +32,7 @@ root, so an abbreviated one fails the build.
 | --- | --- |
 | `backtester/cli.py` | Entry point: `python3 -m backtester.cli` |
 | `backtester/gridcli.py` | Entry point for the ladder-grid simulator, which owns its own bar loop |
+| `backtester/botcli.py` | Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes |
 | `backtester/paircli.py` | Entry point for pairs/cointegration runs |
 | `backtester/requirements.txt` | Declared deps, kept minimal on purpose |
 | `backtester/README.md` | Scope, correctness priorities, usage |
@@ -49,6 +50,8 @@ root, so an abbreviated one fails the build.
 | `backtester/core/metrics.py` | Sharpe, drawdown, CAGR, with the conventions stated in the manifest |
 | `backtester/core/perps.py` | Borrow-fee accrual and liquidation price for the perp mode |
 | `backtester/core/gridsim.py` | Ladder-grid simulator; a port of `extension/src/core/grid.js` that must agree with it |
+| `backtester/core/dcasim.py` | DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism |
+| `backtester/core/trianglesim.py` | Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes `latency_s` later; reads recorded snapshot files |
 | `backtester/core/data.py` | `CsvLoader`, `SyntheticLoader`, bar validation, checksums |
 | `backtester/core/fetch.py` | Explicit Coinbase OHLCV fetch into a local CSV cache; the engine stays offline |
 | `backtester/core/fetch_minutes.py` | Resumable minute-bar cache fetch with rate limiting and coverage |
@@ -177,6 +180,8 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/bgworker.py` | Detached offline sweep worker and per-process array cache |
 | `soltui/compound.py` | Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI `python3 -m soltui.compound` |
 | `soltui/liquidity.py` | Reads daemon state; creates/removes only the KILL flag |
+| `soltui/bots.py` | Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test |
+| `soltui/pricefeed.py` | Streaming price recorder: stdlib WebSocket to Coinbase `level2_batch` + `ticker`, one-second gzip JSONL snapshots, detached process |
 | `soltui/serve.py` | Optional loopback browser console |
 | `soltui/bin/soltui` | Shell launcher with interpreter override |
 | `soltui/config.py` | Configuration |

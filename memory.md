@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 50
-Delta: v49 to v50; equity chart on vendored Lightweight Charts; /dso v2.0.0 shipped in the skills repo.
+Version: 51
+Delta: v50 to v51; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder.
 
 ## v1 - 2026-11-06
 
@@ -528,3 +528,18 @@ Completed (skills repo, not this repo): deep-strategy-optimizer 2.0.0, PR mithud
 
 Remaining: none for the chart; docs/dso-skill could be replaced by a pointer in a later change.
 
+## v51 - 2026-11-08
+
+Target: prompts.md v45. Stele TASK-870 (decision KNOW-871, architecture KNOW-872).
+Worktree: /Users/mitch/dev/solmargintrader-wt-39e8bf11, branch agent-39e8bf11 (four other sessions held the main checkout).
+
+Completed:
+- `backtester/core/dcasim.py` (DCA safety-order bot, gridsim bar order, one-bar leak test) and card `dca_bot.md` (kind `bot`, runner `backtester.botcli`).
+- `backtester/core/trianglesim.py`: L1 screening replay (streaming `TriangleReplay`), recorded-snapshot reader, candle proxy. `triangular_arbitrage.md` moved spec-only -> implemented (nothing measured).
+- `backtester/botcli.py`; card schema gained kind `bot` and runner `backtester.botcli`.
+- `soltui/pricefeed.py`: stdlib WebSocket; Coinbase `level2_batch` books + `ticker`; 1 s gzip JSONL under `<config>/prices/`; detached recorder with flock. Verified live: 24 markets, book quotes under 1 s old.
+- `soltui/bots.py` + Bots tab + 13 registry commands (`bots.*`, `prices.*`). Auto-optimize over 23 coins: grid 12 s, DCA 3.5 s; neither had a reliable winner (p 0.78 / 0.45).
+
+Lessons: the Coinbase ticker bid/ask is trade-driven, so thin cross pairs carry hours-old quotes (SOL-BTC 89 min); use the level-2 book. Thin crosses also have minutes with no candle, so the candle proxy must pair legs per minute, not intersect all products.
+
+Remaining: none planned. A live DCA bot in the extension was not requested as real-money code and was not built.

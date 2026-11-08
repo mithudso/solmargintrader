@@ -53,6 +53,7 @@ from .help_screen import HelpScreen
 from backtester.core import scorecard as sc
 
 from . import bgcontrol
+from . import bots as bots_mod
 from . import compound as compound_mod
 from . import cumulative as cumulative_mod
 from . import bgqueue
@@ -184,6 +185,15 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#compound-unattended-all": "compound.unattended_start",
     "#compound-unattended-stop-all": "compound.unattended_stop",
     "#compound-autopilot": "compound.autopilot",
+    "#bots-apply": "bots.save",
+    "#bots-reset": "bots.save",
+    "#bots-backtest": "bots.backtest",
+    "#bots-forward-start": "bots.forward_start",
+    "#bots-forward-stop": "bots.forward_stop",
+    "#bots-forward-refresh": "bots.forward_status",
+    "#bots-optimize": "bots.optimize",
+    "#bots-rec-start": "prices.start",
+    "#bots-rec-stop": "prices.stop",
 }
 
 class GlossaryTable(DataTable):
@@ -557,6 +567,14 @@ class SolTuiApp(App):
     #compound-call { padding: 0 1; border: round $accent; }
     #compound-detail { color: $text-muted; padding: 0 1; }
     #compound-autopilot-status { padding: 0 1; border: round $success; }
+    #bots-bot { width: 30; }
+    #bots-coin { width: 14; }
+    #bots-start, #bots-days { width: 24; }
+    #bots-about { color: $text-muted; padding: 0 1; }
+    #bots-stream { padding: 0 1; border: round $accent; }
+    #bots-sections { height: 1fr; }
+    #bots-set, #bots-bt-table, #bots-fwd-table { height: 16; }
+    #bots-opt-table, #bots-prices { height: 22; }
     #backtest-pick { width: 44; }
     #backtest-roster { color: $text-muted; padding: 0 1; }
     #backtest-bg-status { padding: 0 1; height: auto; }
@@ -581,8 +599,17 @@ class SolTuiApp(App):
     EDITOR_HEIGHT = 16
 
     def __init__(self, settings: Settings | None = None, *, ui_state_path: Path | None = None,
-                 ensure_autopilot: bool = False, refresh_wallet: bool = False) -> None:
+                 ensure_autopilot: bool = False, refresh_wallet: bool = False,
+                 stream_prices: bool = False) -> None:
         super().__init__()
+        # The real console starts the detached price recorder (public Coinbase stream) so the Bots
+        # tab's forward tests have data; a test app must never spawn it or reach the network.
+        self._stream_prices = stream_prices
+        self._bots_loaded = False
+        self._bots_bot = "grid"
+        self._bots_coins: list[str] = []
+        self._bots_ticks = 0
+        self._bots_forward_running = False
         # Where the editor's height and open/closed state persist. None (every test) keeps them
         # in memory, so no test reads or writes the owner's real layout.
         self._ui_state_path = ui_state_path
@@ -720,6 +747,8 @@ class SolTuiApp(App):
                 yield from self._signals_pane()
             with TabPane("Compound 5m", id="tab-compound"):
                 yield from self._compound_pane()
+            with TabPane("Bots", id="tab-bots"):
+                yield from self._bots_pane()
             with TabPane("Backtest", id="tab-backtest"):
                 yield from self._backtest_pane()
             with TabPane("Top 5", id="tab-top5"):
@@ -971,6 +1000,372 @@ class SolTuiApp(App):
                                      "in the editor below.", classes="table-title")
                         yield GlossaryTable(id="compound-overview")
 
+    def _bots_pane(self) -> ComposeResult:
+        """The grid, triangle-arbitrage and DCA bots: backtest, forward test, auto-optimize, live prices.
+
+        Every action is a `bots.*` or `prices.*` registry command; every bot is a simulation.
+        """
+        with Vertical(id="bots-scroll"):
+            yield Static("SIMULATION AND DRY RUN ONLY: these bots place no orders.", classes="hint")
+            with Horizontal(classes="form-row"):
+                yield Label("Bot:")
+                yield Select([(bots_mod.LABELS[b], b) for b in bots_mod.BOTS], value="grid",
+                             allow_blank=False, id="bots-bot")
+                yield Label("Coin:")
+                yield Select([("SOL", "SOL")], value="SOL", allow_blank=False, id="bots-coin")
+            with Horizontal(classes="form-row"):
+                yield Label("Backtest start (UTC):")
+                yield Input(placeholder="2026-06-01 (empty: 90 days ago)", id="bots-start")
+                yield Label("Days:")
+                yield Input(placeholder="empty: to the end", id="bots-days")
+            yield Static("", id="bots-about")
+            with Horizontal(classes="form-row"):
+                yield Label("Settings (k=v):")
+                yield Input(placeholder="range_pct=10 rungs=9", id="bots-config")
+                yield Button("Apply", variant="primary", id="bots-apply")
+                yield Button("Defaults", id="bots-reset")
+            with Horizontal(classes="form-row"):
+                yield Button("Backtest", variant="warning", id="bots-backtest")
+                yield Button("Start forward test", variant="success", id="bots-forward-start")
+                yield Button("Stop forward test", variant="error", id="bots-forward-stop")
+                yield Button("Refresh forward", id="bots-forward-refresh")
+                yield Button("Auto-optimize (all coins)", variant="warning", id="bots-optimize")
+            yield Static("", id="bots-status")
+            with Horizontal(classes="form-row"):
+                yield Button("Start recorder", id="bots-rec-start")
+                yield Button("Stop recorder", id="bots-rec-stop")
+                yield Static("price stream: not read yet", id="bots-stream")
+            with TabbedContent(id="bots-sections", initial="bots-sec-backtest"):
+                with TabPane("Backtest", id="bots-sec-backtest"):
+                    with VerticalScroll():
+                        yield Static("", id="bots-bt-title", classes="table-title")
+                        yield GlossaryTable(id="bots-set")
+                        yield GlossaryTable(id="bots-bt-table")
+                with TabPane("Forward test", id="bots-sec-forward"):
+                    with VerticalScroll():
+                        yield Static("No forward test yet.", id="bots-fwd-summary")
+                        yield GlossaryTable(id="bots-fwd-table")
+                with TabPane("Auto-optimize", id="bots-sec-optimize"):
+                    with VerticalScroll():
+                        yield Static("Auto-optimize has not run for this bot.", id="bots-opt-verdict")
+                        yield GlossaryTable(id="bots-opt-table")
+                with TabPane("Live prices", id="bots-sec-prices"):
+                    yield GlossaryTable(id="bots-prices")
+
+    # -- Bots tab ------------------------------------------------------------
+
+    def _bots_load(self) -> None:
+        """First view: fill the coin list and the tables' columns, then render the selected bot."""
+        for table_id, cols in (("#bots-set", ("setting", "value")), ("#bots-bt-table", ("metric", "value")),
+                               ("#bots-fwd-table", ("metric", "value")),
+                               ("#bots-opt-table", ("config change", "train rank", "train median return",
+                                                    "test median return")),
+                               ("#bots-prices", ("market", "bid", "ask", "spread bps", "quote age s"))):
+            table = self.query_one(table_id, DataTable)
+            if not table.columns:
+                table.add_columns(*cols)
+                table.cursor_type = "row"
+        env = self._call("bots.overview", quiet=True)
+        if env["ok"]:
+            self._bots_coins = env["result"]["coins"] or [self.settings.asset.upper()]
+            coin = self.settings.asset.upper()
+            select = self.query_one("#bots-coin", Select)
+            select.set_options([(c, c) for c in self._bots_coins])
+            select.value = coin if coin in self._bots_coins else self._bots_coins[0]
+        self._bots_render_selected()
+
+    def _bots_coin(self) -> str:
+        value = self.query_one("#bots-coin", Select).value
+        return str(value) if isinstance(value, str) else self.settings.asset.upper()
+
+    def _bots_render_selected(self) -> None:
+        env = self._call("bots.config", {"bot": self._bots_bot}, quiet=True)
+        about = self.query_one("#bots-about", Static)
+        if not env["ok"]:
+            about.update(Text(self._msg(env)))
+            return
+        r = env["result"]
+        cfg = " ".join(f"{k}={v}" for k, v in r["config"].items())
+        about.update(Text(f"{r['about']}\nCurrent settings: {cfg}"))
+        self.query_one("#bots-config", Input).placeholder = cfg
+        self.query_one("#bots-coin", Select).disabled = self._bots_bot == "triangle"
+        results = self._call("bots.results", {"bot": self._bots_bot, "limit": 1}, quiet=True)
+        if results["ok"] and results["result"]:
+            self._bots_render_backtest(results["result"][0])
+        else:
+            self._bots_clear("#bots-set", "#bots-bt-table")
+            self.query_one("#bots-bt-title", Static).update("No backtest yet for this bot: press Backtest.")
+        opt = self._call("bots.optimize_result", {"bot": self._bots_bot}, quiet=True)
+        if opt["ok"] and opt["result"]:
+            self._bots_render_optimize(opt["result"])
+        else:
+            self._bots_clear("#bots-opt-table")
+            self.query_one("#bots-opt-verdict", Static).update("Auto-optimize has not run for this bot.")
+        self._bots_forward_refresh()
+
+    def _bots_clear(self, *ids: str) -> None:
+        for table_id in ids:
+            self.query_one(table_id, DataTable).clear()
+
+    @staticmethod
+    def _bots_price(value: float) -> str:
+        """Prices from 75,790.12 down to 0.0000023 without scientific notation."""
+        if value >= 1000:
+            return f"{value:,.2f}"
+        if value >= 1:
+            return f"{value:,.4f}"
+        return f"{value:.8f}".rstrip("0")
+
+    @staticmethod
+    def _bots_pct(value: float) -> str:
+        """Two decimals: a forward test's first hours move by hundredths of a percent."""
+        return f"{value * 100:+.2f}%"
+
+    @staticmethod
+    def _bots_fmt(value: Any) -> str:
+        if value is None:
+            return "-"
+        if isinstance(value, bool):
+            return "yes" if value else "no"
+        if isinstance(value, float):
+            return f"{value:,.6g}" if abs(value) < 1e-3 or abs(value) >= 1e6 else f"{value:,.4f}"
+        if isinstance(value, (list, tuple)):
+            return ", ".join(SolTuiApp._bots_fmt(v) for v in value[:12]) + (" …" if len(value) > 12 else "")
+        if isinstance(value, dict):
+            return ", ".join(f"{k}={SolTuiApp._bots_fmt(v)}" for k, v in list(value.items())[:8])
+        return str(value)
+
+    def _bots_metrics(self, table_id: str, results: dict[str, Any]) -> None:
+        table = self.query_one(table_id, DataTable)
+        table.clear()
+        for key in ("total_return", "hold_return", "excess_return", "max_drawdown", "hold_max_drawdown"):
+            if key in results:
+                table.add_row(key, self._bots_pct(results[key]) if results[key] is not None else "-")
+        for key, value in results.items():
+            if key in ("total_return", "hold_return", "excess_return", "max_drawdown", "hold_max_drawdown",
+                       "per_triangle", "cycles"):
+                continue
+            table.add_row(key, self._bots_fmt(value))
+        for name, row in (results.get("per_triangle") or {}).items():
+            table.add_row(name, f"observed {row['observed']}, best net edge "
+                                f"{self._bots_fmt(row['best_edge_bps'])} bps, executed {row['executed']}, "
+                                f"P&L ${row['pnl_usd']:,.4f}")
+
+    def _bots_render_backtest(self, r: dict[str, Any]) -> None:
+        where = r["asset"] if r["bot"] != "triangle" else "every triangle"
+        gap = f"; stopped at a data gap after {r['stopped_at_gap']}" if r.get("stopped_at_gap") else ""
+        self.query_one("#bots-bt-title", Static).update(Text(
+            f"{bots_mod.LABELS[r['bot']]} on {where}, started {r['start']} -> {r['end']} "
+            f"({r['interval']}, data: {r['data_source']}{gap}). What it set at the start, then what it made:"))
+        set_t = self.query_one("#bots-set", DataTable)
+        set_t.clear()
+        setup = dict(r.get("set") or {})
+        orders = setup.pop("orders", None)
+        for key, value in setup.items():
+            set_t.add_row(key, self._bots_fmt(value))
+        for row in orders or []:
+            set_t.add_row(row["order"], f"${row['price']:,.4f} for ${row['usd']:,.2f}; avg ${row['avg_entry']:,.4f}, "
+                                        f"take-profit ${row['take_profit']:,.4f}")
+        self._bots_metrics("#bots-bt-table", r.get("results") or {})
+
+    def _bots_render_optimize(self, r: dict[str, Any]) -> None:
+        v = r["verdict"]
+        head = ("ADOPTED: " if v.get("adopted") else "kept the current settings: ") + v.get("reason", "")
+        skipped = f" Skipped: {', '.join(r['skipped'])}." if r.get("skipped") else ""
+        self.query_one("#bots-opt-verdict", Static).update(Text(
+            f"{head}\n{r['candidates']} configurations on {r['universe']}; picked on {r['train_cells']} train "
+            f"cells, checked on {r['test_cells']} test cells ({r['seconds']} s).{skipped}"))
+        table = self.query_one("#bots-opt-table", DataTable)
+        table.clear()
+        for row in r["table"]:
+            label = "(current)" if row["current"] else " ".join(f"{k}={v}" for k, v in row["changes"].items())
+            table.add_row(label, self._bots_fmt(row["train_mean_rank"]),
+                          self._bots_pct(row["train_median"]) if row["train_median"] is not None else "-",
+                          self._bots_pct(row["test_median"]) if row["test_median"] is not None else "-")
+
+    def _bots_render_forward(self, r: dict[str, Any]) -> None:
+        summary = self.query_one("#bots-fwd-summary", Static)
+        if not r.get("forward"):
+            summary.update(Text(r.get("message", "No forward test.")))
+            self._bots_clear("#bots-fwd-table")
+            return
+        f = r["forward"]
+        state = "running" if r["running"] else f"stopped {r.get('stopped')}"
+        where = f["asset"] if r["bot"] != "triangle" else "every triangle"
+        rec = r.get("recorder") or {}
+        stream = "recorder live" if rec.get("live") else "RECORDER NOT LIVE: no new data is arriving"
+        extra = ""
+        if r.get("stopped_at_gap"):
+            extra = f"; coverage ends at a recorder gap after {r['stopped_at_gap']}"
+        summary.update(Text(f"{bots_mod.LABELS[r['bot']]} forward test on {where}, started {r['started']} "
+                            f"({state}); {r.get('snapshots', 0)} snapshots to {r.get('last_snapshot') or '-'}"
+                            f"; {stream}{extra}. {r.get('message', '')}"))
+        table = self.query_one("#bots-fwd-table", DataTable)
+        self._bots_metrics("#bots-fwd-table", r.get("results") or {})
+        for key, value in (r.get("set") or {}).items():
+            if key != "orders":
+                table.add_row(f"set: {key}", self._bots_fmt(value))
+
+    def _bots_render_prices(self, r: dict[str, Any]) -> None:
+        stream = self.query_one("#bots-stream", Static)
+        prices = r.get("prices") or {}
+        if r.get("live"):
+            state = f"price stream LIVE ({len(prices)} markets, {r.get('recorded_days', 0)} day file(s) recorded)"
+        elif r.get("running"):
+            state = "price recorder running, waiting for data"
+        else:
+            state = "price recorder STOPPED: forward tests get no new data"
+        if r.get("last_error"):
+            state += f"; last error: {r['last_error']}"
+        top = "  ".join(f"{p.split('-')[0]} {self._bots_price(prices[p]['mid'])}"
+                        for p in ("BTC-USD", "ETH-USD", "SOL-USD") if p in prices)
+        stream.update(Text(f"{state}   {top}"))
+        if not self.query_one("#bots-prices", DataTable).columns:
+            return
+        table = self.query_one("#bots-prices", DataTable)
+        table.clear()
+        for product in sorted(prices):
+            q = prices[product]
+            table.add_row(product, self._bots_price(q["bid"]), self._bots_price(q["ask"]),
+                          f"{q['spread_bps']:,.2f}", f"{q['quote_age_s']:,.1f}")
+
+    def _bots_status(self, text: str) -> None:
+        self.query_one("#bots-status", Static).update(Text(text))
+
+    # Not exclusive: a forward refresh must not cancel a running optimize.
+    @work(thread=True, group="bots")
+    def _bots_job(self, name: str, params: dict[str, Any], label: str) -> None:
+        if self.query("#bots-status"):
+            self.call_from_thread(self._bots_status, f"{label}…")
+        env = self._call(name, params)
+        self.call_from_thread(self._bots_after, name, env)
+
+    def _bots_after(self, name: str, env: dict[str, Any]) -> None:
+        if not self.query("#bots-status"):
+            return
+        if not env["ok"]:
+            self._bots_status(f"{name}: {self._msg(env)}")
+            return
+        r = env["result"]
+        if name == "bots.backtest":
+            res = r.get("results") or {}
+            self._bots_status(f"backtest {r['id']} saved: {bots_mod.LABELS[r['bot']]} "
+                              + (f"returned {self._bots_pct(res['total_return'])} vs hold {self._bots_pct(res['hold_return'])}"
+                                 if "total_return" in res else
+                                 f"executed {res.get('executed', 0)} cycles, P&L ${res.get('pnl_usd', 0):,.4f}"))
+            self._bots_render_backtest(r)
+            self.query_one("#bots-sections", TabbedContent).active = "bots-sec-backtest"
+        elif name == "bots.optimize":
+            v = r["verdict"]
+            self._bots_status(("adopted a new configuration" if v.get("adopted") else
+                               "no configuration reliably outperforms; kept the current one"))
+            self._bots_render_optimize(r)
+            self._bots_render_selected()
+            self.query_one("#bots-sections", TabbedContent).active = "bots-sec-optimize"
+        elif name in ("bots.forward_start", "bots.forward_stop"):
+            self._bots_status("forward test started" if name == "bots.forward_start" else
+                              r.get("message", "forward test stopped"))
+            self._bots_forward_refresh()
+            self.query_one("#bots-sections", TabbedContent).active = "bots-sec-forward"
+        elif name == "bots.forward_status":
+            self._bots_forward_running = bool(r.get("running"))
+            self._bots_render_forward(r)
+        elif name == "bots.save":
+            self._bots_status("settings saved: " + " ".join(f"{k}={v}" for k, v in r["config"].items()))
+            self.query_one("#bots-config", Input).value = ""
+            self._bots_render_selected()
+        elif name in ("prices.start", "prices.stop"):
+            if name == "prices.start":
+                self._bots_status("price recorder running" if r.get("started") or r.get("already_running")
+                                  else f"price recorder did not start; see {r.get('log')}")
+            else:
+                self._bots_status(r.get("message") or "price recorder stopping")
+            self._bots_tick()
+
+    def _bots_forward_refresh(self) -> None:
+        self._bots_job("bots.forward_status", {"bot": self._bots_bot}, "replaying the recorded stream")
+
+    def _bots_tick(self) -> None:
+        """Every 5 s while the Bots tab is open: the stream line, live prices and optimize progress."""
+        if not self.query("#bots-stream") or not self._bots_loaded:
+            return
+        try:
+            if self.query_one(TabbedContent).active != "tab-bots":
+                return
+        except NoMatches:
+            return
+        env = self._call("prices.status", quiet=True)
+        if env["ok"]:
+            self._bots_render_prices(env["result"])
+        # A running forward test advances with the recording: replay what arrived every 30 s.
+        self._bots_ticks += 1
+        if self._bots_ticks % 6 == 0 and self._bots_forward_running:
+            self._bots_forward_refresh()
+        prog = bots_mod.runtime().progress.get(self._bots_bot)
+        if prog and prog.get("fraction", 1) < 1:
+            self._bots_status(f"auto-optimize {100 * prog['fraction']:.0f}%: {prog['message']}")
+
+    @on(Select.Changed, "#bots-bot")
+    def _bots_bot_changed(self, event: Select.Changed) -> None:
+        if isinstance(event.value, str) and event.value != self._bots_bot:
+            self._bots_bot = event.value
+            if self._bots_loaded:
+                self._bots_render_selected()
+
+    @on(Button.Pressed, "#bots-apply")
+    def _bots_apply(self) -> None:
+        text = self.query_one("#bots-config", Input).value.strip()
+        if not text:
+            self._bots_status("type settings as name=value pairs first, e.g. " +
+                              self.query_one("#bots-config", Input).placeholder)
+            return
+        self._bots_job("bots.save", {"bot": self._bots_bot, "text": text}, "saving settings")
+
+    @on(Button.Pressed, "#bots-reset")
+    def _bots_reset(self) -> None:
+        self._bots_job("bots.save", {"bot": self._bots_bot, "reset": True}, "restoring defaults")
+
+    @on(Button.Pressed, "#bots-backtest")
+    def _bots_backtest(self) -> None:
+        params: dict[str, Any] = {"bot": self._bots_bot, "asset": self._bots_coin()}
+        start = self.query_one("#bots-start", Input).value.strip()
+        days = self.query_one("#bots-days", Input).value.strip()
+        if start:
+            params["start"] = start
+        if days:
+            try:
+                params["days"] = float(days)
+            except ValueError:
+                self._bots_status(f"days must be a number, got {days!r}")
+                return
+        self._bots_job("bots.backtest", params, "backtesting from the chosen start")
+
+    @on(Button.Pressed, "#bots-forward-start")
+    def _bots_forward_start(self) -> None:
+        self._bots_job("bots.forward_start", {"bot": self._bots_bot, "asset": self._bots_coin()},
+                       "starting the forward test")
+
+    @on(Button.Pressed, "#bots-forward-stop")
+    def _bots_forward_stop(self) -> None:
+        self._bots_job("bots.forward_stop", {"bot": self._bots_bot}, "stopping the forward test")
+
+    @on(Button.Pressed, "#bots-forward-refresh")
+    def _bots_forward_refresh_pressed(self) -> None:
+        self._bots_forward_refresh()
+
+    @on(Button.Pressed, "#bots-optimize")
+    def _bots_optimize(self) -> None:
+        self._bots_job("bots.optimize", {"bot": self._bots_bot},
+                       "auto-optimizing on every coin (train windows pick, test windows decide)")
+
+    @on(Button.Pressed, "#bots-rec-start")
+    def _bots_rec_start(self) -> None:
+        self._bots_job("prices.start", {}, "starting the price recorder")
+
+    @on(Button.Pressed, "#bots-rec-stop")
+    def _bots_rec_stop(self) -> None:
+        self._bots_job("prices.stop", {}, "stopping the price recorder")
+
     ROSTER_PICK = "__roster__"
 
     def _backtest_pane(self) -> ComposeResult:
@@ -1095,6 +1490,9 @@ class SolTuiApp(App):
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self._refresh_liquidity(force=True)
         self._compound_setup()
+        self.set_interval(5, self._bots_tick)
+        if self._stream_prices:
+            self._bots_job("prices.start", {}, "starting the price recorder")
         self._install_help()
         self._apply_ui_state()
 
@@ -2233,6 +2631,11 @@ class SolTuiApp(App):
             self._call("portfolio.notice", {"mark_seen": True}, quiet=True)
         elif pane == "tab-liquidity":
             self._refresh_liquidity(force=True)
+        elif pane == "tab-bots":
+            if not self._bots_loaded:
+                self._bots_loaded = True
+                self._bots_load()
+            self._bots_tick()
         elif pane == "tab-top5" and not self._top5_loaded:
             self._top5_loaded = True
             self._refresh_top5()
@@ -3568,7 +3971,7 @@ class SolTuiApp(App):
 
 def main(argv: list[str] | None = None) -> int:
     """Entry point for `python3 -m soltui.tui`."""
-    SolTuiApp(ui_state_path=config_mod.CONFIG_DIR / "tui.json", ensure_autopilot=True,
+    SolTuiApp(ui_state_path=config_mod.CONFIG_DIR / "tui.json", ensure_autopilot=True, stream_prices=True,
               refresh_wallet=True).run()
     return 0
 

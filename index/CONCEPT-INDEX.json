@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T22:23:25+00:00",
+  "generatedAt": "2026-11-08T07:54:07+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -261,6 +261,10 @@
           "hits": 30
         },
         {
+          "path": "soltui/help.py",
+          "hits": 30
+        },
+        {
           "path": "docs/COMPOUND-5M.md",
           "hits": 29
         },
@@ -270,10 +274,6 @@
         },
         {
           "path": "soltui/compound.py",
-          "hits": 28
-        },
-        {
-          "path": "soltui/help.py",
           "hits": 28
         },
         {
@@ -299,7 +299,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 211,
+      "matchingFiles": 212,
       "shown": 30,
       "files": [
         {
@@ -363,6 +363,14 @@
           "hits": 30
         },
         {
+          "path": "soltui/help.py",
+          "hits": 30
+        },
+        {
+          "path": "memory.md",
+          "hits": 28
+        },
+        {
           "path": "backtester/strategy_cards/grid.md",
           "hits": 26
         },
@@ -372,10 +380,6 @@
         },
         {
           "path": "extension/src/ui/dashboard.html",
-          "hits": 26
-        },
-        {
-          "path": "memory.md",
           "hits": 26
         },
         {
@@ -407,19 +411,15 @@
           "hits": 22
         },
         {
+          "path": "docs/codebase-overview.md",
+          "hits": 21
+        },
+        {
           "path": "backtester/core/strategies/signals.py",
           "hits": 20
         },
         {
-          "path": "docs/codebase-overview.md",
-          "hits": 19
-        },
-        {
           "path": "backtester/tests/test_strategy_cards.py",
-          "hits": 18
-        },
-        {
-          "path": "research/frontier_tune.py",
           "hits": 18
         }
       ],
@@ -478,12 +478,12 @@
           "hits": 31
         },
         {
-          "path": "backtester/tests/test_gridsim.py",
-          "hits": 28
+          "path": "soltui/help.py",
+          "hits": 29
         },
         {
-          "path": "soltui/help.py",
-          "hits": 27
+          "path": "backtester/tests/test_gridsim.py",
+          "hits": 28
         },
         {
           "path": "docs/FILES.md",
@@ -560,6 +560,144 @@
         {
           "path": "backtester/core/report.py",
           "hits": 14
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "data-integrity",
+      "label": "Data integrity",
+      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
+      "terms": [
+        "validate_bars",
+        "strict_gaps",
+        "allow_gaps",
+        "datavalidationerror",
+        "monotone",
+        "gap"
+      ],
+      "matchingFiles": 191,
+      "shown": 30,
+      "files": [
+        {
+          "path": "backtester/tests/test_engine.py",
+          "hits": 34
+        },
+        {
+          "path": "backtester/core/data.py",
+          "hits": 33
+        },
+        {
+          "path": "research/STRATEGIES.md",
+          "hits": 32
+        },
+        {
+          "path": "extension/src/ui/ui.css",
+          "hits": 28
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 24
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 24
+        },
+        {
+          "path": "research/CANDLE-GAP-AUDIT.md",
+          "hits": 23
+        },
+        {
+          "path": "research/candle_gap_audit.py",
+          "hits": 20
+        },
+        {
+          "path": "soltui/utxo_scan.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/tests/test_candle_gap_audit.py",
+          "hits": 16
+        },
+        {
+          "path": "pagesource",
+          "hits": 16
+        },
+        {
+          "path": "research/results/minute_coverage.json",
+          "hits": 12
+        },
+        {
+          "path": "backtester/core/universe.py",
+          "hits": 11
+        },
+        {
+          "path": "research/tick_backfill.py",
+          "hits": 11
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 11
+        },
+        {
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 11
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/btc-bitcoin.md",
+          "hits": 10
+        },
+        {
+          "path": "research/coin-intelligence/xrp-ripple.md",
+          "hits": 10
+        },
+        {
+          "path": "backtester/core/trigger_conditions.py",
+          "hits": 9
+        },
+        {
+          "path": "docs/TRADINGVIEW-REFERENCE.md",
+          "hits": 9
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 8
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 8
+        },
+        {
+          "path": "index/build.py",
+          "hits": 7
+        },
+        {
+          "path": "research/sweep.py",
+          "hits": 6
+        },
+        {
+          "path": "liquidity/src/aero_lp/ledger.py",
+          "hits": 6
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 6
+        },
+        {
+          "path": "soltui/tests/test_utxo_scan.py",
+          "hits": 6
+        },
+        {
+          "path": "backtester/core/fetch.py",
+          "hits": 5
+        },
+        {
+          "path": "research/decide.py",
+          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -835,144 +973,6 @@
         {
           "path": "docs/dso-skill/SKILL.md",
           "hits": 7
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "data-integrity",
-      "label": "Data integrity",
-      "why": "Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.",
-      "terms": [
-        "validate_bars",
-        "strict_gaps",
-        "allow_gaps",
-        "datavalidationerror",
-        "monotone",
-        "gap"
-      ],
-      "matchingFiles": 189,
-      "shown": 30,
-      "files": [
-        {
-          "path": "backtester/tests/test_engine.py",
-          "hits": 34
-        },
-        {
-          "path": "backtester/core/data.py",
-          "hits": 33
-        },
-        {
-          "path": "research/STRATEGIES.md",
-          "hits": 32
-        },
-        {
-          "path": "extension/src/ui/ui.css",
-          "hits": 28
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 24
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "research/CANDLE-GAP-AUDIT.md",
-          "hits": 23
-        },
-        {
-          "path": "research/candle_gap_audit.py",
-          "hits": 20
-        },
-        {
-          "path": "soltui/utxo_scan.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/tests/test_candle_gap_audit.py",
-          "hits": 16
-        },
-        {
-          "path": "pagesource",
-          "hits": 16
-        },
-        {
-          "path": "research/results/minute_coverage.json",
-          "hits": 12
-        },
-        {
-          "path": "backtester/core/universe.py",
-          "hits": 11
-        },
-        {
-          "path": "research/tick_backfill.py",
-          "hits": 11
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 11
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 11
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 10
-        },
-        {
-          "path": "research/coin-intelligence/btc-bitcoin.md",
-          "hits": 10
-        },
-        {
-          "path": "research/coin-intelligence/xrp-ripple.md",
-          "hits": 10
-        },
-        {
-          "path": "backtester/core/trigger_conditions.py",
-          "hits": 9
-        },
-        {
-          "path": "docs/TRADINGVIEW-REFERENCE.md",
-          "hits": 9
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 8
-        },
-        {
-          "path": "index/build.py",
-          "hits": 7
-        },
-        {
-          "path": "research/sweep.py",
-          "hits": 6
-        },
-        {
-          "path": "liquidity/src/aero_lp/ledger.py",
-          "hits": 6
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 6
-        },
-        {
-          "path": "soltui/tests/test_utxo_scan.py",
-          "hits": 6
-        },
-        {
-          "path": "backtester/core/fetch.py",
-          "hits": 5
-        },
-        {
-          "path": "research/decide.py",
-          "hits": 5
-        },
-        {
-          "path": "liquidity/src/aero_lp/gates.py",
-          "hits": 5
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2249,10 +2249,6 @@
           "hits": 10
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 9
-        },
-        {
           "path": "research/results/perturb_all_singles_long.txt",
           "hits": 9
         },
@@ -2263,6 +2259,10 @@
         {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 9
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 8
         },
         {
           "path": "research/results/perturb_all_singles_short.txt",
@@ -2907,7 +2907,6 @@
         "backtester/strategy_cards/social_sentiment.md",
         "backtester/strategy_cards/staking_ratio_flow.md",
         "backtester/strategy_cards/trade_flow_imbalance.md",
-        "backtester/strategy_cards/triangular_arbitrage.md",
         "backtester/strategy_cards/vol_of_vol_term_structure.md",
         "backtester/strategy_cards/xs_momentum.md"
       ],
@@ -2924,7 +2923,8 @@
         "backtester/strategy_cards/ou_half_life_sizing.md"
       ],
       "null": [
-        "backtester/strategy_cards/jlp_vs_sol_relative_value.md"
+        "backtester/strategy_cards/jlp_vs_sol_relative_value.md",
+        "backtester/strategy_cards/triangular_arbitrage.md"
       ],
       "real-sol-daily-and-hourly-recentred-blocks": [
         "backtester/strategy_cards/ladder_grid.md"
@@ -3057,6 +3057,7 @@
         "backtester/strategy_cards/lev_medium.md",
         "backtester/strategy_cards/ppo.md",
         "backtester/strategy_cards/swing_confluence.md",
+        "backtester/strategy_cards/triangular_arbitrage.md",
         "backtester/strategy_cards/trigger_trade.md"
       ],
       "measured": [
@@ -3107,7 +3108,6 @@
         "backtester/strategy_cards/social_sentiment.md",
         "backtester/strategy_cards/staking_ratio_flow.md",
         "backtester/strategy_cards/trade_flow_imbalance.md",
-        "backtester/strategy_cards/triangular_arbitrage.md",
         "backtester/strategy_cards/vol_of_vol_term_structure.md",
         "backtester/strategy_cards/xs_momentum.md"
       ]

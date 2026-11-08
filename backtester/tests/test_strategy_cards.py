@@ -474,6 +474,37 @@ class TestLadderDrift(unittest.TestCase):
         self.assertEqual(cfg.spacing, self.card.defaults()["spacing"])
 
 
+class TestBotCards(unittest.TestCase):
+    """A bot card's params must be exactly its simulator config's fields and defaults."""
+
+    def setUp(self) -> None:
+        self.cards = sc.load_all()
+
+    def _assert_matches(self, card_id: str, cls: type) -> None:
+        card = self.cards[card_id]
+        self.assertEqual(card.kind, "bot")
+        self.assertEqual(card.runner, "backtester.botcli")
+        self.assertIsNone(card.registry_key)
+        sig = inspect.signature(cls)
+        self.assertEqual(set(card.params), set(sig.parameters), f"{card_id} params drifted from {cls.__name__}")
+        for name, param in sig.parameters.items():
+            self.assertEqual(card.params[name].get("default"), param.default,
+                             f"{card_id}.{name}: card default drifted from {cls.__name__}")
+        cls(**card.defaults())  # the declared defaults construct
+
+    def test_dca_bot_card_matches_dcaconfig(self) -> None:
+        from backtester.core.dcasim import DcaConfig
+        self._assert_matches("dca_bot", DcaConfig)
+
+    def test_triangle_card_matches_triangleconfig(self) -> None:
+        from backtester.core.trianglesim import TriangleConfig
+        self._assert_matches("triangular_arbitrage", TriangleConfig)
+
+    def test_a_bot_card_must_run_through_botcli(self) -> None:
+        self.assertIn("bot", sc.KINDS)
+        self.assertIn("backtester.botcli", sc.RUNNERS)
+
+
 class TestSweepDrift(unittest.TestCase):
     """Card presets and research/sweep.py must describe the same experiment."""
 

@@ -128,6 +128,18 @@ HEADER_GLOSSARY = {
 # Define the unit and an example before the statistical qualification. A green
 # closed trade, a high ranking and a wallet deposit are three different facts.
 HEADER_GLOSSARY.update({
+    "setting": "One thing the bot set at its start, such as the ladder bounds, a rung price or a safety order. It is computed from the price at the start bar and the bot's settings.",
+    "value": "The value of the setting or metric in this row. Returns are fractions shown as percentages; USD amounts are simulated dollars, not your account.",
+    "metric": "One result of the bot's simulated run: total_return and hold_return compare the bot with buy-and-hold of the same capital; excess_return is their difference; costs_usd is fees plus slippage. Rows named after a triangle summarise that triangle.",
+    "config change": "How this configuration differs from the current settings; (current) is the current settings themselves.",
+    "train rank": "Mean rank of this configuration across the train (older) windows, 1 = best in every window. The candidate is the lowest mean rank; rank alone is in-sample and is never enough to adopt it.",
+    "train median return": "Median total return of this configuration across the train (older) windows and coins.",
+    "test median return": "Median total return of this configuration across the test (newer) windows and coins: the out-of-sample figure.",
+    "market": "Coinbase market id, base-quote: SOL-USD is dollars per SOL; SOL-ETH is ETH per SOL.",
+    "bid": "Best bid: the highest price a buyer is resting at. Selling at market fills here.",
+    "ask": "Best ask: the lowest price a seller is resting at. Buying at market fills here.",
+    "spread bps": "Ask minus bid as basis points of the mid. Each market order pays about half of it; a triangle cycle crosses three spreads.",
+    "quote age s": "Seconds since this quote was last confirmed by the stream. A book quote is refreshed every snapshot while connected; a ticker-only quote ages until the next trade.",
     "on": "Whether this metric votes (or this gate can block) in the compound call. Off rows are ignored by the call and by Backtest selected.",
     "component": "The metric or gate id. Metrics score the next 5m bar from -1 (down) to +1 (up); gates force FLAT when they block. 'live only' rows need live venue data and cannot be backtested here.",
     "style": "What kind of bet the metric makes (trend, momentum, reversion, breakout, flow, derivatives, context, lifecycle). The regime multiplies weights by style: trend styles count more in trends, reversion styles in ranges.",
@@ -240,6 +252,11 @@ for _source in ("live", "dry-run", "reported"):
     HEADER_GLOSSARY[f"{_source} realized apr"] = "Annualized simple rate inferred from observed earnings over the elapsed time. A short observation can imply a very high APR that will not persist. It is not the account's total net return or a guaranteed future yield."
 
 TAB_HELP = {
+    "tab-bots": "Three trading bots, all simulated: the grid bot (the resting ladder the extension trades), the triangle arbitrage bot (three-leg USD cycles through Coinbase cross pairs) and the DCA bot (base order, deeper safety orders, one take-profit). Backtest starts a bot at a past moment and shows what it set and what it made; Forward test runs it in dry-run on the live recorded price stream from now on; Auto-optimize tests a fixed grid of settings on every coin and adopts a new one only if it reliably beats the current one out of sample. No order is ever placed.",
+    "bots-sec-backtest": "The latest backtest of the selected bot: what it set at its start (the ladder, the safety orders, or the watched triangles) and the result, beside buy-and-hold of the same capital. One backtest is one path through history, not evidence that the bot is profitable.",
+    "bots-sec-forward": "The selected bot's dry-run forward test: everything the price recorder captured since it started, replayed through the bot as it arrives, with the same fill rules and costs as the backtest. A recorder gap longer than two minutes ends the coverage there, because what the market did unseen is unknown.",
+    "bots-sec-optimize": "The latest auto-optimize report. Each row is one configuration of the searched grid: its mean rank across the older (train) windows, and its median return in the train and newer (test) windows. The bot adopts the train winner only when it beats the current settings in significantly more test cells than it loses (sign test, p < 0.05) with a positive median gain.",
+    "bots-sec-prices": "The newest bid and ask of every streamed Coinbase market, from the recorder's level-2 books (ticker quotes for any market without a synced book). Quote age is seconds since that quote was last confirmed; a stale leg cannot be used by the triangle bot.",
     "tab-settings": "Settings choose the historical data, starting capital, trading costs and test splits. They also hold public wallet identifiers. Save settings to apply edits. These choices affect the simulation; they do not enable live orders.",
     "tab-strategies": "Build the roster, the list of strategy configurations to test. A strategy is a trading rule; its parameters specify the exact version. Adding one does not make it profitable. Explicit roster parameters take precedence over signal defaults.",
     "tab-signals": "Signals measure price or volume; strategies turn them into position decisions. Edit their default lookbacks and thresholds here. A 20-bar lookback means 20 observations, not always 20 days. Existing explicit roster settings are preserved.",
@@ -347,6 +364,20 @@ SIGNAL_HELP = {
 }
 
 CONTROL_HELP = {
+    "bots-bot": "Which bot the tab shows and the buttons act on: Grid bot, Triangle arbitrage bot or DCA bot. Each keeps its own settings, backtests, forward test and optimize report.",
+    "bots-coin": "Coin the grid and DCA bots trade in a backtest or forward test. Every coin with cached bars is listed; a forward test also needs the coin's Coinbase USD market in the price stream. The triangle bot watches every triangle at once, so this is disabled for it.",
+    "bots-start": "UTC date (or epoch seconds) at which the backtest starts the bot. The bot sets itself up from the price at that bar's close, as it would have then. Empty means 90 days before the end of the data; for the triangle bot, the start of the recording.",
+    "bots-days": "How many days the backtest runs from its start. Empty runs to the end of the data or to the first gap in it, whichever comes first.",
+    "bots-config": "Settings for the selected bot in name=value form; the placeholder shows the current values. Grid: range_pct (ladder half-width around the start price), rungs, capital_usd, spacing (geom or arith), deadband_bps. DCA: base_order_usd, safety_order_usd, max_safety_orders, price_deviation_pct, step_scale, volume_scale, take_profit_pct, stop_loss_pct (0 = none), cooldown_bars. Triangle: min_edge_bps (net of three fees), taker_fee_bps, latency_s, notional_usd, max_quote_age_s, cooldown_s, use_displayed_size. Apply saves them.",
+    "bots-apply": "Save the settings typed in the field to the selected bot. Unknown names and values the simulator cannot build are refused with the reason. A running forward test keeps the settings it started with; restart it to use the new ones.",
+    "bots-reset": "Restore the selected bot's default settings.",
+    "bots-backtest": "Start the selected bot at the chosen start and simulate it forward: grid and DCA on cached hourly bars with fees and adverse slippage; the triangle bot on recorded bid/ask quotes, or on a labelled one-minute candle proxy fetched from Coinbase when nothing is recorded for that time. Saved to the bot's results.",
+    "bots-forward-start": "Start (or restart) the selected bot's forward test now, on its current settings. It is a dry run on the future: the bot replays the live price stream as the recorder captures it. Starts the recorder if it is not running. No order is placed.",
+    "bots-forward-stop": "Stop the selected bot's forward test. Its results freeze at the stop time and stay visible.",
+    "bots-forward-refresh": "Replay what the recorder captured since the last refresh through the forward test now (the tab also does this when you switch bots).",
+    "bots-optimize": "Run the selected bot's fixed grid of settings on every cached coin (every recorded triangle for the triangle bot) over six 30-day windows. The older windows pick a candidate; the newer windows decide. It is adopted only if it beats the current settings out of sample by a sign test (p < 0.05), otherwise the current settings stay. Takes seconds to a minute.",
+    "bots-rec-start": "Start the price recorder: a detached background process subscribed to Coinbase's public ticker and level-2 channels for every streamed market. It writes one snapshot per second under the config directory's prices/ folder and keeps running after the console closes.",
+    "bots-rec-stop": "Stop the price recorder. Forward tests stop gaining coverage until it is started again, and the gap ends their coverage.",
     "indicator": "Current console phase and its labelled result. Backtest and paper figures are simulations; a source label is part of the number. This indicator is not a combined real-wallet balance or proof of profitable live trading.",
     "help-hint": "Move the pointer over a control, table header or value to read its definition. Press F1 for the full searchable help; use Tab and Page Up/Down to read it, then Esc to return without changing the current input.",
     "btn-save": "Save the edited Settings and apply them to later actions. This persists configuration; it does not start a backtest, background sweep or live trading.",
