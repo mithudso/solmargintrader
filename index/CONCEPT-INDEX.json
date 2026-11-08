@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T13:35:19+00:00",
+  "generatedAt": "2026-11-08T13:37:26+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -253,6 +253,10 @@
           "hits": 21
         },
         {
+          "path": "memory.md",
+          "hits": 21
+        },
+        {
           "path": "liquidity/src/aero_lp/providers.py",
           "hits": 21
         },
@@ -271,10 +275,6 @@
         {
           "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
           "hits": 20
-        },
-        {
-          "path": "memory.md",
-          "hits": 19
         },
         {
           "path": "soltui/commands.py",
@@ -455,11 +455,11 @@
           "hits": 128
         },
         {
-          "path": "backtester/core/gridsim.py",
-          "hits": 102
+          "path": "docs/FILES.md",
+          "hits": 104
         },
         {
-          "path": "docs/FILES.md",
+          "path": "backtester/core/gridsim.py",
           "hits": 102
         },
         {
@@ -508,7 +508,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 34
+          "hits": 35
         },
         {
           "path": "soltui/help.py",

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `e1d951d` (2026-11-08T13:35:19+00:00). 1916 tracked files, 32.9 MB.
+**Generated** from `index/INDEX.json` at commit `5898f07` (2026-11-08T13:37:26+00:00). 1916 tracked files, 32.9 MB.
 
 Regenerate with:
 
@@ -193,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1369 lines · 206,480 B · description: **extracted**
+`doc` · 1433 lines · 216,323 B · description: **extracted**
 
-**Purpose.** Version: 138 Delta: v129 to v138; retain forwardtest delivery and make full SolTUI coverage explicitly opt-in. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 106 Delta: v105 to v106; start EPIC-980 research tracks. Version: 128
 
 **Use.** Read it.
 
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 580 lines · 31,903 B · description: **extracted**
+`doc` · 615 lines · 33,315 B · description: **extracted**
 
-**Purpose.** Version: 72 Delta: v70 to v72; preserve incoming history and explicit coin-fit optional-suite instruction. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 60 Delta: v59 to v60; start EPIC-980 research tracks. Version: 66
 
 **Use.** Read it.
 
@@ -297,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18347 lines · 887,667 B · description: **extracted**
+`doc` · 18739 lines · 903,060 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
