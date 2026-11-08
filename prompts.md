@@ -439,3 +439,12 @@ All trading scripts, including indicators
 ```
 
 This answers the scope question for the request to extract each script's idea and objective and create strategy cards. Preserve the21 accepted strategy-labelled cards and expand to the remaining721 saved publications.
+
+
+## v58 - 2026-11-08 (incomplete-card location)
+
+```text
+If a card you create is incomplete, in that it is not a fully useable strategy or indicator with equations, sources, code, or parameters, then move it to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
+```
+
+Applies to the active expanded script-understanding pass and its accepted21-card subset. Preserve source interpretations and review usable computation separately from runtime implementation status. Coordinate with the independent PR97 card-relocation work rather than overwriting it.

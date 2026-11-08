@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import posixpath
 import re
 import sys
 from collections import Counter
@@ -19,13 +20,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.build_tradingview_script_profiles import FIELDS, WORK, inputs, records
-from scripts.check_tradingview_strategy_profiles import bounded, publication
+from scripts.check_tradingview_strategy_profiles import (
+    bounded,
+    card_location,
+    publication,
+)
 from scripts.check_tradingview_strategy_profiles import validate as validate_protected
 
 MANIFEST = Path("research/tradingview-script-understanding.json")
 INDEX = Path("research/TRADINGVIEW-SCRIPT-CARDS.md")
 CARD_DIR = Path("research/tradingview-script-cards")
+INCOMPLETE_DIR = Path("backtester/strategy_cards/incomplete/publication-profiles")
 PROTECTED = Path("research/tradingview-strategy-understanding.json")
+LOCATIONS = Path("research/tradingview-strategy-card-locations.json")
 FROZEN_MANIFEST = "1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5"
 REVIEW_FIELDS = {
     "in_scope",
@@ -36,6 +43,7 @@ REVIEW_FIELDS = {
     "data_available",
     "data_reason",
     "evidence",
+    "readiness",
 }
 
 
@@ -58,6 +66,29 @@ def read_jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def protected_entries() -> list[dict]:
+    frozen = json.loads((ROOT / PROTECTED).read_text())
+    moves = {}
+    if (ROOT / LOCATIONS).exists():
+        moves = {
+            row["publication_id"]: row
+            for row in json.loads((ROOT / LOCATIONS).read_text())["publications"]
+        }
+    entries = []
+    for row in frozen["publications"]:
+        entry = {**row, "in_scope": True, "protected": True}
+        if moves:
+            entry.update(
+                {
+                    "accepted_card_path": row["card_path"],
+                    "card_path": card_location(ROOT, row).relative_to(ROOT).as_posix(),
+                    "readiness": moves[row["publication_id"]]["readiness"],
+                }
+            )
+        entries.append(entry)
+    return entries
+
+
 def read_coverage(ranges: list, length: int) -> bool:
     end = 0
     for start, stop in sorted(ranges):
@@ -69,6 +100,8 @@ def read_coverage(ranges: list, length: int) -> bool:
 
 def check_review(profile: dict, source: dict, audit: dict) -> None:
     pid = profile["publication_id"]
+    if profile["in_scope"]:
+        check_readiness(profile)
     if any(
         audit.get(k) != v
         for k, v in {
@@ -104,9 +137,32 @@ def check_review(profile: dict, source: dict, audit: dict) -> None:
         raise ValueError(f"Independent review has unresolved findings: {pid}")
 
 
-def card_path(source: dict) -> Path:
+def check_readiness(profile: dict) -> None:
+    readiness = profile.get("readiness", {})
+    if (
+        readiness.get("status") not in {"usable-specification", "incomplete"}
+        or not readiness.get("reason")
+        or not isinstance(readiness.get("gaps"), list)
+        or any(
+            not isinstance(gap, str) or not gap.strip()
+            for gap in readiness.get("gaps", [])
+        )
+        or (readiness.get("status") == "incomplete" and not readiness["gaps"])
+        or (readiness.get("status") == "usable-specification" and readiness["gaps"])
+    ):
+        raise ValueError(
+            f"Missing or contradictory computation-readiness decision: {profile['publication_id']}"
+        )
+
+
+def card_path(source: dict, profile: dict) -> Path:
     slug = re.sub(r"[^a-z0-9]+", "_", source["name"].lower()).strip("_")[:80]
-    return CARD_DIR / f"tv_{source['publication_id'].lower()}_{slug or 'script'}.md"
+    directory = (
+        CARD_DIR
+        if profile.get("readiness", {}).get("status") == "usable-specification"
+        else INCOMPLETE_DIR
+    )
+    return directory / f"tv_{source['publication_id'].lower()}_{slug or 'script'}.md"
 
 
 def bullets(lines: list[str]) -> str:
@@ -122,6 +178,16 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
     pid = profile["publication_id"]
     status = (
         "independently reviewed" if reviewed else "draft; independent review pending"
+    )
+    readiness = profile.get(
+        "readiness",
+        {
+            "status": "incomplete",
+            "reason": "Computation-completeness review is pending.",
+            "gaps": [
+                "Complete and independently review the per-publication readiness assessment."
+            ],
+        },
     )
     sections = [
         "---",
@@ -140,6 +206,11 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
         f"**Classification:** {profile['classification']}. Native publication type: {source['native_type']}. Review: {status}.",
         "## Idea and objective",
         profile["purpose"],
+        "## Completeness and location",
+        f"**{readiness['status']}**. {readiness['reason']}",
+        bullets(readiness["gaps"])
+        if readiness["gaps"]
+        else "No blocking gap was identified for the principal computation described above. Runtime integration and performance remain separate questions.",
         "## How it works",
         bullets(profile["mechanism"]),
         "## Outputs and intended use",
@@ -179,7 +250,7 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
                 "## Earlier catalog references",
                 "The earlier catalog associated this publication with the entries below. These links preserve that history; they do not establish exact equivalence to this complete publication or executable support.",
                 "\n".join(
-                    f"- [{cid}](../../backtester/strategy_cards/{cid}.md)"
+                    catalog_link(cid, card_path(source, profile).parent)
                     for cid in related
                 ),
             ]
@@ -193,6 +264,15 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
         ]
     )
     return "\n\n".join(sections) + "\n"
+
+
+def catalog_link(cid: str, parent: Path) -> str:
+    target = Path("backtester/strategy_cards") / f"{cid}.md"
+    if not (ROOT / target).exists():
+        target = Path("backtester/strategy_cards/incomplete") / f"{cid}.md"
+    if not (ROOT / target).exists():
+        raise ValueError(f"Earlier catalog reference no longer resolves: {cid}")
+    return f"- [{cid}]({posixpath.relpath(target.as_posix(), parent.as_posix())})"
 
 
 def table_text(value: str) -> str:
@@ -224,8 +304,8 @@ def index_text(data: dict) -> str:
         "",
         "## Trading-related publications",
         "",
-        "| Publication | Native type | Classification | Idea and objective |",
-        "| --- | --- | --- | --- |",
+        "| Publication | Native type | Classification | Completeness | Idea and objective |",
+        "| --- | --- | --- | --- | --- |",
     ]
     for row in included:
         relative = (
@@ -234,7 +314,7 @@ def index_text(data: dict) -> str:
             else "../" + row["card_path"]
         )
         lines.append(
-            f"| [{table_text(row['name'])}]({relative}) (`{row['publication_id']}`) | {row['native_type']} | {row['classification']} | {table_text(row['purpose'])} |"
+            f"| [{table_text(row['name'])}]({relative}) (`{row['publication_id']}`) | {row['native_type']} | {row['classification']} | {row.get('readiness', {}).get('status', 'preserved strategy subset; separate readiness review')} | {table_text(row['purpose'])} |"
         )
     lines.extend(
         [
@@ -275,11 +355,19 @@ def render(draft: bool) -> dict:
     if sha((ROOT / PROTECTED).read_bytes()) != FROZEN_MANIFEST:
         raise ValueError("Previously accepted strategy manifest changed")
     validate_protected(ROOT)
-    old = json.loads((ROOT / PROTECTED).read_text())
-    entries = []
+    if not draft and not (ROOT / LOCATIONS).exists():
+        raise ValueError(
+            "The21 accepted cards still require completeness/location review"
+        )
+    previous = (
+        json.loads((ROOT / MANIFEST).read_text())
+        if (ROOT / MANIFEST).exists()
+        else None
+    )
+    entries = protected_entries()
     bindings = {}
-    for row in old["publications"]:
-        entries.append({**row, "in_scope": True, "protected": True})
+    if (ROOT / LOCATIONS).exists():
+        bindings[LOCATIONS.as_posix()] = sha((ROOT / LOCATIONS).read_bytes())
     for shard in work["shards"]:
         path = Path(work["shards"][shard]["output"])
         audit_path = Path(
@@ -306,6 +394,8 @@ def render(draft: bool) -> dict:
                         raise
             if not draft and not reviewed:
                 raise ValueError(f"No accepted independent review: {pid}")
+            if profile["in_scope"] and not draft:
+                check_readiness(profile)
             entry = {
                 k: source[k]
                 for k in (
@@ -348,7 +438,7 @@ def render(draft: bool) -> dict:
                     {**evidence, "start": start, "end": start + len(evidence["quote"])}
                 )
             if profile["in_scope"]:
-                target = card_path(source)
+                target = card_path(source, profile)
                 (ROOT / target).parent.mkdir(parents=True, exist_ok=True)
                 text = render_card(source, profile, reviewed=reviewed)
                 (ROOT / target).write_text(text)
@@ -357,6 +447,7 @@ def render(draft: bool) -> dict:
                         "purpose": profile["purpose"],
                         "card_path": target.as_posix(),
                         "card_sha256": sha(text.encode()),
+                        "readiness": profile.get("readiness", {"status": "pending"}),
                     }
                 )
             else:
@@ -365,6 +456,8 @@ def render(draft: bool) -> dict:
         bindings[path.as_posix()] = sha((ROOT / path).read_bytes())
         if audit_path.exists():
             bindings[audit_path.as_posix()] = sha((ROOT / audit_path).read_bytes())
+    if previous is not None:
+        remove_obsolete(previous["publications"], entries)
     data = {
         "schema_version": 1,
         "version": "1.0.0",
@@ -403,6 +496,25 @@ def render(draft: bool) -> dict:
         "cards": sum(row["in_scope"] for row in entries),
         "excluded": sum(not row["in_scope"] for row in entries),
     }
+
+
+def remove_obsolete(previous: list[dict], current: list[dict]) -> None:
+    """Move only unchanged, task-generated projections after readiness changes."""
+    current_paths = {row["card_path"] for row in current if row["in_scope"]}
+    for row in previous:
+        if row["protected"] or not row["in_scope"] or row["card_path"] in current_paths:
+            continue
+        path = bounded(ROOT, row["card_path"])
+        if path.parent not in {ROOT / CARD_DIR, ROOT / INCOMPLETE_DIR}:
+            raise ValueError(
+                f"Obsolete projection escapes task-owned directories: {path}"
+            )
+        if path.exists():
+            if sha(path.read_bytes()) != row["card_sha256"]:
+                raise ValueError(
+                    f"Preserve edited obsolete card instead of deleting it: {path}"
+                )
+            path.unlink()
 
 
 def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
@@ -444,7 +556,14 @@ def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
             )
         ):
             raise ValueError(f"Accepted source inventory metadata drifted: {pid}")
-    protected = {row["publication_id"]: row for row in frozen["publications"]}
+    protected = {row["publication_id"]: row for row in protected_entries()}
+    if (
+        data["state"] == "accepted"
+        and LOCATIONS.as_posix() not in data["artifact_hashes"]
+    ):
+        raise ValueError(
+            "Accepted strategy cards lack a final completeness/location receipt"
+        )
     actual_protected = {
         row["publication_id"] for row in data["publications"] if row["protected"]
     }
@@ -488,11 +607,7 @@ def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
     for row in data["publications"]:
         pid = row["publication_id"]
         source = inventory[pid]
-        if row["protected"] and row != {
-            **protected[pid],
-            "in_scope": True,
-            "protected": True,
-        }:
+        if row["protected"] and row != protected[pid]:
             raise ValueError(f"Accepted protected profile mapping changed: {pid}")
         if any(row[k] != source[k] for k in source if k in row):
             raise ValueError(f"Publication source metadata drifted: {pid}")
@@ -535,6 +650,14 @@ def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
             elif data["state"] == "accepted":
                 raise ValueError(f"Unreviewed publication: {pid}")
             if row["in_scope"]:
+                if data["state"] == "accepted":
+                    check_readiness(profile)
+                if row["readiness"] != profile.get("readiness", {"status": "pending"}):
+                    raise ValueError(f"Completeness decision drifted: {pid}")
+                if row["card_path"] != card_path(row, profile).as_posix():
+                    raise ValueError(
+                        f"Incomplete/usable card location disagrees with review: {pid}"
+                    )
                 expected_body = render_card(row, profile, reviewed=reviewed)
                 if bounded(ROOT, row["card_path"]).read_text() != expected_body:
                     raise ValueError(
@@ -556,7 +679,9 @@ def check(source_root: Path | None = None, allow_draft: bool = False) -> dict:
                 if raw[evidence["start"] : evidence["end"]] != evidence["quote"]:
                     raise ValueError(f"Raw-source evidence mismatch: {pid}")
     if rendered != {
-        path.relative_to(ROOT).as_posix() for path in (ROOT / CARD_DIR).glob("*.md")
+        path.relative_to(ROOT).as_posix()
+        for directory in (CARD_DIR, INCOMPLETE_DIR)
+        for path in (ROOT / directory).glob("*.md")
     }:
         raise ValueError("Orphaned or missing rendered script documentation card")
     return {

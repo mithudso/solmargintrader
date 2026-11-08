@@ -1,6 +1,6 @@
 # Expanded TradingView script-profile authoring prompts
 
-Version:1.0.0. Delta: create disjoint source-semantic authoring briefs for the user-confirmed full scope.
+Version:1.1.0. Delta: add the user-requested completeness and incomplete-location decision.
 
 User request: For all of the strategies in the script directory, extract and understand the idea and what it's trying to accomplish, and create strategy cards for each one.
 
@@ -21,3 +21,9 @@ B2: batchb, output research/tradingview-script-profiles/shard-b.jsonl,241 public
 B3: batchc, output research/tradingview-script-profiles/shard-c.jsonl,240 publications,1269024 description characters.
 
 The authoritative ID lists and input hashes are research/tradingview-script-profile-work.json. Authors may use named helper/source-cache files, their own output, the existing coverage ledger and source/card references named by those records. Synthesis tier:sonnet mapped to native gpt-6.1-sol. Effort:Read the named files, then write the artifact. Three child agents run concurrently; independent reviewers follow each completed batch.
+
+## Completeness refinement
+
+User: If a card you create is incomplete, in that it is not a fully useable strategy or indicator with equations, sources, code, or parameters, then move it to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
+
+Every in-scope record also contains readiness:{status:usable-specification|incomplete,reason:string,gaps:[string]}. A usable specification supplies a reproducible principal signal, indicator calculation, financial function or strategy/risk procedure with substantive equations, code or parameterized rules. A list of knobs without computation, or a hidden core algorithm, is incomplete. Missing Pine source alone does not defeat a complete disclosed calculation. An indicator does not need portfolio entry/exit rules to be a usable indicator. Missing required formulas and computation contracts stay gaps. Authors add specific readiness to new records and revisit earlier records after full authoring. Independent reviewers must assess readiness from complete descriptions too. Parent owns physical paths and relocation.

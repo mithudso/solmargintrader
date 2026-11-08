@@ -34,7 +34,7 @@ A6. Review batchb source/semantic pairs — needs:A3 — produces: research/trad
 A7. Review batchc source/semantic pairs — needs:A4 — produces: research/tradingview-script-profile-audits/shard-c.jsonl.
 A8. Render separate documentation cards, bind and deliver all in-scope cards — needs:A2-A7 and frozen21 — produces: validated complete script-card collection.
 
-Plan B:A1 is satisfied by the executed preparation helper. B1=A2,B2=A3,B3=A4; B4=A5,B5=A6,B6=A7 follow their corresponding authors. Root performs deterministic helper/render/validation integration and authorized Git delivery. High-risk:none; existing schema, source-binding and hash validators verify the shared outputs. Native model mapping:sonnet tier to gpt-6.1-sol; effort is carried by the brief, with no unsupported model labels.
+Plan B:A1 is satisfied by the executed preparation helper. B1=A2,B2=A3,B3=A4; B4=A5,B5=A6,B6=A7 follow their corresponding authors. B7 separately reviews the21 preserved cards for the owner-requested completeness/location refinement. Root performs deterministic helper/render/validation integration and authorized Git delivery. High-risk:none; existing schema, source-binding and hash validators verify the shared outputs. Native model mapping:sonnet tier to gpt-6.1-sol; effort is carried by the brief, with no unsupported model labels.
 
 ## Open questions
 
@@ -42,7 +42,7 @@ Source gaps stay explicit. No external research is requested or required. The sk
 
 ## Agents
 
-B1-B3:running disjoint semantic authors (TASK948-TASK950). B4-B6:pending independent reviewers. Runtime concurrency limit is3 child agents.
+B1-B3:running disjoint semantic authors (TASK948-TASK950). B4-B6:pending independent reviewers (TASK954-TASK956). B7:accepted21 completeness/location review (TASK957), added by the user completeness refinement. Runtime concurrency limit is3 child agents.
 
 ## Artifacts written
 
@@ -62,3 +62,5 @@ scripts/build_tradingview_script_profiles.py; research/tradingview-script-profil
 10 selfcheck:pending.
 
 Architecture decision: The expanded cards live under research/tradingview-script-cards and link prior catalog entries. They do not alter the executable roster, earlier catalog decisions or frozen21 cards. [src: stele:KNOW-951]
+
+Completeness refinement: Each in-scope source record includes readiness.status, reason and blocking gaps. Incomplete expanded companion cards go beneath backtester/strategy_cards/incomplete/publication-profiles. Preserve the accepted21 semantic manifest and card bytes while binding physical moves through a separately reviewed location receipt. [src: prompts.md] [src: stele:KNOW-951]

@@ -6,7 +6,11 @@ import copy
 import unittest
 
 from scripts.render_tradingview_script_cards import (
+    CARD_DIR,
+    INCOMPLETE_DIR,
     REVIEW_FIELDS,
+    card_path,
+    check_readiness,
     check_review,
     identity,
     literal,
@@ -20,6 +24,11 @@ class SourceReviewTests(unittest.TestCase):
             "publication_id": "demo",
             "in_scope": True,
             "purpose": "Use the source's ten-bar filter to describe price direction.",
+            "readiness": {
+                "status": "usable-specification",
+                "reason": "A ten-bar arithmetic mean is defined.",
+                "gaps": [],
+            },
         }
         self.source = {
             "source_sha256": "a" * 64,
@@ -97,6 +106,28 @@ class SourceReviewTests(unittest.TestCase):
         quote = "```\n<script>not executable evidence</script>\n````"
         text = literal(quote)
         self.assertEqual(text, "`````text\n" + quote + "\n`````")
+
+    def test_incomplete_card_is_physically_under_requested_directory(self) -> None:
+        source = {"publication_id": "demo", "name": "A source indicator"}
+        self.assertEqual(card_path(source, self.profile).parent, CARD_DIR)
+        profile = {
+            **self.profile,
+            "readiness": {
+                "status": "incomplete",
+                "reason": "The adaptive weight is hidden.",
+                "gaps": ["Adaptive weight equation."],
+            },
+        }
+        self.assertEqual(card_path(source, profile).parent, INCOMPLETE_DIR)
+        self.assertIn(
+            "backtester/strategy_cards/incomplete/", str(card_path(source, profile))
+        )
+
+    def test_usable_status_cannot_coexist_with_blocking_computation_gap(self) -> None:
+        profile = copy.deepcopy(self.profile)
+        profile["readiness"]["gaps"] = ["Core filter update is not defined."]
+        with self.assertRaisesRegex(ValueError, "contradictory"):
+            check_readiness(profile)
 
 
 if __name__ == "__main__":

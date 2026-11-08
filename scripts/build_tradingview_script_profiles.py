@@ -189,6 +189,15 @@ def validate_record(row: dict, source: dict) -> None:
         or not row.get("data_reason")
     ):
         raise ValueError(f"Missing source-grounded data review: {pid}")
+    if "readiness" in row:
+        readiness = row["readiness"]
+        if (
+            readiness.get("status") not in {"usable-specification", "incomplete"}
+            or not readiness.get("reason")
+            or not isinstance(readiness.get("gaps"), list)
+            or (readiness["status"] == "incomplete" and not readiness["gaps"])
+        ):
+            raise ValueError(f"Invalid computation-completeness decision: {pid}")
 
 
 def records(shard: str, complete: bool = True) -> list[dict]:

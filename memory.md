@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 98
-Delta: v97 to v98; checkpoint all-script authoring and preserve accepted strategy cards.
+Version: 99
+Delta: v98 to v99; apply user-requested incomplete-card relocation to expanded profiles.
 
 ## v1 - 2026-11-06
 
@@ -1006,3 +1006,12 @@ The private worktree merged optimizer docs a70d62f and committed4f011b0. PR96 is
 The expanded interpretations will use separate documentation cards under research/tradingview-script-cards and an all-script index. Preserve the accepted21 files, manifest hash1d40b13ab4eb8976f7cf2f419aa70932c9c1aab45ea54e19342d14736724ecd5 and prior source catalog. Existing executable/measured cards and registry are untouched. Existing catalog links do not claim exact publication equivalence. Full-source exclusions retain reasons/evidence in the manifest. Trading-session parsers and financial infrastructure stay in scope even without a market edge. See KNOW951 for this architecture.
 
 Remaining: finish all three authoring shards; independently read/review every new source/profile pair, including exclusions; repair findings; render all in-scope documentation cards; bind deterministic output to source/profile/reviewer hashes; validate source coverage and frozen21; run p stage9 sourced append and executed stage10 selfcheck; finish final-head CI, merge PR96 and verify remote delivery; refresh portable collection; clean only owned branch/worktree.
+
+
+## v99 - 2026-11-08 (incomplete cards inside requested directory)
+
+The user now requires every newly created incomplete card under backtester/strategy_cards/incomplete. All three authors received the readiness schema refinement and will backfill their earlier records. Independently review disclosed computation completeness, not merely spec-only status or absent code. Preserve complete mathematical indicators even without portfolio orders. Place incomplete expanded documentation profiles beneath backtester/strategy_cards/incomplete/publication-profiles so companion documentation does not enter the strict executable-card loader. Root owns the relocation and deterministic links.
+
+Separate TASK941/PR97 is actively moving791 older generic cards while retaining292 usable specifications and59 originals. Do not merge or modify its unfinished branch. Once it lands, integrate its loader/coverage changes and preserve its readiness evidence. The13 accepted native-strategy enrichments overlap its baseline files; preserve their enriched text, update readiness bindings after review, and resolve locations without invalidating prior semantic approval. Accepted21 manifest/card-byte hashes remain the prior source-reading receipt; a separate location receipt can bind relocated unchanged bytes. No original checkout edits are authorized while the other live session holds it.
+
+Remaining: complete all721 original explanations and readiness decisions; independently audit new profiles plus21-card readiness/locations; integrate landed PR97; implement correct incomplete placement and source/profile/review/path gates; final delivery remains conditional on full scope. Draft helper checkpoint9e84032 is pushed to PR96.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T11:27:06+00:00",
+  "generatedAt": "2026-11-08T11:36:58+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -847,7 +847,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 264,
+      "matchingFiles": 265,
       "shown": 30,
       "files": [
         {
@@ -1556,7 +1556,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 16
+          "hits": 17
         },
         {
           "path": "backtester/core/dcasim.py",
@@ -1824,15 +1824,15 @@
           "hits": 15
         },
         {
+          "path": "memory.md",
+          "hits": 14
+        },
+        {
           "path": "backtester/core/gridsim.py",
           "hits": 14
         },
         {
           "path": "backtester/core/report.py",
-          "hits": 13
-        },
-        {
-          "path": "memory.md",
           "hits": 13
         },
         {

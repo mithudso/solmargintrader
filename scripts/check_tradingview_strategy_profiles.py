@@ -61,6 +61,77 @@ def bounded(root: Path, name: str) -> Path:
     return path
 
 
+def card_location(repo: Path, profile: dict) -> Path:
+    """Resolve reviewed moves while retaining the accepted semantic manifest.
+
+    A location receipt cannot change accepted card bytes. It binds a separately
+    reviewed completeness decision to each final path after the owner's move.
+    """
+    receipt_path = repo / "research/tradingview-strategy-card-locations.json"
+    if not receipt_path.exists():
+        return bounded(repo, profile["card_path"])
+    receipt = json.loads(receipt_path.read_text())
+    accepted_path = repo / "research/tradingview-strategy-understanding.json"
+    if (
+        receipt.get("schema_version") != 1
+        or receipt.get("verdict") != "pass"
+        or receipt.get("accepted_manifest_sha256") != sha256(accepted_path.read_bytes())
+    ):
+        raise ValueError("Strategy-card location review is stale or unaccepted")
+    entries = {row["publication_id"]: row for row in receipt["publications"]}
+    expected = {
+        row["publication_id"]
+        for row in json.loads(accepted_path.read_text())["publications"]
+    }
+    if len(entries) != len(receipt["publications"]) or set(entries) != expected:
+        raise ValueError(
+            "Strategy-card location review must cover all21 accepted profiles"
+        )
+    entry = entries[profile["publication_id"]]
+    if (
+        entry["original_card_path"] != profile["card_path"]
+        or entry["card_sha256"] != profile["card_sha256"]
+        or entry["source_sha256"] != profile["source_sha256"]
+        or entry["raw_description_sha256"] != profile["raw_description_sha256"]
+    ):
+        raise ValueError(
+            "Strategy-card relocation does not preserve its accepted source/card binding"
+        )
+    readiness = entry["readiness"]
+    if (
+        readiness["status"] not in {"usable-specification", "incomplete"}
+        or not readiness.get("reason")
+        or not entry.get("evidence")
+        or (readiness["status"] == "incomplete" and not readiness.get("gaps"))
+    ):
+        raise ValueError(
+            "Strategy-card relocation lacks a reviewed completeness decision"
+        )
+    end = 0
+    for start, stop in sorted(entry.get("source_read_ranges", [])):
+        if not 0 <= start <= end <= stop <= profile["description_characters"]:
+            raise ValueError(
+                "Strategy-card completeness review has unread source ranges"
+            )
+        end = stop
+    if end != profile["description_characters"]:
+        raise ValueError("Strategy-card completeness review lacks a full-source read")
+    for evidence in entry["evidence"]:
+        if (
+            not evidence.get("quote")
+            or not 0 <= evidence["start"] < evidence["end"] <= end
+            or evidence["end"] - evidence["start"] != len(evidence["quote"])
+        ):
+            raise ValueError("Strategy-card completeness evidence has invalid offsets")
+    target = bounded(repo, entry["current_card_path"])
+    incomplete = "backtester/strategy_cards/incomplete/"
+    if (readiness["status"] == "incomplete") != entry["current_card_path"].startswith(
+        incomplete
+    ):
+        raise ValueError("Strategy-card completeness disagrees with its location")
+    return target
+
+
 def legacy_normalize(text: str) -> str:
     """Apply the existing ledger's tv-description-v2 presentation rules."""
     text = re.sub(
@@ -134,7 +205,7 @@ def validate(repo: Path, source_root: Path | None = None) -> dict:
             row[field] != entry[field] for field in ("source_path", "source_sha256")
         ):
             raise ValueError(f"Profile/inventory source mismatch: {pid}")
-        path = bounded(repo, row["card_path"])
+        path = card_location(repo, row)
         raw = path.read_bytes()
         if sha256(raw) != row["card_sha256"]:
             raise ValueError(
@@ -246,6 +317,18 @@ def validate(repo: Path, source_root: Path | None = None) -> dict:
                     ):
                         raise ValueError(
                             f"Legacy evidence offsets do not bind: {row['publication_id']}"
+                        )
+            locations = repo / "research/tradingview-strategy-card-locations.json"
+            if locations.exists():
+                entry = next(
+                    item
+                    for item in json.loads(locations.read_text())["publications"]
+                    if item["publication_id"] == row["publication_id"]
+                )
+                for evidence in entry["evidence"]:
+                    if text[evidence["start"] : evidence["end"]] != evidence["quote"]:
+                        raise ValueError(
+                            f"Completeness evidence does not bind: {row['publication_id']}"
                         )
     return {
         "inventory": len(inventory),
