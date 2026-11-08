@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 119
-Delta: v118 to v119; record Jupiter advanced order request.
+Version: 120
+Delta: v119 to v120; record request to continue investigation.
+
+## v120 - 2026-11-08
+
+```text
+So investigate it. WHy are you stopping because something needs to be done. Do what's necessary to complete the task
+```
 
 ## v119 - 2026-11-08
 

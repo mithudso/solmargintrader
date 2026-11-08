@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 210
-Delta: v209 to v210; record draft checkpoint and focused test result.
+Version: 211
+Delta: v210 to v211; record teardown fix and token discovery.
+
+## v211 - 2026-11-08
+
+TASK-1044 continuation: fixed _docs_view_changed teardown NoMatches; previously failing test passes. Added Jupiter Tokens API v2 discovery command and UI search; rejects missing decimals, ambiguous symbols and unverified resolution, displays full mint. Five focused tests pass. Jupiter quote, on-chain mint checks, balance, fees, exact Swap v2 transaction verification, confirmed submission and reconciliation remain unimplemented; UI remains disarmed and labels Jupiter unavailable. The docs and backtester CI failures were stale generated index. Rebuild index after staging final files. Draft PR 134 remains open. No live transaction.
 
 ## v209 - 2026-11-08
 

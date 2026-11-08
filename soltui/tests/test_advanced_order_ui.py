@@ -14,6 +14,22 @@ def env(result):
 
 
 class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
+    async def test_token_search_displays_full_mint_without_arming(self):
+        from textual.widgets import Static
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-advanced-order"
+            await pilot.pause(.3)
+            query = app.query_one("#advanced-token-query", Input)
+            query.value = "SOL"
+            mint = "So11111111111111111111111111111111111111112"
+            app._advanced_token_search_done("SOL", env({"tokens": [{"symbol": "SOL", "name": "Solana",
+                "mint": mint, "decimals": 9, "verified": True}]}))
+            self.assertIn(mint, str(app.query_one("#advanced-token-results", Static).render()))
+            self.assertFalse(app.query_one("#advanced-armed", Checkbox).value)
+            app._advanced_token_search_done("STALE", env({"tokens": []}))
+            self.assertIn(mint, str(app.query_one("#advanced-token-results", Static).render()))
+
     async def test_unsupported_choices_block_live_actions_and_preserve_manual_text(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:

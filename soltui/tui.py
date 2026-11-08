@@ -4743,6 +4743,11 @@ class SolTuiApp(App):
                                   ("% available balance", "percent"), ("Coin units", "base")],
                                  value="auto", allow_blank=False, id="advanced-unit")
                 with Horizontal(classes="form-row"):
+                    yield Input(placeholder="Jupiter token symbol or mint", id="advanced-token-query")
+                    yield Button("Find Jupiter token", id="advanced-token-search")
+                yield Static("Search results include full mint addresses. Jupiter order execution is unavailable until verified.",
+                             id="advanced-token-results", markup=False)
+                with Horizontal(classes="form-row"):
                     yield Input(placeholder="Limit / take-profit price (quote currency)", id="advanced-limit-price", disabled=True)
                     yield Input(placeholder="Stop trigger price (quote currency)", id="advanced-stop-price", disabled=True)
                 with Horizontal(classes="form-row"):
@@ -4832,6 +4837,36 @@ class SolTuiApp(App):
         self.query_one("#coinbase-order-armed", Checkbox).value = False
         self.query_one("#coinbase-order-product", Input).value = str(event.row_key.value)
         self.query_one("#coinbase-order-message", Static).update("Pair selected. Review the amount before placing an order.")
+
+    @on(Button.Pressed, "#advanced-token-search")
+    @on(Input.Submitted, "#advanced-token-query")
+    def _advanced_token_search(self) -> None:
+        query = self.query_one("#advanced-token-query", Input).value.strip()
+        if not query:
+            self.query_one("#advanced-token-results", Static).update("Enter a token symbol or mint.")
+            return
+        self.query_one("#advanced-token-results", Static).update("Searching Jupiter tokens…")
+        self._advanced_token_search_worker(query)
+
+    @work(thread=True, exit_on_error=False, group="advanced-token-search")
+    def _advanced_token_search_worker(self, query: str) -> None:
+        try:
+            env = self._call("jupiter.tokens_search", {"query": query}, quiet=True)
+            self.call_from_thread(self._advanced_token_search_done, query, env)
+        except (RuntimeError, NoMatches):
+            pass
+
+    def _advanced_token_search_done(self, query: str, env: dict[str, Any]) -> None:
+        if not self.query("#advanced-token-query") or self.query_one("#advanced-token-query", Input).value.strip() != query:
+            return
+        target = self.query_one("#advanced-token-results", Static)
+        if not env.get("ok"):
+            target.update(self._msg(env))
+            return
+        tokens = (env.get("result") or {}).get("tokens", [])
+        target.update("\n".join(f"{t['symbol']} · {t['name']} · {t['mint']} · decimals {t['decimals']} · "
+                                f"{'verified' if t['verified'] else 'unverified'}" for t in tokens)
+                      or "No matching tokens.")
 
     def _advanced_values(self) -> tuple[str, str, str, str, str, str]:
         venue = str(self.query_one("#advanced-venue", Select).value)
@@ -6765,8 +6800,8 @@ class SolTuiApp(App):
     def _docs_view_changed(self) -> None:
         """Live "unsaved" marker, so a lost-on-navigate edit is visible
         before it is lost, not just guarded against after the fact."""
-        if self._docs_current_path is None:
-            return
+        if self._docs_current_path is None or not self.query("#docs-view") or not self.query("#docs-view-status"):
+            return  # A queued change can arrive while the screen is unmounting.
         view = self.query_one("#docs-view", TextArea)
         status = self.query_one("#docs-view-status", Static)
         base = (f"{self._docs_current_path} — "
