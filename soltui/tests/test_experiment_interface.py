@@ -108,6 +108,11 @@ while True:
         with patch:
             jobs.launch(self.store, self.id, self.settings)
         self.wait(lambda: processes[0].returncode is not None)
+        # wait() sets returncode before the detached reaper has reconciled the
+        # database. While it holds the lease, status may still report running.
+        # Require the terminal state as well as the process exit, not a timing
+        # assumption about which thread next acquires the lease.
+        self.wait(lambda: jobs.status(self.store, self.id)["status"] == "interrupted")
         report = jobs.status(self.store, self.id)
         self.assertEqual(report["status"], "interrupted")
         self.assertIn("deterministic crash evidence", report["log_tail"])
@@ -279,7 +284,9 @@ class Screen(unittest.IsolatedAsyncioTestCase):
         from textual.widgets import Button, Input, Select, Static
         from soltui.experiment_screens import ExperimentScreen
 
+        calls = []
         def call(name, params):
+            calls.append((name, params))
             if name == "prices.status":
                 return {"ok": True, "result": {"live": True, "snapshot_age_s": 1,
                         "prices": {"SOL-USD": {"bid": 99., "ask": 101., "quote_age_s": 2}}}}
@@ -298,6 +305,7 @@ class Screen(unittest.IsolatedAsyncioTestCase):
             await pilot.app.workers.wait_for_complete()
             await pilot.pause()
             screen = pilot.app.screen
+            self.assertIn(("experiments.schema", {"bot": "grid", "asset": "SOL"}), calls)
             self.assertIn("$100", str(screen.query_one("#exp-live-price", Static).render()))
             self.assertIn("percent points", str(screen.query_one("#exp-units", Static).render()))
             self.assertEqual(float(screen.query_one("#exp-start", Input).value), 9.)
@@ -333,3 +341,7 @@ class Screen(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             self.assertEqual(screen.query_one("#exp-stop", Input).value, before)
             self.assertIn("nonzero baseline", str(screen.query_one("#exp-status", Static).render()))
+            screen.query_one("#exp-coins", Input).value = "BTC"
+            await pilot.pause()
+            screen.preview_search()
+            self.assertIn("Coin scope changed", str(screen.query_one("#exp-status", Static).render()))

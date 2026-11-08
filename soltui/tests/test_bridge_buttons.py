@@ -10,6 +10,7 @@ from pathlib import Path
 from soltui import commands, tui
 
 SRC = Path(tui.__file__).read_text()
+UI_ONLY = {"#bot-settings-defaults", "#bot-settings-cancel"}
 
 
 def pressed_selectors() -> list[str]:
@@ -25,17 +26,19 @@ def pressed_selectors() -> list[str]:
 
 
 class ButtonRegistryTests(unittest.TestCase):
-    def test_there_are_one_hundred_six_button_handlers(self) -> None:
-        self.assertEqual(len(pressed_selectors()), 106)
+    def test_button_handler_count(self) -> None:
+        self.assertEqual(len(pressed_selectors()), 111)
 
     def test_every_button_handler_maps_to_a_registered_command(self) -> None:
         for selector in pressed_selectors():
+            if selector in UI_ONLY:
+                continue
             with self.subTest(button=selector):
                 self.assertIn(selector, tui.BUTTON_COMMANDS, "add it to tui.BUTTON_COMMANDS")
                 self.assertIn(tui.BUTTON_COMMANDS[selector], commands.COMMANDS)
 
     def test_no_stale_mapping_entries(self) -> None:
-        self.assertEqual(sorted(tui.BUTTON_COMMANDS), sorted(pressed_selectors()))
+        self.assertEqual(sorted(tui.BUTTON_COMMANDS), sorted(set(pressed_selectors()) - UI_ONLY))
 
     def test_every_button_widget_has_a_handler(self) -> None:
         ids = set(re.findall(r'Button\([^)]*?id="([^"]+)"', SRC, flags=re.S))

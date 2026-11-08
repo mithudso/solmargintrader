@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T20:39:43+00:00",
+  "generatedAt": "2026-11-08T21:00:15+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -91,7 +91,7 @@
         },
         {
           "path": "soltui/tui.py",
-          "hits": 46
+          "hits": 49
         },
         {
           "path": "soltui/commands.py",
@@ -103,7 +103,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 35
+          "hits": 36
         },
         {
           "path": "executor/src/executor/registry.py",
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1317,
+      "matchingFiles": 1319,
       "shown": 30,
       "files": [
         {
@@ -508,7 +508,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 30
+          "hits": 31
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 558,
+      "matchingFiles": 559,
       "shown": 30,
       "files": [
         {
@@ -761,6 +761,10 @@
           "hits": 92
         },
         {
+          "path": "soltui/tests/test_bots.py",
+          "hits": 81
+        },
+        {
           "path": "research/tradingview-card-readiness.json",
           "hits": 79
         },
@@ -785,12 +789,12 @@
           "hits": 53
         },
         {
-          "path": "docs/TRADINGVIEW-CARD-READINESS.md",
-          "hits": 51
+          "path": "soltui/bots.py",
+          "hits": 52
         },
         {
-          "path": "soltui/bots.py",
-          "hits": 50
+          "path": "docs/TRADINGVIEW-CARD-READINESS.md",
+          "hits": 51
         },
         {
           "path": "research/tradingview-strategy-understanding.json",
@@ -805,19 +809,19 @@
           "hits": 38
         },
         {
-          "path": "soltui/tests/test_bots.py",
-          "hits": 37
-        },
-        {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
           "hits": 36
         },
         {
-          "path": "soltui/help.py",
-          "hits": 32
+          "path": "soltui/tests/test_experiment_runner.py",
+          "hits": 36
         },
         {
           "path": "backtester/README.md",
+          "hits": 31
+        },
+        {
+          "path": "soltui/help.py",
           "hits": 31
         },
         {
@@ -830,10 +834,6 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 27
-        },
-        {
-          "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 27
         }
       ],
@@ -1162,7 +1162,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 82
+          "hits": 87
         },
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 258,
+      "matchingFiles": 260,
       "shown": 30,
       "files": [
         {
@@ -1564,12 +1564,12 @@
           "hits": 29
         },
         {
-          "path": "memory.md",
-          "hits": 26
-        },
-        {
           "path": "research/RANKED_LISTS.md",
           "hits": 25
+        },
+        {
+          "path": "memory.md",
+          "hits": 24
         },
         {
           "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
@@ -1584,15 +1584,15 @@
           "hits": 21
         },
         {
+          "path": "soltui/experiment_runner.py",
+          "hits": 17
+        },
+        {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md",
           "hits": 16
         },
         {
           "path": "backtester/core/dcasim.py",
-          "hits": 15
-        },
-        {
-          "path": "soltui/experiment_runner.py",
           "hits": 15
         },
         {
@@ -1805,7 +1805,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 216,
+      "matchingFiles": 217,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 209,
+      "matchingFiles": 211,
       "shown": 30,
       "files": [
         {
@@ -1964,7 +1964,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 23
+          "hits": 21
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -1983,11 +1983,11 @@
           "hits": 19
         },
         {
-          "path": "backtester/core/dcasim.py",
-          "hits": 15
+          "path": "soltui/experiment_runner.py",
+          "hits": 17
         },
         {
-          "path": "soltui/experiment_runner.py",
+          "path": "backtester/core/dcasim.py",
           "hits": 15
         },
         {
@@ -2031,6 +2031,10 @@
           "hits": 8
         },
         {
+          "path": "soltui/tests/test_experiment_runner.py",
+          "hits": 8
+        },
+        {
           "path": "backtester/tests/test_cpcv.py",
           "hits": 7
         },
@@ -2056,10 +2060,6 @@
         },
         {
           "path": "research/results/cpcv_tables.md",
-          "hits": 6
-        },
-        {
-          "path": "soltui/tests/test_bgqueue.py",
           "hits": 6
         }
       ],

@@ -312,6 +312,77 @@ class NativeExperiments(unittest.TestCase):
         self.assertEqual(result["failed_cells"], 0)
         self.assertEqual(self.store.get_run(run["id"])["frozen_candidate"], "1")
 
+    def test_unrelated_failed_candidate_does_not_veto_a_matched_winner(self):
+        coins = ["SOL", "AAA", "BBB", "CCC", "DDD"]
+        for seed, coin in enumerate(coins[1:], 5):
+            write_hourly(self.data, coin, n=24 * 12, seed=seed)
+        run = runner.prepare_experiment("grid", self.settings,
+            space={"range_pct": {"kind": "enum", "values": [5.0, 25.0]}},
+            coins=coins, windows=4, window_days=3, store=self.store)
+        def some_fail(bot, cfg, data, interval, costs):
+            if cfg["range_pct"] == 25:
+                raise ValueError("unrelated candidate failed")
+            return self.fake(bot, cfg, data, interval, costs)
+        with mock.patch.object(bots, "run_bars", side_effect=some_fail):
+            result = runner.run_experiment(run["id"], self.settings, final=True, adopt=True, store=self.store)
+        self.assertGreater(result["failed_cells"], 0)
+        self.assertTrue(result["verdict"]["adopted"])
+        self.assertEqual(bots.get_config("grid")["range_pct"], 5)
+
+    def test_failed_baseline_cannot_promote(self):
+        run = self.prepare()
+        def fail_baseline(bot, cfg, data, interval, costs):
+            if cfg["range_pct"] == 15:
+                raise ValueError("baseline failed")
+            return self.fake(bot, cfg, data, interval, costs)
+        with mock.patch.object(bots, "run_bars", side_effect=fail_baseline):
+            result = runner.run_experiment(run["id"], self.settings, final=True, adopt=True, store=self.store)
+        self.assertFalse(result["verdict"]["adopted"])
+        self.assertIsNone(self.store.get_run(run["id"])["frozen_candidate"])
+
+    def test_coin_can_adopt_a_labeled_incremental_improvement_with_three_holdouts(self):
+        write_hourly(self.data, "SOL", n=24 * 18)
+        run = runner.prepare_experiment("grid", self.settings, space=SPACE, coins=["SOL"],
+                                        config_coin="SOL", windows=6, window_days=3, store=self.store)
+        result = self.execute(run, final=True, adopt=True)
+        self.assertTrue(result["verdict"]["adopted"])
+        self.assertFalse(result["verdict"]["reliable"])
+        self.assertEqual(result["verdict"]["confidence"], "tentative")
+        self.assertIn("not statistically confirmed", result["verdict"]["reason"])
+        self.assertEqual(bots.get_config("grid", "SOL")["range_pct"], 5)
+        self.assertEqual(bots.get_config("grid")["range_pct"], 15)
+
+    def test_coin_manual_mode_blocks_automatic_promotion(self):
+        write_hourly(self.data, "SOL", n=24 * 18)
+        run = runner.prepare_experiment("grid", self.settings, space=SPACE, coins=["SOL"],
+                                        config_coin="SOL", windows=6, window_days=3, store=self.store)
+        bots.save_config("grid", {}, coin="SOL", mode="manual")
+        result = self.execute(run, final=True, adopt=True)
+        self.assertFalse(result["verdict"]["adopted"])
+        self.assertIn("manual mode", result["verdict"]["reason"])
+        self.assertEqual(bots.get_config("grid", "SOL")["range_pct"], 15)
+
+    def test_ledger_backed_per_coin_summary_is_not_mistaken_for_legacy_exposure(self):
+        bots._write_json(bots.optimize_path("grid"), {"at": time.time(), "source": "per_coin_ledger_v1",
+                         "skipped": {"BTC": "not enough data"},
+                         "reports": {"SOL": {"experiment_id": "known-run"}}})
+        self.assertIsNone(runner._legacy_cutoff(self.store, "grid"))
+
+    def test_incremental_winner_can_survive_one_missing_holdout_with_coverage_disclosed(self):
+        write_hourly(self.data, "SOL", n=24 * 60)
+        run = runner.prepare_experiment("grid", self.settings, space=SPACE, coins=["SOL"],
+                                        config_coin="SOL", windows=20, window_days=3, store=self.store)
+        missing_start = next(w["start"] for w in run["spec"]["windows"] if w["split"] == "holdout")
+        def one_failure(bot, cfg, data, interval, costs):
+            if cfg["range_pct"] == 5 and int(data["ts"][0]) == missing_start:
+                raise ValueError("one failed holdout")
+            return self.fake(bot, cfg, data, interval, costs)
+        with mock.patch.object(bots, "run_bars", side_effect=one_failure):
+            result = runner.run_experiment(run["id"], self.settings, final=True, adopt=True, store=self.store)
+        self.assertTrue(result["verdict"]["adopted"])
+        self.assertEqual(result["verdict"]["confidence"], "tentative")
+        self.assertIn("9/10 matched", result["verdict"]["reason"])
+
     def test_last_boundary_pause_wins_over_adoption_and_seals_report(self):
         run = self._reliable_run()
         finalize = self.store.finalize_run
