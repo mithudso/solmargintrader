@@ -427,8 +427,8 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             status = text_of(app, "#roster-status")
             self.assertIn("expected key=value", status)
 
-    async def test_clicking_an_available_strategy_opens_its_source_file(self) -> None:
-        """The strategy list is a shortcut into the code that defines it."""
+    async def test_clicking_an_available_strategy_opens_its_card(self) -> None:
+        """The strategy list opens the full strategy card."""
         from textual.widgets import DataTable, TabbedContent, TextArea
 
         app = SolTuiApp(make_settings())
@@ -442,8 +442,8 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
 
             self.assertEqual(app._docs_current_path,
-                              "backtester/core/strategies/rsi.py")
-            self.assertIn("RSI mean-reversion",
+                              "backtester/strategy_cards/rsi.md")
+            self.assertIn("RSI Mean-Reversion",
                           app.query_one("#docs-view", TextArea).text)
 
     async def test_unknown_strategy_name_reports_instead_of_crashing(self) -> None:
@@ -455,7 +455,7 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             self.assertIn("not in the Docs catalogue",
                           text_of(app, "#docs-view-status"))
 
-    async def test_clicking_a_roster_entry_opens_its_source_file(self) -> None:
+    async def test_clicking_a_roster_entry_opens_its_card(self) -> None:
         """The roster table's first column is a label, not a REGISTRY name --
         this pins that the lookup goes through the roster entry, not the
         display text, to find the right file."""
@@ -472,8 +472,8 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
 
             self.assertEqual(app._docs_current_path,
-                              "backtester/core/strategies/rsi.py")
-            self.assertIn("RSI mean-reversion",
+                              "backtester/strategy_cards/rsi.md")
+            self.assertIn("RSI Mean-Reversion",
                           app.query_one("#docs-view", TextArea).text)
 
 

@@ -248,6 +248,7 @@ class Context:
         self.runtime = runtime or default_runtime()
         # Tests and the TUI may pin the Docs catalogue; None means "read index/INDEX.json".
         self.catalog_override: list[docs_browser.DocEntry] | None = None
+        self.progress: Callable[[str], None] | None = None
 
     @classmethod
     def from_settings(cls, settings: Settings, runtime: Runtime | None = None) -> "Context":
@@ -1526,9 +1527,9 @@ def compound_signal(ctx: Context, p: dict[str, Any]) -> Any:
 def compound_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     if p.get("all"):
         return _compound(compound_mod.backtest_all, perturb=bool(p.get("perturb")),
-                         aggregate_grid=bool(p.get("aggregate_grid")), frontier=bool(p.get("frontier")))
+                         aggregate_grid=bool(p.get("aggregate_grid")), frontier=bool(p.get("frontier")), progress=ctx.progress)
     return _compound(compound_mod.backtest, _compound_asset(ctx, p), perturb=bool(p.get("perturb")),
-                     aggregate_grid=bool(p.get("aggregate_grid")), frontier=bool(p.get("frontier")))
+                     aggregate_grid=bool(p.get("aggregate_grid")), frontier=bool(p.get("frontier")), progress=ctx.progress)
 
 
 @command("compound.results", "The latest compound backtest run and the all-time OOS leaderboard "
@@ -2253,7 +2254,7 @@ def bots_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     if coins is None:
         coins = [str(p.get("asset") or ctx.settings.asset)]
     return _bots(bots_mod.backtest_many, _bot_param(p), coins, ctx.settings, start=p.get("start"),
-                 days=p.get("days"))
+                 days=p.get("days"), progress=(lambda _fraction, message: ctx.progress(message)) if ctx.progress else None)
 
 
 def _coin_fit_run(ctx: Context, p: dict[str, Any], mode: str) -> Any:

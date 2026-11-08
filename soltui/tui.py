@@ -67,6 +67,7 @@ from .experiment_screens import ExperimentScreen
 from . import compound as compound_mod
 from . import cumulative as cumulative_mod
 from . import bgqueue
+from .backtest_log import BacktestLog
 from . import docs_browser
 from . import liquidity as liq
 from . import top5 as top5_mod
@@ -1682,12 +1683,16 @@ class SolTuiApp(App):
     def _bots_job(self, name: str, params: dict[str, Any], label: str) -> None:
         if self.query("#bots-status"):
             self.call_from_thread(self._bots_status, f"{label}…")
-        env = self._call(name, params)
+        env = self._call_with_progress(name, params, "Bot backtest") if name == "bots.backtest" else self._call(name, params)
         self.call_from_thread(self._bots_after, name, env)
 
     def _bots_after(self, name: str, env: dict[str, Any]) -> None:
         if not self.query("#bots-status"):
             return
+        if name == "bots.backtest":
+            result = env.get("result") or {}
+            self._append_log("Bot backtest", self._msg(env) if not env["ok"] else
+                             f"Finished: {result.get('ran', 0)} coin(s); errors: {result.get('errors') or 'none'}")
         if not env["ok"]:
             self._bots_status(f"{name}: {self._msg(env)}")
             if name == "bots.optimize" and self._bots_opt_screen is not None and self._bots_opt_screen.is_attached:
@@ -1804,8 +1809,9 @@ class SolTuiApp(App):
                 self._bots_status(f"days must be a number, got {days!r}")
                 return
         n = len(params["coins"])
-        self._bots_job("bots.backtest", params, f"backtesting on {n} coin(s) from "
-                       + (params.get("start") or "the beginning of the data"))
+        label = f"backtesting on {n} coin(s) from " + (params.get("start") or "the beginning of the data")
+        self._start_log("Bot backtest", label)
+        self._bots_job("bots.backtest", params, label)
 
     @on(Button.Pressed, "#bots-forward-start")
     def _bots_forward_start(self) -> None:
@@ -2391,6 +2397,7 @@ class SolTuiApp(App):
                 )
 
         self._poll_queue()
+        self._poll_backtest_log()
 
     def _poll_queue(self) -> None:
         """Redraw the Queue tab only when the worker actually wrote something.
@@ -2589,7 +2596,10 @@ class SolTuiApp(App):
         params: dict[str, Any] = {"scope": scope}
         if names is not None:
             params["names"] = names
+        tail = BacktestLog(bgqueue.BG_DIR / "worker.log")
         env = self._call("queue.backtest", params)
+        self._start_log("Strategy backtest", self._msg(env) if not env["ok"] else env["result"]["message"],
+                        tail if env["ok"] and env["result"].get("started") else None)
         if not env["ok"]:
             self._history_action = f"[red]{self._msg(env)}[/]"
         else:
@@ -2770,13 +2780,14 @@ class SolTuiApp(App):
         exactly the kind of incidental navigation that guard exists for.
         """
         card = getattr(self, "_strategy_cards", {}).get(name)
-        rel = card["path"] if card and not card["registered"] else self._strategy_source_path(name)
+        rel = card["path"] if card else self._strategy_source_path(name)
         if rel is None:
             self.query_one("#docs-view-status", Static).update(
                 f"{name}: source file not in the Docs catalogue")
             return
         self._open_doc(rel)
 
+    @on(DataTable.RowSelected, "#available-table")
     @on(DataTable.RowHighlighted, "#available-table")
     def _available_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         try:
@@ -2786,8 +2797,11 @@ class SolTuiApp(App):
         except Exception:  # noqa: BLE001 - an empty table has no row to open
             return
         self._update_strategy_actions(name)
+        if isinstance(event, DataTable.RowSelected):
+            self._set_editor_open(True, persist=False)
         self._open_strategy_file(name)
 
+    @on(DataTable.RowSelected, "#roster-table")
     @on(DataTable.RowHighlighted, "#roster-table")
     def _roster_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         try:
@@ -2799,6 +2813,8 @@ class SolTuiApp(App):
         # REGISTRY name -- has to go through the roster to recover that.
         entry = next((e for e in self.roster if e.label == label), None)
         if entry is not None:
+            if isinstance(event, DataTable.RowSelected):
+                self._set_editor_open(True, persist=False)
             self._open_strategy_file(entry.name)
 
     # -- signals ---------------------------------------------------------
@@ -3039,11 +3055,14 @@ class SolTuiApp(App):
             cid, self._compound_cfg, asset=self._compound_coin, own=self._compound_own, columns=columns,
             adoptions=self._compound_adoptions, autopilot=self._compound_autopilot))
 
+    @on(DataTable.RowSelected, "#compound-overview")
     @on(DataTable.RowHighlighted, "#compound-overview")
     def _compound_overview_highlighted(self, event: DataTable.RowHighlighted) -> None:
         if not self._on_compound_tab() or event.row_key is None:
             return
         coin = str(event.row_key.value)
+        if isinstance(event, DataTable.RowSelected):
+            self._set_editor_open(True, persist=False)
         row = self._compound_overview_rows.get(coin)
         if row is None:
             return
@@ -3150,11 +3169,15 @@ class SolTuiApp(App):
     @work(thread=True, group="compound")
     def _compound_job(self, name: str, params: dict[str, Any], label: str) -> None:
         self.call_from_thread(self.query_one("#compound-status", Static).update, f"{label}…")
-        env = self._call(name, params)
+        env = self._call_with_progress(name, params, "Compound backtest") if name == "compound.backtest" else self._call(name, params)
         self.call_from_thread(self._compound_after, name, env)
 
     def _compound_after(self, name: str, env: dict[str, Any]) -> None:
         status = self.query_one("#compound-status", Static)
+        if name == "compound.backtest":
+            result = env.get("result") or {}
+            self._append_log("Compound backtest", self._msg(env) if not env["ok"] else
+                             f"Finished: {result.get('configurations', 0)} configurations on {result.get('assets', [])}; skipped {result.get('skipped', [])}")
         if not env["ok"]:
             status.update(f"[red]{escape(self._msg(env))}[/]")
             return
@@ -3282,6 +3305,7 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#compound-backtest")
     def _compound_backtest(self) -> None:
+        self._start_log("Compound backtest", "Starting " + self._compound_coin)
         self._compound_job("compound.backtest", {"asset": self._compound_coin},
                            "backtesting the compound and each enabled metric alone")
 
@@ -3384,12 +3408,14 @@ class SolTuiApp(App):
 
     @on(Button.Pressed, "#compound-backtest-frontier")
     def _compound_backtest_frontier(self) -> None:
+        self._start_log("Compound backtest", "Starting " + self._compound_coin)
         self._compound_job("compound.backtest", {"asset": self._compound_coin, "frontier": True},
                            "frontier: every metric alone, its strongest 2% of readings, held 1 h, 4 h and 24 h, "
                            "unlevered (about 130 configurations; a few minutes)")
 
     @on(Button.Pressed, "#compound-backtest-all")
     def _compound_backtest_all(self) -> None:
+        self._start_log("Compound backtest", "Starting " + "all coins")
         self._compound_job("compound.backtest", {"all": True},
                            "backtesting every coin in parallel, each with its own settings")
 
@@ -3459,6 +3485,7 @@ class SolTuiApp(App):
         labels = [pick] if isinstance(pick, str) and pick != self.ROSTER_PICK else None
         self.query_one("#backtest-status", Static).update(
             f"running {labels[0]}…" if labels else "running the whole roster…")
+        self._start_log("CPCV backtest", f"Starting {labels[0] if labels else 'the whole roster'}")
         self._sweep_worker(labels)
 
     @work(thread=True, group="sweep")
@@ -3470,6 +3497,7 @@ class SolTuiApp(App):
     def _render_results(self, env: dict[str, Any]) -> None:
         """Fill the results table, best median Sharpe first."""
         status = self.query_one("#backtest-status", Static)
+        self._append_log("CPCV backtest", self._msg(env) if not env["ok"] else env["result"]["message"])
         if not env["ok"]:
             status.update(f"[red]{self._msg(env)}[/]")
             return
@@ -3494,7 +3522,10 @@ class SolTuiApp(App):
         backtested a fixed handful on one horizon, so the button seemed to find work and do none.
         """
         status = self.query_one("#backtest-status", Static)
+        tail = BacktestLog(bgqueue.BG_DIR / "worker.log")
         env = self._call("queue.backtest", {"scope": "undertested"})
+        self._start_log("Strategy backtest", self._msg(env) if not env["ok"] else env["result"]["message"],
+                        tail if env["ok"] and env["result"].get("started") else None)
         if not env["ok"]:
             status.update(Text(self._msg(env), style="red"))
             return
@@ -4815,6 +4846,46 @@ class SolTuiApp(App):
 
     # -- previews: a selected row explained in the shared editor ------------------------------
 
+    def _call_with_progress(self, name: str, params: dict[str, Any], title: str) -> dict[str, Any]:
+        ctx = Context(self.settings, self.roster, self.signals, self.ctx.runtime)
+
+        def progress(message: str) -> None:
+            try:
+                self.call_from_thread(self._append_log, title, message)
+            except RuntimeError:
+                pass  # The console closed while the backtest was still running.
+
+        ctx.progress = progress
+        return dispatch(name, params, surface="tui", ctx=ctx)
+
+    def _start_log(self, title: str, line: str, tail: BacktestLog | None = None) -> None:
+        self._backtest_log_title = title
+        self._backtest_log_text = f"# {title}\n\n{line}\n"
+        self._backtest_log_tail = tail
+        self._backtest_log_progress = None
+        self._set_editor_open(True, persist=False)
+        self._show_preview(title, self._backtest_log_text)
+
+    def _append_log(self, title: str, line: str, *, raw: bool = False) -> None:
+        if getattr(self, "_backtest_log_title", None) != title:
+            return
+        old = self._backtest_log_text
+        self._backtest_log_text = (old + (line if raw else line.rstrip() + "\n"))[-100000:]
+        if self._preview_text == old:
+            self._show_preview(title, self._backtest_log_text)
+
+    def _poll_backtest_log(self) -> None:
+        tail = getattr(self, "_backtest_log_tail", None)
+        if tail is not None:
+            chunk = tail.poll()
+            if chunk:
+                self._append_log("Strategy backtest", chunk, raw=True)
+        if getattr(self, "_backtest_log_title", None) == "CPCV backtest" and self.runner.running:
+            progress = (self.state.done, self.state.total)
+            if progress != self._backtest_log_progress:
+                self._backtest_log_progress = progress
+                self._append_log("CPCV backtest", f"Progress: {progress[0]}/{progress[1]} configurations")
+
     def _show_preview(self, title: str, text: str) -> None:
         """Show generated, read-only text in the shared editor.
 
@@ -5153,6 +5224,13 @@ class SolTuiApp(App):
             except Exception:  # noqa: BLE001 - a coin with no cached data is not in the list
                 pass
         self._v2_show("signal", 0)
+        row = getattr(self, "_v2_coin_rows", {}).get(coin)
+        if row is not None:
+            env = self._call("compound.config", {"asset": coin}, quiet=True)
+            own = env["result"]["own_settings"] if env["ok"] else {}
+            self._set_editor_open(True, persist=False)
+            self._show_preview(f"{coin} overview", compound_mod.coin_preview(
+                row, own=own, adoptions=self._compound_adoptions, autopilot=self._compound_autopilot))
 
     def _v2_load_now(self) -> None:
         """The slower Now reads (the per-coin overview is ~0.7 s) run off the UI thread."""
@@ -5194,7 +5272,9 @@ class SolTuiApp(App):
         table = self.query_one("#now-coins", GlossaryTable)
         table.clear()
         overview = data.get("compound.overview") or {}
-        for r in (overview.get("result") or {}).get("coins", []) if overview.get("ok") else []:
+        rows = (overview.get("result") or {}).get("coins", []) if overview.get("ok") else []
+        self._v2_coin_rows = {r["asset"]: r for r in rows}
+        for r in rows:
             table.add_row(r["asset"], r["backtest_verdict"], _pct(r["backtest_hit"]), str(r["fwd_calls"]),
                           _pct(r["fwd_hit"]), "-" if r["paper_usd"] is None else f"{r['paper_usd']:+,.2f}",
                           "RUNNING" if r["unattended"] else ("-" if r.get("live", True) else "backtest only"),

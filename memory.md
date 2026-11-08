@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 138
-Delta: v129 to v138; retain forwardtest delivery and make full SolTUI coverage explicitly opt-in.
+Version: 140
+Delta: v139 to v140; record implementation and focused verification.
 
 ## v1 - 2026-11-06
 
@@ -1336,3 +1336,11 @@ The owner explicitly requested: make the999-case SolTUI suite optional, skip it 
 ## v138 - Forwardtest and optional CI integration
 
 Concurrent PR89 published forwardtest control changes and conservative timed CI shards atfedde2a. Preserve those functions and scripts. The owner's newer explicit optional-suite instruction controls the full SolTUI job: only workflow_dispatch with run_soltui_suite=true enables all four shards. PR, push and scheduled workflows skip this job; other jobs stay enabled. Combined discovery is1010cases after incoming11additional tests and this feature30tests. No full suite is run or claimed passed.
+
+## v139 - 2026-11-08
+
+Active: Stele TASK-1006. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb5b, branch agent-01a1bb5b, base origin/master 078c895. The original checkout is dirty and other sessions are editing SolTUI; preserve their work. Goal: show selected strategy card and coin details in shared editor and stream backtest logs there. Backtest lifecycle specialist is examining separate job sources. Remaining: implement selection and logs, test, integrate current remote, deliver and verify live installation.
+
+## v140 - 2026-11-08
+
+TASK-1006: registered and roster strategy selection opens the full card; selected coin previews its overview; queue backtests follow a bounded worker log; CPCV progress and Compound/Bots engine callbacks populate the editor. Unsaved file edits are protected and later navigation is not stolen by log updates. Focused tests: 29 passed in test_tui backtest/strategy cases, test_backtest_log, test_bgworker, and test_editor_backtest. Broader relevant regressions running. Remaining: integrate latest origin/master, verify checks and remote delivery, and verify actual loaded app without disrupting concurrent sessions. The original checkout is dirty and shared; never reset or switch it.

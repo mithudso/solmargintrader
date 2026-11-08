@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 72
-Delta: v70 to v72; preserve incoming history and explicit coin-fit optional-suite instruction.
+Version: 73
+Delta: v72 to v73; record SolTUI selection and backtest log request.
 
 ## v1 - 2026-11-06
 
@@ -540,4 +540,10 @@ Add a heuristic backtesting mechanism to quickly test it, and a more detailed au
 
 ```text
 make the 999-case SolTUI suite optional, then skip it and push the code
+```
+
+## v73 - 2026-11-08
+
+```text
+I'm in the soltui, as far as I can tell the Editor does nothing but display one file forever without changing. Whenever I click on a stratgy I want it to show me the strategy card and all the details about that strategy in the edit window, also true of coins, and if I click a backtest button I want the editor to show me the logs of it running,
 ```
