@@ -1,7 +1,7 @@
 # Optimization workbench implementation plan
 
-Version: 4
-Delta: v3 to v4; allow sealed final history in later exploration while retaining permanent final-date spend.
+Version: 5
+Delta: v4 to v5; preserve concurrent Strategies browser delivery and verify combined integration.
 
 Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
 Scope: SolTUI simulated grid, DCA and recorded-triangle optimization, plus read-only external result comparison.
@@ -63,3 +63,7 @@ Exploration evaluates train and validation only. Freeze the chosen candidate bef
 ## Constraints and open questions
 
 Preserve other sessions and dirty files. No secrets, credentials, live trades, paused research, service restarts or changes to dry-run/disarmed defaults. Standard library first; use the existing Python environment. Implementation agents may refine interfaces together and must record any material change here. No unresolved product decision is required to start.
+
+## Delivery integration
+
+PR 99 published a Strategies card browser while the workbench checks were running. The private branch integrates that published work without replacing its handlers or table behavior. The combined app has 68 button handlers and 106 registry actions, including the 14 experiment actions. Both workflow histories and both feature sets are preserved. Targeted parity, Strategies UI and actual combined Bots-entry acceptance pass; final CI runs on the combined tip.

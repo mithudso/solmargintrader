@@ -1,7 +1,7 @@
 # Optimization workbench execution log
 
-Version: 1
-Delta: initial implementation, review and acceptance record.
+Version: 2
+Delta: v1 to v2; record concurrent strategy-browser delivery reconciliation.
 
 ## Work log
 
@@ -9,7 +9,7 @@ Goal: implement all six accepted comparison recommendations.
 Scope: native simulated optimization and read-only external evidence in SolTUI.
 Done-condition: usable shared-registry features, verified evidence/control boundaries and remote delivery.
 
-The implementation plan is `docs/optimization-workbench-plan.md` v4. Plan A contracts were satisfied before implementation; foundation, runner and interface owners implemented against them. A bounded continuity follow-up permits sealed final periods as later training history, while preserving permanent final-test spend and active-reservation protection. An independent reviewer reproduced three issues and verified their fixes: unbound CSV rows, lost launch controls and inconsistent drawdown signs. Loaded acceptance exercised actual native simulation and subprocesses with isolated synthetic configuration/data. No owner data, order path, paused job or running service was changed.
+The implementation plan is `docs/optimization-workbench-plan.md` v5. Plan A contracts were satisfied before implementation; foundation, runner and interface owners implemented against them. A bounded continuity follow-up permits sealed final periods as later training history, while preserving permanent final-test spend and active-reservation protection. An independent reviewer reproduced three issues and verified their fixes: unbound CSV rows, lost launch controls and inconsistent drawdown signs. Loaded acceptance exercised actual native simulation and subprocesses with isolated synthetic configuration/data. No owner data, order path, paused job or running service was changed.
 
 ## Project
 
@@ -73,3 +73,5 @@ New core modules: `soltui/experiments.py`, `soltui/experiment_runner.py`, `soltu
 | Self-check | 8/8 | deterministic helper, no invalid artifacts |
 
 A complete SolTUI run passed 947 tests in 721.036 seconds, with two expected skips, before the bounded sealed-history refinement. The final focused gate passed 79 tests; six new continuity regressions bring current discovery to 953. Actual CLI/worker/workbench acceptance was rerun with stable final source hashes. New Python modules/tests pass Ruff; documentation counts, offline index hashes, card coverage and 11 HTML converter tests pass. Required final-commit CI, merge and installation-boundary receipts are maintained in TASK-962 rather than inferred from this pre-merge document. The shared checkout's unrelated work is preserved.
+
+The initial final CI passed all eight checks, including 953 SolTUI cases with 14 expected optional-dependency skips. Concurrent PR 99 then advanced the default branch and caused a merge conflict. The delivery phase preserved its Strategies browser, combined both workflow histories and regenerated derived indexes. The only source correction was the shared handler-count test: both independent changes added one button, so the combined count is 68. Forty-five targeted cases, the incoming Strategies UI and actual combined Bots/workbench preview/dismissal pass. Final combined-tip CI and installed parity remain bound to TASK-962.

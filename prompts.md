@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 60
-Delta: preserve concurrent remote history and append optimization workbench continuation through v60.
+Version: 61
+Delta: preserve incoming strategy-card history and append workbench continuation through v61.
 
 ## v1 - 2026-11-06
 
@@ -453,7 +453,13 @@ Keep complete indicator specifications too (Recommended)
 I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
 ```
 
-## v60 - 2026-11-08
+## v60 - 2026-11-08 (SolTUI card visibility)
+
+```text
+When I launch the soltui I don't see any of the new strategies.
+```
+
+## v61 - 2026-11-08
 
 ```text
 turn all of your suggestions into an implementation plan and execute it
