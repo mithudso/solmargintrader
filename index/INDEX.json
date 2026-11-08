@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-08T13:40:17+00:00",
+  "generatedAt": "2026-11-08T13:44:18+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "7dd2913",
+  "commit": "f23db68",
   "counts": {
-    "files": 1916,
-    "bytes": 32925331,
+    "files": 1919,
+    "bytes": 32939450,
     "byKind": {
       "strategy-card": 796,
       "doc": 544,
-      "code-python": 182,
-      "test": 130,
+      "code-python": 183,
+      "test": 132,
       "code-js": 87,
       "result": 85,
       "config": 33,
@@ -24,7 +24,7 @@
     "byTopDir": {
       "backtester": 1233,
       "research": 161,
-      "soltui": 105,
+      "soltui": 108,
       "extension": 92,
       "skills": 67,
       "docs": 61,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 1827
+    "withSummary": 1829
   },
   "files": [
     {
@@ -288,7 +288,7 @@
       "summarySource": "opening-prose",
       "bytes": 5126,
       "lines": 93,
-      "sha1": "7f6d77779a5f870f40e0ebd40e421214d0a13d42",
+      "sha1": "c303a04eded59901745c9a7ce52af97e79e8ccc7",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -468,7 +468,7 @@
       "summarySource": "opening-prose",
       "bytes": 13847,
       "lines": 193,
-      "sha1": "008e96672ea68fb9229057ebbb8118df49c3fba0",
+      "sha1": "81440f406f3bfaa8105b913b706520ee8a290e77",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -522,7 +522,7 @@
       "summarySource": "opening-prose",
       "bytes": 3496,
       "lines": 64,
-      "sha1": "429f2f9cee45187e16a36fc4281636aa1013a15b",
+      "sha1": "dbbf2be857370196044387e4602393e42c9ea00e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -540,7 +540,7 @@
       "summarySource": "opening-prose",
       "bytes": 8957,
       "lines": 139,
-      "sha1": "6c73896c51948ba20da84d998e7313df797a9637",
+      "sha1": "d722829a8ad5e227f6f28b47c40c3cad227df49f",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -43677,7 +43677,7 @@
       "summarySource": "opening-prose",
       "bytes": 8875,
       "lines": 187,
-      "sha1": "e0db9caeaee49b2d25d68118b487144c58fe9d19",
+      "sha1": "b77e9781c9099d375a8e4609d78a80dc9de715a7",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -43799,11 +43799,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Testing",
-      "summary": "python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1010 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests",
+      "summary": "python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1015 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests",
       "summarySource": "opening-prose",
       "bytes": 18031,
       "lines": 230,
-      "sha1": "fc2ea1d047810ebe090de31a6140df2ba310c423",
+      "sha1": "bf53935510d6230d47b1af0cfd5fde6c2708c55e",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -50939,11 +50939,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 144 Delta: v143 to v144; preserve PR 100 records and resolve PR 104. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.",
+      "summary": "Version: 147 Delta: v146 to v147; correct test counts and record CI. Version: 144",
       "summarySource": "opening-prose",
-      "bytes": 217245,
-      "lines": 1445,
-      "sha1": "ef30ece7aaf59b4dd280ce4f7bca886c7e5cae60",
+      "bytes": 219638,
+      "lines": 1463,
+      "sha1": "92d869d7c79d6c1d2beb916b459f5482fee75e2d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -51408,11 +51408,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 76 Delta: v75 to v76; preserve PR 100 records and resolve PR 104. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.",
+      "summary": "Version: 76 Delta: v75 to v76; retain CI changes and editor request. Version: 76",
       "summarySource": "opening-prose",
-      "bytes": 33227,
-      "lines": 616,
-      "sha1": "e4b32421ecac2c38c6c8438b43b37ded303a4619",
+      "bytes": 33676,
+      "lines": 624,
+      "sha1": "3e85bc145ef64d01282d76de2c9c3a5f74cc1cc8",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -57740,6 +57740,31 @@
       "frontmatter": {}
     },
     {
+      "id": "soltui/backtest_log.py",
+      "path": "soltui/backtest_log.py",
+      "dir": "soltui",
+      "name": "backtest_log.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "backtest_log",
+      "summary": "Bounded, nonblocking reads of the detached backtest worker's append-only log.",
+      "summarySource": "docstring",
+      "bytes": 1940,
+      "lines": 53,
+      "sha1": "9cf11d643ed6f8ddab2ff784f704bcb101b55ba7",
+      "symbols": [
+        "class BacktestLog"
+      ],
+      "imports": [
+        "__future__",
+        "codecs",
+        "os",
+        "pathlib"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "soltui/bgcontrol.py",
       "path": "soltui/bgcontrol.py",
       "dir": "soltui",
@@ -57877,9 +57902,9 @@
       "title": "The nicest a process can ask to be. Set unconditionally at startup rather than",
       "summary": "The background backtest worker: a separate, low-priority process. python3 -m soltui.bgworker --asset SOL python3 -m soltui.bgworker --asset SOL --horizons medium --max-tier 1 --limit 50 Run directly it is a normal foreground script; the TUI launches it through `bgcontrol.start()`, which is what applies the background scheduling policy.",
       "summarySource": "docstring",
-      "bytes": 22131,
-      "lines": 586,
-      "sha1": "e1f71487f4fbe3dc767e7a464f0c7d3776042f20",
+      "bytes": 22430,
+      "lines": 591,
+      "sha1": "b862ce565adc6c3e8de22671be562fe9f7ed7c80",
       "symbols": [
         "REPO",
         "NICE_LEVEL",
@@ -58152,9 +58177,9 @@
       "title": "The research scripts import pandas and numpy, so they must run on the interpreter running this",
       "summary": "The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.",
       "summarySource": "docstring",
-      "bytes": 129635,
-      "lines": 2661,
-      "sha1": "77107abb418408be039f68e612d1766410a4b6ec",
+      "bytes": 129827,
+      "lines": 2662,
+      "sha1": "11d2744ca5a57cfca1778f4f2f39bc537473dc30",
       "symbols": [
         "REPO",
         "UNTESTED_SWEEP_TIMEOUT_S",
@@ -59978,6 +60003,34 @@
       "frontmatter": {}
     },
     {
+      "id": "soltui/tests/test_backtest_log.py",
+      "path": "soltui/tests/test_backtest_log.py",
+      "dir": "soltui/tests",
+      "name": "test_backtest_log.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_backtest_log",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 1676,
+      "lines": 48,
+      "sha1": "22bf5fbbde1b6af1416fed3024ed27862fbb7aff",
+      "symbols": [
+        "class BacktestLogTests"
+      ],
+      "imports": [
+        "__future__",
+        "pathlib",
+        "soltui",
+        "tempfile",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "soltui/tests/test_bgcontrol.py",
       "path": "soltui/tests/test_bgcontrol.py",
       "dir": "soltui/tests",
@@ -60515,6 +60568,36 @@
         "pathlib",
         "soltui",
         "sys",
+        "textual",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_editor_backtest.py",
+      "path": "soltui/tests/test_editor_backtest.py",
+      "dir": "soltui/tests",
+      "name": "test_editor_backtest.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_editor_backtest",
+      "summary": "Editor ownership and progress routing for interactive backtests.",
+      "summarySource": "docstring",
+      "bytes": 2334,
+      "lines": 55,
+      "sha1": "8e9377b08100c24f6b8575a2b9b26f722a09a24b",
+      "symbols": [
+        "class EditorBacktestTests",
+        "class ProgressRoutingTests"
+      ],
+      "imports": [
+        "__future__",
+        "pathlib",
+        "soltui",
+        "tempfile",
         "textual",
         "unittest"
       ],
@@ -61329,9 +61412,9 @@
       "title": "Terminal big enough that every button is on-screen; Pilot.click() raises",
       "summary": "Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.",
       "summarySource": "docstring",
-      "bytes": 61672,
+      "bytes": 61641,
       "lines": 1365,
-      "sha1": "10d55810f918f2a6fc5699842a185934687d105e",
+      "sha1": "fe0d4c19cfb142e927fd26559f1580d968c5411a",
       "symbols": [
         "_queue_row()",
         "TEST_SIZE",
@@ -61652,9 +61735,9 @@
       "title": "Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.",
       "summary": "Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into five destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.",
       "summarySource": "docstring",
-      "bytes": 276902,
-      "lines": 5339,
-      "sha1": "735630220f12fa1dc30ab0bae81b9c515f21f417",
+      "bytes": 281769,
+      "lines": 5420,
+      "sha1": "b0536a26f98e3055831ffcb4acae2a42af568b20",
       "symbols": [
         "_mtime()",
         "sort_key()",
@@ -61673,6 +61756,7 @@
         "__future__",
         "argparse",
         "asyncio",
+        "backtest_log",
         "backtester",
         "bots_screens",
         "commands",

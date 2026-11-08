@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 145
-Delta: v144 to v145; retain CI changes and editor work.
+Version: 147
+Delta: v146 to v147; correct test counts and record CI.
 Version: 144
 Delta: v143 to v144; preserve PR 100 records and resolve PR 104.
 
@@ -1452,3 +1452,11 @@ Active: Stele TASK-1006. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb5b,
 ## v140 - 2026-11-08
 
 TASK-1006: registered and roster strategy selection opens the full card; selected coin previews its overview; queue backtests follow a bounded worker log; CPCV progress and Compound/Bots engine callbacks populate the editor. Unsaved file edits are protected and later navigation is not stolen by log updates. Focused tests: 29 passed in test_tui backtest/strategy cases, test_backtest_log, test_bgworker, and test_editor_backtest. Broader relevant regressions running. Remaining: integrate latest origin/master, verify checks and remote delivery, and verify actual loaded app without disrupting concurrent sessions. The original checkout is dirty and shared; never reset or switch it.
+
+## v146 - 2026-11-08
+
+Integrated upstream guide separation and targeted CI. After catalog integration, four editor/strategy tests passed; earlier 27 focused tests passed. Compound and v2 shell regression cases passed, but the combined invocation also named nonexistent soltui.tests.test_commands and therefore exited 1 (90 actual tests passed plus one import error). Current live process PID 50024 loaded before these changes from the dirty shared checkout; loaded bytes are unverified and it cannot auto-reload. Leave that checkout and process alone. Remaining: final PR checks, merge, remote content verification, and a safe new-launch acceptance test.
+
+## v147 - 2026-11-08
+
+PR 105 was merged externally as 2d9e27b while its CI was still running. The docs check reported stale test counts caused by five added tests. PR 106 corrects counts to 1015 SolTUI and 2319 total; scripts/check_docs.py passes locally. PR 106 also scrolls the log to the latest lines. Browser e2e failure from PR 105 awaits CI logs. Live process remains on the shared dirty checkout and has not loaded these changes.

@@ -4872,6 +4872,7 @@ class SolTuiApp(App):
         self._backtest_log_text = (old + (line if raw else line.rstrip() + "\n"))[-100000:]
         if self._preview_text == old:
             self._show_preview(title, self._backtest_log_text)
+            self.query_one("#docs-view", TextArea).scroll_end(animate=False)
 
     def _poll_backtest_log(self) -> None:
         tail = getattr(self, "_backtest_log_tail", None)

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T13:40:17+00:00",
+  "generatedAt": "2026-11-08T13:44:18+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -435,7 +435,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 391,
+      "matchingFiles": 392,
       "shown": 30,
       "files": [
         {
@@ -709,7 +709,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 274,
+      "matchingFiles": 275,
       "shown": 30,
       "files": [
         {
@@ -1998,16 +1998,16 @@
           "hits": 20
         },
         {
+          "path": "soltui/tui.py",
+          "hits": 20
+        },
+        {
           "path": "index/make_files_doc.py",
           "hits": 17
         },
         {
           "path": "research/CROSS-ASSET-TRANSFER.md",
           "hits": 17
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 16
         },
         {
           "path": "research/coin-intelligence/btc-bitcoin.md",
