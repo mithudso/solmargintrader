@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 60
-Delta: v59 to v60; expose retained cards in SolTUI Strategies.
+Version: 63
+Delta: v62 to v63; resume the approved SolTUI redesign and preserve concurrent card visibility history.
 
 ## v1 - 2026-11-06
 

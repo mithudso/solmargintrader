@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 110
-Delta: v109 to v110; clarify final verification counts.
+Version: 118
+Delta: v117 to v118; record completed local verification and align continuation metadata.
 
 ## v1 - 2026-11-06
 
@@ -1166,3 +1166,11 @@ Version: 117. Delta: v116 to v117; record acceptance of the final combined sourc
 The combined sixteen-case shell suite passes in 28.124 seconds. Independent fresh mounted acceptance passes Now startup and Research to Strategies, with 351 active cards, 292 TradingView specifications and 34 registered strategies. Filtering and opening AveragePrice shows its equation. Specification Add, Backtest and Space stay blocked without roster or backtest writes. Registered-strategy controls and mocked backtest dispatch remain available. Strategies and the no-order-path badge remain visible at 80 and 100 columns. Source hashes and detailed observations are in /tmp/soltui-v2-resume-01a1bb24/acceptance/combined-catalog/receipt.json.
 
 All source integration is complete. Documentation counts, whitespace and offline index freshness pass on the combined tree. Finish only the delivery gates tracked by TASK-987: observe the prior full local run, pass the complete 900-case final-head CI suite, merge PR93 at its verified final tip, confirm remote source, perform safe canonical synchronization and fresh launcher acceptance, then remove the clean owned worktrees and branches. TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json are the authoritative final receipts; if they report completion, do not replay these steps. Preserve the classic backup and all unrelated active work.
+
+## v118 - 2026-11-08 (local suite complete; final metadata aligned)
+
+Version: 118. Delta: v117 to v118; finish local verification accounting and header consistency.
+
+The full local pre-PR99 merged-tree run passed all 898 cases in 752.436 seconds with two optional skips and exit 0. The final combined source separately passes the sixteen-case shell suite, independent pane/navigation/input/classic acceptance and the merged 351-card catalog checks. The two new narrow-navigation cases bring final discovery to 900 SolTUI cases. Final-head CI remains the complete combined-tree gate. Verification task TASK-986 is complete; delivery task TASK-987 is active.
+
+The workflow headers now agree with their latest entries: prompt version 63 and continuation version 118. All incoming history is preserved. No product source changed after the combined acceptance receipt. The current merge, CI, preservation and installed-launcher results are recorded in TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json. Read them before repeating any remaining delivery action. The original clean Claude redesign worktree remains held by its live process and must be preserved; remove only the private recovery worktree after delivery.
