@@ -32,6 +32,9 @@ reference. Proposal: TASK-877, decision KNOW-878. The classic console is preserv
   - Explain shows the existing F1 help text.
   - The pane interiors are the classic ones under the new theme. The mockup's IQR strips on the
     leaderboard and diverging vote bars in the metric table are not built yet.
+- **Narrow terminals keep their bearings.** When a navigation row does not fit, the top bar keeps
+  the no-order-path badge and the sub-view row shows the selected view with clickable previous/next
+  controls. All panes remain reachable by keyboard. Pane interiors retain their classic sizing.
 - **The palette never runs a write.** Only read-only commands with no required parameters run from
   it; every other command opens and focuses the button that owns it.
 

@@ -50,6 +50,33 @@ class PureBuilderTests(unittest.TestCase):
         dest, index = shell.locate("tab-compound")
         self.assertEqual(dest.views[index].inner, "cmp-call")
 
+    def test_narrow_navigation_keeps_the_active_view_and_clickable_neighbors(self) -> None:
+        from rich.text import Text
+
+        dest = shell.DEST_BY_KEY["research"]
+        for width in (80, 100, 160):
+            for index, view in enumerate(dest.views):
+                segments = shell.subnav_segments(dest, index, width)
+                line = Text.assemble(*(piece for piece, _ in segments))
+                self.assertLessEqual(line.cell_len, width)
+                self.assertIn(view.label, line.plain)
+                targets = {target for _, target in segments}
+                self.assertIn(f"view:{index}", targets)
+                self.assertIn(f"view:{(index - 1) % len(dest.views)}", targets)
+                self.assertIn(f"view:{(index + 1) % len(dest.views)}", targets)
+
+    def test_narrow_topbar_keeps_the_no_order_path_badge(self) -> None:
+        from rich.text import Text
+
+        for width in (80, 100, 160):
+            segments = shell.topbar_segments("research", "SOL $90.00", "dry-run only · no live order path", "12:00", width)
+            line = Text.assemble(*(piece for piece, _ in segments))
+            self.assertLessEqual(line.cell_len, width)
+            self.assertIn("dry-run", line.plain)
+            self.assertIn("order path", line.plain)
+            self.assertIn("no live order path" if width == 160 else "no order path", line.plain)
+            self.assertTrue({f"dest:{d.key}" for d in shell.DESTINATIONS} <= {t for _, t in segments})
+
     def test_needs_lists_failures_worst_first(self) -> None:
         reads = {
             "queue.progress": ok({"state": {"phase": "error", "error": "ValueError: proof differs"}, "alive": False}),

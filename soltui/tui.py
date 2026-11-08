@@ -4505,7 +4505,7 @@ class SolTuiApp(App):
         price = shell.price_line(self._v2_reads)
         self.query_one("#v2-topbar", shell.SegmentBar).set_segments(
             shell.topbar_segments(dest.key, price, self.SUB_TITLE, clock, self.size.width))
-        self.query_one("#v2-subnav", shell.SegmentBar).set_segments(shell.subnav_segments(dest, self._v2_index))
+        self.query_one("#v2-subnav", shell.SegmentBar).set_segments(shell.subnav_segments(dest, self._v2_index, self.size.width))
         panel, bar = self.query_one("#editor-panel"), self.query_one("#editor-bar")
         if dest.key == "now" and not self._v2_editor_suppressed and bar.display:
             self._v2_editor_was_open = bool(panel.display)

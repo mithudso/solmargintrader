@@ -312,12 +312,26 @@ def topbar_segments(active: str, price: str, mode: str, clock: str,
     right.append(f" {mode} ", f"{TOK['muted']} on {TOK['panel']}")
     right.append(f"  {clock} ", TOK["muted"])
     used = sum((s if isinstance(s, Text) else Text(s)).cell_len for s, _ in segs) + right.cell_len
-    segs.append((" " * max(1, width - used), None))
+    if used > width:
+        # Price and clock are secondary to the navigation and the no-order-path guarantee.
+        segs = [(Text(" ◆ ", f"bold {TOK['accent']}"), "dest:now")]
+        compact_mode = mode.replace(" only", "").replace("no live order path", "no order path")
+        right = Text(f" {compact_mode} ", f"{TOK['muted']} on {TOK['panel']}")
+        destinations = [d for d in DESTINATIONS if d.key != "settings"]
+        full_width = sum(len(d.hotkey) + len(d.label) + 2 for d in destinations) + 6 + right.cell_len
+        for dest in destinations:
+            label = dest.label if full_width <= width else dest.label[:3]
+            style = f"bold {TOK['fg']} on {TOK['panel']} underline" if dest.key == active else TOK['fg']
+            segs.append((Text(f"{dest.hotkey} {label} ", style), f"dest:{dest.key}"))
+        segs.append((Text(" , ", gear_style), "dest:settings"))
+        used = sum((s if isinstance(s, Text) else Text(s)).cell_len for s, _ in segs) + right.cell_len
+    segs.append((" " * max(0, width - used), None))
     segs.append((right, None))
     return segs
 
 
-def subnav_segments(dest: Destination, index: int) -> list[tuple[Text | str, str | None]]:
+def subnav_segments(dest: Destination, index: int,
+                    width: int | None = None) -> list[tuple[Text | str, str | None]]:
     segs: list[tuple[Text | str, str | None]] = [(Text(f" {dest.label} ", f"bold {TOK['accent']}"), None),
                                                   (Text("› ", TOK["muted"]), None)]
     for i, view in enumerate(dest.views):
@@ -326,6 +340,15 @@ def subnav_segments(dest: Destination, index: int) -> list[tuple[Text | str, str
         segs.append((" ", None))
     if len(dest.views) > 1:
         segs.append((Text("  [ ] switch", TOK["muted"]), None))
+    if width is not None and sum((s if isinstance(s, Text) else Text(s)).cell_len for s, _ in segs) > width:
+        # A clipped selected label makes a successful keyboard move look like it failed.
+        count = len(dest.views)
+        segs = segs[:2] + [
+            (Text(" ‹ ", TOK["accent"]), f"view:{(index - 1) % count}"),
+            (Text(f" {dest.views[index].label} ", f"bold {TOK['bg']} on {TOK['accent']}"), f"view:{index}"),
+            (Text(" › ", TOK["accent"]), f"view:{(index + 1) % count}"),
+            (Text(f"  {index + 1}/{count} · [ ] switch", TOK["muted"]), None),
+        ]
     return segs
 
 

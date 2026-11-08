@@ -1071,7 +1071,7 @@ The owner requires the actual canonical incomplete directory immediately. Earlie
 
 ## v106 - 2026-11-08 (SolTUI v2 redesign mockup)
 
-Target: prompts v54, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
+Target: prompts v60, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
 
 Completed: a read-only subagent inventoried soltui's functions and data surfaces without reporting layout. docs/design/soltui-v2/DESIGN.md lists 16 primary functions and groups them into five question-led destinations (Now, Signal, Research, Money, Library), with a health strip, a registry command palette and an Explain overlay. docs/design/soltui-v2/mockup.py is a standalone Textual 8.2.8 + textual-plotext app on fixture data; it imports nothing from soltui/. screens/ holds 7 SVGs rendered by `mockup.py --shots`. soltui/README.md points to the proposal.
 
@@ -1081,7 +1081,7 @@ Remaining: merge PR 85 (the background-job harness forbids this session from mer
 
 ## v107 - 2026-11-08 (SolTUI v2 implemented)
 
-Target: prompts v55, Stele TASK-904, KNOW-916 (architecture), KNOW-918 (focus lesson). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch feat/soltui-v2-ui.
+Target: prompts v61, Stele TASK-904, KNOW-916 (architecture), KNOW-918 (focus lesson). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch feat/soltui-v2-ui.
 
 Backup: annotated tag soltui-ui-v1 and branch backup/soltui-ui-v1 at master 4d0f027 (classic 18-tab console), both pushed. `soltui --classic` shows the original tab bar in the new build.
 
@@ -1100,3 +1100,23 @@ The owner asked Codex to resume the quota-exhausted Claude redesign. The accepte
 Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb24. Tasks TASK-985 (recover/integrate), TASK-986 (verify), TASK-987 (deliver) block the original redesign task TASK-904. Current master8ed41ad contains substantial concurrent research/card work. Integrate all incoming changes and exact workflow history. The separate active card-catalog PR99 owns three pre-applied dirty canonical sources; do not touch them or any other shared-checkout files.
 
 Remaining: resolve count/record/derived-index conflicts; verify merged-tree navigation and full TUI suite; preserve the prompt and recovery notes; push the final descendant to PR93, pass CI, merge and verify remote content; confirm installed launcher behavior without restarting existing consoles. No trading, inference or indexing services are authorized by this UI recovery.
+
+## v109 - 2026-11-08 (SolTUI v2 narrow navigation repair)
+
+Version: 109. Delta: v108 to v109; finish integration and repair the independent acceptance finding.
+
+Integrated current master 8ed41ad in the private recovery branch and preserved all incoming workflow history. Fourteen focused shell tests, sixteen offline-index tests, documentation counts and offline index freshness passed before this correction. The full 898-case merged-tree local suite is running; its modules were loaded before the two new regression cases below.
+
+Independent fresh-process acceptance on 36902a7 passed every classic pane (19 including Now), all Signal sections, keys, Explain, palette write safeguards, classic mode and input typing at 160x48. At 80/100 columns, the Research row clipped the active Indicators label. At 80 columns, the top bar also clipped the no-order-path badge. KNOW-990 records the exact trigger. The shell now uses a compact destination row with the safety badge and an active-view subnav with clickable previous/next controls when the full row does not fit. Two behavioral regression cases cover all selected Research views and badge visibility at 80, 100 and 160 columns. Classic pane interiors keep their existing sizing.
+
+Remaining: rerun focused mounted acceptance and the 16-case shell suite, await the prior full local run, refresh offline indexes, pass final-head CI and merge PR93. Independent card-catalog PR99 remains owned by its original session. Preserve the canonical checkout and all unrelated work. Installed launcher acceptance and owned cleanup follow actual delivery.
+
+## v110 - 2026-11-08 (SolTUI v2 final verification checkpoint)
+
+Version: 110. Delta: v109 to v110; record the accepted narrow-terminal correction and delivery handoff.
+
+All sixteen focused shell tests pass in 33.252 seconds. Independent mounted acceptance passes 88 selected-label checks across all 22 destination subviews while resizing 160 to 100 to 80 to 160 columns. Actual previous/next clicks wrap correctly at 80 and 100 columns; the no-order-path badge remains visible; 160 columns restores the full Research row. No mismatches remain in these checks. Classic pane interiors retain their existing sizing. The documentation gate now discovers 900 SolTUI tests and 2,195 cases across the documented suites. Offline-index regression cases and whitespace checks pass.
+
+The full local merged-tree run began before the two new regression tests were added. It tests the prior 898-case tree; the focused 16-case run verifies the final shell delta. Final-head CI must run all 900 cases on the final source. The exact current delivery receipt, local suite result, final-head CI, merge commit and installed acceptance are maintained in Stele TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json. Read those receipts before resuming any action below; do not repeat completed checks merely because this committed checkpoint predates the merge.
+
+Remaining at this checkpoint: finish local full-suite observation, pass final-head CI, gated squash merge of PR93, verify actual remote source, safely synchronize the canonical launcher while preserving other sessions, and remove only the clean recovered redesign worktrees and branches. The backup tag and branch stay. No service restart, trading action, inference or semantic-index rebuild is part of this delivery.
