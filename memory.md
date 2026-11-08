@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 99
-Delta: preserve incoming catalogue history and append sanitized task continuation through v99.
+Version: 105
+Delta: v104 to v105; apply requested canonical card moves immediately.
 
 ## v1 - 2026-11-06
 
@@ -1018,3 +1018,53 @@ The complete root CI run 42471525856 passed on source 8265776, including the cur
 PR 91 independently landed the same mirror-capable executor installer already validated on this branch. Retain its workflow byte for byte, including the new card coverage check; this research PR now has no CI workflow behavior delta. The earlier installer investigation remains historical evidence in KNOW-935. Regenerate only offline retrieval artifacts for the combined source and run the catalogue coverage check, documentation check and targeted index/UI tests. Final pushed combined-tree CI remains required.
 
 Website PR 307 merged as 26ed830f8255428a9406e6270be82be55194ae97 after its final checks passed. Production acceptance is separate and continues against that actual merge. All accepted scientific statements, canonical IDs, source bindings, installed reference bytes and public metadata privacy corrections remain unchanged. Resume only remaining delivery actions from the private run's final-delivery checkpoint.
+
+## v100 - 2026-11-08 (incomplete card separation)
+
+Version: 100. Delta: v99 to v100; start TASK-939 review, TASK-940 relocation, TASK-941 delivery.
+
+Target: review the1083 cards added in PR91, keep substantive implementable specifications, and relocate cards with undisclosed/vague mechanics under backtester/strategy_cards/incomplete. Preserve all59 older cards, registry34, source evidence and unrelated dirty work. No new trading implementation is authorized by this sorting request.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-card-triage; branch feat/tradingview-card-triage. Shared master is188d329 with337 unrelated dirty/untracked files. Concurrent PR96 enriches13 canonical cards and adds8 companion tools; integrate that delivered work without discarding its improvements.
+
+Classification must inspect actual equations, code and mechanism text, not just spec-only status or numeric inputs. Asked whether complete indicator formulas without order rules should remain; default is to keep complete computable signals while flagging their absent runner. Classification decisions and unknowns must be explicit.
+
+Remaining: classify every new card, independent review, move incomplete cards without loss, update catalog/ledger validation and references, relevant tests and source gates, commit/push/CI/merge, safe canonical sync and own-worktree cleanup. Use INDEX_NO_AUTO=1 on searches to preserve paused indexing.
+
+## v101 - 2026-11-08 (card readiness clarification)
+
+Confirmed user clarification: keep complete indicator specifications even without buy/sell rules. Retain a reproducible calculation with declared inputs; move names, generic descriptions, ambiguous predicates and undisclosed algorithms. Three research-contract reviewers each own361 cards, with exact evidence/gaps per decision under /tmp/solmargin-card-triage. Coverage validation will include both directories; the existing flat runtime loader naturally excludes incomplete/. Seven behavior checks pass for loss, duplicate, stale review, location and quote binding. Source/card bodies will not be rewritten during relocation. Remaining: assess all review results, reconcile concurrent PR96 enriched cards, relocate, final verification and delivery.
+
+
+## v102 - 2026-11-08 (reviewed card relocation)
+
+Version: 102. Delta: v101 to v102; complete TASK-939 and apply TASK-940.
+
+Reviewed all 1083 PR91 cards in three361-card source-text batches. Cross-review covered188 initial keeps and120 math-bearing incomplete candidates. Parent accepted6 downgrades and10 upgrades. Final:292 new usable specifications remain active;791 incomplete cards move under backtester/strategy_cards/incomplete. All59 original cards remain active; active catalog351 and total1142. Every card byte is unchanged from the188d329 baseline. Registry34 is unchanged.
+
+research/tradingview-card-readiness.json records each disposition, exact card quotes, narrow functional scope, SHA256, path and gaps. The owner confirmed complete indicator specifications should stay without buy/sell rules. Independent principal outputs/explicit selectable branches can qualify despite incomplete sibling features; hidden intermediate equations do not qualify. Runtime status stays spec-only.
+
+Coverage checker now audits both directories and validates the readiness bindings. Existing flat runtime loading excludes incomplete/. Seven behavior checks pass for loss, duplicate location, stale review, wrong location and unbound evidence. Docs and the old extraction-file receipt preserve source coverage and relocated paths.
+
+Remaining: finish full raw-source and relevant suite checks, update offline indexes, preserve incoming PR95/PR96 histories and any enriched canonical cards, commit/push/PR/final CI/merge, canonical read-back and own-worktree cleanup. TASK-941 owns final delivery. Do not rerun /tmp/solmargin-card-triage/apply.py after relocation; its one-time assertions intentionally refuse a second move. Existing and new card hashes are in /tmp/solmargin-card-triage/card-baseline.json. Shared checkout preservation snapshot contains337 unrelated paths.
+
+
+## v103 - 2026-11-08 (incomplete cards, verified checkpoint)
+
+Version: 103. Delta: v102 to v103; finish local gates and preserve incoming PR95.
+
+Completed:791 byte-preserving relocations;292 new usable specifications plus59 original cards remain active (351 active,1142 total). Original card/registry contracts remain intact. All4890 raw-source bindings pass. Seven separation-integrity cases pass. Backtester880 guarded cases pass in28.177s; all20 mocked IdleTests pass separately in0.016s with INDEX_NO_AUTO unset, for900/900. SolTUI queue/Docs/coverage/editor selection100 cases pass in93.868s (one optional skip). Documentation counts agree on2179 tests. Targeted Python lint and both working/staged whitespace gates pass. Only offline keyword indexes were regenerated; no inference/runtime/index worker was started.
+
+Integrated origin/master a70d62f from PR95 without modifying its optimizer source-context files. Shared histories and all other active PRs/worktrees are preserved. Concurrent PR96 remains its owner's unfinished branch; do not merge or rewrite it. If it lands during this delivery, preserve its card improvements, re-review affected content and update location/hash bindings before finishing.
+
+Final delivery is tracked by TASK-941 and branch feat/tradingview-card-triage. If its PR is open, finish final-head CI and merge. If already merged, verify the remote receipt and complete TASK-941 if needed. Do not repeat extraction or the one-time move script. After actual merge, safely synchronize canonical master only when incoming paths do not overlap unrelated changes, verify all337 preserved path bytes, repeat focused fresh-process catalog/Docs acceptance and remove only this task's clean worktree/branch.
+
+## v104 - 2026-11-08 (readiness concurrent research integration)
+
+Version: 104. Delta: v103 to v104; preserve PR94 research work.
+
+Integrated origin/master 0b46a88 after concurrent PR94 landed while this task opened PR97. Preserve all research artifacts and histories; regenerate only shared indexes after resolving Git stages. Card contents and the292/791 readiness decisions are unchanged. PR97 and TASK-941 own final CI, merge receipt and cleanup. If already merged, verify that receipt instead of replaying review/moves.
+
+## v105 - 2026-11-08 (canonical incomplete directory correction)
+
+The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.

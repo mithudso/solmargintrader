@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 57
-Delta: preserve incoming catalogue history and append sanitized task continuation through v57.
+Version: 59
+Delta: v58 to v59; apply requested canonical card moves immediately.
 
 ## v1 - 2026-11-06
 
@@ -434,3 +434,21 @@ Directed graph preservation (frontier, viability 3.60 / 5)
 
 Target: solmargintrader, isolated branch agent-01a1b5ef. Stele TASK-905.
 Metadata v57: operator-neutral continuation reference; user request unchanged.
+
+## v57 - 2026-11-08 (incomplete TradingView cards)
+
+```text
+create an incomplete directory and put all the cards you just created that cannot actually be run into it for further research, keep any cards that contain an equation, script, and/or parameters that make it a functional strategy
+```
+
+## v58 - 2026-11-08 (card readiness clarification)
+
+```text
+Keep complete indicator specifications too (Recommended)
+```
+
+## v59 - 2026-11-08 (canonical incomplete directory correction)
+
+```text
+I told you to move the incomplete cards to the incomplete directory, you never did that, move all incomplete cards to the /Users/mitch/dev/solmargintrader/backtester/strategy_cards/incomplete directory.
+```

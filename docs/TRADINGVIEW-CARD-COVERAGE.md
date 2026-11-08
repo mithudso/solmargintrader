@@ -1,8 +1,17 @@
 # TradingView indicator and strategy card coverage
 
-Version: 1.0.0 (2026-11-08). Delta: first source-to-card reconciliation.
+Version: 1.1.0 (2026-11-08). Delta: preserve source coverage across active and incomplete research cards.
 
 Created **1083 specification cards** after checking existing cards, the strategy registry, indicator functions and Compound scorecard. Existing code and measured cards keep their status.
+
+The subsequent completeness review keeps **292 new usable specifications** in the
+active directory and moves **791 incomplete cards** to
+`backtester/strategy_cards/incomplete/`. All 59 pre-existing cards stay active;
+the active catalog has 351 cards and all 1,142 remain preserved. See
+[the per-card readiness report](TRADINGVIEW-CARD-READINESS.md) and
+`research/tradingview-card-readiness.json` for exact evidence, paths and gaps.
+The creation dispositions below record the original existence check, not runtime
+support or a claim that every newly created card is complete.
 
 Scope: 114 built-in studies; 747 canonical script publications; 1610 canonical chart/idea publications; 2323 canonical help solutions (313 financial definition candidates); 90 other Markdown exports; 45 distinct ta-library functions plus 72 checked moving-average/candlestick/harmonic function definitions. Duplicate Markdown/HTML captures share a source row.
 
@@ -22,7 +31,11 @@ The full inventory and initial matching used deterministic source extraction and
 
 ## What these cards make available
 
-Cards are discoverable through the card CLI and the SolTUI Docs index after index regeneration. SolTUI’s Strategies roster still lists executable registry entries. Creating a `spec-only` card does not make it runnable, backtestable or forward-testable. No executable trading rule or order path changed.
+The card CLI loads the active directory only. The SolTUI Docs index can find both
+active and incomplete cards for research. SolTUI’s Strategies roster still lists
+executable registry entries. Creating or retaining a `spec-only` card does not
+make it runnable, backtestable or forward-testable. No executable trading rule or
+order path changed.
 
 ## Built-in studies
 
