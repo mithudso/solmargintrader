@@ -16,8 +16,13 @@ path anywhere in this package.
 
 from __future__ import annotations
 
+import asyncio
+import copy
 import json
+import math
+import threading
 import time
+import uuid
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable
@@ -41,6 +46,7 @@ from textual.widgets import (
     Label,
     OptionList,
     Select,
+    Sparkline,
     Static,
     TabbedContent,
     Tab,
@@ -201,6 +207,9 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#bots-forward-stop": "bots.forward_stop",
     "#bots-forward-refresh": "bots.forward_status",
     "#bots-optimize": "bots.optimize",
+    "#bots-fit-rank": "bots.rank_coins",
+    "#bots-fit-audit": "bots.audit_coin",
+    "#bots-fit-cancel": "bots.fit_cancel",
     "#bots-workbench": "experiments.list",
     "#bots-coins": "bots.overview",
 }
@@ -536,6 +545,14 @@ class EditorBar(Widget):
             self.post_message(self.Reset())
 
 
+class CoinFitFinished(Message):
+    """A terminal envelope, posted from a thread without touching widgets."""
+
+    def __init__(self, token: int, bot: str, signature: tuple, envelope: dict[str, Any]) -> None:
+        super().__init__()
+        self.token, self.bot, self.signature, self.envelope = token, bot, signature, envelope
+
+
 class SolTuiApp(App):
     """The console over the tested modules.
 
@@ -566,6 +583,8 @@ class SolTuiApp(App):
     #available-table { width: 3fr; }
     #forward-scope { width: 21; }
     #forward-horizon { width: 17; }
+    #forward-coins { width: 16; }
+    #forward-optimize { width: 24; }
     #forward-mode { width: 14; }
     #forward-start, #forward-stop, #forward-refresh { min-width: 10; }
     #forward-combos { width: 1fr; }
@@ -601,6 +620,11 @@ class SolTuiApp(App):
     #bots-sections { height: 1fr; }
     #bots-set, #bots-bt-table, #bots-fwd-table { height: 16; }
     #bots-opt-table, #bots-prices { height: 22; }
+    #bots-fit-table { height: 14; }
+    #bots-fit-windows { height: 12; }
+    #bots-fit-equity, #bots-fit-hold { height: 3; }
+    #bots-fit-controls Button { width: auto; min-width: 12; }
+    #bots-fit-status, #bots-fit-detail, #bots-fit-selection-summary { height: auto; padding: 0 1; }
     #backtest-pick { width: 44; }
     #backtest-roster { color: $text-muted; padding: 0 1; }
     #backtest-bg-status { padding: 0 1; height: auto; }
@@ -701,6 +725,22 @@ class SolTuiApp(App):
         self._bots_selected: list[str] = []
         self._bots_runs: list[dict[str, Any]] = []
         self._bots_opt_screen: OptimizeScreen | None = None
+        self._bots_fit_busy = False
+        self._bots_fit_cancelling = False
+        self._bots_fit_generation = 0
+        self._bots_fit_active_token: int | None = None
+        self._bots_fit_rows: dict[str, dict[str, Any]] = {}
+        self._bots_fit_audits: dict[str, dict[str, Any]] = {}
+        self._bots_fit_origin: dict[str, Any] | None = None
+        self._bots_fit_coin: str | None = None
+        self._bots_fit_window_rows: dict[str, dict[str, Any]] = {}
+        self._bots_fit_request_id: str | None = None
+        self._bots_fit_timer = None
+        self._bots_fit_worker_handle = None
+        self._bots_fit_alive = threading.Event()
+        self._bots_fit_drained = threading.Event()
+        self._bots_fit_drained.set()
+        self._bots_fit_shutdown_drained = True
         # Where the editor's height and open/closed state persist. None (every test) keeps them
         # in memory, so no test reads or writes the owner's real layout.
         self._ui_state_path = ui_state_path
@@ -731,8 +771,7 @@ class SolTuiApp(App):
         self._docs_loaded_text = ""
         self._forward_running = False
         self._forward_busy = False
-        self._forward_bar = 0
-        self._forward_next = 0.0
+        self._forward_seen: dict[str, Any] = {}
         self._cumulative_loaded = False
         # Last results-file mtime the Queue tab rendered (the worker is a separate process).
         self._queue_mtime = 0.0
@@ -1021,14 +1060,19 @@ class SolTuiApp(App):
     def _forward_pane(self) -> ComposeResult:
         with Vertical():
             yield Static(
-                "Paper direction calls on closed 1m data for the Settings asset. "
-                "UP/DOWN mean a move beyond the cost threshold; FLAT predicts neither.", classes="hint")
+                "Paper direction calls on closed 1m Coinbase data for the chosen coins. UP/DOWN mean a move "
+                "beyond the cost threshold; FLAT predicts neither. Once started it runs in the background "
+                "until Stop, whatever tab is open.", classes="hint")
             with Horizontal(classes="form-row"):
                 yield Select([("All strategies", "all"), ("Roster only", "roster"),
                               ("Combinations only", "combinations")],
                              id="forward-scope", value="all", allow_blank=False)
                 yield Select([("All four", "all"), *((f"{h} min", str(h)) for h in (1, 5, 10, 30))],
                              id="forward-horizon", value="all", allow_blank=False)
+                yield Select(self._forward_coin_options(), id="forward-coins",
+                             value=self.settings.asset.upper(), allow_blank=False)
+                yield Select([("Auto-optimize: on", "on"), ("Auto-optimize: off", "off")],
+                             id="forward-optimize", value="on", allow_blank=False)
                 yield Button("Start", id="forward-start", variant="success")
                 yield Button("Stop", id="forward-stop", disabled=True)
                 yield Button("Refresh", id="forward-refresh")
@@ -1036,20 +1080,33 @@ class SolTuiApp(App):
                 yield Input(placeholder="Combinations: rsi,macd; breakout,obv_trend", id="forward-combos")
                 yield Select([(m, m) for m in ("all", "any", "vote", "mean")],
                              id="forward-mode", value="all", allow_blank=False)
-            yield Static("Forward results by strategy and horizon · Stopped",
+            yield Static("Forward results by coin, strategy and horizon · Stopped",
                          id="forward-status", classes="table-title", markup=False)
             table = GlossaryTable(id="forward-table")
             table.cursor_type = "row"
-            table.add_columns("trial", "minutes", "resolved", "accuracy", "pending", "expired",
-                              "changes", "last call", "last outcome", "issued UTC", "cost bps", "active settings")
+            table.add_columns("coin", "trial", "minutes", "resolved", "accuracy", "pending", "expired",
+                              "changes", "saved default", "last call", "last outcome", "issued UTC", "cost bps",
+                              "active settings")
             yield table
+
+    def _forward_coin_options(self) -> list[tuple[str, str]]:
+        from .commands import forward_coins
+
+        coins = forward_coins()
+        asset = self.settings.asset.upper()
+        if asset not in coins:
+            coins = [asset, *coins]
+        return [("All coins", "all"), *((c, c) for c in coins)]
 
     @on(Button.Pressed, "#forward-start")
     def _forward_start(self) -> None:
         horizon = self.query_one("#forward-horizon", Select).value
         raw = self.query_one("#forward-combos", Input).value
+        coins = self.query_one("#forward-coins", Select).value
         params = {"scope": self.query_one("#forward-scope", Select).value,
                   "mode": self.query_one("#forward-mode", Select).value,
+                  "coins": "all" if coins == "all" else [str(coins)],
+                  "optimize": self.query_one("#forward-optimize", Select).value == "on",
                   "combinations": [[v.strip() for v in c.split(",")]
                                    for c in raw.split(";") if c.strip()]}
         if horizon != "all":
@@ -1060,27 +1117,34 @@ class SolTuiApp(App):
             status.update(self._msg(env))
             return
         result = env["result"]
+        run = self._call("forwardtest.run")
+        if not run["ok"]:
+            status.update(self._msg(run))
+            return
         self._forward_running = True
-        self._forward_bar = 0
-        self._forward_next = 0.0
+        self._forward_seen = {}
         self._forward_controls()
-        status.update(f"{result['asset']}: watching {result['trials']} trials; "
-                      f"horizons {', '.join(map(str, result['horizons']))} min.")
-        self._forward_schedule()
+        status.update(f"{len(result['assets'])} coin(s): watching {result['trials']} trials each; horizons "
+                      f"{', '.join(map(str, result['horizons']))} min; auto-optimize "
+                      f"{'on' if result['optimize'] else 'off'}. Runs in the background until Stop.")
+        self._forward_show_running(result["assets"])
 
     @on(Button.Pressed, "#forward-stop")
     def _forward_stop(self) -> None:
         self._forward_running = False
         self._call("forwardtest.stop")
         self._forward_controls()
+        self._forward_show_running([])
         self.query_one("#forward-status", Static).update(
             "Stopping after the current check…" if self._forward_busy else "Stopped; results saved.")
 
     @on(Button.Pressed, "#forward-refresh")
     def _forward_refresh(self) -> None:
-        if self._forward_busy or self._forward_running:
+        if self._forward_busy:
             return
-        env = self._call("forwardtest.status", quiet=True)
+        coins = self.query_one("#forward-coins", Select).value if self.query("#forward-coins") else None
+        params = {} if self._forward_running else {"coins": "all" if coins == "all" else [str(coins)]}
+        env = self._call("forwardtest.status", params, quiet=True)
         if env["ok"]:
             self._forward_render(env["result"]["rows"])
         else:
@@ -1089,41 +1153,67 @@ class SolTuiApp(App):
     def _forward_controls(self) -> None:
         self.query_one("#forward-start", Button).disabled = self._forward_running or self._forward_busy
         self.query_one("#forward-stop", Button).disabled = not self._forward_running
-        self.query_one("#forward-refresh", Button).disabled = self._forward_running or self._forward_busy
+        self.query_one("#forward-refresh", Button).disabled = self._forward_busy
+        for wid in ("#forward-coins", "#forward-optimize", "#forward-scope", "#forward-horizon"):
+            self.query_one(wid, Select).disabled = self._forward_running
+
+    def _forward_show_running(self, assets: list[str]) -> None:
+        """The header says the forward test runs, so it is visible from every tab."""
+        base = type(self).SUB_TITLE
+        self.sub_title = (f"{base} · forwardtest running on {len(assets)} coin(s)" if assets else base)
 
     def _forward_schedule(self) -> None:
-        now = time.time()
-        if (self._forward_running and not self._forward_busy and self.query("#forward-status")
-                and now >= self._forward_next and now % 60 >= 4 and int(now // 60) * 60 - 60 > self._forward_bar):
-            self._forward_busy = True
-            self._forward_worker()
+        """Every 5 s: read the background runner's state; re-read results when a coin was checked.
 
-    @work(thread=True, exit_on_error=False, group="forwardtest")
-    def _forward_worker(self) -> None:
-        env = self._call("forwardtest.tick", quiet=True)
-        try:
-            self.call_from_thread(self._forward_done, env)
-        except RuntimeError:
-            # Textual may have closed the event loop while the public price request drained.
-            pass
-
-    def _forward_done(self, env: dict[str, Any]) -> None:
-        self._forward_busy = False
-        self._forward_next = time.time() + 10
+        The runner (`forwardtest.run`) owns the checking; this only renders, so nothing here
+        depends on which tab is open.
+        """
         if not self.query("#forward-status"):
             return
+        env = self._call("forwardtest.state", quiet=True)
+        if not env["ok"]:
+            return
+        st = env["result"]
+        was_busy = self._forward_busy
+        self._forward_busy = bool(st["busy"]) or (not st["running"] and st["prepared"])
+        if self._forward_running and not st["prepared"]:
+            self._forward_running = False
+        if not self._forward_running and not st["busy"]:
+            self._forward_busy = False
         self._forward_controls()
+        seen = {a: v.get("at") for a, v in st["last"].items()}
+        if seen != getattr(self, "_forward_seen", {}) or was_busy != self._forward_busy:
+            self._forward_seen = seen
+            self._forward_status_job(st)
+
+    @work(thread=True, exit_on_error=False, group="forwardtest")
+    def _forward_status_job(self, st: dict[str, Any]) -> None:
+        env = self._call("forwardtest.status", quiet=True)
+        try:
+            self.call_from_thread(self._forward_done, env, st)
+        except RuntimeError:
+            pass  # the app closed while the read was in flight
+
+    def _forward_done(self, env: dict[str, Any], st: dict[str, Any] | None = None) -> None:
+        if not self.query("#forward-status"):
+            return
         status = self.query_one("#forward-status", Static)
         if env["ok"]:
-            result = env["result"]
-            self._forward_render(result["rows"])
-            if result["bar"] is not None:
-                self._forward_bar = result["bar"]
-            status.update(f"{result['asset']}: {result['message']} · {result['recorded']} new predictions"
-                          if self._forward_running else "Stopped; results saved.")
-        elif self._forward_running:
-            status.update(f"Will retry: {self._msg(env)}")
-        else:
+            self._forward_render(env["result"]["rows"])
+        st = st or {}
+        last = st.get("last") or {}
+        errors = {a: v["error"] for a, v in last.items() if v.get("error")}
+        recorded = sum(v.get("recorded", 0) for v in last.values())
+        if self._forward_running:
+            when = max((v.get("at") or 0 for v in last.values()), default=0)
+            stamp = time.strftime("%H:%M:%S", time.localtime(when)) if when else "-"
+            text = (f"Running in the background on {len(st.get('assets') or [])} coin(s), auto-optimize "
+                    f"{'on' if st.get('optimize') else 'off'} · last check {stamp}, {recorded} new predictions"
+                    f" · {st.get('defaults_saved', 0)} setting(s) saved as defaults")
+            if errors:
+                text += " · will retry " + ", ".join(f"{a}: {e}" for a, e in list(errors.items())[:3])
+            status.update(text)
+        elif not st.get("busy"):
             status.update("Stopped; results saved.")
 
     def _forward_render(self, rows: list[dict[str, Any]]) -> None:
@@ -1137,15 +1227,24 @@ class SolTuiApp(App):
             settings = "; ".join(
                 f"{m['name']} " + ", ".join(f"{k}={v}" for k, v in m["params"].items())
                 for m in r["settings"])
-            table.add_row(r["label"], r["minutes"], r["resolved"],
+            table.add_row(r.get("asset", "-"), r["label"], r["minutes"], r["resolved"],
                           _pct(r["correct"] / r["resolved"] if r["resolved"] else None),
-                          r["pending"], r["expired"], r["changes"],
+                          r["pending"], r["expired"], r["changes"], "yes" if r.get("saved_default") else "-",
                           directions.get(r["last_call"], "-"), directions.get(r["last_outcome"], "-"), issued,
                           f"{r['cost_bps']:g}", r["note"] or settings, key=r["id"])
         if rows:
             table.move_cursor(row=min(cursor, len(rows) - 1))
 
-    def on_unmount(self) -> None:
+    async def on_unmount(self) -> None:
+        self._bots_fit_alive.clear()
+        if self._bots_fit_timer is not None:
+            self._bots_fit_timer.stop()
+            self._bots_fit_timer = None
+        if self._bots_fit_busy:
+            self._call("bots.fit_cancel", {"request_id": self._bots_fit_request_id, "interrupted": True}, quiet=True)
+            # The backend has no network and checks the event between bounded windows.
+            # The thread posts no UI callbacks while the app is closing.
+            self._bots_fit_shutdown_drained = await asyncio.to_thread(self._bots_fit_drained.wait, 5.0)
         if self._forward_running or self._forward_busy:
             self._forward_running = False
             self._call("forwardtest.stop", quiet=True)
@@ -1298,9 +1397,32 @@ class SolTuiApp(App):
                 yield Button("Refresh forward", id="bots-forward-refresh")
                 yield Button("Auto-optimize (all coins)", variant="warning", id="bots-optimize")
                 yield Button("Experiment workbench", id="bots-workbench")
+            with Horizontal(classes="form-row", id="bots-fit-controls"):
+                yield Button("Rank all coins (quick)", variant="primary", id="bots-fit-rank")
+                yield Button("Audit selected coin", id="bots-fit-audit", disabled=True)
+                yield Button("Cancel ranking / audit", id="bots-fit-cancel", disabled=True)
+            yield Static("Coin suitability: quick ranking is provisional; audit adds multiple windows and stressed costs.",
+                         id="bots-fit-status", markup=False)
             yield Static("", id="bots-status")
             yield Static("price recorder: checking…", id="bots-stream")
             with TabbedContent(id="bots-sections", initial="bots-sec-backtest"):
+                with TabPane("Coin suitability", id="bots-sec-fit"):
+                    with VerticalScroll():
+                        yield Static("Rank all cached coins, then select a row to inspect or audit it. "
+                                     "These simulations neither adopt settings nor place orders.", markup=False)
+                        yield Static("Coin suitability ranking and selected audit outcomes", classes="table-title")
+                        yield GlossaryTable(id="bots-fit-table")
+                        yield Static("No coin selected.", id="bots-fit-selection-summary", markup=False)
+                        yield Static("Select an audit window below to inspect its equity path. Sparklines show shape "
+                                     "with independent vertical scales; compare numeric returns for magnitude.", markup=False)
+                        yield Static("Equity: no selected result.", id="bots-fit-curve-context", markup=False)
+                        yield Static("Bot equity (sampled full-account path)", classes="table-title")
+                        yield Sparkline([], id="bots-fit-equity")
+                        yield Static("Buy-and-hold equity over the same sample", classes="table-title")
+                        yield Sparkline([], id="bots-fit-hold")
+                        yield GlossaryTable(id="bots-fit-windows")
+                        yield Static("Complete metrics, settings and template evidence", classes="table-title")
+                        yield Static("No coin selected.", id="bots-fit-detail", markup=False)
                 with TabPane("Backtest", id="bots-sec-backtest"):
                     with VerticalScroll():
                         yield Static("No backtest yet for this bot: press Backtest.", id="bots-bt-title")
@@ -1350,6 +1472,16 @@ class SolTuiApp(App):
             if not table.columns:
                 table.add_columns(*cols)
                 table.cursor_type = "row"
+        for table_id, columns in (
+            ("#bots-fit-table", ("coin", "fit", "audit", "suitability score", "sim net", "vs hold", "max dd",
+                                 "cycles / deals", "window", "reason")),
+            ("#bots-fit-windows", ("window", "from", "to", "cost stress", "sim net", "hold return",
+                                   "vs hold", "max dd", "cycles / deals", "costs $")),
+        ):
+            table = self.query_one(table_id, DataTable)
+            if not table.columns:
+                table.add_columns(*columns)
+                table.cursor_type = "row"
         env = self._call("bots.overview", quiet=True)
         coin = self.settings.asset.upper()
         if env["ok"]:
@@ -1357,6 +1489,7 @@ class SolTuiApp(App):
         self._bots_selected = [coin if coin in (self._bots_coins or [coin]) else (self._bots_coins or [coin])[0]]
         self._bots_show_coins()
         self._bots_render_selected()
+        self._bots_fit_controls()
 
     def _bots_coin(self) -> str:
         """The first selected coin: what a forward test runs on."""
@@ -1380,6 +1513,7 @@ class SolTuiApp(App):
         about.update(Text(f"{r['about']}\nCurrent settings: {cfg}"))
         self.query_one("#bots-config", Input).placeholder = cfg
         self.query_one("#bots-coins", Button).disabled = self._bots_bot == "triangle"
+        self._bots_fit_controls()
         results = self._call("bots.results", {"bot": self._bots_bot, "limit": 1}, quiet=True)
         if results["ok"] and results["result"]:
             self._bots_runs = list(results["result"])
@@ -1622,8 +1756,25 @@ class SolTuiApp(App):
     @on(Select.Changed, "#bots-bot")
     def _bots_bot_changed(self, event: Select.Changed) -> None:
         if isinstance(event.value, str) and event.value != self._bots_bot:
+            self._bots_fit_generation += 1
+            if self._bots_fit_busy:
+                self._call("bots.fit_cancel", {"request_id": self._bots_fit_request_id, "interrupted": True}, quiet=True)
             self._bots_bot = event.value
             if self._bots_loaded:
+                self._bots_fit_rows.clear()
+                self._bots_fit_audits.clear()
+                self._bots_fit_origin = None
+                self._bots_fit_window_rows.clear()
+                self._bots_fit_coin = None
+                self._bots_clear("#bots-fit-table", "#bots-fit-windows")
+                self.query_one("#bots-fit-equity", Sparkline).data = []
+                self.query_one("#bots-fit-hold", Sparkline).data = []
+                self.query_one("#bots-fit-curve-context", Static).update("Equity: no selected result.")
+                self.query_one("#bots-fit-detail", Static).update("No suitability result for this bot.")
+                self.query_one("#bots-fit-selection-summary", Static).update("No suitability result for this bot.")
+                self.query_one("#bots-fit-status", Static).update(
+                    "Stopping the previous bot's suitability job…" if self._bots_fit_busy else
+                    "Coin suitability: rank this bot's coins, then audit a selected row.")
                 self._bots_render_selected()
 
     @on(Button.Pressed, "#bots-apply")
@@ -1737,6 +1888,308 @@ class SolTuiApp(App):
         if run is not None:
             self._bots_render_backtest(run)
 
+    def _bots_fit_controls(self) -> None:
+        if not self.query("#bots-fit-rank"):
+            return
+        unsupported = self._bots_bot == "triangle"
+        selected = self._bots_fit_rows.get(self._bots_fit_coin or "", {})
+        bound_data = selected.get("data_sha256")
+        self.query_one("#bots-fit-rank", Button).disabled = self._bots_fit_busy or unsupported
+        self.query_one("#bots-fit-audit", Button).disabled = (
+            self._bots_fit_busy or unsupported or self._bots_fit_coin is None or self._bots_fit_origin is None
+            or not isinstance(bound_data, str) or len(bound_data) != 64)
+        self.query_one("#bots-fit-cancel", Button).disabled = (
+            not self._bots_fit_busy or self._bots_fit_cancelling)
+        # A suitability result must correspond to the settings visible when it began.
+        for wid in ("#bots-apply", "#bots-reset", "#bots-backtest", "#bots-optimize",
+                    "#bots-start", "#bots-days", "#bots-config"):
+            self.query_one(wid).disabled = self._bots_fit_busy
+        if unsupported and not self._bots_fit_busy:
+            self.query_one("#bots-fit-status", Static).update(
+                "Coin suitability supports the grid and averaging-down DCA bots; triangle arbitrage is not a per-coin screen.")
+
+    def _bots_fit_signature(self) -> tuple:
+        return (self._bots_bot, repr(self.settings),
+                self.query_one("#bots-start", Input).value,
+                self.query_one("#bots-days", Input).value,
+                json.dumps(bots_mod.get_config(self._bots_bot), sort_keys=True))
+
+    def _bots_fit_begin(self, mode: str) -> None:
+        if self._bots_fit_busy:
+            return
+        if self._bots_bot == "triangle":
+            self._bots_fit_controls()
+            return
+        opt = bots_mod.runtime().progress.get(self._bots_bot)
+        if opt and not opt.get("done") and opt.get("fraction", 1) < 1:
+            self.query_one("#bots-fit-status", Static).update(
+                "Wait for auto-optimize to finish before screening its configuration.")
+            return
+        params: dict[str, Any] = {"bot": self._bots_bot}
+        name = "bots.rank_coins" if mode == "quick" else "bots.audit_coin"
+        if mode == "quick":
+            params["coins"] = "all"
+        elif self._bots_fit_coin is not None:
+            params["asset"] = self._bots_fit_coin
+        else:
+            self.query_one("#bots-fit-status", Static).update("Rank coins and select a row before auditing.")
+            return
+        start = self.query_one("#bots-start", Input).value.strip()
+        days = self.query_one("#bots-days", Input).value.strip()
+        if start:
+            params["start"] = start
+        if days:
+            try:
+                params["days"] = float(days)
+                if not math.isfinite(params["days"]) or params["days"] <= 0:
+                    raise ValueError
+            except ValueError:
+                self.query_one("#bots-fit-status", Static).update("Days must be a finite positive number.")
+                return
+        if mode == "audit":
+            origin = self._bots_fit_origin
+            if not origin or not isinstance(origin.get("config"), dict) or not isinstance(origin.get("policy"), dict):
+                self.query_one("#bots-fit-status", Static).update("Run a quick ranking before auditing its selected coin.")
+                return
+            for key in ("common_start", "common_end", "fee_bps", "slippage_bps", "capital_usd"):
+                if not isinstance(origin.get(key), (int, float)):
+                    self.query_one("#bots-fit-status", Static).update(f"Quick ranking did not bind {key}; rank again before auditing.")
+                    return
+            params.update(start=str(origin["common_start"]), reference_end=origin["common_end"],
+                          days=(origin["common_end"] - origin["common_start"]) / 86400,
+                          config=copy.deepcopy(origin["config"]), fee_bps=origin["fee_bps"],
+                          slippage_bps=origin["slippage_bps"], capital=origin["capital_usd"],
+                          policy=copy.deepcopy(origin["policy"]))
+            selected = self._bots_fit_rows[self._bots_fit_coin]
+            if not selected.get("data_sha256"):
+                self.query_one("#bots-fit-status", Static).update("Selected quick row has no data fingerprint; rank again after resolving its data error.")
+                return
+            params["expected_data_sha256"] = selected["data_sha256"]
+            if origin.get("selection_id"):
+                params["selection_id"] = origin["selection_id"]
+        try:
+            signature = self._bots_fit_signature()
+        except (bots_mod.BotError, OSError, ValueError) as exc:
+            self.query_one("#bots-fit-status", Static).update(f"Cannot read the current bot settings: {exc}")
+            return
+        frozen = Context.from_settings(copy.deepcopy(self.settings), self.ctx.runtime)
+        self._bots_fit_generation += 1
+        token = self._bots_fit_generation
+        self._bots_fit_active_token = token
+        self._bots_fit_request_id = uuid.uuid4().hex
+        params["request_id"] = self._bots_fit_request_id
+        self._bots_fit_busy, self._bots_fit_cancelling = True, False
+        self._bots_fit_drained.clear()
+        self._bots_fit_alive.set()
+        self._bots_fit_controls()
+        self.query_one("#bots-sections", TabbedContent).active = "bots-sec-fit"
+        self.query_one("#bots-fit-status", Static).update(
+            "Running quick heuristic ranking…" if mode == "quick" else f"Auditing {self._bots_fit_coin} across windows and stressed costs…")
+        self._bots_fit_timer = self.set_interval(0.25, self._bots_fit_poll)
+        self._bots_fit_worker_handle = self._bots_fit_worker(token, self._bots_bot, signature, name, params, frozen)
+
+    @work(thread=True, exit_on_error=False, group="coin-suitability")
+    def _bots_fit_worker(self, token: int, bot: str, signature: tuple, name: str,
+                         params: dict[str, Any], context: Context) -> None:
+        try:
+            envelope = dispatch(name, params, surface="tui", ctx=context)
+        except Exception as exc:  # noqa: BLE001 - dispatch failures still need a terminal UI state
+            envelope = {"ok": False, "error": {"message": f"{type(exc).__name__}: {exc}"}, "result": None}
+        finally:
+            self._bots_fit_drained.set()
+        if self._bots_fit_alive.is_set():
+            self.post_message(CoinFitFinished(token, bot, signature, envelope))
+
+    def _bots_fit_poll(self) -> None:
+        if not self._bots_fit_busy or not self._bots_fit_alive.is_set():
+            return
+        env = self._call("bots.fit_status", quiet=True)
+        state = env.get("result") if env.get("ok") else None
+        if not state or state.get("bot") != self._bots_bot:
+            return
+        status = state.get("status", "running")
+        self.query_one("#bots-fit-status", Static).update(
+            f"{state.get('mode', 'quick')} · {status} · {100 * state.get('fraction', 0):.0f}%: {state.get('message', '')}")
+
+    @on(CoinFitFinished)
+    def _bots_fit_finished(self, event: CoinFitFinished) -> None:
+        if not self._bots_fit_alive.is_set() or event.token != self._bots_fit_active_token:
+            return
+        self._bots_fit_busy = False
+        self._bots_fit_active_token = None
+        if self._bots_fit_timer is not None:
+            self._bots_fit_timer.stop()
+            self._bots_fit_timer = None
+        self._bots_fit_controls()
+        try:
+            signature_matches = event.signature == self._bots_fit_signature()
+        except (bots_mod.BotError, OSError, ValueError):
+            signature_matches = False
+        if (event.token != self._bots_fit_generation or event.bot != self._bots_bot or not signature_matches):
+            self.query_one("#bots-fit-status", Static).update(
+                "Inputs changed; the previous suitability result was discarded. Rank again with the current inputs.")
+            return
+        env = event.envelope
+        if not env.get("ok"):
+            self.query_one("#bots-fit-status", Static).update(f"Suitability job failed: {self._msg(env)}")
+            return
+        try:
+            self._bots_fit_render(env["result"])
+        except (KeyError, TypeError, ValueError) as exc:
+            self.query_one("#bots-fit-status", Static).update(f"Suitability job returned an invalid report: {exc}")
+
+    @on(Button.Pressed, "#bots-fit-rank")
+    def _bots_fit_rank(self) -> None:
+        self._bots_fit_begin("quick")
+
+    @on(Button.Pressed, "#bots-fit-audit")
+    def _bots_fit_audit(self) -> None:
+        self._bots_fit_begin("audit")
+
+    @on(Button.Pressed, "#bots-fit-cancel")
+    def _bots_fit_cancel(self) -> None:
+        if self._bots_fit_busy:
+            self._bots_fit_cancelling = True
+            self._call("bots.fit_cancel", {"request_id": self._bots_fit_request_id})
+            self.query_one("#bots-fit-status", Static).update(
+                "Cancelling after the current bounded simulation window; completed rows will be retained.")
+            self._bots_fit_controls()
+
+    @staticmethod
+    def _bots_fit_date(value: Any) -> str:
+        if isinstance(value, (int, float)):
+            return time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(value))
+        return str(value) if value is not None else "-"
+
+    def _bots_fit_render(self, report: dict[str, Any]) -> None:
+        if not isinstance(report, dict) or not isinstance(report.get("rows"), list):
+            raise TypeError("expected a report with a rows list")
+        rows = [dict(row) for row in report["rows"]]
+        if any(not isinstance(row.get("coin"), str) for row in rows):
+            raise ValueError("every row needs a coin identifier")
+        known = {row["coin"] for row in rows}
+        for coin, error in (report.get("errors") or {}).items():
+            if coin not in known:
+                rows.append({"coin": coin, "fit": "ERROR", "reason": str(error), "metrics": {}})
+        if report.get("mode") == "audit" and self._bots_fit_origin is not None:
+            self._bots_fit_audits.update({row["coin"]: row for row in rows})
+        elif rows or not report.get("cancelled"):
+            self._bots_fit_rows = {row["coin"]: row for row in rows}
+            self._bots_fit_origin = report
+            self._bots_fit_audits.clear()
+        table = self.query_one("#bots-fit-table", DataTable)
+        table.clear()
+        origin = self._bots_fit_origin or report
+        for row in self._bots_fit_rows.values():
+            metrics = row.get("metrics") or {}
+            windows = row.get("windows") or []
+            span = (f"{self._bots_fit_date(origin.get('common_start'))} → "
+                    f"{self._bots_fit_date(origin.get('common_end'))}")
+            if windows:
+                span = f"{len(windows)} window(s); {self._bots_fit_date(windows[0].get('start'))}"
+            def pct(key, values=metrics):
+                return self._bots_pct(values[key]) if values.get(key) is not None else "-"
+            table.add_row(row["coin"], str(row.get("fit", row.get("status", "-"))),
+                          str(self._bots_fit_audits.get(row["coin"], {}).get("fit", "-")),
+                          self._bots_fmt(row.get("score")), pct("total_return"), pct("excess_return"),
+                          pct("max_drawdown"), self._bots_fmt(metrics.get("cycles")), span,
+                          str(row.get("reason") or "; ".join(row.get("reasons") or [])), key=row["coin"])
+        if self._bots_fit_coin not in self._bots_fit_rows:
+            self._bots_fit_coin = next(iter(self._bots_fit_rows), None)
+        if self._bots_fit_coin is not None:
+            self._bots_fit_show(self._bots_fit_coin)
+        else:
+            self._bots_clear("#bots-fit-windows")
+            self.query_one("#bots-fit-equity", Sparkline).data = []
+            self.query_one("#bots-fit-hold", Sparkline).data = []
+            self.query_one("#bots-fit-curve-context", Static).update("Equity: no selected result.")
+            self.query_one("#bots-fit-detail", Static).update("No completed coin rows.")
+            self.query_one("#bots-fit-selection-summary", Static).update("No completed coin rows.")
+        terminal = "Interrupted" if report.get("interrupted") else "Cancelled" if report.get("cancelled") else "Completed"
+        notes = "; ".join(str(n) for n in report.get("notes") or [])
+        target = " on " + ", ".join(row["coin"] for row in rows) if report.get("mode") == "audit" else ""
+        self.query_one("#bots-fit-status", Static).update(
+            f"{terminal} {report.get('mode', 'quick')} suitability{target}: {len(rows)} row(s). "
+            f"Fees {self._bots_fmt(report.get('fee_bps'))} bps; slippage {self._bots_fmt(report.get('slippage_bps'))} bps. "
+            f"Quick ranks are provisional; no settings were adopted. {notes}")
+        self._bots_fit_controls()
+
+    def _bots_fit_show(self, coin: str) -> None:
+        row = self._bots_fit_audits.get(coin) or self._bots_fit_rows.get(coin)
+        if row is None:
+            return
+        self._bots_fit_coin = coin
+        failures = [str(v) for v in row.get("failures") or []]
+        supporting = [str(v) for v in row.get("reasons") or []]
+        reasons = list(dict.fromkeys([*failures, *supporting])) or [row.get("reason") or "No reason supplied"]
+        missing = row.get("missing_evidence") or []
+        metrics = row.get("metrics") or {}
+        lead = failures[0] if failures else (str(missing[0]) if missing and row.get("fit") == "INSUFFICIENT_DATA" else str(reasons[0]))
+        self.query_one("#bots-fit-selection-summary", Static).update(
+            f"{coin}: {row.get('fit', row.get('status', '-'))}. "
+            f"{lead[:180]}. "
+            f"{len(missing)} evidence limitation(s); complete reasoning and template below.")
+        lines = [f"{coin}: {row.get('fit', row.get('status', '-'))}; score {self._bots_fmt(row.get('score'))}",
+                 "Verdict basis: " + str(row.get("reason") or "; ".join(reasons)),
+                 "Failed checks: " + ("; ".join(failures) if failures else "none reported"),
+                 "Supporting checks: " + ("; ".join(supporting) if supporting else "none reported"),
+                 "Missing evidence: " + ("; ".join(str(v) for v in missing) if missing else "none reported"),
+                 "Full-account metrics:"]
+        lines += [f"  {key}: {self._bots_fmt(value)}" for key, value in metrics.items()]
+        if self._bots_fit_origin is not None:
+            lines.append("Selection settings (audit stays pinned to these): " +
+                         json.dumps(self._bots_fit_origin.get("config") or {}, sort_keys=True))
+            lines.append("Selection window: " + self._bots_fit_date(self._bots_fit_origin.get("common_start")) +
+                         " → " + self._bots_fit_date(self._bots_fit_origin.get("common_end")))
+            if self._bots_fit_origin.get("score_formula"):
+                lines.append("Heuristic score: " + str(self._bots_fit_origin["score_formula"]))
+            if self._bots_fit_origin.get("policy"):
+                lines.append("Heuristic policy: " + json.dumps(self._bots_fit_origin["policy"], sort_keys=True))
+        for field in row.get("template") or []:
+            if isinstance(field, dict):
+                lines.append(f"{field.get('metric', field.get('field', '-'))}: {field.get('status', field.get('state', '-'))} · "
+                             f"{field.get('reason', '')}; value={self._bots_fmt(field.get('value'))}; "
+                             f"basis={field.get('basis', '-')}")
+        self.query_one("#bots-fit-detail", Static).update("\n".join(lines))
+        curve = row.get("equity") or []
+        self.query_one("#bots-fit-equity", Sparkline).data = [float(p[1]) for p in curve if len(p) >= 3]
+        self.query_one("#bots-fit-hold", Sparkline).data = [float(p[2]) for p in curve if len(p) >= 3]
+        self.query_one("#bots-fit-curve-context", Static).update(
+            f"Equity: {coin} · {'audited continuous full account' if coin in self._bots_fit_audits else 'quick development window'}")
+        table = self.query_one("#bots-fit-windows", DataTable)
+        table.clear()
+        self._bots_fit_window_rows.clear()
+        for i, window in enumerate(row.get("windows") or []):
+            m = window.get("metrics") or {}
+            def pct(key, values=m):
+                return self._bots_pct(values[key]) if values.get(key) is not None else "-"
+            key = f"{coin}:{i}"
+            self._bots_fit_window_rows[key] = window
+            table.add_row(str(window.get("label", "-")), self._bots_fit_date(window.get("start")),
+                          self._bots_fit_date(window.get("end")), self._bots_fmt(window.get("stress")),
+                          pct("total_return"), pct("hold_return"), pct("excess_return"), pct("max_drawdown"),
+                          self._bots_fmt(m.get("cycles")), self._bots_fmt(m.get("costs_usd")), key=key)
+        self._bots_fit_controls()
+
+    @on(DataTable.RowSelected, "#bots-fit-table")
+    def _bots_fit_row_selected(self, event: DataTable.RowSelected) -> None:
+        coin = event.row_key.value if event.row_key is not None else None
+        if coin is not None:
+            self._bots_fit_show(str(coin))
+
+    @on(DataTable.RowSelected, "#bots-fit-windows")
+    def _bots_fit_window_selected(self, event: DataTable.RowSelected) -> None:
+        key = event.row_key.value if event.row_key is not None else None
+        window = self._bots_fit_window_rows.get(str(key))
+        if window is None:
+            return
+        curve = window.get("equity") or []
+        self.query_one("#bots-fit-equity", Sparkline).data = [float(p[1]) for p in curve if len(p) >= 3]
+        self.query_one("#bots-fit-hold", Sparkline).data = [float(p[2]) for p in curve if len(p) >= 3]
+        self.query_one("#bots-fit-curve-context", Static).update(
+            f"Equity: {self._bots_fit_coin} · {window.get('label', '-')} · "
+            f"{self._bots_fit_date(window.get('start'))} → {self._bots_fit_date(window.get('end'))}")
+
     ROSTER_PICK = "__roster__"
 
     def _backtest_pane(self) -> ComposeResult:
@@ -1818,6 +2271,7 @@ class SolTuiApp(App):
 
     def on_mount(self) -> None:
         """Populate tables and start the indicator refresh."""
+        self._bots_fit_alive.set()
         avail = self.query_one("#available-table", DataTable)
         for label in ("strategy", "family", "status", "in roster", "tested", "times tested", "last tested", "card-preset result"):
             avail.add_column(label, key=label)

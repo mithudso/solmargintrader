@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "delta": "Preserve published v2 shell and both default/classic coin-fit controls.",
+  "incoming_commit": "9bd7067d30af3a3fad93120d989d8fa409834966",
+  "incoming_pr": "https://github.com/mithudso/solmargintrader/pull/93",
+  "conflict_backups": "/tmp/coin-fit-merge-93",
+  "conflicted_files": [
+    ".github/copilot-instructions.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "README.md",
+    "docs/DEVELOPMENT.md",
+    "docs/TESTING.md",
+    "index/CONCEPT-INDEX.json",
+    "index/INDEX.json",
+    "index/TEXT-INDEX.json",
+    "memory.md",
+    "prompts.md"
+  ],
+  "resolution": "Production source auto-merged; preserve incoming history, append feature history, recompute exact suite counts/indexes, verify both shell routes."
+}

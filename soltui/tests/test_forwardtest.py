@@ -111,7 +111,109 @@ class ForwardEvidence(unittest.TestCase):
         self.assertGreater(rows[1]["correct"], 0)
 
 
+class AutoOptimizeAndDefaults(ForwardEvidence):
+    """Auto-optimize on adopts and saves the winner as the trial's default; off never moves."""
+
+    def run_probe(self, *, tune: bool) -> dict:
+        self.trial = {"label": "probe", "mode": "all", "members": [ft.member("sma_regime", {})]}
+        active = self.trial["members"]
+
+        def forecast(spec, mode, bars):
+            return -1 if spec == active else 1
+
+        with patch.object(ft, "_predict", side_effect=forecast), patch.dict(
+                ft.KNOBS, tune_min_calls=8, adaptive_prior=2.0, tune_cooldown=0):
+            self.advance(0, tune=tune)
+            for minute in range(1, 13):
+                out = self.advance(minute, tune=tune)
+        return {r["minutes"]: r for r in out["rows"]}
+
+    def test_off_scores_calls_but_never_changes_a_setting(self) -> None:
+        rows = self.run_probe(tune=False)
+        self.assertEqual(rows[1]["changes"], 0)
+        self.assertGreater(rows[1]["resolved"], 0)
+        self.assertEqual(ft.load_defaults(), {})
+
+    def test_an_adoption_is_saved_as_the_default_and_seeds_the_next_trial(self) -> None:
+        rows = self.run_probe(tune=True)
+        adopted = rows[1]["settings"]
+        self.assertTrue(rows[1]["saved_default"])
+        self.assertFalse(rows[5]["saved_default"])
+        saved = ft.load_defaults()
+        self.assertEqual(list(saved), ["SOL|probe|1"])
+        self.assertEqual(saved["SOL|probe|1"]["members"], adopted)
+        self.assertGreater(saved["SOL|probe|1"]["probability"], ft.KNOBS["tune_confidence"])
+        # A new code revision starts new trial rows; the saved default is where the 1-minute one starts.
+        out = ft.tick("SOL", [self.trial], (1, 5), 16.0, fetch=lambda *a, **k: candles(20),
+                      clock=lambda: BASE + 20 * 60 + 4, code="next-revision")
+        fresh = [r for r in out["rows"] if r["changes"] == 0 and r["resolved"] == 0]
+        by_minutes = {r["minutes"]: r for r in fresh}
+        self.assertEqual(by_minutes[1]["settings"], adopted)
+        self.assertEqual(by_minutes[5]["settings"], self.trial["members"])
+
+    def test_a_saved_default_for_other_members_or_unknown_params_is_ignored(self) -> None:
+        seed = self.trial["members"]
+        self.assertEqual(ft._usable_default([{"name": "sma_regime", "params": {}}], seed, "all"), seed)
+        self.assertEqual(ft._usable_default([{"name": "buy_and_hold", "params": {"nope": 1}}], seed, "all"), seed)
+        self.assertEqual(ft._usable_default(None, seed, "all"), seed)
+        ft.save_default("SOL", "hold", 1, [{"name": "sma_regime", "params": {"window": 5}}], [],
+                        probability=0.99, samples=300, bar=0)
+        out = self.advance(0)
+        row = next(r for r in out["rows"] if r["minutes"] == 1)
+        self.assertEqual(row["settings"], seed)
+
+
 class ForwardPlan(unittest.TestCase):
+    def test_coins_and_optimize_reach_the_plan(self) -> None:
+        ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
+        env = commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["eth", "SOL"], "optimize": False},
+                                ctx=ctx, quiet=True)
+        self.assertTrue(env["ok"], env)
+        plan = ctx.runtime.forward_plan
+        self.assertEqual(plan["assets"], ["ETH", "SOL"])
+        self.assertIs(plan["tune"], False)
+        commands.dispatch("forwardtest.stop", {}, ctx=ctx, quiet=True)
+        with patch.object(commands, "forward_coins", return_value=["BTC", "ETH", "SOL"]):
+            env = commands.dispatch("forwardtest.start", {"scope": "roster", "coins": "all"}, ctx=ctx, quiet=True)
+        self.assertEqual(ctx.runtime.forward_plan["assets"], ["BTC", "ETH", "SOL"])
+        self.assertIs(ctx.runtime.forward_plan["tune"], True)
+        bad = commands.dispatch("forwardtest.start", {"coins": 5}, ctx=commands.Context.from_settings(
+            config.Settings(), commands.Runtime()), quiet=True)
+        self.assertEqual(bad["error"]["code"], "bad_params")
+
+    def test_the_runner_checks_every_coin_on_its_own_thread_until_stopped(self) -> None:
+        ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
+        seen: list[str] = []
+
+        def fake_tick(asset, trials, horizons, cost, **kw):
+            seen.append(asset)
+            if asset == "ETH":
+                raise ValueError("No ordered closed one-minute candles")
+            return {"bar": 1, "recorded": 3, "message": "ok", "rows": []}
+
+        self.assertFalse(commands.dispatch("forwardtest.run", {}, ctx=ctx, quiet=True)["ok"])
+        commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["SOL", "ETH", "BTC"]}, ctx=ctx, quiet=True)
+        with patch.object(ft, "tick", side_effect=fake_tick), patch("soltui.commands.time.time", return_value=BASE + 4):
+            self.assertTrue(commands.dispatch("forwardtest.run", {}, ctx=ctx, quiet=True)["ok"])
+            for _ in range(100):
+                if len(seen) >= 3:
+                    break
+                Event().wait(0.02)
+            state = commands.dispatch("forwardtest.state", {}, ctx=ctx, quiet=True)["result"]
+            self.assertTrue(state["running"])
+            self.assertEqual(state["assets"], ["SOL", "ETH", "BTC"])
+            self.assertEqual(state["last"]["SOL"]["recorded"], 3)
+            self.assertIn("candles", state["last"]["ETH"]["error"])  # one coin's failure, the others ran
+            self.assertEqual(state["last"]["BTC"]["recorded"], 3)
+            commands.dispatch("forwardtest.stop", {}, ctx=ctx, quiet=True)
+            thread = ctx.runtime.forward_thread
+            if thread is not None:
+                thread.join(5)
+        self.assertEqual(seen, ["SOL", "ETH", "BTC"])  # once per closed minute, not once per loop
+        self.assertIsNone(ctx.runtime.forward_thread)
+        self.assertFalse(commands.dispatch("forwardtest.state", {}, ctx=ctx, quiet=True)["result"]["running"])
+
+
     def test_custom_combination_at_one_horizon_uses_the_roster_parameters(self) -> None:
         ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
         ctx.roster = Roster()
@@ -151,36 +253,40 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(len(app.roster), len(commands.available_strategies()))
                 self.assertEqual(app.roster.entries[0].params["fast"], 9)
 
-    async def test_start_passes_all_horizons_and_stop_drains_a_running_worker(self) -> None:
+    async def test_start_runs_in_the_background_across_tabs_and_stop_drains_it(self) -> None:
         app = SolTuiApp(config.Settings(poll_interval_seconds=60))
         entered, released = Event(), Event()
 
-        def check(**plan):
+        def check(asset, trials, horizons, cost, **kw):
             entered.set()
             released.wait(5)
-            self.assertTrue(plan["stop"].is_set())
+            self.assertTrue(kw["stop"].is_set())
+            self.assertEqual(horizons, ft.HORIZONS)
+            self.assertIs(kw["tune"], True)
             return {"bar": None, "recorded": 0, "rows": [], "message": "stub"}
 
-        with patch.object(ft, "tick", side_effect=check) as tick:
+        with patch.object(ft, "tick", side_effect=check), patch("soltui.commands.time.time", return_value=BASE + 4):
             async with app.run_test(size=TEST_SIZE) as pilot:
                 app.query_one(TabbedContent).active = "tab-forwardtest"
                 await pilot.pause()
                 await pilot.click("#forward-start")
                 self.assertTrue(app._forward_running, str(app.query_one("#forward-status", Static).content))
-                # Schedule deterministically if the click landed inside the publication grace period.
-                with patch("soltui.tui.time.time", return_value=BASE + 4):
-                    app._forward_schedule()
-                for _ in range(20):
+                # The runner is a thread of its own: leaving the tab does not pause it.
+                app.query_one(TabbedContent).active = "tab-backtest"
+                for _ in range(40):
                     if entered.is_set():
                         break
                     await pilot.pause(0.05)
                 self.assertTrue(entered.is_set())
-                self.assertEqual(tick.call_args.kwargs["horizons"], ft.HORIZONS)
+                self.assertIn("forwardtest running", app.sub_title)
+                app.query_one(TabbedContent).active = "tab-forwardtest"
+                await pilot.pause()
                 await pilot.click("#forward-stop")
-                self.assertTrue(app.query_one("#forward-start").disabled)
+                self.assertNotIn("forwardtest running", app.sub_title)
                 released.set()
-                for _ in range(20):
+                for _ in range(60):
                     await pilot.pause(0.05)
+                    app._forward_schedule()
                     if not app.query_one("#forward-start").disabled:
                         break
                 self.assertFalse(app.query_one("#forward-start").disabled)
