@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 101
-Delta: v100 to v101; retain the Coinbase trade authorization.
+Version: 104
+Delta: v103 to v104; retain the manual order screen request.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -850,4 +850,26 @@ You can try the jup cli again I added my key to it.
 
 ```text
 Wait I don't care what the coinpairt is on coinbase, you said you transfered $5 there, just make any transaction
+```
+
+## v102 - 2026-11-08
+
+```text
+WHere do I put what coinbase credentials?
+```
+
+```text
+Ok it's saved
+```
+
+## v103 - 2026-11-08
+
+```text
+I do intend the soltrader to actually trade with live money eventually. Of course I need trade functionality.
+```
+
+## v104 - 2026-11-08
+
+```text
+Yes, build a manual order screen now.
 ```

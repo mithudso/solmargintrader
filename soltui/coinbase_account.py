@@ -176,7 +176,14 @@ def sync_account(call: Callable[[list[str]], dict[str, Any]] = _cli) -> dict[str
                 args.append('cursor==' + cursor)
             result = call(args)
             rows = result.get('accounts')
-            if not isinstance(rows, list) or not isinstance(result.get('has_next'), bool):
+            has_next = result.get('has_next')
+            # The official CLI omits false and empty fields on the final page.
+            # Accept that representation only if the page is self-consistent.
+            if has_next is None and not result.get('cursor') and isinstance(rows, list):
+                size = result.get('size')
+                if type(size) is int and size == len(rows):
+                    has_next = False
+            if not isinstance(rows, list) or not isinstance(has_next, bool):
                 raise ValueError('Coinbase returned an incomplete balance page')
             if result.get('portfolio_id') != pid:
                 raise ValueError('Coinbase returned balances for the wrong portfolio')
@@ -184,7 +191,7 @@ def sync_account(call: Callable[[list[str]], dict[str, Any]] = _cli) -> dict[str
                 if not isinstance(row, dict) or not isinstance(row.get('currency'), str):
                     raise ValueError('Coinbase returned an invalid balance row')
                 accounts.append({'portfolio_id': pid, 'portfolio_name': portfolio.get('name', ''), **row})
-            if not result['has_next']:
+            if not has_next:
                 break
             nxt = result.get('cursor')
             if not isinstance(nxt, str) or not nxt or nxt in seen:

@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 184
-Delta: v183 to v184; record the filled Coinbase live test.
+Version: 187
+Delta: v186 to v187; record the manual order screen request.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1734,3 +1734,15 @@ The owner configured the Jupiter CLI signer. Its public address matched the inte
 ## v184 - 2026-11-08
 
 The owner authorized any Coinbase transaction as the live connector test. Coinbase filled order 8039c0bd-d54a-49c8-86b5-cbc1160a7084, selling 0.01232907 SOL at 89.19 USDC for 1.0897330855203 USDC after fees of 0.0098966677797 USDC. Order lookup confirmed FILLED and one fill. The connected Coinbase account snapshot was refreshed. The receipt is /Users/mitch/.config/soltui/coinbase/orders/8039c0bd-d54a-49c8-86b5-cbc1160a7084.json. The prior queued Stele entries ff51a048 and 006238b9 were cancelled as stale; TASK-1037 now reflects the filled order, and KNOW-1039 records its evidence. The app's independent read-enabled credentials and full equity-market catalog remain open. No further real order is authorized by this test.
+
+## v185 - 2026-11-08
+
+The owner saved a Coinbase API key in /Users/mitch/Downloads/coinbase-key.json. The Coinbase CLI imported it and the file permissions were restricted to mode 600. Coinbase reports the key has View, Trade and Transfer permissions; this sync feature needs only View, so the owner was advised to restrict it. The first authenticated refresh failed because the CLI omits has_next and cursor on its final balance page. sync_account now accepts that form only when the reported size matches the page and no cursor is present. The real SolTUI command refreshed one portfolio, 38 trading accounts and one portfolio breakdown. Regression tests preserve the old snapshot on inconsistent data. Remaining: deliver the fix and verify the loaded console. The equity-market catalog remains incomplete.
+
+## v186 - 2026-11-08
+
+The owner clarified that SolTUI should eventually trade real money and needs Trade permission. The earlier suggestion to remove Trade permission was too broad. The present SolTUI Coinbase account module only reads account data, and the confirmed Coinbase test order used the separate connected trading service. Keep the existing key and its permissions. The owner has not authorized automatic live trading merely by enabling the Trade permission. Preserve the dry-run default and existing risk controls. The intended first live trading workflow needs clarification.
+
+## v187 - 2026-11-08
+
+The owner chose to build a manual Coinbase order screen now. Stele TASK-1042 tracks the work, and KNOW-1043 records explicit review, disarmed defaults, validation, reconciliation and no automatic resubmission. Finish the authenticated account-sync fix, then implement and verify the manual screen. The owner did not request another live order or authorize automatic trading.
