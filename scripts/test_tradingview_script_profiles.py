@@ -107,6 +107,13 @@ class SourceReviewTests(unittest.TestCase):
         text = literal(quote)
         self.assertEqual(text, "`````text\n" + quote + "\n`````")
 
+    def test_quote_display_cleans_line_endings_without_mutating_raw_evidence(
+        self,
+    ) -> None:
+        quote = "first  \r\n    indented\t"
+        self.assertEqual(literal(quote), "```text\nfirst\n    indented\n```")
+        self.assertEqual(quote, "first  \r\n    indented\t")
+
     def test_incomplete_card_is_physically_under_requested_directory(self) -> None:
         source = {"publication_id": "demo", "name": "A source indicator"}
         self.assertEqual(card_path(source, self.profile).parent, CARD_DIR)

@@ -172,7 +172,11 @@ def bullets(lines: list[str]) -> str:
 
 def literal(quote: str) -> str:
     fence = "`" * max(3, 1 + max((len(s) for s in re.findall(r"`+", quote)), default=0))
-    return f"{fence}text\n{quote}\n{fence}"
+    display = "\n".join(
+        line.rstrip(" \t")
+        for line in quote.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    )
+    return f"{fence}text\n{display}\n{fence}"
 
 
 def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
@@ -231,6 +235,7 @@ def render_card(source: dict, profile: dict, *, reviewed: bool) -> str:
         "This input review does not establish cached coverage for a market, code parity or a measured trading result.",
         "## Evidence and interpretation",
         "The explanation synthesizes the complete saved author description. Stated rules and settings are attributed to that description. Caveats include our analysis. No implementation, order connection or profitability result is created by this documentation card.",
+        "Quotation display normalizes line endings and omits trailing spaces/tabs. The manifest retains the exact raw quotations and offsets.",
         (
             "The saved script.content field is empty. Description snippets do not establish the complete Pine source."
             if not source["pine_source_available"]

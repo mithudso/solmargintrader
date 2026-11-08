@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 107
-Delta: v106 to v107; preserve current status while continuing all remaining source review and repairs.
+Version: 108
+Delta: v107 to v108; checkpoint full independent acceptance of batcha and literal-quote display preservation.
 
 ## v1 - 2026-11-06
 
@@ -1161,3 +1161,12 @@ All721 new source profiles are drafted; audits remain partial and authoritative 
 User asked So what're you doing now? Answered in commentary with actual partial progress, without claiming completion. All742 source decisions are drafted;21 native-strategy cards are independently reviewed and physically sorted in this worktree. At the status reply, audit coverage was556/721 expanded profiles. Exact current coverage/findings remain in the three audit JSONLs. No pause or scope replacement was requested. Finish the remaining reviews, bounded author repairs, exact-hash rechecks, final rendering and delivery.
 
 Current integration gates pass: native21 full-source check verifies742 HTML captures and all raw/legacy/relocation evidence; broader catalog check verifies4890 local source files and353active/789incomplete/1142total cards. Fifteen script review/relocation tests and43strategy-card tests pass. Merge commit is pending only because two generated Markdown lines needed whitespace cleanup; regenerate indexes after staging their corrections. No canonical shared checkout edit occurred.
+
+
+## v108 - 2026-11-08 (batcha fully accepted)
+
+Batcha TASK954 is independently qualified:240/240 current profiles pass,1,269,027 source characters read,all13 exclusions reviewed,40 historical findings resolved with history retained. TASK989 repaired17 last findings without changing223 already accepted hashes. Current batcha profiles are227 in scope (45 usable principal specifications,182 incomplete),13 excluded. Root reran the full audit gate successfully. Preserve this accepted shard; do not reread or rewrite it without a new source/profile change.
+
+Batchb/c full-source audits continue toward their tails. Their exact current coverage and revise queues are in the owned audit JSONLs. Original authors handle bounded repair tasks, independent reviewers recheck exact hashes, and only then qualify. TASK979 andTASK984 repaired23 batchb records; all23 have independent approval. No full b/c acceptance is claimed yet.
+
+Ten current source profiles quote lines with trailing spaces/tabs. The renderer now normalizes quote display line endings and trims only trailing presentation whitespace; raw exact quotations and offsets remain unchanged in the manifest. A red-to-green fixture proves display cleanup preserves the raw evidence string and indentation. Nine review/placement tests pass. Final card rendering remains blocked by unfinished semantic reviews, not source inventory.

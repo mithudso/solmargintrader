@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T12:35:12+00:00",
+  "generatedAt": "2026-11-08T12:48:40+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 482,
+      "matchingFiles": 483,
       "shown": 30,
       "files": [
         {
@@ -169,12 +169,12 @@
           "hits": 1637
         },
         {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 117
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 123
         },
         {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 101
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "hits": 117
         },
         {
           "path": "docs/FILES.md",
@@ -297,7 +297,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 466,
+      "matchingFiles": 467,
       "shown": 30,
       "files": [
         {
@@ -321,12 +321,12 @@
           "hits": 188
         },
         {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 172
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 187
         },
         {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 151
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "hits": 172
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -435,7 +435,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 381,
+      "matchingFiles": 382,
       "shown": 30,
       "files": [
         {
@@ -472,7 +472,7 @@
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 90
+          "hits": 92
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -709,7 +709,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 279,
+      "matchingFiles": 280,
       "shown": 30,
       "files": [
         {
@@ -801,6 +801,10 @@
           "hits": 29
         },
         {
+          "path": "research/tradingview-script-profile-audits/shard-a.jsonl",
+          "hits": 29
+        },
+        {
           "path": "backtester/strategy_cards/incomplete/tv_by9maioc_oscillator_workbench_chart_lucf.md",
           "hits": 28
         },
@@ -827,10 +831,6 @@
         {
           "path": "backtester/strategy_cards/incomplete/tv_oihw2xg2_delta_rsi_oscillator_strategy.md",
           "hits": 23
-        },
-        {
-          "path": "backtester/strategy_cards/rsi.md",
-          "hits": 23
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -847,7 +847,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 274,
+      "matchingFiles": 275,
       "shown": 30,
       "files": [
         {
@@ -986,7 +986,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 229,
+      "matchingFiles": 230,
       "shown": 30,
       "files": [
         {
@@ -1123,7 +1123,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 217,
+      "matchingFiles": 218,
       "shown": 30,
       "files": [
         {
@@ -1151,12 +1151,12 @@
           "hits": 66
         },
         {
-          "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 63
         },
         {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 53
+          "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
+          "hits": 63
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -1258,7 +1258,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 206,
+      "matchingFiles": 207,
       "shown": 30,
       "files": [
         {
@@ -1283,7 +1283,7 @@
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 54
+          "hits": 56
         },
         {
           "path": "research/results/tables.md",
@@ -1396,7 +1396,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 187,
+      "matchingFiles": 188,
       "shown": 30,
       "files": [
         {
@@ -1531,7 +1531,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 185,
+      "matchingFiles": 186,
       "shown": 30,
       "files": [
         {
@@ -1603,6 +1603,10 @@
           "hits": 10
         },
         {
+          "path": "research/tradingview-script-profile-audits/shard-a.jsonl",
+          "hits": 10
+        },
+        {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
           "hits": 8
         },
@@ -1649,10 +1653,6 @@
         {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 6
-        },
-        {
-          "path": "skills/trading-and-investing/references/regime-detection-and-classification.md",
-          "hits": 6
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1666,7 +1666,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 157,
+      "matchingFiles": 158,
       "shown": 30,
       "files": [
         {
@@ -1800,7 +1800,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 157,
+      "matchingFiles": 158,
       "shown": 30,
       "files": [
         {
@@ -1892,6 +1892,10 @@
           "hits": 6
         },
         {
+          "path": "research/tradingview-script-profile-audits/shard-a.jsonl",
+          "hits": 6
+        },
+        {
           "path": "skills/trading-and-investing/references/selection-rule-design.md",
           "hits": 6
         },
@@ -1917,10 +1921,6 @@
         },
         {
           "path": "research/sweep.py",
-          "hits": 5
-        },
-        {
-          "path": "backtester/tests/test_engine_audit.py",
           "hits": 5
         }
       ],
@@ -2077,7 +2077,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 129,
+      "matchingFiles": 130,
       "shown": 30,
       "files": [
         {
@@ -2090,7 +2090,7 @@
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 33
+          "hits": 35
         },
         {
           "path": "docs/TRADINGVIEW-REFERENCE.md",
@@ -2149,6 +2149,10 @@
           "hits": 9
         },
         {
+          "path": "research/tradingview-script-profile-audits/shard-a.jsonl",
+          "hits": 9
+        },
+        {
           "path": "backtester/strategy_cards/ichimoku_cloud.md",
           "hits": 9
         },
@@ -2195,10 +2199,6 @@
         {
           "path": "backtester/cli.py",
           "hits": 4
-        },
-        {
-          "path": "backtester/tests/test_simulation_blind_audit.py",
-          "hits": 4
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 115,
+      "matchingFiles": 116,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 110,
+      "matchingFiles": 111,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 92,
+      "matchingFiles": 93,
       "shown": 30,
       "files": [
         {
