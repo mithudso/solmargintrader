@@ -46,6 +46,11 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     db = sqlite3.connect(path)
     db.executescript("""
+        CREATE TABLE IF NOT EXISTS candle (
+            asset TEXT, ts INTEGER, open REAL, high REAL, low REAL, close REAL, volume REAL,
+            PRIMARY KEY(asset, ts)
+        );
+        CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY CHECK(id=1), plan TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS trial (
             id TEXT PRIMARY KEY, asset TEXT, label TEXT, mode TEXT, minutes INTEGER,
             cost REAL, active TEXT, generation INTEGER DEFAULT 0, moved INTEGER DEFAULT 0,
@@ -66,6 +71,28 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
         );
     """)
     return db
+
+
+def save_session(plan: dict | None) -> None:
+    """Atomically persist the running plan alongside its evidence."""
+    with closing(_db()) as db, db:
+        if plan is None:
+            db.execute("DELETE FROM session WHERE id=1")
+        else:
+            db.execute("INSERT OR REPLACE INTO session(id,plan) VALUES(1,?)", (_json(plan),))
+
+
+def load_session() -> dict | None:
+    path = config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
+    if not path.exists():
+        return None
+    with closing(_db(path)) as db:
+        row = db.execute("SELECT plan FROM session WHERE id=1").fetchone()
+    if not row:
+        return None
+    plan = json.loads(row[0])
+    plan["horizons"] = tuple(plan["horizons"])
+    return plan
 
 
 # -- saved defaults: a setting that tested superior becomes the trial's starting point -------------
@@ -297,6 +324,14 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     ts = raw["ts"]
     if len(ts) == 0 or np.any(np.diff(ts) <= 0) or np.any(ts % 60):
         raise ValueError("No ordered closed one-minute candles")
+    # Save received closed candles before strategy calculation or a later fetch can fail.
+    with closing(_db(db_path)) as db, db:
+        db.executemany("INSERT OR IGNORE INTO candle VALUES (?,?,?,?,?,?,?)", (
+            (asset, int(t), float(o), float(h), float(l), float(c), float(v))
+            for t, o, h, l, c, v in zip(*(raw[k] for k in
+                ("ts", "open", "high", "low", "close", "volume")), strict=True)
+            if all(math.isfinite(float(x)) for x in (o, h, l, c, v))
+        ))
     # Keep gaps visible for settlement. The signal itself sees only the latest contiguous segment.
     candles = {int(t): (float(o), float(c)) for t, o, c in zip(ts, raw["open"], raw["close"], strict=True)
                if math.isfinite(o) and math.isfinite(c) and o > 0 and c > 0}

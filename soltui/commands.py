@@ -834,6 +834,7 @@ def forwardtest_run(ctx: Context, p: dict[str, Any]) -> Any:
         if rt.forward_plan is None:
             raise CommandError("failed", "Prepare a forward test first (forwardtest.start)")
         if rt.forward_thread is None:
+            forwardtest.save_session(rt.forward_plan)
             rt.forward_started_at = time.time()
             rt.forward_thread = threading.Thread(target=_forward_runner, args=(rt,), name="forwardtest",
                                                  daemon=True)
@@ -854,10 +855,31 @@ def forwardtest_state(ctx: Context, p: dict[str, Any]) -> Any:
                 "defaults_saved": len(forwardtest.load_defaults())}
 
 
+@command("forwardtest.restore", "Resume the saved forward test after restarting the console.", read_only=False)
+def forwardtest_restore(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        if rt.forward_plan is not None or rt.forward_thread is not None:
+            return {"restored": False}
+        plan = forwardtest.load_session()
+        if plan is None:
+            return {"restored": False}
+        # A new process must not attribute forecasts to an old code revision.
+        plan["code"] = forwardtest.revision()
+        rt.forward_stop.clear()
+        rt.forward_plan = plan
+        forwardtest.save_session(plan)
+        rt.forward_started_at = time.time()
+        rt.forward_thread = threading.Thread(target=_forward_runner, args=(rt,), name="forwardtest", daemon=True)
+        rt.forward_thread.start()
+        return {"restored": True, "assets": plan["assets"]}
+
+
 @command("forwardtest.stop", "Stop issuing forward predictions in this session.", read_only=False)
 def forwardtest_stop(ctx: Context, p: dict[str, Any]) -> Any:
     rt = ctx.runtime
     with rt.lock:
+        forwardtest.save_session(None)
         rt.forward_stop.set()
         rt.forward_plan = None
         return {"stopping": rt.forward_busy}

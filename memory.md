@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 211
-Delta: v210 to v211; record teardown fix and token discovery.
+Version: 212
+Delta: v211 to v212; track forward-test persistence repair.
+
+## v212 - 2026-11-08
+
+TASK-1057: In /Users/mitch/dev/solmargintrader-wt-01a1bd6d, investigate forward-test data lost across restarts. Calls are committed to SQLite per asset tick, but the running plan and selected coverage exist only in memory, and fetched candles are not retained in the forward database. Preserve existing records and concurrent work. Implemented SQLite closed-candle retention before strategy processing and a saved running plan restored on console startup; explicit Stop clears the plan. Focused forward-test suite passed 23 tests. The docs count gate reports existing count drift (1163 versus 1155). Remaining: assess multi-process ownership, abrupt-shutdown and live installed-app restart; finish delivery.
 
 ## v211 - 2026-11-08
 
