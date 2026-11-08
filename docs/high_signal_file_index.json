@@ -92,7 +92,7 @@
       "component": "backtester",
       "kind": "markdown",
       "summary": "Scope, correctness priorities, usage",
-      "lines": 473
+      "lines": 477
     },
     {
       "path": "backtester/PROMPT.md",
@@ -753,7 +753,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 4874
+      "lines": 5338
     },
     {
       "path": "soltui/shell.py",
@@ -830,31 +830,35 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test",
-      "lines": 1393
+      "lines": 1222
     },
     {
       "path": "soltui/experiments.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison"
+      "summary": "Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison",
+      "lines": 881
     },
     {
       "path": "soltui/experiment_runner.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Frozen native bar/recorded-triangle evaluation, per-cell checkpoints, exploration exposure and fresh final holdout guards"
+      "summary": "Frozen native bar/recorded-triangle evaluation, per-cell checkpoints, exploration exposure and fresh final holdout guards",
+      "lines": 686
     },
     {
       "path": "soltui/experiment_jobs.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Explicit background experiment processes, inherited leases, pause/cancel requests and interrupted-worker recovery"
+      "summary": "Explicit background experiment processes, inherited leases, pause/cancel requests and interrupted-worker recovery",
+      "lines": 227
     },
     {
       "path": "soltui/experiment_screens.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Experiment workbench: typed search editor, explorer, observed maps, worker controls and CSV comparison"
+      "summary": "Experiment workbench: typed search editor, explorer, observed maps, worker controls and CSV comparison",
+      "lines": 665
     },
     {
       "path": "soltui/pricefeed.py",
@@ -910,7 +914,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 537
+      "lines": 557
     },
     {
       "path": "soltui/tests",
@@ -922,19 +926,22 @@
       "path": "soltui/tests/test_experiments.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Experiment store, search-space, sparse-map and external evidence regression tests"
+      "summary": "Experiment store, search-space, sparse-map and external evidence regression tests",
+      "lines": 496
     },
     {
       "path": "soltui/tests/test_experiment_runner.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Frozen native evidence, holdout freshness, pause/cancel/resume and promotion recovery tests"
+      "summary": "Frozen native evidence, holdout freshness, pause/cancel/resume and promotion recovery tests",
+      "lines": 408
     },
     {
       "path": "soltui/tests/test_experiment_interface.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Process leases/control races, registry refusals and live headless workbench interactions"
+      "summary": "Process leases/control races, registry refusals and live headless workbench interactions",
+      "lines": 274
     },
     {
       "path": "mongo/README.md",
@@ -1060,7 +1067,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 306
+      "lines": 335
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1450,13 +1457,15 @@
       "path": "docs/optimization-workbench.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "Use the optimization workbench, understand provenance and final holdout limitations"
+      "summary": "Use the optimization workbench, understand provenance and final holdout limitations",
+      "lines": 57
     },
     {
       "path": "docs/optimization-workbench-plan.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "Six-feature implementation plan, interfaces, ownership and acceptance criteria"
+      "summary": "Six-feature implementation plan, interfaces, ownership and acceptance criteria",
+      "lines": 69
     },
     {
       "path": "docs/code-optimizer-scope-2026-11-06.json",

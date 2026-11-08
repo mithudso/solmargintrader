@@ -554,14 +554,16 @@ def strategies_list(ctx: Context, p: dict[str, Any]) -> Any:
     return [{"name": n, "family": f} for n, f in available_strategies()]
 
 
-@command("strategies.cards", "Active strategy and indicator cards, including specifications and execution capabilities.")
+@command("strategies.cards", "Implemented strategy cards and their execution capabilities.")
 def strategies_cards(ctx: Context, p: dict[str, Any]) -> Any:
     from backtester.core.strategy_cards import load_all
 
     registered = dict(available_strategies())
     rows = []
     for card in load_all().values():
-        key = card.registry_key or card.id
+        if not card.registry_key or card.registry_key not in registered or not card.runner:
+            continue
+        key = card.registry_key
         is_registered = key in registered and card.registry_key is not None
         rows.append({
             "key": key, "id": card.id, "name": card.name, "family": card.family,

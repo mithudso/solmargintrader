@@ -34,7 +34,7 @@ be denominated in. That is what this module backtests.
 
 The genuinely different strategy -- exploiting real, separately-quoted cross pairs
 whose product departs from one -- is triangular arbitrage, and
-`backtester/strategy_cards/triangular_arbitrage.md` already explains at length why
+`backtester/guides/triangular_arbitrage.md` already explains at length why
 this project's data cannot evaluate it and why measuring it here would manufacture
 a spurious equity curve out of timestamp misalignment. Nothing in this module
 should be read as evidence about that card's subject.

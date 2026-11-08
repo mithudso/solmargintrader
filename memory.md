@@ -1397,6 +1397,36 @@ Version: 142. Delta: v141 to v142; preserve incoming coin-suitability and scoped
 
 Concurrent PR102 advanced master to 078c895 while the workflow-only PR103 awaited merge. Preserve all incoming source, tests, CI policy and exact workflow history. This follow-up still changes only prompt/continuation records and offline retrieval indexes. Canonical UI activation remains independently accepted under its installed hashes. No runtime reinstall or full test suite is required for these record-only merges. Complete the ordinary PR103 merge, verify exact five-artifact content, and clean only the private worktree.
 
+
+## v143 - 2026-11-08 (guide and strategy separation)
+
+Version: 143. Delta: v142 to v143; user supersedes the earlier policy that allowed indicator-only specifications in the active strategy folder. Preserve content and move guides to a guides directory and other untestable material outside the active strategy folder. The loader reads only flat cards; 312 of 351 lack runners. Verify actual strategy capability, coverage manifests, UI, and paths; do not infer that all missing-data runners lack implementations. Task TASK-992; worktree /Users/mitch/dev/solmargintrader-wt-guides, branch feat/strategy-guides. Preserve concurrent sessions. Remaining: classify each card, move content, adapt coverage, validate, deliver, and safely synchronize canonical checkout.
+
+
+## v144 - 2026-11-08 (immediate canonical correction)
+
+Version: 144. Delta: v143 to v144; the owner corrected the failure to move cards. Move the verified no-runner active cards immediately in both the private worktree and canonical checkout under byte and collision checks. Put identified educational guides in backtester/guides and other non-runnable cards in backtester/strategy_research. Then update evidence paths, coverage, tests, UI wording, and finish delivery without touching concurrent work. TASK-992 and draft PR101 remain active.
+
+
+## v145 - 2026-11-08 (SolTUI list requirement)
+
+Version: 145. Delta: v144 to v145; owner explicitly requires SolTUI list to reflect the moves. The nonrecursive active loader automatically excludes the312 pre-applied moves, but update misleading status labels and verify fresh mounted SolTUI. Six identified guides and306 other no-runner cards have been moved in both canonical and private worktree under verified byte preconditions; receipt /tmp/strategy-guide-moves-992.json. Coverage paths and hashes must be updated before completion. Audit remaining incomplete guides.
+
+
+## v146 - 2026-11-08 (owner corrected remaining templates)
+
+Version: 146. Delta: v145 to v146; owner explicitly classified JLP/SOL, BTC/ETH pair cards and resting-ladder grid as non-strategy guides/templates. Move these and the two other unregistered bot templates out of the active strategy directory. Registered strategies remain subject to registry and implementation tests. Retain separate simulator code and keep documentation contract tests bound to the relocated files. SolTUI must list only registered strategies.
+
+
+## v147 - 2026-11-08 (canonical moves and SolTUI verified)
+
+Version: 147. Delta: v146 to v147; moved 348 files byte-for-byte in canonical and private worktrees under exact preconditions. The active catalog now has34 registered strategies;42 guides and templates,306 other research cards, and760 incomplete cards preserve all1142 documents. The named JLP/SOL, BTC/ETH and resting-ladder examples and two other unregistered bot templates are in backtester/guides. Coverage manifest and checker follow all four locations; canonical coverage passes. Relocated simulator card drift checks remain enabled. SolTUI filters to registered strategy cards; focused63 tests pass and lint is clean. Canonical runtime and checker paths were pre-applied under hash receipts /tmp/strategy-guide-ui-992.json and /tmp/strategy-guide-checker-992.json; moved-file receipts /tmp/strategy-guide-moves-992.json, /tmp/strategy-guide-more-992.json and /tmp/strategy-template-moves-992.json. Final fresh SolTUI acceptance, offline index refresh, final-head CI, merge and safe canonical reconciliation remain. No research card bytes changed.
+
+
+## v148 - 2026-11-08 (concurrent upstream integration)
+
+Version: 148. Delta: v147 to v148; owner asked whether all newly created cards were moved. Verified all1083 extracted cards are outside the active folder. The canonical checkout has34 registered active,42 guides/templates,306 research and760 incomplete. PR101 is integrating four upstream commits; preserve their v2 UI, forwardtest, workbench and bots changes. Fresh canonical mounted acceptance previously passed. Finish conflict resolution, update generated indexes, validate the merged v2 UI, push, check and merge without overwriting other work.
+
 ## v139 - 2026-11-08: targeted SolTUI gate
 
 PR 89 merged as fedde2a while CI ran. PR 102 made the full suite manual-only at the owner request. Add a bounded changed-area gate for PRs and pushes with bridge smoke and explicit mappings; unknown paths keep smoke. Full sharded coverage stays opt-in. TASK-1001 tracks final validation and delivery.
@@ -1408,3 +1438,7 @@ PR 104 passed targeted CI at 609882b, but PR 103 advanced master to 15b9a2e. Pre
 ## v144 - 2026-11-08: second PR 104 integration
 
 PR 100 advanced master to 98b92c1 after PR 104 final checks passed. Preserve its research and continuation records, regenerate indexes, then verify and merge PR 104. TASK-1001 remains active.
+
+## v145 - 2026-11-08: PR 104 and PR 101 integration
+
+PR 101 advanced master to 69140b8. Preserve guide separation and both continuation histories. Regenerate the indexes, verify and merge PR 104. TASK-1001 remains active.

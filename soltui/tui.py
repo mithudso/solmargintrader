@@ -1027,15 +1027,14 @@ class SolTuiApp(App):
         """Browse active cards and manage the executable roster."""
         with Vertical():
             yield Static(
-                "Left: active strategy and indicator cards. Specifications are documented rules "
-                "without a runnable implementation. Right: your executable backtest roster. "
-                "Space toggles registered strategies; selecting a specification opens its card.",
+                "Left: registered strategy cards. Guides and templates are stored separately. "
+                "Right: your executable backtest roster. Space toggles registered strategies.",
                 classes="hint",
             )
             with Horizontal(classes="form-row"):
                 yield Input(placeholder="Filter cards by name, family or description", id="strategy-card-filter")
                 yield Select([("All active cards", "all"), ("Registered strategies", "registered"),
-                              ("Specifications", "spec-only"), ("TradingView cards", "tradingview")],
+                              ("TradingView cards", "tradingview")],
                              value="all", allow_blank=False, id="strategy-card-scope")
                 yield Button("Refresh cards", id="strategy-cards-refresh")
             yield Static("", id="strategy-card-count", classes="table-title", markup=False)
@@ -2512,7 +2511,7 @@ class SolTuiApp(App):
         catalog = self._strategy_card_catalog
         self.query_one("#strategy-card-count", Static).update(
             f"{table.row_count} of {catalog['count']} active cards · {catalog['registered']} registered strategies · "
-            f"{catalog['tradingview']} TradingView specifications · incomplete research excluded")
+            "guides, templates and research excluded")
         self._apply_strategy_history()
         self._update_strategy_actions()
 
