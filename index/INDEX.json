@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-08T19:48:17+00:00",
+  "generatedAt": "2026-11-08T19:57:32+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "a5a7351",
+  "commit": "c5e6488",
   "counts": {
-    "files": 2631,
-    "bytes": 43603039,
+    "files": 2634,
+    "bytes": 43615766,
     "byKind": {
       "strategy-card": 1478,
-      "doc": 546,
+      "doc": 547,
       "code-python": 189,
-      "test": 141,
+      "test": 143,
       "code-js": 87,
       "result": 85,
       "config": 40,
@@ -24,10 +24,10 @@
     "byTopDir": {
       "backtester": 1911,
       "research": 178,
-      "soltui": 119,
+      "soltui": 121,
       "extension": 92,
       "skills": 67,
-      "docs": 62,
+      "docs": 63,
       "liquidity": 57,
       "executor": 38,
       "tradingview": 26,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2535
+    "withSummary": 2538
   },
   "files": [
     {
@@ -288,7 +288,7 @@
       "summarySource": "opening-prose",
       "bytes": 5126,
       "lines": 93,
-      "sha1": "1a168d5371f149cab8e1677df6bccfa02581126e",
+      "sha1": "fd264c882e9df9ad1f05e0592c1971fd87b805e4",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -468,7 +468,7 @@
       "summarySource": "opening-prose",
       "bytes": 14134,
       "lines": 195,
-      "sha1": "fc296126e88570f436cdbc19476cbfbb9fec5543",
+      "sha1": "e5a68dbae257eeae3862c77a93d41b7f258065c0",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -522,7 +522,7 @@
       "summarySource": "opening-prose",
       "bytes": 3496,
       "lines": 64,
-      "sha1": "f4bd73a8c37856e4023bff1971c18d22ea33b574",
+      "sha1": "c8089d18662cb6091257b110113374921882152b",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -540,7 +540,7 @@
       "summarySource": "opening-prose",
       "bytes": 8957,
       "lines": 139,
-      "sha1": "c537400770012bbd17a837ac9e8c603f5c88d155",
+      "sha1": "f132e53fd32baef0070bc66798d2492713e8e335",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63331,7 +63331,7 @@
       "summarySource": "opening-prose",
       "bytes": 8875,
       "lines": 187,
-      "sha1": "9aa49576aefc58bbd3e428be6293146a6b7d3e19",
+      "sha1": "fcbcc0bb0336914812bd2f6961c159d11a729c4d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63368,6 +63368,24 @@
       "bytes": 7745,
       "lines": 184,
       "sha1": "68c08d34b90b181e5d3b281cc3fd9e5c1d6656d1",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "docs/JUPITER-EXPERIMENT-COSTS.md",
+      "path": "docs/JUPITER-EXPERIMENT-COSTS.md",
+      "dir": "docs",
+      "name": "JUPITER-EXPERIMENT-COSTS.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "Jupiter experiment costs",
+      "summary": "Spot swaps and perpetual positions are separate products. Do not apply a perps fee to a spot swap. For a SOL/USDC spot round trip, derive the realized return from the actual quote or fills: `(USDC received after the sell - USDC spent on the buy - separately paid network and priority fees) / USDC spent on the buy`.",
+      "summarySource": "opening-prose",
+      "bytes": 2952,
+      "lines": 31,
+      "sha1": "a2a793b153b9811101c36c23207909fa360ffa06",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63453,11 +63471,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Testing",
-      "summary": "python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1083 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests",
+      "summary": "python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1085 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests",
       "summarySource": "opening-prose",
       "bytes": 18058,
       "lines": 230,
-      "sha1": "d080af6800b192dfa91dfd61707fee83407737cf",
+      "sha1": "2675cafc924cb27930b1bdd7160085f1c4b2d2a2",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -70611,11 +70629,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 189 Delta: v188 to v189; record the owner's optional no-confirmation mode. Version: 146",
+      "summary": "Version: 191 Delta: v190 to v191; record Forward Test sort persistence. Version: 146",
       "summarySource": "opening-prose",
-      "bytes": 271346,
-      "lines": 1757,
-      "sha1": "b07d4f649dbc8bc99fdfde5ae29b712c8fb1383e",
+      "bytes": 272783,
+      "lines": 1768,
+      "sha1": "fad1dc63c33e1c79146cdc04a3d4ead11a659957",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -71080,11 +71098,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 106 Delta: v105 to v106; retain the optional no-confirmation order request. Version: 75",
+      "summary": "Version: 108 Delta: v107 to v108; retain the forward-test sorting request. Version: 75",
       "summarySource": "opening-prose",
-      "bytes": 43159,
-      "lines": 888,
-      "sha1": "a2f3c02ded3e1bc3c7db62a7ced9d6a0c801ef4a",
+      "bytes": 44428,
+      "lines": 902,
+      "sha1": "9cc8114bfe239d9d58845a8b906e8263d41dbeab",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -81242,6 +81260,34 @@
       "frontmatter": {}
     },
     {
+      "id": "soltui/tests/test_forward_sort_refresh.py",
+      "path": "soltui/tests/test_forward_sort_refresh.py",
+      "dir": "soltui/tests",
+      "name": "test_forward_sort_refresh.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_forward_sort_refresh",
+      "summary": "Forward results retain the user's sort and selected trial during redraws.",
+      "summarySource": "docstring",
+      "bytes": 2511,
+      "lines": 51,
+      "sha1": "f4218f7d45e8c4849dd925686b0fc322abd50de9",
+      "symbols": [
+        "result()",
+        "class ForwardSortRefreshTests"
+      ],
+      "imports": [
+        "rich",
+        "soltui",
+        "textual",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "soltui/tests/test_forwardtest.py",
       "path": "soltui/tests/test_forwardtest.py",
       "dir": "soltui/tests",
@@ -81728,6 +81774,33 @@
         "unittest"
       ],
       "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_shortcuts_everything.py",
+      "path": "soltui/tests/test_shortcuts_everything.py",
+      "dir": "soltui/tests",
+      "name": "test_shortcuts_everything.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_shortcuts_everything",
+      "summary": "Shortcut behavior without starting background jobs or paper experiments.",
+      "summarySource": "docstring",
+      "bytes": 1831,
+      "lines": 36,
+      "sha1": "1571171ae5338a63bca97b4044431bc914969ca3",
+      "symbols": [
+        "class ShortcutTests"
+      ],
+      "imports": [
+        "json",
+        "soltui",
+        "textual",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
       "frontmatter": {}
     },
     {
@@ -82292,9 +82365,9 @@
       "title": "Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.",
       "summary": "Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.",
       "summarySource": "docstring",
-      "bytes": 329578,
-      "lines": 6241,
-      "sha1": "280e7e9027c5f0c5bce7c75c37d324f8aef97667",
+      "bytes": 332305,
+      "lines": 6285,
+      "sha1": "f8be7d4fe3bc8139e864725138c77b2488b69fa8",
       "symbols": [
         "class _CaptureWithoutInvalidFd",
         "_mtime()",
