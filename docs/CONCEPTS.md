@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:21:00+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-08T10:28:16+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -173,7 +173,7 @@ Full list: `python3 index/search.py --concept transfer -n 165`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **162 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **161 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -188,7 +188,7 @@ Strongest files:
 - `docs/CONCEPTS.md` (14 hits)
 - `backtester/core/gridsim.py` (14 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 162`
+Full list: `python3 index/search.py --concept benchmark -n 161`
 
 ### Combinatorial purged cross-validation
 
@@ -243,7 +243,7 @@ Strongest files:
 - `soltui/compound.py` (16 hits)
 - `research/coin-intelligence/sol-solana.md` (11 hits)
 - `research/triggers.py` (10 hits)
-- `research/results/perturb_all_singles_long.txt` (9 hits)
+- `docs/CONCEPTS.md` (9 hits)
 
 Full list: `python3 index/search.py --concept robustness -n 92`
 
@@ -259,7 +259,7 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 |---|---|---|
 | `trend` | 197 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `regime-filter` | 192 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
-| `baseline` | 137 | `buy_and_hold`, `baseline` |
+| `baseline` | 136 | `buy_and_hold`, `baseline` |
 | `oscillator-reversion` | 114 | `rsi`, `stochastic`, `oscillator` |
 | `breakout` | 101 | `breakout`, `bb_breakout`, `keltner` |
 | `mean-reversion` | 91 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |

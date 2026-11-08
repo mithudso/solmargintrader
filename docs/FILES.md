@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5f57462` (2026-11-08T10:21:00+00:00). 778 tracked files, 13.8 MB.
+**Generated** from `index/INDEX.json` at commit `7129da1` (2026-11-08T10:28:16+00:00). 776 tracked files, 13.0 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (558 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 270/284 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (556 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 270/284 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (119 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 18 files
-- [`docs`](#docs) — 41 files
+- [`docs`](#docs) — 39 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 145 files
 - [`research`](#research) — 155 files
@@ -213,7 +213,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-41 files.
+39 files.
 
 #### `docs/API.md`
 
@@ -265,7 +265,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,321 B · description: **extracted**
+`doc` · 316 lines · 15,350 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -281,25 +281,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 7406 lines · 372,153 B · description: **extracted**
+`doc` · 7401 lines · 371,121 B · description: **extracted**
 
-**Purpose.** <<<<<<< HEAD ======= Regenerate with:
-
-**Use.** Read it.
-
-#### `docs/FILES.md`
-
-`doc` · 7406 lines · 372,153 B · description: **extracted**
-
-**Purpose.** <<<<<<< HEAD ======= Regenerate with:
-
-**Use.** Read it.
-
-#### `docs/FILES.md`
-
-`doc` · 7406 lines · 372,153 B · description: **extracted**
-
-**Purpose.** <<<<<<< HEAD ======= Regenerate with:
+**Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
 **Use.** Read it.
 
@@ -7229,9 +7213,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `tradingview/tradingviewinputoptimizer_v2-7/memory.md`
 
-`doc` · 24 lines · 2,021 B · description: **extracted**
+`doc` · 36 lines · 4,205 B · description: **extracted**
 
-**Purpose.** Version: 2 Delta: v1 to v2; completed external dossier and documentation-only baseline. Active: source dossier, docs-only bootstrap and whole-directory keyword/semantic indexing. Stele TASK-924.
+**Purpose.** Version: 3 Delta: v2 to v3; completed full-text and real embedding verification, prepared final delivery. Active: source dossier, docs-only bootstrap and whole-directory keyword/semantic indexing. Stele TASK-924.
 
 **Use.** Read it.
 
@@ -7287,7 +7271,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md`
 
-`doc` · 21 lines · 2,232 B · description: **extracted**
+`doc` · 23 lines · 2,558 B · description: **extracted**
 
 **Purpose.** The complete-directory corpus includes first-party source, documentation, all vendored text, source maps, styles, types, metadata and SVG text. PNG/WASM/non-UTF-8 files receive metadata/hash records; their binary payload is not semantically searchable. Private `.remember` records, OS metadata and Git internals are excluded. The source snapshot and exclusion reasons are recorded per path.
 

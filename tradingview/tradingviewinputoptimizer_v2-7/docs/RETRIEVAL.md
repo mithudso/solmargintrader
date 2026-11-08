@@ -9,7 +9,7 @@ The index lives outside Git at `/Users/mitch/.global-ai-hub/indexes/tradingviewi
 ```bash
 python3 /Users/mitch/.global-ai-hub/indexes/tradingviewinputoptimizer_v2-7/retrieval.py check
 python3 /Users/mitch/.global-ai-hub/indexes/tradingviewinputoptimizer_v2-7/retrieval.py keyword 'set_input_settings'
-python3 /Users/mitch/.global-ai-hub/indexes/tradingviewinputoptimizer_v2-7/retrieval.py semantic 'change chart input values and wait for completion'
+python3 /Users/mitch/.global-ai-hub/indexes/tradingviewinputoptimizer_v2-7/retrieval.py semantic 'change chart input values and wait for completion' --scope first-party
 python3 /Users/mitch/.global-ai-hub/indexes/tradingviewinputoptimizer_v2-7/retrieval.py build
 ```
 
@@ -18,3 +18,5 @@ These commands use the local source root recorded in the store. `check` re-hashe
 The external LLMS dossier starts at `/Users/mitch/.global-ai-hub/skills.llms/mithudso-solmargintrader-tvio.repo/llms.txt`. Its initial 1,556-file census precedes the docs pass; the separate retrieval manifest includes the final documentation too. The parent tracked-file index does not cover ignored upstream code.
 
 Local retrieval databases and source paths are machine-specific. A parent Git clone contains documentation only; restore the original bundle and rebuild before treating these indexes as portable.
+
+`--scope all` (default) searches the whole text corpus; `--scope first-party` excludes `lib/` from results, and `--scope vendor` restricts results to it. These filters do not change index coverage. Obfuscated code and large vendor trees can lower semantic ranking quality; check the returned source text.

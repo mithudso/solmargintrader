@@ -178,9 +178,9 @@
     "docs/COMPONENTS.md": 1231,
     "docs/COMPOUND-5M-PAPER.md": 4949,
     "docs/COMPOUND-5M.md": 3435,
-    "docs/CONCEPTS.md": 1759,
+    "docs/CONCEPTS.md": 1753,
     "docs/DEVELOPMENT.md": 947,
-    "docs/FILES.md": 37704,
+    "docs/FILES.md": 37698,
     "docs/INSTALLATION.md": 821,
     "docs/MCP.md": 148,
     "docs/OPERATIONS.md": 502,
@@ -760,7 +760,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 219,
     "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 200,
     "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 104,
-    "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 293,
+    "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 330,
     "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 244,
     "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 240,
     "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 142,
@@ -774,10 +774,10 @@
     "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 318,
     "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 159,
     "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 156,
-    "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 240,
+    "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-08T10:21:08+00:00",
+  "generatedAt": "2026-11-08T10:28:24+00:00",
   "postings": {
     "001": {
       "research/five-minute-perps-suite/synthesis-audit-receipt.json": 1
@@ -3201,7 +3201,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 3
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 3,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "accepted": {
       "CLAUDE.md": 1,
@@ -5129,7 +5130,7 @@
       "tradingskilllist/trading-skills.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
     },
     "active_call_filter": {
       "research/five-minute-perps-suite/benchmark-scope-review.json": 1
@@ -5409,7 +5410,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "actualboundingboxascent": {
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1
@@ -10183,7 +10185,6 @@
       "backtester/tests/test_sweep_pair_gate.py": 3,
       "backtester/tests/test_textbook_strategies.py": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 37,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "executor/src/executor/engine.py": 1,
@@ -18283,7 +18284,8 @@
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "artifactsha1254521eda688b644884b05e9bb69be9922b7de9759a38c1cc82b0ea9e48c349": {
       "memory.md": 1
@@ -24782,7 +24784,8 @@
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "soltui/compound.py": 1,
       "soltui/portfolio.py": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/AGENTS.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/AGENTS.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "backedstate": {
       "memory.md": 1
@@ -28419,7 +28422,7 @@
       "backtester/tests/test_gridsim.py": 4,
       "docs/COMPOUND-5M-PAPER.md": 4,
       "docs/CONCEPTS.md": 4,
-      "docs/FILES.md": 28,
+      "docs/FILES.md": 27,
       "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -28492,8 +28495,7 @@
       "soltui/reference.py": 1,
       "soltui/tests/test_bridge_parity.py": 3,
       "soltui/tests/test_status_roster.py": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2
     },
     "baseline3historicalnotematchesredacted": {
       "memory.md": 1
@@ -32422,7 +32424,8 @@
       "soltui/tui.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "binary80": {
       "memory.md": 1
@@ -37401,7 +37404,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "browser_host_dirs": {
       "docs/FILES.md": 1,
@@ -38097,7 +38100,7 @@
       "docs/COMPONENTS.md": 7,
       "docs/CONCEPTS.md": 4,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 115,
+      "docs/FILES.md": 116,
       "docs/INSTALLATION.md": 7,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 13,
@@ -38251,7 +38254,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "build_alarm": {
       "docs/FILES.md": 1,
@@ -40093,6 +40097,9 @@
       "executor/tests/test_txverify.py": 1,
       "soltui/pricefeed.py": 4,
       "soltui/tests/test_pricefeed.py": 1
+    },
+    "bytecode": {
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "bytelength": {
       "extension/tools/api-server.js": 1
@@ -42293,7 +42300,8 @@
       "soltui/utxo_scan.py": 1,
       "soltui/wallet.py": 21,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 7,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "call__": {
       "soltui/tests/test_eth_scan.py": 1,
@@ -48394,7 +48402,7 @@
       "tradingskilllist/trading-skills.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1
@@ -48904,7 +48912,8 @@
       "soltui/hdwallet.py": 2,
       "soltui/tests/test_hdwallet.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 13
+      "soltui/tui.py": 13,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "characterisation": {
       "research/coin-intelligence/README.md": 1,
@@ -48965,7 +48974,8 @@
       "research/five-minute-perps-suite/run-state.json": 1,
       "research/verify_numbers.py": 1,
       "soltui/hdwallet.py": 4,
-      "soltui/tests/test_status_roster.py": 1
+      "soltui/tests/test_status_roster.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "charcodeat": {
       "extension/src/wallet/solana.js": 1
@@ -49162,7 +49172,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "chart_crosshair_menu": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -49764,7 +49775,7 @@
       "tools/land.sh": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
@@ -50352,7 +50363,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "checkslashing": {
       "docs/profitable-crypto-strategies-analysis.md": 3,
@@ -51195,7 +51206,8 @@
       "soltui/tests/test_pricefeed.py": 7,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "chunks_of": {
       "index/build.py": 3,
@@ -54784,12 +54796,13 @@
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "code_of_conduct": {
       "docs/FILES.md": 1,
@@ -58801,7 +58814,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "complete_fetch": {
       "backtester/core/fetch_minutes.py": 8,
@@ -58864,7 +58877,7 @@
       "soltui/status.py": 1,
       "soltui/tests/test_bgqueue.py": 1,
       "soltui/tests/test_bgworker.py": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 5
     },
     "completed37paths": {
       "memory.md": 1
@@ -59238,7 +59251,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "components_for_90pct": {
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 2
@@ -60410,7 +60424,7 @@
     "concepts": {
       "CLAUDE.md": 4,
       "backtester/tests/test_index.py": 5,
-      "docs/CONCEPTS.md": 9,
+      "docs/CONCEPTS.md": 10,
       "docs/FILES.md": 20,
       "docs/SCRIPTS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
@@ -62252,7 +62266,8 @@
       "research/five-minute-perps-suite/run-report.md": 1,
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 1,
       "soltui/bgcontrol.py": 1,
-      "soltui/bgworker.py": 1
+      "soltui/bgworker.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "confluence": {
       "backtester/core/scorecard.py": 1,
@@ -64207,7 +64222,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "context7": {
       "memory.md": 2
@@ -64490,7 +64506,8 @@
       "soltui/top5.py": 2,
       "soltui/tui.py": 6,
       "soltui/utxo_scan.py": 1,
-      "soltui/wallet.py": 17
+      "soltui/wallet.py": 17,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "continue_on_fetch_error": {
       "research/full_suite.py": 1
@@ -66378,10 +66395,11 @@
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 3,
       "soltui/cumulative.py": 1,
       "tradingskilllist/trading-skills.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "corr": {
       "backtester/core/scorecard.py": 8,
@@ -68515,11 +68533,12 @@
       "tradingskilllist/trading-skills.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
     },
     "coverage35full": {
       "memory.md": 1
@@ -71627,7 +71646,8 @@
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "curating": {
       "index/build.py": 1
@@ -73417,6 +73437,9 @@
     "d58f142aebc4873345c6b31087629182ca6e0f2b3caeaa528cf882eba": {
       "liquidity/uv.lock": 1
     },
+    "d596856": {
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+    },
     "d5a3eb6af8f513b8d4ca19a8c1b7accab1b5f0d3175f9826b03c1a920dc1f": {
       "liquidity/uv.lock": 1
     },
@@ -73854,6 +73877,9 @@
     },
     "d_volume_over_usd": {
       "research/results/hyperliquid-costs-2026-11-07.json": 6
+    },
+    "da1": {
+      "docs/FILES.md": 1
     },
     "da10cf11fd8d8716720c95b93180e94c8317405d89d08524c579ef360128ac": {
       "liquidity/uv.lock": 1
@@ -78943,7 +78969,8 @@
       "soltui/tests/test_wallet_settings.py": 2,
       "soltui/top5.py": 1,
       "soltui/tui.py": 13,
-      "soltui/wallet.py": 7
+      "soltui/wallet.py": 7,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
     },
     "default_allowed": {
       "docs/FILES.md": 1,
@@ -80750,7 +80777,7 @@
     },
     "delivery": {
       "AGENTS.md": 2,
-      "docs/FILES.md": 1,
+      "docs/FILES.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 4,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "docs/runbooks/handoff.md": 1,
@@ -80770,7 +80797,8 @@
       "tools/gate.sh": 1,
       "tools/land.sh": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
     },
     "deliverybase": {
       "memory.md": 1
@@ -82860,7 +82888,7 @@
       "backtester/gridcli.py": 1,
       "backtester/paircli.py": 1,
       "backtester/strategy_cards/atr_position_sizing.md": 1,
-      "docs/FILES.md": 838,
+      "docs/FILES.md": 836,
       "docs/INSTALLATION.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 52,
       "docs/dso-skill/README.md": 1,
@@ -85505,7 +85533,8 @@
       "backtester/core/scorecard.py": 1,
       "backtester/core/types.py": 2,
       "research/decide.py": 1,
-      "skills/trading-and-investing/references/sampling-frequency-and-bar-aggregation.md": 1
+      "skills/trading-and-investing/references/sampling-frequency-and-bar-aggregation.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "dimensionality": {
       "research/signal_redundancy.py": 2,
@@ -86285,7 +86314,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 5,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 7,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 6
     },
     "directs": {
@@ -88826,7 +88855,7 @@
       "docs/ARCHITECTURE.md": 1,
       "docs/CONCEPTS.md": 2,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 187,
+      "docs/FILES.md": 186,
       "docs/SCRIPTS.md": 9,
       "docs/TRADINGVIEW-REFERENCE.md": 19,
       "docs/caching-and-optimization.md": 1,
@@ -88906,7 +88935,8 @@
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_pnl.py": 4,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 14
+      "soltui/tui.py": 14,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "doc__": {
       "backtester/core/fetch_minutes_alt.py": 1,
@@ -89002,9 +89032,9 @@
       "docs/COMPONENTS.md": 4,
       "docs/COMPOUND-5M-PAPER.md": 7,
       "docs/COMPOUND-5M.md": 1,
-      "docs/CONCEPTS.md": 18,
+      "docs/CONCEPTS.md": 19,
       "docs/DEVELOPMENT.md": 4,
-      "docs/FILES.md": 122,
+      "docs/FILES.md": 120,
       "docs/INSTALLATION.md": 3,
       "docs/MCP.md": 1,
       "docs/OPERATIONS.md": 1,
@@ -89138,7 +89168,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 7
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 10
     },
     "docs_browser": {
       "docs/FILES.md": 2,
@@ -89446,7 +89476,7 @@
       "backtester/core/perps.py": 1,
       "backtester/core/strategy_cards.py": 1,
       "docs/BASE-WALLET-QUERIES.md": 1,
-      "docs/FILES.md": 12,
+      "docs/FILES.md": 11,
       "docs/SCRIPTS.md": 2,
       "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 6,
@@ -90501,7 +90531,7 @@
       "research/coin-intelligence/xrp-ripple.md": 1
     },
     "dossier": {
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 4,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "memory.md": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
@@ -90510,7 +90540,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 5,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 7
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 5
     },
     "dot": {
       "backtester/core/cointegration.py": 3,
@@ -90740,7 +90770,8 @@
       "research/five-minute-perps-suite/run-state.json": 1,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1,
-      "soltui/help.py": 2
+      "soltui/help.py": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "downloaded": {
       "backtester/tests/test_index_search_tooling.py": 2,
@@ -91491,7 +91522,8 @@
       "soltui/top5.py": 1,
       "soltui/tui.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "drift_ticks": {
       "liquidity/tests/test_executor.py": 6
@@ -97913,7 +97945,8 @@
       "soltui/help.py": 1,
       "soltui/setup_app.py": 2,
       "soltui/tests/bridge_support.py": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "embed_model": {
       "backtester/tests/test_index_search_tooling.py": 3,
@@ -97944,7 +97977,7 @@
       "backtester/strategy_cards/dex_cex_dislocation.md": 1,
       "backtester/tests/test_index.py": 1,
       "backtester/tests/test_index_search_tooling.py": 1,
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 6,
       "docs/SCRIPTS.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/external-calls.md": 1,
@@ -97969,7 +98002,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "embedding_failures": {
       "research/five-minute-perps-suite/full-suite-receipt.json": 1
@@ -97990,7 +98023,8 @@
       "memory.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "embeds": {
       "backtester/tests/test_cross_asset_cpcv.py": 1,
@@ -100920,6 +100954,9 @@
       "research/results/perturb_long_any_ou_reversion_obv_trend.txt": 2,
       "research/sweep.py": 6,
       "soltui/signals.py": 3
+    },
+    "entrypoint": {
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "entrypoints": {
       "docs/dso-skill/SKILL.md": 1,
@@ -105920,7 +105957,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "exact_excerpts_checked": {
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
@@ -106515,7 +106552,8 @@
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 1,
       "soltui/help.py": 2,
       "soltui/native_host.py": 2,
-      "soltui/pricefeed.py": 1
+      "soltui/pricefeed.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "excellent": {
       "backtester/README.md": 1,
@@ -107167,7 +107205,8 @@
       "soltui/tui.py": 2,
       "soltui/wallet.py": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "excluded_assets": {
       "research/ratio_rotation.py": 2
@@ -107229,6 +107268,7 @@
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
       "soltui/setup_app.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "excludetotaldatachart": {
@@ -107842,7 +107882,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "execution_checklist": {
       "backtester/core/scorecard.py": 2,
@@ -108565,7 +108605,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "exists": {
       ".claude/agents/aero-pool-scout.md": 1,
@@ -110425,7 +110466,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "explicitboundedregeneration": {
       "memory.md": 1
@@ -111554,7 +111595,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "extension218pass": {
       "memory.md": 1
@@ -111643,7 +111684,7 @@
       "backtester/strategy_cards/discount_to_anchor.md": 1,
       "backtester/strategy_cards/event_driven.md": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 10,
+      "docs/FILES.md": 9,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "docs/external-calls.md": 4,
@@ -111691,7 +111732,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "externaldossier": {
       "memory.md": 1
@@ -111853,7 +111894,7 @@
     },
     "extracted": {
       "backtester/strategy_cards/dex_cex_dislocation.md": 1,
-      "docs/FILES.md": 559,
+      "docs/FILES.md": 557,
       "index/README.md": 1,
       "index/make_files_doc.py": 5,
       "research/coin-intelligence/xrp-ripple.md": 2,
@@ -112567,9 +112608,6 @@
     },
     "f56f72050826f63dcee7a7f55b0a77168cb3bfc553fd405e7f8f9ece75a4036": {
       "liquidity/uv.lock": 1
-    },
-    "f57462": {
-      "docs/FILES.md": 1
     },
     "f57a5c8c70cd1ead3d5d5f776f89d33110b1addae0ab010ad774d9a44fb9": {
       "liquidity/uv.lock": 1
@@ -113901,7 +113939,8 @@
       "tools/gate.sh": 5,
       "tools/land.sh": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "failed_gates": {
       "backtester/tests/test_triggers.py": 1,
@@ -114376,7 +114415,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "failure_handling": {
       "backtester/PROMPT.md": 2,
@@ -115341,7 +115381,8 @@
       "soltui/tests/test_wallet_settings.py": 2,
       "soltui/tui.py": 23,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "family_a": {
       "backtester/tests/test_signal_redundancy.py": 4,
@@ -119252,7 +119293,7 @@
       "docs/COMPOUND-5M.md": 5,
       "docs/CONCEPTS.md": 3,
       "docs/DEVELOPMENT.md": 8,
-      "docs/FILES.md": 104,
+      "docs/FILES.md": 105,
       "docs/INSTALLATION.md": 3,
       "docs/MCP.md": 1,
       "docs/OPERATIONS.md": 1,
@@ -119744,7 +119785,7 @@
       "docs/COMPOUND-5M.md": 2,
       "docs/CONCEPTS.md": 38,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 86,
+      "docs/FILES.md": 85,
       "docs/INSTALLATION.md": 1,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 12,
@@ -119885,7 +119926,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 6
     },
     "files_": {
       "CLAUDE.md": 1,
@@ -120692,7 +120733,8 @@
       "soltui/tests/test_docs_search.py": 1,
       "soltui/tests/test_panes.py": 5,
       "soltui/tests/test_tui.py": 2,
-      "soltui/tui.py": 8
+      "soltui/tui.py": 8,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "filter1": {
       "docs/profitable-crypto-strategies-analysis.md": 3,
@@ -120778,7 +120820,8 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "soltui/tests/test_wallet.py": 1,
       "soltui/tui.py": 1,
-      "soltui/wallet.py": 1
+      "soltui/wallet.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
     },
     "filterunits": {
       "pagesource": 2
@@ -120812,7 +120855,7 @@
       "backtester/tests/test_engine_audit.py": 9,
       "backtester/tests/test_gridsim.py": 8,
       "backtester/tests/test_textbook_strategies.py": 2,
-      "docs/FILES.md": 2,
+      "docs/FILES.md": 3,
       "docs/SCRIPTS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
       "docs/caching-and-optimization.md": 1,
@@ -120890,7 +120933,7 @@
       "soltui/tui.py": 7,
       "soltui/utxo_scan.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 5
     },
     "final7newfunctionaltests": {
       "memory.md": 1
@@ -121904,7 +121947,8 @@
       "soltui/compound.py": 1,
       "soltui/liquidity.py": 1,
       "soltui/spot_prices.py": 2,
-      "soltui/tests/test_bridge_surfaces.py": 1
+      "soltui/tests/test_bridge_surfaces.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "finite_number": {
       "docs/FILES.md": 1,
@@ -122430,13 +122474,13 @@
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "first_available": {
       "backtester/core/fetch_minutes.py": 5,
@@ -126887,7 +126931,8 @@
       "soltui/tests/test_wallet.py": 2,
       "soltui/tui.py": 2,
       "soltui/utxo_scan.py": 4,
-      "soltui/wallet.py": 1
+      "soltui/wallet.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "foundation": {
       "docs/FILES.md": 6,
@@ -128279,7 +128324,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "freshoutputpath": {
       "memory.md": 1
@@ -128901,14 +128947,16 @@
       "memory.md": 1,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
       "research/five-minute-perps-suite/run-report.md": 2,
-      "research/five-minute-perps-suite/run-state.json": 1
+      "research/five-minute-perps-suite/run-state.json": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "fts5": {
       "CLAUDE.md": 1,
       "liquidity/CLAUDE.md": 1,
       "memory.md": 3,
       "research/five-minute-perps-suite/run-state.json": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "fts_rows": {
       "research/five-minute-perps-suite/full-suite-receipt.json": 1
@@ -129050,7 +129098,7 @@
       "docs/COMPOUND-5M-PAPER.md": 7,
       "docs/COMPOUND-5M.md": 9,
       "docs/CONCEPTS.md": 17,
-      "docs/FILES.md": 29,
+      "docs/FILES.md": 30,
       "docs/INSTALLATION.md": 2,
       "docs/OPERATIONS.md": 2,
       "docs/SCRIPTS.md": 11,
@@ -129236,7 +129284,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
     },
     "full_a": {
       "backtester/tests/test_advanced_strategies.py": 2
@@ -131411,7 +131460,8 @@
       "soltui/tests/test_pnl.py": 1,
       "soltui/tui.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "gaps_over_an_hour": {
       "backtester/core/fetch_minutes.py": 3,
@@ -132768,7 +132818,7 @@
       "tradingskilllist/trading-skills.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "generated_at": {
       "extension/src/core/alerts.js": 1,
@@ -134646,7 +134696,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "git_ok": {
       "docs/FILES.md": 1,
@@ -135164,7 +135214,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 6,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "global0": {
       "liquidity/src/aero_lp/chain.py": 3,
@@ -137834,7 +137885,8 @@
       "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md": 2,
       "skills/trading-and-investing/references/strategy-backtesting-and-development-workflow.md": 3,
       "skills/trading-and-investing/references/trading-risk-management.md": 2,
-      "skills/trading-and-investing/references/trading-strategies-and-styles.md": 5
+      "skills/trading-and-investing/references/trading-strategies-and-styles.md": 5,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "guideline": {
       "skills/trading-and-investing/references/forex-and-currency-trading.md": 1
@@ -139660,7 +139712,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "hashgraph": {
       "research/results/top50-nonpegged-2026-11-07.json": 1
@@ -139911,7 +139964,7 @@
       ".github/workflows/ci.yml": 6,
       ".remember/remember.md": 2,
       "backtester/core/ticks.py": 1,
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 2,
       "docs/OPERATIONS.md": 1,
       "docs/SECURITY.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
@@ -140498,7 +140551,8 @@
       "skills/trading-and-investing/references/technical-analysis.md": 2,
       "soltui/tests/bridge_support.py": 5,
       "soltui/tests/test_bridge_parity.py": 2,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "hedera": {
       "research/results/top50-nonpegged-2026-11-07.json": 2
@@ -145574,7 +145628,8 @@
       "soltui/tests/test_wallet.py": 8,
       "soltui/wallet.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "http_error": {
       "soltui/tests/test_wallet.py": 4
@@ -145903,7 +145958,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 6,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "hub_docset_registered": {
       "research/five-minute-perps-suite/run-state.json": 1
@@ -149671,6 +149727,9 @@
       "prompts.md": 1,
       "research/five-minute-perps-suite/run-report.md": 1
     },
+    "inaccuracies": {
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+    },
     "inaccurate": {
       "research/coin-intelligence/xrp-ripple.md": 1
     },
@@ -150950,7 +151009,8 @@
       "soltui/top5.py": 1,
       "soltui/tui.py": 1,
       "soltui/wallet.py": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "independent_audit": {
       "research/five-minute-perps-suite/benchmark-scope-review.json": 1
@@ -151077,7 +151137,7 @@
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/CONCEPTS.md": 25,
-      "docs/FILES.md": 87,
+      "docs/FILES.md": 90,
       "docs/MCP.md": 5,
       "docs/SCRIPTS.md": 30,
       "docs/TESTING.md": 3,
@@ -151232,7 +151292,7 @@
       "tools/land.sh": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 3,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 3,
@@ -151240,7 +151300,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "index_bytes": {
       "research/five-minute-perps-suite/run-state.json": 1
@@ -151428,7 +151488,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 2
     },
     "indexfreshness": {
@@ -152983,7 +153043,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 2
     },
     "initial_account_usd": {
@@ -153412,7 +153472,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "input_mint": {
       "executor/src/executor/jupiter.py": 8,
@@ -153518,7 +153579,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 4
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 4,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "inputused": {
       "extension/src/venues/triggerVenue.js": 2
@@ -154090,7 +154152,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "install_agent": {
       "soltui/pricefeed.py": 3,
@@ -155326,7 +155388,8 @@
       "tools/gate.sh": 1,
       "tradingskilllist/trading-skills.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 3
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 3,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "integration_verification": {
       "research/five-minute-perps-suite/benchmark-scope-review.json": 1
@@ -155375,7 +155438,8 @@
       "research/five-minute-perps-suite/scored-concepts.json": 3,
       "research/tick_backfill.py": 3,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "intel": {
       "tradingskilllist/trading-skills.md": 2
@@ -156041,7 +156105,8 @@
       "soltui/roster.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "international": {
       "research/coin-intelligence/btc-bitcoin.md": 1,
@@ -161191,7 +161256,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "json_": {
       "executor/src/executor/cli.py": 3
@@ -163729,7 +163795,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 2
     },
     "keyword_checks": {
@@ -169394,7 +169460,8 @@
       "soltui/reference.py": 1,
       "soltui/setup_app.py": 2,
       "soltui/tests/test_wallet.py": 1,
-      "tradingskilllist/trading-skills.md": 2
+      "tradingskilllist/trading-skills.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
     },
     "largedashed": {
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 2
@@ -170381,7 +170448,8 @@
       "soltui/tests/test_wallet.py": 1,
       "soltui/tui.py": 9,
       "soltui/wallet.py": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "latest_closed": {
       "soltui/tui.py": 3
@@ -172676,7 +172744,8 @@
       "soltui/tests/test_signals.py": 1,
       "soltui/tui.py": 1,
       "soltui/wallet.py": 3,
-      "tradingskilllist/trading-skills.md": 1
+      "tradingskilllist/trading-skills.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "length14": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -173918,6 +173987,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
@@ -174096,7 +174166,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "license_key": {
       "docs/FILES.md": 1,
@@ -175478,7 +175548,7 @@
       "backtester/tests/test_trianglesim.py": 1,
       "docs/API.md": 1,
       "docs/COMPONENTS.md": 1,
-      "docs/FILES.md": 779,
+      "docs/FILES.md": 777,
       "docs/TRADINGVIEW-REFERENCE.md": 36,
       "docs/code-deep-optimizer-2026-11-06.md": 34,
       "docs/codebase-overview.md": 1,
@@ -175838,7 +175908,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "linkusdt": {
       "docs/FILES.md": 1,
@@ -177125,7 +177196,8 @@
       "soltui/tests/test_wallet.py": 6,
       "soltui/tui.py": 5,
       "soltui/wallet.py": 9,
-      "tradingskilllist/trading-skills.md": 1
+      "tradingskilllist/trading-skills.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "listed_exchange": {
       "docs/TRADINGVIEW-REFERENCE.md": 6
@@ -177887,7 +177959,8 @@
       "tools/land.sh": 2,
       "tradingskilllist/trading-skills.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "live_allowed": {
       "executor/src/executor/gates.py": 1
@@ -178334,6 +178407,7 @@
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 3,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 2
     },
     "llms_ledger": {
@@ -179547,7 +179621,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
     },
     "local_data": {
       "docs/FILES.md": 2,
@@ -180652,7 +180726,6 @@
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 6,
       "docs/COMPOUND-5M.md": 2,
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 82,
       "docs/SCRIPTS.md": 16,
       "docs/TRADINGVIEW-REFERENCE.md": 57,
@@ -182957,7 +183030,8 @@
       "soltui/tests/test_wallet_integration.py": 2,
       "soltui/tui.py": 1,
       "soltui/utxo_scan.py": 2,
-      "soltui/wallet.py": 9
+      "soltui/wallet.py": 9,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
     },
     "lower_out0": {
       "liquidity/src/aero_lp/clmath.py": 3
@@ -185267,7 +185341,7 @@
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 2,
       "docs/CONCEPTS.md": 2,
-      "docs/FILES.md": 28,
+      "docs/FILES.md": 29,
       "docs/SCRIPTS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -185443,7 +185517,7 @@
     },
     "make_files_doc": {
       "backtester/tests/test_index.py": 2,
-      "docs/FILES.md": 5,
+      "docs/FILES.md": 6,
       "docs/SCRIPTS.md": 1,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
       "index/README.md": 3,
@@ -186230,7 +186304,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
     },
     "manifest_path": {
       "index/build.py": 3
@@ -188486,7 +188560,8 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 1,
       "soltui/commands.py": 1,
       "soltui/hdwallet.py": 6,
-      "soltui/tests/test_wallet_settings.py": 1
+      "soltui/tests/test_wallet_settings.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "materialize": {
       "memory.md": 1,
@@ -190877,7 +190952,8 @@
       "soltui/tests/test_top5.py": 1,
       "soltui/tui.py": 1,
       "soltui/utxo_scan.py": 3,
-      "soltui/wallet.py": 1
+      "soltui/wallet.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "meant": {
       ".gitignore": 1,
@@ -192884,7 +192960,8 @@
       "soltui/tests/test_tradingstrategyresults_coverage.py": 1,
       "soltui/tests/test_tui.py": 2,
       "soltui/tui.py": 1,
-      "soltui/wallet.py": 1
+      "soltui/wallet.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "merged5765c8d755322292b6076d116a7b8e3a4526567b": {
       "memory.md": 1
@@ -193360,7 +193437,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "metadataimg": {
       "pagesource": 1
@@ -196655,7 +196733,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 1
     },
     "mitchhudson": {
@@ -197582,7 +197660,8 @@
       "tradingskilllist/trading-skills.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "model_apr": {
       "liquidity/src/aero_lp/allocator.py": 3,
@@ -207244,7 +207323,8 @@
     },
     "nomic": {
       "backtester/tests/test_index_search_tooling.py": 6,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "nominal": {
       "backtester/core/types.py": 1,
@@ -207877,7 +207957,8 @@
       "index/build.py": 1,
       "index/search.py": 1,
       "liquidity/src/aero_lp/providers.py": 10,
-      "skills/trading-and-investing/references/market-participants-and-structure.md": 1
+      "skills/trading-and-investing/references/market-participants-and-structure.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "norm_token": {
       "liquidity/src/aero_lp/providers.py": 10
@@ -211275,9 +211356,11 @@
       "docs/FILES.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "obfuscation": {
       "docs/FILES.md": 2,
@@ -212177,7 +212260,8 @@
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 1,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1,
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
-      "soltui/paper.py": 1
+      "soltui/paper.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "occurrence": {
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -217080,7 +217164,8 @@
       "soltui/top5.py": 1,
       "soltui/tui.py": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "ordered_columns": {
       "soltui/tests/test_compound.py": 1,
@@ -217719,7 +217804,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "original_bytes": {
       "mongo/tests/test_load_audit.py": 2
@@ -218293,7 +218378,8 @@
       "soltui/pricefeed.py": 1,
       "soltui/serve.py": 1,
       "soltui/tests/test_bgqueue.py": 3,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "otm": {
       "skills/trading-and-investing/references/options-fundamentals.md": 4,
@@ -219333,7 +219419,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "outside_fraction": {
       "research/results/grid_review_20261107.json": 9
@@ -219621,7 +219707,8 @@
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
       "soltui/compound.py": 2,
       "soltui/help.py": 1,
-      "soltui/tests/test_forwardtest.py": 1
+      "soltui/tests/test_forwardtest.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "overlapping": {
       ".claude/agents/aero-pool-scout.md": 1,
@@ -220860,7 +220947,8 @@
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tui.py": 2,
       "soltui/wallet.py": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "ox5": {
       "soltui/SolTUI.icns": 2
@@ -223449,7 +223537,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 5
     },
     "parent_bytes": {
       "research/five-minute-perps-suite/full-suite-receipt.json": 1
@@ -223629,7 +223717,8 @@
       "soltui/tests/bridge_support.py": 3,
       "soltui/tests/test_bridge_parity.py": 3,
       "soltui/tests/test_service_plist_parity.py": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "paritytests": {
       "docs/FILES.md": 1,
@@ -224369,7 +224458,8 @@
       "soltui/tests/test_wallet_integration.py": 3,
       "soltui/tui.py": 2,
       "soltui/utxo_scan.py": 1,
-      "soltui/wallet.py": 6
+      "soltui/wallet.py": 6,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "partial_result": {
       "liquidity/src/aero_lp/executor.py": 1
@@ -224697,12 +224787,12 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "pas": {
       "soltui/SolTUI.icns": 1
@@ -224880,7 +224970,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "pass_fds": {
       "soltui/bgcontrol.py": 1,
@@ -224972,7 +225063,8 @@
       "soltui/reference.py": 1,
       "soltui/soltui-service": 1,
       "soltui/tui.py": 1,
-      "tools/land.sh": 1
+      "tools/land.sh": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "passed1084": {
       "memory.md": 1
@@ -226196,7 +226288,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "pathsep": {
       "research/full_suite.py": 1,
@@ -229266,7 +229359,7 @@
       "backtester/tests/test_geometry.py": 2,
       "docs/COMPOUND-5M-PAPER.md": 1,
       "docs/COMPOUND-5M.md": 1,
-      "docs/CONCEPTS.md": 4,
+      "docs/CONCEPTS.md": 3,
       "docs/FILES.md": 51,
       "docs/SCRIPTS.md": 4,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
@@ -229331,7 +229424,6 @@
       "research/perturb.py": 1
     },
     "perturb_all_singles_long": {
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 3,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/results/perturb_all_singles_long.csv": 1,
@@ -229628,7 +229720,8 @@
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 2,
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "skills/trading-and-investing/references/trading-risk-management.md": 1,
-      "soltui/tests/test_status_roster.py": 1
+      "soltui/tests/test_status_roster.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "phasing": {
       "skills/trading-and-investing/references/market-microstructure-and-execution.md": 2,
@@ -236410,6 +236503,7 @@
     },
     "prepared": {
       "backtester/core/compound.py": 2,
+      "docs/FILES.md": 1,
       "docs/SCRIPTS.md": 1,
       "executor/src/executor/engine.py": 1,
       "memory.md": 1,
@@ -236419,7 +236513,8 @@
       "skills/trading-and-investing/references/investing-vs-trading.md": 1,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1,
       "soltui/compound.py": 13,
-      "soltui/tests/test_compound.py": 7
+      "soltui/tests/test_compound.py": 7,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "prepared_max": {
       "soltui/compound.py": 2
@@ -236594,7 +236689,8 @@
       "soltui/top5.py": 1,
       "soltui/tui.py": 6,
       "soltui/wallet.py": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "presentation": {
       "docs/FILES.md": 3,
@@ -239086,7 +239182,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "private_credential": {
       "soltui/tests/test_wallet.py": 2
@@ -240109,7 +240205,8 @@
       "soltui/tests/test_pricefeed.py": 5,
       "soltui/tui.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "product_id": {
       "backtester/core/universe.py": 3,
@@ -242281,7 +242378,8 @@
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "soltui/live_run.py": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "providing": {
       "docs/profitable-crypto-strategies-analysis.md": 1,
@@ -242756,7 +242854,8 @@
       "soltui/compound.py": 1,
       "soltui/tests/test_bgcontrol_identity.py": 2,
       "soltui/tests/test_forwardtest.py": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "publications": {
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 2,
@@ -242913,7 +243012,8 @@
       "soltui/tests/test_hdwallet.py": 2,
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 1
+      "soltui/tui.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "published_geometry": {
       "research/cross_asset_cpcv.py": 2
@@ -243415,7 +243515,7 @@
       "backtester/tests/test_index.py": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/DEVELOPMENT.md": 2,
-      "docs/FILES.md": 783,
+      "docs/FILES.md": 781,
       "docs/INSTALLATION.md": 1,
       "docs/SCRIPTS.md": 21,
       "docs/TRADINGVIEW-REFERENCE.md": 12,
@@ -244196,7 +244296,8 @@
       "soltui/tests/test_service.py": 10,
       "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "python3": {
       ".githooks/pre-commit": 2,
@@ -244257,7 +244358,7 @@
       "docs/COMPOUND-5M.md": 7,
       "docs/CONCEPTS.md": 19,
       "docs/DEVELOPMENT.md": 20,
-      "docs/FILES.md": 276,
+      "docs/FILES.md": 278,
       "docs/INSTALLATION.md": 13,
       "docs/MCP.md": 3,
       "docs/SCRIPTS.md": 116,
@@ -245031,6 +245132,7 @@
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 3,
       "soltui/help.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
     },
     "quandl": {
@@ -245401,7 +245503,8 @@
       "soltui/wallet.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "query": {
       ".github/copilot-instructions.md": 1,
@@ -245471,7 +245574,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
     },
     "query_keep_alive": {
       "docs/FILES.md": 1,
@@ -248353,7 +248456,8 @@
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_tui.py": 1,
       "soltui/top5.py": 3,
-      "soltui/tui.py": 4
+      "soltui/tui.py": 4,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
     },
     "ranking_measure": {
       "research/PROMPT_STRATEGIES.md": 2
@@ -250258,7 +250362,7 @@
       "docs/COMPOUND-5M.md": 11,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 5,
-      "docs/FILES.md": 403,
+      "docs/FILES.md": 401,
       "docs/INSTALLATION.md": 5,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 10,
@@ -251681,7 +251785,7 @@
       "docs/COMPOUND-5M.md": 2,
       "docs/CONCEPTS.md": 3,
       "docs/DEVELOPMENT.md": 3,
-      "docs/FILES.md": 43,
+      "docs/FILES.md": 44,
       "docs/OPERATIONS.md": 1,
       "docs/SCRIPTS.md": 10,
       "docs/SECURITY.md": 2,
@@ -251912,7 +252016,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "real_open": {
       "soltui/tests/test_wallet.py": 2,
@@ -253178,7 +253282,8 @@
       "soltui/help.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "receipt_fee_wei": {
       "docs/code-deep-optimizer-2026-11-06.md": 1,
@@ -253311,7 +253416,8 @@
       "skills/trading-and-investing/references/strategies-and-risk.md": 2,
       "skills/trading-and-investing/references/trading-risk-management.md": 1,
       "soltui/help.py": 2,
-      "soltui/pricefeed.py": 2
+      "soltui/pricefeed.py": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "receiver": {
       "skills/trading-and-investing/references/derivatives-futures-and-swaps.md": 1,
@@ -254181,7 +254287,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "record_dry_run": {
       "docs/FILES.md": 2,
@@ -254707,7 +254814,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "recovery_days": {
       "soltui/pnl.py": 4,
@@ -255191,7 +255299,8 @@
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 1,
       "skills/trading-and-investing/references/market-microstructure-and-execution.md": 1,
       "skills/trading-and-investing/references/trading-risk-management.md": 1,
-      "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1
+      "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "reduction": {
       "research/coin-intelligence/doge-dogecoin.md": 1,
@@ -255675,7 +255784,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "referenceticon": {
       "soltui/SolTUI.icns": 1
@@ -255905,7 +256014,7 @@
     },
     "refresh": {
       "docs/CONCEPTS.md": 2,
-      "docs/FILES.md": 9,
+      "docs/FILES.md": 10,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "docs/caching-and-optimization.md": 1,
       "docs/external-calls.md": 1,
@@ -256665,7 +256774,7 @@
     },
     "regenerate": {
       ".gitignore": 1,
-      "docs/FILES.md": 66,
+      "docs/FILES.md": 64,
       "docs/SCRIPTS.md": 1,
       "docs/caching-and-optimization.md": 1,
       "docs/high_signal_file_index.json": 1,
@@ -256730,7 +256839,8 @@
       "research/verify_numbers.py": 1,
       "soltui/tests/test_presets_netpct.py": 2,
       "soltui/tests/test_top5.py": 1,
-      "soltui/top5.py": 1
+      "soltui/top5.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "regex": {
       ".github/workflows/ci.yml": 1,
@@ -258871,7 +258981,8 @@
       "soltui/help.py": 7,
       "soltui/tests/test_bgcontrol.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "remainblocked": {
       "memory.md": 1
@@ -258987,7 +259098,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "remaining_owner_root": {
       "research/five-minute-perps-suite/full-suite-receipt.json": 1
@@ -259112,7 +259223,7 @@
       "skills/trading-and-investing/references/portfolio-theory-and-asset-allocation.md": 1,
       "soltui/tui.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "remembered": {
       "docs/caching-and-optimization.md": 1,
@@ -260329,7 +260440,8 @@
       "soltui/bgcontrol.py": 2,
       "soltui/bgqueue.py": 1,
       "soltui/help.py": 1,
-      "soltui/tests/test_bgcontrol_identity.py": 4
+      "soltui/tests/test_bgcontrol_identity.py": 4,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "replacements": {
       "docs/FILES.md": 1,
@@ -261980,6 +262092,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 2
     },
     "request_id": {
@@ -263081,7 +263194,7 @@
       "docs/COMPONENTS.md": 8,
       "docs/COMPOUND-5M-PAPER.md": 7,
       "docs/COMPOUND-5M.md": 14,
-      "docs/CONCEPTS.md": 31,
+      "docs/CONCEPTS.md": 30,
       "docs/DEVELOPMENT.md": 16,
       "docs/FILES.md": 390,
       "docs/INSTALLATION.md": 2,
@@ -264296,7 +264409,8 @@
       "soltui/tests/test_forwardtest.py": 6,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_tui.py": 1,
-      "soltui/tui.py": 9
+      "soltui/tui.py": 9,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "resolved_at": {
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -264825,7 +264939,8 @@
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "restartability": {
       "soltui/bgworker.py": 1
@@ -265133,7 +265248,8 @@
       "research/signal_redundancy.py": 1,
       "soltui/bgqueue.py": 1,
       "soltui/help.py": 1,
-      "soltui/tests/test_strategy_history.py": 1
+      "soltui/tests/test_strategy_history.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
     },
     "restructure": {
       "skills/trading-and-investing/SKILL.md": 1
@@ -265615,7 +265731,7 @@
       "docs/ARCHITECTURE.md": 3,
       "docs/COMPOUND-5M-PAPER.md": 7,
       "docs/COMPOUND-5M.md": 10,
-      "docs/CONCEPTS.md": 3,
+      "docs/CONCEPTS.md": 2,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 193,
       "docs/INSTALLATION.md": 1,
@@ -265871,6 +265987,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 1,
@@ -266178,7 +266295,8 @@
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1,
       "skills/trading-and-investing/references/trading-risk-management.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "retained_rent": {
       "executor/src/executor/engine.py": 5,
@@ -266442,7 +266560,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 7,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "retrieve": {
       "backtester/strategy_cards/dex_cex_dislocation.md": 1,
@@ -266844,6 +266962,7 @@
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tui.py": 1,
       "soltui/utxo_scan.py": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
     },
     "returning": {
@@ -267780,7 +267899,8 @@
       "soltui/README.md": 1,
       "soltui/tests/test_docs_browser.py": 2,
       "soltui/tests/test_status_roster.py": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "review_binding": {
       "research/five-minute-perps-suite/accepted-gate-receipt.json": 1,
@@ -268142,7 +268262,7 @@
       "backtester/tests/test_fetch_minutes.py": 2,
       "docs/ARCHITECTURE.md": 1,
       "docs/CONCEPTS.md": 2,
-      "docs/FILES.md": 3,
+      "docs/FILES.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/dso-skill/SKILL.md": 2,
       "docs/jupiter-trigger-contract.md": 1,
@@ -273861,7 +273981,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "runtime_checkable": {
       "backtester/core/data.py": 2,
@@ -276778,7 +276898,9 @@
       "soltui/tui.py": 28,
       "tradingskilllist/trading-skills.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 4,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "scope_corrections": {
       "research/five-minute-perps-suite/run-state.json": 1
@@ -278019,7 +278141,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "search_codebase": {
       "llms-full.txt": 1
@@ -278080,7 +278203,8 @@
       "soltui/commands.py": 1,
       "soltui/help.py": 1,
       "soltui/tests/test_docs_search.py": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/README.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/README.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
     },
     "searching": {
       "backtester/PROMPT.md": 2,
@@ -280365,12 +280489,12 @@
       "soltui/help.py": 4,
       "soltui/tests/test_docs_search.py": 3,
       "soltui/tui.py": 4,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 5,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 2
     },
     "semantic_authorization": {
@@ -281909,7 +282033,8 @@
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "soltui/README.md": 1,
       "soltui/app.py": 1,
-      "soltui/tests/test_panes.py": 1
+      "soltui/tests/test_panes.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "server": {
       ".github/SECURITY.md": 1,
@@ -282182,7 +282307,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "service_spec": {
       "soltui/soltui-service": 5,
@@ -284041,7 +284167,7 @@
       "mongo/schema.py": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "sha1": {
       "backtester/core/compound.py": 1,
@@ -285748,7 +285874,8 @@
     "shortened": {
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1,
       "skills/trading-and-investing/references/market-participants-and-structure.md": 1,
-      "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1
+      "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "shortening": {
       "research/signal_redundancy.py": 1,
@@ -289958,7 +290085,6 @@
       "backtester/strategy_cards/stochastic.md": 2,
       "backtester/tests/test_cross_asset_cpcv.py": 10,
       "backtester/tests/test_simulation_blind_audit.py": 2,
-      "docs/CONCEPTS.md": 1,
       "docs/FILES.md": 14,
       "docs/SCRIPTS.md": 9,
       "docs/strategy-optimization-concept-family.md": 5,
@@ -296027,7 +296153,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 9,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 10,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 2,
@@ -296039,7 +296165,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 10,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 10
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 14
     },
     "source65": {
       "memory.md": 1
@@ -298614,7 +298740,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "sqlite3": {
       "liquidity/src/aero_lp/ledger.py": 6,
@@ -302563,7 +302690,8 @@
       "soltui/tui.py": 251,
       "soltui/utxo_scan.py": 1,
       "soltui/wallet.py": 16,
-      "tools/land.sh": 2
+      "tools/land.sh": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "status_code": {
       "executor/src/executor/http.py": 3,
@@ -303253,7 +303381,7 @@
       "soltui/bots.py": 1,
       "soltui/commands.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "stellar": {
       "research/results/top50-nonpegged-2026-11-07.json": 2
@@ -303559,7 +303687,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/AGENTS.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "stepwise": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -304474,7 +304603,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "storageandnoticetests": {
       "docs/FILES.md": 1,
@@ -304688,7 +304818,8 @@
       "soltui/pnl.py": 1,
       "soltui/tests/test_signals.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "storeidentity": {
       "extension/src/core/engine.js": 2
@@ -315004,7 +315135,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 9
     },
     "task723": {
       "memory.md": 2
@@ -325701,7 +325832,8 @@
       "tools/gate.sh": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 6,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "tests273pass20skip": {
       "memory.md": 1
@@ -325885,7 +326017,7 @@
       "backtester/tests/test_universe.py": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/CONCEPTS.md": 1,
-      "docs/FILES.md": 18,
+      "docs/FILES.md": 19,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 6,
       "docs/TESTING.md": 1,
@@ -326091,11 +326223,12 @@
       "soltui/tests/test_wallet_settings.py": 16,
       "soltui/tui.py": 157,
       "soltui/wallet.py": 13,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 6,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 8,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 1
     },
     "text_area": {
@@ -326999,7 +327132,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
@@ -332491,7 +332624,8 @@
       "mongo/README.md": 1,
       "research/coin-intelligence/zec-zcash.md": 2,
       "skills/trading-and-investing/references/sleeve-weighting-and-objective-selection.md": 1,
-      "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1
+      "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "toolname": {
       "docs/TRADINGVIEW-REFERENCE.md": 5
@@ -333668,7 +333802,8 @@
       "soltui/tui.py": 2,
       "soltui/wallet.py": 4,
       "tradingskilllist/trading-skills.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "totalsupply": {
       "soltui/tests/fixtures/wallet/jupiter_recorded.json": 3
@@ -335477,7 +335612,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 4,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 2
     },
     "tradingviewinputoptimizer_v2": {
@@ -335486,7 +335621,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 1
     },
     "traditional": {
@@ -336900,7 +337035,8 @@
     },
     "trees": {
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 6,
-      "skills/trading-and-investing/references/volatility-and-pricing.md": 1
+      "skills/trading-and-investing/references/volatility-and-pricing.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1
     },
     "trek": {
       "pagesource": 1
@@ -338363,7 +338499,8 @@
       "research/coin-intelligence/trx-tron.md": 1,
       "soltui/analyze.py": 2,
       "soltui/bgqueue.py": 1,
-      "soltui/status.py": 1
+      "soltui/status.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "truncated": {
       "backtester/core/fetch_minutes.py": 2,
@@ -340320,7 +340457,7 @@
       "backtester/strategy_cards/vol_regime_hmm.md": 1,
       "backtester/tests/test_decide.py": 1,
       "docs/BASE-WALLET-QUERIES.md": 1,
-      "docs/CONCEPTS.md": 7,
+      "docs/CONCEPTS.md": 6,
       "docs/DEVELOPMENT.md": 4,
       "docs/FILES.md": 28,
       "docs/INSTALLATION.md": 9,
@@ -342004,7 +342141,7 @@
       "soltui/tui.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "unchanged48": {
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 1
@@ -343197,7 +343334,8 @@
       "soltui/analyze.py": 2,
       "soltui/help.py": 2,
       "soltui/pnl.py": 1,
-      "tradingskilllist/trading-skills.md": 1
+      "tradingskilllist/trading-skills.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "unit_conversion_types": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -345848,7 +345986,8 @@
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tui.py": 171,
       "soltui/wallet.py": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "update_cell": {
       "soltui/tui.py": 2
@@ -346328,7 +346467,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/high_signal_file_index.json": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "upstream7b9666f": {
       "memory.md": 1
@@ -347421,7 +347561,7 @@
       "docs/COMPOUND-5M.md": 3,
       "docs/CONCEPTS.md": 1,
       "docs/DEVELOPMENT.md": 8,
-      "docs/FILES.md": 796,
+      "docs/FILES.md": 794,
       "docs/INSTALLATION.md": 2,
       "docs/SCRIPTS.md": 26,
       "docs/SECURITY.md": 1,
@@ -348135,7 +348275,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 6,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 3,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 1
     },
     "userselect": {
@@ -348322,7 +348462,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "uses_funding": {
       "docs/FILES.md": 2,
@@ -348739,7 +348880,8 @@
       "soltui/top5.py": 1,
       "soltui/tui.py": 2,
       "soltui/wallet.py": 5,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "utf16": {
       "scripts/html_to_markdown.py": 2
@@ -349532,7 +349674,8 @@
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_wallet.py": 4,
-      "soltui/wallet.py": 16
+      "soltui/wallet.py": 16,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "valid_evm_address": {
       "soltui/tests/test_wallet.py": 2,
@@ -351411,7 +351554,8 @@
       "soltui/tests/test_portfolio.py": 1,
       "tradingskilllist/trading-skills.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "vector_rows": {
       "research/five-minute-perps-suite/full-suite-receipt.json": 1
@@ -351452,7 +351596,8 @@
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 2,
       "soltui/tests/test_hdwallet.py": 2,
       "soltui/tests/test_utxo_scan.py": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "veg62yxwfjx1xyeazadlpaz1mwawd89dcwgt8sjv6os7uk1ysczkd1ggqbdffugzp19yxc7ewb8dcao8fnpusfh": {
       "memory.md": 1
@@ -351542,13 +351687,14 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/MCP.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/SECURITY.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "vendor_horizon_and_calibration_scope": {
       "research/five-minute-perps-suite/synthesis-audit-receipt.json": 1
@@ -352197,7 +352343,7 @@
       "backtester/PROMPT.md": 2,
       "backtester/tests/test_interpret.py": 1,
       "docs/DEVELOPMENT.md": 1,
-      "docs/FILES.md": 7,
+      "docs/FILES.md": 8,
       "docs/INSTALLATION.md": 1,
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 2,
@@ -352259,7 +352405,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 4
     },
     "verificationstatus": {
       "executor/tests/fixtures/lifi_quote_usdc_base.json": 4
@@ -355884,7 +356030,8 @@
       "soltui/tui.py": 59,
       "soltui/utxo_scan.py": 6,
       "soltui/wallet.py": 16,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 2,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "wallet_account": {
       "executor/tests/conftest.py": 3,
@@ -356850,7 +356997,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/runbooks/retrieval.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "watchers": {
       "docs/external-calls.md": 1,
@@ -358855,6 +359003,7 @@
       "soltui/tui.py": 8,
       "soltui/wallet.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 2
     },
@@ -361083,7 +361232,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/caching-and-optimization.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/known-issues.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
     },
     "without_skill": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -361479,7 +361628,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 2
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 3
     },
     "work1087": {
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 2
@@ -361705,7 +361854,8 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 2,
-      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+      "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "workflow_dispatch": {
       ".github/workflows/ci.yml": 2,
@@ -366898,7 +367048,8 @@
       "soltui/tests/test_wallet.py": 2,
       "soltui/top5.py": 1,
       "soltui/tui.py": 1,
-      "soltui/wallet.py": 1
+      "soltui/wallet.py": 1,
+      "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "zero_address": {
       "docs/FILES.md": 1,
@@ -367519,10 +367670,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1319.5,
+    "avgDocLength": 1319.9,
     "documents": 776,
-    "terms": 37065,
-    "termsBeforePrune": 37065,
-    "totalTokens": 1023969
+    "terms": 37069,
+    "termsBeforePrune": 37069,
+    "totalTokens": 1024237
   }
 }
