@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T08:56:28+00:00",
+  "generatedAt": "2026-11-08T09:13:44+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -130,16 +130,16 @@
           "hits": 20
         },
         {
+          "path": "memory.md",
+          "hits": 20
+        },
+        {
           "path": "docs/API.md",
           "hits": 20
         },
         {
           "path": "skills/trading-and-investing/references/fixed-income-and-bond-markets.md",
           "hits": 20
-        },
-        {
-          "path": "memory.md",
-          "hits": 19
         },
         {
           "path": "docs/code-deep-optimizer-2026-11-06.md",
@@ -1420,6 +1420,10 @@
           "hits": 21
         },
         {
+          "path": "memory.md",
+          "hits": 15
+        },
+        {
           "path": "backtester/core/dcasim.py",
           "hits": 15
         },
@@ -1450,10 +1454,6 @@
         {
           "path": "backtester/tests/test_deflated_sharpe.py",
           "hits": 10
-        },
-        {
-          "path": "memory.md",
-          "hits": 9
         },
         {
           "path": "backtester/strategy_cards/adx_filtered_trend.md",
@@ -1562,6 +1562,10 @@
           "hits": 13
         },
         {
+          "path": "memory.md",
+          "hits": 12
+        },
+        {
           "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
           "hits": 11
         },
@@ -1587,10 +1591,6 @@
         },
         {
           "path": "backtester/tests/test_signal_redundancy.py",
-          "hits": 6
-        },
-        {
-          "path": "memory.md",
           "hits": 6
         },
         {
