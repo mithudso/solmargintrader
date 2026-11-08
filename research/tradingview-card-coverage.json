@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "version": "1.0.0",
-  "delta": "Initial source reconciliation; new cards are specifications, not implemented or measured strategies.",
+  "version": "1.1.0",
+  "delta": "v1.0.0 to v1.1.0; preserve source inventory across active/incomplete directories with per-card readiness decisions.",
   "source_root": "tradingview/ (gitignored local source directory)",
   "source_publication_counts": {
     "script": 747,
@@ -225055,5 +225055,6 @@
       "reason": "No publication ssrIdeaData; navigation or unavailable page",
       "sha256": "adef575b51680b61e00b271baf9e2cd9a0512a04b202fedef1d8385ab825948f"
     }
-  ]
+  ],
+  "readiness_manifest": "research/tradingview-card-readiness.json"
 }
