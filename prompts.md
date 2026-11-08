@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 85
-Delta: v84 to v85; record the metric edit validation request.
+Version: 86
+Delta: v85 to v86; retain the sweep and metric editor requests.
 
 Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
@@ -709,6 +709,13 @@ Liquidity and so the Aero LP and the positions, and liquidity scout are all unpr
 Confirmation: move liquidity views into an Archive section and withdraw any remaining Aero LP funds to the wallet.
 
 ## v85 - 2026-11-08
+
+```text
+In the soltui IO get this error: error: ValueError: evaluation proof is missing or differs for SOL at /Users/mitch/.config/soltui/bg/results.jsonl; preserve this history and use --results-path for a fresh file · 361 rankable, 253 with positive median Sharpe · 224
+below the 10-trade floor
+```
+
+## v86 - 2026-11-08
 
 ```text
 In the signal call and metrics tab when I try and apply edits, I get this error: vwap_side: unknown parameter 'weekend'; known: mode, window, spread_window, scale, atr

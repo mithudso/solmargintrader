@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 153
-Delta: v152 to v153; track metric editor selection mismatch repair.
+Version: 154
+Delta: v153 to v154; preserve sweep recovery and metric editor repair.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1595,6 +1595,14 @@ Verification: the live checkout fresh-path --plan succeeded with 1,059 pending j
 
 Remaining: implement safe Queue recovery with archive and lock semantics, verify with isolated data, deliver the code, and verify loaded behavior without disrupting the active session. No new sweep was started.
 
+## v150 - 2026-11-08
+
+TASK-1009 resumed in /Users/mitch/dev/solmargintrader-wt-01a1bb7d. Existing history and its proof must remain paired and incompatible results must not mix. Current SOL candle and code hashes differ from saved proof; the rejection is valid. The Queue reads the default path and cannot use the CLI fresh-path workaround. Implement and test safe recovery, deliver, and verify actual loaded behavior without disturbing the active TUI or other services.
+
+## v151 - 2026-11-08
+
+TASK-1009: Queue Start fresh reserves a separate history under the worker lock and atomically selects it; normal Start resumes that history. Queue and strategy views follow the selection and retain proof isolation. 151 focused tests passed (one skipped), and the dedicated UI button test passed. A broader UI run was interrupted after NoMatches: #btn-add and is not claimed as passed. Remaining: update documentation counts, final CI and delivery; verify installed fresh-launch behavior while preserving the active process and historical results.
+
 ## v150 - 2026-11-08: liquidity archival
 
 Target: liquidity, Aero LP, positions and liquidity scout. Stele task TASK-1011. Owner describes these as unprofitable. The live Aero LP launch agent was disabled and unloaded and /Users/mitch/.aero-lp/KILL was set. The standalone GitHub repository mithudso/aero-liquidity was archived. The managed exit-to-safe dry run reports no managed positions. The existing status snapshot reports no positions; a live unstaked NFT scan found none but cannot exclude gauge-staked positions. Preserve wallet data and records. User clarification is pending on whether to withdraw any remaining on-chain positions. The archive notice is recorded in the component documentation and overrides older live-operation guidance. The draft delivery is PR 108. Remaining: settle navigation handling and whether any independently staked positions should be withdrawn, then verify and deliver. Worktree: /Users/mitch/dev/solmargintrader-archive-liquidity.
@@ -1603,6 +1611,6 @@ Target: liquidity, Aero LP, positions and liquidity scout. Stele task TASK-1011.
 
 Owner confirmed Archive navigation and withdrawal of any remaining Aero LP positions to the wallet. Archive navigation is implemented in the isolated worktree. CDP history found three known Aero NFTs; each was burned on 2026-11-06, and Base RPC found zero manager balance and no stake in the known gauge. No withdrawal was needed or sent. This does not rule out all third-party staking paths. Keep the daemon disabled and KILL set. Verify navigation, finish PR 108, and verify delivery.
 
-## v153 - 2026-11-08
+## v154 - 2026-11-08
 
 Task: Fix Signal Call and Metrics edit error, Stele TASK-1018. Worktree: /Users/mitch/dev/solmargintrader-wt-metric-weekend; base origin/master 788d5a8. Sorting changes the displayed row order, but Apply and Toggle used the original component order. The editor correctly follows the displayed row key, so gate_session weekend could be sent to vwap_side. Updated both actions to use displayed row keys. The sorted edit and toggle regression passes in a Textual test with temporary settings. Eight Compound tab and click tests pass. Remaining: verify loaded app and deliver.

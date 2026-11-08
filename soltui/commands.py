@@ -1298,9 +1298,21 @@ def _queue_results(ctx: Context) -> list[bgqueue.JobResult]:
         return list(rt.queue_results)
 
 
+def _queue_state() -> bgqueue.QueueState:
+    """Do not attribute the preceding sweep's status to the selected file."""
+    state = bgqueue.read_state()
+    selected = bgqueue.active_results_path()
+    if state.results_path:
+        if Path(state.results_path) != selected:
+            return bgqueue.QueueState()
+    elif selected != bgqueue.RESULTS_PATH:
+        return bgqueue.QueueState()
+    return state
+
+
 @command("queue.progress", "Background sweep progress line (cheap; no results re-read).")
 def queue_progress(ctx: Context, p: dict[str, Any]) -> Any:
-    return _queue_progress(ctx, bgqueue.read_state())
+    return _queue_progress(ctx, _queue_state())
 
 
 @command("queue.status", "Background sweep: progress, missing price data and the ranked leaderboard.")
@@ -1310,7 +1322,7 @@ def queue_status(ctx: Context, p: dict[str, Any]) -> Any:
     missing = _missing_series(ctx)
     fetch_log = bgqueue.BG_DIR / "fetch.log"
     return {
-        **_queue_progress(ctx, bgqueue.read_state()),
+        **_queue_progress(ctx, _queue_state()),
         "missing": [{"asset": m.asset, "interval": m.interval, "command": m.command_text}
                     for m in missing],
         "fetch_log": str(fetch_log) if fetch_log.exists() else None,
@@ -1329,6 +1341,16 @@ def queue_status(ctx: Context, p: dict[str, Any]) -> Any:
 def queue_start(ctx: Context, p: dict[str, Any]) -> Any:
     try:
         bgcontrol.start(ctx.settings.asset)
+    except Exception as exc:  # noqa: BLE001
+        raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
+    return {"started": True, "asset": ctx.settings.asset}
+
+
+@command("queue.start_fresh", "Start a fresh background sweep while preserving previous results.",
+         read_only=False)
+def queue_start_fresh(ctx: Context, p: dict[str, Any]) -> Any:
+    try:
+        bgcontrol.start(ctx.settings.asset, fresh=True)
     except Exception as exc:  # noqa: BLE001
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
     return {"started": True, "asset": ctx.settings.asset}

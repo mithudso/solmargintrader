@@ -173,6 +173,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#analyze-run": "analyze.run",
     "#cumulative-reload": "cumulative.summary",
     "#queue-start": "queue.start",
+    "#queue-start-fresh": "queue.start_fresh",
     "#queue-stop": "queue.stop",
     "#queue-refresh": "queue.status",
     "#queue-fetch": "queue.fetch",
@@ -2410,7 +2411,8 @@ class SolTuiApp(App):
         if not self.query("#queue-status"):
             return
         self._show_bg_progress()
-        if _mtime(bgqueue.RESULTS_PATH) != self._queue_mtime:
+        path = bgqueue.active_results_path()
+        if (path, _mtime(path)) != self._queue_mtime:
             self._refresh_queue()
             self._refresh_strategy_history()
             return
@@ -4180,6 +4182,7 @@ class SolTuiApp(App):
             )
             with Horizontal(classes="form-row"):
                 yield Button("Start", variant="primary", id="queue-start")
+                yield Button("Start fresh", id="queue-start-fresh")
                 yield Button("Stop", variant="error", id="queue-stop")
                 yield Button("Refresh", id="queue-refresh")
                 yield Button("Fetch missing data", id="queue-fetch")
@@ -4218,6 +4221,16 @@ class SolTuiApp(App):
             status.update("stopping — the current job finishes first")
         else:
             status.update("no background sweep is running")
+
+    @on(Button.Pressed, "#queue-start-fresh")
+    def _queue_start_fresh(self) -> None:
+        """Start a separate sweep without altering historical results."""
+        status = self.query_one("#queue-status", Static)
+        env = self._call("queue.start_fresh")
+        if not env["ok"]:
+            status.update(f"[red]{self._msg(env)}[/]")
+            return
+        self._refresh_queue()
 
     @on(Button.Pressed, "#queue-refresh")
     def _queue_refresh(self) -> None:
@@ -4272,7 +4285,8 @@ class SolTuiApp(App):
             self.query_one("#queue-status", Static).update(f"[red]{self._msg(env)}[/]")
             return
         r = env["result"]
-        self._queue_mtime = _mtime(bgqueue.RESULTS_PATH)
+        path = bgqueue.active_results_path()
+        self._queue_mtime = (path, _mtime(path))
         self._render_queue_data(r["missing"], r["fetch_log"])
         self.query_one("#queue-status", Static).update(r["summary"])
         table = self.query_one("#queue-table", DataTable)

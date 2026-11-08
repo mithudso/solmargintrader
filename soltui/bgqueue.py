@@ -73,6 +73,18 @@ RESULTS_PATH = BG_DIR / "results.jsonl"
 STATE_PATH = BG_DIR / "state.json"
 PID_PATH = BG_DIR / "worker.pid"
 
+
+def active_results_path() -> Path:
+    """Return the selected sweep file; absence selects the original history."""
+    pointer = RESULTS_PATH.parent / "active-results"
+    try:
+        name = pointer.read_text(encoding="utf-8").strip()
+    except FileNotFoundError:
+        return RESULTS_PATH
+    if not re.fullmatch(r"results-[0-9a-f]{32}\.jsonl", name):
+        raise ValueError(f"invalid background results selection at {pointer}")
+    return RESULTS_PATH.parent / name
+
 # An asset symbol becomes a filename (`data/SOL_1d.csv`), so it has to be a
 # single path component. Without this, `--asset ../../etc/passwd` reads outside
 # the data directory -- and because `Path("data") / "/tmp/x"` DISCARDS the left
@@ -264,6 +276,7 @@ class QueueState:
     started_at: float = 0.0
     updated_at: float = 0.0
     error: str = ""
+    results_path: str = ""
 
     @property
     def remaining(self) -> int:
@@ -551,7 +564,7 @@ def _parse_lines(text: str) -> list[JobResult]:
 
 def read_results(path: Path | None = None) -> list[JobResult]:
     """Every parseable result."""
-    path = path or RESULTS_PATH
+    path = path or active_results_path()
     if not path.exists():
         return []
     return _parse_lines(path.read_text(encoding="utf-8", errors="replace"))
@@ -601,7 +614,7 @@ def read_results_since(
     them in that case; without the flag it could not tell "here is the tail" from
     "here is a whole new file".
     """
-    path = path or RESULTS_PATH
+    path = path or active_results_path()
     cursor = cursor or ResultsCursor()
     try:
         # Open first, then stat the OPEN DESCRIPTOR. Statting by name and then
@@ -686,7 +699,7 @@ def read_state(path: Path | None = None) -> QueueState:
     for name in ("started_at", "updated_at"):
         if name in clean:
             clean[name] = _as_float(clean[name])
-    for name in ("phase", "current", "asset", "interval", "error"):
+    for name in ("phase", "current", "asset", "interval", "error", "results_path"):
         if name in clean and not isinstance(clean[name], str):
             clean[name] = str(clean[name])
     try:

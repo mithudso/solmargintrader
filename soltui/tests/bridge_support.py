@@ -27,6 +27,7 @@ HEAVY = {
     "paper.start": {"summary": {"bar": 0}, "text": "stub", "fills": [], "mode": "stub"},
     "live.spawn_dryrun": {"command": ["node"], "returncode": 0, "stdout": "stub"},
     "queue.start": {"started": True, "asset": "SOL"},
+    "queue.start_fresh": {"started": True, "asset": "SOL"},
     "queue.stop": {"stopping": False},
     "queue.backtest": {"started": True, "scope": "all", "strategies": [], "jobs": 0, "asset": "SOL",
                        "message": "stub"},
