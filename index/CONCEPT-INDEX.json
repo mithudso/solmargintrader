@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T07:09:26+00:00",
+  "generatedAt": "2026-11-08T07:18:40+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -591,7 +591,7 @@
         },
         {
           "path": "backtester/core/scorecard.py",
-          "hits": 96
+          "hits": 110
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
@@ -599,7 +599,7 @@
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
-          "hits": 82
+          "hits": 87
         },
         {
           "path": "docs/FILES.md",
@@ -623,6 +623,10 @@
         },
         {
           "path": "backtester/tests/test_sweep_pair_gate.py",
+          "hits": 44
+        },
+        {
+          "path": "docs/COMPOUND-5M.md",
           "hits": 44
         },
         {
@@ -658,10 +662,6 @@
           "hits": 37
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 31
-        },
-        {
           "path": "backtester/core/trigger_conditions.py",
           "hits": 31
         },
@@ -678,6 +678,10 @@
           "hits": 25
         },
         {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 24
+        },
+        {
           "path": "research/results/cpcv_tables.md",
           "hits": 24
         },
@@ -692,10 +696,6 @@
         {
           "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
           "hits": 23
-        },
-        {
-          "path": "backtester/core/strategies/signals.py",
-          "hits": 21
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1460,20 +1460,20 @@
           "hits": 27
         },
         {
+          "path": "docs/COMPOUND-5M.md",
+          "hits": 22
+        },
+        {
           "path": "research/coin-intelligence/trx-tron.md",
           "hits": 21
         },
         {
-          "path": "docs/COMPOUND-5M.md",
-          "hits": 21
+          "path": "memory.md",
+          "hits": 20
         },
         {
           "path": "backtester/core/funding.py",
           "hits": 20
-        },
-        {
-          "path": "memory.md",
-          "hits": 19
         },
         {
           "path": "research/TOP5-RECOMMENDATION.md",
@@ -1839,12 +1839,12 @@
           "hits": 40
         },
         {
-          "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
-          "hits": 31
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 32
         },
         {
-          "path": "backtester/tests/test_scorecard.py",
-          "hits": 29
+          "path": "research/results/compound-10coin-fullhistory-2026-11-07.json",
+          "hits": 31
         },
         {
           "path": "docs/COMPOUND-5M-PAPER.md",
@@ -2249,10 +2249,6 @@
           "hits": 10
         },
         {
-          "path": "docs/CONCEPTS.md",
-          "hits": 9
-        },
-        {
           "path": "research/results/perturb_all_singles_long.txt",
           "hits": 9
         },
@@ -2263,6 +2259,10 @@
         {
           "path": "soltui/tests/test_bgqueue.py",
           "hits": 9
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 8
         },
         {
           "path": "research/results/perturb_all_singles_short.txt",
@@ -2422,6 +2422,10 @@
           "hits": 10
         },
         {
+          "path": "backtester/tests/test_scorecard.py",
+          "hits": 10
+        },
+        {
           "path": "docs/strategy-optimization-concept-family.md",
           "hits": 10
         },
@@ -2439,10 +2443,6 @@
         },
         {
           "path": "backtester/core/strategies/__init__.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/tests/test_scorecard.py",
           "hits": 8
         },
         {

@@ -838,7 +838,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 432
+      "lines": 433
     },
     {
       "path": "soltui/tests",

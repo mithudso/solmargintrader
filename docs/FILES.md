@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `582c730` (2026-11-08T07:09:26+00:00). 683 tracked files, 12.1 MB.
+**Generated** from `index/INDEX.json` at commit `5e06046` (2026-11-08T07:18:40+00:00). 683 tracked files, 12.1 MB.
 
 Regenerate with:
 
@@ -183,9 +183,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 535 lines · 78,588 B · description: **extracted**
+`doc` · 544 lines · 79,721 B · description: **extracted**
 
-**Purpose.** Version: 51 Delta: v50 to v51; adaptive strategy Forwardtest and roster shortcuts. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 52 Delta: v51 to v52; adaptive strategy Forwardtest and roster shortcuts. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -199,9 +199,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 317 lines · 19,403 B · description: **extracted**
+`doc` · 325 lines · 19,546 B · description: **extracted**
 
-**Purpose.** Version: 44 Delta: v43 to v44; Lightweight Charts chosen; deep prompt optimizer, then rebuild /dso as one pass per evaluation method. Delta: added the leverage-tier and reliable-trigger request.
+**Purpose.** Version: 45 Delta: v44 to v45; trend filter for the compound. Delta: added the leverage-tier and reliable-trigger request.
 
 **Use.** Read it.
 
@@ -247,7 +247,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPOUND-5M-PAPER.md`
 
-`doc` · 562 lines · 52,788 B · description: **extracted**
+`doc` · 565 lines · 53,032 B · description: **extracted**
 
 **Purpose.** The compound scorecard asks one question: **will the next five-minute bar of a crypto perpetual close up or down?** It scores 28 metrics from -1 (down) to +1 (up), removes the double-counting between metrics that measure the same thing, reweights styles by market regime, and combines the scores into one call (UP, DOWN or FLAT) behind seven veto gates.
 
@@ -255,7 +255,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPOUND-5M.md`
 
-`doc` · 465 lines · 32,999 B · description: **extracted**
+`doc` · 484 lines · 34,426 B · description: **extracted**
 
 **Purpose.** A tester for one question: **will the next 5-minute bar close up or down?** Every metric in (up). The scores are combined into one call (UP, DOWN or FLAT), which you can backtest and forward test, metric by metric and combined. Nothing here places an order.
 
@@ -263,7 +263,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 316 lines · 15,302 B · description: **extracted**
+`doc` · 316 lines · 15,273 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -329,7 +329,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 216 lines · 16,924 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 853 tests python3 -m unittest discover -s soltui/tests -t . # 817 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 33 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 855 tests python3 -m unittest discover -s soltui/tests -t . # 817 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 33 tests
 
 **Use.** Read it.
 
@@ -879,7 +879,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/scorecard.py`
 
-`code-python` · 1997 lines · 99,922 B · description: **extracted**
+`code-python` · 2028 lines · 101,909 B · description: **extracted**
 
 **Purpose.** Compound five-minute scorecard: score each metric, aggregate into an UP / DOWN / FLAT call. from backtester.core.scorecard import default_config, evaluate, explain, Bars Every component maps visible history to a score in [-1, 1] (+1 = the metric says the next bar closes higher, -1 = lower, 0 = no opinion, NaN = undefined here). Gates map history to "blocked" (no trade, whatever the score says).
 
@@ -1881,7 +1881,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_scorecard.py`
 
-`test` · 620 lines · 31,523 B · description: **extracted**
+`test` · 654 lines · 33,659 B · description: **extracted**
 
 **Purpose.** Compound five-minute scorecard: no look-ahead, honest aggregation, honest statistics.
 
@@ -4351,7 +4351,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 561 lines · 81,266 B · description: **extracted**
+`code-python` · 558 lines · 81,098 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -4597,7 +4597,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 3774 lines · 188,192 B · description: **extracted**
+`code-python` · 3774 lines · 188,209 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -6009,7 +6009,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `skills/five-minute-signal/SKILL.md`
 
-`doc` · 136 lines · 8,044 B · description: **extracted**
+`doc` · 138 lines · 8,187 B · description: **extracted**
 
 **Purpose.** >-
 
