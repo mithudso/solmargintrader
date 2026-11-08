@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `0c6ed81` (2026-11-08T09:35:31+00:00). 748 tracked files, 13.0 MB.
+**Generated** from `index/INDEX.json` at commit `4ce4a5c` (2026-11-08T09:37:39+00:00). 748 tracked files, 13.0 MB.
 
 Regenerate with:
 
@@ -184,9 +184,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 794 lines · 120,822 B · description: **extracted**
+`doc` · 804 lines · 122,712 B · description: **extracted**
 
-**Purpose.** Version: 77 Delta: v76 to v77; preserve concurrent hook records and add Base wallet repair and acceptance. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 78 Delta: v77 to v78; frozen Base wallet acceptance, PR and installation handoff. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -280,7 +280,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 7176 lines · 358,555 B · description: **extracted**
+`doc` · 7144 lines · 357,387 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
