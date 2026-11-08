@@ -186,7 +186,7 @@ DESTINATIONS: tuple[Destination, ...] = (
     )),
     Destination("research", "Research", "3", "Which strategies actually work, and how sure are we?", (
         View("tab-backtest", "Backtest"),
-        View("tab-strategies", "Roster", was="Strategies"),
+        View("tab-strategies", "Strategies"),
         View("tab-queue", "Sweep", was="Queue"),
         View("tab-cumulative", "Cumulative"),
         View("tab-top5", "Top 5"),

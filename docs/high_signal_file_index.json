@@ -753,14 +753,14 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 4781
+      "lines": 4783
     },
     {
       "path": "soltui/shell.py",
       "component": "soltui",
       "kind": "python",
       "summary": "v2 navigation over the TUI's panes: five destinations, health strip, Now overview builders, registry palette, Explain, theme (docs/design/soltui-v2/DESIGN.md)",
-      "lines": 732
+      "lines": 755
     },
     {
       "path": "soltui/signals.py",
@@ -886,7 +886,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 533
+      "lines": 537
     },
     {
       "path": "soltui/tests",
@@ -1018,7 +1018,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 300
+      "lines": 306
     },
     {
       "path": "CONTRIBUTING.md",

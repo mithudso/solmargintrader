@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 105
-Delta: v104 to v105; apply requested canonical card moves immediately.
+Version: 110
+Delta: v109 to v110; clarify final verification counts.
 
 ## v1 - 2026-11-06
 
@@ -1069,9 +1069,39 @@ Integrated origin/master 0b46a88 after concurrent PR94 landed while this task op
 
 The owner requires the actual canonical incomplete directory immediately. Earlier moves existed only in the private worktree pending CI. Apply only the reviewed791 byte-preserving card moves and incomplete README to the canonical directory now; preserve other edits and keep commits in the private branch. Snapshot task-owned changes separately from337 unrelated files. Reconcile these exact staged/unstaged moves safely when final delivery fast-forwards master. Save this correction in the committed prompt/history; final CI must cover its final pushed head.
 
-## v106 - 2026-11-08 (SolTUI v2 redesign mockup)
+## v106 - 2026-11-08 (SolTUI card visibility)
 
-Target: prompts v60, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
+Target: make retained strategy/indicator cards visible on Strategies. Diagnosis at8ed41ad: actual canonical launcher and fresh mounted app load correctly, but strategies.list/history enumerate REGISTRY34 and omit all292 new retained specs from351 active cards. Implement a unified filterable card table with explicit status; stable row keys preserve registry actions and readable names; nonregistered specs open their card and cannot be added/backtested. Keep791 incomplete cards excluded and all registry/trading defaults unchanged. TASK-971 owns implementation; verification/delivery use their tracked tasks. Worktree /Users/mitch/dev/solmargintrader-wt-card-ui, branch feat/soltui-card-catalog. Preserve337 unrelated canonical paths and other active UI/research branches. Use INDEX_NO_AUTO=1 for searches/acceptance. Save exact tested source revisions before safe canonical installation; do not restart existing consoles. Remaining: implement, behavioral tests, fresh UI acceptance, docs/index checks, commit/push/CI/merge, safe canonical sync and cleanup.
+
+## v107 - 2026-11-08 (visible card catalog implementation)
+
+Implemented strategies.cards as a read-only active-card catalog; existing strategies.list/history remain registry-only. Strategies now defaults to all351 active cards including292 retained TradingView specifications, with text/scope filters, status/data labels and card opening. Stable row keys preserve existing registry IDs and source opening. Specifications have disabled Add/Backtest selected controls plus keyboard/programmatic refusal. All/untested sweeps still use executable APIs. No card contents, registry entries or trading behavior changed.
+
+Seven Strategies widget tests pass in40.144s,33 command/history/help cases pass in26.900s,13 mounted history/roster/bridge cases pass in57.671s. Additional Docs/glossary and full884-test SolTUI runs are in progress. Targeted lint/whitespace pass. Preserve HEADER_GLOSSARY public re-export for existing tests/importers. No test count changed; expanded actual UI tests verify catalog visibility, filter/card opening, incomplete exclusion and blocked execution.
+
+Remaining: finish behavioral gates and independent fresh widget acceptance, safely install ONLY tested source files into canonical launcher checkout under fresh hashes (preserve all337 unrelated paths), record exact installed/source identities, regenerate offline indexes, push/PR/final CI/merge, safely reconcile pre-applied task files and clean own worktree. A later canonical install is authorized by the visibility fix; existing consoles must not be restarted. TASK-973 owns verification and TASK-974 delivery.
+
+## v108 - 2026-11-08 (canonical catalog acceptance)
+
+Independent private and canonical fresh mounted acceptance passed on source2442369: defaultAll351active rows including292TradingView cards, excluded791incomplete IDs, AveragePrice card/equation opens, specification controls disabled and keyboard/directUI/directcommand guards attempt zero queue or settings writes. Registered scope34; RSI source opening, fixture Add and selectedBacktest route preserved. strategies.cards351 while strategies.list/history34. Actual /Users/mitch/.local/bin/soltui wrapper resolves to canonical tracked launcher and venvPython. CanonicalHEAD remains8ed41ad until delivery; installed3sourcefile hashes bind loaded behavior to2442369.
+
+Preservation/installation receipts: /tmp/solmargin-card-ui/shared-baseline.json (337unrelated paths), canonical-install.json (commands.py/help.py/tui.py exact before/installed hashes). Only these3task-owned canonical sourcefiles were pre-applied atomically after proving unchanged old bytes. Existing consoles/services were not restarted. Final source revision must retain the tested separate-runner wording correction, which has its own focused8.220s widget pass. All65earlier focused cases pass; full884 suite remains running. Test counts unchanged; lint/whitespace/docs/index gates pass before final metadata refresh.
+
+Delivery is through branch feat/soltui-card-catalog and TASK-974. If the PR is open, finish final-head CI/merge. If merged, verify its actual receipt rather than replaying implementation. Update the canonical install receipt for the final3source hashes, preserve all337unrelated bytes/status, stage ONLY those pre-applied task paths before safe final fast-forward, repeat fresh canonical widget acceptance and clean only this task's worktree/branch. Do not overwrite concurrent UI/research work or restart live consoles.
+
+## v109 - 2026-11-08 (full-suite catalog corrections)
+
+The local full884-case suite completed in682.972s with878passes,4failures and2optional skips. Three failures were the new Refreshcards button missing BUTTON_COMMANDS and the old66-handler assertion; registered it as strategies.cards and updated the exactcount67. The fourth treated indicator titles such as1YearActiveSupply% as unlabelled return values. The safety check now binds only the strategy-title column to actual card labels; every result column retains its source-label checks. Six targeted bridge/percentage cases pass in5.021s. No trading/result-label protection was removed.
+
+PR99: https://github.com/mithudso/solmargintrader/pull/99 ; final delivery TASK-974. Push these corrections and await final-head CI; prior24c063 CI must not be treated as final. The actual canonical UI already renders351/292 via the three verifiedpre-applied sourcefiles. Update only canonicaltui.py under its recorded hash to carry the routing-map correction, update canonical-install.json to final source identity, and preserve337 unrelated paths. No new runtime feature remains. If PR99 is already merged, verify its receipt instead of repeating implementation.
+
+## v110 - 2026-11-08 (final visibility delivery checkpoint)
+
+The local full-suite arithmetic is884cases:878passed,4failed,2skipped. The four integration assertions are corrected and all6targeted reruns pass. Final requiredCI will run the complete884cases. Product source is final; only this verification-count correction changes the next branch tip. PR99/TASK-974 hold final delivery receipts. Canonical3sourcefiles are bound by /tmp/solmargin-card-ui/canonical-install.json; preserve all337unrelated paths when reconciling them with the merged tree.
+
+## v111 - 2026-11-08 (SolTUI v2 redesign mockup)
+
+Target: prompts v61, Stele TASK-877, KNOW-878 (decision) and KNOW-883 (Textual/Rich lessons). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch worktree-soltui-ui-redesign, PR 85.
 
 Completed: a read-only subagent inventoried soltui's functions and data surfaces without reporting layout. docs/design/soltui-v2/DESIGN.md lists 16 primary functions and groups them into five question-led destinations (Now, Signal, Research, Money, Library), with a health strip, a registry command palette and an Explain overlay. docs/design/soltui-v2/mockup.py is a standalone Textual 8.2.8 + textual-plotext app on fixture data; it imports nothing from soltui/. screens/ holds 7 SVGs rendered by `mockup.py --shots`. soltui/README.md points to the proposal.
 
@@ -1079,9 +1109,9 @@ Verification: headless render of all 7 screens at 160x48; pilot smoke run (5 des
 
 Remaining: merge PR 85 (the background-job harness forbids this session from merging). Migration steps are listed in DESIGN.md section 11 and are not started.
 
-## v107 - 2026-11-08 (SolTUI v2 implemented)
+## v112 - 2026-11-08 (SolTUI v2 implemented)
 
-Target: prompts v61, Stele TASK-904, KNOW-916 (architecture), KNOW-918 (focus lesson). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch feat/soltui-v2-ui.
+Target: prompts v62, Stele TASK-904, KNOW-916 (architecture), KNOW-918 (focus lesson). Worktree /Users/mitch/dev/solmargintrader/.claude/worktrees/soltui-ui-redesign, branch feat/soltui-v2-ui.
 
 Backup: annotated tag soltui-ui-v1 and branch backup/soltui-ui-v1 at master 4d0f027 (classic 18-tab console), both pushed. `soltui --classic` shows the original tab bar in the new build.
 
@@ -1091,9 +1121,9 @@ Verification: soltui/tests/test_v2_shell.py (14 tests: every pane reachable, ext
 
 Remaining: deeper per-view interiors from the mockup (IQR strip in the Backtest leaderboard, diverging vote bars in the compound metric table) are not built. Open PR 87 (Bots v2) and tasks TASK-890 / TASK-873 also edit soltui/tui.py; expect merge conflicts in the CSS block and compose().
 
-## v108 - 2026-11-08 (SolTUI v2 recovery)
+## v113 - 2026-11-08 (SolTUI v2 recovery)
 
-Version: 108. Delta: v107 to v108; recover TASK-904 and PR93.
+Version: 113. Delta: v112 to v113; recover TASK-904 and PR93.
 
 The owner asked Codex to resume the quota-exhausted Claude redesign. The accepted checkpoint is64662f0 on feat/soltui-v2-ui, with886 local tests passing (2 skips) and eight CI jobs successful. Backup tag soltui-ui-v1 and branch backup/soltui-ui-v1 remain at4d0f027. Preserve the five-destination shell, every classic pane, Explain, palette and --classic. Deeper mockup pane interiors were explicitly deferred in the accepted checkpoint.
 
@@ -1101,9 +1131,9 @@ Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bb24. Tasks TASK-985 (recover/
 
 Remaining: resolve count/record/derived-index conflicts; verify merged-tree navigation and full TUI suite; preserve the prompt and recovery notes; push the final descendant to PR93, pass CI, merge and verify remote content; confirm installed launcher behavior without restarting existing consoles. No trading, inference or indexing services are authorized by this UI recovery.
 
-## v109 - 2026-11-08 (SolTUI v2 narrow navigation repair)
+## v114 - 2026-11-08 (SolTUI v2 narrow navigation repair)
 
-Version: 109. Delta: v108 to v109; finish integration and repair the independent acceptance finding.
+Version: 114. Delta: v113 to v114; finish integration and repair the independent acceptance finding.
 
 Integrated current master 8ed41ad in the private recovery branch and preserved all incoming workflow history. Fourteen focused shell tests, sixteen offline-index tests, documentation counts and offline index freshness passed before this correction. The full 898-case merged-tree local suite is running; its modules were loaded before the two new regression cases below.
 
@@ -1111,12 +1141,28 @@ Independent fresh-process acceptance on 36902a7 passed every classic pane (19 in
 
 Remaining: rerun focused mounted acceptance and the 16-case shell suite, await the prior full local run, refresh offline indexes, pass final-head CI and merge PR93. Independent card-catalog PR99 remains owned by its original session. Preserve the canonical checkout and all unrelated work. Installed launcher acceptance and owned cleanup follow actual delivery.
 
-## v110 - 2026-11-08 (SolTUI v2 final verification checkpoint)
+## v115 - 2026-11-08 (SolTUI v2 final verification checkpoint)
 
-Version: 110. Delta: v109 to v110; record the accepted narrow-terminal correction and delivery handoff.
+Version: 115. Delta: v114 to v115; record the accepted narrow-terminal correction and delivery handoff.
 
 All sixteen focused shell tests pass in 33.252 seconds. Independent mounted acceptance passes 88 selected-label checks across all 22 destination subviews while resizing 160 to 100 to 80 to 160 columns. Actual previous/next clicks wrap correctly at 80 and 100 columns; the no-order-path badge remains visible; 160 columns restores the full Research row. No mismatches remain in these checks. Classic pane interiors retain their existing sizing. The documentation gate now discovers 900 SolTUI tests and 2,195 cases across the documented suites. Offline-index regression cases and whitespace checks pass.
 
 The full local merged-tree run began before the two new regression tests were added. It tests the prior 898-case tree; the focused 16-case run verifies the final shell delta. Final-head CI must run all 900 cases on the final source. The exact current delivery receipt, local suite result, final-head CI, merge commit and installed acceptance are maintained in Stele TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json. Read those receipts before resuming any action below; do not repeat completed checks merely because this committed checkpoint predates the merge.
 
 Remaining at this checkpoint: finish local full-suite observation, pass final-head CI, gated squash merge of PR93, verify actual remote source, safely synchronize the canonical launcher while preserving other sessions, and remove only the clean recovered redesign worktrees and branches. The backup tag and branch stay. No service restart, trading action, inference or semantic-index rebuild is part of this delivery.
+
+## v116 - 2026-11-08 (SolTUI card catalog integration)
+
+Version: 116. Delta: v115 to v116; preserve delivered PR99 before final redesign verification.
+
+Concurrent strategy-card visibility PR99 merged as 3e5a9f3 while this task ran its checks. Integrated its source, existing-test corrections and full workflow history without changing card/registry behavior. The Research destination now names the view Strategies because it includes the active-card catalog and the curated roster. All 351 active cards, specification execution guards and registered-strategy controls remain intact. The five-destination shell still owns navigation.
+
+Previous local full-suite and independent receipts qualify the pre-PR99 source, plus the separately tested narrow delta. Final combined-source CI is required. Repeat focused shell/catalog acceptance against this merged source, regenerate only offline retrieval artifacts, then finish PR93 delivery. TASK-987 and the private checkpoint hold the current delivery state. Preserve all other active work and do not repeat the card extraction, classification or installation workflow.
+
+## v117 - 2026-11-08 (combined redesign accepted)
+
+Version: 117. Delta: v116 to v117; record acceptance of the final combined source.
+
+The combined sixteen-case shell suite passes in 28.124 seconds. Independent fresh mounted acceptance passes Now startup and Research to Strategies, with 351 active cards, 292 TradingView specifications and 34 registered strategies. Filtering and opening AveragePrice shows its equation. Specification Add, Backtest and Space stay blocked without roster or backtest writes. Registered-strategy controls and mocked backtest dispatch remain available. Strategies and the no-order-path badge remain visible at 80 and 100 columns. Source hashes and detailed observations are in /tmp/soltui-v2-resume-01a1bb24/acceptance/combined-catalog/receipt.json.
+
+All source integration is complete. Documentation counts, whitespace and offline index freshness pass on the combined tree. Finish only the delivery gates tracked by TASK-987: observe the prior full local run, pass the complete 900-case final-head CI suite, merge PR93 at its verified final tip, confirm remote source, perform safe canonical synchronization and fresh launcher acceptance, then remove the clean owned worktrees and branches. TASK-987 and /tmp/soltui-v2-resume-01a1bb24/checkpoint.json are the authoritative final receipts; if they report completion, do not replay these steps. Preserve the classic backup and all unrelated active work.
