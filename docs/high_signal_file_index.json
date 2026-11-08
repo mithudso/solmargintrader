@@ -70,7 +70,8 @@
       "path": "backtester/botcli.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes"
+      "summary": "Entry point for the bot simulators: the DCA safety-order bot and the triangular-arbitrage replay over recorded quotes",
+      "lines": 161
     },
     {
       "path": "backtester/paircli.py",
@@ -91,7 +92,7 @@
       "component": "backtester",
       "kind": "markdown",
       "summary": "Scope, correctness priorities, usage",
-      "lines": 471
+      "lines": 473
     },
     {
       "path": "backtester/PROMPT.md",
@@ -131,7 +132,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Trailing-window indicator functions, each returning a scalar for the current bar",
-      "lines": 441
+      "lines": 479
     },
     {
       "path": "backtester/core/metrics.py",
@@ -158,13 +159,15 @@
       "path": "backtester/core/dcasim.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism"
+      "summary": "DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism",
+      "lines": 484
     },
     {
       "path": "backtester/core/trianglesim.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes latency_s later; reads recorded snapshot files"
+      "summary": "Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes latency_s later; reads recorded snapshot files",
+      "lines": 408
     },
     {
       "path": "backtester/core/data.py",
@@ -185,13 +188,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Resumable minute-bar cache fetch with rate limiting and coverage",
-      "lines": 720
+      "lines": 745
     },
     {
       "path": "backtester/core/fetch_minutes_alt.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "Minute bars from OKX/KuCoin/Bitget/WhiteBIT for coins Coinbase does not list"
+      "summary": "Minute bars from OKX/KuCoin/Bitget/WhiteBIT for coins Coinbase does not list",
+      "lines": 327
     },
     {
       "path": "backtester/core/ticks.py",
@@ -240,7 +244,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Asset universe selection, with the survivorship-bias refusal",
-      "lines": 312
+      "lines": 319
     },
     {
       "path": "backtester/core/report.py",
@@ -261,26 +265,28 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Parses the cards and is checked against the registry both ways",
-      "lines": 652
+      "lines": 663
     },
     {
       "path": "backtester/core/scorecard.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics"
+      "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
+      "lines": 2027
     },
     {
       "path": "backtester/core/compound.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments"
+      "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
+      "lines": 462
     },
     {
       "path": "backtester/core/strategies/__init__.py",
       "component": "backtester",
       "kind": "python",
       "summary": "REGISTRY (25 strategies), FAMILY taxonomy, build()",
-      "lines": 162
+      "lines": 180
     },
     {
       "path": "backtester/core/strategies/signals.py",
@@ -300,7 +306,8 @@
       "path": "backtester/core/strategies/textbook.py",
       "component": "backtester",
       "kind": "python",
-      "summary": "DCA, EMA crossover, PPO, Fibonacci retracement and swing-confluence: the mechanisms the cited trading guides name (tradingstrategyresults.json)"
+      "summary": "DCA, EMA crossover, PPO, Fibonacci retracement and swing-confluence: the mechanisms the cited trading guides name (tradingstrategyresults.json)",
+      "lines": 238
     },
     {
       "path": "backtester/core/strategies/breakout.py",
@@ -342,7 +349,7 @@
       "component": "research",
       "kind": "python",
       "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar",
-      "lines": 1287
+      "lines": 1297
     },
     {
       "path": "research/sweep.py",
@@ -383,7 +390,8 @@
       "path": "research/full_suite.py",
       "component": "research",
       "kind": "python",
-      "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset"
+      "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
+      "lines": 244
     },
     {
       "path": "research/geometry.py",
@@ -458,7 +466,7 @@
       "component": "extension",
       "kind": "json",
       "summary": "MV3 manifest; validated in CI",
-      "lines": 25
+      "lines": 46
     },
     {
       "path": "extension/package.json",
@@ -472,14 +480,14 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 567
+      "lines": 612
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 640
+      "lines": 905
     },
     {
       "path": "extension/src/core/risk.js",
@@ -514,7 +522,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 283
+      "lines": 369
     },
     {
       "path": "extension/src/jupiter/http.js",
@@ -542,7 +550,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Fee attribution \u2014 unconfirmed against a real fill",
-      "lines": 60
+      "lines": 72
     },
     {
       "path": "extension/src/venues/triggerVenue.js",
@@ -597,69 +605,78 @@
       "path": "extension/src/core/alerts.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Pure alert rules: only fresh, gated scout figures may say \"act\", backtest says \"review\", quoted APY is only a lead"
+      "summary": "Pure alert rules: only fresh, gated scout figures may say \"act\", backtest says \"review\", quoted APY is only a lead",
+      "lines": 256
     },
     {
       "path": "extension/src/market/holdings.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Read-only Base and Solana balances in USD; partial failures named, never zeroed"
+      "summary": "Read-only Base and Solana balances in USD; partial failures named, never zeroed",
+      "lines": 295
     },
     {
       "path": "extension/src/market/quote.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range"
+      "summary": "Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range",
+      "lines": 200
     },
     {
       "path": "extension/src/market/pools.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "DefiLlama yields, ranked by 30-day mean; every APY labelled quoted"
+      "summary": "DefiLlama yields, ranked by 30-day mean; every APY labelled quoted",
+      "lines": 100
     },
     {
       "path": "extension/src/market/net.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Read-only fetch and JSON-RPC; refuses any non-read method"
+      "summary": "Read-only fetch and JSON-RPC; refuses any non-read method",
+      "lines": 114
     },
     {
       "path": "extension/src/ui/dashboard.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Dashboard shell and hash router; Overview first, Grid last",
-      "lines": 385
+      "lines": 192
     },
     {
       "path": "extension/src/ui/view-overview.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Overview and Alerts views"
+      "summary": "Overview and Alerts views",
+      "lines": 149
     },
     {
       "path": "extension/src/ui/view-markets.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Holdings, Profit & loss and Discover views"
+      "summary": "Holdings, Profit & loss and Discover views",
+      "lines": 221
     },
     {
       "path": "extension/src/ui/view-trade.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Backtest & strategies and Swap views"
+      "summary": "Backtest & strategies and Swap views",
+      "lines": 276
     },
     {
       "path": "extension/src/ui/view-grid.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "The experimental grid's forms, charts and journal"
+      "summary": "The experimental grid's forms, charts and journal",
+      "lines": 374
     },
     {
       "path": "extension/src/ui/popup.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Popup: holdings, alerts, shortcuts; grid controls collapsed",
-      "lines": 130
+      "lines": 219
     },
     {
       "path": "extension/tools/cli.js",
@@ -694,14 +711,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Dependency wiring",
-      "lines": 88
+      "lines": 93
     },
     {
       "path": "extension/test/core.test.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Grid, risk, P&L, reconciliation, tick guards",
-      "lines": 1540
+      "lines": 1554
     },
     {
       "path": "extension/test/surfaces.test.js",
@@ -722,7 +739,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The menu-bar app",
-      "lines": 253
+      "lines": 283
     },
     {
       "path": "soltui/menubar_launcher.py",
@@ -736,14 +753,14 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 2263
+      "lines": 4186
     },
     {
       "path": "soltui/signals.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Signal derivation for display",
-      "lines": 333
+      "lines": 368
     },
     {
       "path": "soltui/status.py",
@@ -778,20 +795,21 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Explicit worker/fetch processes, lock handoff and nonce-bound socket Stop",
-      "lines": 509
+      "lines": 514
     },
     {
       "path": "soltui/bgworker.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Detached offline sweep worker and per-process array cache",
-      "lines": 571
+      "lines": 585
     },
     {
       "path": "soltui/compound.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound"
+      "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
+      "lines": 1972
     },
     {
       "path": "soltui/liquidity.py",
@@ -804,13 +822,15 @@
       "path": "soltui/bots.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test"
+      "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test",
+      "lines": 1122
     },
     {
       "path": "soltui/pricefeed.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process"
+      "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process",
+      "lines": 708
     },
     {
       "path": "soltui/serve.py",
@@ -831,7 +851,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Configuration",
-      "lines": 180
+      "lines": 232
     },
     {
       "path": "soltui/setup_app.py",
@@ -859,7 +879,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 309
+      "lines": 482
     },
     {
       "path": "soltui/tests",
@@ -900,7 +920,7 @@
       "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 331
+      "lines": 345
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",
@@ -963,7 +983,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 171
+      "lines": 183
     },
     {
       "path": "AGENTS.md",
@@ -977,7 +997,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 62
+      "lines": 63
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -1221,7 +1241,7 @@
       "component": "liquidity",
       "kind": "markdown",
       "summary": "Owner's live-operation authorization and its limits",
-      "lines": 64
+      "lines": 65
     },
     {
       "path": "liquidity/STATE_FILES.md",
@@ -1242,7 +1262,7 @@
       "component": "liquidity",
       "kind": "other",
       "summary": "Locked component dependencies",
-      "lines": 1714
+      "lines": 1700
     },
     {
       "path": "liquidity/src/aero_lp/chain.py",
@@ -1395,19 +1415,22 @@
       "path": "docs/COMPOUND-5M.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings"
+      "summary": "Compound five-minute scorecard: how a call is made, every metric, what else is checked, measured findings",
+      "lines": 486
     },
     {
       "path": "docs/COMPOUND-5M-PAPER.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity"
+      "summary": "Paper on the compound scorecard: every metric (what it checks, why it is included), every tunable parameter, protocol and results recomputed from the saved sweep, threats to validity",
+      "lines": 564
     },
     {
       "path": "docs/TRADINGVIEW-REFERENCE.md",
       "component": "repo",
       "kind": "markdown",
-      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format"
+      "summary": "TradingView Advanced Charts docs distilled for this repo: indicator parity with the backtester, built-in study catalog, PineJS Std functions, datafeed and marks contracts, drawings API, Broker API concepts, licensing limits, Agent Skills format",
+      "lines": 3647
     }
   ]
 }
