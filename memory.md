@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 189
-Delta: v188 to v189; record the owner's optional no-confirmation mode.
+Version: 191
+Delta: v190 to v191; record Forward Test sort persistence.
 
 Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
@@ -1754,3 +1754,14 @@ The owner also requested a complete, retained list of Coinbase trading pairs and
 ## v189 - 2026-11-08
 
 The owner requested an option to silence order confirmations once selected, for fast manual orders and automation. Keep this option off by default; retain venue validation, order limits, submission journaling and the uncertain-outcome lock. This supersedes the prior mandatory per-order review decision in KNOW-1043. Its update is queued as Stele outbox f3e6ff65 after the transport closed. No new live order was authorized as a test.
+
+## v190 - 2026-11-08
+
+The owner requested F5 to run optimized historical backtests from the beginning and then recording forward tests for every strategy, coin, and timescale. F8 should transfer the selected strategy into Experiments with editable defaults. Experiments need a live-run questionnaire for account, capital, and keys. The owner also requests Jupiter cost modeling, leverage up to the venue's actual maximum, and both long and short experiments and orders. Jupiter spot swaps and perpetuals are distinct venues; identify the product and current venue limits and fees before execution. Do not claim arbitrary token swaps, live perps, or backtest coverage until implemented and verified. Existing dry-run defaults and uncertain-submission protections remain. The Coinbase manual-order PR 125 is in CI. The F5/F8 UI investigation is assigned to the Textual specialist in this worktree.
+
+Stele task creation for the new scope is queued in outbox 32c40404 because the Stele transport closed.
+The sourced Jupiter spot versus perpetual cost distinction is queued in outbox a5df844f.
+
+## v191 - 2026-11-08
+
+The owner reports that the Forward Test table reverts the chosen column sort when the minute refresh redraws it. Preserve the chosen column and direction when new rows arrive. Stele task creation is queued in outbox b552278a because the transport closed. Implement in the active shortcuts worktree without interrupting forward workers.
