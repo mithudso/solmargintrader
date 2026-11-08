@@ -18,7 +18,7 @@ Nothing in `result` or `error` names a surface, a time or a request id.
 Boundaries this module keeps:
 
 * soltui has no order path (no keys, no signing, no venue client), so no command here moves funds.
-  `backtest.*` and `paper.*` replay history; `live.spawn_dryrun` runs the extension's *dry-run* tool.
+  `backtest.*`, `paper.*` and `live.spawn_dryrun` simulate historical data without orders.
 * `liquidity.resume` deletes the aero-lp `KILL` file, which removes a safety stop on a real-money
   daemon. It is `requires_confirm`: it refuses with `forbidden` unless `params.confirm is True`, on
   every surface, the TUI included. `liquidity.kill` only adds the stop, so it needs no confirm.
