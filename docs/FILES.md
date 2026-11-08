@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `eecade5` (2026-11-08T12:56:31+00:00). 1872 tracked files, 30.9 MB.
+**Generated** from `index/INDEX.json` at commit `8281902` (2026-11-08T13:15:23+00:00). 1886 tracked files, 31.2 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (1648 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 272/286 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (123 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (1659 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 280/295 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (124 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -33,13 +33,13 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 ## Contents
 
-- [`(root)`](#root) — 18 files
-- [`docs`](#docs) — 43 files
+- [`(root)`](#root) — 20 files
+- [`docs`](#docs) — 46 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1229 files
 - [`research`](#research) — 161 files
 - [`extension`](#extension) — 92 files
-- [`soltui`](#soltui) — 93 files
+- [`soltui`](#soltui) — 100 files
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`liquidity`](#liquidity) — 57 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 17 files
-- [`scripts`](#scripts) — 6 files
+- [`scripts`](#scripts) — 8 files
 - [`skills`](#skills) — 62 files
 - [`tools`](#tools) — 3 files
 - [`tradingview`](#tradingview) — 26 files
@@ -61,7 +61,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md` are the operative rules for anyone — human or agent — changing this repo; read them before the code.
 
-18 files.
+20 files.
 
 #### `.editorconfig`
 
@@ -151,9 +151,17 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 **Use.** Start here.
 
+#### `context-bundle.json`
+
+`config` · 28 lines · 676 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema_version, generated_at, project_key, paths, indexes, links...).
+
+**Use.** Configuration; nothing to run.
+
 #### `llms-facts.txt`
 
-`data` · 32 lines · 2,827 B · description: **derived**
+`data` · 46 lines · 4,551 B · description: **derived**
 
 **Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader: Sourced Facts
 
@@ -177,7 +185,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms.txt`
 
-`data` · 41 lines · 2,340 B · description: **derived**
+`data` · 45 lines · 2,580 B · description: **derived**
 
 **Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader
 
@@ -185,9 +193,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1115 lines · 168,908 B · description: **extracted**
+`doc` · 1177 lines · 177,694 B · description: **extracted**
 
-**Purpose.** Version: 111 Delta: v110 to v111; integrate PR 89 with master and verify delivery. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 118 Delta: v117 to v118; preserve concurrent histories and continue PR 89 CI work. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
 
 **Use.** Read it.
 
@@ -201,9 +209,17 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 475 lines · 27,946 B · description: **extracted**
+`doc` · 489 lines · 28,562 B · description: **extracted**
 
-**Purpose.** Version: 61 Delta: v60 to v61; request to resolve and merge PR 89. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 63 Delta: v62 to v63; preserve concurrent histories and continue PR 89 CI work. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+
+**Use.** Read it.
+
+#### `run-log.jsonl`
+
+`other` · 0 lines · 684 B · description: **none**
+
+**Purpose.** _No description available._
 
 **Use.** Read it.
 
@@ -213,7 +229,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-43 files.
+46 files.
 
 #### `docs/API.md`
 
@@ -225,7 +241,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 161 lines · 10,329 B · description: **extracted**
+`doc` · 178 lines · 11,501 B · description: **extracted**
 
 **Purpose.** Seven components with explicit execution boundaries. The backtester and research do not place orders. The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
@@ -265,7 +281,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 320 lines · 18,660 B · description: **extracted**
+`doc` · 320 lines · 18,929 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -281,7 +297,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 18327 lines · 911,889 B · description: **extracted**
+`doc` · 18437 lines · 916,989 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -329,9 +345,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 216 lines · 16,924 B · description: **extracted**
+`doc` · 222 lines · 17,376 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 895 tests (~610s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 900 tests python3 -m unittest discover -s soltui/tests -t . # 964 tests (~720s) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
 **Use.** Read it.
 
@@ -401,7 +417,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/codebase-overview.md`
 
-`doc` · 335 lines · 22,845 B · description: **extracted**
+`doc` · 344 lines · 24,092 B · description: **extracted**
 
 **Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Seven components, in ascending order of how much damage a bug can do: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 
@@ -417,7 +433,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1437 lines · 42,686 B · description: **derived**
+`doc` · 1500 lines · 44,957 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -460,6 +476,30 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 146 lines · 6,043 B · description: **extracted**
 
 **Purpose.** An offline verification path, followed by optional component setup. Identify the two components that can move money before running any live command. Seven components with different failure modes:
+
+**Use.** Read it.
+
+#### `docs/optimization-workbench-plan.md`
+
+`doc` · 70 lines · 9,228 B · description: **extracted**
+
+**Purpose.** Version: 5 Delta: v4 to v5; preserve concurrent Strategies browser delivery and verify combined integration. Goal: make native optimization inspectable, configurable, resumable and resistant to repeated holdout selection.
+
+**Use.** Read it.
+
+#### `docs/optimization-workbench-run.md`
+
+`doc` · 78 lines · 6,412 B · description: **extracted**
+
+**Purpose.** Version: 2 Delta: v1 to v2; record concurrent strategy-browser delivery reconciliation. Goal: implement all six accepted comparison recommendations.
+
+**Use.** Read it.
+
+#### `docs/optimization-workbench.md`
+
+`doc` · 58 lines · 8,151 B · description: **extracted**
+
+**Purpose.** The Bots tab's **Experiment workbench** keeps complete simulated search evidence. It adds a bounded search editor, candidate/coin/window explorer, observed parameter maps, resumable workers and reported TradingView comparison. It never places an order. Open Bots, choose a bot, then open **Experiment workbench**.
 
 **Use.** Read it.
 
@@ -15279,11 +15319,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
 
-93 files.
+100 files.
 
 #### `soltui/README.md`
 
-`doc` · 520 lines · 42,092 B · description: **extracted**
+`doc` · 526 lines · 42,463 B · description: **extracted**
 
 **Purpose.** A sixteen-tab Textual TUI plus a macOS menu-bar indicator over the backtester. Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin wiring shell.
 
@@ -15367,7 +15407,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/bots.py`
 
-`code-python` · 1394 lines · 64,544 B · description: **extracted**
+`code-python` · 1223 lines · 54,466 B · description: **extracted**
 
 **Purpose.** The Bots tab: grid, triangular-arbitrage and DCA bots. Backtest, forward test, auto-optimize. Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to a venue's trading API; the only network reads are public market data (the recorded Coinbase stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).
 
@@ -15397,7 +15437,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 2332 lines · 110,818 B · description: **extracted**
+`code-python` · 2513 lines · 120,751 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -15465,6 +15505,46 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `import soltui.eth_scan`
 
+#### `soltui/experiment_jobs.py`
+
+`code-python` · 228 lines · 10,788 B · description: **extracted**
+
+**Purpose.** Explicit, recoverable optimization processes. No service starts on import. A run survives closing its window or the console. Pause/cancel requests live in SQLite and the runner acknowledges them after committing the current cell. The launcher lease is inherited by the child, so process death releases ownership without trusting a PID or a stale 'running' flag. A detached reaper never calls UI.
+
+**Contents.** Defines `_ACTIVE`, `_TERMINAL`, `_paths()`, `active()`, `status()`, `request()`, `_settings()`, `_reap()`, `launch()`, `main()`.
+
+**Use.** `python3 soltui/experiment_jobs.py --help`
+
+#### `soltui/experiment_runner.py`
+
+`code-python` · 687 lines · 38,817 B · description: **extracted**
+
+**Purpose.** Durable native optimization over frozen local evidence. Exploration never evaluates the final windows. Final validation freezes one train winner and spends its temporal evidence before running either paired simulator. The ledger records exposure as well as final reservations: changing window sizes cannot turn dates already used for selection into an untouched final test.
+
+**Contents.** Defines `SCHEMA_VERSION`, `MAX_EVALUATIONS`, `_CONTROL`, `_canonical()`, `_digest()`, `_runtime_descriptor()`, `_root()`, `_lock()`, `run_active()`, `_code_fingerprint()` and 24 more.
+
+**Use.** `import soltui.experiment_runner`
+
+#### `soltui/experiment_screens.py`
+
+`code-python` · 666 lines · 36,968 B · description: **extracted**
+
+**Purpose.** Presentation for the optimization workbench; every operation uses the registry.
+
+**Contents.** Defines `_number()`, `_config()`, `class ExperimentScreen`.
+
+**Use.** `import soltui.experiment_screens`
+
+#### `soltui/experiments.py`
+
+`code-python` · 882 lines · 52,141 B · description: **extracted**
+
+**Purpose.** Durable simulation evidence, bounded search spaces and read-only external comparisons. A run spec is immutable. A cell is a completed measurement, never a progress hint. Holdout reservations are a separate temporal ledger so changing a search fingerprint cannot reopen dates that another experiment has already inspected.
+
+**Contents.** Defines `_UNSET`, `class ExperimentError`, `canonical()`, `fingerprint()`, `_candidate_map()`, `_timestamp()`, `class ExperimentStore`, `_number()`, `_values()`, `preview_space()` and 9 more.
+
+**Use.** `import soltui.experiments`
+
 #### `soltui/forwardtest.py`
 
 `code-python` · 399 lines · 18,659 B · description: **extracted**
@@ -15487,7 +15567,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 616 lines · 92,524 B · description: **extracted**
+`code-python` · 617 lines · 92,850 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -15743,7 +15823,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 4424 lines · 224,533 B · description: **extracted**
+`code-python` · 4433 lines · 224,977 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui Tabs: Settings, Strategies, Signals, Backtest, Top 5, Execute (dry-run only), Analyze, Cumulative, Research, Docs. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -15795,7 +15875,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 238 lines · 11,529 B · description: **extracted**
+`test` · 254 lines · 12,494 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
@@ -15855,7 +15935,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bots.py`
 
-`test` · 567 lines · 29,543 B · description: **extracted**
+`test` · 568 lines · 29,594 B · description: **extracted**
 
 **Purpose.** The Bots tab's engine: configs, data, backtests, forward tests and the auto-optimize gate. No network and no real price data: bars come from `SyntheticLoader` written to a temporary data directory, and recorded snapshots are written to a temporary prices directory.
 
@@ -15932,6 +16012,36 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `ADDR`, `class FakeEth`, `class EthScanTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_eth_scan.py -q`
+
+#### `soltui/tests/test_experiment_interface.py`
+
+`test` · 275 lines · 14,573 B · description: **extracted**
+
+**Purpose.** The workbench's lifecycle and presentation, isolated from personal evidence.
+
+**Contents.** Defines `class Isolated`, `class JobLifecycle`, `class Registry`, `class Screen`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_experiment_interface.py -q`
+
+#### `soltui/tests/test_experiment_runner.py`
+
+`test` · 409 lines · 22,736 B · description: **extracted**
+
+**Purpose.** Native evidence boundaries, replay control and promotion recovery (no network).
+
+**Contents.** Defines `SPACE`, `class NativeExperiments`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_experiment_runner.py -q`
+
+#### `soltui/tests/test_experiments.py`
+
+`test` · 497 lines · 29,415 B · description: **extracted**
+
+**Purpose.** Simulation evidence is durable, bounded and cannot reopen inspected holdout dates.
+
+**Contents.** Defines `class StoreTests`, `class SearchTests`, `META`, `CSV`, `class ImportTests`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_experiments.py -q`
 
 #### `soltui/tests/test_forwardtest.py`
 
@@ -16277,7 +16387,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 307 lines · 13,056 B · description: **curated**
+`ci` · 327 lines · 13,754 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -17505,7 +17615,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-6 files.
+8 files.
 
 #### `scripts/build_doc_index.py`
 
@@ -17547,6 +17657,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 scripts/html_to_markdown.py --help`
 
+#### `scripts/soltui_ci.py`
+
+`code-python` · 86 lines · 3,315 B · description: **extracted**
+
+**Purpose.** Select and shard SolTUI tests without silently omitting shared-code coverage.
+
+**Contents.** Defines `selected_modules()`, `flatten()`, `class TimedResult`, `main()`.
+
+**Use.** `python3 scripts/soltui_ci.py --help`
+
 #### `scripts/test_card_readiness.py`
 
 `test` · 112 lines · 4,660 B · description: **extracted**
@@ -17566,6 +17686,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `class MarkdownTests`, `class FileTests`.
 
 **Use.** `python3 -m pytest scripts/test_html_to_markdown.py -q`
+
+#### `scripts/test_soltui_ci.py`
+
+`test` · 16 lines · 779 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class SelectionTests`.
+
+**Use.** `python3 -m pytest scripts/test_soltui_ci.py -q`
 
 ---
 

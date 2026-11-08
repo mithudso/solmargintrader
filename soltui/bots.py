@@ -23,26 +23,27 @@ replays what the price stream has recorded since. Nothing is assumed about time 
 did not see; a gap longer than `MAX_FORWARD_GAP_MIN` minutes ends the forward test's coverage
 at the gap and says so.
 
-**Auto-optimize** runs a fixed, representative grid of configurations for one bot over every
-cached coin (every triangle, for the triangle bot) and several chronological windows. It picks
-a candidate on the older windows only, then checks it against the current configuration on the
-newer windows cell by cell. It adopts the candidate only when it wins a significant majority of
-those out-of-sample cells (one-sided sign test, p < 0.05) with a positive median improvement.
-Otherwise it keeps the current configuration and says that no configuration reliably
-outperforms. This repo has measured an anti-informative in-sample rank (PBO 0.700), which is
-why the in-sample winner alone is never adopted (Stele KNOW-561, KNOW-871).
+**Auto-optimize** uses `experiment_runner`: it freezes configurations and chronological
+windows, stores each candidate/coin/window measurement, and chooses on train evidence
+only. Validation evidence supports inspection. The newest half remains sealed until
+one candidate is frozen and fresh final dates are reserved. Earlier exploration and
+spent final dates cannot be relabelled as fresh by changing search settings. The
+existing one-sided sign test (p < 0.05), minimum decided-cell count and positive
+median improvement still gate adoption. Every path remains a simulation.
+
 """
 
 from __future__ import annotations
 
+import fcntl
 import itertools
 import json
 import math
-import statistics
 import threading
 import time
 import uuid
 import zlib
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -263,17 +264,34 @@ def get_config(bot: str) -> dict[str, Any]:
         return dict(DEFAULTS[bot])  # a stale saved config never blocks the tab; defaults stand in
 
 
-def save_config(bot: str, values: dict[str, Any], *, merge: bool = True, reason: str = "edited") -> dict[str, Any]:
+@contextmanager
+def _config_lock():
+    home().mkdir(parents=True, exist_ok=True)
+    with (home() / "config.lock").open("a+b") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def save_config(bot: str, values: dict[str, Any], *, merge: bool = True, reason: str = "edited",
+                expected: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Atomically save one bot without losing another process's settings edit."""
     bot = _bot(bot)
-    base = get_config(bot) if merge else {}
-    cfg = validate(bot, {**base, **values})
-    raw = _all_configs()
-    raw[bot] = cfg
-    history = raw.setdefault("history", [])
-    history.append({"at": time.time(), "bot": bot, "reason": reason, "config": cfg})
-    raw["history"] = history[-50:]
-    _write_json(config_path(), raw)
-    return cfg
+    with _config_lock():
+        current = get_config(bot)
+        if expected is not None and current != expected:
+            raise BotError("baseline changed since this experiment; adoption refused")
+        base = current if merge else {}
+        cfg = validate(bot, {**base, **values})
+        raw = _all_configs()
+        raw[bot] = cfg
+        history = raw.setdefault("history", [])
+        history.append({"at": time.time(), "bot": bot, "reason": reason, "config": cfg})
+        raw["history"] = history[-50:]
+        _write_json(config_path(), raw)
+        return cfg
 
 
 def reset_config(bot: str) -> dict[str, Any]:
@@ -1162,212 +1180,23 @@ def _ranks(scores: list[float]) -> list[float]:
     return ranks
 
 
-def _cells_bars(bot: str, cands: list[dict[str, Any]], settings: Any, coins: Sequence[str], windows: int,
-                window_bars: int, progress: Callable[[float, str], None]) -> tuple[list[dict], dict, dict]:
-    """One cell per (coin, window): every candidate's total return. Also which coins were used."""
-    costs = _costs(settings)
-    cells: list[dict[str, Any]] = []
-    skipped: dict[str, str] = {}
-    usable = []
-    sources: dict[str, str] = {}
-    for coin in coins:
-        try:
-            arrays = hourly(coin, settings)
-            wins = windows_for(arrays, windows, window_bars)
-        except BotError as exc:
-            skipped[coin] = str(exc)
-            continue
-        if len(wins) < 2:
-            skipped[coin] = f"only {len(wins)} usable {window_bars // 24}-day window(s) in its data"
-            continue
-        sources[coin] = arrays["source"]
-        usable.append((coin, wins))
-    total = sum(len(w) for _, w in usable) * len(cands) or 1
-    done = 0
-    for coin, wins in usable:
-        half = len(wins) // 2
-        for w_idx, seg in enumerate(wins):
-            scores = []
-            for cfg in cands:
-                try:
-                    scores.append(float(run_bars(bot, cfg, seg, BACKTEST_INTERVAL, costs)["results"]["total_return"]))
-                except (ValueError, RuntimeError):
-                    scores.append(-math.inf)
-                done += 1
-            progress(done / total, f"{coin} window {w_idx + 1}/{len(wins)}")
-            cells.append({"cell": f"{coin}#{w_idx + 1}", "coin": coin, "split": "train" if w_idx < half else "test",
-                          "start": _iso(seg["ts"][0]), "end": _iso(seg["ts"][-1]), "scores": scores})
-    return cells, skipped, sources
-
-
-def _cells_triangle(cands: list[dict[str, Any]], progress: Callable[[float, str], None]) -> tuple[list[dict], dict]:
-    """One cell per (triangle, recorded hour) over the newest TRIANGLE_OPT_DAYS day files.
-
-    Streams one hour at a time: every candidate's replay is fed that hour and then discarded, so
-    memory holds one hour of snapshots, not days of them.
-    """
-    tris = triangles_from_products(_triangle_products())
-    hours: list[tuple[str, list[float]]] = []
-    chunk: list[tuple[float, dict]] = []
-    current: int | None = None
-
-    def close_chunk() -> None:
-        if len(chunk) < TRIANGLE_MIN_SNAPSHOTS:
-            return
-        replays = [TriangleReplay(TriangleConfig(**cfg), tris) for cfg in cands]
-        for t, q in chunk:
-            for r in replays:
-                r.feed(t, q)
-        results = [r.result() for r in replays]
-        for tri in tris:
-            hours.append((f"{tri.name}@{_iso(chunk[0][0])}", [res.per_triangle[tri.name]["pnl_usd"] for res in results]))
-        progress(min(0.99, len(hours) / max(1, len(tris) * 48)), f"hour {len(hours) // max(1, len(tris))}")
-
-    seen = 0
-    for t, q in _iter_recorded(0.0, None, last_days=TRIANGLE_OPT_DAYS):
-        seen += 1
-        hour = int(t // TRIANGLE_WINDOW_S)
-        if current is not None and hour != current:
-            close_chunk()
-            chunk = []
-        current = hour
-        chunk.append((t, q))
-    close_chunk()
-    n_hours = len(hours) // max(1, len(tris))
-    if n_hours < 2:
-        return [], {"recorded": f"{seen} recorded snapshots give {n_hours} usable hour window(s); "
-                                "auto-optimize needs at least two (keep the recorder running)"}, {}
-    half = n_hours // 2
-    cells = []
-    for idx, (name, scores) in enumerate(hours):
-        w = idx // max(1, len(tris))
-        cells.append({"cell": name, "coin": name.split("@")[0], "split": "train" if w < half else "test",
-                      "start": name.split("@")[-1], "end": None, "scores": scores})
-    return cells, {}, {}
-
-
 def _changes(before: dict[str, Any], after: dict[str, Any]) -> list[dict[str, Any]]:
     return [{"setting": k, "before": before.get(k), "after": v} for k, v in after.items() if before.get(k) != v]
-
-
-def _per_coin(cells: list[dict[str, Any]], best: int, sources: dict[str, str]) -> list[dict[str, Any]]:
-    """For each coin (each triangle): how many windows ran, and the pick against the current settings."""
-    rows = []
-    for coin in dict.fromkeys(c["coin"] for c in cells):
-        mine = [c for c in cells if c["coin"] == coin]
-        test = [c for c in mine if c["split"] == "test"]
-        diffs = [c["scores"][best] - c["scores"][0] for c in test
-                 if math.isfinite(c["scores"][best]) and math.isfinite(c["scores"][0])]
-        own_best = min(range(len(mine[0]["scores"])),
-                       key=lambda i: statistics.fmean(_ranks(c["scores"])[i] for c in mine))
-        rows.append({"coin": coin, "data_source": sources.get(coin), "windows": len(mine),
-                     "train_windows": len(mine) - len(test), "test_windows": len(test),
-                     "first_window": mine[0]["start"], "last_window_end": mine[-1].get("end"),
-                     "current_test_median": statistics.median(c["scores"][0] for c in test) if test else None,
-                     "pick_test_median": statistics.median(c["scores"][best] for c in test) if test else None,
-                     "pick_wins": sum(d > 1e-12 for d in diffs), "pick_losses": sum(d < -1e-12 for d in diffs),
-                     "coin_best_index": own_best})
-    return rows
 
 
 def optimize(bot: str, settings: Any = None, *, coins: Sequence[str] | None = None,
              windows: int = OPTIMIZE_WINDOWS, window_days: int = OPTIMIZE_WINDOW_DAYS, adopt: bool = True,
              progress: Callable[[float, str], None] | None = None) -> dict[str, Any]:
-    """Search the candidates across every coin and window; adopt only a reliable out-of-sample winner.
+    """Run the durable native experiment engine and guarded final validation.
 
-    Each run is numbered per bot. Run 1 tests the representative grid; each later run tests
-    configurations no earlier run tried, reaching further from the current settings
-    (`candidates`). The report says which coins ran with how many windows, and exactly which
-    settings changed and whether they were saved.
+    This compatibility route shares the workbench's immutable evidence, cell
+    checkpoints and spent-date ledger. Re-running a search never refreshes its
+    final test dates.
     """
-    bot = _bot(bot)
-    if not 2 <= int(windows) <= 24:
-        raise BotError("windows must be in [2, 24]")
-    if not 3 <= int(window_days) <= 365:
-        raise BotError("window_days must be in [3, 365]")
-    started = time.time()
-    hist = optimize_history(bot)
-    run_no = hist["runs"] + 1
-    current = get_config(bot)
-    cands = candidates(bot, current, run_no, hist["tried"])
-    cand_rows = [{"index": i, "changes": {k: v for k, v in c.items() if current.get(k) != v}} for i, c in enumerate(cands)]
+    from .experiment_runner import optimize as run_optimize
 
-    def report(frac: float, msg: str) -> None:
-        runtime().progress[bot] = {"fraction": round(frac, 4), "message": msg, "at": time.time(), "run": run_no,
-                                   "candidates": cand_rows, "started": started, "done": False}
-        if progress:
-            progress(frac, msg)
-
-    report(0.0, f"run {run_no}: {len(cands)} configurations")
-    if bot == "triangle":
-        cells, skipped, sources = _cells_triangle(cands, report)
-        universe = "every recorded triangle, hour windows"
-        coin_list: list[str] = []
-    else:
-        coin_list = [c.upper() for c in (coins or available_coins(settings))]
-        cells, skipped, sources = _cells_bars(bot, cands, settings, coin_list, int(windows), int(window_days) * 24,
-                                              report)
-        universe = f"{len(coin_list)} coins x up to {windows} windows of {window_days} days (1h bars)"
-    train = [c for c in cells if c["split"] == "train"]
-    test = [c for c in cells if c["split"] == "test"]
-    table = []
-    for i, cfg in enumerate(cands):
-        tr = [c["scores"][i] for c in train]
-        te = [c["scores"][i] for c in test]
-        table.append({"index": i, "current": i == 0, "config": cfg,
-                      "changes": {k: v for k, v in cfg.items() if current.get(k) != v},
-                      "train_mean_rank": statistics.fmean(_ranks(c["scores"])[i] for c in train) if train else None,
-                      "train_median": statistics.median(tr) if tr else None,
-                      "test_median": statistics.median(te) if te else None})
-    verdict: dict[str, Any] = {"reliable": False, "adopted": False, "saved": False, "changes": []}
-    best_index = 0
-    if not train or not test:
-        verdict["reason"] = "not enough data to split into train and test windows"
-    else:
-        best = min(table, key=lambda r: (r["train_mean_rank"], r["index"]))
-        best_index = best["index"]
-        diffs = [c["scores"][best_index] - c["scores"][0] for c in test]
-        diffs = [d for d in diffs if math.isfinite(d)]
-        wins = sum(d > 1e-12 for d in diffs)
-        losses = sum(d < -1e-12 for d in diffs)
-        p = sign_test_p(wins, losses)
-        med = statistics.median(diffs) if diffs else 0.0
-        reliable = (best_index != 0 and wins + losses >= MIN_DECIDED_CELLS and p < SIGN_TEST_ALPHA and med > 0)
-        verdict.update({"best_index": best_index, "best_config": best["config"], "best_changes": best["changes"],
-                        "test_cells": len(diffs), "wins": wins, "losses": losses, "ties": len(diffs) - wins - losses,
-                        "p_value": p, "median_improvement": med, "reliable": reliable})
-        if best_index == 0:
-            verdict["reason"] = "the current configuration ranks best on the train windows"
-        elif wins + losses < MIN_DECIDED_CELLS:
-            verdict["reason"] = f"only {wins + losses} test cells differ (need {MIN_DECIDED_CELLS})"
-        elif not reliable:
-            verdict["reason"] = (f"the train winner beat the current config in {wins} of {wins + losses} test cells "
-                                 f"(p = {p:.3f}, median {med:+.4f}); not reliable at p < {SIGN_TEST_ALPHA}")
-        else:
-            verdict["reason"] = (f"the train winner beat the current config in {wins} of {wins + losses} test cells "
-                                 f"(p = {p:.4f}, median improvement {med:+.4f})")
-        if reliable and adopt:
-            saved = save_config(bot, best["config"], merge=False, reason=f"auto-optimize run {run_no}: {verdict['reason']}")
-            verdict.update({"adopted": True, "saved": True, "changes": _changes(current, saved),
-                            "saved_to": str(config_path())})
-        elif reliable:
-            verdict["changes_not_saved"] = _changes(current, best["config"])
-    per_coin = _per_coin(cells, best_index, sources) if cells else []
-    report(1.0, "done")
-    runtime().progress[bot]["done"] = True
-    hist["runs"] = run_no
-    hist["tried"] = list(dict.fromkeys(hist["tried"] + [_cfg_key(c) for c in cands]))[-5000:]
-    hist["log"] = (hist["log"] + [{"run": run_no, "at": time.time(), "candidates": len(cands),
-                                   "adopted": verdict["adopted"], "changes": verdict["changes"]}])[-100:]
-    _write_json(history_path(bot), hist)
-    out = {"bot": bot, "run": run_no, "at": time.time(), "seconds": round(time.time() - started, 1),
-           "universe": universe, "coins_requested": coin_list, "coins_used": [r["coin"] for r in per_coin],
-           "candidates": len(cands), "new_candidates": sum(1 for c in cands[1:]),
-           "train_cells": len(train), "test_cells": len(test), "skipped": skipped, "space": SPACE[bot],
-           "current": current, "verdict": verdict, "per_coin": per_coin,
-           "table": sorted(table, key=lambda r: (r["train_mean_rank"] is None, r["train_mean_rank"] or 0))}
-    _write_json(optimize_path(bot), out)
-    return _json_safe(out)
+    return run_optimize(bot, settings, coins=coins, windows=windows, window_days=window_days,
+                        adopt=adopt, progress=progress)
 
 
 def latest_optimize(bot: str) -> dict[str, Any] | None:

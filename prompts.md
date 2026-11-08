@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 62
-Delta: v61 to v62; reduce CI latency with relevant tests.
+Version: 63
+Delta: v62 to v63; preserve concurrent histories and continue PR 89 CI work.
 
 ## v1 - 2026-11-06
 
@@ -458,6 +458,14 @@ I told you to move the incomplete cards to the incomplete directory, you never d
 ```text
 When I launch the soltui I don't see any of the new strategies.
 ```
+
+## v61 - 2026-11-08
+
+```text
+turn all of your suggestions into an implementation plan and execute it
+```
+
+Scope: all six recommendations from the TradingView comparison: experiment explorer, sparse stability heatmaps, typed search spaces, resumable Bots runs, read-only TradingView import/comparison, and untouched final holdout safeguards.
 
 ## v52 - 2026-11-08 (Forwardtest coins and auto-optimize)
 
